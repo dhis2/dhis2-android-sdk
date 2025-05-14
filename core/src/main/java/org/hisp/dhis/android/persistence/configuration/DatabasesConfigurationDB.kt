@@ -30,7 +30,6 @@ package org.hisp.dhis.android.persistence.configuration
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
-import org.hisp.dhis.android.persistence.configuration.DatabaseAccountDB.Companion.toDB
 
 @Serializable
 internal data class DatabasesConfigurationDB(
@@ -45,14 +44,12 @@ internal data class DatabasesConfigurationDB(
             .accounts(accounts.map { it.toDomain() })
             .build()
     }
+}
 
-    companion object {
-        fun toDB(config: DatabasesConfiguration): DatabasesConfigurationDB {
-            return DatabasesConfigurationDB(
-                versionCode = config.versionCode(),
-                maxAccounts = config.maxAccounts(),
-                accounts = config.accounts().map { it.toDB() },
-            )
-        }
-    }
+internal fun DatabasesConfiguration.toDB(): DatabasesConfigurationDB {
+    return DatabasesConfigurationDB(
+        versionCode = versionCode(),
+        maxAccounts = maxAccounts(),
+        accounts = accounts().map { it.toDB() },
+    )
 }

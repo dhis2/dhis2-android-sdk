@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,26 +28,6 @@
 
 package org.hisp.dhis.android.persistence.common
 
-import org.hisp.dhis.android.core.common.Access
-import org.hisp.dhis.android.core.common.DataAccess
-
-@JvmInline
-internal value class AccessDB(
-    val accessDataWrite: Boolean,
-) {
-    fun toDomain(): Access {
-        return Access.builder()
-            .read(true)
-            .write(true)
-            .data(
-                DataAccess.builder()
-                    .read(true)
-                    .write(accessDataWrite)
-                    .build(),
-            ).build()
-    }
-}
-
-internal fun Access.toDB(): AccessDB {
-    return AccessDB(data().write())
+internal interface DeletableObjectDB {
+    val deleted: Boolean?
 }

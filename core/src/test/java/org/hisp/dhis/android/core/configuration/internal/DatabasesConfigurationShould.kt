@@ -31,6 +31,7 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.persistence.configuration.DatabasesConfigurationDB
+import org.hisp.dhis.android.persistence.configuration.toDB
 import org.junit.Test
 
 class DatabasesConfigurationShould :
@@ -59,8 +60,7 @@ class DatabasesConfigurationShould :
         val configurationDao = deserialize(DatabasesConfigurationDB.serializer())
         val configuration = configurationDao.toDomain()
 
-        val serialized =
-            serialize(DatabasesConfigurationDB.toDB(configuration), DatabasesConfigurationDB.serializer())
+        val serialized = serialize(configuration.toDB(), DatabasesConfigurationDB.serializer())
         val deserializedDao = deserialize(serialized, DatabasesConfigurationDB.serializer())
         val deserialized = deserializedDao.toDomain()
 

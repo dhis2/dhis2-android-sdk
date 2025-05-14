@@ -9,8 +9,11 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.persistence.common.DataObjectDB
+import org.hisp.dhis.android.persistence.common.DeletableObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.GeometryDB
+import org.hisp.dhis.android.persistence.common.SyncStateDB
 import org.hisp.dhis.android.persistence.common.toDB
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitDB
 
@@ -51,25 +54,25 @@ internal data class TrackedEntityInstanceDB(
     val trackedEntityType: String?,
     val geometryType: String?,
     val geometryCoordinates: String?,
-    val syncState: String?,
+    override val syncState: SyncStateDB?,
     val aggregatedSyncState: String?,
-    val deleted: Boolean?,
-) : EntityDB<TrackedEntityInstance> {
+    override val deleted: Boolean?,
+) : EntityDB<TrackedEntityInstance>, DataObjectDB, DeletableObjectDB {
     override fun toDomain(): TrackedEntityInstance {
-        return TrackedEntityInstance.builder()
-            .id(id?.toLong())
-            .uid(uid)
-            .created(created?.toJavaDate())
-            .lastUpdated(lastUpdated?.toJavaDate())
-            .createdAtClient(createdAtClient?.toJavaDate())
-            .lastUpdatedAtClient(lastUpdatedAtClient?.toJavaDate())
-            .organisationUnit(organisationUnit)
-            .trackedEntityType(trackedEntityType)
-            .geometry(GeometryDB(geometryType, geometryCoordinates).toDomain())
-            .syncState(syncState?.let { State.valueOf(it) })
-            .aggregatedSyncState(aggregatedSyncState?.let { State.valueOf(it) })
-            .deleted(deleted)
-            .build()
+        return TrackedEntityInstance.builder().apply {
+            id(id?.toLong())
+            uid(uid)
+            created(created?.toJavaDate())
+            lastUpdated(lastUpdated?.toJavaDate())
+            createdAtClient(createdAtClient?.toJavaDate())
+            lastUpdatedAtClient(lastUpdatedAtClient?.toJavaDate())
+            organisationUnit(organisationUnit)
+            trackedEntityType(trackedEntityType)
+            geometry(GeometryDB(geometryType, geometryCoordinates).toDomain())
+            syncState?.let { syncState(it.toDomain()) }
+            aggregatedSyncState(aggregatedSyncState?.let { State.valueOf(it) })
+            deleted(deleted)
+        }.build()
     }
 }
 
@@ -84,7 +87,7 @@ internal fun TrackedEntityInstance.toDB(): TrackedEntityInstanceDB {
         trackedEntityType = trackedEntityType(),
         geometryType = geometry().toDB().geometryType,
         geometryCoordinates = geometry().toDB().geometryCoordinates,
-        syncState = syncState()?.name,
+        syncState = syncState()?.toDB(),
         aggregatedSyncState = aggregatedSyncState()?.name,
         deleted = deleted(),
     )

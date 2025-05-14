@@ -43,13 +43,11 @@ internal data class DatabaseAccountImportDB(
             .protectedDbName(protectedDbName)
             .build()
     }
+}
 
-    companion object {
-        fun DatabaseAccountImport.toDB(): DatabaseAccountImportDB {
-            return DatabaseAccountImportDB(
-                status = this.status().name,
-                protectedDbName = this.protectedDbName(),
-            )
-        }
-    }
+internal fun DatabaseAccountImport.toDB(): DatabaseAccountImportDB {
+    return DatabaseAccountImportDB(
+        status = status().name,
+        protectedDbName = protectedDbName(),
+    )
 }

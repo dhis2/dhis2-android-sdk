@@ -5,11 +5,13 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.persistence.common.DataObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.persistence.common.SyncStateDB
+import org.hisp.dhis.android.persistence.common.toDB
 import org.hisp.dhis.android.persistence.dataelement.DataElementDB
 import org.hisp.dhis.android.persistence.event.EventDB
 
@@ -48,21 +50,21 @@ internal data class TrackedEntityDataValueDB(
     val created: String?,
     val lastUpdated: String?,
     val providedElsewhere: Boolean?,
-    val syncState: String?,
-) : EntityDB<TrackedEntityDataValue> {
+    override val syncState: SyncStateDB?,
+) : EntityDB<TrackedEntityDataValue>, DataObjectDB {
 
     override fun toDomain(): TrackedEntityDataValue {
-        return TrackedEntityDataValue.builder()
-            .id(id?.toLong())
-            .event(event)
-            .dataElement(dataElement)
-            .storedBy(storedBy)
-            .value(value)
-            .created(created?.toJavaDate())
-            .lastUpdated(lastUpdated?.toJavaDate())
-            .providedElsewhere(providedElsewhere)
-            .syncState(syncState?.let { State.valueOf(it) })
-            .build()
+        return TrackedEntityDataValue.builder().apply {
+            id(id?.toLong())
+            event(event)
+            dataElement(dataElement)
+            storedBy(storedBy)
+            value(value)
+            created?.let { created(it.toJavaDate()) }
+            lastUpdated?.let { lastUpdated(it.toJavaDate()) }
+            providedElsewhere(providedElsewhere)
+            syncState?.let { syncState(it.toDomain()) }
+        }.build()
     }
 }
 
@@ -75,6 +77,6 @@ internal fun TrackedEntityDataValue.toDB(): TrackedEntityDataValueDB {
         created = created()?.dateFormat(),
         lastUpdated = lastUpdated()?.dateFormat(),
         providedElsewhere = providedElsewhere(),
-        syncState = syncState()?.name,
+        syncState = syncState()?.toDB(),
     )
 }

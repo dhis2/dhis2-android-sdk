@@ -151,3 +151,13 @@ internal object Label {
     const val ProgramStatus = "programStatusItem"
     const val EventStatus = "eventStatusItem"
 }
+
+data class TrackerLineListSortingItem(
+    val dimension: TrackerLineListItem,
+    val direction: TrackerLineListSortingDirection
+)
+
+enum class TrackerLineListSortingDirection {
+    ASC,
+    DESC,
+}

@@ -422,6 +422,39 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
         assertThat(resultNoPaging.getOrThrow().rows.size).isEqualTo(2)
     }
 
+    @Test
+    fun evaluate_sorting() {
+        val event1 = generator.generate()
+        helper.createSingleEvent(event1, program.uid(), programStage1.uid(), orgunitChild1.uid())
+        val event2 = generator.generate()
+        helper.createSingleEvent(event2, program.uid(), programStage1.uid(), orgunitChild2.uid())
+
+        helper.insertTrackedEntityDataValue(event1, dataElement1.uid(), "5")
+        helper.insertTrackedEntityDataValue(event2, dataElement1.uid(), "10")
+
+        val dataElementItem1 = TrackerLineListItem.ProgramDataElement(dataElement1.uid(), programStage1.uid())
+
+        val ascOrder = d2.analyticsModule().trackerLineList()
+            .withEventOutput(programStage1.uid())
+            .withColumn(dataElementItem1)
+            .withSorting(TrackerLineListSortingItem(dataElementItem1, TrackerLineListSortingDirection.ASC))
+            .blockingEvaluate()
+
+        val ascRows = ascOrder.getOrThrow().rows
+        assertThat(ascRows.size).isEqualTo(2)
+        assertThat(ascRows.flatten().map { it.value }).isEqualTo(listOf("5", "10"))
+
+        val descOrder = d2.analyticsModule().trackerLineList()
+            .withEventOutput(programStage1.uid())
+            .withColumn(dataElementItem1)
+            .withSorting(TrackerLineListSortingItem(dataElementItem1, TrackerLineListSortingDirection.DESC))
+            .blockingEvaluate()
+
+        val descRows = descOrder.getOrThrow().rows
+        assertThat(descRows.size).isEqualTo(2)
+        assertThat(descRows.flatten().map { it.value }).isEqualTo(listOf("10", "5"))
+    }
+
     internal fun createDefaultEnrollment(
         teiUid: String,
         enrollmentUid: String,

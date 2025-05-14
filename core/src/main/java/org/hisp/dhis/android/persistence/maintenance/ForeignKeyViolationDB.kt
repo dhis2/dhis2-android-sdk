@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation
 import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.persistence.common.EntityDB
 
 @Entity(tableName = "ForeignKeyViolation")
 internal data class ForeignKeyViolationDB(
@@ -20,8 +21,8 @@ internal data class ForeignKeyViolationDB(
     val fromObjectUid: String?,
     val fromObjectRow: String?,
     val created: String?,
-) {
-    fun toDomain(): ForeignKeyViolation {
+) : EntityDB<ForeignKeyViolation> {
+    override fun toDomain(): ForeignKeyViolation {
         return ForeignKeyViolation.builder()
             .fromTable(fromTable)
             .fromColumn(fromColumn)

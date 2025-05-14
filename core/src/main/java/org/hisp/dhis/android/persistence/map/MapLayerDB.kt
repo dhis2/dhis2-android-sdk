@@ -8,6 +8,7 @@ import org.hisp.dhis.android.core.map.layer.ImageFormat
 import org.hisp.dhis.android.core.map.layer.MapLayer
 import org.hisp.dhis.android.core.map.layer.MapLayerPosition
 import org.hisp.dhis.android.core.map.layer.MapService
+import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.StringListDB
 import org.hisp.dhis.android.persistence.common.toDB
 
@@ -32,8 +33,8 @@ internal data class MapLayerDB(
     val mapService: String?,
     val imageFormat: String?,
     val layers: String?,
-) {
-    fun toDomain(): MapLayer {
+) : EntityDB<MapLayer> {
+    override fun toDomain(): MapLayer {
         return MapLayer.builder().apply {
             uid(uid)
             name(name)

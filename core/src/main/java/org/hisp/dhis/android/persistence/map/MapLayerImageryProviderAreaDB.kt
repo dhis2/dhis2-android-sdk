@@ -29,10 +29,36 @@
 package org.hisp.dhis.android.persistence.map
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderArea
+import org.hisp.dhis.android.persistence.map.MapLayerImageryProviderAreaDBSerializable.Companion.toDBSerializable
+
+@JvmInline
+internal value class MapLayerImageryProviderAreaDB(
+    val value: String?
+) {
+    fun toDomain(): List<MapLayerImageryProviderArea> {
+        return if (value == null) {
+            emptyList()
+        } else {
+            KotlinxJsonParser.instance.decodeFromString<List<MapLayerImageryProviderAreaDBSerializable>>(value)
+                .map { it.toDomain() }
+        }
+    }
+}
+
+internal fun List<MapLayerImageryProviderArea>.toDB(): MapLayerImageryProviderAreaDB {
+    return MapLayerImageryProviderAreaDB(
+        KotlinxJsonParser.instance.encodeToString(
+            ListSerializer(MapLayerImageryProviderAreaDBSerializable.serializer()),
+            this.toDBSerializable(),
+        ),
+    )
+}
 
 @Serializable
-internal data class MapLayerImageryProviderAreaDB(
+private data class MapLayerImageryProviderAreaDBSerializable(
     val bbox: List<Double>?,
     val zoomMax: Int,
     val zoomMin: Int,
@@ -46,12 +72,14 @@ internal data class MapLayerImageryProviderAreaDB(
     }
 
     companion object {
-        fun MapLayerImageryProviderArea.toDB(): MapLayerImageryProviderAreaDB {
-            return MapLayerImageryProviderAreaDB(
-                bbox = this.bbox(),
-                zoomMax = this.zoomMax(),
-                zoomMin = this.zoomMin(),
-            )
+        fun List<MapLayerImageryProviderArea>.toDBSerializable(): List<MapLayerImageryProviderAreaDBSerializable> {
+            return this.map {
+                MapLayerImageryProviderAreaDBSerializable(
+                    bbox = it.bbox(),
+                    zoomMax = it.zoomMax(),
+                    zoomMin = it.zoomMin(),
+                )
+            }
         }
     }
 }

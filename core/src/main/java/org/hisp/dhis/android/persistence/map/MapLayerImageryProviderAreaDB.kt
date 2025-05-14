@@ -36,7 +36,7 @@ import org.hisp.dhis.android.persistence.map.MapLayerImageryProviderAreaDBSerial
 
 @JvmInline
 internal value class MapLayerImageryProviderAreaDB(
-    val value: String?
+    val value: String?,
 ) {
     fun toDomain(): List<MapLayerImageryProviderArea> {
         return if (value == null) {

@@ -47,6 +47,6 @@ internal fun D2Error.toDB(): D2ErrorDB {
         errorCode = errorCode().name,
         errorDescription = errorDescription(),
         httpErrorCode = httpErrorCode(),
-        created = created().dateFormat()
+        created = created().dateFormat(),
     )
 }

@@ -84,7 +84,7 @@ internal data class RelationshipConstraintDB(
 
 internal fun RelationshipConstraint.toDB(): RelationshipConstraintDB {
     return RelationshipConstraintDB(
-        relationshipType = relationshipType()!!.uid()!!,
+        relationshipType = relationshipType()!!.uid(),
         constraintType = constraintType()!!.name,
         relationshipEntity = relationshipEntity()?.name,
         trackedEntityType = trackedEntityType()?.uid(),

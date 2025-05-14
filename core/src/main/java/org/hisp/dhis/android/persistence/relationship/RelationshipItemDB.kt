@@ -5,6 +5,13 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
+import org.hisp.dhis.android.core.relationship.RelationshipItem
+import org.hisp.dhis.android.core.relationship.RelationshipItemEnrollment
+import org.hisp.dhis.android.core.relationship.RelationshipItemEvent
+import org.hisp.dhis.android.core.relationship.RelationshipItemTrackedEntityInstance
+import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.persistence.common.ObjectWithUidDB
 import org.hisp.dhis.android.persistence.enrollment.EnrollmentDB
 import org.hisp.dhis.android.persistence.event.EventDB
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceDB
@@ -57,4 +64,30 @@ internal data class RelationshipItemDB(
     val trackedEntityInstance: String?,
     val enrollment: String?,
     val event: String?,
-)
+) : EntityDB<RelationshipItem> {
+
+    override fun toDomain(): RelationshipItem {
+        return RelationshipItem.builder()
+            .id(id?.toLong())
+            .relationship(ObjectWithUidDB(relationship).toDomain())
+            .relationshipItemType(RelationshipConstraintType.valueOf(relationshipItemType))
+            .trackedEntityInstance(
+                RelationshipItemTrackedEntityInstance.builder()
+                    .trackedEntityInstance(trackedEntityInstance)
+                    .build(),
+            )
+            .enrollment(RelationshipItemEnrollment.builder().enrollment(enrollment).build())
+            .event(RelationshipItemEvent.builder().event(event).build())
+            .build()
+    }
+}
+
+internal fun RelationshipItem.toDB(): RelationshipItemDB {
+    return RelationshipItemDB(
+        relationship = relationship()?.uid()!!,
+        relationshipItemType = relationshipItemType()?.name!!,
+        trackedEntityInstance = trackedEntityInstance()?.trackedEntityInstance(),
+        enrollment = enrollment()?.enrollment(),
+        event = event()?.event(),
+    )
+}

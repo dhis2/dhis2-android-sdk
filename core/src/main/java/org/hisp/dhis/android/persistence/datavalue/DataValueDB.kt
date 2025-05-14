@@ -101,6 +101,8 @@ internal data class DataValueDB(
             lastUpdated?.let { lastUpdated(it.toJavaDate()!!) }
             comment(comment)
             followUp(followUp)
+            syncState?.let { syncState(it.toDomain()) }
+            deleted(deleted)
         }.build()
     }
 }

@@ -23,14 +23,14 @@ internal data class SynchronizationSettingDB(
 ) : EntityDB<SynchronizationSettings> {
 
     override fun toDomain(): SynchronizationSettings {
-        return SynchronizationSettings.builder()
-            .id(id?.toLong())
-            .dataSync(dataSync?.let { DataSyncPeriod.valueOf(it) })
-            .metadataSync(metadataSync?.let { MetadataSyncPeriod.valueOf(it) })
-            .trackerImporterVersion(trackerImporterVersion?.let { TrackerImporterVersion.valueOf(it) })
-            .trackerExporterVersion(trackerExporterVersion?.let { TrackerExporterVersion.valueOf(it) })
-            .fileMaxLengthBytes(fileMaxLengthBytes)
-            .build()
+        return SynchronizationSettings.builder().apply {
+            id(id?.toLong())
+            dataSync?.let { dataSync(DataSyncPeriod.valueOf(it)) }
+            metadataSync?.let { metadataSync(MetadataSyncPeriod.valueOf(it)) }
+            trackerImporterVersion?.let { trackerImporterVersion(TrackerImporterVersion.valueOf(it)) }
+            trackerExporterVersion?.let { trackerExporterVersion(TrackerExporterVersion.valueOf(it)) }
+            fileMaxLengthBytes(fileMaxLengthBytes)
+        }.build()
     }
 }
 

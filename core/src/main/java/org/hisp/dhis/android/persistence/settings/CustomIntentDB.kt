@@ -30,20 +30,18 @@ internal data class CustomIntentDB(
 ) : EntityDB<CustomIntent> {
 
     override fun toDomain(): CustomIntent {
-        return CustomIntent.builder()
-            .id(id?.toLong())
-            .uid(uid)
-            .name(name)
-            .action(action?.toDomain())
-            .packageName(packageName)
-            .request(
-                requestArguments?.let {
-                    CustomIntentRequest.builder()
-                        .arguments(requestArguments.toDomain())
-                        .build()
-                },
-            )
-            .response(
+        return CustomIntent.builder().apply {
+            id(id?.toLong())
+            uid(uid)
+            name(name)
+            action(action?.toDomain())
+            packageName(packageName)
+            requestArguments?.let {
+                request(
+                    CustomIntentRequest.builder().arguments(requestArguments.toDomain()).build()
+                )
+            }
+            response(
                 CustomIntentResponse.builder().data(
                     CustomIntentResponseData.builder()
                         .argument(responseDataArgument)
@@ -51,7 +49,7 @@ internal data class CustomIntentDB(
                         .build(),
                 ).build(),
             )
-            .build()
+        }.build()
     }
 }
 

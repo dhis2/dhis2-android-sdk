@@ -24,24 +24,20 @@ internal data class ProgramConfigurationSettingDB(
 ) : EntityDB<ProgramConfigurationSetting> {
 
     override fun toDomain(): ProgramConfigurationSetting {
-        return ProgramConfigurationSetting.builder()
-            .id(id?.toLong())
-            .uid(uid)
-            .completionSpinner(completionSpinner)
-            .optionalSearch(optionalSearch)
-            .disableReferrals(disableReferrals)
-            .disableCollapsibleSections(disableCollapsibleSections)
-            .itemHeader(
-                itemHeaderProgramIndicator?.let {
-                    ProgramItemHeader.builder()
-                        .programIndicator(it)
-                        .build()
-                },
-            )
-            .minimumLocationAccuracy(minimumLocationAccuracy)
-            .disableManualLocation(disableManualLocation)
-            .quickActions(quickActions?.toDomain())
-            .build()
+        return ProgramConfigurationSetting.builder().apply {
+            id(id?.toLong())
+            uid(uid)
+            completionSpinner(completionSpinner)
+            optionalSearch(optionalSearch)
+            disableReferrals(disableReferrals)
+            disableCollapsibleSections(disableCollapsibleSections)
+            itemHeaderProgramIndicator?.let {
+                itemHeader(ProgramItemHeader.builder().programIndicator(it).build())
+            }
+            minimumLocationAccuracy(minimumLocationAccuracy)
+            disableManualLocation(disableManualLocation)
+            quickActions(quickActions?.toDomain())
+        }.build()
     }
 }
 

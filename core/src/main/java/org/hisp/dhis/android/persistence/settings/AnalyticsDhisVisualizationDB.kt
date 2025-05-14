@@ -24,17 +24,17 @@ internal data class AnalyticsDhisVisualizationDB(
 ) : EntityDB<AnalyticsDhisVisualization> {
 
     override fun toDomain(): AnalyticsDhisVisualization {
-        return AnalyticsDhisVisualization.builder()
-            .id(id?.toLong())
-            .uid(uid)
-            .scopeUid(scopeUid)
-            .scope(scope?.let { AnalyticsDhisVisualizationScope.valueOf(it) })
-            .groupUid(groupUid)
-            .groupName(groupName)
-            .timestamp(timestamp)
-            .name(name)
-            .type(AnalyticsDhisVisualizationType.valueOf(type))
-            .build()
+        return AnalyticsDhisVisualization.builder().apply {
+            id(id?.toLong())
+            uid(uid)
+            scopeUid(scopeUid)
+            scope?.let { scope(AnalyticsDhisVisualizationScope.valueOf(it)) }
+            groupUid(groupUid)
+            groupName(groupName)
+            timestamp(timestamp)
+            name(name)
+            type(AnalyticsDhisVisualizationType.valueOf(type))
+        }.build()
     }
 }
 

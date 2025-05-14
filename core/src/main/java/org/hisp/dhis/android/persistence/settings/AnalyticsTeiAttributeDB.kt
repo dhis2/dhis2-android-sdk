@@ -43,11 +43,12 @@ internal data class AnalyticsTeiAttributeDB(
 ) : EntityDB<AnalyticsTeiAttribute> {
 
     override fun toDomain(): AnalyticsTeiAttribute {
-        return AnalyticsTeiAttribute.builder()
-            .id(id?.toLong())
-            .teiSetting(teiSetting)
-            .whoComponent(whoComponent?.let { WHONutritionComponent.valueOf(it) })
-            .attribute(attribute)
+        return AnalyticsTeiAttribute.builder().apply {
+            id(id?.toLong())
+            teiSetting(teiSetting)
+            whoComponent?.let { whoComponent(WHONutritionComponent.valueOf(it)) }
+            attribute(attribute)
+        }
             .build()
     }
 }

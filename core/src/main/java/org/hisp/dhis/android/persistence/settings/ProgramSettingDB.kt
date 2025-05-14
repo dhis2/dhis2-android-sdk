@@ -53,26 +53,26 @@ internal data class ProgramSettingDB(
 ) : EntityDB<ProgramSetting> {
 
     override fun toDomain(): ProgramSetting {
-        return ProgramSetting.builder()
-            .id(id?.toLong())
-            .uid(uid)
-            .name(name)
-            .lastUpdated(lastUpdated.toJavaDate())
-            .teiDownload(teiDownload)
-            .teiDBTrimming(teiDBTrimming)
-            .eventsDownload(eventsDownload)
-            .eventsDBTrimming(eventsDBTrimming)
-            .updateDownload(updateDownload?.let { DownloadPeriod.valueOf(it) })
-            .updateDBTrimming(updateDBTrimming?.let { DownloadPeriod.valueOf(it) })
-            .settingDownload(settingDownload?.let { LimitScope.valueOf(it) })
-            .settingDBTrimming(settingDBTrimming?.let { LimitScope.valueOf(it) })
-            .enrollmentDownload(enrollmentDownload?.let { EnrollmentScope.valueOf(it) })
-            .enrollmentDBTrimming(enrollmentDBTrimming?.let { EnrollmentScope.valueOf(it) })
-            .eventDateDownload(eventDateDownload?.let { DownloadPeriod.valueOf(it) })
-            .eventDateDBTrimming(eventDateDBTrimming?.let { DownloadPeriod.valueOf(it) })
-            .enrollmentDateDownload(enrollmentDateDownload?.let { DownloadPeriod.valueOf(it) })
-            .enrollmentDateDBTrimming(enrollmentDateDBTrimming?.let { DownloadPeriod.valueOf(it) })
-            .build()
+        return ProgramSetting.builder().apply {
+            id(id?.toLong())
+            uid(uid)
+            name(name)
+            lastUpdated(lastUpdated.toJavaDate())
+            teiDownload(teiDownload)
+            teiDBTrimming(teiDBTrimming)
+            eventsDownload(eventsDownload)
+            eventsDBTrimming(eventsDBTrimming)
+            updateDownload?.let { updateDownload(DownloadPeriod.valueOf(it)) }
+            updateDBTrimming?.let { updateDBTrimming(DownloadPeriod.valueOf(it)) }
+            settingDownload?.let { settingDownload(LimitScope.valueOf(it)) }
+            settingDBTrimming?.let { settingDBTrimming(LimitScope.valueOf(it)) }
+            enrollmentDownload?.let { enrollmentDownload(EnrollmentScope.valueOf(it)) }
+            enrollmentDBTrimming?.let { enrollmentDBTrimming(EnrollmentScope.valueOf(it)) }
+            eventDateDownload?.let { eventDateDownload(DownloadPeriod.valueOf(it)) }
+            eventDateDBTrimming?.let { eventDateDBTrimming(DownloadPeriod.valueOf(it)) }
+            enrollmentDateDownload?.let { enrollmentDateDownload(DownloadPeriod.valueOf(it)) }
+            enrollmentDateDBTrimming?.let { enrollmentDateDBTrimming(DownloadPeriod.valueOf(it)) }
+        }.build()
     }
 }
 

@@ -22,11 +22,11 @@ internal data class SystemSettingDB(
 ) : EntityDB<SystemSetting> {
 
     override fun toDomain(): SystemSetting {
-        return SystemSetting.builder()
-            .id(id?.toLong())
-            .key(key?.let { SystemSetting.SystemSettingKey.valueOf(it) })
-            .value(value)
-            .build()
+        return SystemSetting.builder().apply {
+            id(id?.toLong())
+            key?.let { key(SystemSetting.SystemSettingKey.valueOf(it)) }
+            value(value)
+        }.build()
     }
 }
 

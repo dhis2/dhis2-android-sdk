@@ -47,11 +47,11 @@ internal data class AnalyticsTeiWHONutritionDataDB(
 ) : EntityDB<AnalyticsTeiWHONutritionData> {
 
     override fun toDomain(): AnalyticsTeiWHONutritionData {
-        return AnalyticsTeiWHONutritionData.builder()
-            .id(id?.toLong())
-            .teiSetting(teiSetting)
-            .chartType(chartType?.let { WHONutritionChartType.valueOf(it) })
-            .gender(
+        return AnalyticsTeiWHONutritionData.builder().apply {
+            id(id?.toLong())
+            teiSetting(teiSetting)
+            chartType?.let { chartType(WHONutritionChartType.valueOf(it)) }
+            gender(
                 AnalyticsTeiWHONutritionGender.builder()
                     .attribute(genderAttribute)
                     .values(
@@ -62,7 +62,7 @@ internal data class AnalyticsTeiWHONutritionDataDB(
                     )
                     .build(),
             )
-            .build()
+        }.build()
     }
 }
 

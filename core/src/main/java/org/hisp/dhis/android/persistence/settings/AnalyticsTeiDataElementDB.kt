@@ -43,9 +43,7 @@ import org.hisp.dhis.android.persistence.program.ProgramStageDB
     ],
 )
 internal data class AnalyticsTeiDataElementDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "_id") val id: Int? = 0,
     val teiSetting: String,
     val whoComponent: String?,
     val programStage: String?,
@@ -53,13 +51,13 @@ internal data class AnalyticsTeiDataElementDB(
 ) : EntityDB<AnalyticsTeiDataElement> {
 
     override fun toDomain(): AnalyticsTeiDataElement {
-        return AnalyticsTeiDataElement.builder()
-            .id(id?.toLong())
-            .teiSetting(teiSetting)
-            .whoComponent(whoComponent?.let { WHONutritionComponent.valueOf(it) })
-            .programStage(programStage)
-            .dataElement(dataElement)
-            .build()
+        return AnalyticsTeiDataElement.builder().apply {
+            id(id?.toLong())
+            teiSetting(teiSetting)
+            whoComponent?.let { whoComponent(WHONutritionComponent.valueOf(it)) }
+            programStage(programStage)
+            dataElement(dataElement)
+        }.build()
     }
 }
 

@@ -53,13 +53,13 @@ internal data class AnalyticsTeiIndicatorDB(
 ) : EntityDB<AnalyticsTeiIndicator> {
 
     override fun toDomain(): AnalyticsTeiIndicator {
-        return AnalyticsTeiIndicator.builder()
-            .id(id?.toLong())
-            .teiSetting(teiSetting)
-            .whoComponent(whoComponent?.let { WHONutritionComponent.valueOf(it) })
-            .programStage(programStage)
-            .indicator(indicator)
-            .build()
+        return AnalyticsTeiIndicator.builder().apply {
+            id(id?.toLong())
+            teiSetting(teiSetting)
+            whoComponent?.let { whoComponent(WHONutritionComponent.valueOf(it)) }
+            programStage(programStage)
+            indicator(indicator)
+        }.build()
     }
 }
 

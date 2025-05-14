@@ -50,16 +50,16 @@ internal data class AnalyticsTeiSettingDB(
 ) : EntityDB<AnalyticsTeiSetting> {
 
     override fun toDomain(): AnalyticsTeiSetting {
-        return AnalyticsTeiSetting.builder()
-            .id(id?.toLong())
-            .uid(uid)
-            .name(name)
-            .shortName(shortName)
-            .program(program)
-            .programStage(programStage)
-            .period(period?.let { PeriodType.valueOf(it) })
-            .type(ChartType.valueOf(type))
-            .build()
+        return AnalyticsTeiSetting.builder().apply {
+            id(id?.toLong())
+            uid(uid)
+            name(name)
+            shortName(shortName)
+            program(program)
+            programStage(programStage)
+            period?.let { period(PeriodType.valueOf(it)) }
+            type(ChartType.valueOf(type))
+        }.build()
     }
 }
 

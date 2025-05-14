@@ -43,7 +43,7 @@ class TrackerLineListRepositoryShould {
 
     private val service: TrackerLineListService = mock()
 
-    private val initialParams = TrackerLineListParams(null, null, null, null, null, listOf(), listOf())
+    private val initialParams = TrackerLineListParams(null, null, null, null, null, listOf(), listOf(), listOf())
 
     private val paramsCaptor = argumentCaptor<TrackerLineListParams>()
 
@@ -77,6 +77,38 @@ class TrackerLineListRepositoryShould {
                 1 -> {
                     assertThat(item.dataElement).isEqualTo("dataElement2")
                     assertThat(item.filters.size).isEqualTo(0)
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `Call service with overridden sorting`() {
+        val de1_1 = TrackerLineListItem.ProgramDataElement("dataElement1", "programStage")
+        val de2_1 = TrackerLineListItem.ProgramDataElement("dataElement2", "programStage")
+
+        repository
+            .withColumn(de1_1)
+            .withColumn(de2_1)
+            .withSorting(TrackerLineListSortingItem(de1_1, TrackerLineListSortingDirection.ASC))
+            .withSorting(TrackerLineListSortingItem(de1_1, TrackerLineListSortingDirection.DESC))
+            .withSorting(TrackerLineListSortingItem(de2_1, TrackerLineListSortingDirection.ASC))
+            .blockingEvaluate()
+
+        verify(service).evaluate(paramsCaptor.capture())
+        val sorting = paramsCaptor.firstValue.sorting
+
+        assertThat(sorting.size).isEqualTo(2)
+        sorting.forEachIndexed { index, item ->
+            when (index) {
+                0 -> {
+                    assertThat(item.dimension.id).isEqualTo(de1_1.id)
+                    assertThat(item.direction).isEqualTo(TrackerLineListSortingDirection.DESC)
+                }
+
+                1 -> {
+                    assertThat(item.dimension.id).isEqualTo(de2_1.id)
+                    assertThat(item.direction).isEqualTo(TrackerLineListSortingDirection.ASC)
                 }
             }
         }

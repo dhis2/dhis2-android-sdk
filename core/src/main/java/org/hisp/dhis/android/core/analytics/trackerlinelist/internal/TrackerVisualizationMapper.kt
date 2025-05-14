@@ -64,6 +64,7 @@ internal class TrackerVisualizationMapper(
             outputType = mapOutputType(trackerVisualization.outputType()),
             columns = mapDimensions(trackerVisualization.columns(), trackerVisualization),
             filters = mapDimensions(trackerVisualization.filters(), trackerVisualization),
+            sorting = TODO(),
         )
     }
 

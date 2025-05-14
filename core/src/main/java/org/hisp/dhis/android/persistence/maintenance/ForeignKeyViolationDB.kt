@@ -22,8 +22,10 @@ internal data class ForeignKeyViolationDB(
     val fromObjectRow: String?,
     val created: String?,
 ) : EntityDB<ForeignKeyViolation> {
+
     override fun toDomain(): ForeignKeyViolation {
         return ForeignKeyViolation.builder()
+            .id(id?.toLong())
             .fromTable(fromTable)
             .fromColumn(fromColumn)
             .toTable(toTable)

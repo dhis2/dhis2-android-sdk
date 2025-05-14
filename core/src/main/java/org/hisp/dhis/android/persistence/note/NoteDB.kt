@@ -52,8 +52,10 @@ internal data class NoteDB(
     override val syncState: SyncStateDB?,
     override val deleted: Boolean?,
 ) : EntityDB<Note>, DeletableObjectDB, DataObjectDB {
+
     override fun toDomain(): Note {
         return Note.builder().apply {
+            id(id?.toLong())
             uid(uid)
             noteType?.let { noteType(Note.NoteType.valueOf(it)) }
             event(event)

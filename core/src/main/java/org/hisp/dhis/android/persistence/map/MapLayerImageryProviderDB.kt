@@ -31,8 +31,10 @@ internal data class MapLayerImageryProviderDB(
     val attribution: String,
     val coverageAreas: MapLayerImageryProviderAreaDB?,
 ) : EntityDB<MapLayerImageryProvider> {
+
     override fun toDomain(): MapLayerImageryProvider {
         return MapLayerImageryProvider.builder().apply {
+            id(id?.toLong())
             mapLayer(mapLayer)
             attribution(attribution)
             coverageAreas(coverageAreas?.toDomain())

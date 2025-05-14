@@ -34,8 +34,10 @@ internal data class MapLayerDB(
     val imageFormat: String?,
     val layers: String?,
 ) : EntityDB<MapLayer> {
+
     override fun toDomain(): MapLayer {
         return MapLayer.builder().apply {
+            id(id?.toLong())
             uid(uid)
             name(name)
             displayName(displayName)

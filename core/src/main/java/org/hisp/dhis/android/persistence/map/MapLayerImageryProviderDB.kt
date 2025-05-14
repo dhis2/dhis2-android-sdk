@@ -33,12 +33,12 @@ internal data class MapLayerImageryProviderDB(
 ) : EntityDB<MapLayerImageryProvider> {
 
     override fun toDomain(): MapLayerImageryProvider {
-        return MapLayerImageryProvider.builder().apply {
-            id(id?.toLong())
-            mapLayer(mapLayer)
-            attribution(attribution)
-            coverageAreas(coverageAreas?.toDomain())
-        }.build()
+        return MapLayerImageryProvider.builder()
+            .id(id?.toLong())
+            .mapLayer(mapLayer)
+            .attribution(attribution)
+            .coverageAreas(coverageAreas?.toDomain())
+            .build()
     }
 }
 

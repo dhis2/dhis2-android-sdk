@@ -48,13 +48,13 @@ internal data class OptionDB(
 ) : EntityDB<Option>, BaseIdentifiableObjectDB, ObjectWithStyleDB {
 
     override fun toDomain(): Option {
-        return Option.builder().apply {
-            applyBaseIdentifiableFields(this@OptionDB)
-            applyStyleFields(this@OptionDB)
-            id(id?.toLong())
-            optionSet(ObjectWithUid.create(optionSet))
-            sortOrder(sortOrder)
-        }.build()
+        return Option.builder()
+            .applyBaseIdentifiableFields(this@OptionDB)
+            .applyStyleFields(this@OptionDB)
+            .id(id?.toLong())
+            .optionSet(ObjectWithUid.create(optionSet))
+            .sortOrder(sortOrder)
+            .build()
     }
 }
 

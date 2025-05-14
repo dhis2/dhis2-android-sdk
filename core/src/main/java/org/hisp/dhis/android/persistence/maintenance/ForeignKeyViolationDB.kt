@@ -3,6 +3,9 @@ package org.hisp.dhis.android.persistence.maintenance
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation
+import org.hisp.dhis.android.core.util.dateFormat
+import org.hisp.dhis.android.core.util.toJavaDate
 
 @Entity(tableName = "ForeignKeyViolation")
 internal data class ForeignKeyViolationDB(
@@ -17,4 +20,30 @@ internal data class ForeignKeyViolationDB(
     val fromObjectUid: String?,
     val fromObjectRow: String?,
     val created: String?,
-)
+) {
+    fun toDomain(): ForeignKeyViolation {
+        return ForeignKeyViolation.builder()
+            .fromTable(fromTable)
+            .fromColumn(fromColumn)
+            .toTable(toTable)
+            .toColumn(toColumn)
+            .notFoundValue(notFoundValue)
+            .fromObjectUid(fromObjectUid)
+            .fromObjectRow(fromObjectRow)
+            .created(created.toJavaDate())
+            .build()
+    }
+}
+
+internal fun ForeignKeyViolation.toDB(): ForeignKeyViolationDB {
+    return ForeignKeyViolationDB(
+        fromTable = fromTable(),
+        fromColumn = fromColumn(),
+        toTable = toTable(),
+        toColumn = toColumn(),
+        notFoundValue = notFoundValue(),
+        fromObjectUid = fromObjectUid(),
+        fromObjectRow = fromObjectRow(),
+        created = created().dateFormat(),
+    )
+}

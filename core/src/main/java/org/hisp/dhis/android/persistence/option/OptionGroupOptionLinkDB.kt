@@ -5,6 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.option.OptionGroupOptionLink
+import org.hisp.dhis.android.persistence.common.EntityDB
 
 @Entity(
     tableName = "OptionGroupOptionLink",
@@ -36,4 +38,20 @@ internal data class OptionGroupOptionLinkDB(
     val id: Int? = 0,
     val optionGroup: String,
     val option: String,
-)
+) : EntityDB<OptionGroupOptionLink> {
+
+    override fun toDomain(): OptionGroupOptionLink {
+        return OptionGroupOptionLink.builder()
+            .id(id?.toLong())
+            .optionGroup(optionGroup)
+            .option(option)
+            .build()
+    }
+}
+
+internal fun OptionGroupOptionLink.toDB(): OptionGroupOptionLinkDB {
+    return OptionGroupOptionLinkDB(
+        optionGroup = optionGroup()!!,
+        option = option()!!,
+    )
+}

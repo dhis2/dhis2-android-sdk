@@ -5,6 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.program.ProgramStageSectionDataElementLink
+import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.dataelement.DataElementDB
 
 @Entity(
@@ -37,4 +39,22 @@ internal data class ProgramStageSectionDataElementLinkDB(
     val programStageSection: String,
     val dataElement: String,
     val sortOrder: Int,
-)
+) : EntityDB<ProgramStageSectionDataElementLink> {
+
+    override fun toDomain(): ProgramStageSectionDataElementLink {
+        return ProgramStageSectionDataElementLink.builder()
+            .id(id?.toLong())
+            .programStageSection(programStageSection)
+            .dataElement(dataElement)
+            .sortOrder(sortOrder)
+            .build()
+    }
+}
+
+internal fun ProgramStageSectionDataElementLink.toDB(): ProgramStageSectionDataElementLinkDB {
+    return ProgramStageSectionDataElementLinkDB(
+        programStageSection = programStageSection(),
+        dataElement = dataElement(),
+        sortOrder = sortOrder(),
+    )
+}

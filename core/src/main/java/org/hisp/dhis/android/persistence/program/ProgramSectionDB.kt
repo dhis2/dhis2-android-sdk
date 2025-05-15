@@ -5,7 +5,6 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramSection
 import org.hisp.dhis.android.core.program.SectionDeviceRendering
@@ -14,7 +13,9 @@ import org.hisp.dhis.android.core.program.SectionRenderingType
 import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.persistence.common.BaseIdentifiableObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.persistence.common.ObjectWithStyleDB
 import org.hisp.dhis.android.persistence.common.applyBaseIdentifiableFields
+import org.hisp.dhis.android.persistence.common.applyStyleFields
 
 @Entity(
     tableName = "ProgramSection",
@@ -46,15 +47,16 @@ internal data class ProgramSectionDB(
     val program: String?,
     val sortOrder: Int?,
     val formName: String?,
-    val color: String?,
-    val icon: String?,
+    override val color: String?,
+    override val icon: String?,
     val desktopRenderType: String?,
     val mobileRenderType: String?,
-) : EntityDB<ProgramSection>, BaseIdentifiableObjectDB {
+) : EntityDB<ProgramSection>, BaseIdentifiableObjectDB, ObjectWithStyleDB {
 
     override fun toDomain(): ProgramSection {
         return ProgramSection.builder().apply {
             applyBaseIdentifiableFields(this@ProgramSectionDB)
+            applyStyleFields(this@ProgramSectionDB)
             id(id?.toLong())
             description(description)
             program?.let { program(ObjectWithUid.create(it)) }
@@ -62,11 +64,10 @@ internal data class ProgramSectionDB(
             formName(formName)
             renderType(
                 SectionRendering.create(
-                    SectionDeviceRendering.create(desktopRenderType?.let { SectionRenderingType.valueOf(it) }),
-                    SectionDeviceRendering.create(mobileRenderType?.let { SectionRenderingType.valueOf(it) }),
+                    desktopRenderType?.let { SectionDeviceRendering.create(SectionRenderingType.valueOf(it)) },
+                    mobileRenderType?.let { SectionDeviceRendering.create(SectionRenderingType.valueOf(it)) },
                 ),
             )
-            style(ObjectStyle.builder().color(color).icon(icon).build())
         }.build()
     }
 }

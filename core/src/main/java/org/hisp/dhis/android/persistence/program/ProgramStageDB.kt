@@ -7,7 +7,6 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.FormType
-import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.ValidationStrategy
 import org.hisp.dhis.android.core.period.PeriodType
@@ -16,7 +15,9 @@ import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.persistence.common.AccessDB
 import org.hisp.dhis.android.persistence.common.BaseIdentifiableObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.persistence.common.ObjectWithStyleDB
 import org.hisp.dhis.android.persistence.common.applyBaseIdentifiableFields
+import org.hisp.dhis.android.persistence.common.applyStyleFields
 import org.hisp.dhis.android.persistence.common.toDB
 
 @Entity(
@@ -67,18 +68,19 @@ internal data class ProgramStageDB(
     val description: String?,
     val displayDescription: String?,
     val featureType: String?,
-    val color: String?,
-    val icon: String?,
+    override val color: String?,
+    override val icon: String?,
     val enableUserAssignment: Boolean?,
     val displayDueDateLabel: String?,
     val validationStrategy: String?,
     val displayProgramStageLabel: String?,
     val displayEventLabel: String?,
-) : EntityDB<ProgramStage>, BaseIdentifiableObjectDB {
+) : EntityDB<ProgramStage>, BaseIdentifiableObjectDB, ObjectWithStyleDB {
 
     override fun toDomain(): ProgramStage {
         return ProgramStage.builder().apply {
             applyBaseIdentifiableFields(this@ProgramStageDB)
+            applyStyleFields(this@ProgramStageDB)
             id(id?.toLong())
             description(description)
             displayDescription(displayDescription)
@@ -107,7 +109,6 @@ internal data class ProgramStageDB(
             validationStrategy?.let { validationStrategy(ValidationStrategy.valueOf(it)) }
             displayProgramStageLabel(displayProgramStageLabel)
             displayEventLabel(displayEventLabel)
-            style(ObjectStyle.builder().color(color).icon(icon).build())
         }.build()
     }
 }

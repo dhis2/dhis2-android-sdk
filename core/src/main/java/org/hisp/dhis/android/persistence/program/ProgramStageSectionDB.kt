@@ -57,8 +57,8 @@ internal data class ProgramStageSectionDB(
             .programStage(ObjectWithUid.create(programStage))
             .renderType(
                 SectionRendering.create(
-                    SectionDeviceRendering.create(desktopRenderType?.let { SectionRenderingType.valueOf(it) }),
-                    SectionDeviceRendering.create(mobileRenderType?.let { SectionRenderingType.valueOf(it) }),
+                    desktopRenderType?.let { SectionDeviceRendering.create(SectionRenderingType.valueOf(it)) },
+                    mobileRenderType?.let { SectionDeviceRendering.create(SectionRenderingType.valueOf(it)) },
                 ),
             )
             .description(description)

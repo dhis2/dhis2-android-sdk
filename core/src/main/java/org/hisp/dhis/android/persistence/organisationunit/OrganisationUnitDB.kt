@@ -61,6 +61,8 @@ internal data class OrganisationUnitDB(
 }
 
 internal fun OrganisationUnit.toDB(): OrganisationUnitDB {
+    val geometryDB = geometry().toDB()
+
     return OrganisationUnitDB(
         uid = uid()!!,
         code = code(),
@@ -78,7 +80,7 @@ internal fun OrganisationUnit.toDB(): OrganisationUnitDB {
         level = level(),
         parent = parent()?.uid(),
         displayNamePath = displayNamePath()?.toDB(),
-        geometryType = geometry().toDB().geometryType,
-        geometryCoordinates = geometry().toDB().geometryCoordinates,
+        geometryType = geometryDB.geometryType,
+        geometryCoordinates = geometryDB.geometryCoordinates,
     )
 }

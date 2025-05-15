@@ -76,6 +76,8 @@ internal data class TrackedEntityInstanceDB(
 }
 
 internal fun TrackedEntityInstance.toDB(): TrackedEntityInstanceDB {
+    val geometryDB = geometry().toDB()
+
     return TrackedEntityInstanceDB(
         uid = uid(),
         created = created().dateFormat(),
@@ -84,8 +86,8 @@ internal fun TrackedEntityInstance.toDB(): TrackedEntityInstanceDB {
         lastUpdatedAtClient = lastUpdatedAtClient().dateFormat(),
         organisationUnit = organisationUnit(),
         trackedEntityType = trackedEntityType(),
-        geometryType = geometry().toDB().geometryType,
-        geometryCoordinates = geometry().toDB().geometryCoordinates,
+        geometryType = geometryDB.geometryType,
+        geometryCoordinates = geometryDB.geometryCoordinates,
         syncState = syncState()?.toDB(),
         aggregatedSyncState = aggregatedSyncState()?.toDB(),
         deleted = deleted(),

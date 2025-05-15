@@ -51,12 +51,14 @@ internal data class TrackedEntityInstanceEventFilterDB(
 }
 
 internal fun TrackedEntityInstanceEventFilter.toDB(): TrackedEntityInstanceEventFilterDB {
+    val eventCreatedPeriodDB = eventCreatedPeriod().toDB()
+
     return TrackedEntityInstanceEventFilterDB(
         trackedEntityInstanceFilter = trackedEntityInstanceFilter()!!,
         programStage = programStage(),
         eventStatus = eventStatus()?.name,
-        periodFrom = eventCreatedPeriod().toDB().periodFrom,
-        periodTo = eventCreatedPeriod().toDB().periodTo,
+        periodFrom = eventCreatedPeriodDB.periodFrom,
+        periodTo = eventCreatedPeriodDB.periodTo,
         assignedUserMode = assignedUserMode()?.name,
     )
 }

@@ -100,6 +100,8 @@ internal data class EnrollmentDB(
 }
 
 internal fun Enrollment.toDB(): EnrollmentDB {
+    val geometryDB = geometry().toDB()
+
     return EnrollmentDB(
         uid = uid(),
         created = created().dateFormat(),
@@ -115,8 +117,8 @@ internal fun Enrollment.toDB(): EnrollmentDB {
         trackedEntityInstance = trackedEntityInstance()!!,
         syncState = syncState()?.toDB(),
         aggregatedSyncState = aggregatedSyncState()?.toDB(),
-        geometryType = geometry().toDB().geometryType,
-        geometryCoordinates = geometry().toDB().geometryCoordinates,
+        geometryType = geometryDB.geometryType,
+        geometryCoordinates = geometryDB.geometryCoordinates,
         deleted = deleted(),
         completedDate = completedDate().dateFormat(),
     )

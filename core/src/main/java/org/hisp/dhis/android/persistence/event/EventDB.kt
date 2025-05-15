@@ -124,6 +124,8 @@ internal data class EventDB(
 }
 
 internal fun Event.toDB(): EventDB {
+    val geometryDB = geometry().toDB()
+
     return EventDB(
         uid = uid(),
         enrollment = enrollment(),
@@ -132,8 +134,8 @@ internal fun Event.toDB(): EventDB {
         createdAtClient = createdAtClient().dateFormat(),
         lastUpdatedAtClient = lastUpdatedAtClient().dateFormat(),
         status = status()?.name,
-        geometryType = geometry().toDB().geometryType,
-        geometryCoordinates = geometry().toDB().geometryCoordinates,
+        geometryType = geometryDB.geometryType,
+        geometryCoordinates = geometryDB.geometryCoordinates,
         program = program()!!,
         programStage = programStage()!!,
         organisationUnit = organisationUnit()!!,

@@ -43,59 +43,59 @@ import org.hisp.dhis.android.core.period.PeriodType;
 import java.util.Date;
 
 @AutoValue
-abstract class AggregatedDataSync extends BaseObject {
+public abstract class AggregatedDataSync extends BaseObject {
 
     @NonNull
-    abstract String dataSet();
-
-    @NonNull
-    @ColumnAdapter(PeriodTypeColumnAdapter.class)
-    abstract PeriodType periodType();
-
-    @NonNull
-    abstract Integer pastPeriods();
-
-    @NonNull
-    abstract Integer futurePeriods();
-
-    @NonNull
-    abstract Integer dataElementsHash();
-
-    @NonNull
-    abstract Integer organisationUnitsHash();
-
-    @NonNull
-    @ColumnAdapter(DbDateColumnAdapter.class)
-    abstract Date lastUpdated();
-
-    @NonNull
-    static AggregatedDataSync create(Cursor cursor) {
+    public static AggregatedDataSync create(Cursor cursor) {
         return AutoValue_AggregatedDataSync.createFromCursor(cursor);
     }
 
-    static Builder builder() {
+    public static Builder builder() {
         return new $$AutoValue_AggregatedDataSync.Builder();
     }
 
-    abstract Builder toBuilder();
+    @NonNull
+    public abstract String dataSet();
+
+    @NonNull
+    @ColumnAdapter(PeriodTypeColumnAdapter.class)
+    public abstract PeriodType periodType();
+
+    @NonNull
+    public abstract Integer pastPeriods();
+
+    @NonNull
+    public abstract Integer futurePeriods();
+
+    @NonNull
+    public abstract Integer dataElementsHash();
+
+    @NonNull
+    public abstract Integer organisationUnitsHash();
+
+    @NonNull
+    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract Date lastUpdated();
+
+    public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    abstract static class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder extends BaseObject.Builder<Builder> {
 
-        abstract Builder dataSet(String dataSet);
+        public abstract Builder dataSet(String dataSet);
 
-        abstract Builder periodType(PeriodType periodType);
+        public abstract Builder periodType(PeriodType periodType);
 
-        abstract Builder pastPeriods(Integer pastPeriods);
+        public abstract Builder pastPeriods(Integer pastPeriods);
 
-        abstract Builder futurePeriods(Integer futurePeriods);
+        public abstract Builder futurePeriods(Integer futurePeriods);
 
-        abstract Builder dataElementsHash(Integer dataElementsHash);
+        public abstract Builder dataElementsHash(Integer dataElementsHash);
 
-        abstract Builder organisationUnitsHash(Integer organisationUnitHash);
+        public abstract Builder organisationUnitsHash(Integer organisationUnitHash);
 
-        abstract Builder lastUpdated(Date lastUpdated);
+        public abstract Builder lastUpdated(Date lastUpdated);
 
-        abstract AggregatedDataSync build();
+        public abstract AggregatedDataSync build();
     }
 }

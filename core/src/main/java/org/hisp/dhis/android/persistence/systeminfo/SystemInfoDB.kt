@@ -30,16 +30,14 @@ internal data class SystemInfoDB(
             .systemName(systemName)
             .build()
     }
+}
 
-    companion object {
-        fun SystemInfo.toDB(): SystemInfoDB {
-            return SystemInfoDB(
-                serverDate = serverDate().dateFormat(),
-                dateFormat = dateFormat(),
-                version = version(),
-                contextPath = contextPath(),
-                systemName = systemName(),
-            )
-        }
-    }
+internal fun SystemInfo.toDB(): SystemInfoDB {
+    return SystemInfoDB(
+        serverDate = serverDate().dateFormat(),
+        dateFormat = dateFormat(),
+        version = version(),
+        contextPath = contextPath(),
+        systemName = systemName(),
+    )
 }

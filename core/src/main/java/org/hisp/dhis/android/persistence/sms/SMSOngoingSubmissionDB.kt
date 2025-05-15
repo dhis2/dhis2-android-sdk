@@ -23,13 +23,11 @@ internal data class SMSOngoingSubmissionDB(
             .type(type?.let { SubmissionType.valueOf(it) })
             .build()
     }
+}
 
-    companion object {
-        fun SMSOngoingSubmission.toDB(): SMSOngoingSubmissionDB {
-            return SMSOngoingSubmissionDB(
-                submissionId = submissionId(),
-                type = type().name,
-            )
-        }
-    }
+internal fun SMSOngoingSubmission.toDB(): SMSOngoingSubmissionDB {
+    return SMSOngoingSubmissionDB(
+        submissionId = submissionId(),
+        type = type().name,
+    )
 }

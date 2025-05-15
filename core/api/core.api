@@ -6543,6 +6543,32 @@ public final class org/hisp/dhis/android/core/domain/aggregated/data/internal/Ag
 	public fun toString ()Ljava/lang/String;
 }
 
+public abstract class org/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync : org/hisp/dhis/android/core/common/BaseObject {
+	public fun <init> ()V
+	public static fun builder ()Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
+	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync;
+	public abstract fun dataElementsHash ()Ljava/lang/Integer;
+	public abstract fun dataSet ()Ljava/lang/String;
+	public abstract fun futurePeriods ()Ljava/lang/Integer;
+	public abstract fun lastUpdated ()Ljava/util/Date;
+	public abstract fun organisationUnitsHash ()Ljava/lang/Integer;
+	public abstract fun pastPeriods ()Ljava/lang/Integer;
+	public abstract fun periodType ()Lorg/hisp/dhis/android/core/period/PeriodType;
+	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
+}
+
+public abstract class org/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+	public fun <init> ()V
+	public abstract fun build ()Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync;
+	public abstract fun dataElementsHash (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
+	public abstract fun dataSet (Ljava/lang/String;)Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
+	public abstract fun futurePeriods (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
+	public abstract fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
+	public abstract fun organisationUnitsHash (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
+	public abstract fun pastPeriods (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
+	public abstract fun periodType (Lorg/hisp/dhis/android/core/period/PeriodType;)Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
+}
+
 public final class org/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSyncTableInfo {
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 }
@@ -7072,6 +7098,18 @@ public class org/hisp/dhis/android/core/event/EventTableInfo$Columns : org/hisp/
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 	public fun whereUpdate ()[Ljava/lang/String;
+}
+
+public abstract class org/hisp/dhis/android/core/event/internal/EventSync : org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync {
+	public fun <init> ()V
+	public static fun builder ()Lorg/hisp/dhis/android/core/event/internal/EventSync$Builder;
+	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/event/internal/EventSync;
+	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/event/internal/EventSync$Builder;
+}
+
+public abstract class org/hisp/dhis/android/core/event/internal/EventSync$Builder : org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync$Builder {
+	public fun <init> ()V
+	public abstract fun build ()Lorg/hisp/dhis/android/core/event/internal/EventSync;
 }
 
 public final class org/hisp/dhis/android/core/event/search/EventQueryCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUidCollectionRepository {

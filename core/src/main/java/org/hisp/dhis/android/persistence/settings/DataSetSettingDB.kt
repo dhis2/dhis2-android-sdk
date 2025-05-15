@@ -53,7 +53,7 @@ internal fun DataSetSetting.toDB(): DataSetSettingDB {
     return DataSetSettingDB(
         uid = uid(),
         name = name(),
-        lastUpdated = lastUpdated()?.dateFormat(),
+        lastUpdated = lastUpdated().dateFormat(),
         periodDSDownload = periodDSDownload(),
         periodDSDBTrimming = periodDSDBTrimming(),
     )

@@ -7,7 +7,6 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.util.dateFormat
-import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.persistence.common.DataObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.SyncStateDB
@@ -52,8 +51,8 @@ internal data class TrackedEntityAttributeValueDB(
     override fun toDomain(): TrackedEntityAttributeValue {
         return TrackedEntityAttributeValue.builder().apply {
             id(id?.toLong())
-            created(created?.toJavaDate())
-            lastUpdated(lastUpdated?.toJavaDate())
+            created(created.dateFormat())
+            lastUpdated(lastUpdated.dateFormat())
             value(value)
             trackedEntityAttribute(trackedEntityAttribute)
             trackedEntityInstance(trackedEntityInstance)
@@ -64,8 +63,8 @@ internal data class TrackedEntityAttributeValueDB(
 
 internal fun TrackedEntityAttributeValue.toDB(): TrackedEntityAttributeValueDB {
     return TrackedEntityAttributeValueDB(
-        created = created()?.dateFormat(),
-        lastUpdated = lastUpdated()?.dateFormat(),
+        created = created().dateFormat(),
+        lastUpdated = lastUpdated().dateFormat(),
         value = value(),
         trackedEntityAttribute = trackedEntityAttribute()!!,
         trackedEntityInstance = trackedEntityInstance()!!,

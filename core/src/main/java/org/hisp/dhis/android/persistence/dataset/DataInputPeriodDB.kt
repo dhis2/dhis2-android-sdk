@@ -51,7 +51,7 @@ internal fun DataInputPeriod.toDB(): DataInputPeriodDB {
     return DataInputPeriodDB(
         dataSet = dataSet()!!.uid(),
         period = period().uid(),
-        openingDate = openingDate()?.dateFormat(),
-        closingDate = closingDate()?.dateFormat(),
+        openingDate = openingDate().dateFormat(),
+        closingDate = closingDate().dateFormat(),
     )
 }

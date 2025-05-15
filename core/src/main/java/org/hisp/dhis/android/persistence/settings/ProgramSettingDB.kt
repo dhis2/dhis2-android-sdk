@@ -80,7 +80,7 @@ internal fun ProgramSetting.toDB(): ProgramSettingDB {
     return ProgramSettingDB(
         uid = uid(),
         name = name(),
-        lastUpdated = lastUpdated()?.dateFormat(),
+        lastUpdated = lastUpdated().dateFormat(),
         teiDownload = teiDownload(),
         teiDBTrimming = teiDBTrimming(),
         eventsDownload = eventsDownload(),

@@ -41,7 +41,7 @@ internal fun Period.toDB(): PeriodDB {
     return PeriodDB(
         periodId = periodId(),
         periodType = periodType()?.name,
-        startDate = startDate()?.dateFormat(),
-        endDate = endDate()?.dateFormat(),
+        startDate = startDate().dateFormat(),
+        endDate = endDate().dateFormat(),
     )
 }

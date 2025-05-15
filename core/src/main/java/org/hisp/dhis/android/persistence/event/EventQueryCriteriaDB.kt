@@ -26,10 +26,9 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.trackedentity
+package org.hisp.dhis.android.persistence.event
 
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
-import org.hisp.dhis.android.core.trackedentity.EntityQueryCriteria
+import org.hisp.dhis.android.core.event.EventQueryCriteria
 import org.hisp.dhis.android.persistence.common.DateFilterPeriodDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.FilterQueryCriteriaDB
@@ -37,8 +36,7 @@ import org.hisp.dhis.android.persistence.common.StringListDB
 import org.hisp.dhis.android.persistence.common.applyFilterQueryCriteriaFields
 import org.hisp.dhis.android.persistence.common.toDB
 
-internal data class EntityQueryCriteriaDB(
-    val enrollmentStatus: String?,
+internal data class EventQueryCriteriaDB(
     override val followUp: Boolean?,
     override val organisationUnit: String?,
     override val ouMode: String?,
@@ -48,29 +46,23 @@ internal data class EntityQueryCriteriaDB(
     override val eventStatus: String?,
     override val eventDate: DateFilterPeriodDB?,
     override val lastUpdatedDate: DateFilterPeriodDB?,
-    val programStage: String?,
-    val trackedEntityInstances: StringListDB?,
-    val enrollmentIncidentDate: DateFilterPeriodDB?,
-    val enrollmentCreatedDate: DateFilterPeriodDB?,
-    val trackedEntityType: String?,
-) : EntityDB<EntityQueryCriteria>, FilterQueryCriteriaDB {
+    val events: StringListDB?,
+    val dueDate: DateFilterPeriodDB?,
+    val completedDate: DateFilterPeriodDB?,
+) : EntityDB<EventQueryCriteria>, FilterQueryCriteriaDB {
 
-    override fun toDomain(): EntityQueryCriteria {
-        return EntityQueryCriteria.builder().apply {
-            applyFilterQueryCriteriaFields(this@EntityQueryCriteriaDB)
-            enrollmentStatus(enrollmentStatus?.let { EnrollmentStatus.valueOf(it) })
-            programStage(programStage)
-            trackedEntityInstances(trackedEntityInstances?.toDomain())
-            enrollmentIncidentDate(enrollmentIncidentDate?.toDomain())
-            enrollmentCreatedDate(enrollmentCreatedDate?.toDomain())
-            trackedEntityType(trackedEntityType)
+    override fun toDomain(): EventQueryCriteria {
+        return EventQueryCriteria.builder().apply {
+            applyFilterQueryCriteriaFields(this@EventQueryCriteriaDB)
+            events(events?.toDomain())
+            dueDate(dueDate?.toDomain())
+            completedDate(completedDate?.toDomain())
         }.build()
     }
 }
 
-internal fun EntityQueryCriteria.toDB(): EntityQueryCriteriaDB {
-    return EntityQueryCriteriaDB(
-        enrollmentStatus = enrollmentStatus()?.name,
+internal fun EventQueryCriteria.toDB(): EventQueryCriteriaDB {
+    return EventQueryCriteriaDB(
         followUp = followUp(),
         organisationUnit = organisationUnit(),
         ouMode = ouMode()?.name,
@@ -80,10 +72,8 @@ internal fun EntityQueryCriteria.toDB(): EntityQueryCriteriaDB {
         eventStatus = eventStatus()?.name,
         eventDate = eventDate()?.toDB(),
         lastUpdatedDate = lastUpdatedDate()?.toDB(),
-        programStage = programStage(),
-        trackedEntityInstances = trackedEntityInstances()?.toDB(),
-        enrollmentIncidentDate = enrollmentIncidentDate()?.toDB(),
-        enrollmentCreatedDate = enrollmentCreatedDate()?.toDB(),
-        trackedEntityType = trackedEntityType(),
+        events = events()?.toDB(),
+        dueDate = dueDate()?.toDB(),
+        completedDate = completedDate()?.toDB(),
     )
 }

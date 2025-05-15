@@ -5,6 +5,16 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
+import org.hisp.dhis.android.core.util.dateFormat
+import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.persistence.common.DataObjectDB
+import org.hisp.dhis.android.persistence.common.DeletableObjectDB
+import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.persistence.common.GeometryDB
+import org.hisp.dhis.android.persistence.common.SyncStateDB
+import org.hisp.dhis.android.persistence.common.toDB
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitDB
 import org.hisp.dhis.android.persistence.program.ProgramDB
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceDB
@@ -54,13 +64,60 @@ internal data class EnrollmentDB(
     val program: String,
     val enrollmentDate: String?,
     val incidentDate: String?,
-    val followup: Int?,
+    val followup: Boolean?,
     val status: String?,
     val trackedEntityInstance: String,
-    val syncState: String?,
-    val aggregatedSyncState: String?,
+    override val syncState: SyncStateDB?,
+    val aggregatedSyncState: SyncStateDB?,
     val geometryType: String?,
     val geometryCoordinates: String?,
-    val deleted: Int?,
+    override val deleted: Boolean?,
     val completedDate: String?,
-)
+) : EntityDB<Enrollment>, DataObjectDB, DeletableObjectDB {
+
+    override fun toDomain(): Enrollment {
+        return Enrollment.builder().apply {
+            id(id?.toLong())
+            uid(uid)
+            created(created.toJavaDate())
+            lastUpdated(lastUpdated.toJavaDate())
+            createdAtClient(createdAtClient.toJavaDate())
+            lastUpdatedAtClient(lastUpdatedAtClient.toJavaDate())
+            organisationUnit(organisationUnit)
+            program(program)
+            enrollmentDate(enrollmentDate.toJavaDate())
+            incidentDate(incidentDate.toJavaDate())
+            followUp(followup)
+            status?.let { status(EnrollmentStatus.valueOf(it)) }
+            trackedEntityInstance(trackedEntityInstance)
+            syncState?.let { syncState(it.toDomain()) }
+            aggregatedSyncState?.let { aggregatedSyncState(it.toDomain()) }
+            geometry(GeometryDB(geometryType, geometryCoordinates).toDomain())
+            deleted(deleted)
+            completedDate(completedDate.toJavaDate())
+        }.build()
+    }
+}
+
+internal fun Enrollment.toDB(): EnrollmentDB {
+    return EnrollmentDB(
+        uid = uid(),
+        created = created()?.dateFormat(),
+        lastUpdated = lastUpdated()?.dateFormat(),
+        createdAtClient = createdAtClient()?.dateFormat(),
+        lastUpdatedAtClient = lastUpdatedAtClient()?.dateFormat(),
+        organisationUnit = organisationUnit()!!,
+        program = program()!!,
+        enrollmentDate = enrollmentDate()?.dateFormat(),
+        incidentDate = incidentDate()?.dateFormat(),
+        followup = followUp(),
+        status = status()?.name,
+        trackedEntityInstance = trackedEntityInstance()!!,
+        syncState = syncState()?.toDB(),
+        aggregatedSyncState = aggregatedSyncState()?.toDB(),
+        geometryType = geometry().toDB().geometryType,
+        geometryCoordinates = geometry().toDB().geometryCoordinates,
+        deleted = deleted(),
+        completedDate = completedDate()?.dateFormat(),
+    )
+}

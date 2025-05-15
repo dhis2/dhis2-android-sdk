@@ -5,7 +5,6 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.core.util.toJavaDate
@@ -55,7 +54,7 @@ internal data class TrackedEntityInstanceDB(
     val geometryType: String?,
     val geometryCoordinates: String?,
     override val syncState: SyncStateDB?,
-    val aggregatedSyncState: String?,
+    val aggregatedSyncState: SyncStateDB?,
     override val deleted: Boolean?,
 ) : EntityDB<TrackedEntityInstance>, DataObjectDB, DeletableObjectDB {
     override fun toDomain(): TrackedEntityInstance {
@@ -70,7 +69,7 @@ internal data class TrackedEntityInstanceDB(
             trackedEntityType(trackedEntityType)
             geometry(GeometryDB(geometryType, geometryCoordinates).toDomain())
             syncState?.let { syncState(it.toDomain()) }
-            aggregatedSyncState(aggregatedSyncState?.let { State.valueOf(it) })
+            aggregatedSyncState?.let { aggregatedSyncState(it.toDomain()) }
             deleted(deleted)
         }.build()
     }
@@ -88,7 +87,7 @@ internal fun TrackedEntityInstance.toDB(): TrackedEntityInstanceDB {
         geometryType = geometry().toDB().geometryType,
         geometryCoordinates = geometry().toDB().geometryCoordinates,
         syncState = syncState()?.toDB(),
-        aggregatedSyncState = aggregatedSyncState()?.name,
+        aggregatedSyncState = aggregatedSyncState()?.toDB(),
         deleted = deleted(),
     )
 }

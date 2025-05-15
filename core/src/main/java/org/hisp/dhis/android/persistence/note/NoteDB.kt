@@ -5,6 +5,12 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.note.Note
+import org.hisp.dhis.android.persistence.common.DataObjectDB
+import org.hisp.dhis.android.persistence.common.DeletableObjectDB
+import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.persistence.common.SyncStateDB
+import org.hisp.dhis.android.persistence.common.toDB
 import org.hisp.dhis.android.persistence.enrollment.EnrollmentDB
 import org.hisp.dhis.android.persistence.event.EventDB
 
@@ -43,6 +49,36 @@ internal data class NoteDB(
     val storedBy: String?,
     val storedDate: String?,
     val uid: String?,
-    val syncState: String?,
-    val deleted: Int?,
-)
+    override val syncState: SyncStateDB?,
+    override val deleted: Boolean?,
+) : EntityDB<Note>, DeletableObjectDB, DataObjectDB {
+
+    override fun toDomain(): Note {
+        return Note.builder().apply {
+            id(id?.toLong())
+            uid(uid)
+            noteType?.let { noteType(Note.NoteType.valueOf(it)) }
+            event(event)
+            enrollment(enrollment)
+            value(value)
+            storedBy(storedBy)
+            storedDate(storedDate)
+            syncState?.let { syncState(it.toDomain()) }
+            deleted(deleted)
+        }.build()
+    }
+}
+
+internal fun Note.toDB(): NoteDB {
+    return NoteDB(
+        uid = uid(),
+        noteType = noteType()?.name,
+        event = event(),
+        enrollment = enrollment(),
+        value = value(),
+        storedBy = storedBy(),
+        storedDate = storedDate(),
+        syncState = syncState()?.toDB(),
+        deleted = deleted(),
+    )
+}

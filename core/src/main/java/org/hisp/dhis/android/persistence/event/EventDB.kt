@@ -5,7 +5,6 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.util.dateFormat
@@ -146,6 +145,6 @@ internal fun Event.toDB(): EventDB {
         attributeOptionCombo = attributeOptionCombo(),
         deleted = deleted(),
         assignedUser = assignedUser(),
-        completedBy = completedBy()
+        completedBy = completedBy(),
     )
 }

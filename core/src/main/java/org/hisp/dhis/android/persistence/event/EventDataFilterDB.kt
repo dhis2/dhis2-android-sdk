@@ -29,15 +29,11 @@
 package org.hisp.dhis.android.persistence.event
 
 import org.hisp.dhis.android.core.event.EventDataFilter
-import org.hisp.dhis.android.core.event.EventQueryCriteria
 import org.hisp.dhis.android.persistence.common.DateFilterPeriodDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.FilterOperatorsDB
-import org.hisp.dhis.android.persistence.common.FilterQueryCriteriaDB
-import org.hisp.dhis.android.persistence.common.StringListDB
 import org.hisp.dhis.android.persistence.common.StringSetDB
 import org.hisp.dhis.android.persistence.common.applyFilterOperatorsFields
-import org.hisp.dhis.android.persistence.common.applyFilterQueryCriteriaFields
 import org.hisp.dhis.android.persistence.common.toDB
 
 internal data class EventDataFilterDB(

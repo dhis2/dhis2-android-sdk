@@ -5,6 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLink
+import org.hisp.dhis.android.persistence.common.EntityDB
 
 @Entity(
     tableName = "ProgramStageSectionProgramIndicatorLink",
@@ -36,4 +38,20 @@ internal data class ProgramStageSectionProgramIndicatorLinkDB(
     val id: Int? = 0,
     val programStageSection: String,
     val programIndicator: String,
-)
+) : EntityDB<ProgramStageSectionProgramIndicatorLink> {
+
+    override fun toDomain(): ProgramStageSectionProgramIndicatorLink {
+        return ProgramStageSectionProgramIndicatorLink.builder()
+            .id(id?.toLong())
+            .programStageSection(programStageSection)
+            .programIndicator(programIndicator)
+            .build()
+    }
+}
+
+internal fun ProgramStageSectionProgramIndicatorLink.toDB(): ProgramStageSectionProgramIndicatorLinkDB {
+    return ProgramStageSectionProgramIndicatorLinkDB(
+        programStageSection = programStageSection()!!,
+        programIndicator = programIndicator()!!,
+    )
+}

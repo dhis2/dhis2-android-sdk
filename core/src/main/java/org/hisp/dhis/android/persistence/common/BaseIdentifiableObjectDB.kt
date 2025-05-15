@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.persistence.common
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.util.toJavaDate
 
 internal interface BaseIdentifiableObjectDB {
     val uid: String
@@ -45,8 +46,8 @@ internal fun <T> T.applyBaseIdentifiableFields(item: BaseIdentifiableObjectDB): 
     code(item.code)
     name(item.name)
     displayName(item.displayName)
-    item.created?.let { created(it) } ?: { created(null) }
-    item.lastUpdated?.let { lastUpdated(it) } ?: { lastUpdated(null) }
+    created(item.created?.toJavaDate())
+    lastUpdated(item.lastUpdated?.toJavaDate())
     deleted(false)
     return this
 }

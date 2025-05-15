@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.resource.internal.Resource
+import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.persistence.common.EntityDB
 
@@ -28,6 +29,6 @@ internal data class ResourceDB(
 internal fun Resource.toDB(): ResourceDB {
     return ResourceDB(
         resourceType = resourceType()?.name!!,
-        lastSynced = lastSynced().toString(),
+        lastSynced = lastSynced().dateFormat(),
     )
 }

@@ -54,7 +54,7 @@ internal data class ConstantDB(
     override val displayName: String?,
     override val created: String?,
     override val lastUpdated: String?,
-    val value: String?,
+    val value: String?, // It should be a REAL type in the database since it is a double in domain
 ) : EntityDB<Constant>, BaseIdentifiableObjectDB {
 
     override fun toDomain(): Constant {

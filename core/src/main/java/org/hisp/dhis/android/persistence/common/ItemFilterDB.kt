@@ -5,6 +5,9 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.event.EventDataFilter
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
+import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
 import org.hisp.dhis.android.persistence.event.EventFilterDB
 import org.hisp.dhis.android.persistence.programstageworkinglist.ProgramStageWorkingListDB
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceFilterDB
@@ -51,12 +54,104 @@ internal data class ItemFilterDB(
     val programStageWorkingList: String?,
     val sw: String?,
     val ew: String?,
-    val le: String?,
-    val ge: String?,
-    val gt: String?,
-    val lt: String?,
-    val eq: String?,
-    val inProperty: String?,
-    val like: String?,
-    val dateFilter: String?,
-)
+    override val le: String?,
+    override val ge: String?,
+    override val gt: String?,
+    override val lt: String?,
+    override val eq: String?,
+    override val inProperty: StringSetDB?,
+    override val like: String?,
+    override val dateFilter: DateFilterPeriodDB?,
+) : FilterOperatorsDB {
+
+    fun toProgramStageWorkingListAttributeValueFilterDomain(): ProgramStageWorkingListAttributeValueFilter {
+        return ProgramStageWorkingListAttributeValueFilter.builder()
+            .applyFilterOperatorsFields(this@ItemFilterDB)
+            .id(id?.toLong())
+            .attribute(attribute)
+            .programStageWorkingList(programStageWorkingList)
+            .sw(sw)
+            .ew(ew)
+            .build()
+    }
+
+    fun toEventDataFilterDomain(): EventDataFilter {
+        return EventDataFilter.builder()
+            .applyFilterOperatorsFields(this@ItemFilterDB)
+            .id(id?.toLong())
+            .eventFilter(eventFilter)
+            .dataItem(dataItem)
+            .build()
+    }
+
+    fun toAttributeValueFilterDomain(): AttributeValueFilter {
+        return AttributeValueFilter.builder()
+            .applyFilterOperatorsFields(this@ItemFilterDB)
+            .id(id?.toLong())
+            .trackedEntityInstanceFilter(trackedEntityInstanceFilter)
+            .attribute(attribute)
+            .sw(sw)
+            .ew(ew)
+            .build()
+    }
+}
+
+internal fun EventDataFilter.toDB(): ItemFilterDB {
+    return ItemFilterDB(
+        eventFilter = eventFilter(),
+        dataItem = dataItem(),
+        trackedEntityInstanceFilter = null,
+        attribute = null,
+        programStageWorkingList = null,
+        sw = null,
+        ew = null,
+        le = le(),
+        ge = ge(),
+        gt = gt(),
+        lt = lt(),
+        eq = eq(),
+        inProperty = `in`()?.toDB(),
+        like = like(),
+        dateFilter = dateFilter()?.toDB(),
+    )
+}
+
+internal fun AttributeValueFilter.toDB(): ItemFilterDB {
+    return ItemFilterDB(
+        eventFilter = null,
+        dataItem = null,
+        trackedEntityInstanceFilter = trackedEntityInstanceFilter(),
+        attribute = attribute(),
+        programStageWorkingList = null,
+        sw = sw(),
+        ew = ew(),
+        le = le(),
+        ge = ge(),
+        gt = gt(),
+        lt = lt(),
+        eq = eq(),
+        inProperty = `in`()?.toDB(),
+        like = like(),
+        dateFilter = dateFilter()?.toDB(),
+    )
+}
+
+internal fun ProgramStageWorkingListAttributeValueFilter.toDB(): ItemFilterDB {
+    return ItemFilterDB(
+        eventFilter = null,
+        dataItem = null,
+        trackedEntityInstanceFilter = null,
+        attribute = attribute(),
+        programStageWorkingList = programStageWorkingList(),
+        sw = sw(),
+        ew = ew(),
+        le = le(),
+        ge = ge(),
+        gt = gt(),
+        lt = lt(),
+        eq = eq(),
+        inProperty = `in`()?.toDB(),
+        like = like(),
+        dateFilter = dateFilter()?.toDB(),
+    )
+}

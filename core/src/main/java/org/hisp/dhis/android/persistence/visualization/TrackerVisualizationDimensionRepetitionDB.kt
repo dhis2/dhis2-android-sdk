@@ -32,20 +32,12 @@ import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionRepetition
 
 @Serializable
-internal data class TrackerVisualizationDimensionRepetitionDB(
+internal data class TrackerVisualizationDimensionRepetitionDBs(
     val indexes: List<Int>?,
 ) {
     fun toDomain(): TrackerVisualizationDimensionRepetition {
         return TrackerVisualizationDimensionRepetition.builder()
             .indexes(indexes)
             .build()
-    }
-
-    companion object {
-        fun TrackerVisualizationDimensionRepetition.toDBSerializable(): TrackerVisualizationDimensionRepetitionDB {
-            return TrackerVisualizationDimensionRepetitionDB(
-                indexes = this.indexes(),
-            )
-        }
     }
 }

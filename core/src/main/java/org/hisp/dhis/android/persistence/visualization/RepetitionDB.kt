@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.persistence.visualization
 
+import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionRepetition
-import org.hisp.dhis.android.persistence.visualization.TrackerVisualizationDimensionRepetitionDB.Companion.toDBSerializable
 
 @JvmInline
 internal value class RepetitionDB(
@@ -38,20 +38,33 @@ internal value class RepetitionDB(
 ) {
     fun toDomain(): TrackerVisualizationDimensionRepetition {
         return value.let {
-            KotlinxJsonParser.instance.decodeFromString<TrackerVisualizationDimensionRepetitionDB>(
-                it,
-            ).toDomain()
+            KotlinxJsonParser.instance.decodeFromString<TrackerVisualizationDimensionRepetitionDB>(it).toDomain()
         }
     }
 }
 
 internal fun TrackerVisualizationDimensionRepetition.toDB(): RepetitionDB {
     return RepetitionDB(
-        this.let {
-            KotlinxJsonParser.instance.encodeToString(
-                TrackerVisualizationDimensionRepetitionDB.serializer(),
-                it.toDBSerializable(),
-            )
-        },
+        KotlinxJsonParser.instance.encodeToString(
+            TrackerVisualizationDimensionRepetitionDB.serializer(),
+            this.toDBSerializable(),
+        ),
+    )
+}
+
+@Serializable
+private data class TrackerVisualizationDimensionRepetitionDB(
+    val indexes: List<Int>?,
+) {
+    fun toDomain(): TrackerVisualizationDimensionRepetition {
+        return TrackerVisualizationDimensionRepetition.builder()
+            .indexes(indexes)
+            .build()
+    }
+}
+
+private fun TrackerVisualizationDimensionRepetition.toDBSerializable(): TrackerVisualizationDimensionRepetitionDB {
+    return TrackerVisualizationDimensionRepetitionDB(
+        indexes = this.indexes(),
     )
 }

@@ -25,24 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-import org.hisp.dhis.android.core.settings.QuickAction
-import org.hisp.dhis.android.persistence.settings.QuickActionsDB
-import org.hisp.dhis.android.persistence.settings.toDB
+package org.hisp.dhis.android.persistence.settings
 
-internal class QuickActionListColumnAdapter : JSONObjectListColumnAdapter<QuickAction>() {
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.json.Json
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 
-    override fun serialize(o: List<QuickAction>?): String? =
-        QuickActionListColumnAdapter.serialize(o)
-
-    override fun deserialize(str: String): List<QuickAction> {
-        return QuickActionsDB(str).toDomain()
-    }
-
-    companion object {
-        fun serialize(o: List<QuickAction>?): String? {
-            return o?.let { it.toDB().value }
+@JvmInline
+internal value class StringStringMapDB(
+    val value: String,
+) {
+    fun toDomain(): Map<String, String> {
+        return try {
+            KotlinxJsonParser.instance.decodeFromString<Map<String, String>>(value)
+        } catch (e: SerializationException) {
+            emptyMap<String, String>()
         }
+    }
+}
+
+internal fun Map<String, String>.toDB(): StringStringMapDB {
+    return try {
+        StringStringMapDB(
+            Json.encodeToString(MapSerializer(String.serializer(), String.serializer()), this),
+        )
+    } catch (e: SerializationException) {
+        StringStringMapDB("{}")
     }
 }

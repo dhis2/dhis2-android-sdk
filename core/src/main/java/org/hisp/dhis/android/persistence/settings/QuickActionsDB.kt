@@ -25,24 +25,48 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
+package org.hisp.dhis.android.persistence.settings
+
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.settings.QuickAction
-import org.hisp.dhis.android.persistence.settings.QuickActionsDB
-import org.hisp.dhis.android.persistence.settings.toDB
 
-internal class QuickActionListColumnAdapter : JSONObjectListColumnAdapter<QuickAction>() {
-
-    override fun serialize(o: List<QuickAction>?): String? =
-        QuickActionListColumnAdapter.serialize(o)
-
-    override fun deserialize(str: String): List<QuickAction> {
-        return QuickActionsDB(str).toDomain()
+@JvmInline
+internal value class QuickActionsDB(
+    val value: String,
+) {
+    fun toDomain(): List<QuickAction> {
+        return KotlinxJsonParser.instance.decodeFromString<List<QuickActionDBSerializable>>(value)
+            .map { it.toDomain() }
     }
+}
 
-    companion object {
-        fun serialize(o: List<QuickAction>?): String? {
-            return o?.let { it.toDB().value }
-        }
+internal fun List<QuickAction>.toDB(): QuickActionsDB {
+    return QuickActionsDB(
+        KotlinxJsonParser.instance.encodeToString(
+            ListSerializer(QuickActionDBSerializable.serializer()),
+            this.toDBSerializable(),
+        ),
+    )
+}
+
+@Serializable
+private data class QuickActionDBSerializable(
+    val actionId: String,
+) {
+    fun toDomain(): QuickAction {
+        return QuickAction.builder()
+            .actionId(actionId)
+            .build()
+    }
+}
+
+private fun List<QuickAction>.toDBSerializable(): List<QuickActionDBSerializable> {
+    return this.map {
+        QuickActionDBSerializable(
+            actionId = it.actionId(),
+        )
     }
 }

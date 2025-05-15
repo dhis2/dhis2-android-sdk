@@ -3,6 +3,8 @@ package org.hisp.dhis.android.persistence.settings
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.settings.FilterSetting
+import org.hisp.dhis.android.persistence.common.EntityDB
 
 @Entity(tableName = "FilterSetting")
 internal data class FilterSettingDB(
@@ -12,6 +14,28 @@ internal data class FilterSettingDB(
     val scope: String?,
     val filterType: String?,
     val uid: String?,
-    val sort: Int?,
-    val filter: Int?,
-)
+    val sort: Boolean?,
+    val filter: Boolean?,
+) : EntityDB<FilterSetting> {
+
+    override fun toDomain(): FilterSetting {
+        return FilterSetting.builder()
+            .id(id?.toLong())
+            .scope(scope)
+            .filterType(filterType)
+            .uid(uid)
+            .sort(sort)
+            .filter(filter)
+            .build()
+    }
+}
+
+internal fun FilterSetting.toDB(): FilterSettingDB {
+    return FilterSettingDB(
+        scope = scope(),
+        filterType = filterType(),
+        uid = uid(),
+        sort = sort(),
+        filter = filter(),
+    )
+}

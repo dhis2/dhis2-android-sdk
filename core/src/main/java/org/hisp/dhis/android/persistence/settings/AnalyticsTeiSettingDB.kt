@@ -5,6 +5,10 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.period.PeriodType
+import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting
+import org.hisp.dhis.android.core.settings.ChartType
+import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.program.ProgramDB
 import org.hisp.dhis.android.persistence.program.ProgramStageDB
 
@@ -43,4 +47,30 @@ internal data class AnalyticsTeiSettingDB(
     val programStage: String?,
     val period: String?,
     val type: String,
-)
+) : EntityDB<AnalyticsTeiSetting> {
+
+    override fun toDomain(): AnalyticsTeiSetting {
+        return AnalyticsTeiSetting.builder().apply {
+            id(id?.toLong())
+            uid(uid)
+            name(name)
+            shortName(shortName)
+            program(program)
+            programStage(programStage)
+            period?.let { period(PeriodType.valueOf(it)) }
+            type(ChartType.valueOf(type))
+        }.build()
+    }
+}
+
+internal fun AnalyticsTeiSetting.toDB(): AnalyticsTeiSettingDB {
+    return AnalyticsTeiSettingDB(
+        uid = uid(),
+        name = name(),
+        shortName = shortName(),
+        program = program(),
+        programStage = programStage(),
+        period = period()?.name,
+        type = type().name,
+    )
+}

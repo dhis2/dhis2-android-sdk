@@ -28,24 +28,29 @@
 
 package org.hisp.dhis.android.persistence.settings
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.settings.QuickAction
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.serializer
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
+import org.hisp.dhis.android.core.settings.CustomIntentActionType
 
-@Serializable
-internal data class QuickActionDB(
-    val actionId: String,
+@JvmInline
+internal value class CustomIntentActionTypeListDB(
+    val value: String?,
 ) {
-    fun toDomain(): QuickAction {
-        return QuickAction.builder()
-            .actionId(actionId)
-            .build()
-    }
-
-    companion object {
-        fun QuickAction.toDB(): QuickActionDB {
-            return QuickActionDB(
-                actionId = this.actionId(),
-            )
+    fun toDomain(): List<CustomIntentActionType> {
+        return if (value == null) {
+            emptyList()
+        } else {
+            return KotlinxJsonParser.instance.decodeFromString<List<String>>(value)
+                .map { CustomIntentActionType.valueOf(it) }
         }
     }
+}
+
+internal fun List<CustomIntentActionType>.toDB(): CustomIntentActionTypeListDB {
+    return CustomIntentActionTypeListDB(
+        this.map { it.name }.let {
+            KotlinxJsonParser.instance.encodeToString(ListSerializer(String.serializer()), it)
+        },
+    )
 }

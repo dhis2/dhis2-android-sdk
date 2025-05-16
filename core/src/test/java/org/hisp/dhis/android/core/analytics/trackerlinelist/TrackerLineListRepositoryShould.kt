@@ -34,6 +34,7 @@ import com.nhaarman.mockitokotlin2.verify
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.TrackerLineListParams
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.TrackerLineListRepositoryImpl
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.TrackerLineListService
+import org.hisp.dhis.android.core.common.SortingDirection
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -90,9 +91,9 @@ class TrackerLineListRepositoryShould {
         repository
             .withColumn(de1_1)
             .withColumn(de2_1)
-            .withSorting(TrackerLineListSortingItem(de1_1, TrackerLineListSortingDirection.ASC))
-            .withSorting(TrackerLineListSortingItem(de1_1, TrackerLineListSortingDirection.DESC))
-            .withSorting(TrackerLineListSortingItem(de2_1, TrackerLineListSortingDirection.ASC))
+            .withSorting(TrackerLineListSortingItem(de1_1, SortingDirection.ASC))
+            .withSorting(TrackerLineListSortingItem(de1_1, SortingDirection.DESC))
+            .withSorting(TrackerLineListSortingItem(de2_1, SortingDirection.ASC))
             .blockingEvaluate()
 
         verify(service).evaluate(paramsCaptor.capture())
@@ -103,12 +104,12 @@ class TrackerLineListRepositoryShould {
             when (index) {
                 0 -> {
                     assertThat(item.dimension.id).isEqualTo(de1_1.id)
-                    assertThat(item.direction).isEqualTo(TrackerLineListSortingDirection.DESC)
+                    assertThat(item.direction).isEqualTo(SortingDirection.DESC)
                 }
 
                 1 -> {
                     assertThat(item.dimension.id).isEqualTo(de2_1.id)
-                    assertThat(item.direction).isEqualTo(TrackerLineListSortingDirection.ASC)
+                    assertThat(item.direction).isEqualTo(SortingDirection.ASC)
                 }
             }
         }

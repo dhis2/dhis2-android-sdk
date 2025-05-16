@@ -74,7 +74,7 @@ internal data class TrackerLineListParams(
 
     fun updateInSorting(item: TrackerLineListSortingItem): TrackerLineListParams {
         return copy(
-            sorting = sorting.filterNot { it.dimension.id == item.dimension.id } + item
+            sorting = sorting.filterNot { it.dimension.id == item.dimension.id } + item,
         )
     }
 

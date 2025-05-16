@@ -1368,6 +1368,7 @@ public abstract interface class org/hisp/dhis/android/core/analytics/trackerline
 	public abstract fun withEventOutput (Ljava/lang/String;)Lorg/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListRepository;
 	public abstract fun withFilter (Lorg/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListItem;)Lorg/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListRepository;
 	public abstract fun withPageConfig (Lorg/hisp/dhis/android/core/arch/repositories/paging/PageConfig;)Lorg/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListRepository;
+	public abstract fun withSorting (Lorg/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListSortingItem;)Lorg/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListRepository;
 	public abstract fun withTrackedEntityInstanceOutput (Ljava/lang/String;)Lorg/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListRepository;
 	public abstract fun withTrackerVisualization (Ljava/lang/String;)Lorg/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListRepository;
 }
@@ -1385,6 +1386,19 @@ public final class org/hisp/dhis/android/core/analytics/trackerlinelist/TrackerL
 	public final fun getHeaders ()Ljava/util/List;
 	public final fun getMetadata ()Ljava/util/Map;
 	public final fun getRows ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListSortingItem {
+	public fun <init> (Lorg/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListItem;Lorg/hisp/dhis/android/core/common/SortingDirection;)V
+	public final fun component1 ()Lorg/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListItem;
+	public final fun component2 ()Lorg/hisp/dhis/android/core/common/SortingDirection;
+	public final fun copy (Lorg/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListItem;Lorg/hisp/dhis/android/core/common/SortingDirection;)Lorg/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListSortingItem;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListSortingItem;Lorg/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListItem;Lorg/hisp/dhis/android/core/common/SortingDirection;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListSortingItem;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDimension ()Lorg/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListItem;
+	public final fun getDirection ()Lorg/hisp/dhis/android/core/common/SortingDirection;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -4501,6 +4515,14 @@ public final class org/hisp/dhis/android/core/common/RelativePeriod : java/lang/
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/RelativePeriod;
 	public static fun values ()[Lorg/hisp/dhis/android/core/common/RelativePeriod;
+}
+
+public final class org/hisp/dhis/android/core/common/SortingDirection : java/lang/Enum {
+	public static final field ASC Lorg/hisp/dhis/android/core/common/SortingDirection;
+	public static final field DESC Lorg/hisp/dhis/android/core/common/SortingDirection;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/SortingDirection;
+	public static fun values ()[Lorg/hisp/dhis/android/core/common/SortingDirection;
 }
 
 public final class org/hisp/dhis/android/core/common/State : java/lang/Enum {
@@ -15015,7 +15037,7 @@ public abstract class org/hisp/dhis/android/core/visualization/TrackerVisualizat
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationSorting$Builder;
 	public abstract fun dimension ()Ljava/lang/String;
-	public abstract fun direction ()Ljava/lang/String;
+	public abstract fun direction ()Lorg/hisp/dhis/android/core/common/SortingDirection;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationSorting$Builder;
 }
 
@@ -15023,7 +15045,7 @@ public abstract class org/hisp/dhis/android/core/visualization/TrackerVisualizat
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationSorting;
 	public abstract fun dimension (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationSorting$Builder;
-	public abstract fun direction (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationSorting$Builder;
+	public abstract fun direction (Lorg/hisp/dhis/android/core/common/SortingDirection;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationSorting$Builder;
 }
 
 public final class org/hisp/dhis/android/core/visualization/TrackerVisualizationTableInfo {

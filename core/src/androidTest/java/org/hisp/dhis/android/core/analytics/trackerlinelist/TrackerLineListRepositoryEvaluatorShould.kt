@@ -50,6 +50,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.repositories.paging.PageConfig
 import org.hisp.dhis.android.core.common.AnalyticsType
+import org.hisp.dhis.android.core.common.SortingDirection
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper
@@ -437,7 +438,7 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
         val ascOrder = d2.analyticsModule().trackerLineList()
             .withEventOutput(programStage1.uid())
             .withColumn(dataElementItem1)
-            .withSorting(TrackerLineListSortingItem(dataElementItem1, TrackerLineListSortingDirection.ASC))
+            .withSorting(TrackerLineListSortingItem(dataElementItem1, SortingDirection.ASC))
             .blockingEvaluate()
 
         val ascRows = ascOrder.getOrThrow().rows
@@ -447,7 +448,7 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
         val descOrder = d2.analyticsModule().trackerLineList()
             .withEventOutput(programStage1.uid())
             .withColumn(dataElementItem1)
-            .withSorting(TrackerLineListSortingItem(dataElementItem1, TrackerLineListSortingDirection.DESC))
+            .withSorting(TrackerLineListSortingItem(dataElementItem1, SortingDirection.DESC))
             .blockingEvaluate()
 
         val descRows = descOrder.getOrThrow().rows

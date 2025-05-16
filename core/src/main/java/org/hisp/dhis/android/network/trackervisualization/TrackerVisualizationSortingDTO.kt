@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.network.trackervisualization
 
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.common.SortingDirection
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationSorting
 
 @Serializable
@@ -39,7 +40,7 @@ internal data class TrackerVisualizationSortingDTO(
     fun toDomain(): TrackerVisualizationSorting {
         return TrackerVisualizationSorting.builder()
             .dimension(dimension)
-            .direction(direction)
+            .direction(SortingDirection.valueOf(direction))
             .build()
     }
 }

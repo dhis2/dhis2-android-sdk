@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.analytics.trackerlinelist.DateFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.EnumFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.OrganisationUnitFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
+import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.TrackerLineListSortingMapper.mapSorting
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod
@@ -56,15 +57,19 @@ internal class TrackerVisualizationMapper(
     private val organisationUnitLevelStore: OrganisationUnitLevelStore,
 ) {
     fun toTrackerLineListParams(trackerVisualization: TrackerVisualization): TrackerLineListParams {
+        val columns = mapDimensions(trackerVisualization.columns(), trackerVisualization)
+        val filters = mapDimensions(trackerVisualization.filters(), trackerVisualization)
+        val sorting = mapSorting(trackerVisualization.sorting(), columns + filters)
+
         return TrackerLineListParams(
             trackerVisualization = trackerVisualization.uid(),
             programId = trackerVisualization.program()?.uid(),
             programStageId = trackerVisualization.programStage()?.uid(),
             trackedEntityTypeId = trackerVisualization.trackedEntityType()?.uid(),
             outputType = mapOutputType(trackerVisualization.outputType()),
-            columns = mapDimensions(trackerVisualization.columns(), trackerVisualization),
-            filters = mapDimensions(trackerVisualization.filters(), trackerVisualization),
-            sorting = TODO(),
+            columns = columns,
+            filters = filters,
+            sorting = sorting,
         )
     }
 

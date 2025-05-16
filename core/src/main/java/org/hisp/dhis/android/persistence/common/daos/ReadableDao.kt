@@ -31,69 +31,70 @@ package org.hisp.dhis.android.persistence.common.daos
 import androidx.room.RawQuery
 import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
+import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.querybuilders.ReadOnlySQLStatementBuilder
 
-internal abstract class ReadableDao<P>(
+internal abstract class ReadableDao<P : EntityDB<*>>(
     val tableName: String,
     protected val builder: ReadOnlySQLStatementBuilder,
 ) {
     suspend fun selectAll(): List<P> {
         val query = builder.selectAll()
-        return selectRawQuery(query)
+        return entityListRawQuery(query)
     }
 
     suspend fun selectWhere(whereClause: String): List<P> {
         val query = builder.selectWhere(whereClause)
-        return selectRawQuery(query)
+        return entityListRawQuery(query)
     }
 
     suspend fun selectWhere(filterWhereClause: String, orderByClause: String): List<P> {
         val query = builder.selectWhere(filterWhereClause, orderByClause)
-        return selectRawQuery(query)
+        return entityListRawQuery(query)
     }
 
     suspend fun selectWhere(filterWhereClause: String, orderByClause: String, limit: Int): List<P> {
         val query = builder.selectWhere(filterWhereClause, orderByClause, limit)
-        return selectRawQuery(query)
+        return entityListRawQuery(query)
     }
 
     suspend fun selectOneOrderedBy(orderingColumName: String, orderingType: SQLOrderType): P? {
         val query = builder.selectOneOrderedBy(orderingColumName, orderingType)
-        return selectRawQuery(query).firstOrNull()
+        return entityListRawQuery(query).firstOrNull()
     }
 
     suspend fun selectOneWhere(whereClause: String): P? {
         val query = builder.selectWhere(whereClause, 1)
-        return selectRawQuery(query).firstOrNull()
+        return entityListRawQuery(query).firstOrNull()
     }
 
     suspend fun selectFirst(): P? {
         val query = builder.selectAll()
-        return selectRawQuery(query).firstOrNull()
+        return entityListRawQuery(query).firstOrNull()
     }
 
     suspend fun count(): Int {
         val query = builder.count()
-        return selectCount(query)
+        return intRawQuery(query)
     }
 
     suspend fun countWhere(whereClause: String): Int {
         val query = builder.countWhere(whereClause)
-        return selectCount(query)
+        return intRawQuery(query)
     }
 
     suspend fun groupAndGetCountBy(column: String): Map<String, Int> {
         val query = builder.countAndGroupBy(column)
-        return selectGroupBy(query)
+        return countMapRawQuery(query)
     }
 
     @RawQuery
-    suspend abstract fun selectRawQuery(sqlRawQuery: RoomRawQuery): List<P>
+    suspend abstract fun entityListRawQuery(sqlRawQuery: RoomRawQuery): List<P>
 
     @RawQuery
-    protected abstract suspend fun selectCount(sqlRawQuery: RoomRawQuery): Int
+    protected abstract suspend fun intRawQuery(sqlRawQuery: RoomRawQuery): Int
 
     @RawQuery
-    protected abstract suspend fun selectGroupBy(sqlRawQuery: RoomRawQuery): Map<String, Int>
+    protected abstract suspend fun countMapRawQuery(sqlRawQuery: RoomRawQuery): Map<String, Int>
 
 }

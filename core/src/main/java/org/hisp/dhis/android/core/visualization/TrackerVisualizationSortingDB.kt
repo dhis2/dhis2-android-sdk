@@ -29,25 +29,24 @@
 package org.hisp.dhis.android.core.visualization
 
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.common.SortingDirection
 
 @Serializable
-internal data class TrackerVisualizationSortingDAO(
+internal data class TrackerVisualizationSortingDB(
     val dimension: String,
     val direction: String,
 ) {
     fun toDomain(): TrackerVisualizationSorting {
         return TrackerVisualizationSorting.builder()
             .dimension(dimension)
-            .direction(direction)
+            .direction(SortingDirection.valueOf(direction))
             .build()
     }
+}
 
-    companion object {
-        fun TrackerVisualizationSorting.toDao(): TrackerVisualizationSortingDAO {
-            return TrackerVisualizationSortingDAO(
-                dimension = this.dimension(),
-                direction = this.direction(),
-            )
-        }
-    }
+internal fun TrackerVisualizationSorting.toDao(): TrackerVisualizationSortingDB {
+    return TrackerVisualizationSortingDB(
+        dimension = this.dimension(),
+        direction = this.direction().name,
+    )
 }

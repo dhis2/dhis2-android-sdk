@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.arch.repositories.paging.PageConfig
 import org.koin.core.annotation.Singleton
 
 @Singleton
+@Suppress("TooManyFunctions")
 internal class TrackerLineListRepositoryImpl(
     private val params: TrackerLineListParams,
     private val service: TrackerLineListService,

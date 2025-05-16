@@ -26,36 +26,8 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.visualization;
+package org.hisp.dhis.android.core.common
 
-import androidx.annotation.NonNull;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.SortingDirection;
-
-@AutoValue
-public abstract class TrackerVisualizationSorting {
-
-    @NonNull
-    public abstract String dimension();
-
-    @NonNull
-    public abstract SortingDirection direction();
-
-    public static Builder builder() {
-        return new AutoValue_TrackerVisualizationSorting.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder dimension(String dimension);
-
-        public abstract Builder direction(SortingDirection direction);
-
-        public abstract TrackerVisualizationSorting build();
-    }
+enum class SortingDirection {
+    ASC, DESC
 }

@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.data.visualization
 
 import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.common.SortingDirection
 import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils
 import org.hisp.dhis.android.core.visualization.*
 
@@ -73,7 +74,7 @@ internal object TrackerVisualizationSamples {
             listOf(
                 TrackerVisualizationSorting.builder()
                     .dimension("dimension")
-                    .direction("ASC")
+                    .direction(SortingDirection.ASC)
                     .build(),
             ),
         )

@@ -89,7 +89,7 @@ internal class TrackerLineListRepositoryImpl(
     }
 
     override fun withSorting(sorting: TrackerLineListSortingItem): TrackerLineListRepository {
-        return updateParams { params.updateInSorting(sorting) }
+        return updateParams { params.copy(sorting = listOf(sorting)) }
     }
 
     override fun evaluate(): Single<Result<TrackerLineListResponse, AnalyticsException>> {

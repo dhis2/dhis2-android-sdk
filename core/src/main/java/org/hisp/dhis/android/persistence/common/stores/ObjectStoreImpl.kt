@@ -43,8 +43,8 @@ internal open class ObjectStoreImpl<D: CoreObject, P : EntityDB<D>>(
         return objectDao.selectStringColumn(column, clause)
     }
 
-    open suspend fun insert(o: D): Long {
-        return objectDao.insert(o.toDB())
+    open suspend fun insert(domainObj: D): Long {
+        return objectDao.insert(domainObj.toDB())
     }
 
     suspend fun insert(objects: Collection<D>) {
@@ -55,8 +55,8 @@ internal open class ObjectStoreImpl<D: CoreObject, P : EntityDB<D>>(
         return objectDao.delete()
     }
 
-    suspend fun deleteById(o: D): Boolean {
-        return o.id()?.let {objectDao.deleteById(it) > 0} ?: false
+    suspend fun deleteById(domainObj: D): Boolean {
+        return domainObj.id()?.let { objectDao.deleteById(it) > 0 } ?: false
     }
 
     suspend fun deleteWhere(clause: String): Boolean {

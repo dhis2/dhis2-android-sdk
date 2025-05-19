@@ -28,13 +28,11 @@
 
 package org.hisp.dhis.android.persistence.common.daos
 
-import androidx.room.Dao
 import androidx.room.RawQuery
 import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilder
 
-@Dao
 internal abstract class IdentifiableObjectDao<P : EntityDB<*>>(
     tableName: String,
     override val builder: SQLStatementBuilder,

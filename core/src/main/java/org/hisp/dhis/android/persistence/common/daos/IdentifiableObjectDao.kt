@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,51 +26,52 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.common.stores
+package org.hisp.dhis.android.persistence.common.daos
 
-import android.content.ContentValues
-import org.hisp.dhis.android.core.common.CoreObject
+import androidx.room.Dao
+import androidx.room.RawQuery
+import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.persistence.common.EntityDB
-import org.hisp.dhis.android.persistence.common.MapperToDB
-import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilder
 
-internal open class ObjectStoreImpl<D: CoreObject, P : EntityDB<D>>(
-    protected val objectDao: ObjectDao<P>,
-    protected val mapper: MapperToDB<D, P>,
-) : ReadableStoreImpl<D, P>(objectDao), MapperToDB<D, P> by mapper {
+@Dao
+internal abstract class IdentifiableObjectDao<P : EntityDB<*>>(
+    tableName: String,
+    override val builder: SQLStatementBuilder,
+) : ObjectDao<P>(tableName, builder) {
 
-    suspend fun selectStringColumnsWhereClause(column: String, clause: String): List<String> {
-        return objectDao.selectStringColumn(column, clause)
+    @RawQuery
+    protected abstract suspend fun objectRawQuery(query: RoomRawQuery): P?
+
+    @RawQuery
+    protected abstract suspend fun objectListRawQuery(query: RoomRawQuery): List<P>
+
+    suspend fun selectUids(): List<String> {
+        return stringListRawQuery(RoomRawQuery(builder.selectUids()))
     }
 
-    open suspend fun insert(o: D): Long {
-        return objectDao.insert(o.toDB())
+    suspend fun selectUidsWhere(whereClause: String): List<String> {
+        return stringListRawQuery(RoomRawQuery(builder.selectUidsWhere(whereClause)))
     }
 
-    suspend fun insert(objects: Collection<D>) {
-        objectDao.insert(objects.map { it.toDB() })
+    suspend fun selectUidsWhere(whereClause: String, orderByClause: String): List<String> {
+        return stringListRawQuery(RoomRawQuery(builder.selectUidsWhere(whereClause, orderByClause)))
     }
 
-    suspend fun delete(): Int {
-        return objectDao.delete()
+    suspend fun selectByUid(uid: String): P? {
+        return objectRawQuery(RoomRawQuery(builder.selectByUid()))
     }
 
-    suspend fun deleteById(o: D): Boolean {
-        return o.id()?.let {objectDao.deleteById(it) > 0} ?: false
+    suspend fun selectByUids(uids: List<String>): List<P> {
+        val whereClause = RoomRawQuery("uid IN (${uids.joinToString(",") { "'$it'" }})")
+        return objectListRawQuery(whereClause)
     }
 
-    suspend fun deleteWhere(clause: String): Boolean {
-        return objectDao.deleteWhere(clause) > 0
+    suspend fun update(entity: P): Int {
+        return intRawQuery(RoomRawQuery(builder.update()))
     }
 
-    suspend fun updateWhere(updates: ContentValues, whereClause: String): Int {
-        return objectDao.updateWhere(updates, whereClause)
+    suspend fun deleteById(uid: String): Int {
+        return intRawQuery(RoomRawQuery(builder.deleteById()))
     }
-
-    suspend fun deleteWhereIfExists(whereClause: String) {
-        deleteWhere(whereClause)
-    }
-
-    val isReady: Boolean
-        get() = true // TODO: Check what to do with this
 }

@@ -42,10 +42,10 @@ internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
 ) : ObjectStoreImpl<D, P>(identifiableDao, mapper) where D : CoreObject, D : ObjectWithUidInterface {
 
     @Throws(RuntimeException::class)
-    override suspend fun insert(o: D): Long {
-        CollectionsHelper.isNull(o)
-        CollectionsHelper.isNull(o.uid())
-        return super.insert(o)
+    override suspend fun insert(domainObj: D): Long {
+        CollectionsHelper.isNull(domainObj)
+        CollectionsHelper.isNull(domainObj.uid())
+        return super.insert(domainObj)
     }
 
     @Throws(RuntimeException::class)
@@ -75,9 +75,9 @@ internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
     }
 
     @Throws(RuntimeException::class)
-    suspend fun update(o: D) {
-        CollectionsHelper.isNull(o)
-        val entity = o.toDB()
+    suspend fun update(domainObj: D) {
+        CollectionsHelper.isNull(domainObj)
+        val entity = domainObj.toDB()
         val updated = identifiableDao.update(entity)
         if (updated == 0) {
             throw RuntimeException("No rows affected")
@@ -86,12 +86,12 @@ internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
 
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionCaught")
-    suspend fun updateOrInsert(o: D): HandleAction {
+    suspend fun updateOrInsert(domainObj: D): HandleAction {
         return try {
-            update(o)
+            update(domainObj)
             HandleAction.Update
         } catch (e: Exception) {
-            insert(o)
+            insert(domainObj)
             HandleAction.Insert
         }
     }

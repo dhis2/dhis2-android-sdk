@@ -36,7 +36,7 @@ import org.hisp.dhis.android.persistence.common.querybuilders.ReadOnlySQLStateme
 
 internal abstract class ReadableDao<P : EntityDB<*>>(
     val tableName: String,
-    protected val builder: ReadOnlySQLStatementBuilder,
+    protected open val builder: ReadOnlySQLStatementBuilder,
 ) {
     suspend fun selectAll(): List<P> {
         val query = builder.selectAll()

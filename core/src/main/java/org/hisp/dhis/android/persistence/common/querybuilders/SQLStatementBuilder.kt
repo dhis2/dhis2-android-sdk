@@ -26,51 +26,30 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.common.stores
+package org.hisp.dhis.android.persistence.common.querybuilders
 
-import android.content.ContentValues
-import org.hisp.dhis.android.core.common.CoreObject
-import org.hisp.dhis.android.persistence.common.EntityDB
-import org.hisp.dhis.android.persistence.common.MapperToDB
-import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 
-internal open class ObjectStoreImpl<D: CoreObject, P : EntityDB<D>>(
-    protected val objectDao: ObjectDao<P>,
-    protected val mapper: MapperToDB<D, P>,
-) : ReadableStoreImpl<D, P>(objectDao), MapperToDB<D, P> by mapper {
 
-    suspend fun selectStringColumnsWhereClause(column: String, clause: String): List<String> {
-        return objectDao.selectStringColumn(column, clause)
-    }
+@Suppress("TooManyFunctions")
+internal interface SQLStatementBuilder : ReadOnlySQLStatementBuilder {
+    fun getTableName(): String
+    fun getColumns(): Array<String>
+    fun selectUids(): String
+    fun selectUidsWhere(whereClause: String): String
+    fun selectUidsWhere(whereClause: String, orderByClause: String): String
+    fun selectColumnWhere(column: String, whereClause: String): String
+    fun selectChildrenWithLinkTable(
+        projection: LinkTableChildProjection,
+        parentUid: String,
+        whereClause: String?,
+    ): String
 
-    open suspend fun insert(o: D): Long {
-        return objectDao.insert(o.toDB())
-    }
-
-    suspend fun insert(objects: Collection<D>) {
-        objectDao.insert(objects.map { it.toDB() })
-    }
-
-    suspend fun delete(): Int {
-        return objectDao.delete()
-    }
-
-    suspend fun deleteById(o: D): Boolean {
-        return o.id()?.let {objectDao.deleteById(it) > 0} ?: false
-    }
-
-    suspend fun deleteWhere(clause: String): Boolean {
-        return objectDao.deleteWhere(clause) > 0
-    }
-
-    suspend fun updateWhere(updates: ContentValues, whereClause: String): Int {
-        return objectDao.updateWhere(updates, whereClause)
-    }
-
-    suspend fun deleteWhereIfExists(whereClause: String) {
-        deleteWhere(whereClause)
-    }
-
-    val isReady: Boolean
-        get() = true // TODO: Check what to do with this
+    fun selectByUid(): String
+    fun selectDistinct(column: String): String
+    fun insert(): String
+    fun update(): String
+    fun updateWhere(): String
+    fun deleteById(): String
+    fun deleteWhere(): String
 }

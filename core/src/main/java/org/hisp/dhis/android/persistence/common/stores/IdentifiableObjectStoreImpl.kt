@@ -1,0 +1,119 @@
+/*
+ *  Copyright (c) 2004-2023, University of Oslo
+ *  All rights reserved.
+ *
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
+ *
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.hisp.dhis.android.persistence.common.stores
+
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.persistence.common.MapperToDB
+import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
+
+internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
+    protected val identifiableDao: IdentifiableObjectDao<P>,
+    mapper: MapperToDB<D, P>,
+) : ObjectStoreImpl<D, P>(identifiableDao, mapper) where D : CoreObject, D : ObjectWithUidInterface {
+
+    @Throws(RuntimeException::class)
+    override suspend fun insert(o: D): Long {
+        CollectionsHelper.isNull(o)
+        CollectionsHelper.isNull(o.uid())
+        return super.insert(o)
+    }
+
+    @Throws(RuntimeException::class)
+    suspend fun selectUids(): List<String> {
+        return identifiableDao.selectUids()
+    }
+
+    @Throws(RuntimeException::class)
+    suspend fun selectUidsWhere(whereClause: String): List<String> {
+        return identifiableDao.selectUidsWhere(whereClause)
+    }
+
+    @Throws(RuntimeException::class)
+    suspend fun selectUidsWhere(whereClause: String, orderByClause: String): List<String> {
+        return identifiableDao.selectUidsWhere(whereClause, orderByClause)
+    }
+
+    @Throws(RuntimeException::class)
+    suspend fun selectByUid(uid: String): D? {
+        CollectionsHelper.isNull(uid)
+        return identifiableDao.selectByUid(uid)?.toDomain()
+    }
+
+    @Throws(RuntimeException::class)
+    suspend fun selectByUids(uids: List<String>): List<D> {
+        return identifiableDao.selectByUids(uids).map { it.toDomain() }
+    }
+
+    @Throws(RuntimeException::class)
+    suspend fun update(o: D) {
+        CollectionsHelper.isNull(o)
+        val entity = o.toDB()
+        val updated = identifiableDao.update(entity)
+        if (updated == 0) {
+            throw RuntimeException("No rows affected")
+        }
+    }
+
+    @Throws(RuntimeException::class)
+    @Suppress("TooGenericExceptionCaught")
+    suspend fun updateOrInsert(o: D): HandleAction {
+        return try {
+            update(o)
+            HandleAction.Update
+        } catch (e: Exception) {
+            insert(o)
+            HandleAction.Insert
+        }
+    }
+
+    @Throws(RuntimeException::class)
+    suspend fun delete(uid: String) {
+        CollectionsHelper.isNull(uid)
+        val deleted = identifiableDao.deleteById(uid)
+        if (deleted == 0) {
+            throw RuntimeException("No rows affected")
+        }
+    }
+
+    @Throws(RuntimeException::class)
+    @Suppress("TooGenericExceptionCaught")
+    suspend fun deleteIfExists(uid: String) {
+        try {
+            delete(uid)
+        } catch (e: RuntimeException) {
+            if (e.message != "No rows affected") {
+                throw e
+            }
+        }
+    }
+}

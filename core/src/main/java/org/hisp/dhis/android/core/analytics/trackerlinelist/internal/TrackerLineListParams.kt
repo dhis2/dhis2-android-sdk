@@ -51,7 +51,7 @@ internal data class TrackerLineListParams(
             outputType = other.outputType ?: outputType,
             programId = other.programId ?: programId,
             programStageId = other.programStageId ?: programStageId,
-            sorting = other.sorting.takeIf { it.isNotEmpty() } ?: sorting
+            sorting = other.sorting.takeIf { it.isNotEmpty() } ?: sorting,
         ).run {
             other.columns.fold(this) { params, item -> params.updateInColumns(item) }
         }.run {

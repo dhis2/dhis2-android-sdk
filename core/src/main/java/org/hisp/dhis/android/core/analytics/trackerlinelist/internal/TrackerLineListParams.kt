@@ -51,6 +51,7 @@ internal data class TrackerLineListParams(
             outputType = other.outputType ?: outputType,
             programId = other.programId ?: programId,
             programStageId = other.programStageId ?: programStageId,
+            sorting = other.sorting.takeIf { it.isNotEmpty() } ?: sorting
         ).run {
             other.columns.fold(this) { params, item -> params.updateInColumns(item) }
         }.run {
@@ -69,12 +70,6 @@ internal data class TrackerLineListParams(
         return copy(
             columns = columns.filterNot { it.id == item.id },
             filters = filters.replaceOrPush(item) { it.id == item.id },
-        )
-    }
-
-    fun updateInSorting(item: TrackerLineListSortingItem): TrackerLineListParams {
-        return copy(
-            sorting = sorting.filterNot { it.dimension.id == item.dimension.id } + item,
         )
     }
 

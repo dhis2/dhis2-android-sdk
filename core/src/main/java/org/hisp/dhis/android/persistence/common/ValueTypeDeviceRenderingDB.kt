@@ -4,6 +4,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering
+import org.hisp.dhis.android.core.common.ValueTypeRenderingType
 
 @Entity(
     tableName = "ValueTypeDeviceRendering",
@@ -23,4 +25,32 @@ internal data class ValueTypeDeviceRenderingDB(
     val max: Int?,
     val step: Int?,
     val decimalPoints: Int?,
-)
+) : EntityDB<ValueTypeDeviceRendering> {
+
+    override fun toDomain(): ValueTypeDeviceRendering {
+        return ValueTypeDeviceRendering.builder().apply {
+            id(id?.toLong())
+            uid(uid)
+            objectTable(objectTable)
+            deviceType(deviceType)
+            type?.let { type(ValueTypeRenderingType.valueOf(type)) }
+            min(min)
+            max(max)
+            step(step)
+            decimalPoints(decimalPoints)
+        }.build()
+    }
+}
+
+internal fun ValueTypeDeviceRendering.toDB(): ValueTypeDeviceRenderingDB {
+    return ValueTypeDeviceRenderingDB(
+        uid = uid(),
+        objectTable = objectTable(),
+        deviceType = deviceType(),
+        type = type()?.name,
+        min = min(),
+        max = max(),
+        step = step(),
+        decimalPoints = decimalPoints(),
+    )
+}

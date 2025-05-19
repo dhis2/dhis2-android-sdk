@@ -27,13 +27,11 @@ internal data class SMSConfigDB(
             .value(value)
             .build()
     }
+}
 
-    companion object {
-        fun KeyValuePair.toDB(): SMSConfigDB {
-            return SMSConfigDB(
-                key = key()!!,
-                value = value(),
-            )
-        }
-    }
+internal fun KeyValuePair.toDB(): SMSConfigDB {
+    return SMSConfigDB(
+        key = key()!!,
+        value = value(),
+    )
 }

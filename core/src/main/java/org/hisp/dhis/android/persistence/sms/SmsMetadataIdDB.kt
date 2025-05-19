@@ -23,13 +23,11 @@ internal data class SmsMetadataIdDB(
             .uid(uid)
             .build()
     }
+}
 
-    companion object {
-        fun SMSMetadataId.toDB(): SmsMetadataIdDB {
-            return SmsMetadataIdDB(
-                type = type().name,
-                uid = uid(),
-            )
-        }
-    }
+internal fun SMSMetadataId.toDB(): SmsMetadataIdDB {
+    return SmsMetadataIdDB(
+        type = type().name,
+        uid = uid(),
+    )
 }

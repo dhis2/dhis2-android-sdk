@@ -50,8 +50,8 @@ internal data class OrganisationUnitDB(
             .applyBaseNameableFields(this)
             .id(id?.toLong())
             .path(path)
-            .openingDate(openingDate?.toJavaDate())
-            .closedDate(closedDate?.toJavaDate())
+            .openingDate(openingDate.toJavaDate())
+            .closedDate(closedDate.toJavaDate())
             .level(level)
             .parent(parent?.let { ObjectWithUidDB(it).toDomain() })
             .displayNamePath(displayNamePath?.toDomain())
@@ -61,24 +61,26 @@ internal data class OrganisationUnitDB(
 }
 
 internal fun OrganisationUnit.toDB(): OrganisationUnitDB {
+    val geometryDB = geometry().toDB()
+
     return OrganisationUnitDB(
         uid = uid()!!,
         code = code(),
         name = name(),
         displayName = displayName(),
-        created = created()?.dateFormat(),
-        lastUpdated = lastUpdated()?.dateFormat(),
+        created = created().dateFormat(),
+        lastUpdated = lastUpdated().dateFormat(),
         shortName = shortName(),
         displayShortName = displayShortName(),
         description = description(),
         displayDescription = displayDescription(),
         path = path(),
-        openingDate = openingDate()?.dateFormat(),
-        closedDate = closedDate()?.dateFormat(),
+        openingDate = openingDate().dateFormat(),
+        closedDate = closedDate().dateFormat(),
         level = level(),
         parent = parent()?.uid(),
         displayNamePath = displayNamePath()?.toDB(),
-        geometryType = geometry().toDB().geometryType,
-        geometryCoordinates = geometry().toDB().geometryCoordinates,
+        geometryType = geometryDB.geometryType,
+        geometryCoordinates = geometryDB.geometryCoordinates,
     )
 }

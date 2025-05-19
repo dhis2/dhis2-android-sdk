@@ -31,10 +31,10 @@ internal data class TrackedEntityAttributeReservedValueDB(
             .ownerUid(ownerUid)
             .key(key)
             .value(value)
-            .created(created?.toJavaDate())
-            .expiryDate(expiryDate?.toJavaDate())
+            .created(created.toJavaDate())
+            .expiryDate(expiryDate.toJavaDate())
             .organisationUnit(organisationUnit)
-            .temporalValidityDate(temporalValidityDate?.toJavaDate())
+            .temporalValidityDate(temporalValidityDate.toJavaDate())
             .pattern(pattern)
             .build()
     }
@@ -46,10 +46,10 @@ internal fun TrackedEntityAttributeReservedValue.toDB(): TrackedEntityAttributeR
         ownerUid = ownerUid(),
         key = key(),
         value = value(),
-        created = created()?.dateFormat(),
-        expiryDate = expiryDate()?.dateFormat(),
+        created = created().dateFormat(),
+        expiryDate = expiryDate().dateFormat(),
         organisationUnit = organisationUnit(),
-        temporalValidityDate = temporalValidityDate()?.dateFormat(),
+        temporalValidityDate = temporalValidityDate().dateFormat(),
         pattern = pattern(),
     )
 }

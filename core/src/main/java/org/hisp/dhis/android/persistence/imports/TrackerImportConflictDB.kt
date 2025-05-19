@@ -4,6 +4,11 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.imports.ImportStatus
+import org.hisp.dhis.android.core.imports.TrackerImportConflict
+import org.hisp.dhis.android.core.util.dateFormat
+import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.enrollment.EnrollmentDB
 import org.hisp.dhis.android.persistence.event.EventDB
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceDB
@@ -50,4 +55,40 @@ internal data class TrackerImportConflictDB(
     val displayDescription: String?,
     val trackedEntityAttribute: String?,
     val dataElement: String?,
-)
+) : EntityDB<TrackerImportConflict> {
+
+    override fun toDomain(): TrackerImportConflict {
+        return TrackerImportConflict.builder().apply {
+            id(id?.toLong())
+            conflict(conflict)
+            value(value)
+            trackedEntityInstance(trackedEntityInstance)
+            enrollment(enrollment)
+            event(event)
+            tableReference(tableReference)
+            errorCode(errorCode)
+            status?.let { status(ImportStatus.valueOf(it)) }
+            created(created.toJavaDate())
+            displayDescription(displayDescription)
+            trackedEntityAttribute(trackedEntityAttribute)
+            dataElement(dataElement)
+        }.build()
+    }
+}
+
+internal fun TrackerImportConflict.toDB(): TrackerImportConflictDB {
+    return TrackerImportConflictDB(
+        conflict = conflict(),
+        value = value(),
+        trackedEntityInstance = trackedEntityInstance(),
+        enrollment = enrollment(),
+        event = event(),
+        tableReference = tableReference(),
+        errorCode = errorCode(),
+        status = status()?.name,
+        created = created().dateFormat(),
+        displayDescription = displayDescription(),
+        trackedEntityAttribute = trackedEntityAttribute(),
+        dataElement = dataElement(),
+    )
+}

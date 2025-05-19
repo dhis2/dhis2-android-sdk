@@ -61,10 +61,10 @@ internal data class TrackedEntityInstanceDB(
         return TrackedEntityInstance.builder().apply {
             id(id?.toLong())
             uid(uid)
-            created(created?.toJavaDate())
-            lastUpdated(lastUpdated?.toJavaDate())
-            createdAtClient(createdAtClient?.toJavaDate())
-            lastUpdatedAtClient(lastUpdatedAtClient?.toJavaDate())
+            created(created.toJavaDate())
+            lastUpdated(lastUpdated.toJavaDate())
+            createdAtClient(createdAtClient.toJavaDate())
+            lastUpdatedAtClient(lastUpdatedAtClient.toJavaDate())
             organisationUnit(organisationUnit)
             trackedEntityType(trackedEntityType)
             geometry(GeometryDB(geometryType, geometryCoordinates).toDomain())
@@ -76,16 +76,18 @@ internal data class TrackedEntityInstanceDB(
 }
 
 internal fun TrackedEntityInstance.toDB(): TrackedEntityInstanceDB {
+    val geometryDB = geometry().toDB()
+
     return TrackedEntityInstanceDB(
         uid = uid(),
-        created = created()?.dateFormat(),
-        lastUpdated = lastUpdated()?.dateFormat(),
-        createdAtClient = createdAtClient()?.dateFormat(),
-        lastUpdatedAtClient = lastUpdatedAtClient()?.dateFormat(),
+        created = created().dateFormat(),
+        lastUpdated = lastUpdated().dateFormat(),
+        createdAtClient = createdAtClient().dateFormat(),
+        lastUpdatedAtClient = lastUpdatedAtClient().dateFormat(),
         organisationUnit = organisationUnit(),
         trackedEntityType = trackedEntityType(),
-        geometryType = geometry().toDB().geometryType,
-        geometryCoordinates = geometry().toDB().geometryCoordinates,
+        geometryType = geometryDB.geometryType,
+        geometryCoordinates = geometryDB.geometryCoordinates,
         syncState = syncState()?.toDB(),
         aggregatedSyncState = aggregatedSyncState()?.toDB(),
         deleted = deleted(),

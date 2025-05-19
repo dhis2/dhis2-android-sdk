@@ -5,6 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink
+import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.program.ProgramIndicatorDB
 
 @Entity(
@@ -38,4 +40,22 @@ internal data class ProgramIndicatorLegendSetLinkDB(
     val programIndicator: String,
     val legendSet: String,
     val sortOrder: Int?,
-)
+) : EntityDB<ProgramIndicatorLegendSetLink> {
+
+    override fun toDomain(): ProgramIndicatorLegendSetLink {
+        return ProgramIndicatorLegendSetLink.builder()
+            .id(id?.toLong())
+            .programIndicator(programIndicator)
+            .legendSet(legendSet)
+            .sortOrder(sortOrder)
+            .build()
+    }
+}
+
+internal fun ProgramIndicatorLegendSetLink.toDB(): ProgramIndicatorLegendSetLinkDB {
+    return ProgramIndicatorLegendSetLinkDB(
+        programIndicator = programIndicator()!!,
+        legendSet = legendSet()!!,
+        sortOrder = sortOrder(),
+    )
+}

@@ -5,6 +5,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
+import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.indicator.IndicatorDB
 
 @Entity(
@@ -38,4 +40,22 @@ internal data class IndicatorLegendSetLinkDB(
     val indicator: String,
     val legendSet: String,
     val sortOrder: Int?,
-)
+) : EntityDB<IndicatorLegendSetLink> {
+
+    override fun toDomain(): IndicatorLegendSetLink {
+        return IndicatorLegendSetLink.builder()
+            .id(id?.toLong())
+            .indicator(indicator)
+            .legendSet(legendSet)
+            .sortOrder(sortOrder)
+            .build()
+    }
+}
+
+internal fun IndicatorLegendSetLink.toDB(): IndicatorLegendSetLinkDB {
+    return IndicatorLegendSetLinkDB(
+        indicator = indicator()!!,
+        legendSet = legendSet()!!,
+        sortOrder = sortOrder(),
+    )
+}

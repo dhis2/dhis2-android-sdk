@@ -44,8 +44,8 @@ internal fun OrganisationUnitLevel.toDB(): OrganisationUnitLevelDB {
         code = code(),
         name = name(),
         displayName = displayName(),
-        created = created()?.dateFormat(),
-        lastUpdated = lastUpdated()?.dateFormat(),
+        created = created().dateFormat(),
+        lastUpdated = lastUpdated().dateFormat(),
         level = level(),
     )
 }

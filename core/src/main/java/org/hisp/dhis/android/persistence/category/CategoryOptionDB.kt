@@ -61,8 +61,8 @@ internal fun CategoryOption.toDB(): CategoryOptionDB {
         displayShortName = displayShortName(),
         description = description(),
         displayDescription = displayDescription(),
-        startDate = startDate()?.dateFormat(),
-        endDate = endDate()?.dateFormat(),
+        startDate = startDate().dateFormat(),
+        endDate = endDate().dateFormat(),
         accessDataWrite = access().toDB(),
     )
 }

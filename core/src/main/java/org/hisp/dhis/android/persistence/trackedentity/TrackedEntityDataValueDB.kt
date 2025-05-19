@@ -74,8 +74,8 @@ internal fun TrackedEntityDataValue.toDB(): TrackedEntityDataValueDB {
         dataElement = dataElement()!!,
         storedBy = storedBy(),
         value = value(),
-        created = created()?.dateFormat(),
-        lastUpdated = lastUpdated()?.dateFormat(),
+        created = created().dateFormat(),
+        lastUpdated = lastUpdated().dateFormat(),
         providedElsewhere = providedElsewhere(),
         syncState = syncState()?.toDB(),
     )

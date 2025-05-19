@@ -46,8 +46,8 @@ internal fun OrganisationUnitGroup.toDB(): OrganisationUnitGroupDB {
         code = code(),
         name = name(),
         displayName = displayName(),
-        created = created()?.dateFormat(),
-        lastUpdated = lastUpdated()?.dateFormat(),
+        created = created().dateFormat(),
+        lastUpdated = lastUpdated().dateFormat(),
         shortName = shortName(),
         displayShortName = displayShortName(),
     )

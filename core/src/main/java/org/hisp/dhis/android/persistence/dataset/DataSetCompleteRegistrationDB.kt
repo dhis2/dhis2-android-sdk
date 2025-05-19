@@ -78,7 +78,7 @@ internal data class DataSetCompleteRegistrationDB(
             dataSet(dataSet)
             organisationUnit(organisationUnit)
             attributeOptionCombo?.let { attributeOptionCombo(it) }
-            date(date?.toJavaDate())
+            date(date.toJavaDate())
             storedBy(storedBy)
             syncState(syncState?.toDomain())
             deleted(deleted)
@@ -92,7 +92,7 @@ internal fun DataSetCompleteRegistration.toDB(): DataSetCompleteRegistrationDB {
         dataSet = dataSet()!!,
         organisationUnit = organisationUnit()!!,
         attributeOptionCombo = attributeOptionCombo(),
-        date = date()?.dateFormat(),
+        date = date().dateFormat(),
         storedBy = storedBy(),
         syncState = syncState()?.toDB(),
         deleted = deleted(),

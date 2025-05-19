@@ -42,7 +42,7 @@ internal value class StringStringMapDB(
         return try {
             KotlinxJsonParser.instance.decodeFromString<Map<String, String>>(value)
         } catch (e: SerializationException) {
-            emptyMap<String, String>()
+            emptyMap()
         }
     }
 }

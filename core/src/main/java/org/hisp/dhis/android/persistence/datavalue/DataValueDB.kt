@@ -6,6 +6,7 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.persistence.category.CategoryOptionComboDB
 import org.hisp.dhis.android.persistence.common.DataObjectDB
@@ -116,8 +117,8 @@ internal fun DataValue.toDB(): DataValueDB {
         attributeOptionCombo = attributeOptionCombo()!!,
         value = value(),
         storedBy = storedBy(),
-        created = created()?.toString(),
-        lastUpdated = lastUpdated()?.toString(),
+        created = created().dateFormat(),
+        lastUpdated = lastUpdated().dateFormat(),
         comment = comment(),
         followUp = followUp(),
         syncState = syncState()?.toDB(),

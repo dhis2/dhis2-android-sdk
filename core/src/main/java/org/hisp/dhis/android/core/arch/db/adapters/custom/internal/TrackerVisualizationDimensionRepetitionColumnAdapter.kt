@@ -27,10 +27,9 @@
  */
 package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionRepetition
-import org.hisp.dhis.android.persistence.visualization.TrackerVisualizationDimensionRepetitionDB
-import org.hisp.dhis.android.persistence.visualization.TrackerVisualizationDimensionRepetitionDB.Companion.toDBSerializable
+import org.hisp.dhis.android.persistence.visualization.RepetitionDB
+import org.hisp.dhis.android.persistence.visualization.toDB
 
 internal class TrackerVisualizationDimensionRepetitionColumnAdapter :
     JSONObjectColumnAdapter<TrackerVisualizationDimensionRepetition>() {
@@ -40,19 +39,12 @@ internal class TrackerVisualizationDimensionRepetitionColumnAdapter :
     }
 
     override fun deserialize(str: String): TrackerVisualizationDimensionRepetition {
-        return KotlinxJsonParser.instance.decodeFromString<TrackerVisualizationDimensionRepetitionDB>(
-            str,
-        ).toDomain()
+        return RepetitionDB(str).toDomain()
     }
 
     companion object {
         fun serialize(o: TrackerVisualizationDimensionRepetition?): String? {
-            return o?.let {
-                KotlinxJsonParser.instance.encodeToString(
-                    TrackerVisualizationDimensionRepetitionDB.serializer(),
-                    it.toDBSerializable(),
-                )
-            }
+            return o?.toDB()?.value
         }
     }
 }

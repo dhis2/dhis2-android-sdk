@@ -56,7 +56,7 @@ internal fun DataValueConflict.toDB(): DataValueConflictDB {
         orgUnit = orgUnit(),
         errorCode = errorCode(),
         status = status()?.name,
-        created = created()?.dateFormat(),
+        created = created().dateFormat(),
         displayDescription = displayDescription(),
     )
 }

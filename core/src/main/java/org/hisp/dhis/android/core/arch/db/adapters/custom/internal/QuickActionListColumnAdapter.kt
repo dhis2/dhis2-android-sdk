@@ -42,7 +42,7 @@ internal class QuickActionListColumnAdapter : JSONObjectListColumnAdapter<QuickA
 
     companion object {
         fun serialize(o: List<QuickAction>?): String? {
-            return o?.let { it.toDB().value }
+            return o?.toDB()?.value
         }
     }
 }

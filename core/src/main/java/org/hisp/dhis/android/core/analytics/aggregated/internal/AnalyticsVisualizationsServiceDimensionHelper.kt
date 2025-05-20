@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.GridDimension
 import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.composedUidOperandRegex
 import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.orgunitLevelRegex
 import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.tripleComposedUidOperandRegex
-import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.uidRegex
+import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.singleUidRegex
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.category.internal.CategoryCategoryOptionLinkStore
 import org.hisp.dhis.android.core.category.internal.CategoryStore
@@ -67,7 +67,7 @@ internal class AnalyticsVisualizationsServiceDimensionHelper(
                 periodDimension -> extractPeriodDimensionItems(dimension.items())
                 else -> {
                     dimension.id()?.let {
-                        if (uidRegex.matches(it)) {
+                        if (singleUidRegex.matches(it)) {
                             extractUidDimensionItems(dimension.items(), it)
                         } else {
                             emptyList()
@@ -197,7 +197,7 @@ internal class AnalyticsVisualizationsServiceDimensionHelper(
                 periodDimension -> Dimension.Period
                 orgUnitDimension -> Dimension.OrganisationUnit
                 else -> {
-                    if (uidRegex.matches(dimension.id()!!)) {
+                    if (singleUidRegex.matches(dimension.id()!!)) {
                         extractUidDimension(dimension)
                     } else {
                         null

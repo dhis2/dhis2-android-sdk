@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.analytics.trackerlinelist.internal
 
 import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.composedUidOperandRegex
 import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.tripleComposedUidOperandRegex
+import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.uidRegex
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListSortingItem
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationSorting
@@ -76,7 +77,7 @@ internal object TrackerLineListSortingMapper {
         return sortingItem.dimension() == "enrollmentDate" ||
             matchesRegexProgramUid(
                 sortingItem.dimension(),
-                "^(\\w{11})\\.enrollmentdate$".toRegex(),
+                "^($uidRegex)\\.enrollmentdate$".toRegex(),
                 lineListItem.programUid,
             )
     }
@@ -88,7 +89,7 @@ internal object TrackerLineListSortingMapper {
         return sortingItem.dimension() == "incidentDate" ||
             matchesRegexProgramUid(
                 sortingItem.dimension(),
-                "^(\\w{11})\\.incidentdate$".toRegex(),
+                "^($uidRegex)\\.incidentdate$".toRegex(),
                 lineListItem.programUid,
             )
     }
@@ -100,7 +101,7 @@ internal object TrackerLineListSortingMapper {
         return sortingItem.dimension() == "programStatus" ||
             matchesRegexProgramUid(
                 sortingItem.dimension(),
-                "^(\\w{11})\\.programstatus$".toRegex(),
+                "^($uidRegex)\\.programstatus$".toRegex(),
                 lineListItem.programUid,
             )
     }
@@ -112,7 +113,7 @@ internal object TrackerLineListSortingMapper {
         return sortingItem.dimension() == "ou" ||
             matchesRegexProgramUid(
                 sortingItem.dimension(),
-                "^(\\w{11})\\.ouname$".toRegex(),
+                "^($uidRegex)\\.ouname$".toRegex(),
                 lineListItem.programUid,
             )
     }
@@ -128,9 +129,9 @@ internal object TrackerLineListSortingMapper {
             return stage == lineListItem.programStage && dataElement == lineListItem.dataElement
         }
 
-        val tripeRegex = tripleComposedUidOperandRegex.find(sortingItem.dimension())
-        if (tripeRegex != null) {
-            val (_, stage, dataElement) = tripeRegex.destructured
+        val tripleRegex = tripleComposedUidOperandRegex.find(sortingItem.dimension())
+        if (tripleRegex != null) {
+            val (_, stage, dataElement) = tripleRegex.destructured
             return stage == lineListItem.programStage && dataElement == lineListItem.dataElement
         }
 

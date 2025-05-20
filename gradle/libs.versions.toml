@@ -4,6 +4,7 @@ dhis2AndroidSdkCode = "299"
 
 gradle = "8.6.1"
 kotlin = "2.0.20"
+ksp = "2.0.20-1.0.24"
 ktlint = "12.1.1"
 sonarqube = "3.3"
 detekt = "1.21.0"
@@ -65,6 +66,7 @@ gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "gr
 kotlin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 ktlint = { group = "org.jlleitschuh.gradle", name = "ktlint-gradle", version.ref = "ktlint" }
 
+symbol-processing-api = { group = "com.google.devtools.ksp", name = "symbol-processing-api", version.ref = "ksp" }
 desugaring = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "libraryDesugaring" }
 
 rx-java = { group = "io.reactivex.rxjava2", name = "rxjava", version.ref = "rxJava" }
@@ -135,5 +137,6 @@ dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 nexus-publish = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "nexusPublish" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 room = { id = "androidx.room", version.ref = "androidx-room" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 [bundles]

@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.dateRangeRegex
 import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.orgunitGroupRegex
 import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.orgunitLevelRegex
-import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.uidRegex
+import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.singleUidRegex
 import org.hisp.dhis.android.core.analytics.trackerlinelist.DataFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.DateFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.EnumFilter
@@ -129,7 +129,7 @@ internal class TrackerVisualizationMapper(
                         OrganisationUnitFilter.Group(groupUid)
                     }
 
-                    uidRegex.matches(uid) -> {
+                    singleUidRegex.matches(uid) -> {
                         OrganisationUnitFilter.Absolute(uid)
                     }
 

@@ -29,7 +29,8 @@
 package org.hisp.dhis.android.core.analytics.internal
 
 internal object AnalyticsRegex {
-    val uidRegex = "^\\w{11}\$".toRegex()
+    val uidRegex = "\\w{11}"
+    val singleUidRegex = "^\\w{11}\$".toRegex()
     val composedUidOperandRegex = "^(\\w{11})\\.(\\w{11})\$".toRegex()
     val tripleComposedUidOperandRegex = "^(\\w{11})\\.(\\w{11}).(\\w{11})\$".toRegex()
     val orgunitLevelRegex = "^LEVEL-(\\d+)\$".toRegex()

@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.persistence.common.daos
 
-import androidx.room.RawQuery
 import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.EntityWithUpdateQuery
@@ -38,12 +37,6 @@ internal abstract class ObjectWithoutUidDao<P>(
     tableName: String,
     override val builder: SQLStatementBuilder,
 ) : ObjectDao<P>(tableName, builder) where P : EntityDB<*>, P : EntityWithUpdateQuery {
-
-    @RawQuery
-    protected abstract suspend fun objectRawQuery(query: RoomRawQuery): P?
-
-    @RawQuery
-    protected abstract suspend fun objectListRawQuery(query: RoomRawQuery): List<P>
 
     suspend fun updateWhere(entity: P): Int {
         val updateQuery = entity.getUpdateQuery(entity)

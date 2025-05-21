@@ -58,9 +58,9 @@ internal abstract class ObjectDao<P : EntityDB<*>>(
         return intRawQuery(query)
     }
 
-    suspend fun deleteWhere(clause: String): Int {
+    suspend fun deleteWhere(clause: String): Boolean {
         val query = RoomRawQuery("DELETE FROM ${tableName} WHERE $clause;")
-        return intRawQuery(query)
+        return intRawQuery(query) > 0
     }
 
     suspend fun updateWhere(updates: ContentValues, whereClause: String): Int {

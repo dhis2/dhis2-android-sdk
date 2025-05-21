@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -32,37 +32,25 @@ import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilder
 
-internal abstract class IdentifiableObjectDao<P : EntityDB<*>>(
+internal abstract class LinkStoreDao<P : EntityDB<*>>(
     tableName: String,
     override val builder: SQLStatementBuilder,
+    private val parentColumn: String,
 ) : ObjectDao<P>(tableName, builder) {
 
-    suspend fun selectUids(): List<String> {
-        return stringListRawQuery(RoomRawQuery(builder.selectUids()))
+    suspend fun deleteLinksForParentUid(parentUid: String) {
+        val query = RoomRawQuery("DELETE FROM $tableName WHERE $parentColumn = '$parentUid'")
+        intRawQuery(query)
     }
 
-    suspend fun selectUidsWhere(whereClause: String): List<String> {
-        return stringListRawQuery(RoomRawQuery(builder.selectUidsWhere(whereClause)))
+
+    suspend fun selectDistinctChildren(childColumn: String): Set<String> {
+        val query = RoomRawQuery("SELECT DISTINCT $childColumn FROM $tableName")
+        return stringSetRawQuery(query)
     }
 
-    suspend fun selectUidsWhere(whereClause: String, orderByClause: String): List<String> {
-        return stringListRawQuery(RoomRawQuery(builder.selectUidsWhere(whereClause, orderByClause)))
-    }
-
-    suspend fun selectByUid(uid: String): P? {
-        return objectRawQuery(RoomRawQuery(builder.selectByUid()))
-    }
-
-    suspend fun selectByUids(uids: List<String>): List<P> {
-        val whereClause = RoomRawQuery("uid IN (${uids.joinToString(",") { "'$it'" }})")
-        return objectListRawQuery(whereClause)
-    }
-
-    suspend fun update(entity: P): Int {
-        return intRawQuery(RoomRawQuery(builder.update()))
-    }
-
-    suspend fun deleteById(uid: String): Int {
-        return intRawQuery(RoomRawQuery(builder.deleteById()))
+    suspend fun selectLinksForParentUid(parentUid: String): List<P> {
+        val query = RoomRawQuery("SELECT * FROM $tableName WHERE $parentColumn = '$parentUid'")
+        return objectListRawQuery(query)
     }
 }

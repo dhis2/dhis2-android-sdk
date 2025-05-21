@@ -40,37 +40,37 @@ internal abstract class ReadableDao<P : EntityDB<*>>(
 ) {
     suspend fun selectAll(): List<P> {
         val query = builder.selectAll()
-        return entityListRawQuery(query)
+        return objectListRawQuery(query)
     }
 
     suspend fun selectWhere(whereClause: String): List<P> {
         val query = builder.selectWhere(whereClause)
-        return entityListRawQuery(query)
+        return objectListRawQuery(query)
     }
 
     suspend fun selectWhere(filterWhereClause: String, orderByClause: String): List<P> {
         val query = builder.selectWhere(filterWhereClause, orderByClause)
-        return entityListRawQuery(query)
+        return objectListRawQuery(query)
     }
 
     suspend fun selectWhere(filterWhereClause: String, orderByClause: String, limit: Int): List<P> {
         val query = builder.selectWhere(filterWhereClause, orderByClause, limit)
-        return entityListRawQuery(query)
+        return objectListRawQuery(query)
     }
 
     suspend fun selectOneOrderedBy(orderingColumName: String, orderingType: SQLOrderType): P? {
         val query = builder.selectOneOrderedBy(orderingColumName, orderingType)
-        return entityListRawQuery(query).firstOrNull()
+        return objectListRawQuery(query).firstOrNull()
     }
 
     suspend fun selectOneWhere(whereClause: String): P? {
         val query = builder.selectWhere(whereClause, 1)
-        return entityListRawQuery(query).firstOrNull()
+        return objectListRawQuery(query).firstOrNull()
     }
 
     suspend fun selectFirst(): P? {
         val query = builder.selectAll()
-        return entityListRawQuery(query).firstOrNull()
+        return objectListRawQuery(query).firstOrNull()
     }
 
     suspend fun count(): Int {
@@ -89,7 +89,7 @@ internal abstract class ReadableDao<P : EntityDB<*>>(
     }
 
     @RawQuery
-    suspend abstract fun entityListRawQuery(sqlRawQuery: RoomRawQuery): List<P>
+    suspend abstract fun objectListRawQuery(sqlRawQuery: RoomRawQuery): List<P>
 
     @RawQuery
     protected abstract suspend fun intRawQuery(sqlRawQuery: RoomRawQuery): Int

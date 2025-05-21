@@ -26,51 +26,35 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.common.stores
+package org.hisp.dhis.android.persistence.common.daos
 
-import android.content.ContentValues
-import org.hisp.dhis.android.core.common.CoreObject
+import androidx.room.RawQuery
+import androidx.room.RoomRawQuery
+import org.hisp.dhis.android.core.common.DataColumns
+import org.hisp.dhis.android.core.common.DeletableDataColumns
+import org.hisp.dhis.android.core.common.IdentifiableColumns
+import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.persistence.common.EntityDB
-import org.hisp.dhis.android.persistence.common.MapperToDB
-import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilder
 
-internal open class ObjectStoreImpl<D: CoreObject, P : EntityDB<D>>(
-    protected val objectDao: ObjectDao<P>,
-    protected val mapper: MapperToDB<D, P>,
-) : ReadableStoreImpl<D, P>(objectDao), MapperToDB<D, P> by mapper {
+internal abstract class IdentifiableDeletableDataObjectStoreDao<P : EntityDB<*>>(
+    tableName: String,
+    override val builder: SQLStatementBuilder,
+) : IdentifiableDataObjectDao<P>(tableName, builder) {
 
-    suspend fun selectStringColumnsWhereClause(column: String, clause: String): List<String> {
-        return objectDao.selectStringColumn(column, clause)
+    suspend fun setDeleted(uid: String): Int {
+        val query = RoomRawQuery(
+            "UPDATE $tableName SET ${DeletableDataColumns.DELETED} = 1 " +
+                "WHERE ${IdentifiableColumns.UID} = '$uid'"
+        )
+        return intRawQuery(query)
     }
 
-    open suspend fun insert(domainObj: D): Long {
-        return objectDao.insert(domainObj.toDB())
+    suspend fun selectSyncStateWhere(where: String): List<State> {
+        val query = RoomRawQuery("SELECT ${DataColumns.SYNC_STATE} FROM $tableName WHERE $where")
+        return stateListRawQuery(query)
     }
 
-    suspend fun insert(objects: Collection<D>) {
-        objectDao.insert(objects.map { it.toDB() })
-    }
-
-    suspend fun delete(): Int {
-        return objectDao.delete()
-    }
-
-    suspend fun deleteById(domainObj: D): Boolean {
-        return domainObj.id()?.let { objectDao.deleteById(it) > 0 } ?: false
-    }
-
-    suspend fun deleteWhere(clause: String): Boolean {
-        return objectDao.deleteWhere(clause)
-    }
-
-    suspend fun updateWhere(updates: ContentValues, whereClause: String): Int {
-        return objectDao.updateWhere(updates, whereClause)
-    }
-
-    suspend fun deleteWhereIfExists(whereClause: String) {
-        deleteWhere(whereClause)
-    }
-
-    val isReady: Boolean
-        get() = true // TODO: Check what to do with this
+    @RawQuery
+    protected abstract suspend fun stateListRawQuery(query: RoomRawQuery): List<State>
 }

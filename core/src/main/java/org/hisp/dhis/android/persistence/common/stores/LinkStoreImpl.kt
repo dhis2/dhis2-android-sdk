@@ -28,53 +28,50 @@
 
 package org.hisp.dhis.android.persistence.common.stores
 
+import android.database.sqlite.SQLiteConstraintException
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
-import org.hisp.dhis.android.core.common.DataObject
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface
-import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.MapperToDB
-import org.hisp.dhis.android.persistence.common.daos.IdentifiableDataObjectDao
+import org.hisp.dhis.android.persistence.common.daos.LinkStoreDao
 
-
-internal open class IdentifiableDataObjectStoreImpl<D, P : EntityDB<D>>(
-    protected val identifiableDataObjectDao: IdentifiableDataObjectDao<P>,
+internal open class LinkStoreImpl<D : CoreObject, P : EntityDB<D>>(
+    protected val linkStoreDao: LinkStoreDao<P>,
     mapper: MapperToDB<D, P>,
-) : IdentifiableObjectStoreImpl<D, P>(identifiableDataObjectDao, mapper)
-    where D : DataObject, D : ObjectWithUidInterface {
+) : ObjectStoreImpl<D, P>(linkStoreDao, mapper) {
 
     @Throws(RuntimeException::class)
-    suspend fun setSyncState(uid: String, state: State): Int {
-        CollectionsHelper.isNull(uid)
-        return identifiableDataObjectDao.setSyncState(uid, state)
+    suspend fun insertIfNotExists(domainObj: D): HandleAction {
+        return try {
+            insert(domainObj)
+            HandleAction.Insert
+        } catch (e: SQLiteConstraintException) {
+            HandleAction.NoAction
+        }
     }
 
     @Throws(RuntimeException::class)
-    suspend fun setSyncState(uids: List<String>, state: State): Int {
-        val nonNullUids = uids.filterNotNull()
-        return identifiableDataObjectDao.setSyncState(nonNullUids, state)
+    suspend fun deleteLinksForMasterUid(parentUid: String) {
+        CollectionsHelper.isNull(parentUid)
+        linkStoreDao.deleteLinksForParentUid(parentUid)
     }
 
     @Throws(RuntimeException::class)
-    suspend fun setSyncStateIfUploading(uid: String, state: State): Int {
-        CollectionsHelper.isNull(uid)
-        return identifiableDataObjectDao.setSyncStateIfUploading(uid, state)
+    suspend fun deleteAllLinks(): Int {
+        return linkStoreDao.delete()
     }
 
     @Throws(RuntimeException::class)
-    suspend fun getSyncState(uid: String): State? {
-        CollectionsHelper.isNull(uid)
-        return identifiableDataObjectDao.getSyncState(uid)
+    suspend fun selectDistinctSlaves(childColumn: String): Set<String> {
+        CollectionsHelper.isNull(childColumn)
+        return linkStoreDao.selectDistinctChildren(childColumn)
     }
 
     @Throws(RuntimeException::class)
-    suspend fun exists(uid: String): Boolean {
-        CollectionsHelper.isNull(uid)
-        return identifiableDataObjectDao.exists(uid)
+    suspend fun selectLinksForMasterUid(parentUid: String): List<D> {
+        CollectionsHelper.isNull(parentUid)
+        return linkStoreDao.selectLinksForParentUid(parentUid).map { it.toDomain() }
     }
 
-    @Throws(RuntimeException::class)
-    suspend fun getUploadableSyncStatesIncludingError(): List<D> {
-        return identifiableDataObjectDao.getUploadableSyncStatesIncludingError().map { it.toDomain() }
-    }
 }

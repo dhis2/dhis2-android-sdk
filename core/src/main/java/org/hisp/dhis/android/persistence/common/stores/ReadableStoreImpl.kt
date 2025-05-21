@@ -61,7 +61,7 @@ internal open class ReadableStoreImpl<D, P : EntityDB<D>>(
     }
 
     suspend fun selectRawQuery(sqlRawQuery: String): List<D> {
-        val dbEntities = readableDao.entityListRawQuery(RoomRawQuery(sqlRawQuery))
+        val dbEntities = readableDao.objectListRawQuery(RoomRawQuery(sqlRawQuery))
         return dbEntities.map { it.toDomain() }
     }
 

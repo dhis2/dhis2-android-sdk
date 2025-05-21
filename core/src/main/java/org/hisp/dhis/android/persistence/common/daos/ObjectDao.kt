@@ -75,5 +75,12 @@ internal abstract class ObjectDao<P : EntityDB<*>>(
     }
 
     @RawQuery
-    suspend abstract fun stringListRawQuery(sqlRawQuery: RoomRawQuery): List<String>
+    protected abstract suspend fun objectRawQuery(query: RoomRawQuery): P?
+
+    @RawQuery
+    suspend abstract fun stringListRawQuery(query: RoomRawQuery): List<String>
+
+    @RawQuery
+    protected abstract suspend fun stringSetRawQuery(query: RoomRawQuery): Set<String>
+
 }

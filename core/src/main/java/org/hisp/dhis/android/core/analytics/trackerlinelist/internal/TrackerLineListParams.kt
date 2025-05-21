@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.analytics.trackerlinelist.internal
 
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
+import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListSortingItem
 import org.hisp.dhis.android.core.arch.repositories.paging.PageConfig
 import org.hisp.dhis.android.core.util.replaceOrPush
 
@@ -40,6 +41,7 @@ internal data class TrackerLineListParams(
     val trackedEntityTypeId: String?,
     val columns: List<TrackerLineListItem>,
     val filters: List<TrackerLineListItem>,
+    val sorting: List<TrackerLineListSortingItem>,
     val pageConfig: PageConfig = DefaultPaging,
 ) {
     val allItems = columns + filters
@@ -49,6 +51,7 @@ internal data class TrackerLineListParams(
             outputType = other.outputType ?: outputType,
             programId = other.programId ?: programId,
             programStageId = other.programStageId ?: programStageId,
+            sorting = other.sorting.takeIf { it.isNotEmpty() } ?: sorting,
         ).run {
             other.columns.fold(this) { params, item -> params.updateInColumns(item) }
         }.run {

@@ -35,6 +35,7 @@ import androidx.annotation.Nullable;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.TrackerVisualizationSortingListColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.TrackerVisualizationOutputTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.TrackerVisualizationTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
@@ -82,6 +83,10 @@ public abstract class TrackerVisualization extends BaseIdentifiableObject implem
     @ColumnAdapter(IgnoreTrackerVisualizationDimensionListColumnAdapter.class)
     public abstract List<TrackerVisualizationDimension> filters();
 
+    @Nullable
+    @ColumnAdapter(TrackerVisualizationSortingListColumnAdapter.class)
+    public abstract List<TrackerVisualizationSorting> sorting();
+
     public static Builder builder() {
         return new $$AutoValue_TrackerVisualization.Builder();
     }
@@ -114,6 +119,8 @@ public abstract class TrackerVisualization extends BaseIdentifiableObject implem
         public abstract Builder columns(List<TrackerVisualizationDimension> columns);
 
         public abstract Builder filters(List<TrackerVisualizationDimension> filters);
+
+        public abstract Builder sorting(List<TrackerVisualizationSorting> sorting);
 
         public abstract TrackerVisualization build();
     }

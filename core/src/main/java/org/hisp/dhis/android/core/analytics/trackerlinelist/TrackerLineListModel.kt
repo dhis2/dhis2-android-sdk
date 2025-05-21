@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.analytics.trackerlinelist
 import org.hisp.dhis.android.core.analytics.internal.AnalyticsModelHelper.eventDataElementId
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod
+import org.hisp.dhis.android.core.common.SortingDirection
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
 
@@ -151,3 +152,8 @@ internal object Label {
     const val ProgramStatus = "programStatusItem"
     const val EventStatus = "eventStatusItem"
 }
+
+data class TrackerLineListSortingItem(
+    val dimension: TrackerLineListItem,
+    val direction: SortingDirection,
+)

@@ -29,10 +29,11 @@
 package org.hisp.dhis.android.core.analytics.internal
 
 internal object AnalyticsRegex {
-    val uidRegex = "^\\w{11}\$".toRegex()
-    val composedUidOperandRegex = "^(\\w{11})\\.(\\w{11})\$".toRegex()
-    val tripleComposedUidOperandRegex = "^(\\w{11})\\.(\\w{11}).(\\w{11})\$".toRegex()
-    val orgunitLevelRegex = "^LEVEL-(\\d+)\$".toRegex()
-    val orgunitGroupRegex = "^OU_GROUP-(\\w{11})\$".toRegex()
-    val dateRangeRegex = "^(\\d{4}-\\d{1,2}-\\d{1,2})_(\\d{4}-\\d{1,2}-\\d{1,2})\$".toRegex()
+    const val uidRegex = "\\w{11}"
+    val singleUidRegex = "^$uidRegex$".toRegex()
+    val composedUidOperandRegex = "^($uidRegex)\\.($uidRegex)$".toRegex()
+    val tripleComposedUidOperandRegex = "^($uidRegex)\\.($uidRegex)\\.($uidRegex)$".toRegex()
+    val orgunitLevelRegex = "^LEVEL-(\\d+)$".toRegex()
+    val orgunitGroupRegex = "^OU_GROUP-($uidRegex)$".toRegex()
+    val dateRangeRegex = "^(\\d{4}-\\d{1,2}-\\d{1,2})_(\\d{4}-\\d{1,2}-\\d{1,2})$".toRegex()
 }

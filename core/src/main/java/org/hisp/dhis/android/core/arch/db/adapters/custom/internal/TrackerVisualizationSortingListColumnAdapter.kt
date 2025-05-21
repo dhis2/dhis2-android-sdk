@@ -27,11 +27,9 @@
  */
 package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
-import kotlinx.serialization.builtins.ListSerializer
-import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationSorting
-import org.hisp.dhis.android.core.visualization.TrackerVisualizationSortingDB
-import org.hisp.dhis.android.core.visualization.toDao
+import org.hisp.dhis.android.persistence.visualization.TrackerVisualizationSortingListDB
+import org.hisp.dhis.android.persistence.visualization.toDB
 
 internal class TrackerVisualizationSortingListColumnAdapter :
     JSONObjectListColumnAdapter<TrackerVisualizationSorting>() {
@@ -40,19 +38,12 @@ internal class TrackerVisualizationSortingListColumnAdapter :
         TrackerVisualizationSortingListColumnAdapter.serialize(o)
 
     override fun deserialize(str: String): List<TrackerVisualizationSorting> {
-        return KotlinxJsonParser.instance.decodeFromString<List<TrackerVisualizationSortingDB>>(
-            str,
-        ).map { it.toDomain() }
+        return TrackerVisualizationSortingListDB(str).toDomain()
     }
 
     companion object {
         fun serialize(o: List<TrackerVisualizationSorting>?): String? {
-            return o?.let {
-                KotlinxJsonParser.instance.encodeToString(
-                    ListSerializer(TrackerVisualizationSortingDB.serializer()),
-                    it.map { it.toDao() },
-                )
-            }
+            return o?.toDB()?.value
         }
     }
 }

@@ -26,10 +26,33 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.visualization
+package org.hisp.dhis.android.persistence.visualization
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.common.SortingDirection
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationSorting
+
+@JvmInline
+internal value class TrackerVisualizationSortingListDB(
+    val value: String,
+) {
+    fun toDomain(): List<TrackerVisualizationSorting> {
+        return value.let {
+            KotlinxJsonParser.instance.decodeFromString<List<TrackerVisualizationSortingDB>>(it).map { it.toDomain() }
+        }
+    }
+}
+
+internal fun List<TrackerVisualizationSorting>.toDB(): TrackerVisualizationSortingListDB {
+    return TrackerVisualizationSortingListDB(
+        KotlinxJsonParser.instance.encodeToString(
+            ListSerializer(TrackerVisualizationSortingDB.serializer()),
+            this.toDBSerializable(),
+        ),
+    )
+}
 
 @Serializable
 internal data class TrackerVisualizationSortingDB(
@@ -44,9 +67,11 @@ internal data class TrackerVisualizationSortingDB(
     }
 }
 
-internal fun TrackerVisualizationSorting.toDao(): TrackerVisualizationSortingDB {
-    return TrackerVisualizationSortingDB(
-        dimension = this.dimension(),
-        direction = this.direction().name,
-    )
+internal fun List<TrackerVisualizationSorting>.toDBSerializable(): List<TrackerVisualizationSortingDB> {
+    return this.map {
+        TrackerVisualizationSortingDB(
+            dimension = it.dimension(),
+            direction = it.direction().name,
+        )
+    }
 }

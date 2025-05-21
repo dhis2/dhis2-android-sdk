@@ -66,6 +66,7 @@ internal data class TrackerVisualizationDB(
     val program: String?,
     val programStage: String?,
     val trackedEntityType: String?,
+    val sorting: TrackerVisualizationSortingListDB?,
 ) : EntityDB<TrackerVisualization>, BaseIdentifiableObjectDB {
     override fun toDomain(): TrackerVisualization {
         return TrackerVisualization.builder().apply {
@@ -78,6 +79,7 @@ internal data class TrackerVisualizationDB(
             program(ObjectWithUid.create(program))
             programStage(ObjectWithUid.create(programStage))
             trackedEntityType(ObjectWithUid.create(trackedEntityType))
+            sorting(sorting?.toDomain())
         }.build()
     }
 }
@@ -97,5 +99,6 @@ internal fun TrackerVisualization.toDB(): TrackerVisualizationDB {
         program = this.program()?.uid(),
         programStage = this.programStage()?.uid(),
         trackedEntityType = this.trackedEntityType()?.uid(),
+        sorting = this.sorting()?.toDB(),
     )
 }

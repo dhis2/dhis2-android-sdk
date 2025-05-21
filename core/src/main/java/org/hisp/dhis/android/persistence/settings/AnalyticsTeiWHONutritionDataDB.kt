@@ -1,0 +1,77 @@
+package org.hisp.dhis.android.persistence.settings
+
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionData
+import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionGender
+import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionGenderValues
+import org.hisp.dhis.android.core.settings.WHONutritionChartType
+import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeDB
+
+@Entity(
+    tableName = "AnalyticsTeiWHONutritionData",
+    foreignKeys = [
+        ForeignKey(
+            entity = TrackedEntityAttributeDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["genderAttribute"],
+            onDelete = ForeignKey.CASCADE,
+            deferred = true,
+        ),
+        ForeignKey(
+            entity = AnalyticsTeiSettingDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["teiSetting"],
+            onDelete = ForeignKey.CASCADE,
+            deferred = true,
+        ),
+    ],
+    indices = [
+        Index(value = ["genderAttribute"]),
+        Index(value = ["teiSetting"]),
+    ],
+)
+internal data class AnalyticsTeiWHONutritionDataDB(
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "_id")
+    val id: Int? = 0,
+    val teiSetting: String,
+    val chartType: String?,
+    val genderAttribute: String,
+    val genderFemale: String?,
+    val genderMale: String?,
+) : EntityDB<AnalyticsTeiWHONutritionData> {
+
+    override fun toDomain(): AnalyticsTeiWHONutritionData {
+        return AnalyticsTeiWHONutritionData.builder().apply {
+            id(id?.toLong())
+            teiSetting(teiSetting)
+            chartType?.let { chartType(WHONutritionChartType.valueOf(it)) }
+            gender(
+                AnalyticsTeiWHONutritionGender.builder()
+                    .attribute(genderAttribute)
+                    .values(
+                        AnalyticsTeiWHONutritionGenderValues.builder()
+                            .female(genderFemale)
+                            .male(genderMale)
+                            .build(),
+                    )
+                    .build(),
+            )
+        }.build()
+    }
+}
+
+internal fun AnalyticsTeiWHONutritionData.toDB(): AnalyticsTeiWHONutritionDataDB {
+    return AnalyticsTeiWHONutritionDataDB(
+        teiSetting = teiSetting()!!,
+        chartType = chartType()?.name,
+        genderAttribute = gender().attribute(),
+        genderFemale = gender().values().female(),
+        genderMale = gender().values().male(),
+    )
+}

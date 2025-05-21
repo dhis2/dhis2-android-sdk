@@ -56,7 +56,7 @@ public abstract class DatabaseAccount {
     public abstract State syncState();
 
     @Nullable
-    public abstract DatabaseAccountImportDB importDB();
+    public abstract DatabaseAccountImport importDB();
 
     public abstract Builder toBuilder();
 
@@ -77,7 +77,7 @@ public abstract class DatabaseAccount {
 
         public abstract Builder databaseCreationDate(String databaseCreationDate);
 
-        public abstract Builder importDB(DatabaseAccountImportDB importDB);
+        public abstract Builder importDB(DatabaseAccountImport importDB);
 
         public abstract Builder syncState(State syncState);
 

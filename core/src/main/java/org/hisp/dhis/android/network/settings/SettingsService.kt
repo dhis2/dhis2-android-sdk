@@ -73,4 +73,10 @@ internal class SettingsService(private val client: HttpServiceClient) {
             url(url)
         }
     }
+
+    suspend fun customIntents(url: String): CustomIntentsDTO {
+        return client.get {
+            url(url)
+        }
+    }
 }

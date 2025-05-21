@@ -1,0 +1,61 @@
+package org.hisp.dhis.android.persistence.attribute
+
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.attribute.ProgramAttributeValueLink
+import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.persistence.program.ProgramDB
+
+@Entity(
+    tableName = "ProgramAttributeValueLink",
+    foreignKeys = [
+        ForeignKey(
+            entity = ProgramDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["program"],
+            onDelete = ForeignKey.CASCADE,
+            deferred = true,
+        ),
+        ForeignKey(
+            entity = AttributeDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["attribute"],
+            onDelete = ForeignKey.CASCADE,
+            deferred = true,
+        ),
+    ],
+    indices = [
+        Index(value = ["program", "attribute"], unique = true),
+        Index(value = ["program"]),
+        Index(value = ["attribute"]),
+    ],
+)
+internal data class ProgramAttributeValueLinkDB(
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "_id")
+    val id: Int? = 0,
+    val program: String,
+    val attribute: String,
+    val value: String?,
+) : EntityDB<ProgramAttributeValueLink> {
+
+    override fun toDomain(): ProgramAttributeValueLink {
+        return ProgramAttributeValueLink.builder()
+            .id(id?.toLong())
+            .program(program)
+            .attribute(attribute)
+            .value(value)
+            .build()
+    }
+}
+
+internal fun ProgramAttributeValueLink.toDB(): ProgramAttributeValueLinkDB {
+    return ProgramAttributeValueLinkDB(
+        program = program()!!,
+        attribute = attribute()!!,
+        value = value(),
+    )
+}

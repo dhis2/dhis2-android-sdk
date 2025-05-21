@@ -39,6 +39,7 @@ internal class SettingModuleDownloader(
     private val userSettingsCall: UserSettingsCall,
     private val appearanceSettingCall: AppearanceSettingCall,
     private val latestAppVersionCall: LatestAppVersionCall,
+    private val customIntentsCall: CustomIntentsCall,
 ) : UntypedModuleDownloaderCoroutines {
 
     override suspend fun downloadMetadata() {
@@ -53,5 +54,6 @@ internal class SettingModuleDownloader(
         synchronizationSettingCall.download(false)
         appearanceSettingCall.download(false)
         analyticsSettingCall.download(false)
+        customIntentsCall.download(false)
     }
 }

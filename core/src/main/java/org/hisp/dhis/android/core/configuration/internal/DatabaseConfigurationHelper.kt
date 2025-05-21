@@ -57,7 +57,7 @@ internal class DatabaseConfigurationHelper(
     ): DatabasesConfiguration {
         val dbName = databaseNameGenerator.getDatabaseName(serverUrl, username, encrypt)
         val importDb = importStatus?.let {
-            DatabaseAccountImportDB.builder()
+            DatabaseAccountImport.builder()
                 .status(importStatus)
                 .protectedDbName("$dbName.protected")
                 .build()

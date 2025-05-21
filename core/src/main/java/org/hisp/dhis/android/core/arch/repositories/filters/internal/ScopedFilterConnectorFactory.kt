@@ -51,11 +51,11 @@ internal class ScopedFilterConnectorFactory<R : BaseRepository, S : BaseScope>(
         return BoolFilterConnector { bool: Boolean -> repositoryFactory.updated(baseScopeFactory.updated(bool)) }
     }
 
-    fun eqLikeItemC(
+    fun eqLikeInItemC(
         key: String,
         baseScopeFactory: BaseScopeFactory<S, RepositoryScopeFilterItem>,
-    ): EqLikeItemFilterConnector<R> {
-        return EqLikeItemFilterConnector(key) { item: RepositoryScopeFilterItem ->
+    ): EqLikeInItemFilterConnector<R> {
+        return EqLikeInItemFilterConnector(key) { item: RepositoryScopeFilterItem ->
             repositoryFactory.updated(
                 baseScopeFactory.updated(item),
             )

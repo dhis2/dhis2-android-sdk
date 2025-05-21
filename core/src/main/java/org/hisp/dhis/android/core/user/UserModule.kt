@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.user
 
 import io.reactivex.Completable
 import io.reactivex.Single
+import org.hisp.dhis.android.core.user.loginconfig.LoginConfigObjectRepository
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectHandler
 
 @Suppress("TooManyFunctions")
@@ -46,6 +47,7 @@ interface UserModule {
     fun isLogged(): Single<Boolean>
     fun blockingIsLogged(): Boolean
     fun openIdHandler(): OpenIDConnectHandler
+    fun loginConfig(serverUrl: String): LoginConfigObjectRepository
 
     @Deprecated(message = "Use user() instead.")
     fun userCredentials(): UserCredentialsObjectRepository

@@ -30,11 +30,11 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DateFilterPeriodColumnAdapter
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringSetColumnAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
 import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo
 import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
 import org.koin.core.annotation.Singleton
@@ -74,10 +74,16 @@ internal class AttributeValueFilterStoreImpl(
 
         private val WHERE_UPDATE_BINDER = WhereStatementBinder { _: AttributeValueFilter, _ -> }
         private val WHERE_DELETE_BINDER = WhereStatementBinder { _: AttributeValueFilter, _ -> }
+    }
 
-        val CHILD_PROJECTION = SingleParentChildProjection(
-            ItemFilterTableInfo.TABLE_INFO,
-            ItemFilterTableInfo.Columns.TRACKED_ENTITY_INSTANCE_FILTER,
-        )
+    override fun getAttributeValueFilterForTrackedEntityInstanceFilter(trackedEntityInstanceFilterUid: String): List<AttributeValueFilter> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(
+                ItemFilterTableInfo.Columns.TRACKED_ENTITY_INSTANCE_FILTER,
+                trackedEntityInstanceFilterUid
+            )
+            .build()
+        val selectStatement = builder.selectWhere(whereClause)
+        return selectRawQuery(selectStatement)
     }
 }

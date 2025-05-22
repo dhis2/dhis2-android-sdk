@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.dataset.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
@@ -55,5 +56,13 @@ internal class DataSetElementStoreImpl(
             w.bind(2, getUidOrNull(o.dataElement()))
             w.bind(3, getUidOrNull(o.categoryCombo()))
         }
+    }
+
+    override fun getDataSetElementForDataSet(dataSetUid: String): List<DataSetElement> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(DataSetElementLinkTableInfo.Columns.DATA_SET, dataSetUid)
+            .build()
+        val selectStatement = builder.selectWhere(whereClause)
+        return selectRawQuery(selectStatement)
     }
 }

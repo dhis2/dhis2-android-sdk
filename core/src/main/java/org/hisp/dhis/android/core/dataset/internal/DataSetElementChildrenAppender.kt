@@ -27,38 +27,23 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
-import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.singleParentChildStore
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.dataset.DataSet
-import org.hisp.dhis.android.core.dataset.DataSetElement
-import org.hisp.dhis.android.core.dataset.DataSetElementLinkTableInfo
 
 internal class DataSetElementChildrenAppender private constructor(
-    private val childStore: SingleParentChildStore<DataSet, DataSetElement>,
+    private val childStore: DataSetElementStore,
 ) : ChildrenAppender<DataSet>() {
     override fun appendChildren(m: DataSet): DataSet {
-        val builder = m.toBuilder()
-        builder.dataSetElements(childStore.getChildren(m))
-        return builder.build()
+        val children = childStore.getDataSetElementForDataSet(m.uid())
+        return m.toBuilder()
+            .dataSetElements(children)
+            .build()
     }
 
     companion object {
-        private val CHILD_PROJECTION = SingleParentChildProjection(
-            DataSetElementLinkTableInfo.TABLE_INFO,
-            DataSetElementLinkTableInfo.Columns.DATA_SET,
-        )
-
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<DataSet> {
-            return DataSetElementChildrenAppender(
-                singleParentChildStore(
-                    databaseAdapter,
-                    CHILD_PROJECTION,
-                ) { cursor: Cursor -> DataSetElement.create(cursor) },
-            )
+            return DataSetElementChildrenAppender(DataSetElementStoreImpl(databaseAdapter))
         }
     }
 }

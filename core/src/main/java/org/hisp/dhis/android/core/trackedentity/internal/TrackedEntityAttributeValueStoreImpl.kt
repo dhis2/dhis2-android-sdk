@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinde
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper.asStringList
 import org.hisp.dhis.android.core.common.DataColumns
@@ -186,6 +185,17 @@ internal class TrackedEntityAttributeValueStoreImpl(
         )
     }
 
+    override fun getTrackedEntityAttributeValueForTrackedEntityInstance(trackedEntityInstanceUid: String): List<TrackedEntityAttributeValue> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(
+                TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
+                trackedEntityInstanceUid,
+            )
+            .build()
+        val selectStatement = builder.selectWhere(whereClause)
+        return selectRawQuery(selectStatement)
+    }
+
     private fun trackedEntityAttributeValueListFromQuery(query: String): List<TrackedEntityAttributeValue> {
         val trackedEntityAttributeValueList: MutableList<TrackedEntityAttributeValue> = ArrayList()
         val cursor = databaseAdapter.rawQuery(query)
@@ -213,10 +223,5 @@ internal class TrackedEntityAttributeValueStoreImpl(
                 w.bind(1, o.trackedEntityAttribute())
                 w.bind(2, o.trackedEntityInstance())
             }
-
-        val CHILD_PROJECTION = SingleParentChildProjection(
-            TrackedEntityAttributeValueTableInfo.TABLE_INFO,
-            TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
-        )
     }
 }

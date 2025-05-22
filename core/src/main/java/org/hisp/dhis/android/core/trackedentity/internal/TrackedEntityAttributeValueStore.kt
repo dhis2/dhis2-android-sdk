@@ -53,4 +53,8 @@ internal interface TrackedEntityAttributeValueStore : ObjectWithoutUidStore<Trac
     fun removeDeletedAttributeValuesByInstance(trackedEntityInstanceUid: String)
 
     fun setSyncStateByInstance(trackedEntityInstanceUid: String, syncState: State)
+
+    fun getTrackedEntityAttributeValueForTrackedEntityInstance(
+        trackedEntityInstanceUid: String,
+    ): List<TrackedEntityAttributeValue>
 }

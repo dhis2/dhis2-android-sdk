@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.note.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStoreImpl
@@ -68,5 +69,13 @@ internal class NoteStoreImpl(
             NoteTableInfo.TABLE_INFO,
             NoteTableInfo.Columns.EVENT,
         )
+    }
+
+    override fun getNotesForEvent(eventUid: String): List<Note> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(NoteTableInfo.Columns.EVENT, eventUid)
+            .build()
+        val selectStatement = builder.selectWhere(whereClause)
+        return selectRawQuery(selectStatement)
     }
 }

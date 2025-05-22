@@ -29,9 +29,11 @@ package org.hisp.dhis.android.core.dataset.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo
 import org.koin.core.annotation.Singleton
@@ -53,5 +55,13 @@ internal class DataSetOrganisationUnitLinkStoreImpl(
             w.bind(1, o.dataSet())
             w.bind(2, o.organisationUnit())
         }
+    }
+
+    override fun getLinksForOrganisationUnit(orgUnitUid: String): List<ObjectWithUid> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT, orgUnitUid)
+            .build()
+        val selectStatement = builder.selectWhere(whereClause)
+        return selectRawQuery(selectStatement).map { ObjectWithUid.create(it.dataSet()) }
     }
 }

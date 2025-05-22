@@ -29,9 +29,11 @@ package org.hisp.dhis.android.core.option.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.option.OptionGroupOptionLink
 import org.hisp.dhis.android.core.option.OptionGroupOptionLinkTableInfo
 import org.koin.core.annotation.Singleton
@@ -53,5 +55,13 @@ internal class OptionGroupOptionLinkStoreImpl(
             w.bind(1, o.optionGroup())
             w.bind(2, o.option())
         }
+    }
+
+    override fun getLinksForOptionGroup(optionGroupUid: String): List<ObjectWithUid> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(OptionGroupOptionLinkTableInfo.Columns.OPTION_GROUP, optionGroupUid)
+            .build()
+        val selectStatement = builder.selectWhere(whereClause)
+        return selectRawQuery(selectStatement).map { ObjectWithUid.create(it.option()) }
     }
 }

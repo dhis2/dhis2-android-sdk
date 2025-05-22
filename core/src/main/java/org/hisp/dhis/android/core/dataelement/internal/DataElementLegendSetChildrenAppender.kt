@@ -28,30 +28,25 @@
 package org.hisp.dhis.android.core.dataelement.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidChildStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.core.legendset.DataElementLegendSetLinkTableInfo
+import org.hisp.dhis.android.core.legendset.internal.DataElementLegendSetLinkStore
+import org.hisp.dhis.android.core.legendset.internal.DataElementLegendSetLinkStoreImpl
 
 internal class DataElementLegendSetChildrenAppender private constructor(
-    private val linkChildStore: ObjectWithUidChildStore<DataElement>,
+    private val linkStore: DataElementLegendSetLinkStore,
 ) : ChildrenAppender<DataElement>() {
 
     override fun appendChildren(m: DataElement): DataElement {
         return m.toBuilder()
-            .legendSets(linkChildStore.getChildren(m))
+            .legendSets(linkStore.getLinksForDataElement(m.uid()))
             .build()
     }
 
     companion object {
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<DataElement> {
             return DataElementLegendSetChildrenAppender(
-                objectWithUidChildStore(
-                    databaseAdapter,
-                    DataElementLegendSetLinkTableInfo.TABLE_INFO,
-                    DataElementLegendSetLinkTableInfo.CHILD_PROJECTION,
-                ),
+                DataElementLegendSetLinkStoreImpl(databaseAdapter),
             )
         }
     }

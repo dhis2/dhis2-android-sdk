@@ -29,6 +29,9 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetLink
 
-internal interface TrackedEntityAttributeLegendSetLinkStore : LinkStore<TrackedEntityAttributeLegendSetLink>
+internal interface TrackedEntityAttributeLegendSetLinkStore : LinkStore<TrackedEntityAttributeLegendSetLink> {
+    fun getLinksForTrackedEntityAttribute(trackedEntityAttributeUid: String): List<ObjectWithUid>
+}

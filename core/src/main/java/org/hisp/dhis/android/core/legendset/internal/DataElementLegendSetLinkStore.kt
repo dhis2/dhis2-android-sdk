@@ -29,6 +29,9 @@
 package org.hisp.dhis.android.core.legendset.internal
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.legendset.DataElementLegendSetLink
 
-internal interface DataElementLegendSetLinkStore : LinkStore<DataElementLegendSetLink>
+internal interface DataElementLegendSetLinkStore : LinkStore<DataElementLegendSetLink> {
+    fun getLinksForDataElement(dataElementUid: String): List<ObjectWithUid>
+}

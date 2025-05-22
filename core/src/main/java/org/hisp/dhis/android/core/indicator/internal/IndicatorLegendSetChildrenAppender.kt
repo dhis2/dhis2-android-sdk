@@ -25,35 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.indicator.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.indicator.Indicator
-import org.hisp.dhis.android.core.indicator.IndicatorLegendSetLinkTableInfo
+import org.hisp.dhis.android.core.legendset.internal.IndicatorLegendSetLinkStore
+import org.hisp.dhis.android.core.legendset.internal.IndicatorLegendSetLinkStoreImpl
 
 internal class IndicatorLegendSetChildrenAppender(
-    private val linkChildStore: ObjectWithUidChildStore<Indicator>,
+    private val linkStore: IndicatorLegendSetLinkStore,
 ) : ChildrenAppender<Indicator>() {
-
-    override fun appendChildren(indicator: Indicator): Indicator {
-        val builder = indicator.toBuilder()
-        builder.legendSets(linkChildStore.getChildren(indicator))
-        return builder.build()
+    override fun appendChildren(m: Indicator): Indicator {
+        return m.toBuilder()
+            .legendSets(linkStore.getLinksForIndicator(m.uid()))
+            .build()
     }
 
     companion object {
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<Indicator> {
-            return IndicatorLegendSetChildrenAppender(
-                StoreFactory.objectWithUidChildStore(
-                    databaseAdapter,
-                    IndicatorLegendSetLinkTableInfo.TABLE_INFO,
-                    IndicatorLegendSetLinkTableInfo.CHILD_PROJECTION,
-                ),
-            )
+            return IndicatorLegendSetChildrenAppender(IndicatorLegendSetLinkStoreImpl(databaseAdapter))
         }
     }
 }

@@ -30,9 +30,11 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetLink
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetLinkTableInfo
 import org.koin.core.annotation.Singleton
@@ -56,5 +58,16 @@ internal class TrackedEntityAttributeLegendSetLinkStoreImpl(
             w.bind(2, o.legendSet())
             w.bind(3, o.sortOrder())
         }
+    }
+
+    override fun getLinksForTrackedEntityAttribute(trackedEntityAttributeUid: String): List<ObjectWithUid> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(
+                TrackedEntityAttributeLegendSetLinkTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
+                trackedEntityAttributeUid,
+            )
+            .build()
+        val selectStatement = builder.selectWhere(whereClause)
+        return selectRawQuery(selectStatement).map { ObjectWithUid.create(it.legendSet()) }
     }
 }

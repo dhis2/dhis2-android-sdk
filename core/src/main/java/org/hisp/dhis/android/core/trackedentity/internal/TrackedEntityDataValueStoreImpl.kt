@@ -153,6 +153,14 @@ internal class TrackedEntityDataValueStoreImpl(
         )
     }
 
+    override fun getTrackedEntityDataValueForEvent(eventUid: String): List<TrackedEntityDataValue> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid)
+            .build()
+        val selectStatement = builder.selectWhere(whereClause)
+        return selectRawQuery(selectStatement)
+    }
+
     private fun getInProgramStageDataElementsSubQuery(eventUid: String): String {
         val psDataElementName = ProgramStageDataElementTableInfo.TABLE_INFO.name()
         val eventName = EventTableInfo.TABLE_INFO.name()

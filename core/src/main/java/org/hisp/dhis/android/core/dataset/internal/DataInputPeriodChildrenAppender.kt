@@ -27,31 +27,21 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
-import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.singleParentChildStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.dataset.DataInputPeriod
 import org.hisp.dhis.android.core.dataset.DataSet
 
 internal class DataInputPeriodChildrenAppender private constructor(
-    private val childStore: SingleParentChildStore<DataSet, DataInputPeriod>,
+    private val linkStore: DataInputPeriodStore,
 ) : ChildrenAppender<DataSet>() {
     override fun appendChildren(m: DataSet): DataSet {
-        val builder = m.toBuilder()
-        builder.dataInputPeriods(childStore.getChildren(m))
-        return builder.build()
+        val children = linkStore.getDataInputPeriodForDataSet(m.uid())
+        return m.toBuilder().dataInputPeriods(children).build()
     }
 
     companion object {
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<DataSet> {
-            return DataInputPeriodChildrenAppender(
-                singleParentChildStore(
-                    databaseAdapter,
-                    DataInputPeriodStoreImpl.CHILD_PROJECTION,
-                ) { cursor: Cursor? -> DataInputPeriod.create(cursor) },
-            )
+            return DataInputPeriodChildrenAppender(DataInputPeriodStoreImpl(databaseAdapter))
         }
     }
 }

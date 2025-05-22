@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStoreImpl
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.NoteTableInfo
 import org.koin.core.annotation.Singleton
@@ -61,14 +60,6 @@ internal class NoteStoreImpl(
             w.bind(8, o.syncState())
             w.bind(9, o.deleted())
         }
-        val ENROLLMENT_CHILD_PROJECTION = SingleParentChildProjection(
-            NoteTableInfo.TABLE_INFO,
-            NoteTableInfo.Columns.ENROLLMENT,
-        )
-        val EVENT_CHILD_PROJECTION = SingleParentChildProjection(
-            NoteTableInfo.TABLE_INFO,
-            NoteTableInfo.Columns.EVENT,
-        )
     }
 
     override fun getNotesForEvent(eventUid: String): List<Note> {

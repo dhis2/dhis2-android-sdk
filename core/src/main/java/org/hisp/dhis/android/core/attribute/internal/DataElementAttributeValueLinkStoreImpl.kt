@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.attribute.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
@@ -53,5 +54,14 @@ internal class DataElementAttributeValueLinkStoreImpl(
             w.bind(2, o.attribute())
             w.bind(3, o.value())
         }
+    }
+
+    override fun getLinksForDataElement(dataElementUid: String): List<DataElementAttributeValueLink> {
+        val projection = DataElementAttributeValueLinkTableInfo.CHILD_PROJECTION.parentColumn
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(projection, dataElementUid)
+            .build()
+        val query = builder.selectWhere(whereClause)
+        return selectRawQuery(query)
     }
 }

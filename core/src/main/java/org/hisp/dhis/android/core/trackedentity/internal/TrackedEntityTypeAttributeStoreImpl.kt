@@ -29,10 +29,10 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttributeTableInfo
 import org.koin.core.annotation.Singleton
@@ -57,9 +57,13 @@ internal class TrackedEntityTypeAttributeStoreImpl(
             w.bind(5, o.searchable())
             w.bind(6, o.sortOrder())
         }
-        val CHILD_PROJECTION = SingleParentChildProjection(
-            TrackedEntityTypeAttributeTableInfo.TABLE_INFO,
-            TrackedEntityTypeAttributeTableInfo.Columns.TRACKED_ENTITY_TYPE,
-        )
+    }
+
+    override fun getTrackedEntityTypeAttributeForTrackedEntityType(trackedEntityTypeUid: String): List<TrackedEntityTypeAttribute> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(TrackedEntityTypeAttributeTableInfo.Columns.TRACKED_ENTITY_TYPE, trackedEntityTypeUid)
+            .build()
+        val selectStatement = builder.selectWhere(whereClause)
+        return selectRawQuery(selectStatement)
     }
 }

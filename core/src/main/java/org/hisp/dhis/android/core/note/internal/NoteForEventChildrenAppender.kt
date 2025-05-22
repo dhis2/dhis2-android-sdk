@@ -32,10 +32,10 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.event.Event
 
 internal class NoteForEventChildrenAppender private constructor(
-    private val linkStore: NoteStore,
+    private val childStore: NoteStore,
 ) : ChildrenAppender<Event>() {
     override fun appendChildren(m: Event): Event {
-        val children = linkStore.getNotesForEvent(m.uid())
+        val children = childStore.getNotesForEvent(m.uid())
 
         return m.toBuilder()
             .notes(children)

@@ -33,4 +33,5 @@ import org.hisp.dhis.android.core.note.Note
 
 internal interface NoteStore : IdentifiableObjectStore<Note> {
     fun getNotesForEvent(eventUid: String): List<Note>
+    fun getNotesForEnrollment(enrollmentUid: String): List<Note>
 }

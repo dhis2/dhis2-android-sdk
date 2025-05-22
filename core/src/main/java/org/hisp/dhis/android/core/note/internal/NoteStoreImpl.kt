@@ -78,4 +78,12 @@ internal class NoteStoreImpl(
         val selectStatement = builder.selectWhere(whereClause)
         return selectRawQuery(selectStatement)
     }
+
+    override fun getNotesForEnrollment(enrollmentUid: String): List<Note> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(NoteTableInfo.Columns.ENROLLMENT, enrollmentUid)
+            .build()
+        val selectStatement = builder.selectWhere(whereClause)
+        return selectRawQuery(selectStatement)
+    }
 }

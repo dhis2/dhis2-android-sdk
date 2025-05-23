@@ -35,8 +35,7 @@ internal class NoteForEnrollmentChildrenAppender private constructor(
     private val childStore: NoteStore,
 ) : ChildrenAppender<Enrollment>() {
     override fun appendChildren(m: Enrollment): Enrollment {
-        val children = childStore.getNotesForEnrollment(m.uid())
-
+        val children = childStore.getForEnrollment(m.uid())
         return m.toBuilder()
             .notes(children)
             .build()

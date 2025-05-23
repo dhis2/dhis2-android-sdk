@@ -69,7 +69,7 @@ internal class LegendStoreImpl(
         )
     }
 
-    override fun getLinksForLegendSet(legendSetUid: String): List<Legend> {
+    override fun getForLegendSet(legendSetUid: String): List<Legend> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(LegendTableInfo.Columns.LEGEND_SET, legendSetUid)
             .build()

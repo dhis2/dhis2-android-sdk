@@ -35,7 +35,7 @@ internal class DataSetElementChildrenAppender private constructor(
     private val childStore: DataSetElementStore,
 ) : ChildrenAppender<DataSet>() {
     override fun appendChildren(m: DataSet): DataSet {
-        val children = childStore.getDataSetElementForDataSet(m.uid())
+        val children = childStore.getForDataSet(m.uid())
         return m.toBuilder()
             .dataSetElements(children)
             .build()

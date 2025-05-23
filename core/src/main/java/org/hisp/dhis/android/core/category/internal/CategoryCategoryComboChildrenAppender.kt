@@ -27,41 +27,23 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
-import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkChildStore
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.category.Category
-import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo
 import org.hisp.dhis.android.core.category.CategoryCombo
-import org.hisp.dhis.android.core.category.CategoryTableInfo
 
 internal class CategoryCategoryComboChildrenAppender private constructor(
-    private val linkChildStore: LinkChildStore<CategoryCombo, Category>,
+    private val childStore: CategoryStore,
 ) : ChildrenAppender<CategoryCombo>() {
-    override fun appendChildren(categoryCombo: CategoryCombo): CategoryCombo {
-        val builder = categoryCombo.toBuilder()
-        builder.categories(linkChildStore.getChildren(categoryCombo))
-        return builder.build()
+    override fun appendChildren(m: CategoryCombo): CategoryCombo {
+        val children = childStore.getForCategoryCombo(m.uid())
+        return m.toBuilder()
+            .categories(children)
+            .build()
     }
 
     companion object {
-        private val CHILD_PROJECTION = LinkTableChildProjection(
-            CategoryTableInfo.TABLE_INFO,
-            CategoryCategoryComboLinkTableInfo.Columns.CATEGORY_COMBO,
-            CategoryCategoryComboLinkTableInfo.Columns.CATEGORY,
-        )
-
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<CategoryCombo> {
-            return CategoryCategoryComboChildrenAppender(
-                linkChildStore(
-                    databaseAdapter,
-                    CategoryCategoryComboLinkTableInfo.TABLE_INFO,
-                    CHILD_PROJECTION,
-                ) { cursor: Cursor -> Category.create(cursor) },
-            )
+            return CategoryCategoryComboChildrenAppender(CategoryStoreImpl(databaseAdapter))
         }
     }
 }

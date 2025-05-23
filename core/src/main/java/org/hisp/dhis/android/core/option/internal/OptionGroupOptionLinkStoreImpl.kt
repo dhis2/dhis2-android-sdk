@@ -57,7 +57,7 @@ internal class OptionGroupOptionLinkStoreImpl(
         }
     }
 
-    override fun getLinksForOptionGroup(optionGroupUid: String): List<ObjectWithUid> {
+    override fun getForOptionGroup(optionGroupUid: String): List<ObjectWithUid> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(OptionGroupOptionLinkTableInfo.Columns.OPTION_GROUP, optionGroupUid)
             .build()

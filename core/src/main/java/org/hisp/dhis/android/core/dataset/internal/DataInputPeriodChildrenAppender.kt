@@ -32,11 +32,13 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.dataset.DataSet
 
 internal class DataInputPeriodChildrenAppender private constructor(
-    private val linkStore: DataInputPeriodStore,
+    private val childStore: DataInputPeriodStore,
 ) : ChildrenAppender<DataSet>() {
     override fun appendChildren(m: DataSet): DataSet {
-        val children = linkStore.getDataInputPeriodForDataSet(m.uid())
-        return m.toBuilder().dataInputPeriods(children).build()
+        val children = childStore.getForDataSet(m.uid())
+        return m.toBuilder()
+            .dataInputPeriods(children)
+            .build()
     }
 
     companion object {

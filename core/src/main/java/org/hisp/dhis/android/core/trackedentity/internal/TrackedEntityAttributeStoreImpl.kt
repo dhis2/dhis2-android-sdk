@@ -29,11 +29,14 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableWithStyleStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStoreImpl
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
+import org.hisp.dhis.android.core.program.ProgramSectionAttributeLinkTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo
 import org.koin.core.annotation.Singleton
@@ -74,5 +77,21 @@ internal class TrackedEntityAttributeStoreImpl(
                     w.bind(29, o.confidential())
                 }
             }
+    }
+
+    override fun getForProgramSection(programSectionUid: String): List<TrackedEntityAttribute> {
+        val projection = LinkTableChildProjection(
+            TrackedEntityAttributeTableInfo.TABLE_INFO,
+            ProgramSectionAttributeLinkTableInfo.Columns.PROGRAM_SECTION,
+            ProgramSectionAttributeLinkTableInfo.Columns.ATTRIBUTE,
+        )
+
+        val sectionSqlBuilder = SQLStatementBuilderImpl(ProgramSectionAttributeLinkTableInfo.TABLE_INFO)
+        val query = sectionSqlBuilder.selectChildrenWithLinkTable(
+            projection,
+            programSectionUid,
+            null,
+        )
+        return selectRawQuery(query)
     }
 }

@@ -28,40 +28,25 @@
 package org.hisp.dhis.android.core.dataset.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkChildStore
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.dataset.Section
-import org.hisp.dhis.android.core.dataset.SectionIndicatorLinkTableInfo
-import org.hisp.dhis.android.core.indicator.Indicator
-import org.hisp.dhis.android.core.indicator.IndicatorTableInfo
+import org.hisp.dhis.android.core.indicator.internal.IndicatorStore
+import org.hisp.dhis.android.core.indicator.internal.IndicatorStoreImpl
 
 internal class SectionIndicatorsChildrenAppender private constructor(
-    private val linkChildStore: LinkChildStore<Section, Indicator>,
+    private val childStore: IndicatorStore,
 ) : ChildrenAppender<Section>() {
 
-    override fun appendChildren(section: Section): Section {
-        val builder = section.toBuilder()
-        builder.indicators(linkChildStore.getChildren(section))
-        return builder.build()
+    override fun appendChildren(m: Section): Section {
+        val children = childStore.getForSection(m.uid())
+        return m.toBuilder()
+            .indicators(children)
+            .build()
     }
 
     companion object {
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<Section> {
-            val childProjection = LinkTableChildProjection(
-                IndicatorTableInfo.TABLE_INFO,
-                SectionIndicatorLinkTableInfo.Columns.SECTION,
-                SectionIndicatorLinkTableInfo.Columns.INDICATOR,
-            )
-
-            return SectionIndicatorsChildrenAppender(
-                linkChildStore(
-                    databaseAdapter,
-                    SectionIndicatorLinkTableInfo.TABLE_INFO,
-                    childProjection,
-                ) { Indicator.create(it) },
-            )
+            return SectionIndicatorsChildrenAppender(IndicatorStoreImpl(databaseAdapter))
         }
     }
 }

@@ -32,7 +32,5 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute
 
 internal interface TrackedEntityTypeAttributeStore : LinkStore<TrackedEntityTypeAttribute> {
-    fun getTrackedEntityTypeAttributeForTrackedEntityType(
-        trackedEntityTypeUid: String,
-    ): List<TrackedEntityTypeAttribute>
+    fun getForTrackedEntityType(trackedEntityTypeUid: String): List<TrackedEntityTypeAttribute>
 }

@@ -32,11 +32,12 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.legendset.LegendSet
 
 internal class LegendChildrenAppender private constructor(
-    private val linkStore: LegendStore,
+    private val childStore: LegendStore,
 ) : ChildrenAppender<LegendSet>() {
     override fun appendChildren(m: LegendSet): LegendSet {
+        val children = childStore.getForLegendSet(m.uid())
         return m.toBuilder()
-            .legends(linkStore.getLinksForLegendSet(m.uid()))
+            .legends(children)
             .build()
     }
 

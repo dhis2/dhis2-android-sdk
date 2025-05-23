@@ -58,7 +58,7 @@ internal class DataElementLegendSetLinkStoreImpl(
         }
     }
 
-    override fun getLinksForDataElement(dataElementUid: String): List<ObjectWithUid> {
+    override fun getForDataElement(dataElementUid: String): List<ObjectWithUid> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(DataElementLegendSetLinkTableInfo.Columns.DATA_ELEMENT, dataElementUid)
             .build()

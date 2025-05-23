@@ -58,7 +58,7 @@ internal class ProgramIndicatorLegendSetLinkStoreImpl(
         }
     }
 
-    override fun getLinksForProgramIndicator(programIndicatorUid: String): List<ObjectWithUid> {
+    override fun getForProgramIndicator(programIndicatorUid: String): List<ObjectWithUid> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(ProgramIndicatorLegendSetLinkTableInfo.Columns.PROGRAM_INDICATOR, programIndicatorUid)
             .build()

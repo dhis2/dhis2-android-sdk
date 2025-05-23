@@ -38,7 +38,7 @@ internal class IndicatorLegendSetChildrenAppender(
 ) : ChildrenAppender<Indicator>() {
     override fun appendChildren(m: Indicator): Indicator {
         return m.toBuilder()
-            .legendSets(linkStore.getLinksForIndicator(m.uid()))
+            .legendSets(linkStore.getForIndicator(m.uid()))
             .build()
     }
 

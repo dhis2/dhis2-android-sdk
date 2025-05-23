@@ -27,41 +27,25 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkChildStore
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.core.dataelement.DataElementTableInfo
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStoreImpl
 import org.hisp.dhis.android.core.program.ProgramStageSection
-import org.hisp.dhis.android.core.program.ProgramStageSectionDataElementLinkTableInfo
 
 internal class ProgramStageSectionDataElementChildrenAppender private constructor(
-    private val linkChildStore: LinkChildStore<ProgramStageSection, DataElement>,
+    private val childStore: DataElementStore,
 ) : ChildrenAppender<ProgramStageSection>() {
     override fun appendChildren(m: ProgramStageSection): ProgramStageSection {
-        val builder = m.toBuilder()
-        builder.dataElements(linkChildStore.getChildren(m))
-        return builder.build()
+        val children = childStore.getForProgramStageSection(m.uid())
+        return m.toBuilder()
+            .dataElements(children)
+            .build()
     }
 
     companion object {
-        private val CHILD_PROJECTION = LinkTableChildProjection(
-            DataElementTableInfo.TABLE_INFO,
-            ProgramStageSectionDataElementLinkTableInfo.Columns.PROGRAM_STAGE_SECTION,
-            ProgramStageSectionDataElementLinkTableInfo.Columns.DATA_ELEMENT,
-        )
-
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<ProgramStageSection> {
-            return ProgramStageSectionDataElementChildrenAppender(
-                linkChildStore(
-                    databaseAdapter,
-                    ProgramStageSectionDataElementLinkTableInfo.TABLE_INFO,
-                    CHILD_PROJECTION,
-                ) { cursor: Cursor -> DataElement.create(cursor) },
-            )
+            return ProgramStageSectionDataElementChildrenAppender(DataElementStoreImpl(databaseAdapter))
         }
     }
 }

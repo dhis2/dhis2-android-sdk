@@ -35,7 +35,7 @@ internal class TrackedEntityTypeAttributeChildrenAppender private constructor(
     private val childStore: TrackedEntityTypeAttributeStore,
 ) : ChildrenAppender<TrackedEntityType>() {
     override fun appendChildren(m: TrackedEntityType): TrackedEntityType {
-        val children = childStore.getTrackedEntityTypeAttributeForTrackedEntityType(m.uid())
+        val children = childStore.getForTrackedEntityType(m.uid())
         return m.toBuilder().trackedEntityTypeAttributes(children).build()
     }
 

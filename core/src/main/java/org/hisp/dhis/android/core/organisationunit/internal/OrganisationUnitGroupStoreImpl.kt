@@ -29,12 +29,15 @@ package org.hisp.dhis.android.core.organisationunit.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStoreImpl
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroupTableInfo
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -58,5 +61,20 @@ internal class OrganisationUnitGroupStoreImpl(
                     w.bind(8, organisationUnitGroup.displayShortName())
                 }
             }
+    }
+
+    override fun getForOrganisationUnit(organisationUnitId: String): List<OrganisationUnitGroup> {
+        val projection = LinkTableChildProjection(
+            OrganisationUnitGroupTableInfo.TABLE_INFO,
+            OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT,
+            OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT_GROUP,
+        )
+        val sectionSqlBuilder = SQLStatementBuilderImpl(OrganisationUnitOrganisationUnitGroupLinkTableInfo.TABLE_INFO)
+        val query = sectionSqlBuilder.selectChildrenWithLinkTable(
+            projection,
+            organisationUnitId,
+            null,
+        )
+        return selectRawQuery(query)
     }
 }

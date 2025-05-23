@@ -31,4 +31,6 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 
-internal interface TrackedEntityAttributeStore : IdentifiableObjectStore<TrackedEntityAttribute>
+internal interface TrackedEntityAttributeStore : IdentifiableObjectStore<TrackedEntityAttribute> {
+    fun getForProgramSection(programSectionUid: String): List<TrackedEntityAttribute>
+}

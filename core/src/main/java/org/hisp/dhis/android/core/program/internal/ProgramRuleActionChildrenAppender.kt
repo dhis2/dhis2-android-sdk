@@ -35,7 +35,7 @@ internal class ProgramRuleActionChildrenAppender private constructor(
     private val childStore: ProgramRuleActionStore,
 ) : ChildrenAppender<ProgramRule>() {
     override fun appendChildren(m: ProgramRule): ProgramRule {
-        val children = childStore.getProgramRuleActionForProgramRule(m.uid())
+        val children = childStore.getForProgramRule(m.uid())
         return m.toBuilder().programRuleActions(children).build()
     }
 

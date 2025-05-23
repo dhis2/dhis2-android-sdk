@@ -153,7 +153,7 @@ internal class TrackedEntityDataValueStoreImpl(
         )
     }
 
-    override fun getTrackedEntityDataValueForEvent(eventUid: String): List<TrackedEntityDataValue> {
+    override fun getForEvent(eventUid: String): List<TrackedEntityDataValue> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid)
             .build()

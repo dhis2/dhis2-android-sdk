@@ -37,12 +37,12 @@ internal class CustomIntentTriggerChildrenAppender private constructor(
     private val dataElementLinkChildStore: CustomIntentDataElementTriggerStore,
     private val attributeLinkChildStore: CustomIntentAttributeTriggerStore,
 ) : ChildrenAppender<CustomIntent>() {
-    override fun appendChildren(customIntent: CustomIntent): CustomIntent {
-        val builder = customIntent.toBuilder()
+    override fun appendChildren(m: CustomIntent): CustomIntent {
+        val builder = m.toBuilder()
         builder.trigger(
             CustomIntentTrigger.builder()
-                .dataElements(dataElementLinkChildStore.selectLinksForMasterUid(customIntent.uid()))
-                .attributes(attributeLinkChildStore.selectLinksForMasterUid(customIntent.uid()))
+                .dataElements(dataElementLinkChildStore.selectLinksForMasterUid(m.uid()))
+                .attributes(attributeLinkChildStore.selectLinksForMasterUid(m.uid()))
                 .build(),
         )
         return builder.build()

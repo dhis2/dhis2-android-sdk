@@ -29,12 +29,16 @@ package org.hisp.dhis.android.core.dataelement.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStoreImpl
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.dataelement.DataElementOperandTableInfo
+import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLinkTableInfo
+import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLinkTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -54,5 +58,35 @@ internal class DataElementOperandStoreImpl(
             w.bind(2, getUidOrNull(o.dataElement()))
             w.bind(3, getUidOrNull(o.categoryOptionCombo()))
         }
+    }
+
+    override fun getForSection(sectionUid: String): List<DataElementOperand> {
+        val projection = LinkTableChildProjection(
+            DataElementOperandTableInfo.TABLE_INFO,
+            SectionGreyedFieldsLinkTableInfo.Columns.SECTION,
+            SectionGreyedFieldsLinkTableInfo.Columns.DATA_ELEMENT_OPERAND,
+        )
+        val sectionSqlBuilder = SQLStatementBuilderImpl(SectionGreyedFieldsLinkTableInfo.TABLE_INFO)
+        val query = sectionSqlBuilder.selectChildrenWithLinkTable(
+            projection,
+            sectionUid,
+            null,
+        )
+        return selectRawQuery(query)
+    }
+
+    override fun getForDataSet(dataSetUid: String): List<DataElementOperand> {
+        val projection = LinkTableChildProjection(
+            DataElementOperandTableInfo.TABLE_INFO,
+            DataSetCompulsoryDataElementOperandLinkTableInfo.Columns.DATA_SET,
+            DataSetCompulsoryDataElementOperandLinkTableInfo.Columns.DATA_ELEMENT_OPERAND,
+        )
+        val sectionSqlBuilder = SQLStatementBuilderImpl(DataSetCompulsoryDataElementOperandLinkTableInfo.TABLE_INFO)
+        val query = sectionSqlBuilder.selectChildrenWithLinkTable(
+            projection,
+            dataSetUid,
+            null,
+        )
+        return selectRawQuery(query)
     }
 }

@@ -31,4 +31,6 @@ package org.hisp.dhis.android.core.organisationunit.internal
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
 
-internal interface OrganisationUnitGroupStore : IdentifiableObjectStore<OrganisationUnitGroup>
+internal interface OrganisationUnitGroupStore : IdentifiableObjectStore<OrganisationUnitGroup> {
+    fun getForOrganisationUnit(organisationUnitId: String): List<OrganisationUnitGroup>
+}

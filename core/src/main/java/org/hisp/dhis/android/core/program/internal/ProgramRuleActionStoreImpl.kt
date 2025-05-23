@@ -72,7 +72,7 @@ internal class ProgramRuleActionStoreImpl(
             }
     }
 
-    override fun getProgramRuleActionForProgramRule(programRuleUid: String): List<ProgramRuleAction> {
+    override fun getForProgramRule(programRuleUid: String): List<ProgramRuleAction> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(ProgramRuleActionTableInfo.Columns.PROGRAM_RULE, programRuleUid)
             .build()

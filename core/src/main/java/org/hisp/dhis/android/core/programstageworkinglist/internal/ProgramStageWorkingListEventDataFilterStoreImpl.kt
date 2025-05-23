@@ -76,7 +76,7 @@ internal class ProgramStageWorkingListEventDataFilterStoreImpl(
         private val WHERE_DELETE_BINDER = WhereStatementBinder { _: ProgramStageWorkingListEventDataFilter, _ -> }
     }
 
-    override fun getProgramStageWorkingListEventDataFilterForProgramStageWorkingList(
+    override fun getForProgramStageWorkingList(
         programStageWorkingListUid: String,
     ): List<ProgramStageWorkingListEventDataFilter> {
         val whereClause = WhereClauseBuilder()

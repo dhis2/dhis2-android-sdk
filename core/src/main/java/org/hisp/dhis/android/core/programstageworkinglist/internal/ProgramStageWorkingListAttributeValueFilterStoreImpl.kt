@@ -75,7 +75,7 @@ internal class ProgramStageWorkingListAttributeValueFilterStoreImpl(
         private val WHERE_DELETE_BINDER = WhereStatementBinder { _: ProgramStageWorkingListAttributeValueFilter, _ -> }
     }
 
-    override fun getProgramStageWorkingListAttributeValueFilterForProgramStageWorkingList(
+    override fun getForProgramStageWorkingList(
         programStageWorkingList: String,
     ): List<ProgramStageWorkingListAttributeValueFilter> {
         val whereClause = WhereClauseBuilder()

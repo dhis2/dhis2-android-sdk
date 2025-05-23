@@ -35,7 +35,7 @@ internal class EventFilterEventDataFilterChildrenAppender private constructor(
     private val childStore: EventDataFilterStore,
 ) : ChildrenAppender<EventFilter>() {
     override fun appendChildren(m: EventFilter): EventFilter {
-        val children = childStore.getEventDataFiltersForEventFilter(m.uid())
+        val children = childStore.getForEventFilter(m.uid())
         return if (m.eventQueryCriteria() != null) {
             val criteriaBuilder = m.eventQueryCriteria()!!.toBuilder().dataFilters(children).build()
             return m.toBuilder().eventQueryCriteria(criteriaBuilder).build()

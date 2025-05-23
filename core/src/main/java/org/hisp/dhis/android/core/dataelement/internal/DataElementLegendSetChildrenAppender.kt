@@ -39,7 +39,7 @@ internal class DataElementLegendSetChildrenAppender private constructor(
 
     override fun appendChildren(m: DataElement): DataElement {
         return m.toBuilder()
-            .legendSets(linkStore.getLinksForDataElement(m.uid()))
+            .legendSets(linkStore.getForDataElement(m.uid()))
             .build()
     }
 

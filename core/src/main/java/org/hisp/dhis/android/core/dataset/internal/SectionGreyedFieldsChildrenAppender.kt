@@ -27,41 +27,25 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
-import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkChildStore
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.dataelement.DataElementOperand
-import org.hisp.dhis.android.core.dataelement.DataElementOperandTableInfo
+import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandStore
+import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandStoreImpl
 import org.hisp.dhis.android.core.dataset.Section
-import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLinkTableInfo
 
 internal class SectionGreyedFieldsChildrenAppender private constructor(
-    private val linkChildStore: LinkChildStore<Section, DataElementOperand>,
+    private val childStore: DataElementOperandStore,
 ) : ChildrenAppender<Section>() {
     override fun appendChildren(m: Section): Section {
-        val builder = m.toBuilder()
-        builder.greyedFields(linkChildStore.getChildren(m))
-        return builder.build()
+        val children = childStore.getForSection(m.uid())
+        return m.toBuilder()
+            .greyedFields(children)
+            .build()
     }
 
     companion object {
-        private val CHILD_PROJECTION = LinkTableChildProjection(
-            DataElementOperandTableInfo.TABLE_INFO,
-            SectionGreyedFieldsLinkTableInfo.Columns.SECTION,
-            SectionGreyedFieldsLinkTableInfo.Columns.DATA_ELEMENT_OPERAND,
-        )
-
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<Section> {
-            return SectionGreyedFieldsChildrenAppender(
-                linkChildStore(
-                    databaseAdapter,
-                    SectionGreyedFieldsLinkTableInfo.TABLE_INFO,
-                    CHILD_PROJECTION,
-                ) { cursor: Cursor -> DataElementOperand.create(cursor) },
-            )
+            return SectionGreyedFieldsChildrenAppender(DataElementOperandStoreImpl(databaseAdapter))
         }
     }
 }

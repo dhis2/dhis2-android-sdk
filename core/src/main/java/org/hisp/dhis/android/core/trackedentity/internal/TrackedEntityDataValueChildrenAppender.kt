@@ -32,10 +32,10 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.event.Event
 
 internal class TrackedEntityDataValueChildrenAppender private constructor(
-    private val linkStore: TrackedEntityDataValueStore,
+    private val childStore: TrackedEntityDataValueStore,
 ) : ChildrenAppender<Event>() {
     override fun appendChildren(m: Event): Event {
-        val children = linkStore.getTrackedEntityDataValueForEvent(m.uid())
+        val children = childStore.getForEvent(m.uid())
         return m.toBuilder().trackedEntityDataValues(children).build()
     }
 

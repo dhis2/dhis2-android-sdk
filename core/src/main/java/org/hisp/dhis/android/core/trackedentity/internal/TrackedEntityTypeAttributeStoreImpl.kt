@@ -59,7 +59,7 @@ internal class TrackedEntityTypeAttributeStoreImpl(
         }
     }
 
-    override fun getTrackedEntityTypeAttributeForTrackedEntityType(
+    override fun getForTrackedEntityType(
         trackedEntityTypeUid: String,
     ): List<TrackedEntityTypeAttribute> {
         val whereClause = WhereClauseBuilder()

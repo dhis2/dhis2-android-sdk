@@ -38,7 +38,7 @@ internal class OrganisationUnitDataSetChildrenAppender private constructor(
 ) : ChildrenAppender<OrganisationUnit>() {
     override fun appendChildren(m: OrganisationUnit): OrganisationUnit {
         return m.toBuilder()
-            .dataSets(linkStore.getLinksForOrganisationUnit(m.uid()))
+            .dataSets(linkStore.getForOrganisationUnit(m.uid()))
             .build()
     }
 

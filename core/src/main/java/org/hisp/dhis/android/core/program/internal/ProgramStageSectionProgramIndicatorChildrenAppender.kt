@@ -27,41 +27,22 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkChildStore
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.program.ProgramIndicator
-import org.hisp.dhis.android.core.program.ProgramIndicatorTableInfo
 import org.hisp.dhis.android.core.program.ProgramStageSection
-import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkTableInfo
 
 internal class ProgramStageSectionProgramIndicatorChildrenAppender private constructor(
-    private val linkChildStore: LinkChildStore<ProgramStageSection, ProgramIndicator>,
+    private val childStore: ProgramIndicatorStore,
 ) : ChildrenAppender<ProgramStageSection>() {
     override fun appendChildren(m: ProgramStageSection): ProgramStageSection {
         val builder = m.toBuilder()
-        builder.programIndicators(linkChildStore.getChildren(m))
+        builder.programIndicators(childStore.getForProgramStageSection(m.uid()))
         return builder.build()
     }
 
     companion object {
-        private val CHILD_PROJECTION = LinkTableChildProjection(
-            ProgramIndicatorTableInfo.TABLE_INFO,
-            ProgramStageSectionProgramIndicatorLinkTableInfo.Columns.PROGRAM_STAGE_SECTION,
-            ProgramStageSectionProgramIndicatorLinkTableInfo.Columns.PROGRAM_INDICATOR,
-        )
-
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<ProgramStageSection> {
-            return ProgramStageSectionProgramIndicatorChildrenAppender(
-                linkChildStore(
-                    databaseAdapter,
-                    ProgramStageSectionProgramIndicatorLinkTableInfo.TABLE_INFO,
-                    CHILD_PROJECTION,
-                ) { cursor: Cursor -> ProgramIndicator.create(cursor) },
-            )
+            return ProgramStageSectionProgramIndicatorChildrenAppender(ProgramIndicatorStoreImpl(databaseAdapter))
         }
     }
 }

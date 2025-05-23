@@ -33,5 +33,5 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.legendset.DataElementLegendSetLink
 
 internal interface DataElementLegendSetLinkStore : LinkStore<DataElementLegendSetLink> {
-    fun getLinksForDataElement(dataElementUid: String): List<ObjectWithUid>
+    fun getForDataElement(dataElementUid: String): List<ObjectWithUid>
 }

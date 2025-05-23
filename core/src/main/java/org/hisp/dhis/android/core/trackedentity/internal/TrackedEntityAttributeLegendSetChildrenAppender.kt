@@ -37,8 +37,9 @@ internal class TrackedEntityAttributeLegendSetChildrenAppender(
 ) : ChildrenAppender<TrackedEntityAttribute>() {
 
     override fun appendChildren(m: TrackedEntityAttribute): TrackedEntityAttribute {
+        val legendSets = linkStore.getForTrackedEntityAttribute(m.uid())
         return m.toBuilder()
-            .legendSets(linkStore.getLinksForTrackedEntityAttribute(m.uid()))
+            .legendSets(legendSets)
             .build()
     }
 

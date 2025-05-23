@@ -29,14 +29,16 @@ package org.hisp.dhis.android.core.program.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStoreImpl
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.ProgramIndicatorTableInfo
+import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -52,10 +54,6 @@ internal class ProgramIndicatorStoreImpl(
     ) {
 
     companion object {
-        val CHILD_PROJECTION = SingleParentChildProjection(
-            ProgramIndicatorTableInfo.TABLE_INFO,
-            ProgramIndicatorTableInfo.Columns.PROGRAM,
-        )
         private val BINDER: StatementBinder<ProgramIndicator> = object : NameableStatementBinder<ProgramIndicator>() {
             override fun bindToStatement(
                 o: ProgramIndicator,
@@ -72,5 +70,20 @@ internal class ProgramIndicatorStoreImpl(
                 w.bind(18, o.analyticsType())
             }
         }
+    }
+
+    override fun getForProgramStageSection(programStageSectionUid: String): List<ProgramIndicator> {
+        val projection = LinkTableChildProjection(
+            ProgramIndicatorTableInfo.TABLE_INFO,
+            ProgramStageSectionProgramIndicatorLinkTableInfo.Columns.PROGRAM_STAGE_SECTION,
+            ProgramStageSectionProgramIndicatorLinkTableInfo.Columns.PROGRAM_INDICATOR,
+        )
+        val sectionSqlBuilder = SQLStatementBuilderImpl(ProgramStageSectionProgramIndicatorLinkTableInfo.TABLE_INFO)
+        val query = sectionSqlBuilder.selectChildrenWithLinkTable(
+            projection,
+            programStageSectionUid,
+            null,
+        )
+        return selectRawQuery(query)
     }
 }

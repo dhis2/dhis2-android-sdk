@@ -27,41 +27,23 @@
  */
 package org.hisp.dhis.android.core.indicator.internal
 
-import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkChildStore
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.dataset.DataSet
-import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkTableInfo
-import org.hisp.dhis.android.core.indicator.Indicator
-import org.hisp.dhis.android.core.indicator.IndicatorTableInfo.TABLE_INFO
 
 internal class DataSetIndicatorChildrenAppender private constructor(
-    private val linkChildStore: LinkChildStore<DataSet, Indicator>,
+    private val childStore: IndicatorStore,
 ) : ChildrenAppender<DataSet>() {
     override fun appendChildren(m: DataSet): DataSet {
-        val builder = m.toBuilder()
-        builder.indicators(linkChildStore.getChildren(m))
-        return builder.build()
+        val children = childStore.getForDataSet(m.uid())
+        return m.toBuilder()
+            .indicators(children)
+            .build()
     }
 
     companion object {
-        private val CHILD_PROJECTION = LinkTableChildProjection(
-            TABLE_INFO,
-            DataSetIndicatorLinkTableInfo.Columns.DATA_SET,
-            DataSetIndicatorLinkTableInfo.Columns.INDICATOR,
-        )
-
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<DataSet> {
-            return DataSetIndicatorChildrenAppender(
-                linkChildStore(
-                    databaseAdapter,
-                    DataSetIndicatorLinkTableInfo.TABLE_INFO,
-                    CHILD_PROJECTION,
-                ) { cursor: Cursor -> Indicator.create(cursor) },
-            )
+            return DataSetIndicatorChildrenAppender(IndicatorStoreImpl(databaseAdapter))
         }
     }
 }

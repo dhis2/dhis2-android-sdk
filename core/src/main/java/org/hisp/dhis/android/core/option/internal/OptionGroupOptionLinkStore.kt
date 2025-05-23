@@ -33,5 +33,5 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.option.OptionGroupOptionLink
 
 internal interface OptionGroupOptionLinkStore : LinkStore<OptionGroupOptionLink> {
-    fun getLinksForOptionGroup(optionGroupUid: String): List<ObjectWithUid>
+    fun getForOptionGroup(optionGroupUid: String): List<ObjectWithUid>
 }

@@ -58,7 +58,7 @@ internal class DataSetElementStoreImpl(
         }
     }
 
-    override fun getDataSetElementForDataSet(dataSetUid: String): List<DataSetElement> {
+    override fun getForDataSet(dataSetUid: String): List<DataSetElement> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(DataSetElementLinkTableInfo.Columns.DATA_SET, dataSetUid)
             .build()

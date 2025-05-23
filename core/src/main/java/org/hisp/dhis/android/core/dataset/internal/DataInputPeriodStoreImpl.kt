@@ -58,7 +58,7 @@ internal class DataInputPeriodStoreImpl(
         }
     }
 
-    override fun getDataInputPeriodForDataSet(dataSetUid: String): List<DataInputPeriod> {
+    override fun getForDataSet(dataSetUid: String): List<DataInputPeriod> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(DataInputPeriodTableInfo.Columns.DATA_SET, dataSetUid)
             .build()

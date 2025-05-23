@@ -33,5 +33,5 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 
 internal interface OrganisationUnitProgramLinkStore : LinkStore<OrganisationUnitProgramLink> {
-    fun getLinksForOrganisationUnit(organisationUnitUid: String): List<ObjectWithUid>
+    fun getForOrganisationUnit(organisationUnitUid: String): List<ObjectWithUid>
 }

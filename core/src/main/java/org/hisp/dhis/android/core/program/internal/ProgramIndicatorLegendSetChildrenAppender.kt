@@ -37,8 +37,9 @@ internal class ProgramIndicatorLegendSetChildrenAppender private constructor(
     private val linkStore: ProgramIndicatorLegendSetLinkStore,
 ) : ChildrenAppender<ProgramIndicator>() {
     override fun appendChildren(m: ProgramIndicator): ProgramIndicator {
+        val legendSets = linkStore.getForProgramIndicator(m.uid())
         return m.toBuilder()
-            .legendSets(linkStore.getLinksForProgramIndicator(m.uid()))
+            .legendSets(legendSets)
             .build()
     }
 

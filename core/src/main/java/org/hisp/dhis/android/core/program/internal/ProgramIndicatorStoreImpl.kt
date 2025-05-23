@@ -72,7 +72,7 @@ internal class ProgramIndicatorStoreImpl(
         }
     }
 
-    override fun getProgramIndicatorForProgramStageSection(programStageSectionUid: String): List<ProgramIndicator> {
+    override fun getForProgramStageSection(programStageSectionUid: String): List<ProgramIndicator> {
         val projection = LinkTableChildProjection(
             ProgramIndicatorTableInfo.TABLE_INFO,
             ProgramStageSectionProgramIndicatorLinkTableInfo.Columns.PROGRAM_STAGE_SECTION,

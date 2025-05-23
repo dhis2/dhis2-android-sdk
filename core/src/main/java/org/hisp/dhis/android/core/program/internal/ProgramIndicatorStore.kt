@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.program.ProgramIndicator
 
 internal interface ProgramIndicatorStore : IdentifiableObjectStore<ProgramIndicator> {
-    fun getProgramIndicatorForProgramStageSection(programStageSectionUid: String): List<ProgramIndicator>
+    fun getForProgramStageSection(programStageSectionUid: String): List<ProgramIndicator>
 }

@@ -32,11 +32,11 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.program.ProgramStageSection
 
 internal class ProgramStageSectionProgramIndicatorChildrenAppender private constructor(
-    private val linkStore: ProgramIndicatorStore,
+    private val childStore: ProgramIndicatorStore,
 ) : ChildrenAppender<ProgramStageSection>() {
     override fun appendChildren(m: ProgramStageSection): ProgramStageSection {
         val builder = m.toBuilder()
-        builder.programIndicators(linkStore.getProgramIndicatorForProgramStageSection(m.uid()))
+        builder.programIndicators(childStore.getForProgramStageSection(m.uid()))
         return builder.build()
     }
 

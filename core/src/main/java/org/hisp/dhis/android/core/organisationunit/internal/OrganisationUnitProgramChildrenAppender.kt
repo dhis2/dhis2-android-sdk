@@ -36,7 +36,7 @@ internal class OrganisationUnitProgramChildrenAppender private constructor(
 ) : ChildrenAppender<OrganisationUnit>() {
     override fun appendChildren(m: OrganisationUnit): OrganisationUnit {
         return m.toBuilder()
-            .programs(linkStore.getLinksForOrganisationUnit(m.uid()))
+            .programs(linkStore.getForOrganisationUnit(m.uid()))
             .build()
     }
 

@@ -57,7 +57,7 @@ internal class DataSetOrganisationUnitLinkStoreImpl(
         }
     }
 
-    override fun getLinksForOrganisationUnit(orgUnitUid: String): List<ObjectWithUid> {
+    override fun getForOrganisationUnit(orgUnitUid: String): List<ObjectWithUid> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT, orgUnitUid)
             .build()

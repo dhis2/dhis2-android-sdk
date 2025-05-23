@@ -35,7 +35,7 @@ internal class NoteForEventChildrenAppender private constructor(
     private val childStore: NoteStore,
 ) : ChildrenAppender<Event>() {
     override fun appendChildren(m: Event): Event {
-        val children = childStore.getNotesForEvent(m.uid())
+        val children = childStore.getForEvent(m.uid())
         return m.toBuilder()
             .notes(children)
             .build()

@@ -36,7 +36,7 @@ internal class OptionGroupOptionChildrenAppender private constructor(
 ) : ChildrenAppender<OptionGroup>() {
     override fun appendChildren(m: OptionGroup): OptionGroup {
         return m.toBuilder()
-            .options(linkStore.getLinksForOptionGroup(m.uid()))
+            .options(linkStore.getForOptionGroup(m.uid()))
             .build()
     }
 

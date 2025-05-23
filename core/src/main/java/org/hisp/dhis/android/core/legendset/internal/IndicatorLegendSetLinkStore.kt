@@ -33,5 +33,5 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
 
 internal interface IndicatorLegendSetLinkStore : LinkStore<IndicatorLegendSetLink> {
-    fun getLinksForIndicator(indicatorUid: String): List<ObjectWithUid>
+    fun getForIndicator(indicatorUid: String): List<ObjectWithUid>
 }

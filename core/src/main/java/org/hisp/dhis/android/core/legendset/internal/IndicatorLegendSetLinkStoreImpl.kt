@@ -59,7 +59,7 @@ internal class IndicatorLegendSetLinkStoreImpl(
         }
     }
 
-    override fun getLinksForIndicator(indicatorUid: String): List<ObjectWithUid> {
+    override fun getForIndicator(indicatorUid: String): List<ObjectWithUid> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(IndicatorLegendSetLinkTableInfo.Columns.INDICATOR, indicatorUid)
             .build()

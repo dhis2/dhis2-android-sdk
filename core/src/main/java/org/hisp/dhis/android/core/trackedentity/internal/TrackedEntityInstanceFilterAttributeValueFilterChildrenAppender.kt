@@ -36,7 +36,7 @@ internal class TrackedEntityInstanceFilterAttributeValueFilterChildrenAppender p
 ) : ChildrenAppender<TrackedEntityInstanceFilter>() {
 
     override fun appendChildren(m: TrackedEntityInstanceFilter): TrackedEntityInstanceFilter {
-        val children = childStore.getAttributeValueFilterForTrackedEntityInstanceFilter(m.uid())
+        val children = childStore.getForTrackedEntityInstanceFilter(m.uid())
         val criteria = m.entityQueryCriteria().toBuilder().attributeValueFilters(children).build()
         return m.toBuilder().entityQueryCriteria(criteria).build()
     }

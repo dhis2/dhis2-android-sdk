@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.event.EventDataFilter
 
 internal interface EventDataFilterStore : ObjectWithoutUidStore<EventDataFilter> {
-    fun getEventDataFiltersForEventFilter(eventFilterUid: String): List<EventDataFilter>
+    fun getForEventFilter(eventFilterUid: String): List<EventDataFilter>
 }

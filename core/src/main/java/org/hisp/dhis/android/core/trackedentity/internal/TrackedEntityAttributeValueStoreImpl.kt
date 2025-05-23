@@ -185,19 +185,6 @@ internal class TrackedEntityAttributeValueStoreImpl(
         )
     }
 
-    override fun getTrackedEntityAttributeValueForTrackedEntityInstance(
-        trackedEntityInstanceUid: String,
-    ): List<TrackedEntityAttributeValue> {
-        val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(
-                TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
-                trackedEntityInstanceUid,
-            )
-            .build()
-        val selectStatement = builder.selectWhere(whereClause)
-        return selectRawQuery(selectStatement)
-    }
-
     private fun trackedEntityAttributeValueListFromQuery(query: String): List<TrackedEntityAttributeValue> {
         val trackedEntityAttributeValueList: MutableList<TrackedEntityAttributeValue> = ArrayList()
         val cursor = databaseAdapter.rawQuery(query)

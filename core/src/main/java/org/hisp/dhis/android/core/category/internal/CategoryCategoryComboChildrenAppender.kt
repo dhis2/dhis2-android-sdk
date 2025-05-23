@@ -32,10 +32,10 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.category.CategoryCombo
 
 internal class CategoryCategoryComboChildrenAppender private constructor(
-    private val linkChildStore: CategoryStore,
+    private val childStore: CategoryStore,
 ) : ChildrenAppender<CategoryCombo>() {
     override fun appendChildren(m: CategoryCombo): CategoryCombo {
-        val children = linkChildStore.getForCategoryCombo(m.uid())
+        val children = childStore.getForCategoryCombo(m.uid())
         return m.toBuilder()
             .categories(children)
             .build()

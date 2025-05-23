@@ -34,12 +34,14 @@ import org.hisp.dhis.android.core.indicator.internal.IndicatorStore
 import org.hisp.dhis.android.core.indicator.internal.IndicatorStoreImpl
 
 internal class SectionIndicatorsChildrenAppender private constructor(
-    private val linkChildStore: IndicatorStore,
+    private val childStore: IndicatorStore,
 ) : ChildrenAppender<Section>() {
 
     override fun appendChildren(m: Section): Section {
-        val children = linkChildStore.getForSection(m.uid())
-        return m.toBuilder().indicators(children).build()
+        val children = childStore.getForSection(m.uid())
+        return m.toBuilder()
+            .indicators(children)
+            .build()
     }
 
     companion object {

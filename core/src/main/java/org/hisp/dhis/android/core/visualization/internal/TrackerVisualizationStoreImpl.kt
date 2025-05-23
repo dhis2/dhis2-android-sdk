@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.visualization.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.TrackerVisualizationSortingListColumnAdapter
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStoreImpl
@@ -59,6 +60,7 @@ internal class TrackerVisualizationStoreImpl(
                 w.bind(11, UidsHelper.getUidOrNull(o.program()))
                 w.bind(12, UidsHelper.getUidOrNull(o.programStage()))
                 w.bind(13, UidsHelper.getUidOrNull(o.trackedEntityType()))
+                w.bind(14, TrackerVisualizationSortingListColumnAdapter.serialize(o.sorting()))
             }
         }
     }

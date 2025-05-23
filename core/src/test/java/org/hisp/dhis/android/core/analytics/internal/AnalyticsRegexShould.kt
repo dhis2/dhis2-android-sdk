@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.analytics.internal
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.dateRangeRegex
 import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.orgunitLevelRegex
-import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.uidRegex
+import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.singleUidRegex
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -60,8 +60,8 @@ class AnalyticsRegexShould {
 
     @Test
     fun should_evaluate_uid() {
-        assertThat(uidRegex.matches("YuQRtpL10I")).isFalse()
-        assertThat(uidRegex.matches("YuQRtpLP10I")).isTrue()
-        assertThat(uidRegex.matches("YuQRtpL10Ier")).isFalse()
+        assertThat(singleUidRegex.matches("YuQRtpL10I")).isFalse()
+        assertThat(singleUidRegex.matches("YuQRtpLP10I")).isTrue()
+        assertThat(singleUidRegex.matches("YuQRtpL10Ier")).isFalse()
     }
 }

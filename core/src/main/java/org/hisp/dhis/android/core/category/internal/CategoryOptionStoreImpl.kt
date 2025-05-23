@@ -29,11 +29,14 @@ package org.hisp.dhis.android.core.category.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStoreImpl
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkTableInfo
 import org.hisp.dhis.android.core.category.CategoryOptionTableInfo
 import org.koin.core.annotation.Singleton
 
@@ -58,5 +61,18 @@ internal class CategoryOptionStoreImpl(
                 w.bind(13, o.access().data().write())
             }
         }
+    }
+
+    override fun getForCategoryOptionCombo(categoryOptionComboUid: String): List<CategoryOption> {
+        val projection = LinkTableChildProjection(
+            CategoryOptionTableInfo.TABLE_INFO,
+            CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION_COMBO,
+            CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION,
+        )
+        val sectionSqlBuilder = SQLStatementBuilderImpl(CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO)
+        val query = sectionSqlBuilder.selectChildrenWithLinkTable(
+            projection, categoryOptionComboUid, null
+        )
+        return selectRawQuery(query)
     }
 }

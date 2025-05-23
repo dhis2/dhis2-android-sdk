@@ -29,11 +29,11 @@ package org.hisp.dhis.android.core.program.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStoreImpl
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.program.ProgramRuleAction
 import org.hisp.dhis.android.core.program.ProgramRuleActionTableInfo
@@ -70,10 +70,13 @@ internal class ProgramRuleActionStoreImpl(
                     w.bind(19, o.displayContent())
                 }
             }
+    }
 
-        val CHILD_PROJECTION = SingleParentChildProjection(
-            ProgramRuleActionTableInfo.TABLE_INFO,
-            ProgramRuleActionTableInfo.Columns.PROGRAM_RULE,
-        )
+    override fun getProgramRuleActionForProgramRule(programRuleUid: String): List<ProgramRuleAction> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(ProgramRuleActionTableInfo.Columns.PROGRAM_RULE, programRuleUid)
+            .build()
+        val query = builder.selectWhere(whereClause)
+        return selectRawQuery(query)
     }
 }

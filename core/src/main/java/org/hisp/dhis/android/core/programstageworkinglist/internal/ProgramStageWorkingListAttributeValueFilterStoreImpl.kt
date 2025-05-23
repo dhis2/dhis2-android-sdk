@@ -30,11 +30,11 @@ package org.hisp.dhis.android.core.programstageworkinglist.internal
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DateFilterPeriodColumnAdapter
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringSetColumnAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
 import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
 import org.koin.core.annotation.Singleton
@@ -73,10 +73,15 @@ internal class ProgramStageWorkingListAttributeValueFilterStoreImpl(
 
         private val WHERE_UPDATE_BINDER = WhereStatementBinder { _: ProgramStageWorkingListAttributeValueFilter, _ -> }
         private val WHERE_DELETE_BINDER = WhereStatementBinder { _: ProgramStageWorkingListAttributeValueFilter, _ -> }
+    }
 
-        val CHILD_PROJECTION = SingleParentChildProjection(
-            ItemFilterTableInfo.TABLE_INFO,
-            ItemFilterTableInfo.Columns.PROGRAM_STAGE_WORKING_LIST,
-        )
+    override fun getProgramStageWorkingListAttributeValueFilterForProgramStageWorkingList(
+        programStageWorkingList: String
+    ): List<ProgramStageWorkingListAttributeValueFilter> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(ItemFilterTableInfo.Columns.PROGRAM_STAGE_WORKING_LIST, programStageWorkingList)
+            .build()
+        val query = builder.selectWhere(whereClause)
+        return selectRawQuery(query)
     }
 }

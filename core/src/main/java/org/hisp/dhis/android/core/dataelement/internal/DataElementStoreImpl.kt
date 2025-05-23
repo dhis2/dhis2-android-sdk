@@ -29,12 +29,16 @@ package org.hisp.dhis.android.core.dataelement.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.NameableWithStyleStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStoreImpl
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.DataElementTableInfo
+import org.hisp.dhis.android.core.dataset.SectionDataElementLinkTableInfo
+import org.hisp.dhis.android.core.program.ProgramStageSectionDataElementLinkTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -64,5 +68,31 @@ internal class DataElementStoreImpl(
                 w.bind(21, o.fieldMask())
             }
         }
+    }
+
+    override fun getForSection(sectionUid: String): List<DataElement> {
+        val projection = LinkTableChildProjection(
+            DataElementTableInfo.TABLE_INFO,
+            SectionDataElementLinkTableInfo.Columns.SECTION,
+            SectionDataElementLinkTableInfo.Columns.DATA_ELEMENT,
+        )
+        val sectionSqlBuilder = SQLStatementBuilderImpl(SectionDataElementLinkTableInfo.TABLE_INFO)
+        val query = sectionSqlBuilder.selectChildrenWithLinkTable(
+            projection, sectionUid, null
+        )
+        return selectRawQuery(query)
+    }
+
+    override fun getForProgramStageSection(programStageSection: String): List<DataElement> {
+        val projection = LinkTableChildProjection(
+            DataElementTableInfo.TABLE_INFO,
+            ProgramStageSectionDataElementLinkTableInfo.Columns.PROGRAM_STAGE_SECTION,
+            ProgramStageSectionDataElementLinkTableInfo.Columns.DATA_ELEMENT,
+        )
+        val sectionSqlBuilder = SQLStatementBuilderImpl(ProgramStageSectionDataElementLinkTableInfo.TABLE_INFO)
+        val query = sectionSqlBuilder.selectChildrenWithLinkTable(
+            projection, programStageSection, null
+        )
+        return selectRawQuery(query)
     }
 }

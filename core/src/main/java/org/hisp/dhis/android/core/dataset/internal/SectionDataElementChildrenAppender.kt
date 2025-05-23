@@ -27,40 +27,28 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
-import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkChildStore
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.core.dataelement.DataElementTableInfo
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStoreImpl
 import org.hisp.dhis.android.core.dataset.Section
-import org.hisp.dhis.android.core.dataset.SectionDataElementLinkTableInfo
 
 internal class SectionDataElementChildrenAppender private constructor(
-    private val linkChildStore: LinkChildStore<Section, DataElement>,
+    private val childStore: DataElementStore,
 ) : ChildrenAppender<Section>() {
     override fun appendChildren(m: Section): Section {
+        val dataElementList = childStore.getForSection(m.uid())
+
         val builder = m.toBuilder()
-        builder.dataElements(linkChildStore.getChildren(m))
+        builder.dataElements(dataElementList)
         return builder.build()
     }
 
     companion object {
-        private val CHILD_PROJECTION = LinkTableChildProjection(
-            DataElementTableInfo.TABLE_INFO,
-            SectionDataElementLinkTableInfo.Columns.SECTION,
-            SectionDataElementLinkTableInfo.Columns.DATA_ELEMENT,
-        )
 
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<Section> {
             return SectionDataElementChildrenAppender(
-                linkChildStore(
-                    databaseAdapter,
-                    SectionDataElementLinkTableInfo.TABLE_INFO,
-                    CHILD_PROJECTION,
-                ) { cursor: Cursor -> DataElement.create(cursor) },
+                DataElementStoreImpl(databaseAdapter),
             )
         }
     }

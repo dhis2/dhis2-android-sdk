@@ -76,11 +76,13 @@ internal class AttributeValueFilterStoreImpl(
         private val WHERE_DELETE_BINDER = WhereStatementBinder { _: AttributeValueFilter, _ -> }
     }
 
-    override fun getAttributeValueFilterForTrackedEntityInstanceFilter(trackedEntityInstanceFilterUid: String): List<AttributeValueFilter> {
+    override fun getAttributeValueFilterForTrackedEntityInstanceFilter(
+        trackedEntityInstanceFilterUid: String,
+    ): List<AttributeValueFilter> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(
                 ItemFilterTableInfo.Columns.TRACKED_ENTITY_INSTANCE_FILTER,
-                trackedEntityInstanceFilterUid
+                trackedEntityInstanceFilterUid,
             )
             .build()
         val selectStatement = builder.selectWhere(whereClause)

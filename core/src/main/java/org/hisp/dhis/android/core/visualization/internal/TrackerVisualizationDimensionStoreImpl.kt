@@ -65,11 +65,13 @@ internal class TrackerVisualizationDimensionStoreImpl(
         }
     }
 
-    override fun getTrackerVisualizationDimensionForTrackerVisualization(trackerVisualizationId: String): List<TrackerVisualizationDimension> {
+    override fun getTrackerVisualizationDimensionForTrackerVisualization(
+        trackerVisualizationId: String,
+    ): List<TrackerVisualizationDimension> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(
                 TrackerVisualizationDimensionTableInfo.Columns.TRACKER_VISUALIZATION,
-                trackerVisualizationId
+                trackerVisualizationId,
             ).build()
         val query = builder.selectWhere(whereClause)
         return selectRawQuery(query)

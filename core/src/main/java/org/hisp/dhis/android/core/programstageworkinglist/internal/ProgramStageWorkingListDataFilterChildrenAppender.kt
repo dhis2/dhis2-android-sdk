@@ -50,8 +50,8 @@ internal class ProgramStageWorkingListDataFilterChildrenAppender private constru
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<ProgramStageWorkingList> {
             return ProgramStageWorkingListDataFilterChildrenAppender(
                 ProgramStageWorkingListEventDataFilterStoreImpl(
-                    databaseAdapter
-                )
+                    databaseAdapter,
+                ),
             )
         }
     }

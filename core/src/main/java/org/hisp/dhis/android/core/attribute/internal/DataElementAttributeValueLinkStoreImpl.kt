@@ -60,7 +60,7 @@ internal class DataElementAttributeValueLinkStoreImpl(
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(
                 DataElementAttributeValueLinkTableInfo.Columns.DATA_ELEMENT,
-                dataElementUid
+                dataElementUid,
             ).build()
         val query = builder.selectWhere(whereClause)
         return selectRawQuery(query)

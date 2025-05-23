@@ -57,7 +57,7 @@ internal class DataElementAttributeChildrenAppender private constructor(
     companion object {
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<DataElement> {
             return DataElementAttributeChildrenAppender(
-                DataElementAttributeValueLinkStoreImpl(databaseAdapter)
+                DataElementAttributeValueLinkStoreImpl(databaseAdapter),
             )
         }
     }

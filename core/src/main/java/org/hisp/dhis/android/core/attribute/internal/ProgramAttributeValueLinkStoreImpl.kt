@@ -61,7 +61,7 @@ internal class ProgramAttributeValueLinkStoreImpl(
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(
                 ProgramAttributeValueLinkTableInfo.Columns.PROGRAM,
-                programUid
+                programUid,
             ).build()
         val query = builder.selectWhere(whereClause)
         return selectRawQuery(query)

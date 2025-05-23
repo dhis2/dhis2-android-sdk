@@ -49,7 +49,7 @@ internal class ProgramStageWorkingListAttributeValueFilterChildrenAppender priva
     companion object {
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<ProgramStageWorkingList> {
             return ProgramStageWorkingListAttributeValueFilterChildrenAppender(
-                ProgramStageWorkingListAttributeValueFilterStoreImpl(databaseAdapter)
+                ProgramStageWorkingListAttributeValueFilterStoreImpl(databaseAdapter),
             )
         }
     }

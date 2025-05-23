@@ -65,11 +65,13 @@ internal class TrackedEntityInstanceEventFilterStoreImpl(
         private val WHERE_DELETE_BINDER = WhereStatementBinder { _: TrackedEntityInstanceEventFilter, _ -> }
     }
 
-    override fun getEventFiltersForTrackedEntityInstanceFilter(trackedEntityInstanceFilterUid: String): List<TrackedEntityInstanceEventFilter> {
+    override fun getEventFiltersForTrackedEntityInstanceFilter(
+        trackedEntityInstanceFilterUid: String,
+    ): List<TrackedEntityInstanceEventFilter> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(
                 TrackedEntityInstanceEventFilterTableInfo.Columns.TRACKED_ENTITY_INSTANCE_FILTER,
-                trackedEntityInstanceFilterUid
+                trackedEntityInstanceFilterUid,
             )
             .build()
         val query = builder.selectWhere(whereClause)

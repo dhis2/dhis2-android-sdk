@@ -27,13 +27,9 @@
  */
 package org.hisp.dhis.android.core.note.internal
 
-import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.singleParentChildStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.note.Note
 
 internal class NoteForEnrollmentChildrenAppender private constructor(
     private val childStore: NoteStore,

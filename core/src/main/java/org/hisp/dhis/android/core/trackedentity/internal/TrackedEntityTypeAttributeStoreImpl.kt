@@ -59,10 +59,14 @@ internal class TrackedEntityTypeAttributeStoreImpl(
         }
     }
 
-    override fun getTrackedEntityTypeAttributeForTrackedEntityType(trackedEntityTypeUid: String): List<TrackedEntityTypeAttribute> {
+    override fun getTrackedEntityTypeAttributeForTrackedEntityType(
+        trackedEntityTypeUid: String,
+    ): List<TrackedEntityTypeAttribute> {
         val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(TrackedEntityTypeAttributeTableInfo.Columns.TRACKED_ENTITY_TYPE, trackedEntityTypeUid)
-            .build()
+            .appendKeyStringValue(
+                TrackedEntityTypeAttributeTableInfo.Columns.TRACKED_ENTITY_TYPE,
+                trackedEntityTypeUid,
+            ).build()
         val selectStatement = builder.selectWhere(whereClause)
         return selectRawQuery(selectStatement)
     }

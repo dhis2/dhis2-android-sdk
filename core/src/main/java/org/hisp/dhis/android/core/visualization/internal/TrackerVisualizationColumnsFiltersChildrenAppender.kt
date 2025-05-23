@@ -48,7 +48,7 @@ internal class TrackerVisualizationColumnsFiltersChildrenAppender private constr
     companion object {
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<TrackerVisualization> {
             return TrackerVisualizationColumnsFiltersChildrenAppender(
-                TrackerVisualizationDimensionStoreImpl(databaseAdapter)
+                TrackerVisualizationDimensionStoreImpl(databaseAdapter),
             )
         }
     }

@@ -44,8 +44,8 @@ internal class TrackedEntityInstanceFilterEvenFilterChildrenAppender private con
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<TrackedEntityInstanceFilter> {
             return TrackedEntityInstanceFilterEvenFilterChildrenAppender(
                 TrackedEntityInstanceEventFilterStoreImpl(
-                    databaseAdapter
-                )
+                    databaseAdapter,
+                ),
             )
         }
     }

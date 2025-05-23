@@ -58,11 +58,13 @@ internal class VisualizationDimensionItemStoreImpl(
         }
     }
 
-    override fun getVisualizationDimensionItemForVisualization(visualizationId: String): List<VisualizationDimensionItem> {
+    override fun getVisualizationDimensionItemForVisualization(
+        visualizationId: String,
+    ): List<VisualizationDimensionItem> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(
                 VisualizationDimensionItemTableInfo.Columns.VISUALIZATION,
-                visualizationId
+                visualizationId,
             ).build()
         val query = builder.selectWhere(whereClause)
         return selectRawQuery(query)

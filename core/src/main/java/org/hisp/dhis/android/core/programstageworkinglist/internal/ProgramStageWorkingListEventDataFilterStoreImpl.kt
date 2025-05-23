@@ -77,12 +77,12 @@ internal class ProgramStageWorkingListEventDataFilterStoreImpl(
     }
 
     override fun getProgramStageWorkingListEventDataFilterForProgramStageWorkingList(
-        programStageWorkingListUid: String
+        programStageWorkingListUid: String,
     ): List<ProgramStageWorkingListEventDataFilter> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(
                 ItemFilterTableInfo.Columns.PROGRAM_STAGE_WORKING_LIST,
-                programStageWorkingListUid
+                programStageWorkingListUid,
             ).build()
         val query = builder.selectWhere(whereClause)
         return selectRawQuery(query)

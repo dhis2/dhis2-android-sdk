@@ -45,8 +45,8 @@ internal class TrackedEntityInstanceFilterAttributeValueFilterChildrenAppender p
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<TrackedEntityInstanceFilter> {
             return TrackedEntityInstanceFilterAttributeValueFilterChildrenAppender(
                 AttributeValueFilterStoreImpl(
-                    databaseAdapter
-                )
+                    databaseAdapter,
+                ),
             )
         }
     }

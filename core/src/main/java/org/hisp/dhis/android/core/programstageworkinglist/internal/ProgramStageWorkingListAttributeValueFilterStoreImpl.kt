@@ -76,7 +76,7 @@ internal class ProgramStageWorkingListAttributeValueFilterStoreImpl(
     }
 
     override fun getProgramStageWorkingListAttributeValueFilterForProgramStageWorkingList(
-        programStageWorkingList: String
+        programStageWorkingList: String,
     ): List<ProgramStageWorkingListAttributeValueFilter> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(ItemFilterTableInfo.Columns.PROGRAM_STAGE_WORKING_LIST, programStageWorkingList)

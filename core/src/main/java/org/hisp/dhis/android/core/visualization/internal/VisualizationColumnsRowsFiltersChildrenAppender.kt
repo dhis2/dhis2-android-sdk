@@ -60,7 +60,7 @@ internal class VisualizationColumnsRowsFiltersChildrenAppender private construct
     companion object {
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<Visualization> {
             return VisualizationColumnsRowsFiltersChildrenAppender(
-                VisualizationDimensionItemStoreImpl(databaseAdapter)
+                VisualizationDimensionItemStoreImpl(databaseAdapter),
             )
         }
     }

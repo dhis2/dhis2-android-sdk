@@ -185,7 +185,9 @@ internal class TrackedEntityAttributeValueStoreImpl(
         )
     }
 
-    override fun getTrackedEntityAttributeValueForTrackedEntityInstance(trackedEntityInstanceUid: String): List<TrackedEntityAttributeValue> {
+    override fun getTrackedEntityAttributeValueForTrackedEntityInstance(
+        trackedEntityInstanceUid: String,
+    ): List<TrackedEntityAttributeValue> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(
                 TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,

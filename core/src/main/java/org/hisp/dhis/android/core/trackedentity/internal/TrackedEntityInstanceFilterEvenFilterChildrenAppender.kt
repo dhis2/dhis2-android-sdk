@@ -27,30 +27,25 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.singleParentChildStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 
 internal class TrackedEntityInstanceFilterEvenFilterChildrenAppender private constructor(
-    private val childStore: SingleParentChildStore<TrackedEntityInstanceFilter, TrackedEntityInstanceEventFilter>,
+    private val childStore: TrackedEntityInstanceEventFilterStore,
 ) : ChildrenAppender<TrackedEntityInstanceFilter>() {
 
     override fun appendChildren(m: TrackedEntityInstanceFilter): TrackedEntityInstanceFilter {
-        val builder = m.toBuilder()
-        return builder.eventFilters(childStore.getChildren(m)).build()
+        val children = childStore.getEventFiltersForTrackedEntityInstanceFilter(m.uid())
+        return m.toBuilder().eventFilters(children).build()
     }
 
     companion object {
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<TrackedEntityInstanceFilter> {
             return TrackedEntityInstanceFilterEvenFilterChildrenAppender(
-                singleParentChildStore(
-                    databaseAdapter,
-                    TrackedEntityInstanceEventFilterStoreImpl.CHILD_PROJECTION,
-                ) { cursor: Cursor -> TrackedEntityInstanceEventFilter.create(cursor) },
+                TrackedEntityInstanceEventFilterStoreImpl(
+                    databaseAdapter
+                )
             )
         }
     }

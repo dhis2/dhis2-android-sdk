@@ -31,4 +31,6 @@ package org.hisp.dhis.android.core.attribute.internal
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.attribute.ProgramAttributeValueLink
 
-internal interface ProgramAttributeValueLinkStore : LinkStore<ProgramAttributeValueLink>
+internal interface ProgramAttributeValueLinkStore : LinkStore<ProgramAttributeValueLink> {
+    fun getLinksForProgram(programUid: String): List<ProgramAttributeValueLink>
+}

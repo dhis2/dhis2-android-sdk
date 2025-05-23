@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinde
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
 import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo
 import org.hisp.dhis.android.core.event.EventDataFilter
 import org.koin.core.annotation.Singleton
@@ -75,11 +74,6 @@ internal class EventDataFilterStoreImpl(
 
         private val WHERE_UPDATE_BINDER = WhereStatementBinder { _: EventDataFilter, _ -> }
         private val WHERE_DELETE_BINDER = WhereStatementBinder { _: EventDataFilter, _ -> }
-
-        val CHILD_PROJECTION = SingleParentChildProjection(
-            ItemFilterTableInfo.TABLE_INFO,
-            ItemFilterTableInfo.Columns.EVENT_FILTER,
-        )
     }
 
     override fun getEventDataFiltersForEventFilter(eventFilterUid: String): List<EventDataFilter> {

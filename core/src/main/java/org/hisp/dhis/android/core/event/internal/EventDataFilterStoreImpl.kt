@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.event.internal
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DateFilterPeriodColumnAdapter
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringSetColumnAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
@@ -79,5 +80,13 @@ internal class EventDataFilterStoreImpl(
             ItemFilterTableInfo.TABLE_INFO,
             ItemFilterTableInfo.Columns.EVENT_FILTER,
         )
+    }
+
+    override fun getEventDataFiltersForEventFilter(eventFilterUid: String): List<EventDataFilter> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(ItemFilterTableInfo.Columns.EVENT_FILTER, eventFilterUid)
+            .build()
+        val query = builder.selectWhere(whereClause)
+        return selectRawQuery(query)
     }
 }

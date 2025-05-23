@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinde
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStoreImpl
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkTableInfo
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkTableInfo
 import org.hisp.dhis.android.core.category.CategoryOptionTableInfo
@@ -74,5 +75,19 @@ internal class CategoryOptionStoreImpl(
             projection, categoryOptionComboUid, null
         )
         return selectRawQuery(query)
+    }
+
+    override fun getForCategory(categoryUid: String): List<CategoryOption> {
+        val projection = LinkTableChildProjection(
+            CategoryOptionTableInfo.TABLE_INFO,
+            CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY,
+            CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION,
+        )
+        val sectionSqlBuilder = SQLStatementBuilderImpl(CategoryCategoryOptionLinkTableInfo.TABLE_INFO)
+        val query = sectionSqlBuilder.selectChildrenWithLinkTable(
+            projection, categoryUid, null
+        )
+        return selectRawQuery(query)
+
     }
 }

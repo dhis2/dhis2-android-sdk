@@ -27,32 +27,31 @@
  */
 package org.hisp.dhis.android.core.programstageworkinglist.internal
 
-import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.singleParentChildStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
-import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListEventDataFilter
 
 internal class ProgramStageWorkingListDataFilterChildrenAppender private constructor(
-    private val childStore: SingleParentChildStore<ProgramStageWorkingList, ProgramStageWorkingListEventDataFilter>,
+    private val childStore: ProgramStageWorkingListEventDataFilterStore,
 ) : ChildrenAppender<ProgramStageWorkingList>() {
 
     override fun appendChildren(m: ProgramStageWorkingList): ProgramStageWorkingList {
-        val builder = m.toBuilder()
-        val children = childStore.getChildren(m).filter { it.dataItem() != null }
-        val queryCriteria = m.programStageQueryCriteria()?.toBuilder()?.dataFilters(children)?.build()
-        return builder.programStageQueryCriteria(queryCriteria).build()
+        val children = childStore.getProgramStageWorkingListEventDataFilterForProgramStageWorkingList(m.uid())
+            .filter { it.dataItem() != null }
+        val queryCriteria = m.programStageQueryCriteria()?.toBuilder()
+            ?.dataFilters(children)
+            ?.build()
+        return m.toBuilder()
+            .programStageQueryCriteria(queryCriteria)
+            .build()
     }
 
     companion object {
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<ProgramStageWorkingList> {
             return ProgramStageWorkingListDataFilterChildrenAppender(
-                singleParentChildStore(
+                ProgramStageWorkingListEventDataFilterStoreImpl(
                     databaseAdapter,
-                    ProgramStageWorkingListEventDataFilterStoreImpl.CHILD_PROJECTION,
-                ) { cursor: Cursor -> ProgramStageWorkingListEventDataFilter.create(cursor) },
+                ),
             )
         }
     }

@@ -28,28 +28,24 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.singleParentChildStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 
 internal class TrackedEntityInstanceFilterAttributeValueFilterChildrenAppender private constructor(
-    private val childStore: SingleParentChildStore<TrackedEntityInstanceFilter, AttributeValueFilter>,
+    private val childStore: AttributeValueFilterStore,
 ) : ChildrenAppender<TrackedEntityInstanceFilter>() {
 
     override fun appendChildren(m: TrackedEntityInstanceFilter): TrackedEntityInstanceFilter {
-        val criteria = m.entityQueryCriteria().toBuilder().attributeValueFilters(childStore.getChildren(m)).build()
+        val children = childStore.getAttributeValueFilterForTrackedEntityInstanceFilter(m.uid())
+        val criteria = m.entityQueryCriteria().toBuilder().attributeValueFilters(children).build()
         return m.toBuilder().entityQueryCriteria(criteria).build()
     }
 
     companion object {
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<TrackedEntityInstanceFilter> {
             return TrackedEntityInstanceFilterAttributeValueFilterChildrenAppender(
-                singleParentChildStore(
+                AttributeValueFilterStoreImpl(
                     databaseAdapter,
-                    AttributeValueFilterStoreImpl.CHILD_PROJECTION,
-                    AttributeValueFilter::create,
                 ),
             )
         }

@@ -32,4 +32,8 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
 
 internal interface ProgramStageWorkingListAttributeValueFilterStore :
-    ObjectWithoutUidStore<ProgramStageWorkingListAttributeValueFilter>
+    ObjectWithoutUidStore<ProgramStageWorkingListAttributeValueFilter> {
+    fun getProgramStageWorkingListAttributeValueFilterForProgramStageWorkingList(
+        programStageWorkingList: String,
+    ): List<ProgramStageWorkingListAttributeValueFilter>
+}

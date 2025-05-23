@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.visualization.internal
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.TrackerVisualizationDimensionRepetitionColumnAdapter
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidListColumnAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
@@ -62,5 +63,17 @@ internal class TrackerVisualizationDimensionStoreImpl(
             w.bind(8, o.filter())
             w.bind(9, TrackerVisualizationDimensionRepetitionColumnAdapter.serialize(o.repetition()))
         }
+    }
+
+    override fun getTrackerVisualizationDimensionForTrackerVisualization(
+        trackerVisualizationId: String,
+    ): List<TrackerVisualizationDimension> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(
+                TrackerVisualizationDimensionTableInfo.Columns.TRACKER_VISUALIZATION,
+                trackerVisualizationId,
+            ).build()
+        val query = builder.selectWhere(whereClause)
+        return selectRawQuery(query)
     }
 }

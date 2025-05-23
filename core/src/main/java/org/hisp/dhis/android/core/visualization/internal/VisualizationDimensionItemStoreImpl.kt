@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.visualization.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
@@ -55,5 +56,17 @@ internal class VisualizationDimensionItemStoreImpl(
             w.bind(4, o.dimensionItem())
             w.bind(5, o.dimensionItemType())
         }
+    }
+
+    override fun getVisualizationDimensionItemForVisualization(
+        visualizationId: String,
+    ): List<VisualizationDimensionItem> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(
+                VisualizationDimensionItemTableInfo.Columns.VISUALIZATION,
+                visualizationId,
+            ).build()
+        val query = builder.selectWhere(whereClause)
+        return selectRawQuery(query)
     }
 }

@@ -60,7 +60,7 @@ internal class DataElementLegendSetLinkStoreImpl(
 
     override fun getLinksForDataElement(dataElementUid: String): List<ObjectWithUid> {
         val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(DataElementLegendSetLinkTableInfo.CHILD_PROJECTION.parentColumn, dataElementUid)
+            .appendKeyStringValue(DataElementLegendSetLinkTableInfo.Columns.DATA_ELEMENT, dataElementUid)
             .build()
         val selectStatement = builder.selectWhere(whereClause)
         return selectRawQuery(selectStatement).map { ObjectWithUid.create(it.legendSet()) }

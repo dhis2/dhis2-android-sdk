@@ -41,4 +41,5 @@ internal interface TrackedEntityDataValueStore : ObjectWithoutUidStore<TrackedEn
     fun removeDeletedDataValuesByEvent(eventUid: String)
     fun removeUnassignedDataValuesByEvent(eventUid: String)
     fun setSyncStateByEvent(eventUid: String, syncState: State)
+    fun getTrackedEntityDataValueForEvent(eventUid: String): List<TrackedEntityDataValue>
 }

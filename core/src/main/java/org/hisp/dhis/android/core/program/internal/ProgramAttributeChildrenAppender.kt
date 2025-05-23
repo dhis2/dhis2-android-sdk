@@ -28,42 +28,32 @@
 
 package org.hisp.dhis.android.core.program.internal
 
-import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.attribute.AttributeValue
-import org.hisp.dhis.android.core.attribute.ProgramAttributeValueLink
-import org.hisp.dhis.android.core.attribute.ProgramAttributeValueLinkTableInfo
+import org.hisp.dhis.android.core.attribute.internal.ProgramAttributeValueLinkStore
+import org.hisp.dhis.android.core.attribute.internal.ProgramAttributeValueLinkStoreImpl
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.Program
 
 internal class ProgramAttributeChildrenAppender private constructor(
-    private val linkChildStore: SingleParentChildStore<Program, AttributeValue>,
+    private val linkStore: ProgramAttributeValueLinkStore,
 ) : ChildrenAppender<Program>() {
 
     override fun appendChildren(m: Program): Program {
-        val builder = m.toBuilder()
-        builder.attributeValues(linkChildStore.getChildren(m))
-        return builder.build()
+        val attributeValues = linkStore.getLinksForProgram(m.uid())
+            .map {
+                AttributeValue.builder()
+                    .attribute(ObjectWithUid.create(it.attribute()))
+                    .value(it.value())
+                    .build()
+            }
+        return m.toBuilder().attributeValues(attributeValues).build()
     }
 
     companion object {
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<Program> {
-            return ProgramAttributeChildrenAppender(
-                StoreFactory.singleParentChildStore(
-                    databaseAdapter,
-                    ProgramAttributeValueLinkTableInfo.CHILD_PROJECTION,
-                ) { cursor: Cursor ->
-                    val linkTable = ProgramAttributeValueLink.create(cursor)
-
-                    AttributeValue.builder()
-                        .attribute(ObjectWithUid.create(linkTable.attribute()))
-                        .value(linkTable.value())
-                        .build()
-                },
-            )
+            return ProgramAttributeChildrenAppender(ProgramAttributeValueLinkStoreImpl(databaseAdapter))
         }
     }
 }

@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorExecutorImpl
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
@@ -49,20 +48,6 @@ internal object StoreFactory {
             linkTableChildProjection,
             databaseAdapter,
             SQLStatementBuilderImpl(linkTableInfo),
-            CursorExecutorImpl(childFactory),
-        )
-    }
-
-    @JvmStatic
-    fun <P : ObjectWithUidInterface, C> singleParentChildStore(
-        databaseAdapter: DatabaseAdapter,
-        childProjection: SingleParentChildProjection,
-        childFactory: (Cursor) -> C,
-    ): SingleParentChildStore<P, C> {
-        return SingleParentChildStoreImpl(
-            childProjection,
-            databaseAdapter,
-            SQLStatementBuilderImpl(childProjection.childTableInfo),
             CursorExecutorImpl(childFactory),
         )
     }

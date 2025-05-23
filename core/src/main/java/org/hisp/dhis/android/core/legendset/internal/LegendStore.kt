@@ -31,4 +31,6 @@ package org.hisp.dhis.android.core.legendset.internal
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.legendset.Legend
 
-internal interface LegendStore : IdentifiableObjectStore<Legend>
+internal interface LegendStore : IdentifiableObjectStore<Legend> {
+    fun getLinksForLegendSet(legendSetUid: String): List<Legend>
+}

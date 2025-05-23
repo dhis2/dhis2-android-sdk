@@ -32,4 +32,8 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListEventDataFilter
 
 internal interface ProgramStageWorkingListEventDataFilterStore :
-    ObjectWithoutUidStore<ProgramStageWorkingListEventDataFilter>
+    ObjectWithoutUidStore<ProgramStageWorkingListEventDataFilter> {
+    fun getProgramStageWorkingListEventDataFilterForProgramStageWorkingList(
+        programStageWorkingListUid: String,
+    ): List<ProgramStageWorkingListEventDataFilter>
+}

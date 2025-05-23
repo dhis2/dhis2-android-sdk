@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.legendset.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.IdentifiableStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
@@ -66,5 +67,13 @@ internal class LegendStoreImpl(
             LegendTableInfo.TABLE_INFO,
             LegendTableInfo.Columns.LEGEND_SET,
         )
+    }
+
+    override fun getLinksForLegendSet(legendSetUid: String): List<Legend> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(LegendTableInfo.Columns.LEGEND_SET, legendSetUid)
+            .build()
+        val selectStatement = builder.selectWhere(whereClause)
+        return selectRawQuery(selectStatement)
     }
 }

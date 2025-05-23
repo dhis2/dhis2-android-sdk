@@ -27,24 +27,17 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
-import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.singleParentChildStore
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.visualization.LayoutPosition
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationDimension
-import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
-import org.hisp.dhis.android.core.visualization.VisualizationDimensionItemTableInfo
 
 internal class VisualizationColumnsRowsFiltersChildrenAppender private constructor(
-    private val linkChildStore: SingleParentChildStore<Visualization, VisualizationDimensionItem>,
+    private val childStore: VisualizationDimensionItemStore,
 ) : ChildrenAppender<Visualization>() {
-    override fun appendChildren(visualization: Visualization): Visualization {
-        val items = linkChildStore.getChildren(visualization)
-        val groupedByPosition = items
+    override fun appendChildren(m: Visualization): Visualization {
+        val groupedByPosition = childStore.getVisualizationDimensionItemForVisualization(m.uid())
             .groupBy { it.position() }
             .mapValues { (_, items) ->
                 items
@@ -57,7 +50,7 @@ internal class VisualizationColumnsRowsFiltersChildrenAppender private construct
                     }
             }
 
-        return visualization.toBuilder()
+        return m.toBuilder()
             .columns(groupedByPosition[LayoutPosition.COLUMN] ?: emptyList())
             .rows(groupedByPosition[LayoutPosition.ROW] ?: emptyList())
             .filters(groupedByPosition[LayoutPosition.FILTER] ?: emptyList())
@@ -65,17 +58,9 @@ internal class VisualizationColumnsRowsFiltersChildrenAppender private construct
     }
 
     companion object {
-        private val CHILD_PROJECTION = SingleParentChildProjection(
-            VisualizationDimensionItemTableInfo.TABLE_INFO,
-            VisualizationDimensionItemTableInfo.Columns.VISUALIZATION,
-        )
-
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<Visualization> {
             return VisualizationColumnsRowsFiltersChildrenAppender(
-                singleParentChildStore(
-                    databaseAdapter,
-                    CHILD_PROJECTION,
-                ) { cursor: Cursor -> VisualizationDimensionItem.create(cursor) },
+                VisualizationDimensionItemStoreImpl(databaseAdapter),
             )
         }
     }

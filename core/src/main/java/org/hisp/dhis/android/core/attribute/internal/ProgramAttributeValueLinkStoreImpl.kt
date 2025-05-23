@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.attribute.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
@@ -54,5 +55,15 @@ internal class ProgramAttributeValueLinkStoreImpl(
             w.bind(2, o.attribute())
             w.bind(3, o.value())
         }
+    }
+
+    override fun getLinksForProgram(programUid: String): List<ProgramAttributeValueLink> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(
+                ProgramAttributeValueLinkTableInfo.Columns.PROGRAM,
+                programUid,
+            ).build()
+        val query = builder.selectWhere(whereClause)
+        return selectRawQuery(query)
     }
 }

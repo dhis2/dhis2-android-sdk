@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilterTableInfo
 import org.koin.core.annotation.Singleton
@@ -63,10 +63,18 @@ internal class TrackedEntityInstanceEventFilterStoreImpl(
 
         private val WHERE_UPDATE_BINDER = WhereStatementBinder { _: TrackedEntityInstanceEventFilter, _ -> }
         private val WHERE_DELETE_BINDER = WhereStatementBinder { _: TrackedEntityInstanceEventFilter, _ -> }
+    }
 
-        val CHILD_PROJECTION = SingleParentChildProjection(
-            TrackedEntityInstanceEventFilterTableInfo.TABLE_INFO,
-            TrackedEntityInstanceEventFilterTableInfo.Columns.TRACKED_ENTITY_INSTANCE_FILTER,
-        )
+    override fun getEventFiltersForTrackedEntityInstanceFilter(
+        trackedEntityInstanceFilterUid: String,
+    ): List<TrackedEntityInstanceEventFilter> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(
+                TrackedEntityInstanceEventFilterTableInfo.Columns.TRACKED_ENTITY_INSTANCE_FILTER,
+                trackedEntityInstanceFilterUid,
+            )
+            .build()
+        val query = builder.selectWhere(whereClause)
+        return selectRawQuery(query)
     }
 }

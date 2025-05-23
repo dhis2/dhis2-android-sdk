@@ -29,10 +29,10 @@ package org.hisp.dhis.android.core.dataset.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.dataset.DataInputPeriod
 import org.hisp.dhis.android.core.dataset.DataInputPeriodTableInfo
@@ -56,9 +56,13 @@ internal class DataInputPeriodStoreImpl(
             w.bind(3, dataInputPeriod.openingDate())
             w.bind(4, dataInputPeriod.closingDate())
         }
-        val CHILD_PROJECTION = SingleParentChildProjection(
-            DataInputPeriodTableInfo.TABLE_INFO,
-            DataInputPeriodTableInfo.Columns.DATA_SET,
-        )
+    }
+
+    override fun getDataInputPeriodForDataSet(dataSetUid: String): List<DataInputPeriod> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(DataInputPeriodTableInfo.Columns.DATA_SET, dataSetUid)
+            .build()
+        val selectStatement = builder.selectWhere(whereClause)
+        return selectRawQuery(selectStatement)
     }
 }

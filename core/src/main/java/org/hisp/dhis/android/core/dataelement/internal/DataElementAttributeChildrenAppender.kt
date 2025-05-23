@@ -28,41 +28,36 @@
 
 package org.hisp.dhis.android.core.dataelement.internal
 
-import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.attribute.AttributeValue
-import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLink
-import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLinkTableInfo
+import org.hisp.dhis.android.core.attribute.internal.DataElementAttributeValueLinkStore
+import org.hisp.dhis.android.core.attribute.internal.DataElementAttributeValueLinkStoreImpl
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataelement.DataElement
 
 internal class DataElementAttributeChildrenAppender private constructor(
-    private val linkChildStore: SingleParentChildStore<DataElement, AttributeValue>,
+    private val linkStore: DataElementAttributeValueLinkStore,
 ) : ChildrenAppender<DataElement>() {
 
     override fun appendChildren(m: DataElement): DataElement {
-        val builder = m.toBuilder()
-        builder.attributeValues(linkChildStore.getChildren(m))
-        return builder.build()
+        val attributeValues = linkStore.getLinksForDataElement(m.uid())
+            .map {
+                AttributeValue.builder()
+                    .attribute(ObjectWithUid.create(it.attribute()))
+                    .value(it.value())
+                    .build()
+            }
+
+        return m.toBuilder()
+            .attributeValues(attributeValues)
+            .build()
     }
 
     companion object {
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<DataElement> {
             return DataElementAttributeChildrenAppender(
-                StoreFactory.singleParentChildStore(
-                    databaseAdapter,
-                    DataElementAttributeValueLinkTableInfo.CHILD_PROJECTION,
-                ) { cursor: Cursor ->
-                    val linkTable = DataElementAttributeValueLink.create(cursor)
-
-                    AttributeValue.builder()
-                        .attribute(ObjectWithUid.create(linkTable.attribute()))
-                        .value(linkTable.value())
-                        .build()
-                },
+                DataElementAttributeValueLinkStoreImpl(databaseAdapter),
             )
         }
     }

@@ -27,22 +27,18 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.singleParentChildStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.event.EventDataFilter
 import org.hisp.dhis.android.core.event.EventFilter
 
 internal class EventFilterEventDataFilterChildrenAppender private constructor(
-    private val childStore: SingleParentChildStore<EventFilter, EventDataFilter>,
+    private val childStore: EventDataFilterStore,
 ) : ChildrenAppender<EventFilter>() {
     override fun appendChildren(m: EventFilter): EventFilter {
+        val children = childStore.getEventDataFiltersForEventFilter(m.uid())
         return if (m.eventQueryCriteria() != null) {
-            val criteriaBuilder = m.eventQueryCriteria()!!.toBuilder()
-            criteriaBuilder.dataFilters(childStore.getChildren(m))
-            return m.toBuilder().eventQueryCriteria(criteriaBuilder.build()).build()
+            val criteriaBuilder = m.eventQueryCriteria()!!.toBuilder().dataFilters(children).build()
+            return m.toBuilder().eventQueryCriteria(criteriaBuilder).build()
         } else {
             m
         }
@@ -50,12 +46,7 @@ internal class EventFilterEventDataFilterChildrenAppender private constructor(
 
     companion object {
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<EventFilter> {
-            return EventFilterEventDataFilterChildrenAppender(
-                singleParentChildStore(
-                    databaseAdapter,
-                    EventDataFilterStoreImpl.CHILD_PROJECTION,
-                ) { cursor: Cursor -> EventDataFilter.create(cursor) },
-            )
+            return EventFilterEventDataFilterChildrenAppender(EventDataFilterStoreImpl(databaseAdapter))
         }
     }
 }

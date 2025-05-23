@@ -36,8 +36,10 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapp
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStoreImpl
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
+import org.hisp.dhis.android.core.dataset.SectionIndicatorLinkTableInfo
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkTableInfo
 import org.hisp.dhis.android.core.indicator.Indicator
+import org.hisp.dhis.android.core.indicator.IndicatorTableInfo
 import org.hisp.dhis.android.core.indicator.IndicatorTableInfo.TABLE_INFO
 import org.koin.core.annotation.Singleton
 
@@ -80,5 +82,18 @@ internal class IndicatorStoreImpl(
         )
         return selectRawQuery(query)
 
+    }
+
+    override fun getForSection(sectionUid: String): List<Indicator> {
+        val projection = LinkTableChildProjection(
+            IndicatorTableInfo.TABLE_INFO,
+            SectionIndicatorLinkTableInfo.Columns.SECTION,
+            SectionIndicatorLinkTableInfo.Columns.INDICATOR,
+        )
+        val sectionSqlBuilder = SQLStatementBuilderImpl(SectionIndicatorLinkTableInfo.TABLE_INFO)
+        val query = sectionSqlBuilder.selectChildrenWithLinkTable(
+            projection, sectionUid, null
+        )
+        return selectRawQuery(query)
     }
 }

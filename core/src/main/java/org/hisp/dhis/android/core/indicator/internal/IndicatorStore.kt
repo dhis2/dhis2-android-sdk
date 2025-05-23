@@ -33,4 +33,5 @@ import org.hisp.dhis.android.core.indicator.Indicator
 
 internal interface IndicatorStore : IdentifiableObjectStore<Indicator> {
     fun getForDataSet(dataSetUid: String): List<Indicator>
+    fun getForSection(sectionUid: String): List<Indicator>
 }

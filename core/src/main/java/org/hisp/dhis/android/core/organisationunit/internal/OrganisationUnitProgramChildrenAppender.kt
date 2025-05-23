@@ -28,38 +28,21 @@
 package org.hisp.dhis.android.core.organisationunit.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidChildStore
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo
-import org.hisp.dhis.android.core.program.ProgramTableInfo
 
 internal class OrganisationUnitProgramChildrenAppender private constructor(
-    private val childStore: ObjectWithUidChildStore<OrganisationUnit>,
+    private val linkStore: OrganisationUnitProgramLinkStore,
 ) : ChildrenAppender<OrganisationUnit>() {
     override fun appendChildren(m: OrganisationUnit): OrganisationUnit {
-        val builder = m.toBuilder()
-        builder.programs(childStore.getChildren(m))
-        return builder.build()
+        return m.toBuilder()
+            .programs(linkStore.getLinksForOrganisationUnit(m.uid()))
+            .build()
     }
 
     companion object {
-        private val CHILD_PROJECTION = LinkTableChildProjection(
-            ProgramTableInfo.TABLE_INFO,
-            OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT,
-            OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM,
-        )
-
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<OrganisationUnit> {
-            return OrganisationUnitProgramChildrenAppender(
-                objectWithUidChildStore(
-                    databaseAdapter,
-                    OrganisationUnitProgramLinkTableInfo.TABLE_INFO,
-                    CHILD_PROJECTION,
-                ),
-            )
+            return OrganisationUnitProgramChildrenAppender(OrganisationUnitProgramLinkStoreImpl(databaseAdapter))
         }
     }
 }

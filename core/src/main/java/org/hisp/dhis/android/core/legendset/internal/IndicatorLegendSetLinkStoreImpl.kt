@@ -30,9 +30,11 @@ package org.hisp.dhis.android.core.legendset.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.indicator.IndicatorLegendSetLinkTableInfo
 import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
 import org.koin.core.annotation.Singleton
@@ -55,5 +57,13 @@ internal class IndicatorLegendSetLinkStoreImpl(
             w.bind(2, o.legendSet())
             w.bind(3, o.sortOrder())
         }
+    }
+
+    override fun getLinksForIndicator(indicatorUid: String): List<ObjectWithUid> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(IndicatorLegendSetLinkTableInfo.CHILD_PROJECTION.parentColumn, indicatorUid)
+            .build()
+        val selectStatement = builder.selectWhere(whereClause)
+        return selectRawQuery(selectStatement).map { ObjectWithUid.create(it.legendSet()) }
     }
 }

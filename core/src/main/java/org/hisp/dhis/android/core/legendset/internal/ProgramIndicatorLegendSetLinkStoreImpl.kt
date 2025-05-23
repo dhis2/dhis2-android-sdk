@@ -29,9 +29,11 @@ package org.hisp.dhis.android.core.legendset.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkTableInfo
 import org.koin.core.annotation.Singleton
@@ -54,5 +56,13 @@ internal class ProgramIndicatorLegendSetLinkStoreImpl(
             w.bind(2, o.legendSet())
             w.bind(3, o.sortOrder())
         }
+    }
+
+    override fun getLinksForProgramIndicator(programIndicatorUid: String): List<ObjectWithUid> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(ProgramIndicatorLegendSetLinkTableInfo.Columns.PROGRAM_INDICATOR, programIndicatorUid)
+            .build()
+        val selectStatement = builder.selectWhere(whereClause)
+        return selectRawQuery(selectStatement).map { ObjectWithUid.create(it.legendSet()) }
     }
 }

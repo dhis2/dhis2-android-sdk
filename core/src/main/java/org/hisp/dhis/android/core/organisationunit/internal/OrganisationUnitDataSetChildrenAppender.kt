@@ -28,38 +28,23 @@
 package org.hisp.dhis.android.core.organisationunit.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidChildStore
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo
-import org.hisp.dhis.android.core.dataset.DataSetTableInfo
+import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkStore
+import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkStoreImpl
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 
 internal class OrganisationUnitDataSetChildrenAppender private constructor(
-    private val childStore: ObjectWithUidChildStore<OrganisationUnit>,
+    private val linkStore: DataSetOrganisationUnitLinkStore,
 ) : ChildrenAppender<OrganisationUnit>() {
     override fun appendChildren(m: OrganisationUnit): OrganisationUnit {
-        val builder = m.toBuilder()
-        builder.dataSets(childStore.getChildren(m))
-        return builder.build()
+        return m.toBuilder()
+            .dataSets(linkStore.getLinksForOrganisationUnit(m.uid()))
+            .build()
     }
 
     companion object {
-        private val CHILD_PROJECTION = LinkTableChildProjection(
-            DataSetTableInfo.TABLE_INFO,
-            DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
-            DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET,
-        )
-
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<OrganisationUnit> {
-            return OrganisationUnitDataSetChildrenAppender(
-                objectWithUidChildStore(
-                    databaseAdapter,
-                    DataSetOrganisationUnitLinkTableInfo.TABLE_INFO,
-                    CHILD_PROJECTION,
-                ),
-            )
+            return OrganisationUnitDataSetChildrenAppender(DataSetOrganisationUnitLinkStoreImpl(databaseAdapter))
         }
     }
 }

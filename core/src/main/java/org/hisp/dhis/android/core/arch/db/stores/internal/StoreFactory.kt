@@ -66,17 +66,4 @@ internal object StoreFactory {
             CursorExecutorImpl(childFactory),
         )
     }
-
-    @JvmStatic
-    fun <P : ObjectWithUidInterface> objectWithUidChildStore(
-        databaseAdapter: DatabaseAdapter,
-        linkTableInfo: TableInfo,
-        childProjection: LinkTableChildProjection,
-    ): ObjectWithUidChildStore<P> {
-        return ObjectWithUidChildStoreImpl(
-            childProjection,
-            databaseAdapter,
-            SQLStatementBuilderImpl(linkTableInfo),
-        )
-    }
 }

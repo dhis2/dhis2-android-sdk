@@ -34,5 +34,4 @@ import org.hisp.dhis.android.core.category.CategoryOption
 internal interface CategoryOptionStore : IdentifiableObjectStore<CategoryOption> {
     fun getForCategoryOptionCombo(categoryOptionComboUid: String): List<CategoryOption>
     fun getForCategory(categoryUid: String): List<CategoryOption>
-
 }

@@ -43,8 +43,8 @@ internal class OrganisationUnitOrganisationUnitGroupProgramChildrenAppender priv
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<OrganisationUnit> {
             return OrganisationUnitOrganisationUnitGroupProgramChildrenAppender(
                 OrganisationUnitGroupStoreImpl(
-                    databaseAdapter
-                )
+                    databaseAdapter,
+                ),
             )
         }
     }

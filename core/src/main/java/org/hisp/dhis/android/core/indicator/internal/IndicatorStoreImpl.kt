@@ -78,10 +78,11 @@ internal class IndicatorStoreImpl(
         )
         val sectionSqlBuilder = SQLStatementBuilderImpl(DataSetIndicatorLinkTableInfo.TABLE_INFO)
         val query = sectionSqlBuilder.selectChildrenWithLinkTable(
-            projection, dataSetUid, null
+            projection,
+            dataSetUid,
+            null,
         )
         return selectRawQuery(query)
-
     }
 
     override fun getForSection(sectionUid: String): List<Indicator> {
@@ -92,7 +93,9 @@ internal class IndicatorStoreImpl(
         )
         val sectionSqlBuilder = SQLStatementBuilderImpl(SectionIndicatorLinkTableInfo.TABLE_INFO)
         val query = sectionSqlBuilder.selectChildrenWithLinkTable(
-            projection, sectionUid, null
+            projection,
+            sectionUid,
+            null,
         )
         return selectRawQuery(query)
     }

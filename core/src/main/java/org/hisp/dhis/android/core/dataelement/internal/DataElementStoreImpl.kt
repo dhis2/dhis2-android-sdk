@@ -78,7 +78,9 @@ internal class DataElementStoreImpl(
         )
         val sectionSqlBuilder = SQLStatementBuilderImpl(SectionDataElementLinkTableInfo.TABLE_INFO)
         val query = sectionSqlBuilder.selectChildrenWithLinkTable(
-            projection, sectionUid, null
+            projection,
+            sectionUid,
+            null,
         )
         return selectRawQuery(query)
     }
@@ -91,7 +93,9 @@ internal class DataElementStoreImpl(
         )
         val sectionSqlBuilder = SQLStatementBuilderImpl(ProgramStageSectionDataElementLinkTableInfo.TABLE_INFO)
         val query = sectionSqlBuilder.selectChildrenWithLinkTable(
-            projection, programStageSection, null
+            projection,
+            programStageSection,
+            null,
         )
         return selectRawQuery(query)
     }

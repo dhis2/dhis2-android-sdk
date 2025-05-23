@@ -80,7 +80,9 @@ internal class ProgramIndicatorStoreImpl(
         )
         val sectionSqlBuilder = SQLStatementBuilderImpl(ProgramStageSectionProgramIndicatorLinkTableInfo.TABLE_INFO)
         val query = sectionSqlBuilder.selectChildrenWithLinkTable(
-            projection, programStageSectionUid, null
+            projection,
+            programStageSectionUid,
+            null,
         )
         return selectRawQuery(query)
     }

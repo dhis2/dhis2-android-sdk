@@ -69,7 +69,9 @@ internal class CategoryStoreImpl(
         )
         val sectionSqlBuilder = SQLStatementBuilderImpl(CategoryCategoryComboLinkTableInfo.TABLE_INFO)
         val query = sectionSqlBuilder.selectChildrenWithLinkTable(
-            projection, categoryComboUid, null
+            projection,
+            categoryComboUid,
+            null,
         )
         return selectRawQuery(query)
     }

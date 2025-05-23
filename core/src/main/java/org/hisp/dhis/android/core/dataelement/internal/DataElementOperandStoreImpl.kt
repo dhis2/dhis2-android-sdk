@@ -68,7 +68,9 @@ internal class DataElementOperandStoreImpl(
         )
         val sectionSqlBuilder = SQLStatementBuilderImpl(SectionGreyedFieldsLinkTableInfo.TABLE_INFO)
         val query = sectionSqlBuilder.selectChildrenWithLinkTable(
-            projection, sectionUid, null
+            projection,
+            sectionUid,
+            null,
         )
         return selectRawQuery(query)
     }
@@ -81,7 +83,9 @@ internal class DataElementOperandStoreImpl(
         )
         val sectionSqlBuilder = SQLStatementBuilderImpl(DataSetCompulsoryDataElementOperandLinkTableInfo.TABLE_INFO)
         val query = sectionSqlBuilder.selectChildrenWithLinkTable(
-            projection, dataSetUid, null
+            projection,
+            dataSetUid,
+            null,
         )
         return selectRawQuery(query)
     }

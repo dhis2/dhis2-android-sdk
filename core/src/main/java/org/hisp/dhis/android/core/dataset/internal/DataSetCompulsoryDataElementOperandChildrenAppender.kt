@@ -46,7 +46,7 @@ internal class DataSetCompulsoryDataElementOperandChildrenAppender private const
     companion object {
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<DataSet> {
             return DataSetCompulsoryDataElementOperandChildrenAppender(
-                DataElementOperandStoreImpl(databaseAdapter)
+                DataElementOperandStoreImpl(databaseAdapter),
             )
         }
     }

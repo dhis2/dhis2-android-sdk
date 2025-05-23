@@ -88,7 +88,9 @@ internal class TrackedEntityAttributeStoreImpl(
 
         val sectionSqlBuilder = SQLStatementBuilderImpl(ProgramSectionAttributeLinkTableInfo.TABLE_INFO)
         val query = sectionSqlBuilder.selectChildrenWithLinkTable(
-            projection, programSectionUid, null
+            projection,
+            programSectionUid,
+            null,
         )
         return selectRawQuery(query)
     }

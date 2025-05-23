@@ -71,7 +71,9 @@ internal class OrganisationUnitGroupStoreImpl(
         )
         val sectionSqlBuilder = SQLStatementBuilderImpl(OrganisationUnitOrganisationUnitGroupLinkTableInfo.TABLE_INFO)
         val query = sectionSqlBuilder.selectChildrenWithLinkTable(
-            projection, organisationUnitId, null
+            projection,
+            organisationUnitId,
+            null,
         )
         return selectRawQuery(query)
     }

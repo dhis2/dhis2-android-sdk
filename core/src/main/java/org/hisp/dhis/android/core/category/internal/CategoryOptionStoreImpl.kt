@@ -72,7 +72,9 @@ internal class CategoryOptionStoreImpl(
         )
         val sectionSqlBuilder = SQLStatementBuilderImpl(CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO)
         val query = sectionSqlBuilder.selectChildrenWithLinkTable(
-            projection, categoryOptionComboUid, null
+            projection,
+            categoryOptionComboUid,
+            null,
         )
         return selectRawQuery(query)
     }
@@ -85,9 +87,10 @@ internal class CategoryOptionStoreImpl(
         )
         val sectionSqlBuilder = SQLStatementBuilderImpl(CategoryCategoryOptionLinkTableInfo.TABLE_INFO)
         val query = sectionSqlBuilder.selectChildrenWithLinkTable(
-            projection, categoryUid, null
+            projection,
+            categoryUid,
+            null,
         )
         return selectRawQuery(query)
-
     }
 }

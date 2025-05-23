@@ -31,4 +31,6 @@ package org.hisp.dhis.android.core.dataelement.internal
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
 
-internal interface DataElementOperandStore : IdentifiableObjectStore<DataElementOperand>
+internal interface DataElementOperandStore : IdentifiableObjectStore<DataElementOperand> {
+    fun getForSection(sectionUid: String): List<DataElementOperand>
+}

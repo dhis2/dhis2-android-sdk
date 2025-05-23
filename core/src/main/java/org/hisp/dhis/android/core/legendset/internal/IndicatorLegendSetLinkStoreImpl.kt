@@ -61,7 +61,7 @@ internal class IndicatorLegendSetLinkStoreImpl(
 
     override fun getLinksForIndicator(indicatorUid: String): List<ObjectWithUid> {
         val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(IndicatorLegendSetLinkTableInfo.CHILD_PROJECTION.parentColumn, indicatorUid)
+            .appendKeyStringValue(IndicatorLegendSetLinkTableInfo.Columns.INDICATOR, indicatorUid)
             .build()
         val selectStatement = builder.selectWhere(whereClause)
         return selectRawQuery(selectStatement).map { ObjectWithUid.create(it.legendSet()) }

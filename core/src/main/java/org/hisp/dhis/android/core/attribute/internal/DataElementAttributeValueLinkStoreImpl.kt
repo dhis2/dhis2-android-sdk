@@ -57,10 +57,11 @@ internal class DataElementAttributeValueLinkStoreImpl(
     }
 
     override fun getLinksForDataElement(dataElementUid: String): List<DataElementAttributeValueLink> {
-        val projection = DataElementAttributeValueLinkTableInfo.CHILD_PROJECTION.parentColumn
         val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(projection, dataElementUid)
-            .build()
+            .appendKeyStringValue(
+                DataElementAttributeValueLinkTableInfo.Columns.DATA_ELEMENT,
+                dataElementUid
+            ).build()
         val query = builder.selectWhere(whereClause)
         return selectRawQuery(query)
     }

@@ -27,41 +27,24 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkChildStore
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.program.ProgramSection
-import org.hisp.dhis.android.core.program.ProgramSectionAttributeLinkTableInfo
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStoreImpl
 
 internal class ProgramSectionAttributeChildrenAppender private constructor(
-    private val linkChildStore: LinkChildStore<ProgramSection, TrackedEntityAttribute>,
+    private val linkStore: TrackedEntityAttributeStore,
 ) : ChildrenAppender<ProgramSection>() {
     override fun appendChildren(m: ProgramSection): ProgramSection {
         val builder = m.toBuilder()
-        builder.attributes(linkChildStore.getChildren(m))
+        builder.attributes(linkStore.getForProgramSection(m.uid()))
         return builder.build()
     }
 
     companion object {
-        val CHILD_PROJECTION = LinkTableChildProjection(
-            TrackedEntityAttributeTableInfo.TABLE_INFO,
-            ProgramSectionAttributeLinkTableInfo.Columns.PROGRAM_SECTION,
-            ProgramSectionAttributeLinkTableInfo.Columns.ATTRIBUTE,
-        )
-
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<ProgramSection> {
-            return ProgramSectionAttributeChildrenAppender(
-                linkChildStore(
-                    databaseAdapter,
-                    ProgramSectionAttributeLinkTableInfo.TABLE_INFO,
-                    CHILD_PROJECTION,
-                ) { cursor: Cursor -> TrackedEntityAttribute.create(cursor) },
-            )
+            return ProgramSectionAttributeChildrenAppender(TrackedEntityAttributeStoreImpl(databaseAdapter))
         }
     }
 }

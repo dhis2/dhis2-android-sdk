@@ -33,4 +33,5 @@ import org.hisp.dhis.android.core.dataelement.DataElementOperand
 
 internal interface DataElementOperandStore : IdentifiableObjectStore<DataElementOperand> {
     fun getForSection(sectionUid: String): List<DataElementOperand>
+    fun getForDataSet(dataSetUid: String): List<DataElementOperand>
 }

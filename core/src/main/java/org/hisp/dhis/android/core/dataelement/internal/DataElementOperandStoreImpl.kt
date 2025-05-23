@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableC
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.dataelement.DataElementOperandTableInfo
+import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLinkTableInfo
 import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLinkTableInfo
 import org.koin.core.annotation.Singleton
 
@@ -68,6 +69,19 @@ internal class DataElementOperandStoreImpl(
         val sectionSqlBuilder = SQLStatementBuilderImpl(SectionGreyedFieldsLinkTableInfo.TABLE_INFO)
         val query = sectionSqlBuilder.selectChildrenWithLinkTable(
             projection, sectionUid, null
+        )
+        return selectRawQuery(query)
+    }
+
+    override fun getForDataSet(dataSetUid: String): List<DataElementOperand> {
+        val projection = LinkTableChildProjection(
+            DataElementOperandTableInfo.TABLE_INFO,
+            DataSetCompulsoryDataElementOperandLinkTableInfo.Columns.DATA_SET,
+            DataSetCompulsoryDataElementOperandLinkTableInfo.Columns.DATA_ELEMENT_OPERAND,
+        )
+        val sectionSqlBuilder = SQLStatementBuilderImpl(DataSetCompulsoryDataElementOperandLinkTableInfo.TABLE_INFO)
+        val query = sectionSqlBuilder.selectChildrenWithLinkTable(
+            projection, dataSetUid, null
         )
         return selectRawQuery(query)
     }

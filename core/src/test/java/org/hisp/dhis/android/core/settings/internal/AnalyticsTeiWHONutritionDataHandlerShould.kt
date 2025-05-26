@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.ChildElementHandlerImpl
 import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionData
 import org.junit.Before
@@ -58,7 +59,7 @@ class AnalyticsTeiWHONutritionDataHandlerShould {
     }
 
     @Test
-    fun call_data_handlers() {
+    fun call_data_handlers() = runTest {
         analyticsTeiSettingHandler.handleMany(whoData.teiSetting()!!, listOf(whoData))
 
         verify(teiDataElementHandler).handleMany(any(), any(), any())

@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.settings.internal.AnalyticsDhisVisualizationCleaner
 import org.hisp.dhis.android.core.visualization.Visualization
@@ -67,13 +68,13 @@ class VisualizationHandlerShould {
     }
 
     @Test
-    fun call_items_handler() {
+    fun call_items_handler() = runTest {
         visualizationHandler.handleMany(listOf(visualization))
         verify(visualizationDimensionItemHandler).handleMany(any(), any())
     }
 
     @Test
-    fun call_collection_cleaner() {
+    fun call_collection_cleaner() = runTest {
         visualizationHandler.handleMany(listOf(visualization))
         verify(visualizationCollectionCleaner).deleteNotPresent(any())
     }

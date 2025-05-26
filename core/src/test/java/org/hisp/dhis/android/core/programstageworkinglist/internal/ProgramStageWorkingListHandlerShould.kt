@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.programstageworkinglist.internal
 
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageQueryCriteria
@@ -93,13 +94,13 @@ class ProgramStageWorkingListHandlerShould {
     }
 
     @Test
-    fun handle_event_filters() {
+    fun handle_event_filters() = runTest {
         handler.handleMany(workingLists)
         verify(eventDataFilterHandler).handleMany(eq(eventDataFilters), any())
     }
 
     @Test
-    fun handle_attribute_filters() {
+    fun handle_attribute_filters() = runTest {
         handler.handleMany(workingLists)
         verify(attributeValueFilterHandler).handleMany(eq(attributeValueFilters), any())
     }

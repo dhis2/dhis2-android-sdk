@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.user.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.user.User
@@ -92,7 +93,7 @@ class UserHandlerShould {
     }
 
     @Test
-    fun add_username_groups_and_roles_from_credentials() {
+    fun add_username_groups_and_roles_from_credentials() = runTest {
         userHandler.handle(user)
 
         verify(userRoleCollectionCleaner, times(1)).deleteNotPresent(eq(userRoles))

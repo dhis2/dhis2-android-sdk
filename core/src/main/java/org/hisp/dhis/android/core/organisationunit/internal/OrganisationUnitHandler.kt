@@ -66,7 +66,9 @@ internal class OrganisationUnitHandler(
         this.scope = scope
     }
 
-    override suspend fun beforeCollectionHandled(oCollection: Collection<OrganisationUnit>): Collection<OrganisationUnit> {
+    override suspend fun beforeCollectionHandled(
+        oCollection: Collection<OrganisationUnit>,
+    ): Collection<OrganisationUnit> {
         return oCollection
     }
 

@@ -25,82 +25,73 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.internal;
+package org.hisp.dhis.android.core.program.internal
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
+import org.hisp.dhis.android.core.common.ValueTypeRendering
+import org.hisp.dhis.android.core.common.valuetype.rendering.internal.ValueTypeRenderingHandler
+import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.dataelement.internal.DataElementHandler
+import org.hisp.dhis.android.core.program.ProgramStageDataElement
+import org.hisp.dhis.android.core.program.ProgramStageDataElementTableInfo
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import org.mockito.ArgumentMatchers
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.ValueTypeRendering;
-import org.hisp.dhis.android.core.common.valuetype.rendering.internal.ValueTypeRenderingHandler;
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.internal.DataElementHandler;
-import org.hisp.dhis.android.core.program.ProgramStageDataElement;
-import org.hisp.dhis.android.core.program.ProgramStageDataElementTableInfo;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-@RunWith(JUnit4.class)
-public class ProgramStageDataElementHandlerShould {
-
-    @Mock
-    private ProgramStageDataElementStore programStageDataElementStore;
-
-    @Mock
-    private DataElementHandler dataElementHandler;
-
-    @Mock
-    private ValueTypeRenderingHandler renderTypeHandler;
-
-    @Mock
-    private ProgramStageDataElement programStageDataElement;
-
-    @Mock
-    private DataElement dataElement;
-
-    @Mock
-    private ValueTypeRendering valueTypeRendering;
+@RunWith(JUnit4::class)
+class ProgramStageDataElementHandlerShould {
+    private val programStageDataElementStore: ProgramStageDataElementStore = mock()
+    private val dataElementHandler: DataElementHandler = mock()
+    private val renderTypeHandler: ValueTypeRenderingHandler = mock()
+    private val programStageDataElement: ProgramStageDataElement = mock()
+    private val dataElement: DataElement = mock()
+    private val valueTypeRendering: ValueTypeRendering = mock()
 
     // object to test
-    private ProgramStageDataElementHandler handler;
+    private lateinit var handler: ProgramStageDataElementHandler
 
     @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        handler = new ProgramStageDataElementHandler(programStageDataElementStore, dataElementHandler, renderTypeHandler);
-        when(programStageDataElement.uid()).thenReturn("program_stage_data_element");
-        when(programStageDataElement.dataElement()).thenReturn(dataElement);
-        when(dataElement.uid()).thenReturn("test_data_element_uid");
-        when(programStageDataElement.renderType()).thenReturn(valueTypeRendering);
-
-        when(programStageDataElementStore.updateOrInsert(any())).thenReturn(HandleAction.Insert);
+    @Throws(Exception::class)
+    fun setUp() {
+        handler = ProgramStageDataElementHandler(programStageDataElementStore, dataElementHandler, renderTypeHandler)
+        whenever(programStageDataElement.uid()).thenReturn("program_stage_data_element")
+        whenever(programStageDataElement.dataElement()).thenReturn(dataElement)
+        whenever(dataElement.uid()).thenReturn("test_data_element_uid")
+        whenever(programStageDataElement.renderType()).thenReturn(valueTypeRendering)
+        whenever(programStageDataElementStore.updateOrInsert(ArgumentMatchers.any())).thenReturn(HandleAction.Insert)
     }
 
     @Test
-    public void call_data_element_handler() throws Exception {
-        handler.handle(programStageDataElement);
-        verify(dataElementHandler).handle(dataElement);
+    @Throws(Exception::class)
+    fun call_data_element_handler() = runTest {
+        handler.handle(programStageDataElement)
+        verify(dataElementHandler).handle(dataElement)
     }
 
     @Test
-    public void call_value_type_rendering_handler() throws Exception {
-        handler.handle(programStageDataElement);
-        verify(renderTypeHandler).handle(programStageDataElement.renderType(), programStageDataElement.uid(),
-                ProgramStageDataElementTableInfo.TABLE_INFO.name());
+    @Throws(Exception::class)
+    fun call_value_type_rendering_handler() = runTest {
+        handler.handle(programStageDataElement)
+        verify(renderTypeHandler).handle(
+            programStageDataElement.renderType(),
+            programStageDataElement.uid(),
+            ProgramStageDataElementTableInfo.TABLE_INFO.name(),
+        )
     }
 
     @Test
-    public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<ProgramStageDataElement> genericHandler = new ProgramStageDataElementHandler(
-                programStageDataElementStore,
-                dataElementHandler,
-                renderTypeHandler
-        );
+    fun extend_identifiable_handler_impl() = runTest {
+        val genericHandler: IdentifiableHandlerImpl<ProgramStageDataElement> = ProgramStageDataElementHandler(
+            programStageDataElementStore,
+            dataElementHandler,
+            renderTypeHandler,
+        )
     }
 }

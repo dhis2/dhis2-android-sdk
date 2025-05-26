@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.settings.DataSetConfigurationSetting
 import org.hisp.dhis.android.core.settings.DataSetConfigurationSettingSamples
@@ -56,14 +57,14 @@ class DataSetConfigurationSettingHandlerShould {
     }
 
     @Test
-    fun clean_database_before_insert_collection() {
+    fun clean_database_before_insert_collection() = runTest {
         dataSetConfigurationSettingHandler.handleMany(dataSetConfigurationSettingList)
         verify(dataSetConfigurationSettingStore).delete()
         verify(dataSetConfigurationSettingStore).updateOrInsertWhere(dataSetConfigurationSetting)
     }
 
     @Test
-    fun clean_database_if_empty_collection() {
+    fun clean_database_if_empty_collection() = runTest {
         dataSetConfigurationSettingHandler.handleMany(emptyList())
         verify(dataSetConfigurationSettingStore).delete()
         verify(dataSetConfigurationSettingStore, never()).updateOrInsertWhere(dataSetConfigurationSetting)

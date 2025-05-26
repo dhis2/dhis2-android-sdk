@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.common.State
@@ -96,7 +97,7 @@ class EventHandlerShould {
     }
 
     @Test
-    fun do_nothing_when_passing_empty_list_argument() {
+    fun do_nothing_when_passing_empty_list_argument() = runTest {
         val params = IdentifiableDataHandlerParams(hasAllAttributes = false, overwrite = false, asRelationship = false)
         eventHandler.handleMany(listOf(), params, relationshipItemRelatives)
 
@@ -108,7 +109,7 @@ class EventHandlerShould {
     }
 
     @Test
-    fun invoke_only_delete_when_a_event_is_set_as_deleted() {
+    fun invoke_only_delete_when_a_event_is_set_as_deleted() = runTest {
         whenever(event.deleted()).doReturn(true)
 
         val params = IdentifiableDataHandlerParams(hasAllAttributes = false, overwrite = false, asRelationship = false)
@@ -128,7 +129,7 @@ class EventHandlerShould {
     }
 
     @Test
-    fun invoke_update_and_insert_when_handle_event_not_inserted() {
+    fun invoke_update_and_insert_when_handle_event_not_inserted() = runTest {
         whenever(eventStore.updateOrInsert(any())).doReturn(HandleAction.Insert)
         whenever(event.organisationUnit()).doReturn("org_unit_uid")
         whenever(event.status()).doReturn(EventStatus.SCHEDULE)
@@ -147,7 +148,7 @@ class EventHandlerShould {
     }
 
     @Test
-    fun delete_event_data_values_if_empty_list() {
+    fun delete_event_data_values_if_empty_list() = runTest {
         whenever(event.trackedEntityDataValues()).doReturn(emptyList())
 
         val params = IdentifiableDataHandlerParams(hasAllAttributes = false, overwrite = false, asRelationship = false)

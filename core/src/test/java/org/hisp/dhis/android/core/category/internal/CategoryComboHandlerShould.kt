@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.category.Category
@@ -76,26 +77,26 @@ class CategoryComboHandlerShould {
     }
 
     @Test
-    fun handle_option_combos() {
+    fun handle_option_combos() = runTest {
         categoryComboHandler.handle(combo)
         verify(optionComboHandler).handleMany(eq(optionCombos))
     }
 
     @Test
-    fun handle_category_category_combo_links() {
+    fun handle_category_category_combo_links() = runTest {
         categoryComboHandler.handle(combo)
         verify(categoryCategoryComboLinkHandler).handleMany(same(comboUid), eq(categories), any())
     }
 
     @Test
-    fun clean_option_combo_orphans_for_update() {
+    fun clean_option_combo_orphans_for_update() = runTest {
         whenever(categoryComboStore.updateOrInsert(combo)).doReturn(HandleAction.Update)
         categoryComboHandler.handle(combo)
         verify(categoryOptionCleaner).deleteOrphan(combo, optionCombos)
     }
 
     @Test
-    fun not_clean_option_combo_orphans_for_insert() {
+    fun not_clean_option_combo_orphans_for_insert() = runTest {
         whenever(categoryComboStore.updateOrInsert(combo)).doReturn(HandleAction.Insert)
         categoryComboHandler.handle(combo)
         verify(categoryOptionCleaner, never()).deleteOrphan(combo, optionCombos)

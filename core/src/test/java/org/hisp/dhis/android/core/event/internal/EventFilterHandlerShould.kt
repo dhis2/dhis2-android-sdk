@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.event.EventDataFilter
 import org.hisp.dhis.android.core.event.EventFilter
@@ -86,7 +87,7 @@ class EventFilterHandlerShould {
     }
 
     @Test
-    fun handle_event_filters() {
+    fun handle_event_filters() = runTest {
         eventFilterHandler.handleMany(eventFilters)
         verify(eventDataFilterHandler).handleMany(eventDataFilters.filterNotNull())
     }

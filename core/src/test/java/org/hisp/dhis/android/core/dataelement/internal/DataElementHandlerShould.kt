@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.dataelement.internal
 
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.attribute.AttributeValue
 import org.hisp.dhis.android.core.attribute.internal.DataElementAttributeValueLinkHandler
@@ -102,7 +103,7 @@ class DataElementHandlerShould {
     }
 
     @Test
-    fun do_nothing_when_passing_null_argument() {
+    fun do_nothing_when_passing_null_argument() = runTest {
         dataElementHandler.handle(null)
 
         // verify that program indicator store is never called
@@ -112,7 +113,7 @@ class DataElementHandlerShould {
     }
 
     @Test
-    fun delete_shouldDeleteDataElement() {
+    fun delete_shouldDeleteDataElement() = runTest {
         whenever(dataElement.deleted()).doReturn(true)
         dataElementHandler.handleMany(dataElements)
 
@@ -121,7 +122,7 @@ class DataElementHandlerShould {
     }
 
     @Test
-    fun update_shouldUpdateDataElement() {
+    fun update_shouldUpdateDataElement() = runTest {
         dataElementHandler.handleMany(dataElements)
 
         // verify that update is called once
@@ -130,7 +131,7 @@ class DataElementHandlerShould {
     }
 
     @Test
-    fun call_attribute_handlers() {
+    fun call_attribute_handlers() = runTest {
         dataElementHandler.handleMany(dataElements)
         Mockito.verify(dataElementAttributeValueLinkHandler).handleMany(
             eq(dataElement.uid()),
@@ -140,7 +141,7 @@ class DataElementHandlerShould {
     }
 
     @Test
-    fun call_data_element_legend_set_handler() {
+    fun call_data_element_legend_set_handler() = runTest {
         dataElementHandler.handleMany(dataElements)
         verify(dataElementLegendSetLinkHandler).handleMany(any(), any(), any())
     }

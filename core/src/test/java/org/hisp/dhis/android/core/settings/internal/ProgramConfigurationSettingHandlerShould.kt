@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.settings.ProgramConfigurationSetting
 import org.hisp.dhis.android.core.settings.ProgramConfigurationSettingSamples
@@ -56,14 +57,14 @@ class ProgramConfigurationSettingHandlerShould {
     }
 
     @Test
-    fun clean_database_before_insert_collection() {
+    fun clean_database_before_insert_collection() = runTest {
         programConfigurationSettingHandler.handleMany(programConfigurationSettingList)
         verify(programConfigurationSettingStore).delete()
         verify(programConfigurationSettingStore).updateOrInsertWhere(programConfigurationSetting)
     }
 
     @Test
-    fun clean_database_if_empty_collection() {
+    fun clean_database_if_empty_collection() = runTest {
         programConfigurationSettingHandler.handleMany(emptyList())
         verify(programConfigurationSettingStore).delete()
         verify(programConfigurationSettingStore, never()).updateOrInsertWhere(programConfigurationSetting)

@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.map.layer.internal
 
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.map.layer.MapLayer
@@ -58,7 +59,7 @@ class MapLayerHandlerShould {
     }
 
     @Test
-    fun update_shouldUpdateMapLayer() {
+    fun update_shouldUpdateMapLayer() = runTest {
         mapLayerHandler.handleMany(mapLayers)
 
         // verify that update is called once
@@ -67,7 +68,7 @@ class MapLayerHandlerShould {
     }
 
     @Test
-    fun call_imagery_provider_handlers() {
+    fun call_imagery_provider_handlers() = runTest {
         mapLayerHandler.handleMany(mapLayers)
         verify(providerHandler).handleMany(any(), any(), any())
     }

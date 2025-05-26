@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.settings.FilterSetting
 import org.junit.Before
@@ -56,14 +57,14 @@ class FilterSettingHandlerShould {
     }
 
     @Test
-    fun clean_database_before_insert_collection() {
+    fun clean_database_before_insert_collection() = runTest {
         filterSettingsHandler.handleMany(filterSettingsList)
         verify(filterSettingStore).delete()
         verify(filterSettingStore).updateOrInsertWhere(filterSetting)
     }
 
     @Test
-    fun clean_database_if_empty_collection() {
+    fun clean_database_if_empty_collection() = runTest {
         filterSettingsHandler.handleMany(emptyList())
         verify(filterSettingStore).delete()
         verify(filterSettingStore, never()).updateOrInsertWhere(filterSetting)

@@ -25,94 +25,90 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset.internal
 
-package org.hisp.dhis.android.core.dataset.internal;
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
+import org.hisp.dhis.android.core.imports.ImportStatus
+import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
+import org.hisp.dhis.android.core.imports.internal.ImportCount
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import org.mockito.Mockito
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
-import org.hisp.dhis.android.core.imports.ImportStatus;
-import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
-import org.hisp.dhis.android.core.imports.internal.ImportCount;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+@RunWith(JUnit4::class)
+class DataSetCompleteRegistrationImportHandlerShould {
+    private val dataSetCompleteRegistrationStore: DataSetCompleteRegistrationStore = mock()
+    private val dataValueImportSummary: DataValueImportSummary = mock()
+    private val dataSetCompleteRegistration: DataSetCompleteRegistration = mock()
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-@RunWith(JUnit4.class)
-public class DataSetCompleteRegistrationImportHandlerShould {
-
-    @Mock
-    DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore;
-
-    @Mock
-    DataValueImportSummary dataValueImportSummary;
-
-    @Mock
-    DataSetCompleteRegistration dataSetCompleteRegistration;
-
-    private DataSetCompleteRegistrationImportHandler dataSetCompleteRegistrationImportHandler;
+    private lateinit var dataSetCompleteRegistrationImportHandler: DataSetCompleteRegistrationImportHandler
 
     @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-
-        dataSetCompleteRegistrationImportHandler
-                = new DataSetCompleteRegistrationImportHandler(dataSetCompleteRegistrationStore);
-        when(dataValueImportSummary.importCount()).thenReturn(ImportCount.EMPTY);
-        when(dataValueImportSummary.responseType()).thenReturn("ImportSummary");
+    fun setUp() {
+        dataSetCompleteRegistrationImportHandler =
+            DataSetCompleteRegistrationImportHandler(dataSetCompleteRegistrationStore)
+        whenever(dataValueImportSummary.importCount()).thenReturn(ImportCount.EMPTY)
+        whenever(dataValueImportSummary.responseType()).thenReturn("ImportSummary")
     }
 
     @Test
-    public void not_perform_any_action_passing_empty_data_value_set() {
-
-        when(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.SUCCESS);
+    fun not_perform_any_action_passing_empty_data_value_set() {
+        whenever(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.SUCCESS)
         dataSetCompleteRegistrationImportHandler.handleImportSummary(
-                new ArrayList<>(), dataValueImportSummary, new ArrayList<>(), new ArrayList<>());
+            emptyList(),
+            dataValueImportSummary,
+            emptyList(),
+            emptyList(),
+        )
 
-        verify(dataSetCompleteRegistrationStore, never()).setState(
-                any(DataSetCompleteRegistration.class), any(State.class));
+        verify(dataSetCompleteRegistrationStore, Mockito.never()).setState(
+            any<DataSetCompleteRegistration>(),
+            any<State>(),
+        )
     }
 
     @Test
-    public void mark_as_synced_when_successfully_imported_data_values() {
+    fun mark_as_synced_when_successfully_imported_data_values() {
+        val dataSetCompleteRegistrations = mutableListOf(dataSetCompleteRegistration)
 
-        List<DataSetCompleteRegistration> dataSetCompleteRegistrations = new ArrayList<>();
-        dataSetCompleteRegistrations.add(dataSetCompleteRegistration);
-
-        when(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.SUCCESS);
-        when(dataSetCompleteRegistrationStore.isBeingUpload(any(DataSetCompleteRegistration.class)))
-                .thenReturn(Boolean.TRUE);
-
-        dataSetCompleteRegistrationImportHandler.handleImportSummary(dataSetCompleteRegistrations,
-                dataValueImportSummary, new ArrayList<>(), new ArrayList<>());
-
-        verify(dataSetCompleteRegistrationStore, times(1)).setState(dataSetCompleteRegistration, State.SYNCED);
-    }
-
-    @Test
-    public void mark_as_error_when_unsuccessfully_imported_data_values() {
-
-        List<DataSetCompleteRegistration> dataValueCollection = new ArrayList<>();
-        dataValueCollection.add(dataSetCompleteRegistration);
-
-        when(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.ERROR);
-        when(dataSetCompleteRegistrationStore.isBeingUpload(any(DataSetCompleteRegistration.class)))
-                .thenReturn(Boolean.TRUE);
+        whenever(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.SUCCESS)
+        whenever(dataSetCompleteRegistrationStore.isBeingUpload(any<DataSetCompleteRegistration>()))
+            .thenReturn(java.lang.Boolean.TRUE)
 
         dataSetCompleteRegistrationImportHandler.handleImportSummary(
-                dataValueCollection, dataValueImportSummary, new ArrayList<>(), new ArrayList<>());
+            dataSetCompleteRegistrations,
+            dataValueImportSummary,
+            emptyList(),
+            emptyList(),
+        )
 
-        verify(dataSetCompleteRegistrationStore, times(1)).setState(dataSetCompleteRegistration, State.ERROR);
+        Mockito.verify(dataSetCompleteRegistrationStore, Mockito.times(1))
+            .setState(dataSetCompleteRegistration, State.SYNCED)
+    }
+
+    @Test
+    fun mark_as_error_when_unsuccessfully_imported_data_values() {
+        val dataValueCollection = mutableListOf(dataSetCompleteRegistration)
+
+        whenever(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.ERROR)
+        whenever(dataSetCompleteRegistrationStore.isBeingUpload(any<DataSetCompleteRegistration>()))
+            .thenReturn(java.lang.Boolean.TRUE)
+
+        dataSetCompleteRegistrationImportHandler.handleImportSummary(
+            dataValueCollection,
+            dataValueImportSummary,
+            emptyList(),
+            emptyList(),
+        )
+
+        Mockito.verify(dataSetCompleteRegistrationStore, Mockito.times(1))
+            .setState(dataSetCompleteRegistration, State.ERROR)
     }
 }

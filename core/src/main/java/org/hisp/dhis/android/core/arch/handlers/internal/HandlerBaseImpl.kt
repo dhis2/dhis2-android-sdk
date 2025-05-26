@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.arch.handlers.internal
 
 @Suppress("TooManyFunctions")
 internal abstract class HandlerBaseImpl<O> : HandlerWithTransformer<O> {
-    override fun handle(o: O?) {
+    override suspend fun handle(o: O?) {
         if (o == null) {
             return
         }
@@ -38,7 +38,7 @@ internal abstract class HandlerBaseImpl<O> : HandlerWithTransformer<O> {
         afterObjectHandled(o2, action)
     }
 
-    override fun handle(o: O?, transformer: (O) -> O) {
+    override suspend fun handle(o: O?, transformer: (O) -> O) {
         if (o == null) {
             return
         }
@@ -46,7 +46,7 @@ internal abstract class HandlerBaseImpl<O> : HandlerWithTransformer<O> {
     }
 
     @JvmSuppressWildcards
-    protected fun handle(o: O?, transformer: (O) -> O, oTransformedCollection: MutableList<O>) {
+    protected suspend fun handle(o: O?, transformer: (O) -> O, oTransformedCollection: MutableList<O>) {
         if (o == null) {
             return
         }
@@ -54,7 +54,7 @@ internal abstract class HandlerBaseImpl<O> : HandlerWithTransformer<O> {
         oTransformedCollection.add(oTransformed)
     }
 
-    private fun handleInternal(o: O, transformer: (O) -> O): O {
+    private suspend fun handleInternal(o: O, transformer: (O) -> O): O {
         val o2 = beforeObjectHandled(o)
         val o3 = transformer(o2)
         val action = deleteOrPersist(o3)
@@ -63,7 +63,7 @@ internal abstract class HandlerBaseImpl<O> : HandlerWithTransformer<O> {
     }
 
     @JvmSuppressWildcards
-    override fun handleMany(oCollection: Collection<O>?) {
+    override suspend fun handleMany(oCollection: Collection<O>?) {
         if (oCollection != null) {
             val preHandledCollection = beforeCollectionHandled(oCollection)
             for (o in preHandledCollection) {
@@ -74,7 +74,7 @@ internal abstract class HandlerBaseImpl<O> : HandlerWithTransformer<O> {
     }
 
     @JvmSuppressWildcards
-    override fun handleMany(oCollection: Collection<O>?, transformer: (O) -> O) {
+    override suspend fun handleMany(oCollection: Collection<O>?, transformer: (O) -> O) {
         if (oCollection != null) {
             val preHandledCollection = beforeCollectionHandled(oCollection)
             val oTransformedCollection: MutableList<O> = ArrayList(oCollection.size)
@@ -85,25 +85,25 @@ internal abstract class HandlerBaseImpl<O> : HandlerWithTransformer<O> {
         }
     }
 
-    protected abstract fun deleteOrPersist(o: O): HandleAction
+    protected abstract suspend fun deleteOrPersist(o: O): HandleAction
 
-    protected open fun beforeObjectHandled(o: O): O {
+    protected open suspend fun beforeObjectHandled(o: O): O {
         return o
     }
 
-    protected open fun afterObjectHandled(o: O, action: HandleAction) {
+    protected open suspend fun afterObjectHandled(o: O, action: HandleAction) {
         /* Method is not abstract since empty action is the default action and we don't want it to
          * be unnecessarily written in every child.
          */
     }
 
     @JvmSuppressWildcards
-    protected open fun beforeCollectionHandled(oCollection: Collection<O>): Collection<O> {
+    protected open suspend fun beforeCollectionHandled(oCollection: Collection<O>): Collection<O> {
         return oCollection
     }
 
     @JvmSuppressWildcards
-    protected open fun afterCollectionHandled(oCollection: Collection<O>?) {
+    protected open suspend fun afterCollectionHandled(oCollection: Collection<O>?) {
         /* Method is not abstract since empty action is the default action and we don't want it to
          * be unnecessarily written in every child.
          */

@@ -37,7 +37,7 @@ internal class FilterSettingHandler(
     store: FilterSettingStore,
 ) : ObjectWithoutUidHandlerImpl<FilterSetting>(store) {
 
-    override fun beforeCollectionHandled(oCollection: Collection<FilterSetting>): Collection<FilterSetting> {
+    override suspend fun beforeCollectionHandled(oCollection: Collection<FilterSetting>): Collection<FilterSetting> {
         store.delete()
         return oCollection
     }

@@ -42,16 +42,19 @@ internal class CustomIntentHandler(
     private val customIntentAttributeTriggerHandler: CustomIntentAttributeTriggerHandler,
 ) : IdentifiableWithoutDeleteInterfaceHandlerImpl<CustomIntent>(store) {
 
-    override fun afterObjectHandled(o: CustomIntent, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: CustomIntent, action: HandleAction) {
         o.trigger()?.dataElements()?.let { handleDataElementTrigger(o.uid(), it) }
         o.trigger()?.attributes()?.let { handleAttributeTrigger(o.uid(), it) }
     }
 
-    private fun handleDataElementTrigger(customIntentUid: String, dataElementList: List<CustomIntentDataElement>) {
+    private suspend fun handleDataElementTrigger(
+        customIntentUid: String,
+        dataElementList: List<CustomIntentDataElement>,
+    ) {
         customIntentDataElementTriggerHandler.handleMany(customIntentUid, dataElementList)
     }
 
-    private fun handleAttributeTrigger(customIntentUid: String, attributeList: List<CustomIntentAttribute>) {
+    private suspend fun handleAttributeTrigger(customIntentUid: String, attributeList: List<CustomIntentAttribute>) {
         customIntentAttributeTriggerHandler.handleMany(customIntentUid, attributeList)
     }
 }

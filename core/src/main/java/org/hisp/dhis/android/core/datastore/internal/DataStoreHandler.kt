@@ -43,7 +43,7 @@ internal class DataStoreHandler(
     private val store: DataStoreEntryStore,
 ) : LinkHandler<DataStoreEntry, DataStoreEntry>, HandlerBaseImpl<DataStoreEntry>() {
 
-    override fun handleMany(
+    override suspend fun handleMany(
         masterUid: String,
         slaves: Collection<DataStoreEntry>?,
         transformer: (DataStoreEntry) -> DataStoreEntry,
@@ -53,11 +53,11 @@ internal class DataStoreHandler(
         cleanOrphan(masterUid, entriesToHandle)
     }
 
-    override fun resetAllLinks() {
+    override suspend fun resetAllLinks() {
         store.delete()
     }
 
-    override fun deleteOrPersist(o: DataStoreEntry): HandleAction {
+    override suspend fun deleteOrPersist(o: DataStoreEntry): HandleAction {
         return store.updateOrInsertWhere(o)
     }
 

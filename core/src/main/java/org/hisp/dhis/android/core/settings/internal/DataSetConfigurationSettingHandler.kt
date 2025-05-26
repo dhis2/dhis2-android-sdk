@@ -37,7 +37,7 @@ internal class DataSetConfigurationSettingHandler(
     store: DataSetConfigurationSettingStore,
 ) : ObjectWithoutUidHandlerImpl<DataSetConfigurationSetting>(store) {
 
-    override fun beforeCollectionHandled(
+    override suspend fun beforeCollectionHandled(
         oCollection: Collection<DataSetConfigurationSetting>,
     ): Collection<DataSetConfigurationSetting> {
         store.delete()

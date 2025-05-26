@@ -39,7 +39,7 @@ internal class TrackedEntityTypeHandler(
     private val attributeHandler: TrackedEntityTypeAttributeHandler,
     private val collectionCleaner: TrackedEntityTypeCollectionCleaner,
 ) : IdentifiableHandlerImpl<TrackedEntityType>(trackedEntityTypeStore) {
-    override fun afterObjectHandled(o: TrackedEntityType, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: TrackedEntityType, action: HandleAction) {
         attributeHandler.handleMany(
             o.uid(),
             o.trackedEntityTypeAttributes(),
@@ -48,7 +48,7 @@ internal class TrackedEntityTypeHandler(
         }
     }
 
-    override fun afterCollectionHandled(oCollection: Collection<TrackedEntityType>?) {
+    override suspend fun afterCollectionHandled(oCollection: Collection<TrackedEntityType>?) {
         collectionCleaner.deleteNotPresent(oCollection)
     }
 }

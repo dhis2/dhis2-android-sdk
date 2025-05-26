@@ -39,14 +39,14 @@ internal class SynchronizationSettingHandler(
     private val programSettingHandler: ProgramSettingHandler,
 ) : ObjectWithoutUidHandlerImpl<SynchronizationSettings>(store) {
 
-    override fun beforeCollectionHandled(
+    override suspend fun beforeCollectionHandled(
         oCollection: Collection<SynchronizationSettings>,
     ): Collection<SynchronizationSettings> {
         removeExistingValue()
         return oCollection
     }
 
-    override fun afterObjectHandled(o: SynchronizationSettings, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: SynchronizationSettings, action: HandleAction) {
         val dataSetSettings = o.dataSetSettings()?.let { SettingsAppHelper.getDataSetSettingList(it) } ?: emptyList()
         dataSetSettingHandler.handleMany(dataSetSettings)
 
@@ -54,7 +54,7 @@ internal class SynchronizationSettingHandler(
         programSettingHandler.handleMany(programSettings)
     }
 
-    private fun removeExistingValue() {
+    private suspend fun removeExistingValue() {
         store.delete()
         dataSetSettingHandler.handleMany(emptyList())
         programSettingHandler.handleMany(emptyList())

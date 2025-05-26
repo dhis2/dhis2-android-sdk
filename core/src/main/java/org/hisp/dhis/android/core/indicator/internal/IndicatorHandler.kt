@@ -41,7 +41,7 @@ internal class IndicatorHandler(
     private val indicatorLegendSetLinkHandler: IndicatorLegendSetLinkHandler,
 ) : IdentifiableHandlerImpl<Indicator>(indicatorStore) {
 
-    override fun afterObjectHandled(o: Indicator, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: Indicator, action: HandleAction) {
         super.afterObjectHandled(o, action)
 
         if (o.legendSets() != null) {

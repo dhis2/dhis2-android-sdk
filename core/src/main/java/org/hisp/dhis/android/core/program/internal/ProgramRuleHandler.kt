@@ -40,7 +40,7 @@ internal class ProgramRuleHandler(
     private val programRuleActionCleaner: ProgramRuleActionOrphanCleaner,
 ) : IdentifiableHandlerImpl<ProgramRule>(programRuleStore) {
 
-    override fun afterObjectHandled(o: ProgramRule, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: ProgramRule, action: HandleAction) {
         programRuleActionHandler.handleMany(
             o.programRuleActions(),
         )
@@ -50,7 +50,7 @@ internal class ProgramRuleHandler(
         }
     }
 
-    override fun afterCollectionHandled(oCollection: Collection<ProgramRule>?) {
+    override suspend fun afterCollectionHandled(oCollection: Collection<ProgramRule>?) {
         programRuleCleaner.deleteNotPresent(oCollection)
     }
 }

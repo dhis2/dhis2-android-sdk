@@ -35,13 +35,12 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
 import org.koin.core.annotation.Singleton
-import java.util.Arrays
 
 @Singleton
 internal class DataValueHandler(
     store: DataValueStore,
 ) : ObjectWithoutUidHandlerImpl<DataValue>(store) {
-    override fun deleteOrPersist(o: DataValue): HandleAction {
+    override suspend fun deleteOrPersist(o: DataValue): HandleAction {
         return if (CollectionsHelper.isDeleted(o)) {
             store.deleteWhereIfExists(o)
             HandleAction.Delete
@@ -50,7 +49,7 @@ internal class DataValueHandler(
         }
     }
 
-    override fun beforeCollectionHandled(oCollection: Collection<DataValue>): Collection<DataValue> {
+    override suspend fun beforeCollectionHandled(oCollection: Collection<DataValue>): Collection<DataValue> {
         val dataValuesPendingToSync = dataValuesPendingToSync
         val dataValuesToUpdate: MutableList<DataValue> = ArrayList()
         for (dataValue in oCollection) {
@@ -86,7 +85,7 @@ internal class DataValueHandler(
             val whereClause = WhereClauseBuilder()
                 .appendNotInKeyStringValues(
                     DataValueTableInfo.Columns.SYNC_STATE,
-                    Arrays.asList(State.SYNCED.name, State.SYNCED_VIA_SMS.name),
+                    listOf(State.SYNCED.name, State.SYNCED_VIA_SMS.name),
                 )
                 .build()
             return store.selectWhere(whereClause)

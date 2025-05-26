@@ -45,7 +45,7 @@ import org.koin.core.annotation.Singleton
 import java.util.*
 
 @Singleton
-internal class EventImportHandler constructor(
+internal class EventImportHandler(
     private val eventStore: EventStore,
     private val enrollmentStore: EnrollmentStore,
     private val trackerImportConflictStore: TrackerImportConflictStore,

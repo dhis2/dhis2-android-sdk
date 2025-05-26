@@ -49,7 +49,7 @@ internal class ProgramSettingCall(
         }
     }
 
-    override fun process(item: ProgramSettings?) {
+    override suspend fun process(item: ProgramSettings?) {
         val programSettingList = item?.let { SettingsAppHelper.getProgramSettingList(it) } ?: emptyList()
         programSettingHandler.handleMany(programSettingList)
     }

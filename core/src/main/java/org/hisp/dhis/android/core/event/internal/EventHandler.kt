@@ -63,7 +63,7 @@ internal class EventHandler(
     private val relationshipOrphanCleaner: EventRelationshipOrphanCleaner,
 ) : IdentifiableDataHandlerImpl<Event>(eventStore, relationshipVersionManager, relationshipHandler) {
 
-    override fun beforeCollectionHandled(
+    override suspend fun beforeCollectionHandled(
         oCollection: Collection<Event>,
         params: IdentifiableDataHandlerParams,
     ): Collection<Event> {
@@ -77,7 +77,7 @@ internal class EventHandler(
         return super.beforeCollectionHandled(updatedEvents, params)
     }
 
-    override fun beforeObjectHandled(o: Event, params: IdentifiableDataHandlerParams): Event {
+    override suspend fun beforeObjectHandled(o: Event, params: IdentifiableDataHandlerParams): Event {
         return if (GeometryHelper.isValid(o.geometry())) {
             o
         } else {
@@ -86,7 +86,7 @@ internal class EventHandler(
         }
     }
 
-    override fun afterObjectHandled(
+    override suspend fun afterObjectHandled(
         o: Event,
         action: HandleAction?,
         params: IdentifiableDataHandlerParams,
@@ -124,7 +124,7 @@ internal class EventHandler(
         }
     }
 
-    override fun deleteIfCondition(o: Event): Boolean {
+    override suspend fun deleteIfCondition(o: Event): Boolean {
         val validEventDate = o.eventDate() != null ||
             o.status() == EventStatus.SCHEDULE ||
             o.status() == EventStatus.SKIPPED ||

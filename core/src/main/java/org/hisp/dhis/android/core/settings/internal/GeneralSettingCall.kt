@@ -58,7 +58,7 @@ internal class GeneralSettingCall(
         }
     }
 
-    override fun process(item: GeneralSettings?) {
+    override suspend fun process(item: GeneralSettings?) {
         cachedValue = item
         val generalSettingsList = listOfNotNull(item)
         versionManager.setBypassVersion(item?.bypassDHIS2VersionCheck())

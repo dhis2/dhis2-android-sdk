@@ -36,7 +36,7 @@ internal class UserSettingsHandler(
     store: UserSettingsStore,
 ) : ObjectWithoutUidHandlerImpl<UserSettings>(store) {
 
-    override fun beforeObjectHandled(o: UserSettings): UserSettings {
+    override suspend fun beforeObjectHandled(o: UserSettings): UserSettings {
         store.delete()
         return super.beforeObjectHandled(o)
     }

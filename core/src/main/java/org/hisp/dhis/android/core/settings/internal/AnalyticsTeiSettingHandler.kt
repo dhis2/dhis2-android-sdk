@@ -41,14 +41,14 @@ internal class AnalyticsTeiSettingHandler(
     private val whoNutritionDataHandler: AnalyticsTeiWHONutritionDataHandler,
 ) : ObjectWithoutUidHandlerImpl<AnalyticsTeiSetting>(store) {
 
-    override fun beforeCollectionHandled(
+    override suspend fun beforeCollectionHandled(
         oCollection: Collection<AnalyticsTeiSetting>,
     ): Collection<AnalyticsTeiSetting> {
         store.delete()
         return oCollection
     }
 
-    override fun afterObjectHandled(o: AnalyticsTeiSetting, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: AnalyticsTeiSetting, action: HandleAction) {
         teiDataElementHandler.handleMany(o.uid(), o.data()?.dataElements() ?: emptyList()) { de ->
             de.toBuilder().teiSetting(o.uid()).build()
         }

@@ -40,7 +40,7 @@ internal class ProgramSectionHandler(
     private val programSectionAttributeLinkHandler: ProgramSectionAttributeLinkHandler,
 ) : IdentifiableHandlerImpl<ProgramSection>(programSectionStore) {
 
-    override fun afterObjectHandled(o: ProgramSection, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: ProgramSection, action: HandleAction) {
         programSectionAttributeLinkHandler.handleMany(
             o.uid(),
             o.attributes(),

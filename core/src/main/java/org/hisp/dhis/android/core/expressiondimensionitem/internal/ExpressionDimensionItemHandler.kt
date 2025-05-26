@@ -32,6 +32,6 @@ import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionIte
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class ExpressionDimensionItemHandler constructor(
+internal class ExpressionDimensionItemHandler(
     store: ExpressionDimensionItemStore,
 ) : IdentifiableHandlerImpl<ExpressionDimensionItem>(store)

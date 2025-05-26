@@ -36,7 +36,7 @@ internal class ValidationRuleHandler(
     store: ValidationRuleStore,
     private val collectionCleaner: ValidationRuleCollectionCleaner,
 ) : IdentifiableHandlerImpl<ValidationRule>(store) {
-    override fun afterCollectionHandled(oCollection: Collection<ValidationRule>?) {
+    override suspend fun afterCollectionHandled(oCollection: Collection<ValidationRule>?) {
         collectionCleaner.deleteNotPresent(oCollection)
     }
 }

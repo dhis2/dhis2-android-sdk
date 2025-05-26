@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkHelper
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class OrganisationUnitHandler constructor(
+internal class OrganisationUnitHandler(
     organisationUnitStore: OrganisationUnitStore,
     private val userOrganisationUnitLinkHandler: UserOrganisationUnitLinkHandler,
     private val organisationUnitProgramLinkHandler: OrganisationUnitProgramLinkHandler,
@@ -54,7 +54,7 @@ internal class OrganisationUnitHandler constructor(
     private var user: User? = null
     private var scope: OrganisationUnit.Scope? = null
 
-    fun resetLinks() {
+    suspend fun resetLinks() {
         userOrganisationUnitLinkHandler.resetAllLinks()
         organisationUnitProgramLinkHandler.resetAllLinks()
         dataSetOrganisationUnitLinkHandler.resetAllLinks()
@@ -66,11 +66,11 @@ internal class OrganisationUnitHandler constructor(
         this.scope = scope
     }
 
-    override fun beforeCollectionHandled(oCollection: Collection<OrganisationUnit>): Collection<OrganisationUnit> {
+    override suspend fun beforeCollectionHandled(oCollection: Collection<OrganisationUnit>): Collection<OrganisationUnit> {
         return oCollection
     }
 
-    override fun beforeObjectHandled(o: OrganisationUnit): OrganisationUnit {
+    override suspend fun beforeObjectHandled(o: OrganisationUnit): OrganisationUnit {
         return if (GeometryHelper.isValid(o.geometry())) {
             o
         } else {
@@ -82,18 +82,18 @@ internal class OrganisationUnitHandler constructor(
         }
     }
 
-    override fun afterObjectHandled(o: OrganisationUnit, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: OrganisationUnit, action: HandleAction) {
         addOrganisationUnitProgramLink(o)
         addOrganisationUnitDataSetLink(o)
         organisationUnitGroupHandler.handleMany(o.organisationUnitGroups())
         addOrganisationUnitOrganisationUnitGroupLink(o)
     }
 
-    override fun afterCollectionHandled(oCollection: Collection<OrganisationUnit>?) {
+    override suspend fun afterCollectionHandled(oCollection: Collection<OrganisationUnit>?) {
         oCollection?.let { addUserOrganisationUnitLinks(it) }
     }
 
-    private fun addOrganisationUnitProgramLink(organisationUnit: OrganisationUnit) {
+    private suspend fun addOrganisationUnitProgramLink(organisationUnit: OrganisationUnit) {
         val orgUnitPrograms = organisationUnit.programs()
         if (orgUnitPrograms != null) {
             organisationUnitProgramLinkHandler.handleMany(
@@ -108,7 +108,7 @@ internal class OrganisationUnitHandler constructor(
         }
     }
 
-    private fun addOrganisationUnitDataSetLink(organisationUnit: OrganisationUnit) {
+    private suspend fun addOrganisationUnitDataSetLink(organisationUnit: OrganisationUnit) {
         val orgUnitDataSets = organisationUnit.dataSets()
         if (orgUnitDataSets != null) {
             dataSetOrganisationUnitLinkHandler.handleMany(
@@ -123,7 +123,7 @@ internal class OrganisationUnitHandler constructor(
         }
     }
 
-    private fun addOrganisationUnitOrganisationUnitGroupLink(organisationUnit: OrganisationUnit) {
+    private suspend fun addOrganisationUnitOrganisationUnitGroupLink(organisationUnit: OrganisationUnit) {
         organisationUnit.organisationUnitGroups()?.let { orgunitGroups ->
             organisationUnitGroupLinkHandler.handleMany(
                 organisationUnit.uid(),
@@ -137,7 +137,7 @@ internal class OrganisationUnitHandler constructor(
         }
     }
 
-    fun addUserOrganisationUnitLinks(organisationUnits: Collection<OrganisationUnit>) {
+    suspend fun addUserOrganisationUnitLinks(organisationUnits: Collection<OrganisationUnit>) {
         val builder = UserOrganisationUnitLink.builder()
             .organisationUnitScope(scope!!.name)
             .user(user!!.uid())

@@ -66,7 +66,7 @@ internal class AppearanceSettingCall(
         }
     }
 
-    override fun process(item: AppearanceSettings?) {
+    override suspend fun process(item: AppearanceSettings?) {
         val filterSettingsList = item?.let {
             SettingsAppHelper.getFilterSettingsList(it)
         } ?: emptyList()

@@ -47,7 +47,7 @@ internal class DataSetSettingCall(
         }
     }
 
-    override fun process(item: DataSetSettings?) {
+    override suspend fun process(item: DataSetSettings?) {
         val dataSetSettingList = item?.let { SettingsAppHelper.getDataSetSettingList(it) } ?: emptyList()
         dataSetSettingHandler.handleMany(dataSetSettingList)
     }

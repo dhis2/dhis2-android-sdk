@@ -39,7 +39,7 @@ internal class ProgramTrackedEntityAttributeHandler(
     store: ProgramTrackedEntityAttributeStore,
     private val renderTypeHandler: ValueTypeRenderingHandler,
 ) : IdentifiableHandlerImpl<ProgramTrackedEntityAttribute>(store) {
-    override fun afterObjectHandled(o: ProgramTrackedEntityAttribute, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: ProgramTrackedEntityAttribute, action: HandleAction) {
         if (action !== HandleAction.Delete) {
             renderTypeHandler.handle(
                 o.renderType(),

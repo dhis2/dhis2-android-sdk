@@ -63,7 +63,7 @@ internal class CustomIntentsCall(
         }
     }
 
-    override fun process(item: CustomIntents?) {
+    override suspend fun process(item: CustomIntents?) {
         val customIntentList = item?.customIntents() ?: emptyList()
         customIntentHandler.handleMany(customIntentList)
     }

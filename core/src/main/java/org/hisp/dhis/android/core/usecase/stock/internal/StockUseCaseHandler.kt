@@ -38,7 +38,7 @@ internal class StockUseCaseHandler(
     private val transactionLinkHandler: StockUseCaseTransactionLinkHandler,
 ) : IdentifiableWithoutDeleteInterfaceHandlerImpl<InternalStockUseCase>(store) {
 
-    override fun beforeCollectionHandled(
+    override suspend fun beforeCollectionHandled(
         oCollection: Collection<InternalStockUseCase>,
     ): Collection<InternalStockUseCase> {
         store.delete()
@@ -46,7 +46,7 @@ internal class StockUseCaseHandler(
         return oCollection
     }
 
-    override fun afterObjectHandled(o: InternalStockUseCase, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: InternalStockUseCase, action: HandleAction) {
         transactionLinkHandler.handleMany(o.uid(), o.transactions()) { it.toBuilder().programUid(o.uid()).build() }
     }
 }

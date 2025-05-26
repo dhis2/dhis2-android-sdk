@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 
-internal abstract class JobReportTypeHandler constructor(
+internal abstract class JobReportTypeHandler(
     protected val relationshipStore: RelationshipStore,
 ) {
 

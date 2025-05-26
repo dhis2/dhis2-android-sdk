@@ -33,11 +33,11 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 @Suppress("MagicNumber")
-internal class ConstantHandler constructor(
+internal class ConstantHandler(
     optionStore: ConstantStore,
     private val collectionCleaner: ConstantCollectionCleaner,
 ) : IdentifiableHandlerImpl<Constant>(optionStore) {
-    override fun afterCollectionHandled(oCollection: Collection<Constant>?) {
+    override suspend fun afterCollectionHandled(oCollection: Collection<Constant>?) {
         collectionCleaner.deleteNotPresent(oCollection)
     }
 }

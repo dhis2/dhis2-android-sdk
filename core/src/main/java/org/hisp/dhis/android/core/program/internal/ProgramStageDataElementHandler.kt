@@ -42,7 +42,7 @@ internal class ProgramStageDataElementHandler(
     private val valueTypeRenderingHandler: ValueTypeRenderingHandler,
 ) : IdentifiableHandlerImpl<ProgramStageDataElement>(programStageDataElementStore) {
 
-    override fun afterObjectHandled(o: ProgramStageDataElement, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: ProgramStageDataElement, action: HandleAction) {
         if (o.dataElement() != null) {
             dataElementHandler.handle(o.dataElement()!!)
         }

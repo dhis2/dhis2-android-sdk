@@ -71,7 +71,7 @@ internal class LatestAppVersionCall(
         return availableVersions.maxWithOrNull(versionComparator.comparator)
     }
 
-    override fun process(item: LatestAppVersion?) {
+    override suspend fun process(item: LatestAppVersion?) {
         val appVersionList = listOfNotNull(item)
         latestAppVersionHandler.handleMany(appVersionList)
     }

@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.configuration.internal
 
 import android.content.Context
-import com.nhaarman.mockitokotlin2.*
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseExport
 import org.hisp.dhis.android.core.common.BaseCallShould
@@ -37,6 +36,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.kotlin.*
 
 @RunWith(JUnit4::class)
 class MultiUserDatabaseManagerUnitShould : BaseCallShould() {

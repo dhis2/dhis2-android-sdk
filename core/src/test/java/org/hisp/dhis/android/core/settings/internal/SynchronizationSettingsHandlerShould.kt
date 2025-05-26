@@ -27,12 +27,12 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import com.nhaarman.mockitokotlin2.*
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.*
 
 class SynchronizationSettingsHandlerShould {
 

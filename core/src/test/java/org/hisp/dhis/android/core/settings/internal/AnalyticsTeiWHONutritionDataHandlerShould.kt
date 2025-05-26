@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import com.nhaarman.mockitokotlin2.*
 import org.hisp.dhis.android.core.arch.handlers.internal.ChildElementHandlerImpl
 import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionData
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.*
 
 class AnalyticsTeiWHONutritionDataHandlerShould {
 

@@ -27,11 +27,7 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.never
-import com.nhaarman.mockitokotlin2.same
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.common.ObjectWithUid
@@ -41,6 +37,11 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.same
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
 class ProgramRuleHandlerShould {
@@ -69,13 +70,13 @@ class ProgramRuleHandlerShould {
     }
 
     @Test
-    fun call_program_rule_action_handler() {
+    fun call_program_rule_action_handler() = runTest {
         programRuleHandler.handle(programRule)
         verify(programRuleActionHandler).handleMany(same(programRuleActions))
     }
 
     @Test
-    fun call_program_rule_action_orphan_cleaner_on_update() {
+    fun call_program_rule_action_orphan_cleaner_on_update() = runTest {
         whenever(programRuleStore.updateOrInsert(programRule)).thenReturn(HandleAction.Update)
 
         programRuleHandler.handle(programRule)
@@ -83,7 +84,7 @@ class ProgramRuleHandlerShould {
     }
 
     @Test
-    fun not_call_program_rule_action_orphan_cleaner_on_insert() {
+    fun not_call_program_rule_action_orphan_cleaner_on_insert() = runTest {
         whenever(programRuleStore.updateOrInsert(programRule)).thenReturn(HandleAction.Insert)
 
         programRuleHandler.handle(programRule)
@@ -91,7 +92,7 @@ class ProgramRuleHandlerShould {
     }
 
     @Test
-    fun call_program_rule_orphan_cleaner() {
+    fun call_program_rule_orphan_cleaner() = runTest {
         val rules: Collection<ProgramRule> = listOf(programRule)
         programRuleHandler.handleMany(rules)
         verify(programRuleCleaner).deleteNotPresent(rules)

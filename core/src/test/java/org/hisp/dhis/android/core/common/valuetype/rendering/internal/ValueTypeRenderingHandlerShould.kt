@@ -25,64 +25,60 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.common.valuetype.rendering.internal;
+package org.hisp.dhis.android.core.common.valuetype.rendering.internal
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering
+import org.hisp.dhis.android.core.common.ValueTypeRendering
+import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingHandler
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import org.mockito.ArgumentMatchers
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
+import org.mockito.kotlin.whenever
 
-import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering;
-import org.hisp.dhis.android.core.common.ValueTypeRendering;
-import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingHandler;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-@RunWith(JUnit4.class)
-public class ValueTypeRenderingHandlerShould {
-
-    private static final String UID = "uid";
-    private static final String TABLE = "table";
-    
-    @Mock
-    private ValueTypeDeviceRenderingHandler deviceRenderingHandler;
-    
-    @Mock
-    private ValueTypeDeviceRendering desktopRenderType;
-    
-    @Mock
-    private ValueTypeDeviceRendering mobileRenderType;
-    
-    @Mock
-    private ValueTypeRendering renderType;
+@RunWith(JUnit4::class)
+class ValueTypeRenderingHandlerShould {
+    private val deviceRenderingHandler: ValueTypeDeviceRenderingHandler = mock()
+    private val desktopRenderType: ValueTypeDeviceRendering = mock()
+    private val mobileRenderType: ValueTypeDeviceRendering = mock()
+    private val renderType: ValueTypeRendering = mock()
 
     // object to test
-    private ValueTypeRenderingHandler renderTypeHandler;
+    private lateinit var renderTypeHandler: ValueTypeRenderingHandler
 
     @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        when(renderType.desktop()).thenReturn(desktopRenderType);
-        when(renderType.mobile()).thenReturn(mobileRenderType);
-        renderTypeHandler = new ValueTypeRenderingHandler(deviceRenderingHandler);
+    @Throws(Exception::class)
+    fun setUp() {
+        renderTypeHandler = ValueTypeRenderingHandler(deviceRenderingHandler)
+
+        whenever(renderType.desktop()).thenReturn(desktopRenderType)
+        whenever(renderType.mobile()).thenReturn(mobileRenderType)
     }
 
     @Test
-    public void call_device_handler_when_render_type_not_null() throws Exception {
-        renderTypeHandler.handle(renderType, UID, TABLE);
-        verify(deviceRenderingHandler).handle(eq(desktopRenderType), any());
-        verify(deviceRenderingHandler).handle(eq(mobileRenderType), any());
-        verifyNoMoreInteractions(deviceRenderingHandler);
+    @Throws(Exception::class)
+    fun call_device_handler_when_render_type_not_null() = runTest {
+        renderTypeHandler.handle(renderType, UID, TABLE)
+        verify(deviceRenderingHandler).handle(ArgumentMatchers.eq(desktopRenderType), any())
+        verify(deviceRenderingHandler).handle(ArgumentMatchers.eq(mobileRenderType), any())
+        verifyNoMoreInteractions(deviceRenderingHandler)
     }
 
     @Test
-    public void not_call_device_handler_when_render_type_null() throws Exception {
-        renderTypeHandler.handle(null, UID, TABLE);
-        verifyNoMoreInteractions(deviceRenderingHandler);
+    @Throws(Exception::class)
+    fun not_call_device_handler_when_render_type_null() = runTest {
+        renderTypeHandler.handle(null, UID, TABLE)
+        verifyNoMoreInteractions(deviceRenderingHandler)
+    }
+
+    companion object {
+        private const val UID = "uid"
+        private const val TABLE = "table"
     }
 }

@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.trackedentity.search
 
 import androidx.paging.ItemKeyedDataSource
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
@@ -49,6 +48,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.ArgumentMatchers.anyString
+import org.mockito.kotlin.*
 import java.util.concurrent.TimeUnit
 
 @RunWith(JUnit4::class)

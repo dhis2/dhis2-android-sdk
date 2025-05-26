@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
-import com.nhaarman.mockitokotlin2.*
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.imports.ImportStatus
@@ -41,6 +40,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito
+import org.mockito.kotlin.*
 
 @RunWith(JUnit4::class)
 class RelationshipImportHandlerShould {

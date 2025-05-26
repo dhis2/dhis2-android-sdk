@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.datavalue.internal.conflicts
 
-import com.nhaarman.mockitokotlin2.mock
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.mock
 
 internal class PastExpiryDateConflictShould {
 

@@ -44,7 +44,7 @@ internal class D2CallExecutor(
         .errorComponent(D2ErrorComponent.SDK)
 
     @Throws(D2Error::class)
-    fun <C> executeD2CallTransactionally(call: () -> C): C {
+    suspend fun <C> executeD2CallTransactionally(call: suspend () -> C): C {
         try {
             return innerExecuteD2CallTransactionally(call)
         } catch (d2E: D2Error) {
@@ -55,10 +55,10 @@ internal class D2CallExecutor(
 
     @Throws(D2Error::class)
     @Suppress("TooGenericExceptionCaught")
-    private fun <C> innerExecuteD2CallTransactionally(call: () -> C): C {
-        var transaction = databaseAdapter.beginNewTransaction()
+    private suspend fun <C> innerExecuteD2CallTransactionally(call: suspend () -> C): C {
+        val transaction = databaseAdapter.beginNewTransaction()
         try {
-            var response = call()
+            val response = call()
             transaction.setSuccessful()
             return response
         } catch (d2E: D2Error) {

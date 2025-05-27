@@ -31,5 +31,5 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 
 internal fun interface CallProcessor<P> {
     @Throws(D2Error::class)
-    fun process(objectList: List<P>)
+    suspend fun process(objectList: List<P>)
 }

@@ -43,5 +43,5 @@ internal abstract class UidsCallFactoryImpl<P> protected constructor(
     }
 
     protected abstract suspend fun fetcher(uids: Set<String>): CoroutineCallFetcher<P>
-    protected abstract fun processor(): CallProcessor<P>
+    protected abstract suspend fun processor(): CallProcessor<P>
 }

@@ -56,7 +56,7 @@ internal class DataSetEndpointCallFactory(
         }
     }
 
-    override fun processor(): CallProcessor<DataSet> {
+    override suspend fun processor(): CallProcessor<DataSet> {
         return TransactionalResourceSyncCallProcessor(
             data,
             dataSetHandler,

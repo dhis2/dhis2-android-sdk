@@ -39,13 +39,13 @@ internal class AuthorityCallProcessor(
     private val handler: Handler<Authority>,
 ) : CallProcessor<Authority> {
     @Throws(D2Error::class)
-    override fun process(objectList: List<Authority>) {
+    override suspend fun process(objectList: List<Authority>) {
         AuthorityStoreImpl(databaseAdapter).delete()
 
         if (objectList.isNotEmpty()) {
-            create(databaseAdapter).executeD2CallTransactionally<Unit>({
+            create(databaseAdapter).executeD2CallTransactionally {
                 handler.handleMany(objectList)
-            })
+            }
         }
     }
 }

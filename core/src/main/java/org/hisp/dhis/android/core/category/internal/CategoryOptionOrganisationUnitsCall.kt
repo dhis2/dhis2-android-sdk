@@ -85,7 +85,7 @@ internal class CategoryOptionOrganisationUnitsCall(
         return updatedEntries
     }
 
-    private fun handleEntry(entry: Map.Entry<String, List<CategoryOptionRestriction>>) {
+    private suspend fun handleEntry(entry: Map.Entry<String, List<CategoryOptionRestriction>>) {
         handler.handleMany(
             masterUid = entry.key,
             slaves = entry.value,

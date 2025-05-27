@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.localanalytics.dbgeneration
 
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.D2
 import org.hisp.dhis.android.core.D2DIComponentAccessor
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
@@ -68,14 +68,14 @@ internal class LocalAnalyticsDatabaseFiller(private val d2: D2) {
     private val da = d2.databaseAdapter()
     private val d2DIComponent = D2DIComponentAccessor.getD2DIComponent(d2)
 
-    fun fillDatabase(metadataParams: LocalAnalyticsMetadataParams, dataParams: LocalAnalyticsDataParams) {
-        D2CallExecutor.create(da).executeD2CallTransactionally<Unit> {
+    fun fillDatabase(metadataParams: LocalAnalyticsMetadataParams, dataParams: LocalAnalyticsDataParams) = runTest {
+        D2CallExecutor.create(da).executeD2CallTransactionally {
             val metadata = fillMetadata(metadataParams)
             fillData(dataParams, metadata)
         }
     }
 
-    private fun fillMetadata(metadataParams: LocalAnalyticsMetadataParams): MetadataForDataFilling {
+    private suspend fun fillMetadata(metadataParams: LocalAnalyticsMetadataParams): MetadataForDataFilling {
         val generator = LocalAnalyticsMetadataGenerator(metadataParams)
 
         val organisationUnits = generator.getOrganisationUnits()
@@ -92,10 +92,7 @@ internal class LocalAnalyticsDatabaseFiller(private val d2: D2) {
         val trackerDataElements = generator.getDataElementsTracker(defaultCategoryCombo)
         DataElementStoreImpl(da).insert(aggregatedDataElements + trackerDataElements)
 
-        // TODO remove the runBlocking when analytics is migrated to kotlin coroutines
-        runBlocking {
-            d2DIComponent.periodHandler.generateAndPersist()
-        }
+        d2DIComponent.periodHandler.generateAndPersist()
 
         val programs = generator.getPrograms(defaultCategoryCombo)
         ProgramStoreImpl(da).insert(programs)

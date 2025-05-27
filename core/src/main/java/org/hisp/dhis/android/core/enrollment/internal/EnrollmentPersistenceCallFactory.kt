@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.enrollment.internal
 
-import io.reactivex.Completable
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.koin.core.annotation.Singleton
@@ -36,23 +35,20 @@ import org.koin.core.annotation.Singleton
 internal class EnrollmentPersistenceCallFactory(
     private val enrollmentHandler: EnrollmentHandler,
 ) {
-    fun persistAsRelationships(enrollments: List<Enrollment>): Completable {
+    suspend fun persistAsRelationships(enrollments: List<Enrollment>) {
         return persistEnrollmentsInternal(enrollments, asRelationship = true, overwrite = false)
     }
 
-    private fun persistEnrollmentsInternal(
+    private suspend fun persistEnrollmentsInternal(
         enrollments: List<Enrollment>,
         asRelationship: Boolean,
         overwrite: Boolean,
-    ): Completable {
+    ) {
         val params = IdentifiableDataHandlerParams(
             hasAllAttributes = true,
             overwrite = overwrite,
             asRelationship = asRelationship,
         )
-        return Completable.defer {
-            enrollmentHandler.handleMany(enrollments, params, relatives = null)
-            Completable.complete()
-        }
+        enrollmentHandler.handleMany(enrollments, params, relatives = null)
     }
 }

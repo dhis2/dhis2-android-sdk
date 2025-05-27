@@ -116,7 +116,7 @@ internal class RelationshipDownloadAndPersistCallFactory(
             }
         }
 
-        enrollmentPersistenceCallFactory.persistAsRelationships(enrollments).blockingAwait()
+        enrollmentPersistenceCallFactory.persistAsRelationships(enrollments)
 
         cleanFailedRelationships(failedEnrollments, RelationshipItemTableInfo.Columns.ENROLLMENT)
     }

@@ -38,15 +38,15 @@ internal class EnrollmentDateEvaluator(
     private val item: TrackerLineListItem.EnrollmentDate,
 ) : BaseDateEvaluator(item) {
 
-    override fun getCommonSelectSQL(): String {
+    override suspend fun getCommonSelectSQL(): String {
         return "$EnrollmentAlias.${EnrollmentTableInfo.Columns.ENROLLMENT_DATE}"
     }
 
-    override fun getCommonWhereSQL(): String {
+    override suspend fun getCommonWhereSQL(): String {
         return getDateWhereClause()
     }
 
-    override fun getSelectSQLForTrackedEntityInstance(): String {
+    override suspend fun getSelectSQLForTrackedEntityInstance(): String {
         return "SELECT $EnrollmentAlias.${EnrollmentTableInfo.Columns.ENROLLMENT_DATE} " +
             "FROM ${EnrollmentTableInfo.TABLE_INFO.name()} $EnrollmentAlias " +
             "WHERE $EnrollmentAlias.${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = " +

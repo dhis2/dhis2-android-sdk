@@ -38,27 +38,27 @@ internal class EventStatusEvaluator(
     item: TrackerLineListItem.EventStatusItem,
 ) : BaseEnumEvaluator<EventStatus>(item.id, item.filters) {
 
-    override fun getSelectSQLForEvent(): String {
+    override suspend fun getSelectSQLForEvent(): String {
         return "$EventAlias.${EventTableInfo.Columns.STATUS}"
     }
 
-    override fun getSelectSQLForEnrollment(): String {
+    override suspend fun getSelectSQLForEnrollment(): String {
         throw AnalyticsException.InvalidArguments("EventStatus is not supported in ENROLLMENT output type")
     }
 
-    override fun getSelectSQLForTrackedEntityInstance(): String {
+    override suspend fun getSelectSQLForTrackedEntityInstance(): String {
         throw AnalyticsException.InvalidArguments("EventStatus is not supported in TRACKED_ENTITY_INSTANCE output type")
     }
 
-    override fun getWhereSQLForEvent(): String {
+    override suspend fun getWhereSQLForEvent(): String {
         return getWhereClause()
     }
 
-    override fun getWhereSQLForEnrollment(): String {
+    override suspend fun getWhereSQLForEnrollment(): String {
         throw AnalyticsException.InvalidArguments("EventStatus is not supported in ENROLLMENT output type")
     }
 
-    override fun getWhereSQLForTrackedEntityInstance(): String {
+    override suspend fun getWhereSQLForTrackedEntityInstance(): String {
         throw AnalyticsException.InvalidArguments("EventStatus is not supported in TRACKED_ENTITY_INSTANCE output type")
     }
 }

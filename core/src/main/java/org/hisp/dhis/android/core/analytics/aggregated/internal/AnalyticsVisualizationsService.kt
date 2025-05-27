@@ -44,7 +44,9 @@ internal class AnalyticsVisualizationsService(
     private val dimensionHelper: AnalyticsVisualizationsServiceDimensionHelper,
 ) {
 
-    suspend fun evaluate(params: AnalyticsVisualizationsRepositoryParams): Result<GridAnalyticsResponse, AnalyticsException> {
+    suspend fun evaluate(
+        params: AnalyticsVisualizationsRepositoryParams,
+    ): Result<GridAnalyticsResponse, AnalyticsException> {
         return if (params.visualization == null) {
             Result.Failure(AnalyticsException.InvalidArguments("Null visualization id"))
         } else {

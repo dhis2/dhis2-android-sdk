@@ -170,7 +170,10 @@ internal class AnalyticsVisualizationsServiceDimensionHelper(
         } ?: emptyList()
     }
 
-    private suspend fun extractUidDimensionItems(items: List<VisualizationDimensionItem>?, uid: String): List<DimensionItem> {
+    private suspend fun extractUidDimensionItems(
+        items: List<VisualizationDimensionItem>?,
+        uid: String,
+    ): List<DimensionItem> {
         return categoryStore.selectByUid(uid)?.let { category ->
             val categoryOptions =
                 if (items.isNullOrEmpty()) {

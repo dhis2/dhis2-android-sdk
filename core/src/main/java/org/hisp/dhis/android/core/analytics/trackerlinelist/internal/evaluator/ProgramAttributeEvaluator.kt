@@ -42,7 +42,7 @@ internal class ProgramAttributeEvaluator(
     private val item: TrackerLineListItem.ProgramAttribute,
     private val metadata: Map<String, MetadataItem>,
 ) : TrackerLineListEvaluator() {
-    override fun getCommonSelectSQL(): String {
+    override suspend fun getCommonSelectSQL(): String {
         return "SELECT ${getColumnSql()} " +
             "FROM ${TrackedEntityAttributeValueTableInfo.TABLE_INFO.name()} " +
             "WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = " +
@@ -50,7 +50,7 @@ internal class ProgramAttributeEvaluator(
             "AND ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} = '${item.id}'"
     }
 
-    override fun getCommonWhereSQL(): String {
+    override suspend fun getCommonWhereSQL(): String {
         return DataFilterHelper.getWhereClause(item.id, item.filters)
     }
 
@@ -64,7 +64,7 @@ internal class ProgramAttributeEvaluator(
         )
     }
 
-    override fun getSelectSQLForTrackedEntityInstance(): String {
+    override suspend fun getSelectSQLForTrackedEntityInstance(): String {
         return "SELECT ${getColumnSql()} " +
             "FROM ${TrackedEntityAttributeValueTableInfo.TABLE_INFO.name()} " +
             "WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = " +

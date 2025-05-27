@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
@@ -63,14 +64,14 @@ internal class ExpressionDimensionItemEvaluatorIntegrationBaseShould : BaseEvalu
     }
 
     @Test
-    fun should_evaluate_mathematical_expressions() {
+    fun should_evaluate_mathematical_expressions() = runTest {
         val item = createExpression(item = "4 * 5 / 2")
         val value = evaluateForThisMonth(item)
         assertThat(value).isEqualTo("10.0")
     }
 
     @Test
-    fun should_evaluate_sum_of_data_elements() {
+    fun should_evaluate_sum_of_data_elements() = runTest {
         createDataValue("2", dataElementUid = dataElement1.uid())
         createDataValue("3", dataElementUid = dataElement2.uid())
 
@@ -80,7 +81,7 @@ internal class ExpressionDimensionItemEvaluatorIntegrationBaseShould : BaseEvalu
     }
 
     @Test
-    fun should_evaluate_days_variable() {
+    fun should_evaluate_days_variable() = runTest {
         createDataValue("62", dataElementUid = dataElement1.uid())
 
         val item = createExpression(item = "${de(dataElement1.uid())} + [days]")
@@ -89,7 +90,7 @@ internal class ExpressionDimensionItemEvaluatorIntegrationBaseShould : BaseEvalu
     }
 
     @Test
-    fun should_evaluate_constants() {
+    fun should_evaluate_constants() = runTest {
         createDataValue("10", dataElementUid = dataElement1.uid())
 
         val item = createExpression(item = cons(constant1.uid()))
@@ -98,7 +99,7 @@ internal class ExpressionDimensionItemEvaluatorIntegrationBaseShould : BaseEvalu
     }
 
     @Test
-    fun should_evaluate_event_data_elements() {
+    fun should_evaluate_event_data_elements() = runTest {
         createEventAndValue("5", dataElement1.uid())
         createEventAndValue("15", dataElement1.uid())
 
@@ -108,7 +109,7 @@ internal class ExpressionDimensionItemEvaluatorIntegrationBaseShould : BaseEvalu
     }
 
     @Test
-    fun should_evaluate_event_attributes() {
+    fun should_evaluate_event_attributes() = runTest {
         createTEIAndAttribute("10", attribute1.uid())
         createTEIAndAttribute("5", attribute1.uid())
 
@@ -118,7 +119,7 @@ internal class ExpressionDimensionItemEvaluatorIntegrationBaseShould : BaseEvalu
     }
 
     @Test
-    fun should_evaluate_missing_values() {
+    fun should_evaluate_missing_values() = runTest {
         val indicator = createExpression(item = "${de(dataElement1.uid())} / ${de(dataElement2.uid())}")
         val value = evaluateForThisMonth(indicator)
         assertThat(value).isEqualTo("0.0")
@@ -138,7 +139,7 @@ internal class ExpressionDimensionItemEvaluatorIntegrationBaseShould : BaseEvalu
         return expressionDimensionItem
     }
 
-    private fun evaluateForThisMonth(expressionDimensionItem: ExpressionDimensionItem): String? {
+    private suspend fun evaluateForThisMonth(expressionDimensionItem: ExpressionDimensionItem): String? {
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
                 DimensionItem.DataItem.ExpressionDimensionItem(expressionDimensionItem.uid()),

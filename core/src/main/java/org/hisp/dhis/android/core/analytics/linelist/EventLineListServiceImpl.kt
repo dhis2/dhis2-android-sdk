@@ -61,12 +61,12 @@ internal class EventLineListServiceImpl(
     private val legendEvaluator: LegendEvaluator,
 ) : EventLineListService {
 
-    override fun evaluate(params: EventLineListParams): List<LineListResponse> {
+    override suspend fun evaluate(params: EventLineListParams): List<LineListResponse> {
         return evaluateEvents(params)
     }
 
     @Suppress("LongMethod", "ComplexMethod")
-    private fun evaluateEvents(params: EventLineListParams): List<LineListResponse> {
+    private suspend fun evaluateEvents(params: EventLineListParams): List<LineListResponse> {
         val events = getEvents(params)
         val programStage = programStageRepository.uid(params.programStage).blockingGet()
 
@@ -149,7 +149,7 @@ internal class EventLineListServiceImpl(
         }
     }
 
-    private fun getEvents(params: EventLineListParams): List<Event> {
+    private suspend fun getEvents(params: EventLineListParams): List<Event> {
         var repoBuilder = eventRepository
             .byProgramStageUid().eq(params.programStage)
             .orderByTimeline(RepositoryScope.OrderByDirection.ASC)
@@ -210,7 +210,7 @@ internal class EventLineListServiceImpl(
         return dataElementNameMap + programIndicatorNameMap + organisationUnitNameMap
     }
 
-    private fun getOrganisationUnitUids(organisationUnitFilters: List<OrganisationUnitFilter>?): List<String>? {
+    private suspend fun getOrganisationUnitUids(organisationUnitFilters: List<OrganisationUnitFilter>?): List<String>? {
         return organisationUnitFilters?.flatMap { filter ->
             val relativeOrgunitUids = filter.relativeOrganisationUnit?.let {
                 organisationUnitHelper.getRelativeOrganisationUnitUids(it)

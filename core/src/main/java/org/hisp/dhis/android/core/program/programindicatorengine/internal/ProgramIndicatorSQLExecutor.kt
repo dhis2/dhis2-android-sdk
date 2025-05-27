@@ -61,7 +61,7 @@ internal class ProgramIndicatorSQLExecutor(
     private val databaseAdapter: DatabaseAdapter,
 ) {
 
-    fun getProgramIndicatorValue(
+    suspend fun getProgramIndicatorValue(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
         queryMods: QueryMods?,
@@ -74,7 +74,7 @@ internal class ProgramIndicatorSQLExecutor(
         }
     }
 
-    fun getProgramIndicatorSQL(
+    suspend fun getProgramIndicatorSQL(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
         queryMods: QueryMods?,
@@ -138,12 +138,12 @@ internal class ProgramIndicatorSQLExecutor(
             "AND $contextWhereClause"
     }
 
-    private fun constantMap(): Map<String, Constant> {
+    private suspend fun constantMap(): Map<String, Constant> {
         val constants = constantStore.selectAll()
         return UidsHelper.mapByUid(constants)
     }
 
-    private fun newVisitor(
+    private suspend fun newVisitor(
         itemMethod: ExpressionItemMethod,
         context: ProgramIndicatorSQLContext,
     ): CommonExpressionVisitor {

@@ -34,6 +34,7 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.analytics.aggregated.AbsoluteDimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
@@ -145,7 +146,7 @@ class AnalyticsServiceDimensionHelperShould {
     }
 
     @Test
-    fun `Should evaluate relative periods`() {
+    fun `Should evaluate relative periods`() = runTest {
         whenever(periodGenerator.generateRelativePeriods(s.periodLast3Days.relative))
             .thenReturn(listOf(s.period1, s.period2, s.period3))
 
@@ -176,7 +177,7 @@ class AnalyticsServiceDimensionHelperShould {
     }
 
     @Test
-    fun `Should evaluate orgunits by level`() {
+    fun `Should evaluate orgunits by level`() = runTest {
         whenever(organisationUnitHelper.getOrganisationUnitUidsByLevelUid(any()))
             .thenReturn(listOf("orgunit1", "orgunit2", "orgunit3"))
 

@@ -73,7 +73,7 @@ internal class AnalyticsServiceMetadataHelper(
     private val periodHelper: PeriodHelper,
 ) {
 
-    fun getMetadata(evaluationItems: List<AnalyticsServiceEvaluationItem>): Map<String, MetadataItem> {
+    suspend fun getMetadata(evaluationItems: List<AnalyticsServiceEvaluationItem>): Map<String, MetadataItem> {
         val metadata: MutableMap<String, MetadataItem> = mutableMapOf()
 
         evaluationItems.forEach { evaluationItem ->
@@ -83,7 +83,7 @@ internal class AnalyticsServiceMetadataHelper(
         return metadata
     }
 
-    fun includeLegendsToMetadata(
+    suspend fun includeLegendsToMetadata(
         metadata: Map<String, MetadataItem>,
         legendsUids: List<String>,
     ): Map<String, MetadataItem> {
@@ -94,7 +94,7 @@ internal class AnalyticsServiceMetadataHelper(
         return finalMetadata
     }
 
-    private fun getMetadata(evaluationItem: AnalyticsServiceEvaluationItem): Map<String, MetadataItem> {
+    private suspend fun getMetadata(evaluationItem: AnalyticsServiceEvaluationItem): Map<String, MetadataItem> {
         val metadata: MutableMap<String, MetadataItem> = mutableMapOf()
 
         evaluationItem.allDimensionItems
@@ -116,7 +116,7 @@ internal class AnalyticsServiceMetadataHelper(
     }
 
     @SuppressWarnings("ThrowsCount", "ComplexMethod", "LongMethod")
-    private fun getDataItems(item: DimensionItem.DataItem): List<MetadataItem> {
+    private suspend fun getDataItems(item: DimensionItem.DataItem): List<MetadataItem> {
         return listOf(
             when (item) {
                 is DimensionItem.DataItem.DataElementItem ->
@@ -220,7 +220,7 @@ internal class AnalyticsServiceMetadataHelper(
     }
 
     @SuppressWarnings("ThrowsCount")
-    private fun getOrganisationUnitItems(item: DimensionItem.OrganisationUnitItem): List<MetadataItem> {
+    private suspend fun getOrganisationUnitItems(item: DimensionItem.OrganisationUnitItem): List<MetadataItem> {
         return listOf(
             when (item) {
                 is DimensionItem.OrganisationUnitItem.Absolute ->
@@ -249,7 +249,7 @@ internal class AnalyticsServiceMetadataHelper(
         )
     }
 
-    private fun getCategoryItems(item: DimensionItem.CategoryItem): List<MetadataItem> {
+    private suspend fun getCategoryItems(item: DimensionItem.CategoryItem): List<MetadataItem> {
         return listOf(
             categoryStore.selectByUid(item.uid)
                 ?.let { category -> MetadataItem.CategoryItem(category) }

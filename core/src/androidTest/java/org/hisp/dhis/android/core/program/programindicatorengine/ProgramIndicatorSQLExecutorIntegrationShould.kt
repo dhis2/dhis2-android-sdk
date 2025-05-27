@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.program.programindicatorengine
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.constant1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement1
@@ -66,7 +67,7 @@ import org.junit.runner.RunWith
 internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicatorSQLExecutorIntegrationShould() {
 
     @Test
-    fun should_evaluate_event_data_values() {
+    fun should_evaluate_event_data_values() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
@@ -114,7 +115,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
     }
 
     @Test
-    fun should_evaluate_constants() {
+    fun should_evaluate_constants() = runTest {
         helper.createSingleEvent(generator.generate(), program.uid(), programStage1.uid(), orgunitChild1.uid())
         helper.createSingleEvent(generator.generate(), program.uid(), programStage1.uid(), orgunitChild1.uid())
 
@@ -127,7 +128,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
     }
 
     @Test
-    fun should_evaluate_attribute_values() {
+    fun should_evaluate_attribute_values() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
@@ -173,7 +174,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
     }
 
     @Test
-    fun should_evaluate_tei_and_enrollment_count() {
+    fun should_evaluate_tei_and_enrollment_count() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
@@ -245,7 +246,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
     }
 
     @Test
-    fun should_evaluate_date_functions() {
+    fun should_evaluate_date_functions() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(
@@ -308,7 +309,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
     }
 
     @Test
-    fun should_evaluate_ps_event_date_variable() {
+    fun should_evaluate_ps_event_date_variable() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(
@@ -346,7 +347,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
     }
 
     @Test
-    fun should_evaluate_d2_condition() {
+    fun should_evaluate_d2_condition() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
@@ -373,7 +374,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
     }
 
     @Test
-    fun should_evaluate_count_functions() {
+    fun should_evaluate_count_functions() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
@@ -439,7 +440,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
     }
 
     @Test
-    fun should_evaluate_has_value_function() {
+    fun should_evaluate_has_value_function() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
@@ -472,7 +473,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
     }
 
     @Test
-    fun should_evaluate_max_min_functions() {
+    fun should_evaluate_max_min_functions() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
@@ -544,7 +545,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
     }
 
     @Test
-    fun should_evaluate_null_functions() {
+    fun should_evaluate_null_functions() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
@@ -582,7 +583,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
     }
 
     @Test
-    fun should_evaluate_is_function() {
+    fun should_evaluate_is_function() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
@@ -620,7 +621,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
     }
 
     @Test
-    fun should_filter_program_stage_data_values() {
+    fun should_filter_program_stage_data_values() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
@@ -654,7 +655,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
     }
 
     @Test
-    fun should_evaluate_status_variables() {
+    fun should_evaluate_status_variables() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(
@@ -709,7 +710,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
     }
 
     @Test
-    fun should_evaluate_value_count() {
+    fun should_evaluate_value_count() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
@@ -760,7 +761,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
     }
 
     @Test
-    fun should_evaluate_special_functions() {
+    fun should_evaluate_special_functions() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
@@ -821,7 +822,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
     }
 
     @Test
-    fun should_evaluate_greatest_least_functions() {
+    fun should_evaluate_greatest_least_functions() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
@@ -865,7 +866,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
     }
 
     @Test
-    fun should_evaluate_string_comparison() {
+    fun should_evaluate_string_comparison() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
@@ -885,7 +886,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
     }
 
     @Test
-    fun should_evaluate_boolean_comparison() {
+    fun should_evaluate_boolean_comparison() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
@@ -915,7 +916,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
     }
 
     @Test
-    fun should_evaluate_or_comparison() {
+    fun should_evaluate_or_comparison() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
@@ -955,7 +956,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
     }
 
     @Test
-    fun should_evaluate_most_recent_existing_value_for_enrollment_analytics() {
+    fun should_evaluate_most_recent_existing_value_for_enrollment_analytics() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
@@ -1000,7 +1001,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
     }
 
     @Test
-    fun should_evaluate_program_stage_variables() {
+    fun should_evaluate_program_stage_variables() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
@@ -1052,7 +1053,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
     }
 
     @Test
-    fun should_evaluate_analytics_period_variables() {
+    fun should_evaluate_analytics_period_variables() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(
@@ -1102,7 +1103,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
     }
 
     @Test
-    fun should_evaluate_orgunit_count_variable() {
+    fun should_evaluate_orgunit_count_variable() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
@@ -1143,7 +1144,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
     }
 
     @Test
-    fun should_evaluate_relationship_count() {
+    fun should_evaluate_relationship_count() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
@@ -1209,7 +1210,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
     }
 
     @Test
-    fun should_evaluate_creation_and_sync_date_variables() {
+    fun should_evaluate_creation_and_sync_date_variables() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(
@@ -1249,7 +1250,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
     }
 
     @Test
-    fun should_aggregate_by_event() {
+    fun should_aggregate_by_event() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(

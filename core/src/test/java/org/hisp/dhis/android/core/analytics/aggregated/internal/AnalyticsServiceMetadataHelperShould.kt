@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.analytics.aggregated.mock.AggregatedSamples
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
 import org.hisp.dhis.android.core.category.internal.CategoryOptionStore
@@ -95,7 +96,7 @@ class AnalyticsServiceMetadataHelperShould {
     )
 
     @Test
-    fun `Should extract category and category option metadata items`() {
+    fun `Should extract category and category option metadata items`() = runTest {
         whenever(categoryStore.selectByUid(s.categoryItem1_1.uid)).thenReturn(AggregatedSamples.cc1)
         whenever(categoryOptionStore.selectByUid(s.categoryItem1_1.categoryOption)).thenReturn(AggregatedSamples.co11)
         whenever(categoryOptionStore.selectByUid(s.categoryItem1_2.categoryOption)).thenReturn(AggregatedSamples.co12)

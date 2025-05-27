@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
@@ -62,7 +63,7 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
     private val dataElementEvaluator = DataElementSQLEvaluator(databaseAdapter)
 
     @Test
-    fun should_aggregate_value_in_hierarchy() {
+    fun should_aggregate_value_in_hierarchy() = runTest {
         createDataValue("2", orgunitUid = orgunitParent.uid())
         createDataValue("3", orgunitUid = orgunitChild1.uid())
         createDataValue("4", orgunitUid = orgunitChild2.uid())
@@ -83,7 +84,7 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
     }
 
     @Test
-    fun should_aggregate_value_in_time() {
+    fun should_aggregate_value_in_time() = runTest {
         createDataValue("2", periodId = period201911.periodId()!!)
         createDataValue("3", periodId = period201912.periodId()!!)
 
@@ -103,7 +104,7 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
     }
 
     @Test
-    fun should_aggregate_relative_periods() {
+    fun should_aggregate_relative_periods() = runTest {
         createDataValue("2", periodId = period201911.periodId()!!)
         createDataValue("3", periodId = period201912.periodId()!!)
 
@@ -124,7 +125,7 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
     }
 
     @Test
-    fun should_aggregate_data_elements_if_defined_as_filter() {
+    fun should_aggregate_data_elements_if_defined_as_filter() = runTest {
         createDataValue("2", dataElementUid = dataElement1.uid())
         createDataValue("3", dataElementUid = dataElement2.uid())
 
@@ -145,7 +146,7 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
     }
 
     @Test
-    fun should_use_data_element_aggregation_type() {
+    fun should_use_data_element_aggregation_type() = runTest {
         createDataValue("2", orgunitUid = orgunitChild1.uid(), dataElementUid = dataElement2.uid())
         createDataValue("3", orgunitUid = orgunitChild2.uid(), dataElementUid = dataElement2.uid())
 
@@ -165,7 +166,7 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
     }
 
     @Test
-    fun should_disaggregate_by_category_option() {
+    fun should_disaggregate_by_category_option() = runTest {
         createDataValue("2", categoryOptionComboUid = categoryOptionCombo.uid())
         createDataValue("5", categoryOptionComboUid = attributeOptionCombo.uid())
 
@@ -186,7 +187,7 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
     }
 
     @Test
-    fun should_disaggregate_by_attribute_option() {
+    fun should_disaggregate_by_attribute_option() = runTest {
         createDataValue("2", attributeOptionComboUid = categoryOptionCombo.uid())
         createDataValue("5", attributeOptionComboUid = attributeOptionCombo.uid())
 
@@ -207,7 +208,7 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
     }
 
     @Test
-    fun should_ignore_missing_category_option() {
+    fun should_ignore_missing_category_option() = runTest {
         createDataValue("2")
 
         val evaluationItem = AnalyticsServiceEvaluationItem(
@@ -227,7 +228,7 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
     }
 
     @Test
-    fun should_evaluate_data_element_operand() {
+    fun should_evaluate_data_element_operand() = runTest {
         createDataValue("2")
 
         val evaluationItem = AnalyticsServiceEvaluationItem(
@@ -246,7 +247,7 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
     }
 
     @Test
-    fun should_evaluate_relative_user_orgunit() {
+    fun should_evaluate_relative_user_orgunit() = runTest {
         createDataValue("2", orgunitUid = orgunitChild1.uid())
         createDataValue("3", orgunitUid = orgunitChild2.uid())
 
@@ -266,7 +267,7 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
     }
 
     @Test
-    fun should_aggregate_relative_user_children_as_filter() {
+    fun should_aggregate_relative_user_children_as_filter() = runTest {
         createDataValue("2", orgunitUid = orgunitChild1.uid())
         createDataValue("3", orgunitUid = orgunitChild2.uid())
 
@@ -286,7 +287,7 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
     }
 
     @Test
-    fun should_use_organisation_unit_levels() {
+    fun should_use_organisation_unit_levels() = runTest {
         createDataValue("2", orgunitUid = orgunitChild1.uid(), periodId = period201911.periodId()!!)
         createDataValue("3", orgunitUid = orgunitChild2.uid(), periodId = period201911.periodId()!!)
 
@@ -306,7 +307,7 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
     }
 
     @Test
-    fun should_use_organisation_unit_groups() {
+    fun should_use_organisation_unit_groups() = runTest {
         createDataValue("2", orgunitUid = orgunitChild1.uid(), periodId = period201911.periodId()!!)
         createDataValue("3", orgunitUid = orgunitChild2.uid(), periodId = period201911.periodId()!!)
 
@@ -326,7 +327,7 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
     }
 
     @Test
-    fun should_aggregate_by_aggregation_types() {
+    fun should_aggregate_by_aggregation_types() = runTest {
         createDataValue("1", orgunitUid = orgunitChild1.uid(), periodId = period201910.periodId()!!)
         createDataValue("3", orgunitUid = orgunitChild1.uid(), periodId = period201911.periodId()!!)
         createDataValue("5", orgunitUid = orgunitChild1.uid(), periodId = period201912.periodId()!!)
@@ -467,7 +468,7 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
     }
 
     @Test
-    fun should_override_aggregation_types() {
+    fun should_override_aggregation_types() = runTest {
         createDataValue("3", orgunitUid = orgunitChild1.uid(), periodId = period201911.periodId()!!)
         createDataValue("8", orgunitUid = orgunitChild2.uid(), periodId = period201911.periodId()!!)
 
@@ -497,7 +498,7 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
         assertThat(dataElementEvaluator.evaluate(overrideEvaluationItem, metadata)).isEqualTo("5.5")
     }
 
-    private fun evaluateAggregation(
+    private suspend fun evaluateAggregation(
         periodId: String,
         aggregator: AggregationType,
     ): String? {

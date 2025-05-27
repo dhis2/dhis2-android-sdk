@@ -42,7 +42,7 @@ internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
 ) : ObjectStoreImpl<D, P>(identifiableDao, mapper) where D : CoreObject, D : ObjectWithUidInterface {
 
     @Throws(RuntimeException::class)
-    override suspend fun insert(domainObj: D): Long {
+    override suspend fun insert(domainObj: D): Int {
         CollectionsHelper.isNull(domainObj)
         CollectionsHelper.isNull(domainObj.uid())
         return super.insert(domainObj)
@@ -75,6 +75,7 @@ internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
     }
 
     @Throws(RuntimeException::class)
+    @Suppress("TooGenericExceptionThrown")
     suspend fun update(domainObj: D) {
         CollectionsHelper.isNull(domainObj)
         val entity = domainObj.toDB()
@@ -97,6 +98,7 @@ internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
     }
 
     @Throws(RuntimeException::class)
+    @Suppress("TooGenericExceptionThrown")
     suspend fun delete(uid: String) {
         CollectionsHelper.isNull(uid)
         val deleted = identifiableDao.deleteById(uid)

@@ -36,7 +36,6 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.MapperToDB
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableDataObjectDao
 
-
 internal open class IdentifiableDataObjectStoreImpl<D, P : EntityDB<D>>(
     protected val identifiableDataObjectDao: IdentifiableDataObjectDao<P>,
     mapper: MapperToDB<D, P>,

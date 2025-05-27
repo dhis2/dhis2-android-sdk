@@ -58,10 +58,6 @@ internal abstract class IdentifiableObjectDao<P : EntityDB<*>>(
         return objectListRawQuery(whereClause)
     }
 
-    suspend fun update(entity: P): Int {
-        return intRawQuery(RoomRawQuery(builder.update()))
-    }
-
     suspend fun deleteById(uid: String): Int {
         return intRawQuery(RoomRawQuery(builder.deleteById()))
     }

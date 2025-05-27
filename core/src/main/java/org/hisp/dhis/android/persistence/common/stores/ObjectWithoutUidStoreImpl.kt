@@ -41,10 +41,11 @@ internal open class ObjectWithoutUidStoreImpl<D, P>(
     mapper: MapperToDB<D, P>,
 ) : ObjectStoreImpl<D, P>(
     objectWithoutUidDao,
-    mapper
+    mapper,
 ) where D : CoreObject, P : EntityDB<D>, P : EntityWithUpdateQuery {
 
     @Throws(RuntimeException::class)
+    @Suppress("TooGenericExceptionThrown")
     suspend fun updateWhere(domainObj: D) {
         CollectionsHelper.isNull(domainObj)
         val entity = domainObj.toDB()
@@ -55,6 +56,7 @@ internal open class ObjectWithoutUidStoreImpl<D, P>(
     }
 
     @Throws(RuntimeException::class)
+    @Suppress("TooGenericExceptionThrown")
     suspend fun deleteWhere(domainObj: D) {
         CollectionsHelper.isNull(domainObj)
         val entity = domainObj.toDB()

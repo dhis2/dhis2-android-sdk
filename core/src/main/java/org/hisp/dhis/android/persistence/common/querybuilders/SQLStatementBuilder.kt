@@ -30,7 +30,6 @@ package org.hisp.dhis.android.persistence.common.querybuilders
 
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 
-
 @Suppress("TooManyFunctions")
 internal interface SQLStatementBuilder : ReadOnlySQLStatementBuilder {
     fun getTableName(): String

@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.daos.ReadableDao
 
+@Suppress("TooManyFunctions")
 internal open class ReadableStoreImpl<D, P : EntityDB<D>>(
     protected val readableDao: ReadableDao<P>,
 ) {

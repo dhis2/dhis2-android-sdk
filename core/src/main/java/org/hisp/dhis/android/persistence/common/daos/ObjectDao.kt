@@ -33,6 +33,8 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.RawQuery
 import androidx.room.RoomRawQuery
+import androidx.room.Update
+import androidx.room.Upsert
 import org.hisp.dhis.android.core.common.CoreColumns
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.querybuilders.ReadOnlySQLStatementBuilder
@@ -43,34 +45,40 @@ internal abstract class ObjectDao<P : EntityDB<*>>(
 ) : ReadableDao<P>(tableName, builder) {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insert(entity: P): Long
+    abstract suspend fun insert(entity: P): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insert(entities: Collection<P>)
 
+    @Update
+    abstract suspend fun update(entity: P): Int
+
+    @Upsert
+    abstract suspend fun upsert(entity: P): Int
+
     suspend fun delete(): Int {
-        val query = RoomRawQuery("DELETE FROM ${tableName};")
+        val query = RoomRawQuery("DELETE FROM $tableName;")
         return intRawQuery(query)
     }
 
     suspend fun deleteById(id: Long): Int {
-        val query = RoomRawQuery("DELETE FROM ${tableName} WHERE " + CoreColumns.ID + "='" + id + "';")
+        val query = RoomRawQuery("DELETE FROM $tableName WHERE " + CoreColumns.ID + "='" + id + "';")
         return intRawQuery(query)
     }
 
     suspend fun deleteWhere(clause: String): Boolean {
-        val query = RoomRawQuery("DELETE FROM ${tableName} WHERE $clause;")
+        val query = RoomRawQuery("DELETE FROM $tableName WHERE $clause;")
         return intRawQuery(query) > 0
     }
 
     suspend fun updateWhere(updates: ContentValues, whereClause: String): Int {
         val setClause = updates.valueSet().joinToString(", ") { "${it.key} = ${it.value}" }
-        val query = RoomRawQuery("UPDATE ${tableName} SET $setClause WHERE $whereClause;")
+        val query = RoomRawQuery("UPDATE $tableName SET $setClause WHERE $whereClause;")
         return intRawQuery(query)
     }
 
     suspend fun selectStringColumn(column: String, clause: String): List<String> {
-        val query = RoomRawQuery("SELECT $column FROM ${tableName} WHERE $clause;")
+        val query = RoomRawQuery("SELECT $column FROM $tableName WHERE $clause;")
         return stringListRawQuery(query)
     }
 
@@ -78,9 +86,8 @@ internal abstract class ObjectDao<P : EntityDB<*>>(
     protected abstract suspend fun objectRawQuery(query: RoomRawQuery): P?
 
     @RawQuery
-    suspend abstract fun stringListRawQuery(query: RoomRawQuery): List<String>
+    abstract suspend fun stringListRawQuery(query: RoomRawQuery): List<String>
 
     @RawQuery
     protected abstract suspend fun stringSetRawQuery(query: RoomRawQuery): Set<String>
-
 }

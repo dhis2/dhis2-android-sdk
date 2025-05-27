@@ -45,7 +45,7 @@ internal abstract class IdentifiableDeletableDataObjectStoreDao<P : EntityDB<*>>
     suspend fun setDeleted(uid: String): Int {
         val query = RoomRawQuery(
             "UPDATE $tableName SET ${DeletableDataColumns.DELETED} = 1 " +
-                "WHERE ${IdentifiableColumns.UID} = '$uid'"
+                "WHERE ${IdentifiableColumns.UID} = '$uid'",
         )
         return intRawQuery(query)
     }

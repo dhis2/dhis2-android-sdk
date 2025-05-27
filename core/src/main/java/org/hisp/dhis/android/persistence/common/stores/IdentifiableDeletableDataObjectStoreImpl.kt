@@ -47,7 +47,7 @@ internal open class IdentifiableDeletableDataObjectStoreImpl<D, P : EntityDB<D>>
     mapper: MapperToDB<D, P>,
 ) : IdentifiableDataObjectStoreImpl<D, P>(
     identifiableDeletableDataObjectDao,
-    mapper
+    mapper,
 ) where D : CoreObject, D : DeletableDataObject, D : ObjectWithUidInterface {
 
     @Throws(RuntimeException::class)
@@ -78,5 +78,4 @@ internal open class IdentifiableDeletableDataObjectStoreImpl<D, P : EntityDB<D>>
     suspend fun selectSyncStateWhere(where: String): List<State> {
         return identifiableDeletableDataObjectDao.selectSyncStateWhere(where)
     }
-
 }

@@ -44,15 +44,15 @@ internal abstract class IdentifiableDataObjectDao<P : EntityDB<*>>(
 ) : IdentifiableObjectDao<P>(tableName, builder) {
 
     suspend fun setSyncState(uid: String, state: State): Int {
-        val query =
-            RoomRawQuery("UPDATE $tableName SET ${DataColumns.SYNC_STATE} = '$state' WHERE ${IdentifiableColumns.UID} = '$uid'")
+        val query = RoomRawQuery(
+            "UPDATE $tableName SET ${DataColumns.SYNC_STATE} = '$state' " +
+                "WHERE ${IdentifiableColumns.UID} = '$uid'",
+        )
         return intRawQuery(query)
     }
 
     suspend fun setSyncState(uids: List<String>, state: State): Int {
-        val whereClause = WhereClauseBuilder()
-            .appendInKeyStringValues(IdentifiableColumns.UID, uids)
-            .build()
+        val whereClause = WhereClauseBuilder().appendInKeyStringValues(IdentifiableColumns.UID, uids).build()
         val query = RoomRawQuery("UPDATE $tableName SET ${DataColumns.SYNC_STATE} = '$state' WHERE $whereClause")
         return intRawQuery(query)
     }
@@ -60,14 +60,17 @@ internal abstract class IdentifiableDataObjectDao<P : EntityDB<*>>(
     suspend fun setSyncStateIfUploading(uid: String, state: State): Int {
         val query = RoomRawQuery(
             "UPDATE $tableName SET ${DataColumns.SYNC_STATE} = '$state' " +
-                "WHERE ${IdentifiableColumns.UID} = '$uid' AND ${DataColumns.SYNC_STATE} = '${State.UPLOADING}'"
+                "WHERE ${IdentifiableColumns.UID} = '$uid' AND ${DataColumns.SYNC_STATE} = '${State.UPLOADING}'",
         )
         return intRawQuery(query)
     }
 
     suspend fun getSyncState(uid: String): State? {
         val query =
-            RoomRawQuery("SELECT ${DataColumns.SYNC_STATE} FROM $tableName WHERE ${IdentifiableColumns.UID} = '$uid'")
+            RoomRawQuery(
+                "SELECT ${DataColumns.SYNC_STATE} FROM $tableName WHERE " +
+                    "${IdentifiableColumns.UID} = '$uid'"
+            )
         return stateRawQuery(query)
     }
 
@@ -77,10 +80,9 @@ internal abstract class IdentifiableDataObjectDao<P : EntityDB<*>>(
     }
 
     suspend fun getUploadableSyncStatesIncludingError(): List<P> {
-        val whereClause = WhereClauseBuilder()
-            .appendInKeyStringValues(
+        val whereClause = WhereClauseBuilder().appendInKeyStringValues(
                 DataColumns.SYNC_STATE,
-                EnumHelper.asStringList(State.uploadableStatesIncludingError().toList())
+            EnumHelper.asStringList(State.uploadableStatesIncludingError().toList()),
             ).build()
         val query = RoomRawQuery("SELECT * FROM $tableName WHERE $whereClause")
         return objectListRawQuery(query)

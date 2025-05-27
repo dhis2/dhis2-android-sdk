@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.querybuilders.ReadOnlySQLStatementBuilder
 
+@Suppress("TooManyFunctions")
 internal abstract class ReadableDao<P : EntityDB<*>>(
     val tableName: String,
     protected open val builder: ReadOnlySQLStatementBuilder,
@@ -89,12 +90,11 @@ internal abstract class ReadableDao<P : EntityDB<*>>(
     }
 
     @RawQuery
-    suspend abstract fun objectListRawQuery(sqlRawQuery: RoomRawQuery): List<P>
+    abstract suspend fun objectListRawQuery(sqlRawQuery: RoomRawQuery): List<P>
 
     @RawQuery
     protected abstract suspend fun intRawQuery(sqlRawQuery: RoomRawQuery): Int
 
     @RawQuery
     protected abstract suspend fun countMapRawQuery(sqlRawQuery: RoomRawQuery): Map<String, Int>
-
 }

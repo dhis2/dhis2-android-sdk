@@ -43,7 +43,6 @@ internal abstract class LinkStoreDao<P : EntityDB<*>>(
         intRawQuery(query)
     }
 
-
     suspend fun selectDistinctChildren(childColumn: String): Set<String> {
         val query = RoomRawQuery("SELECT DISTINCT $childColumn FROM $tableName")
         return stringSetRawQuery(query)

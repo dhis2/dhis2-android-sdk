@@ -73,5 +73,4 @@ internal open class LinkStoreImpl<D : CoreObject, P : EntityDB<D>>(
         CollectionsHelper.isNull(parentUid)
         return linkStoreDao.selectLinksForParentUid(parentUid).map { it.toDomain() }
     }
-
 }

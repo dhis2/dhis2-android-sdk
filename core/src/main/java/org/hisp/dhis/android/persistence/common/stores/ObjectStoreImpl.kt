@@ -34,7 +34,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.MapperToDB
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
-internal open class ObjectStoreImpl<D: CoreObject, P : EntityDB<D>>(
+internal open class ObjectStoreImpl<D : CoreObject, P : EntityDB<D>>(
     protected val objectDao: ObjectDao<P>,
     protected val mapper: MapperToDB<D, P>,
 ) : ReadableStoreImpl<D, P>(objectDao), MapperToDB<D, P> by mapper {
@@ -43,7 +43,7 @@ internal open class ObjectStoreImpl<D: CoreObject, P : EntityDB<D>>(
         return objectDao.selectStringColumn(column, clause)
     }
 
-    open suspend fun insert(domainObj: D): Long {
+    open suspend fun insert(domainObj: D): Int {
         return objectDao.insert(domainObj.toDB())
     }
 

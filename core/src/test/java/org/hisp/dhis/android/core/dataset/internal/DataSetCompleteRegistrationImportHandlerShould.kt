@@ -36,9 +36,10 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.Mockito
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
@@ -68,7 +69,7 @@ class DataSetCompleteRegistrationImportHandlerShould {
             emptyList(),
         )
 
-        verify(dataSetCompleteRegistrationStore, Mockito.never()).setState(
+        verify(dataSetCompleteRegistrationStore, never()).setState(
             any<DataSetCompleteRegistration>(),
             any<State>(),
         )
@@ -79,8 +80,7 @@ class DataSetCompleteRegistrationImportHandlerShould {
         val dataSetCompleteRegistrations = mutableListOf(dataSetCompleteRegistration)
 
         whenever(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.SUCCESS)
-        whenever(dataSetCompleteRegistrationStore.isBeingUpload(any<DataSetCompleteRegistration>()))
-            .thenReturn(java.lang.Boolean.TRUE)
+        whenever(dataSetCompleteRegistrationStore.isBeingUpload(any<DataSetCompleteRegistration>())).thenReturn(true)
 
         dataSetCompleteRegistrationImportHandler.handleImportSummary(
             dataSetCompleteRegistrations,
@@ -89,7 +89,7 @@ class DataSetCompleteRegistrationImportHandlerShould {
             emptyList(),
         )
 
-        Mockito.verify(dataSetCompleteRegistrationStore, Mockito.times(1))
+        verify(dataSetCompleteRegistrationStore, times(1))
             .setState(dataSetCompleteRegistration, State.SYNCED)
     }
 
@@ -98,8 +98,7 @@ class DataSetCompleteRegistrationImportHandlerShould {
         val dataValueCollection = mutableListOf(dataSetCompleteRegistration)
 
         whenever(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.ERROR)
-        whenever(dataSetCompleteRegistrationStore.isBeingUpload(any<DataSetCompleteRegistration>()))
-            .thenReturn(java.lang.Boolean.TRUE)
+        whenever(dataSetCompleteRegistrationStore.isBeingUpload(any<DataSetCompleteRegistration>())).thenReturn(true)
 
         dataSetCompleteRegistrationImportHandler.handleImportSummary(
             dataValueCollection,
@@ -108,7 +107,7 @@ class DataSetCompleteRegistrationImportHandlerShould {
             emptyList(),
         )
 
-        Mockito.verify(dataSetCompleteRegistrationStore, Mockito.times(1))
+        verify(dataSetCompleteRegistrationStore, times(1))
             .setState(dataSetCompleteRegistration, State.ERROR)
     }
 }

@@ -25,62 +25,51 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.period.internal
 
-package org.hisp.dhis.android.core.period.internal;
+import com.google.common.collect.Lists
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.period.Period
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
+import org.mockito.kotlin.whenever
 
-import com.google.common.collect.Lists;
-
-import org.hisp.dhis.android.core.period.Period;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-
-@RunWith(JUnit4.class)
-public class PeriodHandlerShould {
-
-    @Mock
-    private PeriodStore store;
-
-    @Mock
-    private ParentPeriodGenerator generator;
-
-    @Mock
-    private Period p1;
-
-    @Mock
-    private Period p2;
+@RunWith(JUnit4::class)
+class PeriodHandlerShould {
+    private val store: PeriodStore = mock()
+    private val generator: ParentPeriodGenerator = mock()
+    private val p1: Period = mock()
+    private val p2: Period = mock()
 
     // object to test
-    private PeriodHandler periodHandler;
+    private lateinit var periodHandler: PeriodHandler
 
     @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        periodHandler = new PeriodHandler(store, generator);
-        when(generator.generatePeriods()).thenReturn(Lists.newArrayList(p1, p2));
+    @Throws(Exception::class)
+    fun setUp() {
+        periodHandler = PeriodHandler(store, generator)
+        whenever(generator.generatePeriods()).thenReturn(Lists.newArrayList(p1, p2))
     }
 
     @Test
-    public void call_generator_to_generate_periods() {
-        periodHandler.generateAndPersist();
+    fun call_generator_to_generate_periods() = runTest {
+        periodHandler.generateAndPersist()
 
-        verify(generator).generatePeriods();
-        verifyNoMoreInteractions(generator);
+        verify(generator).generatePeriods()
+        verifyNoMoreInteractions(generator)
     }
 
     @Test
-    public void call_store_to_persist_periods() {
-        periodHandler.generateAndPersist();
+    fun call_store_to_persist_periods() = runTest {
+        periodHandler.generateAndPersist()
 
-        verify(store).updateOrInsertWhere(p1);
-        verify(store).updateOrInsertWhere(p2);
-        verifyNoMoreInteractions(store);
+        verify(store).updateOrInsertWhere(p1)
+        verify(store).updateOrInsertWhere(p2)
+        verifyNoMoreInteractions(store)
     }
 }

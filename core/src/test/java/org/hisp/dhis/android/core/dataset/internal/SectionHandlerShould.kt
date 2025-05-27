@@ -25,96 +25,75 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset.internal;
+package org.hisp.dhis.android.core.dataset.internal
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.dataelement.DataElementOperand
+import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandHandler
+import org.hisp.dhis.android.core.dataset.Section
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataelement.DataElementOperand;
-import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandHandler;
-import org.hisp.dhis.android.core.dataset.Section;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.util.ArrayList;
-import java.util.List;
-
-@RunWith(JUnit4.class)
-public class SectionHandlerShould {
-
-    @Mock
-    private SectionStore sectionStore;
-
-    @Mock
-    private SectionDataElementLinkHandler sectionDataElementLinkHandler;
-
-    @Mock
-    private DataElementOperandHandler greyedFieldsHandler;
-
-    @Mock
-    private SectionGreyedFieldsLinkHandler sectionGreyedFieldsLinkHandler;
-
-    @Mock
-    private SectionIndicatorLinkHandler sectionIndicatorLinkHandler;
-
-    @Mock
-    private SectionGreyedFieldsLinkStore sectionGreyedFieldsStore;
-
-    @Mock
-    private Section section;
+@RunWith(JUnit4::class)
+class SectionHandlerShould {
+    private val sectionStore: SectionStore = mock()
+    private val sectionDataElementLinkHandler: SectionDataElementLinkHandler = mock()
+    private val greyedFieldsHandler: DataElementOperandHandler = mock()
+    private val sectionGreyedFieldsLinkHandler: SectionGreyedFieldsLinkHandler = mock()
+    private val sectionIndicatorLinkHandler: SectionIndicatorLinkHandler = mock()
+    private val sectionGreyedFieldsStore: SectionGreyedFieldsLinkStore = mock()
+    private val section: Section = mock()
 
     // object to test
-    private SectionHandler sectionHandler;
-    private List<DataElement> dataElements;
+    private lateinit var sectionHandler: SectionHandler
+    private lateinit var dataElements: MutableList<DataElement>
 
     @Before
-    public void setUp() throws Exception {
+    @Throws(Exception::class)
+    fun setUp() {
+        sectionHandler = SectionHandler(
+            sectionStore,
+            sectionDataElementLinkHandler,
+            greyedFieldsHandler,
+            sectionGreyedFieldsLinkHandler,
+            sectionIndicatorLinkHandler,
+            sectionGreyedFieldsStore,
+        )
 
-        MockitoAnnotations.initMocks(this);
+        whenever(section.uid()).thenReturn("section_uid")
 
-        sectionHandler = new SectionHandler(sectionStore, sectionDataElementLinkHandler,
-                greyedFieldsHandler, sectionGreyedFieldsLinkHandler, sectionIndicatorLinkHandler, sectionGreyedFieldsStore);
+        dataElements = mutableListOf(DataElement.builder().uid("dataElement_uid").build())
+        whenever(section.dataElements()).thenReturn(dataElements)
 
-        when(section.uid()).thenReturn("section_uid");
-
-        dataElements = new ArrayList<>();
-        dataElements.add(DataElement.builder().uid("dataElement_uid").build());
-        when(section.dataElements()).thenReturn(dataElements);
-
-        List<DataElementOperand> greyedFields = new ArrayList<>();
-        when(section.greyedFields()).thenReturn(greyedFields);
-
-        when(sectionStore.updateOrInsert(section)).thenReturn(HandleAction.Insert);
+        val greyedFields: List<DataElementOperand> = emptyList()
+        whenever(section.greyedFields()).thenReturn(greyedFields)
+        whenever(sectionStore.updateOrInsert(section)).thenReturn(HandleAction.Insert)
     }
 
     @Test
-    public void passingNullArguments_shouldNotPerformAnyAction() {
-        sectionHandler.handle(null);
+    fun passingNullArguments_shouldNotPerformAnyAction() = runTest {
+        sectionHandler.handle(null)
 
-        verify(sectionStore, never()).delete(anyString());
-
-        verify(sectionStore, never()).update(any(Section.class));
-
-        verify(sectionStore, never()).insert(any(Section.class));
+        verify(sectionStore, never()).delete(any())
+        verify(sectionStore, never()).update(any())
+        verify(sectionStore, never()).insert(any<List<Section>>())
+        verify(sectionStore, never()).insert(any<Section>())
     }
 
     @Test
-    public void handlingSection_shouldHandleLinkedDataElements() {
-        sectionHandler.handle(section);
-        verify(sectionDataElementLinkHandler).handleMany(eq(section.uid()), eq(dataElements),
-                any());
-        verify(sectionGreyedFieldsLinkHandler).handleMany(eq(section.uid()), anyListOf(DataElementOperand.class),
-                any());
+    fun handlingSection_shouldHandleLinkedDataElements() = runTest {
+        sectionHandler.handle(section)
+        verify(sectionDataElementLinkHandler).handleMany(eq(section.uid()), eq(dataElements), any())
+        verify(sectionGreyedFieldsLinkHandler).handleMany(eq(section.uid()), any<List<DataElementOperand>>(), any())
     }
 }

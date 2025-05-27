@@ -25,141 +25,105 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.internal;
+package org.hisp.dhis.android.core.program.internal
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import com.google.common.collect.Lists
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.legendset.internal.ProgramIndicatorLegendSetLinkHandler
+import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
+import org.hisp.dhis.android.core.program.ProgramIndicator
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
-import com.google.common.collect.Lists;
-
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.legendset.internal.ProgramIndicatorLegendSetLinkHandler;
-import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary;
-import org.hisp.dhis.android.core.program.ProgramIndicator;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.util.ArrayList;
-import java.util.List;
-
-@RunWith(JUnit4.class)
-public class ProgramIndicatorHandlerShould {
-    @Mock
-    private ProgramIndicatorStore programIndicatorStore;
-
-    @Mock
-    private ProgramIndicatorLegendSetLinkHandler programIndicatorLegendSetLinkHandler;
-
-    @Mock
-    private AnalyticsPeriodBoundaryHandler analyticsPeriodBoundaryHandler;
-
-    @Mock
-    private Handler<ObjectWithUid> legendSetHandler;
-
-    @Mock
-    private ProgramIndicator programIndicator;
-
-    @Mock
-    private ObjectWithUid legendSet;
-
-    @Mock
-    private AnalyticsPeriodBoundary analyticsPeriodBoundary;
-
-    @Mock
-    private AnalyticsPeriodBoundary.Builder analyticsPeriodBoundaryBuilder;
-
-    @Mock
-    private ObjectWithUid program;
+@RunWith(JUnit4::class)
+class ProgramIndicatorHandlerShould {
+    private val programIndicatorStore: ProgramIndicatorStore = mock()
+    private val programIndicatorLegendSetLinkHandler: ProgramIndicatorLegendSetLinkHandler = mock()
+    private val analyticsPeriodBoundaryHandler: AnalyticsPeriodBoundaryHandler = mock()
+    private val legendSetHandler: Handler<ObjectWithUid> = mock()
+    private val programIndicator: ProgramIndicator = mock()
+    private val legendSet: ObjectWithUid = mock()
+    private val analyticsPeriodBoundary: AnalyticsPeriodBoundary = mock()
+    private val analyticsPeriodBoundaryBuilder: AnalyticsPeriodBoundary.Builder = mock()
+    private val program: ObjectWithUid = mock()
 
     // object to test
-    private Handler<ProgramIndicator> programIndicatorHandler;
-
-    // list of program indicators
-    private List<ProgramIndicator> programIndicators;
-
-    // list of program indicators
-    private List<ObjectWithUid> legendSets;
+    private lateinit var programIndicatorHandler: Handler<ProgramIndicator>
+    private lateinit var programIndicators: MutableList<ProgramIndicator>
+    private lateinit var legendSets: MutableList<ObjectWithUid>
 
     @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
+    @Throws(Exception::class)
+    fun setUp() {
+        programIndicatorHandler = ProgramIndicatorHandler(
+            programIndicatorStore,
+            programIndicatorLegendSetLinkHandler,
+            analyticsPeriodBoundaryHandler,
+        )
 
-        programIndicatorHandler = new ProgramIndicatorHandler(
-                programIndicatorStore,
-                programIndicatorLegendSetLinkHandler,
-                analyticsPeriodBoundaryHandler
-        );
+        programIndicators = mutableListOf(programIndicator)
+        legendSets = mutableListOf(legendSet)
 
-        programIndicators = new ArrayList<>();
-        programIndicators.add(programIndicator);
-
-        legendSets = new ArrayList<>();
-        legendSets.add(legendSet);
-
-        when(programIndicator.uid()).thenReturn("test_program_indicator_uid");
-        when(program.uid()).thenReturn("test_program_uid");
-        when(programIndicator.program()).thenReturn(program);
-        when(programIndicator.legendSets()).thenReturn(legendSets);
-        when(programIndicator.analyticsPeriodBoundaries()).thenReturn(Lists.newArrayList(analyticsPeriodBoundary));
-        when(analyticsPeriodBoundary.toBuilder()).thenReturn(analyticsPeriodBoundaryBuilder);
-        when(analyticsPeriodBoundaryBuilder.programIndicator(any())).thenReturn(analyticsPeriodBoundaryBuilder);
-        when(analyticsPeriodBoundaryBuilder.build()).thenReturn(analyticsPeriodBoundary);
-        when(programIndicatorStore.updateOrInsert(any())).thenReturn(HandleAction.Insert);
+        whenever(programIndicator.uid()).thenReturn("test_program_indicator_uid")
+        whenever(program.uid()).thenReturn("test_program_uid")
+        whenever(programIndicator.program()).thenReturn(program)
+        whenever(programIndicator.legendSets()).thenReturn(legendSets)
+        whenever(programIndicator.analyticsPeriodBoundaries()).thenReturn(Lists.newArrayList(analyticsPeriodBoundary))
+        whenever(analyticsPeriodBoundary.toBuilder()).thenReturn(analyticsPeriodBoundaryBuilder)
+        whenever(analyticsPeriodBoundaryBuilder.programIndicator(any())).thenReturn(analyticsPeriodBoundaryBuilder)
+        whenever(analyticsPeriodBoundaryBuilder.build()).thenReturn(analyticsPeriodBoundary)
+        whenever(programIndicatorStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
     }
 
     @Test
-    public void do_nothing_when_passing_null_argument() {
-        programIndicatorHandler.handle(null);
+    fun do_nothing_when_passing_null_argument() = runTest {
+        programIndicatorHandler.handle(null)
 
         // verify that program indicator store is never called
-        verify(programIndicatorStore, never()).delete(anyString());
-
-        verify(programIndicatorStore, never()).update(any(ProgramIndicator.class));
-
-        verify(programIndicatorStore, never()).insert(any(ProgramIndicator.class));
+        verify(programIndicatorStore, never()).delete(any())
+        verify(programIndicatorStore, never()).update(any())
+        verify(programIndicatorStore, never()).insert(any<ProgramIndicator>())
     }
 
-
     @Test
-    public void delete_shouldDeleteProgramIndicator() {
-        when(programIndicator.deleted()).thenReturn(Boolean.TRUE);
-
-        programIndicatorHandler.handleMany(programIndicators);
+    fun delete_shouldDeleteProgramIndicator() = runTest {
+        whenever(programIndicator.deleted()).thenReturn(true)
+        programIndicatorHandler.handleMany(programIndicators)
 
         // verify that delete is called once
-        verify(programIndicatorStore, times(1)).deleteIfExists(programIndicator.uid());
+        verify(programIndicatorStore, times(1)).deleteIfExists(programIndicator.uid())
     }
 
     @Test
-    public void update_shouldUpdateProgramIndicatorWithoutProgramStageSection() {
-        programIndicatorHandler.handleMany(programIndicators);
+    fun update_shouldUpdateProgramIndicatorWithoutProgramStageSection() = runTest {
+        programIndicatorHandler.handleMany(programIndicators)
 
         // verify that update is called once
-        verify(programIndicatorStore, times(1)).updateOrInsert(any(ProgramIndicator.class));
-
-        verify(programIndicatorStore, never()).delete(anyString());
-    }
-
-
-    public void call_program_indicator_legend_set_handler() {
-        programIndicatorHandler.handleMany(programIndicators);
-        verify(legendSetHandler).handleMany(eq(legendSets));
+        verify(programIndicatorStore, times(1)).updateOrInsert(any<ProgramIndicator>())
+        verify(programIndicatorStore, never()).delete(any())
     }
 
     @Test
-    public void call_program_indicator_analytics_period_boundary_handler_and_store() {
-        programIndicatorHandler.handleMany(programIndicators);
-        verify(analyticsPeriodBoundaryHandler).handleMany(any(), any(), any());
+    fun call_program_indicator_legend_set_handler() = runTest {
+        programIndicatorHandler.handleMany(programIndicators)
+        verify(legendSetHandler).handleMany(eq(legendSets))
+    }
+
+    @Test
+    fun call_program_indicator_analytics_period_boundary_handler_and_store() = runTest {
+        programIndicatorHandler.handleMany(programIndicators)
+        verify(analyticsPeriodBoundaryHandler).handleMany(any(), any(), any())
     }
 }

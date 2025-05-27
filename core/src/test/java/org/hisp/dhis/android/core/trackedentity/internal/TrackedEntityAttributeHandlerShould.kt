@@ -25,80 +25,64 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
+import org.hisp.dhis.android.core.common.Access
+import org.hisp.dhis.android.core.common.ObjectStyle
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.util.ArrayList;
-import java.util.List;
-
-@RunWith(JUnit4.class)
-public class TrackedEntityAttributeHandlerShould {
-
-    @Mock
-    private TrackedEntityAttributeStore trackedEntityAttributeStore;
-
-    @Mock
-    private TrackedEntityAttributeLegendSetLinkHandler trackedEntityAttributeLegendSetLinkHandler;
-
-    @Mock
-    private ObjectStyle objectStyle;
-
-    @Mock
-    private Access access;
-
-    private TrackedEntityAttribute trackedEntityAttribute;
+@RunWith(JUnit4::class)
+class TrackedEntityAttributeHandlerShould {
+    private val trackedEntityAttributeStore: TrackedEntityAttributeStore = mock()
+    private val trackedEntityAttributeLegendSetLinkHandler: TrackedEntityAttributeLegendSetLinkHandler = mock()
+    private val objectStyle: ObjectStyle = mock()
+    private val access: Access = mock()
 
     // object to test
-    private List<TrackedEntityAttribute> trackedEntityAttributes;
-    private TrackedEntityAttributeHandler trackedEntityAttributeHandler;
+    private lateinit var trackedEntityAttributeHandler: TrackedEntityAttributeHandler
+    private lateinit var trackedEntityAttributes: MutableList<TrackedEntityAttribute>
+    private lateinit var trackedEntityAttribute: TrackedEntityAttribute
 
     @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        trackedEntityAttributeHandler = new TrackedEntityAttributeHandler(
-                trackedEntityAttributeStore,
-                trackedEntityAttributeLegendSetLinkHandler
-        );
+    @Throws(Exception::class)
+    fun setUp() {
+        trackedEntityAttributeHandler = TrackedEntityAttributeHandler(
+            trackedEntityAttributeStore,
+            trackedEntityAttributeLegendSetLinkHandler,
+        )
 
         trackedEntityAttribute = TrackedEntityAttribute.builder()
-                .uid("test_tracked_entity_attribute_uid")
-                .style(objectStyle)
-                .name("name")
-                .displayName("display_name")
-                .formName("form_name")
-                .access(access)
-                .build();
+            .uid("test_tracked_entity_attribute_uid")
+            .style(objectStyle)
+            .name("name")
+            .displayName("display_name")
+            .formName("form_name")
+            .access(access)
+            .build()
 
-        trackedEntityAttributes = new ArrayList<>();
-        trackedEntityAttributes.add(trackedEntityAttribute);
-
-        when(access.read()).thenReturn(true);
+        trackedEntityAttributes = mutableListOf(trackedEntityAttribute)
+        whenever(access.read()).thenReturn(true)
     }
 
     @Test
-    public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<TrackedEntityAttribute> genericHandler =
-                new TrackedEntityAttributeHandler(trackedEntityAttributeStore, trackedEntityAttributeLegendSetLinkHandler);
+    fun extend_identifiable_handler_impl() {
+        val genericHandler: IdentifiableHandlerImpl<TrackedEntityAttribute> =
+            TrackedEntityAttributeHandler(trackedEntityAttributeStore, trackedEntityAttributeLegendSetLinkHandler)
     }
 
     @Test
-    public void delete_tea_if_no_read_access() {
-        when(access.read()).thenReturn(false);
-        trackedEntityAttributeHandler.handleMany(trackedEntityAttributes);
-        verify(trackedEntityAttributeStore).deleteIfExists(trackedEntityAttribute.uid());
+    fun delete_tea_if_no_read_access() = runTest {
+        whenever(access.read()).thenReturn(false)
+        trackedEntityAttributeHandler.handleMany(trackedEntityAttributes)
+        verify(trackedEntityAttributeStore).deleteIfExists(trackedEntityAttribute.uid())
     }
 }

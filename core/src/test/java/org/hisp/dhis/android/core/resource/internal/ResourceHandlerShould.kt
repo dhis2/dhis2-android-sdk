@@ -25,67 +25,57 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.resource.internal;
+package org.hisp.dhis.android.core.resource.internal
 
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
+import java.util.Date
 
-import java.util.Date;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-@RunWith(JUnit4.class)
-public class ResourceHandlerShould {
-
-    @Mock
-    private ResourceStore resourceStore;
-
-    @Mock
-    private Date serverDate;
+@RunWith(JUnit4::class)
+class ResourceHandlerShould {
+    private val resourceStore: ResourceStore = mock()
+    private val serverDate: Date = mock()
 
     // object to test
-    private ResourceHandler resourceHandler;
+    private lateinit var resourceHandler: ResourceHandler
 
     @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-
-        resourceHandler = new ResourceHandler(resourceStore);
+    @Throws(Exception::class)
+    fun setUp() {
+        resourceHandler = ResourceHandler(resourceStore)
     }
 
     @Test
-    public void do_nothing_when_passing_null_resource() {
-        resourceHandler.setServerDate(serverDate);
-        resourceHandler.handleResource(null);
+    fun do_nothing_when_passing_null_resource() {
+        resourceHandler.setServerDate(serverDate)
+        resourceHandler.handleResource(null)
 
-        // verify that store is never called
-        verify(resourceStore, never()).updateOrInsertWhere(any(Resource.class));
+        verify(resourceStore, never()).updateOrInsertWhere(any())
     }
 
     @Test
-    public void do_nothing_when_not_passing_server_date() {
-        resourceHandler.handleResource(Resource.Type.PROGRAM);
+    fun do_nothing_when_not_passing_server_date() {
+        resourceHandler.handleResource(Resource.Type.PROGRAM)
 
-        // verify that store is never called
-        verify(resourceStore, never()).updateOrInsertWhere(any(Resource.class));
+        verify(resourceStore, never()).updateOrInsertWhere(any())
     }
 
     @Test
-    public void invoke_update_or_insert_when_handle_resource_updatable() {
-        when(resourceStore.updateOrInsertWhere(any(Resource.class))).thenReturn(HandleAction.Update);
+    fun invoke_update_or_insert_when_handle_resource_updatable() {
+        whenever(resourceStore.updateOrInsertWhere(any())).thenReturn(HandleAction.Update)
 
-        resourceHandler.setServerDate(serverDate);
-        resourceHandler.handleResource(Resource.Type.PROGRAM);
+        resourceHandler.setServerDate(serverDate)
+        resourceHandler.handleResource(Resource.Type.PROGRAM)
 
-        verify(resourceStore, times(1)).updateOrInsertWhere(any(Resource.class));
+        verify(resourceStore, times(1)).updateOrInsertWhere(any())
     }
 }

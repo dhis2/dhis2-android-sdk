@@ -25,167 +25,128 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.internal
 
-package org.hisp.dhis.android.core.program.internal;
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.attribute.internal.ProgramStageAttributeValueLinkHandler
+import org.hisp.dhis.android.core.common.Access
+import org.hisp.dhis.android.core.common.DataAccess
+import org.hisp.dhis.android.core.common.ObjectStyle
+import org.hisp.dhis.android.core.program.ProgramStage
+import org.hisp.dhis.android.core.program.ProgramStageDataElement
+import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor
+import org.hisp.dhis.android.core.program.ProgramStageSection
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
-import static org.mockito.ArgumentMatchers.anyCollection;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.attribute.internal.AttributeHandler;
-import org.hisp.dhis.android.core.attribute.internal.ProgramStageAttributeValueLinkHandler;
-import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.DataAccess;
-import org.hisp.dhis.android.core.common.FeatureType;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.program.ProgramStage;
-import org.hisp.dhis.android.core.program.ProgramStageDataElement;
-import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor;
-import org.hisp.dhis.android.core.program.ProgramStageSection;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-@RunWith(JUnit4.class)
-public class ProgramStageHandlerShould {
-    @Mock
-    private ProgramStageStore programStageStore;
-
-    @Mock
-    private ProgramStageSectionHandler programStageSectionHandler;
-
-    @Mock
-    private ProgramStageDataElementHandler programStageDataElementHandler;
-
-    @Mock
-    private ProgramStage programStage;
-
-    @Mock
-    private DataAccess dataAccess;
-
-    @Mock
-    private Access access;
-
-    @Mock
-    private ObjectStyle objectStyle;
-
-    @Mock
-    private ProgramStageDataElement programStageDataElement;
-
-    private List<ProgramStageDataElement> programStageDataElements;
-
-    @Mock
-    private ProgramStageSection programStageSection;
-
-    private List<ProgramStageSection> programStageSections;
-
-    @Mock
-    private ProgramStageDataElementOrphanCleaner programStageDataElementCleaner;
-
-    @Mock
-    private ProgramStageSectionOrphanCleaner programStageSectionCleaner;
-
-    @Mock
-    private ProgramStageSubCollectionCleaner programStageCleaner;
-
-    @Mock
-    private ProgramStage.Builder programStageBuilder;
-
-    @Mock
-    private ProgramStageAttributeValueLinkHandler programStageAttributeValueLinkHandler;
+@RunWith(JUnit4::class)
+class ProgramStageHandlerShould {
+    private val programStageStore: ProgramStageStore = mock()
+    private val programStageSectionHandler: ProgramStageSectionHandler = mock()
+    private val programStageDataElementHandler: ProgramStageDataElementHandler = mock()
+    private val programStage: ProgramStage = mock()
+    private val dataAccess: DataAccess = mock()
+    private val access: Access = mock()
+    private val objectStyle: ObjectStyle = mock()
+    private val programStageDataElement: ProgramStageDataElement = mock()
+    private val programStageSection: ProgramStageSection = mock()
+    private val programStageDataElementCleaner: ProgramStageDataElementOrphanCleaner = mock()
+    private val programStageSectionCleaner: ProgramStageSectionOrphanCleaner = mock()
+    private val programStageCleaner: ProgramStageSubCollectionCleaner = mock()
+    private val programStageBuilder: ProgramStage.Builder = mock()
+    private val programStageAttributeValueLinkHandler: ProgramStageAttributeValueLinkHandler = mock()
 
     // object to test
-    private ProgramStageHandler programStageHandler;
+    private lateinit var programStageHandler: ProgramStageHandler
+    private lateinit var programStageDataElements: List<ProgramStageDataElement>
+    private lateinit var programStageSections: MutableList<ProgramStageSection>
 
     @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
+    @Throws(Exception::class)
+    fun setUp() {
+        programStageHandler = ProgramStageHandler(
+            programStageStore,
+            programStageSectionHandler,
+            programStageDataElementHandler,
+            programStageDataElementCleaner,
+            programStageSectionCleaner,
+            programStageCleaner,
+            programStageAttributeValueLinkHandler,
+        )
 
-        programStageHandler = new ProgramStageHandler(
-                programStageStore,
-                programStageSectionHandler,
-                programStageDataElementHandler,
-                programStageDataElementCleaner,
-                programStageSectionCleaner,
-                programStageCleaner,
-                programStageAttributeValueLinkHandler);
+        programStageSections = mutableListOf(programStageSection)
+        programStageDataElements = listOf(programStageDataElement)
 
-        programStageSections = new ArrayList<>();
-        programStageSections.add(programStageSection);
-
-        programStageDataElements = Collections.singletonList(programStageDataElement);
-
-        when(programStage.uid()).thenReturn("test_program_stage_uid");
-        when(programStage.style()).thenReturn(objectStyle);
-        when(ProgramStageInternalAccessor.accessProgramStageDataElements(programStage))
-                .thenReturn(programStageDataElements);
-        when(ProgramStageInternalAccessor.accessProgramStageSections(programStage)).thenReturn(programStageSections);
-        when(dataAccess.read()).thenReturn(true);
-        when(access.data()).thenReturn(dataAccess);
-        when(programStage.access()).thenReturn(access);
-
-        when(programStage.toBuilder()).thenReturn(programStageBuilder);
-        when(programStageBuilder.featureType(any(FeatureType.class))).thenReturn(programStageBuilder);
-        when(programStageBuilder.build()).thenReturn(programStage);
-
-        when(programStageStore.updateOrInsert(any(ProgramStage.class))).thenReturn(HandleAction.Insert);
+        whenever(programStage.uid()).thenReturn("test_program_stage_uid")
+        whenever(programStage.style()).thenReturn(objectStyle)
+        whenever(ProgramStageInternalAccessor.accessProgramStageDataElements(programStage))
+            .thenReturn(programStageDataElements)
+        whenever(ProgramStageInternalAccessor.accessProgramStageSections(programStage))
+            .thenReturn(programStageSections)
+        whenever(dataAccess.read()).thenReturn(true)
+        whenever(access.data()).thenReturn(dataAccess)
+        whenever(programStage.access()).thenReturn(access)
+        whenever(programStage.toBuilder()).thenReturn(programStageBuilder)
+        whenever(programStageBuilder.featureType(any())).thenReturn(programStageBuilder)
+        whenever(programStageBuilder.build()).thenReturn(programStage)
+        whenever(programStageStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
     }
 
     @Test
-    public void call_program_stage_data_element_handler() throws Exception {
-        programStageHandler.handle(programStage);
-        verify(programStageDataElementHandler).handleMany(programStageDataElements);
+    @Throws(Exception::class)
+    fun call_program_stage_data_element_handler() = runTest {
+        programStageHandler.handle(programStage)
+        verify(programStageDataElementHandler).handleMany(programStageDataElements)
     }
 
     @Test
-    public void call_program_stage_section_handler() throws Exception {
-        programStageHandler.handle(programStage);
-        verify(programStageSectionHandler).handleMany(eq(programStageSections), any());
+    @Throws(Exception::class)
+    fun call_program_stage_section_handler() = runTest {
+        programStageHandler.handle(programStage)
+        verify(programStageSectionHandler).handleMany(eq(programStageSections), any())
     }
 
     @Test
-    public void clean_orphan_data_elements_after_update() {
-        when(programStageStore.updateOrInsert(any(ProgramStage.class))).thenReturn(HandleAction.Update);
-        programStageHandler.handle(programStage);
-        verify(programStageDataElementCleaner).deleteOrphan(programStage, programStageDataElements);
+    fun clean_orphan_data_elements_after_update() = runTest {
+        whenever(programStageStore.updateOrInsert(any())).thenReturn(HandleAction.Update)
+        programStageHandler.handle(programStage)
+        verify(programStageDataElementCleaner).deleteOrphan(programStage, programStageDataElements)
     }
 
     @Test
-    public void not_clean_orphan_data_elements_after_insert() {
-        when(programStageStore.updateOrInsert(any(ProgramStage.class))).thenReturn(HandleAction.Insert);
-        programStageHandler.handle(programStage);
-        verify(programStageDataElementCleaner, never()).deleteOrphan(programStage, programStageDataElements);
+    fun not_clean_orphan_data_elements_after_insert() = runTest {
+        whenever(programStageStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
+        programStageHandler.handle(programStage)
+        verify(programStageDataElementCleaner, never()).deleteOrphan(programStage, programStageDataElements)
     }
 
     @Test
-    public void clean_orphan_sections_after_update() {
-        when(programStageStore.updateOrInsert(any(ProgramStage.class))).thenReturn(HandleAction.Update);
-        programStageHandler.handle(programStage);
-        verify(programStageSectionCleaner).deleteOrphan(programStage, programStageSections);
+    fun clean_orphan_sections_after_update() = runTest {
+        whenever(programStageStore.updateOrInsert(any())).thenReturn(HandleAction.Update)
+        programStageHandler.handle(programStage)
+        verify(programStageSectionCleaner).deleteOrphan(programStage, programStageSections)
     }
 
     @Test
-    public void not_clean_orphan_sections_after_insert() {
-        when(programStageStore.updateOrInsert(any(ProgramStage.class))).thenReturn(HandleAction.Insert);
-        programStageHandler.handle(programStage);
-        verify(programStageSectionCleaner, never()).deleteOrphan(programStage, programStageSections);
+    fun not_clean_orphan_sections_after_insert() = runTest {
+        whenever(programStageStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
+        programStageHandler.handle(programStage)
+        verify(programStageSectionCleaner, never()).deleteOrphan(programStage, programStageSections)
     }
 
     @Test
-    public void call_collection_cleaner_when_calling_handle_many() {
-        List<ProgramStage> programStages = Collections.singletonList(programStage);
-        programStageHandler.handleMany(programStages);
-        verify(programStageCleaner).deleteNotPresent(programStages);
+    fun call_collection_cleaner_when_calling_handle_many() = runTest {
+        val programStages = listOf(programStage)
+        programStageHandler.handleMany(programStages)
+        verify(programStageCleaner).deleteNotPresent(programStages)
     }
 }

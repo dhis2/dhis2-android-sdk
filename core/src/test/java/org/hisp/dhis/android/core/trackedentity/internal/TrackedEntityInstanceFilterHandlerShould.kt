@@ -25,91 +25,77 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
+import org.hisp.dhis.android.core.common.ObjectStyle
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.trackedentity.EntityQueryCriteria
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import com.google.common.collect.Lists;
-
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.trackedentity.EntityQueryCriteria;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.util.ArrayList;
-import java.util.List;
-
-@RunWith(JUnit4.class)
-public class TrackedEntityInstanceFilterHandlerShould {
-
-    @Mock
-    private TrackedEntityInstanceFilterStore trackedEntityInstanceFilterStore;
-
-    @Mock
-    private ObjectStyle objectStyle;
-
-    @Mock
-    private TrackedEntityInstanceEventFilterHandler trackedEntityInstanceEventFilterHandler;
-
-    @Mock
-    private AttributeValueFilterHandler attributeValueFilterHandler;
-
-    @Mock
-    private TrackedEntityInstanceEventFilter eventFilter;
+@RunWith(JUnit4::class)
+class TrackedEntityInstanceFilterHandlerShould {
+    private val trackedEntityInstanceFilterStore: TrackedEntityInstanceFilterStore = mock()
+    private val objectStyle: ObjectStyle = mock()
+    private val trackedEntityInstanceEventFilterHandler: TrackedEntityInstanceEventFilterHandler = mock()
+    private val attributeValueFilterHandler: AttributeValueFilterHandler = mock()
+    private val eventFilter: TrackedEntityInstanceEventFilter = mock()
 
     // object to test
-    private List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters;
-    private List<TrackedEntityInstanceEventFilter> eventFilters;
-    private TrackedEntityInstanceFilterHandler trackedEntityInstanceFilterHandler;
+    private lateinit var trackedEntityInstanceFilterHandler: TrackedEntityInstanceFilterHandler
+    private lateinit var trackedEntityInstanceFilters: MutableList<TrackedEntityInstanceFilter>
+    private lateinit var eventFilters: List<TrackedEntityInstanceEventFilter>
 
     @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        trackedEntityInstanceFilterHandler = new TrackedEntityInstanceFilterHandler(
+    @Throws(Exception::class)
+    fun setUp() {
+        trackedEntityInstanceFilterHandler = TrackedEntityInstanceFilterHandler(
+            trackedEntityInstanceFilterStore,
+            trackedEntityInstanceEventFilterHandler,
+            attributeValueFilterHandler,
+        )
+
+        eventFilters = listOf(eventFilter)
+
+        val trackedEntityInstanceFilter = TrackedEntityInstanceFilter.builder()
+            .uid("test_tracked_entity_attribute_uid")
+            .program(ObjectWithUid.create("program_uid"))
+            .style(objectStyle)
+            .name("name")
+            .displayName("display_name")
+            .eventFilters(eventFilters)
+            .entityQueryCriteria(EntityQueryCriteria.builder().build())
+            .build()
+
+        whenever(trackedEntityInstanceFilterStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
+
+        trackedEntityInstanceFilters = mutableListOf(trackedEntityInstanceFilter)
+    }
+
+    @Test
+    fun extend_identifiable_handler_impl() {
+        val genericHandler: IdentifiableHandlerImpl<TrackedEntityInstanceFilter> =
+            TrackedEntityInstanceFilterHandler(
                 trackedEntityInstanceFilterStore,
                 trackedEntityInstanceEventFilterHandler,
-                attributeValueFilterHandler);
-
-        eventFilters = Lists.newArrayList(eventFilter);
-
-        TrackedEntityInstanceFilter trackedEntityInstanceFilter = TrackedEntityInstanceFilter.builder()
-                .uid("test_tracked_entity_attribute_uid")
-                .program(ObjectWithUid.create("program_uid"))
-                .style(objectStyle)
-                .name("name")
-                .displayName("display_name")
-                .eventFilters(eventFilters)
-                .entityQueryCriteria(EntityQueryCriteria.builder().build())
-                .build();
-
-        when(trackedEntityInstanceFilterStore.updateOrInsert(any())).thenReturn(HandleAction.Insert);
-
-        trackedEntityInstanceFilters = new ArrayList<>();
-        trackedEntityInstanceFilters.add(trackedEntityInstanceFilter);
+                attributeValueFilterHandler,
+            )
     }
 
     @Test
-    public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<TrackedEntityInstanceFilter> genericHandler =
-                new TrackedEntityInstanceFilterHandler(trackedEntityInstanceFilterStore,
-                        trackedEntityInstanceEventFilterHandler, attributeValueFilterHandler);
-    }
-
-    @Test
-    public void handle_event_filters() {
-        trackedEntityInstanceFilterHandler.handleMany(trackedEntityInstanceFilters);
-        verify(trackedEntityInstanceEventFilterHandler).handleMany(eventFilters);
+    fun handle_event_filters() = runTest {
+        trackedEntityInstanceFilterHandler.handleMany(trackedEntityInstanceFilters)
+        verify(trackedEntityInstanceEventFilterHandler).handleMany(eventFilters)
     }
 }

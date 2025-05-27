@@ -25,61 +25,48 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.settings.internal;
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.settings.DataSetSetting
+import org.junit.Before
+import org.junit.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+class DataSetSettingHandlerShould {
+    private val dataSetSettingStore: DataSetSettingStore = mock()
+    private val dataSetSetting: DataSetSetting = mock()
 
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.settings.DataSetSetting;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-public class DataSetSettingHandlerShould {
-
-    @Mock
-    private DataSetSettingStore dataSetSettingStore;
-
-    @Mock
-    private DataSetSetting dataSetSetting;
-
-    private Handler<DataSetSetting> dataSetSettingHandler;
-
-    private List<DataSetSetting> dataSetSettings;
+    // object to test
+    private lateinit var dataSetSettingHandler: Handler<DataSetSetting>
+    private lateinit var dataSetSettings: MutableList<DataSetSetting>
 
     @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-
-        dataSetSettings = new ArrayList<>();
-        dataSetSettings.add(dataSetSetting);
-        when(dataSetSettingStore.updateOrInsertWhere(any())).thenReturn(HandleAction.Insert);
-
-        dataSetSettingHandler = new DataSetSettingHandler(dataSetSettingStore);
+    @Throws(Exception::class)
+    fun setUp() {
+        dataSetSettings = mutableListOf(dataSetSetting)
+        whenever(dataSetSettingStore.updateOrInsertWhere(any())).thenReturn(HandleAction.Insert)
+        dataSetSettingHandler = DataSetSettingHandler(dataSetSettingStore)
     }
 
     @Test
-    public void clean_database_before_insert_collection() {
-        dataSetSettingHandler.handleMany(dataSetSettings);
-        verify(dataSetSettingStore, times(1)).delete();
-        verify(dataSetSettingStore, times(1)).updateOrInsertWhere(dataSetSetting);
+    fun clean_database_before_insert_collection() = runTest {
+        dataSetSettingHandler.handleMany(dataSetSettings)
+        verify(dataSetSettingStore, times(1)).delete()
+        verify(dataSetSettingStore, times(1)).updateOrInsertWhere(dataSetSetting)
     }
 
     @Test
-    public void clean_database_if_empty_collection() {
-        dataSetSettingHandler.handleMany(Collections.emptyList());
-        verify(dataSetSettingStore, times(1)).delete();
-        verify(dataSetSettingStore, never()).updateOrInsertWhere(dataSetSetting);
+    fun clean_database_if_empty_collection() = runTest {
+        dataSetSettingHandler.handleMany(emptyList())
+        verify(dataSetSettingStore, times(1)).delete()
+        verify(dataSetSettingStore, never()).updateOrInsertWhere(dataSetSetting)
     }
 }

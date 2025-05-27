@@ -25,85 +25,66 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.legendset.internal;
+package org.hisp.dhis.android.core.legendset.internal
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.legendset.Legend
+import org.hisp.dhis.android.core.legendset.LegendSet
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.legendset.Legend;
-import org.hisp.dhis.android.core.legendset.LegendSet;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.util.ArrayList;
-import java.util.List;
-
-@RunWith(JUnit4.class)
-public class LegendSetHandlerShould {
-
-    @Mock
-    private LegendSetStore legendSetStore;
-
-    @Mock
-    private LegendHandler legendHandler;
-
-    @Mock
-    private Legend legend;
-
-    @Mock
-    private List<Legend> legends;
-
-    @Mock
-    private LegendSet legendSet;
-
-    @Mock
-    private LegendSetLegendOrphanCleaner legendCleaner;
+@RunWith(JUnit4::class)
+class LegendSetHandlerShould {
+    private val legendSetStore: LegendSetStore = mock()
+    private val legendHandler: LegendHandler = mock()
+    private val legend: Legend = mock()
+    private var legends: MutableList<Legend> = mock()
+    private val legendSet: LegendSet = mock()
+    private val legendCleaner: LegendSetLegendOrphanCleaner = mock()
 
     // object to test
-    private LegendSetHandler legendSetHandler;
+    private lateinit var legendSetHandler: LegendSetHandler
 
     @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        legendSetHandler = new LegendSetHandler(legendSetStore, legendHandler, legendCleaner);
-        legends = new ArrayList<>();
-        legends.add(legend);
-        when(legendSet.legends()).thenReturn(legends);
-
-        when(legendSetStore.updateOrInsert(any(LegendSet.class))).thenReturn(HandleAction.Insert);
+    @Throws(Exception::class)
+    fun setUp() {
+        legendSetHandler = LegendSetHandler(legendSetStore, legendHandler, legendCleaner)
+        legends = mutableListOf(legend)
+        whenever(legendSet.legends()).thenReturn(legends)
+        whenever(legendSetStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
     }
 
     @Test
-    public void extend_identifiable_sync_handler_impl() {
-        LegendSetHandler genericHandler = new LegendSetHandler
-                (legendSetStore, legendHandler, legendCleaner);
+    fun extend_identifiable_sync_handler_impl() {
+        val genericHandler = LegendSetHandler(legendSetStore, legendHandler, legendCleaner)
     }
 
     @Test
-    public void call_style_handler() {
-        legendSetHandler.handle(legendSet);
-        verify(legendHandler).handleMany(eq(legendSet.legends()));
+    fun call_style_handler() = runTest {
+        legendSetHandler.handle(legendSet)
+        verify(legendHandler).handleMany(eq(legendSet.legends()))
     }
 
     @Test
-    public void clean_orphan_legends_after_update() {
-        when(legendSetStore.updateOrInsert(any(LegendSet.class))).thenReturn(HandleAction.Update);
-        legendSetHandler.handle(legendSet);
-        verify(legendCleaner).deleteOrphan(legendSet, legends);
+    fun clean_orphan_legends_after_update() = runTest {
+        whenever(legendSetStore.updateOrInsert(any())).thenReturn(HandleAction.Update)
+        legendSetHandler.handle(legendSet)
+        verify(legendCleaner).deleteOrphan(legendSet, legends)
     }
 
     @Test
-    public void not_clean_orphan_legends_after_insert() {
-        when(legendSetStore.updateOrInsert(any(LegendSet.class))).thenReturn(HandleAction.Insert);
-        legendSetHandler.handle(legendSet);
-        verify(legendCleaner, never()).deleteOrphan(legendSet, legends);
+    fun not_clean_orphan_legends_after_insert() = runTest {
+        whenever(legendSetStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
+        legendSetHandler.handle(legendSet)
+        verify(legendCleaner, never()).deleteOrphan(legendSet, legends)
     }
 }

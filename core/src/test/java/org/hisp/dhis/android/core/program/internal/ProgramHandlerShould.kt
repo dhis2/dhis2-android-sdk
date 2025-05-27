@@ -25,220 +25,173 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.internal
 
-package org.hisp.dhis.android.core.program.internal;
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.attribute.AttributeValue
+import org.hisp.dhis.android.core.attribute.internal.ProgramAttributeValueLinkHandler
+import org.hisp.dhis.android.core.common.Access
+import org.hisp.dhis.android.core.common.DataAccess
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.program.Program
+import org.hisp.dhis.android.core.program.ProgramInternalAccessor
+import org.hisp.dhis.android.core.program.ProgramRuleVariable
+import org.hisp.dhis.android.core.program.ProgramSection
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute
+import org.hisp.dhis.android.core.program.ProgramType
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
+import org.mockito.kotlin.whenever
 
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+@RunWith(JUnit4::class)
+class ProgramHandlerShould {
+    private val programStore: ProgramStore = mock()
+    private val programRuleVariableHandler: ProgramRuleVariableHandler = mock()
+    private val programTrackedEntityAttributeHandler: ProgramTrackedEntityAttributeHandler = mock()
+    private val programSectionHandler: ProgramSectionHandler = mock()
+    private val orphanCleaner: ProgramOrphanCleaner = mock()
+    private val collectionCleaner: ProgramCollectionCleaner = mock()
+    private val linkCleaner: ProgramOrganisationUnitLinkCleaner = mock()
+    private val programAttributeValueLinkHandler: ProgramAttributeValueLinkHandler = mock()
+    private val program: Program = mock()
+    private val dataAccess: DataAccess = mock()
+    private val access: Access = mock()
+    private val relatedProgram: ObjectWithUid = mock()
+    private val trackedEntityType: TrackedEntityType = mock()
+    private val programTrackedEntityAttributes: List<ProgramTrackedEntityAttribute> = mock()
+    private val programRuleVariable: ProgramRuleVariable = mock()
+    private val programSections: List<ProgramSection> = mock()
 
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.attribute.AttributeValue;
-import org.hisp.dhis.android.core.attribute.internal.ProgramAttributeValueLinkHandler;
-import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.DataAccess;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.program.ProgramInternalAccessor;
-import org.hisp.dhis.android.core.program.ProgramRuleVariable;
-import org.hisp.dhis.android.core.program.ProgramSection;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.android.core.program.ProgramType;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-@RunWith(JUnit4.class)
-public class ProgramHandlerShould {
-
-    @Mock
-    private ProgramStore programStore;
-
-    @Mock
-    private ProgramRuleVariableHandler programRuleVariableHandler;
-
-    @Mock
-    private ProgramTrackedEntityAttributeHandler programTrackedEntityAttributeHandler;
-
-    @Mock
-    private ProgramSectionHandler programSectionHandler;
-
-    @Mock
-    private ProgramOrphanCleaner orphanCleaner;
-
-    @Mock
-    private ProgramCollectionCleaner collectionCleaner;
-
-    @Mock
-    private ProgramOrganisationUnitLinkCleaner linkCleaner;
-
-    @Mock
-    private ProgramAttributeValueLinkHandler programAttributeValueLinkHandler;
-
-
-    @Mock
-    private Program program;
-
-    @Mock
-    private DataAccess dataAccess;
-
-    @Mock
-    private Access access;
-
-    @Mock
-    private ObjectWithUid relatedProgram;
-
-    @Mock
-    private TrackedEntityType trackedEntityType;
-
-    @Mock
-    private List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes;
-
-    @Mock
-    private ProgramRuleVariable programRuleVariable;
-
-    @Mock
-    private List<ProgramRuleVariable> programRuleVariables;
-
-    @Mock
-    private List<ProgramSection> programSections;
-
-    private List<AttributeValue> attributeValues = new ArrayList<>();
-
-    ObjectWithUid attributeValue = ObjectWithUid.create("Att_Uid");
+    private val attributeValues: MutableList<AttributeValue> = ArrayList()
+    private var programRuleVariables: List<ProgramRuleVariable> = mock()
+    private var attributeValue: ObjectWithUid = ObjectWithUid.create("Att_Uid")
 
     // object to test
-    private ProgramHandler programHandler;
+    private lateinit var programHandler: ProgramHandler
 
     @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
+    @Throws(Exception::class)
+    fun setUp() {
+        programHandler = ProgramHandler(
+            programStore,
+            programRuleVariableHandler,
+            programTrackedEntityAttributeHandler,
+            programSectionHandler,
+            orphanCleaner,
+            collectionCleaner,
+            linkCleaner,
+            programAttributeValueLinkHandler,
+        )
 
-        programHandler = new ProgramHandler(
-                programStore,
-                programRuleVariableHandler,
-                programTrackedEntityAttributeHandler,
-                programSectionHandler,
-                orphanCleaner,
-                collectionCleaner,
-                linkCleaner,
-                programAttributeValueLinkHandler
-        );
+        whenever(program.uid()).thenReturn("test_program_uid")
+        whenever(program.code()).thenReturn("test_program_code")
+        whenever(program.name()).thenReturn("test_program_name")
+        whenever(program.displayName()).thenReturn("test_program_display_name")
+        whenever(program.shortName()).thenReturn("test_program")
+        whenever(program.displayShortName()).thenReturn("test_program")
+        whenever(program.description()).thenReturn("A test program for the integration tests.")
+        whenever(program.displayDescription()).thenReturn("A test program for the integration tests.")
 
-        when(program.uid()).thenReturn("test_program_uid");
-        when(program.code()).thenReturn("test_program_code");
-        when(program.name()).thenReturn("test_program_name");
-        when(program.displayName()).thenReturn("test_program_display_name");
-        when(program.shortName()).thenReturn("test_program");
-        when(program.displayShortName()).thenReturn("test_program");
-        when(program.description()).thenReturn("A test program for the integration tests.");
-        when(program.displayDescription()).thenReturn("A test program for the integration tests.");
+        // Program attributes:
+        whenever(program.version()).thenReturn(1)
+        whenever(program.onlyEnrollOnce()).thenReturn(true)
+        whenever(program.displayEnrollmentDateLabel()).thenReturn("enrollment date")
+        whenever(program.displayIncidentDate()).thenReturn(true)
+        whenever(program.displayIncidentDateLabel()).thenReturn("incident date label")
+        whenever(program.registration()).thenReturn(true)
+        whenever(program.selectEnrollmentDatesInFuture()).thenReturn(true)
+        whenever(program.dataEntryMethod()).thenReturn(true)
+        whenever(program.ignoreOverdueEvents()).thenReturn(false)
+        whenever(program.selectIncidentDatesInFuture()).thenReturn(true)
+        whenever(program.useFirstStageDuringRegistration()).thenReturn(true)
+        whenever(program.displayFrontPageList()).thenReturn(true)
+        whenever(program.programType()).thenReturn(ProgramType.WITH_REGISTRATION)
+        whenever(program.relatedProgram()).thenReturn(relatedProgram)
+        whenever(program.trackedEntityType()).thenReturn(trackedEntityType)
 
-        //Program attributes:
-        when(program.version()).thenReturn(1);
-        when(program.onlyEnrollOnce()).thenReturn(true);
-        when(program.displayEnrollmentDateLabel()).thenReturn("enrollment date");
-        when(program.displayIncidentDate()).thenReturn(true);
-        when(program.displayIncidentDateLabel()).thenReturn("incident date label");
-        when(program.registration()).thenReturn(true);
-        when(program.selectEnrollmentDatesInFuture()).thenReturn(true);
-        when(program.dataEntryMethod()).thenReturn(true);
-        when(program.ignoreOverdueEvents()).thenReturn(false);
-        when(program.selectIncidentDatesInFuture()).thenReturn(true);
-        when(program.useFirstStageDuringRegistration()).thenReturn(true);
-        when(program.displayFrontPageList()).thenReturn(true);
-        when(program.programType()).thenReturn(ProgramType.WITH_REGISTRATION);
-        when(program.relatedProgram()).thenReturn(relatedProgram);
-        when(program.trackedEntityType()).thenReturn(trackedEntityType);
+        programRuleVariables = listOf(programRuleVariable)
 
-        programRuleVariables = Collections.singletonList(programRuleVariable);
+        whenever(ProgramInternalAccessor.accessProgramTrackedEntityAttributes(program))
+            .thenReturn(programTrackedEntityAttributes)
+        whenever(ProgramInternalAccessor.accessProgramRuleVariables(program)).thenReturn(programRuleVariables)
+        whenever(ProgramInternalAccessor.accessProgramSections(program)).thenReturn(programSections)
+        whenever(program.access()).thenReturn(access)
+        whenever(access.data()).thenReturn(dataAccess)
+        whenever(dataAccess.read()).thenReturn(true)
+        whenever(dataAccess.write()).thenReturn(true)
 
-        when(ProgramInternalAccessor.accessProgramTrackedEntityAttributes(program))
-                .thenReturn(programTrackedEntityAttributes);
-        when(ProgramInternalAccessor.accessProgramRuleVariables(program)).thenReturn(programRuleVariables);
-        when(ProgramInternalAccessor.accessProgramSections(program)).thenReturn(programSections);
-        when(program.access()).thenReturn(access);
-        when(access.data()).thenReturn(dataAccess);
-        when(dataAccess.read()).thenReturn(true);
-        when(dataAccess.write()).thenReturn(true);
+        val attribute: ObjectWithUid = ObjectWithUid.create("Att_Uid")
+        val attValue = AttributeValue.builder()
+            .value("5")
+            .attribute(attribute)
+            .build()
 
+        attributeValues.add(attValue)
 
-        ObjectWithUid attribute = ObjectWithUid.create("Att_Uid");
-        AttributeValue attValue = AttributeValue.builder()
-                .value("5")
-                .attribute(attribute)
-                .build();
-
-        attributeValues.add(attValue);
-
-        when(program.attributeValues()).thenReturn(attributeValues);
-
-        when(programStore.updateOrInsert(any(Program.class))).thenReturn(HandleAction.Insert);
+        whenever(program.attributeValues()).thenReturn(attributeValues)
+        whenever(programStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
     }
 
     @Test
-    public void call_program_tracked_entity_attributes_handler() {
-        programHandler.handle(program);
-        verify(programTrackedEntityAttributeHandler).handleMany(anyListOf(ProgramTrackedEntityAttribute.class));
+    fun call_program_tracked_entity_attributes_handler() = runTest {
+        programHandler.handle(program)
+        verify(programTrackedEntityAttributeHandler).handleMany(any<List<ProgramTrackedEntityAttribute>>())
     }
 
     @Test
-    public void call_program_rule_variable_handler() {
-        programHandler.handle(program);
-        verify(programRuleVariableHandler).handleMany(programRuleVariables);
+    fun call_program_rule_variable_handler() = runTest {
+        programHandler.handle(program)
+        verify(programRuleVariableHandler).handleMany(programRuleVariables)
     }
 
     @Test
-    public void call_program_section_handler() {
-        programHandler.handle(program);
-        verify(programSectionHandler).handleMany(anyListOf(ProgramSection.class));
+    fun call_program_section_handler() = runTest {
+        programHandler.handle(program)
+        verify(programSectionHandler).handleMany(any<List<ProgramSection>>())
     }
 
     @Test
-    public void clean_orphan_options_after_update() {
-        when(programStore.updateOrInsert(any(Program.class))).thenReturn(HandleAction.Update);
-        programHandler.handle(program);
-        verify(orphanCleaner).deleteOrphan(program);
+    fun clean_orphan_options_after_update() = runTest {
+        whenever(programStore.updateOrInsert(any())).thenReturn(HandleAction.Update)
+        programHandler.handle(program)
+        verify(orphanCleaner).deleteOrphan(program)
     }
 
     @Test
-    public void not_clean_orphan_options_after_insert() {
-        when(programStore.updateOrInsert(any(Program.class))).thenReturn(HandleAction.Insert);
-        programHandler.handle(program);
-        verify(orphanCleaner, never()).deleteOrphan(program);
+    fun not_clean_orphan_options_after_insert() = runTest {
+        whenever(programStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
+        programHandler.handle(program)
+        verify(orphanCleaner, never()).deleteOrphan(program)
     }
 
     @Test
-    public void call_collection_cleaner_when_calling_handle_many() {
-        List<Program> programs = Collections.singletonList(program);
-        programHandler.handleMany(programs);
-        verify(collectionCleaner).deleteNotPresent(programs);
+    fun call_collection_cleaner_when_calling_handle_many() = runTest {
+        val programs = listOf(program)
+        programHandler.handleMany(programs)
+        verify(collectionCleaner).deleteNotPresent(programs)
     }
 
     @Test
-    public void not_store_tracker_program_witout_tracked_entity_type() {
-        when(program.programType()).thenReturn(ProgramType.WITH_REGISTRATION);
-        when(program.trackedEntityType()).thenReturn(null);
-        programHandler.handleMany(Collections.singletonList(program));
-        verifyNoMoreInteractions(programStore);
+    fun not_store_tracker_program_without_tracked_entity_type() = runTest {
+        whenever(program.programType()).thenReturn(ProgramType.WITH_REGISTRATION)
+        whenever(program.trackedEntityType()).thenReturn(null)
+        programHandler.handleMany(listOf(program))
+        verifyNoMoreInteractions(programStore)
     }
 
     @Test
-    public void call_attribute_handlers() {
-        programHandler.handleMany(Collections.singletonList(program));
-        verify(programAttributeValueLinkHandler).handleMany(eq(program.uid()), eq(Arrays.asList(attributeValue)), any());
+    fun call_attribute_handlers() = runTest {
+        programHandler.handleMany(listOf(program))
+        verify(programAttributeValueLinkHandler).handleMany(eq(program.uid()), eq(listOf(attributeValue)), any())
     }
 }

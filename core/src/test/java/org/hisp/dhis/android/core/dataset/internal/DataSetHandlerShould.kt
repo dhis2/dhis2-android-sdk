@@ -79,7 +79,6 @@ class DataSetHandlerShould {
     @Before
     @Throws(Exception::class)
     fun setUp() {
-
         dataSetHandler = DataSetHandler(
             dataSetStore,
             sectionHandler,
@@ -90,7 +89,7 @@ class DataSetHandlerShould {
             dataSetElementHandler,
             dataSetIndicatorLinkHandler,
             collectionCleaner,
-            linkCleaner
+            linkCleaner,
         )
 
         whenever(dataSet.uid()).thenReturn("dataset_uid")

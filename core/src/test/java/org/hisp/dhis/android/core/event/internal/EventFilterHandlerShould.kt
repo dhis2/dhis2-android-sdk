@@ -51,7 +51,7 @@ class EventFilterHandlerShould {
 
     // object to test
     private lateinit var eventFilters: MutableList<EventFilter>
-    private lateinit var eventDataFilters: List<EventDataFilter?>
+    private lateinit var eventDataFilters: List<EventDataFilter>
     private lateinit var eventFilterHandler: EventFilterHandler
 
     @Before
@@ -89,6 +89,6 @@ class EventFilterHandlerShould {
     @Test
     fun handle_event_filters() = runTest {
         eventFilterHandler.handleMany(eventFilters)
-        verify(eventDataFilterHandler).handleMany(eventDataFilters.filterNotNull())
+        verify(eventDataFilterHandler).handleMany(eventDataFilters)
     }
 }

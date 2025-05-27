@@ -25,61 +25,48 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.settings.internal;
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.settings.ProgramSetting
+import org.junit.Before
+import org.junit.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+class ProgramSettingHandlerShould {
+    private val programSettingStore: ProgramSettingStore = mock()
+    private val programSetting: ProgramSetting = mock()
 
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.settings.ProgramSetting;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-public class ProgramSettingHandlerShould {
-
-    @Mock
-    private ProgramSettingStore programSettingStore;
-
-    @Mock
-    private ProgramSetting programSetting;
-
-    private Handler<ProgramSetting> programSettingHandler;
-
-    private List<ProgramSetting> programSettings;
+    // object to test
+    private lateinit var programSettingHandler: Handler<ProgramSetting>
+    private lateinit var programSettings: MutableList<ProgramSetting>
 
     @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-
-        programSettings = new ArrayList<>();
-        programSettings.add(programSetting);
-        when(programSettingStore.updateOrInsertWhere(any())).thenReturn(HandleAction.Insert);
-
-        programSettingHandler = new ProgramSettingHandler(programSettingStore);
+    @Throws(Exception::class)
+    fun setUp() {
+        programSettings = mutableListOf(programSetting)
+        whenever(programSettingStore.updateOrInsertWhere(any())).thenReturn(HandleAction.Insert)
+        programSettingHandler = ProgramSettingHandler(programSettingStore)
     }
 
     @Test
-    public void clean_database_before_insert_collection() {
-        programSettingHandler.handleMany(programSettings);
-        verify(programSettingStore, times(1)).delete();
-        verify(programSettingStore, times(1)).updateOrInsertWhere(programSetting);
+    fun clean_database_before_insert_collection() = runTest {
+        programSettingHandler.handleMany(programSettings)
+        verify(programSettingStore, times(1)).delete()
+        verify(programSettingStore, times(1)).updateOrInsertWhere(programSetting)
     }
 
     @Test
-    public void clean_database_if_empty_collection() {
-        programSettingHandler.handleMany(Collections.emptyList());
-        verify(programSettingStore, times(1)).delete();
-        verify(programSettingStore, never()).updateOrInsertWhere(programSetting);
+    fun clean_database_if_empty_collection() = runTest {
+        programSettingHandler.handleMany(emptyList())
+        verify(programSettingStore, times(1)).delete()
+        verify(programSettingStore, never()).updateOrInsertWhere(programSetting)
     }
 }

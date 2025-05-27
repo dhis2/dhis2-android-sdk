@@ -25,71 +25,60 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.internal
 
-package org.hisp.dhis.android.core.program.internal;
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
+import org.hisp.dhis.android.core.program.ProgramSection
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.same
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.same;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import com.google.common.collect.Lists;
-
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.program.ProgramSection;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.util.List;
-
-@RunWith(JUnit4.class)
-public class ProgramSectionHandlerShould {
-
-    @Mock
-    private ProgramSectionStore programSectionStore;
-
-    @Mock
-    private ProgramSectionAttributeLinkHandler programSectionAttributeLinkHandler;
-
-    @Mock
-    private ProgramSection programSection;
-
-    private String SECTION_UID = "section_uid";
+@RunWith(JUnit4::class)
+class ProgramSectionHandlerShould {
+    private val programSectionStore: ProgramSectionStore = mock()
+    private val programSectionAttributeLinkHandler: ProgramSectionAttributeLinkHandler = mock()
+    private val programSection: ProgramSection = mock()
 
     // object to test
-    private ProgramSectionHandler programSectionHandler;
+    private lateinit var programSectionHandler: ProgramSectionHandler
+    private val sectionUid = "section_uid"
 
     @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
+    @Throws(Exception::class)
+    fun setUp() {
+        programSectionHandler = ProgramSectionHandler(programSectionStore, programSectionAttributeLinkHandler)
 
-        programSectionHandler = new ProgramSectionHandler(programSectionStore, programSectionAttributeLinkHandler);
-
-        List<TrackedEntityAttribute> attributes = Lists.newArrayList(
-                TrackedEntityAttribute.builder().uid("attribute_uid").build());
-        when(programSection.attributes()).thenReturn(attributes);
-        when(programSection.uid()).thenReturn(SECTION_UID);
-
-        when(programSectionStore.updateOrInsert(any())).thenReturn(HandleAction.Insert);
+        val attributes = listOf(TrackedEntityAttribute.builder().uid("attribute_uid").build())
+        whenever(programSection.attributes()).thenReturn(attributes)
+        whenever(programSection.uid()).thenReturn(sectionUid)
+        whenever(programSectionStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
     }
 
     @Test
-    public void save_program_section_attribute_links() throws Exception {
-        programSectionHandler.handle(programSection);
-        verify(programSectionAttributeLinkHandler).handleMany(same(SECTION_UID),
-                anyList(), any());
+    @Throws(Exception::class)
+    fun save_program_section_attribute_links() = runTest {
+        programSectionHandler.handle(programSection)
+        verify(programSectionAttributeLinkHandler).handleMany(
+            same(sectionUid),
+            any<List<TrackedEntityAttribute>>(),
+            any(),
+        )
     }
 
     @Test
-    public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<ProgramSection> genericHandler = new ProgramSectionHandler(
-                programSectionStore, programSectionAttributeLinkHandler);
+    fun extend_identifiable_handler_impl() {
+        val genericHandler: IdentifiableHandlerImpl<ProgramSection> = ProgramSectionHandler(
+            programSectionStore,
+            programSectionAttributeLinkHandler,
+        )
     }
 }

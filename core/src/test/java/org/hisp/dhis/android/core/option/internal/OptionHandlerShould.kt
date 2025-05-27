@@ -25,63 +25,53 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.option.internal
 
-package org.hisp.dhis.android.core.option.internal;
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
+import org.hisp.dhis.android.core.common.ObjectStyle
+import org.hisp.dhis.android.core.option.Option
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.option.Option;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.util.Collections;
-import java.util.List;
-
-@RunWith(JUnit4.class)
-public class OptionHandlerShould {
-    @Mock
-    private OptionStore optionStore;
-
-    @Mock
-    private Option option;
-
-    @Mock
-    private ObjectStyle style;
-
-    @Mock
-    private OptionSubCollectionCleaner optionCleaner;
-
-    private List<Option> options;
+@RunWith(JUnit4::class)
+class OptionHandlerShould {
+    private val optionStore: OptionStore = mock()
+    private val option: Option = mock()
+    private val style: ObjectStyle = mock()
+    private val optionCleaner: OptionSubCollectionCleaner = mock()
 
     // object to test
-    private OptionHandler optionHandler;
+    private lateinit var optionHandler: OptionHandler
+    private lateinit var options: List<Option>
 
     @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        optionHandler = new OptionHandler(optionStore, optionCleaner);
-        when(option.uid()).thenReturn("test_option_uid");
-        options = Collections.singletonList(option);
-        when(option.style()).thenReturn(style);
-        when(optionStore.updateOrInsert(option)).thenReturn(HandleAction.Insert);
+    @Throws(Exception::class)
+    fun setUp() {
+        optionHandler = OptionHandler(optionStore, optionCleaner)
+        whenever(option.uid()).thenReturn("test_option_uid")
+        options = listOf(option)
+        whenever(option.style()).thenReturn(style)
+        whenever(optionStore.updateOrInsert(option)).thenReturn(HandleAction.Insert)
     }
 
     @Test
-    public void clean_orphan_options() {
-        optionHandler.handleMany(options);
-        verify(optionCleaner).deleteNotPresent(options);
+    fun clean_orphan_options() = runTest {
+        optionHandler.handleMany(options)
+        verify(optionCleaner).deleteNotPresent(options)
     }
 
     @Test
-    public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<Option> genericHandler = new OptionHandler(optionStore, optionCleaner);
+    fun extend_identifiable_handler_impl() {
+        val genericHandler: IdentifiableHandlerImpl<Option> = OptionHandler(
+            optionStore,
+            optionCleaner,
+        )
     }
 }

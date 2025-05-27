@@ -38,7 +38,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.Mockito
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.eq
@@ -133,7 +132,7 @@ class DataElementHandlerShould {
     @Test
     fun call_attribute_handlers() = runTest {
         dataElementHandler.handleMany(dataElements)
-        Mockito.verify(dataElementAttributeValueLinkHandler).handleMany(
+        verify(dataElementAttributeValueLinkHandler).handleMany(
             eq(dataElement.uid()),
             eq(listOf(attributeValue) as Collection<ObjectWithUid>),
             any(),

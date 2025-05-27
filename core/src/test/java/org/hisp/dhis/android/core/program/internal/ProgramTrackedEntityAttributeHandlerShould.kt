@@ -25,84 +25,68 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.internal;
+package org.hisp.dhis.android.core.program.internal
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.common.ValueTypeRendering
+import org.hisp.dhis.android.core.common.valuetype.rendering.internal.ValueTypeRenderingHandler
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.ValueTypeRendering;
-import org.hisp.dhis.android.core.common.valuetype.rendering.internal.ValueTypeRenderingHandler;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.util.ArrayList;
-import java.util.List;
-
-@RunWith(JUnit4.class)
-public class ProgramTrackedEntityAttributeHandlerShould {
-
-    @Mock
-    private ProgramTrackedEntityAttributeStore store;
-
-    @Mock
-    private List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes;
-
-    @Mock
-    private ProgramTrackedEntityAttribute programTrackedEntityAttribute;
-
-    @Mock
-    private ValueTypeRenderingHandler renderTypeHandler;
-
-    @Mock
-    private ObjectWithUid program;
-
-    @Mock
-    private ValueTypeRendering valueTypeRendering;
-
-    @Mock
-    private ObjectWithUid trackedEntityAttribute;
+@RunWith(JUnit4::class)
+class ProgramTrackedEntityAttributeHandlerShould {
+    private val store: ProgramTrackedEntityAttributeStore = mock()
+    private var programTrackedEntityAttributes: MutableList<ProgramTrackedEntityAttribute> = mock()
+    private val programTrackedEntityAttribute: ProgramTrackedEntityAttribute = mock()
+    private val renderTypeHandler: ValueTypeRenderingHandler = mock()
+    private val program: ObjectWithUid = mock()
+    private val valueTypeRendering: ValueTypeRendering = mock()
+    private val trackedEntityAttribute: ObjectWithUid = mock()
 
     // object to test
-    private Handler<ProgramTrackedEntityAttribute> handler;
+    private lateinit var handler: Handler<ProgramTrackedEntityAttribute>
 
     @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        handler = new ProgramTrackedEntityAttributeHandler(store, renderTypeHandler);
-        programTrackedEntityAttributes = new ArrayList<>();
-        programTrackedEntityAttributes.add(programTrackedEntityAttribute);
+    @Throws(Exception::class)
+    fun setUp() {
+        handler = ProgramTrackedEntityAttributeHandler(store, renderTypeHandler)
+        programTrackedEntityAttributes = ArrayList()
+        programTrackedEntityAttributes.add(programTrackedEntityAttribute)
 
-        when(programTrackedEntityAttribute.trackedEntityAttribute()).thenReturn(trackedEntityAttribute);
-        when(programTrackedEntityAttribute.uid()).thenReturn("program_tracked_entity_attribute_uid");
-        when(programTrackedEntityAttribute.renderType()).thenReturn(valueTypeRendering);
-        when(trackedEntityAttribute.uid()).thenReturn("tracked_entity_attribute_uid");
-        when(programTrackedEntityAttribute.program()).thenReturn(program);
-        when(program.uid()).thenReturn("program_uid");
-
-        when(store.updateOrInsert(any())).thenReturn(HandleAction.Insert);
+        whenever(programTrackedEntityAttribute.trackedEntityAttribute()).thenReturn(trackedEntityAttribute)
+        whenever(programTrackedEntityAttribute.uid()).thenReturn("program_tracked_entity_attribute_uid")
+        whenever(programTrackedEntityAttribute.renderType()).thenReturn(valueTypeRendering)
+        whenever(trackedEntityAttribute.uid()).thenReturn("tracked_entity_attribute_uid")
+        whenever(programTrackedEntityAttribute.program()).thenReturn(program)
+        whenever(program.uid()).thenReturn("program_uid")
+        whenever(store.updateOrInsert(any())).thenReturn(HandleAction.Insert)
     }
 
     @Test
-    public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<ProgramTrackedEntityAttribute> syncHandler =
-                new ProgramTrackedEntityAttributeHandler(store, renderTypeHandler);
+    fun extend_identifiable_handler_impl() {
+        val syncHandler: IdentifiableHandlerImpl<ProgramTrackedEntityAttribute> =
+            ProgramTrackedEntityAttributeHandler(store, renderTypeHandler)
     }
 
     @Test
-    public void call_render_type_handler() {
-        handler.handleMany(programTrackedEntityAttributes);
-        verify(renderTypeHandler).handle(valueTypeRendering, programTrackedEntityAttribute.uid(),
-                ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name());
+    fun call_render_type_handler() = runTest {
+        handler.handleMany(programTrackedEntityAttributes)
+        verify(renderTypeHandler).handle(
+            valueTypeRendering,
+            programTrackedEntityAttribute.uid(),
+            ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name(),
+        )
     }
 }

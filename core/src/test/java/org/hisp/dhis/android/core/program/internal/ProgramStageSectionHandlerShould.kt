@@ -25,86 +25,66 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program.internal;
+package org.hisp.dhis.android.core.program.internal
 
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.program.ProgramIndicator
+import org.hisp.dhis.android.core.program.ProgramStageSection
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.program.ProgramIndicator;
-import org.hisp.dhis.android.core.program.ProgramStageSection;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.util.ArrayList;
-import java.util.List;
-
-@RunWith(JUnit4.class)
-public class ProgramStageSectionHandlerShould {
-    private static final String PROGRAM_STAGE_SECTION_UID = "test_program_stage_section_uid";
-
-    @Mock
-    private ProgramStageSectionStoreImpl programStageSectionStore;
-
-    @Mock
-    private ProgramStageSectionProgramIndicatorLinkHandler programStageSectionProgramIndicatorLinkHandler;
-
-    @Mock
-    private ProgramStageSectionDataElementLinkHandler programStageSectionDataElementLinkHandler;
-
-    @Mock
-    private ProgramStageSection programStageSection;
-
-    @Mock
-    private DataElement dataElement;
-
-    @Mock
-    private ProgramIndicator programIndicator;
-
-    private List<ProgramIndicator> programIndicators;
+@RunWith(JUnit4::class)
+class ProgramStageSectionHandlerShould {
+    private val programStageSectionStore: ProgramStageSectionStoreImpl = mock()
+    private val programStageSectionProgramIndicatorLinkHandler: ProgramStageSectionProgramIndicatorLinkHandler = mock()
+    private val programStageSectionDataElementLinkHandler: ProgramStageSectionDataElementLinkHandler = mock()
+    private val programStageSection: ProgramStageSection = mock()
+    private val dataElement: DataElement = mock()
+    private val programIndicator: ProgramIndicator = mock()
 
     // object to test
-    private ProgramStageSectionHandler programStageSectionHandler;
+    private lateinit var programStageSectionHandler: ProgramStageSectionHandler
+    private lateinit var programIndicators: MutableList<ProgramIndicator>
 
     @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
+    @Throws(Exception::class)
+    fun setUp() {
+        programStageSectionHandler = ProgramStageSectionHandler(
+            programStageSectionStore,
+            programStageSectionProgramIndicatorLinkHandler, programStageSectionDataElementLinkHandler,
+        )
 
-        programStageSectionHandler = new ProgramStageSectionHandler(
-                programStageSectionStore,
-                programStageSectionProgramIndicatorLinkHandler, programStageSectionDataElementLinkHandler);
-
-        when(programStageSection.uid()).thenReturn(PROGRAM_STAGE_SECTION_UID);
-        List<DataElement> dataElements = new ArrayList<>(1);
-        dataElements.add(dataElement);
-        programIndicators = new ArrayList<>(1);
-        programIndicators.add(programIndicator);
-        when(programStageSection.dataElements()).thenReturn(dataElements);
-        when(programStageSection.programIndicators()).thenReturn(programIndicators);
-        when(dataElement.uid()).thenReturn("data_element_uid");
-        when(programIndicator.uid()).thenReturn("program_indicator_uid");
-
-        when(programStageSectionStore.updateOrInsert(any())).thenReturn(HandleAction.Insert);
+        whenever(programStageSection.uid()).thenReturn(PROGRAM_STAGE_SECTION_UID)
+        val dataElements = mutableListOf(dataElement)
+        programIndicators = mutableListOf(programIndicator)
+        whenever(programStageSection.dataElements()).thenReturn(dataElements)
+        whenever(programStageSection.programIndicators()).thenReturn(programIndicators)
+        whenever(dataElement.uid()).thenReturn("data_element_uid")
+        whenever(programIndicator.uid()).thenReturn("program_indicator_uid")
+        whenever(programStageSectionStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
     }
 
     @Test
-    public void handle_program_stage_section_data_element_links() {
-        programStageSectionHandler.handle(programStageSection);
-        verify(programStageSectionDataElementLinkHandler).handleMany(any(String.class),
-                anyList(), any());
+    fun handle_program_stage_section_data_element_links() = runTest {
+        programStageSectionHandler.handle(programStageSection)
+        verify(programStageSectionDataElementLinkHandler).handleMany(any(), any<List<DataElement>>(), any())
     }
 
     @Test
-    public void handle_program_stage_section_program_indicator_links() {
-        programStageSectionHandler.handle(programStageSection);
-        verify(programStageSectionProgramIndicatorLinkHandler).handleMany(any(String.class),
-                anyList(), any());
+    fun handle_program_stage_section_program_indicator_links() = runTest {
+        programStageSectionHandler.handle(programStageSection)
+        verify(programStageSectionProgramIndicatorLinkHandler).handleMany(any(), any<List<ProgramIndicator>>(), any())
+    }
+
+    companion object {
+        private const val PROGRAM_STAGE_SECTION_UID = "test_program_stage_section_uid"
     }
 }

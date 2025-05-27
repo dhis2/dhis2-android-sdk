@@ -25,113 +25,94 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.datavalue.internal
 
-package org.hisp.dhis.android.core.datavalue.internal;
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.imports.ImportStatus
+import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+@RunWith(JUnit4::class)
+class DataValueImportHandlerShould {
+    private val dataValueStore: DataValueStore = mock()
+    private val dataValueConflictParser: DataValueConflictParser = mock()
+    private val dataValueConflictStore: DataValueConflictStore = mock()
+    private val dataValueImportSummary: DataValueImportSummary = mock()
+    private val dataValue: DataValue = mock()
 
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.datavalue.DataValue;
-import org.hisp.dhis.android.core.imports.ImportStatus;
-import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.util.Collections;
-
-@RunWith(JUnit4.class)
-public class DataValueImportHandlerShould {
-
-    @Mock
-    DataValueStore dataValueStore;
-
-    @Mock
-    DataValueConflictParser dataValueConflictParser;
-
-    @Mock
-    DataValueConflictStore dataValueConflictStore;
-
-    @Mock
-    DataValueImportSummary dataValueImportSummary;
-
-    DataValueSet dataValueSet;
-
-    @Mock
-    DataValue dataValue;
-
-    private DataValueImportHandler dataValueImportHandler;
+    // object to test
+    private lateinit var dataValueSet: DataValueSet
+    private lateinit var dataValueImportHandler: DataValueImportHandler
 
     @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
+    fun setUp() {
+        whenever(dataValue.attributeOptionCombo()).thenReturn("attributeOptionCombo")
+        whenever(dataValue.categoryOptionCombo()).thenReturn("categoryOptionCombo")
+        whenever(dataValue.dataElement()).thenReturn("dataElement")
+        whenever(dataValue.period()).thenReturn("period")
+        whenever(dataValue.organisationUnit()).thenReturn("organisationUnit")
 
-        when(dataValue.attributeOptionCombo()).thenReturn("attributeOptionCombo");
-        when(dataValue.categoryOptionCombo()).thenReturn("categoryOptionCombo");
-        when(dataValue.dataElement()).thenReturn("dataElement");
-        when(dataValue.period()).thenReturn("period");
-        when(dataValue.organisationUnit()).thenReturn("organisationUnit");
-
-        dataValueSet = new DataValueSet(Collections.singletonList(dataValue));
-
-        dataValueImportHandler = new DataValueImportHandler(dataValueStore, dataValueConflictParser, dataValueConflictStore);
+        dataValueSet = DataValueSet(listOf(dataValue))
+        dataValueImportHandler = DataValueImportHandler(
+            dataValueStore,
+            dataValueConflictParser, dataValueConflictStore,
+        )
     }
 
     @Test
-    public void passingNullDataValueSet_shouldNotPerformAnyAction() {
+    fun passingNullDataValueSet_shouldNotPerformAnyAction() = runTest {
+        dataValueImportHandler.handleImportSummary(null, dataValueImportSummary)
 
-        dataValueImportHandler.handleImportSummary(null, dataValueImportSummary);
-
-        verify(dataValueStore, never()).setState(any(DataValue.class), any(State.class));
+        verify(dataValueStore, never()).setState(any(), any())
     }
 
     @Test
-    public void passingNullImportSummary_shouldNotPerformAnyAction() {
+    fun passingNullImportSummary_shouldNotPerformAnyAction() = runTest {
+        dataValueImportHandler.handleImportSummary(dataValueSet, null)
 
-        dataValueImportHandler.handleImportSummary(dataValueSet, null);
-
-        verify(dataValueStore, never()).setState(any(DataValue.class), any(State.class));
+        verify(dataValueStore, never()).setState(any(), any())
     }
 
     @Test
-    public void successfullyImportedDataValues_shouldBeMarkedAsSynced() {
+    fun successfullyImportedDataValues_shouldBeMarkedAsSynced() = runTest {
+        whenever(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.SUCCESS)
+        whenever(dataValueStore.isDataValueBeingUpload(any<DataValue>())).thenReturn(true)
 
-        when(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.SUCCESS);
-        when(dataValueStore.isDataValueBeingUpload(any(DataValue.class))).thenReturn(Boolean.TRUE);
+        dataValueImportHandler.handleImportSummary(dataValueSet, dataValueImportSummary)
 
-        dataValueImportHandler.handleImportSummary(dataValueSet, dataValueImportSummary);
-
-        verify(dataValueStore, times(1)).setState(dataValue, State.SYNCED);
+        verify(dataValueStore, times(1)).setState(dataValue, State.SYNCED)
     }
 
     @Test
-    public void successfullyImportedAndDeletedDataValues_shouldBeDeleted() {
+    fun successfullyImportedAndDeletedDataValues_shouldBeDeleted() = runTest {
+        whenever(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.SUCCESS)
+        whenever(dataValueStore.isDataValueBeingUpload(any())).thenReturn(true)
+        whenever(dataValueStore.isDeleted(any())).thenReturn(true)
 
-        when(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.SUCCESS);
-        when(dataValueStore.isDataValueBeingUpload(any(DataValue.class))).thenReturn(Boolean.TRUE);
-        when(dataValueStore.isDeleted(any(DataValue.class))).thenReturn(Boolean.TRUE);
+        dataValueImportHandler.handleImportSummary(dataValueSet, dataValueImportSummary)
 
-        dataValueImportHandler.handleImportSummary(dataValueSet, dataValueImportSummary);
-
-        verify(dataValueStore, never()).setState(any(DataValue.class), any());
-        verify(dataValueStore, times(1)).deleteWhere(dataValue);
+        verify(dataValueStore, never()).setState(any(), any())
+        verify(dataValueStore, times(1)).deleteWhere(dataValue)
     }
 
     @Test
-    public void unsuccessfullyImportedDataValues_shouldBeMarkedAsError() {
+    fun unsuccessfullyImportedDataValues_shouldBeMarkedAsError() = runTest {
+        whenever(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.ERROR)
+        whenever(dataValueStore.isDataValueBeingUpload(any())).thenReturn(true)
 
-        when(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.ERROR);
-        when(dataValueStore.isDataValueBeingUpload(any(DataValue.class))).thenReturn(Boolean.TRUE);
+        dataValueImportHandler.handleImportSummary(dataValueSet, dataValueImportSummary)
 
-        dataValueImportHandler.handleImportSummary(dataValueSet, dataValueImportSummary);
-
-        verify(dataValueStore, times(1)).setState(dataValue, State.ERROR);
+        verify(dataValueStore, times(1)).setState(dataValue, State.ERROR)
     }
 }

@@ -122,7 +122,7 @@ internal class APIDownloaderImpl(private val resourceHandler: ResourceHandler) :
     override suspend fun <K, V> downloadPartitionedMap(
         uids: Set<String>,
         pageSize: Int,
-        handler: (Map<K, V>) -> Any,
+        handler: suspend (Map<K, V>) -> Any,
         pageDownloader: suspend (Set<String>) -> Map<K, V>,
     ): Map<K, V> {
         val partitions = CollectionsHelper.setPartition(uids, pageSize)

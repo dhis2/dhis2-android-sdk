@@ -222,7 +222,7 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
     }
 
     @Throws(D2Error::class)
-    protected fun storeRelationship(
+    protected suspend fun storeRelationship(
         relationshipUid: String,
         from: String,
         to: String,
@@ -231,7 +231,7 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
     }
 
     @Throws(D2Error::class)
-    protected fun storeRelationship(
+    protected suspend fun storeRelationship(
         relationshipUid: String,
         from: RelationshipItem,
         to: RelationshipItem,

@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.legendset.internal
 
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.legendset.Legend
 import org.hisp.dhis.android.core.legendset.LegendSet
 import org.junit.Before
@@ -64,8 +65,10 @@ class LegendSetHandlerShould {
     }
 
     @Test
+    @Suppress("UnusedPrivateMember")
     fun extend_identifiable_sync_handler_impl() {
-        val genericHandler = LegendSetHandler(legendSetStore, legendHandler, legendCleaner)
+        val genericHandler: IdentifiableHandlerImpl<LegendSet> =
+            LegendSetHandler(legendSetStore, legendHandler, legendCleaner)
     }
 
     @Test

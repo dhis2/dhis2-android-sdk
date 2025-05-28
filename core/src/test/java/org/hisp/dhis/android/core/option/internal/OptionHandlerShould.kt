@@ -68,6 +68,7 @@ class OptionHandlerShould {
     }
 
     @Test
+    @Suppress("UnusedPrivateMember")
     fun extend_identifiable_handler_impl() {
         val genericHandler: IdentifiableHandlerImpl<Option> = OptionHandler(
             optionStore,

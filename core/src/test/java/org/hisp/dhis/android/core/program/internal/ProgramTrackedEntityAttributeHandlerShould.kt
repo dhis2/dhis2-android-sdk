@@ -75,8 +75,9 @@ class ProgramTrackedEntityAttributeHandlerShould {
     }
 
     @Test
+    @Suppress("UnusedPrivateMember")
     fun extend_identifiable_handler_impl() {
-        val syncHandler: IdentifiableHandlerImpl<ProgramTrackedEntityAttribute> =
+        val genericHandler: IdentifiableHandlerImpl<ProgramTrackedEntityAttribute> =
             ProgramTrackedEntityAttributeHandler(store, renderTypeHandler)
     }
 

@@ -87,11 +87,13 @@ class ProgramStageDataElementHandlerShould {
     }
 
     @Test
+    @Suppress("UnusedPrivateMember")
     fun extend_identifiable_handler_impl() = runTest {
-        val genericHandler: IdentifiableHandlerImpl<ProgramStageDataElement> = ProgramStageDataElementHandler(
-            programStageDataElementStore,
-            dataElementHandler,
-            renderTypeHandler,
-        )
+        val genericHandler: IdentifiableHandlerImpl<ProgramStageDataElement> =
+            ProgramStageDataElementHandler(
+                programStageDataElementStore,
+                dataElementHandler,
+                renderTypeHandler,
+            )
     }
 }

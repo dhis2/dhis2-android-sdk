@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.event.internal
 
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.event.EventDataFilter
 import org.hisp.dhis.android.core.event.EventFilter
 import org.hisp.dhis.android.core.event.EventQueryCriteria
@@ -80,7 +81,7 @@ class EventFilterHandlerShould {
     @Test
     @Suppress("UnusedPrivateMember")
     fun extend_identifiable_handler_impl() {
-        val genericHandler = EventFilterHandler(
+        val genericHandler: IdentifiableHandlerImpl<EventFilter> = EventFilterHandler(
             eventFilterStore,
             eventDataFilterHandler,
         )

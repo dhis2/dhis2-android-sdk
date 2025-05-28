@@ -84,6 +84,7 @@ class TrackedEntityInstanceFilterHandlerShould {
     }
 
     @Test
+    @Suppress("UnusedPrivateMember")
     fun extend_identifiable_handler_impl() {
         val genericHandler: IdentifiableHandlerImpl<TrackedEntityInstanceFilter> =
             TrackedEntityInstanceFilterHandler(

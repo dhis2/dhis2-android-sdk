@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
-import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
@@ -79,6 +78,7 @@ class UserHandlerShould {
     }
 
     @Test
+    @Suppress("UnusedPrivateMember")
     fun extend_identifiable_sync_handler_impl() {
         val genericHandler: IdentifiableHandlerImpl<User> =
             UserHandler(
@@ -88,8 +88,6 @@ class UserHandlerShould {
                 userGroupHandler,
                 userGroupCollectionCleaner,
             )
-
-        assertThat(genericHandler).isNotNull()
     }
 
     @Test

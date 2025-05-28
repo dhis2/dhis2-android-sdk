@@ -35,7 +35,9 @@ import org.koin.core.annotation.Singleton
 internal class GeneralSettingHandler(store: GeneralSettingStore) :
     ObjectWithoutUidHandlerImpl<GeneralSettings>(store) {
 
-    override suspend fun beforeCollectionHandled(oCollection: Collection<GeneralSettings>): Collection<GeneralSettings> {
+    override suspend fun beforeCollectionHandled(
+        oCollection: Collection<GeneralSettings>,
+    ): Collection<GeneralSettings> {
         store.delete()
         return oCollection
     }

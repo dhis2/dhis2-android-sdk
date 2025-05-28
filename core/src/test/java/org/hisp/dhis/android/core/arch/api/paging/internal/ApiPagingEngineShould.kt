@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine.calcu
 import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine.getPaginationList
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.runners.MockitoJUnitRunner
+import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
 class ApiPagingEngineShould {

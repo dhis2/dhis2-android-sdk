@@ -52,7 +52,6 @@ class ProgramIndicatorHandlerShould {
     private val programIndicatorStore: ProgramIndicatorStore = mock()
     private val programIndicatorLegendSetLinkHandler: ProgramIndicatorLegendSetLinkHandler = mock()
     private val analyticsPeriodBoundaryHandler: AnalyticsPeriodBoundaryHandler = mock()
-    private val legendSetHandler: Handler<ObjectWithUid> = mock()
     private val programIndicator: ProgramIndicator = mock()
     private val legendSet: ObjectWithUid = mock()
     private val analyticsPeriodBoundary: AnalyticsPeriodBoundary = mock()
@@ -118,7 +117,7 @@ class ProgramIndicatorHandlerShould {
     @Test
     fun call_program_indicator_legend_set_handler() = runTest {
         programIndicatorHandler.handleMany(programIndicators)
-        verify(legendSetHandler).handleMany(eq(legendSets))
+        verify(programIndicatorLegendSetLinkHandler).handleMany(eq(programIndicator.uid()), eq(legendSets), any())
     }
 
     @Test

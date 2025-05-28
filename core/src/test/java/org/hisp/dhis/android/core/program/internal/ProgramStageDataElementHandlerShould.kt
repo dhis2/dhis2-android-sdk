@@ -40,7 +40,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.ArgumentMatchers
+import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
@@ -65,7 +65,7 @@ class ProgramStageDataElementHandlerShould {
         whenever(programStageDataElement.dataElement()).thenReturn(dataElement)
         whenever(dataElement.uid()).thenReturn("test_data_element_uid")
         whenever(programStageDataElement.renderType()).thenReturn(valueTypeRendering)
-        whenever(programStageDataElementStore.updateOrInsert(ArgumentMatchers.any())).thenReturn(HandleAction.Insert)
+        whenever(programStageDataElementStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
     }
 
     @Test

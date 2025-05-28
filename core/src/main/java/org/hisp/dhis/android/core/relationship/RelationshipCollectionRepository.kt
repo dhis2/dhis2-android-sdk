@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.relationship
 
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
@@ -94,6 +95,13 @@ class RelationshipCollectionRepository internal constructor(
 
     @Throws(D2Error::class)
     override fun blockingAdd(o: Relationship): String {
+        return runBlocking {
+            addInternal(o)
+        }
+    }
+
+    @Throws(D2Error::class)
+    private suspend fun addInternal(o: Relationship): String {
         val relationshipWithUid: Relationship
         if (relationshipHandler.doesRelationshipExist(o)) {
             throw D2Error

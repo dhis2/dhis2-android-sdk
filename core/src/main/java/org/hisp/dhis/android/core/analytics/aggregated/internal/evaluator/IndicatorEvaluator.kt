@@ -39,7 +39,7 @@ internal class IndicatorEvaluator(
     private val indicatorEngine: IndicatorEngine,
 ) : AnalyticsEvaluator {
 
-    override fun evaluate(
+    override suspend fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
         queryMods: QueryMods?,
@@ -54,7 +54,7 @@ internal class IndicatorEvaluator(
         )
     }
 
-    override fun getSql(
+    override suspend fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
         queryMods: QueryMods?,

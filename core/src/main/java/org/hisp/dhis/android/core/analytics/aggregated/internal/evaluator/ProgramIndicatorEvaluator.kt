@@ -51,7 +51,7 @@ internal class ProgramIndicatorEvaluator(
     private val programIndicatorEngine: ProgramIndicatorEngine,
 ) : AnalyticsEvaluator {
 
-    override fun evaluate(
+    override suspend fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
         queryMods: QueryMods?,
@@ -70,7 +70,7 @@ internal class ProgramIndicatorEvaluator(
         return aggregateValues(aggregationType, values)
     }
 
-    override fun getSql(
+    override suspend fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
         queryMods: QueryMods?,
@@ -78,7 +78,7 @@ internal class ProgramIndicatorEvaluator(
         throw AnalyticsException.SQLException("Method getSql not implemented for ProgramIndicatorEvaluator")
     }
 
-    private fun evaluateEventProgramIndicator(
+    private suspend fun evaluateEventProgramIndicator(
         programIndicator: ProgramIndicator,
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
@@ -89,7 +89,7 @@ internal class ProgramIndicatorEvaluator(
         }
     }
 
-    private fun getFilteredEventUids(
+    private suspend fun getFilteredEventUids(
         programIndicator: ProgramIndicator,
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
@@ -102,7 +102,7 @@ internal class ProgramIndicatorEvaluator(
         return eventStore.selectRawQuery(rawClause).map { it.uid() }
     }
 
-    private fun evaluateEnrollmentProgramIndicator(
+    private suspend fun evaluateEnrollmentProgramIndicator(
         programIndicator: ProgramIndicator,
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
@@ -113,7 +113,7 @@ internal class ProgramIndicatorEvaluator(
         }
     }
 
-    private fun getFilteredEnrollmentUids(
+    private suspend fun getFilteredEnrollmentUids(
         programIndicator: ProgramIndicator,
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,

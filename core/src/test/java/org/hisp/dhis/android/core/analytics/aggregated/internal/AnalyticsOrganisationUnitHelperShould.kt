@@ -33,6 +33,7 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
@@ -56,7 +57,7 @@ class AnalyticsOrganisationUnitHelperShould {
     )
 
     @Test
-    fun `Should get relative organisation unit uids`() {
+    fun `Should get relative organisation unit uids`() = runTest {
         val unorderedList = listOf("3", "2", "1")
         val orderedList = listOf("1", "2", "3")
 

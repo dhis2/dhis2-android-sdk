@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
@@ -67,7 +68,7 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
     private val helper = BaseTrackerDataIntegrationHelper(databaseAdapter)
 
     @Test
-    fun should_aggregate_data_from_multiple_teis() {
+    fun should_aggregate_data_from_multiple_teis() = runTest {
         createSampleData()
 
         val valueSum = evaluateIndicator(
@@ -87,7 +88,7 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
     }
 
     @Test
-    fun should_override_aggregation_type() {
+    fun should_override_aggregation_type() = runTest {
         createSampleData()
 
         val defaultValue = evaluateIndicator(
@@ -137,7 +138,7 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
         helper.insertTrackedEntityDataValue(event2, dataElement1.uid(), "20")
     }
 
-    private fun evaluateIndicator(
+    private suspend fun evaluateIndicator(
         programIndicator: ProgramIndicator,
         overrideAggregationType: AggregationType = AggregationType.DEFAULT,
     ): String? {

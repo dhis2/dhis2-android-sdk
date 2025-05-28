@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
@@ -59,7 +60,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
     abstract val indicatorEvaluator: AnalyticsEvaluator
 
     @Test
-    fun should_evaluate_mathematical_expressions() {
+    fun should_evaluate_mathematical_expressions() = runTest {
         val indicator = createIndicator(
             numerator = "4 * 5 / 2",
             denominator = "2 + 7 - 4",
@@ -71,7 +72,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
     }
 
     @Test
-    fun should_evaluate_sum_of_data_elements() {
+    fun should_evaluate_sum_of_data_elements() = runTest {
         createDataValue("2", dataElementUid = dataElement1.uid())
         createDataValue("3", dataElementUid = dataElement2.uid())
 
@@ -83,7 +84,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
     }
 
     @Test
-    fun should_evaluate_days_variable() {
+    fun should_evaluate_days_variable() = runTest {
         createDataValue("62", dataElementUid = dataElement1.uid())
 
         val indicator = createIndicator(
@@ -97,7 +98,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
     }
 
     @Test
-    fun should_round_using_decimals_property() {
+    fun should_round_using_decimals_property() = runTest {
         createDataValue("10", dataElementUid = dataElement1.uid())
         createDataValue("3", dataElementUid = dataElement2.uid())
 
@@ -113,7 +114,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
     }
 
     @Test
-    fun should_evaluate_constants() {
+    fun should_evaluate_constants() = runTest {
         createDataValue("10", dataElementUid = dataElement1.uid())
 
         val indicator = createIndicator(
@@ -127,7 +128,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
     }
 
     @Test
-    fun should_evaluate_event_data_elements() {
+    fun should_evaluate_event_data_elements() = runTest {
         createEventAndValue("5", dataElement1.uid())
         createEventAndValue("15", dataElement1.uid())
 
@@ -141,7 +142,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
     }
 
     @Test
-    fun should_evaluate_event_attributes() {
+    fun should_evaluate_event_attributes() = runTest {
         createTEIAndAttribute("10", attribute1.uid())
         createTEIAndAttribute("5", attribute1.uid())
 
@@ -155,7 +156,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
     }
 
     @Test
-    fun should_override_aggregation_type() {
+    fun should_override_aggregation_type() = runTest {
         createDataValue("2", dataElementUid = dataElement1.uid(), periodId = period201911.periodId()!!)
         createDataValue("3", dataElementUid = dataElement1.uid(), periodId = period201912.periodId()!!)
 
@@ -169,7 +170,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
     }
 
     @Test
-    fun should_evaluate_period_offset() {
+    fun should_evaluate_period_offset() = runTest {
         createDataValue("2", dataElementUid = dataElement1.uid(), periodId = period201911.periodId()!!)
         createDataValue("3", dataElementUid = dataElement1.uid(), periodId = period201912.periodId()!!)
 
@@ -180,7 +181,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
     }
 
     @Test
-    fun should_evaluate_relative_period_offset() {
+    fun should_evaluate_relative_period_offset() = runTest {
         createDataValue("2", dataElementUid = dataElement1.uid(), periodId = period201911.periodId()!!)
         createDataValue("3", dataElementUid = dataElement1.uid(), periodId = period201912.periodId()!!)
         createDataValue("20", dataElementUid = dataElement2.uid(), periodId = period201911.periodId()!!)
@@ -194,7 +195,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
     }
 
     @Test
-    fun should_evaluate_aggregation_type_function() {
+    fun should_evaluate_aggregation_type_function() = runTest {
         createDataValue("2", dataElementUid = dataElement1.uid(), periodId = period201911.periodId()!!)
         createDataValue("3", dataElementUid = dataElement1.uid(), periodId = period201912.periodId()!!)
 
@@ -208,7 +209,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
     }
 
     @Test
-    fun should_evaluate_min_date_function() {
+    fun should_evaluate_min_date_function() = runTest {
         createDataValue("2", dataElementUid = dataElement1.uid(), periodId = period201910.periodId()!!)
         createDataValue("4", dataElementUid = dataElement1.uid(), periodId = period201911.periodId()!!)
         createDataValue("8", dataElementUid = dataElement1.uid(), periodId = period201912.periodId()!!)
@@ -225,7 +226,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
     }
 
     @Test
-    fun should_evaluate_yearly_period_count_item() {
+    fun should_evaluate_yearly_period_count_item() = runTest {
         val indicator = createIndicator(numerator = "[yearlyPeriodCount]")
 
         mapOf(
@@ -239,7 +240,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
     }
 
     @Test
-    fun should_evaluate_period_in_year() {
+    fun should_evaluate_period_in_year() = runTest {
         val indicator = createIndicator(numerator = "[periodInYear]")
 
         mapOf(
@@ -253,7 +254,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
     }
 
     @Test
-    fun should_evaluate_year_to_date() {
+    fun should_evaluate_year_to_date() = runTest {
         createDataValue("2", dataElementUid = dataElement1.uid(), periodId = period201910.periodId()!!)
         createDataValue("4", dataElementUid = dataElement1.uid(), periodId = period201911.periodId()!!)
         createDataValue("8", dataElementUid = dataElement1.uid(), periodId = period201912.periodId()!!)
@@ -273,20 +274,20 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
     }
 
     @Test
-    fun should_evaluate_null_literal() {
+    fun should_evaluate_null_literal() = runTest {
         val indicator = createIndicator(numerator = "firstNonNull(null, 4, 2)")
         val result = evaluateForThisMonth(indicator)
         assertThat(result).isEqualTo("4.0")
     }
 
     @Test
-    fun should_evaluate_missing_values() {
+    fun should_evaluate_missing_values() = runTest {
         val indicator = createIndicator(numerator = "${de(dataElement1.uid())} / ${de(dataElement2.uid())}")
         val result = evaluateForThisMonth(indicator)
         assertThat(result).isEqualTo("0.0")
     }
 
-    private fun evaluateForThisMonth(
+    private suspend fun evaluateForThisMonth(
         indicator: Indicator,
         aggregationType: AggregationType = AggregationType.DEFAULT,
     ): String? {
@@ -297,7 +298,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
         )
     }
 
-    private fun evaluateForAbsolute(
+    private suspend fun evaluateForAbsolute(
         indicator: Indicator,
         periodId: String,
         aggregationType: AggregationType = AggregationType.DEFAULT,
@@ -309,7 +310,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
         )
     }
 
-    private fun evaluateFor(
+    private suspend fun evaluateFor(
         indicator: Indicator,
         aggregationType: AggregationType = AggregationType.DEFAULT,
         periodItem: DimensionItem.PeriodItem,

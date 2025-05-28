@@ -31,6 +31,7 @@ import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
 import org.hisp.dhis.android.core.common.DatePeriodType
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
@@ -51,7 +52,7 @@ class EventLineListRepositoryShould {
     private val repository = EventLineListRepositoryImpl(eventLineListService, initialParams)
 
     @Test
-    fun `Call service with dataElement list`() {
+    fun `Call service with dataElement list`() = runTest {
         repository
             .withDataElement("uid1")
             .withDataElement("uid2")
@@ -64,7 +65,7 @@ class EventLineListRepositoryShould {
     }
 
     @Test
-    fun `Call service with programIndicator list`() {
+    fun `Call service with programIndicator list`() = runTest {
         repository
             .withProgramIndicator("uid1")
             .withProgramIndicator("uid2")
@@ -77,7 +78,7 @@ class EventLineListRepositoryShould {
     }
 
     @Test
-    fun `Call service with program stage`() {
+    fun `Call service with program stage`() = runTest {
         repository
             .byProgramStage().eq("program_stage_uid")
             .blockingEvaluate()
@@ -87,7 +88,7 @@ class EventLineListRepositoryShould {
     }
 
     @Test
-    fun `Call service with tracked entity instance uid`() {
+    fun `Call service with tracked entity instance uid`() = runTest {
         repository
             .byTrackedEntityInstance().eq("tracked_entity_instance_uid")
             .blockingEvaluate()
@@ -97,7 +98,7 @@ class EventLineListRepositoryShould {
     }
 
     @Test
-    fun `Call service with event dates`() {
+    fun `Call service with event dates`() = runTest {
         repository
             .byEventDate().inPeriods(RelativePeriod.LAST_3_MONTHS)
             .blockingEvaluate()
@@ -108,7 +109,7 @@ class EventLineListRepositoryShould {
     }
 
     @Test
-    fun `Call service with organisation units`() {
+    fun `Call service with organisation units`() = runTest {
         repository
             .byOrganisationUnit().`in`(RelativeOrganisationUnit.USER_ORGUNIT)
             .blockingEvaluate()
@@ -119,7 +120,7 @@ class EventLineListRepositoryShould {
     }
 
     @Test
-    fun `Call service with fixed legend strategy`() {
+    fun `Call service with fixed legend strategy`() = runTest {
         repository
             .withLegendStrategy(AnalyticsLegendStrategy.Fixed("uid1"))
             .blockingEvaluate()
@@ -132,7 +133,7 @@ class EventLineListRepositoryShould {
     }
 
     @Test
-    fun `Call service with none legend strategy`() {
+    fun `Call service with none legend strategy`() = runTest {
         repository
             .withLegendStrategy(AnalyticsLegendStrategy.None)
             .blockingEvaluate()
@@ -144,7 +145,7 @@ class EventLineListRepositoryShould {
     }
 
     @Test
-    fun `Call service with byDataItem legend strategy`() {
+    fun `Call service with byDataItem legend strategy`() = runTest {
         repository
             .withLegendStrategy(AnalyticsLegendStrategy.ByDataItem)
             .blockingEvaluate()

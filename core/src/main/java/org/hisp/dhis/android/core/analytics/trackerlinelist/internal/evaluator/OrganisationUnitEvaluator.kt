@@ -58,19 +58,19 @@ internal class OrganisationUnitEvaluator(
     private val orgunitLevelStore = OrganisationUnitLevelStoreImpl(context.databaseAdapter)
     private val orgunitGroupLinkStore = OrganisationUnitOrganisationUnitGroupLinkStoreImpl(context.databaseAdapter)
 
-    override fun getCommonSelectSQL(): String {
+    override suspend fun getCommonSelectSQL(): String {
         return "$OrgUnitAlias.${OrganisationUnitTableInfo.Columns.DISPLAY_NAME}"
     }
 
-    override fun getCommonWhereSQL(): String {
+    override suspend fun getCommonWhereSQL(): String {
         return if (item.filters.isEmpty()) {
             "1"
         } else {
-            return item.filters.joinToString(" AND ") { getFilterWhereClause(it) }
+            return item.filters.map { getFilterWhereClause(it) }.joinToString(" AND ")
         }
     }
 
-    override fun getSelectSQLForTrackedEntityInstance(): String {
+    override suspend fun getSelectSQLForTrackedEntityInstance(): String {
         return if (item.programUid.isNullOrBlank()) {
             "$OrgUnitAlias.${OrganisationUnitTableInfo.Columns.DISPLAY_NAME}"
         } else {
@@ -86,7 +86,7 @@ internal class OrganisationUnitEvaluator(
         }
     }
 
-    private fun getFilterWhereClause(filter: OrganisationUnitFilter): String {
+    private suspend fun getFilterWhereClause(filter: OrganisationUnitFilter): String {
         val filterHelper = FilterHelper(item.id)
         return when (filter) {
             is OrganisationUnitFilter.Absolute -> inPathOf(filter.uid)

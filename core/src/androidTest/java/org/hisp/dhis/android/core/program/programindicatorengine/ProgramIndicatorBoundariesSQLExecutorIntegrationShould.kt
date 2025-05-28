@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.program.programindicatorengine
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.day20191101
@@ -65,7 +66,7 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
     BaseProgramIndicatorSQLExecutorIntegrationShould() {
 
     @Test
-    fun should_evaluate_static_boundaries() {
+    fun should_evaluate_static_boundaries() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(
@@ -168,7 +169,7 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
     }
 
     @Test
-    fun should_evaluate_data_element_boundaries() {
+    fun should_evaluate_data_element_boundaries() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(
@@ -240,7 +241,7 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
     }
 
     @Test
-    fun should_evaluate_attribute_boundaries() {
+    fun should_evaluate_attribute_boundaries() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(
@@ -309,7 +310,7 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
     }
 
     @Test
-    fun should_evaluate_ps_event_boundaries() {
+    fun should_evaluate_ps_event_boundaries() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(
@@ -415,7 +416,7 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
     }
 
     @Test
-    fun should_evaluate_offsets() {
+    fun should_evaluate_offsets() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(

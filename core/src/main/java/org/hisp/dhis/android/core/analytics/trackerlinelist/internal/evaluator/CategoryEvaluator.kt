@@ -40,7 +40,7 @@ internal class CategoryEvaluator(
     private val item: TrackerLineListItem.Category,
 ) : TrackerLineListEvaluator() {
 
-    override fun getSelectSQLForEvent(): String {
+    override suspend fun getSelectSQLForEvent(): String {
         return "SELECT $COAlias.${CategoryOptionTableInfo.Columns.DISPLAY_NAME} " +
             "FROM ${CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO.name()} $COCCOLAlias " +
             "JOIN ${CategoryOptionTableInfo.TABLE_INFO.name()} $COAlias ON " +
@@ -58,23 +58,23 @@ internal class CategoryEvaluator(
             "AND " + DataFilterHelper.getWhereClause(CategoryOptionTableInfo.Columns.UID, item.filters)
     }
 
-    override fun getWhereSQLForEvent(): String {
+    override suspend fun getWhereSQLForEvent(): String {
         return " ${item.uid} IS NOT NULL "
     }
 
-    override fun getSelectSQLForEnrollment(): String {
+    override suspend fun getSelectSQLForEnrollment(): String {
         throw AnalyticsException.InvalidArguments("Category is not supported in ENROLLMENT output type")
     }
 
-    override fun getWhereSQLForEnrollment(): String {
+    override suspend fun getWhereSQLForEnrollment(): String {
         throw AnalyticsException.InvalidArguments("Category is not supported in ENROLLMENT output type")
     }
 
-    override fun getSelectSQLForTrackedEntityInstance(): String {
+    override suspend fun getSelectSQLForTrackedEntityInstance(): String {
         throw AnalyticsException.InvalidArguments("Category is not supported in TRACKED_ENTITY_INSTANCE output type")
     }
 
-    override fun getWhereSQLForTrackedEntityInstance(): String {
+    override suspend fun getWhereSQLForTrackedEntityInstance(): String {
         throw AnalyticsException.InvalidArguments("Category is not supported in TRACKED_ENTITY_INSTANCE output type")
     }
 

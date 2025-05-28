@@ -29,5 +29,5 @@ package org.hisp.dhis.android.core.analytics.linelist
 
 internal interface EventLineListService {
 
-    fun evaluate(params: EventLineListParams): List<LineListResponse>
+    suspend fun evaluate(params: EventLineListParams): List<LineListResponse>
 }

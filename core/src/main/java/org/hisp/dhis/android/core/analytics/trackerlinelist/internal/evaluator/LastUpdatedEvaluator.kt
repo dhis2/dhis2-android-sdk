@@ -39,19 +39,19 @@ internal class LastUpdatedEvaluator(
     item: TrackerLineListItem.LastUpdated,
 ) : BaseDateEvaluator(item) {
 
-    override fun getSelectSQLForEvent(): String {
+    override suspend fun getSelectSQLForEvent(): String {
         return "$EventAlias.${EventTableInfo.Columns.LAST_UPDATED}"
     }
 
-    override fun getSelectSQLForEnrollment(): String {
+    override suspend fun getSelectSQLForEnrollment(): String {
         return "$EnrollmentAlias.${EnrollmentTableInfo.Columns.LAST_UPDATED}"
     }
 
-    override fun getSelectSQLForTrackedEntityInstance(): String {
+    override suspend fun getSelectSQLForTrackedEntityInstance(): String {
         return "$TrackedEntityInstanceAlias.${EnrollmentTableInfo.Columns.LAST_UPDATED}"
     }
 
-    override fun getCommonWhereSQL(): String {
+    override suspend fun getCommonWhereSQL(): String {
         return getDateWhereClause()
     }
 }

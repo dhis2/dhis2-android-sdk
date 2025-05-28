@@ -58,7 +58,7 @@ internal class ProgramIndicatorEvaluator(
     private val dataElementStore = DataElementStoreImpl(context.databaseAdapter)
     private val trackedEntityAttributeStore = TrackedEntityAttributeStoreImpl(context.databaseAdapter)
 
-    override fun getCommonSelectSQL(): String {
+    override suspend fun getCommonSelectSQL(): String {
         val programIndicator = getProgramIndicator()
 
         val context = ProgramIndicatorSQLContext(
@@ -86,7 +86,7 @@ internal class ProgramIndicatorEvaluator(
             "END"
     }
 
-    override fun getCommonWhereSQL(): String {
+    override suspend fun getCommonWhereSQL(): String {
         return DataFilterHelper.getWhereClause(item.id, item.filters)
     }
 
@@ -118,13 +118,13 @@ internal class ProgramIndicatorEvaluator(
         )
     }
 
-    override fun getSelectSQLForTrackedEntityInstance(): String {
+    override suspend fun getSelectSQLForTrackedEntityInstance(): String {
         throw AnalyticsException.InvalidArguments(
             "ProgramIndicator is not supported in TRACKED_ENTITY_INSTANCE output type",
         )
     }
 
-    override fun getWhereSQLForTrackedEntityInstance(): String {
+    override suspend fun getWhereSQLForTrackedEntityInstance(): String {
         throw AnalyticsException.InvalidArguments(
             "ProgramIndicator is not supported in TRACKED_ENTITY_INSTANCE output type",
         )

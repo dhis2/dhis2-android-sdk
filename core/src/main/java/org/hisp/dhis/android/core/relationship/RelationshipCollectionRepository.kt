@@ -100,6 +100,7 @@ class RelationshipCollectionRepository internal constructor(
         }
     }
 
+    @Suppress("ThrowsCount")
     @Throws(D2Error::class)
     private suspend fun addInternal(o: Relationship): String {
         val relationshipWithUid: Relationship

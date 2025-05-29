@@ -1,5 +1,6 @@
 package org.hisp.dhis.android.persistence.option
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -25,16 +26,15 @@ import org.hisp.dhis.android.persistence.common.applyStyleFields
         ),
     ],
     indices = [
-//        Index(value = ["uid"], unique = true),
+        Index(value = ["uid"], unique = true),
         Index(value = ["optionSet"]),
         Index(value = ["optionSet", "code"]),
     ],
 )
 internal data class OptionDB(
-//    @PrimaryKey(autoGenerate = true)
-//    @ColumnInfo(name = "_id")
-//    val id: Int? = null,
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "_id")
+    val id: Int? = 0,
     override val uid: String,
     override val code: String?,
     override val name: String?,
@@ -51,7 +51,7 @@ internal data class OptionDB(
         return Option.builder()
             .applyBaseIdentifiableFields(this@OptionDB)
             .applyStyleFields(this@OptionDB)
-//            .id(id?.toLong())
+            .id(id?.toLong())
             .optionSet(ObjectWithUid.create(optionSet))
             .sortOrder(sortOrder)
             .build()

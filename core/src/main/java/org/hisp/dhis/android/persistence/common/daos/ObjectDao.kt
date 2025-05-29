@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.persistence.common.daos
 
 import android.content.ContentValues
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.RawQuery
@@ -37,24 +38,34 @@ import androidx.room.Update
 import androidx.room.Upsert
 import org.hisp.dhis.android.core.common.CoreColumns
 import org.hisp.dhis.android.persistence.common.EntityDB
-import org.hisp.dhis.android.persistence.common.querybuilders.ReadOnlySQLStatementBuilder
 
 internal abstract class ObjectDao<P : EntityDB<*>>(
     tableName: String,
-    builder: ReadOnlySQLStatementBuilder,
-) : ReadableDao<P>(tableName, builder) {
+) : ReadableDao<P>(tableName) {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insert(entity: P): Int
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    abstract suspend fun insert(entity: P): Long
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insert(entities: Collection<P>)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    abstract suspend fun insert(entities: Collection<P>): LongArray
 
     @Update
     abstract suspend fun update(entity: P): Int
 
+    @Update
+    abstract suspend fun update(entities: Collection<P>): Int
+
     @Upsert
-    abstract suspend fun upsert(entity: P): Int
+    abstract suspend fun upsert(entity: P): Long
+
+    @Upsert
+    abstract suspend fun upsert(entities: Collection<P>): LongArray
+
+    @Delete
+    abstract suspend fun delete(entity: P): Int
+
+    @Delete
+    abstract suspend fun delete(entities: Collection<P>): Int
 
     suspend fun delete(): Int {
         val query = RoomRawQuery("DELETE FROM $tableName;")
@@ -88,6 +99,8 @@ internal abstract class ObjectDao<P : EntityDB<*>>(
     @RawQuery
     abstract suspend fun stringListRawQuery(query: RoomRawQuery): List<String>
 
-    @RawQuery
-    protected abstract suspend fun stringSetRawQuery(query: RoomRawQuery): Set<String>
+    protected suspend fun stringSetRawQuery(query: RoomRawQuery): Set<String> {
+        return stringListRawQuery(query).toSet()
+
+    }
 }

@@ -44,11 +44,11 @@ internal interface SQLStatementBuilder : ReadOnlySQLStatementBuilder {
         whereClause: String?,
     ): String
 
-    fun selectByUid(): String
+    fun selectByUid(uid: String): String
     fun selectDistinct(column: String): String
     fun insert(): String
     fun update(): String
     fun updateWhere(): String
-    fun deleteById(): String
+    fun deleteById(uid: String): String
     fun deleteWhere(): String
 }

@@ -30,26 +30,21 @@ package org.hisp.dhis.android.persistence.common.daos
 
 import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.persistence.common.EntityDB
-import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilder
 
 internal abstract class LinkStoreDao<P : EntityDB<*>>(
     tableName: String,
-    override val builder: SQLStatementBuilder,
     private val parentColumn: String,
-) : ObjectDao<P>(tableName, builder) {
+) : ObjectDao<P>(tableName) {
 
-    suspend fun deleteLinksForParentUid(parentUid: String) {
-        val query = RoomRawQuery("DELETE FROM $tableName WHERE $parentColumn = '$parentUid'")
-        intRawQuery(query)
+    suspend fun deleteLinksForParentUid(query: (String, String) -> RoomRawQuery) {
+        intRawQuery(query(tableName, parentColumn))
     }
 
-    suspend fun selectDistinctChildren(childColumn: String): Set<String> {
-        val query = RoomRawQuery("SELECT DISTINCT $childColumn FROM $tableName")
-        return stringSetRawQuery(query)
+    suspend fun selectDistinctChildren(query: (String) -> RoomRawQuery): Set<String> {
+        return stringSetRawQuery(query(tableName))
     }
 
-    suspend fun selectLinksForParentUid(parentUid: String): List<P> {
-        val query = RoomRawQuery("SELECT * FROM $tableName WHERE $parentColumn = '$parentUid'")
-        return objectListRawQuery(query)
+    suspend fun selectLinksForParentUid(query: (String, String) -> RoomRawQuery): List<P> {
+        return objectListRawQuery(query(tableName, parentColumn))
     }
 }

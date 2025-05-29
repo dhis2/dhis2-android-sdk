@@ -30,29 +30,19 @@ package org.hisp.dhis.android.persistence.common.daos
 
 import androidx.room.RawQuery
 import androidx.room.RoomRawQuery
-import org.hisp.dhis.android.core.common.DataColumns
-import org.hisp.dhis.android.core.common.DeletableDataColumns
-import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.persistence.common.EntityDB
-import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilder
 
 internal abstract class IdentifiableDeletableDataObjectStoreDao<P : EntityDB<*>>(
     tableName: String,
-    override val builder: SQLStatementBuilder,
-) : IdentifiableDataObjectDao<P>(tableName, builder) {
+) : IdentifiableDataObjectDao<P>(tableName) {
 
-    suspend fun setDeleted(uid: String): Int {
-        val query = RoomRawQuery(
-            "UPDATE $tableName SET ${DeletableDataColumns.DELETED} = 1 " +
-                "WHERE ${IdentifiableColumns.UID} = '$uid'",
-        )
-        return intRawQuery(query)
+    suspend fun setDeleted(query: (String) -> RoomRawQuery): Int {
+        return intRawQuery(query(tableName))
     }
 
-    suspend fun selectSyncStateWhere(where: String): List<State> {
-        val query = RoomRawQuery("SELECT ${DataColumns.SYNC_STATE} FROM $tableName WHERE $where")
-        return stateListRawQuery(query)
+    suspend fun selectSyncStateWhere(query: (String) -> RoomRawQuery): List<State> {
+        return stateListRawQuery(query(tableName))
     }
 
     @RawQuery

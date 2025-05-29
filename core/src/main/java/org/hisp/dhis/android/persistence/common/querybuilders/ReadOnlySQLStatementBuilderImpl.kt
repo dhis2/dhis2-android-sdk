@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,32 +26,47 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.common.daos
+package org.hisp.dhis.android.persistence.common.querybuilders
 
 import androidx.room.RoomRawQuery
-import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
+import org.koin.core.annotation.Singleton
 
-internal abstract class IdentifiableObjectDao<P : EntityDB<*>>(
-    tableName: String,
-) : ObjectDao<P>(tableName) {
-
-    suspend fun selectUids(query: RoomRawQuery): List<String> {
-        return stringListRawQuery(query)
+@Singleton
+internal class ReadOnlySQLStatementBuilderImpl : ReadOnlySQLStatementBuilder {
+    override fun selectWhere(whereClause: String): RoomRawQuery {
+        TODO("Not yet implemented")
     }
 
-    suspend fun selectUidsWhere(query: RoomRawQuery): List<String> {
-        return stringListRawQuery(query)
+    override fun selectWhere(whereClause: String, limit: Int): RoomRawQuery {
+        TODO("Not yet implemented")
     }
 
-    suspend fun selectByUid(query: RoomRawQuery): P? {
-        return objectRawQuery(query)
+    override fun selectWhere(whereClause: String, orderByClause: String): RoomRawQuery {
+        TODO("Not yet implemented")
     }
 
-    suspend fun selectByUids(query: RoomRawQuery): List<P> {
-        return objectListRawQuery(query)
+    override fun selectWhere(whereClause: String, orderByClause: String, limit: Int): RoomRawQuery {
+        TODO("Not yet implemented")
     }
 
-    suspend fun deleteById(query: RoomRawQuery): Int {
-        return intRawQuery(query)
+    override fun selectOneOrderedBy(orderingColumName: String, orderingType: SQLOrderType): RoomRawQuery {
+        TODO("Not yet implemented")
+    }
+
+    override fun selectAll(): RoomRawQuery {
+        TODO("Not yet implemented")
+    }
+
+    override fun count(): RoomRawQuery {
+        TODO("Not yet implemented")
+    }
+
+    override fun countWhere(whereClause: String): RoomRawQuery {
+        TODO("Not yet implemented")
+    }
+
+    override fun countAndGroupBy(column: String): RoomRawQuery {
+        TODO("Not yet implemented")
     }
 }

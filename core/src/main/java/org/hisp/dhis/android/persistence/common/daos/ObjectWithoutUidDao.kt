@@ -28,23 +28,6 @@
 
 package org.hisp.dhis.android.persistence.common.daos
 
-import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.persistence.common.EntityDB
-import org.hisp.dhis.android.persistence.common.EntityWithUpdateQuery
-import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilder
 
-internal abstract class ObjectWithoutUidDao<P>(
-    tableName: String,
-    override val builder: SQLStatementBuilder,
-) : ObjectDao<P>(tableName, builder) where P : EntityDB<*>, P : EntityWithUpdateQuery {
-
-    suspend fun updateWhere(entity: P): Int {
-        val updateQuery = entity.getUpdateQuery(entity)
-        return intRawQuery(RoomRawQuery(updateQuery))
-    }
-
-    suspend fun deleteWhere(entity: P): Int {
-        val deleteQuery = entity.getDeleteQuery(entity)
-        return intRawQuery(RoomRawQuery(deleteQuery))
-    }
-}
+internal abstract class ObjectWithoutUidDao<P : EntityDB<*>>(tableName: String) : ObjectDao<P>(tableName)

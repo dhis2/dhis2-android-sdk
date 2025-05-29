@@ -30,62 +30,27 @@ package org.hisp.dhis.android.persistence.common.daos
 
 import androidx.room.RawQuery
 import androidx.room.RoomRawQuery
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper
-import org.hisp.dhis.android.core.common.DataColumns
-import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.persistence.common.EntityDB
-import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilder
 
 internal abstract class IdentifiableDataObjectDao<P : EntityDB<*>>(
     tableName: String,
-    override val builder: SQLStatementBuilder,
-) : IdentifiableObjectDao<P>(tableName, builder) {
+) : IdentifiableObjectDao<P>(tableName) {
 
-    suspend fun setSyncState(uid: String, state: State): Int {
-        val query = RoomRawQuery(
-            "UPDATE $tableName SET ${DataColumns.SYNC_STATE} = '$state' " +
-                "WHERE ${IdentifiableColumns.UID} = '$uid'",
-        )
-        return intRawQuery(query)
+    suspend fun setSyncState(query: (String) -> RoomRawQuery): Int {
+        return intRawQuery(query(tableName))
     }
 
-    suspend fun setSyncState(uids: List<String>, state: State): Int {
-        val whereClause = WhereClauseBuilder().appendInKeyStringValues(IdentifiableColumns.UID, uids).build()
-        val query = RoomRawQuery("UPDATE $tableName SET ${DataColumns.SYNC_STATE} = '$state' WHERE $whereClause")
-        return intRawQuery(query)
+    suspend fun getSyncState(query: (String) -> RoomRawQuery): State? {
+        return stateRawQuery(query(tableName))
     }
 
-    suspend fun setSyncStateIfUploading(uid: String, state: State): Int {
-        val query = RoomRawQuery(
-            "UPDATE $tableName SET ${DataColumns.SYNC_STATE} = '$state' " +
-                "WHERE ${IdentifiableColumns.UID} = '$uid' AND ${DataColumns.SYNC_STATE} = '${State.UPLOADING}'",
-        )
-        return intRawQuery(query)
+    suspend fun exists(query: (String) -> RoomRawQuery): Boolean {
+        return intRawQuery(query(tableName)) > 0
     }
 
-    suspend fun getSyncState(uid: String): State? {
-        val query =
-            RoomRawQuery(
-                "SELECT ${DataColumns.SYNC_STATE} FROM $tableName WHERE " +
-                    "${IdentifiableColumns.UID} = '$uid'"
-            )
-        return stateRawQuery(query)
-    }
-
-    suspend fun exists(uid: String): Boolean {
-        val query = RoomRawQuery("SELECT 1 FROM $tableName WHERE ${IdentifiableColumns.UID} = '$uid'")
-        return intRawQuery(query) > 0
-    }
-
-    suspend fun getUploadableSyncStatesIncludingError(): List<P> {
-        val whereClause = WhereClauseBuilder().appendInKeyStringValues(
-                DataColumns.SYNC_STATE,
-            EnumHelper.asStringList(State.uploadableStatesIncludingError().toList()),
-            ).build()
-        val query = RoomRawQuery("SELECT * FROM $tableName WHERE $whereClause")
-        return objectListRawQuery(query)
+    suspend fun getUploadableSyncStatesIncludingError(query: (String) -> RoomRawQuery): List<P> {
+        return objectListRawQuery(query(tableName))
     }
 
     @RawQuery

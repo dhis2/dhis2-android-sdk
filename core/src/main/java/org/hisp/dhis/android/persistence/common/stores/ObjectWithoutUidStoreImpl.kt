@@ -32,24 +32,26 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.persistence.common.EntityDB
-import org.hisp.dhis.android.persistence.common.EntityWithUpdateQuery
 import org.hisp.dhis.android.persistence.common.MapperToDB
 import org.hisp.dhis.android.persistence.common.daos.ObjectWithoutUidDao
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilder
 
-internal open class ObjectWithoutUidStoreImpl<D, P>(
+internal open class ObjectWithoutUidStoreImpl<D : CoreObject, P : EntityDB<D>>(
     protected val objectWithoutUidDao: ObjectWithoutUidDao<P>,
     mapper: MapperToDB<D, P>,
+    override val builder: SQLStatementBuilder,
 ) : ObjectStoreImpl<D, P>(
     objectWithoutUidDao,
     mapper,
-) where D : CoreObject, P : EntityDB<D>, P : EntityWithUpdateQuery {
+    builder
+) {
 
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionThrown")
     suspend fun updateWhere(domainObj: D) {
         CollectionsHelper.isNull(domainObj)
         val entity = domainObj.toDB()
-        val updated = objectWithoutUidDao.updateWhere(entity)
+        val updated = objectWithoutUidDao.update(entity)
         if (updated == 0) {
             throw RuntimeException("No rows affected")
         }
@@ -57,20 +59,18 @@ internal open class ObjectWithoutUidStoreImpl<D, P>(
 
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionThrown")
-    suspend fun deleteWhere(domainObj: D) {
+    suspend fun deleteWhere(domainObj: D): Boolean {
         CollectionsHelper.isNull(domainObj)
         val entity = domainObj.toDB()
-        val deleted = objectWithoutUidDao.deleteWhere(entity)
-        if (deleted == 0) {
-            throw RuntimeException("No rows affected")
-        }
+        return objectWithoutUidDao.delete(entity) > 0
     }
 
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionCaught")
     suspend fun deleteWhereIfExists(domainObj: D) {
         try {
-            deleteWhere(domainObj)
+            val entity = domainObj.toDB()
+            objectWithoutUidDao.delete(entity)
         } catch (e: RuntimeException) {
             if (e.message != "No rows affected") {
                 throw e
@@ -81,12 +81,13 @@ internal open class ObjectWithoutUidStoreImpl<D, P>(
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionCaught")
     suspend fun updateOrInsertWhere(domainObj: D): HandleAction {
-        return try {
-            updateWhere(domainObj)
-            HandleAction.Update
-        } catch (e: Exception) {
+        val entity = domainObj.toDB()
+        val updated = objectWithoutUidDao.update(entity)
+        return if (updated == 0) {
             insert(domainObj)
             HandleAction.Insert
+        } else {
+            HandleAction.Update
         }
     }
 }

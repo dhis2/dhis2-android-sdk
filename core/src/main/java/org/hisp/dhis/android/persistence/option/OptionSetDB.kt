@@ -20,7 +20,7 @@ import org.hisp.dhis.android.persistence.common.applyBaseIdentifiableFields
 internal data class OptionSetDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int? = 0,
+    val id: Int? = null,
     override val uid: String,
     override val code: String?,
     override val name: String?,

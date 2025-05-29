@@ -28,52 +28,90 @@
 
 package org.hisp.dhis.android.persistence.common.stores
 
+import androidx.room.RoomRawQuery
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper
+import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.DataObject
+import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.MapperToDB
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableDataObjectDao
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilder
 
 internal open class IdentifiableDataObjectStoreImpl<D, P : EntityDB<D>>(
     protected val identifiableDataObjectDao: IdentifiableDataObjectDao<P>,
     mapper: MapperToDB<D, P>,
-) : IdentifiableObjectStoreImpl<D, P>(identifiableDataObjectDao, mapper)
+    override val builder: SQLStatementBuilder,
+) : IdentifiableObjectStoreImpl<D, P>(identifiableDataObjectDao, mapper, builder)
     where D : DataObject, D : ObjectWithUidInterface {
 
     @Throws(RuntimeException::class)
     suspend fun setSyncState(uid: String, state: State): Int {
         CollectionsHelper.isNull(uid)
-        return identifiableDataObjectDao.setSyncState(uid, state)
+        val query: (String) -> RoomRawQuery = { tableName ->
+            RoomRawQuery(
+                "UPDATE $tableName SET ${DataColumns.SYNC_STATE} = '$state' " +
+                    "WHERE ${IdentifiableColumns.UID} = '$uid'",
+            )
+        }
+        return identifiableDataObjectDao.setSyncState(query)
     }
 
     @Throws(RuntimeException::class)
     suspend fun setSyncState(uids: List<String>, state: State): Int {
         val nonNullUids = uids.filterNotNull()
-        return identifiableDataObjectDao.setSyncState(nonNullUids, state)
+        val whereClause = WhereClauseBuilder().appendInKeyStringValues(IdentifiableColumns.UID, nonNullUids).build()
+        val query: (String) -> RoomRawQuery =
+            { tableName -> RoomRawQuery("UPDATE $tableName SET ${DataColumns.SYNC_STATE} = '$state' WHERE $whereClause") }
+        return identifiableDataObjectDao.setSyncState(query)
     }
 
     @Throws(RuntimeException::class)
     suspend fun setSyncStateIfUploading(uid: String, state: State): Int {
         CollectionsHelper.isNull(uid)
-        return identifiableDataObjectDao.setSyncStateIfUploading(uid, state)
+        val query: (String) -> RoomRawQuery = { tableName ->
+            RoomRawQuery(
+                "UPDATE $tableName SET ${DataColumns.SYNC_STATE} = '$state' " +
+                    "WHERE ${IdentifiableColumns.UID} = '$uid' AND ${DataColumns.SYNC_STATE} = '${State.UPLOADING}'",
+            )
+        }
+        return identifiableDataObjectDao.setSyncState(query)
     }
 
     @Throws(RuntimeException::class)
     suspend fun getSyncState(uid: String): State? {
         CollectionsHelper.isNull(uid)
-        return identifiableDataObjectDao.getSyncState(uid)
+        val query: (String) -> RoomRawQuery =
+            { tableName ->
+                RoomRawQuery(
+                    "SELECT ${DataColumns.SYNC_STATE} FROM $tableName WHERE " +
+                        "${IdentifiableColumns.UID} = '$uid'"
+                )
+            }
+        return identifiableDataObjectDao.getSyncState(query)
     }
 
     @Throws(RuntimeException::class)
     suspend fun exists(uid: String): Boolean {
         CollectionsHelper.isNull(uid)
-        return identifiableDataObjectDao.exists(uid)
+        val query: (String) -> RoomRawQuery =
+            { tableName -> RoomRawQuery("SELECT 1 FROM $tableName WHERE ${IdentifiableColumns.UID} = '$uid'") }
+        return identifiableDataObjectDao.exists(query)
     }
 
     @Throws(RuntimeException::class)
     suspend fun getUploadableSyncStatesIncludingError(): List<D> {
-        return identifiableDataObjectDao.getUploadableSyncStatesIncludingError().map { it.toDomain() }
+        val whereClause = WhereClauseBuilder().appendInKeyStringValues(
+            DataColumns.SYNC_STATE,
+            EnumHelper.asStringList(State.uploadableStatesIncludingError().toList()),
+        ).build()
+        val query: (String) -> RoomRawQuery =
+            { tableName -> RoomRawQuery("SELECT * FROM $tableName WHERE $whereClause") }
+        val entitiesDB = identifiableDataObjectDao.getUploadableSyncStatesIncludingError(query)
+        return entitiesDB.map { it.toDomain() }
     }
 }

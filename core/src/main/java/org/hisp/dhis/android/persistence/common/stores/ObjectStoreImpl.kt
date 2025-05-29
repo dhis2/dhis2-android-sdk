@@ -33,17 +33,19 @@ import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.MapperToDB
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.persistence.common.querybuilders.ReadOnlySQLStatementBuilder
 
 internal open class ObjectStoreImpl<D : CoreObject, P : EntityDB<D>>(
     protected val objectDao: ObjectDao<P>,
     protected val mapper: MapperToDB<D, P>,
-) : ReadableStoreImpl<D, P>(objectDao), MapperToDB<D, P> by mapper {
+    override val builder: ReadOnlySQLStatementBuilder,
+) : ReadableStoreImpl<D, P>(objectDao, builder), MapperToDB<D, P> by mapper {
 
     suspend fun selectStringColumnsWhereClause(column: String, clause: String): List<String> {
         return objectDao.selectStringColumn(column, clause)
     }
 
-    open suspend fun insert(domainObj: D): Int {
+    open suspend fun insert(domainObj: D): Long {
         return objectDao.insert(domainObj.toDB())
     }
 
@@ -70,7 +72,4 @@ internal open class ObjectStoreImpl<D : CoreObject, P : EntityDB<D>>(
     suspend fun deleteWhereIfExists(whereClause: String) {
         deleteWhere(whereClause)
     }
-
-    val isReady: Boolean
-        get() = true // TODO: Check what to do with this
 }

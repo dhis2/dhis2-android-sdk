@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.common.stores
 
+import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
@@ -41,13 +42,16 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.MapperToDB
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableDeletableDataObjectStoreDao
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilder
 
 internal open class IdentifiableDeletableDataObjectStoreImpl<D, P : EntityDB<D>>(
     protected val identifiableDeletableDataObjectDao: IdentifiableDeletableDataObjectStoreDao<P>,
     mapper: MapperToDB<D, P>,
+    override val builder: SQLStatementBuilder,
 ) : IdentifiableDataObjectStoreImpl<D, P>(
     identifiableDeletableDataObjectDao,
     mapper,
+    builder
 ) where D : CoreObject, D : DeletableDataObject, D : ObjectWithUidInterface {
 
     @Throws(RuntimeException::class)
@@ -72,10 +76,18 @@ internal open class IdentifiableDeletableDataObjectStoreImpl<D, P : EntityDB<D>>
     @Throws(RuntimeException::class)
     suspend fun setDeleted(uid: String): Int {
         CollectionsHelper.isNull(uid)
-        return identifiableDeletableDataObjectDao.setDeleted(uid)
+        val query: (String) -> RoomRawQuery = { tableName ->
+            RoomRawQuery(
+                "UPDATE $tableName SET ${DeletableDataColumns.DELETED} = 1 " +
+                    "WHERE ${IdentifiableColumns.UID} = '$uid'",
+            )
+        }
+        return identifiableDeletableDataObjectDao.setDeleted(query)
     }
 
     suspend fun selectSyncStateWhere(where: String): List<State> {
-        return identifiableDeletableDataObjectDao.selectSyncStateWhere(where)
+        val query: (String) -> RoomRawQuery =
+            { tableName -> RoomRawQuery("SELECT ${DataColumns.SYNC_STATE} FROM $tableName WHERE $where") }
+        return identifiableDeletableDataObjectDao.selectSyncStateWhere(query)
     }
 }

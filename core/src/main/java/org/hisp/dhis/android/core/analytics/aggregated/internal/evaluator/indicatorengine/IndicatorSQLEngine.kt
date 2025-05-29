@@ -44,7 +44,7 @@ internal class IndicatorSQLEngine(
     private val databaseAdapter: DatabaseAdapter,
 ) {
 
-    fun evaluateIndicator(
+    suspend fun evaluateIndicator(
         indicator: Indicator,
         contextEvaluationItem: AnalyticsServiceEvaluationItem,
         contextMetadata: Map<String, MetadataItem>,
@@ -58,7 +58,7 @@ internal class IndicatorSQLEngine(
         }
     }
 
-    fun getSql(
+    suspend fun getSql(
         indicator: Indicator,
         contextEvaluationItem: AnalyticsServiceEvaluationItem,
         contextMetadata: Map<String, MetadataItem>,

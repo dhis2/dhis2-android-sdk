@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.analytics.eventlinelist
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
 import org.hisp.dhis.android.core.analytics.LegendEvaluator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsOrganisationUnitHelper
@@ -196,7 +197,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
     }
 
     @Test
-    fun should_return_single_data_element_in_repeatable_stage() {
+    fun should_return_single_data_element_in_repeatable_stage() = runTest {
         val event1 = createEvent(program1Stage2.uid(), "2020-08-01T00:00:00.000")
         val event2 = createEvent(program1Stage2.uid(), "2020-09-02T00:00:00.000")
         val event3 = createEvent(program1Stage2.uid(), "2020-10-03T00:00:00.000")
@@ -239,7 +240,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
     }
 
     @Test
-    fun should_return_several_data_elements_in_repeatable_stage() {
+    fun should_return_several_data_elements_in_repeatable_stage() = runTest {
         val event1 = createEvent(program1Stage2.uid(), "2020-08-01T00:00:00.000")
         val event2 = createEvent(program1Stage2.uid(), "2020-09-02T00:00:00.000")
 
@@ -261,7 +262,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
     }
 
     @Test
-    fun should_return_missing_data_elements_in_repeatable_stage() {
+    fun should_return_missing_data_elements_in_repeatable_stage() = runTest {
         val event1 = createEvent(program1Stage2.uid(), "2020-08-01T00:00:00.000")
         val event2 = createEvent(program1Stage2.uid(), "2020-09-02T00:00:00.000")
 
@@ -294,7 +295,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
     }
 
     @Test
-    fun should_return_program_indicators_in_repeatable_stage() {
+    fun should_return_program_indicators_in_repeatable_stage() = runTest {
         val event1 = createEvent(program1Stage2.uid(), "2020-08-01T00:00:00.000")
         val event2 = createEvent(program1Stage2.uid(), "2020-09-02T00:00:00.000")
 
@@ -326,7 +327,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
     }
 
     @Test
-    fun should_ignore_deleted_events() {
+    fun should_ignore_deleted_events() = runTest {
         val event1 = createEvent(program1Stage2.uid(), "2020-08-01T00:00:00.000")
         val deletedEvent = createDeletedEvent(program1Stage2.uid(), "2020-09-02T00:00:00.000")
 
@@ -349,7 +350,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
     }
 
     @Test
-    fun should_return_program_stage_period_if_defined() {
+    fun should_return_program_stage_period_if_defined() = runTest {
         val event1 = createEvent(program1Stage2.uid(), "2020-08-01T00:00:00.000")
         val event2 = createEvent(program1Stage2.uid(), "2020-09-02T00:00:00.000")
         val event3 = createEvent(program1Stage2.uid(), "2020-10-03T00:00:00.000")
@@ -376,7 +377,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
     }
 
     @Test
-    fun should_consider_due_events() {
+    fun should_consider_due_events() = runTest {
         val event1 = createEvent(program1Stage2.uid(), "2020-08-01T00:00:00.000")
         val event2 = createDueEvent(program1Stage2.uid(), "2020-09-02T00:00:00.000")
 
@@ -398,7 +399,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
     }
 
     @Test
-    fun should_evaluate_relative_periods() {
+    fun should_evaluate_relative_periods() = runTest {
         val event1 = createEvent(program1Stage2.uid(), "2019-12-01T00:00:00.000")
         val event2 = createEvent(program1Stage2.uid(), "2019-06-02T00:00:00.000")
         val event3 = createEvent(program1Stage2.uid(), "2019-05-03T00:00:00.000")
@@ -421,7 +422,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
     }
 
     @Test
-    fun should_evaluate_relative_organisationUnits() {
+    fun should_evaluate_relative_organisationUnits() = runTest {
         val event1 = createEvent(program1Stage2.uid(), "2019-12-01T00:00:00.000")
 
         val eventListParams = EventLineListParams(
@@ -437,7 +438,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
     }
 
     @Test
-    fun should_return_program_indicators_without_legend_if_legend_strategy_is_none() {
+    fun should_return_program_indicators_without_legend_if_legend_strategy_is_none() = runTest {
         val event1 = createEvent(program1Stage2.uid(), "2020-08-01T00:00:00.000")
 
         createDataValue(event1.uid(), dataElement1.uid(), "1.0")
@@ -460,7 +461,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
     }
 
     @Test
-    fun should_return_program_indicators_with_legend_by_PI_if_legend_strategy_is_by_data_item() {
+    fun should_return_program_indicators_with_legend_by_PI_if_legend_strategy_is_by_data_item() = runTest {
         val event1 = createEvent(program1Stage2.uid(), "2020-08-01T00:00:00.000")
 
         createDataValue(event1.uid(), dataElement1.uid(), "1.0")
@@ -487,7 +488,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
     }
 
     @Test
-    fun should_return_program_indicators_legend_by_fixed_if_legend_strategy_is_fixed() {
+    fun should_return_program_indicators_legend_by_fixed_if_legend_strategy_is_fixed() = runTest {
         val event1 = createEvent(program1Stage2.uid(), "2020-08-01T00:00:00.000")
 
         createDataValue(event1.uid(), dataElement1.uid(), "30.0")
@@ -514,7 +515,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
     }
 
     @Test
-    fun should_return_data_elements_without_legend_if_legend_strategy_is_none() {
+    fun should_return_data_elements_without_legend_if_legend_strategy_is_none() = runTest {
         val event1 = createEvent(program1Stage2.uid(), "2020-08-01T00:00:00.000")
 
         createDataValue(event1.uid(), dataElement1.uid(), "10.0")
@@ -533,7 +534,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
     }
 
     @Test
-    fun should_return_data_elements_with_legend_by_DE_if_legend_strategy_is_by_data_item() {
+    fun should_return_data_elements_with_legend_by_DE_if_legend_strategy_is_by_data_item() = runTest {
         val event1 = createEvent(program1Stage2.uid(), "2020-08-01T00:00:00.000")
 
         createDataValue(event1.uid(), dataElement1.uid(), "10.0")
@@ -561,7 +562,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
     }
 
     @Test
-    fun should_return_data_elements_with_legend_by_fixed_if_legend_strategy_is_fixed() {
+    fun should_return_data_elements_with_legend_by_fixed_if_legend_strategy_is_fixed() = runTest {
         val event1 = createEvent(program1Stage2.uid(), "2020-08-01T00:00:00.000")
 
         createDataValue(event1.uid(), dataElement1.uid(), "10.0")

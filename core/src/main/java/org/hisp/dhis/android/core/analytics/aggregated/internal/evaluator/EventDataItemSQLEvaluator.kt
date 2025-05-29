@@ -52,7 +52,7 @@ internal class EventDataItemSQLEvaluator(
     private val databaseAdapter: DatabaseAdapter,
 ) : AnalyticsEvaluator {
 
-    override fun evaluate(
+    override suspend fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
         queryMods: QueryMods?,
@@ -66,7 +66,7 @@ internal class EventDataItemSQLEvaluator(
     }
 
     @Suppress("ComplexMethod", "LongMethod")
-    override fun getSql(
+    override suspend fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
         queryMods: QueryMods?,

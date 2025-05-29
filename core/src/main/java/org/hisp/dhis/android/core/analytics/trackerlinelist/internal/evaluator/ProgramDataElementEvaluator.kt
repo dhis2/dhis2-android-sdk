@@ -46,19 +46,19 @@ internal class ProgramDataElementEvaluator(
     private val item: TrackerLineListItem.ProgramDataElement,
     private val metadata: Map<String, MetadataItem>,
 ) : TrackerLineListEvaluator() {
-    override fun getSelectSQLForEvent(): String {
+    override suspend fun getSelectSQLForEvent(): String {
         val selectEventClause = "= $EventAlias.${EventTableInfo.Columns.UID} "
 
         return getSelectClause(selectEventClause)
     }
 
-    override fun getSelectSQLForEnrollment(): String {
+    override suspend fun getSelectSQLForEnrollment(): String {
         val enrollmentSelectClause = "= $EnrollmentAlias.${EnrollmentTableInfo.Columns.UID}"
         val eventSelectClause = getEventSelectClause(enrollmentSelectClause)
         return getSelectClause(eventSelectClause)
     }
 
-    override fun getSelectSQLForTrackedEntityInstance(): String {
+    override suspend fun getSelectSQLForTrackedEntityInstance(): String {
         val enrollmentSelectClause = "IN (SELECT " +
             "$EnrollmentAlias.${EnrollmentTableInfo.Columns.UID} " +
             "FROM ${EnrollmentTableInfo.TABLE_INFO.name()} $EnrollmentAlias " +
@@ -75,7 +75,7 @@ internal class ProgramDataElementEvaluator(
         return getSelectClause(eventSelectClause)
     }
 
-    override fun getCommonWhereSQL(): String {
+    override suspend fun getCommonWhereSQL(): String {
         return DataFilterHelper.getWhereClause(item.id, item.filters)
     }
 

@@ -49,7 +49,7 @@ internal class AnalyticsServiceDimensionHelper(
     /**
      * Return the list of AbsoluteDimensionItems by each dimension.
      */
-    fun getQueryAbsoluteDimensionItems(
+    suspend fun getQueryAbsoluteDimensionItems(
         queryDimensionItems: List<DimensionItem>,
         dimensions: List<Dimension>,
     ): Map<Dimension, List<AbsoluteDimensionItem>> {
@@ -84,7 +84,7 @@ internal class AnalyticsServiceDimensionHelper(
         }
     }
 
-    private fun toAbsoluteDimensionItems(item: DimensionItem): List<AbsoluteDimensionItem> {
+    private suspend fun toAbsoluteDimensionItems(item: DimensionItem): List<AbsoluteDimensionItem> {
         return when (item) {
             is DimensionItem.DataItem -> listOf(item)
             is DimensionItem.PeriodItem ->

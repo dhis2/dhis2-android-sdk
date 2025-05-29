@@ -29,6 +29,8 @@
 package org.hisp.dhis.android.core.analytics.trackerlinelist.internal
 
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListRepository
@@ -93,11 +95,11 @@ internal class TrackerLineListRepositoryImpl(
     }
 
     override fun evaluate(): Single<Result<TrackerLineListResponse, AnalyticsException>> {
-        return Single.fromCallable { blockingEvaluate() }
+        return rxSingle { service.evaluate(params) }
     }
 
     override fun blockingEvaluate(): Result<TrackerLineListResponse, AnalyticsException> {
-        return service.evaluate(params)
+        return runBlocking { service.evaluate(params) }
     }
 
     private fun updateParams(

@@ -57,7 +57,7 @@ internal open class BaseProgramIndicatorSQLExecutorIntegrationShould : BaseEvalu
 
     protected val helper = BaseTrackerDataIntegrationHelper(databaseAdapter)
 
-    protected fun evaluateTeiCount(
+    protected suspend fun evaluateTeiCount(
         filter: String? = null,
         periods: List<Period>? = null,
         boundaries: List<AnalyticsPeriodBoundary>? = null,
@@ -72,7 +72,7 @@ internal open class BaseProgramIndicatorSQLExecutorIntegrationShould : BaseEvalu
         )
     }
 
-    protected fun evaluateEventCount(
+    protected suspend fun evaluateEventCount(
         filter: String? = null,
         periods: List<Period>? = null,
         boundaries: List<AnalyticsPeriodBoundary>? = null,
@@ -87,7 +87,7 @@ internal open class BaseProgramIndicatorSQLExecutorIntegrationShould : BaseEvalu
         )
     }
 
-    protected fun evaluateProgramIndicator(
+    protected suspend fun evaluateProgramIndicator(
         expression: String,
         filter: String? = null,
         analyticsType: AnalyticsType = AnalyticsType.EVENT,

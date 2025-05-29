@@ -39,7 +39,7 @@ internal class ProgramIndicatorSQLEvaluator(
     private val programIndicatorSQLExecutor: ProgramIndicatorSQLExecutor,
 ) : AnalyticsEvaluator {
 
-    override fun evaluate(
+    override suspend fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
         queryMods: QueryMods?,
@@ -47,7 +47,7 @@ internal class ProgramIndicatorSQLEvaluator(
         return programIndicatorSQLExecutor.getProgramIndicatorValue(evaluationItem, metadata, queryMods)
     }
 
-    override fun getSql(
+    override suspend fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
         queryMods: QueryMods?,

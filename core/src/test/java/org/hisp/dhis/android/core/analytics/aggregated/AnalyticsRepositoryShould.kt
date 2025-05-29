@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.analytics.aggregated
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsRepositoryImpl
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsRepositoryParams
@@ -52,7 +53,7 @@ class AnalyticsRepositoryShould {
     private val repository = AnalyticsRepositoryImpl(initialParams, analyticsService)
 
     @Test
-    fun `Call service with fixed legend strategy`() {
+    fun `Call service with fixed legend strategy`() = runTest {
         repository
             .withLegendStrategy(AnalyticsLegendStrategy.Fixed("uid1"))
             .blockingEvaluate()
@@ -65,7 +66,7 @@ class AnalyticsRepositoryShould {
     }
 
     @Test
-    fun `Call service with none legend strategy`() {
+    fun `Call service with none legend strategy`() = runTest {
         repository
             .withLegendStrategy(AnalyticsLegendStrategy.None)
             .blockingEvaluate()
@@ -77,7 +78,7 @@ class AnalyticsRepositoryShould {
     }
 
     @Test
-    fun `Call service with byDataItem legend strategy`() {
+    fun `Call service with byDataItem legend strategy`() = runTest {
         repository
             .withLegendStrategy(AnalyticsLegendStrategy.ByDataItem)
             .blockingEvaluate()
@@ -89,7 +90,7 @@ class AnalyticsRepositoryShould {
     }
 
     @Test
-    fun `Call service with overriden aggregation type`() {
+    fun `Call service with overriden aggregation type`() = runTest {
         repository
             .withAggregationType(AggregationType.LAST)
             .blockingEvaluate()

@@ -59,7 +59,7 @@ internal class AnalyticsVisualizationsServiceDimensionHelper(
     private val orgUnitDimension = "ou"
     private val periodDimension = "pe"
 
-    fun getDimensionItems(dimensions: List<VisualizationDimension>?): List<DimensionItem> {
+    suspend fun getDimensionItems(dimensions: List<VisualizationDimension>?): List<DimensionItem> {
         return dimensions?.map { dimension ->
             when (dimension.id()) {
                 dataDimension -> extractDataDimensionItems(dimension.items())
@@ -132,7 +132,7 @@ internal class AnalyticsVisualizationsServiceDimensionHelper(
         } ?: emptyList()
     }
 
-    private fun extractOrgunitDimensionItems(items: List<VisualizationDimensionItem>?): List<DimensionItem> {
+    private suspend fun extractOrgunitDimensionItems(items: List<VisualizationDimensionItem>?): List<DimensionItem> {
         return items?.mapNotNull { it.dimensionItem() }?.map { item ->
             val relativeOrgUnit = RelativeOrganisationUnit.values().find { it.name == item }
 
@@ -170,7 +170,10 @@ internal class AnalyticsVisualizationsServiceDimensionHelper(
         } ?: emptyList()
     }
 
-    private fun extractUidDimensionItems(items: List<VisualizationDimensionItem>?, uid: String): List<DimensionItem> {
+    private suspend fun extractUidDimensionItems(
+        items: List<VisualizationDimensionItem>?,
+        uid: String,
+    ): List<DimensionItem> {
         return categoryStore.selectByUid(uid)?.let { category ->
             val categoryOptions =
                 if (items.isNullOrEmpty()) {

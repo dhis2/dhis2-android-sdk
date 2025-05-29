@@ -39,6 +39,7 @@ import androidx.room.Upsert
 import org.hisp.dhis.android.core.common.CoreColumns
 import org.hisp.dhis.android.persistence.common.EntityDB
 
+@Suppress("TooManyFunctions")
 internal abstract class ObjectDao<P : EntityDB<*>>(
     tableName: String,
 ) : ReadableDao<P>(tableName) {
@@ -101,6 +102,5 @@ internal abstract class ObjectDao<P : EntityDB<*>>(
 
     protected suspend fun stringSetRawQuery(query: RoomRawQuery): Set<String> {
         return stringListRawQuery(query).toSet()
-
     }
 }

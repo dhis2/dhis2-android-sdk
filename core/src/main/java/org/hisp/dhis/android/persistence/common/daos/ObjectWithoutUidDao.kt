@@ -30,4 +30,5 @@ package org.hisp.dhis.android.persistence.common.daos
 
 import org.hisp.dhis.android.persistence.common.EntityDB
 
+@Suppress("UnnecessaryAbstractClass")
 internal abstract class ObjectWithoutUidDao<P : EntityDB<*>>(tableName: String) : ObjectDao<P>(tableName)

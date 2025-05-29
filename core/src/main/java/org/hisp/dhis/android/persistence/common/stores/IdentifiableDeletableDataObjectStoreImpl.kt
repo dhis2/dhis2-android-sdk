@@ -51,7 +51,7 @@ internal open class IdentifiableDeletableDataObjectStoreImpl<D, P : EntityDB<D>>
 ) : IdentifiableDataObjectStoreImpl<D, P>(
     identifiableDeletableDataObjectDao,
     mapper,
-    builder
+    builder,
 ) where D : CoreObject, D : DeletableDataObject, D : ObjectWithUidInterface {
 
     @Throws(RuntimeException::class)

@@ -66,7 +66,11 @@ internal open class IdentifiableDataObjectStoreImpl<D, P : EntityDB<D>>(
         val nonNullUids = uids.filterNotNull()
         val whereClause = WhereClauseBuilder().appendInKeyStringValues(IdentifiableColumns.UID, nonNullUids).build()
         val query: (String) -> RoomRawQuery =
-            { tableName -> RoomRawQuery("UPDATE $tableName SET ${DataColumns.SYNC_STATE} = '$state' WHERE $whereClause") }
+            { tableName ->
+                RoomRawQuery(
+                    "UPDATE $tableName SET ${DataColumns.SYNC_STATE} = '$state' WHERE $whereClause",
+                )
+            }
         return identifiableDataObjectDao.setSyncState(query)
     }
 
@@ -89,7 +93,7 @@ internal open class IdentifiableDataObjectStoreImpl<D, P : EntityDB<D>>(
             { tableName ->
                 RoomRawQuery(
                     "SELECT ${DataColumns.SYNC_STATE} FROM $tableName WHERE " +
-                        "${IdentifiableColumns.UID} = '$uid'"
+                        "${IdentifiableColumns.UID} = '$uid'",
                 )
             }
         return identifiableDataObjectDao.getSyncState(query)

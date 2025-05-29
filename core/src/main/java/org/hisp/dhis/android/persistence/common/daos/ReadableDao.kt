@@ -49,7 +49,6 @@ internal abstract class ReadableDao<P : EntityDB<*>>(
 
     @RawQuery
     abstract suspend fun groupCountListRawQuery(sqlRawQuery: RoomRawQuery): List<GroupCount>
-
 }
 
 internal data class GroupCount(

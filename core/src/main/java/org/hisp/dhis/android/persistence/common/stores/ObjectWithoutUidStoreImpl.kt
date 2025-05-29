@@ -43,7 +43,7 @@ internal open class ObjectWithoutUidStoreImpl<D : CoreObject, P : EntityDB<D>>(
 ) : ObjectStoreImpl<D, P>(
     objectWithoutUidDao,
     mapper,
-    builder
+    builder,
 ) {
 
     @Throws(RuntimeException::class)

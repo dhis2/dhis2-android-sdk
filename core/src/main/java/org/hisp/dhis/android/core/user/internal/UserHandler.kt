@@ -41,7 +41,7 @@ internal class UserHandler(
     private val userGroupCollectionCleaner: UserGroupCollectionCleaner,
 ) : IdentifiableHandlerImpl<User>(userStore) {
 
-    override fun afterObjectHandled(o: User, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: User, action: HandleAction) {
         userRoleCollectionCleaner.deleteNotPresent(o.userRoles())
         userRoleHandler.handleMany(o.userRoles())
         userGroupCollectionCleaner.deleteNotPresent(o.userGroups())

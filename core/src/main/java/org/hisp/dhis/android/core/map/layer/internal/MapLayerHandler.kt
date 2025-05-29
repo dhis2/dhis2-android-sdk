@@ -34,12 +34,12 @@ import org.hisp.dhis.android.core.map.layer.MapLayer
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class MapLayerHandler constructor(
+internal class MapLayerHandler(
     store: MapLayerStore,
     private val imagerProviderHandler: MapLayerImageryProviderHandler,
 ) : IdentifiableWithoutDeleteInterfaceHandlerImpl<MapLayer>(store) {
 
-    override fun afterObjectHandled(o: MapLayer, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: MapLayer, action: HandleAction) {
         imagerProviderHandler.handleMany(o.uid(), o.imageryProviders()) { i ->
             i.toBuilder().mapLayer(o.uid()).build()
         }

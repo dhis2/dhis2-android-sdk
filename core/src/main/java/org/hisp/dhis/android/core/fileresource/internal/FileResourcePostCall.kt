@@ -106,7 +106,7 @@ internal class FileResourcePostCall(
         )
     }
 
-    private fun handleResponse(
+    private suspend fun handleResponse(
         downloadedFileResource: FileResource,
         fileResource: FileResource,
         file: File,
@@ -202,7 +202,7 @@ internal class FileResourcePostCall(
         }
     }
 
-    private fun updateFileResource(
+    private suspend fun updateFileResource(
         fileResource: FileResource,
         downloadedFileResource: FileResource,
         file: File,

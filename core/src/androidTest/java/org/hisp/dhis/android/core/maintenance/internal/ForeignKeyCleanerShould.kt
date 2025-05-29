@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.maintenance.internal
 
 import androidx.test.runner.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.common.IdentifiableColumns
@@ -87,11 +88,11 @@ class ForeignKeyCleanerShould : BaseMockIntegrationTestEmptyDispatcher() {
 
     @Test
     @Throws(Exception::class)
-    fun delete_in_cascade_on_foreign_key_error() {
+    fun delete_in_cascade_on_foreign_key_error() = runTest {
         val executor = D2CallExecutor.create(d2.databaseAdapter())
         val PROGRAM_RULE_UID = "program_rule_uid"
         val program = ObjectWithUid.create("nonexisent-program")
-        executor.executeD2CallTransactionally<Unit> {
+        executor.executeD2CallTransactionally {
             ProgramRuleStoreImpl(d2.databaseAdapter()).insert(
                 ProgramRule.builder()
                     .uid(PROGRAM_RULE_UID).name("Rule").program(program).build(),
@@ -113,7 +114,7 @@ class ForeignKeyCleanerShould : BaseMockIntegrationTestEmptyDispatcher() {
         }
     }
 
-    private fun addOptionForeignKeyViolation() {
+    private fun addOptionForeignKeyViolation() = runTest {
         val executor = D2CallExecutor.create(d2.databaseAdapter())
 
         executor.executeD2CallTransactionally<Unit> {

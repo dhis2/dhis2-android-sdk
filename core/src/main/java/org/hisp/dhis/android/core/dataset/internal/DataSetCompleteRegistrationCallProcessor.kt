@@ -37,7 +37,10 @@ internal class DataSetCompleteRegistrationCallProcessor internal constructor(
     private val handler: DataSetCompleteRegistrationHandler,
 ) {
 
-    internal fun process(objectList: List<DataSetCompleteRegistration>, query: DataSetCompleteRegistrationQuery) {
+    internal suspend fun process(
+        objectList: List<DataSetCompleteRegistration>,
+        query: DataSetCompleteRegistrationQuery,
+    ) {
         if (objectList.isNotEmpty()) {
             removeExistingRegistersForQuery(query)
             val objectsToImport = objectList.filter {

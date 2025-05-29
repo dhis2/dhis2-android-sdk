@@ -29,10 +29,6 @@ package org.hisp.dhis.android.core.tracker.importer
 
 import android.content.Context
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
 import org.hisp.dhis.android.core.tracker.importer.internal.JobValidationError
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerConflictHelper
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType
@@ -40,6 +36,10 @@ import org.hisp.dhis.android.core.tracker.importer.internal.interpreters.Interpr
 import org.hisp.dhis.android.core.tracker.importer.internal.interpreters.InterpreterSelector
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 class TrackerConflictHelperShould {
 

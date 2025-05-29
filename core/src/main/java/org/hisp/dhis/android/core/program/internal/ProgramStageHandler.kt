@@ -49,7 +49,7 @@ internal class ProgramStageHandler(
     private val programStageAttributeValueLinkHandler: ProgramStageAttributeValueLinkHandler,
 ) : IdentifiableHandlerImpl<ProgramStage>(programStageStore) {
 
-    override fun afterObjectHandled(o: ProgramStage, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: ProgramStage, action: HandleAction) {
         programStageDataElementHandler.handleMany(
             ProgramStageInternalAccessor.accessProgramStageDataElements(o),
         )
@@ -87,7 +87,7 @@ internal class ProgramStageHandler(
         }
     }
 
-    override fun afterCollectionHandled(oCollection: Collection<ProgramStage>?) {
+    override suspend fun afterCollectionHandled(oCollection: Collection<ProgramStage>?) {
         programStageCleaner.deleteNotPresent(oCollection)
     }
 }

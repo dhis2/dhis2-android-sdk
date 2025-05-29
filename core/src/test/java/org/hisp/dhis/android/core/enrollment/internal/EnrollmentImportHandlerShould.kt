@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.enrollment.internal
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.*
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
@@ -42,6 +41,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.ArgumentMatchers.anyList
+import org.mockito.kotlin.*
 
 @RunWith(JUnit4::class)
 class EnrollmentImportHandlerShould {

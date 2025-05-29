@@ -27,12 +27,13 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import com.nhaarman.mockitokotlin2.*
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.*
 
 class SynchronizationSettingsHandlerShould {
 
@@ -59,14 +60,14 @@ class SynchronizationSettingsHandlerShould {
     }
 
     @Test
-    fun clean_database_before_insert_collection() {
+    fun clean_database_before_insert_collection() = runTest {
         synchronizationSettingsHandler.handleMany(synchronizationSettingsList)
         verify(synchronizationSettingStore).delete()
         verify(synchronizationSettingStore).updateOrInsertWhere(synchronizationSettings)
     }
 
     @Test
-    fun call_dataSet_and_program_handlers_after_insert_item() {
+    fun call_dataSet_and_program_handlers_after_insert_item() = runTest {
         synchronizationSettingsHandler.handleMany(synchronizationSettingsList)
 
         // Two times: first one to remove existing values, second one to store new ones
@@ -75,7 +76,7 @@ class SynchronizationSettingsHandlerShould {
     }
 
     @Test
-    fun clean_database_if_empty_collection() {
+    fun clean_database_if_empty_collection() = runTest {
         synchronizationSettingsHandler.handleMany(emptyList())
         verify(synchronizationSettingStore).delete()
         verify(synchronizationSettingStore, never()).updateOrInsertWhere(synchronizationSettings)

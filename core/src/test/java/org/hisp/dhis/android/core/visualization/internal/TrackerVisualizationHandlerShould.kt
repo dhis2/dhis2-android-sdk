@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
-import com.nhaarman.mockitokotlin2.*
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.settings.internal.AnalyticsDhisVisualizationCleaner
 import org.hisp.dhis.android.core.visualization.TrackerVisualization
@@ -36,6 +36,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.kotlin.*
 
 @RunWith(JUnit4::class)
 class TrackerVisualizationHandlerShould {
@@ -66,13 +67,13 @@ class TrackerVisualizationHandlerShould {
     }
 
     @Test
-    fun call_items_handler() {
+    fun call_items_handler() = runTest {
         trackerVisualizationHandler.handleMany(listOf(trackerVisualization))
         verify(dimensionHandler).handleMany(any(), any())
     }
 
     @Test
-    fun call_collection_cleaner() {
+    fun call_collection_cleaner() = runTest {
         trackerVisualizationHandler.handleMany(listOf(trackerVisualization))
         verify(collectionCleaner).deleteNotPresent(any())
     }

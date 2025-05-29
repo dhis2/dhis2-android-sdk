@@ -115,7 +115,7 @@ internal class OrganisationUnitCall(
         }
     }
 
-    private fun linkCaptureOrgUnitsInSearchScope(orgUnits: Set<OrganisationUnit>, user: User) {
+    private suspend fun linkCaptureOrgUnitsInSearchScope(orgUnits: Set<OrganisationUnit>, user: User) {
         handler.setData(user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
         handler.addUserOrganisationUnitLinks(orgUnits)
     }

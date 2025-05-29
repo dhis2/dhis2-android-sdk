@@ -28,9 +28,6 @@
 package org.hisp.dhis.android.core.analytics.trackerlinelist
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.argumentCaptor
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.TrackerLineListParams
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.TrackerLineListRepositoryImpl
@@ -38,6 +35,9 @@ import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.TrackerLine
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 
 @RunWith(JUnit4::class)
 class TrackerLineListRepositoryShould {

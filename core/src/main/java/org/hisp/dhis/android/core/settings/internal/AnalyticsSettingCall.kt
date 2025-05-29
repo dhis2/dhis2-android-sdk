@@ -65,7 +65,7 @@ internal class AnalyticsSettingCall(
         }
     }
 
-    override fun process(item: AnalyticsSettings?) {
+    override suspend fun process(item: AnalyticsSettings?) {
         val analyticsTeiSettingList = item?.tei() ?: emptyList()
         analyticsTeiSettingHandler.handleMany(analyticsTeiSettingList)
 

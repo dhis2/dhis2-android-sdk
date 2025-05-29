@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.period.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.period.PeriodSamples
@@ -62,7 +63,7 @@ class PeriodStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationSho
     }
 
     @Test
-    fun select_correct_period_passing_period_type_and_a_date() {
+    fun select_correct_period_passing_period_type_and_a_date() = runTest {
         PeriodHandler(periodStore, create(ClockProviderFactory.createFixed())).generateAndPersist()
         val period = periodStore.selectPeriodByTypeAndDate(
             PeriodType.SixMonthly,

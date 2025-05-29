@@ -25,63 +25,48 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings.internal
 
-package org.hisp.dhis.android.core.option.internal;
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.Handler
+import org.hisp.dhis.android.core.settings.DataSetSetting
+import org.junit.Before
+import org.junit.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction;
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.option.Option;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.util.Collections;
-import java.util.List;
-
-@RunWith(JUnit4.class)
-public class OptionHandlerShould {
-    @Mock
-    private OptionStore optionStore;
-
-    @Mock
-    private Option option;
-
-    @Mock
-    private ObjectStyle style;
-
-    @Mock
-    private OptionSubCollectionCleaner optionCleaner;
-
-    private List<Option> options;
+class DataSetSettingHandlerShould {
+    private val dataSetSettingStore: DataSetSettingStore = mock()
+    private val dataSetSetting: DataSetSetting = mock()
 
     // object to test
-    private OptionHandler optionHandler;
+    private lateinit var dataSetSettingHandler: Handler<DataSetSetting>
+    private lateinit var dataSetSettings: MutableList<DataSetSetting>
 
     @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        optionHandler = new OptionHandler(optionStore, optionCleaner);
-        when(option.uid()).thenReturn("test_option_uid");
-        options = Collections.singletonList(option);
-        when(option.style()).thenReturn(style);
-        when(optionStore.updateOrInsert(option)).thenReturn(HandleAction.Insert);
+    @Throws(Exception::class)
+    fun setUp() {
+        dataSetSettings = mutableListOf(dataSetSetting)
+        whenever(dataSetSettingStore.updateOrInsertWhere(any())).thenReturn(HandleAction.Insert)
+        dataSetSettingHandler = DataSetSettingHandler(dataSetSettingStore)
     }
 
     @Test
-    public void clean_orphan_options() {
-        optionHandler.handleMany(options);
-        verify(optionCleaner).deleteNotPresent(options);
+    fun clean_database_before_insert_collection() = runTest {
+        dataSetSettingHandler.handleMany(dataSetSettings)
+        verify(dataSetSettingStore, times(1)).delete()
+        verify(dataSetSettingStore, times(1)).updateOrInsertWhere(dataSetSetting)
     }
 
     @Test
-    public void extend_identifiable_handler_impl() {
-        IdentifiableHandlerImpl<Option> genericHandler = new OptionHandler(optionStore, optionCleaner);
+    fun clean_database_if_empty_collection() = runTest {
+        dataSetSettingHandler.handleMany(emptyList())
+        verify(dataSetSettingStore, times(1)).delete()
+        verify(dataSetSettingStore, never()).updateOrInsertWhere(dataSetSetting)
     }
 }

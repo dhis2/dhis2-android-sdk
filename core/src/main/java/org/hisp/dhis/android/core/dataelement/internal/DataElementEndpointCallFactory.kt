@@ -54,7 +54,7 @@ internal class DataElementEndpointCallFactory(
         }
     }
 
-    override fun processor(): CallProcessor<DataElement> {
+    override suspend fun processor(): CallProcessor<DataElement> {
         return TransactionalNoResourceSyncCallProcessor(
             data.databaseAdapter,
             handler,

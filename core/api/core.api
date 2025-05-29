@@ -2623,16 +2623,6 @@ public final class org/hisp/dhis/android/core/arch/handlers/internal/HandleActio
 	public static fun values ()[Lorg/hisp/dhis/android/core/arch/handlers/internal/HandleAction;
 }
 
-public abstract interface class org/hisp/dhis/android/core/arch/handlers/internal/Handler {
-	public abstract fun handle (Ljava/lang/Object;)V
-	public abstract fun handleMany (Ljava/util/Collection;)V
-}
-
-public abstract interface class org/hisp/dhis/android/core/arch/handlers/internal/HandlerWithTransformer : org/hisp/dhis/android/core/arch/handlers/internal/Handler {
-	public abstract fun handle (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)V
-	public abstract fun handleMany (Ljava/util/Collection;Lkotlin/jvm/functions/Function1;)V
-}
-
 public final class org/hisp/dhis/android/core/arch/handlers/internal/IdentifiableDataHandlerParams {
 	public fun <init> (ZZZLjava/lang/String;)V
 	public synthetic fun <init> (ZZZLjava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -2649,11 +2639,6 @@ public final class org/hisp/dhis/android/core/arch/handlers/internal/Identifiabl
 	public final fun getProgram ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-}
-
-public abstract interface class org/hisp/dhis/android/core/arch/handlers/internal/LinkHandler {
-	public abstract fun handleMany (Ljava/lang/String;Ljava/util/Collection;Lkotlin/jvm/functions/Function1;)V
-	public abstract fun resetAllLinks ()V
 }
 
 public abstract interface class org/hisp/dhis/android/core/arch/handlers/internal/Transformer {

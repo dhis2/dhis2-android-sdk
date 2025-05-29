@@ -27,12 +27,13 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import com.nhaarman.mockitokotlin2.*
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.settings.*
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.*
 
 class AnalyticsTeiSettingHandlerShould {
 
@@ -65,21 +66,21 @@ class AnalyticsTeiSettingHandlerShould {
     }
 
     @Test
-    fun clean_database_before_insert_collection() {
+    fun clean_database_before_insert_collection() = runTest {
         analyticsTeiSettingHandler.handleMany(analyticsTeiSettingList)
         verify(analyticsTeiSettingStore).delete()
         verify(analyticsTeiSettingStore).updateOrInsertWhere(analyticsTeiSetting)
     }
 
     @Test
-    fun clean_database_if_empty_collection() {
+    fun clean_database_if_empty_collection() = runTest {
         analyticsTeiSettingHandler.handleMany(emptyList())
         verify(analyticsTeiSettingStore).delete()
         verify(analyticsTeiSettingStore, never()).updateOrInsertWhere(analyticsTeiSetting)
     }
 
     @Test
-    fun call_data_handlers() {
+    fun call_data_handlers() = runTest {
         analyticsTeiSettingHandler.handleMany(analyticsTeiSettingList)
 
         verify(teiDataElementHandler).handleMany(any(), any(), any())

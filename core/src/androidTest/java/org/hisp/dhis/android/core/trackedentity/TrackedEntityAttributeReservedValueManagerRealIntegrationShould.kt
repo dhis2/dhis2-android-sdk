@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.trackedentity
 
 import com.google.common.truth.Truth
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory
 import org.hisp.dhis.android.core.category.CategoryCombo
@@ -88,7 +89,7 @@ internal class TrackedEntityAttributeReservedValueManagerRealIntegrationShould :
     private var manager: TrackedEntityAttributeReservedValueManager? = null
 
     @Before
-    override fun setUp() {
+    override fun setUp() = runTest {
         super.setUp()
         login()
         store = TrackedEntityAttributeReservedValueStoreImpl(d2.databaseAdapter())

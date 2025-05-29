@@ -42,7 +42,7 @@ internal class TrackerVisualizationHandler(
     private val dimensionHandler: TrackerVisualizationDimensionHandler,
 ) : IdentifiableHandlerImpl<TrackerVisualization>(store) {
 
-    override fun afterObjectHandled(o: TrackerVisualization, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: TrackerVisualization, action: HandleAction) {
         val dimensions =
             (o.columns() ?: emptyList()) +
                 (o.filters() ?: emptyList())
@@ -50,7 +50,7 @@ internal class TrackerVisualizationHandler(
         dimensionHandler.handleMany(o.uid(), dimensions)
     }
 
-    override fun afterCollectionHandled(oCollection: Collection<TrackerVisualization>?) {
+    override suspend fun afterCollectionHandled(oCollection: Collection<TrackerVisualization>?) {
         trackerVisualizationCollectionCleaner.deleteNotPresent(oCollection)
         analyticsDhisVisualizationCleaner.deleteNotPresent(
             uids = store.selectUids(),

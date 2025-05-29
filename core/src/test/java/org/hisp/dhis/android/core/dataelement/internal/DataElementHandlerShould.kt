@@ -27,14 +27,7 @@
  */
 package org.hisp.dhis.android.core.dataelement.internal
 
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.eq
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.never
-import com.nhaarman.mockitokotlin2.times
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.attribute.AttributeValue
 import org.hisp.dhis.android.core.attribute.internal.DataElementAttributeValueLinkHandler
@@ -45,7 +38,14 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.Mockito
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
 class DataElementHandlerShould {
@@ -102,7 +102,7 @@ class DataElementHandlerShould {
     }
 
     @Test
-    fun do_nothing_when_passing_null_argument() {
+    fun do_nothing_when_passing_null_argument() = runTest {
         dataElementHandler.handle(null)
 
         // verify that program indicator store is never called
@@ -112,7 +112,7 @@ class DataElementHandlerShould {
     }
 
     @Test
-    fun delete_shouldDeleteDataElement() {
+    fun delete_shouldDeleteDataElement() = runTest {
         whenever(dataElement.deleted()).doReturn(true)
         dataElementHandler.handleMany(dataElements)
 
@@ -121,7 +121,7 @@ class DataElementHandlerShould {
     }
 
     @Test
-    fun update_shouldUpdateDataElement() {
+    fun update_shouldUpdateDataElement() = runTest {
         dataElementHandler.handleMany(dataElements)
 
         // verify that update is called once
@@ -130,9 +130,9 @@ class DataElementHandlerShould {
     }
 
     @Test
-    fun call_attribute_handlers() {
+    fun call_attribute_handlers() = runTest {
         dataElementHandler.handleMany(dataElements)
-        Mockito.verify(dataElementAttributeValueLinkHandler).handleMany(
+        verify(dataElementAttributeValueLinkHandler).handleMany(
             eq(dataElement.uid()),
             eq(listOf(attributeValue) as Collection<ObjectWithUid>),
             any(),
@@ -140,7 +140,7 @@ class DataElementHandlerShould {
     }
 
     @Test
-    fun call_data_element_legend_set_handler() {
+    fun call_data_element_legend_set_handler() = runTest {
         dataElementHandler.handleMany(dataElements)
         verify(dataElementLegendSetLinkHandler).handleMany(any(), any(), any())
     }

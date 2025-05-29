@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal
 
-import com.nhaarman.mockitokotlin2.*
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkHandler
@@ -39,6 +39,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.kotlin.*
 
 @RunWith(JUnit4::class)
 class OrganisationUnitHandlerShould {
@@ -88,41 +89,41 @@ class OrganisationUnitHandlerShould {
     }
 
     @Test
-    fun persist_user_organisation_unit_link() {
+    fun persist_user_organisation_unit_link() = runTest {
         organisationUnitHandler.setData(user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
         organisationUnitHandler.handleMany(organisationUnits)
     }
 
     @Test
-    fun persist_program_organisation_unit_link_when_programs_uids() {
+    fun persist_program_organisation_unit_link_when_programs_uids() = runTest {
         organisationUnitHandler.setData(user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
         organisationUnitHandler.handleMany(organisationUnits)
         verify(organisationUnitProgramLinkHandler).handleMany(any(), any(), any())
     }
 
     @Test
-    fun persist_program_organisation_unit_link_when_no_programs_uids() {
+    fun persist_program_organisation_unit_link_when_no_programs_uids() = runTest {
         organisationUnitHandler.setData(user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
         organisationUnitHandler.handleMany(organisationUnits)
         verifyNoMoreInteractions(organisationUnitProgramLinkStore)
     }
 
     @Test
-    fun persist_organisation_unit_groups() {
+    fun persist_organisation_unit_groups() = runTest {
         organisationUnitHandler.setData(user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
         organisationUnitHandler.handleMany(organisationUnits)
         verify(organisationUnitGroupHandler).handleMany(any())
     }
 
     @Test
-    fun persist_organisation_unit_organisation_unit_group_link() {
+    fun persist_organisation_unit_organisation_unit_group_link() = runTest {
         organisationUnitHandler.setData(user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
         organisationUnitHandler.handleMany(organisationUnits)
         verify(organisationUnitGroupLinkHandler).handleMany(any(), any(), any())
     }
 
     @Test
-    fun dont_persist_organisation_unit_organisation_unit_group_link_when_no_organisation_unit_groups() {
+    fun dont_persist_organisation_unit_organisation_unit_group_link_when_no_organisation_unit_groups() = runTest {
         organisationUnitHandler.setData(user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
         organisationUnitHandler.handleMany(listOf(organisationUnitWithoutGroups))
         verify(organisationUnitGroupLinkHandler, never()).handleMany(any(), any(), any())

@@ -35,11 +35,11 @@ import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLink
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class CategoryOptionComboHandler constructor(
+internal class CategoryOptionComboHandler(
     store: CategoryOptionComboStore,
     private val categoryOptionComboCategoryOptionLinkHandler: CategoryOptionComboCategoryOptionHandler,
 ) : IdentifiableHandlerImpl<CategoryOptionCombo>(store) {
-    override fun afterObjectHandled(o: CategoryOptionCombo, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: CategoryOptionCombo, action: HandleAction) {
         categoryOptionComboCategoryOptionLinkHandler.handleMany(
             o.uid(),
             o.categoryOptions(),

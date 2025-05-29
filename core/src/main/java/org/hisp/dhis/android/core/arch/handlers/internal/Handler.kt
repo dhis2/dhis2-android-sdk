@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.arch.handlers.internal
 
-interface Handler<O> {
-    fun handle(o: O?)
+internal interface Handler<O> {
+    suspend fun handle(o: O?)
 
     @JvmSuppressWildcards
-    fun handleMany(oCollection: Collection<O>?)
+    suspend fun handleMany(oCollection: Collection<O>?)
 }

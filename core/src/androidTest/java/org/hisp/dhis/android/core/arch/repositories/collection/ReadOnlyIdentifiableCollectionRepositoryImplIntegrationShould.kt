@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.arch.repositories.collection
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityTypeSamples
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
@@ -159,7 +160,7 @@ class ReadOnlyIdentifiableCollectionRepositoryImplIntegrationShould : BaseMockIn
 
         @BeforeClass
         @JvmStatic
-        fun setUpTestClass() {
+        fun setUpTestClass() = runTest {
             setUpClass()
             val rtHandler = objects.d2DIComponent.relationshipTypeHandler
             val tetHandler = objects.d2DIComponent.trackedEntityTypeHandler

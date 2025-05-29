@@ -65,5 +65,5 @@ internal abstract class BaseSettingCall<T> internal constructor(
 
     protected abstract suspend fun tryFetch(storeError: Boolean): Result<T, D2Error>
 
-    protected abstract fun process(item: T?)
+    protected abstract suspend fun process(item: T?)
 }

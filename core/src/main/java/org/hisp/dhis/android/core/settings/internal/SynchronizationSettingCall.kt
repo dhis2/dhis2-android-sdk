@@ -85,7 +85,7 @@ internal class SynchronizationSettingCall(
         }
     }
 
-    override fun process(item: SynchronizationSettings?) {
+    override suspend fun process(item: SynchronizationSettings?) {
         val syncSettingsList = listOfNotNull(item)
         synchronizationSettingHandler.handleMany(syncSettingsList)
     }

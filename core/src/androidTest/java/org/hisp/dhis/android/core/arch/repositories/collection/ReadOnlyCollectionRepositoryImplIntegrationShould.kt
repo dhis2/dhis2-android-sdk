@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.arch.repositories.collection
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.repositories.collection.RelationshipTypeAsserts.assertTypesWithoutConstraints
 import org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples
 import org.hisp.dhis.android.core.relationship.RelationshipType
@@ -111,7 +112,7 @@ class ReadOnlyCollectionRepositoryImplIntegrationShould : BaseMockIntegrationTes
 
         @BeforeClass
         @JvmStatic
-        fun setUpTestClass() {
+        fun setUpTestClass() = runTest {
             setUpClass()
             typeMap = RelationshipTypeSamples.typeMap
             val handler = objects.d2DIComponent.relationshipTypeHandler

@@ -36,17 +36,17 @@ import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class RelationshipTypeHandler constructor(
+internal class RelationshipTypeHandler(
     relationshipTypeStore: RelationshipTypeStore,
     private val relationshipConstraintHandler: RelationshipConstraintHandler,
 ) : IdentifiableHandlerImpl<RelationshipType>(relationshipTypeStore) {
 
-    override fun afterObjectHandled(o: RelationshipType, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: RelationshipType, action: HandleAction) {
         handleConstraint(o, o.fromConstraint(), RelationshipConstraintType.FROM)
         handleConstraint(o, o.toConstraint(), RelationshipConstraintType.TO)
     }
 
-    private fun handleConstraint(
+    private suspend fun handleConstraint(
         relationshipType: RelationshipType,
         downloadedConstraint: RelationshipConstraint?,
         type: RelationshipConstraintType,

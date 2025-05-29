@@ -43,7 +43,7 @@ internal class ProgramStageSectionHandler(
     private val programStageSectionDataElementLinkHandler: ProgramStageSectionDataElementLinkHandler,
 ) : IdentifiableHandlerImpl<ProgramStageSection>(programStageSectionStore) {
 
-    override fun afterObjectHandled(o: ProgramStageSection, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: ProgramStageSection, action: HandleAction) {
         programStageSectionDataElementLinkHandler.handleMany(
             o.uid(),
             o.dataElements(),

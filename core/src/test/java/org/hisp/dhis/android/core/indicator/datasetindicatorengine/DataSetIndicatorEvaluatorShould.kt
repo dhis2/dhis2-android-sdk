@@ -28,9 +28,6 @@
 package org.hisp.dhis.android.core.indicator.datasetindicatorengine
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.IndicatorType
@@ -39,6 +36,9 @@ import org.hisp.dhis.android.core.parser.internal.service.ExpressionServiceConte
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DimensionalItemObject
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 class DataSetIndicatorEvaluatorShould {
 

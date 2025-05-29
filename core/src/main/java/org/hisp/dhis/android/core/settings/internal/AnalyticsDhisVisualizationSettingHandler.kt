@@ -37,7 +37,7 @@ internal class AnalyticsDhisVisualizationSettingHandler(
     store: AnalyticsDhisVisualizationStore,
 ) : ObjectWithoutUidHandlerImpl<AnalyticsDhisVisualization>(store) {
 
-    override fun beforeCollectionHandled(
+    override suspend fun beforeCollectionHandled(
         oCollection: Collection<AnalyticsDhisVisualization>,
     ): Collection<AnalyticsDhisVisualization> {
         store.delete()

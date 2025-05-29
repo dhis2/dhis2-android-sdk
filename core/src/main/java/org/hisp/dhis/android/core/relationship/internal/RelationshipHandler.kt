@@ -41,7 +41,7 @@ internal class RelationshipHandler(
     private val relationshipItemHandler: RelationshipItemHandler,
 ) : IdentifiableHandlerImpl<Relationship>(relationshipStore) {
 
-    override fun afterObjectHandled(o: Relationship, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: Relationship, action: HandleAction) {
         relationshipItemHandler.handle(
             o.from()!!.toBuilder()
                 .relationship(ObjectWithUid.create(o.uid()))

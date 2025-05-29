@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.enrollment.internal
 
-import com.nhaarman.mockitokotlin2.*
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.common.State
@@ -48,6 +48,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.ArgumentMatchers
+import org.mockito.kotlin.*
 
 @RunWith(JUnit4::class)
 class EnrollmentHandlerShould {
@@ -89,7 +90,7 @@ class EnrollmentHandlerShould {
     }
 
     @Test
-    fun do_nothing_when_passing_null_argument() {
+    fun do_nothing_when_passing_null_argument() = runTest {
         val params = IdentifiableDataHandlerParams(hasAllAttributes = false, overwrite = false, asRelationship = false)
         enrollmentHandler.handleMany(null, params, relationshipItemRelatives)
 
@@ -102,7 +103,7 @@ class EnrollmentHandlerShould {
     }
 
     @Test
-    fun invoke_only_delete_when_a_enrollment_is_set_as_deleted() {
+    fun invoke_only_delete_when_a_enrollment_is_set_as_deleted() = runTest {
         whenever(enrollment.deleted()).doReturn(true)
 
         val params = IdentifiableDataHandlerParams(hasAllAttributes = false, overwrite = false, asRelationship = false)
@@ -120,7 +121,7 @@ class EnrollmentHandlerShould {
     }
 
     @Test
-    fun invoke_only_update_or_insert_when_handle_enrollment_is_valid() {
+    fun invoke_only_update_or_insert_when_handle_enrollment_is_valid() = runTest {
         whenever(enrollment.deleted()).doReturn(false)
         whenever(enrollmentStore.updateOrInsert(any())).doReturn(HandleAction.Update)
 

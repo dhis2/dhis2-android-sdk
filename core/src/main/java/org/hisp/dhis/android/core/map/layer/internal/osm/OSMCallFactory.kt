@@ -39,7 +39,7 @@ internal class OSMCallFactory(
     private val mapLayerHandler: MapLayerHandler,
 ) {
 
-    fun download(): List<MapLayer> {
+    suspend fun download(): List<MapLayer> {
         val mapLayers = getOSMBaseMaps()
         mapLayerHandler.handleMany(mapLayers)
         return mapLayers

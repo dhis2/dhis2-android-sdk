@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import com.nhaarman.mockitokotlin2.*
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.enrollment.Enrollment
@@ -46,6 +46,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.kotlin.*
 
 @RunWith(JUnit4::class)
 class TrackedEntityInstanceHandlerShould {
@@ -113,7 +114,7 @@ class TrackedEntityInstanceHandlerShould {
     }
 
     @Test
-    fun do_nothing_when_passing_null_argument() {
+    fun do_nothing_when_passing_null_argument() = runTest {
         trackedEntityInstanceHandler.handleMany(null, params, relationshipItemRelatives)
 
         // verify that tracked entity instance store is never called
@@ -128,7 +129,7 @@ class TrackedEntityInstanceHandlerShould {
     }
 
     @Test
-    fun invoke_delete_when_handle_program_tracked_entity_instance_set_as_deleted() {
+    fun invoke_delete_when_handle_program_tracked_entity_instance_set_as_deleted() = runTest {
         whenever(trackedEntityInstance.deleted()).thenReturn(true)
 
         trackedEntityInstanceHandler.handleMany(listOf(trackedEntityInstance), params, relationshipItemRelatives)
@@ -146,7 +147,7 @@ class TrackedEntityInstanceHandlerShould {
     }
 
     @Test
-    fun invoke_only_update_or_insert_when_handle_tracked_entity_instance_inserted() {
+    fun invoke_only_update_or_insert_when_handle_tracked_entity_instance_inserted() = runTest {
         whenever(trackedEntityInstance.deleted()).doReturn(false)
         whenever(trackedEntityInstanceStore.updateOrInsert(any())).doReturn(HandleAction.Update)
         whenever(trackedEntityInstance.trackedEntityAttributeValues()).doReturn(
@@ -171,7 +172,7 @@ class TrackedEntityInstanceHandlerShould {
     }
 
     @Test
-    fun invoke_cleaners_if_full_update() {
+    fun invoke_cleaners_if_full_update() = runTest {
         whenever(trackedEntityInstanceStore.updateOrInsert(any())).thenReturn(HandleAction.Update)
 
         trackedEntityInstanceHandler.handleMany(listOf(trackedEntityInstance), params, relatives)
@@ -181,7 +182,7 @@ class TrackedEntityInstanceHandlerShould {
     }
 
     @Test
-    fun invoke_relationship_handler_with_relationship_from_version_manager() {
+    fun invoke_relationship_handler_with_relationship_from_version_manager() = runTest {
         whenever(relationshipVersionManager.getOwnedRelationships(listOf(relationship), TEI_UID))
             .doReturn(listOf(relationship))
         whenever(relative.toBuilder()).doReturn(relativeBuilder)
@@ -200,14 +201,14 @@ class TrackedEntityInstanceHandlerShould {
     }
 
     @Test
-    fun do_not_invoke_relationship_repository_when_no_relative() {
+    fun do_not_invoke_relationship_repository_when_no_relative() = runTest {
         trackedEntityInstanceHandler.handleMany(listOf(trackedEntityInstance), params, relationshipItemRelatives)
 
         verify(relationshipHandler, never()).handle(any())
     }
 
     @Test
-    fun delete_orphan_attributes_if_as_relationship() {
+    fun delete_orphan_attributes_if_as_relationship() = runTest {
         val thisParams = params.copy(asRelationship = true)
         trackedEntityInstanceHandler.handleMany(listOf(trackedEntityInstance), thisParams, relatives)
 
@@ -219,7 +220,7 @@ class TrackedEntityInstanceHandlerShould {
     }
 
     @Test
-    fun delete_orphan_program_attribute_values_if_not_all_attributes_and_program() {
+    fun delete_orphan_program_attribute_values_if_not_all_attributes_and_program() = runTest {
         val thisParams = params.copy(hasAllAttributes = false, program = "program")
         trackedEntityInstanceHandler.handleMany(listOf(trackedEntityInstance), thisParams, relatives)
 

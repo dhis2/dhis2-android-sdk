@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.parser.internal.expression
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
 import org.hisp.dhis.android.core.constant.Constant
@@ -47,6 +45,8 @@ import org.hisp.dhis.android.core.validation.MissingValueStrategy
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 class ExpressionServiceShould {
     private val dataElementId1 = "sK2wroysTNW"

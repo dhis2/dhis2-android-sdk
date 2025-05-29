@@ -45,7 +45,7 @@ internal class VisualizationHandler(
     private val itemHandler: VisualizationDimensionItemHandler,
 ) : IdentifiableHandlerImpl<Visualization>(store) {
 
-    override fun afterObjectHandled(o: Visualization, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: Visualization, action: HandleAction) {
         val items =
             toItems(o.columns(), LayoutPosition.COLUMN) +
                 toItems(o.rows(), LayoutPosition.ROW) +
@@ -54,7 +54,7 @@ internal class VisualizationHandler(
         itemHandler.handleMany(o.uid(), items)
     }
 
-    override fun afterCollectionHandled(oCollection: Collection<Visualization>?) {
+    override suspend fun afterCollectionHandled(oCollection: Collection<Visualization>?) {
         visualizationCollectionCleaner.deleteNotPresent(oCollection)
         analyticsDhisVisualizationCleaner.deleteNotPresent(
             uids = store.selectUids(),

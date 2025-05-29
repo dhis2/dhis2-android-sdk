@@ -36,7 +36,7 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ExpressionDimensionItemNetworkHandlerImpl(
-    private val httpServiceClient: HttpServiceClient,
+    httpServiceClient: HttpServiceClient,
 ) : ExpressionDimensionItemNetworkHandler {
     private val service = ExpressionDimensionItemService(httpServiceClient)
     override suspend fun getExpressionDimensionItems(itemUids: Set<String>): Payload<ExpressionDimensionItem> {

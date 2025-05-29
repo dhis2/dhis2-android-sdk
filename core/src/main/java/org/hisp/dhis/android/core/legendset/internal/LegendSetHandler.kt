@@ -39,7 +39,7 @@ internal class LegendSetHandler(
     private val legendCleaner: LegendSetLegendOrphanCleaner,
 ) : IdentifiableHandlerImpl<LegendSet>(legendSetStore) {
 
-    override fun afterObjectHandled(o: LegendSet, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: LegendSet, action: HandleAction) {
         legendHandler.handleMany(o.legends())
 
         if (action === HandleAction.Update) {

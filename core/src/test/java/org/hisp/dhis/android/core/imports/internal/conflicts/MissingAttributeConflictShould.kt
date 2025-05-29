@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.whenever
 import org.junit.Test
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.whenever
 
 internal class MissingAttributeConflictShould : BaseConflictShould() {
 

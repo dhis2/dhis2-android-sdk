@@ -28,13 +28,13 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.kotlin.*
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)

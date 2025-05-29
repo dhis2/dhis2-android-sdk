@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 internal open class IdentifiableHandlerImpl<O>(protected val store: IdentifiableObjectStore<O>) :
     HandlerBaseImpl<O>() where O : ObjectWithUidInterface, O : ObjectWithDeleteInterface {
 
-    override fun deleteOrPersist(o: O): HandleAction {
+    override suspend fun deleteOrPersist(o: O): HandleAction {
         val modelUid = o.uid()
         return if ((CollectionsHelper.isDeleted(o) || deleteIfCondition(o)) && modelUid != null) {
             store.deleteIfExists(modelUid)
@@ -45,7 +45,7 @@ internal open class IdentifiableHandlerImpl<O>(protected val store: Identifiable
         }
     }
 
-    protected open fun deleteIfCondition(o: O): Boolean {
+    protected open suspend fun deleteIfCondition(o: O): Boolean {
         return false
     }
 }

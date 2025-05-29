@@ -74,7 +74,7 @@ class SystemInfoCall internal constructor(
         )
     }
 
-    private fun insertOrUpdateSystemInfo(systemInfo: SystemInfo) {
+    private suspend fun insertOrUpdateSystemInfo(systemInfo: SystemInfo) {
         systemInfoHandler.handle(systemInfo)
         resourceHandler.serverDate = systemInfo.serverDate()
         resourceHandler.handleResource(Resource.Type.SYSTEM_INFO)

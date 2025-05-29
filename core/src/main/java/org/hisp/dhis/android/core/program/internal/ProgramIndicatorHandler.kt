@@ -43,7 +43,7 @@ internal class ProgramIndicatorHandler(
     private val analyticsPeriodBoundaryHandler: AnalyticsPeriodBoundaryHandler,
 ) : IdentifiableHandlerImpl<ProgramIndicator>(programIndicatorStore) {
 
-    override fun afterCollectionHandled(oCollection: Collection<ProgramIndicator>?) {
+    override suspend fun afterCollectionHandled(oCollection: Collection<ProgramIndicator>?) {
         val inDbProgramIndicatorUids = programIndicatorStore.selectUids()
         val apiProgramIndicatorUids = oCollection?.map(ProgramIndicator::uid)
         val deleteProgramIndicatorUid = inDbProgramIndicatorUids.filter { inDbProgramIndicatorUid ->
@@ -60,7 +60,7 @@ internal class ProgramIndicatorHandler(
         }
     }
 
-    override fun afterObjectHandled(o: ProgramIndicator, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: ProgramIndicator, action: HandleAction) {
         programIndicatorLegendSetLinkHandler.handleMany(o.uid(), o.legendSets()) { legendSet, sortOrder ->
             ProgramIndicatorLegendSetLink.builder()
                 .programIndicator(o.uid())

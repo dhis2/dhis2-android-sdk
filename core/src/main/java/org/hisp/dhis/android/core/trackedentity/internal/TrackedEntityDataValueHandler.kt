@@ -36,7 +36,7 @@ import org.koin.core.annotation.Singleton
 internal class TrackedEntityDataValueHandler(
     private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
 ) : ObjectWithoutUidHandlerImpl<TrackedEntityDataValue>(trackedEntityDataValueStore) {
-    override fun beforeObjectHandled(o: TrackedEntityDataValue): TrackedEntityDataValue {
+    override suspend fun beforeObjectHandled(o: TrackedEntityDataValue): TrackedEntityDataValue {
         return o.toBuilder().syncState(State.SYNCED).build()
     }
 
@@ -44,7 +44,7 @@ internal class TrackedEntityDataValueHandler(
         trackedEntityDataValueStore.deleteByEvent(eventUid!!)
     }
 
-    override fun afterCollectionHandled(oCollection: Collection<TrackedEntityDataValue>?) {
+    override suspend fun afterCollectionHandled(oCollection: Collection<TrackedEntityDataValue>?) {
         removeNotExistingDataValuesInServer(oCollection)
     }
 

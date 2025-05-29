@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.arch.storage.internal
 
-import com.nhaarman.mockitokotlin2.*
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.*
 
 class ChunkedSecureStoreShould {
 

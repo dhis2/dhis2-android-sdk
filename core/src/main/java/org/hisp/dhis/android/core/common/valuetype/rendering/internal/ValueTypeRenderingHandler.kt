@@ -37,7 +37,7 @@ import org.koin.core.annotation.Singleton
 internal class ValueTypeRenderingHandler(
     private val valueTypeDeviceRenderingHandler: ValueTypeDeviceRenderingHandler,
 ) : DictionaryTableHandler<ValueTypeRendering> {
-    override fun handle(o: ValueTypeRendering?, uid: String, objectTable: String) {
+    override suspend fun handle(o: ValueTypeRendering?, uid: String, objectTable: String) {
         if (o != null) {
             valueTypeDeviceRenderingHandler.handle(
                 o.desktop(),

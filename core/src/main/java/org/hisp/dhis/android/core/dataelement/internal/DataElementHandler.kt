@@ -39,13 +39,13 @@ import org.hisp.dhis.android.core.legendset.internal.DataElementLegendSetLinkHan
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class DataElementHandler constructor(
+internal class DataElementHandler(
     dataElementStore: DataElementStore,
     private val dataElementAttributeLinkHandler: DataElementAttributeValueLinkHandler,
     private val dataElementLegendSetLinkHandler: DataElementLegendSetLinkHandler,
 ) : IdentifiableHandlerImpl<DataElement>(dataElementStore) {
 
-    override fun afterObjectHandled(o: DataElement, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: DataElement, action: HandleAction) {
         if (o.attributeValues() != null) {
             val attributes = AttributeValueUtils.extractAttributes(o.attributeValues())
             dataElementAttributeLinkHandler.handleMany(

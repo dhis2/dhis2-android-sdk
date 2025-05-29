@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
-import com.nhaarman.mockitokotlin2.*
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreWithState
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.ObjectWithUid
@@ -39,6 +39,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.kotlin.*
 
 @RunWith(JUnit4::class)
 class RelationshipHandlerShould {
@@ -86,37 +87,37 @@ class RelationshipHandlerShould {
     }
 
     @Test
-    fun not_delete_relationship_if_existing_id_matches() {
+    fun not_delete_relationship_if_existing_id_matches() = runTest {
         relationshipHandler.handle(existingRelationship)
         verify(relationshipStore, never()).delete(RelationshipSamples.UID)
     }
 
     @Test
-    fun not_call_delete_if_no_existing_relationship() {
+    fun not_call_delete_if_no_existing_relationship() = runTest {
         relationshipHandler.handle(newRelationship)
         verify(relationshipStore, never()).delete(RelationshipSamples.UID)
     }
 
     @Test
-    fun update_relationship_store_for_existing_relationship() {
+    fun update_relationship_store_for_existing_relationship() = runTest {
         relationshipHandler.handle(existingRelationship)
         verify(relationshipStore).updateOrInsert(existingRelationship)
     }
 
     @Test
-    fun update_relationship_store_for_existing_relationship_with_new_uid() {
+    fun update_relationship_store_for_existing_relationship_with_new_uid() = runTest {
         relationshipHandler.handle(existingRelationshipWithNewUid)
         verify(relationshipStore).updateOrInsert(existingRelationshipWithNewUid)
     }
 
     @Test
-    fun update_relationship_store_for_new_relationship() {
+    fun update_relationship_store_for_new_relationship() = runTest {
         relationshipHandler.handle(newRelationship)
         verify(relationshipStore).updateOrInsert(newRelationship)
     }
 
     @Test
-    fun update_relationship_handler_store_for_existing_relationship() {
+    fun update_relationship_handler_store_for_existing_relationship() = runTest {
         relationshipHandler.handle(existingRelationship)
         verify(relationshipItemHandler).handle(
             RelationshipSamples.fromItem.toBuilder().relationship(ObjectWithUid.create(existingRelationship.uid()))
@@ -129,7 +130,7 @@ class RelationshipHandlerShould {
     }
 
     @Test
-    fun update_relationship_item_handler_for_existing_relationship_with_new_uid() {
+    fun update_relationship_item_handler_for_existing_relationship_with_new_uid() = runTest {
         relationshipHandler.handle(existingRelationshipWithNewUid)
         verify(relationshipItemHandler).handle(
             RelationshipSamples.fromItem.toBuilder()
@@ -144,7 +145,7 @@ class RelationshipHandlerShould {
     }
 
     @Test
-    fun update_relationship_item_handler_for_new_relationship() {
+    fun update_relationship_item_handler_for_new_relationship() = runTest {
         relationshipHandler.handle(newRelationship)
         verify(relationshipItemHandler).handle(
             tei3Item.toBuilder().relationship(ObjectWithUid.create(newRelationship.uid()))

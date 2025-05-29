@@ -28,12 +28,12 @@
 package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 import java.util.*
 
 class AggregatedDataSyncLastUpdatedCalculatorShould {

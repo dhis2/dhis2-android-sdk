@@ -36,7 +36,7 @@ import org.koin.core.annotation.Singleton
 internal class TrackedEntityAttributeValueHandler(
     store: TrackedEntityAttributeValueStore,
 ) : ObjectWithoutUidHandlerImpl<TrackedEntityAttributeValue>(store) {
-    override fun beforeObjectHandled(o: TrackedEntityAttributeValue): TrackedEntityAttributeValue {
+    override suspend fun beforeObjectHandled(o: TrackedEntityAttributeValue): TrackedEntityAttributeValue {
         return o.toBuilder().syncState(State.SYNCED).build()
     }
 }

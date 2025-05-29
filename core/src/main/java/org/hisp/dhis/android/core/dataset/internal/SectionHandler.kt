@@ -50,7 +50,7 @@ internal class SectionHandler(
     private val sectionGreyedFieldsStore: SectionGreyedFieldsLinkStore,
 ) : IdentifiableHandlerImpl<Section>(sectionStore) {
 
-    override fun afterObjectHandled(o: Section, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: Section, action: HandleAction) {
         sectionDataElementLinkHandler.handleMany(
             o.uid(),
             o.dataElements(),

@@ -39,7 +39,7 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ValidationRuleNetworkHandlerImpl(
-    private val httpServiceClient: HttpServiceClient,
+    httpServiceClient: HttpServiceClient,
 ) : ValidationRuleNetworkHandler {
     private val service: ValidationRuleService = ValidationRuleService(httpServiceClient)
     override suspend fun getValidationRules(uids: Set<String>): Payload<ValidationRule> {

@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.event.search
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.*
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.event.EventCollectionRepository
@@ -39,6 +38,7 @@ import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.kotlin.*
 
 class EventCollectionRepositoryAdapterShould {
 

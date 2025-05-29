@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.analytics.trackerlinelist.internal
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.mock
 import org.hisp.dhis.android.core.analytics.trackerlinelist.DataFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.DateFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.EnumFilter
@@ -40,6 +39,7 @@ import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.kotlin.mock
 
 @RunWith(JUnit4::class)
 class TrackerVisualizationMapperShould {

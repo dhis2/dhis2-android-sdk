@@ -28,17 +28,18 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.never
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.settings.ProgramConfigurationSetting
 import org.hisp.dhis.android.core.settings.ProgramConfigurationSettingSamples
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 class ProgramConfigurationSettingHandlerShould {
     private val programConfigurationSettingStore: ProgramConfigurationSettingStore = mock()
@@ -56,14 +57,14 @@ class ProgramConfigurationSettingHandlerShould {
     }
 
     @Test
-    fun clean_database_before_insert_collection() {
+    fun clean_database_before_insert_collection() = runTest {
         programConfigurationSettingHandler.handleMany(programConfigurationSettingList)
         verify(programConfigurationSettingStore).delete()
         verify(programConfigurationSettingStore).updateOrInsertWhere(programConfigurationSetting)
     }
 
     @Test
-    fun clean_database_if_empty_collection() {
+    fun clean_database_if_empty_collection() = runTest {
         programConfigurationSettingHandler.handleMany(emptyList())
         verify(programConfigurationSettingStore).delete()
         verify(programConfigurationSettingStore, never()).updateOrInsertWhere(programConfigurationSetting)

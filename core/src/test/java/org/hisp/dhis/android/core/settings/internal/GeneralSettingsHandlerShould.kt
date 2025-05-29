@@ -27,13 +27,13 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import com.nhaarman.mockitokotlin2.*
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.settings.GeneralSettings
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito
+import org.mockito.kotlin.*
 
 class GeneralSettingsHandlerShould {
 
@@ -54,16 +54,16 @@ class GeneralSettingsHandlerShould {
     }
 
     @Test
-    fun clean_database_before_insert_collection() {
+    fun clean_database_before_insert_collection() = runTest {
         generalSettingHandler.handleMany(generalSettingList)
-        Mockito.verify(generalSettingStore).delete()
-        Mockito.verify(generalSettingStore).updateOrInsertWhere(generalSettings)
+        verify(generalSettingStore).delete()
+        verify(generalSettingStore).updateOrInsertWhere(generalSettings)
     }
 
     @Test
-    fun clean_database_if_empty_collection() {
+    fun clean_database_if_empty_collection() = runTest {
         generalSettingHandler.handleMany(emptyList())
-        Mockito.verify(generalSettingStore).delete()
-        Mockito.verify(generalSettingStore, never()).updateOrInsertWhere(generalSettings)
+        verify(generalSettingStore).delete()
+        verify(generalSettingStore, never()).updateOrInsertWhere(generalSettings)
     }
 }

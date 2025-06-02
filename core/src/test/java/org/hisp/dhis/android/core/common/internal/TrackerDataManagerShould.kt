@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.common.internal
 
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
@@ -90,7 +91,7 @@ class TrackerDataManagerShould {
     }
 
     @Test
-    fun cascade_tracked_entity_deletion_when_existing() {
+    fun cascade_tracked_entity_deletion_when_existing() = runTest {
         whenever(trackedEntity.syncState()).doReturn(State.TO_UPDATE)
         whenever(enrollment.syncState()).doReturn(State.TO_UPDATE)
         whenever(event.syncState()).doReturn(State.TO_UPDATE)
@@ -109,7 +110,7 @@ class TrackerDataManagerShould {
     }
 
     @Test
-    fun cascade_tracked_entity_deletion_when_new() {
+    fun cascade_tracked_entity_deletion_when_new() = runTest {
         whenever(trackedEntity.syncState()).doReturn(State.TO_POST)
         whenever(enrollment.syncState()).doReturn(State.TO_POST)
         whenever(event.syncState()).doReturn(State.TO_POST)
@@ -124,7 +125,7 @@ class TrackerDataManagerShould {
     }
 
     @Test
-    fun create_program_owner_entry_on_new_enrollment() {
+    fun create_program_owner_entry_on_new_enrollment() = runTest {
         whenever(enrollment.program()).doReturn("program")
         whenever(enrollment.trackedEntityInstance()).doReturn("instance")
         whenever(enrollment.organisationUnit()).doReturn("orgunit")

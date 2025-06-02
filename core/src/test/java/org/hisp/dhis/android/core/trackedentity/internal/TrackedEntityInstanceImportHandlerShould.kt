@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
@@ -85,13 +86,13 @@ class TrackedEntityInstanceImportHandlerShould {
     }
 
     @Test
-    fun do_nothing_when_passing_null_argument() {
+    fun do_nothing_when_passing_null_argument() = runTest {
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(null, instances)
         verify(trackedEntityInstanceStore, never()).setSyncStateOrDelete(anyString(), any())
     }
 
     @Test
-    fun setStatus_shouldUpdateTrackedEntityInstanceStatusSuccess() {
+    fun setStatus_shouldUpdateTrackedEntityInstanceStatusSuccess() = runTest {
         whenever(importSummary.status()).doReturn(ImportStatus.SUCCESS)
         whenever(importSummary.reference()).doReturn(sampleTeiUid)
 
@@ -105,7 +106,7 @@ class TrackedEntityInstanceImportHandlerShould {
     }
 
     @Test
-    fun setStatus_shouldUpdateTrackedEntityInstanceStatusError() {
+    fun setStatus_shouldUpdateTrackedEntityInstanceStatusError() = runTest {
         whenever(importSummary.status()).doReturn(ImportStatus.ERROR)
         whenever(importSummary.reference()).doReturn(sampleTeiUid)
 
@@ -119,7 +120,8 @@ class TrackedEntityInstanceImportHandlerShould {
     }
 
     @Test
-    fun update_tracker_entity_instance_status_success_status_and_handle_import_enrollment_on_import_success() {
+    fun update_tracker_entity_instance_status_success_status_and_handle_import_enrollment_on_import_success()
+    = runTest {
         whenever(importSummary.status()).doReturn(ImportStatus.SUCCESS)
         whenever(importSummary.reference()).doReturn(sampleTeiUid)
         whenever(importSummary.enrollments()).thenReturn(importEnrollment)
@@ -141,7 +143,7 @@ class TrackedEntityInstanceImportHandlerShould {
     }
 
     @Test
-    fun mark_as_to_update_tracked_entity_instances_not_present_in_the_response() {
+    fun mark_as_to_update_tracked_entity_instances_not_present_in_the_response() = runTest {
         whenever(importSummary.status()).doReturn(ImportStatus.SUCCESS)
         whenever(importSummary.reference()).doReturn(sampleTeiUid)
 
@@ -158,7 +160,7 @@ class TrackedEntityInstanceImportHandlerShould {
     }
 
     @Test
-    fun return_tracked_entity_instances_not_present_in_the_response() {
+    fun return_tracked_entity_instances_not_present_in_the_response() = runTest {
         whenever(importSummary.status()).doReturn(ImportStatus.SUCCESS)
         whenever(importSummary.reference()).doReturn(sampleTeiUid)
 
@@ -175,7 +177,7 @@ class TrackedEntityInstanceImportHandlerShould {
     }
 
     @Test
-    fun deleted_tei_if_not_present_in_server_and_is_deleted_locally() {
+    fun deleted_tei_if_not_present_in_server_and_is_deleted_locally() = runTest {
         whenever(importSummary.status()).doReturn(ImportStatus.SUCCESS)
         whenever(importSummary.reference()).doReturn(null)
         whenever(importSummary.description())

@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.common.internal
 
 import androidx.test.runner.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
@@ -159,7 +160,7 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
 
     @Test
     @Throws(D2Error::class)
-    fun reset_enrollment_and_event_states_if_uploading() {
+    fun reset_enrollment_and_event_states_if_uploading() = runTest {
         val teiUid = d2.trackedEntityModule().trackedEntityInstances().blockingAdd(sampleTEIProjection())
         val enrolmentUid1 = d2.enrollmentModule().enrollments().blockingAdd(sampleEnrollmentProjection(teiUid))
         val enrolmentUid2 = d2.enrollmentModule().enrollments().blockingAdd(sampleEnrollmentProjection(teiUid))
@@ -183,7 +184,7 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
 
     @Test
     @Throws(D2Error::class, ParseException::class)
-    fun propagate_last_updated_if_previous_is_older() {
+    fun propagate_last_updated_if_previous_is_older() = runTest {
         val oldDate = BaseIdentifiableObject.DATE_FORMAT.parse("1990-09-20T08:36:46.552")
         val teiUid = createTEIWithLastUpdated(oldDate)
 
@@ -196,7 +197,7 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
 
     @Test
     @Throws(D2Error::class, ParseException::class)
-    fun do_not_propagate_last_updated_if_previous_is_newer() {
+    fun do_not_propagate_last_updated_if_previous_is_newer() = runTest {
         val newerDate = BaseIdentifiableObject.DATE_FORMAT.parse("2990-09-20T08:36:46.552")
         val teiUid = createTEIWithLastUpdated(newerDate)
 
@@ -382,7 +383,7 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
     }
 
     @Throws(D2Error::class)
-    private fun assertThatSetTeiToUpdateWhenTrackedEntityDataValuePropagation(state: State) {
+    private fun assertThatSetTeiToUpdateWhenTrackedEntityDataValuePropagation(state: State) = runTest {
         val teiUid = createTEIWithState(state)
         val enrolmentUid = createEnrollmentWithState(state, teiUid)
         val eventUid = createEventWithState(state, enrolmentUid)
@@ -399,7 +400,7 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
     }
 
     @Throws(D2Error::class)
-    private fun assertThatDoNotSetTeiToUpdateWhenTrackedEntityDataValuePropagation(state: State) {
+    private fun assertThatDoNotSetTeiToUpdateWhenTrackedEntityDataValuePropagation(state: State) = runTest {
         val teiUid = createTEIWithState(state)
         val enrolmentUid = createEnrollmentWithState(state, teiUid)
         val eventUid = createEventWithState(state, enrolmentUid)

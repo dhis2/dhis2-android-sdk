@@ -116,19 +116,19 @@ class EnrollmentImportHandlerShould {
     }
 
     @Test
-    fun invoke_set_state_and_handle_event_import_summaries_when_enrollment_is_success_and_event_is_imported()
-    = runTest {
-        whenever(importSummary.status()).thenReturn(ImportStatus.SUCCESS)
-        whenever(importSummary.reference()).thenReturn(enrollmentUid)
-        whenever(importSummary.events()).thenReturn(importEvent)
+    fun invoke_set_state_and_handle_event_import_summaries_when_enrollment_is_success_and_event_is_imported() =
+        runTest {
+            whenever(importSummary.status()).thenReturn(ImportStatus.SUCCESS)
+            whenever(importSummary.reference()).thenReturn(enrollmentUid)
+            whenever(importSummary.events()).thenReturn(importEvent)
 
-        val eventSummaries: List<EventImportSummary> = listOf(eventSummary)
-        whenever(importEvent.importSummaries()).thenReturn(eventSummaries)
+            val eventSummaries: List<EventImportSummary> = listOf(eventSummary)
+            whenever(importEvent.importSummaries()).thenReturn(eventSummaries)
 
-        enrollmentImportHandler.handleEnrollmentImportSummary(listOf(importSummary), enrollments, teiState)
-        verify(enrollmentStore, times(1)).setSyncStateOrDelete(enrollmentUid, State.SYNCED)
-        verify(eventImportHandler, times(1)).handleEventImportSummaries(eq(eventSummaries), anyList())
-    }
+            enrollmentImportHandler.handleEnrollmentImportSummary(listOf(importSummary), enrollments, teiState)
+            verify(enrollmentStore, times(1)).setSyncStateOrDelete(enrollmentUid, State.SYNCED)
+            verify(eventImportHandler, times(1)).handleEventImportSummaries(eq(eventSummaries), anyList())
+        }
 
     @Test
     fun mark_as_to_update_enrollments_not_present_in_the_response() = runTest {

@@ -120,27 +120,27 @@ class TrackedEntityInstanceImportHandlerShould {
     }
 
     @Test
-    fun update_tracker_entity_instance_status_success_status_and_handle_import_enrollment_on_import_success()
-    = runTest {
-        whenever(importSummary.status()).doReturn(ImportStatus.SUCCESS)
-        whenever(importSummary.reference()).doReturn(sampleTeiUid)
-        whenever(importSummary.enrollments()).thenReturn(importEnrollment)
+    fun update_tracker_entity_instance_status_success_status_and_handle_import_enrollment_on_import_success() =
+        runTest {
+            whenever(importSummary.status()).doReturn(ImportStatus.SUCCESS)
+            whenever(importSummary.reference()).doReturn(sampleTeiUid)
+            whenever(importSummary.enrollments()).thenReturn(importEnrollment)
 
-        val enrollmentSummaries = listOf(enrollmentSummary)
-        whenever(importEnrollment.importSummaries()).doReturn(enrollmentSummaries)
+            val enrollmentSummaries = listOf(enrollmentSummary)
+            whenever(importEnrollment.importSummaries()).doReturn(enrollmentSummaries)
 
-        trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-            listOf(importSummary),
-            instances,
-        )
+            trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
+                listOf(importSummary),
+                instances,
+            )
 
-        verify(trackedEntityInstanceStore, times(1)).setSyncStateOrDelete(sampleTeiUid, State.SYNCED)
-        verify(enrollmentImportHandler, times(1)).handleEnrollmentImportSummary(
-            eq(enrollmentSummaries),
-            anyList(),
-            eq(State.SYNCED),
-        )
-    }
+            verify(trackedEntityInstanceStore, times(1)).setSyncStateOrDelete(sampleTeiUid, State.SYNCED)
+            verify(enrollmentImportHandler, times(1)).handleEnrollmentImportSummary(
+                eq(enrollmentSummaries),
+                anyList(),
+                eq(State.SYNCED),
+            )
+        }
 
     @Test
     fun mark_as_to_update_tracked_entity_instances_not_present_in_the_response() = runTest {

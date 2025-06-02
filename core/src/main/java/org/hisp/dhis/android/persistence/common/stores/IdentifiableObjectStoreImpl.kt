@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.persistence.common.stores
 
-import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.CoreObject
@@ -53,26 +52,26 @@ internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
 
     @Throws(RuntimeException::class)
     suspend fun selectUids(): List<String> {
-        val query = RoomRawQuery(builder.selectUids())
+        val query = builder.selectUids()
         return identifiableDao.selectUids(query)
     }
 
     @Throws(RuntimeException::class)
     suspend fun selectUidsWhere(whereClause: String): List<String> {
-        val query = RoomRawQuery(builder.selectUidsWhere(whereClause))
+        val query = builder.selectUidsWhere(whereClause)
         return identifiableDao.selectUidsWhere(query)
     }
 
     @Throws(RuntimeException::class)
     suspend fun selectUidsWhere(whereClause: String, orderByClause: String): List<String> {
-        val query = RoomRawQuery(builder.selectUidsWhere(whereClause, orderByClause))
+        val query = builder.selectUidsWhere(whereClause, orderByClause)
         return identifiableDao.selectUidsWhere(query)
     }
 
     @Throws(RuntimeException::class)
     suspend fun selectByUid(uid: String): D? {
         CollectionsHelper.isNull(uid)
-        val query = RoomRawQuery(builder.selectByUid(uid))
+        val query = builder.selectByUid(uid)
         val dbEntity = identifiableDao.selectByUid(query)
         return dbEntity?.toDomain()
     }
@@ -112,7 +111,6 @@ internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
     @Suppress("TooGenericExceptionThrown")
     suspend fun delete(uid: String) {
         CollectionsHelper.isNull(uid)
-        val query = RoomRawQuery(builder.deleteById(uid))
         val deleted = identifiableDao.deleteById(query)
         if (deleted == 0) {
             throw RuntimeException("No rows affected")

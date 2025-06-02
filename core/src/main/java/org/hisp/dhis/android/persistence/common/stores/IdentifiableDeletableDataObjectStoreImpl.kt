@@ -64,7 +64,8 @@ internal open class IdentifiableDeletableDataObjectStoreImpl<D, P : EntityDB<D>>
                 .appendKeyNumberValue(DeletableDataColumns.DELETED, 1)
                 .appendKeyStringValue(DataColumns.SYNC_STATE, State.UPLOADING)
                 .build()
-            deleted = identifiableDeletableDataObjectDao.deleteWhere(whereClause)
+            val query = builder.deleteWhere(whereClause)
+            deleted = identifiableDeletableDataObjectDao.intRawQuery(query) > 0
         }
         return if (deleted) {
             HandleAction.Delete

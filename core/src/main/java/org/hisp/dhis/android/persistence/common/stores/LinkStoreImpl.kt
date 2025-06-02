@@ -29,19 +29,18 @@
 package org.hisp.dhis.android.persistence.common.stores
 
 import android.database.sqlite.SQLiteConstraintException
-import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.MapperToDB
-import org.hisp.dhis.android.persistence.common.daos.LinkStoreDao
-import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilder
+import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilder
 
 internal open class LinkStoreImpl<D : CoreObject, P : EntityDB<D>>(
-    protected val linkStoreDao: LinkStoreDao<P>,
+    protected val linkStoreDao: ObjectDao<P>,
     mapper: MapperToDB<D, P>,
-    override val builder: SQLStatementBuilder,
+    override val builder: LinkSQLStatementBuilder,
 ) : ObjectStoreImpl<D, P>(linkStoreDao, mapper, builder) {
 
     @Throws(RuntimeException::class)
@@ -57,31 +56,28 @@ internal open class LinkStoreImpl<D : CoreObject, P : EntityDB<D>>(
     @Throws(RuntimeException::class)
     suspend fun deleteLinksForMasterUid(parentUid: String) {
         CollectionsHelper.isNull(parentUid)
-        val query: (String, String) -> RoomRawQuery =
-            { tableName, parentColumn -> RoomRawQuery("DELETE FROM $tableName WHERE $parentColumn = '$parentUid'") }
-        linkStoreDao.deleteLinksForParentUid(query)
+        val query = builder.deleteLinksForParentUid(parentUid)
+        linkStoreDao.intRawQuery(query)
     }
 
     @Throws(RuntimeException::class)
     suspend fun deleteAllLinks(): Int {
-        return linkStoreDao.delete()
+        val query = builder.deleteTable()
+        return linkStoreDao.intRawQuery(query)
     }
 
     @Throws(RuntimeException::class)
     suspend fun selectDistinctSlaves(childColumn: String): Set<String> {
         CollectionsHelper.isNull(childColumn)
-        val query: (String) -> RoomRawQuery =
-            { tableName -> RoomRawQuery("SELECT DISTINCT $childColumn FROM $tableName") }
-        return linkStoreDao.selectDistinctChildren(query)
+        val query = builder.selectDistinctChildren(childColumn)
+        return linkStoreDao.stringSetRawQuery(query)
     }
 
     @Throws(RuntimeException::class)
     suspend fun selectLinksForMasterUid(parentUid: String): List<D> {
         CollectionsHelper.isNull(parentUid)
-        val query: (String, String) -> RoomRawQuery = { tableName, parentColumn ->
-            RoomRawQuery("SELECT * FROM $tableName WHERE $parentColumn = '$parentUid'")
-        }
-        val entitiesDB = linkStoreDao.selectLinksForParentUid(query)
+        val query = builder.selectLinksForParentUid(parentUid)
+        val entitiesDB = linkStoreDao.objectListRawQuery(query)
         return entitiesDB.map { it.toDomain() }
     }
 }

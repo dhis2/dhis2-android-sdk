@@ -29,17 +29,16 @@
 package org.hisp.dhis.android.persistence.common.querybuilders
 
 import androidx.room.RoomRawQuery
-import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class SQLStatementBuilderImpl(
+internal open class SQLStatementBuilderImpl(
     private val tableName: String,
     private val hasSortOrder: Boolean,
-) : SQLStatementBuilder {
+) : ReadOnlySQLStatementBuilderImpl(tableName), SQLStatementBuilder {
     override fun getTableName(): String {
         return tableName
     }
@@ -100,69 +99,10 @@ internal class SQLStatementBuilderImpl(
         )
     }
 
-    override fun deleteById(uid: String): RoomRawQuery {
+    override fun deleteByUid(uid: String): RoomRawQuery {
         return RoomRawQuery(
             "DELETE" + FROM + tableName + WHERE + IdentifiableColumns.UID + " = '$uid' ;"
         )
-    }
-
-    override fun selectWhere(whereClause: String): RoomRawQuery {
-        return RoomRawQuery(
-            SELECT + "*" + FROM + tableName + WHERE + whereClause + ";"
-        )
-    }
-
-    override fun selectWhere(whereClause: String, limit: Int): RoomRawQuery {
-        return selectWhere(whereClause + LIMIT + limit)
-    }
-
-    override fun selectWhere(whereClause: String, orderByClause: String): RoomRawQuery {
-        return selectWhere(whereClause + ORDER_BY + orderByClause)
-    }
-
-    override fun selectWhere(whereClause: String, orderByClause: String, limit: Int): RoomRawQuery {
-        return selectWhere(whereClause + ORDER_BY + orderByClause + LIMIT + limit)
-    }
-
-    override fun selectOneOrderedBy(orderingColumName: String, orderingType: SQLOrderType): RoomRawQuery {
-        return RoomRawQuery(
-            SELECT + "*" + FROM + tableName +
-                ORDER_BY + orderingColumName + " " + orderingType.name +
-                LIMIT + "1;"
-        )
-    }
-
-    override fun selectAll(): RoomRawQuery {
-        return RoomRawQuery(
-            SELECT + "*" + FROM + tableName + ";"
-        )
-    }
-
-    override fun count(): RoomRawQuery {
-        return RoomRawQuery(
-            SELECT + "COUNT(*)" + FROM + tableName + ";"
-        )
-    }
-
-    override fun countWhere(whereClause: String): RoomRawQuery {
-        return RoomRawQuery(
-            SELECT + "COUNT(*)" + FROM + tableName + WHERE + whereClause + ";"
-        )
-    }
-
-    override fun countAndGroupBy(column: String): RoomRawQuery {
-        return RoomRawQuery(
-            "$SELECT$column , COUNT(*)$FROM$tableName GROUP BY $column;"
-        )
-    }
-
-    companion object {
-        private const val WHERE = " WHERE "
-        private const val LIMIT = " LIMIT "
-        private const val FROM = " FROM "
-        private const val SELECT = "SELECT "
-        private const val AND = " AND "
-        private const val ORDER_BY = " ORDER BY "
     }
 
 }

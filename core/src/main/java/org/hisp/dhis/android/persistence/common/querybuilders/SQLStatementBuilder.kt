@@ -46,5 +46,5 @@ internal interface SQLStatementBuilder : ReadOnlySQLStatementBuilder {
 
     fun selectByUid(uid: String): RoomRawQuery
     fun selectDistinct(column: String): RoomRawQuery
-    fun deleteById(uid: String): RoomRawQuery
+    fun deleteByUid(uid: String): RoomRawQuery
 }

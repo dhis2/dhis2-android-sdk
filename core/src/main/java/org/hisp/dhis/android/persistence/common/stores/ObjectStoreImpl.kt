@@ -41,7 +41,8 @@ internal open class ObjectStoreImpl<D : CoreObject, P : EntityDB<D>>(
 ) : ReadableStoreImpl<D, P>(objectDao, builder), MapperToDB<D, P> by mapper {
 
     suspend fun selectStringColumnsWhereClause(column: String, clause: String): List<String> {
-        return objectDao.selectStringColumn(column, clause)
+        val query = builder.selectStringColumn(column, clause)
+        return objectDao.stringListRawQuery(query)
     }
 
     open suspend fun insert(domainObj: D): Long {
@@ -52,16 +53,19 @@ internal open class ObjectStoreImpl<D : CoreObject, P : EntityDB<D>>(
         objectDao.insert(objects.map { it.toDB() })
     }
 
-    suspend fun delete(): Int {
-        return objectDao.delete()
+    suspend fun deleteTable(): Int {
+        val query = builder.deleteTable()
+        return objectDao.intRawQuery(query)
     }
 
-    suspend fun deleteById(domainObj: D): Boolean {
-        return domainObj.id()?.let { objectDao.deleteById(it) > 0 } ?: false
+    suspend fun deleteByEntity(domainObj: D): Boolean {
+        val entityDB = domainObj.toDB()
+        return objectDao.delete(entityDB) > 0
     }
 
     suspend fun deleteWhere(clause: String): Boolean {
-        return objectDao.deleteWhere(clause)
+        val query = builder.deleteWhere(clause)
+        return objectDao.intRawQuery(query) > 0
     }
 
     suspend fun deleteWhereIfExists(whereClause: String) {

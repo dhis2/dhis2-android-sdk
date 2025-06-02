@@ -36,23 +36,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 internal abstract class IdentifiableDataObjectDao<P : EntityDB<*>>(
     tableName: String,
 ) : IdentifiableObjectDao<P>(tableName) {
-
-    suspend fun setSyncState(query: (String) -> RoomRawQuery): Int {
-        return intRawQuery(query(tableName))
-    }
-
-    suspend fun getSyncState(query: (String) -> RoomRawQuery): State? {
-        return stateRawQuery(query(tableName))
-    }
-
-    suspend fun exists(query: (String) -> RoomRawQuery): Boolean {
-        return intRawQuery(query(tableName)) > 0
-    }
-
-    suspend fun getUploadableSyncStatesIncludingError(query: (String) -> RoomRawQuery): List<P> {
-        return objectListRawQuery(query(tableName))
-    }
-
+    
     @RawQuery
-    protected abstract suspend fun stateRawQuery(query: RoomRawQuery): State?
+    abstract suspend fun stateRawQuery(query: RoomRawQuery): State?
 }

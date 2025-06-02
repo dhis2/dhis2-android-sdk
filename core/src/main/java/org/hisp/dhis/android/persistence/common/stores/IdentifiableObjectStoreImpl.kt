@@ -111,7 +111,8 @@ internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
     @Suppress("TooGenericExceptionThrown")
     suspend fun delete(uid: String) {
         CollectionsHelper.isNull(uid)
-        val deleted = identifiableDao.deleteById(query)
+        val query = builder.deleteByUid(uid)
+        val deleted = identifiableDao.intRawQuery(query)
         if (deleted == 0) {
             throw RuntimeException("No rows affected")
         }

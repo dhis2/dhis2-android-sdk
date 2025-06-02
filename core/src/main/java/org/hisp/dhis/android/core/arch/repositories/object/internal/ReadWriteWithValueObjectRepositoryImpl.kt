@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 
 import android.util.Log
 import io.reactivex.Completable
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxCompletable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
@@ -59,7 +61,7 @@ internal constructor(
      * @return the `Completable` which notifies the completion
      */
     override fun delete(): Completable {
-        return Completable.fromAction { blockingDelete() }
+        return rxCompletable { deleteInternal() }
     }
 
     /**
@@ -75,7 +77,12 @@ internal constructor(
      */
     @Throws(D2Error::class)
     override fun blockingDelete() {
-        blockingGetWithoutChildren()?.let { delete(it) }
+        runBlocking { deleteInternal() }
+    }
+
+    @Throws(D2Error::class)
+    protected open suspend fun deleteInternal() {
+        getWithoutChildrenInternal()?.let { delete(it) }
     }
 
     /**
@@ -88,7 +95,7 @@ internal constructor(
      * @return the `Completable` which notifies the completion
      */
     override fun deleteIfExist(): Completable {
-        return Completable.fromAction { blockingDeleteIfExist() }
+        return rxCompletable { deleteIfExistInternal() }
     }
 
     /**
@@ -102,8 +109,12 @@ internal constructor(
      * asynchronous version [.deleteIfExist].
      */
     override fun blockingDeleteIfExist() {
+        runBlocking { deleteIfExistInternal() }
+    }
+
+    protected suspend fun deleteIfExistInternal() {
         try {
-            blockingDelete()
+            deleteInternal()
         } catch (d2Error: D2Error) {
             Log.v(ReadWriteWithValueObjectRepositoryImpl::class.java.canonicalName, d2Error.errorDescription())
         }
@@ -112,6 +123,12 @@ internal constructor(
     @Throws(D2Error::class)
     @Suppress("TooGenericExceptionCaught")
     protected open fun delete(m: M) {
+        runBlocking { deleteInternal(m) }
+    }
+
+    @Throws(D2Error::class)
+    @Suppress("TooGenericExceptionCaught")
+    protected open suspend fun deleteInternal(m: M) {
         try {
             store.deleteWhere(m)
             propagateState(m)
@@ -128,7 +145,7 @@ internal constructor(
 
     @Throws(D2Error::class)
     @Suppress("TooGenericExceptionCaught")
-    protected fun setObject(m: M) {
+    protected suspend fun setObject(m: M) {
         try {
             store.updateOrInsertWhere(m)
             propagateState(m)
@@ -145,10 +162,18 @@ internal constructor(
 
     protected inline fun <V> updateIfChanged(
         newValue: V?,
+        crossinline propertyGetter: (M?) -> V?,
+        crossinline updater: (M?, V?) -> M,
+    ): org.hisp.dhis.android.core.common.Unit {
+        return runBlocking { updateIfChangedInternal(newValue, propertyGetter, updater) }
+    }
+
+    protected suspend inline fun <V> updateIfChangedInternal(
+        newValue: V?,
         propertyGetter: (M?) -> V?,
         crossinline updater: (M?, V?) -> M,
     ): org.hisp.dhis.android.core.common.Unit {
-        val obj = blockingGetWithoutChildren()
+        val obj = getWithoutChildrenInternal()
         val currentValue = propertyGetter(obj)
 
         if (currentValue != newValue) {
@@ -157,7 +182,7 @@ internal constructor(
         return org.hisp.dhis.android.core.common.Unit()
     }
 
-    protected open fun propagateState(m: M?) {
+    protected open suspend fun propagateState(m: M?) {
         // Method is empty because is the default action.
     }
 }

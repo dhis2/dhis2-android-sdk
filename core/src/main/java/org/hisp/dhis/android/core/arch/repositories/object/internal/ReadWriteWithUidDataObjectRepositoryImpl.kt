@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 
 import android.util.Log
 import io.reactivex.Completable
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxCompletable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
@@ -60,7 +62,7 @@ abstract class ReadWriteWithUidDataObjectRepositoryImpl<M, R : ReadOnlyObjectRep
      * @return the `Completable` which notifies the completion
      */
     override fun delete(): Completable {
-        return Completable.fromAction { blockingDelete() }
+        return rxCompletable { deleteInternal() }
     }
 
     /**
@@ -76,7 +78,12 @@ abstract class ReadWriteWithUidDataObjectRepositoryImpl<M, R : ReadOnlyObjectRep
      */
     @Throws(D2Error::class)
     override fun blockingDelete() {
-        val obj = blockingGet()
+        runBlocking { deleteInternal() }
+    }
+
+    @Throws(D2Error::class)
+    protected suspend fun deleteInternal() {
+        val obj = getInternal()
         if (obj === null) {
             throw D2Error
                 .builder()
@@ -97,7 +104,7 @@ abstract class ReadWriteWithUidDataObjectRepositoryImpl<M, R : ReadOnlyObjectRep
      * @return the `Completable` which notifies the completion
      */
     override fun deleteIfExist(): Completable {
-        return Completable.fromAction { blockingDeleteIfExist() }
+        return rxCompletable { deleteIfExistInternal() }
     }
 
     /**
@@ -110,15 +117,19 @@ abstract class ReadWriteWithUidDataObjectRepositoryImpl<M, R : ReadOnlyObjectRep
      * asynchronous version [.delete].
      */
     override fun blockingDeleteIfExist() {
+        runBlocking { deleteIfExistInternal() }
+    }
+
+    protected suspend fun deleteIfExistInternal() {
         try {
-            blockingDelete()
+            deleteInternal()
         } catch (d2Error: D2Error) {
             Log.v(ReadWriteWithUidDataObjectRepositoryImpl::class.java.canonicalName, d2Error.errorDescription())
         }
     }
 
     @Throws(D2Error::class)
-    override fun updateObject(m: M): Unit {
+    override suspend fun updateObject(m: M): Unit {
         super.updateObject(m)
         propagateState(m, HandleAction.Update)
         return Unit()
@@ -126,10 +137,18 @@ abstract class ReadWriteWithUidDataObjectRepositoryImpl<M, R : ReadOnlyObjectRep
 
     protected inline fun <V> updateIfChanged(
         newValue: V?,
+        crossinline propertyGetter: (M) -> V?,
+        crossinline updater: (M, V?) -> M,
+    ): Unit {
+        return runBlocking { updateIfChangedInternal(newValue, propertyGetter, updater) }
+    }
+
+    protected suspend inline fun <V> updateIfChangedInternal(
+        newValue: V?,
         propertyGetter: (M) -> V?,
         crossinline updater: (M, V?) -> M,
     ): Unit {
-        val obj = blockingGetWithoutChildren() as M
+        val obj = getWithoutChildrenInternal() as M
         val currentValue = propertyGetter(obj)
 
         if (currentValue != newValue) {
@@ -138,6 +157,6 @@ abstract class ReadWriteWithUidDataObjectRepositoryImpl<M, R : ReadOnlyObjectRep
         return Unit()
     }
 
-    protected abstract fun propagateState(m: M, action: HandleAction)
-    protected abstract fun deleteObject(m: M)
+    protected abstract suspend fun propagateState(m: M, action: HandleAction)
+    protected abstract suspend fun deleteObject(m: M)
 }

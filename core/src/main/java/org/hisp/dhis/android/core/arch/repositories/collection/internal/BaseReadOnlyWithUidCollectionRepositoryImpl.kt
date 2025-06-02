@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.arch.repositories.collection.internal
 
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
@@ -54,7 +56,7 @@ abstract class BaseReadOnlyWithUidCollectionRepositoryImpl<M, R : ReadOnlyCollec
      * @return A `Single` object with the list of uids.
      */
     override fun getUids(): Single<List<String>> {
-        return Single.fromCallable { blockingGetUids() }
+        return rxSingle { getUidsInternal() }
     }
 
     /**
@@ -64,6 +66,10 @@ abstract class BaseReadOnlyWithUidCollectionRepositoryImpl<M, R : ReadOnlyCollec
      * @return List of uids
      */
     override fun blockingGetUids(): List<String> {
+        return runBlocking { getUidsInternal() }
+    }
+
+    protected suspend fun getUidsInternal(): List<String> {
         return store.selectUidsWhere(
             whereClause,
             OrderByClauseBuilder.orderByFromItems(

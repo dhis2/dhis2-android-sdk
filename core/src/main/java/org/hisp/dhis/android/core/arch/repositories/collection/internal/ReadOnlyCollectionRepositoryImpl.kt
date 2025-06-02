@@ -37,6 +37,8 @@ import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
@@ -62,6 +64,10 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
 ) : BaseRepositoryImpl<R>(scope, cf), ReadOnlyCollectionRepository<M> {
 
     protected fun blockingGetWithoutChildren(): List<M> {
+        return runBlocking { getWithoutChildrenInternal() }
+    }
+
+    private suspend fun getWithoutChildrenInternal(): List<M> {
         return store.selectWhere(
             whereClause,
             OrderByClauseBuilder.orderByFromItems(
@@ -87,12 +93,9 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
      * @return List of objects
      */
     override fun blockingGet(): List<M> {
-        return ChildrenAppenderExecutor.appendInObjectCollection(
-            blockingGetWithoutChildren(),
-            databaseAdapter,
-            childrenAppenders,
-            scope.children(),
-        )
+        return runBlocking {
+            getInternal()
+        }
     }
 
     /**
@@ -101,7 +104,16 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
      * @return A `Single` object with the list of objects.
      */
     override fun get(): Single<List<M>> {
-        return Single.fromCallable { blockingGet() }
+        return rxSingle { getInternal() }
+    }
+
+    private suspend fun getInternal(): List<M> {
+        return ChildrenAppenderExecutor.appendInObjectCollection(
+            getWithoutChildrenInternal(),
+            databaseAdapter,
+            childrenAppenders,
+            scope.children(),
+        )
     }
 
     /**
@@ -144,7 +156,7 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
      * @return A `Single` object with the element count
      */
     override fun count(): Single<Int> {
-        return Single.fromCallable { blockingCount() }
+        return rxSingle { countInternal() }
     }
 
     /**
@@ -154,6 +166,10 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
      * @return Element count
      */
     override fun blockingCount(): Int {
+        return runBlocking { countInternal() }
+    }
+
+    private suspend fun countInternal(): Int {
         return store.countWhere(whereClause)
     }
 
@@ -163,7 +179,7 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
      * @return If selection is empty
      */
     override fun isEmpty(): Single<Boolean> {
-        return Single.fromCallable { blockingIsEmpty() }
+        return rxSingle { isEmptyProtected() }
     }
 
     /**
@@ -174,7 +190,11 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
      * @return If selection is empty
      */
     override fun blockingIsEmpty(): Boolean {
-        return !one().blockingExists()
+        return runBlocking { isEmptyProtected() }
+    }
+
+    protected suspend fun isEmptyProtected(): Boolean {
+        return !one().existsInternal()
     }
 
     protected val whereClause: String

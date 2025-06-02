@@ -37,6 +37,8 @@ import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
@@ -69,6 +71,10 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
 ) : BaseRepositoryImpl<R>(scope, cf), ReadOnlyCollectionRepository<T> {
 
     fun blockingGetWithoutChildren(): List<M> {
+        return runBlocking { getWithoutChildrenInternal() }
+    }
+
+    suspend fun getWithoutChildrenInternal(): List<M> {
         return store.selectWhere(
             whereClause,
             OrderByClauseBuilder.orderByFromItems(
@@ -100,12 +106,7 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
      * @return List of objects
      */
     override fun blockingGet(): List<T> {
-        return ChildrenAppenderExecutor.appendInObjectCollection(
-            blockingGetWithoutChildren(),
-            databaseAdapter,
-            childrenAppenders,
-            scope.children(),
-        ).map { transformer.transform(it) }
+        return runBlocking { getInternal() }
     }
 
     /**
@@ -114,7 +115,16 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
      * @return A `Single` object with the list of objects.
      */
     override fun get(): Single<List<T>> {
-        return Single.fromCallable { blockingGet() }
+        return rxSingle { getInternal() }
+    }
+
+    private suspend fun getInternal(): List<T> {
+        return ChildrenAppenderExecutor.appendInObjectCollection(
+            getWithoutChildrenInternal(),
+            databaseAdapter,
+            childrenAppenders,
+            scope.children(),
+        ).map { transformer.transform(it) }
     }
 
     /**
@@ -160,7 +170,7 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
      * @return A `Single` object with the element count
      */
     override fun count(): Single<Int> {
-        return Single.fromCallable { blockingCount() }
+        return rxSingle { countInternal() }
     }
 
     /**
@@ -170,6 +180,10 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
      * @return Element count
      */
     override fun blockingCount(): Int {
+        return runBlocking { countInternal() }
+    }
+
+    suspend fun countInternal(): Int {
         return store.countWhere(whereClause)
     }
 
@@ -190,6 +204,10 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
      * @return If selection is empty
      */
     override fun blockingIsEmpty(): Boolean {
+        return !one().blockingExists()
+    }
+
+    suspend fun isEmptyInternal(): Boolean {
         return !one().blockingExists()
     }
 

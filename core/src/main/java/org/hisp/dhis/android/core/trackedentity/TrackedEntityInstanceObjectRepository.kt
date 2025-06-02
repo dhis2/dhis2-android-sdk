@@ -103,11 +103,11 @@ class TrackedEntityInstanceObjectRepository internal constructor(
             .lastUpdatedAtClient(updateDate)
     }
 
-    override fun propagateState(m: TrackedEntityInstance, action: HandleAction) {
+    override suspend fun propagateState(m: TrackedEntityInstance, action: HandleAction) {
         trackerDataManager.propagateTrackedEntityUpdate(m, action)
     }
 
-    override fun deleteObject(m: TrackedEntityInstance) {
+    override suspend fun deleteObject(m: TrackedEntityInstance) {
         trackerDataManager.deleteTrackedEntity(m)
     }
 }

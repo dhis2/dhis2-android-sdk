@@ -38,6 +38,7 @@ import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.helpers.Result
@@ -134,8 +135,12 @@ class TrackedEntitySearchCollectionRepository internal constructor(
     val resultDataSource: DataSource<TrackedEntitySearchItem, Result<TrackedEntitySearchItem, D2Error>>
         get() = TrackedEntitySearchDataSourceResult(getDataFetcher())
 
-    @Suppress("TooGenericExceptionCaught", "TooGenericExceptionThrown")
     override fun blockingGet(): List<TrackedEntitySearchItem> {
+        return runBlocking { getInternal() }
+    }
+
+    @Suppress("TooGenericExceptionCaught", "TooGenericExceptionThrown")
+    private suspend fun getInternal(): List<TrackedEntitySearchItem> {
         val dataFetcher = getDataFetcher()
         val searchResult =
             if (scope.mode() == RepositoryMode.OFFLINE_ONLY || scope.mode() == RepositoryMode.OFFLINE_FIRST) {
@@ -211,6 +216,10 @@ class TrackedEntitySearchCollectionRepository internal constructor(
     }
 
     override fun blockingGetUids(): List<String> {
+        return runBlocking { getUidsInternal() }
+    }
+
+    private suspend fun getUidsInternal(): List<String> {
         return if (scope.mode() == RepositoryMode.OFFLINE_ONLY || scope.mode() == RepositoryMode.OFFLINE_FIRST) {
             getDataFetcher().queryAllOfflineUids()
         } else {

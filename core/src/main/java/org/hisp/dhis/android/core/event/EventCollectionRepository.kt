@@ -109,7 +109,7 @@ class EventCollectionRepository internal constructor(
         upload().blockingSubscribe()
     }
 
-    override fun propagateState(m: Event, action: HandleAction?) {
+    override suspend fun propagateState(m: Event, action: HandleAction?) {
         trackerDataManager.propagateEventUpdate(m, action!!)
     }
 

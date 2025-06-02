@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.sms.data.localdbrepository.internal
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
+import kotlinx.coroutines.rx2.rxCompletable
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.common.State
@@ -179,7 +180,7 @@ internal class LocalDbRepositoryImpl(
     }
 
     override fun updateEventSubmissionState(eventUid: String, state: State): Completable {
-        return Completable.fromAction {
+        return rxCompletable {
             eventStore.setSyncState(eventUid, state)
             val event = eventStore.selectByUid(eventUid)
             dataStatePropagator.propagateEventUpdate(event)
@@ -187,7 +188,7 @@ internal class LocalDbRepositoryImpl(
     }
 
     override fun updateEnrollmentSubmissionState(tei: TrackedEntityInstance, state: State): Completable {
-        return Completable.fromAction {
+        return rxCompletable {
             val enrollment = TrackedEntityInstanceInternalAccessor.accessEnrollments(tei)[0]
             val events = EnrollmentInternalAccessor.accessEvents(enrollment)
             events?.forEach { event ->
@@ -202,7 +203,7 @@ internal class LocalDbRepositoryImpl(
     }
 
     override fun updateRelationshipSubmissionState(relationshipUid: String, state: State): Completable {
-        return Completable.fromAction {
+        return rxCompletable {
             relationshipStore.setSyncState(relationshipUid, state)
             val relationship = relationshipStore.selectByUid(relationshipUid)
 

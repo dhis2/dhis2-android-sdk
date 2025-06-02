@@ -41,7 +41,7 @@ internal class JobReportHandler internal constructor(
     private val dataStatePropagator: DataStatePropagator,
 ) {
 
-    fun handle(o: JobReport, jobObjects: List<TrackerJobObject>) {
+    suspend fun handle(o: JobReport, jobObjects: List<TrackerJobObject>) {
         val jobObjectsMap = jobObjects.associateBy { jo -> Pair(jo.trackerType(), jo.objectUid()) }
         val relatedUids = getRelatedUids(jobObjects)
 
@@ -112,7 +112,7 @@ internal class JobReportHandler internal constructor(
             .forEach { typeHandler.handleSuccess(it) }
     }
 
-    private fun getRelatedUids(jobObjects: List<TrackerJobObject>): DataStateUidHolder {
+    private suspend fun getRelatedUids(jobObjects: List<TrackerJobObject>): DataStateUidHolder {
         return dataStatePropagator.getRelatedUids(
             jobObjects.filter { it.trackerType() == TRACKED_ENTITY }.map { it.objectUid() },
             jobObjects.filter { it.trackerType() == ENROLLMENT }.map { it.objectUid() },

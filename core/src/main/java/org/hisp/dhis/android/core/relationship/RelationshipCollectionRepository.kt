@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.relationship
 
 import io.reactivex.Single
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
@@ -90,14 +91,12 @@ class RelationshipCollectionRepository internal constructor(
 ),
     ReadWriteWithUidCollectionRepository<Relationship, Relationship> {
     override fun add(o: Relationship): Single<String> {
-        return Single.fromCallable { blockingAdd(o) }
+        return rxSingle { addInternal(o) }
     }
 
     @Throws(D2Error::class)
     override fun blockingAdd(o: Relationship): String {
-        return runBlocking {
-            addInternal(o)
-        }
+        return runBlocking { addInternal(o) }
     }
 
     @Suppress("ThrowsCount")

@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceSt
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
 
 @Suppress("TooManyFunctions")
-internal class TrackedEntityInstanceQueryDataFetcher constructor(
+internal class TrackedEntityInstanceQueryDataFetcher(
     private val store: TrackedEntityInstanceStore,
     private val databaseAdapter: DatabaseAdapter,
     private val trackerParentCallFactory: TrackerParentCallFactory,
@@ -72,7 +72,7 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
         returnedErrorCodes = HashSet()
     }
 
-    fun loadPages(requestedLoadSize: Int): List<Result<TrackedEntityInstance, D2Error>> {
+    suspend fun loadPages(requestedLoadSize: Int): List<Result<TrackedEntityInstance, D2Error>> {
         val result: MutableList<Result<TrackedEntityInstance, D2Error>> = ArrayList()
 
         if (scope.mode() == RepositoryMode.OFFLINE_ONLY || scope.mode() == RepositoryMode.OFFLINE_FIRST) {
@@ -96,11 +96,11 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
         return result
     }
 
-    fun queryAllOffline(): List<Result<TrackedEntityInstance, D2Error>> {
+    suspend fun queryAllOffline(): List<Result<TrackedEntityInstance, D2Error>> {
         return queryOffline(-1)
     }
 
-    fun queryAllOfflineUids(): List<String> {
+    suspend fun queryAllOfflineUids(): List<String> {
         val sqlQuery = localQueryHelper.getUidsWhereClause(scope, scope.excludedUids(), -1)
         return store.selectUidsWhere(sqlQuery)
     }
@@ -109,7 +109,7 @@ internal class TrackedEntityInstanceQueryDataFetcher constructor(
         return queryOnline(-1)
     }
 
-    private fun queryOffline(requestedLoadSize: Int): List<Result<TrackedEntityInstance, D2Error>> {
+    private suspend fun queryOffline(requestedLoadSize: Int): List<Result<TrackedEntityInstance, D2Error>> {
         val sqlQuery = localQueryHelper.getSqlQuery(
             scope,
             returnedUidsOffline,

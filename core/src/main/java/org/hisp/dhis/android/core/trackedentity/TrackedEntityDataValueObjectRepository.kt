@@ -111,7 +111,7 @@ class TrackedEntityDataValueObjectRepository internal constructor(
         }
     }
 
-    override fun propagateState(m: TrackedEntityDataValue?) {
+    override suspend fun propagateState(m: TrackedEntityDataValue?) {
         dataStatePropagator.propagateTrackedEntityDataValueUpdate(m)
     }
 }

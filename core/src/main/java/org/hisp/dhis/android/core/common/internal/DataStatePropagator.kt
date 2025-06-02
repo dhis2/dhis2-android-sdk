@@ -39,35 +39,35 @@ import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
 @Suppress("TooManyFunctions")
 internal interface DataStatePropagator {
 
-    fun propagateTrackedEntityInstanceUpdate(tei: TrackedEntityInstance?)
+    suspend fun propagateTrackedEntityInstanceUpdate(tei: TrackedEntityInstance?)
 
-    fun propagateEnrollmentUpdate(enrollment: Enrollment?)
+    suspend fun propagateEnrollmentUpdate(enrollment: Enrollment?)
 
-    fun propagateEventUpdate(event: Event?)
+    suspend fun propagateEventUpdate(event: Event?)
 
-    fun propagateTrackedEntityDataValueUpdate(dataValue: TrackedEntityDataValue?)
+    suspend fun propagateTrackedEntityDataValueUpdate(dataValue: TrackedEntityDataValue?)
 
-    fun propagateTrackedEntityAttributeUpdate(trackedEntityAttributeValue: TrackedEntityAttributeValue?)
+    suspend fun propagateTrackedEntityAttributeUpdate(trackedEntityAttributeValue: TrackedEntityAttributeValue?)
 
-    fun propagateNoteCreation(note: Note?)
+    suspend fun propagateNoteCreation(note: Note?)
 
-    fun propagateRelationshipUpdate(relationship: Relationship?)
+    suspend fun propagateRelationshipUpdate(relationship: Relationship?)
 
-    fun propagateOwnershipUpdate(programOwner: ProgramOwner)
+    suspend fun propagateOwnershipUpdate(programOwner: ProgramOwner)
 
-    fun resetUploadingEnrollmentAndEventStates(trackedEntityInstanceUid: String?)
+    suspend fun resetUploadingEnrollmentAndEventStates(trackedEntityInstanceUid: String?)
 
-    fun resetUploadingEventStates(enrollmentUid: String?)
+    suspend fun resetUploadingEventStates(enrollmentUid: String?)
 
-    fun refreshTrackedEntityInstanceAggregatedSyncState(trackedEntityInstanceUid: String)
+    suspend fun refreshTrackedEntityInstanceAggregatedSyncState(trackedEntityInstanceUid: String)
 
-    fun refreshEnrollmentAggregatedSyncState(enrollmentUid: String)
+    suspend fun refreshEnrollmentAggregatedSyncState(enrollmentUid: String)
 
-    fun refreshEventAggregatedSyncState(eventUid: String)
+    suspend fun refreshEventAggregatedSyncState(eventUid: String)
 
-    fun refreshAggregatedSyncStates(uidHolder: DataStateUidHolder)
+    suspend fun refreshAggregatedSyncStates(uidHolder: DataStateUidHolder)
 
-    fun getRelatedUids(
+    suspend fun getRelatedUids(
         trackedEntityInstanceUids: List<String>,
         enrollmentUids: List<String>,
         eventUids: List<String>,

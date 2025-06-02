@@ -28,11 +28,12 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import androidx.paging.PageKeyedDataSource
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
-internal class TrackedEntityInstanceQueryDataSourceResult constructor(
+internal class TrackedEntityInstanceQueryDataSourceResult(
     private val dataFetcher: TrackedEntityInstanceQueryDataFetcher,
 ) : PageKeyedDataSource<TrackedEntityInstance, Result<TrackedEntityInstance, D2Error>>() {
 
@@ -65,6 +66,6 @@ internal class TrackedEntityInstanceQueryDataSourceResult constructor(
     }
 
     private fun loadPages(requestedLoadSize: Int): List<Result<TrackedEntityInstance, D2Error>> {
-        return dataFetcher.loadPages(requestedLoadSize)
+        return runBlocking { dataFetcher.loadPages(requestedLoadSize) }
     }
 }

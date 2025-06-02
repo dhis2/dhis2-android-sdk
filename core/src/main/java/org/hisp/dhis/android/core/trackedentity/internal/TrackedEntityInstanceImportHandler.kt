@@ -59,7 +59,7 @@ internal class TrackedEntityInstanceImportHandler internal constructor(
         Regex("Tracked entity instance (\\w{11}) cannot be deleted as it is not present in the system")
 
     @Suppress("NestedBlockDepth")
-    fun handleTrackedEntityInstanceImportSummaries(
+    suspend fun handleTrackedEntityInstanceImportSummaries(
         teiImportSummaries: List<TEIImportSummary?>?,
         instances: List<TrackedEntityInstance>,
     ): TEIWebResponseHandlerSummary {
@@ -108,7 +108,7 @@ internal class TrackedEntityInstanceImportHandler internal constructor(
         return summary
     }
 
-    private fun handleEnrollmentImportSummaries(
+    private suspend fun handleEnrollmentImportSummaries(
         teiImportSummary: TEIImportSummary,
         instances: List<TrackedEntityInstance>,
         teiState: State,
@@ -144,7 +144,7 @@ internal class TrackedEntityInstanceImportHandler internal constructor(
         trackerImportConflicts.forEach { trackerImportConflictStore.insert(it) }
     }
 
-    private fun processIgnoredTEIs(
+    private suspend fun processIgnoredTEIs(
         processedTEIs: List<String>,
         instances: List<TrackedEntityInstance>,
     ): List<TrackedEntityInstance> {
@@ -155,7 +155,7 @@ internal class TrackedEntityInstanceImportHandler internal constructor(
         }
     }
 
-    private fun resetNestedDataStates(instance: TrackedEntityInstance?) {
+    private suspend fun resetNestedDataStates(instance: TrackedEntityInstance?) {
         instance?.let {
             dataStatePropagator.resetUploadingEnrollmentAndEventStates(instance.uid())
         }

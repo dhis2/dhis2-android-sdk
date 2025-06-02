@@ -48,7 +48,7 @@ class AppearanceSettingsObjectRepository internal constructor(
     appearanceSettingCall: AppearanceSettingCall,
 ) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<AppearanceSettings>(appearanceSettingCall),
     ReadOnlyWithDownloadObjectRepository<AppearanceSettings> {
-    override fun blockingGet(): AppearanceSettings? {
+    override suspend fun getInternal(): AppearanceSettings? {
         val filters = filterSettingStore.selectAll()
         val programConfigurationSettingList = programConfigurationSettingStore.selectAll()
         val dataSetConfigurationSettingList = dataSetConfigurationSettingStore.selectAll()

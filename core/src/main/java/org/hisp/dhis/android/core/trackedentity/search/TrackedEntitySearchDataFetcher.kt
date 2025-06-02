@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity.search
 
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.cache.internal.ExpirableCache
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.Result
@@ -79,14 +80,14 @@ internal class TrackedEntitySearchDataFetcher(
     }
 
     fun loadPages(requestedLoadSize: Int): List<Result<TrackedEntitySearchItem, D2Error>> {
-        return transform(instanceFetcher.loadPages(requestedLoadSize))
+        return runBlocking { transform(instanceFetcher.loadPages(requestedLoadSize)) }
     }
 
-    fun queryAllOffline(): List<Result<TrackedEntitySearchItem, D2Error>> {
+    suspend fun queryAllOffline(): List<Result<TrackedEntitySearchItem, D2Error>> {
         return transform(instanceFetcher.queryAllOffline())
     }
 
-    fun queryAllOfflineUids(): List<String> {
+    suspend fun queryAllOfflineUids(): List<String> {
         return instanceFetcher.queryAllOfflineUids()
     }
 

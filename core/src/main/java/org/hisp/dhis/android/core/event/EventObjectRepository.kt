@@ -147,11 +147,11 @@ class EventObjectRepository internal constructor(
             .lastUpdatedAtClient(updateDate)
     }
 
-    override fun propagateState(m: Event, action: HandleAction) {
+    override suspend fun propagateState(m: Event, action: HandleAction) {
         trackerDataManager.propagateEventUpdate(m, action)
     }
 
-    override fun deleteObject(m: Event) {
+    override suspend fun deleteObject(m: Event) {
         trackerDataManager.deleteEvent(m)
     }
 }

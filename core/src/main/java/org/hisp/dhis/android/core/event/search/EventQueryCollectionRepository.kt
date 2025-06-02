@@ -296,6 +296,7 @@ class EventQueryCollectionRepository internal constructor(
     override fun isEmpty(): Single<Boolean> {
         return eventCollectionRepository.isEmpty()
     }
+
     override fun blockingIsEmpty(): Boolean {
         return eventCollectionRepository.blockingIsEmpty()
     }

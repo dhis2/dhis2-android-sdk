@@ -90,7 +90,7 @@ class TrackedEntityInstanceCollectionRepository internal constructor(
     },
 ),
     ReadWriteWithUploadWithUidCollectionRepository<TrackedEntityInstance, TrackedEntityInstanceCreateProjection> {
-    override fun propagateState(m: TrackedEntityInstance, action: HandleAction?) {
+    override suspend fun propagateState(m: TrackedEntityInstance, action: HandleAction?) {
         trackerDataManager.propagateTrackedEntityUpdate(m, action!!)
     }
 

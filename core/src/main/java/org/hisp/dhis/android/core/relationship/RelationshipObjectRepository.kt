@@ -59,11 +59,11 @@ internal class RelationshipObjectRepository(
         )
     },
 ) {
-    override fun propagateState(m: Relationship, action: HandleAction) {
+    override suspend fun propagateState(m: Relationship, action: HandleAction) {
         trackerDataManager.propagateRelationshipUpdate(m, action)
     }
 
-    override fun deleteObject(m: Relationship) {
+    override suspend fun deleteObject(m: Relationship) {
         trackerDataManager.deleteRelationship(m)
     }
 }

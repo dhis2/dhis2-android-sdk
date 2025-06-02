@@ -29,6 +29,8 @@
 package org.hisp.dhis.android.core.datastore
 
 import io.reactivex.Completable
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxCompletable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteValueObjectRepository
@@ -56,20 +58,28 @@ class DataStoreObjectRepository internal constructor(
 ),
     ReadWriteValueObjectRepository<DataStoreEntry> {
     override fun set(value: String?): Completable {
-        return Completable.fromAction { blockingSet(value) }
+        return rxCompletable { setInternal(value) }
     }
 
     override fun blockingSet(value: String?) {
+        runBlocking { setInternal(value) }
+    }
+
+    private suspend fun setInternal(value: String?) {
         val entry = setBuilder().value(value).deleted(false).build()
         setObject(entry)
     }
 
     override fun delete(): Completable {
-        return Completable.fromAction { blockingDelete() }
+        return rxCompletable { deleteInternal() }
     }
 
     override fun blockingDelete() {
-        blockingGetWithoutChildren()?.let { entry ->
+        runBlocking { deleteInternal() }
+    }
+
+    override suspend fun deleteInternal() {
+        getWithoutChildrenInternal()?.let { entry ->
             if (entry.syncState() == State.TO_POST) {
                 super.blockingDelete()
             } else {
@@ -78,8 +88,8 @@ class DataStoreObjectRepository internal constructor(
         }
     }
 
-    private fun setBuilder(): DataStoreEntry.Builder {
-        val entry = blockingGetWithoutChildren()
+    private suspend fun setBuilder(): DataStoreEntry.Builder {
+        val entry = getWithoutChildrenInternal()
 
         return if (entry != null) {
             entry.toBuilder()

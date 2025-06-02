@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.persistence.common.daos
 
-import android.content.ContentValues
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -81,12 +80,6 @@ internal abstract class ObjectDao<P : EntityDB<*>>(
     suspend fun deleteWhere(clause: String): Boolean {
         val query = RoomRawQuery("DELETE FROM $tableName WHERE $clause;")
         return intRawQuery(query) > 0
-    }
-
-    suspend fun updateWhere(updates: ContentValues, whereClause: String): Int {
-        val setClause = updates.valueSet().joinToString(", ") { "${it.key} = ${it.value}" }
-        val query = RoomRawQuery("UPDATE $tableName SET $setClause WHERE $whereClause;")
-        return intRawQuery(query)
     }
 
     suspend fun selectStringColumn(column: String, clause: String): List<String> {

@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.persistence.common.stores
 
-import android.content.ContentValues
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.MapperToDB
@@ -63,10 +62,6 @@ internal open class ObjectStoreImpl<D : CoreObject, P : EntityDB<D>>(
 
     suspend fun deleteWhere(clause: String): Boolean {
         return objectDao.deleteWhere(clause)
-    }
-
-    suspend fun updateWhere(updates: ContentValues, whereClause: String): Int {
-        return objectDao.updateWhere(updates, whereClause)
     }
 
     suspend fun deleteWhereIfExists(whereClause: String) {

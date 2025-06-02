@@ -174,7 +174,7 @@ class TrackedEntityInstanceQueryCollectionRepository internal constructor(
         return runBlocking { getProtected() }
     }
 
-    protected suspend fun getProtected(): List<TrackedEntityInstance> {
+    private suspend fun getProtected(): List<TrackedEntityInstance> {
         val dataFetcher = getDataFetcher()
         val searchResult =
             if (scope.mode() == RepositoryMode.OFFLINE_ONLY || scope.mode() == RepositoryMode.OFFLINE_FIRST) {
@@ -203,7 +203,7 @@ class TrackedEntityInstanceQueryCollectionRepository internal constructor(
         return blockingGet().size
     }
 
-    protected suspend fun countProtected(): Int {
+    private suspend fun countProtected(): Int {
         return getProtected().size
     }
 
@@ -215,7 +215,7 @@ class TrackedEntityInstanceQueryCollectionRepository internal constructor(
         return runBlocking { isEmptyProtected() }
     }
 
-    protected suspend fun isEmptyProtected(): Boolean {
+    private suspend fun isEmptyProtected(): Boolean {
         return countProtected() == 0
     }
 

@@ -46,6 +46,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 
+@Suppress("TooManyFunctions")
 abstract class ReadWriteWithUidDataObjectRepositoryImpl<M, R : ReadOnlyObjectRepository<M>> internal constructor(
     store: IdentifiableDeletableDataObjectStore<M>,
     databaseAdapter: DatabaseAdapter,

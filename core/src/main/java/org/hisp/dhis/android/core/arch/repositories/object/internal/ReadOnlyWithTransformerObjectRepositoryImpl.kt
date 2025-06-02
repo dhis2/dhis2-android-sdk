@@ -53,7 +53,7 @@ internal constructor(
         return runBlocking { getWithoutChildrenInternal() }
     }
 
-    protected suspend fun getWithoutChildrenInternal(): M? {
+    private suspend fun getWithoutChildrenInternal(): M? {
         val whereClauseBuilder = WhereClauseFromScopeBuilder(WhereClauseBuilder())
         return store.selectOneWhere(whereClauseBuilder.getWhereClause(scope))
     }
@@ -75,7 +75,7 @@ internal constructor(
         return runBlocking { getInternal() }
     }
 
-    protected suspend fun getInternal(): T? {
+    private suspend fun getInternal(): T? {
         val item = ChildrenAppenderExecutor.appendInObject(
             getWithoutChildrenInternal(),
             databaseAdapter,
@@ -103,7 +103,7 @@ internal constructor(
         return runBlocking { existsInternal() }
     }
 
-    protected suspend fun existsInternal(): Boolean {
+    private suspend fun existsInternal(): Boolean {
         return getWithoutChildrenInternal() != null
     }
 }

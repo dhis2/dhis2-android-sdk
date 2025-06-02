@@ -45,33 +45,33 @@ internal open class SQLStatementBuilderImpl(
 
     override fun selectUids(): RoomRawQuery {
         return RoomRawQuery(
-            SELECT + IdentifiableColumns.UID + FROM + tableName + ";"
+            SELECT + IdentifiableColumns.UID + FROM + tableName + ";",
         )
     }
 
     override fun selectUidsWhere(whereClause: String): RoomRawQuery {
         return RoomRawQuery(
-            SELECT + IdentifiableColumns.UID + FROM + tableName + WHERE + whereClause + ";"
+            SELECT + IdentifiableColumns.UID + FROM + tableName + WHERE + whereClause + ";",
         )
     }
 
     override fun selectUidsWhere(whereClause: String, orderByClause: String): RoomRawQuery {
         return RoomRawQuery(
             SELECT + IdentifiableColumns.UID + FROM + tableName + WHERE + whereClause +
-                ORDER_BY + orderByClause + ";"
+                ORDER_BY + orderByClause + ";",
         )
     }
 
     override fun selectColumnWhere(column: String, whereClause: String): RoomRawQuery {
         return RoomRawQuery(
-            SELECT + column + FROM + tableName + WHERE + whereClause + ";"
+            SELECT + column + FROM + tableName + WHERE + whereClause + ";",
         )
     }
 
     override fun selectChildrenWithLinkTable(
         projection: LinkTableChildProjection,
         parentUid: String,
-        whereClause: String?
+        whereClause: String?,
     ): RoomRawQuery {
         val whereClauseStr = if (whereClause == null) "" else AND + whereClause
 
@@ -81,7 +81,7 @@ internal open class SQLStatementBuilderImpl(
                 WHERE + "l." + projection.childColumn + "=" + "c." + IdentifiableColumns.UID +
                 AND + "l." + projection.parentColumn + "='" + parentUid + "'" +
                 whereClauseStr +
-                orderBySortOrderClause() + ";"
+                orderBySortOrderClause() + ";",
         )
     }
 
@@ -95,14 +95,13 @@ internal open class SQLStatementBuilderImpl(
 
     override fun selectDistinct(column: String): RoomRawQuery {
         return RoomRawQuery(
-            SELECT + "DISTINCT " + column + FROM + tableName + ";"
+            SELECT + "DISTINCT " + column + FROM + tableName + ";",
         )
     }
 
     override fun deleteByUid(uid: String): RoomRawQuery {
         return RoomRawQuery(
-            "DELETE" + FROM + tableName + WHERE + IdentifiableColumns.UID + " = '$uid' ;"
+            "DELETE" + FROM + tableName + WHERE + IdentifiableColumns.UID + " = '$uid' ;",
         )
     }
-
 }

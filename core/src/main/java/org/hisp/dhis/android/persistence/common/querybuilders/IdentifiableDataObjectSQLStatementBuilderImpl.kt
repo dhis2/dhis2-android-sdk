@@ -38,32 +38,32 @@ import org.hisp.dhis.android.core.common.State
 internal class IdentifiableDataObjectSQLStatementBuilderImpl(
     private val tableName: String,
 
-    ) : IdentifiableDataObjectSQLStatementBuilder, SQLStatementBuilderImpl(tableName, false) {
+) : IdentifiableDataObjectSQLStatementBuilder, SQLStatementBuilderImpl(tableName, false) {
     override fun setSyncState(uid: String, state: String): RoomRawQuery {
         return RoomRawQuery(
             "UPDATE $tableName SET ${DataColumns.SYNC_STATE} = '$state' " +
-                "WHERE ${IdentifiableColumns.UID} = '$uid'"
+                "WHERE ${IdentifiableColumns.UID} = '$uid'",
         )
     }
 
     override fun setSyncState(uids: List<String>, state: String): RoomRawQuery {
         val whereClause = WhereClauseBuilder().appendInKeyStringValues(IdentifiableColumns.UID, uids).build()
         return RoomRawQuery(
-            "UPDATE $tableName SET ${DataColumns.SYNC_STATE} = '$state' WHERE $whereClause"
+            "UPDATE $tableName SET ${DataColumns.SYNC_STATE} = '$state' WHERE $whereClause",
         )
     }
 
     override fun setSyncStateIfUploading(uid: String, state: String): RoomRawQuery {
         return RoomRawQuery(
             "UPDATE $tableName SET ${DataColumns.SYNC_STATE} = '$state' " +
-                "WHERE ${IdentifiableColumns.UID} = '$uid' AND ${DataColumns.SYNC_STATE} = '${State.UPLOADING}'"
+                "WHERE ${IdentifiableColumns.UID} = '$uid' AND ${DataColumns.SYNC_STATE} = '${State.UPLOADING}'",
         )
     }
 
     override fun getSyncState(uid: String): RoomRawQuery {
         return RoomRawQuery(
             "SELECT ${DataColumns.SYNC_STATE} FROM $tableName WHERE " +
-                "${IdentifiableColumns.UID} = '$uid'"
+                "${IdentifiableColumns.UID} = '$uid'",
         )
     }
 

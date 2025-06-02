@@ -31,12 +31,13 @@ package org.hisp.dhis.android.persistence.common.querybuilders
 import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
 
-open class ReadOnlySQLStatementBuilderImpl(
+@Suppress("TooManyFunctions")
+internal open class ReadOnlySQLStatementBuilderImpl(
     private val tableName: String,
 ) : ReadOnlySQLStatementBuilder {
     override fun selectWhere(whereClause: String): RoomRawQuery {
         return RoomRawQuery(
-            SELECT + "*" + FROM + tableName + WHERE + whereClause + ";"
+            SELECT + "*" + FROM + tableName + WHERE + whereClause + ";",
         )
     }
 
@@ -54,42 +55,42 @@ open class ReadOnlySQLStatementBuilderImpl(
 
     override fun selectOneOrderedBy(
         orderingColumName: String,
-        orderingType: SQLOrderType
+        orderingType: SQLOrderType,
     ): RoomRawQuery {
         return RoomRawQuery(
             SELECT + "*" + FROM + tableName +
                 ORDER_BY + orderingColumName + " " + orderingType.name +
-                LIMIT + "1;"
+                LIMIT + "1;",
         )
     }
 
     override fun selectAll(): RoomRawQuery {
         return RoomRawQuery(
-            SELECT + "*" + FROM + tableName + ";"
+            SELECT + "*" + FROM + tableName + ";",
         )
     }
 
     override fun count(): RoomRawQuery {
         return RoomRawQuery(
-            SELECT + "COUNT(*)" + FROM + tableName + ";"
+            SELECT + "COUNT(*)" + FROM + tableName + ";",
         )
     }
 
     override fun selectStringColumn(column: String, clause: String): RoomRawQuery {
         return RoomRawQuery(
-            "SELECT $column FROM $tableName WHERE $clause;"
+            "SELECT $column FROM $tableName WHERE $clause;",
         )
     }
 
     override fun countWhere(whereClause: String): RoomRawQuery {
         return RoomRawQuery(
-            SELECT + "COUNT(*)" + FROM + tableName + WHERE + whereClause + ";"
+            SELECT + "COUNT(*)" + FROM + tableName + WHERE + whereClause + ";",
         )
     }
 
     override fun countAndGroupBy(column: String): RoomRawQuery {
         return RoomRawQuery(
-            "SELECT $column AS key, COUNT(*) AS count FROM $tableName GROUP BY $column"
+            "SELECT $column AS key, COUNT(*) AS count FROM $tableName GROUP BY $column",
         )
     }
 

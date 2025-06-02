@@ -36,7 +36,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 internal abstract class IdentifiableDataObjectDao<P : EntityDB<*>>(
     tableName: String,
 ) : IdentifiableObjectDao<P>(tableName) {
-    
+
     @RawQuery
     abstract suspend fun stateRawQuery(query: RoomRawQuery): State?
 }

@@ -81,7 +81,7 @@ class DataStoreObjectRepository internal constructor(
     override suspend fun deleteInternal() {
         getWithoutChildrenInternal()?.let { entry ->
             if (entry.syncState() == State.TO_POST) {
-                super.blockingDelete()
+                super.deleteInternal()
             } else {
                 setObject(entry.toBuilder().deleted(true).syncState(State.TO_UPDATE).build())
             }

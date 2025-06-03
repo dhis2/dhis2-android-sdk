@@ -18714,6 +18714,7 @@ public final class org/hisp/dhis/android/persistence/visualization/TrackerVisual
 	public static final field OUTPUT_TYPE Ljava/lang/String;
 	public static final field PROGRAM Ljava/lang/String;
 	public static final field PROGRAM_STAGE Ljava/lang/String;
+	public static final field SORTING Ljava/lang/String;
 	public static final field TRACKED_ENTITY_TYPE Ljava/lang/String;
 	public static final field TYPE Ljava/lang/String;
 	public static final field UID Ljava/lang/String;

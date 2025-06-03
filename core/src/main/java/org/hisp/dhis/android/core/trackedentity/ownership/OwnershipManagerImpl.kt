@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.ownership
 
 import io.reactivex.Completable
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxCompletable
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
@@ -100,10 +101,14 @@ internal class OwnershipManagerImpl(
     }
 
     override fun transfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String): Completable {
-        return Completable.fromCallable { blockingTransfer(trackedEntityInstance, program, ownerOrgUnit) }
+        return rxCompletable { transferInternal(trackedEntityInstance, program, ownerOrgUnit) }
     }
 
     override fun blockingTransfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String) {
+        runBlocking { transferInternal(trackedEntityInstance, program, ownerOrgUnit) }
+    }
+
+    private suspend fun transferInternal(trackedEntityInstance: String, program: String, ownerOrgUnit: String) {
         val programOwner = ProgramOwner.builder()
             .trackedEntityInstance(trackedEntityInstance)
             .program(program)

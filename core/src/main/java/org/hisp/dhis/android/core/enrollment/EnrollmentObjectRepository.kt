@@ -128,11 +128,11 @@ class EnrollmentObjectRepository internal constructor(
             .lastUpdatedAtClient(updateDate)
     }
 
-    override fun propagateState(m: Enrollment, action: HandleAction) {
+    override suspend fun propagateState(m: Enrollment, action: HandleAction) {
         trackerDataManager.propagateEnrollmentUpdate(m, action)
     }
 
-    override fun deleteObject(m: Enrollment) {
+    override suspend fun deleteObject(m: Enrollment) {
         trackerDataManager.deleteEnrollment(m)
     }
 }

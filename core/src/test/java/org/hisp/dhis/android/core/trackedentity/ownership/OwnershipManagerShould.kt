@@ -118,7 +118,7 @@ class OwnershipManagerShould {
     }
 
     @Test
-    fun propagate_program_ownership_update() {
+    fun propagate_program_ownership_update() = runTest {
         ownershipManager.blockingTransfer("tei_uid", "program_uid", "orgunit")
 
         verify(programOwnerStore).updateOrInsertWhere(any())

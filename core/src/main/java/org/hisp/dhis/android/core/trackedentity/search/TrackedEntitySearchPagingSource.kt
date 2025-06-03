@@ -84,8 +84,8 @@ internal class TrackedEntitySearchPagingSource(
         }
     }
 
-    private fun loadPages(loadSize: Int): LoadResult<TrackedEntitySearchItem, TrackedEntitySearchItem> {
-        val pages = dataFetcher.loadPages(loadSize)
+    private suspend fun loadPages(loadSize: Int): LoadResult<TrackedEntitySearchItem, TrackedEntitySearchItem> {
+        val pages = dataFetcher.loadPagesSuspend(loadSize)
 
         return pages.firstOrNull { it is Result.Failure }?.let {
             LoadResult.Error((it as Result.Failure).failure)

@@ -57,7 +57,7 @@ internal class EnrollmentImportHandler(
 ) {
 
     @Suppress("NestedBlockDepth")
-    fun handleEnrollmentImportSummary(
+    suspend fun handleEnrollmentImportSummary(
         enrollmentImportSummaries: List<EnrollmentImportSummary?>?,
         enrollments: List<Enrollment>,
         teiState: State,
@@ -108,7 +108,7 @@ internal class EnrollmentImportHandler(
         return summary
     }
 
-    private fun handleEventImportSummaries(
+    private suspend fun handleEventImportSummaries(
         enrollmentImportSummary: EnrollmentImportSummary,
         enrollments: List<Enrollment>,
     ): TEIWebResponseHandlerSummary {
@@ -147,7 +147,7 @@ internal class EnrollmentImportHandler(
         trackerImportConflicts.forEach { trackerImportConflictStore.insert(it) }
     }
 
-    private fun processIgnoredEnrollments(
+    private suspend fun processIgnoredEnrollments(
         enrollmentImportSummaries: List<EnrollmentImportSummary?>?,
         enrollments: List<Enrollment>,
         teiState: State,
@@ -176,7 +176,7 @@ internal class EnrollmentImportHandler(
         }
     }
 
-    private fun resetNestedDataStates(enrollment: Enrollment?) {
+    private suspend fun resetNestedDataStates(enrollment: Enrollment?) {
         enrollment?.let {
             dataStatePropagator.resetUploadingEventStates(enrollment.uid())
         }

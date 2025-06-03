@@ -42,7 +42,7 @@ class GeneralSettingObjectRepository internal constructor(
     generalSettingCall: GeneralSettingCall,
 ) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<GeneralSettings>(generalSettingCall),
     ReadOnlyWithDownloadObjectRepository<GeneralSettings> {
-    override fun blockingGet(): GeneralSettings? {
+    override suspend fun getInternal(): GeneralSettings? {
         val generalSettings = store.selectAll()
         val syncSettings = syncStore.selectAll()
         return if (generalSettings.isEmpty() && syncSettings.isEmpty()) {

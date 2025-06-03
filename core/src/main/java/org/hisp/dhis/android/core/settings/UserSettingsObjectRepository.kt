@@ -39,7 +39,7 @@ class UserSettingsObjectRepository internal constructor(
     generalSettingCall: GeneralSettingCall,
 ) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<UserSettings>(generalSettingCall),
     ReadOnlyWithDownloadObjectRepository<UserSettings> {
-    override fun blockingGet(): UserSettings? {
+    override suspend fun getInternal(): UserSettings? {
         return store.selectAll().firstOrNull()
     }
 }

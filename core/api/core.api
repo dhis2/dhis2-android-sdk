@@ -2864,6 +2864,7 @@ public abstract interface class org/hisp/dhis/android/core/arch/repositories/col
 public abstract class org/hisp/dhis/android/core/arch/repositories/collection/internal/BaseReadOnlyWithUidCollectionRepositoryImpl : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyCollectionRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUidCollectionRepository {
 	public fun blockingGetUids ()Ljava/util/List;
 	public fun getUids ()Lio/reactivex/Single;
+	protected final fun getUidsInternal (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public class org/hisp/dhis/android/core/arch/repositories/collection/internal/BaseRepositoryImpl : org/hisp/dhis/android/core/arch/repositories/collection/BaseRepository {
@@ -2885,6 +2886,7 @@ public class org/hisp/dhis/android/core/arch/repositories/collection/internal/Re
 	public fun getPagingData (I)Lkotlinx/coroutines/flow/Flow;
 	protected final fun getWhereClause ()Ljava/lang/String;
 	public fun isEmpty ()Lio/reactivex/Single;
+	protected final fun isEmptyProtected (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun one ()Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository;
 	public fun one ()Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyOneObjectRepositoryFinalImpl;
 }
@@ -2923,8 +2925,9 @@ public class org/hisp/dhis/android/core/arch/repositories/collection/internal/Re
 public abstract class org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadWriteWithUidCollectionRepositoryImpl : org/hisp/dhis/android/core/arch/repositories/collection/internal/BaseReadOnlyWithUidCollectionRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUidCollectionRepository {
 	protected final field transformer Lorg/hisp/dhis/android/core/arch/handlers/internal/Transformer;
 	public fun add (Ljava/lang/Object;)Lio/reactivex/Single;
+	protected final fun addInternal (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun blockingAdd (Ljava/lang/Object;)Ljava/lang/String;
-	protected fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lorg/hisp/dhis/android/core/arch/handlers/internal/HandleAction;)V
+	protected fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lorg/hisp/dhis/android/core/arch/handlers/internal/HandleAction;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract class org/hisp/dhis/android/core/arch/repositories/filters/internal/AbstractFilterConnector {
@@ -3189,10 +3192,11 @@ public abstract interface class org/hisp/dhis/android/core/arch/repositories/obj
 public abstract class org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyAnyObjectWithDownloadRepositoryImpl {
 	public final fun blockingDownload ()V
 	public final fun blockingExists ()Z
-	public abstract fun blockingGet ()Ljava/lang/Object;
+	public final fun blockingGet ()Ljava/lang/Object;
 	public final fun download ()Lio/reactivex/Completable;
 	public final fun exists ()Lio/reactivex/Single;
 	public final fun get ()Lio/reactivex/Single;
+	protected abstract fun getInternal (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public class org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyFirstObjectWithDownloadRepositoryImpl : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyOneObjectRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository {
@@ -3207,11 +3211,14 @@ public abstract class org/hisp/dhis/android/core/arch/repositories/object/intern
 	public abstract fun blockingGetWithoutChildren ()Ljava/lang/Object;
 	public fun exists ()Lio/reactivex/Single;
 	public fun get ()Lio/reactivex/Single;
+	protected final fun getInternal (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected final fun getScope ()Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope;
+	protected abstract fun getWithoutChildrenInternal (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public class org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyOneObjectRepositoryImpl : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyObjectRepositoryImpl {
 	public fun blockingGetWithoutChildren ()Ljava/lang/Object;
+	protected fun getWithoutChildrenInternal (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract class org/hisp/dhis/android/core/arch/repositories/object/internal/ReadWriteWithUidDataObjectRepositoryImpl : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadWriteWithUidObjectRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/object/ReadWriteObjectRepository {
@@ -3219,14 +3226,17 @@ public abstract class org/hisp/dhis/android/core/arch/repositories/object/intern
 	public fun blockingDeleteIfExist ()V
 	public fun delete ()Lio/reactivex/Completable;
 	public fun deleteIfExist ()Lio/reactivex/Completable;
-	protected abstract fun deleteObject (Lorg/hisp/dhis/android/core/common/CoreObject;)V
-	protected abstract fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lorg/hisp/dhis/android/core/arch/handlers/internal/HandleAction;)V
+	protected final fun deleteIfExistInternal (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	protected final fun deleteInternal (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	protected abstract fun deleteObject (Lorg/hisp/dhis/android/core/common/CoreObject;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	protected abstract fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lorg/hisp/dhis/android/core/arch/handlers/internal/HandleAction;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected final fun updateIfChanged (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)Lorg/hisp/dhis/android/core/common/Unit;
-	protected fun updateObject (Lorg/hisp/dhis/android/core/common/CoreObject;)Lorg/hisp/dhis/android/core/common/Unit;
+	protected final fun updateIfChangedInternal (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	protected fun updateObject (Lorg/hisp/dhis/android/core/common/CoreObject;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public class org/hisp/dhis/android/core/arch/repositories/object/internal/ReadWriteWithUidObjectRepositoryImpl : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyOneObjectRepositoryImpl {
-	protected fun updateObject (Lorg/hisp/dhis/android/core/common/CoreObject;)Lorg/hisp/dhis/android/core/common/Unit;
+	protected fun updateObject (Lorg/hisp/dhis/android/core/common/CoreObject;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public class org/hisp/dhis/android/core/arch/repositories/object/internal/ReadWriteWithValueObjectRepositoryImpl : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyOneObjectRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/object/ReadWriteObjectRepository {
@@ -3235,9 +3245,13 @@ public class org/hisp/dhis/android/core/arch/repositories/object/internal/ReadWr
 	public fun delete ()Lio/reactivex/Completable;
 	protected fun delete (Lorg/hisp/dhis/android/core/common/CoreObject;)V
 	public fun deleteIfExist ()Lio/reactivex/Completable;
-	protected fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;)V
-	protected final fun setObject (Lorg/hisp/dhis/android/core/common/CoreObject;)V
+	protected final fun deleteIfExistInternal (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	protected fun deleteInternal (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	protected fun deleteInternal (Lorg/hisp/dhis/android/core/common/CoreObject;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	protected fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	protected final fun setObject (Lorg/hisp/dhis/android/core/common/CoreObject;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected final fun updateIfChanged (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)Lorg/hisp/dhis/android/core/common/Unit;
+	protected final fun updateIfChangedInternal (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract class org/hisp/dhis/android/core/arch/repositories/paging/PageConfig {
@@ -6678,7 +6692,7 @@ public final class org/hisp/dhis/android/core/enrollment/EnrollmentCollectionRep
 	public final fun orderByIncidentDate (Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;)Lorg/hisp/dhis/android/core/enrollment/EnrollmentCollectionRepository;
 	public final fun orderByLastUpdated (Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;)Lorg/hisp/dhis/android/core/enrollment/EnrollmentCollectionRepository;
 	public final fun orderByLastUpdatedAtClient (Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;)Lorg/hisp/dhis/android/core/enrollment/EnrollmentCollectionRepository;
-	public synthetic fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lorg/hisp/dhis/android/core/arch/handlers/internal/HandleAction;)V
+	public synthetic fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lorg/hisp/dhis/android/core/arch/handlers/internal/HandleAction;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository;
 	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/EnrollmentObjectRepository;
 	public final fun withNotes ()Lorg/hisp/dhis/android/core/enrollment/EnrollmentCollectionRepository;
@@ -6715,8 +6729,8 @@ public abstract interface class org/hisp/dhis/android/core/enrollment/Enrollment
 }
 
 public final class org/hisp/dhis/android/core/enrollment/EnrollmentObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadWriteWithUidDataObjectRepositoryImpl {
-	public synthetic fun deleteObject (Lorg/hisp/dhis/android/core/common/CoreObject;)V
-	public synthetic fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lorg/hisp/dhis/android/core/arch/handlers/internal/HandleAction;)V
+	public synthetic fun deleteObject (Lorg/hisp/dhis/android/core/common/CoreObject;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lorg/hisp/dhis/android/core/arch/handlers/internal/HandleAction;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun setCompletedDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/Unit;
 	public final fun setEnrollmentDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/Unit;
 	public final fun setFollowUp (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/Unit;
@@ -6864,7 +6878,7 @@ public final class org/hisp/dhis/android/core/event/EventCollectionRepository : 
 	public final fun orderByLastUpdatedAtClient (Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;)Lorg/hisp/dhis/android/core/event/EventCollectionRepository;
 	public final fun orderByOrganisationUnitName (Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;)Lorg/hisp/dhis/android/core/event/EventCollectionRepository;
 	public final fun orderByTimeline (Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;)Lorg/hisp/dhis/android/core/event/EventCollectionRepository;
-	public synthetic fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lorg/hisp/dhis/android/core/arch/handlers/internal/HandleAction;)V
+	public synthetic fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lorg/hisp/dhis/android/core/arch/handlers/internal/HandleAction;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository;
 	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/EventObjectRepository;
 	public fun upload ()Lio/reactivex/Observable;
@@ -7019,8 +7033,8 @@ public final class org/hisp/dhis/android/core/event/EventNonEditableReason : jav
 }
 
 public final class org/hisp/dhis/android/core/event/EventObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadWriteWithUidDataObjectRepositoryImpl {
-	public synthetic fun deleteObject (Lorg/hisp/dhis/android/core/common/CoreObject;)V
-	public synthetic fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lorg/hisp/dhis/android/core/arch/handlers/internal/HandleAction;)V
+	public synthetic fun deleteObject (Lorg/hisp/dhis/android/core/common/CoreObject;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lorg/hisp/dhis/android/core/arch/handlers/internal/HandleAction;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun setAssignedUser (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/Unit;
 	public final fun setAttributeOptionComboUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/Unit;
 	public final fun setCompletedBy (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/Unit;
@@ -8666,7 +8680,7 @@ public final class org/hisp/dhis/android/core/note/NoteCollectionRepository : or
 	public final fun bySyncState ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
 	public final fun byUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byValue ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
-	public synthetic fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lorg/hisp/dhis/android/core/arch/handlers/internal/HandleAction;)V
+	public synthetic fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lorg/hisp/dhis/android/core/arch/handlers/internal/HandleAction;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository;
 }
 
@@ -11125,16 +11139,12 @@ public abstract class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualiza
 
 public final class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSettingObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyAnyObjectWithDownloadRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository {
 	public final fun blockingByDataSet (Ljava/lang/String;)Ljava/util/List;
-	public synthetic fun blockingGet ()Ljava/lang/Object;
-	public fun blockingGet ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting;
 	public final fun blockingGetByProgram (Ljava/lang/String;)Ljava/util/List;
 	public final fun getByDataSet (Ljava/lang/String;)Lio/reactivex/Single;
 	public final fun getByProgram (Ljava/lang/String;)Lio/reactivex/Single;
 }
 
 public final class org/hisp/dhis/android/core/settings/AnalyticsSettingObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyAnyObjectWithDownloadRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository {
-	public synthetic fun blockingGet ()Ljava/lang/Object;
-	public fun blockingGet ()Lorg/hisp/dhis/android/core/settings/AnalyticsSettings;
 	public final fun teis ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSettingCollectionRepository;
 	public final fun visualizationsSettings ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSettingObjectRepository;
 }
@@ -11428,8 +11438,6 @@ public abstract class org/hisp/dhis/android/core/settings/AppearanceSettings$Bui
 }
 
 public final class org/hisp/dhis/android/core/settings/AppearanceSettingsObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyAnyObjectWithDownloadRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository {
-	public synthetic fun blockingGet ()Ljava/lang/Object;
-	public fun blockingGet ()Lorg/hisp/dhis/android/core/settings/AppearanceSettings;
 	public final fun getCompletionSpinnerByUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CompletionSpinner;
 	public final fun getDataSetConfigurationByUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting;
 	public final fun getDataSetFiltersByUid (Ljava/lang/String;)Ljava/util/Map;
@@ -11792,8 +11800,6 @@ public abstract class org/hisp/dhis/android/core/settings/DataSetSettings$Builde
 }
 
 public final class org/hisp/dhis/android/core/settings/DataSetSettingsObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyAnyObjectWithDownloadRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository {
-	public synthetic fun blockingGet ()Ljava/lang/Object;
-	public fun blockingGet ()Lorg/hisp/dhis/android/core/settings/DataSetSettings;
 }
 
 public final class org/hisp/dhis/android/core/settings/DataSyncPeriod : java/lang/Enum {
@@ -11894,8 +11900,6 @@ public abstract class org/hisp/dhis/android/core/settings/FilterSorting$Builder 
 }
 
 public final class org/hisp/dhis/android/core/settings/GeneralSettingObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyAnyObjectWithDownloadRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository {
-	public synthetic fun blockingGet ()Ljava/lang/Object;
-	public fun blockingGet ()Lorg/hisp/dhis/android/core/settings/GeneralSettings;
 	public final fun blockingHasExperimentalFeature (Ljava/lang/String;)Z
 	public final fun blockingHasExperimentalFeature (Lorg/hisp/dhis/android/core/settings/ExperimentalFeature;)Z
 	public final fun hasExperimentalFeature (Ljava/lang/String;)Lio/reactivex/Single;
@@ -12002,8 +12006,6 @@ public abstract class org/hisp/dhis/android/core/settings/LatestAppVersion$Build
 }
 
 public final class org/hisp/dhis/android/core/settings/LatestAppVersionObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyAnyObjectWithDownloadRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository {
-	public synthetic fun blockingGet ()Ljava/lang/Object;
-	public fun blockingGet ()Lorg/hisp/dhis/android/core/settings/LatestAppVersion;
 }
 
 public final class org/hisp/dhis/android/core/settings/LatestAppVersionTableInfo {
@@ -12248,8 +12250,6 @@ public abstract class org/hisp/dhis/android/core/settings/ProgramSettings$Builde
 }
 
 public final class org/hisp/dhis/android/core/settings/ProgramSettingsObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyAnyObjectWithDownloadRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository {
-	public synthetic fun blockingGet ()Ljava/lang/Object;
-	public fun blockingGet ()Lorg/hisp/dhis/android/core/settings/ProgramSettings;
 }
 
 public abstract class org/hisp/dhis/android/core/settings/QuickAction {
@@ -12294,8 +12294,6 @@ public abstract class org/hisp/dhis/android/core/settings/SettingsAppInfo$Builde
 }
 
 public final class org/hisp/dhis/android/core/settings/SynchronizationSettingObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyAnyObjectWithDownloadRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository {
-	public synthetic fun blockingGet ()Ljava/lang/Object;
-	public fun blockingGet ()Lorg/hisp/dhis/android/core/settings/SynchronizationSettings;
 }
 
 public final class org/hisp/dhis/android/core/settings/SynchronizationSettingTableInfo {
@@ -12404,8 +12402,6 @@ public abstract class org/hisp/dhis/android/core/settings/UserSettings$Builder {
 }
 
 public final class org/hisp/dhis/android/core/settings/UserSettingsObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyAnyObjectWithDownloadRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository {
-	public synthetic fun blockingGet ()Ljava/lang/Object;
-	public fun blockingGet ()Lorg/hisp/dhis/android/core/settings/UserSettings;
 }
 
 public final class org/hisp/dhis/android/core/settings/UserSettingsTableInfo {
@@ -13292,7 +13288,7 @@ public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttribu
 	public fun blockingExists ()Z
 	public fun blockingSet (Ljava/lang/String;)V
 	public synthetic fun delete (Lorg/hisp/dhis/android/core/common/CoreObject;)V
-	public synthetic fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;)V
+	public synthetic fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun set (Ljava/lang/String;)Lio/reactivex/Completable;
 }
 
@@ -13358,7 +13354,7 @@ public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityDataVal
 	public fun blockingExists ()Z
 	public fun blockingSet (Ljava/lang/String;)V
 	public synthetic fun delete (Lorg/hisp/dhis/android/core/common/CoreObject;)V
-	public synthetic fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;)V
+	public synthetic fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun set (Ljava/lang/String;)Lio/reactivex/Completable;
 }
 
@@ -13439,7 +13435,7 @@ public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanc
 	public final fun orderByCreatedAtClient (Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCollectionRepository;
 	public final fun orderByLastUpdated (Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCollectionRepository;
 	public final fun orderByLastUpdatedAtClient (Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCollectionRepository;
-	public synthetic fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lorg/hisp/dhis/android/core/arch/handlers/internal/HandleAction;)V
+	public synthetic fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lorg/hisp/dhis/android/core/arch/handlers/internal/HandleAction;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository;
 	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceObjectRepository;
 	public fun upload ()Lio/reactivex/Observable;
@@ -13588,8 +13584,8 @@ public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanc
 }
 
 public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadWriteWithUidDataObjectRepositoryImpl {
-	public synthetic fun deleteObject (Lorg/hisp/dhis/android/core/common/CoreObject;)V
-	public synthetic fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lorg/hisp/dhis/android/core/arch/handlers/internal/HandleAction;)V
+	public synthetic fun deleteObject (Lorg/hisp/dhis/android/core/common/CoreObject;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lorg/hisp/dhis/android/core/arch/handlers/internal/HandleAction;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun setGeometry (Lorg/hisp/dhis/android/core/common/Geometry;)Lorg/hisp/dhis/android/core/common/Unit;
 	public final fun setOrganisationUnitUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/Unit;
 }

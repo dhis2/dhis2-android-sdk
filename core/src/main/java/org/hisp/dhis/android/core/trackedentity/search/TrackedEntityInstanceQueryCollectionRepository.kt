@@ -37,6 +37,8 @@ import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.helpers.Result
@@ -169,6 +171,10 @@ class TrackedEntityInstanceQueryCollectionRepository internal constructor(
 
     @Suppress("TooGenericExceptionCaught", "TooGenericExceptionThrown")
     override fun blockingGet(): List<TrackedEntityInstance> {
+        return runBlocking { getProtected() }
+    }
+
+    private suspend fun getProtected(): List<TrackedEntityInstance> {
         val dataFetcher = getDataFetcher()
         val searchResult =
             if (scope.mode() == RepositoryMode.OFFLINE_ONLY || scope.mode() == RepositoryMode.OFFLINE_FIRST) {
@@ -197,12 +203,20 @@ class TrackedEntityInstanceQueryCollectionRepository internal constructor(
         return blockingGet().size
     }
 
+    private suspend fun countProtected(): Int {
+        return getProtected().size
+    }
+
     override fun isEmpty(): Single<Boolean> {
-        return Single.fromCallable { blockingIsEmpty() }
+        return rxSingle { isEmptyProtected() }
     }
 
     override fun blockingIsEmpty(): Boolean {
-        return blockingCount() == 0
+        return runBlocking { isEmptyProtected() }
+    }
+
+    private suspend fun isEmptyProtected(): Boolean {
+        return countProtected() == 0
     }
 
     override fun one(): ReadOnlyObjectRepository<TrackedEntityInstance> {
@@ -243,6 +257,10 @@ class TrackedEntityInstanceQueryCollectionRepository internal constructor(
     }
 
     override fun blockingGetUids(): List<String> {
+        return runBlocking { getUidsInternal() }
+    }
+
+    private suspend fun getUidsInternal(): List<String> {
         return if (scope.mode() == RepositoryMode.OFFLINE_ONLY || scope.mode() == RepositoryMode.OFFLINE_FIRST) {
             getDataFetcher().queryAllOfflineUids()
         } else {

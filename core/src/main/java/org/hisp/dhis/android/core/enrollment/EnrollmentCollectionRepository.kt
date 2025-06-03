@@ -72,7 +72,7 @@ class EnrollmentCollectionRepository internal constructor(
         )
     },
 ) {
-    override fun propagateState(m: Enrollment, action: HandleAction?) {
+    override suspend fun propagateState(m: Enrollment, action: HandleAction?) {
         trackerDataManager.propagateEnrollmentUpdate(m, action!!)
     }
 

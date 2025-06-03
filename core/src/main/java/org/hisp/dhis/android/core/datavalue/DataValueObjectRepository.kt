@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.datavalue
 
 import io.reactivex.Completable
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxCompletable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteValueObjectRepository
@@ -95,12 +97,17 @@ class DataValueObjectRepository internal constructor(
     }
 
     override fun delete(): Completable {
-        return Completable.fromAction { blockingDelete() }
+        return rxCompletable { deleteInternal() }
     }
 
     @Throws(D2Error::class)
     override fun blockingDelete() {
-        blockingGetWithoutChildren()?.let { dataValue ->
+        runBlocking { deleteInternal() }
+    }
+
+    @Throws(D2Error::class)
+    override suspend fun deleteInternal() {
+        getWithoutChildrenInternal()?.let { dataValue ->
             if (dataValue.syncState() === State.TO_POST) {
                 super.delete(dataValue)
             } else {

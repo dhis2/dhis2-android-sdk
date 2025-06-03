@@ -56,7 +56,7 @@ class AnalyticsDhisVisualizationsSettingObjectRepository internal constructor(
         return generateGroups(analyticsDhisVisualizationStore.selectAll()).dataSet()[dataSet]
     }
 
-    override fun blockingGet(): AnalyticsDhisVisualizationsSetting {
+    override suspend fun getInternal(): AnalyticsDhisVisualizationsSetting {
         return generateGroups(analyticsDhisVisualizationStore.selectAll())
     }
 }

@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
@@ -48,6 +50,10 @@ internal constructor(
 ) : ReadOnlyObjectRepository<T> {
 
     fun blockingGetWithoutChildren(): M? {
+        return runBlocking { getWithoutChildrenInternal() }
+    }
+
+    private suspend fun getWithoutChildrenInternal(): M? {
         val whereClauseBuilder = WhereClauseFromScopeBuilder(WhereClauseBuilder())
         return store.selectOneWhere(whereClauseBuilder.getWhereClause(scope))
     }
@@ -66,8 +72,12 @@ internal constructor(
      * @return the object
      */
     override fun blockingGet(): T? {
+        return runBlocking { getInternal() }
+    }
+
+    private suspend fun getInternal(): T? {
         val item = ChildrenAppenderExecutor.appendInObject(
-            blockingGetWithoutChildren(),
+            getWithoutChildrenInternal(),
             databaseAdapter,
             childrenAppenders,
             scope.children(),
@@ -81,7 +91,7 @@ internal constructor(
      * @return if the object exists, wrapped in a `Single`
      */
     override fun exists(): Single<Boolean> {
-        return Single.fromCallable { blockingExists() }
+        return rxSingle { existsInternal() }
     }
 
     /**
@@ -90,6 +100,10 @@ internal constructor(
      * @return if the object exists
      */
     override fun blockingExists(): Boolean {
-        return blockingGetWithoutChildren() != null
+        return runBlocking { existsInternal() }
+    }
+
+    private suspend fun existsInternal(): Boolean {
+        return getWithoutChildrenInternal() != null
     }
 }

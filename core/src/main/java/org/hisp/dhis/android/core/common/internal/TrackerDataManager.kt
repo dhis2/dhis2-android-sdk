@@ -35,19 +35,19 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
 internal interface TrackerDataManager {
 
-    fun propagateTrackedEntityUpdate(tei: TrackedEntityInstance?, action: HandleAction)
+    suspend fun propagateTrackedEntityUpdate(tei: TrackedEntityInstance?, action: HandleAction)
 
-    fun propagateEnrollmentUpdate(enrollment: Enrollment?, action: HandleAction)
+    suspend fun propagateEnrollmentUpdate(enrollment: Enrollment?, action: HandleAction)
 
-    fun propagateEventUpdate(event: Event?, action: HandleAction)
+    suspend fun propagateEventUpdate(event: Event?, action: HandleAction)
 
-    fun propagateRelationshipUpdate(relationship: Relationship, action: HandleAction)
+    suspend fun propagateRelationshipUpdate(relationship: Relationship, action: HandleAction)
 
-    fun deleteTrackedEntity(tei: TrackedEntityInstance?)
+    suspend fun deleteTrackedEntity(tei: TrackedEntityInstance?)
 
-    fun deleteEnrollment(enrollment: Enrollment?)
+    suspend fun deleteEnrollment(enrollment: Enrollment?)
 
-    fun deleteEvent(event: Event?)
+    suspend fun deleteEvent(event: Event?)
 
-    fun deleteRelationship(relationship: Relationship?)
+    suspend fun deleteRelationship(relationship: Relationship?)
 }

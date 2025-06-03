@@ -43,7 +43,7 @@ internal class RelationshipImportHandler internal constructor(
     private val relationshipRepository: RelationshipCollectionRepository,
 ) {
 
-    fun handleRelationshipImportSummaries(
+    suspend fun handleRelationshipImportSummaries(
         importSummaries: List<RelationshipImportSummary?>?,
         relationships: List<Relationship>,
     ) {
@@ -68,7 +68,7 @@ internal class RelationshipImportHandler internal constructor(
         processIgnoredRelationships(importSummaries, relationships)
     }
 
-    private fun processIgnoredRelationships(
+    private suspend fun processIgnoredRelationships(
         importSummaries: List<RelationshipImportSummary?>?,
         relationships: List<Relationship>,
     ) {

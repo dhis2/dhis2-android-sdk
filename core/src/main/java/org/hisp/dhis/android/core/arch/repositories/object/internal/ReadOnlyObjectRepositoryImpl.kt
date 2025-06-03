@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
@@ -44,6 +46,7 @@ abstract class ReadOnlyObjectRepositoryImpl<M, R : ReadOnlyObjectRepository<M>> 
     @JvmField protected val cf: FilterConnectorFactory<R> = FilterConnectorFactory(scope, repositoryFactory)
 
     abstract fun blockingGetWithoutChildren(): M?
+    protected abstract suspend fun getWithoutChildrenInternal(): M?
 
     /**
      * Returns the object in an asynchronous way, returning a `Single<M>`.
@@ -59,6 +62,10 @@ abstract class ReadOnlyObjectRepositoryImpl<M, R : ReadOnlyObjectRepository<M>> 
      * @return the object
      */
     override fun blockingGet(): M? {
+        return runBlocking { getInternal() }
+    }
+
+    protected suspend fun getInternal(): M? {
         return ChildrenAppenderExecutor.appendInObject(
             blockingGetWithoutChildren(),
             databaseAdapter,
@@ -72,7 +79,7 @@ abstract class ReadOnlyObjectRepositoryImpl<M, R : ReadOnlyObjectRepository<M>> 
      * @return if the object exists, wrapped in a `Single`
      */
     override fun exists(): Single<Boolean> {
-        return Single.fromCallable { blockingExists() }
+        return rxSingle { existsInternal() }
     }
 
     /**
@@ -81,6 +88,10 @@ abstract class ReadOnlyObjectRepositoryImpl<M, R : ReadOnlyObjectRepository<M>> 
      * @return if the object exists
      */
     override fun blockingExists(): Boolean {
-        return blockingGetWithoutChildren() != null
+        return runBlocking { existsInternal() }
+    }
+
+    internal suspend fun existsInternal(): Boolean {
+        return getWithoutChildrenInternal() != null
     }
 }

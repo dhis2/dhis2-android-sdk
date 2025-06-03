@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.arch.repositories.collection.internal
 
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
@@ -67,7 +69,7 @@ abstract class ReadWriteWithUidCollectionRepositoryImpl<M, P, R : ReadOnlyCollec
      * @return the Single with the UID
      */
     override fun add(o: P): Single<String> {
-        return Single.fromCallable { blockingAdd(o) }
+        return rxSingle { addInternal(o) }
     }
 
     /**
@@ -80,8 +82,13 @@ abstract class ReadWriteWithUidCollectionRepositoryImpl<M, P, R : ReadOnlyCollec
      * @return the UID
      */
     @Throws(D2Error::class)
-    @Suppress("TooGenericExceptionCaught")
     override fun blockingAdd(o: P): String {
+        return runBlocking { addInternal(o) }
+    }
+
+    @Throws(D2Error::class)
+    @Suppress("TooGenericExceptionCaught")
+    protected suspend fun addInternal(o: P): String {
         val obj = transformer.transform(o)
         return try {
             store.insert(obj)
@@ -98,7 +105,7 @@ abstract class ReadWriteWithUidCollectionRepositoryImpl<M, P, R : ReadOnlyCollec
         }
     }
 
-    protected open fun propagateState(m: M, action: HandleAction?) {
+    protected open suspend fun propagateState(m: M, action: HandleAction?) {
         // Method is empty because is the default action.
     }
 }

@@ -28,10 +28,11 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import androidx.paging.ItemKeyedDataSource
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
-internal class TrackedEntityInstanceQueryDataSource constructor(
+internal class TrackedEntityInstanceQueryDataSource(
     private val dataFetcher: TrackedEntityInstanceQueryDataFetcher,
 ) : ItemKeyedDataSource<TrackedEntityInstance, TrackedEntityInstance>() {
 
@@ -40,14 +41,18 @@ internal class TrackedEntityInstanceQueryDataSource constructor(
         callback: LoadInitialCallback<TrackedEntityInstance>,
     ) {
         dataFetcher.refresh()
-        callback.onResult(loadPages(params.requestedLoadSize))
+        callback.onResult(
+            runBlocking { loadPages(params.requestedLoadSize) },
+        )
     }
 
     override fun loadAfter(
         params: LoadParams<TrackedEntityInstance>,
         callback: LoadCallback<TrackedEntityInstance>,
     ) {
-        callback.onResult(loadPages(params.requestedLoadSize))
+        callback.onResult(
+            runBlocking { loadPages(params.requestedLoadSize) },
+        )
     }
 
     override fun loadBefore(
@@ -61,7 +66,7 @@ internal class TrackedEntityInstanceQueryDataSource constructor(
         return item
     }
 
-    private fun loadPages(requestedLoadSize: Int): List<TrackedEntityInstance> {
+    private suspend fun loadPages(requestedLoadSize: Int): List<TrackedEntityInstance> {
         return dataFetcher.loadPages(requestedLoadSize).mapNotNull {
             when (it) {
                 is Result.Success -> it.value

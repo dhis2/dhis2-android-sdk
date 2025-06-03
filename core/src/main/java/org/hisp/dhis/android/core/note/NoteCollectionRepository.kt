@@ -108,7 +108,7 @@ class NoteCollectionRepository internal constructor(
         return ReadOnlyOneObjectRepositoryFinalImpl(store, databaseAdapter, childrenAppenders, updatedScope)
     }
 
-    override fun propagateState(m: Note, action: HandleAction?) {
+    override suspend fun propagateState(m: Note, action: HandleAction?) {
         dataStatePropagator.propagateNoteCreation(m)
     }
 

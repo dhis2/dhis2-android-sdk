@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 
 import io.reactivex.Completable
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxCompletable
 import org.hisp.dhis.android.core.arch.call.internal.DownloadProvider
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
@@ -55,7 +56,7 @@ internal constructor(
      * @return a `Completable` that completes when the download and processing is finished
      */
     override fun download(): Completable {
-        return rxCompletable { downloadProvider.download(true) }
+        return rxCompletable { downloadInternal() }
     }
 
     /**
@@ -64,6 +65,10 @@ internal constructor(
      * not be executed in the main thread. Consider the asynchronous version [.download].
      */
     override fun blockingDownload() {
-        download().blockingAwait()
+        runBlocking { downloadInternal() }
+    }
+
+    private suspend fun downloadInternal() {
+        downloadProvider.download(true)
     }
 }

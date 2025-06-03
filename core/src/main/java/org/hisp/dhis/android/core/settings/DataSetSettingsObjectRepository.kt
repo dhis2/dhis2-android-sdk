@@ -39,7 +39,7 @@ class DataSetSettingsObjectRepository internal constructor(
     dataSetSettingCall: DataSetSettingCall,
 ) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<DataSetSettings>(dataSetSettingCall),
     ReadOnlyWithDownloadObjectRepository<DataSetSettings> {
-    override fun blockingGet(): DataSetSettings? {
+    override suspend fun getInternal(): DataSetSettings? {
         val settings = store.selectAll()
         return if (settings.isEmpty()) {
             null

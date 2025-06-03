@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
@@ -82,14 +83,14 @@ class EventImportHandlerShould {
     }
 
     @Test
-    fun do_nothing_when_passing_null_argument() {
+    fun do_nothing_when_passing_null_argument() = runTest {
         eventImportHandler.handleEventImportSummaries(null, events)
 
         verify(eventStore, never()).setSyncStateOrDelete(anyString(), any())
     }
 
     @Test
-    fun invoke_set_state_after_handle_event_import_summaries_with_success_status_and_reference() {
+    fun invoke_set_state_after_handle_event_import_summaries_with_success_status_and_reference() = runTest {
         whenever(importSummary.status()).thenReturn(ImportStatus.SUCCESS)
         whenever(importSummary.reference()).thenReturn("test_event_uid")
 
@@ -99,7 +100,7 @@ class EventImportHandlerShould {
     }
 
     @Test
-    fun invoke_set_state_after_handle_event_import_summaries_with_error_status_and_reference() {
+    fun invoke_set_state_after_handle_event_import_summaries_with_error_status_and_reference() = runTest {
         whenever(importSummary.status()).thenReturn(ImportStatus.ERROR)
         whenever(importSummary.reference()).thenReturn("test_event_uid")
 
@@ -109,7 +110,7 @@ class EventImportHandlerShould {
     }
 
     @Test
-    fun mark_as_to_update_events_not_present_in_the_response() {
+    fun mark_as_to_update_events_not_present_in_the_response() = runTest {
         whenever(importSummary.status()).thenReturn(ImportStatus.SUCCESS)
         whenever(importSummary.reference()).thenReturn("test_event_uid")
 

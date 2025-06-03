@@ -55,7 +55,7 @@ internal class EventImportHandler(
 ) {
 
     @Suppress("NestedBlockDepth")
-    fun handleEventImportSummaries(
+    suspend fun handleEventImportSummaries(
         eventImportSummaries: List<EventImportSummary?>?,
         events: List<Event>,
     ): TEIWebResponseHandlerSummary {

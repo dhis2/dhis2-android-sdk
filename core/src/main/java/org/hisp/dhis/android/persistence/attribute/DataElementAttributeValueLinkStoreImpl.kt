@@ -30,7 +30,6 @@ package org.hisp.dhis.android.persistence.attribute
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLink
-import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLinkTableInfo
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilder
 import org.hisp.dhis.android.persistence.common.stores.ObjectStoreImpl
 

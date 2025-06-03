@@ -37,7 +37,7 @@ internal class CategoryCategoryComboLinkStoreImpl(
     val dao: CategoryCategoryComboLinkDao,
     override val builder: SQLStatementBuilder = SQLStatementBuilderImpl(
         CategoryCategoryComboLinkTableInfo.TABLE_INFO.name(),
-        false
+        false,
     ),
 ) : ObjectStoreImpl<CategoryCategoryComboLink, CategoryCategoryComboLinkDB>(
     dao,

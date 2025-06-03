@@ -41,7 +41,6 @@ internal class IdentifiableDeletableDataObjectSQLStatementBuilderImpl(
             "UPDATE $tableName SET ${DeletableDataColumns.DELETED} = 1 " +
                 "WHERE ${IdentifiableColumns.UID} = '$uid'",
         )
-
     }
 
     override fun selectSyncStateWhere(where: String): RoomRawQuery {

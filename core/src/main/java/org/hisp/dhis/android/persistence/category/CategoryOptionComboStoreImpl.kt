@@ -37,7 +37,8 @@ import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreIm
 internal class CategoryOptionComboStoreImpl(
     val dao: CategoryOptionComboDao,
     override val builder: SQLStatementBuilder = SQLStatementBuilderImpl(
-        CategoryOptionComboTableInfo.TABLE_INFO.name(), false
+        CategoryOptionComboTableInfo.TABLE_INFO.name(),
+        false,
     ),
 ) : IdentifiableObjectStoreImpl<CategoryOptionCombo, CategoryOptionComboDB>(
     dao,

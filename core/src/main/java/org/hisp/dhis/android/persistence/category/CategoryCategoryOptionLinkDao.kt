@@ -32,4 +32,4 @@ import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
 @Dao
-internal abstract class CategoryCategoryOptionLinkDao : ObjectDao<CategoryCategoryOptionLinkDB>
+internal interface CategoryCategoryOptionLinkDao : ObjectDao<CategoryCategoryOptionLinkDB>

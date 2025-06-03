@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyinterfaceight (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -32,4 +32,4 @@ import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
 @Dao
-internal abstract class CategoryOptionDao : ObjectDao<CategoryOptionDB>
+internal interface CategoryOptionDao : ObjectDao<CategoryOptionDB>

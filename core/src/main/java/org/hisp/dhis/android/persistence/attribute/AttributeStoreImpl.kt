@@ -37,7 +37,7 @@ internal class AttributeStoreImpl(
     val dao: AttributeDao,
     override val builder: SQLStatementBuilder = SQLStatementBuilderImpl(
         AttributeTableInfo.TABLE_INFO.name(),
-        false
+        false,
     ),
 ) : IdentifiableObjectStoreImpl<Attribute, AttributeDB>(
     dao,

@@ -37,7 +37,8 @@ import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreIm
 internal class CategoryStoreImpl(
     val dao: CategoryDao,
     override val builder: SQLStatementBuilder = SQLStatementBuilderImpl(
-        CategoryTableInfo.TABLE_INFO.name(), false
+        CategoryTableInfo.TABLE_INFO.name(),
+        false,
     ),
 ) : IdentifiableObjectStoreImpl<Category, CategoryDB>(
     dao,

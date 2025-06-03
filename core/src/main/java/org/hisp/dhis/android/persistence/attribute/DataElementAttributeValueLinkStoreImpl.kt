@@ -38,7 +38,7 @@ internal class DataElementAttributeValueLinkStoreImpl(
     val dao: DataElementAttributeValueLinkDao,
     override val builder: SQLStatementBuilder = SQLStatementBuilderImpl(
         DataElementAttributeValueLinkTableInfo.TABLE_INFO.name(),
-        false
+        false,
     ),
 ) : ObjectStoreImpl<DataElementAttributeValueLink, DataElementAttributeValueLinkDB>(
     dao,

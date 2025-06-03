@@ -38,7 +38,7 @@ internal class ProgramAttributeValueLinkStoreImpl(
     val dao: ProgramAttributeValueLinkDao,
     override val builder: SQLStatementBuilder = SQLStatementBuilderImpl(
         ProgramAttributeValueLinkTableInfo.TABLE_INFO.name(),
-        false
+        false,
     ),
 ) : ObjectStoreImpl<ProgramAttributeValueLink, ProgramAttributeValueLinkDB>(
     dao,

@@ -30,11 +30,15 @@ package org.hisp.dhis.android.persistence.category
 
 import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilder
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectStoreImpl
 
 internal class CategoryCategoryOptionLinkStoreImpl(
     val dao: CategoryCategoryOptionLinkDao,
-    override val builder: SQLStatementBuilder,
+    override val builder: SQLStatementBuilder = SQLStatementBuilderImpl(
+        CategoryCategoryOptionLinkTableInfo.TABLE_INFO.name(),
+        false
+    ),
 ) : ObjectStoreImpl<CategoryCategoryOptionLink, CategoryCategoryOptionLinkDB>(
     dao,
     CategoryCategoryOptionLink::toDB,

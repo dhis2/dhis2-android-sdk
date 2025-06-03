@@ -29,9 +29,7 @@
 package org.hisp.dhis.android.persistence.constant
 
 import androidx.room.Dao
-import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
+import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
 @Dao
-internal abstract class ConstantDao : IdentifiableObjectDao<ConstantDB>(
-    ConstantTableInfo.TABLE_INFO.name(),
-)
+internal abstract class ConstantDao : ObjectDao<ConstantDB>

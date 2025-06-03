@@ -30,11 +30,15 @@ package org.hisp.dhis.android.persistence.category
 
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLink
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilder
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectStoreImpl
 
 internal class CategoryCategoryComboLinkStoreImpl(
     val dao: CategoryCategoryComboLinkDao,
-    override val builder: SQLStatementBuilder,
+    override val builder: SQLStatementBuilder = SQLStatementBuilderImpl(
+        CategoryCategoryComboLinkTableInfo.TABLE_INFO.name(),
+        false
+    ),
 ) : ObjectStoreImpl<CategoryCategoryComboLink, CategoryCategoryComboLinkDB>(
     dao,
     CategoryCategoryComboLink::toDB,

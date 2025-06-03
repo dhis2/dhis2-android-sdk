@@ -29,9 +29,7 @@
 package org.hisp.dhis.android.persistence.category
 
 import androidx.room.Dao
-import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
+import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
 @Dao
-internal abstract class CategoryComboDao : IdentifiableObjectDao<CategoryComboDB>(
-    CategoryComboTableInfo.TABLE_INFO.name(),
-)
+internal abstract class CategoryComboDao : ObjectDao<CategoryComboDB>

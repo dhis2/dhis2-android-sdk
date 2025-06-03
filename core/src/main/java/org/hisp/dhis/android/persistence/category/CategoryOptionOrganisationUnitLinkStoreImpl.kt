@@ -32,11 +32,14 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLink
 import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLinkTableInfo
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilder
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectStoreImpl
 
 internal class CategoryOptionOrganisationUnitLinkStoreImpl(
     val dao: CategoryOptionOrganisationUnitLinkDao,
-    override val builder: SQLStatementBuilder,
+    override val builder: SQLStatementBuilder = SQLStatementBuilderImpl(
+        CategoryOptionOrganisationUnitLinkTableInfo.TABLE_INFO.name(), false
+    ),
 ) : ObjectStoreImpl<CategoryOptionOrganisationUnitLink, CategoryOptionOrganisationUnitLinkDB>(
     dao,
     CategoryOptionOrganisationUnitLink::toDB,

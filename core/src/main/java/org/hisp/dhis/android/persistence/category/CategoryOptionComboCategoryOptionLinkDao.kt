@@ -32,6 +32,4 @@ import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
 @Dao
-internal abstract class CategoryOptionComboCategoryOptionLinkDao : ObjectDao<CategoryOptionComboCategoryOptionLinkDB>(
-    CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO.name(),
-)
+internal abstract class CategoryOptionComboCategoryOptionLinkDao : ObjectDao<CategoryOptionComboCategoryOptionLinkDB>

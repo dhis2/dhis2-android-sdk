@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 internal class OrganisationUnitOrganisationUnitGroupProgramChildrenAppender private constructor(
     private val childStore: OrganisationUnitGroupStore,
 ) : ChildrenAppender<OrganisationUnit>() {
-    override fun appendChildren(m: OrganisationUnit): OrganisationUnit {
+    override suspend fun appendChildren(m: OrganisationUnit): OrganisationUnit {
         val children = childStore.getForOrganisationUnit(m.uid())
         return m.toBuilder().organisationUnitGroups(children).build()
     }

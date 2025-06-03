@@ -49,7 +49,7 @@ internal class ResourceStoreImpl(
         WHERE_DELETE_BINDER,
         { cursor: Cursor -> Resource.create(cursor) },
     ) {
-    override fun getLastUpdated(type: Resource.Type): String? {
+    override suspend fun getLastUpdated(type: Resource.Type): String? {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(ResourceTableInfo.Columns.RESOURCE_TYPE, type.name).build()
         val resourceList = selectWhere(whereClause)
@@ -59,7 +59,7 @@ internal class ResourceStoreImpl(
         }
     }
 
-    override fun deleteResource(type: Resource.Type): Boolean {
+    override suspend fun deleteResource(type: Resource.Type): Boolean {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(ResourceTableInfo.Columns.RESOURCE_TYPE, type.name).build()
 

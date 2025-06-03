@@ -37,7 +37,7 @@ internal class JobReportRelationshipHandler internal constructor(
     relationshipStore: RelationshipStore,
 ) : JobReportTypeHandler(relationshipStore) {
 
-    override fun handleObject(uid: String, state: State): HandleAction {
+    override suspend fun handleObject(uid: String, state: State): HandleAction {
         val handledState =
             if (state == State.ERROR || state == State.WARNING) {
                 State.TO_UPDATE
@@ -49,7 +49,7 @@ internal class JobReportRelationshipHandler internal constructor(
     }
 
     @Suppress("EmptyFunctionBlock")
-    override fun storeConflict(errorReport: JobValidationError) {
+    override suspend fun storeConflict(errorReport: JobValidationError) {
         val relationship by lazy { relationshipStore.selectByUid(errorReport.uid) }
 
         if (errorReport.errorCode == ImporterError.E4005.name && relationship?.deleted() == true) {

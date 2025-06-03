@@ -34,5 +34,5 @@ internal abstract class ChildrenAppender<M> {
          */
     }
 
-    abstract fun appendChildren(m: M): M
+    abstract suspend fun appendChildren(m: M): M
 }

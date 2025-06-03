@@ -32,9 +32,9 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
 internal interface TrackedEntityInstanceStore : IdentifiableDeletableDataObjectStore<TrackedEntityInstance> {
-    fun queryTrackedEntityInstancesToSync(): List<TrackedEntityInstance>
-    fun queryTrackedEntityInstancesToPost(): List<TrackedEntityInstance>
-    fun querySyncedTrackedEntityInstanceUids(): List<String>
-    fun queryMissingRelationshipsUids(): List<String>
-    fun setAggregatedSyncState(uid: String, state: State): Int
+    suspend fun queryTrackedEntityInstancesToSync(): List<TrackedEntityInstance>
+    suspend fun queryTrackedEntityInstancesToPost(): List<TrackedEntityInstance>
+    suspend fun querySyncedTrackedEntityInstanceUids(): List<String>
+    suspend fun queryMissingRelationshipsUids(): List<String>
+    suspend fun setAggregatedSyncState(uid: String, state: State): Int
 }

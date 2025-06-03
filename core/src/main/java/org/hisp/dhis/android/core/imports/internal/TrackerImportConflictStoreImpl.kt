@@ -52,7 +52,7 @@ internal class TrackerImportConflictStoreImpl(
         { cursor: Cursor -> TrackerImportConflict.create(cursor) },
     ) {
 
-    override fun deleteEventConflicts(eventUid: String) {
+    override suspend fun deleteEventConflicts(eventUid: String) {
         deleteTypeConflicts(
             TrackerImportConflictTableInfo.Columns.EVENT,
             EventTableInfo.TABLE_INFO,
@@ -60,7 +60,7 @@ internal class TrackerImportConflictStoreImpl(
         )
     }
 
-    override fun deleteEnrollmentConflicts(enrollmentUid: String) {
+    override suspend fun deleteEnrollmentConflicts(enrollmentUid: String) {
         deleteTypeConflicts(
             TrackerImportConflictTableInfo.Columns.ENROLLMENT,
             EnrollmentTableInfo.TABLE_INFO,
@@ -68,7 +68,7 @@ internal class TrackerImportConflictStoreImpl(
         )
     }
 
-    override fun deleteTrackedEntityConflicts(tackedEntityUid: String) {
+    override suspend fun deleteTrackedEntityConflicts(tackedEntityUid: String) {
         deleteTypeConflicts(
             TrackerImportConflictTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
             TrackedEntityInstanceTableInfo.TABLE_INFO,
@@ -76,7 +76,7 @@ internal class TrackerImportConflictStoreImpl(
         )
     }
 
-    private fun deleteTypeConflicts(column: String, tableInfo: TableInfo, uid: String) {
+    private suspend fun deleteTypeConflicts(column: String, tableInfo: TableInfo, uid: String) {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(column, uid)
             .appendKeyStringValue(

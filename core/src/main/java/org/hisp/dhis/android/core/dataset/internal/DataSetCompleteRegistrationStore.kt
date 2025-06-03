@@ -31,14 +31,14 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 
-internal interface DataSetCompleteRegistrationStore : ObjectWithoutUidStore<DataSetCompleteRegistration> {
-    fun setState(dataSetCompleteRegistration: DataSetCompleteRegistration, newState: State?)
-    fun setDeleted(dataSetCompleteRegistration: DataSetCompleteRegistration)
-    fun removeNotPresentAndSynced(
+interface DataSetCompleteRegistrationStore : ObjectWithoutUidStore<DataSetCompleteRegistration> {
+    suspend fun setState(dataSetCompleteRegistration: DataSetCompleteRegistration, newState: State?)
+    suspend fun setDeleted(dataSetCompleteRegistration: DataSetCompleteRegistration)
+    suspend fun removeNotPresentAndSynced(
         dataSetUids: Collection<String>,
         periodIds: Collection<String>,
         rootOrgunitUid: String,
     ): Boolean
 
-    fun isBeingUpload(dscr: DataSetCompleteRegistration): Boolean
+    suspend fun isBeingUpload(dscr: DataSetCompleteRegistration): Boolean
 }

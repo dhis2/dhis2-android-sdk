@@ -57,7 +57,7 @@ internal class ProgramStageAttributeValueLinkStoreImpl(
         }
     }
 
-    override fun getLinksForProgramStage(programStageUid: String): List<ProgramStageAttributeValueLink> {
+    override suspend fun getLinksForProgramStage(programStageUid: String): List<ProgramStageAttributeValueLink> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(ProgramStageAttributeValueLinkTableInfo.Columns.PROGRAM_STAGE, programStageUid)
             .build()

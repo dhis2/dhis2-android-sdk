@@ -35,7 +35,7 @@ internal class TrackedEntityInstanceFilterEvenFilterChildrenAppender private con
     private val childStore: TrackedEntityInstanceEventFilterStore,
 ) : ChildrenAppender<TrackedEntityInstanceFilter>() {
 
-    override fun appendChildren(m: TrackedEntityInstanceFilter): TrackedEntityInstanceFilter {
+    override suspend fun appendChildren(m: TrackedEntityInstanceFilter): TrackedEntityInstanceFilter {
         val children = childStore.getForTrackedEntityInstanceFilter(m.uid())
         return m.toBuilder().eventFilters(children).build()
     }

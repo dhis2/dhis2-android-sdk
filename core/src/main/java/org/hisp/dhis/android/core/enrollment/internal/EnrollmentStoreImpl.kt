@@ -55,7 +55,7 @@ internal class EnrollmentStoreImpl(
         { cursor: Cursor -> Enrollment.create(cursor) },
     ) {
 
-    override fun queryEnrollmentsToPost(): Map<String, List<Enrollment>> {
+    override suspend fun queryEnrollmentsToPost(): Map<String, List<Enrollment>> {
         val enrollmentsToPostQuery = WhereClauseBuilder()
             .appendInKeyStringValues(
                 DataColumns.AGGREGATED_SYNC_STATE,
@@ -66,7 +66,7 @@ internal class EnrollmentStoreImpl(
         return enrollmentList.groupBy { it.trackedEntityInstance()!! }
     }
 
-    override fun queryMissingRelationshipsUids(): List<String> {
+    override suspend fun queryMissingRelationshipsUids(): List<String> {
         val whereRelationshipsClause = WhereClauseBuilder()
             .appendKeyStringValue(DataColumns.AGGREGATED_SYNC_STATE, State.RELATIONSHIP)
             .appendIsNullValue(EventTableInfo.Columns.ORGANISATION_UNIT)
@@ -75,7 +75,7 @@ internal class EnrollmentStoreImpl(
         return selectUidsWhere(whereRelationshipsClause)
     }
 
-    override fun setAggregatedSyncState(uid: String, state: State): Int {
+    override suspend fun setAggregatedSyncState(uid: String, state: State): Int {
         val updates = ContentValues()
         updates.put(DataColumns.AGGREGATED_SYNC_STATE, state.toString())
         val whereClause = WhereClauseBuilder()
@@ -85,13 +85,13 @@ internal class EnrollmentStoreImpl(
         return updateWhere(updates, whereClause)
     }
 
-    override fun selectAggregatedSyncStateWhere(whereClause: String): List<State> {
+    override suspend fun selectAggregatedSyncStateWhere(whereClause: String): List<State> {
         val statesStr = selectStringColumnsWhereClause(DataColumns.AGGREGATED_SYNC_STATE, whereClause)
 
         return statesStr.map { State.valueOf(it) }
     }
 
-    override fun selectByTrackedEntityInstanceAndAttribute(
+    override suspend fun selectByTrackedEntityInstanceAndAttribute(
         teiUid: String,
         attributeUid: String,
     ): List<Enrollment> {

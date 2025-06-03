@@ -50,7 +50,7 @@ internal class DataValueHandler(
     }
 
     override suspend fun beforeCollectionHandled(oCollection: Collection<DataValue>): Collection<DataValue> {
-        val dataValuesPendingToSync = dataValuesPendingToSync
+        val dataValuesPendingToSync = dataValuesPendingToSync()
         val dataValuesToUpdate: MutableList<DataValue> = ArrayList()
         for (dataValue in oCollection) {
             if (!containsDataValue(dataValuesPendingToSync, dataValue)) {
@@ -80,14 +80,13 @@ internal class DataValueHandler(
         }
     }
 
-    private val dataValuesPendingToSync: List<DataValue>
-        get() {
-            val whereClause = WhereClauseBuilder()
-                .appendNotInKeyStringValues(
-                    DataValueTableInfo.Columns.SYNC_STATE,
-                    listOf(State.SYNCED.name, State.SYNCED_VIA_SMS.name),
-                )
-                .build()
-            return store.selectWhere(whereClause)
-        }
+    private suspend fun dataValuesPendingToSync(): List<DataValue> {
+        val whereClause = WhereClauseBuilder()
+            .appendNotInKeyStringValues(
+                DataValueTableInfo.Columns.SYNC_STATE,
+                listOf(State.SYNCED.name, State.SYNCED_VIA_SMS.name),
+            )
+            .build()
+        return store.selectWhere(whereClause)
+    }
 }

@@ -31,6 +31,8 @@ import android.util.Log
 import android.util.Pair
 import io.reactivex.Completable
 import io.reactivex.Single
+import kotlinx.coroutines.rx2.rxCompletable
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository.TooManySubmissionsException
 import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType
@@ -45,7 +47,7 @@ internal class OngoingSubmissionsStore(
     private var lastGeneratedSubmissionId: Int? = null
 
     fun getOngoingSubmissions(): Single<Map<Int, SubmissionType>> {
-        return Single.fromCallable {
+        return rxSingle {
             if (ongoingSubmissions == null) {
                 updateOngoingSubmissions()
             }
@@ -68,7 +70,7 @@ internal class OngoingSubmissionsStore(
                 if (submissions.containsKey(id)) {
                     Completable.error(IllegalArgumentException("Submission id already exists"))
                 } else {
-                    Completable.fromCallable {
+                    rxCompletable {
                         val ongoingSubmission = SMSOngoingSubmission.builder().submissionId(id).type(type).build()
                         smsOngoingSubmissionStore.insert(ongoingSubmission)
                         updateOngoingSubmissions()
@@ -82,7 +84,7 @@ internal class OngoingSubmissionsStore(
         return if (id == null) {
             Completable.error(IllegalArgumentException("Wrong submission id"))
         } else {
-            Completable.fromCallable {
+            rxCompletable {
                 val whereClause = WhereClauseBuilder()
                     .appendKeyStringValue(SMSOngoingSubmissionTableInfo.Columns.SUBMISSION_ID, id)
                     .build()
@@ -92,7 +94,7 @@ internal class OngoingSubmissionsStore(
         }
     }
 
-    private fun updateOngoingSubmissions() {
+    private suspend fun updateOngoingSubmissions() {
         val submissionList = smsOngoingSubmissionStore.selectAll()
         this.ongoingSubmissions = submissionList.associate { it.submissionId() to it.type() }
 

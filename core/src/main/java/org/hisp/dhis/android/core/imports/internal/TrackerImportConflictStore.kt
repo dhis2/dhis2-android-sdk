@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
 
 internal interface TrackerImportConflictStore : ObjectStore<TrackerImportConflict> {
-    fun deleteEventConflicts(eventUid: String)
-    fun deleteEnrollmentConflicts(enrollmentUid: String)
-    fun deleteTrackedEntityConflicts(tackedEntityUid: String)
+    suspend fun deleteEventConflicts(eventUid: String)
+    suspend fun deleteEnrollmentConflicts(enrollmentUid: String)
+    suspend fun deleteTrackedEntityConflicts(tackedEntityUid: String)
 }

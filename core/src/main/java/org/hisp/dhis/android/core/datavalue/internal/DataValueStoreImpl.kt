@@ -54,7 +54,7 @@ internal class DataValueStoreImpl(
         { cursor: Cursor? -> DataValue.create(cursor) },
     ) {
 
-    override fun getDataValuesWithState(state: State): Collection<DataValue> {
+    override suspend fun getDataValuesWithState(state: State): Collection<DataValue> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(DataValueTableInfo.Columns.SYNC_STATE, state.name).build()
         return selectWhere(whereClause)
@@ -64,23 +64,23 @@ internal class DataValueStoreImpl(
      * @param dataValue DataValue element you want to update
      * @param newState  The new state to be set for the DataValue
      */
-    override fun setState(dataValue: DataValue, newState: State) {
+    override suspend fun setState(dataValue: DataValue, newState: State) {
         val updatedDataValue = dataValue.toBuilder().syncState(newState).build()
         updateWhere(updatedDataValue)
     }
 
-    override fun exists(dataValue: DataValue): Boolean {
+    override suspend fun exists(dataValue: DataValue): Boolean {
         return selectWhere(uniqueWhereClauseBuilder(dataValue).build()).isNotEmpty()
     }
 
-    override fun isDataValueBeingUpload(dataValue: DataValue): Boolean {
+    override suspend fun isDataValueBeingUpload(dataValue: DataValue): Boolean {
         val whereClause = uniqueWhereClauseBuilder(dataValue)
             .appendKeyStringValue(DataValueTableInfo.Columns.SYNC_STATE, State.UPLOADING)
             .build()
         return selectWhere(whereClause).isNotEmpty()
     }
 
-    override fun isDeleted(dataValue: DataValue): Boolean {
+    override suspend fun isDeleted(dataValue: DataValue): Boolean {
         val whereClause = uniqueWhereClauseBuilder(dataValue)
             .appendKeyNumberValue(DataValueTableInfo.Columns.DELETED, 1)
             .build()
@@ -96,7 +96,7 @@ internal class DataValueStoreImpl(
             .appendKeyStringValue(DataValueTableInfo.Columns.ATTRIBUTE_OPTION_COMBO, dataValue.attributeOptionCombo()!!)
     }
 
-    override fun existsInDataSet(dataValue: DataValue, dataSetUid: String): Boolean {
+    override suspend fun existsInDataSet(dataValue: DataValue, dataSetUid: String): Boolean {
         val whereClauseBuilder = uniqueWhereClauseBuilder(dataValue)
             .appendInSubQuery(
                 dataValueKey,

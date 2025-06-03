@@ -47,7 +47,7 @@ internal class DataValueImportHandler(
     private val dataValueConflictStore: DataValueConflictStore,
 ) {
 
-    fun handleImportSummary(
+    suspend fun handleImportSummary(
         dataValueSet: DataValueSet?,
         dataValueImportSummary: DataValueImportSummary?,
     ) {
@@ -70,7 +70,7 @@ internal class DataValueImportHandler(
         }
     }
 
-    private fun deleteDataValueConflicts(dataValues: List<DataValue>) {
+    private suspend fun deleteDataValueConflicts(dataValues: List<DataValue>) {
         dataValues.forEach { dataValue ->
             val whereClause = WhereClauseBuilder()
                 .appendKeyStringValue(
@@ -97,7 +97,7 @@ internal class DataValueImportHandler(
         }
     }
 
-    private fun handleDataValueWarnings(
+    private suspend fun handleDataValueWarnings(
         dataValues: List<DataValue>,
         dataValueImportSummary: DataValueImportSummary,
     ) {
@@ -109,7 +109,7 @@ internal class DataValueImportHandler(
         } ?: setStateToDataValues(WARNING, dataValues)
     }
 
-    private fun getValuesWithConflicts(
+    private suspend fun getValuesWithConflicts(
         dataValues: List<DataValue>,
         importConflicts: List<ImportConflict>?,
     ): Set<DataValue>? {
@@ -138,7 +138,7 @@ internal class DataValueImportHandler(
         }.toSet()
     }
 
-    private fun setDataValueStates(
+    private suspend fun setDataValueStates(
         dataValues: List<DataValue>,
         dataValueConflicts: Set<DataValue>,
     ) {
@@ -149,7 +149,7 @@ internal class DataValueImportHandler(
         setStateToDataValues(SYNCED, syncedValues)
     }
 
-    private fun setStateToDataValues(state: State, dataValues: Collection<DataValue>) {
+    private suspend fun setStateToDataValues(state: State, dataValues: Collection<DataValue>) {
         for (dataValue in dataValues) {
             if (dataValueStore.isDataValueBeingUpload(dataValue)) {
                 if (state == SYNCED && dataValueStore.isDeleted(dataValue)) {

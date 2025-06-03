@@ -49,7 +49,7 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator internal cons
     private val oldTrackerImporterPayloadGenerator: OldTrackerImporterPayloadGenerator,
 ) {
 
-    fun getTrackedEntityPayload(
+    suspend fun getTrackedEntityPayload(
         instances: List<TrackedEntityInstance>,
     ): NewTrackerImporterPayloadWrapper {
         val oldPayload = oldTrackerImporterPayloadGenerator.getTrackedEntityInstancePayload(instances)

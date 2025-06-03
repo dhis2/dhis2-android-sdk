@@ -52,7 +52,7 @@ internal class TrackedEntityInstanceStoreImpl(
         BINDER,
         { cursor: Cursor -> TrackedEntityInstance.create(cursor) },
     ) {
-    override fun queryTrackedEntityInstancesToSync(): List<TrackedEntityInstance> {
+    override suspend fun queryTrackedEntityInstancesToSync(): List<TrackedEntityInstance> {
         val uploadableStatesString = uploadableStatesIncludingError().map { it.name }
         val whereToSyncClause = WhereClauseBuilder()
             .appendInKeyStringValues(DataColumns.AGGREGATED_SYNC_STATE, uploadableStatesString)
@@ -60,21 +60,21 @@ internal class TrackedEntityInstanceStoreImpl(
         return selectWhere(whereToSyncClause)
     }
 
-    override fun queryTrackedEntityInstancesToPost(): List<TrackedEntityInstance> {
+    override suspend fun queryTrackedEntityInstancesToPost(): List<TrackedEntityInstance> {
         val whereToPostClause = WhereClauseBuilder()
             .appendKeyStringValue(DataColumns.AGGREGATED_SYNC_STATE, State.TO_POST.name)
             .build()
         return selectWhere(whereToPostClause)
     }
 
-    override fun querySyncedTrackedEntityInstanceUids(): List<String> {
+    override suspend fun querySyncedTrackedEntityInstanceUids(): List<String> {
         val whereSyncedClause = WhereClauseBuilder()
             .appendKeyStringValue(DataColumns.AGGREGATED_SYNC_STATE, State.SYNCED)
             .build()
         return selectUidsWhere(whereSyncedClause)
     }
 
-    override fun queryMissingRelationshipsUids(): List<String> {
+    override suspend fun queryMissingRelationshipsUids(): List<String> {
         val whereRelationshipsClause = WhereClauseBuilder()
             .appendKeyStringValue(DataColumns.AGGREGATED_SYNC_STATE, State.RELATIONSHIP)
             .appendIsNullValue(TrackedEntityInstanceTableInfo.Columns.ORGANISATION_UNIT)
@@ -82,7 +82,7 @@ internal class TrackedEntityInstanceStoreImpl(
         return selectUidsWhere(whereRelationshipsClause)
     }
 
-    override fun setAggregatedSyncState(uid: String, state: State): Int {
+    override suspend fun setAggregatedSyncState(uid: String, state: State): Int {
         val updates = ContentValues()
         updates.put(DataColumns.AGGREGATED_SYNC_STATE, state.toString())
         val whereClause = WhereClauseBuilder()

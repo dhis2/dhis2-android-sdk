@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.dataset.DataSet
 internal class DataSetIndicatorChildrenAppender private constructor(
     private val childStore: IndicatorStore,
 ) : ChildrenAppender<DataSet>() {
-    override fun appendChildren(m: DataSet): DataSet {
+    override suspend fun appendChildren(m: DataSet): DataSet {
         val children = childStore.getForDataSet(m.uid())
         return m.toBuilder()
             .indicators(children)

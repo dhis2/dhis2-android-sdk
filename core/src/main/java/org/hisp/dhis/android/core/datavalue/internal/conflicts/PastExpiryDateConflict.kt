@@ -44,7 +44,7 @@ internal class PastExpiryDateConflict(
     override val regex: Regex
         get() = Regex("Current date is past expiry days for period (\\d+) and data set: (\\w{11})")
 
-    override fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict> {
+    override suspend fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict> {
         val foundDataValuesConflicts: MutableList<DataValueConflict> = ArrayList()
         val period = conflict.`object`()
         val dataSetUid = regex.find(conflict.value())?.groupValues?.get(2)

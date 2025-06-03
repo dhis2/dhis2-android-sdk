@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.arch.repositories.paging.internal
 
 import androidx.paging.ItemKeyedDataSource
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
@@ -48,23 +49,25 @@ class RepositoryDataSource<M : CoreObject> internal constructor(
         val whereClause = WhereClauseFromScopeBuilder(WhereClauseBuilder()).getWhereClause(
             scope,
         )
-        val withoutChildren = store.selectWhere(
-            whereClause,
-            OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()),
-            params.requestedLoadSize,
-        )
-        callback.onResult(appendChildren(withoutChildren))
+        runBlocking {
+            val withoutChildren = store.selectWhere(
+                whereClause,
+                OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()),
+                params.requestedLoadSize,
+            )
+            callback.onResult(appendChildren(withoutChildren))
+        }
     }
 
     override fun loadAfter(params: LoadParams<M>, callback: LoadCallback<M>) {
-        loadPages(params, callback, false)
+        runBlocking { loadPages(params, callback, false) }
     }
 
     override fun loadBefore(params: LoadParams<M>, callback: LoadCallback<M>) {
-        loadPages(params, callback, true)
+        runBlocking { loadPages(params, callback, true) }
     }
 
-    private fun loadPages(params: LoadParams<M>, callback: LoadCallback<M>, reversed: Boolean) {
+    private suspend fun loadPages(params: LoadParams<M>, callback: LoadCallback<M>, reversed: Boolean) {
         val whereClauseBuilder = WhereClauseBuilder()
 
         OrderByClauseBuilder.addSortingClauses(
@@ -89,7 +92,7 @@ class RepositoryDataSource<M : CoreObject> internal constructor(
         return item
     }
 
-    private fun appendChildren(withoutChildren: List<M>): List<M> {
+    private suspend fun appendChildren(withoutChildren: List<M>): List<M> {
         return appendInObjectCollection(withoutChildren, databaseAdapter, childrenAppenders, scope.children())
     }
 }

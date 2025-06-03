@@ -43,7 +43,7 @@ internal class PeriodAfterLatestOpenFutureConflict(
     override val regex: Regex
         get() = Regex("Period: (\\d+) is after latest open future period: (\\d+) for data element: (\\w{11})")
 
-    override fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict> {
+    override suspend fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict> {
         val foundDataValuesConflicts: MutableList<DataValueConflict> = ArrayList()
         val period = conflict.`object`()
         val dataElementUid = regex.find(conflict.value())?.groupValues?.get(3)

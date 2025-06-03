@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.program.ProgramStageDataElement
 internal class DataElementValueTypeRenderingChildrenAppender(
     databaseAdapter: DatabaseAdapter,
 ) : ValueTypeRenderingChildrenAppender<ProgramStageDataElement>(ValueTypeDeviceRenderingStoreImpl(databaseAdapter)) {
-    override fun appendChildren(m: ProgramStageDataElement): ProgramStageDataElement {
+    override suspend fun appendChildren(m: ProgramStageDataElement): ProgramStageDataElement {
         val valueTypeRendering = getValueTypeDeviceRendering(m)
         return m.toBuilder().renderType(valueTypeRendering).build()
     }

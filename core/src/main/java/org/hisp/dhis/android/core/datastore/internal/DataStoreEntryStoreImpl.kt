@@ -55,7 +55,7 @@ internal class DataStoreEntryStoreImpl(
 ),
     DataStoreEntryStore {
 
-    override fun setState(entry: DataStoreEntry, state: State) {
+    override suspend fun setState(entry: DataStoreEntry, state: State) {
         val updates = ContentValues()
         updates.put(DataColumns.SYNC_STATE, state.toString())
         val whereClause = WhereClauseBuilder()
@@ -66,7 +66,7 @@ internal class DataStoreEntryStoreImpl(
         updateWhere(updates, whereClause)
     }
 
-    override fun setStateIfUploading(entry: DataStoreEntry, state: State) {
+    override suspend fun setStateIfUploading(entry: DataStoreEntry, state: State) {
         val updates = ContentValues()
         updates.put(DataColumns.SYNC_STATE, state.toString())
         val whereClause = WhereClauseBuilder()

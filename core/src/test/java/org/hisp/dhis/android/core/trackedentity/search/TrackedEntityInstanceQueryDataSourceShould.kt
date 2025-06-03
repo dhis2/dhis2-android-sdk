@@ -278,7 +278,7 @@ class TrackedEntityInstanceQueryDataSourceShould {
 
     private fun identityAppender(): ChildrenAppender<TrackedEntityInstance> {
         return object : ChildrenAppender<TrackedEntityInstance>() {
-            override fun appendChildren(m: TrackedEntityInstance): TrackedEntityInstance {
+            override suspend fun appendChildren(m: TrackedEntityInstance): TrackedEntityInstance {
                 return m
             }
         }

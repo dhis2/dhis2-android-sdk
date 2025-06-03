@@ -123,7 +123,7 @@ internal class TrackedEntityInstanceImportHandler internal constructor(
         } ?: TEIWebResponseHandlerSummary()
     }
 
-    private fun storeTEIImportConflicts(teiImportSummary: TEIImportSummary) {
+    private suspend fun storeTEIImportConflicts(teiImportSummary: TEIImportSummary) {
         val trackerImportConflicts: MutableList<TrackerImportConflict> = ArrayList()
         if (teiImportSummary.description() != null) {
             trackerImportConflicts.add(
@@ -170,7 +170,7 @@ internal class TrackedEntityInstanceImportHandler internal constructor(
         } ?: listOf()
     }
 
-    private fun checkAlreadyDeletedInServer(summary: TEIImportSummary): String? {
+    private suspend fun checkAlreadyDeletedInServer(summary: TEIImportSummary): String? {
         val teiUid = summary.description()?.let {
             alreadyDeletedInServerRegex.find(it)?.groupValues?.get(1)
         }

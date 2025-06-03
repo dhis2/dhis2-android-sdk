@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.attribute.ProgramStageAttributeValueLink
 
 internal interface ProgramStageAttributeValueLinkStore : LinkStore<ProgramStageAttributeValueLink> {
-    fun getLinksForProgramStage(programStageUid: String): List<ProgramStageAttributeValueLink>
+    suspend fun getLinksForProgramStage(programStageUid: String): List<ProgramStageAttributeValueLink>
 }

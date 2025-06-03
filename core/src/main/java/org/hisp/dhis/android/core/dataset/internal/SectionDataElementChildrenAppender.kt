@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.dataset.Section
 internal class SectionDataElementChildrenAppender private constructor(
     private val childStore: DataElementStore,
 ) : ChildrenAppender<Section>() {
-    override fun appendChildren(m: Section): Section {
+    override suspend fun appendChildren(m: Section): Section {
         val dataElementList = childStore.getForSection(m.uid())
 
         val builder = m.toBuilder()

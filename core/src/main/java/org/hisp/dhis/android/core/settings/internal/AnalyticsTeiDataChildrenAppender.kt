@@ -62,7 +62,7 @@ internal class AnalyticsTeiDataChildrenAppender(
         whoNutritionData = analyticsTeiWHONutritionDataStore.selectAll()
     }
 
-    override fun appendChildren(m: AnalyticsTeiSetting): AnalyticsTeiSetting {
+    override suspend fun appendChildren(m: AnalyticsTeiSetting): AnalyticsTeiSetting {
         return buildAnalyticsTeiSetting(
             m,
             dataElements!!,

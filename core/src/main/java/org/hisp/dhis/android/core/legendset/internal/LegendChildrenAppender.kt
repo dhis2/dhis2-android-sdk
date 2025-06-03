@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.legendset.LegendSet
 internal class LegendChildrenAppender private constructor(
     private val childStore: LegendStore,
 ) : ChildrenAppender<LegendSet>() {
-    override fun appendChildren(m: LegendSet): LegendSet {
+    override suspend fun appendChildren(m: LegendSet): LegendSet {
         val children = childStore.getForLegendSet(m.uid())
         return m.toBuilder()
             .legends(children)

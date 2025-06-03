@@ -53,7 +53,7 @@ internal class ProgramStoreImpl(
         { cursor: Cursor -> Program.create(cursor) },
     ) {
 
-    override fun getUidsByProgramType(programType: ProgramType): List<String> {
+    override suspend fun getUidsByProgramType(programType: ProgramType): List<String> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(ProgramTableInfo.Columns.PROGRAM_TYPE, programType.toString()).build()
         return selectStringColumnsWhereClause(IdentifiableColumns.UID, whereClause)

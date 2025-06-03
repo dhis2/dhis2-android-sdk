@@ -34,7 +34,9 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore
 import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class D2CallExecutor(
     private val databaseAdapter: DatabaseAdapter,
     private val errorStore: D2ErrorStore,

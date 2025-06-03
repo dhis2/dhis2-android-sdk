@@ -61,7 +61,7 @@ internal class DataStoreHandler(
         return store.updateOrInsertWhere(o)
     }
 
-    private fun filterNotSyncedEntries(
+    private suspend fun filterNotSyncedEntries(
         namespace: String,
         slaves: Collection<DataStoreEntry>?,
     ): List<DataStoreEntry>? {
@@ -82,7 +82,7 @@ internal class DataStoreHandler(
         }
     }
 
-    private fun cleanOrphan(
+    private suspend fun cleanOrphan(
         namespace: String,
         slaves: Collection<DataStoreEntry>?,
     ) {

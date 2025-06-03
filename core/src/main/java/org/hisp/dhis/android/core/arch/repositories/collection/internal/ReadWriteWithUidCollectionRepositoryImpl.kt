@@ -88,7 +88,7 @@ abstract class ReadWriteWithUidCollectionRepositoryImpl<M, P, R : ReadOnlyCollec
 
     @Throws(D2Error::class)
     @Suppress("TooGenericExceptionCaught")
-    protected suspend fun addInternal(o: P): String {
+    protected open suspend fun addInternal(o: P): String {
         val obj = transformer.transform(o)
         return try {
             store.insert(obj)

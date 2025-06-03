@@ -156,7 +156,7 @@ internal class OrganisationUnitEvaluator(
         return "$OrgUnitAlias.${OrganisationUnitTableInfo.Columns.PATH} LIKE '%$orgunit%'"
     }
 
-    private fun getChildren(orgunits: List<String>): List<String> {
+    private suspend fun getChildren(orgunits: List<String>): List<String> {
         return organisationUnitStore.selectUidsWhere(
             WhereClauseBuilder()
                 .appendInKeyStringValues(OrganisationUnitTableInfo.Columns.PARENT, orgunits)

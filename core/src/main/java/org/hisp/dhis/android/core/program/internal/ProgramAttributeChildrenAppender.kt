@@ -40,7 +40,7 @@ internal class ProgramAttributeChildrenAppender private constructor(
     private val linkStore: ProgramAttributeValueLinkStore,
 ) : ChildrenAppender<Program>() {
 
-    override fun appendChildren(m: Program): Program {
+    override suspend fun appendChildren(m: Program): Program {
         val attributeValues = linkStore.getLinksForProgram(m.uid())
             .map {
                 AttributeValue.builder()

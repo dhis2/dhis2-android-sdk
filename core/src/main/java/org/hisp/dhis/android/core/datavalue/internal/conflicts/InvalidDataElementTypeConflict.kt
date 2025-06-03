@@ -41,7 +41,7 @@ internal open class InvalidDataElementTypeConflict(
     override val regex: Regex
         get() = Regex(".*, must match data element type: (\\w{11})")
 
-    override fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict> {
+    override suspend fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict> {
         val foundDataValuesConflicts: MutableList<DataValueConflict> = ArrayList()
         val value = conflict.`object`()
         val dataElementUid = regex.find(conflict.value())?.groupValues?.get(1)

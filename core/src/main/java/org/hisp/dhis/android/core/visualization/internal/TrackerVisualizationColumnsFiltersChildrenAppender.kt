@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.visualization.TrackerVisualization
 internal class TrackerVisualizationColumnsFiltersChildrenAppender private constructor(
     private val childStore: TrackerVisualizationDimensionStore,
 ) : ChildrenAppender<TrackerVisualization>() {
-    override fun appendChildren(m: TrackerVisualization): TrackerVisualization {
+    override suspend fun appendChildren(m: TrackerVisualization): TrackerVisualization {
         val groupedByPosition = childStore.getTrackerVisualizationDimensionForTrackerVisualization(m.uid())
             .groupBy { it.position() }
 

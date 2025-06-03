@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.common.CoreObject
 
 internal object ChildrenAppenderExecutor {
     @JvmStatic
-    fun <M> appendInObject(
+    suspend fun <M> appendInObject(
         m: M?,
         databaseAdapter: DatabaseAdapter,
         childrenAppenders: ChildrenAppenderGetter<M>,
@@ -48,7 +48,7 @@ internal object ChildrenAppenderExecutor {
     }
 
     @JvmStatic
-    fun <M : CoreObject?> appendInObjectCollection(
+    suspend fun <M : CoreObject?> appendInObjectCollection(
         list: List<M>,
         databaseAdapter: DatabaseAdapter,
         childrenAppenders: ChildrenAppenderGetter<M>,

@@ -36,7 +36,7 @@ internal class ProgramTrackedEntityTypeChildrenAppender(
     databaseAdapter: DatabaseAdapter,
 ) : ChildrenAppender<Program>() {
     private val store = TrackedEntityTypeStoreImpl(databaseAdapter)
-    override fun appendChildren(m: Program): Program {
+    override suspend fun appendChildren(m: Program): Program {
         val builder = m.toBuilder()
         val trackedEntityType = m.trackedEntityType()
         if (trackedEntityType != null) {

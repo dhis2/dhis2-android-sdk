@@ -76,7 +76,7 @@ internal class CoroutineAPICallExecutorImpl(
         }
     }
 
-    private fun <P> handleHttpException(
+    private suspend fun <P> handleHttpException(
         d2ExceptionResponse: D2HttpResponse,
         storeError: Boolean,
         acceptedErrorCodes: List<Int>?,
@@ -147,7 +147,7 @@ internal class CoroutineAPICallExecutorImpl(
         }
     }
 
-    private fun catchError(
+    private suspend fun catchError(
         errorCatcher: APICallErrorCatcher,
         errorBuilder: D2Error.Builder,
         response: D2HttpResponse,
@@ -165,7 +165,7 @@ internal class CoroutineAPICallExecutorImpl(
             ?: storeAndReturn(errorMapper.responseException(errorBuilder, response, null), storeError)
     }
 
-    private fun storeAndReturn(d2Error: D2Error, storeError: Boolean): D2Error {
+    private suspend fun storeAndReturn(d2Error: D2Error, storeError: Boolean): D2Error {
         if (errorStore.isReady && storeError) {
             errorStore.insert(d2Error)
         }

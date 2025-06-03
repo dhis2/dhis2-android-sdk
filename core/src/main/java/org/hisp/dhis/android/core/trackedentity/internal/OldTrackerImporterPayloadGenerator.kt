@@ -75,7 +75,7 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
         val relationships: List<Relationship>,
     )
 
-    fun getTrackedEntityInstancePayload(
+    suspend fun getTrackedEntityInstancePayload(
         trackedEntityInstances: List<TrackedEntityInstance>,
     ): OldTrackerImporterPayload {
         val extraData = getExtraData()
@@ -90,7 +90,7 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
         )
     }
 
-    fun getEventPayload(
+    suspend fun getEventPayload(
         events: List<Event>,
     ): OldTrackerImporterPayload {
         val extraData = getExtraData()
@@ -236,7 +236,7 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
         return !isIncludedInPayload && isPendingToSync
     }
 
-    private fun getExtraData(): ExtraData {
+    private suspend fun getExtraData(): ExtraData {
         return ExtraData(
             eventMap = eventStore.queryEventsAttachedToEnrollmentToPost(),
             enrollmentMap = enrollmentStore.queryEnrollmentsToPost(),

@@ -25,60 +25,44 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.note.internal
 
-package org.hisp.dhis.android.core.note.internal;
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.common.DataColumns
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.note.Note
+import org.hisp.dhis.android.core.note.Note.NoteType
+import org.hisp.dhis.android.core.note.NoteTableInfo
+import org.koin.core.annotation.Singleton
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.common.DataColumns;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.note.Note;
-import org.hisp.dhis.android.core.note.NoteTableInfo;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-public class NoteUniquenessManager {
-
-    private final NoteStore noteStore;
-
-    public NoteUniquenessManager(NoteStore noteStore) {
-        this.noteStore = noteStore;
-    }
-
-    public Set<Note> buildUniqueCollection(Collection<Note> notes, Note.NoteType noteType, String ownerUid) {
-        if (noteType == null) {
-            throw new IllegalArgumentException("Note type is null");
+@Singleton
+internal class NoteUniquenessManager(private val noteStore: NoteStore) {
+    suspend fun buildUniqueCollection(notes: Collection<Note>, noteType: NoteType, ownerUid: String): Set<Note> {
+        val ownerColumn = when (noteType) {
+            NoteType.ENROLLMENT_NOTE -> NoteTableInfo.Columns.ENROLLMENT
+            NoteType.EVENT_NOTE -> NoteTableInfo.Columns.EVENT
         }
 
-        String ownerColumn = noteType == Note.NoteType.ENROLLMENT_NOTE ?
-                NoteTableInfo.Columns.ENROLLMENT :
-                NoteTableInfo.Columns.EVENT;
+        val toPostWhere = WhereClauseBuilder()
+            .appendKeyStringValue(DataColumns.SYNC_STATE, State.TO_POST)
+            .appendKeyStringValue(ownerColumn, ownerUid)
+            .build()
 
-        String whereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(DataColumns.SYNC_STATE, State.TO_POST)
-                .appendKeyStringValue(ownerColumn, ownerUid).build();
-        List<Note> toPostNotes = noteStore.selectWhere(whereClause);
+        val toPostNotes = noteStore.selectWhere(toPostWhere)
 
-        String deleteWhereClause = new WhereClauseBuilder()
-                .appendKeyStringValue(ownerColumn, ownerUid).build();
-        noteStore.deleteWhere(deleteWhereClause);
+        val deleteWhere = WhereClauseBuilder()
+            .appendKeyStringValue(ownerColumn, ownerUid)
+            .build()
+        noteStore.deleteWhere(deleteWhere)
 
-        Set<Note> uniqueNotes = new HashSet<>();
-        for (Note note : notes) {
-            uniqueNotes.add(note.toBuilder()
-                    .id(null)
-                    .syncState(State.SYNCED)
-                    .build());
-        }
+        val newNotes = notes
+            .map { it.toBuilder().id(null).syncState(State.SYNCED).build() }
+            .toSet()
 
-        for (Note toPostNote : toPostNotes) {
-            uniqueNotes.add(toPostNote.toBuilder()
-                    .id(null)
-                    .build());
-        }
+        val pendingNotes = toPostNotes
+            .map { it.toBuilder().id(null).build() }
+            .toSet()
 
-        return uniqueNotes;
+        return newNotes + pendingNotes
     }
 }

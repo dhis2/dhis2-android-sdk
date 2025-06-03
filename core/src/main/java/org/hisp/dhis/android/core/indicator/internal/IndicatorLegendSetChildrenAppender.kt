@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.legendset.internal.IndicatorLegendSetLinkStore
 internal class IndicatorLegendSetChildrenAppender(
     private val linkStore: IndicatorLegendSetLinkStore,
 ) : ChildrenAppender<Indicator>() {
-    override fun appendChildren(m: Indicator): Indicator {
+    override suspend fun appendChildren(m: Indicator): Indicator {
         return m.toBuilder()
             .legendSets(linkStore.getForIndicator(m.uid()))
             .build()

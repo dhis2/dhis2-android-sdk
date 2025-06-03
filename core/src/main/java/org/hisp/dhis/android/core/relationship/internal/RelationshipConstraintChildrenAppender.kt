@@ -44,7 +44,7 @@ internal class RelationshipConstraintChildrenAppender(
         constraints = constraintStore.selectAll()
     }
 
-    override fun appendChildren(m: RelationshipType): RelationshipType {
+    override suspend fun appendChildren(m: RelationshipType): RelationshipType {
         val builder = m.toBuilder()
         for (constraint in constraints!!) {
             if (constraint.relationshipType()!!.uid() == m.uid()) {

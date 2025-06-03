@@ -103,7 +103,7 @@ internal class RelationshipPostCall(
         }
     }
 
-    private fun handleDeleteRelationshipError(relationshipUid: String) {
+    private suspend fun handleDeleteRelationshipError(relationshipUid: String) {
         // TODO Implement better handling
         // The relationship is marked as error, but there is no handling in the TEI. The TEI is being posted
         relationshipStore.setSyncState(relationshipUid, State.ERROR)

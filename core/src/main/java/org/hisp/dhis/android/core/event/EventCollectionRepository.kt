@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.event
 
 import io.reactivex.Observable
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
@@ -101,7 +102,7 @@ class EventCollectionRepository internal constructor(
                     .byEnrollmentUid().isNull
                     .blockingGetWithoutChildren()
             }
-                .flatMap { events: List<Event> -> postCall.uploadEvents(events) },
+                .flatMap { events: List<Event> -> runBlocking { postCall.uploadEvents(events) } },
         )
     }
 

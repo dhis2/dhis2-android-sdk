@@ -97,12 +97,12 @@ internal class ProgramIndicatorEvaluator(
         return ((programIndicatorMetadata) as MetadataItem.ProgramIndicatorItem).item
     }
 
-    private fun constantMap(): Map<String, Constant> {
+    private suspend fun constantMap(): Map<String, Constant> {
         val constants = constantStore.selectAll()
         return UidsHelper.mapByUid(constants)
     }
 
-    private fun newVisitor(
+    private suspend fun newVisitor(
         itemMethod: ExpressionItemMethod,
         context: ProgramIndicatorSQLContext,
     ): CommonExpressionVisitor {

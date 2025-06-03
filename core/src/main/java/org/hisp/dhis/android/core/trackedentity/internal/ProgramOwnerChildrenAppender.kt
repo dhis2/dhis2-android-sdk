@@ -39,7 +39,7 @@ internal class ProgramOwnerChildrenAppender constructor(
 ) : ChildrenAppender<TrackedEntityInstance>() {
     private val childStore = ProgramOwnerStoreImpl(databaseAdapter)
 
-    override fun appendChildren(tei: TrackedEntityInstance): TrackedEntityInstance {
+    override suspend fun appendChildren(tei: TrackedEntityInstance): TrackedEntityInstance {
         val builder = tei.toBuilder()
         val programOwners = childStore.selectWhere(
             WhereClauseBuilder()

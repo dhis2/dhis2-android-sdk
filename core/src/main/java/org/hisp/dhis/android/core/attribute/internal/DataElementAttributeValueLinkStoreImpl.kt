@@ -56,7 +56,7 @@ internal class DataElementAttributeValueLinkStoreImpl(
         }
     }
 
-    override fun getLinksForDataElement(dataElementUid: String): List<DataElementAttributeValueLink> {
+    override suspend fun getLinksForDataElement(dataElementUid: String): List<DataElementAttributeValueLink> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(
                 DataElementAttributeValueLinkTableInfo.Columns.DATA_ELEMENT,

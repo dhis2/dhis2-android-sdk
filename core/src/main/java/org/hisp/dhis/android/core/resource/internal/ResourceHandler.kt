@@ -44,7 +44,7 @@ internal class ResourceHandler(private val resourceStore: ResourceStore) {
         return Date(serverDate!!.time)
     }
 
-    fun handleResource(resourceType: Resource.Type?) {
+    suspend fun handleResource(resourceType: Resource.Type?) {
         if (resourceType == null || serverDate == null) {
             return
         }
@@ -62,8 +62,8 @@ internal class ResourceHandler(private val resourceStore: ResourceStore) {
      * @param type Type of the resource.
      * @return a string representing the last synced date
      */
-    fun getLastUpdated(type: Resource.Type?): String? {
-        return resourceStore.getLastUpdated(type!!)
+    suspend fun getLastUpdated(type: Resource.Type): String? {
+        return resourceStore.getLastUpdated(type)
     }
 
     companion object {

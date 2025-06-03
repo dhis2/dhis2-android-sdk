@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.arch.repositories.paging.internal
 
 import androidx.paging.ItemKeyedDataSource
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
@@ -49,23 +50,25 @@ internal class RepositoryDataSourceWithTransformer<M : CoreObject, T : Any> inte
 
     override fun loadInitial(params: LoadInitialParams<M>, callback: LoadInitialCallback<T>) {
         val whereClause = WhereClauseFromScopeBuilder(WhereClauseBuilder()).getWhereClause(scope)
-        val withoutChildren = store.selectWhere(
-            whereClause,
-            OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()),
-            params.requestedLoadSize,
-        )
-        callback.onResult(appendChildren(withoutChildren))
+        runBlocking {
+            val withoutChildren = store.selectWhere(
+                whereClause,
+                OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()),
+                params.requestedLoadSize,
+            )
+            callback.onResult(appendChildren(withoutChildren))
+        }
     }
 
     override fun loadAfter(params: LoadParams<M>, callback: LoadCallback<T>) {
-        loadPages(params, callback, false)
+        runBlocking { loadPages(params, callback, false) }
     }
 
     override fun loadBefore(params: LoadParams<M>, callback: LoadCallback<T>) {
-        loadPages(params, callback, true)
+        runBlocking { loadPages(params, callback, true) }
     }
 
-    private fun loadPages(params: LoadParams<M>, callback: LoadCallback<T>, reversed: Boolean) {
+    private suspend fun loadPages(params: LoadParams<M>, callback: LoadCallback<T>, reversed: Boolean) {
         val whereClauseBuilder = WhereClauseBuilder()
         OrderByClauseBuilder.addSortingClauses(
             whereClauseBuilder,
@@ -87,7 +90,7 @@ internal class RepositoryDataSourceWithTransformer<M : CoreObject, T : Any> inte
         return transformer.deTransform(item)
     }
 
-    private fun appendChildren(withoutChildren: List<M>): List<T> {
+    private suspend fun appendChildren(withoutChildren: List<M>): List<T> {
         return ChildrenAppenderExecutor.appendInObjectCollection(
             withoutChildren,
             databaseAdapter,

@@ -35,7 +35,7 @@ internal class ProgramStageWorkingListAttributeValueFilterChildrenAppender priva
     private val childStore: ProgramStageWorkingListAttributeValueFilterStore,
 ) : ChildrenAppender<ProgramStageWorkingList>() {
 
-    override fun appendChildren(m: ProgramStageWorkingList): ProgramStageWorkingList {
+    override suspend fun appendChildren(m: ProgramStageWorkingList): ProgramStageWorkingList {
         val children = childStore.getForProgramStageWorkingList(m.uid())
             .filter { it.attribute() != null }
         val queryCriteria = m.programStageQueryCriteria()?.toBuilder()

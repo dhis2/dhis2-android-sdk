@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.DataStoreEntry
 
 internal interface DataStoreEntryStore : ObjectWithoutUidStore<DataStoreEntry> {
-    fun setState(entry: DataStoreEntry, state: State)
+    suspend fun setState(entry: DataStoreEntry, state: State)
 
-    fun setStateIfUploading(entry: DataStoreEntry, state: State)
+    suspend fun setStateIfUploading(entry: DataStoreEntry, state: State)
 }

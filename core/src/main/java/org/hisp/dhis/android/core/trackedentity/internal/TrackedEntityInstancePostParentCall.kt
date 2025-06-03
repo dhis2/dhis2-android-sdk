@@ -42,7 +42,7 @@ internal class TrackedEntityInstancePostParentCall internal constructor(
     private val trackerParentCallHelper: TrackerPostParentCallHelper,
 ) {
 
-    fun uploadTrackedEntityInstances(trackedEntityInstances: List<TrackedEntityInstance>): Observable<D2Progress> {
+    suspend fun uploadTrackedEntityInstances(trackedEntityInstances: List<TrackedEntityInstance>): Observable<D2Progress> {
         return if (trackedEntityInstances.isEmpty()) {
             Observable.empty()
         } else {

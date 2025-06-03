@@ -25,93 +25,81 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.sms.data.localdbrepository.internal
 
-package org.hisp.dhis.android.core.sms.data.localdbrepository.internal;
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludingError
+import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationCollectionRepository
+import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationStore
+import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.datavalue.DataValueModule
+import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
+import org.koin.core.annotation.Singleton
 
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationCollectionRepository;
-import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationStore;
-import org.hisp.dhis.android.core.datavalue.DataValue;
-import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository;
-import org.hisp.dhis.android.core.datavalue.DataValueModule;
-import org.hisp.dhis.android.core.datavalue.internal.DataValueStore;
+@Singleton
+internal class DataSetsStore(
+    private val dataValueModule: DataValueModule,
+    private val dataValueStore: DataValueStore,
+    private val dataSetStore: DataSetCompleteRegistrationStore,
+    private val completeRegistrationRepository: DataSetCompleteRegistrationCollectionRepository
+) {
+    fun getDataValues(
+        dataSetUid: String?,
+        orgUnit: String,
+        period: String,
+        attributeOptionComboUid: String
+    ): List<DataValue> {
+        val baseQuery = dataValueModule.dataValues()
+            .byDataSetUid(dataSetUid)
+            .byOrganisationUnitUid().eq(orgUnit)
+            .byPeriod().eq(period)
+            .byAttributeOptionComboUid().eq(attributeOptionComboUid)
 
-import java.util.Arrays;
-import java.util.List;
+        val uploadable = uploadableStatesIncludingError().toList()
+        val dataValues = baseQuery
+            .bySyncState().`in`(uploadable)
+            .blockingGet()
 
-import io.reactivex.Completable;
-import io.reactivex.Single;
-
-public class DataSetsStore {
-    private final DataValueModule dataValueModule;
-    private final DataValueStore dataValueStore;
-    private final DataSetCompleteRegistrationStore dataSetStore;
-    private final DataSetCompleteRegistrationCollectionRepository completeRegistrationRepository;
-
-    public DataSetsStore(DataValueModule dataValueModule,
-                         DataValueStore dataValueStore,
-                         DataSetCompleteRegistrationStore dataSetStore,
-                         DataSetCompleteRegistrationCollectionRepository completeRegistrationRepository) {
-        this.dataValueModule = dataValueModule;
-        this.dataValueStore = dataValueStore;
-        this.dataSetStore = dataSetStore;
-        this.completeRegistrationRepository = completeRegistrationRepository;
+        return dataValues.ifEmpty {
+            baseQuery
+                .blockingGet()
+                .takeIf { it.isNotEmpty() }
+                ?.take(1)
+                ?: emptyList()
+        }
     }
 
-    Single<List<DataValue>> getDataValues(String dataSetUid, String orgUnit,
-                                          String period, String attributeOptionComboUid) {
-        return Single.fromCallable(() -> {
-            DataValueCollectionRepository baseDataValuesRepo = dataValueModule.dataValues()
-                    .byDataSetUid(dataSetUid)
-                    .byOrganisationUnitUid().eq(orgUnit)
-                    .byPeriod().eq(period)
-                    .byAttributeOptionComboUid().eq(attributeOptionComboUid);
-
-            List<DataValue> dataValues = baseDataValuesRepo
-                    .bySyncState().in(Arrays.asList(State.uploadableStatesIncludingError()))
-                    .blockingGet();
-
-            // TODO Workaround to prevent empty lists. Not supported in compression library
-            if (dataValues.isEmpty()) {
-                List<DataValue> allDataValues = baseDataValuesRepo.blockingGet();
-
-                if (!allDataValues.isEmpty()) {
-                    dataValues = allDataValues.subList(0, 1);
-                }
-            }
-
-            return dataValues;
-        });
+    /**
+     * Updates the sync state for all data values in the given dataset/orgUnit/period/AOC.
+     */
+    suspend fun updateDataSetValuesState(
+        dataSetUid: String?,
+        orgUnit: String,
+        period: String,
+        attributeOptionComboUid: String,
+        state: State
+    ) {
+        getDataValues(dataSetUid, orgUnit, period, attributeOptionComboUid)
+            .forEach { dataValueStore.setState(it, state) }
     }
 
-    Completable updateDataSetValuesState(String dataSet,
-                                         String orgUnit,
-                                         String period,
-                                         String attributeOptionComboUid,
-                                         State state) {
-        return getDataValues(dataSet, orgUnit, period, attributeOptionComboUid)
-                .flattenAsObservable(items -> items)
-                .flatMapCompletable(item -> Completable.fromAction(() ->
-                        dataValueStore.setState(item, state))
-                );
-    }
-
-    Completable updateDataSetCompleteRegistrationState(String dataSetId,
-                                                       String orgUnit,
-                                                       String period,
-                                                       String attributeOptionComboUid,
-                                                       State state) {
-        return Completable.fromAction(() -> {
-            DataSetCompleteRegistration dataSet = completeRegistrationRepository
-                    .byDataSetUid().eq(dataSetId)
-                    .byOrganisationUnitUid().eq(orgUnit)
-                    .byPeriod().eq(period)
-                    .byAttributeOptionComboUid().eq(attributeOptionComboUid)
-                    .one().blockingGet();
-            if (dataSet != null) {
-                dataSetStore.setState(dataSet, state);
-            }
-        });
+    /**
+     * Updates the sync state for the dataset complete registration entry matching the given parameters.
+     */
+    suspend fun updateDataSetCompleteRegistrationState(
+        dataSetId: String,
+        orgUnit: String,
+        period: String,
+        attributeOptionComboUid: String,
+        state: State?
+    ) {
+        completeRegistrationRepository
+            .byDataSetUid().eq(dataSetId)
+            .byOrganisationUnitUid().eq(orgUnit)
+            .byPeriod().eq(period)
+            .byAttributeOptionComboUid().eq(attributeOptionComboUid)
+            .one()
+            .blockingGet()
+            ?.let { dataSetStore.setState(it, state) }
     }
 }

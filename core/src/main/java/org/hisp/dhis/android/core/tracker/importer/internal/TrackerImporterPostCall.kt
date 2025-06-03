@@ -64,7 +64,7 @@ internal class TrackerImporterPostCall internal constructor(
     private val jobObjectHandler: TrackerJobObjectHandler,
     private val breakTheGlassHelper: TrackerImporterBreakTheGlassHelper,
 ) {
-    fun uploadTrackedEntityInstances(
+    suspend fun uploadTrackedEntityInstances(
         filteredTrackedEntityInstances: List<TrackedEntityInstance>,
     ): Flow<D2Progress> {
         return postPayloadWrapper(payloadGenerator.getTrackedEntityPayload(filteredTrackedEntityInstances))

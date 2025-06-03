@@ -37,7 +37,7 @@ internal class DataElementLegendSetChildrenAppender private constructor(
     private val linkStore: DataElementLegendSetLinkStore,
 ) : ChildrenAppender<DataElement>() {
 
-    override fun appendChildren(m: DataElement): DataElement {
+    override suspend fun appendChildren(m: DataElement): DataElement {
         return m.toBuilder()
             .legendSets(linkStore.getForDataElement(m.uid()))
             .build()

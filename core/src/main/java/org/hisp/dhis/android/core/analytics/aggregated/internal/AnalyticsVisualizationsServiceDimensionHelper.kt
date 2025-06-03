@@ -81,7 +81,7 @@ internal class AnalyticsVisualizationsServiceDimensionHelper(
     @Suppress("ComplexMethod")
     private fun extractDataDimensionItems(items: List<VisualizationDimensionItem>?): List<DimensionItem> {
         return items?.mapNotNull { item ->
-            val dataType = DataDimensionItemType.values().find { it.name == item.dimensionItemType() }
+            val dataType = DataDimensionItemType.entries.find { it.name == item.dimensionItemType() }
 
             when (dataType) {
                 DataDimensionItemType.INDICATOR ->
@@ -134,7 +134,7 @@ internal class AnalyticsVisualizationsServiceDimensionHelper(
 
     private suspend fun extractOrgunitDimensionItems(items: List<VisualizationDimensionItem>?): List<DimensionItem> {
         return items?.mapNotNull { it.dimensionItem() }?.map { item ->
-            val relativeOrgUnit = RelativeOrganisationUnit.values().find { it.name == item }
+            val relativeOrgUnit = RelativeOrganisationUnit.entries.find { it.name == item }
 
             when {
                 relativeOrgUnit != null -> {
@@ -160,7 +160,7 @@ internal class AnalyticsVisualizationsServiceDimensionHelper(
 
     private fun extractPeriodDimensionItems(items: List<VisualizationDimensionItem>?): List<DimensionItem> {
         return items?.mapNotNull { it.dimensionItem() }?.map { item ->
-            val relativePeriod = RelativePeriod.values().find { it.name == item }
+            val relativePeriod = RelativePeriod.entries.find { it.name == item }
 
             if (relativePeriod != null) {
                 DimensionItem.PeriodItem.Relative(relativePeriod)

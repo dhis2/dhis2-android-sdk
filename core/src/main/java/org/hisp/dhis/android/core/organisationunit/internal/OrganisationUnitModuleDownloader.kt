@@ -56,7 +56,7 @@ internal class OrganisationUnitModuleDownloader(
         }
     }
 
-    private fun cleanLinksFromDB() {
+    private suspend fun cleanLinksFromDB() {
         dataSetLinkCleaner.deleteNotPresentInDb()
         programLinkCleaner.deleteNotPresentInDb()
     }

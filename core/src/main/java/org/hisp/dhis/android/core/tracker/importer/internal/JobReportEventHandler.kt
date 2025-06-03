@@ -53,7 +53,7 @@ internal class JobReportEventHandler internal constructor(
     relationshipStore: RelationshipStore,
 ) : JobReportTypeHandler(relationshipStore) {
 
-    override fun handleObject(uid: String, state: State): HandleAction {
+    override suspend fun handleObject(uid: String, state: State): HandleAction {
         conflictStore.deleteEventConflicts(uid)
         val handleAction = eventStore.setSyncStateOrDelete(uid, state)
 
@@ -64,7 +64,7 @@ internal class JobReportEventHandler internal constructor(
         return handleAction
     }
 
-    override fun storeConflict(errorReport: JobValidationError) {
+    override suspend fun storeConflict(errorReport: JobValidationError) {
         eventStore.selectByUid(errorReport.uid)?.let { event ->
             val trackedEntityInstanceUid = event.enrollment()?.let {
                 enrollmentStore.selectByUid(it)?.trackedEntityInstance()
@@ -88,14 +88,14 @@ internal class JobReportEventHandler internal constructor(
         return relationshipStore.getRelationshipsByItem(RelationshipHelper.eventItem(uid)).mapNotNull { it.uid() }
     }
 
-    fun handleSyncedEvent(eventUid: String) {
+    suspend fun handleSyncedEvent(eventUid: String) {
         handleEventNotes(eventUid, State.SYNCED)
         trackedEntityDataValueStore.setSyncStateByEvent(eventUid, State.SYNCED)
         trackedEntityDataValueStore.removeDeletedDataValuesByEvent(eventUid)
         trackedEntityDataValueStore.removeUnassignedDataValuesByEvent(eventUid)
     }
 
-    private fun handleEventNotes(eventUid: String, state: State) {
+    private suspend fun handleEventNotes(eventUid: String, state: State) {
         val newNoteState = if (state == State.SYNCED) State.SYNCED else State.TO_POST
         val whereClause = WhereClauseBuilder()
             .appendInKeyStringValues(

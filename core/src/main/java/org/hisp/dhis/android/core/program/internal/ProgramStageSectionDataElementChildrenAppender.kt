@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.program.ProgramStageSection
 internal class ProgramStageSectionDataElementChildrenAppender private constructor(
     private val childStore: DataElementStore,
 ) : ChildrenAppender<ProgramStageSection>() {
-    override fun appendChildren(m: ProgramStageSection): ProgramStageSection {
+    override suspend fun appendChildren(m: ProgramStageSection): ProgramStageSection {
         val children = childStore.getForProgramStageSection(m.uid())
         return m.toBuilder()
             .dataElements(children)

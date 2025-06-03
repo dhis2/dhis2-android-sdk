@@ -61,10 +61,14 @@ internal class OwnershipManagerImpl(
 ) : OwnershipManager {
 
     override fun breakGlass(trackedEntityInstance: String, program: String, reason: String): Completable {
-        return Completable.fromCallable { blockingBreakGlass(trackedEntityInstance, program, reason) }
+        return rxCompletable { breakGlassInternal(trackedEntityInstance, program, reason) }
     }
 
     override fun blockingBreakGlass(trackedEntityInstance: String, program: String, reason: String) {
+        runBlocking { breakGlassInternal(trackedEntityInstance, program, reason) }
+    }
+
+    private suspend fun breakGlassInternal(trackedEntityInstance: String, program: String, reason: String) {
         runBlocking {
             postBreakGlass(trackedEntityInstance, program, reason)
         }.fold(

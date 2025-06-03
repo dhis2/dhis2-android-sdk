@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.program.ProgramRule
 internal class ProgramRuleActionChildrenAppender private constructor(
     private val childStore: ProgramRuleActionStore,
 ) : ChildrenAppender<ProgramRule>() {
-    override fun appendChildren(m: ProgramRule): ProgramRule {
+    override suspend fun appendChildren(m: ProgramRule): ProgramRule {
         val children = childStore.getForProgramRule(m.uid())
         return m.toBuilder().programRuleActions(children).build()
     }

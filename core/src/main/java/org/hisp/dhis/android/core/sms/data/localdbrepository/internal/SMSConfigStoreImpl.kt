@@ -49,7 +49,7 @@ internal class SMSConfigStoreImpl(
         { cursor -> KeyValuePair.create(cursor) },
     ) {
 
-    override fun get(key: SMSConfigKey): String? {
+    override suspend fun get(key: SMSConfigKey): String? {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(SMSConfigTableInfo.Columns.KEY, key.name)
             .build()
@@ -57,7 +57,7 @@ internal class SMSConfigStoreImpl(
         return selectOneWhere(whereClause)?.value()
     }
 
-    override fun set(key: SMSConfigKey, value: String): HandleAction {
+    override suspend fun set(key: SMSConfigKey, value: String): HandleAction {
         val keyValuePair = KeyValuePair.builder()
             .key(key.name)
             .value(value)
@@ -66,7 +66,7 @@ internal class SMSConfigStoreImpl(
         return updateOrInsertWhere(keyValuePair)
     }
 
-    override fun delete(key: SMSConfigKey) {
+    override suspend fun delete(key: SMSConfigKey) {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(SMSConfigTableInfo.Columns.KEY, key.name)
             .build()
@@ -80,11 +80,11 @@ internal class SMSConfigStoreImpl(
             w.bind(2, o.value())
         }
 
-        private val WHERE_UPDATE_BINDER = WhereStatementBinder<KeyValuePair> { o: KeyValuePair, w: StatementWrapper ->
+        private val WHERE_UPDATE_BINDER = WhereStatementBinder { o: KeyValuePair, w: StatementWrapper ->
             w.bind(3, o.key())
         }
 
-        private val WHERE_DELETE_BINDER = WhereStatementBinder<KeyValuePair> { o: KeyValuePair, w: StatementWrapper ->
+        private val WHERE_DELETE_BINDER = WhereStatementBinder { o: KeyValuePair, w: StatementWrapper ->
             w.bind(1, o.key())
         }
     }

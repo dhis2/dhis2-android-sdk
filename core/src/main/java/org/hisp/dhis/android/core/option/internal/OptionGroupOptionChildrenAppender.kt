@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.option.OptionGroup
 internal class OptionGroupOptionChildrenAppender private constructor(
     private val linkStore: OptionGroupOptionLinkStore,
 ) : ChildrenAppender<OptionGroup>() {
-    override fun appendChildren(m: OptionGroup): OptionGroup {
+    override suspend fun appendChildren(m: OptionGroup): OptionGroup {
         return m.toBuilder()
             .options(linkStore.getForOptionGroup(m.uid()))
             .build()

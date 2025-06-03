@@ -38,7 +38,7 @@ internal class DataStoreImportHandler(
     private val store: DataStoreEntryStore,
 ) {
 
-    fun handleDelete(entry: DataStoreEntry, response: HttpMessageResponse) {
+    suspend fun handleDelete(entry: DataStoreEntry, response: HttpMessageResponse) {
         if (response.httpStatusCode() == HttpStatusCode.OK.value ||
             response.httpStatusCode() == HttpStatusCode.NotFound.value
         ) {
@@ -48,7 +48,7 @@ internal class DataStoreImportHandler(
         }
     }
 
-    fun handleUpdateOrCreate(entry: DataStoreEntry, response: HttpMessageResponse) {
+    suspend fun handleUpdateOrCreate(entry: DataStoreEntry, response: HttpMessageResponse) {
         val syncState = if (response.status() == HttpStatusCode.OK.description) {
             State.SYNCED
         } else {

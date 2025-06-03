@@ -57,7 +57,7 @@ internal class ProgramAttributeValueLinkStoreImpl(
         }
     }
 
-    override fun getLinksForProgram(programUid: String): List<ProgramAttributeValueLink> {
+    override suspend fun getLinksForProgram(programUid: String): List<ProgramAttributeValueLink> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(
                 ProgramAttributeValueLinkTableInfo.Columns.PROGRAM,

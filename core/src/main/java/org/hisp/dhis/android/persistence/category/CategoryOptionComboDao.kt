@@ -33,5 +33,5 @@ import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
 
 @Dao
 internal abstract class CategoryOptionComboDao : IdentifiableObjectDao<CategoryOptionComboDB>(
-    CategoryOptionComboTableInfo.TABLE_INFO.name()
+    CategoryOptionComboTableInfo.TABLE_INFO.name(),
 )

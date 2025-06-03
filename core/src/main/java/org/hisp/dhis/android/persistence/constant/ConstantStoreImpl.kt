@@ -34,9 +34,9 @@ import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreIm
 
 internal class ConstantStoreImpl(
     val constantDao: ConstantDao,
-    override val builder: SQLStatementBuilder
+    override val builder: SQLStatementBuilder,
 ) : IdentifiableObjectStoreImpl<Constant, ConstantDB>(
     constantDao,
     Constant::toDB,
-    builder
+    builder,
 )

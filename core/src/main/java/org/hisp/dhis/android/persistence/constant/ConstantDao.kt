@@ -33,5 +33,5 @@ import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
 
 @Dao
 internal abstract class ConstantDao : IdentifiableObjectDao<ConstantDB>(
-    ConstantTableInfo.TABLE_INFO.name()
+    ConstantTableInfo.TABLE_INFO.name(),
 )

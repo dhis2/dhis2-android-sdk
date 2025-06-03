@@ -33,5 +33,5 @@ import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
 
 @Dao
 internal abstract class AttributeDao : IdentifiableObjectDao<AttributeDB>(
-    AttributeTableInfo.TABLE_INFO.name()
+    AttributeTableInfo.TABLE_INFO.name(),
 )

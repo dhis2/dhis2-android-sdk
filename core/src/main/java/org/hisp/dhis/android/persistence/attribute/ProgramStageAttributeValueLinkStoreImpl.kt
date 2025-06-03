@@ -35,11 +35,11 @@ import org.hisp.dhis.android.persistence.common.stores.ObjectStoreImpl
 
 internal class ProgramStageAttributeValueLinkStoreImpl(
     val dao: ProgramStageAttributeValueLinkDao,
-    override val builder: SQLStatementBuilder
+    override val builder: SQLStatementBuilder,
 ) : ObjectStoreImpl<ProgramStageAttributeValueLink, ProgramStageAttributeValueLinkDB>(
     dao,
     ProgramStageAttributeValueLink::toDB,
-    builder
+    builder,
 ) {
     suspend fun getLinksForProgramStage(programStageUid: String): List<ProgramStageAttributeValueLink> {
         val whereClause = WhereClauseBuilder()

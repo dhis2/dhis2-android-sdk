@@ -33,5 +33,5 @@ import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
 @Dao
 internal abstract class CategoryCategoryOptionLinkDao : ObjectDao<CategoryCategoryOptionLinkDB>(
-    CategoryCategoryOptionLinkTableInfo.TABLE_INFO.name()
+    CategoryCategoryOptionLinkTableInfo.TABLE_INFO.name(),
 )

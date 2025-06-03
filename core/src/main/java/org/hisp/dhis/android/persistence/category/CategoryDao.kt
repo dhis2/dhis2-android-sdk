@@ -33,5 +33,5 @@ import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
 
 @Dao
 internal abstract class CategoryDao : IdentifiableObjectDao<CategoryDB>(
-    CategoryTableInfo.TABLE_INFO.name()
+    CategoryTableInfo.TABLE_INFO.name(),
 )

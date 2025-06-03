@@ -34,9 +34,9 @@ import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreIm
 
 internal class AttributeStoreImpl(
     val dao: AttributeDao,
-    override val builder: SQLStatementBuilder
+    override val builder: SQLStatementBuilder,
 ) : IdentifiableObjectStoreImpl<Attribute, AttributeDB>(
     dao,
     Attribute::toDB,
-    builder
+    builder,
 )

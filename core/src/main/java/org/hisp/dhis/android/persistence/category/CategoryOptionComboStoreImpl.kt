@@ -35,11 +35,11 @@ import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreIm
 
 internal class CategoryOptionComboStoreImpl(
     val dao: CategoryOptionComboDao,
-    override val builder: SQLStatementBuilder
+    override val builder: SQLStatementBuilder,
 ) : IdentifiableObjectStoreImpl<CategoryOptionCombo, CategoryOptionComboDB>(
     dao,
     CategoryOptionCombo::toDB,
-    builder
+    builder,
 ) {
     suspend fun getForCategoryCombo(categoryComboUid: String): List<CategoryOptionCombo> {
         val whereClause = WhereClauseBuilder()

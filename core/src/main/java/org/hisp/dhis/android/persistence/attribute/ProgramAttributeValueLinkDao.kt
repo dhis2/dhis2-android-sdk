@@ -33,5 +33,5 @@ import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
 @Dao
 internal abstract class ProgramAttributeValueLinkDao : ObjectDao<ProgramAttributeValueLinkDB>(
-    ProgramAttributeValueLinkTableInfo.TABLE_INFO.name()
+    ProgramAttributeValueLinkTableInfo.TABLE_INFO.name(),
 )

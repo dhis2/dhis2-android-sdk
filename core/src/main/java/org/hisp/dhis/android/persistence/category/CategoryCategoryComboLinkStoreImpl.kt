@@ -34,9 +34,9 @@ import org.hisp.dhis.android.persistence.common.stores.ObjectStoreImpl
 
 internal class CategoryCategoryComboLinkStoreImpl(
     val dao: CategoryCategoryComboLinkDao,
-    override val builder: SQLStatementBuilder
+    override val builder: SQLStatementBuilder,
 ) : ObjectStoreImpl<CategoryCategoryComboLink, CategoryCategoryComboLinkDB>(
     dao,
     CategoryCategoryComboLink::toDB,
-    builder
+    builder,
 )

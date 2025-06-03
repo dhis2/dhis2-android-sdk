@@ -35,11 +35,11 @@ import org.hisp.dhis.android.persistence.common.stores.ObjectStoreImpl
 
 internal class DataElementAttributeValueLinkStoreImpl(
     val dao: DataElementAttributeValueLinkDao,
-    override val builder: SQLStatementBuilder
+    override val builder: SQLStatementBuilder,
 ) : ObjectStoreImpl<DataElementAttributeValueLink, DataElementAttributeValueLinkDB>(
     dao,
     DataElementAttributeValueLink::toDB,
-    builder
+    builder,
 ) {
     suspend fun getLinksForDataElement(dataElementUid: String): List<DataElementAttributeValueLink> {
         val whereClause = WhereClauseBuilder()

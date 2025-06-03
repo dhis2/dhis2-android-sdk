@@ -36,11 +36,11 @@ import org.hisp.dhis.android.persistence.common.stores.ObjectStoreImpl
 
 internal class CategoryOptionOrganisationUnitLinkStoreImpl(
     val dao: CategoryOptionOrganisationUnitLinkDao,
-    override val builder: SQLStatementBuilder
+    override val builder: SQLStatementBuilder,
 ) : ObjectStoreImpl<CategoryOptionOrganisationUnitLink, CategoryOptionOrganisationUnitLinkDB>(
     dao,
     CategoryOptionOrganisationUnitLink::toDB,
-    builder
+    builder,
 ) {
     suspend fun getLinksForCategoryOption(categoryOptionUid: String): List<CategoryOptionOrganisationUnitLink> {
         val whereClause = WhereClauseBuilder()

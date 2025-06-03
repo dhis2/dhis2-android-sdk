@@ -33,5 +33,5 @@ import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
 @Dao
 internal abstract class DataElementAttributeValueLinkDao : ObjectDao<DataElementAttributeValueLinkDB>(
-    DataElementAttributeValueLinkTableInfo.TABLE_INFO.name()
+    DataElementAttributeValueLinkTableInfo.TABLE_INFO.name(),
 )

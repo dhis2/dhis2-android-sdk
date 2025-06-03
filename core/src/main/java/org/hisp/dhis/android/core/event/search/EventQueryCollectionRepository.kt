@@ -278,11 +278,11 @@ class EventQueryCollectionRepository internal constructor(
         return eventCollectionRepository.getPagingData(pageSize)
     }
 
-    fun getPager(pageSize: Int): Pager<Event, Event> {
+    fun getPager(pageSize: Int): Pager<Int, Event> {
         return eventCollectionRepository.getPager(pageSize)
     }
 
-    val dataSource: DataSource<Event, Event>
+    val dataSource: DataSource<Int, Event>
         get() = eventCollectionRepository.dataSource
 
     override fun count(): Single<Int> {

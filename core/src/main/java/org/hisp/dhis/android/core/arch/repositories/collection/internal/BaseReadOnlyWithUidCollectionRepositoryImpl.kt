@@ -74,7 +74,6 @@ abstract class BaseReadOnlyWithUidCollectionRepositoryImpl<M, R : ReadOnlyCollec
             whereClause,
             OrderByClauseBuilder.orderByFromItems(
                 scope.orderBy(),
-                scope.pagingKey(),
             ),
         )
     }

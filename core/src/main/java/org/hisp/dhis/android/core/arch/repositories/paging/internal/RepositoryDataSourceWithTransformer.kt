@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.paging.internal
 
-import androidx.paging.ItemKeyedDataSource
+import androidx.paging.PageKeyedDataSource
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
@@ -45,46 +45,37 @@ internal class RepositoryDataSourceWithTransformer<M : CoreObject, T : Any> inte
     private val scope: RepositoryScope,
     private val childrenAppenders: ChildrenAppenderGetter<M>,
     private val transformer: TwoWayTransformer<M, T>,
-) : ItemKeyedDataSource<M, T>() {
+) : PageKeyedDataSource<Int, T>() {
 
-    override fun loadInitial(params: LoadInitialParams<M>, callback: LoadInitialCallback<T>) {
+    override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, T>) {
         val whereClause = WhereClauseFromScopeBuilder(WhereClauseBuilder()).getWhereClause(scope)
         val withoutChildren = store.selectWhere(
             whereClause,
-            OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()),
+            OrderByClauseBuilder.orderByFromItems(scope.orderBy()),
             params.requestedLoadSize,
         )
-        callback.onResult(appendChildren(withoutChildren))
+        callback.onResult(appendChildren(withoutChildren), null, params.requestedLoadSize)
     }
 
-    override fun loadAfter(params: LoadParams<M>, callback: LoadCallback<T>) {
-        loadPages(params, callback, false)
+    override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, T>) {
+        loadPages(params, callback, nextOffset = params.key + params.requestedLoadSize)
     }
 
-    override fun loadBefore(params: LoadParams<M>, callback: LoadCallback<T>) {
-        loadPages(params, callback, true)
+    override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, T>) {
+        loadPages(params, callback, nextOffset = params.key - params.requestedLoadSize)
     }
 
-    private fun loadPages(params: LoadParams<M>, callback: LoadCallback<T>, reversed: Boolean) {
-        val whereClauseBuilder = WhereClauseBuilder()
-        OrderByClauseBuilder.addSortingClauses(
-            whereClauseBuilder,
-            scope.orderBy(),
-            params.key.toContentValues(),
-            reversed,
-            scope.pagingKey(),
-        )
-        val whereClause = WhereClauseFromScopeBuilder(whereClauseBuilder).getWhereClause(scope)
+    private fun loadPages(params: LoadParams<Int>, callback: LoadCallback<Int, T>, nextOffset: Int) {
+        val offset = params.key
+
+        val whereClause = WhereClauseFromScopeBuilder(WhereClauseBuilder()).getWhereClause(scope)
         val withoutChildren = store.selectWhere(
             whereClause,
-            OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()),
+            OrderByClauseBuilder.orderByFromItems(scope.orderBy()),
             params.requestedLoadSize,
+            offset,
         )
-        callback.onResult(appendChildren(withoutChildren))
-    }
-
-    override fun getKey(item: T): M {
-        return transformer.deTransform(item)
+        callback.onResult(appendChildren(withoutChildren), nextOffset)
     }
 
     private fun appendChildren(withoutChildren: List<M>): List<T> {

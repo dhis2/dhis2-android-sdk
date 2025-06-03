@@ -102,9 +102,9 @@ internal class SQLStatementBuilderImpl internal constructor(
         return SELECT + IdentifiableColumns.UID + FROM + tableName + WHERE + whereClause + ";"
     }
 
-    override fun selectUidsWhere(whereClause: String, orderByClause: String): String {
+    override fun selectUidsWhere(whereClause: String, orderByClause: String?): String {
         return SELECT + IdentifiableColumns.UID + FROM + tableName + WHERE + whereClause +
-            ORDER_BY + orderByClause + ";"
+            getOrderBy(orderByClause) + ";"
     }
 
     override fun selectColumnWhere(column: String, whereClause: String): String {
@@ -156,12 +156,16 @@ internal class SQLStatementBuilderImpl internal constructor(
         return selectWhere(whereClause + LIMIT + limit)
     }
 
-    override fun selectWhere(whereClause: String, orderByClause: String): String {
-        return selectWhere(whereClause + ORDER_BY + orderByClause)
+    override fun selectWhere(whereClause: String, orderByClause: String?): String {
+        return selectWhere(whereClause + getOrderBy(orderByClause))
     }
 
-    override fun selectWhere(whereClause: String, orderByClause: String, limit: Int): String {
-        return selectWhere(whereClause + ORDER_BY + orderByClause + LIMIT + limit)
+    override fun selectWhere(whereClause: String, orderByClause: String?, limit: Int): String {
+        return selectWhere(whereClause + getOrderBy(orderByClause) + LIMIT + limit)
+    }
+
+    override fun selectWhere(whereClause: String, orderByClause: String?, limit: Int, offset: Int?): String {
+        return selectWhere(whereClause + getOrderBy(orderByClause) + LIMIT + limit + getOffset(offset))
     }
 
     override fun selectAll(): String {
@@ -218,5 +222,14 @@ internal class SQLStatementBuilderImpl internal constructor(
         private const val SELECT = "SELECT "
         private const val AND = " AND "
         private const val ORDER_BY = " ORDER BY "
+        private const val OFFSET = " OFFSET "
+
+        internal fun getOrderBy(orderByClause: String?): String {
+            return orderByClause?.let { ORDER_BY + it } ?: ""
+        }
+
+        internal fun getOffset(offset: Int?): String {
+            return offset?.let { OFFSET + it } ?: ""
+        }
     }
 }

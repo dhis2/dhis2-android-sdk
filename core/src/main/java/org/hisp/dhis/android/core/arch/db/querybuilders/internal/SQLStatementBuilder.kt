@@ -35,7 +35,7 @@ internal interface SQLStatementBuilder : ReadOnlySQLStatementBuilder {
     fun getColumns(): Array<String>
     fun selectUids(): String
     fun selectUidsWhere(whereClause: String): String
-    fun selectUidsWhere(whereClause: String, orderByClause: String): String
+    fun selectUidsWhere(whereClause: String, orderByClause: String?): String
     fun selectColumnWhere(column: String, whereClause: String): String
     fun selectChildrenWithLinkTable(
         projection: LinkTableChildProjection,

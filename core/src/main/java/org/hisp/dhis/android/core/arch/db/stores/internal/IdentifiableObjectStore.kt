@@ -50,7 +50,7 @@ internal interface IdentifiableObjectStore<O : ObjectWithUidInterface> : ObjectS
     fun selectUidsWhere(whereClause: String): List<String>
 
     @Throws(RuntimeException::class)
-    fun selectUidsWhere(whereClause: String, orderByClause: String): List<String>
+    fun selectUidsWhere(whereClause: String, orderByClause: String?): List<String>
 
     @Throws(RuntimeException::class)
     fun selectByUid(uid: String): O?

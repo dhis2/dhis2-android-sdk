@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.dataset.internal
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.ReadOnlySQLStatementBuilder
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl.Companion.getOffset
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl.Companion.getOrderBy
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo
@@ -70,12 +72,16 @@ open class DataSetInstanceSQLStatementBuilder : ReadOnlySQLStatementBuilder {
         return "SELECT $column , COUNT(*) FROM (${selectAll()}) GROUP BY $column;"
     }
 
-    override fun selectWhere(whereClause: String, orderByClause: String): String {
-        return selectWhere(whereClause) + " ORDER BY " + orderByClause
+    override fun selectWhere(whereClause: String, orderByClause: String?): String {
+        return selectWhere(whereClause) + getOrderBy(orderByClause)
     }
 
-    override fun selectWhere(whereClause: String, orderByClause: String, limit: Int): String {
+    override fun selectWhere(whereClause: String, orderByClause: String?, limit: Int): String {
         return selectWhere(whereClause, orderByClause) + " LIMIT " + limit
+    }
+
+    override fun selectWhere(whereClause: String, orderByClause: String?, limit: Int, offset: Int?): String {
+        return selectWhere(whereClause, orderByClause) + " LIMIT " + limit + getOffset(offset)
     }
 
     override fun selectOneOrderedBy(orderingColumnName: String, orderingType: SQLOrderType): String {

@@ -72,7 +72,6 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
             whereClause,
             OrderByClauseBuilder.orderByFromItems(
                 scope.orderBy(),
-                scope.pagingKey(),
             ),
         )
     }
@@ -124,8 +123,8 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
      */
     @Deprecated("Use {@link #getPagingData()} instead}", replaceWith = ReplaceWith("getPagingData()"))
     override fun getPaged(pageSize: Int): LiveData<PagedList<M>> {
-        val factory: DataSource.Factory<M, M> = object : DataSource.Factory<M, M>() {
-            override fun create(): DataSource<M, M> {
+        val factory: DataSource.Factory<Int, M> = object : DataSource.Factory<Int, M>() {
+            override fun create(): DataSource<Int, M> {
                 return dataSource
             }
         }
@@ -136,7 +135,7 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
         return getPager(pageSize).flow
     }
 
-    fun getPager(pageSize: Int): Pager<M, M> {
+    fun getPager(pageSize: Int): Pager<Int, M> {
         return Pager(
             config = PagingConfig(pageSize = pageSize),
         ) {
@@ -145,10 +144,10 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
     }
 
     @Deprecated("Use {@link #getPagingData()} instead}", replaceWith = ReplaceWith("getPagingData()"))
-    val dataSource: DataSource<M, M>
+    val dataSource: DataSource<Int, M>
         get() = RepositoryDataSource(store, databaseAdapter, scope, childrenAppenders)
 
-    private val pagingSource: PagingSource<M, M>
+    private val pagingSource: PagingSource<Int, M>
         get() = RepositoryPagingSource(store, databaseAdapter, scope, childrenAppenders)
 
     /**

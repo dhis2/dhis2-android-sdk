@@ -2517,8 +2517,7 @@ public class org/hisp/dhis/android/core/arch/db/querybuilders/internal/MultipleT
 }
 
 public final class org/hisp/dhis/android/core/arch/db/querybuilders/internal/OrderByClauseBuilder {
-	public static fun addSortingClauses (Lorg/hisp/dhis/android/core/arch/db/querybuilders/internal/WhereClauseBuilder;Ljava/util/List;Landroid/content/ContentValues;ZLjava/lang/String;)V
-	public static fun orderByFromItems (Ljava/util/List;Ljava/lang/String;)Ljava/lang/String;
+	public static fun orderByFromItems (Ljava/util/List;)Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/core/arch/db/sqlorder/internal/SQLOrderType : java/lang/Enum {
@@ -2581,6 +2580,7 @@ public abstract interface class org/hisp/dhis/android/core/arch/db/stores/intern
 	public abstract fun selectWhere (Ljava/lang/String;)Ljava/util/List;
 	public abstract fun selectWhere (Ljava/lang/String;Ljava/lang/String;)Ljava/util/List;
 	public abstract fun selectWhere (Ljava/lang/String;Ljava/lang/String;I)Ljava/util/List;
+	public abstract fun selectWhere (Ljava/lang/String;Ljava/lang/String;ILjava/lang/Integer;)Ljava/util/List;
 }
 
 public class org/hisp/dhis/android/core/arch/db/stores/projections/internal/LinkTableChildProjection {
@@ -3277,17 +3277,15 @@ public final class org/hisp/dhis/android/core/arch/repositories/paging/PageConfi
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class org/hisp/dhis/android/core/arch/repositories/paging/internal/RepositoryDataSource : androidx/paging/ItemKeyedDataSource {
-	public synthetic fun getKey (Ljava/lang/Object;)Ljava/lang/Object;
-	public fun getKey (Lorg/hisp/dhis/android/core/common/CoreObject;)Lorg/hisp/dhis/android/core/common/CoreObject;
-	public fun loadAfter (Landroidx/paging/ItemKeyedDataSource$LoadParams;Landroidx/paging/ItemKeyedDataSource$LoadCallback;)V
-	public fun loadBefore (Landroidx/paging/ItemKeyedDataSource$LoadParams;Landroidx/paging/ItemKeyedDataSource$LoadCallback;)V
-	public fun loadInitial (Landroidx/paging/ItemKeyedDataSource$LoadInitialParams;Landroidx/paging/ItemKeyedDataSource$LoadInitialCallback;)V
+public final class org/hisp/dhis/android/core/arch/repositories/paging/internal/RepositoryDataSource : androidx/paging/PageKeyedDataSource {
+	public fun loadAfter (Landroidx/paging/PageKeyedDataSource$LoadParams;Landroidx/paging/PageKeyedDataSource$LoadCallback;)V
+	public fun loadBefore (Landroidx/paging/PageKeyedDataSource$LoadParams;Landroidx/paging/PageKeyedDataSource$LoadCallback;)V
+	public fun loadInitial (Landroidx/paging/PageKeyedDataSource$LoadInitialParams;Landroidx/paging/PageKeyedDataSource$LoadInitialCallback;)V
 }
 
 public final class org/hisp/dhis/android/core/arch/repositories/paging/internal/RepositoryPagingSource : androidx/paging/PagingSource {
+	public fun getRefreshKey (Landroidx/paging/PagingState;)Ljava/lang/Integer;
 	public synthetic fun getRefreshKey (Landroidx/paging/PagingState;)Ljava/lang/Object;
-	public fun getRefreshKey (Landroidx/paging/PagingState;)Lorg/hisp/dhis/android/core/common/CoreObject;
 	public fun load (Landroidx/paging/PagingSource$LoadParams;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -3303,7 +3301,6 @@ public abstract class org/hisp/dhis/android/core/arch/repositories/scope/Reposit
 	public abstract fun filters ()Ljava/util/List;
 	public fun hasFilters ()Z
 	public abstract fun orderBy ()Ljava/util/List;
-	public abstract fun pagingKey ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$Builder;
 }
 
@@ -3314,7 +3311,6 @@ public abstract class org/hisp/dhis/android/core/arch/repositories/scope/Reposit
 	public abstract fun complexFilters (Ljava/util/List;)Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$Builder;
 	public abstract fun filters (Ljava/util/List;)Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$Builder;
 	public abstract fun orderBy (Ljava/util/List;)Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$Builder;
-	public abstract fun pagingKey (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$Builder;
 }
 
 public final class org/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection : java/lang/Enum {
@@ -6135,6 +6131,7 @@ public class org/hisp/dhis/android/core/dataset/internal/DataSetInstanceSQLState
 	public fun selectWhere (Ljava/lang/String;I)Ljava/lang/String;
 	public fun selectWhere (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
 	public fun selectWhere (Ljava/lang/String;Ljava/lang/String;I)Ljava/lang/String;
+	public fun selectWhere (Ljava/lang/String;Ljava/lang/String;ILjava/lang/Integer;)Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/core/dataset/internal/DataSetInstanceSQLStatementBuilder$Companion {
@@ -6151,6 +6148,7 @@ public final class org/hisp/dhis/android/core/dataset/internal/DataSetInstanceSu
 	public fun selectWhere (Ljava/lang/String;I)Ljava/lang/String;
 	public fun selectWhere (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
 	public fun selectWhere (Ljava/lang/String;Ljava/lang/String;I)Ljava/lang/String;
+	public fun selectWhere (Ljava/lang/String;Ljava/lang/String;ILjava/lang/Integer;)Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/core/dataset/internal/DataSetInstanceSummarySQLStatementBuilder$Companion {

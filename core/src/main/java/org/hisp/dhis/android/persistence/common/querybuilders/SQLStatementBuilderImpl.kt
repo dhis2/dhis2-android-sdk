@@ -32,9 +32,7 @@ import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.common.IdentifiableColumns
-import org.koin.core.annotation.Singleton
 
-@Singleton
 internal open class SQLStatementBuilderImpl(
     private val tableName: String,
     private val hasSortOrder: Boolean,

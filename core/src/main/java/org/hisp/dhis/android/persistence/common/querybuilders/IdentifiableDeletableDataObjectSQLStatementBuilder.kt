@@ -26,9 +26,11 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.common.daos
+package org.hisp.dhis.android.persistence.common.querybuilders
 
-import org.hisp.dhis.android.persistence.common.EntityDB
+import androidx.room.RoomRawQuery
 
-@Suppress("UnnecessaryAbstractClass")
-internal abstract class ObjectWithoutUidDao<P : EntityDB<*>>(tableName: String) : ObjectDao<P>(tableName)
+internal interface IdentifiableDeletableDataObjectSQLStatementBuilder : IdentifiableDataObjectSQLStatementBuilder {
+    fun setDeleted(uid: String): RoomRawQuery
+    fun selectSyncStateWhere(where: String): RoomRawQuery
+}

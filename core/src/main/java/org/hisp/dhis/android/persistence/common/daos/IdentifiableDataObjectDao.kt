@@ -33,10 +33,8 @@ import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.persistence.common.EntityDB
 
-internal abstract class IdentifiableDataObjectDao<P : EntityDB<*>>(
-    tableName: String,
-) : IdentifiableObjectDao<P>(tableName) {
+internal interface IdentifiableDataObjectDao<P : EntityDB<*>> : ObjectDao<P> {
 
     @RawQuery
-    abstract suspend fun stateRawQuery(query: RoomRawQuery): State?
+    suspend fun stateRawQuery(query: RoomRawQuery): State?
 }

@@ -32,19 +32,16 @@ import androidx.room.RawQuery
 import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.persistence.common.EntityDB
 
-@Suppress("TooManyFunctions")
-internal abstract class ReadableDao<P : EntityDB<*>>(
-    val tableName: String,
-) {
+internal interface ReadableDao<P : EntityDB<*>> {
 
     @RawQuery
-    abstract suspend fun objectListRawQuery(sqlRawQuery: RoomRawQuery): List<P>
+    suspend fun objectListRawQuery(sqlRawQuery: RoomRawQuery): List<P>
 
     @RawQuery
-    abstract suspend fun intRawQuery(sqlRawQuery: RoomRawQuery): Int
+    suspend fun intRawQuery(sqlRawQuery: RoomRawQuery): Int
 
     @RawQuery
-    abstract suspend fun groupCountListRawQuery(sqlRawQuery: RoomRawQuery): List<GroupCount>
+    suspend fun groupCountListRawQuery(sqlRawQuery: RoomRawQuery): List<GroupCount>
 }
 
 internal data class GroupCount(

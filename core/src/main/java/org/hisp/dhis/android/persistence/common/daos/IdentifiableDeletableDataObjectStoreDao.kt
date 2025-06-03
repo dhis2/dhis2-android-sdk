@@ -33,18 +33,8 @@ import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.persistence.common.EntityDB
 
-internal abstract class IdentifiableDeletableDataObjectStoreDao<P : EntityDB<*>>(
-    tableName: String,
-) : IdentifiableDataObjectDao<P>(tableName) {
-
-    suspend fun setDeleted(query: (String) -> RoomRawQuery): Int {
-        return intRawQuery(query(tableName))
-    }
-
-    suspend fun selectSyncStateWhere(query: (String) -> RoomRawQuery): List<State> {
-        return stateListRawQuery(query(tableName))
-    }
+internal interface IdentifiableDeletableDataObjectStoreDao<P : EntityDB<*>> : IdentifiableDataObjectDao<P> {
 
     @RawQuery
-    protected abstract suspend fun stateListRawQuery(query: RoomRawQuery): List<State>
+    suspend fun stateListRawQuery(query: RoomRawQuery): List<State>
 }

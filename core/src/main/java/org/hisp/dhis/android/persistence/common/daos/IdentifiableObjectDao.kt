@@ -28,30 +28,6 @@
 
 package org.hisp.dhis.android.persistence.common.daos
 
-import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.persistence.common.EntityDB
 
-internal abstract class IdentifiableObjectDao<P : EntityDB<*>>(
-    tableName: String,
-) : ObjectDao<P>(tableName) {
-
-    suspend fun selectUids(query: RoomRawQuery): List<String> {
-        return stringListRawQuery(query)
-    }
-
-    suspend fun selectUidsWhere(query: RoomRawQuery): List<String> {
-        return stringListRawQuery(query)
-    }
-
-    suspend fun selectByUid(query: RoomRawQuery): P? {
-        return objectRawQuery(query)
-    }
-
-    suspend fun selectByUids(query: RoomRawQuery): List<P> {
-        return objectListRawQuery(query)
-    }
-
-    suspend fun deleteById(query: RoomRawQuery): Int {
-        return intRawQuery(query)
-    }
-}
+internal interface IdentifiableObjectDao<P : EntityDB<*>> : ObjectDao<P>

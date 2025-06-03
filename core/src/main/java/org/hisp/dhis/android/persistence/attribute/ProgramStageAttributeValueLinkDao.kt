@@ -32,6 +32,4 @@ import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
 @Dao
-internal abstract class ProgramStageAttributeValueLinkDao : ObjectDao<ProgramStageAttributeValueLinkDB>(
-    ProgramStageAttributeValueLinkTableInfo.TABLE_INFO.name(),
-)
+internal abstract class ProgramStageAttributeValueLinkDao : ObjectDao<ProgramStageAttributeValueLinkDB>

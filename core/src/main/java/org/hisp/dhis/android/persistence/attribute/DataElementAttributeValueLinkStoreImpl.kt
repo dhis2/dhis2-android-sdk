@@ -31,11 +31,15 @@ package org.hisp.dhis.android.persistence.attribute
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLink
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilder
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectStoreImpl
 
 internal class DataElementAttributeValueLinkStoreImpl(
     val dao: DataElementAttributeValueLinkDao,
-    override val builder: SQLStatementBuilder,
+    override val builder: SQLStatementBuilder = SQLStatementBuilderImpl(
+        DataElementAttributeValueLinkTableInfo.TABLE_INFO.name(),
+        false
+    ),
 ) : ObjectStoreImpl<DataElementAttributeValueLink, DataElementAttributeValueLinkDB>(
     dao,
     DataElementAttributeValueLink::toDB,

@@ -29,9 +29,7 @@
 package org.hisp.dhis.android.persistence.attribute
 
 import androidx.room.Dao
-import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
+import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
 @Dao
-internal abstract class AttributeDao : IdentifiableObjectDao<AttributeDB>(
-    AttributeTableInfo.TABLE_INFO.name(),
-)
+internal abstract class AttributeDao : ObjectDao<AttributeDB>

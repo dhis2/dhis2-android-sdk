@@ -66,14 +66,14 @@ internal open class IdentifiableObjectStoreImpl<O>(
     private var adapterHashCode: Int? = null
 
     @Throws(RuntimeException::class)
-    override fun insert(o: O): Long {
+    override suspend fun insert(o: O): Long {
         CollectionsHelper.isNull(o)
         CollectionsHelper.isNull(o.uid())
         return super.insert(o)
     }
 
     @Throws(RuntimeException::class)
-    override fun delete(uid: String) {
+    override suspend fun delete(uid: String) {
         CollectionsHelper.isNull(uid)
         compileStatements()
         deleteStatement!!.bind(1, uid)
@@ -105,7 +105,7 @@ internal open class IdentifiableObjectStoreImpl<O>(
 
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionCaught")
-    override fun deleteIfExists(uid: String) {
+    override suspend fun deleteIfExists(uid: String) {
         try {
             delete(uid)
         } catch (e: RuntimeException) {
@@ -116,7 +116,7 @@ internal open class IdentifiableObjectStoreImpl<O>(
     }
 
     @Throws(RuntimeException::class)
-    override fun update(o: O) {
+    override suspend fun update(o: O) {
         CollectionsHelper.isNull(o)
         compileStatements()
         binder.bindToStatement(o, updateStatement!!)
@@ -126,8 +126,7 @@ internal open class IdentifiableObjectStoreImpl<O>(
 
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionCaught")
-    @Synchronized
-    override fun updateOrInsert(o: O): HandleAction {
+    override suspend fun updateOrInsert(o: O): HandleAction {
         return try {
             update(o)
             HandleAction.Update
@@ -138,31 +137,31 @@ internal open class IdentifiableObjectStoreImpl<O>(
     }
 
     @Throws(RuntimeException::class)
-    override fun selectUids(): List<String> {
+    override suspend fun selectUids(): List<String> {
         val cursor = databaseAdapter.rawQuery(builder.selectUids())
         return mapStringColumnSetFromCursor(cursor)
     }
 
     @Throws(RuntimeException::class)
-    override fun selectUidsWhere(whereClause: String): List<String> {
+    override suspend fun selectUidsWhere(whereClause: String): List<String> {
         val cursor = databaseAdapter.rawQuery(builder.selectUidsWhere(whereClause))
         return mapStringColumnSetFromCursor(cursor)
     }
 
     @Throws(RuntimeException::class)
-    override fun selectUidsWhere(whereClause: String, orderByClause: String): List<String> {
+    override suspend fun selectUidsWhere(whereClause: String, orderByClause: String): List<String> {
         val cursor = databaseAdapter.rawQuery(builder.selectUidsWhere(whereClause, orderByClause))
         return mapStringColumnSetFromCursor(cursor)
     }
 
     @Throws(RuntimeException::class)
-    override fun selectByUid(uid: String): O? {
+    override suspend fun selectByUid(uid: String): O? {
         val cursor = databaseAdapter.rawQuery(builder.selectByUid(), uid)
         return mapObjectFromCursor(cursor)
     }
 
     @Throws(RuntimeException::class)
-    override fun selectByUids(uid: List<String>): List<O> {
+    override suspend fun selectByUids(uid: List<String>): List<O> {
         return selectWhere("$UID IN (${uid.joinToString(",") { "'$it'" }})")
     }
 

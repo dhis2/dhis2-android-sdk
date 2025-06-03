@@ -73,8 +73,7 @@ internal open class ObjectWithoutUidStoreImpl<O : CoreObject>(
     private var adapterHashCode: Int? = null
 
     @Throws(RuntimeException::class)
-    @Synchronized
-    override fun updateWhere(o: O) {
+    override suspend fun updateWhere(o: O) {
         CollectionsHelper.isNull(o)
         compileStatements()
         binder.bindToStatement(o, updateWhereStatement!!)
@@ -106,7 +105,7 @@ internal open class ObjectWithoutUidStoreImpl<O : CoreObject>(
     }
 
     @Throws(RuntimeException::class)
-    override fun deleteWhere(o: O) {
+    override suspend fun deleteWhere(o: O) {
         CollectionsHelper.isNull(o)
         compileStatements()
         whereDeleteBinder.bindWhereStatement(o, deleteWhereStatement!!)
@@ -115,7 +114,7 @@ internal open class ObjectWithoutUidStoreImpl<O : CoreObject>(
 
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionCaught")
-    override fun deleteWhereIfExists(o: O) {
+    override suspend fun deleteWhereIfExists(o: O) {
         try {
             deleteWhere(o)
         } catch (e: RuntimeException) {
@@ -127,8 +126,7 @@ internal open class ObjectWithoutUidStoreImpl<O : CoreObject>(
 
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionCaught")
-    @Synchronized
-    override fun updateOrInsertWhere(o: O): HandleAction {
+    override suspend fun updateOrInsertWhere(o: O): HandleAction {
         return try {
             updateWhere(o)
             HandleAction.Update

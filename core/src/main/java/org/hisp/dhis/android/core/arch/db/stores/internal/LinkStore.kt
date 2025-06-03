@@ -31,11 +31,11 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.CoreObject
 
 internal interface LinkStore<O : CoreObject> : ObjectStore<O> {
-    fun insertIfNotExists(o: O): HandleAction
+    suspend fun insertIfNotExists(o: O): HandleAction
 
     @Throws(RuntimeException::class)
-    fun deleteLinksForMasterUid(masterUid: String)
-    fun deleteAllLinks(): Int
-    fun selectDistinctSlaves(slaveColumn: String): Set<String>
-    fun selectLinksForMasterUid(masterUid: String): List<O>
+    suspend fun deleteLinksForMasterUid(masterUid: String)
+    suspend fun deleteAllLinks(): Int
+    suspend fun selectDistinctSlaves(slaveColumn: String): Set<String>
+    suspend fun selectLinksForMasterUid(masterUid: String): List<O>
 }

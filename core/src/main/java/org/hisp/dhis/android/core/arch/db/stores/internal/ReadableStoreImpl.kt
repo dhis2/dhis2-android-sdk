@@ -42,44 +42,44 @@ internal open class ReadableStoreImpl<O : CoreObject>(
     val objectFactory: (Cursor) -> O,
 ) : ReadableStore<O> {
 
-    override fun selectAll(): List<O> {
+    override suspend fun selectAll(): List<O> {
         val query = builder.selectAll()
         return selectRawQuery(query)
     }
 
-    override fun selectWhere(whereClause: String): List<O> {
+    override suspend fun selectWhere(whereClause: String): List<O> {
         val query = builder.selectWhere(whereClause)
         return selectRawQuery(query)
     }
 
-    override fun selectWhere(filterWhereClause: String, orderByClause: String): List<O> {
+    override suspend fun selectWhere(filterWhereClause: String, orderByClause: String): List<O> {
         val query = builder.selectWhere(filterWhereClause, orderByClause)
         return selectRawQuery(query)
     }
 
-    override fun selectWhere(filterWhereClause: String, orderByClause: String, limit: Int): List<O> {
+    override suspend fun selectWhere(filterWhereClause: String, orderByClause: String, limit: Int): List<O> {
         val query = builder.selectWhere(filterWhereClause, orderByClause, limit)
         return selectRawQuery(query)
     }
 
-    override fun selectOneOrderedBy(orderingColumName: String, orderingType: SQLOrderType): O? {
+    override suspend fun selectOneOrderedBy(orderingColumName: String, orderingType: SQLOrderType): O? {
         val cursor = databaseAdapter.rawQuery(builder.selectOneOrderedBy(orderingColumName, orderingType))
         return getFirstFromCursor(cursor)
     }
 
-    override fun selectRawQuery(sqlRawQuery: String): List<O> {
+    override suspend fun selectRawQuery(sqlRawQuery: String): List<O> {
         val cursor = databaseAdapter.rawQuery(sqlRawQuery)
         val list: MutableList<O> = ArrayList()
         addObjectsToCollection(cursor, list)
         return list
     }
 
-    override fun selectOneWhere(whereClause: String): O? {
+    override suspend fun selectOneWhere(whereClause: String): O? {
         val cursor = databaseAdapter.rawQuery(builder.selectWhere(whereClause, 1))
         return getFirstFromCursor(cursor)
     }
 
-    override fun selectFirst(): O? {
+    override suspend fun selectFirst(): O? {
         val cursor = databaseAdapter.rawQuery(builder.selectAll())
         return getFirstFromCursor(cursor)
     }
@@ -95,15 +95,15 @@ internal open class ReadableStoreImpl<O : CoreObject>(
         }
     }
 
-    override fun count(): Int {
+    override suspend fun count(): Int {
         return processCount(databaseAdapter.rawQuery(builder.count()))
     }
 
-    override fun countWhere(whereClause: String): Int {
+    override suspend fun countWhere(whereClause: String): Int {
         return processCount(databaseAdapter.rawQuery(builder.countWhere(whereClause)))
     }
 
-    override fun groupAndGetCountBy(column: String): Map<String, Int> {
+    override suspend fun groupAndGetCountBy(column: String): Map<String, Int> {
         val result: MutableMap<String, Int> = HashMap()
         databaseAdapter.rawQuery(builder.countAndGroupBy(column)).use { cursor ->
             if (cursor.count > 0) {

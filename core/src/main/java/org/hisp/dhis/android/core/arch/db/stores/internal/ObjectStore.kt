@@ -31,20 +31,20 @@ import android.content.ContentValues
 
 internal interface ObjectStore<O> : ReadableStore<O> {
     @Throws(RuntimeException::class)
-    fun selectStringColumnsWhereClause(column: String, clause: String): List<String>
+    suspend fun selectStringColumnsWhereClause(column: String, clause: String): List<String>
 
     @Throws(RuntimeException::class)
-    fun insert(o: O): Long
+    suspend fun insert(o: O): Long
 
     @Throws(RuntimeException::class)
-    fun insert(objects: Collection<O>)
-    fun delete(): Int
-    fun deleteById(o: O): Boolean
-    fun deleteWhere(clause: String): Boolean
+    suspend fun insert(objects: Collection<O>)
+    suspend fun delete(): Int
+    suspend fun deleteById(o: O): Boolean
+    suspend fun deleteWhere(clause: String): Boolean
 
-    fun updateWhere(updates: ContentValues, whereClause: String): Int
+    suspend fun updateWhere(updates: ContentValues, whereClause: String): Int
 
     @Throws(RuntimeException::class)
-    fun deleteWhereIfExists(whereClause: String)
+    suspend fun deleteWhereIfExists(whereClause: String)
     val isReady: Boolean
 }

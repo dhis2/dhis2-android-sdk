@@ -30,43 +30,84 @@ package org.hisp.dhis.android.persistence.common.querybuilders
 
 import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
-import org.koin.core.annotation.Singleton
 
-@Singleton
-internal class ReadOnlySQLStatementBuilderImpl : ReadOnlySQLStatementBuilder {
+@Suppress("TooManyFunctions")
+internal open class ReadOnlySQLStatementBuilderImpl(
+    private val tableName: String,
+) : ReadOnlySQLStatementBuilder {
     override fun selectWhere(whereClause: String): RoomRawQuery {
-        TODO("Not yet implemented")
+        return RoomRawQuery(
+            SELECT + "*" + FROM + tableName + WHERE + whereClause + ";",
+        )
     }
 
     override fun selectWhere(whereClause: String, limit: Int): RoomRawQuery {
-        TODO("Not yet implemented")
+        return selectWhere(whereClause + LIMIT + limit)
     }
 
     override fun selectWhere(whereClause: String, orderByClause: String): RoomRawQuery {
-        TODO("Not yet implemented")
+        return selectWhere(whereClause + ORDER_BY + orderByClause)
     }
 
     override fun selectWhere(whereClause: String, orderByClause: String, limit: Int): RoomRawQuery {
-        TODO("Not yet implemented")
+        return selectWhere(whereClause + ORDER_BY + orderByClause + LIMIT + limit)
     }
 
-    override fun selectOneOrderedBy(orderingColumName: String, orderingType: SQLOrderType): RoomRawQuery {
-        TODO("Not yet implemented")
+    override fun selectOneOrderedBy(
+        orderingColumName: String,
+        orderingType: SQLOrderType,
+    ): RoomRawQuery {
+        return RoomRawQuery(
+            SELECT + "*" + FROM + tableName +
+                ORDER_BY + orderingColumName + " " + orderingType.name +
+                LIMIT + "1;",
+        )
     }
 
     override fun selectAll(): RoomRawQuery {
-        TODO("Not yet implemented")
+        return RoomRawQuery(
+            SELECT + "*" + FROM + tableName + ";",
+        )
     }
 
     override fun count(): RoomRawQuery {
-        TODO("Not yet implemented")
+        return RoomRawQuery(
+            SELECT + "COUNT(*)" + FROM + tableName + ";",
+        )
+    }
+
+    override fun selectStringColumn(column: String, clause: String): RoomRawQuery {
+        return RoomRawQuery(
+            "SELECT $column FROM $tableName WHERE $clause;",
+        )
     }
 
     override fun countWhere(whereClause: String): RoomRawQuery {
-        TODO("Not yet implemented")
+        return RoomRawQuery(
+            SELECT + "COUNT(*)" + FROM + tableName + WHERE + whereClause + ";",
+        )
     }
 
     override fun countAndGroupBy(column: String): RoomRawQuery {
-        TODO("Not yet implemented")
+        return RoomRawQuery(
+            "SELECT $column AS key, COUNT(*) AS count FROM $tableName GROUP BY $column",
+        )
+    }
+
+    override fun deleteTable(): RoomRawQuery {
+        return RoomRawQuery("DELETE FROM $tableName;")
+    }
+
+    override fun deleteWhere(whereClause: String): RoomRawQuery {
+        return RoomRawQuery("DELETE FROM $tableName WHERE $whereClause;")
+    }
+
+    companion object {
+        internal const val WHERE = " WHERE "
+        internal const val LIMIT = " LIMIT "
+        internal const val FROM = " FROM "
+        internal const val SELECT = "SELECT "
+        internal const val AND = " AND "
+        internal const val ORDER_BY = " ORDER BY "
     }
 }

@@ -26,28 +26,15 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.common.daos
+package org.hisp.dhis.android.persistence.common.querybuilders
 
-import androidx.room.RawQuery
 import androidx.room.RoomRawQuery
-import org.hisp.dhis.android.persistence.common.EntityDB
 
-@Suppress("TooManyFunctions")
-internal abstract class ReadableDao<P : EntityDB<*>>(
-    val tableName: String,
-) {
-
-    @RawQuery
-    abstract suspend fun objectListRawQuery(sqlRawQuery: RoomRawQuery): List<P>
-
-    @RawQuery
-    abstract suspend fun intRawQuery(sqlRawQuery: RoomRawQuery): Int
-
-    @RawQuery
-    abstract suspend fun groupCountListRawQuery(sqlRawQuery: RoomRawQuery): List<GroupCount>
+internal interface IdentifiableDataObjectSQLStatementBuilder : SQLStatementBuilder {
+    fun setSyncState(uid: String, state: String): RoomRawQuery
+    fun setSyncState(uids: List<String>, state: String): RoomRawQuery
+    fun setSyncStateIfUploading(uid: String, state: String): RoomRawQuery
+    fun getSyncState(uid: String): RoomRawQuery
+    fun exists(uid: String): RoomRawQuery
+    fun getUploadableSyncStatesIncludingError(): RoomRawQuery
 }
-
-internal data class GroupCount(
-    val key: String,
-    val count: Int,
-)

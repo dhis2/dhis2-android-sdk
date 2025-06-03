@@ -26,28 +26,23 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.common.daos
+package org.hisp.dhis.android.persistence.common.querybuilders
 
-import androidx.room.RawQuery
 import androidx.room.RoomRawQuery
-import org.hisp.dhis.android.persistence.common.EntityDB
 
-@Suppress("TooManyFunctions")
-internal abstract class ReadableDao<P : EntityDB<*>>(
-    val tableName: String,
-) {
+internal class LinkSQLStatementBuilderImpl(
+    private val tableName: String,
+    private val parentColumn: String,
+) : LinkSQLStatementBuilder, SQLStatementBuilderImpl(tableName, false) {
+    override fun deleteLinksForParentUid(parentUid: String): RoomRawQuery {
+        return RoomRawQuery("DELETE FROM $tableName WHERE $parentColumn = '$parentUid'")
+    }
 
-    @RawQuery
-    abstract suspend fun objectListRawQuery(sqlRawQuery: RoomRawQuery): List<P>
+    override fun selectDistinctChildren(childColumn: String): RoomRawQuery {
+        return RoomRawQuery("SELECT DISTINCT $childColumn FROM $tableName")
+    }
 
-    @RawQuery
-    abstract suspend fun intRawQuery(sqlRawQuery: RoomRawQuery): Int
-
-    @RawQuery
-    abstract suspend fun groupCountListRawQuery(sqlRawQuery: RoomRawQuery): List<GroupCount>
+    override fun selectLinksForParentUid(parentUid: String): RoomRawQuery {
+        return RoomRawQuery("SELECT * FROM $tableName WHERE $parentColumn = '$parentUid'")
+    }
 }
-
-internal data class GroupCount(
-    val key: String,
-    val count: Int,
-)

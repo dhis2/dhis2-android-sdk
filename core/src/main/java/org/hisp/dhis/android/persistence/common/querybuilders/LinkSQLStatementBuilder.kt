@@ -26,25 +26,12 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.common.daos
+package org.hisp.dhis.android.persistence.common.querybuilders
 
 import androidx.room.RoomRawQuery
-import org.hisp.dhis.android.persistence.common.EntityDB
 
-internal abstract class LinkStoreDao<P : EntityDB<*>>(
-    tableName: String,
-    private val parentColumn: String,
-) : ObjectDao<P>(tableName) {
-
-    suspend fun deleteLinksForParentUid(query: (String, String) -> RoomRawQuery) {
-        intRawQuery(query(tableName, parentColumn))
-    }
-
-    suspend fun selectDistinctChildren(query: (String) -> RoomRawQuery): Set<String> {
-        return stringSetRawQuery(query(tableName))
-    }
-
-    suspend fun selectLinksForParentUid(query: (String, String) -> RoomRawQuery): List<P> {
-        return objectListRawQuery(query(tableName, parentColumn))
-    }
+internal interface LinkSQLStatementBuilder : SQLStatementBuilder {
+    fun deleteLinksForParentUid(parentUid: String): RoomRawQuery
+    fun selectDistinctChildren(childColumn: String): RoomRawQuery
+    fun selectLinksForParentUid(parentUid: String): RoomRawQuery
 }

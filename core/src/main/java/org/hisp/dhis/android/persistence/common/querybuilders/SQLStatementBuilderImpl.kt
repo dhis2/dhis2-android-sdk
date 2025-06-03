@@ -55,10 +55,10 @@ internal open class SQLStatementBuilderImpl(
         )
     }
 
-    override fun selectUidsWhere(whereClause: String, orderByClause: String): RoomRawQuery {
+    override fun selectUidsWhere(whereClause: String, orderByClause: String?): RoomRawQuery {
         return RoomRawQuery(
             SELECT + IdentifiableColumns.UID + FROM + tableName + WHERE + whereClause +
-                ORDER_BY + orderByClause + ";",
+                getOrderBy(orderByClause) + ";",
         )
     }
 

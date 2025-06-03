@@ -80,7 +80,11 @@ internal class TrackedEntitySearchDataFetcher(
     }
 
     fun loadPages(requestedLoadSize: Int): List<Result<TrackedEntitySearchItem, D2Error>> {
-        return runBlocking { transform(instanceFetcher.loadPages(requestedLoadSize)) }
+        return runBlocking { loadPagesSuspend(requestedLoadSize) }
+    }
+
+    suspend fun loadPagesSuspend(requestedLoadSize: Int): List<Result<TrackedEntitySearchItem, D2Error>> {
+        return transform(instanceFetcher.loadPages(requestedLoadSize))
     }
 
     suspend fun queryAllOffline(): List<Result<TrackedEntitySearchItem, D2Error>> {

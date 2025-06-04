@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 internal open class ReadOnlySQLStatementBuilderImpl(
     private val tableInfo: TableInfo,
 ) : ReadOnlySQLStatementBuilder {
+    @get:JvmName("fetchTableName")
     val tableName = tableInfo.name()
 
     override fun selectWhere(whereClause: String): RoomRawQuery {

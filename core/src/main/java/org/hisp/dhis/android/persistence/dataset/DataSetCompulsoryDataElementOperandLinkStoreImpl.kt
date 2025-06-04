@@ -39,6 +39,6 @@ internal class DataSetCompulsoryDataElementOperandLinkStoreImpl(
     DataSetCompulsoryDataElementOperandLink::toDB,
     LinkSQLStatementBuilderImpl(
         DataSetCompulsoryDataElementOperandsLinkTableInfo.TABLE_INFO,
-        DataSetCompulsoryDataElementOperandsLinkTableInfo.Columns.DATA_SET
-    )
+        DataSetCompulsoryDataElementOperandsLinkTableInfo.Columns.DATA_SET,
+    ),
 )

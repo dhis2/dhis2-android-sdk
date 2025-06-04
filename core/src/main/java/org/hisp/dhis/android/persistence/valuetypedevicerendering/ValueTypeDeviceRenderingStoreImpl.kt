@@ -41,6 +41,5 @@ internal class ValueTypeDeviceRenderingStoreImpl(
     ObjectWithoutUidStoreImpl<ValueTypeDeviceRendering, ValueTypeDeviceRenderingDB>(
         dao,
         ValueTypeDeviceRendering::toDB,
-        SQLStatementBuilderImpl(ValueTypeDeviceRenderingTableInfo.TABLE_INFO)
-    ) {
-}
+        SQLStatementBuilderImpl(ValueTypeDeviceRenderingTableInfo.TABLE_INFO),
+    )

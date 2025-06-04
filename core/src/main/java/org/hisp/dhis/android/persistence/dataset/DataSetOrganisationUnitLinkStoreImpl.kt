@@ -41,8 +41,8 @@ internal class DataSetOrganisationUnitLinkStoreImpl(
     DataSetOrganisationUnitLink::toDB,
     LinkSQLStatementBuilderImpl(
         DataSetOrganisationUnitLinkTableInfo.TABLE_INFO,
-        DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT
-    )
+        DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
+    ),
 ) {
     suspend fun getForOrganisationUnit(orgUnitUid: String): List<ObjectWithUid> {
         val whereClause = WhereClauseBuilder()

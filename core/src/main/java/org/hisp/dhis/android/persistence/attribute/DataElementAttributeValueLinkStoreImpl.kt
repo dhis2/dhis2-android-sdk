@@ -40,7 +40,7 @@ internal class DataElementAttributeValueLinkStoreImpl(
     DataElementAttributeValueLink::toDB,
     LinkSQLStatementBuilderImpl(
         DataElementAttributeValueLinkTableInfo.TABLE_INFO,
-        DataElementAttributeValueLinkTableInfo.Columns.DATA_ELEMENT
+        DataElementAttributeValueLinkTableInfo.Columns.DATA_ELEMENT,
     ),
 ) {
     suspend fun getLinksForDataElement(dataElementUid: String): List<DataElementAttributeValueLink> {

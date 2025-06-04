@@ -40,8 +40,8 @@ internal class DataSetDataElementLinkStoreImpl(
     DataSetElement::toDB,
     LinkSQLStatementBuilderImpl(
         DataSetDataElementLinkTableInfo.TABLE_INFO,
-        DataSetDataElementLinkTableInfo.Columns.DATA_SET
-    )
+        DataSetDataElementLinkTableInfo.Columns.DATA_SET,
+    ),
 ) {
     suspend fun getForDataSet(dataSetUid: String): List<DataSetElement> {
         val whereClause = WhereClauseBuilder()

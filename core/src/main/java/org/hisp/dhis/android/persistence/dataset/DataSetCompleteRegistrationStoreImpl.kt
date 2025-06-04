@@ -40,7 +40,7 @@ internal class DataSetCompleteRegistrationStoreImpl(
 ) : ObjectStoreImpl<DataSetCompleteRegistration, DataSetCompleteRegistrationDB>(
     dao,
     DataSetCompleteRegistration::toDB,
-    SQLStatementBuilderImpl(DataSetCompleteRegistrationTableInfo.TABLE_INFO)
+    SQLStatementBuilderImpl(DataSetCompleteRegistrationTableInfo.TABLE_INFO),
 ) {
 
     /**
@@ -94,5 +94,4 @@ internal class DataSetCompleteRegistrationStoreImpl(
 
         return selectWhere(whereClause).isNotEmpty()
     }
-
 }

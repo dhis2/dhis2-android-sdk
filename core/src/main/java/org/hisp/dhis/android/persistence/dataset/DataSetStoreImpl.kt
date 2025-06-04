@@ -37,5 +37,5 @@ internal class DataSetStoreImpl(
 ) : IdentifiableObjectStoreImpl<DataSet, DataSetDB>(
     dao,
     DataSet::toDB,
-    SQLStatementBuilderImpl(DataSetTableInfo.TABLE_INFO)
+    SQLStatementBuilderImpl(DataSetTableInfo.TABLE_INFO),
 )

@@ -32,4 +32,4 @@ import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
 @Dao
-internal abstract class DataSetOrganisationUnitLinkDao : ObjectDao<DataSetOrganisationUnitLinkDB>
+internal interface DataSetOrganisationUnitLinkDao : ObjectDao<DataSetOrganisationUnitLinkDB>

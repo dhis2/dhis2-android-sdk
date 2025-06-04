@@ -35,9 +35,9 @@ import org.hisp.dhis.android.persistence.common.stores.ObjectStoreImpl
 
 internal class DataApprovalStoreImpl(
     val dao: DataApprovalDao,
-    override val builder: SQLStatementBuilder
+    override val builder: SQLStatementBuilder,
 ) : ObjectStoreImpl<DataApproval, DataApprovalDB>(
     dao,
     DataApproval::toDB,
-    SQLStatementBuilderImpl(DataApprovalTableInfo.TABLE_INFO)
+    SQLStatementBuilderImpl(DataApprovalTableInfo.TABLE_INFO),
 )

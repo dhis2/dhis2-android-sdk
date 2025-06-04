@@ -39,7 +39,7 @@ internal class DataInputPeriodStoreImpl(
 ) : ObjectStoreImpl<DataInputPeriod, DataInputPeriodDB>(
     dao,
     DataInputPeriod::toDB,
-    SQLStatementBuilderImpl(DataInputPeriodTableInfo.TABLE_INFO)
+    SQLStatementBuilderImpl(DataInputPeriodTableInfo.TABLE_INFO),
 ) {
     suspend fun getForDataSet(dataSetUid: String): List<DataInputPeriod> {
         val whereClause = WhereClauseBuilder()

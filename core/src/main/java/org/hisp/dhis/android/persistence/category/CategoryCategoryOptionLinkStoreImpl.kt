@@ -39,6 +39,6 @@ internal class CategoryCategoryOptionLinkStoreImpl(
     CategoryCategoryOptionLink::toDB,
     LinkSQLStatementBuilderImpl(
         CategoryCategoryOptionLinkTableInfo.TABLE_INFO,
-        CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY
+        CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY,
     ),
 )

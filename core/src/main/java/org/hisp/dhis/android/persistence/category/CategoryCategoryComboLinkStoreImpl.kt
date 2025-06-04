@@ -39,6 +39,6 @@ internal class CategoryCategoryComboLinkStoreImpl(
     CategoryCategoryComboLink::toDB,
     LinkSQLStatementBuilderImpl(
         CategoryCategoryComboLinkTableInfo.TABLE_INFO,
-        CategoryCategoryComboLinkTableInfo.Columns.CATEGORY_COMBO
+        CategoryCategoryComboLinkTableInfo.Columns.CATEGORY_COMBO,
     ),
 )

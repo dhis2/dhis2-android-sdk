@@ -10,7 +10,6 @@ import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.StringListDB
 import org.hisp.dhis.android.persistence.common.toDB
-import org.hisp.dhis.android.persistence.itemfilter.toDB
 
 @Entity(tableName = "TrackerJobObject")
 internal data class TrackerJobObjectDB(

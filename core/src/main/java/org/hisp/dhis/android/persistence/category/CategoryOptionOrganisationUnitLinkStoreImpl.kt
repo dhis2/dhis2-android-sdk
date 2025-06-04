@@ -41,7 +41,7 @@ internal class CategoryOptionOrganisationUnitLinkStoreImpl(
     CategoryOptionOrganisationUnitLink::toDB,
     LinkSQLStatementBuilderImpl(
         CategoryOptionOrganisationUnitLinkTableInfo.TABLE_INFO,
-        CategoryOptionOrganisationUnitLinkTableInfo.Columns.CATEGORY_OPTION
+        CategoryOptionOrganisationUnitLinkTableInfo.Columns.CATEGORY_OPTION,
     ),
 ) {
     suspend fun getLinksForCategoryOption(categoryOptionUid: String): List<CategoryOptionOrganisationUnitLink> {

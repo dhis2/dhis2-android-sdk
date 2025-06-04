@@ -32,4 +32,4 @@ import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
 @Dao
-internal abstract class DataSetDao : ObjectDao<DataSetDB>
+internal interface DataSetDao : ObjectDao<DataSetDB>

@@ -40,7 +40,7 @@ internal class DataElementStoreImpl(
 ) : IdentifiableObjectStoreImpl<DataElement, DataElementDB>(
     dao,
     DataElement::toDB,
-    SQLStatementBuilderImpl(DataElementTableInfo.TABLE_INFO)
+    SQLStatementBuilderImpl(DataElementTableInfo.TABLE_INFO),
 ) {
     suspend fun getForSection(sectionUid: String): List<DataElement> {
         val projection = LinkTableChildProjection(
@@ -49,7 +49,7 @@ internal class DataElementStoreImpl(
             SectionDataElementLinkTableInfo.Columns.DATA_ELEMENT,
         )
         val sectionSqlBuilder = SQLStatementBuilderImpl(
-            SectionDataElementLinkTableInfo.TABLE_INFO
+            SectionDataElementLinkTableInfo.TABLE_INFO,
         )
         val query = sectionSqlBuilder.selectChildrenWithLinkTable(
             projection,
@@ -66,7 +66,7 @@ internal class DataElementStoreImpl(
             ProgramStageSectionDataElementLinkTableInfo.Columns.DATA_ELEMENT,
         )
         val sectionSqlBuilder = SQLStatementBuilderImpl(
-            ProgramStageSectionDataElementLinkTableInfo.TABLE_INFO
+            ProgramStageSectionDataElementLinkTableInfo.TABLE_INFO,
         )
         val query = sectionSqlBuilder.selectChildrenWithLinkTable(
             projection,

@@ -40,7 +40,7 @@ internal class ProgramAttributeValueLinkStoreImpl(
     ProgramAttributeValueLink::toDB,
     LinkSQLStatementBuilderImpl(
         ProgramAttributeValueLinkTableInfo.TABLE_INFO,
-        ProgramAttributeValueLinkTableInfo.Columns.PROGRAM
+        ProgramAttributeValueLinkTableInfo.Columns.PROGRAM,
     ),
 ) {
     suspend fun getLinksForProgram(programUid: String): List<ProgramAttributeValueLink> {

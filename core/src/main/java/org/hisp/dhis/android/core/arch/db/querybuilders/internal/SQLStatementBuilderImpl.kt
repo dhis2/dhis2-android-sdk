@@ -153,7 +153,7 @@ internal class SQLStatementBuilderImpl internal constructor(
     }
 
     override fun selectWhere(whereClause: String, limit: Int): String {
-        return selectWhere(whereClause + LIMIT + limit)
+        return selectWhere(whereClause + getLimit(limit))
     }
 
     override fun selectWhere(whereClause: String, orderByClause: String?): String {
@@ -161,11 +161,11 @@ internal class SQLStatementBuilderImpl internal constructor(
     }
 
     override fun selectWhere(whereClause: String, orderByClause: String?, limit: Int): String {
-        return selectWhere(whereClause + getOrderBy(orderByClause) + LIMIT + limit)
+        return selectWhere(whereClause + getOrderBy(orderByClause) + getLimit(limit))
     }
 
     override fun selectWhere(whereClause: String, orderByClause: String?, limit: Int, offset: Int?): String {
-        return selectWhere(whereClause + getOrderBy(orderByClause) + LIMIT + limit + getOffset(offset))
+        return selectWhere(whereClause + getOrderBy(orderByClause) + getLimit(limit) + getOffset(offset))
     }
 
     override fun selectAll(): String {
@@ -226,6 +226,10 @@ internal class SQLStatementBuilderImpl internal constructor(
 
         internal fun getOrderBy(orderByClause: String?): String {
             return orderByClause?.let { ORDER_BY + it } ?: ""
+        }
+
+        internal fun getLimit(limit: Int): String {
+            return LIMIT + limit
         }
 
         internal fun getOffset(offset: Int?): String {

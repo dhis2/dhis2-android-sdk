@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl.Companion.getLimit
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl.Companion.getOffset
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl.Companion.getOrderBy
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
@@ -43,7 +44,7 @@ class DataSetInstanceSummarySQLStatementBuilder : DataSetInstanceSQLStatementBui
 
     override fun selectWhere(whereClause: String, limit: Int): String {
         val innerSelectClause = super.selectWhere(whereClause)
-        return wrapInnerClause(innerSelectClause) + " LIMIT " + limit
+        return wrapInnerClause(innerSelectClause) + getLimit(limit)
     }
 
     override fun selectAll(): String {
@@ -64,11 +65,11 @@ class DataSetInstanceSummarySQLStatementBuilder : DataSetInstanceSQLStatementBui
     }
 
     override fun selectWhere(whereClause: String, orderByClause: String?, limit: Int): String {
-        return selectWhere(whereClause, orderByClause) + " LIMIT " + limit
+        return selectWhere(whereClause, orderByClause) + getLimit(limit)
     }
 
     override fun selectWhere(whereClause: String, orderByClause: String?, limit: Int, offset: Int?): String {
-        return selectWhere(whereClause, orderByClause) + " LIMIT " + limit + getOffset(offset)
+        return selectWhere(whereClause, orderByClause) + getLimit(limit) + getOffset(offset)
     }
 
     override fun selectOneOrderedBy(orderingColumnName: String, orderingType: SQLOrderType): String {

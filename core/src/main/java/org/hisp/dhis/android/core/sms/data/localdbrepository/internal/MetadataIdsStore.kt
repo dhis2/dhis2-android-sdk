@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.sms.data.localdbrepository.internal
 
 import io.reactivex.Completable
 import io.reactivex.Single
+import kotlinx.coroutines.rx2.rxCompletable
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.smscompression.SMSConsts
 import org.hisp.dhis.smscompression.models.SMSMetadata
@@ -40,7 +42,7 @@ internal class MetadataIdsStore(
     private val smsConfigStore: SMSConfigStore,
 ) {
     fun getMetadataIds(): Single<SMSMetadata> {
-        return Single.fromCallable {
+        return rxSingle {
             val lastSync = smsConfigStore.get(SMSConfigKey.METADATA_SYNC_DATE)
             val metadataIdList = smsMetadataIdsStore.selectAll()
 
@@ -77,7 +79,7 @@ internal class MetadataIdsStore(
     }
 
     fun setMetadataIds(metadata: SMSMetadata?): Completable {
-        return Completable.fromAction {
+        return rxCompletable {
             metadata?.let {
                 it.lastSyncDate?.let { date ->
                     smsConfigStore.set(SMSConfigKey.METADATA_SYNC_DATE, DateUtils.DATE_FORMAT.format(date))
@@ -109,7 +111,7 @@ internal class MetadataIdsStore(
     }
 
     fun clear(): Completable {
-        return Completable.fromAction {
+        return rxCompletable {
             smsMetadataIdsStore.delete()
             smsConfigStore.delete(SMSConfigKey.METADATA_SYNC_DATE)
         }

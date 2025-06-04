@@ -33,5 +33,5 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetLink
 
 internal interface TrackedEntityAttributeLegendSetLinkStore : LinkStore<TrackedEntityAttributeLegendSetLink> {
-    fun getForTrackedEntityAttribute(trackedEntityAttributeUid: String): List<ObjectWithUid>
+    suspend fun getForTrackedEntityAttribute(trackedEntityAttributeUid: String): List<ObjectWithUid>
 }

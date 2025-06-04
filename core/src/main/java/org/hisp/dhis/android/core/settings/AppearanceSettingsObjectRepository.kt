@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.settings
 
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl
 import org.hisp.dhis.android.core.settings.AppearanceSettingsHelper.getGlobal
@@ -161,12 +162,12 @@ class AppearanceSettingsObjectRepository internal constructor(
     }
 
     fun getGlobalProgramConfigurationSetting(): ProgramConfigurationSetting? {
-        val programSettingList = programConfigurationSettingStore.selectAll()
+        val programSettingList = runBlocking { programConfigurationSettingStore.selectAll() }
         return getGlobal(programSettingList)
     }
 
     fun getGlobalDataSetConfigurationSetting(): DataSetConfigurationSetting? {
-        val dataSetSettingList = dataSetConfigurationSettingStore.selectAll()
+        val dataSetSettingList = runBlocking { dataSetConfigurationSettingStore.selectAll() }
         return getGlobal(dataSetSettingList)
     }
 
@@ -177,15 +178,15 @@ class AppearanceSettingsObjectRepository internal constructor(
     }
 
     fun getProgramConfigurationByUid(uid: String?): ProgramConfigurationSetting? {
-        val programSettingList = programConfigurationSettingStore.selectAll()
-        var result = getSpecifics(programSettingList)[uid]
+        val programSettingList = runBlocking { programConfigurationSettingStore.selectAll() }
+        val result = getSpecifics(programSettingList)[uid]
 
         return result ?: getGlobalProgramConfigurationSetting()
     }
 
     fun getDataSetConfigurationByUid(uid: String?): DataSetConfigurationSetting? {
-        val dataSetSettingList = dataSetConfigurationSettingStore.selectAll()
-        var result = getSpecifics(dataSetSettingList)[uid]
+        val dataSetSettingList = runBlocking { dataSetConfigurationSettingStore.selectAll() }
+        val result = getSpecifics(dataSetSettingList)[uid]
 
         return result ?: getGlobalDataSetConfigurationSetting()
     }

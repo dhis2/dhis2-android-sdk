@@ -43,7 +43,7 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal interface IndicatorDataItem : ExpressionItem {
 
-    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+    override suspend fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
         return getEvaluationItem(ctx, visitor)?.let { evaluationItem ->
             runBlocking {
                 getMetadataEntry(evaluationItem, visitor)?.let { metadataEntry ->

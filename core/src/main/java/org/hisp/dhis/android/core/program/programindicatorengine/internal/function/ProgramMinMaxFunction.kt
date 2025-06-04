@@ -41,7 +41,7 @@ internal abstract class ProgramMinMaxFunction : ExpressionItem {
 
     abstract fun getSqlAggregator(): String
 
-    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+    override suspend fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
         val programStageUid = ctx.uid0.text
         val mappedValues: List<String> = (visitor.programIndicatorContext!!.events[programStageUid] ?: emptyList())
             .mapNotNull { event ->

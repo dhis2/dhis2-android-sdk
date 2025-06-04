@@ -80,7 +80,9 @@ internal class TrackedEntityAttributeValueStoreImpl(
             " IN (" + states + "))"
     }
 
-    override suspend fun queryByTrackedEntityInstance(trackedEntityInstanceUid: String): List<TrackedEntityAttributeValue> {
+    override suspend fun queryByTrackedEntityInstance(
+        trackedEntityInstanceUid: String,
+    ): List<TrackedEntityAttributeValue> {
         val selectByTrackedEntityInstanceQuery = WhereClauseBuilder().appendKeyStringValue(
             TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
             trackedEntityInstanceUid,

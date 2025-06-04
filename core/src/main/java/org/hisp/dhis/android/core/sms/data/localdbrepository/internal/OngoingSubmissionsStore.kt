@@ -105,14 +105,14 @@ internal class OngoingSubmissionsStore(
         return if (lastGeneratedSubmissionId != null) {
             Single.just(lastGeneratedSubmissionId)
         } else {
-            Single.fromCallable {
+            rxSingle {
                 smsConfigStore.get(SMSConfigKey.LAST_SUBMISSION_ID)?.toInt() ?: 0
             }
                 .doOnSuccess { lastGeneratedSubmissionId = it }
         }
     }
 
-    private fun saveLastGeneratedSubmissionId(id: Int) {
+    private suspend fun saveLastGeneratedSubmissionId(id: Int) {
         smsConfigStore.set(SMSConfigKey.LAST_SUBMISSION_ID, id.toString())
     }
 

@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.period.internal
 
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.DataSetCollectionRepository
 import org.hisp.dhis.android.core.period.Period
@@ -48,12 +49,12 @@ internal class PeriodForDataSetManager(
                 dataSet.periodType()!!,
                 endPeriods,
             )
-            storePeriods(periods)
+            runBlocking { storePeriods(periods) }
             periods
         }
     }
 
-    fun getPeriodsForDataSets(periodType: PeriodType, dataSets: List<DataSet>): List<Period> {
+    suspend fun getPeriodsForDataSets(periodType: PeriodType, dataSets: List<DataSet>): List<Period> {
         var maxFuturePeriods = 0
         var someHasOpen = false
         for (dataSet in dataSets) {
@@ -82,7 +83,7 @@ internal class PeriodForDataSetManager(
      * @param endOffset Relative period offset, it could be positive or negative
      * @return List of periods in range
      */
-    fun getPeriodsInRange(periodType: PeriodType, startOffset: Int, endOffset: Int): List<Period> {
+    suspend fun getPeriodsInRange(periodType: PeriodType, startOffset: Int, endOffset: Int): List<Period> {
         val periods = parentPeriodGenerator.generatePeriods(
             periodType,
             startOffset,
@@ -92,7 +93,7 @@ internal class PeriodForDataSetManager(
         return periods
     }
 
-    private fun storePeriods(periods: List<Period>) {
+    private suspend fun storePeriods(periods: List<Period>) {
         for (period in periods) {
             periodStore.updateOrInsertWhere(period)
         }

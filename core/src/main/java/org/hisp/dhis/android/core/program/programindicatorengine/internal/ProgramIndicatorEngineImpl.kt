@@ -44,7 +44,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
 import org.koin.core.annotation.Singleton
-import java.util.*
 
 @Singleton
 internal class ProgramIndicatorEngineImpl(
@@ -60,7 +59,7 @@ internal class ProgramIndicatorEngineImpl(
 ) : ProgramIndicatorEngine {
 
     @Deprecated("Deprecated in Java")
-    override fun getProgramIndicatorValue(
+    override suspend fun getProgramIndicatorValue(
         enrollmentUid: String?,
         eventUid: String?,
         programIndicatorUid: String,
@@ -72,7 +71,10 @@ internal class ProgramIndicatorEngineImpl(
         }
     }
 
-    override fun getEnrollmentProgramIndicatorValue(enrollmentUid: String, programIndicatorUid: String): String? {
+    override suspend fun getEnrollmentProgramIndicatorValue(
+        enrollmentUid: String,
+        programIndicatorUid: String,
+    ): String? {
         val programIndicator = programIndicatorStore.selectByUid(programIndicatorUid) ?: return null
 
         val enrollment = enrollmentStore.selectByUid(enrollmentUid)
@@ -88,7 +90,7 @@ internal class ProgramIndicatorEngineImpl(
         return evaluateProgramIndicatorContext(programIndicatorContext)
     }
 
-    override fun getEventProgramIndicatorValue(eventUid: String, programIndicatorUid: String): String? {
+    override suspend fun getEventProgramIndicatorValue(eventUid: String, programIndicatorUid: String): String? {
         val programIndicator = programIndicatorStore.selectByUid(programIndicatorUid) ?: return null
 
         val event = eventRepository
@@ -111,9 +113,9 @@ internal class ProgramIndicatorEngineImpl(
         return evaluateProgramIndicatorContext(programIndicatorContext)
     }
 
-    private fun evaluateProgramIndicatorContext(context: ProgramIndicatorContext): String? {
+    private suspend fun evaluateProgramIndicatorContext(context: ProgramIndicatorContext): String? {
         val executor = ProgramIndicatorExecutor(
-            constantMap,
+            constantMap(),
             context,
             dataElementStore,
             trackedEntityAttributeStore,
@@ -123,13 +125,12 @@ internal class ProgramIndicatorEngineImpl(
         return executor.getProgramIndicatorValue(context.programIndicator)
     }
 
-    private val constantMap: Map<String, Constant>
-        get() {
-            val constants = constantStore.selectAll()
-            return mapByUid(constants)
-        }
+    private suspend fun constantMap(): Map<String, Constant> {
+        val constants = constantStore.selectAll()
+        return mapByUid(constants)
+    }
 
-    private fun getAttributeValues(enrollment: Enrollment?): Map<String, TrackedEntityAttributeValue> {
+    private suspend fun getAttributeValues(enrollment: Enrollment?): Map<String, TrackedEntityAttributeValue> {
         val trackedEntityAttributeValues = enrollment?.trackedEntityInstance()?.let { teiUid ->
             trackedEntityAttributeValueStore.queryByTrackedEntityInstance(teiUid)
         } ?: return mapOf()
@@ -142,7 +143,7 @@ internal class ProgramIndicatorEngineImpl(
     private fun getEnrollmentEvents(enrollment: Enrollment): Map<String, List<Event>> {
         val programStageUids = programRepository.byProgramUid().eq(enrollment.program()).blockingGetUids()
 
-        return programStageUids.map { programStageUid ->
+        return programStageUids.associateWith { programStageUid ->
             val programStageEvents = eventRepository
                 .byProgramStageUid().eq(programStageUid)
                 .byEnrollmentUid().eq(enrollment.uid())
@@ -152,7 +153,7 @@ internal class ProgramIndicatorEngineImpl(
                 .withTrackedEntityDataValues()
                 .blockingGet()
 
-            programStageUid to programStageEvents
-        }.toMap()
+            programStageEvents
+        }
     }
 }

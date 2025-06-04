@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingLis
 
 internal interface ProgramStageWorkingListAttributeValueFilterStore :
     ObjectWithoutUidStore<ProgramStageWorkingListAttributeValueFilter> {
-    fun getForProgramStageWorkingList(
+    suspend fun getForProgramStageWorkingList(
         programStageWorkingList: String,
     ): List<ProgramStageWorkingListAttributeValueFilter>
 }

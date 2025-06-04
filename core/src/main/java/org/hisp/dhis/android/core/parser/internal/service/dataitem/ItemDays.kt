@@ -48,7 +48,7 @@ internal class ItemDays : ExpressionItem {
         return ParserUtils.DOUBLE_VALUE_IF_NULL
     }
 
-    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+    override suspend fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
         return visitor.days
     }
 

@@ -39,7 +39,7 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal class D2AddDays : ExpressionItem {
 
-    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+    override suspend fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
         val dateStr = visitor.castStringVisit(ctx.expr(0))
         val days = visitor.castStringVisit(ctx.expr(1))
         val date = LocalDateTime.parseDateStr(dateStr).toLocalDate()

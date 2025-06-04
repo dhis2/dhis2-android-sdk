@@ -38,7 +38,7 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal class VEventCount : ExpressionItem {
 
-    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+    override suspend fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         return visitor.programIndicatorContext!!.events.values.sumOf { it.size }.toString()
     }
 

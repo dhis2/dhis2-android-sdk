@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.sms.data.localdbrepository.internal
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxCompletable
 import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
@@ -40,7 +39,6 @@ import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludi
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationTableInfo
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationStore
-import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
@@ -321,7 +319,7 @@ internal class LocalDbRepositoryImpl(
                     orgUnit,
                     period,
                     attributeOptionComboUid,
-                    state
+                    state,
                 )
             },
             rxCompletable {
@@ -330,9 +328,9 @@ internal class LocalDbRepositoryImpl(
                     orgUnit,
                     period,
                     attributeOptionComboUid,
-                    state
+                    state,
                 )
-            }
+            },
         )
     }
 

@@ -70,7 +70,7 @@ internal class TrackerImporterPostCall internal constructor(
         return postPayloadWrapper(payloadGenerator.getTrackedEntityPayload(filteredTrackedEntityInstances))
     }
 
-    fun uploadEvents(
+    suspend fun uploadEvents(
         filteredEvents: List<Event>,
     ): Flow<D2Progress> {
         return postPayloadWrapper(payloadGenerator.getEventPayload(filteredEvents))

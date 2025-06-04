@@ -51,16 +51,16 @@ internal class TrackerQueryFactoryCommonHelper(
     private val organisationUnitProgramLinkStore: OrganisationUnitProgramLinkStore,
 ) {
 
-    private fun getRootCaptureOrgUnitUids(): List<String> {
+    private suspend fun getRootCaptureOrgUnitUids(): List<String> {
         return userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids()
     }
 
-    fun getCaptureOrgUnitUids(): List<String> {
+    suspend fun getCaptureOrgUnitUids(): List<String> {
         return userOrganisationUnitLinkStore
             .queryOrganisationUnitUidsByScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
     }
 
-    fun getLinkedCaptureOrgUnitUids(programUid: String): List<String> {
+    suspend fun getLinkedCaptureOrgUnitUids(programUid: String): List<String> {
         val ous = getCaptureOrgUnitUids()
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM, programUid)
@@ -69,10 +69,10 @@ internal class TrackerQueryFactoryCommonHelper(
         return organisationUnitProgramLinkStore.selectWhere(whereClause).map { it.organisationUnit()!! }
     }
 
-    private fun getOrganisationUnits(
+    private suspend fun getOrganisationUnits(
         params: ProgramDataDownloadParams,
         hasLimitByOrgUnit: Boolean,
-        byLimitExtractor: () -> List<String>,
+        byLimitExtractor: suspend () -> List<String>,
     ): Pair<OrganisationUnitMode, List<String>> {
         return when {
             params.orgUnits().size > 0 ->
@@ -111,7 +111,7 @@ internal class TrackerQueryFactoryCommonHelper(
         }
     }
 
-    fun getLimit(
+    suspend fun getLimit(
         params: ProgramDataDownloadParams,
         programSettings: ProgramSettings?,
         programUid: String?,
@@ -127,7 +127,7 @@ internal class TrackerQueryFactoryCommonHelper(
     }
 
     @Suppress("ReturnCount")
-    private fun getConfigLimit(
+    private suspend fun getConfigLimit(
         params: ProgramDataDownloadParams,
         programSettings: ProgramSettings?,
         programUid: String?,
@@ -166,7 +166,7 @@ internal class TrackerQueryFactoryCommonHelper(
         return ProgramDataDownloadParams.DEFAULT_LIMIT
     }
 
-    private fun specificEvents(
+    private suspend fun specificEvents(
         params: ProgramDataDownloadParams,
         programSettings: ProgramSettings?,
         downloadExtractor: (ProgramSetting?) -> Int?,
@@ -245,7 +245,7 @@ internal class TrackerQueryFactoryCommonHelper(
         programs: List<String>,
         programUid: String?,
         limit: Int,
-        orgUnitByLimitExtractor: () -> List<String>,
+        orgUnitByLimitExtractor: suspend () -> List<String>,
         periodExtractor: (ProgramSetting?) -> DownloadPeriod?,
     ): TrackerQueryCommonParams {
         val hasLimitByOrgUnit = hasLimitByOrgUnit(params, programSettings, programUid)

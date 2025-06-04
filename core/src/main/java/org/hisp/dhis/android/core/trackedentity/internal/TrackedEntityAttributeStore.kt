@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 
 internal interface TrackedEntityAttributeStore : IdentifiableObjectStore<TrackedEntityAttribute> {
-    fun getForProgramSection(programSectionUid: String): List<TrackedEntityAttribute>
+    suspend fun getForProgramSection(programSectionUid: String): List<TrackedEntityAttribute>
 }

@@ -48,7 +48,7 @@ internal abstract class DimensionalItem : ExpressionItem {
         return DOUBLE_VALUE_IF_NULL
     }
 
-    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+    override suspend fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
         val value = visitor.itemValueMap[getId(ctx)]
         return visitor.handleNulls(value, ValueType.NUMBER)
     }

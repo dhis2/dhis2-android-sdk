@@ -76,7 +76,7 @@ internal class AttributeValueFilterStoreImpl(
         private val WHERE_DELETE_BINDER = WhereStatementBinder { _: AttributeValueFilter, _ -> }
     }
 
-    override fun getForTrackedEntityInstanceFilter(
+    override suspend fun getForTrackedEntityInstanceFilter(
         trackedEntityInstanceFilterUid: String,
     ): List<AttributeValueFilter> {
         val whereClause = WhereClauseBuilder()

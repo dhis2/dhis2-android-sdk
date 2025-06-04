@@ -136,7 +136,7 @@ internal class EnrollmentServiceImpl(
                     .flatMapIterable { stages: List<ProgramStage>? -> stages }
                     .filter { programStage: ProgramStage ->
                         !currentProgramStagesUids.contains(programStage.uid()) ||
-                                programStage.repeatable()!!
+                            programStage.repeatable()!!
                     }
                     .toList()
             }.blockingGet()
@@ -163,6 +163,6 @@ internal class EnrollmentServiceImpl(
          */
 
         return ownerships.isEmpty() ||
-                ownerships.any { DateUtils.DATE_FORMAT.format(it.validUntil()) > nowStr }
+            ownerships.any { DateUtils.DATE_FORMAT.format(it.validUntil()) > nowStr }
     }
 }

@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramExpressionItem
@@ -64,8 +65,10 @@ internal abstract class ProgramCountFunction : ProgramExpressionItem() {
         val programStageId = ctx.uid0.text
         val dataElementId = ctx.uid1.text
 
-        val dataElement = visitor.dataElementStore!!.selectByUid(dataElementId)
-            ?: throw IllegalArgumentException("DataElement $dataElementId does not exist.")
+        val dataElement = runBlocking {
+            visitor.dataElementStore!!.selectByUid(dataElementId)
+                ?: throw IllegalArgumentException("DataElement $dataElementId does not exist.")
+        }
 
         val valueCastExpression = getColumnValueCast(
             TrackedEntityDataValueTableInfo.Columns.VALUE,

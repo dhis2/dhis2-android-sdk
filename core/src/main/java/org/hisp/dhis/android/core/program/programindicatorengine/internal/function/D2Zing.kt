@@ -33,7 +33,7 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal class D2Zing : ExpressionItem {
 
-    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+    override suspend fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         val argument = visitor.castStringVisit(ctx.expr(0))
         val value = argument.toDouble()
 

@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingLis
 
 internal interface ProgramStageWorkingListEventDataFilterStore :
     ObjectWithoutUidStore<ProgramStageWorkingListEventDataFilter> {
-    fun getForProgramStageWorkingList(
+    suspend fun getForProgramStageWorkingList(
         programStageWorkingListUid: String,
     ): List<ProgramStageWorkingListEventDataFilter>
 }

@@ -41,13 +41,13 @@ internal class DataSetsStore(
     private val dataValueModule: DataValueModule,
     private val dataValueStore: DataValueStore,
     private val dataSetStore: DataSetCompleteRegistrationStore,
-    private val completeRegistrationRepository: DataSetCompleteRegistrationCollectionRepository
+    private val completeRegistrationRepository: DataSetCompleteRegistrationCollectionRepository,
 ) {
     fun getDataValues(
         dataSetUid: String?,
         orgUnit: String,
         period: String,
-        attributeOptionComboUid: String
+        attributeOptionComboUid: String,
     ): List<DataValue> {
         val baseQuery = dataValueModule.dataValues()
             .byDataSetUid(dataSetUid)
@@ -77,7 +77,7 @@ internal class DataSetsStore(
         orgUnit: String,
         period: String,
         attributeOptionComboUid: String,
-        state: State
+        state: State,
     ) {
         getDataValues(dataSetUid, orgUnit, period, attributeOptionComboUid)
             .forEach { dataValueStore.setState(it, state) }
@@ -91,7 +91,7 @@ internal class DataSetsStore(
         orgUnit: String,
         period: String,
         attributeOptionComboUid: String,
-        state: State?
+        state: State?,
     ) {
         completeRegistrationRepository
             .byDataSetUid().eq(dataSetId)

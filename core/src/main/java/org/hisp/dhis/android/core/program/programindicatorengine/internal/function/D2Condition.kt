@@ -35,7 +35,7 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal class D2Condition : ExpressionItem {
 
-    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+    override suspend fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         val testExpression = AntlrParserUtils.trimQuotes(ctx.stringLiteral().text)
 
         val valueIfTrue = visitor.castStringVisit(ctx.expr(0))

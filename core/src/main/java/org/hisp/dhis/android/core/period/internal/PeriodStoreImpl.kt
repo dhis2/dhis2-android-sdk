@@ -54,7 +54,7 @@ internal class PeriodStoreImpl(
         WHERE_DELETE_BINDER,
         { cursor: Cursor -> Period.create(cursor) },
     ) {
-    override fun selectByPeriodId(periodId: String?): Period? {
+    override suspend fun selectByPeriodId(periodId: String?): Period? {
         return periodId?.let {
             val whereClause = WhereClauseBuilder()
                 .appendKeyStringValue(PeriodTableInfo.Columns.PERIOD_ID, it)
@@ -63,7 +63,7 @@ internal class PeriodStoreImpl(
         }
     }
 
-    override fun selectPeriodByTypeAndDate(periodType: PeriodType, date: Date): Period? {
+    override suspend fun selectPeriodByTypeAndDate(periodType: PeriodType, date: Date): Period? {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(PeriodTableInfo.Columns.PERIOD_TYPE, periodType)
             .appendKeyLessThanOrEqStringValue(
@@ -78,11 +78,10 @@ internal class PeriodStoreImpl(
         return selectOneWhere(whereClause)
     }
 
-    override val oldestPeriodStartDate: Date?
-        get() {
-            val period = selectOneOrderedBy(PeriodTableInfo.Columns.START_DATE, SQLOrderType.ASC)
-            return period?.startDate()
-        }
+    override suspend fun oldestPeriodStartDate(): Date? {
+        val period = selectOneOrderedBy(PeriodTableInfo.Columns.START_DATE, SQLOrderType.ASC)
+        return period?.startDate()
+    }
 
     companion object {
         private val BINDER = StatementBinder { o: Period, w: StatementWrapper ->

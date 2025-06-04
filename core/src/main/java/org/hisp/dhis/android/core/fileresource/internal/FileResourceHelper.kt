@@ -67,7 +67,10 @@ internal class FileResourceHelper(
         return fileResourceStore.getUploadableSyncStatesIncludingError()
     }
 
-    suspend fun isPresentInDataValues(fileResourceUid: String, dataValues: Collection<TrackedEntityDataValue>?): Boolean {
+    suspend fun isPresentInDataValues(
+        fileResourceUid: String,
+        dataValues: Collection<TrackedEntityDataValue>?,
+    ): Boolean {
         return dataValues?.any {
             fileResourceUid == it.value() && isFileDataElement(it.dataElement())
         } ?: false
@@ -141,6 +144,7 @@ internal class FileResourceHelper(
                 getRelatedEvent(fileResourceUid)?.syncState()
                     ?: getRelatedTei(fileResourceUid)?.syncState()
                     ?: State.TO_POST
+
             FileResourceDataDomainType.AGGREGATED ->
                 getRelatedDataValue(fileResourceUid)?.syncState()
                     ?: State.TO_POST

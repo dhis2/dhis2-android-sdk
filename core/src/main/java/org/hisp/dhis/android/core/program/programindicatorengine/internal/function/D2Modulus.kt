@@ -34,7 +34,7 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 import java.util.*
 
 internal class D2Modulus : ExpressionItem {
-    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+    override suspend fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         val firstValue = visitor.castStringVisit(ctx.expr(0))?.toDoubleOrNull() ?: ParserUtils.DOUBLE_VALUE_IF_NULL
         val secondValue = visitor.castStringVisit(ctx.expr(1))?.toDoubleOrNull() ?: ParserUtils.DOUBLE_VALUE_IF_NULL
 

@@ -42,7 +42,7 @@ internal class TrackedEntityEnrollmentOrphanCleaner(
     private val breakTheGlassHelper: TrackerImporterBreakTheGlassHelper,
 ) {
 
-    fun deleteOrphan(
+    suspend fun deleteOrphan(
         parent: TrackedEntityInstance?,
         children: Collection<Enrollment>?,
         program: String?,

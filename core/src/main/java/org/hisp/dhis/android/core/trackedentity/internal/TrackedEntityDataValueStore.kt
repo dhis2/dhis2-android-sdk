@@ -32,14 +32,14 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 
 internal interface TrackedEntityDataValueStore : ObjectWithoutUidStore<TrackedEntityDataValue> {
-    fun deleteByEventAndNotInDataElements(eventUid: String, dataElementUids: List<String>): Boolean
-    fun deleteByEvent(eventUid: String): Boolean
-    fun queryTrackedEntityDataValuesByEventUid(eventUid: String): List<TrackedEntityDataValue>
+    suspend fun deleteByEventAndNotInDataElements(eventUid: String, dataElementUids: List<String>): Boolean
+    suspend fun deleteByEvent(eventUid: String): Boolean
+    suspend fun queryTrackedEntityDataValuesByEventUid(eventUid: String): List<TrackedEntityDataValue>
     fun querySingleEventsTrackedEntityDataValues(): Map<String, List<TrackedEntityDataValue>>
     fun queryTrackerTrackedEntityDataValues(): Map<String, List<TrackedEntityDataValue>>
-    fun queryToPostByEvent(eventUid: String): List<TrackedEntityDataValue>
-    fun removeDeletedDataValuesByEvent(eventUid: String)
-    fun removeUnassignedDataValuesByEvent(eventUid: String)
+    suspend fun queryToPostByEvent(eventUid: String): List<TrackedEntityDataValue>
+    suspend fun removeDeletedDataValuesByEvent(eventUid: String)
+    suspend fun removeUnassignedDataValuesByEvent(eventUid: String)
     fun setSyncStateByEvent(eventUid: String, syncState: State)
-    fun getForEvent(eventUid: String): List<TrackedEntityDataValue>
+    suspend fun getForEvent(eventUid: String): List<TrackedEntityDataValue>
 }

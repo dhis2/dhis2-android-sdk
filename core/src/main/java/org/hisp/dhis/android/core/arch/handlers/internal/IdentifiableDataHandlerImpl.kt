@@ -158,7 +158,7 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         }
     }
 
-    protected suspend fun deleteLinkedRelationships(o: O) {
+    private suspend fun deleteLinkedRelationships(o: O) {
         o.uid()?.let { relationshipHandler.deleteLinkedRelationships(it) }
     }
 

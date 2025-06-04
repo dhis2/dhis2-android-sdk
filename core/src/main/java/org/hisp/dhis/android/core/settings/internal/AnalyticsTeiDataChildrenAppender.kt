@@ -55,7 +55,7 @@ internal class AnalyticsTeiDataChildrenAppender(
     private var attributes: List<AnalyticsTeiAttribute>? = null
     private var whoNutritionData: List<AnalyticsTeiWHONutritionData>? = null
 
-    override fun prepareChildren(collection: Collection<AnalyticsTeiSetting>) {
+    override suspend fun prepareChildren(collection: Collection<AnalyticsTeiSetting>) {
         dataElements = analyticsTeiDataElementStore.selectAll()
         indicators = analyticsTeiIndicatorStore.selectAll()
         attributes = analyticsTeiAttributeStore.selectAll()

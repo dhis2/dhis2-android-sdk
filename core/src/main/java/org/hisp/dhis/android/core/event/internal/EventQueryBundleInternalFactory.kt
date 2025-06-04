@@ -33,16 +33,16 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParam
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryFactoryCommonHelper
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryInternalFactory
 
-internal class EventQueryBundleInternalFactory constructor(
+internal class EventQueryBundleInternalFactory(
     commonHelper: TrackerQueryFactoryCommonHelper,
     params: ProgramDataDownloadParams,
     programSettings: ProgramSettings?,
 ) : TrackerQueryInternalFactory<EventQueryBundle>(commonHelper, params, programSettings) {
 
-    override fun queryInternal(
+    override suspend fun queryInternal(
         programs: List<String>,
         programUid: String?,
-        orgUnitByLimitExtractor: () -> List<String>,
+        orgUnitByLimitExtractor: suspend () -> List<String>,
     ): List<EventQueryBundle> {
         val limit = commonHelper.getLimit(
             params,

@@ -39,7 +39,7 @@ internal class EventPostStateManager internal constructor(
 ) {
 
     suspend fun <T> markObjectsAs(events: Collection<T>, forcedState: State?)
-            where T : ObjectWithUidInterface, T : DataObject {
+    where T : ObjectWithUidInterface, T : DataObject {
         for (e in events) {
             eventStore.setSyncState(e.uid(), DataStateHelper.forcedOrOwn(e, forcedState))
         }

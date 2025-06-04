@@ -39,7 +39,7 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
  * @author Jim Grace
  */
 internal class FunctionAggregationType : ExpressionItem {
-    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+    override suspend fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
         val aggregationType = parseAggregationType(ctx.aggregationType.text)
         val queryMods = (visitor.state.queryMods ?: QueryMods()).copy(aggregationType = aggregationType)
 

@@ -42,7 +42,7 @@ internal class ProgramIndicatorAnalyticsPeriodBoundaryChildrenAppender private c
         return programIndicator.toBuilder().analyticsPeriodBoundaries(getChildren(programIndicator)).build()
     }
 
-    private fun getChildren(o: ProgramIndicator): List<AnalyticsPeriodBoundary> {
+    private suspend fun getChildren(o: ProgramIndicator): List<AnalyticsPeriodBoundary> {
         val whereClause = WhereClauseBuilder().apply {
             appendKeyStringValue(AnalyticsPeriodBoundaryTableInfo.Columns.PROGRAM_INDICATOR, o.uid())
         }.build()

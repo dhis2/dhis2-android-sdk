@@ -40,7 +40,7 @@ internal class RelationshipConstraintChildrenAppender(
 
     private var constraints: List<RelationshipConstraint>? = null
 
-    override fun prepareChildren(collection: Collection<RelationshipType>) {
+    override suspend fun prepareChildren(collection: Collection<RelationshipType>) {
         constraints = constraintStore.selectAll()
     }
 

@@ -69,7 +69,7 @@ internal class AggregatedDataCallBundleFactory(
         return syncValues.associateBy { it.dataSet() }
     }
 
-    fun getBundlesInternal(
+    suspend fun getBundlesInternal(
         dataSets: Collection<DataSet>,
         dataSetSettings: DataSetSettings?,
         rootOrganisationUnitUids: List<String>,

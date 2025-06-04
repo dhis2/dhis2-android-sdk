@@ -35,7 +35,7 @@ import java.util.*
 
 internal class VCurrentDate : ExpressionItem {
 
-    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+    override suspend fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
         return ParserUtils.getMediumDateString(Date())
     }
 

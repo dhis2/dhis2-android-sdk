@@ -46,7 +46,7 @@ import org.hisp.dhis.antlr.AntlrExpressionVisitor
 import org.hisp.dhis.antlr.ParserExceptionWithoutContext
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-internal class CommonExpressionVisitor constructor(
+class CommonExpressionVisitor constructor(
     val scope: CommonExpressionVisitorScope,
 ) : AntlrExpressionVisitor() {
 

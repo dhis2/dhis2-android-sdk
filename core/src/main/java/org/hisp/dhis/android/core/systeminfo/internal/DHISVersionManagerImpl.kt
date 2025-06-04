@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.systeminfo.internal
 
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
@@ -46,32 +47,37 @@ internal class DHISVersionManagerImpl internal constructor(
     private var bypassDHIS2Version: Boolean? = null
 
     override fun getVersion(): DHISVersion {
-        return version
-            ?: systemInfoStore.selectFirst()?.let { systemInfo ->
-                systemInfo.version()?.let { DHISVersion.getValue(it, getBypassVersion()) }
-                    .also { dhisVersion -> version = dhisVersion }
-            }
-            ?: throw D2Error.builder()
-                .errorComponent(D2ErrorComponent.SDK)
-                .errorCode(D2ErrorCode.INVALID_DHIS_VERSION)
-                .errorDescription("Invalid DHIS version")
-                .build()
+        return runBlocking {
+            version
+                ?: systemInfoStore.selectFirst()?.let { systemInfo ->
+                    systemInfo.version()?.let { DHISVersion.getValue(it, getBypassVersion()) }
+                        .also { dhisVersion -> version = dhisVersion }
+                }
+                ?: throw D2Error.builder()
+                    .errorComponent(D2ErrorComponent.SDK)
+                    .errorCode(D2ErrorCode.INVALID_DHIS_VERSION)
+                    .errorDescription("Invalid DHIS version")
+                    .build()
+        }
     }
 
     override fun getPatchVersion(): DHISPatchVersion? {
-        return patchVersion
-            ?: systemInfoStore.selectFirst()?.let { systemInfo ->
+        return runBlocking {
+            patchVersion ?: systemInfoStore.selectFirst()?.let { systemInfo ->
                 systemInfo.version()?.let { DHISPatchVersion.getValue(it, getBypassVersion()) }
                     .also { patch -> patchVersion = patch }
             }
+        }
     }
 
     override fun getSmsVersion(): SMSVersion? {
-        return smsVersion
-            ?: systemInfoStore.selectFirst()?.let { systemInfo ->
-                systemInfo.version()?.let { SMSVersion.getValue(it, getBypassVersion()) }
-                    .also { sms -> smsVersion = sms }
-            }
+        return runBlocking {
+            smsVersion
+                ?: systemInfoStore.selectFirst()?.let { systemInfo ->
+                    systemInfo.version()?.let { SMSVersion.getValue(it, getBypassVersion()) }
+                        .also { sms -> smsVersion = sms }
+                }
+        }
     }
 
     override fun getBypassVersion(): Boolean? {

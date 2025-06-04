@@ -36,7 +36,7 @@ internal abstract class TrackerQueryInternalFactory<T>(
     protected val programSettings: ProgramSettings?,
 ) {
 
-    fun queryGlobal(
+    suspend fun queryGlobal(
         programs: List<String>,
     ): List<T> {
         return queryInternal(programs, null) {
@@ -44,7 +44,7 @@ internal abstract class TrackerQueryInternalFactory<T>(
         }
     }
 
-    fun queryPerProgram(
+    suspend fun queryPerProgram(
         programUid: String?,
     ): List<T> {
         return queryInternal(listOf(programUid!!), programUid) {
@@ -52,9 +52,9 @@ internal abstract class TrackerQueryInternalFactory<T>(
         }
     }
 
-    protected abstract fun queryInternal(
+    protected abstract suspend fun queryInternal(
         programs: List<String>,
         programUid: String?,
-        orgUnitByLimitExtractor: () -> List<String>,
+        orgUnitByLimitExtractor: suspend () -> List<String>,
     ): List<T>
 }

@@ -32,12 +32,12 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
-import org.hisp.dhis.android.persistence.common.stores.ObjectStoreImpl
+import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitTableInfo
 
 internal class DataSetCompleteRegistrationStoreImpl(
     val dao: DataSetCompleteRegistrationDao,
-) : ObjectStoreImpl<DataSetCompleteRegistration, DataSetCompleteRegistrationDB>(
+) : ObjectWithoutUidStoreImpl<DataSetCompleteRegistration, DataSetCompleteRegistrationDB>(
     dao,
     DataSetCompleteRegistration::toDB,
     SQLStatementBuilderImpl(DataSetCompleteRegistrationTableInfo.TABLE_INFO),
@@ -49,12 +49,12 @@ internal class DataSetCompleteRegistrationStoreImpl(
      */
     suspend fun setState(dataSetCompleteRegistration: DataSetCompleteRegistration, newState: State?) {
         val updatedDataSetCompleteRegistration = dataSetCompleteRegistration.toBuilder().syncState(newState).build()
-        update(updatedDataSetCompleteRegistration)
+        updateWhere(updatedDataSetCompleteRegistration)
     }
 
     suspend fun setDeleted(dataSetCompleteRegistration: DataSetCompleteRegistration) {
         val updatedDataSetCompleteRegistration = dataSetCompleteRegistration.toBuilder().deleted(true).build()
-        update(updatedDataSetCompleteRegistration)
+        updateWhere(updatedDataSetCompleteRegistration)
     }
 
     suspend fun removeNotPresentAndSynced(

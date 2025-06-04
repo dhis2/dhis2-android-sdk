@@ -53,14 +53,6 @@ internal open class ObjectStoreImpl<D : CoreObject, P : EntityDB<D>>(
         objectDao.insert(objects.map { it.toDB() })
     }
 
-    suspend fun update(domainObj: D): Int {
-        return objectDao.update(domainObj.toDB())
-    }
-
-    suspend fun update(objects: Collection<D>): Int {
-        return objectDao.update(objects.map { it.toDB() })
-    }
-
     suspend fun deleteTable(): Int {
         val query = builder.deleteTable()
         return objectDao.intRawQuery(query)

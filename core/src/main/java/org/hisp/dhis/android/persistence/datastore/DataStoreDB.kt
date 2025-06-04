@@ -9,7 +9,7 @@ import org.hisp.dhis.android.persistence.common.DataObjectDB
 import org.hisp.dhis.android.persistence.common.DeletableObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.SyncStateDB
-import org.hisp.dhis.android.persistence.itemfilter.toDB
+import org.hisp.dhis.android.persistence.common.toDB
 
 @Entity(
     tableName = "DataStore",

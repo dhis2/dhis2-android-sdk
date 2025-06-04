@@ -10,7 +10,7 @@ import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.FilterPeriodDB
-import org.hisp.dhis.android.persistence.itemfilter.toDB
+import org.hisp.dhis.android.persistence.common.toDB
 
 @Entity(
     tableName = "TrackedEntityInstanceEventFilter",

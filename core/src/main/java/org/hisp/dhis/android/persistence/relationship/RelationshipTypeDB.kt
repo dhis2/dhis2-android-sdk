@@ -10,7 +10,7 @@ import org.hisp.dhis.android.persistence.common.AccessDB
 import org.hisp.dhis.android.persistence.common.BaseIdentifiableObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.applyBaseIdentifiableFields
-import org.hisp.dhis.android.persistence.itemfilter.toDB
+import org.hisp.dhis.android.persistence.common.toDB
 
 @Entity(
     tableName = "RelationshipType",

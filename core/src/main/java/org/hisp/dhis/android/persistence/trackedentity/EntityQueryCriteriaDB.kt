@@ -35,7 +35,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.FilterQueryCriteriaDB
 import org.hisp.dhis.android.persistence.common.StringListDB
 import org.hisp.dhis.android.persistence.common.applyFilterQueryCriteriaFields
-import org.hisp.dhis.android.persistence.itemfilter.toDB
+import org.hisp.dhis.android.persistence.common.toDB
 
 internal data class EntityQueryCriteriaDB(
     val enrollmentStatus: String?,

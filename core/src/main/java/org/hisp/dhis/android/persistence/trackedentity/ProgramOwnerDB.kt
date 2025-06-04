@@ -9,7 +9,7 @@ import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
 import org.hisp.dhis.android.persistence.common.DataObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.SyncStateDB
-import org.hisp.dhis.android.persistence.itemfilter.toDB
+import org.hisp.dhis.android.persistence.common.toDB
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitDB
 import org.hisp.dhis.android.persistence.program.ProgramDB
 

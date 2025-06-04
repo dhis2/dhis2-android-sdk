@@ -13,7 +13,7 @@ import org.hisp.dhis.android.persistence.common.GeometryDB
 import org.hisp.dhis.android.persistence.common.ObjectWithUidDB
 import org.hisp.dhis.android.persistence.common.StringListDB
 import org.hisp.dhis.android.persistence.common.applyBaseNameableFields
-import org.hisp.dhis.android.persistence.common.toDB
+import org.hisp.dhis.android.persistence.itemfilter.toDB
 
 @Entity(
     tableName = "OrganisationUnit",

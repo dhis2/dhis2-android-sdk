@@ -11,7 +11,7 @@ import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.persistence.common.DataObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.SyncStateDB
-import org.hisp.dhis.android.persistence.common.toDB
+import org.hisp.dhis.android.persistence.itemfilter.toDB
 import org.hisp.dhis.android.persistence.dataelement.DataElementDB
 import org.hisp.dhis.android.persistence.event.EventDB
 

@@ -12,7 +12,7 @@ import org.hisp.dhis.android.core.relationship.TrackerDataView
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.ObjectWithUidDB
 import org.hisp.dhis.android.persistence.common.StringListDB
-import org.hisp.dhis.android.persistence.common.toDB
+import org.hisp.dhis.android.persistence.itemfilter.toDB
 import org.hisp.dhis.android.persistence.program.ProgramDB
 import org.hisp.dhis.android.persistence.program.ProgramStageDB
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityTypeDB

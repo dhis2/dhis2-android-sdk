@@ -10,7 +10,7 @@ import org.hisp.dhis.android.core.map.layer.MapLayerPosition
 import org.hisp.dhis.android.core.map.layer.MapService
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.StringListDB
-import org.hisp.dhis.android.persistence.common.toDB
+import org.hisp.dhis.android.persistence.itemfilter.toDB
 
 @Entity(
     tableName = "MapLayer",

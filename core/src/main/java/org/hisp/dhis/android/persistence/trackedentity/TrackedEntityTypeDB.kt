@@ -13,7 +13,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.ObjectWithStyleDB
 import org.hisp.dhis.android.persistence.common.applyBaseNameableFields
 import org.hisp.dhis.android.persistence.common.applyStyleFields
-import org.hisp.dhis.android.persistence.common.toDB
+import org.hisp.dhis.android.persistence.itemfilter.toDB
 
 @Entity(
     tableName = "TrackedEntityType",

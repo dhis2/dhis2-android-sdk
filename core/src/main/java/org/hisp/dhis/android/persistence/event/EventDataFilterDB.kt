@@ -34,7 +34,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.FilterOperatorsDB
 import org.hisp.dhis.android.persistence.common.StringSetDB
 import org.hisp.dhis.android.persistence.common.applyFilterOperatorsFields
-import org.hisp.dhis.android.persistence.common.toDB
+import org.hisp.dhis.android.persistence.itemfilter.toDB
 
 internal data class EventDataFilterDB(
     override val le: String?,

@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.paging.internal.RepositoryDataSource
-import org.hisp.dhis.android.core.arch.repositories.paging.internal.RepositoryPagingConfig
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
@@ -82,7 +81,24 @@ class RepositoryPagingShould {
     }
 
     @Test
-    fun get_initial_page_objects_with_order_by() {
+    fun get_initial_page_objects_with_forced_order_by_paging_key_asc() {
+        val updatedScope = withOrderBy(
+            emptyScope,
+            RepositoryScopeOrderByItem.builder()
+                .column("name")
+                .direction(RepositoryScope.OrderByDirection.ASC)
+                .build(),
+        )
+        val dataSource: RepositoryDataSource<CategoryOption> =
+            RepositoryDataSource(store, databaseAdapter, updatedScope, childrenAppenders)
+
+        dataSource.loadInitial(PageKeyedDataSource.LoadInitialParams(3, false), initialCallback)
+        verify(store).selectWhere("1", "name ASC", 3)
+        verify(initialCallback).onResult(objects, null, 3)
+    }
+
+    @Test
+    fun get_initial_page_objects_with_forced_order_by_paging_key_desc() {
         val updatedScope = withOrderBy(
             emptyScope,
             RepositoryScopeOrderByItem.builder()
@@ -95,40 +111,6 @@ class RepositoryPagingShould {
 
         dataSource.loadInitial(PageKeyedDataSource.LoadInitialParams(3, false), initialCallback)
         verify(store).selectWhere("1", "name DESC", 3)
-        verify(initialCallback).onResult(objects, null, 3)
-    }
-
-    @Test
-    fun get_initial_page_objects_with_forced_order_by_paging_key_asc() {
-        val updatedScope = withOrderBy(
-            emptyScope,
-            RepositoryScopeOrderByItem.builder()
-                .column(RepositoryPagingConfig.PAGING_KEY)
-                .direction(RepositoryScope.OrderByDirection.ASC)
-                .build(),
-        )
-        val dataSource: RepositoryDataSource<CategoryOption> =
-            RepositoryDataSource(store, databaseAdapter, updatedScope, childrenAppenders)
-
-        dataSource.loadInitial(PageKeyedDataSource.LoadInitialParams(3, false), initialCallback)
-        verify(store).selectWhere("1", "_id ASC", 3)
-        verify(initialCallback).onResult(objects, null, 3)
-    }
-
-    @Test
-    fun get_initial_page_objects_with_forced_order_by_paging_key_desc() {
-        val updatedScope = withOrderBy(
-            emptyScope,
-            RepositoryScopeOrderByItem.builder()
-                .column(RepositoryPagingConfig.PAGING_KEY)
-                .direction(RepositoryScope.OrderByDirection.DESC)
-                .build(),
-        )
-        val dataSource: RepositoryDataSource<CategoryOption> =
-            RepositoryDataSource(store, databaseAdapter, updatedScope, childrenAppenders)
-
-        dataSource.loadInitial(PageKeyedDataSource.LoadInitialParams(3, false), initialCallback)
-        verify(store).selectWhere("1", "_id DESC", 3)
         verify(initialCallback).onResult(objects, null, 3)
     }
 

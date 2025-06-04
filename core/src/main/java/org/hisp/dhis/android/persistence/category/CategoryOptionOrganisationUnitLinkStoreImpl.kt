@@ -31,15 +31,18 @@ package org.hisp.dhis.android.persistence.category
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLink
 import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLinkTableInfo
-import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
-import org.hisp.dhis.android.persistence.common.stores.ObjectStoreImpl
+import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
 
 internal class CategoryOptionOrganisationUnitLinkStoreImpl(
     val dao: CategoryOptionOrganisationUnitLinkDao,
-) : ObjectStoreImpl<CategoryOptionOrganisationUnitLink, CategoryOptionOrganisationUnitLinkDB>(
+) : LinkStoreImpl<CategoryOptionOrganisationUnitLink, CategoryOptionOrganisationUnitLinkDB>(
     dao,
     CategoryOptionOrganisationUnitLink::toDB,
-    SQLStatementBuilderImpl(CategoryOptionOrganisationUnitLinkTableInfo.TABLE_INFO),
+    LinkSQLStatementBuilderImpl(
+        CategoryOptionOrganisationUnitLinkTableInfo.TABLE_INFO,
+        CategoryOptionOrganisationUnitLinkTableInfo.Columns.CATEGORY_OPTION
+    ),
 ) {
     suspend fun getLinksForCategoryOption(categoryOptionUid: String): List<CategoryOptionOrganisationUnitLink> {
         val whereClause = WhereClauseBuilder()

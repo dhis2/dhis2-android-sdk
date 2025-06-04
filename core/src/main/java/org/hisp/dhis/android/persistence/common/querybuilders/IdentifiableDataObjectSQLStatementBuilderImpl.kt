@@ -30,14 +30,15 @@ package org.hisp.dhis.android.persistence.common.querybuilders
 
 import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.State
 
 internal open class IdentifiableDataObjectSQLStatementBuilderImpl(
-    private val tableName: String,
-) : IdentifiableDataObjectSQLStatementBuilder, SQLStatementBuilderImpl(tableName, false) {
+    private val tableInfo: TableInfo,
+) : IdentifiableDataObjectSQLStatementBuilder, SQLStatementBuilderImpl(tableInfo) {
     override fun setSyncState(uid: String, state: String): RoomRawQuery {
         return RoomRawQuery(
             "UPDATE $tableName SET ${DataColumns.SYNC_STATE} = '$state' " +

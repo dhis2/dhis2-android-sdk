@@ -34,9 +34,10 @@ import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 
 internal open class SQLStatementBuilderImpl(
-    private val tableName: String,
-    private val hasSortOrder: Boolean,
-) : ReadOnlySQLStatementBuilderImpl(tableName), SQLStatementBuilder {
+    private val tableInfo: TableInfo,
+) : ReadOnlySQLStatementBuilderImpl(tableInfo), SQLStatementBuilder {
+    val hasSortOrder = tableInfo.hasSortOrder()
+
     override fun getTableName(): String {
         return tableName
     }

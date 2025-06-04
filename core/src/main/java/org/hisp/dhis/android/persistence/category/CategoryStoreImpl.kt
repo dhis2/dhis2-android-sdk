@@ -30,20 +30,15 @@ package org.hisp.dhis.android.persistence.category
 
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.category.Category
-import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilder
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
 
 internal class CategoryStoreImpl(
     val dao: CategoryDao,
-    override val builder: SQLStatementBuilder = SQLStatementBuilderImpl(
-        CategoryTableInfo.TABLE_INFO.name(),
-        false,
-    ),
 ) : IdentifiableObjectStoreImpl<Category, CategoryDB>(
     dao,
     Category::toDB,
-    builder,
+    SQLStatementBuilderImpl(CategoryTableInfo.TABLE_INFO),
 ) {
     suspend fun getForCategoryCombo(categoryComboUid: String): List<Category> {
         val projection = LinkTableChildProjection(

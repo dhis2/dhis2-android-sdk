@@ -30,11 +30,14 @@ package org.hisp.dhis.android.persistence.common.querybuilders
 
 import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 
 @Suppress("TooManyFunctions")
 internal open class ReadOnlySQLStatementBuilderImpl(
-    private val tableName: String,
+    private val tableInfo: TableInfo,
 ) : ReadOnlySQLStatementBuilder {
+    val tableName = tableInfo.name()
+
     override fun selectWhere(whereClause: String): RoomRawQuery {
         return RoomRawQuery(
             SELECT + "*" + FROM + tableName + WHERE + whereClause + ";",

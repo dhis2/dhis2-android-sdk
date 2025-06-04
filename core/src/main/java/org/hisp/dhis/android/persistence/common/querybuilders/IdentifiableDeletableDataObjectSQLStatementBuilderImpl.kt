@@ -29,13 +29,14 @@
 package org.hisp.dhis.android.persistence.common.querybuilders
 
 import androidx.room.RoomRawQuery
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.DeletableDataColumns
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 
 internal class IdentifiableDeletableDataObjectSQLStatementBuilderImpl(
-    private val tableName: String,
-) : IdentifiableDeletableDataObjectSQLStatementBuilder, IdentifiableDataObjectSQLStatementBuilderImpl(tableName) {
+    private val tableInfo: TableInfo,
+) : IdentifiableDeletableDataObjectSQLStatementBuilder, IdentifiableDataObjectSQLStatementBuilderImpl(tableInfo) {
     override fun setDeleted(uid: String): RoomRawQuery {
         return RoomRawQuery(
             "UPDATE $tableName SET ${DeletableDataColumns.DELETED} = 1 " +

@@ -29,11 +29,12 @@
 package org.hisp.dhis.android.persistence.common.querybuilders
 
 import androidx.room.RoomRawQuery
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 
 internal class LinkSQLStatementBuilderImpl(
-    private val tableName: String,
+    private val tableInfo: TableInfo,
     private val parentColumn: String,
-) : LinkSQLStatementBuilder, SQLStatementBuilderImpl(tableName, false) {
+) : LinkSQLStatementBuilder, SQLStatementBuilderImpl(tableInfo) {
     override fun deleteLinksForParentUid(parentUid: String): RoomRawQuery {
         return RoomRawQuery("DELETE FROM $tableName WHERE $parentColumn = '$parentUid'")
     }

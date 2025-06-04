@@ -76,7 +76,7 @@ internal class EventDataFilterStoreImpl(
         private val WHERE_DELETE_BINDER = WhereStatementBinder { _: EventDataFilter, _ -> }
     }
 
-    override fun getForEventFilter(eventFilterUid: String): List<EventDataFilter> {
+    override suspend fun getForEventFilter(eventFilterUid: String): List<EventDataFilter> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(ItemFilterTableInfo.Columns.EVENT_FILTER, eventFilterUid)
             .build()

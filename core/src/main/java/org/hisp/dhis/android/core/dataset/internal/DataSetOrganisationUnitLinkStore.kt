@@ -33,5 +33,5 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink
 
 internal interface DataSetOrganisationUnitLinkStore : LinkStore<DataSetOrganisationUnitLink> {
-    fun getForOrganisationUnit(orgUnitUid: String): List<ObjectWithUid>
+    suspend fun getForOrganisationUnit(orgUnitUid: String): List<ObjectWithUid>
 }

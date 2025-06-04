@@ -44,7 +44,7 @@ internal class Migration260(
     private val databaseConfigurationStore: ObjectKeyValueStore<DatabasesConfiguration>,
     private val databaseAdapterFactory: DatabaseAdapterFactory,
 ) {
-    fun apply() {
+    suspend fun apply() {
         val configuration = databaseConfigurationStore.get()
 
         configuration?.let {
@@ -61,7 +61,7 @@ internal class Migration260(
         }
     }
 
-    private fun migrateFileResources260(databaseAdapter: DatabaseAdapter) {
+    private suspend fun migrateFileResources260(databaseAdapter: DatabaseAdapter) {
         val accountSubFolder = FileResourceDirectoryHelper.getSubfolderName(databaseAdapter.databaseName)
 
         val rootResources = FileResourceDirectoryHelper.getRootFileResourceDirectory(context)
@@ -84,7 +84,7 @@ internal class Migration260(
     }
 
     @Suppress("MagicNumber")
-    private fun migrateSmsSettings(databaseAdapter: DatabaseAdapter) {
+    private suspend fun migrateSmsSettings(databaseAdapter: DatabaseAdapter) {
         val configFile = "smsconfig"
 
         val keyModuleEnabled = "module_enabled"

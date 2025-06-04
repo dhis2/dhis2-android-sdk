@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.legendset.Legend
 
 internal interface LegendStore : IdentifiableObjectStore<Legend> {
-    fun getForLegendSet(legendSetUid: String): List<Legend>
+    suspend fun getForLegendSet(legendSetUid: String): List<Legend>
 }

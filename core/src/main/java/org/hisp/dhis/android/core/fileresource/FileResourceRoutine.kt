@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.fileresource
 
 import io.reactivex.Completable
+import kotlinx.coroutines.rx2.rxCompletable
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
@@ -64,13 +65,13 @@ internal class FileResourceRoutine(
     private val clockProvider: ClockProvider,
 ) {
     fun deleteOutdatedFileResources(after: Date? = null): Completable {
-        return Completable.fromCallable {
+        return rxCompletable {
             blockingDeleteOutdatedFileResources(after)
         }
     }
 
     @SuppressWarnings("MagicNumber")
-    fun blockingDeleteOutdatedFileResources(after: Date? = null) {
+    suspend fun blockingDeleteOutdatedFileResources(after: Date? = null) {
         val dataElementsUids = dataElementCollectionRepository
             .byValueType().`in`(ValueType.FILE_RESOURCE, ValueType.IMAGE)
             .blockingGet().map(DataElement::uid)
@@ -110,7 +111,7 @@ internal class FileResourceRoutine(
         blockingDeleteFileResources(fileResources)
     }
 
-    private fun blockingDeleteFileResources(fileResources: List<FileResource>) {
+    private suspend fun blockingDeleteFileResources(fileResources: List<FileResource>) {
         fileResources.forEach { fileResource ->
             fileResource.uid()?.let { uid ->
                 fileResourceStore.deleteIfExists(uid)

@@ -62,7 +62,7 @@ internal class PeriodAfterLatestOpenFutureConflict(
         return foundDataValuesConflicts
     }
 
-    private fun getDisplayDescription(conflict: ImportConflict, period: String, dataElementUid: String?) =
+    private suspend fun getDisplayDescription(conflict: ImportConflict, period: String, dataElementUid: String?) =
         dataElementUid?.let {
             val dataElementType = dataElementStore.selectByUid(it)?.valueType().toString()
             "Period $period is after latest open future period for data element: $dataElementType"

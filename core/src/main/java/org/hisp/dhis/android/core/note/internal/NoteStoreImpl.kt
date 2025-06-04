@@ -62,7 +62,7 @@ internal class NoteStoreImpl(
         }
     }
 
-    override fun getForEvent(eventUid: String): List<Note> {
+    override suspend fun getForEvent(eventUid: String): List<Note> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(NoteTableInfo.Columns.EVENT, eventUid)
             .build()
@@ -70,7 +70,7 @@ internal class NoteStoreImpl(
         return selectRawQuery(selectStatement)
     }
 
-    override fun getForEnrollment(enrollmentUid: String): List<Note> {
+    override suspend fun getForEnrollment(enrollmentUid: String): List<Note> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(NoteTableInfo.Columns.ENROLLMENT, enrollmentUid)
             .build()

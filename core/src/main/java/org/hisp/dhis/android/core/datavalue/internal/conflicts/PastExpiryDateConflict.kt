@@ -65,7 +65,7 @@ internal class PastExpiryDateConflict(
         return foundDataValuesConflicts
     }
 
-    private fun getDisplayDescription(conflict: ImportConflict, dataValue: DataValue, dataSetUid: String) =
+    private suspend fun getDisplayDescription(conflict: ImportConflict, dataValue: DataValue, dataSetUid: String) =
         dataSetStore.selectByUid(dataSetUid)?.let { dataSet ->
             "Current date is past expiry days for period ${dataValue.period()} and data set: ${dataSet.displayName()}"
         } ?: conflict.value()

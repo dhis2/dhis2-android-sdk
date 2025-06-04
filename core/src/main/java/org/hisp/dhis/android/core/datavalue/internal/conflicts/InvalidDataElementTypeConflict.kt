@@ -60,7 +60,7 @@ internal open class InvalidDataElementTypeConflict(
         return foundDataValuesConflicts
     }
 
-    protected fun getDisplayDescription(conflict: ImportConflict, value: String, dataElementUid: String?) =
+    protected suspend fun getDisplayDescription(conflict: ImportConflict, value: String, dataElementUid: String?) =
         dataElementUid?.let {
             val dataElementType = dataElementStore.selectByUid(it)?.valueType().toString()
             "DataValue $value must match with data element type $dataElementType"

@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.dataset.DataSetElement
 
 internal interface DataSetElementStore : LinkStore<DataSetElement> {
-    fun getForDataSet(dataSetUid: String): List<DataSetElement>
+    suspend fun getForDataSet(dataSetUid: String): List<DataSetElement>
 }

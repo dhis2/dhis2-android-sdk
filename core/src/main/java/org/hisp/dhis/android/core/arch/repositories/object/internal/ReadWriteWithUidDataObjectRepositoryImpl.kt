@@ -139,7 +139,7 @@ abstract class ReadWriteWithUidDataObjectRepositoryImpl<M, R : ReadOnlyObjectRep
     protected inline fun <V> updateIfChanged(
         newValue: V?,
         crossinline propertyGetter: (M) -> V?,
-        crossinline updater: (M, V?) -> M,
+        crossinline updater: suspend (M, V?) -> M,
     ): Unit {
         return runBlocking { updateIfChangedInternal(newValue, propertyGetter, updater) }
     }
@@ -147,7 +147,7 @@ abstract class ReadWriteWithUidDataObjectRepositoryImpl<M, R : ReadOnlyObjectRep
     protected suspend inline fun <V> updateIfChangedInternal(
         newValue: V?,
         propertyGetter: (M) -> V?,
-        crossinline updater: (M, V?) -> M,
+        crossinline updater: suspend (M, V?) -> M,
     ): Unit {
         val obj = getWithoutChildrenInternal() as M
         val currentValue = propertyGetter(obj)

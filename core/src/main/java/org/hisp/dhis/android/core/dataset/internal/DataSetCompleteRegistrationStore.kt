@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 
-interface DataSetCompleteRegistrationStore : ObjectWithoutUidStore<DataSetCompleteRegistration> {
+internal interface DataSetCompleteRegistrationStore : ObjectWithoutUidStore<DataSetCompleteRegistration> {
     suspend fun setState(dataSetCompleteRegistration: DataSetCompleteRegistration, newState: State?)
     suspend fun setDeleted(dataSetCompleteRegistration: DataSetCompleteRegistration)
     suspend fun removeNotPresentAndSynced(

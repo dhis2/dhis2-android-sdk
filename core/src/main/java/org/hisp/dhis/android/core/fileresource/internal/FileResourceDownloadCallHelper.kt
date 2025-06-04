@@ -70,7 +70,7 @@ internal class FileResourceDownloadCallHelper(
     private val dhisVersionManager: DHISVersionManager,
 ) {
 
-    fun getMissingTrackerAttributeValues(
+    suspend fun getMissingTrackerAttributeValues(
         params: FileResourceDownloadParams,
         existingFileResources: List<String>,
     ): List<MissingTrackerAttributeValue> {
@@ -104,7 +104,7 @@ internal class FileResourceDownloadCallHelper(
             }
     }
 
-    fun getMissingTrackerDataValues(
+    suspend fun getMissingTrackerDataValues(
         params: FileResourceDownloadParams,
         existingFileResources: List<String>,
     ): List<TrackedEntityDataValue> {
@@ -130,7 +130,7 @@ internal class FileResourceDownloadCallHelper(
         return trackedEntityDataValueStore.selectWhere(dataValuesWhereClause)
     }
 
-    fun getMissingAggregatedDataValues(
+    suspend fun getMissingAggregatedDataValues(
         params: FileResourceDownloadParams,
         existingFileResources: List<String>,
     ): List<DataValue> {
@@ -161,7 +161,7 @@ internal class FileResourceDownloadCallHelper(
         return dataValueStore.selectWhere(dataValuesWhereClause)
     }
 
-    fun getMissingCustomIcons(
+    suspend fun getMissingCustomIcons(
         existingFileResources: List<String>,
     ): List<CustomIcon> {
         val customIconsWhereClause = WhereClauseBuilder()

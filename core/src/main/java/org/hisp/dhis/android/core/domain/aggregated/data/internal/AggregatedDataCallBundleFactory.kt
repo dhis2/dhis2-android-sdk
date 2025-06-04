@@ -47,29 +47,27 @@ internal class AggregatedDataCallBundleFactory(
     private val aggregatedDataSyncStore: AggregatedDataSyncStore,
     private val lastUpdatedCalculator: AggregatedDataSyncLastUpdatedCalculator,
 ) {
-    val bundles: List<AggregatedDataCallBundle>
-        get() {
-            val rootOrganisationUnitUids = organisationUnitRepository
-                .byRootOrganisationUnit(true)
-                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-                .blockingGetUids()
-            val allOrganisationUnitUids = organisationUnitRepository
-                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-                .blockingGetUids()
-            return getBundlesInternal(
-                dataSets,
-                dataSetSettingsObjectRepository.blockingGet(),
-                rootOrganisationUnitUids,
-                HashSet(allOrganisationUnitUids),
-                syncValuesByDataSetUid,
-            )
-        }
+    suspend fun bundles(): List<AggregatedDataCallBundle> {
+        val rootOrganisationUnitUids = organisationUnitRepository
+            .byRootOrganisationUnit(true)
+            .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+            .blockingGetUids()
+        val allOrganisationUnitUids = organisationUnitRepository
+            .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+            .blockingGetUids()
+        return getBundlesInternal(
+            dataSets,
+            dataSetSettingsObjectRepository.blockingGet(),
+            rootOrganisationUnitUids,
+            HashSet(allOrganisationUnitUids),
+            syncValuesByDataSetUid(),
+        )
+    }
 
-    private val syncValuesByDataSetUid: Map<String, AggregatedDataSync>
-        get() {
-            val syncValues = aggregatedDataSyncStore.selectAll()
-            return syncValues.associateBy { it.dataSet() }
-        }
+    private suspend fun syncValuesByDataSetUid(): Map<String, AggregatedDataSync> {
+        val syncValues = aggregatedDataSyncStore.selectAll()
+        return syncValues.associateBy { it.dataSet() }
+    }
 
     fun getBundlesInternal(
         dataSets: Collection<DataSet>,

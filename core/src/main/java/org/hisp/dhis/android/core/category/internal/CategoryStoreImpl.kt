@@ -61,7 +61,7 @@ internal class CategoryStoreImpl(
         }
     }
 
-    override fun getForCategoryCombo(categoryComboUid: String): List<Category> {
+    override suspend fun getForCategoryCombo(categoryComboUid: String): List<Category> {
         val projection = LinkTableChildProjection(
             CategoryTableInfo.TABLE_INFO,
             CategoryCategoryComboLinkTableInfo.Columns.CATEGORY_COMBO,

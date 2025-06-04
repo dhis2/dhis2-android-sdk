@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.dataset.DataInputPeriod
 
 internal interface DataInputPeriodStore : LinkStore<DataInputPeriod> {
-    fun getForDataSet(dataSetUid: String): List<DataInputPeriod>
+    suspend fun getForDataSet(dataSetUid: String): List<DataInputPeriod>
 }

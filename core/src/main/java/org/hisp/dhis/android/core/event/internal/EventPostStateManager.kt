@@ -38,7 +38,8 @@ internal class EventPostStateManager internal constructor(
     private val eventStore: EventStore,
 ) {
 
-    fun <T> markObjectsAs(events: Collection<T>, forcedState: State?) where T : ObjectWithUidInterface, T : DataObject {
+    suspend fun <T> markObjectsAs(events: Collection<T>, forcedState: State?)
+            where T : ObjectWithUidInterface, T : DataObject {
         for (e in events) {
             eventStore.setSyncState(e.uid(), DataStateHelper.forcedOrOwn(e, forcedState))
         }

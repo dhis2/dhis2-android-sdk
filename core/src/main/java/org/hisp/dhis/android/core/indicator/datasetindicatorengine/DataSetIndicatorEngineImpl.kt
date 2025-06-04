@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.indicator.datasetindicatorengine
 
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByUid
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.constant.ConstantCollectionRepository
@@ -63,12 +65,20 @@ internal class DataSetIndicatorEngineImpl(
         orgUnitUid: String,
         attributeOptionComboUid: String,
     ): Single<Double> {
-        return Single.fromCallable {
-            blockingEvaluate(indicatorUid, dataSetUid, periodId, orgUnitUid, attributeOptionComboUid)
-        }
+        return rxSingle { evaluateInternal(indicatorUid, dataSetUid, periodId, orgUnitUid, attributeOptionComboUid) }
     }
 
     override fun blockingEvaluate(
+        indicatorUid: String,
+        dataSetUid: String,
+        periodId: String,
+        orgUnitUid: String,
+        attributeOptionComboUid: String,
+    ): Double {
+        return runBlocking { evaluateInternal(indicatorUid, dataSetUid, periodId, orgUnitUid, attributeOptionComboUid) }
+    }
+
+    private suspend fun evaluateInternal(
         indicatorUid: String,
         dataSetUid: String,
         periodId: String,
@@ -118,7 +128,7 @@ internal class DataSetIndicatorEngineImpl(
         return mapByUid(constants)
     }
 
-    private fun getOrgunitGroupMap(): Map<String, Int> {
+    private suspend fun getOrgunitGroupMap(): Map<String, Int> {
         return orgunitGroupLinkStore.groupAndGetCountBy(
             OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT_GROUP,
         )

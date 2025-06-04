@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.dataset.SectionIndicatorLinkTableInfo
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkTableInfo
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.IndicatorTableInfo
-import org.hisp.dhis.android.core.indicator.IndicatorTableInfo.TABLE_INFO
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -50,7 +49,7 @@ internal class IndicatorStoreImpl(
 ) : IndicatorStore,
     IdentifiableObjectStoreImpl<Indicator>(
         databaseAdapter,
-        TABLE_INFO,
+        IndicatorTableInfo.TABLE_INFO,
         BINDER,
         { cursor: Cursor -> Indicator.create(cursor) },
     ) {
@@ -70,9 +69,9 @@ internal class IndicatorStoreImpl(
         }
     }
 
-    override fun getForDataSet(dataSetUid: String): List<Indicator> {
+    override suspend fun getForDataSet(dataSetUid: String): List<Indicator> {
         val projection = LinkTableChildProjection(
-            TABLE_INFO,
+            IndicatorTableInfo.TABLE_INFO,
             DataSetIndicatorLinkTableInfo.Columns.DATA_SET,
             DataSetIndicatorLinkTableInfo.Columns.INDICATOR,
         )
@@ -85,7 +84,7 @@ internal class IndicatorStoreImpl(
         return selectRawQuery(query)
     }
 
-    override fun getForSection(sectionUid: String): List<Indicator> {
+    override suspend fun getForSection(sectionUid: String): List<Indicator> {
         val projection = LinkTableChildProjection(
             IndicatorTableInfo.TABLE_INFO,
             SectionIndicatorLinkTableInfo.Columns.SECTION,

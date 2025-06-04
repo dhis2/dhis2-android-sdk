@@ -57,7 +57,7 @@ internal class OrganisationUnitProgramLinkStoreImpl(
         }
     }
 
-    override fun getForOrganisationUnit(organisationUnitUid: String): List<ObjectWithUid> {
+    override suspend fun getForOrganisationUnit(organisationUnitUid: String): List<ObjectWithUid> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT, organisationUnitUid)
             .build()

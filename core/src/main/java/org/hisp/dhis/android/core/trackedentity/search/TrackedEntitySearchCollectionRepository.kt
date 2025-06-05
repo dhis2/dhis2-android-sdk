@@ -178,13 +178,7 @@ class TrackedEntitySearchCollectionRepository internal constructor(
     }
 
     override fun one(): ReadOnlyObjectRepository<TrackedEntitySearchItem> {
-        return objectRepository(
-            object : Transformer<List<TrackedEntitySearchItem>, TrackedEntitySearchItem?> {
-                override fun transform(o: List<TrackedEntitySearchItem>): TrackedEntitySearchItem? {
-                    return o.firstOrNull()
-                }
-            },
-        )
+        return objectRepository { o -> o.firstOrNull() }
     }
 
     private fun getDataFetcher(): TrackedEntitySearchDataFetcher {
@@ -202,13 +196,7 @@ class TrackedEntitySearchCollectionRepository internal constructor(
     }
 
     override fun uid(uid: String?): ReadOnlyObjectRepository<TrackedEntitySearchItem> {
-        return byTrackedEntities().eq(uid).objectRepository(
-            object : Transformer<List<TrackedEntitySearchItem>, TrackedEntitySearchItem?> {
-                override fun transform(o: List<TrackedEntitySearchItem>): TrackedEntitySearchItem? {
-                    return o.find { uid == it.uid() }
-                }
-            },
-        )
+        return byTrackedEntities().eq(uid).objectRepository { o -> o.find { uid == it.uid() } }
     }
 
     override fun getUids(): Single<List<String>> {

@@ -46,7 +46,7 @@ internal class MaintenanceModuleImpl(
         organisationUnitThreshold: Int,
         programRulesPerProgramThreshold: Int,
     ): PerformanceHintsService {
-        return PerformanceHintsService.create(
+        return PerformanceHintsService(
             databaseAdapter,
             organisationUnitThreshold,
             programRulesPerProgramThreshold,

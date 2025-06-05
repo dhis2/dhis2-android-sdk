@@ -25,83 +25,71 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.maintenance
 
-package org.hisp.dhis.android.core.maintenance;
+import kotlinx.coroutines.runBlocking
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByParentUid
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl
+import org.hisp.dhis.android.core.program.Program
+import org.hisp.dhis.android.core.program.ProgramRule
+import org.hisp.dhis.android.core.program.internal.ProgramRuleStoreImpl
+import org.hisp.dhis.android.core.program.internal.ProgramStoreImpl
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl;
-import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.program.ProgramRule;
-import org.hisp.dhis.android.core.program.internal.ProgramRuleStoreImpl;
-import org.hisp.dhis.android.core.program.internal.ProgramStoreImpl;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-public class PerformanceHintsService {
-
-    private final IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
-    private final IdentifiableObjectStore<Program> programStore;
-    private final IdentifiableObjectStore<ProgramRule> programRuleStore;
-
-    private final int organisationUnitThreshold;
-    private final int programRulesPerProgramThreshold;
-
-    PerformanceHintsService(IdentifiableObjectStore<OrganisationUnit> organisationUnitStore,
-                            IdentifiableObjectStore<Program> programStore,
-                            IdentifiableObjectStore<ProgramRule> programRuleStore,
-                            int organisationUnitThreshold,
-                            int programRulesPerProgramThreshold) {
-
-        this.organisationUnitStore = organisationUnitStore;
-        this.programStore = programStore;
-        this.programRuleStore = programRuleStore;
-        this.organisationUnitThreshold = organisationUnitThreshold;
-        this.programRulesPerProgramThreshold = programRulesPerProgramThreshold;
+class PerformanceHintsService internal constructor(
+    private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit>,
+    private val programStore: IdentifiableObjectStore<Program>,
+    private val programRuleStore: IdentifiableObjectStore<ProgramRule>,
+    private val organisationUnitThreshold: Int,
+    private val programRulesPerProgramThreshold: Int
+) {
+    fun areThereExcessiveOrganisationUnits(): Boolean {
+        return runBlocking { organisationUnitStore.count() > organisationUnitThreshold }
     }
 
-    public boolean areThereExcessiveOrganisationUnits() {
-        return this.organisationUnitStore.count() > organisationUnitThreshold;
-    }
+    val programsWithExcessiveProgramRules: List<Program?>
+        get() {
+            return runBlocking {
+                val programRules = programRuleStore.selectAll()
 
-    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-    public List<Program> getProgramsWithExcessiveProgramRules() {
-        List<ProgramRule> programRules = programRuleStore.selectAll();
+                val rulesMap: Map<String, List<ProgramRule>> =
+                    mapByParentUid(programRules) { programRule -> programRule.program()!!.uid() }
 
-        Map<String, List<ProgramRule>> rulesMap =
-                UidsHelper.mapByParentUid(programRules, programRule -> programRule.program().uid());
+                val programsWithExcessiveProgramRules: MutableList<Program?> = ArrayList()
+                for ((key, value) in rulesMap) {
+                    if (value.size > programRulesPerProgramThreshold) {
+                        val program = programStore.selectByUid(key)
+                        programsWithExcessiveProgramRules.add(program)
+                    }
+                }
 
-        List<Program> programsWithExcessiveProgramRules = new ArrayList<>();
-        for (Map.Entry<String, List<ProgramRule>> entry : rulesMap.entrySet()) {
-            if (entry.getValue().size() > programRulesPerProgramThreshold) {
-                Program program = programStore.selectByUid(entry.getKey());
-                programsWithExcessiveProgramRules.add(program);
+                programsWithExcessiveProgramRules
             }
         }
 
-        return programsWithExcessiveProgramRules;
+    fun areThereProgramsWithExcessiveProgramRules(): Boolean {
+        return programsWithExcessiveProgramRules.isNotEmpty()
     }
 
-    public boolean areThereProgramsWithExcessiveProgramRules() {
-        return !getProgramsWithExcessiveProgramRules().isEmpty();
+    fun areThereVulnerabilities(): Boolean {
+        return this.areThereExcessiveOrganisationUnits() || areThereProgramsWithExcessiveProgramRules()
     }
 
-    public boolean areThereVulnerabilities() {
-        return this.areThereExcessiveOrganisationUnits() || areThereProgramsWithExcessiveProgramRules();
-    }
-
-    public static PerformanceHintsService create(DatabaseAdapter databaseAdapter,
-                                                 int organisationUnitThreshold,
-                                                 int programRulesPerProgramThreshold) {
-        return new PerformanceHintsService(
-                new OrganisationUnitStoreImpl(databaseAdapter),
-                new ProgramStoreImpl(databaseAdapter),
-                new ProgramRuleStoreImpl(databaseAdapter),
+    companion object {
+        operator fun invoke(
+            databaseAdapter: DatabaseAdapter,
+            organisationUnitThreshold: Int,
+            programRulesPerProgramThreshold: Int
+        ): PerformanceHintsService {
+            return PerformanceHintsService(
+                OrganisationUnitStoreImpl(databaseAdapter),
+                ProgramStoreImpl(databaseAdapter),
+                ProgramRuleStoreImpl(databaseAdapter),
                 organisationUnitThreshold,
-                programRulesPerProgramThreshold);
+                programRulesPerProgramThreshold
+            )
+        }
     }
 }

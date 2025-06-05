@@ -180,7 +180,7 @@ internal class CoroutineAPICallExecutorImpl(
         return errorMapper.getBaseErrorBuilder()
     }
 
-    private fun successfulTransaction(t: Transaction, cleanForeignKeys: Boolean) {
+    private suspend fun successfulTransaction(t: Transaction, cleanForeignKeys: Boolean) {
         if (cleanForeignKeys) {
             foreignKeyCleaner.cleanForeignKeyErrors()
         }

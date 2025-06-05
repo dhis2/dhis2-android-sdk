@@ -44,6 +44,7 @@ import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleanerImpl
+import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyViolationStoreImpl
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl
 import org.hisp.dhis.android.core.program.internal.ProgramStageStoreImpl
 import org.hisp.dhis.android.core.program.internal.ProgramStore
@@ -257,7 +258,8 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
                     .relationshipItemType(RelationshipConstraintType.TO)
                     .build(),
             )
-            ForeignKeyCleanerImpl.create(databaseAdapter).cleanForeignKeyErrors()
+            ForeignKeyCleanerImpl(databaseAdapter, ForeignKeyViolationStoreImpl(databaseAdapter))
+                .cleanForeignKeyErrors()
         }
     }
 

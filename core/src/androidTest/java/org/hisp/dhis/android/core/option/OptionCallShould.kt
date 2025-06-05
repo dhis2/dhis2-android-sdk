@@ -34,6 +34,7 @@ import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleanerImpl
+import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyViolationStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
 import org.junit.Before
 import org.junit.Test
@@ -106,7 +107,7 @@ class OptionCallShould : BaseMockIntegrationTestEmptyEnqueable() {
                 optionSets = objects.d2DIComponent.optionSetCall.download(uids)
             } catch (ignored: Exception) {
             }
-            ForeignKeyCleanerImpl.create(databaseAdapter).cleanForeignKeyErrors()
+            ForeignKeyCleanerImpl(databaseAdapter, ForeignKeyViolationStoreImpl(databaseAdapter)).cleanForeignKeyErrors()
             optionSets!!
         }
     }
@@ -119,7 +120,8 @@ class OptionCallShould : BaseMockIntegrationTestEmptyEnqueable() {
                 options = optionCall.invoke()
             } catch (ignored: Exception) {
             }
-            ForeignKeyCleanerImpl.create(databaseAdapter).cleanForeignKeyErrors()
+            ForeignKeyCleanerImpl(databaseAdapter, ForeignKeyViolationStoreImpl(databaseAdapter))
+                .cleanForeignKeyErrors()
             options
         }
     }

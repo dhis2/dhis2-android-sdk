@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.validation.engine.internal
 
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByUid
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.constant.ConstantCollectionRepository
@@ -137,9 +138,11 @@ internal class ValidationEngineImpl(
     }
 
     private val orgunitGroupMap: Map<String, Int>
-        get() = orgunitGroupLinkStore.groupAndGetCountBy(
-            OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT_GROUP,
-        )
+        get() = runBlocking {
+            orgunitGroupLinkStore.groupAndGetCountBy(
+                OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT_GROUP,
+            )
+        }
 
     private fun getPeriod(periodId: String): Period {
         return periodHelper.blockingGetPeriodForPeriodId(periodId)

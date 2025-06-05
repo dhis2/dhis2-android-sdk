@@ -34,7 +34,7 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 import kotlin.math.floor
 
 internal class D2Floor : ExpressionItem {
-    override suspend fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         val value = visitor.castStringVisit(ctx.expr(0))?.toDoubleOrNull() ?: ParserUtils.DOUBLE_VALUE_IF_NULL
         return floor(value).toLong().toString()
     }

@@ -66,7 +66,7 @@ internal class ItemOrgUnitGroup : ExpressionItem {
         return DOUBLE_VALUE_IF_NULL
     }
 
-    override suspend fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         val count = visitor.orgUnitCountMap[ctx.uid0.text]
             ?: throw ParserExceptionWithoutContext("Can't find count for orgunitGroup unit " + ctx.uid0.text)
 

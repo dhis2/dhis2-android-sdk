@@ -38,7 +38,7 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal class VOrgUnitCount : ExpressionItem {
 
-    override suspend fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         val orgUnits = when (visitor.programIndicatorContext!!.programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
                 visitor.programIndicatorContext.events.values.flatMap { it.map { it.organisationUnit() } }

@@ -38,7 +38,7 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
  * @author Jim Grace
  */
 internal class FunctionYearToDate : ExpressionItem {
-    override suspend fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
         val queryMods = (visitor.state.queryMods ?: QueryMods()).copy(yearToDate = true)
 
         return visitor.visitWithQueryMods(ctx.expr(0), queryMods)

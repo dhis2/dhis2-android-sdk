@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
+import kotlinx.coroutines.runBlocking
 import net.openid.appauth.AuthState
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
@@ -58,12 +59,8 @@ internal class LogInCall(
     private val accountManager: AccountManagerImpl,
     private val apiCallErrorCatcher: UserAuthenticateCallErrorCatcher,
 ) {
-    suspend fun logIn(username: String?, password: String?, serverUrl: String?): User {
-        return blockingLogIn(username, password, serverUrl)
-    }
-
     @Throws(D2Error::class)
-    private suspend fun blockingLogIn(username: String?, password: String?, serverUrl: String?): User {
+    suspend fun logIn(username: String?, password: String?, serverUrl: String?): User {
         exceptions.throwExceptionIfUsernameNull(username)
         exceptions.throwExceptionIfPasswordNull(password)
         exceptions.throwExceptionIfAlreadyAuthenticated()
@@ -144,7 +141,7 @@ internal class LogInCall(
 
     @Throws(D2Error::class)
     @Suppress("ThrowsCount")
-    private fun tryLoginOffline(credentials: Credentials, originalError: D2Error): User {
+    private suspend fun tryLoginOffline(credentials: Credentials, originalError: D2Error): User {
         val existingDatabase =
             databaseManager.loadExistingKeepingEncryption(credentials.serverUrl, credentials.username)
         if (!existingDatabase) {
@@ -161,7 +158,7 @@ internal class LogInCall(
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private fun importDB(serverUrl: String, credentials: Credentials): User {
+    private suspend fun importDB(serverUrl: String, credentials: Credentials): User {
         try {
             databaseManager.importDB(serverUrl, credentials)
             credentialsSecureStore.set(credentials)

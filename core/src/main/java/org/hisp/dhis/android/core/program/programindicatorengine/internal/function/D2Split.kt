@@ -34,7 +34,7 @@ import org.hisp.dhis.antlr.AntlrParserUtils
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal class D2Split : ExpressionItem {
-    override suspend fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         val input = visitor.castStringVisit(ctx.expr(0))
         val delimiter = visitor.castStringVisit(ctx.expr(1))
 

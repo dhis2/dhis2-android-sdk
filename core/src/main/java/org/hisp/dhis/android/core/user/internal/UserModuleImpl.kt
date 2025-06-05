@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.user.internal
 
 import io.reactivex.Completable
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.user.*
 import org.hisp.dhis.android.core.user.loginconfig.LoginConfigCall
@@ -84,7 +85,7 @@ internal class UserModuleImpl(
     }
 
     override fun blockingLogIn(username: String, password: String, serverUrl: String): User {
-        return logIn(username, password, serverUrl).blockingGet()
+        return runBlocking { logInCall.logIn(username, password, serverUrl) }
     }
 
     override fun logOut(): Completable {

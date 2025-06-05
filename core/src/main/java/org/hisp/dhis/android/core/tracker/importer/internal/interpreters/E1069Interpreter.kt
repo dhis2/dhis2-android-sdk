@@ -36,7 +36,7 @@ internal class E1069Interpreter internal constructor(
     override val regex: Regex,
 ) : ErrorCodeInterpreter {
     override val unformattedDescription = R.string.E1069
-    override fun companions(error: JobValidationError): List<String> {
+    override suspend fun companions(error: JobValidationError): List<String> {
         val programUid = regex.find(error.message)!!.groupValues.last()
         return listOf(interpreterHelper.programDisplayName(programUid), programUid, error.uid)
     }

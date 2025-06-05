@@ -35,7 +35,7 @@ internal class E1081Interpreter internal constructor(
     override val regex: Regex,
 ) : ErrorCodeInterpreter {
     override val unformattedDescription = R.string.E1081
-    override fun companions(error: JobValidationError): List<String> {
+    override suspend fun companions(error: JobValidationError): List<String> {
         return listOf(error.uid)
     }
 }

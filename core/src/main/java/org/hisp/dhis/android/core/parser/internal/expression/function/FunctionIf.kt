@@ -57,7 +57,7 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
  */
 internal class FunctionIf : ExpressionItem {
 
-    override suspend fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
         val arg0 = visitor.castBooleanVisit(ctx.expr(0))
 
         return when {

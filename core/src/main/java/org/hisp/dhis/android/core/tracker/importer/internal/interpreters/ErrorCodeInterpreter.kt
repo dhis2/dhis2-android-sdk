@@ -34,10 +34,10 @@ import org.hisp.dhis.android.core.tracker.importer.internal.JobValidationError
 internal interface ErrorCodeInterpreter {
     val regex: Regex
     val unformattedDescription: Int
-    fun companions(error: JobValidationError): List<String> = emptyList()
+    suspend fun companions(error: JobValidationError): List<String> = emptyList()
 
     @Suppress("SpreadOperator")
-    fun displayDescription(context: Context, error: JobValidationError): String {
+    suspend fun displayDescription(context: Context, error: JobValidationError): String {
         return context.getString(unformattedDescription).format(*companions(error).toTypedArray())
     }
 }

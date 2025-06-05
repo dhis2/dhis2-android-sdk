@@ -34,7 +34,7 @@ import org.hisp.dhis.antlr.AntlrParserUtils
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal class D2Substring : ExpressionItem {
-    override suspend fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
         val originalString = visitor.castStringVisit(ctx.expr(0)) ?: ""
         val start = AntlrParserUtils.castDouble(visitor.castStringVisit(ctx.expr(1))).toInt()
         val end = AntlrParserUtils.castDouble(visitor.castStringVisit(ctx.expr(2))).toInt()

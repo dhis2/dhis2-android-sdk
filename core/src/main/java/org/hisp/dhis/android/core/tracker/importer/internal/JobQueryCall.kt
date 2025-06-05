@@ -73,12 +73,12 @@ internal class JobQueryCall internal constructor(
         }
     }.asObservable()
 
-    fun queryJob(jobId: String): Flow<D2Progress> {
+    suspend fun queryJob(jobId: String): Flow<D2Progress> {
         val jobObjects = trackerJobObjectStore.selectWhere(byJobIdClause(jobId))
         return queryJobInternal(jobId, jobObjects, true, ATTEMPTS_AFTER_UPLOAD)
     }
 
-    private fun updateFileResourceStates(jobObjects: List<TrackerJobObject>) {
+    private suspend fun updateFileResourceStates(jobObjects: List<TrackerJobObject>) {
         return fileResourceHandler.updateFileResourceStates(jobObjects)
     }
 

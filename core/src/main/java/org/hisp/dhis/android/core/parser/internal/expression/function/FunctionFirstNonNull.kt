@@ -38,7 +38,7 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
  * @author Jim Grace
  */
 internal class FunctionFirstNonNull : ExpressionItem {
-    override suspend fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
         for (c in ctx.expr()) {
             val value = visitor.visitAllowingNulls(c)
             if (value != null) {

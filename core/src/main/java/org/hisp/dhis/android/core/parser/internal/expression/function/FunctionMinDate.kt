@@ -39,7 +39,7 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
  * @author Jim Grace
  */
 internal class FunctionMinDate : ExpressionItem {
-    override suspend fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
         val date = ParserUtils.parseExpressionDate(ctx.minDate.text)
         val queryMods = (visitor.state.queryMods ?: QueryMods()).copy(minDate = date)
 

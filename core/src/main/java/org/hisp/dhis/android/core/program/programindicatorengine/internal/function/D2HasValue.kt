@@ -42,7 +42,7 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal class D2HasValue : ProgramExpressionItem() {
 
-    override suspend fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         return when (getProgramArgType(ctx)) {
             is ProgramItemStageElement -> hasProgramItemStageElement(ctx, visitor)
             is ProgramItemAttribute -> hasProgramAttribute(ctx, visitor)

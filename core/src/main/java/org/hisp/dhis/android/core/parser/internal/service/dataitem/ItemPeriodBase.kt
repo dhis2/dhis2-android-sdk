@@ -38,7 +38,7 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal abstract class ItemPeriodBase : ExpressionItem {
 
-    override suspend fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
         val periodIds = visitor.indicatorContext?.evaluationItem?.allDimensionItems
             ?.filterIsInstance<DimensionItem.PeriodItem>()?.map { it.id } ?: emptyList()
 

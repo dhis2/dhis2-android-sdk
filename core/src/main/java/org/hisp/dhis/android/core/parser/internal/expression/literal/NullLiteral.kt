@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal class NullLiteral : ExpressionItem {
-    override suspend fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
         visitor.state.replaceNulls = false
         return null
     }

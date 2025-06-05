@@ -53,7 +53,7 @@ internal class ItemConstant : ExpressionItem {
         return DOUBLE_VALUE_IF_NULL
     }
 
-    override suspend fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         val constantValue = visitor.constantMap[ctx.uid0.text]?.value()
             ?: throw ParserExceptionWithoutContext("Can't find constant to evaluate " + ctx.uid0.text)
 

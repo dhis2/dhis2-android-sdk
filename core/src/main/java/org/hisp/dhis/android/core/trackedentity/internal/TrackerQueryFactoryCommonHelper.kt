@@ -239,7 +239,7 @@ internal class TrackerQueryFactoryCommonHelper(
     }
 
     @Suppress("LongParameterList")
-    fun getCommonParams(
+    suspend fun getCommonParams(
         params: ProgramDataDownloadParams,
         programSettings: ProgramSettings?,
         programs: List<String>,

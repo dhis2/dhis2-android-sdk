@@ -40,7 +40,7 @@ internal class TrackerConflictHelper(
     private val interpreterSelector: InterpreterSelector,
 ) {
 
-    fun getConflictBuilder(errorReport: JobValidationError): TrackerImportConflict.Builder {
+    suspend fun getConflictBuilder(errorReport: JobValidationError): TrackerImportConflict.Builder {
         return TrackerImportConflict.builder()
             .conflict(errorReport.message)
             .displayDescription(displayDescription(errorReport))
@@ -51,7 +51,7 @@ internal class TrackerConflictHelper(
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private fun displayDescription(errorReport: JobValidationError): String {
+    private suspend fun displayDescription(errorReport: JobValidationError): String {
         return try {
             val error = ImporterError.valueOf(errorReport.errorCode)
             val interpreter = interpreterSelector.getInterpreter(error)

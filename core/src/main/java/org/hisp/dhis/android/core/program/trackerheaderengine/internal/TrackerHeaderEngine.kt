@@ -66,7 +66,7 @@ internal class TrackerHeaderEngine(
         )
 
         val executor = ProgramIndicatorExecutor(
-            constantMap,
+            constantMap(),
             context,
             dataElementStore,
             trackedEntityAttributeStore,

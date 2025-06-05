@@ -34,7 +34,7 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal class VValueCount : ExpressionItem {
 
-    override suspend fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         val expression = visitor.programIndicatorContext!!.programIndicator.expression()
             ?: throw IllegalArgumentException("Expression is null")
 

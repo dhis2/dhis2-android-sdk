@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension
 
 internal interface TrackerVisualizationDimensionStore : LinkStore<TrackerVisualizationDimension> {
-    fun getTrackerVisualizationDimensionForTrackerVisualization(
+    suspend fun getTrackerVisualizationDimensionForTrackerVisualization(
         trackerVisualizationId: String,
     ): List<TrackerVisualizationDimension>
 }

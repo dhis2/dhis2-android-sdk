@@ -65,7 +65,7 @@ internal class TrackerVisualizationDimensionStoreImpl(
         }
     }
 
-    override fun getTrackerVisualizationDimensionForTrackerVisualization(
+    override suspend fun getTrackerVisualizationDimensionForTrackerVisualization(
         trackerVisualizationId: String,
     ): List<TrackerVisualizationDimension> {
         val whereClause = WhereClauseBuilder()

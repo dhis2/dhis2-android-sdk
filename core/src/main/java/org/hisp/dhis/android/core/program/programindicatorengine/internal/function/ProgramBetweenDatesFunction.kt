@@ -39,7 +39,7 @@ internal abstract class ProgramBetweenDatesFunction : ExpressionItem {
 
     abstract fun getSql(startExpression: String, endExpression: String): Any
 
-    override suspend fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         val start = visitor.castStringVisit(ctx.expr(0))
         val end = visitor.castStringVisit(ctx.expr(1))
 

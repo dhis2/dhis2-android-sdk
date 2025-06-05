@@ -38,7 +38,7 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
  * @author Enrico Colasante
  */
 internal class PeriodOffset : ExpressionItem {
-    override suspend fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
         val state = visitor.state
         val existingPeriodOffset = state.queryMods?.periodOffset ?: 0
         val parsedPeriodOffset = ctx.period?.text?.toIntOrNull() ?: 0

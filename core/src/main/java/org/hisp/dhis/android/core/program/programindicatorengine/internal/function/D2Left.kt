@@ -35,7 +35,7 @@ import org.hisp.dhis.antlr.AntlrParserUtils
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal class D2Left : ExpressionItem {
-    override suspend fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         val doubleValue = AntlrParserUtils.castDouble(visitor.castStringVisit(ctx.expr(1)))
         require(doubleValue % 1 == 0.0) { "Number has to be an integer" }
         val chars = doubleValue.toInt()

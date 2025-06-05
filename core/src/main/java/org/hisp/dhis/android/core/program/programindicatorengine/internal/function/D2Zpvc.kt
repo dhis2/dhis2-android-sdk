@@ -33,7 +33,7 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal class D2Zpvc : ExpressionItem {
 
-    override suspend fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
         return ctx.expr()
             .map { visitor.castStringVisit(it).toDouble() }
             .count { it >= 0 }

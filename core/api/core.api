@@ -1721,9 +1721,11 @@ public class org/hisp/dhis/android/core/arch/db/access/internal/DatabaseAdapterF
 	public static fun create (Landroid/content/Context;Lorg/hisp/dhis/android/core/arch/storage/internal/SecureStore;)Lorg/hisp/dhis/android/core/arch/db/access/internal/DatabaseAdapterFactory;
 	public fun createOrOpenDatabase (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;Ljava/lang/String;Z)V
 	public fun createOrOpenDatabase (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;Ljava/lang/String;ZLjava/lang/Integer;)V
+	public fun createOrOpenDatabase (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;Ljava/lang/String;ZLjava/lang/Integer;Z)V
 	public fun createOrOpenDatabase (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;)V
+	public fun createOrRecreateDatabase (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;)V
 	public fun deleteDatabase (Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;)V
-	public fun getDatabaseAdapter (Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;)Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;
+	public fun getDatabaseAdapter (Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;Z)Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;
 	public fun newParentDatabaseAdapter ()Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;
 	public fun removeDatabaseAdapter (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;)V
 }

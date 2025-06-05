@@ -79,7 +79,6 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
             whereClause,
             OrderByClauseBuilder.orderByFromItems(
                 scope.orderBy(),
-                scope.pagingKey(),
             ),
         )
     }
@@ -135,8 +134,8 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
      */
     @Deprecated("Use {@link #getPagingData()} instead}", replaceWith = ReplaceWith("getPagingData()"))
     override fun getPaged(pageSize: Int): LiveData<PagedList<T>> {
-        val factory: DataSource.Factory<M, T> = object : DataSource.Factory<M, T>() {
-            override fun create(): DataSource<M, T> {
+        val factory: DataSource.Factory<Int, T> = object : DataSource.Factory<Int, T>() {
+            override fun create(): DataSource<Int, T> {
                 return dataSource
             }
         }
@@ -151,7 +150,7 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
         }.flow
     }
 
-    fun getPager(pageSize: Int): Pager<M, T> {
+    fun getPager(pageSize: Int): Pager<Int, T> {
         return Pager(
             config = PagingConfig(pageSize = pageSize),
         ) {
@@ -159,10 +158,10 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
         }
     }
 
-    val dataSource: DataSource<M, T>
+    val dataSource: DataSource<Int, T>
         get() = RepositoryDataSourceWithTransformer(store, databaseAdapter, scope, childrenAppenders, transformer)
 
-    private val pagingSource: PagingSource<M, T>
+    private val pagingSource: PagingSource<Int, T>
         get() = RepositoryPagingSourceWithTransformer(store, databaseAdapter, scope, childrenAppenders, transformer)
 
     /**

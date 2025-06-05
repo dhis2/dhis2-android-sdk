@@ -90,7 +90,6 @@ internal class ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<
             whereClause,
             OrderByClauseBuilder.orderByFromItems(
                 scope.orderBy(),
-                scope.pagingKey(),
             ),
         )
     }

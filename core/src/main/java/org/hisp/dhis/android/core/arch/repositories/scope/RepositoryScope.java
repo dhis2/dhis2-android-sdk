@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSe
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeComplexFilterItem;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem;
-import org.hisp.dhis.android.core.common.CoreColumns;
 
 import java.util.Collections;
 import java.util.List;
@@ -69,9 +68,6 @@ public abstract class RepositoryScope {
     public abstract List<RepositoryScopeOrderByItem> orderBy();
 
     @NonNull
-    public abstract String pagingKey();
-
-    @NonNull
     public abstract ChildrenSelection children();
 
     public boolean hasFilters() {
@@ -84,7 +80,6 @@ public abstract class RepositoryScope {
                 .filters(Collections.emptyList())
                 .complexFilters(Collections.emptyList())
                 .orderBy(Collections.emptyList())
-                .pagingKey(CoreColumns.ID)
                 .build();
     }
 
@@ -104,8 +99,6 @@ public abstract class RepositoryScope {
         public abstract Builder children(ChildrenSelection children);
 
         public abstract Builder orderBy(List<RepositoryScopeOrderByItem> orderBy);
-
-        public abstract Builder pagingKey(String pagingKey);
 
         public abstract RepositoryScope build();
     }

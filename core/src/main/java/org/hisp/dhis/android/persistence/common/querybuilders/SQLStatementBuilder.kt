@@ -36,7 +36,7 @@ internal interface SQLStatementBuilder : ReadOnlySQLStatementBuilder {
     fun getTableName(): String
     fun selectUids(): RoomRawQuery
     fun selectUidsWhere(whereClause: String): RoomRawQuery
-    fun selectUidsWhere(whereClause: String, orderByClause: String): RoomRawQuery
+    fun selectUidsWhere(whereClause: String, orderByClause: String?): RoomRawQuery
     fun selectColumnWhere(column: String, whereClause: String): RoomRawQuery
     fun selectChildrenWithLinkTable(
         projection: LinkTableChildProjection,

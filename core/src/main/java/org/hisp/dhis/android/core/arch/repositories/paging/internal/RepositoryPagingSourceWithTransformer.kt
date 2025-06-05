@@ -48,35 +48,21 @@ internal class RepositoryPagingSourceWithTransformer<M : CoreObject, T : Any> in
     private val scope: RepositoryScope,
     private val childrenAppenders: ChildrenAppenderGetter<M>,
     private val transformer: TwoWayTransformer<M, T>,
-) : PagingSource<M, T>() {
-    override fun getRefreshKey(state: PagingState<M, T>): M? {
+) : PagingSource<Int, T>() {
+    override fun getRefreshKey(state: PagingState<Int, T>): Int? {
         return state.anchorPosition?.let { state.closestPageToPosition(it)?.prevKey }
     }
 
-    override suspend fun load(params: LoadParams<M>): LoadResult<M, T> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, T> {
         try {
-            val whereClauseBuilder = WhereClauseBuilder()
+            val offset = params.key
 
-            params.key?.let { key ->
-                val reverse = when (params) {
-                    is LoadParams.Prepend -> true
-                    else -> false
-                }
-
-                OrderByClauseBuilder.addSortingClauses(
-                    whereClauseBuilder,
-                    scope.orderBy(),
-                    key.toContentValues(),
-                    reverse,
-                    scope.pagingKey(),
-                )
-            }
-
-            val whereClause = WhereClauseFromScopeBuilder(whereClauseBuilder).getWhereClause(scope)
+            val whereClause = WhereClauseFromScopeBuilder(WhereClauseBuilder()).getWhereClause(scope)
             val withoutChildren = store.selectWhere(
                 whereClause,
-                OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()),
+                OrderByClauseBuilder.orderByFromItems(scope.orderBy()),
                 params.loadSize,
+                offset,
             )
             val items = ChildrenAppenderExecutor.appendInObjectCollection(
                 withoutChildren,
@@ -87,8 +73,8 @@ internal class RepositoryPagingSourceWithTransformer<M : CoreObject, T : Any> in
 
             return LoadResult.Page(
                 data = items.map { transformer.transform(it) },
-                prevKey = items.firstOrNull(),
-                nextKey = items.getOrNull(params.loadSize - 1),
+                prevKey = offset?.let { it - params.loadSize },
+                nextKey = (offset ?: 0) + params.loadSize,
             )
         } catch (e: IOException) {
             return LoadResult.Error(e)

@@ -45,12 +45,16 @@ internal open class ReadOnlySQLStatementBuilderImpl(
         return selectWhere(whereClause + LIMIT + limit)
     }
 
-    override fun selectWhere(whereClause: String, orderByClause: String): RoomRawQuery {
-        return selectWhere(whereClause + ORDER_BY + orderByClause)
+    override fun selectWhere(whereClause: String, orderByClause: String?): RoomRawQuery {
+        return selectWhere(whereClause + getOrderBy(orderByClause))
     }
 
-    override fun selectWhere(whereClause: String, orderByClause: String, limit: Int): RoomRawQuery {
-        return selectWhere(whereClause + ORDER_BY + orderByClause + LIMIT + limit)
+    override fun selectWhere(whereClause: String, orderByClause: String?, limit: Int): RoomRawQuery {
+        return selectWhere(whereClause + getOrderBy(orderByClause) + LIMIT + limit)
+    }
+
+    override fun selectWhere(whereClause: String, orderByClause: String?, limit: Int, offset: Int?): RoomRawQuery {
+        return selectWhere(whereClause + getOrderBy(orderByClause) + LIMIT + limit + getOffset(offset))
     }
 
     override fun selectOneOrderedBy(
@@ -109,5 +113,14 @@ internal open class ReadOnlySQLStatementBuilderImpl(
         internal const val SELECT = "SELECT "
         internal const val AND = " AND "
         internal const val ORDER_BY = " ORDER BY "
+        internal const val OFFSET = " OFFSET "
+
+        internal fun getOrderBy(orderByClause: String?): String {
+            return orderByClause?.let { ORDER_BY + it } ?: ""
+        }
+
+        internal fun getOffset(offset: Int?): String {
+            return offset?.let { OFFSET + it } ?: ""
+        }
     }
 }

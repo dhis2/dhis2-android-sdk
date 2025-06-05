@@ -26,15 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.common.daos
+package org.hisp.dhis.android.persistence.constant
 
-import androidx.room.RawQuery
-import androidx.room.RoomRawQuery
-import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.core.constant.Constant
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilder
+import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
 
-internal interface IdentifiableDataObjectDao<P : EntityDB<*>> : ObjectDao<P> {
-
-    @RawQuery
-    suspend fun stateRawQuery(query: RoomRawQuery): State?
-}
+internal class ConstantStoreImpl(
+    val constantDao: ConstantDao,
+    override val builder: SQLStatementBuilder,
+) : IdentifiableObjectStoreImpl<Constant, ConstantDB>(
+    constantDao,
+    Constant::toDB,
+    builder,
+)

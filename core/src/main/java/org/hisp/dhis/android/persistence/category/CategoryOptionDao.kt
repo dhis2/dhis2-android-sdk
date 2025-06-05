@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyinterfaceight (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,15 +26,10 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.common.daos
+package org.hisp.dhis.android.persistence.category
 
-import androidx.room.RawQuery
-import androidx.room.RoomRawQuery
-import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.persistence.common.EntityDB
+import androidx.room.Dao
+import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
-internal interface IdentifiableDataObjectDao<P : EntityDB<*>> : ObjectDao<P> {
-
-    @RawQuery
-    suspend fun stateRawQuery(query: RoomRawQuery): State?
-}
+@Dao
+internal interface CategoryOptionDao : ObjectDao<CategoryOptionDB>

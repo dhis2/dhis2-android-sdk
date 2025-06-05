@@ -38,41 +38,35 @@ import androidx.room.Upsert
 import org.hisp.dhis.android.persistence.common.EntityDB
 
 @Suppress("TooManyFunctions")
-internal abstract class ObjectDao<P : EntityDB<*>>(
-    tableName: String,
-) : ReadableDao<P>(tableName) {
+internal interface ObjectDao<P : EntityDB<*>> : ReadableDao<P> {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract suspend fun insert(entity: P): Long
+    suspend fun insert(entity: P): Long
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract suspend fun insert(entities: Collection<P>): LongArray
+    suspend fun insert(entities: Collection<P>): LongArray
 
     @Update
-    abstract suspend fun update(entity: P): Int
+    suspend fun update(entity: P): Int
 
     @Update
-    abstract suspend fun update(entities: Collection<P>): Int
+    suspend fun update(entities: Collection<P>): Int
 
     @Upsert
-    abstract suspend fun upsert(entity: P): Long
+    suspend fun upsert(entity: P): Long
 
     @Upsert
-    abstract suspend fun upsert(entities: Collection<P>): LongArray
+    suspend fun upsert(entities: Collection<P>): LongArray
 
     @Delete
-    abstract suspend fun delete(entity: P): Int
+    suspend fun delete(entity: P): Int
 
     @Delete
-    abstract suspend fun delete(entities: Collection<P>): Int
+    suspend fun delete(entities: Collection<P>): Int
 
     @RawQuery
-    protected abstract suspend fun objectRawQuery(query: RoomRawQuery): P?
+    suspend fun objectRawQuery(query: RoomRawQuery): P?
 
     @RawQuery
-    abstract suspend fun stringListRawQuery(query: RoomRawQuery): List<String>
-
-    internal suspend fun stringSetRawQuery(query: RoomRawQuery): Set<String> {
-        return stringListRawQuery(query).toSet()
-    }
+    suspend fun stringListRawQuery(query: RoomRawQuery): List<String>
 }

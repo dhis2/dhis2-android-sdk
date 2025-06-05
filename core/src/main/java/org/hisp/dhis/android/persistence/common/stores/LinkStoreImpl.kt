@@ -70,7 +70,7 @@ internal open class LinkStoreImpl<D : CoreObject, P : EntityDB<D>>(
     suspend fun selectDistinctSlaves(childColumn: String): Set<String> {
         CollectionsHelper.isNull(childColumn)
         val query = builder.selectDistinctChildren(childColumn)
-        return linkStoreDao.stringSetRawQuery(query)
+        return linkStoreDao.stringListRawQuery(query).toSet()
     }
 
     @Throws(RuntimeException::class)

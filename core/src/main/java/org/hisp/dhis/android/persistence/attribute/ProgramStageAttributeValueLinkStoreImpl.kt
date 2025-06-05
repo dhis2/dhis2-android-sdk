@@ -26,15 +26,31 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.common.daos
+package org.hisp.dhis.android.persistence.attribute
 
-import androidx.room.RawQuery
-import androidx.room.RoomRawQuery
-import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.attribute.ProgramStageAttributeValueLink
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilder
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.stores.ObjectStoreImpl
 
-internal interface IdentifiableDataObjectDao<P : EntityDB<*>> : ObjectDao<P> {
-
-    @RawQuery
-    suspend fun stateRawQuery(query: RoomRawQuery): State?
+internal class ProgramStageAttributeValueLinkStoreImpl(
+    val dao: ProgramStageAttributeValueLinkDao,
+    override val builder: SQLStatementBuilder = SQLStatementBuilderImpl(
+        ProgramStageAttributeValueLinkTableInfo.TABLE_INFO.name(),
+        false,
+    ),
+) : ObjectStoreImpl<ProgramStageAttributeValueLink, ProgramStageAttributeValueLinkDB>(
+    dao,
+    ProgramStageAttributeValueLink::toDB,
+    builder,
+) {
+    suspend fun getLinksForProgramStage(programStageUid: String): List<ProgramStageAttributeValueLink> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(ProgramStageAttributeValueLinkTableInfo.Columns.PROGRAM_STAGE, programStageUid)
+            .build()
+        val query = builder.selectWhere(whereClause)
+        val dbEntities = dao.objectListRawQuery(query)
+        return dbEntities.map { it.toDomain() }
+    }
 }

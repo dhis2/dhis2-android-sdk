@@ -26,15 +26,37 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.common.daos
+package org.hisp.dhis.android.persistence.category
 
-import androidx.room.RawQuery
-import androidx.room.RoomRawQuery
-import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
+import org.hisp.dhis.android.core.category.Category
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilder
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
 
-internal interface IdentifiableDataObjectDao<P : EntityDB<*>> : ObjectDao<P> {
-
-    @RawQuery
-    suspend fun stateRawQuery(query: RoomRawQuery): State?
+internal class CategoryStoreImpl(
+    val dao: CategoryDao,
+    override val builder: SQLStatementBuilder = SQLStatementBuilderImpl(
+        CategoryTableInfo.TABLE_INFO.name(),
+        false,
+    ),
+) : IdentifiableObjectStoreImpl<Category, CategoryDB>(
+    dao,
+    Category::toDB,
+    builder,
+) {
+    suspend fun getForCategoryCombo(categoryComboUid: String): List<Category> {
+        val projection = LinkTableChildProjection(
+            CategoryTableInfo.TABLE_INFO,
+            CategoryCategoryComboLinkTableInfo.Columns.CATEGORY_COMBO,
+            CategoryCategoryComboLinkTableInfo.Columns.CATEGORY,
+        )
+        val query = builder.selectChildrenWithLinkTable(
+            projection,
+            categoryComboUid,
+            null,
+        )
+        val dbEntities = dao.objectListRawQuery(query)
+        return dbEntities.map { it.toDomain() }
+    }
 }

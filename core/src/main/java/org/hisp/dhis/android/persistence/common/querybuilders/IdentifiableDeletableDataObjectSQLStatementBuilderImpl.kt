@@ -29,52 +29,21 @@
 package org.hisp.dhis.android.persistence.common.querybuilders
 
 import androidx.room.RoomRawQuery
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper
 import org.hisp.dhis.android.core.common.DataColumns
+import org.hisp.dhis.android.core.common.DeletableDataColumns
 import org.hisp.dhis.android.core.common.IdentifiableColumns
-import org.hisp.dhis.android.core.common.State
 
-internal open class IdentifiableDataObjectSQLStatementBuilderImpl(
+internal class IdentifiableDeletableDataObjectSQLStatementBuilderImpl(
     private val tableName: String,
-) : IdentifiableDataObjectSQLStatementBuilder, SQLStatementBuilderImpl(tableName, false) {
-    override fun setSyncState(uid: String, state: String): RoomRawQuery {
+) : IdentifiableDeletableDataObjectSQLStatementBuilder, IdentifiableDataObjectSQLStatementBuilderImpl(tableName) {
+    override fun setDeleted(uid: String): RoomRawQuery {
         return RoomRawQuery(
-            "UPDATE $tableName SET ${DataColumns.SYNC_STATE} = '$state' " +
+            "UPDATE $tableName SET ${DeletableDataColumns.DELETED} = 1 " +
                 "WHERE ${IdentifiableColumns.UID} = '$uid'",
         )
     }
 
-    override fun setSyncState(uids: List<String>, state: String): RoomRawQuery {
-        val whereClause = WhereClauseBuilder().appendInKeyStringValues(IdentifiableColumns.UID, uids).build()
-        return RoomRawQuery(
-            "UPDATE $tableName SET ${DataColumns.SYNC_STATE} = '$state' WHERE $whereClause",
-        )
-    }
-
-    override fun setSyncStateIfUploading(uid: String, state: String): RoomRawQuery {
-        return RoomRawQuery(
-            "UPDATE $tableName SET ${DataColumns.SYNC_STATE} = '$state' " +
-                "WHERE ${IdentifiableColumns.UID} = '$uid' AND ${DataColumns.SYNC_STATE} = '${State.UPLOADING}'",
-        )
-    }
-
-    override fun getSyncState(uid: String): RoomRawQuery {
-        return RoomRawQuery(
-            "SELECT ${DataColumns.SYNC_STATE} FROM $tableName WHERE " +
-                "${IdentifiableColumns.UID} = '$uid'",
-        )
-    }
-
-    override fun exists(uid: String): RoomRawQuery {
-        return RoomRawQuery("SELECT 1 FROM $tableName WHERE ${IdentifiableColumns.UID} = '$uid'")
-    }
-
-    override fun getUploadableSyncStatesIncludingError(): RoomRawQuery {
-        val whereClause = WhereClauseBuilder().appendInKeyStringValues(
-            DataColumns.SYNC_STATE,
-            EnumHelper.asStringList(State.uploadableStatesIncludingError().toList()),
-        ).build()
-        return RoomRawQuery("SELECT * FROM $tableName WHERE $whereClause")
+    override fun selectSyncStateWhere(where: String): RoomRawQuery {
+        return RoomRawQuery("SELECT ${DataColumns.SYNC_STATE} FROM $tableName WHERE $where")
     }
 }

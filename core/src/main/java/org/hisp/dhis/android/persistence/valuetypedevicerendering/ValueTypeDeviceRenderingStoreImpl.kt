@@ -26,19 +26,20 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.category
+package org.hisp.dhis.android.persistence.valuetypedevicerendering
 
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink
-import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
-import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering
+import org.hisp.dhis.android.persistence.common.ValueTypeDeviceRenderingDB
+import org.hisp.dhis.android.persistence.common.ValueTypeDeviceRenderingTableInfo
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.hisp.dhis.android.persistence.common.toDB
 
-internal class CategoryCategoryOptionLinkStoreImpl(
-    val dao: CategoryCategoryOptionLinkDao,
-) : LinkStoreImpl<CategoryCategoryOptionLink, CategoryCategoryOptionLinkDB>(
-    dao,
-    CategoryCategoryOptionLink::toDB,
-    LinkSQLStatementBuilderImpl(
-        CategoryCategoryOptionLinkTableInfo.TABLE_INFO,
-        CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY,
-    ),
-)
+internal class ValueTypeDeviceRenderingStoreImpl(
+    val dao: ValueTypeDeviceRenderingDao,
+) :
+    ObjectWithoutUidStoreImpl<ValueTypeDeviceRendering, ValueTypeDeviceRenderingDB>(
+        dao,
+        ValueTypeDeviceRendering::toDB,
+        SQLStatementBuilderImpl(ValueTypeDeviceRenderingTableInfo.TABLE_INFO),
+    )

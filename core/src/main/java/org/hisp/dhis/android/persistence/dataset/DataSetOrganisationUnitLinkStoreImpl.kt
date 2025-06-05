@@ -26,19 +26,29 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.category
+package org.hisp.dhis.android.persistence.dataset
 
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
 
-internal class CategoryCategoryOptionLinkStoreImpl(
-    val dao: CategoryCategoryOptionLinkDao,
-) : LinkStoreImpl<CategoryCategoryOptionLink, CategoryCategoryOptionLinkDB>(
+internal class DataSetOrganisationUnitLinkStoreImpl(
+    val dao: DataSetOrganisationUnitLinkDao,
+) : LinkStoreImpl<DataSetOrganisationUnitLink, DataSetOrganisationUnitLinkDB>(
     dao,
-    CategoryCategoryOptionLink::toDB,
+    DataSetOrganisationUnitLink::toDB,
     LinkSQLStatementBuilderImpl(
-        CategoryCategoryOptionLinkTableInfo.TABLE_INFO,
-        CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY,
+        DataSetOrganisationUnitLinkTableInfo.TABLE_INFO,
+        DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
     ),
-)
+) {
+    suspend fun getForOrganisationUnit(orgUnitUid: String): List<ObjectWithUid> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT, orgUnitUid)
+            .build()
+        val selectStatement = builder.selectWhere(whereClause)
+        return selectRawQuery(selectStatement).map { ObjectWithUid.create(it.dataSet()) }
+    }
+}

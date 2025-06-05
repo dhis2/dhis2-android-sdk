@@ -26,32 +26,49 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.category
+package org.hisp.dhis.android.persistence.dataelement
 
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
-import org.hisp.dhis.android.core.category.Category
+import org.hisp.dhis.android.core.dataelement.DataElementOperand
+import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLinkTableInfo
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.hisp.dhis.android.persistence.dataset.SectionGreyedFieldsLinkTableInfo
 
-internal class CategoryStoreImpl(
-    val dao: CategoryDao,
-) : IdentifiableObjectStoreImpl<Category, CategoryDB>(
+internal class DataElementOperandStoreImpl(
+    val dao: DataElementOperandDao,
+) : IdentifiableObjectStoreImpl<DataElementOperand, DataElementOperandDB>(
     dao,
-    Category::toDB,
-    SQLStatementBuilderImpl(CategoryTableInfo.TABLE_INFO),
+    DataElementOperand::toDB,
+    SQLStatementBuilderImpl(DataElementOperandTableInfo.TABLE_INFO),
 ) {
-    suspend fun getForCategoryCombo(categoryComboUid: String): List<Category> {
+    suspend fun getForSection(sectionUid: String): List<DataElementOperand> {
         val projection = LinkTableChildProjection(
-            CategoryTableInfo.TABLE_INFO,
-            CategoryCategoryComboLinkTableInfo.Columns.CATEGORY_COMBO,
-            CategoryCategoryComboLinkTableInfo.Columns.CATEGORY,
+            DataElementOperandTableInfo.TABLE_INFO,
+            SectionGreyedFieldsLinkTableInfo.Columns.SECTION,
+            SectionGreyedFieldsLinkTableInfo.Columns.DATA_ELEMENT_OPERAND,
         )
-        val query = builder.selectChildrenWithLinkTable(
+        val sectionSqlBuilder = SQLStatementBuilderImpl(SectionGreyedFieldsLinkTableInfo.TABLE_INFO)
+        val query = sectionSqlBuilder.selectChildrenWithLinkTable(
             projection,
-            categoryComboUid,
+            sectionUid,
             null,
         )
-        val dbEntities = dao.objectListRawQuery(query)
-        return dbEntities.map { it.toDomain() }
+        return selectRawQuery(query)
+    }
+
+    suspend fun getForDataSet(dataSetUid: String): List<DataElementOperand> {
+        val projection = LinkTableChildProjection(
+            DataElementOperandTableInfo.TABLE_INFO,
+            DataSetCompulsoryDataElementOperandLinkTableInfo.Columns.DATA_SET,
+            DataSetCompulsoryDataElementOperandLinkTableInfo.Columns.DATA_ELEMENT_OPERAND,
+        )
+        val sectionSqlBuilder = SQLStatementBuilderImpl(DataSetCompulsoryDataElementOperandLinkTableInfo.TABLE_INFO)
+        val query = sectionSqlBuilder.selectChildrenWithLinkTable(
+            projection,
+            dataSetUid,
+            null,
+        )
+        return selectRawQuery(query)
     }
 }

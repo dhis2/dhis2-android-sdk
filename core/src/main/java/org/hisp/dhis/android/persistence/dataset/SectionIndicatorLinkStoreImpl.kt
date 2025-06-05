@@ -26,19 +26,19 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.category
+package org.hisp.dhis.android.persistence.dataset
 
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink
+import org.hisp.dhis.android.core.dataset.internal.SectionIndicatorLink
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
 
-internal class CategoryCategoryOptionLinkStoreImpl(
-    val dao: CategoryCategoryOptionLinkDao,
-) : LinkStoreImpl<CategoryCategoryOptionLink, CategoryCategoryOptionLinkDB>(
+internal class SectionIndicatorLinkStoreImpl(
+    val dao: SectionIndicatorLinkDao,
+) : LinkStoreImpl<SectionIndicatorLink, SectionIndicatorLinkDB>(
     dao,
-    CategoryCategoryOptionLink::toDB,
+    SectionIndicatorLink::toDB,
     LinkSQLStatementBuilderImpl(
-        CategoryCategoryOptionLinkTableInfo.TABLE_INFO,
-        CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY,
+        SectionIndicatorLinkTableInfo.TABLE_INFO,
+        SectionIndicatorLinkTableInfo.Columns.SECTION,
     ),
 )

@@ -26,19 +26,18 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.category
+package org.hisp.dhis.android.persistence.dataapproval
 
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink
-import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
-import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.hisp.dhis.android.core.dataapproval.DataApproval
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilder
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.stores.ObjectStoreImpl
 
-internal class CategoryCategoryOptionLinkStoreImpl(
-    val dao: CategoryCategoryOptionLinkDao,
-) : LinkStoreImpl<CategoryCategoryOptionLink, CategoryCategoryOptionLinkDB>(
+internal class DataApprovalStoreImpl(
+    val dao: DataApprovalDao,
+    override val builder: SQLStatementBuilder,
+) : ObjectStoreImpl<DataApproval, DataApprovalDB>(
     dao,
-    CategoryCategoryOptionLink::toDB,
-    LinkSQLStatementBuilderImpl(
-        CategoryCategoryOptionLinkTableInfo.TABLE_INFO,
-        CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY,
-    ),
+    DataApproval::toDB,
+    SQLStatementBuilderImpl(DataApprovalTableInfo.TABLE_INFO),
 )

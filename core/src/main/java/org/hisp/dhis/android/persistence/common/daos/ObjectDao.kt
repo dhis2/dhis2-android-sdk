@@ -40,10 +40,10 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 @Suppress("TooManyFunctions")
 internal interface ObjectDao<P : EntityDB<*>> : ReadableDao<P> {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(entity: P): Long
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entities: Collection<P>): LongArray
 
     @Update

@@ -26,19 +26,28 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.category
+package org.hisp.dhis.android.persistence.dataset
 
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.dataset.DataSetElement
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
 
-internal class CategoryCategoryOptionLinkStoreImpl(
-    val dao: CategoryCategoryOptionLinkDao,
-) : LinkStoreImpl<CategoryCategoryOptionLink, CategoryCategoryOptionLinkDB>(
+internal class DataSetDataElementLinkStoreImpl(
+    val dao: DataSetDataElementLinkDao,
+) : LinkStoreImpl<DataSetElement, DataSetDataElementLinkDB>(
     dao,
-    CategoryCategoryOptionLink::toDB,
+    DataSetElement::toDB,
     LinkSQLStatementBuilderImpl(
-        CategoryCategoryOptionLinkTableInfo.TABLE_INFO,
-        CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY,
+        DataSetDataElementLinkTableInfo.TABLE_INFO,
+        DataSetDataElementLinkTableInfo.Columns.DATA_SET,
     ),
-)
+) {
+    suspend fun getForDataSet(dataSetUid: String): List<DataSetElement> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(DataSetDataElementLinkTableInfo.Columns.DATA_SET, dataSetUid)
+            .build()
+        val selectStatement = builder.selectWhere(whereClause)
+        return selectRawQuery(selectStatement)
+    }
+}

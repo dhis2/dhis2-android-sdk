@@ -26,19 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.category
+package org.hisp.dhis.android.persistence.dataset
 
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink
-import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
-import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.dataset.DataInputPeriod
+import org.hisp.dhis.android.core.dataset.DataInputPeriodTableInfo
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.stores.ObjectStoreImpl
 
-internal class CategoryCategoryOptionLinkStoreImpl(
-    val dao: CategoryCategoryOptionLinkDao,
-) : LinkStoreImpl<CategoryCategoryOptionLink, CategoryCategoryOptionLinkDB>(
+internal class DataInputPeriodStoreImpl(
+    val dao: DataInputPeriodDao,
+) : ObjectStoreImpl<DataInputPeriod, DataInputPeriodDB>(
     dao,
-    CategoryCategoryOptionLink::toDB,
-    LinkSQLStatementBuilderImpl(
-        CategoryCategoryOptionLinkTableInfo.TABLE_INFO,
-        CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY,
-    ),
-)
+    DataInputPeriod::toDB,
+    SQLStatementBuilderImpl(DataInputPeriodTableInfo.TABLE_INFO),
+) {
+    suspend fun getForDataSet(dataSetUid: String): List<DataInputPeriod> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(DataInputPeriodTableInfo.Columns.DATA_SET, dataSetUid)
+            .build()
+        val query = builder.selectWhere(whereClause)
+        return selectRawQuery(query)
+    }
+}

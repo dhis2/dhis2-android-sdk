@@ -67,8 +67,8 @@ object CustomIntentSamples {
                             CustomIntentRequestArgument.builder()
                                 .key("some key")
                                 .value("some value")
-                                .build()
-                        )
+                                .build(),
+                        ),
                     )
                     .build(),
             )

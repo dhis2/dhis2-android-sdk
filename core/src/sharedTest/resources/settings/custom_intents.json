@@ -24,11 +24,20 @@
       ],
       "packageName": "com.company.application.REGISTER",
       "request": {
-        "arguments": {
-          "projectID": "project one",
-          "serverUrl": "https://server.org",
-          "location": "V{orgunit_uid}"
-        }
+        "arguments": [
+          {
+            "key": "projectID",
+            "value": "project one"
+          },
+          {
+            "key": "serverUrl",
+            "value": "https://server.org"
+          },
+          {
+            "key": "location",
+            "value": "V{orgunit_uid}"
+          }
+        ]
       },
       "response": {
         "data": {
@@ -56,11 +65,20 @@
       ],
       "packageName": "com.company.application.REGISTER",
       "request": {
-        "arguments": {
-          "projectID": "project one",
-          "serverUrl": "https://server.org",
-          "location": "V{orgunit_uid}"
-        }
+        "arguments": [
+          {
+            "key": "projectID",
+            "value": "project one"
+          },
+          {
+            "key": "serverUrl",
+            "value": "https://server.org"
+          },
+          {
+            "key": "location",
+            "value": "V{orgunit_uid}"
+          }
+        ]
       },
       "response": {
         "data": {

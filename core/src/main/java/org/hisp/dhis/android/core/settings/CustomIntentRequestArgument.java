@@ -26,40 +26,33 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal
+package org.hisp.dhis.android.core.settings;
 
-import android.content.ContentValues
-import android.database.Cursor
-import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
-import org.hisp.dhis.android.core.settings.CustomIntentRequest
-import org.hisp.dhis.android.core.settings.CustomIntentRequestArgument
-import org.hisp.dhis.android.core.settings.CustomIntentTableInfo
-import org.hisp.dhis.android.persistence.settings.CustomIntentRequestArgumentsDB
-import org.hisp.dhis.android.persistence.settings.toDB
+import android.database.Cursor;
 
-internal class CustomIntentRequestColumnAdapter : ColumnTypeAdapter<CustomIntentRequest> {
+import com.google.auto.value.AutoValue;
 
-    override fun fromCursor(cursor: Cursor, columnName: String): CustomIntentRequest {
-        val requestArgumentsIndex = cursor.getColumnIndex(CustomIntentTableInfo.Columns.REQUEST_ARGUMENTS)
+@AutoValue
+public abstract class CustomIntentRequestArgument {
 
-        val argumentsString = CustomIntentRequestArgumentsDB(cursor.getString(requestArgumentsIndex))
-        val arguments = argumentsString.toDomain()
+    public abstract String key();
 
-        return CustomIntentRequest.builder()
-            .arguments(arguments)
-            .build()
+    public abstract String value();
+
+    public static CustomIntentRequestArgument create(Cursor cursor) {
+        return AutoValue_CustomIntentRequestArgument.createFromCursor(cursor);
     }
 
-    override fun toContentValues(values: ContentValues, columnName: String, value: CustomIntentRequest?) {
-        value?.arguments()?.let {
-            val argumentsString: String = serialize(it)
-            values.put(CustomIntentTableInfo.Columns.REQUEST_ARGUMENTS, argumentsString)
-        }
+    public static Builder builder() {
+        return new AutoValue_CustomIntentRequestArgument.Builder();
     }
 
-    companion object {
-        fun serialize(list: List<CustomIntentRequestArgument>): String {
-            return list.toDB().value
-        }
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder key(String key);
+
+        public abstract Builder value(String value);
+
+        public abstract CustomIntentRequestArgument build();
     }
 }

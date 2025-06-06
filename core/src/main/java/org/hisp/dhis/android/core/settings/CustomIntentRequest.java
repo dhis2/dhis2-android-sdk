@@ -34,13 +34,13 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import java.util.Map;
+import java.util.List;
 
 @AutoValue
 public abstract class CustomIntentRequest {
 
     @Nullable
-    public abstract Map<String, String> arguments();
+    public abstract List<CustomIntentRequestArgument> arguments();
 
     public static CustomIntentRequest create(Cursor cursor) {
         return AutoValue_CustomIntentRequest.createFromCursor(cursor);
@@ -52,7 +52,7 @@ public abstract class CustomIntentRequest {
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder arguments(Map<String, String> arguments);
+        public abstract Builder arguments(List<CustomIntentRequestArgument> arguments);
 
         public abstract CustomIntentRequest build();
     }

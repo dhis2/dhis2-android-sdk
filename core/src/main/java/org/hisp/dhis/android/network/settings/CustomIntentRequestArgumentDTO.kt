@@ -26,33 +26,20 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.settings
+package org.hisp.dhis.android.network.settings
 
-import kotlinx.serialization.SerializationException
-import kotlinx.serialization.builtins.MapSerializer
-import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.json.Json
-import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.settings.CustomIntentRequestArgument
 
-@JvmInline
-internal value class StringStringMapDB(
+@Serializable
+internal data class CustomIntentRequestArgumentDTO(
+    val key: String,
     val value: String,
 ) {
-    fun toDomain(): Map<String, String> {
-        return try {
-            KotlinxJsonParser.instance.decodeFromString<Map<String, String>>(value)
-        } catch (e: SerializationException) {
-            emptyMap()
-        }
-    }
-}
-
-internal fun Map<String, String>.toDB(): StringStringMapDB {
-    return try {
-        StringStringMapDB(
-            Json.encodeToString(MapSerializer(String.serializer(), String.serializer()), this),
-        )
-    } catch (e: SerializationException) {
-        StringStringMapDB("{}")
+    fun toDomain(): CustomIntentRequestArgument {
+        return CustomIntentRequestArgument.builder()
+            .key(key)
+            .value(value)
+            .build()
     }
 }

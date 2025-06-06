@@ -95,13 +95,22 @@ class EntityProcessor(
                 }
                 
                 class Columns : CoreColumns() {
+                    override fun all(): Array<String> {
+                        return arrayOf(
+                            ${columnNames.joinToString(
+                                separator = "\n                            ",
+                            ) { name -> 
+                                "${camelToUpperSnakeCase(name)}," 
+                            }}
+                        )
+                    }
                     companion object {
                         ${columnNames.joinToString(
-                separator = "\n                        ",
-            ) { name ->
-                val upperName = camelToUpperSnakeCase(name)
-                "const val $upperName = \"$name\""
-            }}
+                            separator = "\n                        ",
+                        ) { name -> 
+                            val upperName = camelToUpperSnakeCase(name)
+                            "const val $upperName = \"$name\"" 
+                        }}
                     }
                 }
             }

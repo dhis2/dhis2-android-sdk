@@ -59,7 +59,7 @@ class ProgramStageDataElementHandlerShould {
 
     @Before
     @Throws(Exception::class)
-    fun setUp() {
+    fun setUp() = runTest {
         handler = ProgramStageDataElementHandler(programStageDataElementStore, dataElementHandler, renderTypeHandler)
         whenever(programStageDataElement.uid()).thenReturn("program_stage_data_element")
         whenever(programStageDataElement.dataElement()).thenReturn(dataElement)

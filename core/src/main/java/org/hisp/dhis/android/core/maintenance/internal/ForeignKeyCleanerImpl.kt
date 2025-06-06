@@ -39,7 +39,7 @@ import java.util.Date
 @Singleton
 internal class ForeignKeyCleanerImpl(
     private val databaseAdapter: DatabaseAdapter,
-    private val foreignKeyViolationStore: ForeignKeyViolationStore
+    private val foreignKeyViolationStore: ForeignKeyViolationStore,
 ) : ForeignKeyCleaner {
     override suspend fun cleanForeignKeyErrors(): Int {
         var totalRows = 0
@@ -79,7 +79,7 @@ internal class ForeignKeyCleanerImpl(
             if (rowsAffected > 0) {
                 val msg =
                     " was not persisted on $fromTable table to avoid Foreign Key constraint error. " +
-                            "Target not found on $toTable table. $it"
+                        "Target not found on $toTable table. $it"
                 val warningMsg = it.fromObjectUid()
                     ?.let { uid -> "The object $uid$msg" }
                     ?: "An object$msg"
@@ -92,7 +92,7 @@ internal class ForeignKeyCleanerImpl(
         foreignKeyId: String,
         fromTable: String,
         toTable: String,
-        rowId: String
+        rowId: String,
     ): ForeignKeyViolation? {
         databaseAdapter.rawQuery("PRAGMA foreign_key_list($fromTable);").use { listCursor ->
             if (listCursor.moveToFirst()) {
@@ -110,7 +110,7 @@ internal class ForeignKeyCleanerImpl(
         listCursor: Cursor,
         fromTable: String,
         toTable: String,
-        rowId: String
+        rowId: String,
     ): ForeignKeyViolation? {
         val fromColumn = listCursor.getString(3)
         val toColumn = listCursor.getString(4)

@@ -65,11 +65,12 @@ class TrackerDataManagerShould {
     private val enrollment: Enrollment = mock()
     private val event: Event = mock()
     private val relationship: Relationship = mock()
+    private val programOwner: ProgramOwner = mock()
 
     private lateinit var trackerDataManager: TrackerDataManager
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         whenever(trackedEntity.uid()).doReturn("tei_uid")
         whenever(enrollment.uid()).doReturn("enrollment_uid")
         whenever(event.uid()).doReturn("event_uid")
@@ -129,6 +130,7 @@ class TrackerDataManagerShould {
         whenever(enrollment.program()).doReturn("program")
         whenever(enrollment.trackedEntityInstance()).doReturn("instance")
         whenever(enrollment.organisationUnit()).doReturn("orgunit")
+        whenever(programOwnerStore.selectWhere(any())).doReturn(emptyList())
 
         trackerDataManager.propagateEnrollmentUpdate(enrollment, HandleAction.Insert)
         verify(programOwnerStore, times(1)).selectWhere(any())

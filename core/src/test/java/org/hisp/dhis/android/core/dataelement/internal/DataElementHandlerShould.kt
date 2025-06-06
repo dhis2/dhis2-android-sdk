@@ -65,7 +65,7 @@ class DataElementHandlerShould {
     private val attributeValue = ObjectWithUid.create("Att_Uid")
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         dataElementHandler = DataElementHandler(
             dataElementStore,
             dataElementAttributeValueLinkHandler,

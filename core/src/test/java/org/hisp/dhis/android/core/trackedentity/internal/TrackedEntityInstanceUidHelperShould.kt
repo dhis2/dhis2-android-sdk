@@ -25,127 +25,107 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import com.google.common.truth.Truth
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
+import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
+import org.junit.Before
+import org.junit.Test
+import org.mockito.Mockito
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
-import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+class TrackedEntityInstanceUidHelperShould {
+    private val organisationUnitStore: OrganisationUnitStore = mock()
+    private val tei1: TrackedEntityInstance = mock()
+    private val tei2: TrackedEntityInstance = mock()
+    private val enrollment: Enrollment = mock()
+    private val event: Event = mock()
 
-import com.google.common.collect.Lists;
-
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor;
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.util.ArrayList;
-import java.util.Set;
-
-public class TrackedEntityInstanceUidHelperShould {
-
-    @Mock
-    private OrganisationUnitStore organisationUnitStore;
-
-    @Mock
-    private TrackedEntityInstance tei1;
-
-    @Mock
-    private TrackedEntityInstance tei2;
-
-    @Mock
-    private Enrollment enrollment;
-
-    @Mock
-    private Event event;
-
-    private TrackedEntityInstanceUidHelper uidHelper;
+    private lateinit var uidHelper: TrackedEntityInstanceUidHelper
 
     @Before
-    @SuppressWarnings("unchecked")
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-
-        when(organisationUnitStore.selectUids()).thenReturn(Lists.newArrayList("ou1", "ou2"));
-        uidHelper = new TrackedEntityInstanceUidHelperImpl(organisationUnitStore
-        );
+    @Throws(Exception::class)
+    fun setUp() = runTest {
+        whenever(organisationUnitStore.selectUids()).thenReturn(listOf("ou1", "ou2"))
+        uidHelper = TrackedEntityInstanceUidHelperImpl(organisationUnitStore)
     }
 
     @Test
-    public void call_organisation_unit_select_uids() {
-        uidHelper.getMissingOrganisationUnitUids(new ArrayList<>());
-        verify(organisationUnitStore).selectUids();
+    fun call_organisation_unit_select_uids() = runTest {
+        uidHelper.getMissingOrganisationUnitUids(ArrayList())
+        Mockito.verify(organisationUnitStore).selectUids()
     }
 
     @Test
-    public void return_tei_org_unit_if_not_in_store() {
-        when(tei1.organisationUnit()).thenReturn("ou3");
-        Set<String> missingUids = uidHelper.getMissingOrganisationUnitUids(Lists.newArrayList(tei1));
-        assertThat(missingUids.size()).isEqualTo(1);
-        assertThat(missingUids.iterator().next()).isEqualTo("ou3");
+    fun return_tei_org_unit_if_not_in_store() = runTest {
+        whenever(tei1.organisationUnit()).thenReturn("ou3")
+        val missingUids = uidHelper.getMissingOrganisationUnitUids(listOf(tei1))
+        Truth.assertThat(missingUids.size).isEqualTo(1)
+        Truth.assertThat(missingUids.iterator().next()).isEqualTo("ou3")
     }
 
     @Test
-    public void not_return_tei_org_unit_if_in_store() {
-        when(tei1.organisationUnit()).thenReturn("ou2");
-        Set<String> missingUids = uidHelper.getMissingOrganisationUnitUids(Lists.newArrayList(tei1));
-        assertThat(missingUids.size()).isEqualTo(0);
+    fun not_return_tei_org_unit_if_in_store() = runTest {
+        whenever(tei1.organisationUnit()).thenReturn("ou2")
+        val missingUids = uidHelper.getMissingOrganisationUnitUids(listOf(tei1))
+        Truth.assertThat(missingUids.size).isEqualTo(0)
     }
 
     @Test
-    public void return_2_tei_org_unit_if_not_in_store() {
-        when(tei1.organisationUnit()).thenReturn("ou3");
-        when(tei2.organisationUnit()).thenReturn("ou4");
-        Set<String> missingUids = uidHelper.getMissingOrganisationUnitUids(Lists.newArrayList(tei1, tei2));
-        assertThat(missingUids.size()).isEqualTo(2);
-        assertThat(missingUids.contains("ou3")).isTrue();
-        assertThat(missingUids.contains("ou4")).isTrue();
+    fun return_2_tei_org_unit_if_not_in_store() = runTest {
+        whenever(tei1.organisationUnit()).thenReturn("ou3")
+        whenever(tei2.organisationUnit()).thenReturn("ou4")
+        val missingUids = uidHelper.getMissingOrganisationUnitUids(listOf(tei1, tei2))
+        Truth.assertThat(missingUids.size).isEqualTo(2)
+        Truth.assertThat(missingUids.contains("ou3")).isTrue()
+        Truth.assertThat(missingUids.contains("ou4")).isTrue()
     }
 
     @Test
-    public void return_enrollment_org_unit_if_not_in_store() {
-        addToEnrollment("ou3");
-        Set<String> missingUids = uidHelper.getMissingOrganisationUnitUids(Lists.newArrayList(tei1));
-        assertThat(missingUids.size()).isEqualTo(1);
-        assertThat(missingUids.iterator().next()).isEqualTo("ou3");
+    fun return_enrollment_org_unit_if_not_in_store() = runTest {
+        addToEnrollment("ou3")
+        val missingUids = uidHelper.getMissingOrganisationUnitUids(listOf(tei1))
+        Truth.assertThat(missingUids.size).isEqualTo(1)
+        Truth.assertThat(missingUids.iterator().next()).isEqualTo("ou3")
     }
 
     @Test
-    public void not_return_enrollment_org_unit_if_in_store() {
-        addToEnrollment("ou2");
-        Set<String> missingUids = uidHelper.getMissingOrganisationUnitUids(Lists.newArrayList(tei1));
-        assertThat(missingUids.size()).isEqualTo(0);
+    fun not_return_enrollment_org_unit_if_in_store() = runTest {
+        addToEnrollment("ou2")
+        val missingUids = uidHelper.getMissingOrganisationUnitUids(listOf(tei1))
+        Truth.assertThat(missingUids.size).isEqualTo(0)
     }
 
     @Test
-    public void return_event_org_unit_if_not_in_store() {
-        addToEvent("ou3");
-        Set<String> missingUids = uidHelper.getMissingOrganisationUnitUids(Lists.newArrayList(tei1));
-        assertThat(missingUids.size()).isEqualTo(1);
-        assertThat(missingUids.iterator().next()).isEqualTo("ou3");
+    fun return_event_org_unit_if_not_in_store() = runTest {
+        addToEvent("ou3")
+        val missingUids = uidHelper.getMissingOrganisationUnitUids(listOf(tei1))
+        Truth.assertThat(missingUids.size).isEqualTo(1)
+        Truth.assertThat(missingUids.iterator().next()).isEqualTo("ou3")
     }
 
     @Test
-    public void not_return_event_org_unit_if_in_store() {
-        addToEvent("ou2");
-        Set<String> missingUids = uidHelper.getMissingOrganisationUnitUids(Lists.newArrayList(tei1));
-        assertThat(missingUids.size()).isEqualTo(0);
+    fun not_return_event_org_unit_if_in_store() = runTest {
+        addToEvent("ou2")
+        val missingUids = uidHelper.getMissingOrganisationUnitUids(listOf(tei1))
+        Truth.assertThat(missingUids.size).isEqualTo(0)
     }
 
-    private void addToEnrollment(String organisationUnitId) {
-        when(enrollment.organisationUnit()).thenReturn(organisationUnitId);
-        when(TrackedEntityInstanceInternalAccessor.accessEnrollments(tei1)).thenReturn(Lists.newArrayList(enrollment));
+    private fun addToEnrollment(organisationUnitId: String) {
+        whenever(enrollment.organisationUnit()).thenReturn(organisationUnitId)
+        whenever(TrackedEntityInstanceInternalAccessor.accessEnrollments(tei1)).thenReturn(listOf(enrollment))
     }
 
-    private void addToEvent(String organisationUnitId) {
-        when(event.organisationUnit()).thenReturn(organisationUnitId);
-        when(EnrollmentInternalAccessor.accessEvents(enrollment)).thenReturn(Lists.newArrayList(event));
-        when(TrackedEntityInstanceInternalAccessor.accessEnrollments(tei1)).thenReturn(Lists.newArrayList(enrollment));
+    private fun addToEvent(organisationUnitId: String) {
+        whenever(event.organisationUnit()).thenReturn(organisationUnitId)
+        whenever(EnrollmentInternalAccessor.accessEvents(enrollment)).thenReturn(listOf(event))
+        whenever(TrackedEntityInstanceInternalAccessor.accessEnrollments(tei1)).thenReturn(listOf(enrollment))
     }
 }

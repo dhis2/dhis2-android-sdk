@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.option
 
 import androidx.test.runner.AndroidJUnit4
 import com.google.common.truth.Truth
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
@@ -40,7 +39,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(AndroidJUnit4::class)
 class OptionCallShould : BaseMockIntegrationTestEmptyEnqueable() {
     private lateinit var optionCall: suspend () -> List<Option>
@@ -98,7 +96,7 @@ class OptionCallShould : BaseMockIntegrationTestEmptyEnqueable() {
 
     @Throws(Exception::class)
     private fun executeOptionSetCall() = runTest {
-        coroutineAPICallExecutor.wrapTransactionally<List<OptionSet>> {
+        coroutineAPICallExecutor.wrapTransactionally {
             var optionSets: List<OptionSet>? = null
             try {
                 val uids: MutableSet<String> = HashSet()
@@ -107,7 +105,10 @@ class OptionCallShould : BaseMockIntegrationTestEmptyEnqueable() {
                 optionSets = objects.d2DIComponent.optionSetCall.download(uids)
             } catch (ignored: Exception) {
             }
-            ForeignKeyCleanerImpl(databaseAdapter, ForeignKeyViolationStoreImpl(databaseAdapter)).cleanForeignKeyErrors()
+            ForeignKeyCleanerImpl(
+                databaseAdapter,
+                ForeignKeyViolationStoreImpl(databaseAdapter),
+            ).cleanForeignKeyErrors()
             optionSets!!
         }
     }

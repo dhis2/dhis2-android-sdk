@@ -78,7 +78,7 @@ class DataSetHandlerShould {
 
     @Before
     @Throws(Exception::class)
-    fun setUp() {
+    fun setUp() = runTest {
         dataSetHandler = DataSetHandler(
             dataSetStore,
             sectionHandler,

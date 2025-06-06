@@ -81,7 +81,7 @@ class TrackedEntityInstanceQueryDataSourceShould {
     private val initialLoad = 30
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         offlineObjects = listOf(
             TrackedEntityInstance.builder().uid("offline1").build(),
             TrackedEntityInstance.builder().uid("offline2").build(),
@@ -140,7 +140,7 @@ class TrackedEntityInstanceQueryDataSourceShould {
     }
 
     @Test
-    fun get_initial_offline_page() {
+    fun get_initial_offline_page() = runTest {
         val scope = singleEventFilterScope.toBuilder().mode(RepositoryMode.OFFLINE_ONLY).build()
         val dataSource = TrackedEntityInstanceQueryDataSource(getDataFetcher(scope))
         dataSource.loadInitial(

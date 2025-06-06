@@ -56,7 +56,7 @@ class ProgramStageSectionHandlerShould {
 
     @Before
     @Throws(Exception::class)
-    fun setUp() {
+    fun setUp() = runTest {
         programStageSectionHandler = ProgramStageSectionHandler(
             programStageSectionStore,
             programStageSectionProgramIndicatorLinkHandler, programStageSectionDataElementLinkHandler,

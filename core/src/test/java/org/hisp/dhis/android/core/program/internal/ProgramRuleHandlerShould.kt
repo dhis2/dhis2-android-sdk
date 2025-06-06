@@ -56,7 +56,7 @@ class ProgramRuleHandlerShould {
     private lateinit var programRuleHandler: IdentifiableHandlerImpl<ProgramRule>
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         programRuleHandler = ProgramRuleHandler(
             programRuleStore, programRuleActionHandler,
             programRuleCleaner, programRuleActionCleaner,

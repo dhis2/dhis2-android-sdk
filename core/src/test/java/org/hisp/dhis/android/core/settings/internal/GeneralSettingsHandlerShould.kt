@@ -47,7 +47,7 @@ class GeneralSettingsHandlerShould {
 
     @Before
     @Throws(Exception::class)
-    fun setUp() {
+    fun setUp() = runTest {
         generalSettingList = listOf(generalSettings)
         whenever(generalSettingStore.updateOrInsertWhere(any())) doReturn HandleAction.Insert
         generalSettingHandler = GeneralSettingHandler(generalSettingStore)

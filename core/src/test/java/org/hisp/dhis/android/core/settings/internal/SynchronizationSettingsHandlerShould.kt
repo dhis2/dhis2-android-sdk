@@ -49,7 +49,7 @@ class SynchronizationSettingsHandlerShould {
 
     @Before
     @Throws(Exception::class)
-    fun setUp() {
+    fun setUp() = runTest {
         synchronizationSettingsList = listOf(synchronizationSettings)
         whenever(synchronizationSettingStore.updateOrInsertWhere(any())) doReturn HandleAction.Insert
         synchronizationSettingsHandler = SynchronizationSettingHandler(

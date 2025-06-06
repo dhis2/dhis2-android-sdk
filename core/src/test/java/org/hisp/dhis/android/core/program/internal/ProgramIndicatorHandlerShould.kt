@@ -65,7 +65,7 @@ class ProgramIndicatorHandlerShould {
 
     @Before
     @Throws(Exception::class)
-    fun setUp() {
+    fun setUp() = runTest {
         programIndicatorHandler = ProgramIndicatorHandler(
             programIndicatorStore,
             programIndicatorLegendSetLinkHandler,
@@ -84,6 +84,7 @@ class ProgramIndicatorHandlerShould {
         whenever(analyticsPeriodBoundaryBuilder.programIndicator(any())).thenReturn(analyticsPeriodBoundaryBuilder)
         whenever(analyticsPeriodBoundaryBuilder.build()).thenReturn(analyticsPeriodBoundary)
         whenever(programIndicatorStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
+        whenever(programIndicatorStore.selectUids()).thenReturn(listOf("test_program_indicator_uid"))
     }
 
     @Test

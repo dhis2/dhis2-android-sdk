@@ -52,7 +52,7 @@ class TrackerVisualizationHandlerShould {
     private lateinit var trackerVisualizationHandler: TrackerVisualizationHandler
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         trackerVisualizationHandler = TrackerVisualizationHandler(
             store,
             collectionCleaner,

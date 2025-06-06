@@ -106,8 +106,10 @@ class ForeignKeyCleanerShould : BaseMockIntegrationTestEmptyDispatcher() {
             ProgramRuleActionStoreImpl(d2.databaseAdapter()).insert(programRuleAction)
             assertThat(d2.programModule().programRules().blockingCount()).isEqualTo(1)
             assertThat(d2.programModule().programRuleActions().blockingCount()).isEqualTo(1)
-            val foreignKeyCleaner = ForeignKeyCleanerImpl(d2.databaseAdapter(),
-                ForeignKeyViolationStoreImpl(databaseAdapter))
+            val foreignKeyCleaner = ForeignKeyCleanerImpl(
+                d2.databaseAdapter(),
+                ForeignKeyViolationStoreImpl(databaseAdapter),
+            )
             val rowsAffected = foreignKeyCleaner.cleanForeignKeyErrors()
             assertThat(rowsAffected).isEqualTo(1)
             assertThat(d2.programModule().programRules().blockingCount()).isEqualTo(0)

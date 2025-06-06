@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 internal class InvalidTrackedEntityTypeConflictShould : BaseConflictShould() {
@@ -45,7 +46,7 @@ internal class InvalidTrackedEntityTypeConflictShould : BaseConflictShould() {
     }
 
     @Test
-    fun `Should create display description`() {
+    fun `Should create display description`() = runTest {
         val displayDescription = InvalidTrackedEntityTypeConflict.getDisplayDescription(importConflict, context)
         assert(displayDescription == "Your entity $relatedTeiUid has an invalid type of entity")
     }

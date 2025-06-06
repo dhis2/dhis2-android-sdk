@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 internal class FileResourceReferenceNotFoundConflictShould : BaseConflictShould() {
@@ -45,7 +46,7 @@ internal class FileResourceReferenceNotFoundConflictShould : BaseConflictShould(
     }
 
     @Test
-    fun `Should create display description`() {
+    fun `Should create display description`() = runTest {
         val displayDescription =
             FileResourceReferenceNotFoundConflict.getDisplayDescription(importConflict, context)
         assert(displayDescription == "The file reference $fileResourceUid could not be found")

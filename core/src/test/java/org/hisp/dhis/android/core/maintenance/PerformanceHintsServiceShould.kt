@@ -25,139 +25,120 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.maintenance
 
-package org.hisp.dhis.android.core.maintenance;
+import com.google.common.collect.Lists
+import com.google.common.truth.Truth.*
+import io.ktor.utils.io.errors.IOException
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.program.Program
+import org.hisp.dhis.android.core.program.ProgramRule
+import org.junit.Before
+import org.junit.Test
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
-import com.google.common.collect.Lists;
+class PerformanceHintsServiceShould {
+    private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit> = mock()
+    private val programStore: IdentifiableObjectStore<Program> = mock()
+    private val programRuleStore: IdentifiableObjectStore<ProgramRule> = mock()
+    private val programRule1: ProgramRule = mock()
+    private val programRule2: ProgramRule = mock()
+    private val programRule3: ProgramRule = mock()
+    private val programRule4: ProgramRule = mock()
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.program.ProgramRule;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+    private lateinit var program1: Program
+    private lateinit var program2: Program
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.when;
-
-public class PerformanceHintsServiceShould {
-
-    @Mock
-    private IdentifiableObjectStore<OrganisationUnit> organisationUnitStore;
-
-    @Mock
-    private IdentifiableObjectStore<Program> programStore;
-
-    @Mock
-    private IdentifiableObjectStore<ProgramRule> programRuleStore;
-
-    private Program program1;
-
-    private Program program2;
-
-    @Mock
-    private ProgramRule programRule1;
-
-    @Mock
-    private ProgramRule programRule2;
-
-    @Mock
-    private ProgramRule programRule3;
-
-    @Mock
-    private ProgramRule programRule4;
-
-
-    private PerformanceHintsService performanceHintsService;
+    private lateinit var performanceHintsService: PerformanceHintsService
 
     @Before
-    public void setUp() throws IOException {
-        MockitoAnnotations.initMocks(this);
+    @Throws(IOException::class)
+    fun setUp() = runTest {
+        program1 = Program.builder().uid("p1").build()
+        program2 = Program.builder().uid("p2").build()
 
-        program1 = Program.builder().uid("p1").build();
-        program2 = Program.builder().uid("p2").build();
+        whenever(programRule1.program()).thenReturn(ObjectWithUid.create(program1.uid()))
+        whenever(programRule2.program()).thenReturn(ObjectWithUid.create(program2.uid()))
+        whenever(programRule3.program()).thenReturn(ObjectWithUid.create(program2.uid()))
+        whenever(programRule4.program()).thenReturn(ObjectWithUid.create(program2.uid()))
 
-        when(programRule1.program()).thenReturn(ObjectWithUid.create(program1.uid()));
-        when(programRule2.program()).thenReturn(ObjectWithUid.create(program2.uid()));
-        when(programRule3.program()).thenReturn(ObjectWithUid.create(program2.uid()));
-        when(programRule4.program()).thenReturn(ObjectWithUid.create(program2.uid()));
+        whenever(organisationUnitStore.count()).thenReturn(0)
+        whenever(programStore.selectByUid("p1")).thenReturn(program1)
+        whenever(programStore.selectByUid("p2")).thenReturn(program2)
+        whenever(programRuleStore.selectAll()).thenReturn(emptyList())
 
-        when(organisationUnitStore.count()).thenReturn(0);
-        when(programStore.selectByUid("p1")).thenReturn(program1);
-        when(programStore.selectByUid("p2")).thenReturn(program2);
-        when(programRuleStore.selectAll()).thenReturn(Collections.emptyList());
-
-        int ORGANISATION_UNIT_THRESHOLD = 3;
-        int PROGRAM_RULES_PER_PROGRAM_THRESHOLD = 2;
-
-        performanceHintsService = new PerformanceHintsService(organisationUnitStore, programStore, programRuleStore,
-                ORGANISATION_UNIT_THRESHOLD, PROGRAM_RULES_PER_PROGRAM_THRESHOLD);
-    }
-
-
-    @Test
-    public void no_organisation_unit_vulnerable_when_no_organisation_units() {
-        assertThat(performanceHintsService.areThereExcessiveOrganisationUnits()).isFalse();
-        assertThat(performanceHintsService.areThereVulnerabilities()).isFalse();
+        performanceHintsService = PerformanceHintsService(
+            organisationUnitStore, programStore, programRuleStore,
+            ORGANISATION_UNIT_THRESHOLD, PROGRAM_RULES_PER_PROGRAM_THRESHOLD,
+        )
     }
 
     @Test
-    public void no_organisation_unit_vulnerable_when_organisation_units_under_threshold() {
-        when(organisationUnitStore.count()).thenReturn(1);
-        assertThat(performanceHintsService.areThereExcessiveOrganisationUnits()).isFalse();
-        assertThat(performanceHintsService.areThereVulnerabilities()).isFalse();
+    fun no_organisation_unit_vulnerable_when_no_organisation_units() {
+        assertThat(performanceHintsService.areThereExcessiveOrganisationUnits()).isFalse()
+        assertThat(performanceHintsService.areThereVulnerabilities()).isFalse()
     }
 
     @Test
-    public void no_organisation_unit_vulnerable_when_organisation_units_equal_to_threshold() {
-        when(organisationUnitStore.count()).thenReturn(3);
-        assertThat(performanceHintsService.areThereExcessiveOrganisationUnits()).isFalse();
-        assertThat(performanceHintsService.areThereVulnerabilities()).isFalse();
+    fun no_organisation_unit_vulnerable_when_organisation_units_under_threshold() = runTest {
+        whenever(organisationUnitStore.count()).thenReturn(1)
+        assertThat(performanceHintsService.areThereExcessiveOrganisationUnits()).isFalse()
+        assertThat(performanceHintsService.areThereVulnerabilities()).isFalse()
     }
 
     @Test
-    public void no_organisation_unit_vulnerable_when_organisation_units_over_threshold() {
-        when(organisationUnitStore.count()).thenReturn(4);
-        assertThat(performanceHintsService.areThereExcessiveOrganisationUnits()).isTrue();
-        assertThat(performanceHintsService.areThereVulnerabilities()).isTrue();
+    fun no_organisation_unit_vulnerable_when_organisation_units_equal_to_threshold() = runTest {
+        whenever(organisationUnitStore.count()).thenReturn(3)
+        assertThat(performanceHintsService.areThereExcessiveOrganisationUnits()).isFalse()
+        assertThat(performanceHintsService.areThereVulnerabilities()).isFalse()
     }
 
     @Test
-    public void no_program_rule_vulnerable_when_no_programs_nor_program_rules() {
-        assertThat(performanceHintsService.areThereProgramsWithExcessiveProgramRules()).isFalse();
-        assertThat(performanceHintsService.getProgramsWithExcessiveProgramRules().size()).isEqualTo(0);
-        assertThat(performanceHintsService.areThereVulnerabilities()).isFalse();
+    fun no_organisation_unit_vulnerable_when_organisation_units_over_threshold() = runTest {
+        whenever(organisationUnitStore.count()).thenReturn(4)
+        assertThat(performanceHintsService.areThereExcessiveOrganisationUnits()).isTrue()
+        assertThat(performanceHintsService.areThereVulnerabilities()).isTrue()
     }
 
     @Test
-    public void no_program_rule_vulnerable_when_one_program_under_threshold() {
-        when(programStore.selectAll()).thenReturn(Lists.newArrayList(program1));
-        when(programRuleStore.selectAll()).thenReturn(Lists.newArrayList(programRule1));
-
-        assertThat(performanceHintsService.areThereProgramsWithExcessiveProgramRules()).isFalse();
-        assertThat(performanceHintsService.getProgramsWithExcessiveProgramRules().size()).isEqualTo(0);
-        assertThat(performanceHintsService.areThereVulnerabilities()).isFalse();
+    fun no_program_rule_vulnerable_when_no_programs_nor_program_rules() {
+        assertThat(performanceHintsService.areThereProgramsWithExcessiveProgramRules()).isFalse()
+        assertThat(performanceHintsService.programsWithExcessiveProgramRules.size).isEqualTo(0)
+        assertThat(performanceHintsService.areThereVulnerabilities()).isFalse()
     }
 
     @Test
-    public void is_program_rule_vulnerable_when_one_program_over_threshold() {
-        when(programStore.selectAll()).thenReturn(Lists.newArrayList(program1, program2));
-        when(programRuleStore.selectAll()).thenReturn(Lists.newArrayList(programRule1, programRule2, programRule3, programRule4));
+    fun no_program_rule_vulnerable_when_one_program_under_threshold() = runTest {
+        whenever(programStore.selectAll()).thenReturn(Lists.newArrayList(program1))
+        whenever(programRuleStore.selectAll()).thenReturn(Lists.newArrayList(programRule1))
 
-        assertThat(performanceHintsService.areThereProgramsWithExcessiveProgramRules()).isTrue();
+        assertThat(performanceHintsService.areThereProgramsWithExcessiveProgramRules()).isFalse()
+        assertThat(performanceHintsService.programsWithExcessiveProgramRules.size).isEqualTo(0)
+        assertThat(performanceHintsService.areThereVulnerabilities()).isFalse()
+    }
 
-        List<Program> programs = performanceHintsService.getProgramsWithExcessiveProgramRules();
+    @Test
+    fun is_program_rule_vulnerable_when_one_program_over_threshold() = runTest {
+        whenever(programStore.selectAll()).thenReturn(listOf(program1, program2))
+        whenever(programRuleStore.selectAll())
+            .thenReturn(listOf(programRule1, programRule2, programRule3, programRule4))
 
-        assertThat(programs.size()).isEqualTo(1);
-        assertThat(programs.get(0).uid()).isEqualTo("p2");
+        assertThat(performanceHintsService.areThereProgramsWithExcessiveProgramRules()).isTrue()
 
-        assertThat(performanceHintsService.areThereVulnerabilities()).isTrue();
+        val programs = performanceHintsService.programsWithExcessiveProgramRules
+
+        assertThat(programs.size).isEqualTo(1)
+        assertThat(programs[0]?.uid()).isEqualTo("p2")
+
+        assertThat(performanceHintsService.areThereVulnerabilities()).isTrue()
+    }
+
+    companion object {
+        private const val ORGANISATION_UNIT_THRESHOLD = 3
+        private const val PROGRAM_RULES_PER_PROGRAM_THRESHOLD = 2
     }
 }

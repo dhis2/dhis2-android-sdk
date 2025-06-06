@@ -43,7 +43,7 @@ class PerformanceHintsService internal constructor(
     private val programStore: IdentifiableObjectStore<Program>,
     private val programRuleStore: IdentifiableObjectStore<ProgramRule>,
     private val organisationUnitThreshold: Int,
-    private val programRulesPerProgramThreshold: Int
+    private val programRulesPerProgramThreshold: Int,
 ) {
     fun areThereExcessiveOrganisationUnits(): Boolean {
         return runBlocking { organisationUnitStore.count() > organisationUnitThreshold }
@@ -81,14 +81,14 @@ class PerformanceHintsService internal constructor(
         operator fun invoke(
             databaseAdapter: DatabaseAdapter,
             organisationUnitThreshold: Int,
-            programRulesPerProgramThreshold: Int
+            programRulesPerProgramThreshold: Int,
         ): PerformanceHintsService {
             return PerformanceHintsService(
                 OrganisationUnitStoreImpl(databaseAdapter),
                 ProgramStoreImpl(databaseAdapter),
                 ProgramRuleStoreImpl(databaseAdapter),
                 organisationUnitThreshold,
-                programRulesPerProgramThreshold
+                programRulesPerProgramThreshold,
             )
         }
     }

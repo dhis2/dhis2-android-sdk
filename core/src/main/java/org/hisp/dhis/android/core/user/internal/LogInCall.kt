@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
-import kotlinx.coroutines.runBlocking
 import net.openid.appauth.AuthState
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper

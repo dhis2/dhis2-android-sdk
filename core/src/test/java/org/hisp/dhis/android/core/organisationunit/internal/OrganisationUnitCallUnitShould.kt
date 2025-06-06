@@ -69,7 +69,7 @@ class OrganisationUnitCallUnitShould {
     @Suppress("LongMethod")
     @Before
     @Throws(IOException::class)
-    fun setUp() {
+    fun setUp() = runTest {
         lastUpdated = Date()
 
         val orgUnitUid = "orgUnitUid1"
@@ -108,6 +108,8 @@ class OrganisationUnitCallUnitShould {
         whenever(user.email()).doReturn("user_email")
         whenever(user.phoneNumber()).doReturn("user_phone_number")
         whenever(user.nationality()).doReturn("user_nationality")
+        whenever(userOrganisationUnitLinkStore.queryOrganisationUnitUidsByScope(any())).doReturn(listOf(orgUnitUid))
+        whenever(organisationUnitStore.selectByUids(any())).doReturn(listOf(organisationUnit))
 
         organisationUnitCall = {
             OrganisationUnitCall(

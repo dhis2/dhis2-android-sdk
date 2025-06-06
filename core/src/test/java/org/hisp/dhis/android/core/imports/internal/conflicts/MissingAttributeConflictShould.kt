@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.whenever
@@ -47,7 +48,7 @@ internal class MissingAttributeConflictShould : BaseConflictShould() {
     }
 
     @Test
-    fun `Should create display description`() {
+    fun `Should create display description`() = runTest {
         whenever(attribute.displayFormName()) doReturn "Attribute form name"
 
         val displayDescription = MissingAttributeConflict.getDisplayDescription(importConflict, context)

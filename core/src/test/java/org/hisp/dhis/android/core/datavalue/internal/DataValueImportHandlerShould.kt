@@ -88,6 +88,7 @@ class DataValueImportHandlerShould {
     fun successfullyImportedDataValues_shouldBeMarkedAsSynced() = runTest {
         whenever(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.SUCCESS)
         whenever(dataValueStore.isDataValueBeingUpload(any<DataValue>())).thenReturn(true)
+        whenever(dataValueStore.isDeleted(any<DataValue>())).thenReturn(false)
 
         dataValueImportHandler.handleImportSummary(dataValueSet, dataValueImportSummary)
 

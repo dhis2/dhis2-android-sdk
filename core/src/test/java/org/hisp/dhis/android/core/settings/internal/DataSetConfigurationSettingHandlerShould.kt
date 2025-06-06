@@ -50,7 +50,7 @@ class DataSetConfigurationSettingHandlerShould {
 
     @Before
     @Throws(Exception::class)
-    fun setUp() {
+    fun setUp() = runTest {
         dataSetConfigurationSettingList = listOf(dataSetConfigurationSetting)
         whenever(dataSetConfigurationSettingStore.updateOrInsertWhere(any())) doReturn HandleAction.Insert
         dataSetConfigurationSettingHandler = DataSetConfigurationSettingHandler(dataSetConfigurationSettingStore)

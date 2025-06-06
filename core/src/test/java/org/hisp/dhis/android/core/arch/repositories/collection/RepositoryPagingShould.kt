@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.arch.repositories.collection
 
 import android.content.ContentValues
 import androidx.paging.ItemKeyedDataSource
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
@@ -67,12 +68,12 @@ class RepositoryPagingShould {
     private val initialCallback: ItemKeyedDataSource.LoadInitialCallback<CategoryOption> = mock()
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         whenever(store.selectWhere(any(), any(), any())).doReturn(objects)
     }
 
     @Test
-    fun get_initial_page_objects_without_order_by() {
+    fun get_initial_page_objects_without_order_by() = runTest {
         val dataSource: RepositoryDataSource<CategoryOption> =
             RepositoryDataSource(store, databaseAdapter, emptyScope, childrenAppenders)
 
@@ -82,7 +83,7 @@ class RepositoryPagingShould {
     }
 
     @Test
-    fun get_initial_page_objects_with_order_by() {
+    fun get_initial_page_objects_with_order_by() = runTest {
         val updatedScope = withOrderBy(
             emptyScope,
             RepositoryScopeOrderByItem.builder()
@@ -99,7 +100,7 @@ class RepositoryPagingShould {
     }
 
     @Test
-    fun get_initial_page_objects_with_forced_order_by_paging_key_asc() {
+    fun get_initial_page_objects_with_forced_order_by_paging_key_asc() = runTest {
         val updatedScope = withOrderBy(
             emptyScope,
             RepositoryScopeOrderByItem.builder()
@@ -116,7 +117,7 @@ class RepositoryPagingShould {
     }
 
     @Test
-    fun get_initial_page_objects_with_forced_order_by_paging_key_desc() {
+    fun get_initial_page_objects_with_forced_order_by_paging_key_desc() = runTest {
         val updatedScope = withOrderBy(
             emptyScope,
             RepositoryScopeOrderByItem.builder()
@@ -133,7 +134,7 @@ class RepositoryPagingShould {
     }
 
     @Test
-    fun get_initial_page_objects_with_two_order_by() {
+    fun get_initial_page_objects_with_two_order_by() = runTest {
         val updatedScope = withOrderBy(
             emptyScope,
             RepositoryScopeOrderByItem.builder()
@@ -157,7 +158,7 @@ class RepositoryPagingShould {
     }
 
     @Test
-    fun get_after_page_objects_with_order_by_and_filter() {
+    fun get_after_page_objects_with_order_by_and_filter() = runTest {
         whenever(key.toContentValues()).doReturn(keyContentValues)
         whenever(keyContentValues.getAsString("_id")).doReturn("5")
         whenever(keyContentValues.getAsString("code")).doReturn("key-code")

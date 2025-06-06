@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.parser.internal.expression
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
 import org.hisp.dhis.android.core.constant.Constant
@@ -76,7 +77,7 @@ class ExpressionServiceShould {
     private lateinit var service: ExpressionService
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         service = ExpressionService(
             dataElementStore,
             categoryOptionComboStore,

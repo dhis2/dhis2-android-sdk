@@ -82,7 +82,7 @@ class TrackedEntityInstanceHandlerShould {
     private lateinit var trackedEntityInstanceHandler: TrackedEntityInstanceHandler
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         whenever(trackedEntityInstance.uid()).doReturn(TEI_UID)
         whenever(trackedEntityInstance.trackedEntityType()).doReturn(TET_UID)
         whenever(TrackedEntityInstanceInternalAccessor.accessEnrollments(trackedEntityInstance))
@@ -99,6 +99,7 @@ class TrackedEntityInstanceHandlerShould {
         whenever(relationship.to()).thenReturn(RelationshipHelper.teiItem(RELATIVE_UID))
         whenever(relative.uid()).thenReturn(RELATIVE_UID)
         whenever(trackedEntityInstanceStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
+        whenever(trackedEntityInstanceStore.selectUidsWhere(any())).thenReturn(listOf(TEI_UID))
 
         trackedEntityInstanceHandler = TrackedEntityInstanceHandler(
             relationshipVersionManager,

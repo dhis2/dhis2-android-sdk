@@ -61,7 +61,7 @@ class UserHandlerShould {
     private lateinit var userHandler: UserHandler
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         userHandler = UserHandler(
             userStore, userRoleHandler, userRoleCollectionCleaner, userGroupHandler,
             userGroupCollectionCleaner,

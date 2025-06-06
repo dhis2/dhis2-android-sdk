@@ -52,7 +52,7 @@ class AnalyticsTeiSettingHandlerShould {
 
     @Before
     @Throws(Exception::class)
-    fun setUp() {
+    fun setUp() = runTest {
         whenever(analyticsTeiSettingStore.updateOrInsertWhere(any())) doReturn HandleAction.Insert
         whenever(analyticsTeiSetting.uid()) doReturn "tei_setting_uid"
 

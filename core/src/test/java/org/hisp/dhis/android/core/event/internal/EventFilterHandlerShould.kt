@@ -56,7 +56,7 @@ class EventFilterHandlerShould {
     private lateinit var eventFilterHandler: EventFilterHandler
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         eventFilterHandler = EventFilterHandler(
             eventFilterStore,
             eventDataFilterHandler,

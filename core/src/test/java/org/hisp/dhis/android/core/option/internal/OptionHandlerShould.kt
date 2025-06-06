@@ -53,7 +53,7 @@ class OptionHandlerShould {
 
     @Before
     @Throws(Exception::class)
-    fun setUp() {
+    fun setUp() = runTest {
         optionHandler = OptionHandler(optionStore, optionCleaner)
         whenever(option.uid()).thenReturn("test_option_uid")
         options = listOf(option)

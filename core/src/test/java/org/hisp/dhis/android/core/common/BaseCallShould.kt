@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.common
 
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpException
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
@@ -53,7 +54,7 @@ abstract class BaseCallShould {
     protected lateinit var errorResponse: D2HttpException
 
     @Throws(Exception::class)
-    open fun setUp() {
+    open fun setUp() = runTest {
         whenever(genericCallData.databaseAdapter).thenReturn(databaseAdapter)
         whenever(
             genericCallData.resourceHandler,

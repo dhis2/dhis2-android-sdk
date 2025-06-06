@@ -76,7 +76,7 @@ class TrackedEntityInstanceImportHandlerShould {
     private lateinit var trackedEntityInstanceImportHandler: TrackedEntityInstanceImportHandler
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         trackedEntityInstanceImportHandler = TrackedEntityInstanceImportHandler(
             trackedEntityInstanceStore, enrollmentImportHandler, trackerImportConflictStore,
             trackerImportConflictParser, dataStatePropagator, jobReportTrackedEntityHandler,

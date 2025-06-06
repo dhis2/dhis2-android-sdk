@@ -57,7 +57,7 @@ class LegendSetHandlerShould {
 
     @Before
     @Throws(Exception::class)
-    fun setUp() {
+    fun setUp() = runTest {
         legendSetHandler = LegendSetHandler(legendSetStore, legendHandler, legendCleaner)
         legends = mutableListOf(legend)
         whenever(legendSet.legends()).thenReturn(legends)

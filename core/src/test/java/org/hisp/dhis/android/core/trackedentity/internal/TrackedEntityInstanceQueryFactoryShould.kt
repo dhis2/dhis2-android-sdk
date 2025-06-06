@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStore
@@ -75,7 +76,7 @@ class TrackedEntityInstanceQueryFactoryShould {
 
     @Before
     @Throws(Exception::class)
-    fun setUp() {
+    fun setUp() = runTest {
         whenever(userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids()).thenReturn(rootOrgUnits)
         whenever(userOrganisationUnitLinkStore.queryOrganisationUnitUidsByScope(any()))
             .thenReturn(captureOrgUnits)
@@ -99,7 +100,7 @@ class TrackedEntityInstanceQueryFactoryShould {
     }
 
     @Test
-    fun create_a_single_bundle_when_global() {
+    fun create_a_single_bundle_when_global() = runTest {
         val params = ProgramDataDownloadParams.builder().build()
         val queries = queryFactory.getQueries(params)
         assertThat(queries.size).isEqualTo(1)
@@ -110,7 +111,7 @@ class TrackedEntityInstanceQueryFactoryShould {
     }
 
     @Test
-    fun get_enrollment_date_value_if_defined() {
+    fun get_enrollment_date_value_if_defined() = runTest {
         val params = ProgramDataDownloadParams.builder().build()
 
         val settings = ProgramSetting.builder().uid(p1).enrollmentDateDownload(DownloadPeriod.LAST_3_MONTHS).build()
@@ -127,7 +128,7 @@ class TrackedEntityInstanceQueryFactoryShould {
     }
 
     @Test
-    fun single_query_if_program_provided_by_user() {
+    fun single_query_if_program_provided_by_user() = runTest {
         val params = ProgramDataDownloadParams.builder().limit(5000).program(p1).build()
         val queries = queryFactory.getQueries(params)
         assertThat(queries.size).isEqualTo(1)
@@ -138,7 +139,7 @@ class TrackedEntityInstanceQueryFactoryShould {
     }
 
     @Test
-    fun apply_user_defined_limit_only_to_global_if_no_program() {
+    fun apply_user_defined_limit_only_to_global_if_no_program() = runTest {
         val params = ProgramDataDownloadParams.builder().limit(5000).build()
 
         val settings = ProgramSetting.builder().uid(p1).teiDownload(100).build()
@@ -157,7 +158,7 @@ class TrackedEntityInstanceQueryFactoryShould {
     }
 
     @Test
-    fun single_query_if_tei_provided_by_user() {
+    fun single_query_if_tei_provided_by_user() = runTest {
         val params = ProgramDataDownloadParams.builder().uids(listOf("tei_uid")).build()
 
         val queries = queryFactory.getQueries(params)

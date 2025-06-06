@@ -49,7 +49,7 @@ class MapLayerHandlerShould {
     private var mapLayers = listOf(mapLayer)
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         mapLayerHandler = MapLayerHandler(store, providerHandler)
 
         whenever(mapLayer.uid()).doReturn("mapLayerId")

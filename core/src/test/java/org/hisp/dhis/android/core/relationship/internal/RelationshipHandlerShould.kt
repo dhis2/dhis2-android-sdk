@@ -65,7 +65,7 @@ class RelationshipHandlerShould {
     private lateinit var relationshipHandler: RelationshipHandler
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         relationshipHandler = RelationshipHandler(
             relationshipStore,
             relationshipItemStore,

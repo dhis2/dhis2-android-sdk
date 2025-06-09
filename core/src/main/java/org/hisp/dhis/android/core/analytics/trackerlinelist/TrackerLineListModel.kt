@@ -138,6 +138,7 @@ sealed class DataFilter {
     data class Like(val value: String, val ignoreCase: Boolean = true) : DataFilter()
     data class NotLike(val value: String, val ignoreCase: Boolean = true) : DataFilter()
     data class In(val values: List<String>) : DataFilter()
+    data class IsNull(val value: Boolean) : DataFilter()
 }
 
 internal object Label {

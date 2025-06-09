@@ -51,7 +51,7 @@ class TrackerVisualizationMapperShould {
     @Test
     fun should_map_data_filters() {
         val item = TrackerVisualizationDimension.builder()
-            .filter("GT:6:ILIKE:ar:NE:4")
+            .filter("GT:6:ILIKE:ar:NE:4:NE:NV")
             .build()
 
         val dataFilters = mapper.mapDataFilters(item)
@@ -60,6 +60,7 @@ class TrackerVisualizationMapperShould {
             DataFilter.GreaterThan("6"),
             DataFilter.Like("ar", ignoreCase = true),
             DataFilter.NotEqualTo("4", ignoreCase = false),
+            DataFilter.IsNull(false),
         )
     }
 

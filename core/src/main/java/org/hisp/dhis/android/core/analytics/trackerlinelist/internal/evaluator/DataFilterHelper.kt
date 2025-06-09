@@ -51,6 +51,7 @@ internal object DataFilterHelper {
             is DataFilter.Like -> helper.like(filter.value, filter.ignoreCase)
             is DataFilter.NotLike -> helper.notLike(filter.value, filter.ignoreCase)
             is DataFilter.In -> helper.inValues(filter.values)
+            is DataFilter.IsNull -> helper.isNull(filter.value)
         }
     }
 }

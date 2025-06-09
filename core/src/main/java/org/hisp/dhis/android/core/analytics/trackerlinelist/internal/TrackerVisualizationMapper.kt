@@ -221,7 +221,15 @@ internal class TrackerVisualizationMapper(
                 val value = filterPair.getOrNull(1)
                 if (operator != null && value != null) {
                     when (operator) {
-                        "EQ" -> DataFilter.EqualTo(value, ignoreCase = false)
+                        "EQ" -> if (value == "NV") {
+                            DataFilter.IsNull(true)
+                        } else {
+                            DataFilter.EqualTo(
+                                value,
+                                ignoreCase = false,
+                            )
+                        }
+
                         "!EQ" -> DataFilter.NotEqualTo(value, ignoreCase = false)
                         "IEQ" -> DataFilter.EqualTo(value, ignoreCase = true)
                         "!IEQ" -> DataFilter.NotEqualTo(value, ignoreCase = true)
@@ -229,7 +237,15 @@ internal class TrackerVisualizationMapper(
                         "GE" -> DataFilter.GreaterThanOrEqualTo(value)
                         "LT" -> DataFilter.LowerThan(value)
                         "LE" -> DataFilter.LowerThanOrEqualTo(value)
-                        "NE" -> DataFilter.NotEqualTo(value)
+                        "NE" -> if (value == "NV") {
+                            DataFilter.IsNull(false)
+                        } else {
+                            DataFilter.NotEqualTo(
+                                value,
+                                ignoreCase = false,
+                            )
+                        }
+
                         "LIKE" -> DataFilter.Like(value, ignoreCase = false)
                         "!LIKE" -> DataFilter.NotLike(value, ignoreCase = false)
                         "ILIKE" -> DataFilter.Like(value, ignoreCase = true)

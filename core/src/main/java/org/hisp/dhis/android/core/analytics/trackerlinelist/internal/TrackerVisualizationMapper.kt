@@ -211,52 +211,33 @@ internal class TrackerVisualizationMapper(
 
     @Suppress("ComplexMethod")
     internal fun mapDataFilters(item: TrackerVisualizationDimension): List<DataFilter> {
-        return if (item.filter().isNullOrEmpty()) {
+        val filter = item.filter().orEmpty()
+        return if (filter.isEmpty()) {
             emptyList()
         } else {
-            val filterPairs = item.filter()!!.split(":").chunked(2)
+            filter.split(":")
+                .chunked(2)
+                .mapNotNull { (op, value) -> buildFilter(op, value) }
+        }
+    }
 
-            filterPairs.mapNotNull { filterPair ->
-                val operator = filterPair.getOrNull(0)
-                val value = filterPair.getOrNull(1)
-                if (operator != null && value != null) {
-                    when (operator) {
-                        "EQ" -> if (value == "NV") {
-                            DataFilter.IsNull(true)
-                        } else {
-                            DataFilter.EqualTo(
-                                value,
-                                ignoreCase = false,
-                            )
-                        }
-
-                        "!EQ" -> DataFilter.NotEqualTo(value, ignoreCase = false)
-                        "IEQ" -> DataFilter.EqualTo(value, ignoreCase = true)
-                        "!IEQ" -> DataFilter.NotEqualTo(value, ignoreCase = true)
-                        "GT" -> DataFilter.GreaterThan(value)
-                        "GE" -> DataFilter.GreaterThanOrEqualTo(value)
-                        "LT" -> DataFilter.LowerThan(value)
-                        "LE" -> DataFilter.LowerThanOrEqualTo(value)
-                        "NE" -> if (value == "NV") {
-                            DataFilter.IsNull(false)
-                        } else {
-                            DataFilter.NotEqualTo(
-                                value,
-                                ignoreCase = false,
-                            )
-                        }
-
-                        "LIKE" -> DataFilter.Like(value, ignoreCase = false)
-                        "!LIKE" -> DataFilter.NotLike(value, ignoreCase = false)
-                        "ILIKE" -> DataFilter.Like(value, ignoreCase = true)
-                        "!ILIKE" -> DataFilter.NotLike(value, ignoreCase = true)
-                        "IN" -> DataFilter.In(value.split(";"))
-                        else -> null
-                    }
-                } else {
-                    null
-                }
-            }
+    private fun buildFilter(operator: String, value: String): DataFilter? {
+        return when (operator) {
+            "EQ" -> if (value == "NV") DataFilter.IsNull(true) else DataFilter.EqualTo(value)
+            "!EQ" -> DataFilter.NotEqualTo(value)
+            "IEQ" -> DataFilter.EqualTo(value, ignoreCase = true)
+            "!IEQ" -> DataFilter.NotEqualTo(value, ignoreCase = true)
+            "GT" -> DataFilter.GreaterThan(value)
+            "GE" -> DataFilter.GreaterThanOrEqualTo(value)
+            "LT" -> DataFilter.LowerThan(value)
+            "LE" -> DataFilter.LowerThanOrEqualTo(value)
+            "NE" -> if (value == "NV") DataFilter.IsNull(false) else DataFilter.NotEqualTo(value)
+            "LIKE" -> DataFilter.Like(value)
+            "!LIKE" -> DataFilter.NotLike(value)
+            "ILIKE" -> DataFilter.Like(value, ignoreCase = true)
+            "!ILIKE" -> DataFilter.NotLike(value, ignoreCase = true)
+            "IN" -> DataFilter.In(value.split(";"))
+            else -> null
         }
     }
 

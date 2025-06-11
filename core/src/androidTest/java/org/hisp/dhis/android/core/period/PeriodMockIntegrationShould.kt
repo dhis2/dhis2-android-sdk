@@ -41,7 +41,8 @@ class PeriodMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Throws(ParseException::class)
     fun get_period_passing_period_type_and_a_date() {
         val period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodTypeAndDate(
-            PeriodType.BiWeekly, BaseIdentifiableObject.DATE_FORMAT.parse("2019-07-08T12:24:25.319")
+            PeriodType.BiWeekly,
+            BaseIdentifiableObject.DATE_FORMAT.parse("2019-07-08T12:24:25.319"),
         )
         Truth.assertThat(period.periodId()).isEqualTo("2019BiW14")
     }
@@ -57,7 +58,8 @@ class PeriodMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
         Truth.assertThat(periodInDb).isNull()
 
         val period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodTypeAndDate(
-            PeriodType.Monthly, date
+            PeriodType.Monthly,
+            date,
         )
         Truth.assertThat(period).isNotNull()
         Truth.assertThat(period.periodId()).isEqualTo("201012")

@@ -89,19 +89,19 @@ internal class MetadataIdsStore(
             }
             val metadataIds =
                 buildFor(it, SMSConsts.MetadataType.USER) +
-                        buildFor(it, SMSConsts.MetadataType.TRACKED_ENTITY_TYPE) +
-                        buildFor(it, SMSConsts.MetadataType.TRACKED_ENTITY_ATTRIBUTE) +
-                        buildFor(it, SMSConsts.MetadataType.PROGRAM) +
-                        buildFor(it, SMSConsts.MetadataType.ORGANISATION_UNIT) +
-                        buildFor(it, SMSConsts.MetadataType.DATA_ELEMENT) +
-                        buildFor(it, SMSConsts.MetadataType.CATEGORY_OPTION_COMBO) +
-                        buildFor(it, SMSConsts.MetadataType.DATASET) +
-                        buildFor(it, SMSConsts.MetadataType.PROGRAM_STAGE) +
-                        buildFor(it, SMSConsts.MetadataType.EVENT) +
-                        buildFor(it, SMSConsts.MetadataType.ENROLLMENT) +
-                        buildFor(it, SMSConsts.MetadataType.TRACKED_ENTITY_INSTANCE) +
-                        buildFor(it, SMSConsts.MetadataType.RELATIONSHIP) +
-                        buildFor(it, SMSConsts.MetadataType.RELATIONSHIP_TYPE)
+                    buildFor(it, SMSConsts.MetadataType.TRACKED_ENTITY_TYPE) +
+                    buildFor(it, SMSConsts.MetadataType.TRACKED_ENTITY_ATTRIBUTE) +
+                    buildFor(it, SMSConsts.MetadataType.PROGRAM) +
+                    buildFor(it, SMSConsts.MetadataType.ORGANISATION_UNIT) +
+                    buildFor(it, SMSConsts.MetadataType.DATA_ELEMENT) +
+                    buildFor(it, SMSConsts.MetadataType.CATEGORY_OPTION_COMBO) +
+                    buildFor(it, SMSConsts.MetadataType.DATASET) +
+                    buildFor(it, SMSConsts.MetadataType.PROGRAM_STAGE) +
+                    buildFor(it, SMSConsts.MetadataType.EVENT) +
+                    buildFor(it, SMSConsts.MetadataType.ENROLLMENT) +
+                    buildFor(it, SMSConsts.MetadataType.TRACKED_ENTITY_INSTANCE) +
+                    buildFor(it, SMSConsts.MetadataType.RELATIONSHIP) +
+                    buildFor(it, SMSConsts.MetadataType.RELATIONSHIP_TYPE)
 
             smsMetadataIdsStore.delete()
             metadataIds.forEach { id -> smsMetadataIdsStore.insert(id) }

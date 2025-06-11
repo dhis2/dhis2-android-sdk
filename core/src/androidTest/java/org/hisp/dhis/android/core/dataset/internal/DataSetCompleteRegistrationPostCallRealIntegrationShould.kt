@@ -46,7 +46,7 @@ class DataSetCompleteRegistrationPostCallRealIntegrationShould : BaseRealIntegra
     }
 
     // commented out since it is a flaky test that works against a real server.
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun upload_data_set_complete_registrations_with_to_post_state() {
         d2.userModule().logIn(username, password, url).blockingGet()
@@ -62,7 +62,7 @@ class DataSetCompleteRegistrationPostCallRealIntegrationShould : BaseRealIntegra
             dataSetCompleteRegistration.period(),
             dataSetCompleteRegistration.organisationUnit(),
             dataSetCompleteRegistration.dataSet(),
-            dataSetCompleteRegistration.attributeOptionCombo()
+            dataSetCompleteRegistration.attributeOptionCombo(),
         ).blockingSet()
 
         repository.blockingUpload()
@@ -75,7 +75,7 @@ class DataSetCompleteRegistrationPostCallRealIntegrationShould : BaseRealIntegra
     }
 
     // commented out since it is a flaky test that works against a real server.
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun upload_data_set_complete_registrations_with_to_update_state() = runTest {
         d2.userModule().logIn(username, password, url).blockingGet()
@@ -95,7 +95,7 @@ class DataSetCompleteRegistrationPostCallRealIntegrationShould : BaseRealIntegra
     }
 
     // commented out since it is a flaky test that works against a real server.
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun update_and_delete_different_data_set_complete_registrations() = runTest {
         d2.userModule().logIn(username, password, url).blockingGet()
@@ -111,13 +111,13 @@ class DataSetCompleteRegistrationPostCallRealIntegrationShould : BaseRealIntegra
             toDeleteDataSetCompleteRegistration.period(),
             toDeleteDataSetCompleteRegistration.organisationUnit(),
             toDeleteDataSetCompleteRegistration.dataSet(),
-            toDeleteDataSetCompleteRegistration.attributeOptionCombo()
+            toDeleteDataSetCompleteRegistration.attributeOptionCombo(),
         ).blockingSet()
         repository.value(
             dataSetCompleteRegistration.period(),
             dataSetCompleteRegistration.organisationUnit(),
             dataSetCompleteRegistration.dataSet(),
-            dataSetCompleteRegistration.attributeOptionCombo()
+            dataSetCompleteRegistration.attributeOptionCombo(),
         ).blockingSet()
         dataSetCompleteRegistrationStore.setDeleted(toDeleteDataSetCompleteRegistration)
         dataSetCompleteRegistrationStore.setState(toDeleteDataSetCompleteRegistration, State.TO_UPDATE)
@@ -131,7 +131,7 @@ class DataSetCompleteRegistrationPostCallRealIntegrationShould : BaseRealIntegra
     }
 
     // commented out since it is a flaky test that works against a real server.
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun delete_data_set_complete_registrations_with_to_delete_state() = runTest {
         d2.userModule().logIn(username, password, url).blockingGet()
@@ -145,7 +145,7 @@ class DataSetCompleteRegistrationPostCallRealIntegrationShould : BaseRealIntegra
             dataSetCompleteRegistration.period(),
             dataSetCompleteRegistration.organisationUnit(),
             dataSetCompleteRegistration.dataSet(),
-            dataSetCompleteRegistration.attributeOptionCombo()
+            dataSetCompleteRegistration.attributeOptionCombo(),
         ).blockingSet()
         dataSetCompleteRegistrationStore.setDeleted(dataSetCompleteRegistration)
         dataSetCompleteRegistrationStore.setState(dataSetCompleteRegistration, State.TO_UPDATE)

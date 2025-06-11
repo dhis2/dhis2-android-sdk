@@ -58,7 +58,7 @@ class ObjectStoreIntegrationShould : BaseIntegrationTestWithDatabase() {
         store.insert(optionSet)
         val cursor = databaseAdapter().query(
             OptionSetTableInfo.TABLE_INFO.name(),
-            *OptionSetTableInfo.TABLE_INFO.columns().all()
+            *OptionSetTableInfo.TABLE_INFO.columns().all(),
         )
         StoreMocks.optionSetCursorAssert(cursor, optionSet)
     }

@@ -40,8 +40,9 @@ import java.util.Date
 
 @RunWith(D2JunitRunner::class)
 class ResourceStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<Resource>(
-    ResourceStoreImpl(TestDatabaseAdapterFactory.get()), ResourceTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get()
+    ResourceStoreImpl(TestDatabaseAdapterFactory.get()),
+    ResourceTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
 ) {
 
     override fun buildObject(): Resource {
@@ -61,7 +62,7 @@ class ResourceStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationS
 
         Truth.assertThat(lastUpdated).isEqualTo(
             BaseIdentifiableObject.DATE_FORMAT
-                .format(ResourceSamples.getResource().lastSynced()!!)
+                .format(ResourceSamples.getResource().lastSynced()!!),
         )
     }
 

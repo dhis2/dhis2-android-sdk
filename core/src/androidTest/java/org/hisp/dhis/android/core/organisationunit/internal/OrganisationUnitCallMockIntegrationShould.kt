@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.organisationunit.internal
 
 import android.content.ContentValues
 import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo

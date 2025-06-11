@@ -62,7 +62,7 @@ class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShould : Bas
         reserveValues()
 
         val reservedValues = TrackedEntityAttributeReservedValueStoreImpl(
-            d2.databaseAdapter()
+            d2.databaseAdapter(),
         ).selectAll()
 
         Truth.assertThat(reservedValues.size).isEqualTo(numberToReserve)
@@ -75,7 +75,7 @@ class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShould : Bas
         d2.trackedEntityModule().reservedValueManager().blockingDownloadAllReservedValues(20)
 
         val reservedValues = TrackedEntityAttributeReservedValueStoreImpl(
-            d2.databaseAdapter()
+            d2.databaseAdapter(),
         ).selectAll()
 
         val value = d2.trackedEntityModule().reservedValueManager().blockingGetValue("xs8A6tQJY0s", orgunitUid)

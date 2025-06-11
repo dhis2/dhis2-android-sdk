@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.sms.mockrepos
 
 import io.reactivex.Completable
 import io.reactivex.Single
-import kotlinx.coroutines.rx2.rxCompletable
 import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event

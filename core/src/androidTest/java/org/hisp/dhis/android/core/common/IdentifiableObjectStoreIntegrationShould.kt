@@ -59,7 +59,7 @@ class IdentifiableObjectStoreIntegrationShould : BaseIntegrationTestWithDatabase
     private val cursor: Cursor
         get() = databaseAdapter().query(
             OptionSetTableInfo.TABLE_INFO.name(),
-            *OptionSetTableInfo.TABLE_INFO.columns().all()
+            *OptionSetTableInfo.TABLE_INFO.columns().all(),
         )
 
     @Test

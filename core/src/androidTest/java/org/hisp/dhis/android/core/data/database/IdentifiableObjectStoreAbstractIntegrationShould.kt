@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.data.database
 
 import com.google.common.truth.Truth.assertThat
-import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.rx2.rxSingle
 import kotlinx.coroutines.test.runTest

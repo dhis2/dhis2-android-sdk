@@ -58,11 +58,12 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-class TrackedEntityDataValueStoreIntegrationShould
-    : ObjectWithoutUidStoreAbstractIntegrationShould<TrackedEntityDataValue>(
-    TrackedEntityDataValueStoreImpl(TestDatabaseAdapterFactory.get()),
-    TrackedEntityDataValueTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get()
-) {
+class TrackedEntityDataValueStoreIntegrationShould :
+    ObjectWithoutUidStoreAbstractIntegrationShould<TrackedEntityDataValue>(
+        TrackedEntityDataValueStoreImpl(TestDatabaseAdapterFactory.get()),
+        TrackedEntityDataValueTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get(),
+    ) {
 
     override fun buildObject(): TrackedEntityDataValue {
         return TrackedEntityDataValueSamples.get()
@@ -88,19 +89,19 @@ class TrackedEntityDataValueStoreIntegrationShould
     fun delete_by_event_and_not_in_data_elements() = runTest {
         (store as TrackedEntityDataValueStore).insert(
             TrackedEntityDataValueSamples.get()
-                .toBuilder().event("event_1").dataElement("data_element_1").build()
+                .toBuilder().event("event_1").dataElement("data_element_1").build(),
         )
         store.insert(
             TrackedEntityDataValueSamples.get()
-                .toBuilder().event("event_1").dataElement("data_element_2").build()
+                .toBuilder().event("event_1").dataElement("data_element_2").build(),
         )
         store.insert(
             TrackedEntityDataValueSamples.get()
-                .toBuilder().event("event_2").dataElement("data_element_1").build()
+                .toBuilder().event("event_2").dataElement("data_element_1").build(),
         )
         store.insert(
             TrackedEntityDataValueSamples.get()
-                .toBuilder().event("event_2").dataElement("data_element_2").build()
+                .toBuilder().event("event_2").dataElement("data_element_2").build(),
         )
 
         store.deleteByEventAndNotInDataElements("event_1", Lists.newArrayList("data_element_1"))
@@ -117,15 +118,15 @@ class TrackedEntityDataValueStoreIntegrationShould
     fun select_data_values_by_event_uid() = runTest {
         (store as TrackedEntityDataValueStore).insert(
             TrackedEntityDataValueSamples.get()
-                .toBuilder().event("event_1").dataElement("data_element_1").build()
+                .toBuilder().event("event_1").dataElement("data_element_1").build(),
         )
         store.insert(
             TrackedEntityDataValueSamples.get()
-                .toBuilder().event("event_1").dataElement("data_element_2").build()
+                .toBuilder().event("event_1").dataElement("data_element_2").build(),
         )
         store.insert(
             TrackedEntityDataValueSamples.get()
-                .toBuilder().event("event_2").dataElement("data_element_1").build()
+                .toBuilder().event("event_2").dataElement("data_element_1").build(),
         )
 
         val dataValueForEvent1 = store.queryTrackedEntityDataValuesByEventUid("event_1")
@@ -141,22 +142,22 @@ class TrackedEntityDataValueStoreIntegrationShould
     fun select_single_events_data_values() = runTest {
         val eventStore: EventStore = EventStoreImpl(TestDatabaseAdapterFactory.get())
         eventStore.insert(
-            EventSamples.get().toBuilder().uid("event_1").enrollment(null).syncState(State.TO_POST).build()
+            EventSamples.get().toBuilder().uid("event_1").enrollment(null).syncState(State.TO_POST).build(),
         )
         eventStore.insert(EventSamples.get().toBuilder().uid("event_2").syncState(State.TO_POST).build())
         assertThat(eventStore.count()).isEqualTo(2)
 
         (store as TrackedEntityDataValueStore).insert(
             TrackedEntityDataValueSamples.get()
-                .toBuilder().event("event_1").dataElement("data_element_1").build()
+                .toBuilder().event("event_1").dataElement("data_element_1").build(),
         )
         store.insert(
             TrackedEntityDataValueSamples.get()
-                .toBuilder().event("event_1").dataElement("data_element_2").build()
+                .toBuilder().event("event_1").dataElement("data_element_2").build(),
         )
         store.insert(
             TrackedEntityDataValueSamples.get()
-                .toBuilder().event("event_2").dataElement("data_element_1").build()
+                .toBuilder().event("event_2").dataElement("data_element_1").build(),
         )
         assertThat(store.selectAll().size).isEqualTo(3)
 
@@ -185,22 +186,22 @@ class TrackedEntityDataValueStoreIntegrationShould
         val eventStore: EventStore = EventStoreImpl(TestDatabaseAdapterFactory.get())
         eventStore.insert(EventSamples.get().toBuilder().uid("event_1").syncState(State.TO_POST).build())
         eventStore.insert(
-            EventSamples.get().toBuilder().uid("event_2").enrollment(null).syncState(State.TO_POST).build()
+            EventSamples.get().toBuilder().uid("event_2").enrollment(null).syncState(State.TO_POST).build(),
         )
 
         assertThat(eventStore.count()).isEqualTo(2)
 
         store.insert(
             TrackedEntityDataValueSamples.get()
-                .toBuilder().event("event_1").dataElement("data_element_1").build()
+                .toBuilder().event("event_1").dataElement("data_element_1").build(),
         )
         store.insert(
             TrackedEntityDataValueSamples.get()
-                .toBuilder().event("event_1").dataElement("data_element_2").build()
+                .toBuilder().event("event_1").dataElement("data_element_2").build(),
         )
         store.insert(
             TrackedEntityDataValueSamples.get()
-                .toBuilder().event("event_2").dataElement("data_element_1").build()
+                .toBuilder().event("event_2").dataElement("data_element_1").build(),
         )
         assertThat(store.selectAll().size).isEqualTo(3)
 
@@ -231,16 +232,16 @@ class TrackedEntityDataValueStoreIntegrationShould
                 .uid(dataElement1)
                 .dataElement(DataElementSamples.getDataElement().toBuilder().uid(dataElement1).build())
                 .programStage(ObjectWithUid.create(stage.uid()))
-                .build()
+                .build(),
         )
 
         (store as TrackedEntityDataValueStore).insert(
             TrackedEntityDataValueSamples.get()
-                .toBuilder().event(event.uid()).dataElement(dataElement1).build()
+                .toBuilder().event(event.uid()).dataElement(dataElement1).build(),
         )
         store.insert(
             TrackedEntityDataValueSamples.get()
-                .toBuilder().event(event.uid()).dataElement(dataElement2).build()
+                .toBuilder().event(event.uid()).dataElement(dataElement2).build(),
         )
         assertThat(store.queryTrackedEntityDataValuesByEventUid(event.uid()).size).isEqualTo(2)
 

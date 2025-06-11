@@ -88,7 +88,6 @@ class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTe
 
     private lateinit var categoryComboOptionUid: String
 
-
     @Before
     override fun setUp() {
         super.setUp()
@@ -124,32 +123,30 @@ class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTe
      * If you want run this test you need config the correct uids in the server side.
      * At this moment is necessary add into the "child programme" program the category combo : Implementing Partner
      * */
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun response_true_when_data_sync() = runTest {
         downloadMetadata()
 
-
         createDummyDataToPost(
             orgUnitUid, programUid, programStageUid, trackedEntityUid, coordinates, geometry, eventUid,
-            enrollmentUid, trackedEntityInstanceUid, trackedEntityAttributeUid, dataElementUid
+            enrollmentUid, trackedEntityInstanceUid, trackedEntityAttributeUid, dataElementUid,
         )
 
         createDummyDataToPost(
             orgUnitUid, programUid, programStageUid, trackedEntityUid, coordinates, geometry,
-            event1Uid, enrollment1Uid, trackedEntityInstance1Uid, trackedEntityAttributeUid, dataElementUid
+            event1Uid, enrollment1Uid, trackedEntityInstance1Uid, trackedEntityAttributeUid, dataElementUid,
         )
 
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload()
     }
 
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun add_and_post_tei_using_repositories() {
         downloadMetadata()
 
         val childProgramUid = "IpHINAT79UW"
-
 
         // Organisation unit module -> get one organisation unit
         val organisationUnit = d2.organisationUnitModule().organisationUnits().one().blockingGet()
@@ -165,7 +162,7 @@ class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTe
                 TrackedEntityInstanceCreateProjection.builder()
                     .organisationUnit(organisationUnit?.uid())
                     .trackedEntityType(program?.trackedEntityType()?.uid())
-                    .build()
+                    .build(),
             )
 
         // Enrollment module -> enroll the tracked entity instance to the program
@@ -174,7 +171,7 @@ class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTe
                 .organisationUnit(organisationUnit?.uid())
                 .program(program?.uid())
                 .trackedEntityInstance(teiUid)
-                .build()
+                .build(),
         )
 
         // Program module -> get the program tracked entity attributes of the program
@@ -195,26 +192,24 @@ class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTe
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload()
     }
 
-
     /*
      * If you want run this test you need config the correct uids in the server side.
      * At this moment is necessary add into the "child programme" program the category combo : Implementing Partner
      * */
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun pull_event_after_push_tracked_entity_instance_with_that_event() = runTest {
         downloadMetadata()
 
-
         createDummyDataToPost(
             orgUnitUid, programUid, programStageUid, trackedEntityUid, coordinates, geometry,
-            eventUid, enrollmentUid, trackedEntityInstanceUid, trackedEntityAttributeUid, dataElementUid
+            eventUid, enrollmentUid, trackedEntityInstanceUid, trackedEntityAttributeUid, dataElementUid,
         )
 
         postTrackedEntityInstances()
 
         val pushedTrackedEntityInstance = getTrackedEntityInstanceFromDB(
-            trackedEntityInstanceUid
+            trackedEntityInstanceUid,
         )
         val pushedEnrollment = getEnrollmentByTrackedEntityInstanceFromDb(trackedEntityInstanceUid)
         val pushedEvent = getEventFromDb(eventUid)
@@ -223,24 +218,26 @@ class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTe
 
         downloadMetadata()
 
-
         d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(trackedEntityInstanceUid)
             .blockingDownload()
 
         val downloadedTrackedEntityInstance = getTrackedEntityInstanceFromDB(
-            trackedEntityInstanceUid
+            trackedEntityInstanceUid,
         )
         val downloadedEnrollment = getEnrollmentByTrackedEntityInstanceFromDb(trackedEntityInstanceUid)
         val downloadedEvent = getEventFromDb(eventUid)
 
         assertPushAndDownloadTrackedEntityInstances(
-            pushedTrackedEntityInstance, pushedEnrollment,
-            pushedEvent, downloadedTrackedEntityInstance, downloadedEnrollment,
-            downloadedEvent
+            pushedTrackedEntityInstance,
+            pushedEnrollment,
+            pushedEvent,
+            downloadedTrackedEntityInstance,
+            downloadedEnrollment,
+            downloadedEvent,
         )
     }
 
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun post_a_tei() = runTest {
         downloadMetadata()
@@ -268,7 +265,7 @@ class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTe
         Truth.assertThat(updatedTei.geometry()).isEqualTo(geometry)
     }
 
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun post_more_than_one_tei() = runTest {
         downloadMetadata()
@@ -294,7 +291,7 @@ class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTe
         Truth.assertThat(teiList.size == 1).isTrue()
     }
 
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun post_teis_filtering_what_to_post() = runTest {
         downloadMetadata()
@@ -328,7 +325,8 @@ class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTe
         Truth.assertThat(teiDownloadedSuccessfully).isFalse()
     }
 
-    /* Set Dhis2 server to 2.30 or up*/ //@Test
+    /* Set Dhis2 server to 2.30 or up*/
+    // @Test
     @Throws(Exception::class)
     fun post_one_tei_and_delete_it() = runTest {
         downloadMetadata()
@@ -363,7 +361,7 @@ class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTe
         Truth.assertThat(e.errorCode()).isEqualTo(D2ErrorCode.API_UNSUCCESSFUL_RESPONSE)
     }
 
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun post_new_relationship_to_client_created_tei() = runTest {
         downloadMetadata()
@@ -381,7 +379,8 @@ class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTe
 
         val newRelationship = RelationshipHelper.teiToTeiRelationship(
             teiA.uid(),
-            teiBUid, relationshipType.uid()
+            teiBUid,
+            relationshipType.uid(),
         )
         d2.relationshipModule().relationships().blockingAdd(newRelationship)
 
@@ -392,10 +391,9 @@ class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTe
 
         d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(teiA.uid()).blockingDownload()
         val responseTeiA = d2.trackedEntityModule().trackedEntityInstances().byUid().eq(
-            teiA.uid()
+            teiA.uid(),
         ).blockingGet()
         Truth.assertThat(responseTeiA.size == 1).isTrue()
-
 
         d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(teiBUid).blockingDownload()
         val responseTeiB = d2.trackedEntityModule().trackedEntityInstances().byUid().eq(teiBUid).blockingGet()
@@ -420,7 +418,7 @@ class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTe
         Truth.assertThat(relationshipFound).isTrue()
     }
 
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun create_tei_to_tei_relationship() = runTest {
         downloadMetadata()
@@ -436,15 +434,16 @@ class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTe
 
         d2.relationshipModule().relationships().blockingAdd(
             RelationshipHelper.teiToTeiRelationship(
-                t0.uid(), t1.uid(),
-                relationshipType.uid()
-            )
+                t0.uid(),
+                t1.uid(),
+                relationshipType.uid(),
+            ),
         )
 
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload()
     }
 
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun create_and_delete_tei_to_tei_relationship() = runTest {
         downloadMetadata()
@@ -464,8 +463,9 @@ class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTe
         val relationshipType = typesRepository.blockingGet().iterator().next()
 
         val newRelationship = RelationshipHelper.teiToTeiRelationship(
-            t0.uid(), t1.uid(),
-            relationshipType.uid()
+            t0.uid(),
+            t1.uid(),
+            relationshipType.uid(),
         )
         relationshipsRepository.blockingAdd(newRelationship)
 
@@ -476,7 +476,7 @@ class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTe
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload()
     }
 
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun post_a_tei_and_delete_one_event() = runTest {
         downloadMetadata()
@@ -515,10 +515,17 @@ class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTe
     }
 
     private suspend fun createDummyDataToPost(
-        orgUnitUid: String, programUid: String, programStageUid: String,
-        trackedEntityUid: String, coordinates: String, geometry: Geometry,
-        eventUid: String, enrollmentUid: String, trackedEntityInstanceUid: String,
-        trackedEntityAttributeUid: String, dataElementUid: String
+        orgUnitUid: String,
+        programUid: String,
+        programStageUid: String,
+        trackedEntityUid: String,
+        coordinates: String,
+        geometry: Geometry,
+        eventUid: String,
+        enrollmentUid: String,
+        trackedEntityInstanceUid: String,
+        trackedEntityAttributeUid: String,
+        dataElementUid: String,
     ) {
         val refDate = currentDateMinusTwoHoursTenMinutes
 
@@ -575,9 +582,12 @@ class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTe
     }
 
     private fun assertPushAndDownloadTrackedEntityInstances(
-        pushedTrackedEntityInstance: TrackedEntityInstance, pushedEnrollment: Enrollment,
-        pushedEvent: Event, downloadedTrackedEntityInstance: TrackedEntityInstance,
-        downloadedEnrollment: Enrollment, downloadedEvent: Event
+        pushedTrackedEntityInstance: TrackedEntityInstance,
+        pushedEnrollment: Enrollment,
+        pushedEvent: Event,
+        downloadedTrackedEntityInstance: TrackedEntityInstance,
+        downloadedEnrollment: Enrollment,
+        downloadedEvent: Event,
     ) {
         Truth.assertThat(pushedTrackedEntityInstance.uid() == downloadedTrackedEntityInstance.uid()).isTrue()
         Truth.assertThat(pushedTrackedEntityInstance.uid() == downloadedTrackedEntityInstance.uid()).isTrue()
@@ -595,13 +605,12 @@ class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTe
         enrollmentStore.selectWhere(
             WhereClauseBuilder().appendKeyStringValue(
                 EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
-                trackedEntityInstanceUid
-            ).build()
+                trackedEntityInstanceUid,
+            ).build(),
         ).first()
 
     private suspend fun getEventFromDb(eventUid: String): Event =
         eventStore.selectAll().first { it.uid() == eventUid }
-
 
     @Throws(Exception::class)
     private fun postTrackedEntityInstances() {
@@ -617,7 +626,7 @@ class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTe
 
     private fun verifyEventCategoryAttributes(event: Event, downloadedEvent: Event): Boolean {
         return event.uid() == downloadedEvent.uid() &&
-                event.attributeOptionCombo() == downloadedEvent.attributeOptionCombo()
+            event.attributeOptionCombo() == downloadedEvent.attributeOptionCombo()
     }
 
     private val currentDateMinusTwoHoursTenMinutes: Date

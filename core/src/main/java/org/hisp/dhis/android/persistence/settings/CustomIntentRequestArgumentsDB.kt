@@ -26,40 +26,57 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal
+package org.hisp.dhis.android.persistence.settings
 
-import android.content.ContentValues
-import android.database.Cursor
-import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
-import org.hisp.dhis.android.core.settings.CustomIntentRequest
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.builtins.ListSerializer
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.settings.CustomIntentRequestArgument
-import org.hisp.dhis.android.core.settings.CustomIntentTableInfo
-import org.hisp.dhis.android.persistence.settings.CustomIntentRequestArgumentsDB
-import org.hisp.dhis.android.persistence.settings.toDB
 
-internal class CustomIntentRequestColumnAdapter : ColumnTypeAdapter<CustomIntentRequest> {
+@JvmInline
+internal value class CustomIntentRequestArgumentsDB(
+    val value: String,
+) {
+    fun toDomain(): List<CustomIntentRequestArgument> {
+        return try {
+            KotlinxJsonParser.instance.decodeFromString<List<CustomIntentRequestArgumentDBSerializable>>(value)
+                .map { it.toDomain() }
+        } catch (e: SerializationException) {
+            emptyList()
+        }
+    }
+}
 
-    override fun fromCursor(cursor: Cursor, columnName: String): CustomIntentRequest {
-        val requestArgumentsIndex = cursor.getColumnIndex(CustomIntentTableInfo.Columns.REQUEST_ARGUMENTS)
+internal fun List<CustomIntentRequestArgument>.toDB(): CustomIntentRequestArgumentsDB {
+    return try {
+        CustomIntentRequestArgumentsDB(
+            KotlinxJsonParser.instance.encodeToString(
+                ListSerializer(CustomIntentRequestArgumentDBSerializable.serializer()),
+                this.map { it.toDBSerializable() },
+            ),
+        )
+    } catch (e: SerializationException) {
+        CustomIntentRequestArgumentsDB("[]")
+    }
+}
 
-        val argumentsString = CustomIntentRequestArgumentsDB(cursor.getString(requestArgumentsIndex))
-        val arguments = argumentsString.toDomain()
-
-        return CustomIntentRequest.builder()
-            .arguments(arguments)
+@Serializable
+private data class CustomIntentRequestArgumentDBSerializable(
+    val key: String,
+    val value: String,
+) {
+    fun toDomain(): CustomIntentRequestArgument {
+        return CustomIntentRequestArgument.builder()
+            .key(key)
+            .value(value)
             .build()
     }
+}
 
-    override fun toContentValues(values: ContentValues, columnName: String, value: CustomIntentRequest?) {
-        value?.arguments()?.let {
-            val argumentsString: String = serialize(it)
-            values.put(CustomIntentTableInfo.Columns.REQUEST_ARGUMENTS, argumentsString)
-        }
-    }
-
-    companion object {
-        fun serialize(list: List<CustomIntentRequestArgument>): String {
-            return list.toDB().value
-        }
-    }
+private fun CustomIntentRequestArgument.toDBSerializable(): CustomIntentRequestArgumentDBSerializable {
+    return CustomIntentRequestArgumentDBSerializable(
+        key = this.key(),
+        value = this.value(),
+    )
 }

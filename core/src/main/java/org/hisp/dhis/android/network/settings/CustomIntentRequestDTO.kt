@@ -33,11 +33,11 @@ import org.hisp.dhis.android.core.settings.CustomIntentRequest
 
 @Serializable
 internal data class CustomIntentRequestDTO(
-    val arguments: Map<String, String>,
+    val arguments: List<CustomIntentRequestArgumentDTO>,
 ) {
     fun toDomain(): CustomIntentRequest {
         return CustomIntentRequest.builder()
-            .arguments(arguments)
+            .arguments(arguments.map { it.toDomain() })
             .build()
     }
 }

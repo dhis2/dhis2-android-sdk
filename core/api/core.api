@@ -11590,15 +11590,30 @@ public class org/hisp/dhis/android/core/settings/CustomIntentDataElementTableInf
 
 public abstract class org/hisp/dhis/android/core/settings/CustomIntentRequest {
 	public fun <init> ()V
-	public abstract fun arguments ()Ljava/util/Map;
+	public abstract fun arguments ()Ljava/util/List;
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/CustomIntentRequest$Builder;
 	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/CustomIntentRequest;
 }
 
 public abstract class org/hisp/dhis/android/core/settings/CustomIntentRequest$Builder {
 	public fun <init> ()V
-	public abstract fun arguments (Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/CustomIntentRequest$Builder;
+	public abstract fun arguments (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/CustomIntentRequest$Builder;
 	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/CustomIntentRequest;
+}
+
+public abstract class org/hisp/dhis/android/core/settings/CustomIntentRequestArgument {
+	public fun <init> ()V
+	public static fun builder ()Lorg/hisp/dhis/android/core/settings/CustomIntentRequestArgument$Builder;
+	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/CustomIntentRequestArgument;
+	public abstract fun key ()Ljava/lang/String;
+	public abstract fun value ()Ljava/lang/String;
+}
+
+public abstract class org/hisp/dhis/android/core/settings/CustomIntentRequestArgument$Builder {
+	public fun <init> ()V
+	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/CustomIntentRequestArgument;
+	public abstract fun key (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntentRequestArgument$Builder;
+	public abstract fun value (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntentRequestArgument$Builder;
 }
 
 public abstract class org/hisp/dhis/android/core/settings/CustomIntentResponse {

@@ -65,7 +65,6 @@ class TrackerDataManagerShould {
     private val enrollment: Enrollment = mock()
     private val event: Event = mock()
     private val relationship: Relationship = mock()
-    private val programOwner: ProgramOwner = mock()
 
     private lateinit var trackerDataManager: TrackerDataManager
 

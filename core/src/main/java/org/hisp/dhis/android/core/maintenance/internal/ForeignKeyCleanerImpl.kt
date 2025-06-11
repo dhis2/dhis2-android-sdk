@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation
 import org.koin.core.annotation.Singleton
 import java.util.Date
 
+@Suppress("MagicNumber")
 @Singleton
 internal class ForeignKeyCleanerImpl(
     private val databaseAdapter: DatabaseAdapter,
@@ -79,7 +80,7 @@ internal class ForeignKeyCleanerImpl(
             if (rowsAffected > 0) {
                 val msg =
                     " was not persisted on $fromTable table to avoid Foreign Key constraint error. " +
-                        "Target not found on $toTable table. $it"
+                            "Target not found on $toTable table. $it"
                 val warningMsg = it.fromObjectUid()
                     ?.let { uid -> "The object $uid$msg" }
                     ?: "An object$msg"
@@ -92,15 +93,22 @@ internal class ForeignKeyCleanerImpl(
         foreignKeyId: String,
         fromTable: String,
         toTable: String,
-        rowId: String,
+        rowId: String
     ): ForeignKeyViolation? {
-        databaseAdapter.rawQuery("PRAGMA foreign_key_list($fromTable);").use { listCursor ->
-            if (listCursor.moveToFirst()) {
-                do {
-                    if (foreignKeyId == listCursor.getInt(0).toString()) {
-                        return buildViolation(listCursor, fromTable, toTable, rowId)
-                    }
-                } while (listCursor.moveToNext())
+        val matchingCursor = findForeignKeyEntryCursor(fromTable, foreignKeyId)
+        return matchingCursor?.let { buildViolation(it, fromTable, toTable, rowId) }
+    }
+
+    private fun findForeignKeyEntryCursor(
+        fromTable: String,
+        foreignKeyId: String
+    ): Cursor? {
+        val sql = "PRAGMA foreign_key_list($fromTable);"
+        databaseAdapter.rawQuery(sql).use { cursor ->
+            while (cursor.moveToNext()) {
+                if (cursor.getInt(0).toString() == foreignKeyId) {
+                    return cursor
+                }
             }
         }
         return null

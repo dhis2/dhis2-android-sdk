@@ -57,7 +57,7 @@ import org.koin.core.annotation.Singleton
 import java.io.File
 
 @Singleton
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions", "TooGenericExceptionCaught")
 class FileResourceCollectionRepository internal constructor(
     private val fileResourceStore: FileResourceStore,
     databaseAdapter: DatabaseAdapter,
@@ -107,7 +107,6 @@ class FileResourceCollectionRepository internal constructor(
     }
 
     @Throws(D2Error::class)
-    @Suppress("TooGenericExceptionCaught")
     override fun blockingAdd(o: File): String {
         return runBlocking { addInternal(o) }
     }

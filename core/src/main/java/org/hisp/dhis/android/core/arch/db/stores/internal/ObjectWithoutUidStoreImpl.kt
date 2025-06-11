@@ -127,7 +127,6 @@ internal open class ObjectWithoutUidStoreImpl<O : CoreObject>(
         }
     }
 
-    // TODO: Remove Mutex when migrating to Room
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionCaught")
     override suspend fun updateOrInsertWhere(o: O): HandleAction = upsertMutex.withLock {

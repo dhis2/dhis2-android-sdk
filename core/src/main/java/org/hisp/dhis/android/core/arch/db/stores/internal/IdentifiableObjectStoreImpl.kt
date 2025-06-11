@@ -127,7 +127,6 @@ internal open class IdentifiableObjectStoreImpl<O>(
         executeUpdateDelete(updateStatement!!)
     }
 
-    // TODO: Remove Mutex when migrating to Room
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionCaught")
     override suspend fun updateOrInsert(o: O): HandleAction = upsertMutex.withLock {

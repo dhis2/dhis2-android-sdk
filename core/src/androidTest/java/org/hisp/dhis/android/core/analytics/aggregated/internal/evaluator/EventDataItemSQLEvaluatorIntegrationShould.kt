@@ -76,7 +76,7 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
     private val enrollment2 = generator.generate()
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
         helper.createTrackerEvent(

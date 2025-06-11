@@ -25,56 +25,47 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.BaseIntegrationTestWithDatabase
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.option.OptionSet
+import org.hisp.dhis.android.core.option.OptionSetTableInfo
+import org.hisp.dhis.android.core.option.internal.OptionSetStoreImpl
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import java.io.IOException
 
-import android.database.Cursor;
+@RunWith(D2JunitRunner::class)
+class ObjectStoreIntegrationShould : BaseIntegrationTestWithDatabase() {
+    private lateinit var store: IdentifiableObjectStore<OptionSet>
 
-import org.hisp.dhis.android.core.BaseIntegrationTestWithDatabase;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetTableInfo;
-import org.hisp.dhis.android.core.option.internal.OptionSetStoreImpl;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+    private lateinit var optionSet: OptionSet
 
-import java.io.IOException;
-
-import static org.hisp.dhis.android.core.common.StoreMocks.optionSetCursorAssert;
-
-@RunWith(D2JunitRunner.class)
-public class ObjectStoreIntegrationShould extends BaseIntegrationTestWithDatabase {
-
-    private IdentifiableObjectStore<OptionSet> store;
-
-    private OptionSet optionSet;
-
-    @Override
     @Before
-    public void setUp() throws IOException {
-        super.setUp();
-        this.optionSet = StoreMocks.generateOptionSet();
-        this.store = new OptionSetStoreImpl(databaseAdapter());
+    @Throws(IOException::class)
+    override fun setUp() {
+        super.setUp()
+        this.optionSet = StoreMocks.generateOptionSet()
+        this.store = OptionSetStoreImpl(databaseAdapter())
     }
 
     @Test
-    public void insert_option_set() {
-        store.insert(optionSet);
-        Cursor cursor = databaseAdapter().query(OptionSetTableInfo.TABLE_INFO.name(), OptionSetTableInfo.TABLE_INFO.columns().all());
-        optionSetCursorAssert(cursor, optionSet);
+    fun insert_option_set() = runTest {
+        store.insert(optionSet)
+        val cursor = databaseAdapter().query(
+            OptionSetTableInfo.TABLE_INFO.name(),
+            *OptionSetTableInfo.TABLE_INFO.columns().all()
+        )
+        StoreMocks.optionSetCursorAssert(cursor, optionSet)
     }
 
-    @Test(expected = NullPointerException.class)
-    public void throw_exception_for_null_when_inserting() {
-        OptionSet optionSet = null;
-        store.insert(optionSet);
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void throw_exception_for_second_identical_insertion() {
-        store.insert(this.optionSet);
-        store.insert(this.optionSet);
+    @Test(expected = RuntimeException::class)
+    fun throw_exception_for_second_identical_insertion() = runTest {
+        store.insert(optionSet)
+        store.insert(optionSet)
     }
 }

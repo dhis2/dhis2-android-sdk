@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.datastore.internal
 
 import com.google.common.truth.Truth.assertThat
 import io.ktor.http.HttpStatusCode
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
@@ -76,7 +77,7 @@ class DataStorePostCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
     }
 
     @Test
-    fun post_if_not_found() {
+    fun post_if_not_found() = runTest {
         dhis2MockServer.enqueueMockResponse(
             code = HttpStatusCode.NotFound.value,
             fileName = "datastore/actions/namespace_key_put_not_found_404.json",
@@ -94,7 +95,7 @@ class DataStorePostCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
     }
 
     @Test
-    fun delete_locally() {
+    fun delete_locally() = runTest {
         dhis2MockServer.enqueueMockResponse("datastore/actions/namespace_key_deleted_200.json")
         provideDataStore("config", "key", "{\"enabled\": true}")
         setState(State.TO_UPDATE)
@@ -106,7 +107,7 @@ class DataStorePostCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
     }
 
     @Test
-    fun delete_locally_even_if_not_found() {
+    fun delete_locally_even_if_not_found() = runTest {
         dhis2MockServer.enqueueMockResponse(
             code = HttpStatusCode.NotFound.value,
             fileName = "datastore/actions/namespace_key_deleted_not_found_404.json",
@@ -132,7 +133,7 @@ class DataStorePostCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
             .blockingSet(value)
     }
 
-    private fun setState(state: State) {
+    private suspend fun setState(state: State) {
         val entries = d2.dataStoreModule().dataStore().blockingGet()
 
         val store = DataStoreEntryStoreImpl(databaseAdapter)

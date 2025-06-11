@@ -25,113 +25,99 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import com.google.common.truth.Truth
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.BaseRealIntegrationTest
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.helpers.UidGenerator
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
+import org.hisp.dhis.android.core.common.FeatureType
+import org.hisp.dhis.android.core.common.Geometry
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
+import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl
+import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.event.internal.EventStore
+import org.hisp.dhis.android.core.event.internal.EventStoreImpl
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
+import org.hisp.dhis.android.core.relationship.RelationshipHelper
+import org.hisp.dhis.android.core.relationship.RelationshipItem
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection
+import org.junit.Before
+import java.util.Date
 
-import static com.google.common.truth.Truth.assertThat;
-
-import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder;
-import org.hisp.dhis.android.core.arch.helpers.UidGenerator;
-import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
-import org.hisp.dhis.android.core.common.FeatureType;
-import org.hisp.dhis.android.core.common.Geometry;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection;
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore;
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl;
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.event.EventStatus;
-import org.hisp.dhis.android.core.event.internal.EventStore;
-import org.hisp.dhis.android.core.event.internal.EventStoreImpl;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
-import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.relationship.Relationship;
-import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository;
-import org.hisp.dhis.android.core.relationship.RelationshipHelper;
-import org.hisp.dhis.android.core.relationship.RelationshipItem;
-import org.hisp.dhis.android.core.relationship.RelationshipModule;
-import org.hisp.dhis.android.core.relationship.RelationshipType;
-import org.hisp.dhis.android.core.relationship.RelationshipTypeCollectionRepository;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection;
-import org.hisp.dhis.android.core.tracker.exporter.TrackerD2Progress;
-import org.junit.Before;
-
-import java.util.Date;
-import java.util.List;
-
-import io.reactivex.observers.TestObserver;
-
-public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseRealIntegrationTest {
+class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTest() {
     /**
      * A quick integration test that is probably flaky, but will help with finding bugs related to the
      * metadataSyncCall. It works against the demo server.
      */
-    private UidGenerator uidGenerator;
+    private lateinit var uidGenerator: UidGenerator
 
-    private TrackedEntityInstanceStore trackedEntityInstanceStore;
-    private EnrollmentStore enrollmentStore;
-    private EventStore eventStore;
-    private TrackedEntityAttributeValueStore trackedEntityAttributeValueStore;
-    private TrackedEntityDataValueStore trackedEntityDataValueStore;
-    private String orgUnitUid;
-    private String programUid;
-    private String programStageUid;
-    private String dataElementUid;
-    private String trackedEntityUid;
-    private String trackedEntityAttributeUid;
-    private String coordinates;
-    private Geometry geometry;
-    private String eventUid;
-    private String enrollmentUid;
-    private String trackedEntityInstanceUid;
+    private lateinit var trackedEntityInstanceStore: TrackedEntityInstanceStore
+    private lateinit var enrollmentStore: EnrollmentStore
+    private lateinit var eventStore: EventStore
+    private lateinit var trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore
+    private lateinit var trackedEntityDataValueStore: TrackedEntityDataValueStore
+    private lateinit var orgUnitUid: String
+    private lateinit var programUid: String
+    private lateinit var programStageUid: String
+    private lateinit var dataElementUid: String
+    private lateinit var trackedEntityUid: String
+    private lateinit var trackedEntityAttributeUid: String
+    private lateinit var coordinates: String
+    private lateinit var geometry: Geometry
+    private lateinit var eventUid: String
+    private lateinit var enrollmentUid: String
+    private lateinit var trackedEntityInstanceUid: String
 
-    private String event1Uid;
-    private String enrollment1Uid;
-    private String trackedEntityInstance1Uid;
+    private lateinit var event1Uid: String
+    private lateinit var enrollment1Uid: String
+    private lateinit var trackedEntityInstance1Uid: String
 
-    private String categoryComboOptionUid;
+    private lateinit var categoryComboOptionUid: String
 
 
     @Before
-    @Override
-    public void setUp() {
-        super.setUp();
+    override fun setUp() {
+        super.setUp()
 
-        trackedEntityInstanceStore = new TrackedEntityInstanceStoreImpl(d2.databaseAdapter());
-        enrollmentStore = new EnrollmentStoreImpl(d2.databaseAdapter());
-        eventStore = new EventStoreImpl(d2.databaseAdapter());
-        trackedEntityAttributeValueStore = new TrackedEntityAttributeValueStoreImpl(d2.databaseAdapter());
-        trackedEntityDataValueStore = new TrackedEntityDataValueStoreImpl(d2.databaseAdapter());
+        trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl(d2.databaseAdapter())
+        enrollmentStore = EnrollmentStoreImpl(d2.databaseAdapter())
+        eventStore = EventStoreImpl(d2.databaseAdapter())
+        trackedEntityAttributeValueStore = TrackedEntityAttributeValueStoreImpl(d2.databaseAdapter())
+        trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl(d2.databaseAdapter())
 
-        uidGenerator = new UidGeneratorImpl();
-        orgUnitUid = "DiszpKrYNg8";
-        programUid = "IpHINAT79UW";
-        programStageUid = "A03MvHHogjR";
-        dataElementUid = "a3kGcGDCuk6";
-        trackedEntityUid = "nEenWmSyUEp";
-        trackedEntityAttributeUid = "w75KJ2mc4zz";
+        uidGenerator = UidGeneratorImpl()
+        orgUnitUid = "DiszpKrYNg8"
+        programUid = "IpHINAT79UW"
+        programStageUid = "A03MvHHogjR"
+        dataElementUid = "a3kGcGDCuk6"
+        trackedEntityUid = "nEenWmSyUEp"
+        trackedEntityAttributeUid = "w75KJ2mc4zz"
 
-        coordinates = "[9,9]";
-        geometry = Geometry.builder().type(FeatureType.POINT).coordinates("[-11.96, 9.49]").build();
+        coordinates = "[9,9]"
+        geometry = Geometry.builder().type(FeatureType.POINT).coordinates("[-11.96, 9.49]").build()
 
-        categoryComboOptionUid = "HllvX50cXC0";
-        eventUid = uidGenerator.generate();
-        enrollmentUid = uidGenerator.generate();
-        trackedEntityInstanceUid = uidGenerator.generate();
+        categoryComboOptionUid = "HllvX50cXC0"
+        eventUid = uidGenerator.generate()
+        enrollmentUid = uidGenerator.generate()
+        trackedEntityInstanceUid = uidGenerator.generate()
 
-        event1Uid = uidGenerator.generate();
-        enrollment1Uid = uidGenerator.generate();
-        trackedEntityInstance1Uid = uidGenerator.generate();
+        event1Uid = uidGenerator.generate()
+        enrollment1Uid = uidGenerator.generate()
+        trackedEntityInstance1Uid = uidGenerator.generate()
     }
 
     /*
@@ -139,52 +125,57 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
      * At this moment is necessary add into the "child programme" program the category combo : Implementing Partner
      * */
     //@Test
-    public void response_true_when_data_sync() throws Exception {
-        downloadMetadata();
+    @Throws(Exception::class)
+    fun response_true_when_data_sync() = runTest {
+        downloadMetadata()
 
 
         createDummyDataToPost(
-                orgUnitUid, programUid, programStageUid, trackedEntityUid, coordinates, geometry, eventUid,
-                enrollmentUid, trackedEntityInstanceUid, trackedEntityAttributeUid, dataElementUid);
+            orgUnitUid, programUid, programStageUid, trackedEntityUid, coordinates, geometry, eventUid,
+            enrollmentUid, trackedEntityInstanceUid, trackedEntityAttributeUid, dataElementUid
+        )
 
         createDummyDataToPost(
-                orgUnitUid, programUid, programStageUid, trackedEntityUid, coordinates, geometry,
-                event1Uid, enrollment1Uid, trackedEntityInstance1Uid, trackedEntityAttributeUid, dataElementUid);
+            orgUnitUid, programUid, programStageUid, trackedEntityUid, coordinates, geometry,
+            event1Uid, enrollment1Uid, trackedEntityInstance1Uid, trackedEntityAttributeUid, dataElementUid
+        )
 
-        d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
+        d2.trackedEntityModule().trackedEntityInstances().blockingUpload()
     }
 
     //@Test
-    public void add_and_post_tei_using_repositories() throws Exception {
+    @Throws(Exception::class)
+    fun add_and_post_tei_using_repositories() {
+        downloadMetadata()
 
-        downloadMetadata();
-
-        String childProgramUid = "IpHINAT79UW";
+        val childProgramUid = "IpHINAT79UW"
 
 
         // Organisation unit module -> get one organisation unit
-        OrganisationUnit organisationUnit = d2.organisationUnitModule().organisationUnits().one().blockingGet();
+        val organisationUnit = d2.organisationUnitModule().organisationUnits().one().blockingGet()
 
         // Program module -> get the program by its uid
-        Program program = d2.programModule().programs()
-                .uid(childProgramUid)
-                .blockingGet();
+        val program = d2.programModule().programs()
+            .uid(childProgramUid)
+            .blockingGet()
 
         // Tracked entity module -> add a new tracked entity instance
-        String teiUid = d2.trackedEntityModule().trackedEntityInstances()
-                .blockingAdd(TrackedEntityInstanceCreateProjection.builder()
-                        .organisationUnit(organisationUnit.uid())
-                        .trackedEntityType(program.trackedEntityType().uid())
-                        .build());
+        val teiUid = d2.trackedEntityModule().trackedEntityInstances()
+            .blockingAdd(
+                TrackedEntityInstanceCreateProjection.builder()
+                    .organisationUnit(organisationUnit?.uid())
+                    .trackedEntityType(program?.trackedEntityType()?.uid())
+                    .build()
+            )
 
         // Enrollment module -> enroll the tracked entity instance to the program
         d2.enrollmentModule().enrollments().blockingAdd(
-                EnrollmentCreateProjection.builder()
-                        .organisationUnit(organisationUnit.uid())
-                        .program(program.uid())
-                        .trackedEntityInstance(teiUid)
-                        .build()
-        );
+            EnrollmentCreateProjection.builder()
+                .organisationUnit(organisationUnit?.uid())
+                .program(program?.uid())
+                .trackedEntityInstance(teiUid)
+                .build()
+        )
 
         // Program module -> get the program tracked entity attributes of the program
         /*List<ProgramTrackedEntityAttribute> attributes = d2.programModule()
@@ -201,8 +192,7 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
                         .blockingSet(at.name() + " - value");
             }
         }*/
-
-        d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
+        d2.trackedEntityModule().trackedEntityInstances().blockingUpload()
     }
 
 
@@ -210,423 +200,436 @@ public class TrackedEntityInstancePostCallRealIntegrationShould extends BaseReal
      * If you want run this test you need config the correct uids in the server side.
      * At this moment is necessary add into the "child programme" program the category combo : Implementing Partner
      * */
-
     //@Test
-    public void pull_event_after_push_tracked_entity_instance_with_that_event() throws Exception {
-        downloadMetadata();
+    @Throws(Exception::class)
+    fun pull_event_after_push_tracked_entity_instance_with_that_event() = runTest {
+        downloadMetadata()
 
 
         createDummyDataToPost(
-                orgUnitUid, programUid, programStageUid, trackedEntityUid, coordinates, geometry,
-                eventUid, enrollmentUid, trackedEntityInstanceUid, trackedEntityAttributeUid, dataElementUid);
+            orgUnitUid, programUid, programStageUid, trackedEntityUid, coordinates, geometry,
+            eventUid, enrollmentUid, trackedEntityInstanceUid, trackedEntityAttributeUid, dataElementUid
+        )
 
-        postTrackedEntityInstances();
+        postTrackedEntityInstances()
 
-        TrackedEntityInstance pushedTrackedEntityInstance = getTrackedEntityInstanceFromDB(trackedEntityInstanceUid);
-        Enrollment pushedEnrollment = getEnrollmentsByTrackedEntityInstanceFromDb(trackedEntityInstanceUid);
-        Event pushedEvent = getEventsFromDb(eventUid);
+        val pushedTrackedEntityInstance = getTrackedEntityInstanceFromDB(
+            trackedEntityInstanceUid
+        )
+        val pushedEnrollment = getEnrollmentByTrackedEntityInstanceFromDb(trackedEntityInstanceUid)
+        val pushedEvent = getEventFromDb(eventUid)
 
-        d2.wipeModule().wipeEverything();
+        d2.wipeModule().wipeEverything()
 
-        downloadMetadata();
+        downloadMetadata()
 
 
         d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(trackedEntityInstanceUid)
-                .blockingDownload();
+            .blockingDownload()
 
-        TrackedEntityInstance downloadedTrackedEntityInstance = getTrackedEntityInstanceFromDB(trackedEntityInstanceUid);
-        Enrollment downloadedEnrollment = getEnrollmentsByTrackedEntityInstanceFromDb(trackedEntityInstanceUid);
-        Event downloadedEvent = getEventsFromDb(eventUid);
+        val downloadedTrackedEntityInstance = getTrackedEntityInstanceFromDB(
+            trackedEntityInstanceUid
+        )
+        val downloadedEnrollment = getEnrollmentByTrackedEntityInstanceFromDb(trackedEntityInstanceUid)
+        val downloadedEvent = getEventFromDb(eventUid)
 
-        assertPushAndDownloadTrackedEntityInstances(pushedTrackedEntityInstance, pushedEnrollment,
-                pushedEvent, downloadedTrackedEntityInstance, downloadedEnrollment,
-                downloadedEvent);
+        assertPushAndDownloadTrackedEntityInstances(
+            pushedTrackedEntityInstance, pushedEnrollment,
+            pushedEvent, downloadedTrackedEntityInstance, downloadedEnrollment,
+            downloadedEvent
+        )
     }
 
     //@Test
-    public void post_a_tei() throws Exception {
-        downloadMetadata();
-        d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(4).limitByOrgunit(true).blockingDownload();
+    @Throws(Exception::class)
+    fun post_a_tei() = runTest {
+        downloadMetadata()
+        d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(4).limitByOrgunit(true).blockingDownload()
 
-        TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
+        val tei = trackedEntityInstanceStore.selectFirst()
 
-        Geometry geometry = Geometry.builder().type(FeatureType.POINT).coordinates("[98.54, 4.65]").build();
+        val geometry = Geometry.builder().type(FeatureType.POINT).coordinates("[98.54, 4.65]").build()
 
-        String newUid = uidGenerator.generate();
+        val newUid = uidGenerator.generate()
 
-        insertATei(newUid, tei, geometry);
+        insertATei(newUid, tei!!, geometry)
 
-        d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
+        d2.trackedEntityModule().trackedEntityInstances().blockingUpload()
 
-        d2.wipeModule().wipeEverything();
-        downloadMetadata();
+        d2.wipeModule().wipeEverything()
+        downloadMetadata()
 
-        d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(newUid).blockingDownload();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(newUid).blockingDownload()
 
-        List<TrackedEntityInstance> response = d2.trackedEntityModule().trackedEntityInstances().byUid().eq(newUid).blockingGet();
+        val response = d2.trackedEntityModule().trackedEntityInstances().byUid().eq(newUid).blockingGet()
 
-        TrackedEntityInstance updatedTei = response.get(0);
+        val updatedTei = response[0]
 
-        assertThat(updatedTei.geometry()).isEqualTo(geometry);
+        Truth.assertThat(updatedTei.geometry()).isEqualTo(geometry)
     }
 
     //@Test
-    public void post_more_than_one_tei() throws Exception {
-        downloadMetadata();
-        d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(4).limitByOrgunit(true).blockingDownload();
+    @Throws(Exception::class)
+    fun post_more_than_one_tei() = runTest {
+        downloadMetadata()
+        d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(4).limitByOrgunit(true).blockingDownload()
 
-        TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
+        val tei = trackedEntityInstanceStore.selectFirst()!!
 
-        String newUid1 = uidGenerator.generate();
-        String newUid2 = uidGenerator.generate();
+        val newUid1 = uidGenerator.generate()
+        val newUid2 = uidGenerator.generate()
 
-        insertATei(newUid1, tei, tei.geometry());
-        insertATei(newUid2, tei, tei.geometry());
+        insertATei(newUid1, tei, tei.geometry()!!)
+        insertATei(newUid2, tei, tei.geometry()!!)
 
-        d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
+        d2.trackedEntityModule().trackedEntityInstances().blockingUpload()
 
-        d2.wipeModule().wipeEverything();
-        downloadMetadata();
+        d2.wipeModule().wipeEverything()
+        downloadMetadata()
 
-        d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(newUid1).blockingDownload();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(newUid1).blockingDownload()
 
-        List<TrackedEntityInstance> teiList = d2.trackedEntityModule().trackedEntityInstances().byUid().eq(newUid1).blockingGet();
+        val teiList = d2.trackedEntityModule().trackedEntityInstances().byUid().eq(newUid1).blockingGet()
 
-        assertThat(teiList.size() == 1).isTrue();
+        Truth.assertThat(teiList.size == 1).isTrue()
     }
 
     //@Test
-    public void post_teis_filtering_what_to_post() throws Exception {
-        downloadMetadata();
-        d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(4).limitByOrgunit(true).blockingDownload();
+    @Throws(Exception::class)
+    fun post_teis_filtering_what_to_post() = runTest {
+        downloadMetadata()
+        d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(4).limitByOrgunit(true).blockingDownload()
 
-        TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
+        val tei = trackedEntityInstanceStore.selectFirst()!!
 
-        String newUid1 = uidGenerator.generate();
-        String newUid2 = uidGenerator.generate();
+        val newUid1 = uidGenerator.generate()
+        val newUid2 = uidGenerator.generate()
 
-        insertATei(newUid1, tei, tei.geometry());
-        insertATei(newUid2, tei, tei.geometry());
+        insertATei(newUid1, tei, tei.geometry()!!)
+        insertATei(newUid2, tei, tei.geometry()!!)
 
-        d2.trackedEntityModule().trackedEntityInstances().byUid().eq(newUid1).blockingUpload();
+        d2.trackedEntityModule().trackedEntityInstances().byUid().eq(newUid1).blockingUpload()
 
-        d2.wipeModule().wipeEverything();
-        downloadMetadata();
+        d2.wipeModule().wipeEverything()
+        downloadMetadata()
 
-        d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(newUid1).blockingDownload();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(newUid1).blockingDownload()
 
-        List<TrackedEntityInstance> teiList = d2.trackedEntityModule().trackedEntityInstances().byUid().eq(newUid1).blockingGet();
+        val teiList = d2.trackedEntityModule().trackedEntityInstances().byUid().eq(newUid1).blockingGet()
 
-        assertThat(teiList.size() == 1).isTrue();
+        Truth.assertThat(teiList.size == 1).isTrue()
 
-        boolean teiDownloadedSuccessfully = true;
+        var teiDownloadedSuccessfully = true
         try {
-            d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(newUid2).blockingDownload();
-        } catch (Exception e) {
-            teiDownloadedSuccessfully = false;
+            d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(newUid2).blockingDownload()
+        } catch (e: Exception) {
+            teiDownloadedSuccessfully = false
         }
-        assertThat(teiDownloadedSuccessfully).isFalse();
+        Truth.assertThat(teiDownloadedSuccessfully).isFalse()
     }
 
-    /* Set Dhis2 server to 2.30 or up*/
-    //@Test
-    public void post_one_tei_and_delete_it() throws Exception {
-        downloadMetadata();
-        d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(1).limitByOrgunit(true).blockingDownload();
+    /* Set Dhis2 server to 2.30 or up*/ //@Test
+    @Throws(Exception::class)
+    fun post_one_tei_and_delete_it() = runTest {
+        downloadMetadata()
+        d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(1).limitByOrgunit(true).blockingDownload()
 
-        TrackedEntityInstance tei = trackedEntityInstanceStore.selectFirst();
+        val tei = trackedEntityInstanceStore.selectFirst()!!
 
-        Geometry geometry = Geometry.builder().type(FeatureType.POINT).coordinates("[98.54, 4.65]").build();
+        val geometry = Geometry.builder().type(FeatureType.POINT).coordinates("[98.54, 4.65]").build()
 
-        String newUid = uidGenerator.generate();
+        val newUid = uidGenerator.generate()
 
-        insertATei(newUid, tei, geometry);
+        insertATei(newUid, tei, geometry)
 
-        d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
-        d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(newUid).blockingDownload();
+        d2.trackedEntityModule().trackedEntityInstances().blockingUpload()
+        d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(newUid).blockingDownload()
 
-        List<TrackedEntityInstance> response = d2.trackedEntityModule().trackedEntityInstances().byUid().eq(newUid).blockingGet();
+        val response = d2.trackedEntityModule().trackedEntityInstances().byUid().eq(newUid).blockingGet()
 
-        assertThat(response.size()).isEqualTo(1);
+        Truth.assertThat(response.size).isEqualTo(1)
 
-        d2.trackedEntityModule().trackedEntityInstances().uid(newUid).blockingDelete();
+        d2.trackedEntityModule().trackedEntityInstances().uid(newUid).blockingDelete()
 
-        d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
+        d2.trackedEntityModule().trackedEntityInstances().blockingUpload()
 
-        TestObserver<TrackerD2Progress> testObserver =
-                d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(newUid).download().test();
-        testObserver.awaitTerminalEvent();
+        val testObserver =
+            d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(newUid).download().test()
+        testObserver.awaitTerminalEvent()
 
-        D2Error e = (D2Error) testObserver.errors().get(0);
+        val e = testObserver.errors()[0] as D2Error
 
-        assertThat(e.errorComponent()).isEqualTo(D2ErrorComponent.Server);
-        assertThat(e.errorCode()).isEqualTo(D2ErrorCode.API_UNSUCCESSFUL_RESPONSE);
+        Truth.assertThat(e.errorComponent()).isEqualTo(D2ErrorComponent.Server)
+        Truth.assertThat(e.errorCode()).isEqualTo(D2ErrorCode.API_UNSUCCESSFUL_RESPONSE)
     }
 
     //@Test
-    public void post_new_relationship_to_client_created_tei() throws Exception {
-        downloadMetadata();
-        d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(5).limitByOrgunit(true).blockingDownload();
+    @Throws(Exception::class)
+    fun post_new_relationship_to_client_created_tei() = runTest {
+        downloadMetadata()
+        d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(5).limitByOrgunit(true).blockingDownload()
 
-        TrackedEntityInstance teiA = trackedEntityInstanceStore.selectFirst();
-        RelationshipType relationshipType = d2.relationshipModule().relationshipTypes().blockingGet().iterator().next();
-        Geometry geometry = Geometry.builder().type(FeatureType.MULTI_POLYGON).coordinates("[98.54, 4.65]").build();
+        val teiA = trackedEntityInstanceStore.selectFirst()!!
+        val relationshipType = d2.relationshipModule().relationshipTypes().blockingGet().iterator().next()
+        val geometry = Geometry.builder().type(FeatureType.MULTI_POLYGON).coordinates("[98.54, 4.65]").build()
 
         // Create a TEI by copying an existing one
-        String teiBUid = uidGenerator.generate();
-        insertATei(teiBUid, teiA, geometry);
+        val teiBUid = uidGenerator.generate()
+        insertATei(teiBUid, teiA, geometry)
 
-        trackedEntityInstanceStore.setSyncState(teiA.uid(), State.TO_POST);
+        trackedEntityInstanceStore.setSyncState(teiA.uid(), State.TO_POST)
 
-        Relationship newRelationship = RelationshipHelper.teiToTeiRelationship(teiA.uid(),
-                teiBUid, relationshipType.uid());
-        d2.relationshipModule().relationships().blockingAdd(newRelationship);
+        val newRelationship = RelationshipHelper.teiToTeiRelationship(
+            teiA.uid(),
+            teiBUid, relationshipType.uid()
+        )
+        d2.relationshipModule().relationships().blockingAdd(newRelationship)
 
-        d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
+        d2.trackedEntityModule().trackedEntityInstances().blockingUpload()
 
-        d2.wipeModule().wipeEverything();
-        downloadMetadata();
+        d2.wipeModule().wipeEverything()
+        downloadMetadata()
 
-        d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(teiA.uid()).blockingDownload();
-        List<TrackedEntityInstance> responseTeiA = d2.trackedEntityModule().trackedEntityInstances().byUid().eq(teiA.uid()).blockingGet();
-        assertThat(responseTeiA.size() == 1).isTrue();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(teiA.uid()).blockingDownload()
+        val responseTeiA = d2.trackedEntityModule().trackedEntityInstances().byUid().eq(
+            teiA.uid()
+        ).blockingGet()
+        Truth.assertThat(responseTeiA.size == 1).isTrue()
 
 
-        d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(teiBUid).blockingDownload();
-        List<TrackedEntityInstance> responseTeiB = d2.trackedEntityModule().trackedEntityInstances().byUid().eq(teiBUid).blockingGet();
-        assertThat(responseTeiB.size() == 1).isTrue();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(teiBUid).blockingDownload()
+        val responseTeiB = d2.trackedEntityModule().trackedEntityInstances().byUid().eq(teiBUid).blockingGet()
+        Truth.assertThat(responseTeiB.size == 1).isTrue()
 
-        List<Relationship> relationships =
-                d2.relationshipModule().relationships().getByItem(RelationshipHelper.teiItem(teiA.uid()), true, false);
-        assertThat(relationships.size() > 0).isTrue();
+        val relationships =
+            d2.relationshipModule().relationships().getByItem(RelationshipHelper.teiItem(teiA.uid()), true, false)
+        Truth.assertThat(relationships.size > 0).isTrue()
 
-        boolean relationshipFound = false;
-        for (Relationship relationship : relationships) {
-            if (!relationshipType.uid().equals(relationship.relationshipType())) {
-                break;
+        var relationshipFound = false
+        for (relationship in relationships) {
+            if (relationshipType.uid() != relationship.relationshipType()) {
+                break
             }
-            String fromUid = getTEIUidFromRelationshipItem(relationship.from());
-            String toUid = getTEIUidFromRelationshipItem(relationship.to());
+            val fromUid = getTEIUidFromRelationshipItem(relationship.from())
+            val toUid = getTEIUidFromRelationshipItem(relationship.to())
 
-            if (teiA.uid().equals(fromUid) && teiBUid.equals(toUid)) {
-                relationshipFound = true;
+            if (teiA.uid() == fromUid && teiBUid == toUid) {
+                relationshipFound = true
             }
         }
-        assertThat(relationshipFound).isTrue();
+        Truth.assertThat(relationshipFound).isTrue()
     }
 
     //@Test
-    public void create_tei_to_tei_relationship() throws Exception {
-        downloadMetadata();
+    @Throws(Exception::class)
+    fun create_tei_to_tei_relationship() = runTest {
+        downloadMetadata()
 
-        d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(5).blockingDownload();
-        List<TrackedEntityInstance> trackedEntityInstances = trackedEntityInstanceStore.selectAll();
-        assertThat(trackedEntityInstances.size() >= 5).isTrue();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(5).blockingDownload()
+        val trackedEntityInstances = trackedEntityInstanceStore.selectAll()
+        Truth.assertThat(trackedEntityInstances.size >= 5).isTrue()
 
-        TrackedEntityInstance t0 = trackedEntityInstances.get(0);
-        TrackedEntityInstance t1 = trackedEntityInstances.get(1);
+        val t0 = trackedEntityInstances[0]
+        val t1 = trackedEntityInstances[1]
 
-        RelationshipType relationshipType = d2.relationshipModule().relationshipTypes().blockingGet().iterator().next();
+        val relationshipType = d2.relationshipModule().relationshipTypes().blockingGet().iterator().next()
 
-        d2.relationshipModule().relationships().blockingAdd(RelationshipHelper.teiToTeiRelationship(t0.uid(), t1.uid(),
-                relationshipType.uid()));
+        d2.relationshipModule().relationships().blockingAdd(
+            RelationshipHelper.teiToTeiRelationship(
+                t0.uid(), t1.uid(),
+                relationshipType.uid()
+            )
+        )
 
-        d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
+        d2.trackedEntityModule().trackedEntityInstances().blockingUpload()
     }
 
     //@Test
-    public void create_and_delete_tei_to_tei_relationship() throws Exception {
-        downloadMetadata();
+    @Throws(Exception::class)
+    fun create_and_delete_tei_to_tei_relationship() = runTest {
+        downloadMetadata()
 
-        d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(10).blockingDownload();
-        List<TrackedEntityInstance> trackedEntityInstances = trackedEntityInstanceStore.selectAll();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(10).blockingDownload()
+        val trackedEntityInstances = trackedEntityInstanceStore.selectAll()
 
-        assertThat(trackedEntityInstances.size() == 10).isTrue();
+        Truth.assertThat(trackedEntityInstances.size == 10).isTrue()
 
-        TrackedEntityInstance t0 = trackedEntityInstances.get(0);
-        TrackedEntityInstance t1 = trackedEntityInstances.get(1);
+        val t0 = trackedEntityInstances[0]
+        val t1 = trackedEntityInstances[1]
 
-        RelationshipModule relationshipModule = d2.relationshipModule();
-        RelationshipTypeCollectionRepository typesRepository = relationshipModule.relationshipTypes();
-        RelationshipCollectionRepository relationshipsRepository = relationshipModule.relationships();
+        val relationshipModule = d2.relationshipModule()
+        val typesRepository = relationshipModule.relationshipTypes()
+        val relationshipsRepository = relationshipModule.relationships()
 
-        RelationshipType relationshipType = typesRepository.blockingGet().iterator().next();
+        val relationshipType = typesRepository.blockingGet().iterator().next()
 
-        Relationship newRelationship = RelationshipHelper.teiToTeiRelationship(t0.uid(), t1.uid(),
-                relationshipType.uid());
-        relationshipsRepository.blockingAdd(newRelationship);
+        val newRelationship = RelationshipHelper.teiToTeiRelationship(
+            t0.uid(), t1.uid(),
+            relationshipType.uid()
+        )
+        relationshipsRepository.blockingAdd(newRelationship)
 
-        d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
+        d2.trackedEntityModule().trackedEntityInstances().blockingUpload()
 
-        relationshipsRepository.uid(newRelationship.uid()).blockingDelete();
+        relationshipsRepository.uid(newRelationship.uid()).blockingDelete()
 
-        d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
+        d2.trackedEntityModule().trackedEntityInstances().blockingUpload()
     }
 
     //@Test
-    public void post_a_tei_and_delete_one_event() throws Exception {
-        downloadMetadata();
-        d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq("LxMVYhJm3Jp").blockingDownload();
+    @Throws(Exception::class)
+    fun post_a_tei_and_delete_one_event() = runTest {
+        downloadMetadata()
+        d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq("LxMVYhJm3Jp").blockingDownload()
 
-        Event event = eventStore.selectFirst();
-        String eventUid = event.uid();
+        val event = eventStore.selectFirst()!!
+        val eventUid = event.uid()
 
-        d2.eventModule().events().uid(eventUid).blockingDelete();
+        d2.eventModule().events().uid(eventUid).blockingDelete()
 
-        d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
+        d2.trackedEntityModule().trackedEntityInstances().blockingUpload()
 
-        d2.wipeModule().wipeEverything();
-        downloadMetadata();
-        d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq("LxMVYhJm3Jp").blockingDownload();
+        d2.wipeModule().wipeEverything()
+        downloadMetadata()
+        d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq("LxMVYhJm3Jp").blockingDownload()
 
-        Boolean deleted = true;
-        for (Event eventToCheck : eventStore.selectAll()) {
-            if (eventToCheck.uid().equals(eventUid)) {
-                deleted = false;
+        var deleted = true
+        for (eventToCheck in eventStore.selectAll()) {
+            if (eventToCheck.uid() == eventUid) {
+                deleted = false
             }
         }
 
-        assertThat(deleted).isTrue();
+        Truth.assertThat(deleted).isTrue()
     }
 
-    private void insertATei(String uid, TrackedEntityInstance tei, Geometry geometry) {
-        TrackedEntityInstance trackedEntityInstance = tei.toBuilder()
-                .uid(uid)
-                .geometry(geometry)
-                .syncState(State.TO_POST)
-                .aggregatedSyncState(State.TO_POST)
-                .build();
+    private suspend fun insertATei(uid: String, tei: TrackedEntityInstance, geometry: Geometry) {
+        val trackedEntityInstance = tei.toBuilder()
+            .uid(uid)
+            .geometry(geometry)
+            .syncState(State.TO_POST)
+            .aggregatedSyncState(State.TO_POST)
+            .build()
 
-        trackedEntityInstanceStore.insert(trackedEntityInstance);
+        trackedEntityInstanceStore.insert(trackedEntityInstance)
     }
 
-    private void createDummyDataToPost(String orgUnitUid, String programUid, String programStageUid,
-                                       String trackedEntityUid, String coordinates, Geometry geometry,
-                                       String eventUid, String enrollmentUid, String trackedEntityInstanceUid,
-                                       String trackedEntityAttributeUid, String dataElementUid) {
+    private suspend fun createDummyDataToPost(
+        orgUnitUid: String, programUid: String, programStageUid: String,
+        trackedEntityUid: String, coordinates: String, geometry: Geometry,
+        eventUid: String, enrollmentUid: String, trackedEntityInstanceUid: String,
+        trackedEntityAttributeUid: String, dataElementUid: String
+    ) {
+        val refDate = currentDateMinusTwoHoursTenMinutes
 
-        Date refDate = getCurrentDateMinusTwoHoursTenMinutes();
+        val trackedEntityInstance = TrackedEntityInstance.builder()
+            .uid(trackedEntityInstanceUid)
+            .created(refDate)
+            .lastUpdated(refDate)
+            .organisationUnit(orgUnitUid)
+            .trackedEntityType(trackedEntityUid)
+            .geometry(geometry)
+            .syncState(State.TO_POST)
+            .aggregatedSyncState(State.TO_POST)
+            .build()
 
-        TrackedEntityInstance trackedEntityInstance = TrackedEntityInstance.builder()
-                .uid(trackedEntityInstanceUid)
-                .created(refDate)
-                .lastUpdated(refDate)
-                .organisationUnit(orgUnitUid)
-                .trackedEntityType(trackedEntityUid)
-                .geometry(geometry)
-                .syncState(State.TO_POST)
-                .aggregatedSyncState(State.TO_POST)
-                .build();
+        trackedEntityInstanceStore.insert(trackedEntityInstance)
 
-        trackedEntityInstanceStore.insert(trackedEntityInstance);
+        val enrollment = Enrollment.builder()
+            .uid(enrollmentUid).created(refDate).lastUpdated(refDate).organisationUnit(orgUnitUid)
+            .program(programUid).incidentDate(refDate).completedDate(refDate).enrollmentDate(refDate)
+            .followUp(java.lang.Boolean.FALSE).status(EnrollmentStatus.ACTIVE)
+            .trackedEntityInstance(trackedEntityInstanceUid)
+            .geometry(Geometry.builder().type(FeatureType.POINT).coordinates("[10.33, 12.231]").build())
+            .syncState(State.TO_POST).aggregatedSyncState(State.TO_POST).build()
 
-        Enrollment enrollment = Enrollment.builder()
-                .uid(enrollmentUid).created(refDate).lastUpdated(refDate).organisationUnit(orgUnitUid)
-                .program(programUid).incidentDate(refDate).completedDate(refDate).enrollmentDate(refDate)
-                .followUp(Boolean.FALSE).status(EnrollmentStatus.ACTIVE).trackedEntityInstance(trackedEntityInstanceUid)
-                .geometry(Geometry.builder().type(FeatureType.POINT).coordinates("[10.33, 12.231]").build())
-                .syncState(State.TO_POST).aggregatedSyncState(State.TO_POST).build();
+        enrollmentStore.insert(enrollment)
 
-        enrollmentStore.insert(enrollment);
+        val event = Event.builder()
+            .uid(eventUid).enrollment(enrollmentUid).created(refDate).lastUpdated(refDate)
+            .status(EventStatus.ACTIVE).program(programUid)
+            .geometry(Geometry.builder().type(FeatureType.POINT).coordinates("[12.21, 13.21]").build())
+            .programStage(programStageUid).organisationUnit(orgUnitUid).eventDate(refDate).dueDate(refDate)
+            .completedDate(refDate).syncState(State.TO_POST).attributeOptionCombo(categoryComboOptionUid)
+            .build()
 
-        Event event = Event.builder()
-                .uid(eventUid).enrollment(enrollmentUid).created(refDate).lastUpdated(refDate)
-                .status(EventStatus.ACTIVE).program(programUid)
-                .geometry(Geometry.builder().type(FeatureType.POINT).coordinates("[12.21, 13.21]").build())
-                .programStage(programStageUid).organisationUnit(orgUnitUid).eventDate(refDate).dueDate(refDate)
-                .completedDate(refDate).syncState(State.TO_POST).attributeOptionCombo(categoryComboOptionUid)
-                .build();
+        eventStore.insert(event)
 
-        eventStore.insert(event);
+        val trackedEntityDataValue = TrackedEntityDataValue.builder()
+            .event(eventUid)
+            .created(refDate)
+            .lastUpdated(refDate)
+            .dataElement(dataElementUid)
+            .storedBy("user_name")
+            .value("12")
+            .providedElsewhere(java.lang.Boolean.FALSE)
+            .build()
 
-        TrackedEntityDataValue trackedEntityDataValue = TrackedEntityDataValue.builder()
-                .event(eventUid)
-                .created(refDate)
-                .lastUpdated(refDate)
-                .dataElement(dataElementUid)
-                .storedBy("user_name")
-                .value("12")
-                .providedElsewhere(Boolean.FALSE)
-                .build();
+        trackedEntityDataValueStore.insert(trackedEntityDataValue)
 
-        trackedEntityDataValueStore.insert(trackedEntityDataValue);
+        val trackedEntityAttributeValue = TrackedEntityAttributeValue.builder()
+            .value("new2").created(refDate).lastUpdated(refDate).trackedEntityAttribute(trackedEntityAttributeUid)
+            .trackedEntityInstance(trackedEntityInstanceUid).build()
 
-        TrackedEntityAttributeValue trackedEntityAttributeValue = TrackedEntityAttributeValue.builder()
-                .value("new2").created(refDate).lastUpdated(refDate).trackedEntityAttribute(trackedEntityAttributeUid)
-                .trackedEntityInstance(trackedEntityInstanceUid).build();
-
-        trackedEntityAttributeValueStore.insert(trackedEntityAttributeValue);
+        trackedEntityAttributeValueStore.insert(trackedEntityAttributeValue)
     }
 
-    private void assertPushAndDownloadTrackedEntityInstances(
-            TrackedEntityInstance pushedTrackedEntityInstance, Enrollment pushedEnrollment,
-            Event pushedEvent, TrackedEntityInstance downloadedTrackedEntityInstance,
-            Enrollment downloadedEnrollment, Event downloadedEvent) {
-        assertThat(pushedTrackedEntityInstance.uid().equals(downloadedTrackedEntityInstance.uid())).isTrue();
-        assertThat(pushedTrackedEntityInstance.uid().equals(downloadedTrackedEntityInstance.uid())).isTrue();
-        assertThat(pushedEnrollment.uid().equals(downloadedEnrollment.uid())).isTrue();
-        assertThat(pushedEvent.uid().equals(downloadedEvent.uid())).isTrue();
-        assertThat(pushedEvent.uid().equals(downloadedEvent.uid())).isTrue();
-        verifyEventCategoryAttributes(pushedEvent, downloadedEvent);
+    private fun assertPushAndDownloadTrackedEntityInstances(
+        pushedTrackedEntityInstance: TrackedEntityInstance, pushedEnrollment: Enrollment,
+        pushedEvent: Event, downloadedTrackedEntityInstance: TrackedEntityInstance,
+        downloadedEnrollment: Enrollment, downloadedEvent: Event
+    ) {
+        Truth.assertThat(pushedTrackedEntityInstance.uid() == downloadedTrackedEntityInstance.uid()).isTrue()
+        Truth.assertThat(pushedTrackedEntityInstance.uid() == downloadedTrackedEntityInstance.uid()).isTrue()
+        Truth.assertThat(pushedEnrollment.uid() == downloadedEnrollment.uid()).isTrue()
+        Truth.assertThat(pushedEvent.uid() == downloadedEvent.uid()).isTrue()
+        Truth.assertThat(pushedEvent.uid() == downloadedEvent.uid()).isTrue()
+        verifyEventCategoryAttributes(pushedEvent, downloadedEvent)
     }
 
-    private TrackedEntityInstance getTrackedEntityInstanceFromDB(String trackedEntityInstanceUid) {
-        TrackedEntityInstance trackedEntityInstance = null;
-        TrackedEntityInstance storedTrackedEntityInstance = trackedEntityInstanceStore.selectByUid(trackedEntityInstanceUid);
-        if (storedTrackedEntityInstance.uid().equals(trackedEntityInstanceUid)) {
-            trackedEntityInstance = storedTrackedEntityInstance;
+    private suspend fun getTrackedEntityInstanceFromDB(trackedEntityInstanceUid: String): TrackedEntityInstance {
+        return trackedEntityInstanceStore.selectByUid(trackedEntityInstanceUid)!!
+    }
+
+    private suspend fun getEnrollmentByTrackedEntityInstanceFromDb(trackedEntityInstanceUid: String): Enrollment =
+        enrollmentStore.selectWhere(
+            WhereClauseBuilder().appendKeyStringValue(
+                EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
+                trackedEntityInstanceUid
+            ).build()
+        ).first()
+
+    private suspend fun getEventFromDb(eventUid: String): Event =
+        eventStore.selectAll().first { it.uid() == eventUid }
+
+
+    @Throws(Exception::class)
+    private fun postTrackedEntityInstances() {
+        d2.trackedEntityModule().trackedEntityInstances().blockingUpload()
+    }
+
+    @Throws(Exception::class)
+    private fun downloadMetadata() {
+        d2.userModule().logIn(username, password, url).blockingGet()
+
+        d2.metadataModule().blockingDownload()
+    }
+
+    private fun verifyEventCategoryAttributes(event: Event, downloadedEvent: Event): Boolean {
+        return event.uid() == downloadedEvent.uid() &&
+                event.attributeOptionCombo() == downloadedEvent.attributeOptionCombo()
+    }
+
+    private val currentDateMinusTwoHoursTenMinutes: Date
+        get() {
+            val newTime = (Date()).time - (130 * 60 * 1000)
+            return Date(newTime)
         }
-        return trackedEntityInstance;
-    }
 
-    private Enrollment getEnrollmentsByTrackedEntityInstanceFromDb(String trackedEntityInstanceUid) {
-        EnrollmentStore enrollmentStore = new EnrollmentStoreImpl(d2.databaseAdapter());
-        Enrollment enrollment = null;
-        List<Enrollment> storedEnrollments = enrollmentStore.selectWhere(new WhereClauseBuilder()
-                .appendKeyStringValue(EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE, trackedEntityInstanceUid).build());
-        for (Enrollment storedEnrollment : storedEnrollments) {
-            if (storedEnrollment.uid().equals(enrollmentUid)) {
-                enrollment = storedEnrollment;
-            }
+    private fun getTEIUidFromRelationshipItem(item: RelationshipItem?): String? {
+        if (item?.trackedEntityInstance() != null) {
+            return item.trackedEntityInstance()?.trackedEntityInstance()
         }
-        return enrollment;
-    }
-
-    private Event getEventsFromDb(String eventUid) {
-        Event event = null;
-        List<Event> storedEvents = eventStore.selectAll();
-        for (Event storedEvent : storedEvents) {
-            if (storedEvent.uid().equals(eventUid)) {
-                event = storedEvent;
-            }
-        }
-        return event;
-    }
-
-    private void postTrackedEntityInstances() throws Exception {
-        d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
-    }
-
-    private void downloadMetadata() throws Exception {
-        d2.userModule().logIn(username, password, url).blockingGet();
-
-        d2.metadataModule().blockingDownload();
-    }
-
-    private boolean verifyEventCategoryAttributes(Event event, Event downloadedEvent) {
-        return event.uid().equals(downloadedEvent.uid()) &&
-                event.attributeOptionCombo().equals(downloadedEvent.attributeOptionCombo());
-    }
-
-    private Date getCurrentDateMinusTwoHoursTenMinutes() {
-        Long newTime = (new Date()).getTime() - (130 * 60 * 1000);
-        return new Date(newTime);
-    }
-
-    private String getTEIUidFromRelationshipItem(RelationshipItem item) {
-        if (item != null && item.trackedEntityInstance() != null) {
-            return item.trackedEntityInstance().trackedEntityInstance();
-        }
-        return null;
+        return null
     }
 }

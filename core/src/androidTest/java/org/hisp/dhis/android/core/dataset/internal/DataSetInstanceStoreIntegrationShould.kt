@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.dataset.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
@@ -44,7 +45,7 @@ class DataSetInstanceStoreIntegrationShould : BaseMockIntegrationTestMetadataDis
     private lateinit var dataValueStore: DataValueStore
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         dataSetInstanceStore = DataSetInstanceStoreImpl(databaseAdapter)
         dataValueStore = DataValueStoreImpl(databaseAdapter)
 
@@ -52,12 +53,12 @@ class DataSetInstanceStoreIntegrationShould : BaseMockIntegrationTestMetadataDis
     }
 
     @After
-    fun tearDown() {
+    fun tearDown() = runTest {
         dataValueStore.delete()
     }
 
     @Test
-    fun should_prioritize_data_value_sync_states() {
+    fun should_prioritize_data_value_sync_states() = runTest {
         mapOf(
             listOf(State.SYNCED, State.TO_POST) to State.TO_POST,
             listOf(State.SYNCED, State.ERROR) to State.ERROR,
@@ -73,7 +74,7 @@ class DataSetInstanceStoreIntegrationShould : BaseMockIntegrationTestMetadataDis
         }
     }
 
-    private fun insertDataValuesWithStates(state1: State, state2: State) {
+    private suspend fun insertDataValuesWithStates(state1: State, state2: State) {
         val dataSetUid = "lyLU2wR22tC"
 
         val dataset = d2.dataSetModule().dataSets()

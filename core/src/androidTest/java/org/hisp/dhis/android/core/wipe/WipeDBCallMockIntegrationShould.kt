@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.wipe
 
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.data.database.DatabaseAssert.Companion.assertThatDatabase
 import org.hisp.dhis.android.core.data.datastore.KeyValuePairSamples
 import org.hisp.dhis.android.core.data.maps.MapLayerImageryProviderSamples
@@ -64,7 +65,7 @@ import org.junit.runner.RunWith
 class WipeDBCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() {
 
     @Test
-    fun have_empty_database_when_wipe_db_after_sync_data() {
+    fun have_empty_database_when_wipe_db_after_sync_data() = runTest {
         activateSMSModule()
         givenAMetadataInDatabase()
         givenDataInDatabase()
@@ -93,7 +94,7 @@ class WipeDBCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher()
         d2.dataStoreModule().dataStoreDownloader().blockingDownload()
     }
 
-    private fun givenOthersInDatabase() {
+    private suspend fun givenOthersInDatabase() {
         D2ErrorStoreImpl(databaseAdapter).insert(
             D2Error.builder()
                 .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)

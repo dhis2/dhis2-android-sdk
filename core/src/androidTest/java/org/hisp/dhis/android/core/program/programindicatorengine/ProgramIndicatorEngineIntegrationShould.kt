@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.program.programindicatorengine
 
 import androidx.test.runner.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.category.CategoryCombo
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo
 import org.hisp.dhis.android.core.category.internal.CreateCategoryComboUtils
@@ -87,7 +88,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         @BeforeClass
         @JvmStatic
         @Throws(Exception::class)
-        fun setUp() {
+        fun setUp() = runTest {
             setUpClass()
 
             val orgunit = OrganisationUnit.builder().uid(orgunitUid).build()
@@ -134,7 +135,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
 
     @Before
     @Throws(Exception::class)
-    fun setUpTest() {
+    fun setUpTest() = runTest {
         programIndicatorEngine = d2.programModule().programIndicatorEngine()
 
         helper.createTrackedEntity(teiUid, orgunitUid, teiTypeUid)
@@ -147,7 +148,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
     }
 
     @Test
-    fun evaluate_single_dataelement() {
+    fun evaluate_single_dataelement() = runTest {
         createEnrollment()
         createTrackerEvent(eventUid = event1, programStageUid = programStage1, eventDate = Date())
         insertTrackedEntityDataValue(event1, dataElement1, "4")
@@ -157,7 +158,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
     }
 
     @Test
-    fun evaluate_single_text_dataelement() {
+    fun evaluate_single_text_dataelement() = runTest {
         createEnrollment()
         createTrackerEvent(eventUid = event1, programStageUid = programStage1, eventDate = Date())
         insertTrackedEntityDataValue(event1, dataElement1, "text data-value")
@@ -167,7 +168,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
     }
 
     @Test
-    fun evaluate_addition_two_dataelement() {
+    fun evaluate_addition_two_dataelement() = runTest {
         createEnrollment()
         createTrackerEvent(eventUid = event1, programStageUid = programStage1)
         insertTrackedEntityDataValue(event1, dataElement1, "5")
@@ -178,7 +179,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
     }
 
     @Test
-    fun evaluate_division_two_dataelement() {
+    fun evaluate_division_two_dataelement() = runTest {
         createEnrollment()
         createTrackerEvent(eventUid = event1, programStageUid = programStage1)
         insertTrackedEntityDataValue(event1, dataElement1, "3")
@@ -189,7 +190,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
     }
 
     @Test
-    fun evaluate_last_value_in_repeatable_stages() {
+    fun evaluate_last_value_in_repeatable_stages() = runTest {
         createEnrollment()
         createTrackerEvent(
             eventUid = event1,
@@ -218,7 +219,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
     }
 
     @Test
-    fun evaluate_last_value_indicators_same_date() {
+    fun evaluate_last_value_indicators_same_date() = runTest {
         createEnrollment()
         val eventDate = twoDaysBefore()
         createTrackerEvent(
@@ -248,7 +249,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
     }
 
     @Test
-    fun evaluate_operation_several_stages() {
+    fun evaluate_operation_several_stages() = runTest {
         createEnrollment()
         createTrackerEvent(event1, programStage1)
         createTrackerEvent(event2, programStage2)
@@ -271,7 +272,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
     }
 
     @Test
-    fun evaluate_event_count_variable() {
+    fun evaluate_event_count_variable() = runTest {
         createEnrollment()
         createTrackerEvent(event1, programStage1)
         createTrackerEvent(event2, programStage2)
@@ -285,7 +286,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
     }
 
     @Test
-    fun evaluate_expression_with_d2_functions() {
+    fun evaluate_expression_with_d2_functions() = runTest {
         createEnrollment()
         createTrackerEvent(event1, programStage1)
         insertTrackedEntityDataValue(event1, dataElement1, "4.8")
@@ -299,7 +300,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
 
     @Test
     @Throws(ParseException::class)
-    fun evaluate_d2_functions_with_dates() {
+    fun evaluate_d2_functions_with_dates() = runTest {
         val enrollmentDate = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").parse("2018-05-05T00:00:00.000")
         val incidentDate = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").parse("2018-05-21T00:00:00.000")
         createEnrollment(enrollmentDate, incidentDate)
@@ -309,7 +310,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
     }
 
     @Test
-    fun evaluate_single_event() {
+    fun evaluate_single_event() = runTest {
         createSingleEvent(eventUid = event1, programStageUid = programStage1)
         insertTrackedEntityDataValue(event1, dataElement1, "3.0")
         insertTrackedEntityDataValue(event1, dataElement2, "4.0")
@@ -318,7 +319,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         assertThat(result).isEqualTo("7")
     }
 
-    private fun createEnrollment(enrollmentDate: Date? = null, incidentDate: Date? = null) {
+    private suspend fun createEnrollment(enrollmentDate: Date? = null, incidentDate: Date? = null) {
         helper.createEnrollment(teiUid, enrollmentUid, programUid, orgunitUid, enrollmentDate, incidentDate)
     }
 
@@ -328,7 +329,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         deleted: Boolean = false,
         eventDate: Date? = null,
         lastUpdated: Date? = null,
-    ) {
+    ) = runTest {
         helper.createEvent(
             eventUid = eventUid,
             programUid = programUid,
@@ -347,7 +348,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         deleted: Boolean = false,
         eventDate: Date? = null,
         lastUpdated: Date? = null,
-    ) {
+    ) = runTest {
         helper.createEvent(
             eventUid = eventUid,
             programUid = programUid,
@@ -360,19 +361,19 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         )
     }
 
-    private fun setProgramIndicatorExpression(expression: String) {
+    private suspend fun setProgramIndicatorExpression(expression: String) {
         insertProgramIndicator(expression, AggregationType.AVERAGE)
     }
 
-    private fun insertProgramIndicator(expression: String, aggregationType: AggregationType) {
+    private suspend fun insertProgramIndicator(expression: String, aggregationType: AggregationType) {
         helper.insertProgramIndicator(programIndicatorUid, programUid, expression, aggregationType)
     }
 
-    private fun insertTrackedEntityDataValue(eventUid: String, dataElementUid: String, value: String) {
+    private suspend fun insertTrackedEntityDataValue(eventUid: String, dataElementUid: String, value: String) {
         helper.insertTrackedEntityDataValue(eventUid, dataElementUid, value)
     }
 
-    private fun insertTrackedEntityAttributeValue(attributeUid: String, value: String) {
+    private suspend fun insertTrackedEntityAttributeValue(attributeUid: String, value: String) {
         helper.insertTrackedEntityAttributeValue(teiUid, attributeUid, value)
     }
 }

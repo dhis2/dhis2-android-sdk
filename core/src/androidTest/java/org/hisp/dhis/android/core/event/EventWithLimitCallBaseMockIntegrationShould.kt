@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.event
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
 import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStoreImpl
@@ -49,7 +50,7 @@ abstract class EventWithLimitCallBaseMockIntegrationShould : BaseMockIntegration
     private val syncStore = SynchronizationSettingStoreImpl(databaseAdapter)
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         initSyncParams = syncStore.selectFirst()!!
         val testParams = initSyncParams.toBuilder().trackerImporterVersion(importerVersion)
             .trackerExporterVersion(exporterVersion).build()
@@ -58,14 +59,14 @@ abstract class EventWithLimitCallBaseMockIntegrationShould : BaseMockIntegration
     }
 
     @After
-    fun tearDown() {
+    fun tearDown() = runTest {
         d2.wipeModule().wipeData()
         syncStore.delete()
         syncStore.insert(initSyncParams)
     }
 
     @Test
-    fun download_events() {
+    fun download_events() = runTest {
         val eventLimitByOrgUnit = 1
         dhis2MockServer.enqueueSystemInfoResponse()
         dhis2MockServer.enqueueMockResponse(downloadEventsFile)
@@ -76,7 +77,7 @@ abstract class EventWithLimitCallBaseMockIntegrationShould : BaseMockIntegration
     }
 
     // @Test TODO https://jira.dhis2.org/browse/ANDROSDK-1328
-    fun download_events_by_uid_limited_by_one() {
+    fun download_events_by_uid_limited_by_one() = runTest {
         val eventLimitByOrgUnit = 1
         dhis2MockServer.enqueueSystemInfoResponse()
         dhis2MockServer.enqueueMockResponse(downloadEventsByUidLimitedByOneFile)

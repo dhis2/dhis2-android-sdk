@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.configuration.internal
 
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
@@ -89,7 +90,7 @@ class DatabaseConfigurationMigrationIntegrationShould {
     }
 
     @Test
-    fun delete_empty_database() {
+    fun delete_empty_database() = runTest {
         val databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter()
         databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, DatabaseConfigurationMigration.OLD_DBNAME, false)
         assertThat(context.databaseList().contains(DatabaseConfigurationMigration.OLD_DBNAME)).isTrue()
@@ -101,7 +102,7 @@ class DatabaseConfigurationMigrationIntegrationShould {
     }
 
     @Test
-    fun rename_database_with_credentials() {
+    fun rename_database_with_credentials() = runTest {
         val databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter()
         databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, DatabaseConfigurationMigration.OLD_DBNAME, false)
 
@@ -119,7 +120,7 @@ class DatabaseConfigurationMigrationIntegrationShould {
     }
 
     @Test
-    fun return_empty_new_configuration_if_existing_empty_database() {
+    fun return_empty_new_configuration_if_existing_empty_database() = runTest {
         val databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter()
         databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, DatabaseConfigurationMigration.OLD_DBNAME, false)
 
@@ -129,7 +130,7 @@ class DatabaseConfigurationMigrationIntegrationShould {
     }
 
     @Test
-    fun migrate_from_old_database_configuration() {
+    fun migrate_from_old_database_configuration() = runTest {
         val oldDatabaseConfiguration = DatabasesConfigurationOldDB(
             loggedServerUrl = serverUrlWithApi,
             servers = listOf(
@@ -147,7 +148,7 @@ class DatabaseConfigurationMigrationIntegrationShould {
             ),
         )
 
-        DatabaseConfigurationInsecureStoreOld.get(insecureStore).set(oldDatabaseConfiguration)
+        DatabaseConfigurationInsecureStoreOld[insecureStore].set(oldDatabaseConfiguration)
 
         val rootSdkResources = FileResourceDirectoryHelper.getRootFileResourceDirectory(context)
         File(rootSdkResources, "sample.txt").createNewFile()
@@ -172,15 +173,15 @@ class DatabaseConfigurationMigrationIntegrationShould {
     }
 
     @Test
-    fun migrate_empty_from_old_database_configuration() {
-        DatabaseConfigurationInsecureStoreOld.get(insecureStore).remove()
+    fun migrate_empty_from_old_database_configuration() = runTest {
+        DatabaseConfigurationInsecureStoreOld[insecureStore].remove()
 
         migration.apply()
 
         assertThat(databasesConfigurationStore.get()?.accounts()).isEmpty()
     }
 
-    private fun setCredentialsAndServerUrl(databaseAdapter: DatabaseAdapter) {
+    private fun setCredentialsAndServerUrl(databaseAdapter: DatabaseAdapter) = runTest {
         databaseAdapter.execSQL("CREATE TABLE UserCredentials (_id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT)")
         databaseAdapter.setForeignKeyConstraintsEnabled(false)
         databaseAdapter.execSQL("INSERT INTO UserCredentials (username) VALUES ('${credentials.username()}')")

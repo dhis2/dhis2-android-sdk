@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.program.internal
 
 import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo
 import org.hisp.dhis.android.core.category.internal.CreateCategoryComboUtils
@@ -52,20 +51,19 @@ import org.junit.runner.RunWith
 import org.mockito.internal.util.collections.Sets
 
 @RunWith(D2JunitRunner::class)
-@OptIn(ExperimentalCoroutinesApi::class)
 class ProgramEndpointCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
 
     @Test
-    fun persist_program_when_call() {
+    fun persist_program_when_call() = runTest {
         val store = ProgramStoreImpl(databaseAdapter)
 
         assertThat(store.count()).isEqualTo(3)
-        assertThat(store.selectByUid(programUid)!!.toBuilder().id(null).build())
+        assertThat(store.selectByUid(PROGRAM_UID)!!.toBuilder().id(null).build())
             .isEqualTo(ProgramSamples.getAntenatalProgram())
     }
 
     @Test
-    fun persist_program_rule_variables_on_call() {
+    fun persist_program_rule_variables_on_call() = runTest {
         val store = ProgramRuleVariableStoreImpl(databaseAdapter)
 
         assertThat(store.count()).isEqualTo(2)
@@ -73,7 +71,7 @@ class ProgramEndpointCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnq
     }
 
     @Test
-    fun persist_program_tracker_entity_attributes_when_call() {
+    fun persist_program_tracker_entity_attributes_when_call() = runTest {
         val store = ProgramTrackedEntityAttributeStoreImpl(databaseAdapter)
 
         assertThat(store.count()).isEqualTo(2)
@@ -82,13 +80,13 @@ class ProgramEndpointCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnq
     }
 
     @Test
-    fun not_persist_relationship_type_when_call() {
+    fun not_persist_relationship_type_when_call() = runTest {
         val store = RelationshipTypeStoreImpl(databaseAdapter)
         assertThat(store.count()).isEqualTo(0)
     }
 
     companion object {
-        private const val programUid = "lxAQ7Zs9VYR"
+        private const val PROGRAM_UID = "lxAQ7Zs9VYR"
 
         @BeforeClass
         @JvmStatic
@@ -114,11 +112,11 @@ class ProgramEndpointCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnq
                 databaseAdapter.insert(DataElementTableInfo.TABLE_INFO.name(), null, dataElement1)
                 val dataElement2 = CreateDataElementUtils.create(2L, "sWoqcoByYmD", categoryComboUid, null)
                 databaseAdapter.insert(DataElementTableInfo.TABLE_INFO.name(), null, dataElement2)
-                val programStage = CreateProgramStageUtils.create(1L, "dBwrot7S420", programUid)
+                val programStage = CreateProgramStageUtils.create(1L, "dBwrot7S420", PROGRAM_UID)
                 databaseAdapter.insert(ProgramStageTableInfo.TABLE_INFO.name(), null, programStage)
                 dhis2MockServer.enqueueMockResponse("program/programs.json")
 
-                objects.d2DIComponent.programCall.download(Sets.newSet(programUid))
+                objects.d2DIComponent.programCall.download(Sets.newSet(PROGRAM_UID))
             }
         }
     }

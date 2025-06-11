@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.testapp.trackedentity
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
@@ -78,7 +79,7 @@ class TrackedEntityAttributeValueObjectRepositoryMockIntegrationShould : BaseMoc
     }
 
     @Test
-    fun update_value() {
+    fun update_value() = runTest {
         val value1 = "new_value"
         val value2 = "other_value"
 
@@ -143,7 +144,7 @@ class TrackedEntityAttributeValueObjectRepositoryMockIntegrationShould : BaseMoc
     }
 
     companion object {
-        fun setDataValueState(value: TrackedEntityAttributeValue, syncState: State?) {
+        suspend fun setDataValueState(value: TrackedEntityAttributeValue, syncState: State?) {
             val store: TrackedEntityAttributeValueStore = TrackedEntityAttributeValueStoreImpl(databaseAdapter)
             store.updateWhere(value.toBuilder().syncState(syncState).build())
         }

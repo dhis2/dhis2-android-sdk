@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute1
@@ -218,7 +219,7 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
     )
 
     @Before
-    fun setUpBase() {
+    fun setUpBase() = runTest {
         organisationUnitLevelStore.insert(level1)
         organisationUnitLevelStore.insert(level2)
 
@@ -278,7 +279,7 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
     }
 
     @After
-    fun tearDown() {
+    fun tearDown() = runTest {
         organisationUnitLevelStore.delete()
         organisationUnitStore.delete()
         organisationUnitGroupStore.delete()
@@ -305,7 +306,7 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
         constantStore.delete()
     }
 
-    protected fun createDataValue(
+    protected suspend fun createDataValue(
         value: String,
         dataElementUid: String = dataElement1.uid(),
         orgunitUid: String = orgunitParent.uid(),
@@ -325,7 +326,7 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
         dataValueStore.insert(dataValue)
     }
 
-    protected fun createEventAndValue(
+    protected suspend fun createEventAndValue(
         value: String,
         dataElementUid: String,
         enrollmentUid: String? = null,
@@ -351,7 +352,7 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
         trackedEntityDataValueStore.insert(dataValue)
     }
 
-    protected fun createTEIAndAttribute(
+    protected suspend fun createTEIAndAttribute(
         value: String?,
         attributeUid: String,
     ) {

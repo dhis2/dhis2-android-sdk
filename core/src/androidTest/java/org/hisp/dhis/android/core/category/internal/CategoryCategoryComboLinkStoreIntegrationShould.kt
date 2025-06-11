@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.category.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLink
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo
 import org.hisp.dhis.android.core.data.category.CategoryCategoryComboLinkSamples
@@ -58,7 +59,7 @@ class CategoryCategoryComboLinkStoreIntegrationShould : LinkStoreAbstractIntegra
     }
 
     @Test
-    fun count_by_master_column() {
+    fun count_by_master_column() = runTest {
         store.insert(buildObjectWithOtherMasterUid())
         store.insert(buildObject())
 

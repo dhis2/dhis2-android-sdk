@@ -117,7 +117,7 @@ internal class LocalAnalyticsDatabaseFiller(private val d2: D2) {
         )
     }
 
-    private fun fillData(dataParams: LocalAnalyticsDataParams, metadata: MetadataForDataFilling) {
+    private suspend fun fillData(dataParams: LocalAnalyticsDataParams, metadata: MetadataForDataFilling) {
         val generator = LocalAnalyticsDataGenerator(dataParams)
 
         val dv = generator.generateDataValues(metadata)

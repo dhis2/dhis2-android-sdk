@@ -54,7 +54,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(D2JunitRunner::class)
 class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
     // The return of the organisationUnitCall to be tested:
@@ -154,7 +153,7 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
 
         @AfterClass
         @JvmStatic
-        fun tearDownClass() {
+        fun tearDownClass() = runTest {
             d2.databaseAdapter().delete(ProgramTableInfo.TABLE_INFO.name())
             d2.databaseAdapter().delete(DataSetTableInfo.TABLE_INFO.name())
             d2.databaseAdapter().delete(CategoryComboTableInfo.TABLE_INFO.name())

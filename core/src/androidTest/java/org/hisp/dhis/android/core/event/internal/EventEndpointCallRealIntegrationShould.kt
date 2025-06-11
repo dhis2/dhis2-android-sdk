@@ -64,20 +64,20 @@ class EventEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
         assertThat(verifyAtLeastOneEventWithOptionCombo()).isTrue()
     }
 
-    private fun verifyAtLeastOneEventWithOptionCombo(): Boolean {
+    private suspend fun verifyAtLeastOneEventWithOptionCombo(): Boolean {
         val eventStore = EventStoreImpl(d2.databaseAdapter())
         val downloadedEvents = eventStore.querySingleEvents()
         return downloadedEvents.any { it.attributeOptionCombo() != null }
     }
 
-    private fun verifyNumberOfDownloadedEvents(numEvents: Int) {
+    private suspend fun verifyNumberOfDownloadedEvents(numEvents: Int) {
         val eventStore = EventStoreImpl(d2.databaseAdapter())
         val downloadedEvents = eventStore.querySingleEvents()
 
         assertThat(downloadedEvents.size).isEqualTo(numEvents)
     }
 
-    private fun verifyNumberOfDownloadedTrackedEntityDataValue(num: Int) {
+    private suspend fun verifyNumberOfDownloadedTrackedEntityDataValue(num: Int) {
         val trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl(d2.databaseAdapter())
         val numPersisted = trackedEntityDataValueStore.selectAll().size
 

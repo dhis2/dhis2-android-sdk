@@ -80,7 +80,7 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
         d2.wipeModule().wipeData()
     }
 
-    protected fun storeTrackerData() {
+    protected suspend fun storeTrackerData() {
         val orgUnit = OrganisationUnitStoreImpl(databaseAdapter).selectFirst()!!
         val teiType = TrackedEntityTypeStoreImpl(databaseAdapter).selectFirst()!!
         val program = d2.programModule().programs().one().blockingGet()!!
@@ -208,7 +208,7 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
         teiDataValueStore.insert(singleEventDataValue)
     }
 
-    protected fun storeSimpleTrackedEntityInstance(teiUid: String, state: State) {
+    protected suspend fun storeSimpleTrackedEntityInstance(teiUid: String, state: State) {
         val orgUnit = OrganisationUnitStoreImpl(databaseAdapter).selectFirst()
         val teiType = TrackedEntityTypeStoreImpl(databaseAdapter).selectFirst()
         TrackedEntityInstanceStoreImpl(databaseAdapter).insert(

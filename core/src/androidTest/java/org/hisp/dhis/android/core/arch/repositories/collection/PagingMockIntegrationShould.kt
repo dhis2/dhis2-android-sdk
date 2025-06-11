@@ -44,7 +44,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class PagingMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 
     @get:Rule
@@ -57,7 +56,7 @@ class PagingMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     private val orderByClause = OrderByClauseBuilder.orderByFromItems(empty.orderBy(), empty.pagingKey())
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         store = objects.d2DIComponent.categoryOptionStore
         allValues = store.selectWhere("1", orderByClause, 8)
     }

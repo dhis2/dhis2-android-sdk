@@ -25,130 +25,110 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
+import android.database.Cursor
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.BaseIntegrationTestWithDatabase
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.data.database.CursorAssert
+import org.hisp.dhis.android.core.option.OptionSet
+import org.hisp.dhis.android.core.option.OptionSetTableInfo
+import org.hisp.dhis.android.core.option.internal.OptionSetStoreImpl
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import java.io.IOException
 
-import android.database.Cursor;
+@RunWith(D2JunitRunner::class)
+class IdentifiableObjectStoreIntegrationShould : BaseIntegrationTestWithDatabase() {
+    private lateinit var store: IdentifiableObjectStore<OptionSet>
+    private lateinit var optionSet: OptionSet
+    private lateinit var updatedOptionSet: OptionSet
 
-import org.hisp.dhis.android.core.BaseIntegrationTestWithDatabase;
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore;
-import org.hisp.dhis.android.core.option.OptionSet;
-import org.hisp.dhis.android.core.option.OptionSetTableInfo;
-import org.hisp.dhis.android.core.option.internal.OptionSetStoreImpl;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.io.IOException;
-
-import static org.hisp.dhis.android.core.common.StoreMocks.optionSetCursorAssert;
-import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
-
-@RunWith(D2JunitRunner.class)
-public class IdentifiableObjectStoreIntegrationShould extends BaseIntegrationTestWithDatabase {
-
-    private IdentifiableObjectStore<OptionSet> store;
-
-    private OptionSet optionSet;
-    private OptionSet updatedOptionSet;
-
-    @Override
     @Before
-    public void setUp() throws IOException {
-        super.setUp();
-        this.optionSet = StoreMocks.generateOptionSet();
-        this.updatedOptionSet = StoreMocks.generateUpdatedOptionSet();
-        this.store = new OptionSetStoreImpl(databaseAdapter());
+    @Throws(IOException::class)
+    override fun setUp() {
+        super.setUp()
+        this.optionSet = StoreMocks.generateOptionSet()
+        this.updatedOptionSet = StoreMocks.generateUpdatedOptionSet()
+        this.store = OptionSetStoreImpl(databaseAdapter())
     }
 
-    private Cursor getCursor() {
-        return databaseAdapter().query(OptionSetTableInfo.TABLE_INFO.name(), OptionSetTableInfo.TABLE_INFO.columns().all());
+    private val cursor: Cursor
+        get() = databaseAdapter().query(
+            OptionSetTableInfo.TABLE_INFO.name(),
+            *OptionSetTableInfo.TABLE_INFO.columns().all()
+        )
+
+    @Test
+    fun insert_option_set() = runTest {
+        store.insert(optionSet)
+        val cursor = cursor
+        StoreMocks.optionSetCursorAssert(cursor, optionSet)
+    }
+
+    @Test(expected = RuntimeException::class)
+    fun throw_exception_for_second_identical_insertion() = runTest {
+        store.insert(optionSet)
+        store.insert(optionSet)
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun throw_exception_for_option_set_without_uid_inserting() = runTest {
+        val withoutUid = OptionSet.builder().code("code").build()
+        store.insert(withoutUid)
     }
 
     @Test
-    public void insert_option_set() {
-        store.insert(optionSet);
-        Cursor cursor = getCursor();
-        optionSetCursorAssert(cursor, optionSet);
+    fun delete_existing_option_set() = runTest {
+        store.insert(optionSet)
+        store.delete(optionSet.uid())
+        CursorAssert.assertThatCursor(cursor).isExhausted()
     }
 
-    @Test(expected = NullPointerException.class)
-    public void throw_exception_for_null_when_inserting() {
-        OptionSet optionSet = null;
-        store.insert(optionSet);
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void throw_exception_for_second_identical_insertion() {
-        store.insert(this.optionSet);
-        store.insert(this.optionSet);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void throw_exception_for_option_set_without_uid_inserting() {
-        OptionSet withoutUid = OptionSet.builder().code("code").build();
-        store.insert(withoutUid);
+    @Test(expected = RuntimeException::class)
+    fun throw_exception_deleting_non_existing_option_set() = runTest {
+        store.delete("new-id")
     }
 
     @Test
-    public void delete_existing_option_set() {
-        store.insert(optionSet);
-        store.delete(optionSet.uid());
-        assertThatCursor(getCursor()).isExhausted();
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void throw_exception_deleting_non_existing_option_set() {
-        store.delete("new-id");
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void throw_exception_deleting_with_null_uid() {
-        store.delete(null);
+    fun do_not_throw_exception_safe_deleting_non_existing_option_set() = runTest {
+        store.deleteIfExists("new-id")
+        CursorAssert.assertThatCursor(cursor).isExhausted()
     }
 
     @Test
-    public void do_not_throw_exception_safe_deleting_non_existing_option_set() {
-        store.deleteIfExists("new-id");
-        assertThatCursor(getCursor()).isExhausted();
+    fun update_option_set() = runTest {
+        store.insert(optionSet)
+        store.update(updatedOptionSet)
+        val cursor = cursor
+        StoreMocks.optionSetCursorAssert(cursor, updatedOptionSet)
+    }
+
+    @Test(expected = RuntimeException::class)
+    fun throw_exception_updating_with_null_uid() = runTest {
+        store.update(StoreMocks.generateOptionSetWithoutUid())
+    }
+
+    @Test(expected = RuntimeException::class)
+    fun throw_exception_updating_non_existing_option_set() = runTest {
+        store.update(optionSet)
     }
 
     @Test
-    public void update_option_set() {
-        store.insert(optionSet);
-        store.update(updatedOptionSet);
-        Cursor cursor = getCursor();
-        optionSetCursorAssert(cursor, updatedOptionSet);
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void throw_exception_updating_null() {
-        store.update(null);
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void throw_exception_updating_with_null_uid() {
-        store.update(StoreMocks.generateOptionSetWithoutUid());
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void throw_exception_updating_non_existing_option_set() {
-        store.update(optionSet);
+    fun insert_when_no_option_set_and_update_or_insert() = runTest {
+        store.updateOrInsert(optionSet)
+        val cursor = cursor
+        StoreMocks.optionSetCursorAssert(cursor, optionSet)
     }
 
     @Test
-    public void insert_when_no_option_set_and_update_or_insert() {
-        store.updateOrInsert(optionSet);
-        Cursor cursor = getCursor();
-        optionSetCursorAssert(cursor, optionSet);
-    }
-
-    @Test
-    public void update_when_option_set_and_update_or_insert() {
-        store.insert(optionSet);
-        store.updateOrInsert(updatedOptionSet);
-        Cursor cursor = getCursor();
-        optionSetCursorAssert(cursor, updatedOptionSet);
+    fun update_when_option_set_and_update_or_insert() = runTest {
+        store.insert(optionSet)
+        store.updateOrInsert(updatedOptionSet)
+        val cursor = cursor
+        StoreMocks.optionSetCursorAssert(cursor, updatedOptionSet)
     }
 }

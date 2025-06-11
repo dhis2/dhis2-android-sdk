@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import com.google.common.truth.Truth.assertThat
 import junit.framework.Assert.fail
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
@@ -68,7 +69,7 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
     private val syncStore = SynchronizationSettingStoreImpl(databaseAdapter)
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         initSyncParams = syncStore.selectFirst()!!
         val testParams = initSyncParams.toBuilder().trackerImporterVersion(importerVersion)
             .trackerExporterVersion(exporterVersion).build()
@@ -77,7 +78,7 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
     }
 
     @After
-    fun tearDown() {
+    fun tearDown() = runTest {
         d2.wipeModule().wipeData()
         syncStore.delete()
         syncStore.insert(initSyncParams)
@@ -176,7 +177,7 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
         assertThat(relationships.first().to()).isNotNull()
     }
 
-    private fun verifyDownloadedTrackedEntityInstanceSingle(file: String, teiUid: String) {
+    private fun verifyDownloadedTrackedEntityInstanceSingle(file: String, teiUid: String) = runTest {
         val parsed = parseTrackedEntityInstance(file)
         val expectedEnrollmentResponse = removeDeletedData(parsed)
         val downloadedTei = getDownloadedTei(teiUid)
@@ -188,7 +189,7 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
     }
 
     @Throws(IOException::class)
-    private fun verifyDownloadedTrackedEntityInstance(file: String, teiUid: String) {
+    private fun verifyDownloadedTrackedEntityInstance(file: String, teiUid: String) = runTest {
         val parsed = parseTrackedEntityInstance(file)
         val expectedEnrollmentResponse = removeDeletedData(parsed)
         val downloadedTei = getDownloadedTei(teiUid)
@@ -215,7 +216,7 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
             .build()
     }
 
-    private fun getDownloadedTei(teiUid: String): TrackedEntityInstance? {
+    private suspend fun getDownloadedTei(teiUid: String): TrackedEntityInstance? {
         val teiAttributeValuesStore = TrackedEntityAttributeValueStoreImpl(databaseAdapter)
         val attValues = teiAttributeValuesStore.queryByTrackedEntityInstance(teiUid)
         val attValuesWithoutIdAndTEI = attValues.map {

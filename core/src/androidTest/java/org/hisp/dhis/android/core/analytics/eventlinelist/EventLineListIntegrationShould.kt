@@ -140,7 +140,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
     )
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         setUpClass()
 
         trackedEntityTypeStore.insert(trackedEntityType)
@@ -176,7 +176,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
     }
 
     @After
-    fun tearDown() {
+    fun tearDown() = runTest {
         trackedEntityTypeStore.delete()
         categoryComboStore.delete()
         categoryOptionComboStore.delete()
@@ -589,27 +589,27 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         assertThat(values[1].legend == legendSet2.legends()?.get(0)?.uid()).isTrue()
     }
 
-    private fun createTei() {
+    private suspend fun createTei() {
         trackedEntityInstanceStore.insert(trackedEntityInstance)
     }
 
-    private fun createEnrollment() {
+    private suspend fun createEnrollment() {
         enrollmentStore.insert(enrollment)
     }
 
-    private fun createEvent(programStageId: String, eventDate: String): Event {
+    private suspend fun createEvent(programStageId: String, eventDate: String): Event {
         val event = EventLineListSamples.event(programStageId, BaseIdentifiableObject.parseDate(eventDate))
         eventStore.insert(event)
         return event
     }
 
-    private fun createDueEvent(programStageId: String, dueDate: String): Event {
+    private suspend fun createDueEvent(programStageId: String, dueDate: String): Event {
         val event = EventLineListSamples.dueEvent(programStageId, BaseIdentifiableObject.parseDate(dueDate))
         eventStore.insert(event)
         return event
     }
 
-    private fun createDeletedEvent(programStageId: String, eventDate: String): Event {
+    private suspend fun createDeletedEvent(programStageId: String, eventDate: String): Event {
         val event = EventLineListSamples
             .event(programStageId, BaseIdentifiableObject.parseDate(eventDate))
             .toBuilder().deleted(true).build()
@@ -617,12 +617,12 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         return event
     }
 
-    private fun createDataValue(eventId: String, dataElementId: String, value: String) {
+    private suspend fun createDataValue(eventId: String, dataElementId: String, value: String) {
         val dataValue = TrackedEntityDataValue.builder().event(eventId).dataElement(dataElementId).value(value).build()
         trackedEntityDataValueStore.insert(dataValue)
     }
 
-    private fun createProgramIndicator(expression: String): ProgramIndicator {
+    private suspend fun createProgramIndicator(expression: String): ProgramIndicator {
         val programIndicator = EventLineListSamples.programIndicator(expression)
         programIndicatorStore.insert(programIndicator)
         programIndicatorLegendSetLinkStore.insert(
@@ -633,7 +633,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         return programIndicator
     }
 
-    private fun createDataElementLegendSetLinks(dataElement: String, legendSets: List<ObjectWithUid>) {
+    private suspend fun createDataElementLegendSetLinks(dataElement: String, legendSets: List<ObjectWithUid>) {
         legendSets.forEach {
             val dataElementLegendSetLink =
                 DataElementLegendSetLink.builder().dataElement(dataElement).legendSet(it.uid()).build()

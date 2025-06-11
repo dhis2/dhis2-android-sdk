@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.testapp.trackedentity
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.State
@@ -95,7 +96,7 @@ class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShould : Bas
 
     @Test
     @Throws(D2Error::class)
-    fun filter_by_deleted() {
+    fun filter_by_deleted() = runTest {
         val teiUid = "nWrB0TfWlvh"
         val repository = d2.trackedEntityModule().trackedEntityAttributeValues()
             .value("cejWyOfXge6", teiUid)
@@ -128,13 +129,13 @@ class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShould : Bas
         assertThat(objectRepository.blockingGet()!!.value()).isEqualTo("4081507")
     }
 
-    private fun restoreTeiState(teiUid: String, syncState: State) {
+    private suspend fun restoreTeiState(teiUid: String, syncState: State) {
         val store = DhisAndroidSdkKoinContext.koin.get<TrackedEntityInstanceStore>()
         store.setAggregatedSyncState(teiUid, syncState)
         store.setSyncState(teiUid, syncState)
     }
 
-    private fun setDataValueState(value: TrackedEntityAttributeValue, syncState: State?) {
+    private suspend fun setDataValueState(value: TrackedEntityAttributeValue, syncState: State?) {
         val store: TrackedEntityAttributeValueStore = TrackedEntityAttributeValueStoreImpl(databaseAdapter)
         store.updateWhere(value.toBuilder().syncState(syncState).build())
     }

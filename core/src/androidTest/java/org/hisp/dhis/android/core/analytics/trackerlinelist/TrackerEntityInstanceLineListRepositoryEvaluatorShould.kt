@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.analytics.trackerlinelist
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorIntegrationShould
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attributeOptionCombo
@@ -79,7 +80,7 @@ internal class TrackerEntityInstanceLineListRepositoryEvaluatorShould : BaseEval
         .build()
 
     @Before
-    fun additionalSetUpBase() {
+    fun additionalSetUpBase() = runTest {
         programStore.insert(programOther)
         trackedEntityAttributeStore.insert(attributeOther)
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
@@ -118,7 +119,7 @@ internal class TrackerEntityInstanceLineListRepositoryEvaluatorShould : BaseEval
     }
 
     @Test
-    fun evaluate_program_attributes() {
+    fun evaluate_program_attributes() = runTest {
         val attributeValue1 = "45"
         val attributeValueOther = "55"
         helper.insertTrackedEntityAttributeValue(trackedEntity1.uid(), attribute1.uid(), attributeValue1)
@@ -164,7 +165,7 @@ internal class TrackerEntityInstanceLineListRepositoryEvaluatorShould : BaseEval
     }
 
     @Test
-    fun evaluate_repeated_data_elements() {
+    fun evaluate_repeated_data_elements() = runTest {
         val enrollment1_2 = generator.generate()
         createDefaultEnrollment(
             trackedEntity1.uid(),
@@ -315,7 +316,7 @@ internal class TrackerEntityInstanceLineListRepositoryEvaluatorShould : BaseEval
         assertThat(rows[1][1].value).isEqualTo(DATE_FORMAT.format(period201912.startDate()!!))
     }
 
-    private fun createDefaultTrackerEvent(
+    private suspend fun createDefaultTrackerEvent(
         eventUid: String,
         enrollmentUid: String,
         programUid: String = program.uid(),
@@ -343,7 +344,7 @@ internal class TrackerEntityInstanceLineListRepositoryEvaluatorShould : BaseEval
         )
     }
 
-    internal fun createDefaultEnrollment(
+    internal suspend fun createDefaultEnrollment(
         teiUid: String,
         enrollmentUid: String,
         programUid: String = program.uid(),

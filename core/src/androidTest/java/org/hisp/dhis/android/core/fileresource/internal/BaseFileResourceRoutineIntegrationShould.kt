@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.fileresource.internal
 
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.category.internal.CategoryComboStoreImpl
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStoreImpl
 import org.hisp.dhis.android.core.dataset.internal.DataSetElementStoreImpl
@@ -77,7 +78,7 @@ internal open class BaseFileResourceRoutineIntegrationShould : BaseMockIntegrati
     protected val dataSetElementStore = DataSetElementStoreImpl(databaseAdapter)
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         organisationUnitStore.insert(FileResourceRoutineSamples.orgUnit1)
         fileResourceStore.insert(FileResourceRoutineSamples.fileResource1)
         fileResourceStore.insert(FileResourceRoutineSamples.fileResource2)
@@ -101,7 +102,7 @@ internal open class BaseFileResourceRoutineIntegrationShould : BaseMockIntegrati
     }
 
     @After
-    fun tearDown() {
+    fun tearDown() = runTest {
         dataValueStore.deleteWhere(FileResourceRoutineSamples.dataValue1)
         dataSetStore.delete(FileResourceRoutineSamples.dataset.uid())
         dataElementStore.delete(FileResourceRoutineSamples.dataElement2.uid())

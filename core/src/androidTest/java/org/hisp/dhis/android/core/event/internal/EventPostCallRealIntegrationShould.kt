@@ -99,7 +99,7 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
         downloadMetadata()
         createDummyDataToPost(eventUid1)
         pushDummyEvent()
-        val pushedEvent = eventFromDB
+        val pushedEvent = eventFromDB()
         d2.wipeModule().wipeEverything()
         downloadMetadata()
         downloadEvents()
@@ -124,14 +124,14 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
         createDummyDataToPost(eventUid1)
         createDummyDataToPost(eventUid2)
         pushDummyEvent()
-        val pushedEvent = eventFromDB
+        val pushedEvent = eventFromDB()
         d2.wipeModule().wipeEverything()
         downloadMetadata()
         downloadEvents()
         assertThatEventPushedIsDownloaded(pushedEvent)
     }
 
-    private fun createDummyDataToPost(eventUid: String?) {
+    private fun createDummyDataToPost(eventUid: String?) = runTest {
         eventStore.insert(
             Event.builder().uid(eventUid).created(Date()).lastUpdated(Date())
                 .status(EventStatus.ACTIVE).program(programUid)
@@ -151,7 +151,7 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
         trackedEntityDataValueStore.insert(trackedEntityDataValue)
     }
 
-    private fun assertThatEventPushedIsDownloaded(pushedEvent: Event?) {
+    private fun assertThatEventPushedIsDownloaded(pushedEvent: Event?) = runTest {
         val downloadedEvents = eventStore.querySingleEvents()
         Truth.assertThat(verifyPushedEventIsInPullList(pushedEvent, downloadedEvents)).isTrue()
     }
@@ -172,17 +172,16 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
         assertThat(events.isEmpty()).isFalse()
     }
 
-    private val eventFromDB: Event?
-        private get() {
-            var event: Event? = null
-            val storedEvents = eventStore.selectAll()
-            for (storedEvent in storedEvents) {
-                if (storedEvent.uid() == eventUid1) {
-                    event = storedEvent
-                }
+    private suspend fun eventFromDB(): Event? {
+        var event: Event? = null
+        val storedEvents = eventStore.selectAll()
+        for (storedEvent in storedEvents) {
+            if (storedEvent.uid() == eventUid1) {
+                event = storedEvent
             }
-            return event
         }
+        return event
+    }
 
     private fun pushDummyEvent() {
         d2.eventModule().events().blockingUpload()

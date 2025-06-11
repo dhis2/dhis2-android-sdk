@@ -25,49 +25,47 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset.internal
 
-package org.hisp.dhis.android.core.dataset.internal;
+import com.google.common.truth.Truth
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.BaseRealIntegrationTest
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
+import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationCollectionRepository
+import org.junit.Before
+import java.text.SimpleDateFormat
 
-import static com.google.common.truth.Truth.assertThat;
-
-import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationCollectionRepository;
-import org.junit.Before;
-
-import java.text.SimpleDateFormat;
-
-public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends BaseRealIntegrationTest {
-
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-    private DataSetCompleteRegistrationStore dataSetCompleteRegistrationStore;
+class DataSetCompleteRegistrationPostCallRealIntegrationShould : BaseRealIntegrationTest() {
+    private lateinit var dataSetCompleteRegistrationStore: DataSetCompleteRegistrationStore
 
     @Before
-    public void setUp() {
-        super.setUp();
-        dataSetCompleteRegistrationStore = new DataSetCompleteRegistrationStoreImpl(d2.databaseAdapter());
+    override fun setUp() {
+        super.setUp()
+        dataSetCompleteRegistrationStore = DataSetCompleteRegistrationStoreImpl(d2.databaseAdapter())
     }
 
     // commented out since it is a flaky test that works against a real server.
     //@Test
-    public void upload_data_set_complete_registrations_with_to_post_state() throws Exception {
-        d2.userModule().logIn(username, password, url).blockingGet();
-        d2.metadataModule().blockingDownload();
-        d2.aggregatedModule().data().blockingDownload();
+    @Throws(Exception::class)
+    fun upload_data_set_complete_registrations_with_to_post_state() {
+        d2.userModule().logIn(username, password, url).blockingGet()
+        d2.metadataModule().blockingDownload()
+        d2.aggregatedModule().data().blockingDownload()
 
-        DataSetCompleteRegistration dataSetCompleteRegistration
-                = getTestDataSetCompleteRegistrationWith(State.TO_POST, "2018");
+        val dataSetCompleteRegistration = getTestDataSetCompleteRegistrationWith(State.TO_POST, "2018")
 
-        DataSetCompleteRegistrationCollectionRepository repository
-                = d2.dataSetModule().dataSetCompleteRegistrations();
-        repository.value(dataSetCompleteRegistration.period(),
-                dataSetCompleteRegistration.organisationUnit(),
-                dataSetCompleteRegistration.dataSet(),
-                dataSetCompleteRegistration.attributeOptionCombo()).blockingSet();
+        val repository: DataSetCompleteRegistrationCollectionRepository =
+            d2.dataSetModule().dataSetCompleteRegistrations()
 
-        repository.blockingUpload();
+        repository.value(
+            dataSetCompleteRegistration.period(),
+            dataSetCompleteRegistration.organisationUnit(),
+            dataSetCompleteRegistration.dataSet(),
+            dataSetCompleteRegistration.attributeOptionCombo()
+        ).blockingSet()
+
+        repository.blockingUpload()
 
         /*int importCountTotal = dataValueImportSummary.importCount().imported() +
                 dataValueImportSummary.importCount().updated() +
@@ -78,17 +76,17 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
 
     // commented out since it is a flaky test that works against a real server.
     //@Test
-    public void upload_data_set_complete_registrations_with_to_update_state() throws Exception {
-        d2.userModule().logIn(username, password, url).blockingGet();
-        d2.metadataModule().blockingDownload();
-        d2.aggregatedModule().data().blockingDownload();
+    @Throws(Exception::class)
+    fun upload_data_set_complete_registrations_with_to_update_state() = runTest {
+        d2.userModule().logIn(username, password, url).blockingGet()
+        d2.metadataModule().blockingDownload()
+        d2.aggregatedModule().data().blockingDownload()
 
-        DataSetCompleteRegistration dataSetCompleteRegistration
-                = getTestDataSetCompleteRegistrationWith(State.TO_UPDATE, "2018");
+        val dataSetCompleteRegistration = getTestDataSetCompleteRegistrationWith(State.TO_UPDATE, "2018")
 
-        assertThat(insertToPostDataSetCompleteRegistration(dataSetCompleteRegistration)).isTrue();
+        Truth.assertThat(insertToPostDataSetCompleteRegistration(dataSetCompleteRegistration)).isTrue()
 
-        d2.dataSetModule().dataSetCompleteRegistrations().blockingUpload();
+        d2.dataSetModule().dataSetCompleteRegistrations().blockingUpload()
 
         /*int importCountTotal = dataValueImportSummary.importCount().updated() +
                 dataValueImportSummary.importCount().ignored();
@@ -98,30 +96,33 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
 
     // commented out since it is a flaky test that works against a real server.
     //@Test
-    public void update_and_delete_different_data_set_complete_registrations() throws Exception {
-        d2.userModule().logIn(username, password, url).blockingGet();
-        d2.metadataModule().blockingDownload();
-        d2.aggregatedModule().data().blockingDownload();
+    @Throws(Exception::class)
+    fun update_and_delete_different_data_set_complete_registrations() = runTest {
+        d2.userModule().logIn(username, password, url).blockingGet()
+        d2.metadataModule().blockingDownload()
+        d2.aggregatedModule().data().blockingDownload()
 
-        DataSetCompleteRegistration toDeleteDataSetCompleteRegistration
-                = getTestDataSetCompleteRegistrationWith(State.TO_UPDATE, "2019");
+        val toDeleteDataSetCompleteRegistration = getTestDataSetCompleteRegistrationWith(State.TO_UPDATE, "2019")
 
-        DataSetCompleteRegistration dataSetCompleteRegistration
-                = getTestDataSetCompleteRegistrationWith(State.TO_UPDATE, "2018");
+        val dataSetCompleteRegistration = getTestDataSetCompleteRegistrationWith(State.TO_UPDATE, "2018")
 
-        DataSetCompleteRegistrationCollectionRepository repository = d2.dataSetModule().dataSetCompleteRegistrations();
-        repository.value(toDeleteDataSetCompleteRegistration.period(),
-                toDeleteDataSetCompleteRegistration.organisationUnit(),
-                toDeleteDataSetCompleteRegistration.dataSet(),
-                toDeleteDataSetCompleteRegistration.attributeOptionCombo()).blockingSet();
-        repository.value(dataSetCompleteRegistration.period(),
-                dataSetCompleteRegistration.organisationUnit(),
-                dataSetCompleteRegistration.dataSet(),
-                dataSetCompleteRegistration.attributeOptionCombo()).blockingSet();
-        dataSetCompleteRegistrationStore.setDeleted(toDeleteDataSetCompleteRegistration);
-        dataSetCompleteRegistrationStore.setState(toDeleteDataSetCompleteRegistration, State.TO_UPDATE);
+        val repository = d2.dataSetModule().dataSetCompleteRegistrations()
+        repository.value(
+            toDeleteDataSetCompleteRegistration.period(),
+            toDeleteDataSetCompleteRegistration.organisationUnit(),
+            toDeleteDataSetCompleteRegistration.dataSet(),
+            toDeleteDataSetCompleteRegistration.attributeOptionCombo()
+        ).blockingSet()
+        repository.value(
+            dataSetCompleteRegistration.period(),
+            dataSetCompleteRegistration.organisationUnit(),
+            dataSetCompleteRegistration.dataSet(),
+            dataSetCompleteRegistration.attributeOptionCombo()
+        ).blockingSet()
+        dataSetCompleteRegistrationStore.setDeleted(toDeleteDataSetCompleteRegistration)
+        dataSetCompleteRegistrationStore.setState(toDeleteDataSetCompleteRegistration, State.TO_UPDATE)
 
-        repository.blockingUpload();
+        repository.blockingUpload()
 
         /*int importCountTotal = dataValueImportSummary.importCount().updated() +
                 dataValueImportSummary.importCount().ignored();
@@ -131,44 +132,49 @@ public class DataSetCompleteRegistrationPostCallRealIntegrationShould extends Ba
 
     // commented out since it is a flaky test that works against a real server.
     //@Test
-    public void delete_data_set_complete_registrations_with_to_delete_state() throws Exception {
-        d2.userModule().logIn(username, password, url).blockingGet();
-        d2.metadataModule().blockingDownload();
-        d2.aggregatedModule().data().blockingDownload();
+    @Throws(Exception::class)
+    fun delete_data_set_complete_registrations_with_to_delete_state() = runTest {
+        d2.userModule().logIn(username, password, url).blockingGet()
+        d2.metadataModule().blockingDownload()
+        d2.aggregatedModule().data().blockingDownload()
 
-        DataSetCompleteRegistration dataSetCompleteRegistration
-                = getTestDataSetCompleteRegistrationWith(State.TO_UPDATE, "2018");
+        val dataSetCompleteRegistration = getTestDataSetCompleteRegistrationWith(State.TO_UPDATE, "2018")
 
-        DataSetCompleteRegistrationCollectionRepository repository
-                = d2.dataSetModule().dataSetCompleteRegistrations();
-        repository.value(dataSetCompleteRegistration.period(),
-                dataSetCompleteRegistration.organisationUnit(),
-                dataSetCompleteRegistration.dataSet(),
-                dataSetCompleteRegistration.attributeOptionCombo()).blockingSet();
-        dataSetCompleteRegistrationStore.setDeleted(dataSetCompleteRegistration);
-        dataSetCompleteRegistrationStore.setState(dataSetCompleteRegistration, State.TO_UPDATE);
+        val repository = d2.dataSetModule().dataSetCompleteRegistrations()
+        repository.value(
+            dataSetCompleteRegistration.period(),
+            dataSetCompleteRegistration.organisationUnit(),
+            dataSetCompleteRegistration.dataSet(),
+            dataSetCompleteRegistration.attributeOptionCombo()
+        ).blockingSet()
+        dataSetCompleteRegistrationStore.setDeleted(dataSetCompleteRegistration)
+        dataSetCompleteRegistrationStore.setState(dataSetCompleteRegistration, State.TO_UPDATE)
 
-        repository.blockingUpload();
+        repository.blockingUpload()
 
         // assertThat(dataValueImportSummary.importCount().deleted() == 1).isTrue();
     }
 
-    private boolean insertToPostDataSetCompleteRegistration(DataSetCompleteRegistration dataSetCompleteRegistration){
-
-        return (dataSetCompleteRegistrationStore.insert(dataSetCompleteRegistration) > 0);
+    private suspend fun insertToPostDataSetCompleteRegistration(
+        dataSetCompleteRegistration: DataSetCompleteRegistration,
+    ): Boolean {
+        return (dataSetCompleteRegistrationStore.insert(dataSetCompleteRegistration) > 0)
     }
 
-    private DataSetCompleteRegistration getTestDataSetCompleteRegistrationWith(State state, String period)
-            throws Exception {
-
+    @Throws(Exception::class)
+    private fun getTestDataSetCompleteRegistrationWith(state: State, period: String): DataSetCompleteRegistration {
         return DataSetCompleteRegistration.builder()
-                        .period(period)
-                        .dataSet("BfMAe6Itzgt")
-                        .attributeOptionCombo("HllvX50cXC0")
-                        .organisationUnit("DiszpKrYNg8")
-                        .date(dateFormat.parse("2010-03-02"))
-                        .storedBy("android")
-                        .syncState(state)
-                        .build();
+            .period(period)
+            .dataSet("BfMAe6Itzgt")
+            .attributeOptionCombo("HllvX50cXC0")
+            .organisationUnit("DiszpKrYNg8")
+            .date(dateFormat.parse("2010-03-02"))
+            .storedBy("android")
+            .syncState(state)
+            .build()
+    }
+
+    companion object {
+        private val dateFormat = SimpleDateFormat("yyyy-MM-dd")
     }
 }

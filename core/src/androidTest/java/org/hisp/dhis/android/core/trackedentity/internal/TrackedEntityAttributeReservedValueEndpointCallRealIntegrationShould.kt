@@ -25,102 +25,98 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import com.google.common.truth.Truth
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.BaseRealIntegrationTest
+import org.hisp.dhis.android.core.trackedentity.ReservedValueSummary
 
-import static com.google.common.truth.Truth.assertThat;
-
-import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.trackedentity.ReservedValueSummary;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue;
-
-import java.util.List;
-
-public class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShould extends BaseRealIntegrationTest {
+class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
     /**
      * A quick integration test that is probably flaky, but will help with finding bugs related to the
      * metadataSyncCall. It works against the demo server.
      */
-    private Integer numberToReserve = 5;
-    private String orgunitUid = "DiszpKrYNg8";
+    private val numberToReserve = 5
+    private val orgunitUid = "DiszpKrYNg8"
 
-    private void reserveValues() {
-        d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues("xs8A6tQJY0s", numberToReserve);
+    private fun reserveValues() {
+        d2.trackedEntityModule().reservedValueManager().blockingDownloadReservedValues("xs8A6tQJY0s", numberToReserve)
     }
 
-    private String getValue() {
-        return d2.trackedEntityModule().reservedValueManager().blockingGetValue("xs8A6tQJY0s", orgunitUid);
+    private val value: String
+        get() = d2.trackedEntityModule().reservedValueManager().blockingGetValue("xs8A6tQJY0s", orgunitUid)
+
+    // @Test
+    fun reserve_and_download() {
+        login()
+        syncMetadata()
+        reserveValues()
+        val value = value
     }
 
     // @Test
-    public void reserve_and_download() {
-        login();
-        syncMetadata();
-        reserveValues();
-        String value = getValue();
+    fun download_and_persist_reserved_values() = runTest {
+        login()
+        syncMetadata()
+        reserveValues()
+
+        val reservedValues = TrackedEntityAttributeReservedValueStoreImpl(
+            d2.databaseAdapter()
+        ).selectAll()
+
+        Truth.assertThat(reservedValues.size).isEqualTo(numberToReserve)
     }
 
     // @Test
-    public void download_and_persist_reserved_values() {
-        login();
-        syncMetadata();
-        reserveValues();
+    fun download_and_persist_all_reserved_values() = runTest {
+        login()
+        syncMetadata()
+        d2.trackedEntityModule().reservedValueManager().blockingDownloadAllReservedValues(20)
 
-        List<TrackedEntityAttributeReservedValue> reservedValues = new TrackedEntityAttributeReservedValueStoreImpl(
-                d2.databaseAdapter()).selectAll();
+        val reservedValues = TrackedEntityAttributeReservedValueStoreImpl(
+            d2.databaseAdapter()
+        ).selectAll()
 
-        assertThat(reservedValues.size()).isEqualTo(numberToReserve);
+        val value = d2.trackedEntityModule().reservedValueManager().blockingGetValue("xs8A6tQJY0s", orgunitUid)
     }
 
     // @Test
-    public void download_and_persist_all_reserved_values() {
-        login();
-        syncMetadata();
-        d2.trackedEntityModule().reservedValueManager().blockingDownloadAllReservedValues(20);
-
-        List<TrackedEntityAttributeReservedValue> reservedValues = new TrackedEntityAttributeReservedValueStoreImpl(
-                d2.databaseAdapter()).selectAll();
-
-        String value = d2.trackedEntityModule().reservedValueManager().blockingGetValue("xs8A6tQJY0s", orgunitUid);
-    }
-
-    // @Test
-    public void reserve_and_count() {
-        login();
-        syncMetadata();
-        TrackedEntityAttribute trackedEntityAttribute =
-        d2.trackedEntityModule().trackedEntityAttributes().byGenerated().isTrue().one().blockingGet();
+    fun reserve_and_count() {
+        login()
+        syncMetadata()
+        val trackedEntityAttribute =
+            d2.trackedEntityModule().trackedEntityAttributes().byGenerated().isTrue.one().blockingGet()
         d2.trackedEntityModule().reservedValueManager()
-                .blockingDownloadReservedValues(trackedEntityAttribute.uid(), numberToReserve);
-        int attributeCount = d2.trackedEntityModule().reservedValueManager()
-                        .blockingCount(trackedEntityAttribute.uid(), null);
-        int attributeAndOrgUnitCount = d2.trackedEntityModule().reservedValueManager()
-                .blockingCount(trackedEntityAttribute.uid(), orgunitUid);
+            .blockingDownloadReservedValues(trackedEntityAttribute!!.uid(), numberToReserve)
+        val attributeCount = d2.trackedEntityModule().reservedValueManager()
+            .blockingCount(trackedEntityAttribute.uid(), null)
+        val attributeAndOrgUnitCount = d2.trackedEntityModule().reservedValueManager()
+            .blockingCount(trackedEntityAttribute.uid(), orgunitUid)
 
-        assertThat(attributeCount).isEqualTo(numberToReserve);
-        assertThat(attributeAndOrgUnitCount).isEqualTo(numberToReserve);
+        Truth.assertThat(attributeCount).isEqualTo(numberToReserve)
+        Truth.assertThat(attributeAndOrgUnitCount).isEqualTo(numberToReserve)
     }
 
     // @Test
-    public void retrieve_the_reserved_value_summaries() {
-        login();
-        syncMetadata();
-        d2.trackedEntityModule().reservedValueManager().blockingDownloadAllReservedValues(5);
+    fun retrieve_the_reserved_value_summaries() {
+        login()
+        syncMetadata()
+        d2.trackedEntityModule().reservedValueManager().blockingDownloadAllReservedValues(5)
 
-        List<ReservedValueSummary> reservedValueSummaries =
-                d2.trackedEntityModule().reservedValueManager().blockingGetReservedValueSummaries();
+        val reservedValueSummaries: List<ReservedValueSummary?> =
+            d2.trackedEntityModule().reservedValueManager().blockingGetReservedValueSummaries()
 
-        assertThat(reservedValueSummaries).isNotEmpty();
+        Truth.assertThat(reservedValueSummaries).isNotEmpty()
     }
 
-    private void login() {
+    private fun login() {
         if (!d2.userModule().isLogged().blockingGet()) {
-            d2.userModule().logIn(username, password, url).blockingGet();
+            d2.userModule().logIn(username, password, url).blockingGet()
         }
     }
 
-    private void syncMetadata() {
-        d2.metadataModule().blockingDownload();
+    private fun syncMetadata() {
+        d2.metadataModule().blockingDownload()
     }
 }

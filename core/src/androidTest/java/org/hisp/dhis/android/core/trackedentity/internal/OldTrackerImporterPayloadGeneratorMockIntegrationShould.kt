@@ -44,7 +44,7 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
     private val oldTrackerPayloadGenerator = objects.d2DIComponent.oldTrackerImporterPayloadGenerator
 
     @Test
-    fun build_tracked_entity_instance_payload_with_nested_elements() {
+    fun build_tracked_entity_instance_payload_with_nested_elements() = runTest {
         storeTrackerData()
         val trackedEntityInstance = teiStore.selectByUid(teiId)!!
 
@@ -66,7 +66,7 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
     }
 
     @Test
-    fun build_single_event_with_nested_elements() {
+    fun build_single_event_with_nested_elements() = runTest {
         storeTrackerData()
         val event = eventStore.selectByUid(singleEventId)!!
 
@@ -208,7 +208,7 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
     }
 
     @Test
-    fun build_payload_with_non_accessible_data() {
+    fun build_payload_with_non_accessible_data() = runTest {
         storeTrackerData()
         val previousTrackedEntityType = trackedEntityTypeStore.selectFirst()!!
         val previousProgram = programStore.selectFirst()!!
@@ -233,7 +233,7 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
     }
 
     @Test
-    fun do_not_include_data_values_not_assigned_to_program_stage() {
+    fun do_not_include_data_values_not_assigned_to_program_stage() = runTest {
         storeTrackerData()
         d2.trackedEntityModule().trackedEntityDataValues()
             .value(event1Id, unassignedDataElementId)

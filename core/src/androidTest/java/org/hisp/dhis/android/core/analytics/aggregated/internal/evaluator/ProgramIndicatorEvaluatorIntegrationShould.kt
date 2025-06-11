@@ -107,7 +107,7 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
         assertThat(overrideValue).isEqualTo("15.0")
     }
 
-    private fun createSampleData() {
+    private suspend fun createSampleData() {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
@@ -159,7 +159,7 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
         )
     }
 
-    private fun setProgramIndicator(
+    private suspend fun setProgramIndicator(
         expression: String,
         filter: String? = null,
         analyticsType: AnalyticsType? = AnalyticsType.EVENT,

@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.arch.helpers.Result
@@ -90,7 +91,7 @@ class AnalyticsRepositoryIntegrationShould : BaseMockIntegrationTestFullDispatch
     }
 
     @Test
-    fun should_fail_if_unsupported_aggregation_type() {
+    fun should_fail_if_unsupported_aggregation_type() = runTest {
         val dataElementStore = DataElementStoreImpl(databaseAdapter)
         val dataElement = dataElementStore.selectByUid("g9eOBujte1U")!!
 

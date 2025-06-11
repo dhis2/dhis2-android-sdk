@@ -25,63 +25,56 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.resource.internal
 
-package org.hisp.dhis.android.core.resource.internal;
+import com.google.common.truth.Truth
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.resource.ResourceSamples
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.Test
+import org.junit.runner.RunWith
+import java.util.Date
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.resource.ResourceSamples;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+@RunWith(D2JunitRunner::class)
+class ResourceStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<Resource>(
+    ResourceStoreImpl(TestDatabaseAdapterFactory.get()), ResourceTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get()
+) {
 
-import java.util.Date;
-
-import static com.google.common.truth.Truth.assertThat;
-
-@RunWith(D2JunitRunner.class)
-public class ResourceStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<Resource> {
-
-    private ResourceStore store;
-
-    public ResourceStoreIntegrationShould() {
-        super(new ResourceStoreImpl(TestDatabaseAdapterFactory.get()), ResourceTableInfo.TABLE_INFO,
-                TestDatabaseAdapterFactory.get());
-        this.store = new ResourceStoreImpl(TestDatabaseAdapterFactory.get());
+    override fun buildObject(): Resource {
+        return ResourceSamples.getResource()
     }
 
-    @Override
-    protected Resource buildObject() {
-        return ResourceSamples.getResource();
-    }
-
-    @Override
-    protected Resource buildObjectToUpdate() {
+    override fun buildObjectToUpdate(): Resource {
         return ResourceSamples.getResource().toBuilder()
-                .lastSynced(new Date())
-                .build();
+            .lastSynced(Date())
+            .build()
     }
 
     @Test
-    public void return_last_updated() {
-        store.insert(ResourceSamples.getResource());
-        String lastUpdated = store.getLastUpdated(Resource.Type.PROGRAM);
+    fun return_last_updated() = runTest {
+        store.insert(ResourceSamples.getResource())
+        val lastUpdated = (store as ResourceStore).getLastUpdated(Resource.Type.PROGRAM)
 
-        assertThat(lastUpdated).isEqualTo(BaseIdentifiableObject.DATE_FORMAT
-                .format(ResourceSamples.getResource().lastSynced()));
+        Truth.assertThat(lastUpdated).isEqualTo(
+            BaseIdentifiableObject.DATE_FORMAT
+                .format(ResourceSamples.getResource().lastSynced()!!)
+        )
     }
 
     @Test
-    public void delete_resource() {
-        store.insert(ResourceSamples.getResource());
+    fun delete_resource() = runTest {
+        store.insert(ResourceSamples.getResource())
 
-        String lastUpdatedBefore = store.getLastUpdated(Resource.Type.PROGRAM);
-        assertThat(lastUpdatedBefore).isNotNull();
+        val lastUpdatedBefore = (store as ResourceStore).getLastUpdated(Resource.Type.PROGRAM)
+        Truth.assertThat(lastUpdatedBefore).isNotNull()
 
-        store.deleteResource(Resource.Type.PROGRAM);
+        store.deleteResource(Resource.Type.PROGRAM)
 
-        String lastUpdatedAfter = store.getLastUpdated(Resource.Type.PROGRAM);
-        assertThat(lastUpdatedAfter).isNull();
+        val lastUpdatedAfter = store.getLastUpdated(Resource.Type.PROGRAM)
+        Truth.assertThat(lastUpdatedAfter).isNull()
     }
 }

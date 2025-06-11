@@ -64,7 +64,7 @@ class LogoutCallRealIntegrationShould : BaseRealIntegrationTest() {
     }
 
     // @Test
-    fun recreate_credentials_when_login_again() {
+    fun recreate_credentials_when_login_again() = runTest {
         d2.userModule().logIn(username, password, url).blockingGet()
         d2.metadataModule().blockingDownload()
         assertThat(SqliteCheckerUtility.isDatabaseEmpty(d2.databaseAdapter())).isFalse()

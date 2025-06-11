@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.data.database
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
@@ -51,38 +52,38 @@ abstract class ObjectStoreAbstractIntegrationShould<M : CoreObject> internal con
 
     @Before
     @Throws(IOException::class)
-    open fun setUp() {
+    open fun setUp() = runTest {
         store.delete()
     }
 
     @After
-    open fun tearDown() {
+    open fun tearDown() = runTest {
         store.delete()
     }
 
     @Test
-    fun insert_and_select_first_object() {
+    fun insert_and_select_first_object() = runTest {
         store.insert(`object`)
         val objectFromDb = store.selectFirst()
         assertEqualsIgnoreId(objectFromDb)
     }
 
     @Test
-    fun insert_as_content_values_and_select_first_object() {
+    fun insert_as_content_values_and_select_first_object() = runTest {
         databaseAdapter.insert(tableInfo.name(), null, `object`.toContentValues())
         val objectFromDb = store.selectFirst()
         assertEqualsIgnoreId(objectFromDb)
     }
 
     @Test
-    fun insert_and_select_all_objects() {
+    fun insert_and_select_all_objects() = runTest {
         store.insert(`object`)
         val objectsFromDb = store.selectAll()
         assertEqualsIgnoreId(objectsFromDb.iterator().next())
     }
 
     @Test
-    fun delete_inserted_object_by_id() {
+    fun delete_inserted_object_by_id() = runTest {
         store.insert(`object`)
         val m = store.selectFirst()!!
         store.deleteById(m)

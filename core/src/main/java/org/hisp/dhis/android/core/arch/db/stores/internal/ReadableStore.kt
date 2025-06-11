@@ -33,8 +33,9 @@ import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
 interface ReadableStore<O> {
     suspend fun selectAll(): List<O>
     suspend fun selectWhere(whereClause: String): List<O>
-    suspend fun selectWhere(filterWhereClause: String, orderByClause: String): List<O>
-    suspend fun selectWhere(filterWhereClause: String, orderByClause: String, limit: Int): List<O>
+    suspend fun selectWhere(filterWhereClause: String, orderByClause: String?): List<O>
+    suspend fun selectWhere(filterWhereClause: String, orderByClause: String?, limit: Int): List<O>
+    suspend fun selectWhere(filterWhereClause: String, orderByClause: String?, limit: Int, offset: Int?): List<O>
     suspend fun selectOneOrderedBy(orderingColumName: String, orderingType: SQLOrderType): O?
     suspend fun selectRawQuery(sqlRawQuery: String): List<O>
     suspend fun selectOneWhere(whereClause: String): O?

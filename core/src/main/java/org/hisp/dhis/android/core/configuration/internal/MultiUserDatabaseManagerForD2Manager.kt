@@ -64,7 +64,7 @@ internal class MultiUserDatabaseManagerForD2Manager(
             .databaseCreationDate(DateUtils.DATE_FORMAT.format(Date()))
             .build()
         ServerURLWrapper.setServerUrl(serverUrl)
-        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, config)
+        databaseAdapterFactory.createOrRecreateDatabase(databaseAdapter, config)
     }
 
     suspend fun applyMigration() {

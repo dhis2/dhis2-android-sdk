@@ -152,7 +152,7 @@ internal open class IdentifiableObjectStoreImpl<O>(
     }
 
     @Throws(RuntimeException::class)
-    override suspend fun selectUidsWhere(whereClause: String, orderByClause: String): List<String> {
+    override suspend fun selectUidsWhere(whereClause: String, orderByClause: String?): List<String> {
         val cursor = databaseAdapter.rawQuery(builder.selectUidsWhere(whereClause, orderByClause))
         return mapStringColumnSetFromCursor(cursor)
     }

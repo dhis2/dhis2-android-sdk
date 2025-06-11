@@ -24,7 +24,7 @@ internal data class CustomIntentDB(
     val name: String?,
     val action: CustomIntentActionTypeListDB?,
     val packageName: String?,
-    val requestArguments: StringStringMapDB?,
+    val requestArguments: CustomIntentRequestArgumentsDB?,
     val responseDataArgument: String?,
     val responseDataPath: String?,
 ) : EntityDB<CustomIntent> {

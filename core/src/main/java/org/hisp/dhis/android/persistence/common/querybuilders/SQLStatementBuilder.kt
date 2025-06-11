@@ -28,27 +28,23 @@
 
 package org.hisp.dhis.android.persistence.common.querybuilders
 
+import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 
 @Suppress("TooManyFunctions")
 internal interface SQLStatementBuilder : ReadOnlySQLStatementBuilder {
     fun getTableName(): String
-    fun getColumns(): Array<String>
-    fun selectUids(): String
-    fun selectUidsWhere(whereClause: String): String
-    fun selectUidsWhere(whereClause: String, orderByClause: String): String
-    fun selectColumnWhere(column: String, whereClause: String): String
+    fun selectUids(): RoomRawQuery
+    fun selectUidsWhere(whereClause: String): RoomRawQuery
+    fun selectUidsWhere(whereClause: String, orderByClause: String?): RoomRawQuery
+    fun selectColumnWhere(column: String, whereClause: String): RoomRawQuery
     fun selectChildrenWithLinkTable(
         projection: LinkTableChildProjection,
         parentUid: String,
         whereClause: String?,
-    ): String
+    ): RoomRawQuery
 
-    fun selectByUid(uid: String): String
-    fun selectDistinct(column: String): String
-    fun insert(): String
-    fun update(): String
-    fun updateWhere(): String
-    fun deleteById(uid: String): String
-    fun deleteWhere(): String
+    fun selectByUid(uid: String): RoomRawQuery
+    fun selectDistinct(column: String): RoomRawQuery
+    fun deleteByUid(uid: String): RoomRawQuery
 }

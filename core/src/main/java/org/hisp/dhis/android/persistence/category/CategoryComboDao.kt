@@ -26,9 +26,10 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.common.daos
+package org.hisp.dhis.android.persistence.category
 
-import org.hisp.dhis.android.persistence.common.EntityDB
+import androidx.room.Dao
+import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
-@Suppress("UnnecessaryAbstractClass")
-internal abstract class ObjectWithoutUidDao<P : EntityDB<*>>(tableName: String) : ObjectDao<P>(tableName)
+@Dao
+internal interface CategoryComboDao : ObjectDao<CategoryComboDB>

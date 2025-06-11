@@ -31,25 +31,19 @@ package org.hisp.dhis.android.core.settings.internal
 import android.content.ContentValues
 import android.database.Cursor
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
-import kotlinx.serialization.SerializationException
-import kotlinx.serialization.builtins.MapSerializer
-import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.json.Json
-import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.settings.CustomIntentRequest
+import org.hisp.dhis.android.core.settings.CustomIntentRequestArgument
 import org.hisp.dhis.android.core.settings.CustomIntentTableInfo
+import org.hisp.dhis.android.persistence.settings.CustomIntentRequestArgumentsDB
+import org.hisp.dhis.android.persistence.settings.toDB
 
 internal class CustomIntentRequestColumnAdapter : ColumnTypeAdapter<CustomIntentRequest> {
 
     override fun fromCursor(cursor: Cursor, columnName: String): CustomIntentRequest {
         val requestArgumentsIndex = cursor.getColumnIndex(CustomIntentTableInfo.Columns.REQUEST_ARGUMENTS)
 
-        val argumentsString = cursor.getString(requestArgumentsIndex)
-        val arguments: Map<String, String> = try {
-            KotlinxJsonParser.instance.decodeFromString(argumentsString)
-        } catch (e: SerializationException) {
-            emptyMap<String, String>()
-        }
+        val argumentsString = CustomIntentRequestArgumentsDB(cursor.getString(requestArgumentsIndex))
+        val arguments = argumentsString.toDomain()
 
         return CustomIntentRequest.builder()
             .arguments(arguments)
@@ -64,12 +58,8 @@ internal class CustomIntentRequestColumnAdapter : ColumnTypeAdapter<CustomIntent
     }
 
     companion object {
-        fun serialize(map: Map<String, String>): String {
-            return try {
-                Json.encodeToString(MapSerializer(String.serializer(), String.serializer()), map)
-            } catch (e: SerializationException) {
-                "{}"
-            }
+        fun serialize(list: List<CustomIntentRequestArgument>): String {
+            return list.toDB().value
         }
     }
 }

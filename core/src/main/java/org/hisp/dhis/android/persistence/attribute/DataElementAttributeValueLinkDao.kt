@@ -26,25 +26,10 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.common.daos
+package org.hisp.dhis.android.persistence.attribute
 
-import androidx.room.RoomRawQuery
-import org.hisp.dhis.android.persistence.common.EntityDB
+import androidx.room.Dao
+import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
-internal abstract class LinkStoreDao<P : EntityDB<*>>(
-    tableName: String,
-    private val parentColumn: String,
-) : ObjectDao<P>(tableName) {
-
-    suspend fun deleteLinksForParentUid(query: (String, String) -> RoomRawQuery) {
-        intRawQuery(query(tableName, parentColumn))
-    }
-
-    suspend fun selectDistinctChildren(query: (String) -> RoomRawQuery): Set<String> {
-        return stringSetRawQuery(query(tableName))
-    }
-
-    suspend fun selectLinksForParentUid(query: (String, String) -> RoomRawQuery): List<P> {
-        return objectListRawQuery(query(tableName, parentColumn))
-    }
-}
+@Dao
+internal interface DataElementAttributeValueLinkDao : ObjectDao<DataElementAttributeValueLinkDB>

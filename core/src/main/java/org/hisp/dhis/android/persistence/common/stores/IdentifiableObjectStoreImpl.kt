@@ -28,21 +28,20 @@
 
 package org.hisp.dhis.android.persistence.common.stores
 
-import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.MapperToDB
-import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
+import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilder
 
 internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
-    protected val identifiableDao: IdentifiableObjectDao<P>,
+    protected val identifiableObjectDao: ObjectDao<P>,
     mapper: MapperToDB<D, P>,
     override val builder: SQLStatementBuilder,
-) : ObjectStoreImpl<D, P>(identifiableDao, mapper, builder) where D : CoreObject, D : ObjectWithUidInterface {
+) : ObjectStoreImpl<D, P>(identifiableObjectDao, mapper, builder) where D : CoreObject, D : ObjectWithUidInterface {
 
     @Throws(RuntimeException::class)
     override suspend fun insert(domainObj: D): Long {
@@ -53,27 +52,27 @@ internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
 
     @Throws(RuntimeException::class)
     suspend fun selectUids(): List<String> {
-        val query = RoomRawQuery(builder.selectUids())
-        return identifiableDao.selectUids(query)
+        val query = builder.selectUids()
+        return identifiableObjectDao.stringListRawQuery(query)
     }
 
     @Throws(RuntimeException::class)
     suspend fun selectUidsWhere(whereClause: String): List<String> {
-        val query = RoomRawQuery(builder.selectUidsWhere(whereClause))
-        return identifiableDao.selectUidsWhere(query)
+        val query = builder.selectUidsWhere(whereClause)
+        return identifiableObjectDao.stringListRawQuery(query)
     }
 
     @Throws(RuntimeException::class)
     suspend fun selectUidsWhere(whereClause: String, orderByClause: String): List<String> {
-        val query = RoomRawQuery(builder.selectUidsWhere(whereClause, orderByClause))
-        return identifiableDao.selectUidsWhere(query)
+        val query = builder.selectUidsWhere(whereClause, orderByClause)
+        return identifiableObjectDao.stringListRawQuery(query)
     }
 
     @Throws(RuntimeException::class)
     suspend fun selectByUid(uid: String): D? {
         CollectionsHelper.isNull(uid)
-        val query = RoomRawQuery(builder.selectByUid(uid))
-        val dbEntity = identifiableDao.selectByUid(query)
+        val query = builder.selectByUid(uid)
+        val dbEntity = identifiableObjectDao.objectRawQuery(query)
         return dbEntity?.toDomain()
     }
 
@@ -81,7 +80,7 @@ internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
     suspend fun selectByUids(uids: List<String>): List<D> {
         val whereClause = "uid IN (${uids.joinToString(",") { "'$it'" }})"
         val query = builder.selectWhere(whereClause)
-        val dbEntities = identifiableDao.selectByUids(query)
+        val dbEntities = identifiableObjectDao.objectListRawQuery(query)
         return dbEntities.map { it.toDomain() }
     }
 
@@ -90,7 +89,7 @@ internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
     suspend fun update(domainObj: D) {
         CollectionsHelper.isNull(domainObj)
         val entity = domainObj.toDB()
-        val updated = identifiableDao.update(entity)
+        val updated = identifiableObjectDao.update(entity)
         if (updated == 0) {
             throw RuntimeException("No rows affected")
         }
@@ -112,8 +111,8 @@ internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
     @Suppress("TooGenericExceptionThrown")
     suspend fun delete(uid: String) {
         CollectionsHelper.isNull(uid)
-        val query = RoomRawQuery(builder.deleteById(uid))
-        val deleted = identifiableDao.deleteById(query)
+        val query = builder.deleteByUid(uid)
+        val deleted = identifiableObjectDao.intRawQuery(query)
         if (deleted == 0) {
             throw RuntimeException("No rows affected")
         }

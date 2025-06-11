@@ -52,13 +52,18 @@ internal open class ReadableStoreImpl<O : CoreObject>(
         return selectRawQuery(query)
     }
 
-    override suspend fun selectWhere(filterWhereClause: String, orderByClause: String): List<O> {
+    override suspend fun selectWhere(filterWhereClause: String, orderByClause: String?): List<O> {
         val query = builder.selectWhere(filterWhereClause, orderByClause)
         return selectRawQuery(query)
     }
 
-    override suspend fun selectWhere(filterWhereClause: String, orderByClause: String, limit: Int): List<O> {
+    override suspend fun selectWhere(filterWhereClause: String, orderByClause: String?, limit: Int): List<O> {
         val query = builder.selectWhere(filterWhereClause, orderByClause, limit)
+        return selectRawQuery(query)
+    }
+
+    override suspend fun selectWhere(filterWhereClause: String, orderByClause: String?, limit: Int, offset: Int?): List<O> {
+        val query = builder.selectWhere(filterWhereClause, orderByClause, limit, offset)
         return selectRawQuery(query)
     }
 

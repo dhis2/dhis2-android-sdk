@@ -49,7 +49,8 @@ class CustomIntentsShould : BaseObjectKotlinxShould("settings/custom_intents.jso
         assertThat(firstCustomIntent.trigger()?.attributes()?.get(0)?.uid()).isEqualTo("attributeUid")
         assertThat(firstCustomIntent.action()).isEqualTo(listOf(CustomIntentActionType.DATA_ENTRY))
         assertThat(firstCustomIntent.request()?.arguments()?.size).isEqualTo(3)
-        assertThat(firstCustomIntent.request()?.arguments()?.get("projectID")).isEqualTo("project one")
+        assertThat(firstCustomIntent.request()?.arguments()?.get(0)?.key()).isEqualTo("projectID")
+        assertThat(firstCustomIntent.request()?.arguments()?.get(0)?.value()).isEqualTo("project one")
         assertThat(firstCustomIntent.response()?.data()?.argument()).isEqualTo("registration")
         assertThat(firstCustomIntent.response()?.data()?.path()).isEqualTo("guid")
     }

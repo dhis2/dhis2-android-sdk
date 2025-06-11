@@ -69,8 +69,8 @@ internal open class ReadableStoreImpl<D, P : EntityDB<D>>(
         return dbEntity?.toDomain()
     }
 
-    suspend fun selectRawQuery(sqlRawQuery: String): List<D> {
-        val dbEntities = readableDao.objectListRawQuery(RoomRawQuery(sqlRawQuery))
+    suspend fun selectRawQuery(sqlRawQuery: RoomRawQuery): List<D> {
+        val dbEntities = readableDao.objectListRawQuery(sqlRawQuery)
         return dbEntities.map { it.toDomain() }
     }
 
@@ -97,10 +97,8 @@ internal open class ReadableStoreImpl<D, P : EntityDB<D>>(
     }
 
     suspend fun groupAndGetCountBy(column: String): Map<String, Int> {
-        val queryStr: (String) -> RoomRawQuery =
-            { table -> RoomRawQuery("SELECT $column AS key, COUNT(*) AS count FROM $table GROUP BY $column") }
-        // TODO move query lambda to SQLStatementBuilder
-        val groupCountList = readableDao.groupAndGetCountBy(queryStr)
+        val query = builder.countAndGroupBy(column)
+        val groupCountList = readableDao.groupCountListRawQuery(query)
         return groupCountList.associate { it.key to it.count }
     }
 }

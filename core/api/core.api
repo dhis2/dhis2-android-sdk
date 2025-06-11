@@ -1721,9 +1721,11 @@ public class org/hisp/dhis/android/core/arch/db/access/internal/DatabaseAdapterF
 	public static fun create (Landroid/content/Context;Lorg/hisp/dhis/android/core/arch/storage/internal/SecureStore;)Lorg/hisp/dhis/android/core/arch/db/access/internal/DatabaseAdapterFactory;
 	public fun createOrOpenDatabase (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;Ljava/lang/String;Z)V
 	public fun createOrOpenDatabase (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;Ljava/lang/String;ZLjava/lang/Integer;)V
+	public fun createOrOpenDatabase (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;Ljava/lang/String;ZLjava/lang/Integer;Z)V
 	public fun createOrOpenDatabase (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;)V
+	public fun createOrRecreateDatabase (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;)V
 	public fun deleteDatabase (Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;)V
-	public fun getDatabaseAdapter (Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;)Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;
+	public fun getDatabaseAdapter (Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;Z)Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;
 	public fun newParentDatabaseAdapter ()Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;
 	public fun removeDatabaseAdapter (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;)V
 }
@@ -2517,8 +2519,7 @@ public class org/hisp/dhis/android/core/arch/db/querybuilders/internal/MultipleT
 }
 
 public final class org/hisp/dhis/android/core/arch/db/querybuilders/internal/OrderByClauseBuilder {
-	public static fun addSortingClauses (Lorg/hisp/dhis/android/core/arch/db/querybuilders/internal/WhereClauseBuilder;Ljava/util/List;Landroid/content/ContentValues;ZLjava/lang/String;)V
-	public static fun orderByFromItems (Ljava/util/List;Ljava/lang/String;)Ljava/lang/String;
+	public static fun orderByFromItems (Ljava/util/List;)Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/core/arch/db/sqlorder/internal/SQLOrderType : java/lang/Enum {
@@ -2581,6 +2582,7 @@ public abstract interface class org/hisp/dhis/android/core/arch/db/stores/intern
 	public abstract fun selectWhere (Ljava/lang/String;)Ljava/util/List;
 	public abstract fun selectWhere (Ljava/lang/String;Ljava/lang/String;)Ljava/util/List;
 	public abstract fun selectWhere (Ljava/lang/String;Ljava/lang/String;I)Ljava/util/List;
+	public abstract fun selectWhere (Ljava/lang/String;Ljava/lang/String;ILjava/lang/Integer;)Ljava/util/List;
 }
 
 public class org/hisp/dhis/android/core/arch/db/stores/projections/internal/LinkTableChildProjection {
@@ -3277,17 +3279,15 @@ public final class org/hisp/dhis/android/core/arch/repositories/paging/PageConfi
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class org/hisp/dhis/android/core/arch/repositories/paging/internal/RepositoryDataSource : androidx/paging/ItemKeyedDataSource {
-	public synthetic fun getKey (Ljava/lang/Object;)Ljava/lang/Object;
-	public fun getKey (Lorg/hisp/dhis/android/core/common/CoreObject;)Lorg/hisp/dhis/android/core/common/CoreObject;
-	public fun loadAfter (Landroidx/paging/ItemKeyedDataSource$LoadParams;Landroidx/paging/ItemKeyedDataSource$LoadCallback;)V
-	public fun loadBefore (Landroidx/paging/ItemKeyedDataSource$LoadParams;Landroidx/paging/ItemKeyedDataSource$LoadCallback;)V
-	public fun loadInitial (Landroidx/paging/ItemKeyedDataSource$LoadInitialParams;Landroidx/paging/ItemKeyedDataSource$LoadInitialCallback;)V
+public final class org/hisp/dhis/android/core/arch/repositories/paging/internal/RepositoryDataSource : androidx/paging/PageKeyedDataSource {
+	public fun loadAfter (Landroidx/paging/PageKeyedDataSource$LoadParams;Landroidx/paging/PageKeyedDataSource$LoadCallback;)V
+	public fun loadBefore (Landroidx/paging/PageKeyedDataSource$LoadParams;Landroidx/paging/PageKeyedDataSource$LoadCallback;)V
+	public fun loadInitial (Landroidx/paging/PageKeyedDataSource$LoadInitialParams;Landroidx/paging/PageKeyedDataSource$LoadInitialCallback;)V
 }
 
 public final class org/hisp/dhis/android/core/arch/repositories/paging/internal/RepositoryPagingSource : androidx/paging/PagingSource {
+	public fun getRefreshKey (Landroidx/paging/PagingState;)Ljava/lang/Integer;
 	public synthetic fun getRefreshKey (Landroidx/paging/PagingState;)Ljava/lang/Object;
-	public fun getRefreshKey (Landroidx/paging/PagingState;)Lorg/hisp/dhis/android/core/common/CoreObject;
 	public fun load (Landroidx/paging/PagingSource$LoadParams;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -3303,7 +3303,6 @@ public abstract class org/hisp/dhis/android/core/arch/repositories/scope/Reposit
 	public abstract fun filters ()Ljava/util/List;
 	public fun hasFilters ()Z
 	public abstract fun orderBy ()Ljava/util/List;
-	public abstract fun pagingKey ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$Builder;
 }
 
@@ -3314,7 +3313,6 @@ public abstract class org/hisp/dhis/android/core/arch/repositories/scope/Reposit
 	public abstract fun complexFilters (Ljava/util/List;)Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$Builder;
 	public abstract fun filters (Ljava/util/List;)Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$Builder;
 	public abstract fun orderBy (Ljava/util/List;)Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$Builder;
-	public abstract fun pagingKey (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$Builder;
 }
 
 public final class org/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection : java/lang/Enum {
@@ -6135,6 +6133,7 @@ public class org/hisp/dhis/android/core/dataset/internal/DataSetInstanceSQLState
 	public fun selectWhere (Ljava/lang/String;I)Ljava/lang/String;
 	public fun selectWhere (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
 	public fun selectWhere (Ljava/lang/String;Ljava/lang/String;I)Ljava/lang/String;
+	public fun selectWhere (Ljava/lang/String;Ljava/lang/String;ILjava/lang/Integer;)Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/core/dataset/internal/DataSetInstanceSQLStatementBuilder$Companion {
@@ -6151,6 +6150,7 @@ public final class org/hisp/dhis/android/core/dataset/internal/DataSetInstanceSu
 	public fun selectWhere (Ljava/lang/String;I)Ljava/lang/String;
 	public fun selectWhere (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
 	public fun selectWhere (Ljava/lang/String;Ljava/lang/String;I)Ljava/lang/String;
+	public fun selectWhere (Ljava/lang/String;Ljava/lang/String;ILjava/lang/Integer;)Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/core/dataset/internal/DataSetInstanceSummarySQLStatementBuilder$Companion {
@@ -11590,15 +11590,30 @@ public class org/hisp/dhis/android/core/settings/CustomIntentDataElementTableInf
 
 public abstract class org/hisp/dhis/android/core/settings/CustomIntentRequest {
 	public fun <init> ()V
-	public abstract fun arguments ()Ljava/util/Map;
+	public abstract fun arguments ()Ljava/util/List;
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/CustomIntentRequest$Builder;
 	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/CustomIntentRequest;
 }
 
 public abstract class org/hisp/dhis/android/core/settings/CustomIntentRequest$Builder {
 	public fun <init> ()V
-	public abstract fun arguments (Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/CustomIntentRequest$Builder;
+	public abstract fun arguments (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/CustomIntentRequest$Builder;
 	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/CustomIntentRequest;
+}
+
+public abstract class org/hisp/dhis/android/core/settings/CustomIntentRequestArgument {
+	public fun <init> ()V
+	public static fun builder ()Lorg/hisp/dhis/android/core/settings/CustomIntentRequestArgument$Builder;
+	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/CustomIntentRequestArgument;
+	public abstract fun key ()Ljava/lang/String;
+	public abstract fun value ()Ljava/lang/String;
+}
+
+public abstract class org/hisp/dhis/android/core/settings/CustomIntentRequestArgument$Builder {
+	public fun <init> ()V
+	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/CustomIntentRequestArgument;
+	public abstract fun key (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntentRequestArgument$Builder;
+	public abstract fun value (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntentRequestArgument$Builder;
 }
 
 public abstract class org/hisp/dhis/android/core/settings/CustomIntentResponse {
@@ -15952,35 +15967,6 @@ public final class org/hisp/dhis/android/persistence/category/CategoryTableInfo$
 public final class org/hisp/dhis/android/persistence/category/CategoryTableInfo$Columns$Companion {
 }
 
-public final class org/hisp/dhis/android/persistence/common/ItemFilterTableInfo {
-	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/common/ItemFilterTableInfo;
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public final class org/hisp/dhis/android/persistence/common/ItemFilterTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field ATTRIBUTE Ljava/lang/String;
-	public static final field Companion Lorg/hisp/dhis/android/persistence/common/ItemFilterTableInfo$Columns$Companion;
-	public static final field DATA_ITEM Ljava/lang/String;
-	public static final field DATE_FILTER Ljava/lang/String;
-	public static final field EQ Ljava/lang/String;
-	public static final field EVENT_FILTER Ljava/lang/String;
-	public static final field EW Ljava/lang/String;
-	public static final field GE Ljava/lang/String;
-	public static final field GT Ljava/lang/String;
-	public static final field IN_PROPERTY Ljava/lang/String;
-	public static final field LE Ljava/lang/String;
-	public static final field LIKE Ljava/lang/String;
-	public static final field LT Ljava/lang/String;
-	public static final field PROGRAM_STAGE_WORKING_LIST Ljava/lang/String;
-	public static final field SW Ljava/lang/String;
-	public static final field TRACKED_ENTITY_INSTANCE_FILTER Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/persistence/common/ItemFilterTableInfo$Columns$Companion {
-}
-
 public final class org/hisp/dhis/android/persistence/common/ValueTypeDeviceRenderingTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/common/ValueTypeDeviceRenderingTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
@@ -16711,6 +16697,35 @@ public final class org/hisp/dhis/android/persistence/indicator/IndicatorTypeTabl
 }
 
 public final class org/hisp/dhis/android/persistence/indicator/IndicatorTypeTableInfo$Columns$Companion {
+}
+
+public final class org/hisp/dhis/android/persistence/itemfilter/ItemFilterTableInfo {
+	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/itemfilter/ItemFilterTableInfo;
+	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+}
+
+public final class org/hisp/dhis/android/persistence/itemfilter/ItemFilterTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
+	public static final field ATTRIBUTE Ljava/lang/String;
+	public static final field Companion Lorg/hisp/dhis/android/persistence/itemfilter/ItemFilterTableInfo$Columns$Companion;
+	public static final field DATA_ITEM Ljava/lang/String;
+	public static final field DATE_FILTER Ljava/lang/String;
+	public static final field EQ Ljava/lang/String;
+	public static final field EVENT_FILTER Ljava/lang/String;
+	public static final field EW Ljava/lang/String;
+	public static final field GE Ljava/lang/String;
+	public static final field GT Ljava/lang/String;
+	public static final field IN_PROPERTY Ljava/lang/String;
+	public static final field LE Ljava/lang/String;
+	public static final field LIKE Ljava/lang/String;
+	public static final field LT Ljava/lang/String;
+	public static final field PROGRAM_STAGE_WORKING_LIST Ljava/lang/String;
+	public static final field SW Ljava/lang/String;
+	public static final field TRACKED_ENTITY_INSTANCE_FILTER Ljava/lang/String;
+	public static final field _ID Ljava/lang/String;
+	public fun <init> ()V
+}
+
+public final class org/hisp/dhis/android/persistence/itemfilter/ItemFilterTableInfo$Columns$Companion {
 }
 
 public final class org/hisp/dhis/android/persistence/legendset/DataElementLegendSetLinkTableInfo {
@@ -18710,6 +18725,7 @@ public final class org/hisp/dhis/android/persistence/visualization/TrackerVisual
 	public static final field OUTPUT_TYPE Ljava/lang/String;
 	public static final field PROGRAM Ljava/lang/String;
 	public static final field PROGRAM_STAGE Ljava/lang/String;
+	public static final field SORTING Ljava/lang/String;
 	public static final field TRACKED_ENTITY_TYPE Ljava/lang/String;
 	public static final field TYPE Ljava/lang/String;
 	public static final field UID Ljava/lang/String;

@@ -64,15 +64,23 @@ public class DatabaseAdapterFactory {
     }
 
     @SuppressWarnings("PMD.EmptyCatchBlock")
-    public void createOrOpenDatabase(DatabaseAdapter adapter, String databaseName, boolean encrypt, Integer version) {
+    public void createOrOpenDatabase(DatabaseAdapter adapter,
+                                     String databaseName,
+                                     boolean encrypt,
+                                     Integer version,
+                                     boolean force) {
         try {
             ParentDatabaseAdapter parentDatabaseAdapter = (ParentDatabaseAdapter) adapter;
-            DatabaseAdapter internalAdapter = newInternalAdapter(databaseName, encrypt, version);
+            DatabaseAdapter internalAdapter = newInternalAdapter(databaseName, encrypt, version, force);
             adaptersToPreventNotClosedError.add(internalAdapter);
             parentDatabaseAdapter.setAdapter(internalAdapter);
         } catch (ClassCastException cce) {
             // This ensures tests that mock DatabaseAdapter pass
         }
+    }
+
+    public void createOrOpenDatabase(DatabaseAdapter adapter, String databaseName, boolean encrypt, Integer version) {
+        createOrOpenDatabase(adapter, databaseName, encrypt, version, false);
     }
 
     public void createOrOpenDatabase(DatabaseAdapter adapter, String databaseName, boolean encrypt) {
@@ -82,6 +90,11 @@ public class DatabaseAdapterFactory {
     public void createOrOpenDatabase(DatabaseAdapter adapter, DatabaseAccount userConfiguration) {
         createOrOpenDatabase(adapter, userConfiguration.databaseName(), userConfiguration.encrypted(),
                 BaseDatabaseOpenHelper.VERSION);
+    }
+
+    public void createOrRecreateDatabase(DatabaseAdapter adapter, DatabaseAccount userConfiguration) {
+        createOrOpenDatabase(adapter, userConfiguration.databaseName(), userConfiguration.encrypted(),
+                BaseDatabaseOpenHelper.VERSION, true);
     }
 
     public void deleteDatabase(DatabaseAccount userConfiguration) {
@@ -94,27 +107,30 @@ public class DatabaseAdapterFactory {
         }
     }
 
-    public DatabaseAdapter getDatabaseAdapter(DatabaseAccount databaseAccount) {
+    public DatabaseAdapter getDatabaseAdapter(DatabaseAccount databaseAccount, boolean force) {
         DatabaseAdapter adapter = newInternalAdapter(databaseAccount.databaseName(), databaseAccount.encrypted(),
-                BaseDatabaseOpenHelper.VERSION);
+                BaseDatabaseOpenHelper.VERSION, force);
         adaptersToPreventNotClosedError.add(adapter);
         return adapter;
     }
 
     private DatabaseAdapter newInternalAdapter(String databaseName,
                                                boolean encrypt,
-                                               int version) {
+                                               int version,
+                                               boolean force) {
         if (encrypt) {
             String password = passwordManager.getPassword(databaseName);
 
             // We need the password to be set before instantiating the helper
-            EncryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(databaseName, encryptedOpenHelpers,
-                    v -> new EncryptedDatabaseOpenHelper(context, databaseName, password, version));
+            EncryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(databaseName, force, encryptedOpenHelpers,
+                    v -> new EncryptedDatabaseOpenHelper(context, databaseName, password, version),
+                    v -> v.close());
             // It seems that now SQLCipher (4.5.5) handles password internally if previously given
             return new EncryptedDatabaseAdapter(openHelper.getWritableDatabase(), openHelper.getDatabaseName());
         } else {
-            UnencryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(databaseName, unencryptedOpenHelpers,
-                    v -> new UnencryptedDatabaseOpenHelper(context, databaseName, version));
+            UnencryptedDatabaseOpenHelper openHelper = instantiateOpenHelper(databaseName, force,
+                    unencryptedOpenHelpers, v -> new UnencryptedDatabaseOpenHelper(context, databaseName, version),
+                    v -> v.close());
             return new UnencryptedDatabaseAdapter(openHelper.getWritableDatabase(), openHelper.getDatabaseName());
         }
     }
@@ -123,9 +139,24 @@ public class DatabaseAdapterFactory {
         O run(I i);
     }
 
-    private <H> H instantiateOpenHelper(String databaseName, Map<String, H> helpers, Function<Void, H> helperCreator) {
-        H openHelper;
-        if (databaseName == null || !helpers.containsKey(databaseName)) {
+    private interface Closer<I> {
+        void run(I i);
+    }
+
+    private <H> H instantiateOpenHelper(String databaseName,
+                                        boolean force,
+                                        Map<String, H> helpers,
+                                        Function<Void, H> helperCreator,
+                                        Closer<H> closer) {
+        H openHelper = helpers.get(databaseName);
+        if (force && openHelper != null) {
+            try {
+                closer.run(openHelper);
+            } catch (Exception e) {
+                // Do nothing
+            }
+        }
+        if (force || databaseName == null || openHelper == null) {
             openHelper = helperCreator.run(null);
             if (databaseName != null) {
                 helpers.put(databaseName, openHelper);

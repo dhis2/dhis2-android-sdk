@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,32 +26,11 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.common.daos
+package org.hisp.dhis.android.persistence.common.querybuilders
 
 import androidx.room.RoomRawQuery
-import org.hisp.dhis.android.persistence.common.EntityDB
 
-internal abstract class IdentifiableObjectDao<P : EntityDB<*>>(
-    tableName: String,
-) : ObjectDao<P>(tableName) {
-
-    suspend fun selectUids(query: RoomRawQuery): List<String> {
-        return stringListRawQuery(query)
-    }
-
-    suspend fun selectUidsWhere(query: RoomRawQuery): List<String> {
-        return stringListRawQuery(query)
-    }
-
-    suspend fun selectByUid(query: RoomRawQuery): P? {
-        return objectRawQuery(query)
-    }
-
-    suspend fun selectByUids(query: RoomRawQuery): List<P> {
-        return objectListRawQuery(query)
-    }
-
-    suspend fun deleteById(query: RoomRawQuery): Int {
-        return intRawQuery(query)
-    }
+internal interface IdentifiableDeletableDataObjectSQLStatementBuilder : IdentifiableDataObjectSQLStatementBuilder {
+    fun setDeleted(uid: String): RoomRawQuery
+    fun selectSyncStateWhere(where: String): RoomRawQuery
 }

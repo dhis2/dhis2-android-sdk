@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.settings.CustomIntentActionType
 import org.hisp.dhis.android.core.settings.CustomIntentAttribute
 import org.hisp.dhis.android.core.settings.CustomIntentDataElement
 import org.hisp.dhis.android.core.settings.CustomIntentRequest
+import org.hisp.dhis.android.core.settings.CustomIntentRequestArgument
 import org.hisp.dhis.android.core.settings.CustomIntentResponse
 import org.hisp.dhis.android.core.settings.CustomIntentResponseData
 import org.hisp.dhis.android.core.settings.CustomIntentTrigger
@@ -61,7 +62,14 @@ object CustomIntentSamples {
             .packageName("package.name")
             .request(
                 CustomIntentRequest.builder()
-                    .arguments(mapOf("some key" to "some value"))
+                    .arguments(
+                        listOf(
+                            CustomIntentRequestArgument.builder()
+                                .key("some key")
+                                .value("some value")
+                                .build(),
+                        ),
+                    )
                     .build(),
             )
             .response(

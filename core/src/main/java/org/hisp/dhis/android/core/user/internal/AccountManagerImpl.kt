@@ -138,7 +138,7 @@ internal class AccountManagerImpl(
 
     private fun updateSyncState(account: DatabaseAccount): DatabaseAccount {
         return if (account.importDB()?.status() != DatabaseAccountImportStatus.PENDING_TO_IMPORT) {
-            val databaseAdapter = databaseAdapterFactory.getDatabaseAdapter(account)
+            val databaseAdapter = databaseAdapterFactory.getDatabaseAdapter(account, false)
             val syncState = AccountManagerHelper.getSyncState(databaseAdapter)
 
             account.toBuilder()

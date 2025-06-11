@@ -40,17 +40,23 @@ class RelationshipServiceIntegrationShould : BaseMockIntegrationTestFullDispatch
             .getRelationshipTypesForTrackedEntities("nEenWmSyUEp")
 
         assertThat(relationshipsWithoutProgram.size).isEqualTo(2)
-        assertThat(relationshipsWithoutProgram[0].relationshipType.uid()).isEqualTo("WiH6923nMtb")
-        assertThat(relationshipsWithoutProgram[0].entitySide).isEqualTo(RelationshipConstraintType.TO)
-        assertThat(relationshipsWithoutProgram[1].relationshipType.uid()).isEqualTo("V2kkHafqs8G")
-        assertThat(relationshipsWithoutProgram[1].entitySide).isEqualTo(RelationshipConstraintType.FROM)
+        assertThat(
+            relationshipsWithoutProgram.any { r ->
+                r.relationshipType.uid() == "WiH6923nMtb" && r.entitySide == RelationshipConstraintType.TO
+            },
+        ).isTrue()
+        assertThat(
+            relationshipsWithoutProgram.any { r ->
+                r.relationshipType.uid() == "V2kkHafqs8G" && r.entitySide == RelationshipConstraintType.FROM
+            },
+        ).isTrue()
 
         val relationshipsWithProgram = d2.relationshipModule().relationshipService()
             .getRelationshipTypesForTrackedEntities("nEenWmSyUEp", "other_program")
 
         assertThat(relationshipsWithProgram.size).isEqualTo(1)
-        assertThat(relationshipsWithoutProgram[0].relationshipType.uid()).isEqualTo("WiH6923nMtb")
-        assertThat(relationshipsWithoutProgram[0].entitySide).isEqualTo(RelationshipConstraintType.TO)
+        assertThat(relationshipsWithProgram[0].relationshipType.uid()).isEqualTo("WiH6923nMtb")
+        assertThat(relationshipsWithProgram[0].entitySide).isEqualTo(RelationshipConstraintType.TO)
     }
 
     @Test

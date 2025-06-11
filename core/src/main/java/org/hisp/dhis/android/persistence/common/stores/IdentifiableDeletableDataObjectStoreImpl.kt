@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.persistence.common.stores
 
-import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
@@ -42,12 +41,12 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.MapperToDB
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableDeletableDataObjectStoreDao
-import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilder
+import org.hisp.dhis.android.persistence.common.querybuilders.IdentifiableDeletableDataObjectSQLStatementBuilder
 
 internal open class IdentifiableDeletableDataObjectStoreImpl<D, P : EntityDB<D>>(
     protected val identifiableDeletableDataObjectDao: IdentifiableDeletableDataObjectStoreDao<P>,
     mapper: MapperToDB<D, P>,
-    override val builder: SQLStatementBuilder,
+    override val builder: IdentifiableDeletableDataObjectSQLStatementBuilder,
 ) : IdentifiableDataObjectStoreImpl<D, P>(
     identifiableDeletableDataObjectDao,
     mapper,
@@ -64,7 +63,8 @@ internal open class IdentifiableDeletableDataObjectStoreImpl<D, P : EntityDB<D>>
                 .appendKeyNumberValue(DeletableDataColumns.DELETED, 1)
                 .appendKeyStringValue(DataColumns.SYNC_STATE, State.UPLOADING)
                 .build()
-            deleted = identifiableDeletableDataObjectDao.deleteWhere(whereClause)
+            val query = builder.deleteWhere(whereClause)
+            deleted = identifiableDeletableDataObjectDao.intRawQuery(query) > 0
         }
         return if (deleted) {
             HandleAction.Delete
@@ -76,18 +76,12 @@ internal open class IdentifiableDeletableDataObjectStoreImpl<D, P : EntityDB<D>>
     @Throws(RuntimeException::class)
     suspend fun setDeleted(uid: String): Int {
         CollectionsHelper.isNull(uid)
-        val query: (String) -> RoomRawQuery = { tableName ->
-            RoomRawQuery(
-                "UPDATE $tableName SET ${DeletableDataColumns.DELETED} = 1 " +
-                    "WHERE ${IdentifiableColumns.UID} = '$uid'",
-            )
-        }
-        return identifiableDeletableDataObjectDao.setDeleted(query)
+        val query = builder.setDeleted(uid)
+        return identifiableDeletableDataObjectDao.intRawQuery(query)
     }
 
     suspend fun selectSyncStateWhere(where: String): List<State> {
-        val query: (String) -> RoomRawQuery =
-            { tableName -> RoomRawQuery("SELECT ${DataColumns.SYNC_STATE} FROM $tableName WHERE $where") }
-        return identifiableDeletableDataObjectDao.selectSyncStateWhere(query)
+        val query = builder.selectSyncStateWhere(where)
+        return identifiableDeletableDataObjectDao.stateListRawQuery(query)
     }
 }

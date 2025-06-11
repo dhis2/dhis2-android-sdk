@@ -50,7 +50,7 @@ internal interface IdentifiableObjectStore<O : ObjectWithUidInterface> : ObjectS
     suspend fun selectUidsWhere(whereClause: String): List<String>
 
     @Throws(RuntimeException::class)
-    suspend fun selectUidsWhere(whereClause: String, orderByClause: String): List<String>
+    suspend fun selectUidsWhere(whereClause: String, orderByClause: String?): List<String>
 
     @Throws(RuntimeException::class)
     suspend fun selectByUid(uid: String): O?

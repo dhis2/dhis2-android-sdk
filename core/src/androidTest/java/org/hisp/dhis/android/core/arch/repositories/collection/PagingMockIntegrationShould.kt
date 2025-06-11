@@ -52,7 +52,7 @@ class PagingMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     private lateinit var allValues: List<CategoryOption>
 
     private val empty = RepositoryScope.empty()
-    private val orderByClause = OrderByClauseBuilder.orderByFromItems(empty.orderBy(), empty.pagingKey())
+    private val orderByClause = OrderByClauseBuilder.orderByFromItems(empty.orderBy())
 
     @Before
     fun setUp() = runTest {

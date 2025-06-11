@@ -23,6 +23,11 @@ pipeline {
         label "ec2-android"
     }
 
+    environment {
+        GRADLE_USER_HOME = "${env.WORKSPACE}/.gradle"
+    }
+
+
     options {
         disableConcurrentBuilds(abortPrevious: true)
     }

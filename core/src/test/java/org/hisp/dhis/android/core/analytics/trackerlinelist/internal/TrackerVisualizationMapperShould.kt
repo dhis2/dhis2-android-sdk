@@ -60,7 +60,7 @@ class TrackerVisualizationMapperShould {
             DataFilter.GreaterThan("6"),
             DataFilter.Like("ar", ignoreCase = true),
             DataFilter.NotEqualTo("4", ignoreCase = false),
-            DataFilter.IsNull(false),
+            DataFilter.IsNotNullOrEmpty,
         )
     }
 

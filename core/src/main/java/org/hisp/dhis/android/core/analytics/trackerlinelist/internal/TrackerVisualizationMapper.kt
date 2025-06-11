@@ -223,7 +223,7 @@ internal class TrackerVisualizationMapper(
 
     private fun buildFilter(operator: String, value: String): DataFilter? {
         return when (operator) {
-            "EQ" -> if (value == "NV") DataFilter.IsNull(true) else DataFilter.EqualTo(value)
+            "EQ" -> if (value == "NV") DataFilter.IsNullOrEmpty else DataFilter.EqualTo(value)
             "!EQ" -> DataFilter.NotEqualTo(value)
             "IEQ" -> DataFilter.EqualTo(value, ignoreCase = true)
             "!IEQ" -> DataFilter.NotEqualTo(value, ignoreCase = true)
@@ -231,7 +231,7 @@ internal class TrackerVisualizationMapper(
             "GE" -> DataFilter.GreaterThanOrEqualTo(value)
             "LT" -> DataFilter.LowerThan(value)
             "LE" -> DataFilter.LowerThanOrEqualTo(value)
-            "NE" -> if (value == "NV") DataFilter.IsNull(false) else DataFilter.NotEqualTo(value)
+            "NE" -> if (value == "NV") DataFilter.IsNotNullOrEmpty else DataFilter.NotEqualTo(value)
             "LIKE" -> DataFilter.Like(value)
             "!LIKE" -> DataFilter.NotLike(value)
             "ILIKE" -> DataFilter.Like(value, ignoreCase = true)

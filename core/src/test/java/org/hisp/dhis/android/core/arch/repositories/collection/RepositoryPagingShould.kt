@@ -27,10 +27,8 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection
 
-import android.content.ContentValues
-import androidx.paging.ItemKeyedDataSource
-import kotlinx.coroutines.test.runTest
 import androidx.paging.PageKeyedDataSource
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter

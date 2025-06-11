@@ -80,7 +80,7 @@ internal class ForeignKeyCleanerImpl(
             if (rowsAffected > 0) {
                 val msg =
                     " was not persisted on $fromTable table to avoid Foreign Key constraint error. " +
-                            "Target not found on $toTable table. $it"
+                        "Target not found on $toTable table. $it"
                 val warningMsg = it.fromObjectUid()
                     ?.let { uid -> "The object $uid$msg" }
                     ?: "An object$msg"
@@ -93,7 +93,7 @@ internal class ForeignKeyCleanerImpl(
         foreignKeyId: String,
         fromTable: String,
         toTable: String,
-        rowId: String
+        rowId: String,
     ): ForeignKeyViolation? {
         val matchingCursor = findForeignKeyEntryCursor(fromTable, foreignKeyId)
         return matchingCursor?.let { buildViolation(it, fromTable, toTable, rowId) }
@@ -101,7 +101,7 @@ internal class ForeignKeyCleanerImpl(
 
     private fun findForeignKeyEntryCursor(
         fromTable: String,
-        foreignKeyId: String
+        foreignKeyId: String,
     ): Cursor? {
         val sql = "PRAGMA foreign_key_list($fromTable);"
         databaseAdapter.rawQuery(sql).use { cursor ->

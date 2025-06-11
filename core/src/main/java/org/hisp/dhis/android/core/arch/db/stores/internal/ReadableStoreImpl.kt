@@ -32,8 +32,6 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.ReadOnlySQLStatementBuilder
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
 import org.hisp.dhis.android.core.common.CoreObject
-import java.util.ArrayList
-import java.util.HashMap
 
 @Suppress("TooManyFunctions")
 internal open class ReadableStoreImpl<O : CoreObject>(
@@ -62,7 +60,12 @@ internal open class ReadableStoreImpl<O : CoreObject>(
         return selectRawQuery(query)
     }
 
-    override suspend fun selectWhere(filterWhereClause: String, orderByClause: String?, limit: Int, offset: Int?): List<O> {
+    override suspend fun selectWhere(
+        filterWhereClause: String,
+        orderByClause: String?,
+        limit: Int,
+        offset: Int?,
+    ): List<O> {
         val query = builder.selectWhere(filterWhereClause, orderByClause, limit, offset)
         return selectRawQuery(query)
     }

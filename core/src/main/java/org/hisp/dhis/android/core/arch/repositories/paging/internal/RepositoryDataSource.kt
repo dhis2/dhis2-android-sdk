@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.paging.internal
 
-import kotlinx.coroutines.runBlocking
 import androidx.paging.PageKeyedDataSource
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
@@ -44,7 +44,7 @@ class RepositoryDataSource<M : CoreObject> internal constructor(
     private val databaseAdapter: DatabaseAdapter,
     private val scope: RepositoryScope,
     private val childrenAppenders: ChildrenAppenderGetter<M>,
-) : PageKeyedDataSource<M, M>() {
+) : PageKeyedDataSource<Int, M>() {
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, M>) {
         val whereClause = WhereClauseFromScopeBuilder(WhereClauseBuilder()).getWhereClause(
             scope,
@@ -52,10 +52,10 @@ class RepositoryDataSource<M : CoreObject> internal constructor(
         runBlocking {
             val withoutChildren = store.selectWhere(
                 whereClause,
-                OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()),
+                OrderByClauseBuilder.orderByFromItems(scope.orderBy()),
                 params.requestedLoadSize,
             )
-            callback.onResult(appendChildren(withoutChildren))
+            callback.onResult(appendChildren(withoutChildren), null, params.requestedLoadSize)
         }
     }
 

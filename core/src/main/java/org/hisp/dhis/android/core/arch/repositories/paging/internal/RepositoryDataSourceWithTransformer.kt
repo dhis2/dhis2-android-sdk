@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.paging.internal
 
-import kotlinx.coroutines.runBlocking
 import androidx.paging.PageKeyedDataSource
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder

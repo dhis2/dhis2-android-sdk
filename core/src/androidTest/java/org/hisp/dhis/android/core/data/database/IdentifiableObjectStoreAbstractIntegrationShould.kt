@@ -126,14 +126,7 @@ abstract class IdentifiableObjectStoreAbstractIntegrationShould<M> internal cons
         assertThat(handleAction).isEqualTo(HandleAction.Update)
     }
 
-    // TODO: This test is temporarily disabled because turning
-    // updateOrInsert() into a suspend function removed the implicit synchronisation
-    // that previously made the SELECT-then-INSERT logic atomic. Two concurrent
-    // calls can now hit the INSERT path and violate NOT-NULL/PK constraints.
-    // When the persistence layer is migrated to Room, re-enable this test and
-    // replace the hand-rolled upsert with either @Upsert or @Insert(onConflict = IGNORE|REPLACE)
-    // inside a @Transaction, which restores atomicity and eliminates the race.
-    // @Test
+    @Test
     fun insert_same_object_simultaneously_and_transactionally() = runTest {
         val s1 = rxSingle { store.updateOrInsert(`object`) }.subscribeOn(Schedulers.io())
         val s2 = rxSingle { store.updateOrInsert(`object`) }.subscribeOn(Schedulers.io())

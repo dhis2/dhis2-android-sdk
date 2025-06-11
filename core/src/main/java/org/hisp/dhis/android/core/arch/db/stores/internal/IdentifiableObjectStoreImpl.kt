@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.arch.db.stores.internal
 
 import android.database.Cursor
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
@@ -64,6 +66,7 @@ internal open class IdentifiableObjectStoreImpl<O>(
     private var updateStatement: StatementWrapper? = null
     private var deleteStatement: StatementWrapper? = null
     private var adapterHashCode: Int? = null
+    private val upsertMutex = Mutex()
 
     @Throws(RuntimeException::class)
     override suspend fun insert(o: O): Long {
@@ -124,9 +127,10 @@ internal open class IdentifiableObjectStoreImpl<O>(
         executeUpdateDelete(updateStatement!!)
     }
 
+    // TODO: Remove Mutex when migrating to Room
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionCaught")
-    override suspend fun updateOrInsert(o: O): HandleAction {
+    override suspend fun updateOrInsert(o: O): HandleAction = upsertMutex.withLock {
         return try {
             update(o)
             HandleAction.Update

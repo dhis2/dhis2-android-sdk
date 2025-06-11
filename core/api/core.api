@@ -843,6 +843,14 @@ public final class org/hisp/dhis/android/core/analytics/trackerlinelist/DataFilt
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class org/hisp/dhis/android/core/analytics/trackerlinelist/DataFilter$IsNotNullOrEmpty : org/hisp/dhis/android/core/analytics/trackerlinelist/DataFilter {
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/analytics/trackerlinelist/DataFilter$IsNotNullOrEmpty;
+}
+
+public final class org/hisp/dhis/android/core/analytics/trackerlinelist/DataFilter$IsNullOrEmpty : org/hisp/dhis/android/core/analytics/trackerlinelist/DataFilter {
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/analytics/trackerlinelist/DataFilter$IsNullOrEmpty;
+}
+
 public final class org/hisp/dhis/android/core/analytics/trackerlinelist/DataFilter$Like : org/hisp/dhis/android/core/analytics/trackerlinelist/DataFilter {
 	public fun <init> (Ljava/lang/String;Z)V
 	public synthetic fun <init> (Ljava/lang/String;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V

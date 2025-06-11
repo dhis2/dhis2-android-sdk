@@ -39,6 +39,8 @@ internal class FilterHelper(private val itemId: String) {
     fun like(value: String, ignoreCase: Boolean): String = itemTo("LIKE '%$value%'${case(ignoreCase)}")
     fun notLike(value: String, ignoreCase: Boolean): String = itemTo("NOT LIKE '%$value%'${case(ignoreCase)}")
     fun inValues(values: List<String>): String = itemTo("IN (${values.joinToString(", ") { "'$it'" }})")
+    fun isNullOrEmpty(): String = itemTo("(IS NULL OR = '')")
+    fun isNotNullOrEmpty(): String = itemTo("(IS NOT NULL AND <> '')")
 
     private fun itemTo(comparison: String) = "\"$itemId\" $comparison"
 

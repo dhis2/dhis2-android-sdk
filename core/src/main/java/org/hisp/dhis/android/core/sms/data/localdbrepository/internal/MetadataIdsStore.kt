@@ -79,13 +79,16 @@ internal class MetadataIdsStore(
     }
 
     fun setMetadataIds(metadata: SMSMetadata?): Completable {
-        return rxCompletable {
-            metadata?.let {
-                it.lastSyncDate?.let { date ->
-                    smsConfigStore.set(SMSConfigKey.METADATA_SYNC_DATE, DateUtils.DATE_FORMAT.format(date))
-                }
-                val metadataIds =
-                    buildFor(it, SMSConsts.MetadataType.USER) +
+        return rxCompletable { setMetadataIdsSuspend(metadata) }
+    }
+
+    suspend fun setMetadataIdsSuspend(metadata: SMSMetadata?) {
+        metadata?.let {
+            it.lastSyncDate?.let { date ->
+                smsConfigStore.set(SMSConfigKey.METADATA_SYNC_DATE, DateUtils.DATE_FORMAT.format(date))
+            }
+            val metadataIds =
+                buildFor(it, SMSConsts.MetadataType.USER) +
                         buildFor(it, SMSConsts.MetadataType.TRACKED_ENTITY_TYPE) +
                         buildFor(it, SMSConsts.MetadataType.TRACKED_ENTITY_ATTRIBUTE) +
                         buildFor(it, SMSConsts.MetadataType.PROGRAM) +
@@ -100,9 +103,8 @@ internal class MetadataIdsStore(
                         buildFor(it, SMSConsts.MetadataType.RELATIONSHIP) +
                         buildFor(it, SMSConsts.MetadataType.RELATIONSHIP_TYPE)
 
-                smsMetadataIdsStore.delete()
-                metadataIds.forEach { id -> smsMetadataIdsStore.insert(id) }
-            }
+            smsMetadataIdsStore.delete()
+            metadataIds.forEach { id -> smsMetadataIdsStore.insert(id) }
         }
     }
 

@@ -130,8 +130,8 @@ internal class LocalDbRepositoryImpl(
         return metadataIdsStore.getMetadataIds()
     }
 
-    override fun setMetadataIds(metadata: SMSMetadata): Completable {
-        return metadataIdsStore.setMetadataIds(metadata)
+    override suspend fun setMetadataIds(metadata: SMSMetadata) {
+        return metadataIdsStore.setMetadataIdsSuspend(metadata)
     }
 
     override fun getTrackerEventToSubmit(eventUid: String): Single<Event> {
@@ -229,12 +229,10 @@ internal class LocalDbRepositoryImpl(
         }
     }
 
-    override fun getMetadataDownloadConfig(): Single<GetMetadataIdsConfig> {
-        return rxSingle {
-            val stringVal = smsConfigStore.get(SMSConfigKey.METADATA_CONFIG)
-            stringVal?.let { KotlinxJsonParser.instance.decodeFromString<GetMetadataIdsConfig>(it) }
-                ?: GetMetadataIdsConfig()
-        }
+    override suspend fun getMetadataDownloadConfig(): GetMetadataIdsConfig {
+        return smsConfigStore.get(SMSConfigKey.METADATA_CONFIG)
+            ?.let { KotlinxJsonParser.instance.decodeFromString<GetMetadataIdsConfig>(it) }
+            ?: GetMetadataIdsConfig()
     }
 
     override fun setModuleEnabled(enabled: Boolean): Completable {
@@ -242,7 +240,11 @@ internal class LocalDbRepositoryImpl(
     }
 
     override fun isModuleEnabled(): Single<Boolean> {
-        return rxSingle { smsConfigStore.get(SMSConfigKey.MODULE_ENABLED)?.toBoolean() ?: false }
+        return rxSingle { isModuleEnabledSuspend() }
+    }
+
+    override suspend fun isModuleEnabledSuspend(): Boolean {
+        return smsConfigStore.get(SMSConfigKey.MODULE_ENABLED)?.toBoolean() ?: false
     }
 
     override fun setWaitingForResultEnabled(enabled: Boolean): Completable {

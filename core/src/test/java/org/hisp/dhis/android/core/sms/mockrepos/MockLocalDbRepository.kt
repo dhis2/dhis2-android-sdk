@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.sms.mockrepos
 
 import io.reactivex.Completable
 import io.reactivex.Single
+import kotlinx.coroutines.rx2.rxCompletable
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.relationship.Relationship
@@ -101,8 +103,8 @@ class MockLocalDbRepository : LocalDbRepository {
         return Single.fromCallable { metadata }
     }
 
-    override fun setMetadataIds(metadata: SMSMetadata): Completable {
-        return Completable.fromAction { this.metadata = metadata }
+    override suspend fun setMetadataIds(metadata: SMSMetadata) {
+        this.metadata = metadata
     }
 
     override fun getTrackerEventToSubmit(eventUid: String): Single<Event> {
@@ -151,8 +153,8 @@ class MockLocalDbRepository : LocalDbRepository {
         return Completable.fromAction { this.metadataIdsConfig = metadataIdsConfig }
     }
 
-    override fun getMetadataDownloadConfig(): Single<GetMetadataIdsConfig> {
-        return Single.fromCallable { metadataIdsConfig }
+    override suspend fun getMetadataDownloadConfig(): GetMetadataIdsConfig {
+        return metadataIdsConfig
     }
 
     override fun setModuleEnabled(enabled: Boolean): Completable {
@@ -160,7 +162,11 @@ class MockLocalDbRepository : LocalDbRepository {
     }
 
     override fun isModuleEnabled(): Single<Boolean> {
-        return Single.fromCallable { moduleEnabled }
+        return rxSingle { isModuleEnabledSuspend() }
+    }
+
+    override suspend fun isModuleEnabledSuspend(): Boolean {
+        return moduleEnabled
     }
 
     override fun setWaitingForResultEnabled(enabled: Boolean): Completable {

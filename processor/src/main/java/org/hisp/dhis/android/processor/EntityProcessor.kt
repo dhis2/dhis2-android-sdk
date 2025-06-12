@@ -64,7 +64,7 @@ class EntityProcessor(
             val tableName = getTableName(symbol)
             val tableInfoClass = tableName + "TableInfo"
 
-            val columnNames = getColumns(symbol)
+            val columns = getColumns(symbol)
 
             val file = codeGenerator.createNewFile(
                 // Make sure to associate the generated file with sources to keep/maintain it across incremental builds.
@@ -95,13 +95,21 @@ class EntityProcessor(
                 }
                 
                 class Columns : CoreColumns() {
+                    override fun all(): Array<String> {
+                        return arrayOf(
+                            ${columns.joinToString(
+                                separator = "\n                            ",
+                            ) { c ->
+                                "${c.propertyName}," 
+                            }}
+                        )
+                    }
                     companion object {
-                        ${columnNames.joinToString(
-                separator = "\n                        ",
-            ) { name ->
-                val upperName = camelToUpperSnakeCase(name)
-                "const val $upperName = \"$name\""
-            }}
+                        ${columns.joinToString(
+                            separator = "\n                        ",
+                        ) { c ->
+                            "const val ${c.propertyName} = \"${c.columnName}\"" 
+                        }}
                     }
                 }
             }
@@ -127,8 +135,12 @@ class EntityProcessor(
         return string.replace(pattern, "_$0").uppercase()
     }
 
-    private fun getColumns(symbol: KSClassDeclaration): List<String> {
-        return symbol.getDeclaredProperties().map { getColumnName(it) }.toList()
+    private fun getColumns(symbol: KSClassDeclaration): List<TableColumn> {
+        return symbol.getDeclaredProperties().map {
+            val columnName = getColumnName(it)
+            val propertyName = camelToUpperSnakeCase(columnName)
+            TableColumn(propertyName = propertyName, columnName = columnName)
+        }.toList()
     }
 
     private fun getColumnName(property: KSPropertyDeclaration): String {
@@ -140,3 +152,5 @@ class EntityProcessor(
         return serialNameValue ?: property.simpleName.getShortName()
     }
 }
+
+private data class TableColumn(val propertyName: String, val columnName: String)

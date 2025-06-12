@@ -95,19 +95,27 @@ internal class ForeignKeyCleanerImpl(
         toTable: String,
         rowId: String,
     ): ForeignKeyViolation? {
-        val matchingCursor = findForeignKeyEntryCursor(fromTable, foreignKeyId)
-        return matchingCursor?.let { buildViolation(it, fromTable, toTable, rowId) }
+        val foreignKeyEntry = findForeignKeyEntry(fromTable, foreignKeyId) ?: return null
+        return buildViolation(foreignKeyEntry, fromTable, toTable, rowId)
     }
 
-    private fun findForeignKeyEntryCursor(
+    private data class ForeignKeyEntry(
+        val fromColumn: String,
+        val toColumn: String,
+    )
+
+    private fun findForeignKeyEntry(
         fromTable: String,
         foreignKeyId: String,
-    ): Cursor? {
+    ): ForeignKeyEntry? {
         val sql = "PRAGMA foreign_key_list($fromTable);"
         databaseAdapter.rawQuery(sql).use { cursor ->
             while (cursor.moveToNext()) {
                 if (cursor.getInt(0).toString() == foreignKeyId) {
-                    return cursor
+                    return ForeignKeyEntry(
+                        fromColumn = cursor.getString(3),
+                        toColumn = cursor.getString(4),
+                    )
                 }
             }
         }
@@ -115,15 +123,12 @@ internal class ForeignKeyCleanerImpl(
     }
 
     private fun buildViolation(
-        listCursor: Cursor,
+        foreignKeyEntry: ForeignKeyEntry,
         fromTable: String,
         toTable: String,
         rowId: String,
     ): ForeignKeyViolation? {
-        val fromColumn = listCursor.getString(3)
-        val toColumn = listCursor.getString(4)
         val selectStmt = "SELECT * FROM $fromTable WHERE ROWID = $rowId;"
-
         databaseAdapter.rawQuery(selectStmt).use { objectCursor ->
             if (objectCursor.moveToFirst()) {
                 val uid = objectCursor.getColumnIndex(IdentifiableColumns.UID)
@@ -137,9 +142,9 @@ internal class ForeignKeyCleanerImpl(
                 return ForeignKeyViolation.builder()
                     .fromTable(fromTable)
                     .toTable(toTable)
-                    .fromColumn(fromColumn)
-                    .toColumn(toColumn)
-                    .notFoundValue(getColumnValueAsString(objectCursor, fromColumn))
+                    .fromColumn(foreignKeyEntry.fromColumn)
+                    .toColumn(foreignKeyEntry.toColumn)
+                    .notFoundValue(getColumnValueAsString(objectCursor, foreignKeyEntry.fromColumn))
                     .fromObjectRow(commaAndSpaceSeparatedArrayValues(columnAndValues.toTypedArray()))
                     .fromObjectUid(uid)
                     .created(Date())

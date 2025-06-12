@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.sms.mockrepos
 
 import io.reactivex.Completable
 import io.reactivex.Single
-import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.relationship.Relationship
@@ -161,7 +160,7 @@ class MockLocalDbRepository : LocalDbRepository {
     }
 
     override fun isModuleEnabled(): Single<Boolean> {
-        return rxSingle { isModuleEnabledSuspend() }
+        return Single.fromCallable { moduleEnabled }
     }
 
     override suspend fun isModuleEnabledSuspend(): Boolean {

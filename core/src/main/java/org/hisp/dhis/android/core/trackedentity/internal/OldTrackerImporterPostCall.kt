@@ -65,14 +65,14 @@ internal class OldTrackerImporterPostCall internal constructor(
         trackedEntityInstances: List<TrackedEntityInstance>,
     ): Flow<D2Progress> = flow {
         val payload = trackerImporterPayloadGenerator.getTrackedEntityInstancePayload(trackedEntityInstances)
-        uploadPayload(payload)
+        emitAll(uploadPayload(payload))
     }
 
     fun uploadEvents(
         events: List<Event>,
     ): Flow<D2Progress> = flow {
         val payload = trackerImporterPayloadGenerator.getEventPayload(events)
-        uploadPayload(payload)
+        emitAll(uploadPayload(payload))
     }
 
     private fun uploadPayload(

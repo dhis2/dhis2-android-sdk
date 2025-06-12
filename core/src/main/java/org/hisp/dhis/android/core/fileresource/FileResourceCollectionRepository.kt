@@ -30,8 +30,10 @@ package org.hisp.dhis.android.core.fileresource
 import android.content.Context
 import io.reactivex.Observable
 import io.reactivex.Single
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
+import kotlinx.coroutines.withContext
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
@@ -111,8 +113,8 @@ class FileResourceCollectionRepository internal constructor(
         return runBlocking { addInternal(o) }
     }
 
-    override suspend fun addInternal(o: File): String {
-        return try {
+    override suspend fun addInternal(o: File): String = withContext(Dispatchers.IO) {
+        try {
             val generatedUid = UidGeneratorImpl().generate()
             val dstFile = saveFile(o, generatedUid, context)
             val fileResource = transformer.transform(dstFile).toBuilder().uid(generatedUid).name(o.name).build()

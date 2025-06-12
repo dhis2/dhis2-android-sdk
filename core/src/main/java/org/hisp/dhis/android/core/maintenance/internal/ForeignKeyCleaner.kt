@@ -27,6 +27,6 @@
  */
 package org.hisp.dhis.android.core.maintenance.internal
 
-interface ForeignKeyCleaner {
+fun interface ForeignKeyCleaner {
     suspend fun cleanForeignKeyErrors(): Int
 }

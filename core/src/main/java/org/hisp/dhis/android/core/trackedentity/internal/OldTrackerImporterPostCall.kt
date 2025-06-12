@@ -61,18 +61,18 @@ internal class OldTrackerImporterPostCall internal constructor(
     private val breakTheGlassHelper: TrackerImporterBreakTheGlassHelper,
 ) {
 
-    suspend fun uploadTrackedEntityInstances(
+    fun uploadTrackedEntityInstances(
         trackedEntityInstances: List<TrackedEntityInstance>,
-    ): Flow<D2Progress> {
+    ): Flow<D2Progress> = flow {
         val payload = trackerImporterPayloadGenerator.getTrackedEntityInstancePayload(trackedEntityInstances)
-        return uploadPayload(payload)
+        uploadPayload(payload)
     }
 
-    suspend fun uploadEvents(
+    fun uploadEvents(
         events: List<Event>,
-    ): Flow<D2Progress> {
+    ): Flow<D2Progress> = flow {
         val payload = trackerImporterPayloadGenerator.getEventPayload(events)
-        return uploadPayload(payload)
+        uploadPayload(payload)
     }
 
     private fun uploadPayload(

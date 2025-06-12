@@ -64,16 +64,16 @@ internal class TrackerImporterPostCall internal constructor(
     private val jobObjectHandler: TrackerJobObjectHandler,
     private val breakTheGlassHelper: TrackerImporterBreakTheGlassHelper,
 ) {
-    suspend fun uploadTrackedEntityInstances(
+    fun uploadTrackedEntityInstances(
         filteredTrackedEntityInstances: List<TrackedEntityInstance>,
-    ): Flow<D2Progress> {
-        return postPayloadWrapper(payloadGenerator.getTrackedEntityPayload(filteredTrackedEntityInstances))
+    ): Flow<D2Progress> = flow {
+        postPayloadWrapper(payloadGenerator.getTrackedEntityPayload(filteredTrackedEntityInstances))
     }
 
-    suspend fun uploadEvents(
+    fun uploadEvents(
         filteredEvents: List<Event>,
-    ): Flow<D2Progress> {
-        return postPayloadWrapper(payloadGenerator.getEventPayload(filteredEvents))
+    ): Flow<D2Progress> = flow {
+        postPayloadWrapper(payloadGenerator.getEventPayload(filteredEvents))
     }
 
     private fun postPayloadWrapper(

@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.persistence.common.stores
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.db.stores.internal.DeletableStoreWithState
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.CoreObject
@@ -47,14 +48,14 @@ internal open class IdentifiableDeletableDataObjectStoreImpl<D, P : EntityDB<D>>
     protected val identifiableDeletableDataObjectDao: IdentifiableDeletableDataObjectStoreDao<P>,
     mapper: MapperToDB<D, P>,
     override val builder: IdentifiableDeletableDataObjectSQLStatementBuilder,
-) : IdentifiableDataObjectStoreImpl<D, P>(
+) : DeletableStoreWithState<D>, IdentifiableDataObjectStoreImpl<D, P>(
     identifiableDeletableDataObjectDao,
     mapper,
     builder,
 ) where D : CoreObject, D : DeletableDataObject, D : ObjectWithUidInterface {
 
     @Throws(RuntimeException::class)
-    suspend fun setSyncStateOrDelete(uid: String, state: State): HandleAction {
+    override suspend fun setSyncStateOrDelete(uid: String, state: State): HandleAction {
         CollectionsHelper.isNull(uid)
         var deleted = false
         if (state == State.SYNCED) {
@@ -74,13 +75,13 @@ internal open class IdentifiableDeletableDataObjectStoreImpl<D, P : EntityDB<D>>
     }
 
     @Throws(RuntimeException::class)
-    suspend fun setDeleted(uid: String): Int {
+    override suspend fun setDeleted(uid: String): Int {
         CollectionsHelper.isNull(uid)
         val query = builder.setDeleted(uid)
         return identifiableDeletableDataObjectDao.intRawQuery(query)
     }
 
-    suspend fun selectSyncStateWhere(where: String): List<State> {
+    override suspend fun selectSyncStateWhere(where: String): List<State> {
         val query = builder.selectSyncStateWhere(where)
         return identifiableDeletableDataObjectDao.stateListRawQuery(query)
     }

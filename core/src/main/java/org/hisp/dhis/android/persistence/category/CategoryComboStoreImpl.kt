@@ -29,12 +29,13 @@
 package org.hisp.dhis.android.persistence.category
 
 import org.hisp.dhis.android.core.category.CategoryCombo
+import org.hisp.dhis.android.core.category.internal.CategoryComboStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
 
 internal class CategoryComboStoreImpl(
     val dao: CategoryComboDao,
-) : IdentifiableObjectStoreImpl<CategoryCombo, CategoryComboDB>(
+) : CategoryComboStore, IdentifiableObjectStoreImpl<CategoryCombo, CategoryComboDB>(
     dao,
     CategoryCombo::toDB,
     SQLStatementBuilderImpl(CategoryComboTableInfo.TABLE_INFO),

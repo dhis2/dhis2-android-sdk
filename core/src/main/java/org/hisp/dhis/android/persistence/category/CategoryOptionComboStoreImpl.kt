@@ -30,17 +30,19 @@ package org.hisp.dhis.android.persistence.category
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
+import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
 
 internal class CategoryOptionComboStoreImpl(
     val dao: CategoryOptionComboDao,
-) : IdentifiableObjectStoreImpl<CategoryOptionCombo, CategoryOptionComboDB>(
-    dao,
-    CategoryOptionCombo::toDB,
-    SQLStatementBuilderImpl(CategoryOptionComboTableInfo.TABLE_INFO),
-) {
-    suspend fun getForCategoryCombo(categoryComboUid: String): List<CategoryOptionCombo> {
+) : CategoryOptionComboStore,
+    IdentifiableObjectStoreImpl<CategoryOptionCombo, CategoryOptionComboDB>(
+        dao,
+        CategoryOptionCombo::toDB,
+        SQLStatementBuilderImpl(CategoryOptionComboTableInfo.TABLE_INFO),
+    ) {
+    override suspend fun getForCategoryCombo(categoryComboUid: String): List<CategoryOptionCombo> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(CategoryOptionComboTableInfo.Columns.CATEGORY_COMBO, categoryComboUid)
             .build()

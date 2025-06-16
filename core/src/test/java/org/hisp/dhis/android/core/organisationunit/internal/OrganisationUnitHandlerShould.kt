@@ -60,7 +60,7 @@ class OrganisationUnitHandlerShould {
 
     @Before
     @Throws(Exception::class)
-    fun setUp() {
+    fun setUp() = runTest {
         val programUid = "test_program_uid"
         organisationUnitHandler = OrganisationUnitHandler(
             organisationUnitStore,

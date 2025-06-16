@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.arch.repositories.paging.internal
 
 import androidx.paging.PageKeyedDataSource
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
@@ -49,23 +50,25 @@ internal class RepositoryDataSourceWithTransformer<M : CoreObject, T : Any> inte
 
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, T>) {
         val whereClause = WhereClauseFromScopeBuilder(WhereClauseBuilder()).getWhereClause(scope)
-        val withoutChildren = store.selectWhere(
-            whereClause,
-            OrderByClauseBuilder.orderByFromItems(scope.orderBy()),
-            params.requestedLoadSize,
-        )
-        callback.onResult(appendChildren(withoutChildren), null, params.requestedLoadSize)
+        runBlocking {
+            val withoutChildren = store.selectWhere(
+                whereClause,
+                OrderByClauseBuilder.orderByFromItems(scope.orderBy()),
+                params.requestedLoadSize,
+            )
+            callback.onResult(appendChildren(withoutChildren), null, params.requestedLoadSize)
+        }
     }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, T>) {
-        loadPages(params, callback, nextOffset = params.key + params.requestedLoadSize)
+        runBlocking { loadPages(params, callback, nextOffset = params.key + params.requestedLoadSize) }
     }
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, T>) {
-        loadPages(params, callback, nextOffset = params.key - params.requestedLoadSize)
+        runBlocking { loadPages(params, callback, nextOffset = params.key - params.requestedLoadSize) }
     }
 
-    private fun loadPages(params: LoadParams<Int>, callback: LoadCallback<Int, T>, nextOffset: Int) {
+    private suspend fun loadPages(params: LoadParams<Int>, callback: LoadCallback<Int, T>, nextOffset: Int) {
         val offset = params.key
 
         val whereClause = WhereClauseFromScopeBuilder(WhereClauseBuilder()).getWhereClause(scope)
@@ -78,7 +81,7 @@ internal class RepositoryDataSourceWithTransformer<M : CoreObject, T : Any> inte
         callback.onResult(appendChildren(withoutChildren), nextOffset)
     }
 
-    private fun appendChildren(withoutChildren: List<M>): List<T> {
+    private suspend fun appendChildren(withoutChildren: List<M>): List<T> {
         return ChildrenAppenderExecutor.appendInObjectCollection(
             withoutChildren,
             databaseAdapter,

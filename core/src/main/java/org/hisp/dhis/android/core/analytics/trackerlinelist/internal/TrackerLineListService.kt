@@ -97,7 +97,7 @@ internal class TrackerLineListService(
         }
     }
 
-    private fun evaluateParams(params: TrackerLineListParams): TrackerLineListParams {
+    private suspend fun evaluateParams(params: TrackerLineListParams): TrackerLineListParams {
         return params
             .run {
                 if (this.trackerVisualization != null) {

@@ -40,7 +40,7 @@ internal class ProgramStageAttributeChildrenAppender private constructor(
     private val linkStore: ProgramStageAttributeValueLinkStore,
 ) : ChildrenAppender<ProgramStage>() {
 
-    override fun appendChildren(m: ProgramStage): ProgramStage {
+    override suspend fun appendChildren(m: ProgramStage): ProgramStage {
         val attributeValues = linkStore.getLinksForProgramStage(m.uid())
             .map {
                 AttributeValue.builder()

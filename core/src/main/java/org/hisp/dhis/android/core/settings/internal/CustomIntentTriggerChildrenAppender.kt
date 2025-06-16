@@ -37,7 +37,7 @@ internal class CustomIntentTriggerChildrenAppender private constructor(
     private val dataElementLinkChildStore: CustomIntentDataElementTriggerStore,
     private val attributeLinkChildStore: CustomIntentAttributeTriggerStore,
 ) : ChildrenAppender<CustomIntent>() {
-    override fun appendChildren(m: CustomIntent): CustomIntent {
+    override suspend fun appendChildren(m: CustomIntent): CustomIntent {
         val builder = m.toBuilder()
         builder.trigger(
             CustomIntentTrigger.builder()

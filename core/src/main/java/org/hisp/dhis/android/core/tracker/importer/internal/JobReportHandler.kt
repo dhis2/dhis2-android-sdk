@@ -52,7 +52,7 @@ internal class JobReportHandler internal constructor(
         dataStatePropagator.refreshAggregatedSyncStates(relatedUids)
     }
 
-    private fun handleErrors(
+    private suspend fun handleErrors(
         o: JobReport,
         jobObjectsMap: Map<Pair<TrackerImporterObjectType, String>, TrackerJobObject>,
     ) {
@@ -63,7 +63,7 @@ internal class JobReportHandler internal constructor(
         }
     }
 
-    private fun handleSuccesses(
+    private suspend fun handleSuccesses(
         o: JobReport,
         jobObjectsMap: Map<Pair<TrackerImporterObjectType, String>, TrackerJobObject>,
     ) {
@@ -76,7 +76,7 @@ internal class JobReportHandler internal constructor(
         }
     }
 
-    private fun handleNotPresent(
+    private suspend fun handleNotPresent(
         o: JobReport,
         jobObjectsMap: Map<Pair<TrackerImporterObjectType, String>, TrackerJobObject>,
     ) {
@@ -102,7 +102,7 @@ internal class JobReportHandler internal constructor(
             .forEach { getHandler(it.trackerType()).handleNotPresent(it) }
     }
 
-    private fun applySuccess(
+    private suspend fun applySuccess(
         typeReport: JobTypeReport,
         jobObjects: Map<Pair<TrackerImporterObjectType, String>, TrackerJobObject>,
         typeHandler: JobReportTypeHandler,

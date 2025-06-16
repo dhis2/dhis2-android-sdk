@@ -213,7 +213,7 @@ internal class TrackedEntityInstanceQueryDataFetcher(
         }
     }
 
-    private fun appendAttributes(withoutChildren: List<TrackedEntityInstance>): List<TrackedEntityInstance> {
+    private suspend fun appendAttributes(withoutChildren: List<TrackedEntityInstance>): List<TrackedEntityInstance> {
         return ChildrenAppenderExecutor.appendInObjectCollection(
             withoutChildren,
             databaseAdapter,

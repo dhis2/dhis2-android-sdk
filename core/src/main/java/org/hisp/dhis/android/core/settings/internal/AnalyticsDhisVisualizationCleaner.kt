@@ -38,7 +38,7 @@ internal class AnalyticsDhisVisualizationCleaner(
     private val store: AnalyticsDhisVisualizationStore,
 ) {
 
-    fun deleteNotPresent(uids: List<String>, type: AnalyticsDhisVisualizationType) {
+    suspend fun deleteNotPresent(uids: List<String>, type: AnalyticsDhisVisualizationType) {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(AnalyticsDhisVisualizationTableInfo.Columns.TYPE, type.name)
             .appendNotInKeyStringValues(AnalyticsDhisVisualizationTableInfo.Columns.UID, uids)

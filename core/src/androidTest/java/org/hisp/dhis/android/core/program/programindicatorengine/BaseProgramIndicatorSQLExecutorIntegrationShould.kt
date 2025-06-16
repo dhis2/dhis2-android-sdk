@@ -117,7 +117,7 @@ internal open class BaseProgramIndicatorSQLExecutorIntegrationShould : BaseEvalu
         )
     }
 
-    private fun setProgramIndicator(
+    private suspend fun setProgramIndicator(
         expression: String,
         filter: String? = null,
         analyticsType: AnalyticsType = AnalyticsType.EVENT,

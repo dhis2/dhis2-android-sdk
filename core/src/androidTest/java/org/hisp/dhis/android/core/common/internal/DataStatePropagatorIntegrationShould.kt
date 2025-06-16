@@ -150,7 +150,7 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
 
     @Test
     @Throws(D2Error::class)
-    fun do_not_fail_with_events_without_registration() {
+    fun do_not_fail_with_events_without_registration() = runTest {
         val eventUid = d2.eventModule().events().blockingAdd(sampleEventProjection(null))
 
         assertThat(eventStore.selectByUid(eventUid)!!.syncState()).isEqualTo(State.TO_POST)
@@ -210,7 +210,7 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
 
     @Test
     @Throws(D2Error::class)
-    fun propagate_last_updated_if_previous_is_null() {
+    fun propagate_last_updated_if_previous_is_null() = runTest {
         val teiUid = createTEIWithLastUpdated(null)
         d2.enrollmentModule().enrollments().blockingAdd(sampleEnrollmentProjection(teiUid))
 
@@ -221,7 +221,7 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
 
     @Test
     @Throws(D2Error::class)
-    fun propagate_tei_relationship_update() {
+    fun propagate_tei_relationship_update() = runTest {
         listOf(true, false).forEach { bidirectional ->
             val originalRelationshipType = relationshipTypeStore.selectByUid(relationshipType)!!
             relationshipTypeStore.update(originalRelationshipType.toBuilder().bidirectional(bidirectional).build())
@@ -254,7 +254,7 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
 
     @Test
     @Throws(D2Error::class)
-    fun propagate_enrollment_relationship_update() {
+    fun propagate_enrollment_relationship_update() = runTest {
         listOf(true, false).forEach { bidirectional ->
             val originalRelationshipType = relationshipTypeStore.selectByUid(relationshipType)!!
             relationshipTypeStore.update(originalRelationshipType.toBuilder().bidirectional(bidirectional).build())
@@ -290,7 +290,7 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
 
     @Test
     @Throws(D2Error::class)
-    fun propagate_event_relationship_update() {
+    fun propagate_event_relationship_update() = runTest {
         listOf(true, false).forEach { bidirectional ->
             val originalRelationshipType = relationshipTypeStore.selectByUid(relationshipType)!!
             relationshipTypeStore.update(originalRelationshipType.toBuilder().bidirectional(bidirectional).build())
@@ -328,7 +328,7 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
     }
 
     @Throws(D2Error::class)
-    private fun assertThatSetTeiToUpdateWhenEnrollmentPropagation(state: State) {
+    private fun assertThatSetTeiToUpdateWhenEnrollmentPropagation(state: State) = runTest {
         val teiUid = createTEIWithState(state)
         d2.enrollmentModule().enrollments().blockingAdd(sampleEnrollmentProjection(teiUid))
 
@@ -339,7 +339,7 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
     }
 
     @Throws(D2Error::class)
-    private fun assertThatDoNotSetTeiToUpdateWhenEnrollmentPropagation(state: State) {
+    private fun assertThatDoNotSetTeiToUpdateWhenEnrollmentPropagation(state: State) = runTest {
         val teiUid = createTEIWithState(state)
         d2.enrollmentModule().enrollments().blockingAdd(sampleEnrollmentProjection(teiUid))
 
@@ -350,7 +350,7 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
     }
 
     @Throws(D2Error::class)
-    private fun assertThatSetTeiToUpdateWhenEventPropagation(state: State) {
+    private fun assertThatSetTeiToUpdateWhenEventPropagation(state: State) = runTest {
         val teiUid = createTEIWithState(state)
         val enrolmentUid = d2.enrollmentModule().enrollments().blockingAdd(sampleEnrollmentProjection(teiUid))
 
@@ -368,7 +368,7 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
     }
 
     @Throws(D2Error::class)
-    private fun assertThatDoNotSetTeiToUpdateWhenEventPropagation(state: State) {
+    private fun assertThatDoNotSetTeiToUpdateWhenEventPropagation(state: State) = runTest {
         val teiUid = createTEIWithState(state)
         val enrolmentUid = createEnrollmentWithState(state, teiUid)
 
@@ -417,7 +417,7 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
     }
 
     @Throws(D2Error::class)
-    private fun createTEIWithState(state: State): String {
+    private suspend fun createTEIWithState(state: State): String {
         val teiUid = d2.trackedEntityModule().trackedEntityInstances().blockingAdd(sampleTEIProjection())
 
         trackedEntityInstanceStore.setSyncState(teiUid, state)
@@ -427,7 +427,7 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
     }
 
     @Throws(D2Error::class)
-    private fun createEnrollmentWithState(state: State, teiUid: String): String {
+    private suspend fun createEnrollmentWithState(state: State, teiUid: String): String {
         val enrolmentUid = d2.enrollmentModule().enrollments().blockingAdd(sampleEnrollmentProjection(teiUid))
 
         enrollmentStore.setSyncState(enrolmentUid, state)
@@ -437,7 +437,7 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
     }
 
     @Throws(D2Error::class)
-    private fun createEventWithState(state: State, enrolmentUid: String): String {
+    private suspend fun createEventWithState(state: State, enrolmentUid: String): String {
         val eventUid = d2.eventModule().events().blockingAdd(sampleEventProjection(enrolmentUid))
 
         eventStore.setSyncState(eventUid, state)
@@ -447,7 +447,7 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
     }
 
     @Throws(D2Error::class)
-    private fun createTEIWithLastUpdated(lastUpdated: Date?): String {
+    private suspend fun createTEIWithLastUpdated(lastUpdated: Date?): String {
         val teiUid = d2.trackedEntityModule().trackedEntityInstances().blockingAdd(sampleTEIProjection())
         val existingTEI = trackedEntityInstanceStore.selectByUid(teiUid)
 

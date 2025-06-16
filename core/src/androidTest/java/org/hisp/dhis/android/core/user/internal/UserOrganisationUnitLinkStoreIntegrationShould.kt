@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.user.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.user.UserOrganisationUnitLinkSamples
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
@@ -61,7 +62,7 @@ class UserOrganisationUnitLinkStoreIntegrationShould : LinkStoreAbstractIntegrat
     }
 
     @Test
-    fun assignedOrgUnitForDataCapture() {
+    fun assignedOrgUnitForDataCapture() = runTest {
         linkStore.insert(UserOrganisationUnitLinkSamples.getUserOrganisationUnitLink())
         linkStore.insert(
             UserOrganisationUnitLinkSamples
@@ -77,7 +78,7 @@ class UserOrganisationUnitLinkStoreIntegrationShould : LinkStoreAbstractIntegrat
     }
 
     @Test
-    fun assignedOrgUnitForTEISearch() {
+    fun assignedOrgUnitForTEISearch() = runTest {
         linkStore.insert(UserOrganisationUnitLinkSamples.getUserOrganisationUnitLink())
         linkStore.insert(
             UserOrganisationUnitLinkSamples

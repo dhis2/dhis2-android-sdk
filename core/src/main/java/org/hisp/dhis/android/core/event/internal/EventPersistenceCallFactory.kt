@@ -64,7 +64,7 @@ internal class EventPersistenceCallFactory(
         }
     }
 
-    private fun hasMissingOrganisationUnitUids(events: Collection<Event>): Boolean {
+    private suspend fun hasMissingOrganisationUnitUids(events: Collection<Event>): Boolean {
         val uids = events.mapNotNull { it.organisationUnit() }.toSet()
         return (uids - organisationUnitStore.selectUids().toSet()).isNotEmpty()
     }

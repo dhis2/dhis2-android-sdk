@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.parser.internal.service.dataitem
 
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.DOUBLE_VALUE_IF_NULL
@@ -40,10 +41,12 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
  */
 internal class ItemOrgUnitGroup : ExpressionItem {
     override fun getDescription(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        val orgUnitGroupName = visitor.organisationUnitGroupStore!!.selectByUid(ctx.uid0.text)?.displayName()
-            ?: throw ParserExceptionWithoutContext("No organization unit group defined for " + ctx.uid0.text)
+        runBlocking {
+            val orgUnitGroupName = visitor.organisationUnitGroupStore!!.selectByUid(ctx.uid0.text)?.displayName()
+                ?: throw ParserExceptionWithoutContext("No organization unit group defined for " + ctx.uid0.text)
 
-        visitor.itemDescriptions[ctx.text] = orgUnitGroupName
+            visitor.itemDescriptions[ctx.text] = orgUnitGroupName
+        }
 
         return DOUBLE_VALUE_IF_NULL
     }

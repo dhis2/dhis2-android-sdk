@@ -96,28 +96,28 @@ internal class TrackerImportConflictParser(
         MissingDataElementConflict,
     )
 
-    fun getTrackedEntityInstanceConflict(
+    suspend fun getTrackedEntityInstanceConflict(
         conflict: ImportConflict,
         conflictBuilder: TrackerImportConflict.Builder,
     ): TrackerImportConflict {
         return evaluateConflicts(conflict, conflictBuilder, trackedEntityInstanceConflicts)
     }
 
-    fun getEnrollmentConflict(
+    suspend fun getEnrollmentConflict(
         conflict: ImportConflict,
         conflictBuilder: TrackerImportConflict.Builder,
     ): TrackerImportConflict {
         return evaluateConflicts(conflict, conflictBuilder, enrollmentConflicts)
     }
 
-    fun getEventConflict(
+    suspend fun getEventConflict(
         conflict: ImportConflict,
         conflictBuilder: TrackerImportConflict.Builder,
     ): TrackerImportConflict {
         return evaluateConflicts(conflict, conflictBuilder, eventConflicts)
     }
 
-    private fun evaluateConflicts(
+    private suspend fun evaluateConflicts(
         conflict: ImportConflict,
         conflictBuilder: TrackerImportConflict.Builder,
         conflictTypes: List<TrackerImportConflictItem>,

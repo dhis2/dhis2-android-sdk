@@ -71,7 +71,7 @@ class EnrollmentHandlerShould {
     private lateinit var enrollmentHandler: EnrollmentHandler
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         whenever(enrollment.uid()).doReturn("test_enrollment_uid")
         whenever(EnrollmentInternalAccessor.accessEvents(enrollment)).doReturn(listOf(event))
         whenever(enrollment.notes()).doReturn(listOf(note))
@@ -124,6 +124,7 @@ class EnrollmentHandlerShould {
     fun invoke_only_update_or_insert_when_handle_enrollment_is_valid() = runTest {
         whenever(enrollment.deleted()).doReturn(false)
         whenever(enrollmentStore.updateOrInsert(any())).doReturn(HandleAction.Update)
+        whenever(noteUniquenessManager.buildUniqueCollection(any(), any(), any())).doReturn(setOf(note))
 
         val params = IdentifiableDataHandlerParams(hasAllAttributes = false, overwrite = false, asRelationship = false)
         enrollmentHandler.handleMany(listOf(enrollment), params, relationshipItemRelatives)

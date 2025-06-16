@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.handlers.internal
 
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
@@ -123,7 +124,7 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
 
     private fun relationshipTransformer(): (O) -> O {
         return { o: O ->
-            val currentState = store.getSyncState(o.uid())
+            val currentState = runBlocking { store.getSyncState(o.uid()) }
             if (currentState == State.RELATIONSHIP || currentState == null) {
                 addRelationshipState(o)
             } else {
@@ -157,7 +158,7 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         }
     }
 
-    protected suspend fun deleteLinkedRelationships(o: O) {
+    private suspend fun deleteLinkedRelationships(o: O) {
         o.uid()?.let { relationshipHandler.deleteLinkedRelationships(it) }
     }
 
@@ -227,7 +228,7 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
          */
     }
 
-    private fun filterExistingObjectsByState(os: Collection<O>, allowedStates: List<String>): Collection<O> {
+    private suspend fun filterExistingObjectsByState(os: Collection<O>, allowedStates: List<String>): Collection<O> {
         val storedObjectUids = storedObjectUids(os)
         val allowedObjectUids = objectWithStatesUids(storedObjectUids, allowedStates)
 
@@ -238,14 +239,14 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         }
     }
 
-    private fun storedObjectUids(os: Collection<O>): List<String> {
+    private suspend fun storedObjectUids(os: Collection<O>): List<String> {
         val objectUids = getUidsList(os)
         val storedObjectUidsWhereClause = WhereClauseBuilder()
             .appendInKeyStringValues(IdentifiableColumns.UID, objectUids).build()
         return store.selectUidsWhere(storedObjectUidsWhereClause)
     }
 
-    private fun objectWithStatesUids(storedObjectUids: List<String>, states: List<String>): List<String> {
+    private suspend fun objectWithStatesUids(storedObjectUids: List<String>, states: List<String>): List<String> {
         if (storedObjectUids.isNotEmpty()) {
             val syncedObjectUidsWhereClause2 = WhereClauseBuilder()
                 .appendInKeyStringValues(IdentifiableColumns.UID, storedObjectUids)

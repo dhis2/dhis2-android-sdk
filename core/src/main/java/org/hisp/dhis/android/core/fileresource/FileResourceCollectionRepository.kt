@@ -30,6 +30,10 @@ package org.hisp.dhis.android.core.fileresource
 import android.content.Context
 import io.reactivex.Observable
 import io.reactivex.Single
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
+import kotlinx.coroutines.withContext
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
@@ -55,7 +59,7 @@ import org.koin.core.annotation.Singleton
 import java.io.File
 
 @Singleton
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions", "TooGenericExceptionCaught")
 class FileResourceCollectionRepository internal constructor(
     private val fileResourceStore: FileResourceStore,
     databaseAdapter: DatabaseAdapter,
@@ -101,13 +105,16 @@ class FileResourceCollectionRepository internal constructor(
     }
 
     override fun add(o: File): Single<String> {
-        return Single.fromCallable { blockingAdd(o) }
+        return rxSingle { addInternal(o) }
     }
 
     @Throws(D2Error::class)
-    @Suppress("TooGenericExceptionCaught")
     override fun blockingAdd(o: File): String {
-        return try {
+        return runBlocking { addInternal(o) }
+    }
+
+    override suspend fun addInternal(o: File): String = withContext(Dispatchers.IO) {
+        try {
             val generatedUid = UidGeneratorImpl().generate()
             val dstFile = saveFile(o, generatedUid, context)
             val fileResource = transformer.transform(dstFile).toBuilder().uid(generatedUid).name(o.name).build()

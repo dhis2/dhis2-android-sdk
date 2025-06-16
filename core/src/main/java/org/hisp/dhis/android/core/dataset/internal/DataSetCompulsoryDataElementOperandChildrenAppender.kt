@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.dataset.DataSet
 internal class DataSetCompulsoryDataElementOperandChildrenAppender private constructor(
     private val linkChildStore: DataElementOperandStore,
 ) : ChildrenAppender<DataSet>() {
-    override fun appendChildren(m: DataSet): DataSet {
+    override suspend fun appendChildren(m: DataSet): DataSet {
         val children = linkChildStore.getForDataSet(m.uid())
         return m.toBuilder()
             .compulsoryDataElementOperands(children)

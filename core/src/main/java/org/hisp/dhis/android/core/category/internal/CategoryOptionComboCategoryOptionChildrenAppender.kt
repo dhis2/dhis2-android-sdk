@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.category.CategoryOptionCombo
 internal class CategoryOptionComboCategoryOptionChildrenAppender private constructor(
     private val childStore: CategoryOptionStore,
 ) : ChildrenAppender<CategoryOptionCombo>() {
-    override fun appendChildren(m: CategoryOptionCombo): CategoryOptionCombo {
+    override suspend fun appendChildren(m: CategoryOptionCombo): CategoryOptionCombo {
         val children = childStore.getForCategoryOptionCombo(m.uid())
         return m.toBuilder()
             .categoryOptions(children)

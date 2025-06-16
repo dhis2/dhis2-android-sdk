@@ -108,7 +108,7 @@ internal class EventImportHandler(
         return summary
     }
 
-    private fun processIgnoredEvents(
+    private suspend fun processIgnoredEvents(
         eventImportSummaries: List<EventImportSummary?>?,
         events: List<Event>,
     ): List<Event> {
@@ -121,7 +121,7 @@ internal class EventImportHandler(
         }
     }
 
-    private fun storeEventImportConflicts(
+    private suspend fun storeEventImportConflicts(
         importSummary: EventImportSummary,
         enrollmentUid: String?,
     ) {
@@ -147,7 +147,7 @@ internal class EventImportHandler(
         trackerImportConflicts.forEach { trackerImportConflictStore.insert(it) }
     }
 
-    private fun getConflictBuilder(
+    private suspend fun getConflictBuilder(
         enrollmentUid: String?,
         eventImportSummary: EventImportSummary,
     ): TrackerImportConflict.Builder {

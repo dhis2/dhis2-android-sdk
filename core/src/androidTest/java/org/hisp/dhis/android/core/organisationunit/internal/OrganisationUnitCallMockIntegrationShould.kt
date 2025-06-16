@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.organisationunit.internal
 
 import android.content.ContentValues
 import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
@@ -54,7 +53,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(D2JunitRunner::class)
 class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
     // The return of the organisationUnitCall to be tested:
@@ -154,7 +152,7 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
 
         @AfterClass
         @JvmStatic
-        fun tearDownClass() {
+        fun tearDownClass() = runTest {
             d2.databaseAdapter().delete(ProgramTableInfo.TABLE_INFO.name())
             d2.databaseAdapter().delete(DataSetTableInfo.TABLE_INFO.name())
             d2.databaseAdapter().delete(CategoryComboTableInfo.TABLE_INFO.name())

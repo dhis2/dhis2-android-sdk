@@ -72,7 +72,7 @@ class ProgramStageHandlerShould {
 
     @Before
     @Throws(Exception::class)
-    fun setUp() {
+    fun setUp() = runTest {
         programStageHandler = ProgramStageHandler(
             programStageStore,
             programStageSectionHandler,

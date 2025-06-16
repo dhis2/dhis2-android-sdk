@@ -29,6 +29,7 @@ package org.hisp.dhis.android.testapp.tracker.importer
 
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.tracker.importer.internal.JobValidationError
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerConflictHelper
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType
@@ -38,7 +39,7 @@ import org.junit.Test
 class TrackerConflictHelperMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 
     @Test
-    fun generate_correct_display_descriptions_if_passing_correct_error_report() {
+    fun generate_correct_display_descriptions_if_passing_correct_error_report() = runTest {
         val trackerImportConflict = TrackerConflictHelper(
             InstrumentationRegistry.getInstrumentation().context,
             objects.d2DIComponent.interpreterSelector,
@@ -51,7 +52,7 @@ class TrackerConflictHelperMockIntegrationShould : BaseMockIntegrationTestFullDi
     }
 
     @Test
-    fun return_default_message_when_passing_wrong_error_report() {
+    fun return_default_message_when_passing_wrong_error_report() = runTest {
         val trackerImportConflict = TrackerConflictHelper(
             InstrumentationRegistry.getInstrumentation().context,
             objects.d2DIComponent.interpreterSelector,
@@ -61,7 +62,7 @@ class TrackerConflictHelperMockIntegrationShould : BaseMockIntegrationTestFullDi
     }
 
     @Test
-    fun generate_correct_display_descriptions_for_E1000_error() {
+    fun generate_correct_display_descriptions_for_E1000_error() = runTest {
         val trackerImportConflict = TrackerConflictHelper(
             InstrumentationRegistry.getInstrumentation().context,
             objects.d2DIComponent.interpreterSelector,

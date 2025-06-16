@@ -40,7 +40,7 @@ internal class DataElementAttributeChildrenAppender private constructor(
     private val linkStore: DataElementAttributeValueLinkStore,
 ) : ChildrenAppender<DataElement>() {
 
-    override fun appendChildren(m: DataElement): DataElement {
+    override suspend fun appendChildren(m: DataElement): DataElement {
         val attributeValues = linkStore.getLinksForDataElement(m.uid())
             .map {
                 AttributeValue.builder()

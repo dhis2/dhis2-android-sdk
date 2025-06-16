@@ -33,19 +33,19 @@ import org.hisp.dhis.android.core.datavalue.DataValue
 
 internal interface DataValueStore : ObjectWithoutUidStore<DataValue> {
 
-    fun getDataValuesWithState(state: State): Collection<DataValue>
+    suspend fun getDataValuesWithState(state: State): Collection<DataValue>
 
     /**
      * @param dataValue DataValue element you want to update
      * @param newState  The new state to be set for the DataValue
      */
-    fun setState(dataValue: DataValue, newState: State)
+    suspend fun setState(dataValue: DataValue, newState: State)
 
-    fun exists(dataValue: DataValue): Boolean
+    suspend fun exists(dataValue: DataValue): Boolean
 
-    fun isDataValueBeingUpload(dataValue: DataValue): Boolean
+    suspend fun isDataValueBeingUpload(dataValue: DataValue): Boolean
 
-    fun isDeleted(dataValue: DataValue): Boolean
+    suspend fun isDeleted(dataValue: DataValue): Boolean
 
-    fun existsInDataSet(dataValue: DataValue, dataSetUid: String): Boolean
+    suspend fun existsInDataSet(dataValue: DataValue, dataSetUid: String): Boolean
 }

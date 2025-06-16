@@ -52,7 +52,7 @@ internal class CustomIconStoreImpl(
         CustomIcon::create,
     ) {
 
-    override fun selectByKey(key: String): CustomIcon? {
+    override suspend fun selectByKey(key: String): CustomIcon? {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(CustomIconTableInfo.Columns.KEY, key)
             .build()

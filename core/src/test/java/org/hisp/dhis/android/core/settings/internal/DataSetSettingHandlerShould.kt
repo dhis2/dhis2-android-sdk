@@ -50,7 +50,7 @@ class DataSetSettingHandlerShould {
 
     @Before
     @Throws(Exception::class)
-    fun setUp() {
+    fun setUp() = runTest {
         dataSetSettings = mutableListOf(dataSetSetting)
         whenever(dataSetSettingStore.updateOrInsertWhere(any())).thenReturn(HandleAction.Insert)
         dataSetSettingHandler = DataSetSettingHandler(dataSetSettingStore)

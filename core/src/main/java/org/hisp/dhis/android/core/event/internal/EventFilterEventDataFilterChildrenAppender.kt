@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.event.EventFilter
 internal class EventFilterEventDataFilterChildrenAppender private constructor(
     private val childStore: EventDataFilterStore,
 ) : ChildrenAppender<EventFilter>() {
-    override fun appendChildren(m: EventFilter): EventFilter {
+    override suspend fun appendChildren(m: EventFilter): EventFilter {
         val children = childStore.getForEventFilter(m.uid())
         return if (m.eventQueryCriteria() != null) {
             val criteriaBuilder = m.eventQueryCriteria()!!.toBuilder().dataFilters(children).build()

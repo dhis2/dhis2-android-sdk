@@ -64,8 +64,7 @@ internal open class ObjectStoreImpl<O : CoreObject> internal constructor(
 
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionThrown")
-    @Synchronized
-    override fun insert(o: O): Long {
+    override suspend fun insert(o: O): Long {
         CollectionsHelper.isNull(o)
         compileStatements()
         binder.bindToStatement(o, insertStatement!!)
@@ -78,7 +77,7 @@ internal open class ObjectStoreImpl<O : CoreObject> internal constructor(
     }
 
     @Throws(RuntimeException::class)
-    override fun insert(objects: Collection<O>) {
+    override suspend fun insert(objects: Collection<O>) {
         for (m in objects) {
             insert(m)
         }
@@ -104,12 +103,12 @@ internal open class ObjectStoreImpl<O : CoreObject> internal constructor(
         return oldCode != null && databaseAdapter.hashCode() != oldCode
     }
 
-    override fun selectStringColumnsWhereClause(column: String, clause: String): List<String> {
+    override suspend fun selectStringColumnsWhereClause(column: String, clause: String): List<String> {
         val cursor = databaseAdapter.rawQuery(builder.selectColumnWhere(column, clause))
         return mapStringColumnSetFromCursor(cursor)
     }
 
-    override fun delete(): Int {
+    override suspend fun delete(): Int {
         return databaseAdapter.delete(builder.getTableName())
     }
 
@@ -125,11 +124,11 @@ internal open class ObjectStoreImpl<O : CoreObject> internal constructor(
         }
     }
 
-    override fun deleteById(o: O): Boolean {
+    override suspend fun deleteById(o: O): Boolean {
         return deleteWhere(CoreColumns.ID + "='" + o.id() + "';")
     }
 
-    protected fun popOneWhere(whereClause: String): O? {
+    protected suspend fun popOneWhere(whereClause: String): O? {
         val m = selectOneWhere(whereClause)
         if (m != null) {
             deleteById(m)
@@ -137,17 +136,17 @@ internal open class ObjectStoreImpl<O : CoreObject> internal constructor(
         return m
     }
 
-    override fun deleteWhere(clause: String): Boolean {
+    override suspend fun deleteWhere(clause: String): Boolean {
         return databaseAdapter.delete(builder.getTableName(), clause, null) > 0
     }
 
-    override fun updateWhere(updates: ContentValues, whereClause: String): Int {
+    override suspend fun updateWhere(updates: ContentValues, whereClause: String): Int {
         return databaseAdapter.update(builder.getTableName(), updates, whereClause, null)
     }
 
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionCaught")
-    override fun deleteWhereIfExists(whereClause: String) {
+    override suspend fun deleteWhereIfExists(whereClause: String) {
         try {
             deleteWhere(whereClause)
         } catch (e: RuntimeException) {

@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.resource.internal
 
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.junit.Before
 import org.junit.Test
@@ -55,7 +56,7 @@ class ResourceHandlerShould {
     }
 
     @Test
-    fun do_nothing_when_passing_null_resource() {
+    fun do_nothing_when_passing_null_resource() = runTest {
         resourceHandler.setServerDate(serverDate)
         resourceHandler.handleResource(null)
 
@@ -63,14 +64,14 @@ class ResourceHandlerShould {
     }
 
     @Test
-    fun do_nothing_when_not_passing_server_date() {
+    fun do_nothing_when_not_passing_server_date() = runTest {
         resourceHandler.handleResource(Resource.Type.PROGRAM)
 
         verify(resourceStore, never()).updateOrInsertWhere(any())
     }
 
     @Test
-    fun invoke_update_or_insert_when_handle_resource_updatable() {
+    fun invoke_update_or_insert_when_handle_resource_updatable() = runTest {
         whenever(resourceStore.updateOrInsertWhere(any())).thenReturn(HandleAction.Update)
 
         resourceHandler.setServerDate(serverDate)

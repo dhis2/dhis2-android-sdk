@@ -106,7 +106,7 @@ internal open class IdentifiableDataObjectStoreImpl<O>(
         }
     }
 
-    override fun setSyncState(uid: String, state: State): Int {
+    override suspend fun setSyncState(uid: String, state: State): Int {
         compileStatements()
         setStateStatement!!.bind(1, state)
 
@@ -117,7 +117,7 @@ internal open class IdentifiableDataObjectStoreImpl<O>(
         return updatedRow
     }
 
-    override fun setSyncState(uids: List<String>, state: State): Int {
+    override suspend fun setSyncState(uids: List<String>, state: State): Int {
         val updates = ContentValues()
         updates.put(DataColumns.SYNC_STATE, state.toString())
         val whereClause = WhereClauseBuilder()
@@ -126,7 +126,7 @@ internal open class IdentifiableDataObjectStoreImpl<O>(
         return databaseAdapter.update(tableName, updates, whereClause, null)
     }
 
-    override fun setSyncStateIfUploading(uid: String, state: State): Int {
+    override suspend fun setSyncStateIfUploading(uid: String, state: State): Int {
         compileStatements()
         setStateIfUploadingStatement!!.bind(1, state)
 
@@ -137,7 +137,7 @@ internal open class IdentifiableDataObjectStoreImpl<O>(
         return affectedRows
     }
 
-    override fun getSyncState(uid: String): State? {
+    override suspend fun getSyncState(uid: String): State? {
         compileStatements()
         val cursor = databaseAdapter.rawQuery(selectStateQuery, uid)
         var state: State? = null
@@ -149,7 +149,7 @@ internal open class IdentifiableDataObjectStoreImpl<O>(
         return state
     }
 
-    override fun exists(uid: String): Boolean {
+    override suspend fun exists(uid: String): Boolean {
         compileStatements()
         val cursor = databaseAdapter.rawQuery(existsQuery, uid)
         val count = cursor.count
@@ -157,7 +157,7 @@ internal open class IdentifiableDataObjectStoreImpl<O>(
         return count > 0
     }
 
-    override fun getUploadableSyncStatesIncludingError(): List<O> {
+    override suspend fun getUploadableSyncStatesIncludingError(): List<O> {
         val whereClause = WhereClauseBuilder()
             .appendInKeyStringValues(
                 DataColumns.SYNC_STATE,

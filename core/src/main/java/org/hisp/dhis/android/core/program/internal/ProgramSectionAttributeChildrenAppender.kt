@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeS
 internal class ProgramSectionAttributeChildrenAppender private constructor(
     private val childStore: TrackedEntityAttributeStore,
 ) : ChildrenAppender<ProgramSection>() {
-    override fun appendChildren(m: ProgramSection): ProgramSection {
+    override suspend fun appendChildren(m: ProgramSection): ProgramSection {
         val builder = m.toBuilder()
         builder.attributes(childStore.getForProgramSection(m.uid()))
         return builder.build()

@@ -79,7 +79,7 @@ class LogInCallUnitShould : BaseCallShould() {
 
     @Before
     @Throws(Exception::class)
-    override fun setUp() {
+    override fun setUp() = runTest {
         super.setUp()
         whenever(apiUser.uid()).thenReturn(UID)
         whenever(dbUser.uid()).thenReturn(UID)
@@ -208,7 +208,7 @@ class LogInCallUnitShould : BaseCallShould() {
     }
 
     @Test
-    fun succeed_for_login_offline_if_server_has_a_trailing_slash() {
+    fun succeed_for_login_offline_if_server_has_a_trailing_slash() = runTest {
         whenAPICall { throw d2Error }
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
         whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(SERVER_URL, USERNAME)).thenReturn(true)

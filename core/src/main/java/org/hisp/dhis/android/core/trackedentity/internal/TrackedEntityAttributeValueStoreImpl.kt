@@ -80,7 +80,9 @@ internal class TrackedEntityAttributeValueStoreImpl(
             " IN (" + states + "))"
     }
 
-    override fun queryByTrackedEntityInstance(trackedEntityInstanceUid: String): List<TrackedEntityAttributeValue> {
+    override suspend fun queryByTrackedEntityInstance(
+        trackedEntityInstanceUid: String,
+    ): List<TrackedEntityAttributeValue> {
         val selectByTrackedEntityInstanceQuery = WhereClauseBuilder().appendKeyStringValue(
             TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
             trackedEntityInstanceUid,
@@ -88,7 +90,7 @@ internal class TrackedEntityAttributeValueStoreImpl(
         return selectWhere(selectByTrackedEntityInstanceQuery)
     }
 
-    override fun deleteByInstanceAndNotInAttributes(
+    override suspend fun deleteByInstanceAndNotInAttributes(
         trackedEntityInstanceUid: String,
         trackedEntityAttributeUids: List<String>,
     ) {
@@ -105,7 +107,7 @@ internal class TrackedEntityAttributeValueStoreImpl(
         deleteWhere(deleteWhereQuery)
     }
 
-    override fun deleteByInstanceAndNotInProgramAttributes(
+    override suspend fun deleteByInstanceAndNotInProgramAttributes(
         trackedEntityInstanceUid: String,
         trackedEntityAttributeUids: List<String>,
         program: String,
@@ -129,7 +131,7 @@ internal class TrackedEntityAttributeValueStoreImpl(
         deleteWhere(deleteWhereQuery)
     }
 
-    override fun deleteByInstanceAndNotInAccessibleAttributes(
+    override suspend fun deleteByInstanceAndNotInAccessibleAttributes(
         trackedEntityInstanceUid: String,
         trackedEntityAttributeUids: List<String>,
         teiType: String,
@@ -159,7 +161,7 @@ internal class TrackedEntityAttributeValueStoreImpl(
         deleteWhere(deleteWhereQuery)
     }
 
-    override fun removeDeletedAttributeValuesByInstance(trackedEntityInstanceUid: String) {
+    override suspend fun removeDeletedAttributeValuesByInstance(trackedEntityInstanceUid: String) {
         val deleteWhereQuery = WhereClauseBuilder()
             .appendKeyStringValue(
                 TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,

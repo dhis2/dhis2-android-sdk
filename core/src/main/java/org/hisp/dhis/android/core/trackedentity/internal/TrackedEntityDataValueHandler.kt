@@ -40,7 +40,7 @@ internal class TrackedEntityDataValueHandler(
         return o.toBuilder().syncState(State.SYNCED).build()
     }
 
-    fun removeEventDataValues(eventUid: String?) {
+    suspend fun removeEventDataValues(eventUid: String?) {
         trackedEntityDataValueStore.deleteByEvent(eventUid!!)
     }
 
@@ -48,7 +48,9 @@ internal class TrackedEntityDataValueHandler(
         removeNotExistingDataValuesInServer(oCollection)
     }
 
-    private fun removeNotExistingDataValuesInServer(trackedEntityDataValues: Collection<TrackedEntityDataValue>?) {
+    private suspend fun removeNotExistingDataValuesInServer(
+        trackedEntityDataValues: Collection<TrackedEntityDataValue>?,
+    ) {
         if (trackedEntityDataValues.isNullOrEmpty()) {
             return
         }

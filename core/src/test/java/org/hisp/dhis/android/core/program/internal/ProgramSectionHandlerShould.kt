@@ -54,7 +54,7 @@ class ProgramSectionHandlerShould {
 
     @Before
     @Throws(Exception::class)
-    fun setUp() {
+    fun setUp() = runTest {
         programSectionHandler = ProgramSectionHandler(programSectionStore, programSectionAttributeLinkHandler)
 
         val attributes = listOf(TrackedEntityAttribute.builder().uid("attribute_uid").build())

@@ -42,7 +42,7 @@ internal class TrackedEntityEnrollmentOrphanCleaner(
     private val breakTheGlassHelper: TrackerImporterBreakTheGlassHelper,
 ) {
 
-    fun deleteOrphan(
+    suspend fun deleteOrphan(
         parent: TrackedEntityInstance?,
         children: Collection<Enrollment>?,
         program: String?,
@@ -79,7 +79,7 @@ internal class TrackedEntityEnrollmentOrphanCleaner(
         }
     }
 
-    private fun isAccessibleByGlass(enrollment: Enrollment, program: String?): Boolean {
+    private suspend fun isAccessibleByGlass(enrollment: Enrollment, program: String?): Boolean {
         val isProtected = breakTheGlassHelper.isProtectedInSearchScope(
             program = enrollment.program(),
             organisationUnit = enrollment.organisationUnit(),

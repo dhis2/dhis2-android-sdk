@@ -50,7 +50,7 @@ class ProgramConfigurationSettingHandlerShould {
 
     @Before
     @Throws(Exception::class)
-    fun setUp() {
+    fun setUp() = runTest {
         programConfigurationSettingList = listOf(programConfigurationSetting)
         whenever(programConfigurationSettingStore.updateOrInsertWhere(any())) doReturn HandleAction.Insert
         programConfigurationSettingHandler = ProgramConfigurationSettingHandler(programConfigurationSettingStore)

@@ -25,25 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.programindicatorengine
 
-package org.hisp.dhis.android.core.program.programindicatorengine;
-
-import androidx.annotation.NonNull;
-
-public interface ProgramIndicatorEngine {
-
+interface ProgramIndicatorEngine {
     /**
-     * @deprecated
-     * Use {@link #getEnrollmentProgramIndicatorValue(String, String)} or
-     * {@link #getEventProgramIndicatorValue(String, String)} instead.
-     *
      * @param enrollmentUid Enrollment uid to evaluate the program indicator
      * @param eventUid Single event to evaluate the program indicator
      * @param programIndicatorUid Program indicator to evaluate
      * @return Program indicator evaluation
      */
-    @Deprecated
-    String getProgramIndicatorValue(String enrollmentUid, String eventUid, String programIndicatorUid);
+    @Deprecated(
+        """ Use {@link #getEnrollmentProgramIndicatorValue(String, String)} or
+      {@link #getEventProgramIndicatorValue(String, String)} instead.
+     
+      """,
+    )
+    suspend fun getProgramIndicatorValue(
+        enrollmentUid: String?,
+        eventUid: String?,
+        programIndicatorUid: String,
+    ): String?
 
     /**
      * Evaluates a program indicator in the context of an enrollment. This is only intended to evaluate the
@@ -53,7 +54,7 @@ public interface ProgramIndicatorEngine {
      * @param programIndicatorUid Program indicator to evaluate
      * @return Program indicator evaluation
      */
-    String getEnrollmentProgramIndicatorValue(@NonNull String enrollmentUid, @NonNull String programIndicatorUid);
+    suspend fun getEnrollmentProgramIndicatorValue(enrollmentUid: String, programIndicatorUid: String): String?
 
     /**
      * Evaluates a program indicator in the context of an event (single or tracker). This is only intended to
@@ -64,6 +65,5 @@ public interface ProgramIndicatorEngine {
      * @param programIndicatorUid Program indicator to evaluate
      * @return Program indicator evaluation
      */
-    String getEventProgramIndicatorValue(@NonNull String eventUid, @NonNull String programIndicatorUid);
-
+    suspend fun getEventProgramIndicatorValue(eventUid: String, programIndicatorUid: String): String?
 }

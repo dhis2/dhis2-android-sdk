@@ -50,7 +50,7 @@ internal open class LinkCleanerImpl<P : ObjectWithUidInterface>(
         return deleteNotPresentByKey(objects.map { it.uid() })
     }
 
-    override fun deleteNotPresentInDb(): Boolean {
+    override suspend fun deleteNotPresentInDb(): Boolean {
         return deleteNotPresent(parentStore.selectAll())
     }
 }

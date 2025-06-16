@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.tracker
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
 import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
 import org.hisp.dhis.android.core.systeminfo.DHISPatchVersion
@@ -52,7 +53,7 @@ class TrackerPostParentCallHelperShould {
     private lateinit var helper: TrackerPostParentCallHelper
 
     @Before
-    fun setup() {
+    fun setUp() = runTest {
         val dhisVersionManager = DHISVersionManagerImpl(systemInfoStore)
         helper = TrackerPostParentCallHelper(dhisVersionManager, synchronizationSettingStore)
 
@@ -61,68 +62,68 @@ class TrackerPostParentCallHelperShould {
     }
 
     @Test
-    fun should_return_old_importer_if_less_than_40() {
+    fun should_return_old_importer_if_less_than_40() = runTest {
         whenever(systemInfo.version()).doReturn(DHISPatchVersion.V2_39_0.strValue)
         assertThat(helper.useNewTrackerImporter()).isFalse()
     }
 
     @Test
-    fun should_return_new_importer_if_greater_or_equal_than_40() {
+    fun should_return_new_importer_if_greater_or_equal_than_40() = runTest {
         whenever(systemInfo.version()).doReturn(DHISPatchVersion.V2_40_0.strValue)
         assertThat(helper.useNewTrackerImporter()).isTrue()
     }
 
     @Test
-    fun should_return_true_if_explicitly_set_in_importer() {
+    fun should_return_true_if_explicitly_set_in_importer() = runTest {
         whenever(systemInfo.version()).doReturn(DHISPatchVersion.V2_39_0.strValue)
         whenever(syncSettings.trackerImporterVersion()).doReturn(TrackerImporterVersion.V2)
         assertThat(helper.useNewTrackerImporter()).isTrue()
     }
 
     @Test
-    fun should_return_false_if_explicitly_unset_in_importer() {
+    fun should_return_false_if_explicitly_unset_in_importer() = runTest {
         whenever(systemInfo.version()).doReturn(DHISPatchVersion.V2_40_0.strValue)
         whenever(syncSettings.trackerImporterVersion()).doReturn(TrackerImporterVersion.V1)
         assertThat(helper.useNewTrackerImporter()).isFalse()
     }
 
     @Test
-    fun should_always_return_false_if_less_than_38_in_importer() {
+    fun should_always_return_false_if_less_than_38_in_importer() = runTest {
         whenever(systemInfo.version()).doReturn(DHISPatchVersion.V2_37_0.strValue)
         whenever(syncSettings.trackerImporterVersion()).doReturn(TrackerImporterVersion.V2)
         assertThat(helper.useNewTrackerImporter()).isFalse()
     }
 
     @Test
-    fun should_always_return_true_if_greater_or_equal_than_42_in_importer() {
+    fun should_always_return_true_if_greater_or_equal_than_42_in_importer() = runTest {
         whenever(systemInfo.version()).doReturn(DHISPatchVersion.V2_42_0.strValue)
         whenever(syncSettings.trackerImporterVersion()).doReturn(TrackerImporterVersion.V1)
         assertThat(helper.useNewTrackerImporter()).isTrue()
     }
 
     @Test
-    fun should_return_true_if_explicitly_set_in_exporter() {
+    fun should_return_true_if_explicitly_set_in_exporter() = runTest {
         whenever(systemInfo.version()).doReturn(DHISPatchVersion.V2_40_0.strValue)
         whenever(syncSettings.trackerExporterVersion()).doReturn(TrackerExporterVersion.V2)
         assertThat(helper.useNewTrackerExporter()).isTrue()
     }
 
     @Test
-    fun should_return_false_if_explicitly_unset_in_exporter() {
+    fun should_return_false_if_explicitly_unset_in_exporter() = runTest {
         whenever(systemInfo.version()).doReturn(DHISPatchVersion.V2_40_0.strValue)
         whenever(syncSettings.trackerExporterVersion()).doReturn(TrackerExporterVersion.V1)
         assertThat(helper.useNewTrackerExporter()).isFalse()
     }
 
     @Test
-    fun should_always_return_false_if_less_than_40_in_exporter() {
+    fun should_always_return_false_if_less_than_40_in_exporter() = runTest {
         whenever(systemInfo.version()).doReturn(DHISPatchVersion.V2_39_0.strValue)
         whenever(syncSettings.trackerExporterVersion()).doReturn(TrackerExporterVersion.V2)
         assertThat(helper.useNewTrackerExporter()).isFalse()
     }
 
     @Test
-    fun should_always_return_true_if_greater_or_equal_than_42_in_exporter() {
+    fun should_always_return_true_if_greater_or_equal_than_42_in_exporter() = runTest {
         whenever(systemInfo.version()).doReturn(DHISPatchVersion.V2_42_0.strValue)
         whenever(syncSettings.trackerExporterVersion()).doReturn(TrackerExporterVersion.V1)
         assertThat(helper.useNewTrackerExporter()).isTrue()

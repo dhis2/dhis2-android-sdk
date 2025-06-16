@@ -56,7 +56,7 @@ import org.koin.core.annotation.Singleton
 internal class TrackerVisualizationMapper(
     private val organisationUnitLevelStore: OrganisationUnitLevelStore,
 ) {
-    fun toTrackerLineListParams(trackerVisualization: TrackerVisualization): TrackerLineListParams {
+    suspend fun toTrackerLineListParams(trackerVisualization: TrackerVisualization): TrackerLineListParams {
         val columns = mapDimensions(trackerVisualization.columns(), trackerVisualization)
         val filters = mapDimensions(trackerVisualization.filters(), trackerVisualization)
         val sorting = mapSorting(trackerVisualization.sorting(), columns + filters)
@@ -82,7 +82,7 @@ internal class TrackerVisualizationMapper(
         }
     }
 
-    private fun mapDimensions(
+    private suspend fun mapDimensions(
         dimensions: List<TrackerVisualizationDimension>?,
         trackerVisualization: TrackerVisualization,
     ): List<TrackerLineListItem> {
@@ -103,7 +103,7 @@ internal class TrackerVisualizationMapper(
         } ?: emptyList()
     }
 
-    private fun mapOrganisationUnit(item: TrackerVisualizationDimension): TrackerLineListItem? {
+    private suspend fun mapOrganisationUnit(item: TrackerVisualizationDimension): TrackerLineListItem? {
         return TrackerLineListItem.OrganisationUnitItem(
             programUid = item.program()?.uid(),
             filters = item.items()?.mapNotNull { it.uid() }?.mapNotNull { uid ->

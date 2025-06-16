@@ -38,11 +38,11 @@ import org.hisp.dhis.android.core.program.ProgramIndicator
 internal class ProgramIndicatorAnalyticsPeriodBoundaryChildrenAppender private constructor(
     private val childStore: LinkStore<AnalyticsPeriodBoundary>,
 ) : ChildrenAppender<ProgramIndicator>() {
-    override fun appendChildren(programIndicator: ProgramIndicator): ProgramIndicator {
+    override suspend fun appendChildren(programIndicator: ProgramIndicator): ProgramIndicator {
         return programIndicator.toBuilder().analyticsPeriodBoundaries(getChildren(programIndicator)).build()
     }
 
-    private fun getChildren(o: ProgramIndicator): List<AnalyticsPeriodBoundary> {
+    private suspend fun getChildren(o: ProgramIndicator): List<AnalyticsPeriodBoundary> {
         val whereClause = WhereClauseBuilder().apply {
             appendKeyStringValue(AnalyticsPeriodBoundaryTableInfo.Columns.PROGRAM_INDICATOR, o.uid())
         }.build()

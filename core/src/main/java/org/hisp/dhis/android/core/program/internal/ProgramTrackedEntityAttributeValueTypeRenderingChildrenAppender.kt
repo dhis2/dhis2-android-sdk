@@ -36,7 +36,7 @@ internal class ProgramTrackedEntityAttributeValueTypeRenderingChildrenAppender(
 ) : ValueTypeRenderingChildrenAppender<ProgramTrackedEntityAttribute>(
     ValueTypeDeviceRenderingStoreImpl(databaseAdapter),
 ) {
-    override fun appendChildren(m: ProgramTrackedEntityAttribute): ProgramTrackedEntityAttribute {
+    override suspend fun appendChildren(m: ProgramTrackedEntityAttribute): ProgramTrackedEntityAttribute {
         val valueTypeRendering = getValueTypeDeviceRendering(m)
         return m.toBuilder().renderType(valueTypeRendering).build()
     }

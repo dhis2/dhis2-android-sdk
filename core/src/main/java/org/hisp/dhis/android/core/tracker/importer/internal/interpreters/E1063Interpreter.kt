@@ -36,7 +36,7 @@ internal class E1063Interpreter internal constructor(
     override val regex: Regex,
 ) : ErrorCodeInterpreter {
     override val unformattedDescription = R.string.E1063
-    override fun companions(error: JobValidationError): List<String> {
+    override suspend fun companions(error: JobValidationError): List<String> {
         val trackedEntityTypeDisplayName = interpreterHelper.trackedEntityTypeDisplayName(
             interpreterHelper.trackedEntityInstance(error.uid).trackedEntityType()!!,
         )

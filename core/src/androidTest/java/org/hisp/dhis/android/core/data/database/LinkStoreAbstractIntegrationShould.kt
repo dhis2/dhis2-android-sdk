@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.data.database
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
@@ -55,7 +56,7 @@ abstract class LinkStoreAbstractIntegrationShould<M : CoreObject> internal const
     }
 
     @Test
-    fun delete_link_for_master_uid() {
+    fun delete_link_for_master_uid() = runTest {
         store.insert(`object`)
         store.deleteLinksForMasterUid(masterUid)
         val objectFromDb = store.selectFirst()
@@ -63,7 +64,7 @@ abstract class LinkStoreAbstractIntegrationShould<M : CoreObject> internal const
     }
 
     @Test
-    fun delete_links_for_master_should_delete_only_objects_with_the_master_key() {
+    fun delete_links_for_master_should_delete_only_objects_with_the_master_key() = runTest {
         store.insert(`object`)
         store.insert(objectWithOtherMasterUid)
         store.deleteLinksForMasterUid(masterUid)
@@ -72,7 +73,7 @@ abstract class LinkStoreAbstractIntegrationShould<M : CoreObject> internal const
     }
 
     @Test
-    fun select_links_for_master_should_select_only_objects_with_the_master_key() {
+    fun select_links_for_master_should_select_only_objects_with_the_master_key() = runTest {
         store.insert(`object`)
         store.insert(objectWithOtherMasterUid)
         val links = store.selectLinksForMasterUid(masterUid)

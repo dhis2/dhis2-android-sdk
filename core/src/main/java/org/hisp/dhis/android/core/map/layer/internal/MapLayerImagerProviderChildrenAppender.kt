@@ -36,7 +36,7 @@ internal class MapLayerImagerProviderChildrenAppender(
 ) : ChildrenAppender<MapLayer>() {
     private val mapLayerImageryProviderStore = MapLayerImageryProviderStoreImpl(databaseAdapter)
 
-    override fun appendChildren(mapLayer: MapLayer): MapLayer {
+    override suspend fun appendChildren(mapLayer: MapLayer): MapLayer {
         return mapLayer.toBuilder()
             .imageryProviders(mapLayerImageryProviderStore.selectLinksForMasterUid(mapLayer.uid()))
             .build()

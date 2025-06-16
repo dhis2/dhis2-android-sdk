@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.settings
 
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl
 import org.hisp.dhis.android.core.settings.internal.AnalyticsDhisVisualizationStore
@@ -41,18 +43,26 @@ class AnalyticsDhisVisualizationsSettingObjectRepository internal constructor(
 ) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<AnalyticsDhisVisualizationsSetting>(analyticsSettingCall),
     ReadOnlyWithDownloadObjectRepository<AnalyticsDhisVisualizationsSetting> {
     fun getByProgram(program: String?): Single<List<AnalyticsDhisVisualizationsGroup>> {
-        return Single.just(blockingGetByProgram(program))
+        return rxSingle { getByProgramInternal(program)!! }
     }
 
     fun blockingGetByProgram(program: String?): List<AnalyticsDhisVisualizationsGroup>? {
+        return runBlocking { getByProgramInternal(program) }
+    }
+
+    private suspend fun getByProgramInternal(program: String?): List<AnalyticsDhisVisualizationsGroup>? {
         return generateGroups(analyticsDhisVisualizationStore.selectAll()).program()[program]
     }
 
     fun getByDataSet(dataSet: String?): Single<List<AnalyticsDhisVisualizationsGroup>> {
-        return Single.just(blockingGetByProgram(dataSet))
+        return rxSingle { byDataSetInternal(dataSet)!! }
     }
 
     fun blockingByDataSet(dataSet: String?): List<AnalyticsDhisVisualizationsGroup>? {
+        return runBlocking { byDataSetInternal(dataSet) }
+    }
+
+    private suspend fun byDataSetInternal(dataSet: String?): List<AnalyticsDhisVisualizationsGroup>? {
         return generateGroups(analyticsDhisVisualizationStore.selectAll()).dataSet()[dataSet]
     }
 

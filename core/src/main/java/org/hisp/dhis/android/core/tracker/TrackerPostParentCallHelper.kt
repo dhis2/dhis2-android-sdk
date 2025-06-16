@@ -39,7 +39,7 @@ internal class TrackerPostParentCallHelper(
     private val synchronizationSettingStore: SynchronizationSettingStore,
 ) {
 
-    fun useNewTrackerImporter(): Boolean {
+    suspend fun useNewTrackerImporter(): Boolean {
         val explicitTrackerVersion = synchronizationSettingStore.selectFirst()?.trackerImporterVersion()
         return when {
             !dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_38) -> false
@@ -50,7 +50,7 @@ internal class TrackerPostParentCallHelper(
         }
     }
 
-    fun useNewTrackerExporter(): Boolean {
+    suspend fun useNewTrackerExporter(): Boolean {
         val explicitTrackerVersion = synchronizationSettingStore.selectFirst()?.trackerExporterVersion()
         return when {
             !dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_40) -> false

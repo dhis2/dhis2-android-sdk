@@ -43,7 +43,7 @@ internal class EventPostParentCall internal constructor(
     private val trackerParentCallHelper: TrackerPostParentCallHelper,
 ) {
 
-    fun uploadEvents(events: List<Event>): Observable<D2Progress> {
+    suspend fun uploadEvents(events: List<Event>): Observable<D2Progress> {
         return if (events.isEmpty()) {
             Observable.empty()
         } else {

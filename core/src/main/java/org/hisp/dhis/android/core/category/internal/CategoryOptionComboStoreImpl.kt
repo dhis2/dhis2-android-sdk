@@ -41,7 +41,7 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 @Suppress("MagicNumber")
-internal class CategoryOptionComboStoreImpl constructor(
+internal class CategoryOptionComboStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : CategoryOptionComboStore,
     IdentifiableObjectStoreImpl<CategoryOptionCombo>(
@@ -51,7 +51,7 @@ internal class CategoryOptionComboStoreImpl constructor(
         { cursor: Cursor -> CategoryOptionCombo.create(cursor) },
     ) {
 
-    override fun getForCategoryCombo(categoryComboUid: String): List<CategoryOptionCombo> {
+    override suspend fun getForCategoryCombo(categoryComboUid: String): List<CategoryOptionCombo> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(CategoryOptionComboTableInfo.Columns.CATEGORY_COMBO, categoryComboUid)
             .build()

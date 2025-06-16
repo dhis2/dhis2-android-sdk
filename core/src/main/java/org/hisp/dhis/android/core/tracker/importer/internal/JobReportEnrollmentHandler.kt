@@ -49,7 +49,7 @@ internal class JobReportEnrollmentHandler internal constructor(
     relationshipStore: RelationshipStore,
 ) : JobReportTypeHandler(relationshipStore) {
 
-    fun handleEnrollmentNotes(enrollmentUid: String, state: State) {
+    suspend fun handleEnrollmentNotes(enrollmentUid: String, state: State) {
         val newNoteState = if (state == State.SYNCED) State.SYNCED else State.TO_POST
         val whereClause = WhereClauseBuilder()
             .appendInKeyStringValues(
@@ -62,7 +62,7 @@ internal class JobReportEnrollmentHandler internal constructor(
         }
     }
 
-    override fun handleObject(uid: String, state: State): HandleAction {
+    override suspend fun handleObject(uid: String, state: State): HandleAction {
         conflictStore.deleteEnrollmentConflicts(uid)
         val handleAction = enrollmentStore.setSyncStateOrDelete(uid, state)
 
@@ -73,7 +73,7 @@ internal class JobReportEnrollmentHandler internal constructor(
         return handleAction
     }
 
-    override fun storeConflict(errorReport: JobValidationError) {
+    override suspend fun storeConflict(errorReport: JobValidationError) {
         enrollmentStore.selectByUid(errorReport.uid)?.let { enrollment ->
             if (errorReport.errorCode == ImporterError.E1081.name && enrollment.deleted() == true) {
                 enrollmentStore.delete(enrollment.uid())

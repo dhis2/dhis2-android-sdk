@@ -75,7 +75,7 @@ internal class AggregatedDataCall(
         progressManager: AggregatedD2ProgressManager,
     ): Flow<AggregatedD2Progress> {
         return flow {
-            val bundles = aggregatedDataCallBundleFactory.bundles
+            val bundles = aggregatedDataCallBundleFactory.bundles()
             val dataSets = bundles.flatMap { it.dataSets }.mapNotNull { it.uid() }
 
             progressManager.setTotalCalls(bundles.size + 2)
@@ -130,7 +130,7 @@ internal class AggregatedDataCall(
         return dsCompleteRegistrationCall.download(completeRegistrationQuery)
     }
 
-    private fun updateAggregatedDataSync(
+    private suspend fun updateAggregatedDataSync(
         bundle: AggregatedDataCallBundle,
     ) {
         for (dataSet in bundle.dataSets) {
@@ -169,7 +169,7 @@ internal class AggregatedDataCall(
         }
     }
 
-    private fun getAttributeOptionCombosUidsFrom(dataSetsWithWorkflow: Collection<DataSet>): Set<String> {
+    private suspend fun getAttributeOptionCombosUidsFrom(dataSetsWithWorkflow: Collection<DataSet>): Set<String> {
         val categoryComboUids = dataSetsWithWorkflow.mapNotNull { it.categoryCombo()?.uid() }.toSet()
 
         val whereClause = WhereClauseBuilder()

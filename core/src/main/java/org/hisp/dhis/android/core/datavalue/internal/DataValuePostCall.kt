@@ -87,7 +87,7 @@ internal class DataValuePostCall(
         }
     }
 
-    private fun markObjectsAs(dataValues: Collection<DataValue>, forcedState: State?) {
+    private suspend fun markObjectsAs(dataValues: Collection<DataValue>, forcedState: State?) {
         for (dataValue in dataValues) {
             dataValueStore.setState(dataValue, forcedOrOwn(dataValue, forcedState))
         }

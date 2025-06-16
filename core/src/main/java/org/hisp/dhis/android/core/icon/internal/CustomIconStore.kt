@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.icon.CustomIcon
 
 internal interface CustomIconStore : ObjectWithoutUidStore<CustomIcon> {
-    fun selectByKey(key: String): CustomIcon?
+    suspend fun selectByKey(key: String): CustomIcon?
 }

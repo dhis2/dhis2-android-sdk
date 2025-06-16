@@ -32,6 +32,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.dataelement.DataElement
 
 internal interface DataElementStore : IdentifiableObjectStore<DataElement> {
-    fun getForSection(sectionUid: String): List<DataElement>
-    fun getForProgramStageSection(programStageSection: String): List<DataElement>
+    suspend fun getForSection(sectionUid: String): List<DataElement>
+    suspend fun getForProgramStageSection(programStageSection: String): List<DataElement>
 }

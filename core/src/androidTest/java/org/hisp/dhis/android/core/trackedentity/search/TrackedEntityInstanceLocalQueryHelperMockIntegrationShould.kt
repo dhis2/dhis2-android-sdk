@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
@@ -50,7 +51,7 @@ class TrackedEntityInstanceLocalQueryHelperMockIntegrationShould : BaseMockInteg
     private val localQueryHelper = TrackedEntityInstanceLocalQueryHelper(periodHelper)
 
     @Test
-    fun should_generate_valid_sql_queries() {
+    fun should_generate_valid_sql_queries() = runTest {
         val scope = TrackedEntityInstanceQueryRepositoryScope.builder()
             .program("programUid")
             .programStage("programStageUid")

@@ -33,13 +33,13 @@ import org.hisp.dhis.android.core.enrollment.Enrollment
 
 internal interface EnrollmentStore : IdentifiableDeletableDataObjectStore<Enrollment> {
 
-    fun queryEnrollmentsToPost(): Map<String, List<Enrollment>>
+    suspend fun queryEnrollmentsToPost(): Map<String, List<Enrollment>>
 
-    fun queryMissingRelationshipsUids(): List<String>
+    suspend fun queryMissingRelationshipsUids(): List<String>
 
-    fun setAggregatedSyncState(uid: String, state: State): Int
+    suspend fun setAggregatedSyncState(uid: String, state: State): Int
 
-    fun selectAggregatedSyncStateWhere(whereClause: String): List<State>
+    suspend fun selectAggregatedSyncStateWhere(whereClause: String): List<State>
 
-    fun selectByTrackedEntityInstanceAndAttribute(teiUid: String, attributeUid: String): List<Enrollment>
+    suspend fun selectByTrackedEntityInstanceAndAttribute(teiUid: String, attributeUid: String): List<Enrollment>
 }

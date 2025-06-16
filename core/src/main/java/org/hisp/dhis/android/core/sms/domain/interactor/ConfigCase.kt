@@ -31,6 +31,7 @@ import android.util.Log
 import io.reactivex.Completable
 import io.reactivex.Single
 import kotlinx.coroutines.rx2.rxCompletable
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository.GetMetadataIdsConfig
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository
@@ -46,7 +47,7 @@ class ConfigCase(
 
     fun getSmsModuleConfig(): Single<SmsConfig> {
         return Single.zip(
-            localDbRepository.isModuleEnabled(),
+            rxSingle { localDbRepository.isModuleEnabledSuspend() },
             localDbRepository.getGatewayNumber(),
             localDbRepository.getWaitingForResultEnabled(),
             localDbRepository.getConfirmationSenderNumber(),
@@ -142,14 +143,6 @@ class ConfigCase(
     }
 
     /**
-     * Get the metadata download configuration.
-     * @return `Single with the` metadata download configuration.
-     */
-    fun getMetadataDownloadConfig(): Single<GetMetadataIdsConfig> {
-        return localDbRepository.getMetadataDownloadConfig()
-    }
-
-    /**
      * Method to download metadata ids. This is required before using the SMS module.
      */
     fun refreshMetadataIds(): Completable {
@@ -159,18 +152,18 @@ class ConfigCase(
     }
 
     private suspend fun refreshMetadataIdsCoroutines() {
-        val enabled = localDbRepository.isModuleEnabled().blockingGet()
+        val enabled = localDbRepository.isModuleEnabledSuspend()
 
         if (enabled) {
             val config = try {
-                getMetadataDownloadConfig().blockingGet()
+                localDbRepository.getMetadataDownloadConfig()
             } catch (ignored: Exception) {
                 Log.d(TAG, "Can't read saved SMS metadata download config. Using default.")
                 getDefaultMetadataDownloadConfig()
             }
 
             val metadata = webApiRepository.getMetadataIds(config)
-            localDbRepository.setMetadataIds(metadata).blockingAwait()
+            localDbRepository.setMetadataIds(metadata)
         } else {
             Log.d(TAG, "Not refreshing SMS metadata, because sms module is disabled")
         }

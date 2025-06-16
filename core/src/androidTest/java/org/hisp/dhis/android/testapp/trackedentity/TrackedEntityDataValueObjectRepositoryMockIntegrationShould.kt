@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.testapp.trackedentity
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
@@ -45,12 +46,12 @@ class TrackedEntityDataValueObjectRepositoryMockIntegrationShould : BaseMockInte
     private val sampleDataElement = "bx6fsa0t90x"
 
     @Before
-    fun setup() {
+    fun setup() = runTest {
         hardDeleteDataValue()
     }
 
     @After
-    fun tearDown() {
+    fun tearDown() = runTest {
         hardDeleteDataValue()
     }
 
@@ -71,7 +72,7 @@ class TrackedEntityDataValueObjectRepositoryMockIntegrationShould : BaseMockInte
     }
 
     @Test
-    fun update_value() {
+    fun update_value() = runTest {
         val value1 = "new_value"
         val value2 = "other_value"
 
@@ -141,7 +142,7 @@ class TrackedEntityDataValueObjectRepositoryMockIntegrationShould : BaseMockInte
             .value(sampleEvent, sampleDataElement)
     }
 
-    private fun hardDeleteDataValue() {
+    private suspend fun hardDeleteDataValue() {
         val store: TrackedEntityDataValueStore = TrackedEntityDataValueStoreImpl(databaseAdapter)
 
         store.deleteWhereIfExists(
@@ -152,7 +153,7 @@ class TrackedEntityDataValueObjectRepositoryMockIntegrationShould : BaseMockInte
         )
     }
 
-    private fun setDataValueStateToError(value: TrackedEntityDataValue) {
+    private suspend fun setDataValueStateToError(value: TrackedEntityDataValue) {
         val store: TrackedEntityDataValueStore = TrackedEntityDataValueStoreImpl(databaseAdapter)
         store.updateWhere(value.toBuilder().syncState(State.ERROR).build())
     }

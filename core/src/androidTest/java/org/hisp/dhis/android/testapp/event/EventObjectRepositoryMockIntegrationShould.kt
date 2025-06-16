@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.testapp.event
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStoreImpl
 import org.hisp.dhis.android.core.common.FeatureType
@@ -46,7 +47,7 @@ import java.util.Date
 
 class EventObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    fun update_organisation_unit() {
+    fun update_organisation_unit() = runTest {
         val orgUnitUid = "new_org_unit"
         OrganisationUnitStoreImpl(databaseAdapter).insert(
             OrganisationUnit.builder().uid(orgUnitUid).build(),
@@ -183,7 +184,7 @@ class EventObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDi
     }
 
     @Test
-    fun update_attribute_option_combo() {
+    fun update_attribute_option_combo() = runTest {
         val attributeOptionCombo = "new_att_opt_comb"
         CategoryOptionComboStoreImpl(databaseAdapter)
             .insert(CategoryOptionCombo.builder().uid(attributeOptionCombo).build())

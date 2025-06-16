@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 internal class TrackedEntityTypeAttributeChildrenAppender private constructor(
     private val childStore: TrackedEntityTypeAttributeStore,
 ) : ChildrenAppender<TrackedEntityType>() {
-    override fun appendChildren(m: TrackedEntityType): TrackedEntityType {
+    override suspend fun appendChildren(m: TrackedEntityType): TrackedEntityType {
         val children = childStore.getForTrackedEntityType(m.uid())
         return m.toBuilder().trackedEntityTypeAttributes(children).build()
     }

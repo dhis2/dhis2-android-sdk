@@ -68,7 +68,7 @@ internal class TrackerImporterProgramOwnerPostCall(
         emit(progressManager.increaseProgress(ProgramOwner::class.java, false))
     }
 
-    private fun selectWhere(o: ProgramOwner): ProgramOwner? {
+    private suspend fun selectWhere(o: ProgramOwner): ProgramOwner? {
         val selectWhere = WhereClauseBuilder()
             .appendKeyStringValue(ProgramOwnerTableInfo.Columns.PROGRAM, o.program())
             .appendKeyStringValue(ProgramOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE, o.trackedEntityInstance())

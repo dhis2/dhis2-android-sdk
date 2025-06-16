@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.arch.db.stores.internal
 
 import android.database.Cursor
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
@@ -71,10 +73,10 @@ internal open class ObjectWithoutUidStoreImpl<O : CoreObject>(
     private var updateWhereStatement: StatementWrapper? = null
     private var deleteWhereStatement: StatementWrapper? = null
     private var adapterHashCode: Int? = null
+    private val upsertMutex = Mutex()
 
     @Throws(RuntimeException::class)
-    @Synchronized
-    override fun updateWhere(o: O) {
+    override suspend fun updateWhere(o: O) {
         CollectionsHelper.isNull(o)
         compileStatements()
         binder.bindToStatement(o, updateWhereStatement!!)
@@ -106,7 +108,7 @@ internal open class ObjectWithoutUidStoreImpl<O : CoreObject>(
     }
 
     @Throws(RuntimeException::class)
-    override fun deleteWhere(o: O) {
+    override suspend fun deleteWhere(o: O) {
         CollectionsHelper.isNull(o)
         compileStatements()
         whereDeleteBinder.bindWhereStatement(o, deleteWhereStatement!!)
@@ -115,7 +117,7 @@ internal open class ObjectWithoutUidStoreImpl<O : CoreObject>(
 
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionCaught")
-    override fun deleteWhereIfExists(o: O) {
+    override suspend fun deleteWhereIfExists(o: O) {
         try {
             deleteWhere(o)
         } catch (e: RuntimeException) {
@@ -127,9 +129,8 @@ internal open class ObjectWithoutUidStoreImpl<O : CoreObject>(
 
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionCaught")
-    @Synchronized
-    override fun updateOrInsertWhere(o: O): HandleAction {
-        return try {
+    override suspend fun updateOrInsertWhere(o: O): HandleAction = upsertMutex.withLock {
+        try {
             updateWhere(o)
             HandleAction.Update
         } catch (e: Exception) {

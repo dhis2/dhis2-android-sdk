@@ -35,7 +35,7 @@ internal class ProgramStageWorkingListDataFilterChildrenAppender private constru
     private val childStore: ProgramStageWorkingListEventDataFilterStore,
 ) : ChildrenAppender<ProgramStageWorkingList>() {
 
-    override fun appendChildren(m: ProgramStageWorkingList): ProgramStageWorkingList {
+    override suspend fun appendChildren(m: ProgramStageWorkingList): ProgramStageWorkingList {
         val children = childStore.getForProgramStageWorkingList(m.uid())
             .filter { it.dataItem() != null }
         val queryCriteria = m.programStageQueryCriteria()?.toBuilder()

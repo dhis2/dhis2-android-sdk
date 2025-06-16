@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.testapp.enrollment
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.Geometry
 import org.hisp.dhis.android.core.common.IdentifiableColumns
@@ -48,7 +49,7 @@ import java.util.Date
 
 class EnrollmentObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    fun update_organisation_unit() {
+    fun update_organisation_unit() = runTest {
         val orgUnitUid = "new_org_unit"
         OrganisationUnitStoreImpl(databaseAdapter).insert(OrganisationUnit.builder().uid(orgUnitUid).build())
 

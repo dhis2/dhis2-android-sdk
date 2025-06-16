@@ -28,8 +28,9 @@
 package org.hisp.dhis.android.core.data.database
 
 import com.google.common.truth.Truth.assertThat
-import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.rx2.rxSingle
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
@@ -53,7 +54,7 @@ abstract class ObjectWithoutUidStoreAbstractIntegrationShould<M : CoreObject> in
     }
 
     @Test
-    fun insert_and_update_where() {
+    fun insert_and_update_where() = runTest {
         store.insert(`object`)
         store.updateWhere(objectToUpdate)
         val objectFromDb = store.selectFirst()
@@ -61,7 +62,7 @@ abstract class ObjectWithoutUidStoreAbstractIntegrationShould<M : CoreObject> in
     }
 
     @Test
-    fun insert_and_delete_where() {
+    fun insert_and_delete_where() = runTest {
         store.insert(`object`)
         assertThat(store.count()).isEqualTo(1)
         store.deleteWhere(`object`)
@@ -69,7 +70,7 @@ abstract class ObjectWithoutUidStoreAbstractIntegrationShould<M : CoreObject> in
     }
 
     @Test
-    fun update_when_call_update_or_insert_where_and_there_is_a_previous_object() {
+    fun update_when_call_update_or_insert_where_and_there_is_a_previous_object() = runTest {
         store.insert(`object`)
         val handleAction = store.updateOrInsertWhere(objectToUpdate)
         assertThat(handleAction).isEqualTo(HandleAction.Update)
@@ -78,7 +79,7 @@ abstract class ObjectWithoutUidStoreAbstractIntegrationShould<M : CoreObject> in
     }
 
     @Test
-    fun insert_when_call_update_or_insert_where_and_there_is_no_previous_object() {
+    fun insert_when_call_update_or_insert_where_and_there_is_no_previous_object() = runTest {
         val handleAction = store.updateOrInsertWhere(objectToUpdate)
         assertThat(handleAction).isEqualTo(HandleAction.Insert)
         val objectFromDb = store.selectFirst()
@@ -86,9 +87,9 @@ abstract class ObjectWithoutUidStoreAbstractIntegrationShould<M : CoreObject> in
     }
 
     @Test
-    fun insert_same_object_simultaneously_and_transactionally() {
-        val s1 = Single.fromCallable { store.updateOrInsertWhere(`object`) }.subscribeOn(Schedulers.io())
-        val s2 = Single.fromCallable { store.updateOrInsertWhere(`object`) }.subscribeOn(Schedulers.io())
+    fun insert_same_object_simultaneously_and_transactionally() = runTest {
+        val s1 = rxSingle { store.updateOrInsertWhere(`object`) }.subscribeOn(Schedulers.io())
+        val s2 = rxSingle { store.updateOrInsertWhere(`object`) }.subscribeOn(Schedulers.io())
 
         s1.mergeWith(s2).blockingSubscribe()
 

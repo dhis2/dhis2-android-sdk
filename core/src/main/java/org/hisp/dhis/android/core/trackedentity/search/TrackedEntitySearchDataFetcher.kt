@@ -95,11 +95,11 @@ internal class TrackedEntitySearchDataFetcher(
         return instanceFetcher.queryAllOfflineUids()
     }
 
-    fun queryAllOnline(): List<Result<TrackedEntitySearchItem, D2Error>> {
+    suspend fun queryAllOnline(): List<Result<TrackedEntitySearchItem, D2Error>> {
         return transform(instanceFetcher.queryAllOnline())
     }
 
-    private fun transform(
+    private suspend fun transform(
         list: List<Result<TrackedEntityInstance, D2Error>>,
     ): List<Result<TrackedEntitySearchItem, D2Error>> {
         return list.map { itemResult ->
@@ -136,7 +136,7 @@ internal class TrackedEntitySearchDataFetcher(
         }
     }
 
-    private fun evaluateHeader(item: TrackedEntityInstance): String? {
+    private suspend fun evaluateHeader(item: TrackedEntityInstance): String? {
         return headerExpression?.let {
             helper.evaluateHeaderExpression(it, item)
         }

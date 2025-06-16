@@ -47,7 +47,7 @@ internal abstract class TrackerQueryFactory<T, S : TrackerBaseSync> constructor(
 ) {
 
     @Suppress("NestedBlockDepth")
-    fun getQueries(params: ProgramDataDownloadParams): List<T> {
+    suspend fun getQueries(params: ProgramDataDownloadParams): List<T> {
         val programSettings = programSettingsObjectRepository.blockingGet()
         val internalFactory = internalFactoryCreator.invoke(params, programSettings)
         lastUpdatedManager.prepare(programSettings, params)

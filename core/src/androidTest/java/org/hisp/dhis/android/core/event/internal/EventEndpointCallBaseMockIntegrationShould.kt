@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.event.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
@@ -51,7 +52,7 @@ abstract class EventEndpointCallBaseMockIntegrationShould : BaseMockIntegrationT
     private val syncStore = SynchronizationSettingStoreImpl(databaseAdapter)
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         initSyncParams = syncStore.selectFirst()!!
         val testParams = initSyncParams.toBuilder().trackerImporterVersion(importerVersion)
             .trackerExporterVersion(exporterVersion).build()
@@ -60,7 +61,7 @@ abstract class EventEndpointCallBaseMockIntegrationShould : BaseMockIntegrationT
     }
 
     @After
-    fun tearDown() {
+    fun tearDown() = runTest {
         d2.wipeModule().wipeData()
         syncStore.delete()
         syncStore.insert(initSyncParams)
@@ -89,7 +90,7 @@ abstract class EventEndpointCallBaseMockIntegrationShould : BaseMockIntegrationT
         assertThat(d2.eventModule().events().blockingCount()).isEqualTo(2)
     }
 
-    private fun checkOverwrite(state: State, finalStatus: EventStatus) {
+    private suspend fun checkOverwrite(state: State, finalStatus: EventStatus) {
         enqueue(events1File)
         d2.eventModule().eventDownloader().blockingDownload()
 
@@ -113,22 +114,22 @@ abstract class EventEndpointCallBaseMockIntegrationShould : BaseMockIntegrationT
     }
 
     @Test
-    fun overwrite_when_state_sync() {
+    fun overwrite_when_state_sync() = runTest {
         checkOverwrite(State.SYNCED, EventStatus.COMPLETED)
     }
 
     @Test
-    fun not_overwrite_when_state_to_post() {
+    fun not_overwrite_when_state_to_post() = runTest {
         checkOverwrite(State.TO_POST, EventStatus.SKIPPED)
     }
 
     @Test
-    fun not_overwrite_when_state_error() {
+    fun not_overwrite_when_state_error() = runTest {
         checkOverwrite(State.ERROR, EventStatus.SKIPPED)
     }
 
     @Test
-    fun not_overwrite_when_state_to_update() {
+    fun not_overwrite_when_state_to_update() = runTest {
         checkOverwrite(State.TO_UPDATE, EventStatus.SKIPPED)
     }
 

@@ -71,7 +71,7 @@ class WipeDBCallRealIntegrationShould : BaseRealIntegrationTest() {
 
     // @Test
     @Throws(Exception::class)
-    fun do_not_have_data_when_wipe_data_after_sync() {
+    fun do_not_have_data_when_wipe_data_after_sync() = runTest {
         d2.userModule().logIn(username, password, url).blockingGet()
         d2.metadataModule().blockingDownload()
         d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(5).blockingDownload()

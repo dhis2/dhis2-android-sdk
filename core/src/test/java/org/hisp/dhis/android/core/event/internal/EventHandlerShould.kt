@@ -71,17 +71,19 @@ class EventHandlerShould {
     private lateinit var eventHandler: EventHandler
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         whenever(event.uid()).doReturn("test_event_uid")
         whenever(event.notes()).doReturn(listOf(note))
         whenever(event.organisationUnit()).doReturn("org_unit_uid")
         whenever(event.status()).doReturn(EventStatus.SCHEDULE)
         whenever(event.trackedEntityDataValues()).doReturn(listOf(trackedEntityDataValue))
         whenever(eventStore.updateOrInsert(any())).doReturn(HandleAction.Insert)
+        whenever(eventStore.selectUidsWhere(any())).doReturn(listOf("test_event_uid"))
         whenever(event.toBuilder()).doReturn(eventBuilder)
         whenever(eventBuilder.syncState(State.SYNCED)).doReturn(eventBuilder)
         whenever(eventBuilder.aggregatedSyncState(State.SYNCED)).doReturn(eventBuilder)
         whenever(eventBuilder.build()).doReturn(event)
+        whenever(programStore.selectAll()).doReturn(emptyList())
 
         eventHandler = EventHandler(
             relationshipVersionManager,
@@ -133,6 +135,7 @@ class EventHandlerShould {
         whenever(eventStore.updateOrInsert(any())).doReturn(HandleAction.Insert)
         whenever(event.organisationUnit()).doReturn("org_unit_uid")
         whenever(event.status()).doReturn(EventStatus.SCHEDULE)
+        whenever(noteUniquenessManager.buildUniqueCollection(any(), any(), any())).doReturn(setOf(note))
 
         val params = IdentifiableDataHandlerParams(hasAllAttributes = false, overwrite = false, asRelationship = false)
         eventHandler.handleMany(listOf(event), params, relationshipItemRelatives)

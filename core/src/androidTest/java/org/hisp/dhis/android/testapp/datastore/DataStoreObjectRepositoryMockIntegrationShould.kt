@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.testapp.datastore
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
@@ -71,7 +72,7 @@ class DataStoreObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
     }
 
     @Test
-    fun set_state_to_delete_if_state_is_not_to_post() {
+    fun set_state_to_delete_if_state_is_not_to_post() = runTest {
         val repository = d2.dataStoreModule().dataStore()
             .value("new_namespace", "new_key")
         repository.blockingSet("value")
@@ -92,7 +93,7 @@ class DataStoreObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
     }
 
     @Test
-    fun set_not_deleted_when_updating_deleted_value() {
+    fun set_not_deleted_when_updating_deleted_value() = runTest {
         val repository = d2.dataStoreModule().dataStore()
             .value("new_namespace", "new_key")
         repository.blockingSet("value")

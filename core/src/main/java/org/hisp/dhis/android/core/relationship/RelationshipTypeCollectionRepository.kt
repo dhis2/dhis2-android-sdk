@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.relationship
 
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
@@ -100,7 +101,7 @@ class RelationshipTypeCollectionRepository internal constructor(
      * - or the TEI might be assigned to the TO component and the RelationshipType is bidirectional
      */
     fun byAvailableForTrackedEntityInstance(trackedEntityInstanceUid: String): RelationshipTypeCollectionRepository {
-        val trackedEntityInstance = teiStore.selectByUid(trackedEntityInstanceUid)
+        val trackedEntityInstance = runBlocking { teiStore.selectByUid(trackedEntityInstanceUid) }
         return cf.subQuery(IdentifiableColumns.UID).rawSubQuery(
             FilterItemOperator.IN,
             availableForTrackedEntityInstanceRawQuery(trackedEntityInstance),
@@ -113,7 +114,7 @@ class RelationshipTypeCollectionRepository internal constructor(
      * - or the enrollment might be assigned to the TO component and the RelationshipType is bidirectional
      */
     fun byAvailableForEnrollment(enrollmentUid: String): RelationshipTypeCollectionRepository {
-        val enrollment = enrollmentStore.selectByUid(enrollmentUid)
+        val enrollment = runBlocking { enrollmentStore.selectByUid(enrollmentUid) }
         return cf.subQuery(IdentifiableColumns.UID).rawSubQuery(
             FilterItemOperator.IN,
             availableForEnrollmentRawQuery(enrollment),
@@ -126,7 +127,7 @@ class RelationshipTypeCollectionRepository internal constructor(
      * - or the event might be assigned to the TO component and the RelationshipType is bidirectional
      */
     fun byAvailableForEvent(eventUid: String): RelationshipTypeCollectionRepository {
-        val event = eventStore.selectByUid(eventUid)
+        val event = runBlocking { eventStore.selectByUid(eventUid) }
         return cf.subQuery(IdentifiableColumns.UID).rawSubQuery(
             FilterItemOperator.IN,
             availableForEventRawQuery(event),

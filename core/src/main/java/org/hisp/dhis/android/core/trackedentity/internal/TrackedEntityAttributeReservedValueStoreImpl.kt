@@ -55,7 +55,7 @@ internal class TrackedEntityAttributeReservedValueStoreImpl(
         { cursor: Cursor -> TrackedEntityAttributeReservedValue.create(cursor) },
     ) {
 
-    override fun deleteExpired(serverDate: Date) {
+    override suspend fun deleteExpired(serverDate: Date) {
         val serverDateStr = "date('${DateUtils.DATE_FORMAT.format(serverDate)}')"
         super.deleteWhere(
             "${Columns.EXPIRY_DATE} < $serverDateStr OR " +
@@ -64,7 +64,7 @@ internal class TrackedEntityAttributeReservedValueStoreImpl(
         )
     }
 
-    override fun deleteIfOutdatedPattern(ownerUid: String, pattern: String) {
+    override suspend fun deleteIfOutdatedPattern(ownerUid: String, pattern: String) {
         val deleteWhereClause = WhereClauseBuilder()
             .appendKeyStringValue(Columns.OWNER_UID, ownerUid)
             .appendNotKeyStringValue(Columns.PATTERN, pattern)
@@ -72,11 +72,11 @@ internal class TrackedEntityAttributeReservedValueStoreImpl(
         super.deleteWhere(deleteWhereClause)
     }
 
-    override fun popOne(ownerUid: String, organisationUnitUid: String?): TrackedEntityAttributeReservedValue? {
+    override suspend fun popOne(ownerUid: String, organisationUnitUid: String?): TrackedEntityAttributeReservedValue? {
         return popOneWhere(where(ownerUid, organisationUnitUid, null))
     }
 
-    override fun count(ownerUid: String, organisationUnitUid: String?, pattern: String?): Int {
+    override suspend fun count(ownerUid: String, organisationUnitUid: String?, pattern: String?): Int {
         return countWhere(where(ownerUid, organisationUnitUid, pattern))
     }
 

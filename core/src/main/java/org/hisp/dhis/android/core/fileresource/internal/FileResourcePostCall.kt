@@ -128,14 +128,14 @@ internal class FileResourcePostCall(
         }
     }
 
-    private fun handleMissingFile(fileResource: FileResource, value: FileResourceValue) {
+    private suspend fun handleMissingFile(fileResource: FileResource, value: FileResourceValue) {
         if (fileResource.uid() != null) {
             updateValue(fileResource, null, value)
             fileResourceStore.deleteIfExists(fileResource.uid()!!)
         }
     }
 
-    private fun updateValue(
+    private suspend fun updateValue(
         fileResource: FileResource,
         newUid: String?,
         value: FileResourceValue,
@@ -149,7 +149,7 @@ internal class FileResourcePostCall(
         updateValueMethod(fileResource, newUid, value.uid)
     }
 
-    private fun updateAggregatedDataValue(fileResource: FileResource, newUid: String?, elementUid: String) {
+    private suspend fun updateAggregatedDataValue(fileResource: FileResource, newUid: String?, elementUid: String) {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(DataValueTableInfo.Columns.VALUE, fileResource.uid()!!)
             .appendKeyStringValue(DataValueTableInfo.Columns.DATA_ELEMENT, elementUid)
@@ -167,7 +167,7 @@ internal class FileResourcePostCall(
         }
     }
 
-    private fun updateTrackedEntityAttributeValue(
+    private suspend fun updateTrackedEntityAttributeValue(
         fileResource: FileResource,
         newUid: String?,
         elementUid: String,
@@ -187,7 +187,7 @@ internal class FileResourcePostCall(
         } ?: false
     }
 
-    private fun updateTrackedEntityDataValue(fileResource: FileResource, newUid: String?, elementUid: String) {
+    private suspend fun updateTrackedEntityDataValue(fileResource: FileResource, newUid: String?, elementUid: String) {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.VALUE, fileResource.uid()!!)
             .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT, elementUid)

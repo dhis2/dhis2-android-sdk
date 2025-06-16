@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramType
 
 internal interface ProgramStore : IdentifiableObjectStore<Program> {
-    fun getUidsByProgramType(programType: ProgramType): List<String>
+    suspend fun getUidsByProgramType(programType: ProgramType): List<String>
 }

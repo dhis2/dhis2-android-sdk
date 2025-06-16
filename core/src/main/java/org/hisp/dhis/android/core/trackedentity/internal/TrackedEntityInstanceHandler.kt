@@ -121,7 +121,7 @@ internal class TrackedEntityInstanceHandler(
         return o.toBuilder().aggregatedSyncState(State.SYNCED).syncState(State.SYNCED).build()
     }
 
-    private fun deleteOrphanAttributes(tei: TrackedEntityInstance, params: IdentifiableDataHandlerParams) {
+    private suspend fun deleteOrphanAttributes(tei: TrackedEntityInstance, params: IdentifiableDataHandlerParams) {
         tei.trackedEntityAttributeValues()?.let { attributes ->
             val attributeUids = attributes.mapNotNull { it.trackedEntityAttribute() }
 

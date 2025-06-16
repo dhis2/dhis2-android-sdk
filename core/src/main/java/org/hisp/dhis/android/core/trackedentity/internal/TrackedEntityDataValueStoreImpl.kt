@@ -59,7 +59,7 @@ internal class TrackedEntityDataValueStoreImpl(
         { cursor: Cursor -> TrackedEntityDataValue.create(cursor) },
     ) {
 
-    override fun deleteByEventAndNotInDataElements(
+    override suspend fun deleteByEventAndNotInDataElements(
         eventUid: String,
         dataElementUids: List<String>,
     ): Boolean {
@@ -70,14 +70,14 @@ internal class TrackedEntityDataValueStoreImpl(
         return deleteWhere(whereClause)
     }
 
-    override fun deleteByEvent(eventUid: String): Boolean {
+    override suspend fun deleteByEvent(eventUid: String): Boolean {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid)
             .build()
         return deleteWhere(whereClause)
     }
 
-    override fun queryTrackedEntityDataValuesByEventUid(eventUid: String): List<TrackedEntityDataValue> {
+    override suspend fun queryTrackedEntityDataValuesByEventUid(eventUid: String): List<TrackedEntityDataValue> {
         val whereClauseBuilder = WhereClauseBuilder()
             .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid)
         return selectWhere(whereClauseBuilder.build())
@@ -91,7 +91,7 @@ internal class TrackedEntityDataValueStoreImpl(
         return queryTrackedEntityDataValues(queryStatement)
     }
 
-    override fun removeDeletedDataValuesByEvent(eventUid: String) {
+    override suspend fun removeDeletedDataValuesByEvent(eventUid: String) {
         val deleteWhereQuery = WhereClauseBuilder()
             .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid)
             .appendIsNullValue(TrackedEntityAttributeValueTableInfo.Columns.VALUE)
@@ -99,7 +99,7 @@ internal class TrackedEntityDataValueStoreImpl(
         deleteWhere(deleteWhereQuery)
     }
 
-    override fun removeUnassignedDataValuesByEvent(eventUid: String) {
+    override suspend fun removeUnassignedDataValuesByEvent(eventUid: String) {
         val queryStatement = WhereClauseBuilder()
             .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid)
             .appendNotInSubQuery(
@@ -127,7 +127,7 @@ internal class TrackedEntityDataValueStoreImpl(
         return queryTrackedEntityDataValues(queryStatement)
     }
 
-    override fun queryToPostByEvent(eventUid: String): List<TrackedEntityDataValue> {
+    override suspend fun queryToPostByEvent(eventUid: String): List<TrackedEntityDataValue> {
         val queryStatement = WhereClauseBuilder()
             .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid)
             .appendInSubQuery(
@@ -153,7 +153,7 @@ internal class TrackedEntityDataValueStoreImpl(
         )
     }
 
-    override fun getForEvent(eventUid: String): List<TrackedEntityDataValue> {
+    override suspend fun getForEvent(eventUid: String): List<TrackedEntityDataValue> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid)
             .build()

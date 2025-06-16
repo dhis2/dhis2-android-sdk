@@ -44,6 +44,7 @@ import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.event.internal.EventStoreImpl
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleanerImpl
+import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyViolationStoreImpl
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl
 import org.hisp.dhis.android.core.program.internal.ProgramStageStoreImpl
 import org.hisp.dhis.android.core.program.internal.ProgramStore
@@ -79,7 +80,7 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
         d2.wipeModule().wipeData()
     }
 
-    protected fun storeTrackerData() {
+    protected suspend fun storeTrackerData() {
         val orgUnit = OrganisationUnitStoreImpl(databaseAdapter).selectFirst()!!
         val teiType = TrackedEntityTypeStoreImpl(databaseAdapter).selectFirst()!!
         val program = d2.programModule().programs().one().blockingGet()!!
@@ -207,7 +208,7 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
         teiDataValueStore.insert(singleEventDataValue)
     }
 
-    protected fun storeSimpleTrackedEntityInstance(teiUid: String, state: State) {
+    protected suspend fun storeSimpleTrackedEntityInstance(teiUid: String, state: State) {
         val orgUnit = OrganisationUnitStoreImpl(databaseAdapter).selectFirst()
         val teiType = TrackedEntityTypeStoreImpl(databaseAdapter).selectFirst()
         TrackedEntityInstanceStoreImpl(databaseAdapter).insert(
@@ -257,7 +258,8 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
                     .relationshipItemType(RelationshipConstraintType.TO)
                     .build(),
             )
-            ForeignKeyCleanerImpl.create(databaseAdapter).cleanForeignKeyErrors()
+            ForeignKeyCleanerImpl(databaseAdapter, ForeignKeyViolationStoreImpl(databaseAdapter))
+                .cleanForeignKeyErrors()
         }
     }
 

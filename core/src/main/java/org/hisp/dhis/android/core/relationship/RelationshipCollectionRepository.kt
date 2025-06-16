@@ -175,7 +175,7 @@ class RelationshipCollectionRepository internal constructor(
      * @return List of relationships
      */
     fun getByItem(searchItem: RelationshipItem): List<Relationship> {
-        return relationshipManager.getByItem(searchItem, includeDeleted = false, onlyAccessible = true)
+        return relationshipManager.blockingGetByItem(searchItem, includeDeleted = false, onlyAccessible = true)
     }
 
     /**
@@ -186,7 +186,7 @@ class RelationshipCollectionRepository internal constructor(
      * @return List of relationships
      */
     fun getByItem(searchItem: RelationshipItem, includeDeleted: Boolean): List<Relationship> {
-        return relationshipManager.getByItem(searchItem, includeDeleted, true)
+        return relationshipManager.blockingGetByItem(searchItem, includeDeleted, true)
     }
 
     /**
@@ -202,7 +202,7 @@ class RelationshipCollectionRepository internal constructor(
         includeDeleted: Boolean,
         onlyAccessible: Boolean,
     ): List<Relationship> {
-        return relationshipManager.getByItem(searchItem, includeDeleted, onlyAccessible)
+        return relationshipManager.blockingGetByItem(searchItem, includeDeleted, onlyAccessible)
     }
 
     /**

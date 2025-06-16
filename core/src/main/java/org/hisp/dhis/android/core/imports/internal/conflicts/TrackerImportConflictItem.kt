@@ -38,7 +38,7 @@ internal interface TrackerImportConflictItem {
     fun getEnrollment(conflict: ImportConflict): String? { return null }
     fun getTrackedEntityInstance(conflict: ImportConflict): String? { return null }
     fun getFileResource(conflict: ImportConflict): String? { return null }
-    fun getDisplayDescription(
+    suspend fun getDisplayDescription(
         conflict: ImportConflict,
         context: TrackerImportConflictItemContext,
     ): String

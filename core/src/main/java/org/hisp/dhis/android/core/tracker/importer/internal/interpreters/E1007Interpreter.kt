@@ -35,7 +35,7 @@ internal class E1007Interpreter internal constructor(
     override val regex: Regex,
 ) : ErrorCodeInterpreter {
     override val unformattedDescription = R.string.E1007
-    override fun companions(error: JobValidationError): List<String> {
+    override suspend fun companions(error: JobValidationError): List<String> {
         val groupValues = regex.find(error.message)!!.groupValues
         return listOf(groupValues[1], groupValues[2])
     }

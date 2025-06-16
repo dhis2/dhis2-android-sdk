@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.testapp.trackedentity.search
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
 import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStoreImpl
 import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
@@ -53,7 +54,7 @@ abstract class TrackedEntityOnlineQueryCollectionRepositoryBaseIntegrationShould
     private val syncStore = SynchronizationSettingStoreImpl(databaseAdapter)
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         initSyncParams = syncStore.selectFirst()!!
         val testParams = initSyncParams.toBuilder().trackerImporterVersion(importerVersion)
             .trackerExporterVersion(exporterVersion).build()
@@ -62,7 +63,7 @@ abstract class TrackedEntityOnlineQueryCollectionRepositoryBaseIntegrationShould
     }
 
     @After
-    fun tearDown() {
+    fun tearDown() = runTest {
         d2.wipeModule().wipeData()
         syncStore.delete()
         syncStore.insert(initSyncParams)

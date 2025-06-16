@@ -332,7 +332,7 @@ internal abstract class IndicatorEvaluatorIntegrationBaseShould : BaseEvaluatorI
         )
     }
 
-    private fun createIndicator(
+    private suspend fun createIndicator(
         numerator: String? = "1",
         denominator: String? = "1",
         decimals: Int? = null,

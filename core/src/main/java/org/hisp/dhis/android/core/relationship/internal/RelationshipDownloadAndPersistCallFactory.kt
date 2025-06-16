@@ -141,7 +141,7 @@ internal class RelationshipDownloadAndPersistCallFactory(
         cleanFailedRelationships(failedTeis, RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE)
     }
 
-    private fun cleanFailedRelationships(failedTeis: List<String>, elementType: String) {
+    private suspend fun cleanFailedRelationships(failedTeis: List<String>, elementType: String) {
         val corruptedRelationships: MutableList<Relationship> = mutableListOf()
         for (uid in failedTeis) {
             val builder = RelationshipItem.builder()
@@ -168,7 +168,7 @@ internal class RelationshipDownloadAndPersistCallFactory(
         }
     }
 
-    private fun itemDoesNotExist(item: RelationshipItemRelative): Boolean {
+    private suspend fun itemDoesNotExist(item: RelationshipItemRelative): Boolean {
         return !relationshipItemStoreSelector.getElementStore(item).exists(item.itemUid)
     }
 }

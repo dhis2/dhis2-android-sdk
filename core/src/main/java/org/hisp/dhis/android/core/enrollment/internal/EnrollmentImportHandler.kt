@@ -121,7 +121,7 @@ internal class EnrollmentImportHandler(
         } ?: TEIWebResponseHandlerSummary()
     }
 
-    private fun storeEnrollmentImportConflicts(
+    private suspend fun storeEnrollmentImportConflicts(
         enrollmentImportSummary: EnrollmentImportSummary,
         teiUid: String,
     ) {

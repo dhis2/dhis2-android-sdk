@@ -31,16 +31,16 @@ import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
 
 @Suppress("TooManyFunctions")
 interface ReadableStore<O> {
-    fun selectAll(): List<O>
-    fun selectWhere(whereClause: String): List<O>
-    fun selectWhere(filterWhereClause: String, orderByClause: String?): List<O>
-    fun selectWhere(filterWhereClause: String, orderByClause: String?, limit: Int): List<O>
-    fun selectWhere(filterWhereClause: String, orderByClause: String?, limit: Int, offset: Int?): List<O>
-    fun selectOneOrderedBy(orderingColumName: String, orderingType: SQLOrderType): O?
-    fun selectRawQuery(sqlRawQuery: String): List<O>
-    fun selectOneWhere(whereClause: String): O?
-    fun selectFirst(): O?
-    fun count(): Int
-    fun countWhere(whereClause: String): Int
-    fun groupAndGetCountBy(column: String): Map<String, Int>
+    suspend fun selectAll(): List<O>
+    suspend fun selectWhere(whereClause: String): List<O>
+    suspend fun selectWhere(filterWhereClause: String, orderByClause: String?): List<O>
+    suspend fun selectWhere(filterWhereClause: String, orderByClause: String?, limit: Int): List<O>
+    suspend fun selectWhere(filterWhereClause: String, orderByClause: String?, limit: Int, offset: Int?): List<O>
+    suspend fun selectOneOrderedBy(orderingColumName: String, orderingType: SQLOrderType): O?
+    suspend fun selectRawQuery(sqlRawQuery: String): List<O>
+    suspend fun selectOneWhere(whereClause: String): O?
+    suspend fun selectFirst(): O?
+    suspend fun count(): Int
+    suspend fun countWhere(whereClause: String): Int
+    suspend fun groupAndGetCountBy(column: String): Map<String, Int>
 }

@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.enrollment.Enrollment
 internal class NoteForEnrollmentChildrenAppender private constructor(
     private val childStore: NoteStore,
 ) : ChildrenAppender<Enrollment>() {
-    override fun appendChildren(m: Enrollment): Enrollment {
+    override suspend fun appendChildren(m: Enrollment): Enrollment {
         val children = childStore.getForEnrollment(m.uid())
         return m.toBuilder()
             .notes(children)

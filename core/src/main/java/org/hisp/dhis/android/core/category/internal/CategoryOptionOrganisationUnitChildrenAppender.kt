@@ -42,7 +42,7 @@ internal class CategoryOptionOrganisationUnitChildrenAppender private constructo
     private val childStore: LinkStore<CategoryOptionOrganisationUnitLink>,
 ) : ChildrenAppender<CategoryOption>() {
 
-    override fun appendChildren(categoryOption: CategoryOption): CategoryOption {
+    override suspend fun appendChildren(categoryOption: CategoryOption): CategoryOption {
         val builder = categoryOption.toBuilder()
         val whereClause = WhereClauseBuilder().apply {
             appendKeyStringValue(

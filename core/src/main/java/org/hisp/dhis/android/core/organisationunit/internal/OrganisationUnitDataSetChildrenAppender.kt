@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 internal class OrganisationUnitDataSetChildrenAppender private constructor(
     private val linkStore: DataSetOrganisationUnitLinkStore,
 ) : ChildrenAppender<OrganisationUnit>() {
-    override fun appendChildren(m: OrganisationUnit): OrganisationUnit {
+    override suspend fun appendChildren(m: OrganisationUnit): OrganisationUnit {
         return m.toBuilder()
             .dataSets(linkStore.getForOrganisationUnit(m.uid()))
             .build()

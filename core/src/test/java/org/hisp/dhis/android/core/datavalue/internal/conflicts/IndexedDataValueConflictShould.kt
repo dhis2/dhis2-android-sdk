@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.datavalue.internal.conflicts
 
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.internal.conflicts.DataValueImportConflictSamples.indexedImportConflict
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
@@ -47,7 +48,7 @@ internal class IndexedDataValueConflictShould {
     }
 
     @Test
-    fun `Should get data value conflicts right`() {
+    fun `Should get data value conflicts right`() = runTest {
         val result = indexedDataValueConflict.getDataValues(conflict, dataValues)
         assert(result.size == 2)
         assert(result[0].value() == "Replacement")
@@ -55,7 +56,7 @@ internal class IndexedDataValueConflictShould {
     }
 
     @Test
-    fun `Should return no data value conflicts`() {
+    fun `Should return no data value conflicts`() = runTest {
         val result = indexedDataValueConflict.getDataValues(
             conflict.toBuilder().indexes(emptyList()).build(),
             dataValues,

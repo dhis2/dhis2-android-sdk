@@ -58,7 +58,7 @@ internal class EventStoreImpl(
         { cursor: Cursor -> Event.create(cursor) },
     ) {
 
-    override fun queryEventsAttachedToEnrollmentToPost(): Map<String, List<Event>> {
+    override suspend fun queryEventsAttachedToEnrollmentToPost(): Map<String, List<Event>> {
         val eventsAttachedToEnrollmentsQuery = WhereClauseBuilder()
             .appendIsNotNullValue(EventTableInfo.Columns.ENROLLMENT)
             .appendInKeyStringValues(
@@ -70,7 +70,7 @@ internal class EventStoreImpl(
         return eventList.filter { it.enrollment() != null }.groupBy { it.enrollment()!! }
     }
 
-    override fun querySingleEventsToPost(): List<Event> {
+    override suspend fun querySingleEventsToPost(): List<Event> {
         val states = CollectionsHelper.commaAndSpaceSeparatedArrayValues(
             CollectionsHelper.withSingleQuotationMarksArray(asStringList(uploadableStatesIncludingError().toList())),
         )
@@ -79,11 +79,11 @@ internal class EventStoreImpl(
         return eventListFromQuery(singleEventsToPostQuery)
     }
 
-    override fun querySingleEvents(): List<Event> {
+    override suspend fun querySingleEvents(): List<Event> {
         return eventListFromQuery(QUERY_SINGLE_EVENTS)
     }
 
-    override fun queryOrderedForEnrollmentAndProgramStage(
+    override suspend fun queryOrderedForEnrollmentAndProgramStage(
         enrollmentUid: String,
         programStageUid: String,
         includeDeleted: Boolean,
@@ -100,7 +100,7 @@ internal class EventStoreImpl(
         return eventListFromQuery(query)
     }
 
-    override fun countEventsForEnrollment(enrollmentUid: String, includeDeleted: Boolean): Int {
+    override suspend fun countEventsForEnrollment(enrollmentUid: String, includeDeleted: Boolean): Int {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(EventTableInfo.Columns.ENROLLMENT, enrollmentUid)
         if (!includeDeleted) {
@@ -112,7 +112,7 @@ internal class EventStoreImpl(
         return events.size
     }
 
-    override fun countTeisWhereEvents(whereClause: String): Int {
+    override suspend fun countTeisWhereEvents(whereClause: String): Int {
         val query = "SELECT COUNT(DISTINCT a." + EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE + ") " +
             "FROM " + EnrollmentTableInfo.TABLE_INFO.name() + " a " +
             "INNER JOIN " +
@@ -122,7 +122,7 @@ internal class EventStoreImpl(
         return processCount(databaseAdapter.rawQuery(query))
     }
 
-    override fun queryMissingRelationshipsUids(): List<String> {
+    override suspend fun queryMissingRelationshipsUids(): List<String> {
         val whereRelationshipsClause = WhereClauseBuilder()
             .appendKeyStringValue(DataColumns.SYNC_STATE, State.RELATIONSHIP)
             .appendIsNullValue(EventTableInfo.Columns.ORGANISATION_UNIT)
@@ -130,7 +130,7 @@ internal class EventStoreImpl(
         return selectUidsWhere(whereRelationshipsClause)
     }
 
-    override fun setAggregatedSyncState(uid: String, state: State): Int {
+    override suspend fun setAggregatedSyncState(uid: String, state: State): Int {
         val updates = ContentValues()
         updates.put(DataColumns.AGGREGATED_SYNC_STATE, state.toString())
         val whereClause = WhereClauseBuilder()
@@ -140,7 +140,7 @@ internal class EventStoreImpl(
         return updateWhere(updates, whereClause)
     }
 
-    override fun selectAggregatedSyncStateWhere(whereClause: String): List<State> {
+    override suspend fun selectAggregatedSyncStateWhere(whereClause: String): List<State> {
         val statesStr = selectStringColumnsWhereClause(DataColumns.AGGREGATED_SYNC_STATE, whereClause)
 
         return statesStr.map { State.valueOf(it) }

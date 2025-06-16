@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.systeminfo.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISPatchVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
@@ -47,7 +48,7 @@ class DHISVersionManagerShould {
     private lateinit var dhisVersionManager: DHISVersionManager
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         whenever(systemInfoStore.selectFirst()).thenReturn(systemInfo)
         dhisVersionManager = DHISVersionManagerImpl(systemInfoStore)
     }

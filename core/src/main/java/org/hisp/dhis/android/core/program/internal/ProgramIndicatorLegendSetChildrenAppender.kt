@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.program.ProgramIndicator
 internal class ProgramIndicatorLegendSetChildrenAppender private constructor(
     private val linkStore: ProgramIndicatorLegendSetLinkStore,
 ) : ChildrenAppender<ProgramIndicator>() {
-    override fun appendChildren(m: ProgramIndicator): ProgramIndicator {
+    override suspend fun appendChildren(m: ProgramIndicator): ProgramIndicator {
         val legendSets = linkStore.getForProgramIndicator(m.uid())
         return m.toBuilder()
             .legendSets(legendSets)

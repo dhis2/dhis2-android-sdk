@@ -65,7 +65,7 @@ internal class TrackedEntityInstanceEventFilterStoreImpl(
         private val WHERE_DELETE_BINDER = WhereStatementBinder { _: TrackedEntityInstanceEventFilter, _ -> }
     }
 
-    override fun getForTrackedEntityInstanceFilter(
+    override suspend fun getForTrackedEntityInstanceFilter(
         trackedEntityInstanceFilterUid: String,
     ): List<TrackedEntityInstanceEventFilter> {
         val whereClause = WhereClauseBuilder()

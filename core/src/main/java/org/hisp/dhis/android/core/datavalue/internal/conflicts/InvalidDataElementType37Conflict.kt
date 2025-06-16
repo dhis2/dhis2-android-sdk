@@ -40,7 +40,7 @@ internal class InvalidDataElementType37Conflict(
     override val regex: Regex
         get() = Regex("Value must match data element's `(\\w{11})` type constraints:.*")
 
-    override fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict> {
+    override suspend fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict> {
         val foundDataValuesConflicts: MutableList<DataValueConflict> = ArrayList()
         val dataElementUid = regex.find(conflict.value())?.groupValues?.get(1)
         dataValues.forEach { dataValue ->

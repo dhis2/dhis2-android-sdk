@@ -52,7 +52,7 @@ import java.util.*
 
 open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: DatabaseAdapter) {
 
-    fun createTrackedEntity(teiUid: String, orgunitUid: String, teiTypeUid: String) {
+    suspend fun createTrackedEntity(teiUid: String, orgunitUid: String, teiTypeUid: String) {
         val teiStore = TrackedEntityInstanceStoreImpl(databaseAdapter)
         val trackedEntityInstance = TrackedEntityInstance.builder()
             .uid(teiUid)
@@ -64,7 +64,7 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         teiStore.insert(trackedEntityInstance)
     }
 
-    fun createEnrollment(
+    suspend fun createEnrollment(
         teiUid: String,
         enrollmentUid: String,
         programUid: String,
@@ -81,7 +81,7 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         EnrollmentStoreImpl(databaseAdapter).insert(enrollment)
     }
 
-    fun createEvent(
+    suspend fun createEvent(
         eventUid: String,
         programUid: String,
         programStageUid: String,
@@ -100,7 +100,7 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         EventStoreImpl(databaseAdapter).insert(event)
     }
 
-    fun createTrackerEvent(
+    suspend fun createTrackerEvent(
         eventUid: String,
         enrollmentUid: String,
         programUid: String,
@@ -128,7 +128,7 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         )
     }
 
-    fun createSingleEvent(
+    suspend fun createSingleEvent(
         eventUid: String,
         programUid: String,
         programStageUid: String,
@@ -151,7 +151,7 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         )
     }
 
-    fun setProgramIndicatorExpression(
+    suspend fun setProgramIndicatorExpression(
         programIndicatorUid: String,
         programUid: String,
         expression: String,
@@ -160,7 +160,7 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         insertProgramIndicator(programIndicatorUid, programUid, expression, AggregationType.AVERAGE, analyticsType)
     }
 
-    fun insertProgramIndicator(
+    suspend fun insertProgramIndicator(
         programIndicatorUid: String,
         programUid: String,
         expression: String,
@@ -178,11 +178,11 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         setProgramIndicator(programIndicator)
     }
 
-    fun setProgramIndicator(programIndicator: ProgramIndicator) {
+    suspend fun setProgramIndicator(programIndicator: ProgramIndicator) {
         ProgramIndicatorStoreImpl(databaseAdapter).updateOrInsert(programIndicator)
     }
 
-    fun insertTrackedEntityDataValue(eventUid: String, dataElementUid: String, value: String) {
+    suspend fun insertTrackedEntityDataValue(eventUid: String, dataElementUid: String, value: String) {
         val trackedEntityDataValue = TrackedEntityDataValue.builder()
             .event(eventUid)
             .dataElement(dataElementUid)
@@ -190,13 +190,13 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         TrackedEntityDataValueStoreImpl(databaseAdapter).updateOrInsertWhere(trackedEntityDataValue)
     }
 
-    fun insertTrackedEntityAttributeValue(teiUid: String, attributeUid: String, value: String) {
+    suspend fun insertTrackedEntityAttributeValue(teiUid: String, attributeUid: String, value: String) {
         val trackedEntityAttributeValue = TrackedEntityAttributeValue.builder()
             .value(value).trackedEntityAttribute(attributeUid).trackedEntityInstance(teiUid).build()
         TrackedEntityAttributeValueStoreImpl(databaseAdapter).updateOrInsertWhere(trackedEntityAttributeValue)
     }
 
-    fun createRelationship(typeUid: String, fromTei: String, toTei: String) {
+    suspend fun createRelationship(typeUid: String, fromTei: String, toTei: String) {
         val relationship = RelationshipHelper.teiToTeiRelationship(fromTei, toTei, typeUid)
 
         RelationshipStoreImpl(databaseAdapter).insert(relationship)

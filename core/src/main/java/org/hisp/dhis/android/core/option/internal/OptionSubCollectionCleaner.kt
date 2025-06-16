@@ -41,9 +41,5 @@ internal class OptionSubCollectionCleaner(
     tableName = OptionTableInfo.TABLE_INFO.name(),
     parentColumn = OptionTableInfo.Columns.OPTION_SET,
     databaseAdapter = databaseAdapter,
-    keyExtractor = object : Transformer<Option, String> {
-        override fun transform(o: Option): String {
-            return o.optionSet()!!.uid()
-        }
-    },
+    keyExtractor = Transformer { o -> o.optionSet()!!.uid() },
 )

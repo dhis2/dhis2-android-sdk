@@ -36,7 +36,7 @@ internal class StockUseCaseTransactionChildrenAppender(
 ) : ChildrenAppender<InternalStockUseCase>() {
     private val transactionLinkStore = StockUseCaseTransactionLinkStoreImpl(databaseAdapter)
 
-    override fun appendChildren(internalStockUseCase: InternalStockUseCase): InternalStockUseCase {
+    override suspend fun appendChildren(internalStockUseCase: InternalStockUseCase): InternalStockUseCase {
         return internalStockUseCase.toBuilder()
             .transactions(transactionLinkStore.selectLinksForMasterUid(internalStockUseCase.uid()))
             .build()

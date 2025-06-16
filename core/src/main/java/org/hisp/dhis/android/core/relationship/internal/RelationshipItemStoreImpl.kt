@@ -74,7 +74,7 @@ internal class RelationshipItemStoreImpl(
         return relationships
     }
 
-    override fun getForRelationshipUidAndConstraintType(
+    override suspend fun getForRelationshipUidAndConstraintType(
         uid: String,
         constraintType: RelationshipConstraintType,
     ): RelationshipItem? {
@@ -85,14 +85,14 @@ internal class RelationshipItemStoreImpl(
         return selectOneWhere(whereClause)
     }
 
-    override fun getForRelationshipUid(relationshipUid: String): List<RelationshipItem> {
+    override suspend fun getForRelationshipUid(relationshipUid: String): List<RelationshipItem> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(RelationshipItemTableInfo.Columns.RELATIONSHIP, relationshipUid)
             .build()
         return selectWhere(whereClause)
     }
 
-    override fun getRelatedTeiUids(trackedEntityInstanceUids: List<String>): List<String> {
+    override suspend fun getRelatedTeiUids(trackedEntityInstanceUids: List<String>): List<String> {
         val whereFromClause = WhereClauseBuilder()
             .appendInKeyStringValues(
                 RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
@@ -121,7 +121,7 @@ internal class RelationshipItemStoreImpl(
         return relatedRelationshipItems.map { it.trackedEntityInstance()!!.trackedEntityInstance() }
     }
 
-    override fun getByItem(item: RelationshipItem): List<RelationshipItem> {
+    override suspend fun getByItem(item: RelationshipItem): List<RelationshipItem> {
         val clauseBuilder = WhereClauseBuilder().apply {
             appendKeyStringValue(item.elementType(), item.elementUid())
 
@@ -137,7 +137,7 @@ internal class RelationshipItemStoreImpl(
         return selectWhere(clauseBuilder.build())
     }
 
-    override fun getByEntityUid(entityUid: String): List<RelationshipItem> {
+    override suspend fun getByEntityUid(entityUid: String): List<RelationshipItem> {
         val clauseBuilder = WhereClauseBuilder().apply {
             appendOrKeyStringValue(RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE, entityUid)
             appendOrKeyStringValue(RelationshipItemTableInfo.Columns.ENROLLMENT, entityUid)

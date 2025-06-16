@@ -89,7 +89,7 @@ internal open class IdentifiableDeletableDataObjectStoreImpl<O>(
         }
     }
 
-    override fun setSyncStateOrDelete(uid: String, state: State): HandleAction {
+    override suspend fun setSyncStateOrDelete(uid: String, state: State): HandleAction {
         var deleted = false
         if (state == State.SYNCED) {
             val whereClause = WhereClauseBuilder()
@@ -106,7 +106,7 @@ internal open class IdentifiableDeletableDataObjectStoreImpl<O>(
         }
     }
 
-    override fun setDeleted(uid: String): Int {
+    override suspend fun setDeleted(uid: String): Int {
         compileStatements()
         setDeletedStatement!!.bind(1, uid)
         val updatedRow = databaseAdapter.executeUpdateDelete(setDeletedStatement)
@@ -114,7 +114,7 @@ internal open class IdentifiableDeletableDataObjectStoreImpl<O>(
         return updatedRow
     }
 
-    override fun selectSyncStateWhere(where: String): List<State> {
+    override suspend fun selectSyncStateWhere(where: String): List<State> {
         val statesStr = selectStringColumnsWhereClause(DataColumns.SYNC_STATE, where)
         return statesStr.map { State.valueOf(it) }
     }

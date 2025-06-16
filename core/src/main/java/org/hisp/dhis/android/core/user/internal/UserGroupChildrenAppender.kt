@@ -38,7 +38,7 @@ internal class UserGroupChildrenAppender(
 ) : ChildrenAppender<User>() {
     private val store = UserGroupStoreImpl(databaseAdapter)
 
-    override fun appendChildren(user: User): User {
+    override suspend fun appendChildren(user: User): User {
         val builder = user.toBuilder()
         builder.userGroups(store.selectAll())
         return builder.build()

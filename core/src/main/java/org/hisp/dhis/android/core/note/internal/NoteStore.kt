@@ -32,6 +32,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.note.Note
 
 internal interface NoteStore : IdentifiableObjectStore<Note> {
-    fun getForEvent(eventUid: String): List<Note>
-    fun getForEnrollment(enrollmentUid: String): List<Note>
+    suspend fun getForEvent(eventUid: String): List<Note>
+    suspend fun getForEnrollment(enrollmentUid: String): List<Note>
 }

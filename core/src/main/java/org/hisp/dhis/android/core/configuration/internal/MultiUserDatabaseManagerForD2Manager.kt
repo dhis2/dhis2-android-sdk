@@ -67,7 +67,7 @@ internal class MultiUserDatabaseManagerForD2Manager(
         databaseAdapterFactory.createOrRecreateDatabase(databaseAdapter, config)
     }
 
-    fun applyMigration() {
+    suspend fun applyMigration() {
         migration.apply()
     }
 }

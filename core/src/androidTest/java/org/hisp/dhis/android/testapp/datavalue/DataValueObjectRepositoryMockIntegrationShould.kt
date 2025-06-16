@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.testapp.datavalue
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValueObjectRepository
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStoreImpl
@@ -80,7 +81,7 @@ class DataValueObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
     }
 
     @Test
-    fun set_state_to_delete_if_state_is_not_to_post() {
+    fun set_state_to_delete_if_state_is_not_to_post() = runTest {
         val repository = objectRepository()
         repository.blockingSet("value")
         DataValueStoreImpl(databaseAdapter).setState(repository.blockingGet()!!, State.ERROR)
@@ -95,7 +96,7 @@ class DataValueObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
     }
 
     @Test
-    fun set_not_deleted_when_updating_deleted_value() {
+    fun set_not_deleted_when_updating_deleted_value() = runTest {
         val repository = objectRepository()
         repository.blockingSet("value")
         DataValueStoreImpl(databaseAdapter).setState(repository.blockingGet()!!, State.TO_UPDATE)
@@ -136,7 +137,7 @@ class DataValueObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
 
     @Test
     @Throws(D2Error::class)
-    fun not_update_status_when_passing_same_value() {
+    fun not_update_status_when_passing_same_value() = runTest {
         val repository = objectRepository()
         repository.blockingSet("test_value")
         repository.setComment("Hey!")

@@ -45,12 +45,10 @@ internal open class TrackerSyncLastUpdatedManager<S : TrackerBaseSync>(private v
     private var programSettings: ProgramSettings? = null
     private lateinit var params: ProgramDataDownloadParams
 
-    fun prepare(programSettings: ProgramSettings?, params: ProgramDataDownloadParams) {
+    suspend fun prepare(programSettings: ProgramSettings?, params: ProgramDataDownloadParams) {
         this.programSettings = programSettings
         this.params = params
-        this.syncMap = store.selectAll()
-            .map { Pair(it.program(), it.organisationUnitIdsHash()) to it }
-            .toMap()
+        this.syncMap = store.selectAll().associateBy { Pair(it.program(), it.organisationUnitIdsHash()) }
     }
 
     fun getLastUpdatedStr(commonParams: TrackerQueryCommonParams): String? {
@@ -105,7 +103,7 @@ internal open class TrackerSyncLastUpdatedManager<S : TrackerBaseSync>(private v
         return programSetting?.updateDownload() != null
     }
 
-    fun update(sync: S) {
+    suspend fun update(sync: S) {
         val builder = WhereClauseBuilder().appendKeyNumberValue(
             Columns.ORGANISATION_UNIT_IDS_HASH,
             sync.organisationUnitIdsHash(),

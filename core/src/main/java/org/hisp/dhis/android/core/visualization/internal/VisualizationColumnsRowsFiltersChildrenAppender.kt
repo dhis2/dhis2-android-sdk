@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.visualization.VisualizationDimension
 internal class VisualizationColumnsRowsFiltersChildrenAppender private constructor(
     private val childStore: VisualizationDimensionItemStore,
 ) : ChildrenAppender<Visualization>() {
-    override fun appendChildren(m: Visualization): Visualization {
+    override suspend fun appendChildren(m: Visualization): Visualization {
         val groupedByPosition = childStore.getVisualizationDimensionItemForVisualization(m.uid())
             .groupBy { it.position() }
             .mapValues { (_, items) ->

@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
@@ -60,7 +61,7 @@ internal open class BaseConflictShould {
     protected val relationshipUid = "AJOytZW7OaI"
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         whenever(context.attributeStore) doReturn attributeStore
         whenever(context.dataElementStore) doReturn dataElementStore
 

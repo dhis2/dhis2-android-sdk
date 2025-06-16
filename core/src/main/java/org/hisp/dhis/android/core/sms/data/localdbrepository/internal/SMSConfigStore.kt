@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.datastore.KeyValuePair
 
 internal interface SMSConfigStore : ObjectWithoutUidStore<KeyValuePair> {
-    fun get(key: SMSConfigKey): String?
-    fun set(key: SMSConfigKey, value: String): HandleAction
-    fun delete(key: SMSConfigKey)
+    suspend fun get(key: SMSConfigKey): String?
+    suspend fun set(key: SMSConfigKey, value: String): HandleAction
+    suspend fun delete(key: SMSConfigKey)
 }

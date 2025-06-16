@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.dataset.Section
 internal class SectionGreyedFieldsChildrenAppender private constructor(
     private val childStore: DataElementOperandStore,
 ) : ChildrenAppender<Section>() {
-    override fun appendChildren(m: Section): Section {
+    override suspend fun appendChildren(m: Section): Section {
         val children = childStore.getForSection(m.uid())
         return m.toBuilder()
             .greyedFields(children)

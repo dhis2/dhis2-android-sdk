@@ -58,7 +58,7 @@ class ProgramStageWorkingListHandlerShould {
     private lateinit var handler: ProgramStageWorkingListHandler
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         handler = ProgramStageWorkingListHandler(
             programStageWorkingListStore,
             eventDataFilterHandler,

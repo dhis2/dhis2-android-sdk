@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity.ownership
 
+import io.ktor.http.HttpStatusCode
 import io.reactivex.Completable
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxCompletable
@@ -61,43 +62,45 @@ internal class OwnershipManagerImpl(
 ) : OwnershipManager {
 
     override fun breakGlass(trackedEntityInstance: String, program: String, reason: String): Completable {
-        return Completable.fromCallable { blockingBreakGlass(trackedEntityInstance, program, reason) }
+        return rxCompletable { breakGlassInternal(trackedEntityInstance, program, reason) }
     }
 
     override fun blockingBreakGlass(trackedEntityInstance: String, program: String, reason: String) {
-        runBlocking {
-            postBreakGlass(trackedEntityInstance, program, reason)
-        }.fold(
-            onSuccess = { breakGlassResponse ->
-                @Suppress("MagicNumber")
-                if (breakGlassResponse.httpStatusCode() == 200) {
-                    programTempOwnerStore.insert(
-                        ProgramTempOwner.builder()
-                            .program(program)
-                            .trackedEntityInstance(trackedEntityInstance)
-                            .reason(reason)
-                            .created(Date())
-                            .validUntil(getValidUntil().toJavaDate())
-                            .build(),
-                    )
-                } else {
+        runBlocking { breakGlassInternal(trackedEntityInstance, program, reason) }
+    }
+
+    private suspend fun breakGlassInternal(trackedEntityInstance: String, program: String, reason: String) {
+        postBreakGlass(trackedEntityInstance, program, reason)
+            .fold(
+                onSuccess = { breakGlassResponse ->
+                    if (breakGlassResponse.httpStatusCode() == HttpStatusCode.OK.value) {
+                        programTempOwnerStore.insert(
+                            ProgramTempOwner.builder()
+                                .program(program)
+                                .trackedEntityInstance(trackedEntityInstance)
+                                .reason(reason)
+                                .created(Date())
+                                .validUntil(getValidUntil().toJavaDate())
+                                .build(),
+                        )
+                    } else {
+                        throw D2Error.builder()
+                            .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
+                            .errorComponent(D2ErrorComponent.Server)
+                            .errorDescription(breakGlassResponse.message())
+                            .httpErrorCode(breakGlassResponse.httpStatusCode())
+                            .build()
+                    }
+                },
+                onFailure = { e ->
                     throw D2Error.builder()
                         .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
                         .errorComponent(D2ErrorComponent.Server)
-                        .errorDescription(breakGlassResponse.message())
-                        .httpErrorCode(breakGlassResponse.httpStatusCode())
+                        .errorDescription(e.errorDescription())
+                        .httpErrorCode(e.httpErrorCode())
                         .build()
-                }
-            },
-            onFailure = { e ->
-                throw D2Error.builder()
-                    .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
-                    .errorComponent(D2ErrorComponent.Server)
-                    .errorDescription(e.errorDescription())
-                    .httpErrorCode(e.httpErrorCode())
-                    .build()
-            },
-        )
+                },
+            )
     }
 
     override fun transfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String): Completable {

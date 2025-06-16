@@ -38,7 +38,7 @@ internal abstract class RelationshipOrphanCleaner<O : ObjectWithUidInterface, R 
 ) : OrphanCleaner<O, R> {
     abstract fun getItem(uid: String): RelationshipItem
     abstract fun relationships(relationships: Collection<R>): Collection<Relationship>
-    override fun deleteOrphan(parent: O?, children: Collection<R>?): Boolean {
+    override suspend fun deleteOrphan(parent: O?, children: Collection<R>?): Boolean {
         if (parent == null || children == null) {
             return false
         }

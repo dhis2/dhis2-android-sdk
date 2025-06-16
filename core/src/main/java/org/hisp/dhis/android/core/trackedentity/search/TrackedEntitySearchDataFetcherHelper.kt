@@ -68,7 +68,7 @@ internal class TrackedEntitySearchDataFetcherHelper(
         }
     }
 
-    fun evaluateHeaderExpression(expression: String, trackedEntityInstance: TrackedEntityInstance): String? {
+    suspend fun evaluateHeaderExpression(expression: String, trackedEntityInstance: TrackedEntityInstance): String? {
         return trackerHeaderEngine.getTrackedEntityHeader(
             expression = expression,
             attributeValues = trackedEntityInstance.trackedEntityAttributeValues() ?: emptyList(),

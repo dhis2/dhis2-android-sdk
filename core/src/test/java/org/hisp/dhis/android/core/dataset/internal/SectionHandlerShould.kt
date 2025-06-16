@@ -60,7 +60,7 @@ class SectionHandlerShould {
 
     @Before
     @Throws(Exception::class)
-    fun setUp() {
+    fun setUp() = runTest {
         sectionHandler = SectionHandler(
             sectionStore,
             sectionDataElementLinkHandler,

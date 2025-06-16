@@ -41,9 +41,5 @@ internal class ProgramRuleSubCollectionCleaner(
     tableName = ProgramRuleTableInfo.TABLE_INFO.name(),
     parentColumn = ProgramRuleTableInfo.Columns.PROGRAM,
     databaseAdapter = databaseAdapter,
-    keyExtractor = object : Transformer<ProgramRule, String> {
-        override fun transform(o: ProgramRule): String {
-            return o.program()!!.uid()
-        }
-    },
+    keyExtractor = Transformer { o -> o.program()!!.uid() },
 )

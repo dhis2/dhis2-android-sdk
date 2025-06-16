@@ -125,7 +125,7 @@ internal class ExpressionDimensionItemEvaluatorIntegrationBaseShould : BaseEvalu
         assertThat(value).isEqualTo("0.0")
     }
 
-    private fun createExpression(
+    private suspend fun createExpression(
         item: String,
     ): ExpressionDimensionItem {
         val expressionDimensionItem = ExpressionDimensionItem.builder()

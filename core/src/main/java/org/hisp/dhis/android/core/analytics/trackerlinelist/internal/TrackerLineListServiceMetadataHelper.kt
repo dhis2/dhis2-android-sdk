@@ -51,7 +51,7 @@ internal class TrackerLineListServiceMetadataHelper(
     private val categoryStore: CategoryStore,
 ) {
 
-    fun getMetadata(params: TrackerLineListParams): Map<String, MetadataItem> {
+    suspend fun getMetadata(params: TrackerLineListParams): Map<String, MetadataItem> {
         val metadata: MutableMap<String, MetadataItem> = mutableMapOf()
 
         (params.columns + params.filters).forEach { item ->
@@ -61,7 +61,7 @@ internal class TrackerLineListServiceMetadataHelper(
         return metadata
     }
 
-    private fun getMetadata(item: TrackerLineListItem): Map<String, MetadataItem> {
+    private suspend fun getMetadata(item: TrackerLineListItem): Map<String, MetadataItem> {
         val metadata: MutableMap<String, MetadataItem> = mutableMapOf()
 
         if (!metadata.containsKey(item.id)) {
@@ -80,7 +80,7 @@ internal class TrackerLineListServiceMetadataHelper(
         return metadata
     }
 
-    private fun getProgramAttributeItems(item: TrackerLineListItem.ProgramAttribute): List<MetadataItem> {
+    private suspend fun getProgramAttributeItems(item: TrackerLineListItem.ProgramAttribute): List<MetadataItem> {
         val attribute = trackedEntityAttributeStore.selectByUid(item.uid)
             ?: throw AnalyticsException.InvalidTrackedEntityAttribute(item.uid)
 
@@ -89,7 +89,7 @@ internal class TrackerLineListServiceMetadataHelper(
         )
     }
 
-    private fun getProgramIndicator(item: TrackerLineListItem.ProgramIndicator): List<MetadataItem> {
+    private suspend fun getProgramIndicator(item: TrackerLineListItem.ProgramIndicator): List<MetadataItem> {
         val programIndicator = programIndicatorStore.selectByUid(item.uid)
             ?: throw AnalyticsException.InvalidProgramIndicator(item.uid)
 
@@ -98,7 +98,7 @@ internal class TrackerLineListServiceMetadataHelper(
         )
     }
 
-    private fun getProgramDataElement(item: TrackerLineListItem.ProgramDataElement): List<MetadataItem> {
+    private suspend fun getProgramDataElement(item: TrackerLineListItem.ProgramDataElement): List<MetadataItem> {
         val dataElement = dataElementStore.selectByUid(item.dataElement)
             ?.let { MetadataItem.DataElementItem(it) }
             ?: throw AnalyticsException.InvalidDataElement(item.dataElement)
@@ -113,17 +113,17 @@ internal class TrackerLineListServiceMetadataHelper(
         return listOf(dataElement, program, programStage)
     }
 
-    private fun getProgram(programId: String): Program {
+    private suspend fun getProgram(programId: String): Program {
         return programStore.selectByUid(programId)
             ?: throw AnalyticsException.InvalidProgram(programId)
     }
 
-    private fun getProgramStage(programStageId: String): ProgramStage {
+    private suspend fun getProgramStage(programStageId: String): ProgramStage {
         return programStageStore.selectByUid(programStageId)
             ?: throw AnalyticsException.InvalidProgramStage(programStageId)
     }
 
-    private fun getCategory(item: TrackerLineListItem.Category): List<MetadataItem> {
+    private suspend fun getCategory(item: TrackerLineListItem.Category): List<MetadataItem> {
         val category = categoryStore.selectByUid(item.uid) ?: throw AnalyticsException.InvalidCategory(item.uid)
         return listOf(MetadataItem.CategoryItem(category))
     }

@@ -81,7 +81,7 @@ class ProgramHandlerShould {
 
     @Before
     @Throws(Exception::class)
-    fun setUp() {
+    fun setUp() = runTest {
         programHandler = ProgramHandler(
             programStore,
             programRuleVariableHandler,

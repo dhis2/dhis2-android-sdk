@@ -59,7 +59,7 @@ internal class DataValueConflictParser(
 
     private val indexedDataValueConflict = IndexedDataValueConflict()
 
-    fun getDataValueConflicts(
+    suspend fun getDataValueConflicts(
         conflict: ImportConflict,
         dataValues: List<DataValue>,
     ): List<DataValueConflict> {

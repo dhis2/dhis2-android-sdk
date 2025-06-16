@@ -46,7 +46,7 @@ internal class JobReportTrackedEntityHandler internal constructor(
     relationshipStore: RelationshipStore,
 ) : JobReportTypeHandler(relationshipStore) {
 
-    override fun handleObject(uid: String, state: State): HandleAction {
+    override suspend fun handleObject(uid: String, state: State): HandleAction {
         conflictStore.deleteTrackedEntityConflicts(uid)
         val handleAction = trackedEntityStore.setSyncStateOrDelete(uid, state)
 
@@ -56,7 +56,7 @@ internal class JobReportTrackedEntityHandler internal constructor(
         return handleAction
     }
 
-    override fun storeConflict(errorReport: JobValidationError) {
+    override suspend fun storeConflict(errorReport: JobValidationError) {
         trackedEntityStore.selectByUid(errorReport.uid)?.let { trackedEntity ->
             if (errorReport.errorCode == ImporterError.E1063.name && trackedEntity.deleted() == true) {
                 trackedEntityStore.delete(trackedEntity.uid())
@@ -74,7 +74,7 @@ internal class JobReportTrackedEntityHandler internal constructor(
         return relationshipStore.getRelationshipsByItem(RelationshipHelper.teiItem(uid)).mapNotNull { it.uid() }
     }
 
-    fun handleSyncedEntity(uid: String) {
+    suspend fun handleSyncedEntity(uid: String) {
         trackedEntityAttributeValueStore.setSyncStateByInstance(uid, State.SYNCED)
         trackedEntityAttributeValueStore.removeDeletedAttributeValuesByInstance(uid)
     }

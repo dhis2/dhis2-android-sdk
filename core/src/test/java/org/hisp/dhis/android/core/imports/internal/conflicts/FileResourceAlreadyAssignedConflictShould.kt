@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 internal class FileResourceAlreadyAssignedConflictShould : BaseConflictShould() {
@@ -45,7 +46,7 @@ internal class FileResourceAlreadyAssignedConflictShould : BaseConflictShould() 
     }
 
     @Test
-    fun `Should create display description`() {
+    fun `Should create display description`() = runTest {
         val displayDescription =
             FileResourceAlreadyAssignedConflict.getDisplayDescription(importConflict, context)
         assert(displayDescription == "The file $fileResourceUid has already been assigned")

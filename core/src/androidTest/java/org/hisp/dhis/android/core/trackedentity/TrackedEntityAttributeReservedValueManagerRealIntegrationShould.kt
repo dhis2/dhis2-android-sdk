@@ -329,7 +329,7 @@ internal class TrackedEntityAttributeReservedValueManagerRealIntegrationShould :
             .blockingGetValue(ownerUid, "not_stored_organisation_unit_uid")
     }
 
-    private fun selectAll(): List<TrackedEntityAttributeReservedValue> {
+    private suspend fun selectAll(): List<TrackedEntityAttributeReservedValue> {
         return store.selectAll()
     }
 

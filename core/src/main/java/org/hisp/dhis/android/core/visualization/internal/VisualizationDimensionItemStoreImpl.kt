@@ -58,7 +58,7 @@ internal class VisualizationDimensionItemStoreImpl(
         }
     }
 
-    override fun getVisualizationDimensionItemForVisualization(
+    override suspend fun getVisualizationDimensionItemForVisualization(
         visualizationId: String,
     ): List<VisualizationDimensionItem> {
         val whereClause = WhereClauseBuilder()

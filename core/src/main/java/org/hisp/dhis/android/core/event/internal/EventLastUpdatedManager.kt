@@ -37,7 +37,7 @@ internal class EventLastUpdatedManager(
     private val resourceHandler: ResourceHandler,
 ) : TrackerSyncLastUpdatedManager<EventSync>(store) {
 
-    fun update(bundle: EventQueryBundle) {
+    suspend fun update(bundle: EventQueryBundle) {
         val sync = EventSync.builder()
             .program(bundle.commonParams().program)
             .organisationUnitIdsHash(bundle.orgUnits().toSet().hashCode())

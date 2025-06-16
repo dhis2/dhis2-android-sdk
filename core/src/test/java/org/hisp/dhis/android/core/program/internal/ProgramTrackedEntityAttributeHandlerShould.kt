@@ -60,7 +60,7 @@ class ProgramTrackedEntityAttributeHandlerShould {
 
     @Before
     @Throws(Exception::class)
-    fun setUp() {
+    fun setUp() = runTest {
         handler = ProgramTrackedEntityAttributeHandler(store, renderTypeHandler)
         programTrackedEntityAttributes = ArrayList()
         programTrackedEntityAttributes.add(programTrackedEntityAttribute)

@@ -63,7 +63,7 @@ internal class OrganisationUnitGroupStoreImpl(
             }
     }
 
-    override fun getForOrganisationUnit(organisationUnitId: String): List<OrganisationUnitGroup> {
+    override suspend fun getForOrganisationUnit(organisationUnitId: String): List<OrganisationUnitGroup> {
         val projection = LinkTableChildProjection(
             OrganisationUnitGroupTableInfo.TABLE_INFO,
             OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT,

@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.event.Event
 internal class NoteForEventChildrenAppender private constructor(
     private val childStore: NoteStore,
 ) : ChildrenAppender<Event>() {
-    override fun appendChildren(m: Event): Event {
+    override suspend fun appendChildren(m: Event): Event {
         val children = childStore.getForEvent(m.uid())
         return m.toBuilder()
             .notes(children)

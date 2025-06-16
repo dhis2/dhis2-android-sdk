@@ -51,7 +51,7 @@ internal class UserOrganisationUnitLinkStoreImpl(
     ) {
 
     @Throws(RuntimeException::class)
-    override fun queryRootCaptureOrganisationUnitUids(): List<String> {
+    override suspend fun queryRootCaptureOrganisationUnitUids(): List<String> {
         return selectStringColumnsWhereClause(
             UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
             WhereClauseBuilder()
@@ -63,7 +63,7 @@ internal class UserOrganisationUnitLinkStoreImpl(
         )
     }
 
-    override fun queryOrganisationUnitUidsByScope(scope: OrganisationUnit.Scope): List<String> {
+    override suspend fun queryOrganisationUnitUidsByScope(scope: OrganisationUnit.Scope): List<String> {
         return selectStringColumnsWhereClause(
             UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
             WhereClauseBuilder()
@@ -74,7 +74,7 @@ internal class UserOrganisationUnitLinkStoreImpl(
         )
     }
 
-    override fun queryAssignedOrganisationUnitUidsByScope(scope: OrganisationUnit.Scope): List<String> {
+    override suspend fun queryAssignedOrganisationUnitUidsByScope(scope: OrganisationUnit.Scope): List<String> {
         return selectStringColumnsWhereClause(
             UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
             WhereClauseBuilder()
@@ -86,7 +86,7 @@ internal class UserOrganisationUnitLinkStoreImpl(
         )
     }
 
-    override fun isCaptureScope(organisationUnit: String): Boolean {
+    override suspend fun isCaptureScope(organisationUnit: String): Boolean {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT, organisationUnit)
             .appendKeyStringValue(
@@ -100,7 +100,7 @@ internal class UserOrganisationUnitLinkStoreImpl(
 
     companion object {
         private val BINDER =
-            StatementBinder<UserOrganisationUnitLink> { o: UserOrganisationUnitLink, w: StatementWrapper ->
+            StatementBinder { o: UserOrganisationUnitLink, w: StatementWrapper ->
                 w.bind(1, o.user())
                 w.bind(2, o.organisationUnit())
                 w.bind(3, o.organisationUnitScope())

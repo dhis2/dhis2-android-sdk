@@ -60,7 +60,7 @@ internal class DataElementOperandStoreImpl(
         }
     }
 
-    override fun getForSection(sectionUid: String): List<DataElementOperand> {
+    override suspend fun getForSection(sectionUid: String): List<DataElementOperand> {
         val projection = LinkTableChildProjection(
             DataElementOperandTableInfo.TABLE_INFO,
             SectionGreyedFieldsLinkTableInfo.Columns.SECTION,
@@ -75,7 +75,7 @@ internal class DataElementOperandStoreImpl(
         return selectRawQuery(query)
     }
 
-    override fun getForDataSet(dataSetUid: String): List<DataElementOperand> {
+    override suspend fun getForDataSet(dataSetUid: String): List<DataElementOperand> {
         val projection = LinkTableChildProjection(
             DataElementOperandTableInfo.TABLE_INFO,
             DataSetCompulsoryDataElementOperandLinkTableInfo.Columns.DATA_SET,

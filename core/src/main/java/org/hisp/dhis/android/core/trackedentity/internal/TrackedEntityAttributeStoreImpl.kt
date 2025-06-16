@@ -79,7 +79,7 @@ internal class TrackedEntityAttributeStoreImpl(
             }
     }
 
-    override fun getForProgramSection(programSectionUid: String): List<TrackedEntityAttribute> {
+    override suspend fun getForProgramSection(programSectionUid: String): List<TrackedEntityAttribute> {
         val projection = LinkTableChildProjection(
             TrackedEntityAttributeTableInfo.TABLE_INFO,
             ProgramSectionAttributeLinkTableInfo.Columns.PROGRAM_SECTION,

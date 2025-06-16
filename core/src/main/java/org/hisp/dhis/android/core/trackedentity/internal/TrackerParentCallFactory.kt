@@ -47,7 +47,7 @@ internal class TrackerParentCallFactory(
     private val trackerParentCallHelper: TrackerPostParentCallHelper,
 ) {
 
-    fun getTrackedEntityCall(): TrackedEntityEndpointCallFactory {
+    suspend fun getTrackedEntityCall(): TrackedEntityEndpointCallFactory {
         return if (trackerParentCallHelper.useNewTrackerExporter()) {
             newTrackedEntityEndpointCallFactory
         } else {
@@ -55,7 +55,7 @@ internal class TrackerParentCallFactory(
         }
     }
 
-    fun getEnrollmentCall(): EnrollmentEndpointCallFactory {
+    suspend fun getEnrollmentCall(): EnrollmentEndpointCallFactory {
         return if (trackerParentCallHelper.useNewTrackerExporter()) {
             newEnrollmentEndpointCallFactory
         } else {
@@ -63,7 +63,7 @@ internal class TrackerParentCallFactory(
         }
     }
 
-    fun getEventCall(): EventEndpointCallFactory {
+    suspend fun getEventCall(): EventEndpointCallFactory {
         return if (trackerParentCallHelper.useNewTrackerExporter()) {
             newEventEndpointCallFactory
         } else {

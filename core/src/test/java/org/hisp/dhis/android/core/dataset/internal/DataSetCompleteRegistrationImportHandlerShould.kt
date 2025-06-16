@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 import org.hisp.dhis.android.core.imports.ImportStatus
@@ -60,7 +61,7 @@ class DataSetCompleteRegistrationImportHandlerShould {
     }
 
     @Test
-    fun not_perform_any_action_passing_empty_data_value_set() {
+    fun not_perform_any_action_passing_empty_data_value_set() = runTest {
         whenever(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.SUCCESS)
         dataSetCompleteRegistrationImportHandler.handleImportSummary(
             emptyList(),
@@ -76,7 +77,7 @@ class DataSetCompleteRegistrationImportHandlerShould {
     }
 
     @Test
-    fun mark_as_synced_when_successfully_imported_data_values() {
+    fun mark_as_synced_when_successfully_imported_data_values() = runTest {
         val dataSetCompleteRegistrations = mutableListOf(dataSetCompleteRegistration)
 
         whenever(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.SUCCESS)
@@ -94,7 +95,7 @@ class DataSetCompleteRegistrationImportHandlerShould {
     }
 
     @Test
-    fun mark_as_error_when_unsuccessfully_imported_data_values() {
+    fun mark_as_error_when_unsuccessfully_imported_data_values() = runTest {
         val dataValueCollection = mutableListOf(dataSetCompleteRegistration)
 
         whenever(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.ERROR)

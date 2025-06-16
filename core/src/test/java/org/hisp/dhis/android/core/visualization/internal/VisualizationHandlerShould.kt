@@ -52,7 +52,7 @@ class VisualizationHandlerShould {
     private lateinit var visualizationHandler: VisualizationHandler
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         visualizationHandler = VisualizationHandler(
             visualizationStore,
             visualizationCollectionCleaner,

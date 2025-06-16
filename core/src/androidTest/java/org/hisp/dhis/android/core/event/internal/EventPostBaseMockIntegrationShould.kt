@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.event.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityDataValueSamples
 import org.hisp.dhis.android.core.event.Event
@@ -57,7 +58,7 @@ abstract class EventPostBaseMockIntegrationShould : BaseMockIntegrationTestMetad
     private val syncStore = SynchronizationSettingStoreImpl(databaseAdapter)
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         initSyncParams = syncStore.selectFirst()!!
         val testParams = initSyncParams.toBuilder().trackerImporterVersion(importerVersion)
             .trackerExporterVersion(exporterVersion).build()
@@ -66,14 +67,14 @@ abstract class EventPostBaseMockIntegrationShould : BaseMockIntegrationTestMetad
     }
 
     @After
-    fun tearDown() {
+    fun tearDown() = runTest {
         d2.wipeModule().wipeData()
         syncStore.delete()
         syncStore.insert(initSyncParams)
     }
 
     @Test
-    fun handle_import_conflicts_correctly() {
+    fun handle_import_conflicts_correctly() = runTest {
         storeEvents()
         importConflictsFile1.forEach { dhis2MockServer.enqueueMockResponse(it) }
         d2.eventModule().events().blockingUpload()
@@ -81,7 +82,7 @@ abstract class EventPostBaseMockIntegrationShould : BaseMockIntegrationTestMetad
     }
 
     @Test
-    fun delete_old_import_conflicts() {
+    fun delete_old_import_conflicts() = runTest {
         storeEvents()
         importConflictsFile1.forEach { dhis2MockServer.enqueueMockResponse(it) }
         d2.eventModule().events().blockingUpload()
@@ -100,7 +101,7 @@ abstract class EventPostBaseMockIntegrationShould : BaseMockIntegrationTestMetad
     }
 
     @Test
-    fun handle_event_deletions() {
+    fun handle_event_deletions() = runTest {
         storeEvents()
         assertThat(d2.eventModule().events().blockingCount()).isEqualTo(4)
         d2.eventModule().events().uid("event1Id").blockingDelete()
@@ -111,7 +112,7 @@ abstract class EventPostBaseMockIntegrationShould : BaseMockIntegrationTestMetad
         assertThat(d2.eventModule().events().blockingCount()).isEqualTo(3)
     }
 
-    private fun storeEvents() {
+    private suspend fun storeEvents() {
         val orgUnit = d2.organisationUnitModule().organisationUnits().one().blockingGet()!!
         val program = d2.programModule().programs().one().blockingGet()!!
         val programStage = d2.programModule().programStages().one().blockingGet()!!

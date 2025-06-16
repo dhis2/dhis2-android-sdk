@@ -49,31 +49,31 @@ internal class InterpreterHelper internal constructor(
     private val trackedEntityAttributeStore: TrackedEntityAttributeStore,
 ) {
 
-    fun trackedEntityInstance(teiUid: String): TrackedEntityInstance {
+    suspend fun trackedEntityInstance(teiUid: String): TrackedEntityInstance {
         return teiStore.selectByUid(teiUid)!!
     }
 
-    fun programStageUid(eventUid: String): String {
+    suspend fun programStageUid(eventUid: String): String {
         return eventStore.selectByUid(eventUid)!!.programStage()!!
     }
 
-    fun programDisplayName(programUid: String): String {
+    suspend fun programDisplayName(programUid: String): String {
         return programStore.selectByUid(programUid)!!.displayName()!!
     }
 
-    fun programStageDisplayName(programStageUid: String): String {
+    suspend fun programStageDisplayName(programStageUid: String): String {
         return programStageStore.selectByUid(programStageUid)!!.displayName()!!
     }
 
-    fun organisationUnitDisplayName(orgUnitUid: String): String {
+    suspend fun organisationUnitDisplayName(orgUnitUid: String): String {
         return organisationUnitStore.selectByUid(orgUnitUid)!!.displayName()!!
     }
 
-    fun trackedEntityTypeDisplayName(trackedEntityTypeUid: String): String {
+    suspend fun trackedEntityTypeDisplayName(trackedEntityTypeUid: String): String {
         return trackedEntityTypeStore.selectByUid(trackedEntityTypeUid)!!.displayName()!!
     }
 
-    fun trackedEntityAttributeStoreDisplayName(attributeUid: String): String {
+    suspend fun trackedEntityAttributeStoreDisplayName(attributeUid: String): String {
         return trackedEntityAttributeStore.selectByUid(attributeUid)!!.displayName()!!
     }
 

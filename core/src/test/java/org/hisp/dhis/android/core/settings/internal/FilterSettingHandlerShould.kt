@@ -50,7 +50,7 @@ class FilterSettingHandlerShould {
 
     @Before
     @Throws(Exception::class)
-    fun setUp() {
+    fun setUp() = runTest {
         filterSettingsList = listOf(filterSetting)
         whenever(filterSettingStore.updateOrInsertWhere(any())) doReturn HandleAction.Insert
         filterSettingsHandler = FilterSettingHandler(filterSettingStore)

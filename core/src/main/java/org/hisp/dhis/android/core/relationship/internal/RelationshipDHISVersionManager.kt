@@ -41,14 +41,17 @@ import org.koin.core.annotation.Singleton
 internal class RelationshipDHISVersionManager(
     private val relationshipTypeStore: RelationshipTypeStore,
 ) {
-    fun getOwnedRelationships(relationships: Collection<Relationship>, elementUid: String): List<Relationship> {
+    suspend fun getOwnedRelationships(
+        relationships: Collection<Relationship>,
+        elementUid: String,
+    ): List<Relationship> {
         return relationships.filter { relationship ->
             val fromItem = relationship.from()
             isBidirectional(relationship) || fromItem?.elementUid() == elementUid
         }
     }
 
-    private fun isBidirectional(relationship: Relationship): Boolean {
+    private suspend fun isBidirectional(relationship: Relationship): Boolean {
         return relationship.relationshipType()?.let { relationshipTypeUid ->
             relationshipTypeStore.selectByUid(relationshipTypeUid)?.bidirectional()
         } ?: false
@@ -62,9 +65,11 @@ internal class RelationshipDHISVersionManager(
             parentUid == fromUid ->
                 baseRelationship.to()?.toBuilder()
                     ?.relationshipItemType(RelationshipConstraintType.TO)
+
             parentUid == toUid ->
                 baseRelationship.from()?.toBuilder()
                     ?.relationshipItemType(RelationshipConstraintType.FROM)
+
             else ->
                 null
         }

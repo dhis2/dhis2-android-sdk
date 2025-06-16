@@ -60,7 +60,7 @@ internal class TrackedEntityAttributeLegendSetLinkStoreImpl(
         }
     }
 
-    override fun getForTrackedEntityAttribute(trackedEntityAttributeUid: String): List<ObjectWithUid> {
+    override suspend fun getForTrackedEntityAttribute(trackedEntityAttributeUid: String): List<ObjectWithUid> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(
                 TrackedEntityAttributeLegendSetLinkTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,

@@ -49,7 +49,7 @@ internal class DatabaseConfigurationMigration(
     private val databaseAdapterFactory: DatabaseAdapterFactory,
 ) {
     @Suppress("TooGenericExceptionCaught")
-    fun apply() {
+    suspend fun apply() {
         var existingVersionCode: Long? = null
         val oldDatabaseExist = context.databaseList().contains(OLD_DBNAME)
 
@@ -143,7 +143,7 @@ internal class DatabaseConfigurationMigration(
         }
     }
 
-    private fun getServerUrl(databaseAdapter: DatabaseAdapter): String? {
+    private suspend fun getServerUrl(databaseAdapter: DatabaseAdapter): String? {
         val store = ConfigurationStoreImpl(databaseAdapter)
         return store.selectFirst()?.serverUrl()
     }

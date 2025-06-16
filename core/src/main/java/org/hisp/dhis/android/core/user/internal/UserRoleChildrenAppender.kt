@@ -38,7 +38,7 @@ internal class UserRoleChildrenAppender(
 ) : ChildrenAppender<User>() {
     private val store = UserRoleStoreImpl(databaseAdapter)
 
-    override fun appendChildren(user: User): User {
+    override suspend fun appendChildren(user: User): User {
         val builder = user.toBuilder()
         builder.userRoles(store.selectAll())
         return builder.build()

@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.utils.integration.mock
 
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.data.datavalue.DataValueConflictSamples
 import org.hisp.dhis.android.core.data.imports.TrackerImportConflictSamples
 import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples
@@ -49,7 +50,7 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
     companion object {
         @BeforeClass
         @JvmStatic
-        fun setUpClass() {
+        fun setUpClass() = runTest {
             val isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.FullDispatcher)
             dhis2MockServer.setRequestDispatcher()
             freshLogin("android", "Android123", dhis2MockServer.baseEndpoint)
@@ -96,7 +97,7 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
             d2.dataStoreModule().dataStoreDownloader().blockingDownload()
         }
 
-        private fun storeSomeD2Errors() {
+        private suspend fun storeSomeD2Errors() {
             val d2ErrorStore = D2ErrorStoreImpl(databaseAdapter)
             d2ErrorStore.insert(D2ErrorSamples.get())
             d2ErrorStore.insert(
@@ -110,7 +111,7 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
             )
         }
 
-        private fun storeSomeConflicts() {
+        private suspend fun storeSomeConflicts() {
             val trackerImportConflictStore = TrackerImportConflictStoreImpl(databaseAdapter)
             trackerImportConflictStore.insert(
                 TrackerImportConflictSamples.get().toBuilder()
@@ -155,7 +156,7 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
             )
         }
 
-        private fun storeSomeKeyValuesInLocalDataStore() {
+        private suspend fun storeSomeKeyValuesInLocalDataStore() {
             val dataStore = LocalDataStoreStoreImpl(databaseAdapter)
 
             dataStore.insert(

@@ -64,7 +64,7 @@ internal class CategoryOptionStoreImpl(
         }
     }
 
-    override fun getForCategoryOptionCombo(categoryOptionComboUid: String): List<CategoryOption> {
+    override suspend fun getForCategoryOptionCombo(categoryOptionComboUid: String): List<CategoryOption> {
         val projection = LinkTableChildProjection(
             CategoryOptionTableInfo.TABLE_INFO,
             CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION_COMBO,
@@ -79,7 +79,7 @@ internal class CategoryOptionStoreImpl(
         return selectRawQuery(query)
     }
 
-    override fun getForCategory(categoryUid: String): List<CategoryOption> {
+    override suspend fun getForCategory(categoryUid: String): List<CategoryOption> {
         val projection = LinkTableChildProjection(
             CategoryOptionTableInfo.TABLE_INFO,
             CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY,

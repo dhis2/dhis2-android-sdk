@@ -39,7 +39,7 @@ internal class RelationshipItemChildrenAppender(
 ) : ChildrenAppender<Relationship>() {
     private val store = RelationshipItemStoreImpl(databaseAdapter)
 
-    override fun appendChildren(relationship: Relationship): Relationship {
+    override suspend fun appendChildren(relationship: Relationship): Relationship {
         val fromItem = store.getForRelationshipUidAndConstraintType(
             relationship.uid()!!,
             RelationshipConstraintType.FROM,

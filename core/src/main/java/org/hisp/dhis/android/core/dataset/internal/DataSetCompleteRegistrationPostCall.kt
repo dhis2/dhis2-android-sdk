@@ -117,7 +117,7 @@ internal class DataSetCompleteRegistrationPostCall(
         return networkHandler.postDataSetCompleteRegistrations(dataSetCompleteRegistrations)
     }
 
-    private fun markObjectsAs(
+    private suspend fun markObjectsAs(
         dataSetCompleteRegistrations: Collection<DataSetCompleteRegistration>,
         forcedState: State?,
     ) {

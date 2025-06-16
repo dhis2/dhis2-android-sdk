@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.analytics.trackerlinelist
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorIntegrationShould
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute1
@@ -65,7 +66,7 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
     private val helper = BaseTrackerDataIntegrationHelper(databaseAdapter)
 
     @Test
-    fun evaluate_program_attributes() {
+    fun evaluate_program_attributes() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         createDefaultEnrollment(trackedEntity1.uid(), enrollment1)
@@ -89,7 +90,7 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
     }
 
     @Test
-    fun evaluate_repeated_data_elements() {
+    fun evaluate_repeated_data_elements() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         createDefaultEnrollment(trackedEntity1.uid(), enrollment1)
@@ -135,7 +136,7 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
     }
 
     @Test
-    fun evaluate_line_list_category() {
+    fun evaluate_line_list_category() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         createDefaultEnrollment(trackedEntity1.uid(), enrollment1)
@@ -160,7 +161,7 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
     }
 
     @Test
-    fun evaluate_line_list_category_with_filters() {
+    fun evaluate_line_list_category_with_filters() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         createDefaultEnrollment(trackedEntity1.uid(), enrollment1)
@@ -195,7 +196,7 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
     }
 
     @Test
-    fun should_filter_by_date() {
+    fun should_filter_by_date() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         createDefaultEnrollment(trackedEntity1.uid(), enrollment1, enrollmentDate = period202001.startDate())
@@ -245,7 +246,7 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
     }
 
     @Test
-    fun evaluate_program_indicator() {
+    fun evaluate_program_indicator() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         createDefaultEnrollment(trackedEntity1.uid(), enrollment1, enrollmentDate = period202001.startDate())
@@ -282,13 +283,13 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
     }
 
     @Test
-    fun evaluate_contains_functions() {
+    fun evaluate_contains_functions() = runTest {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         createDefaultEnrollment(trackedEntity1.uid(), enrollment1, enrollmentDate = period202001.startDate())
         helper.insertTrackedEntityAttributeValue(trackedEntity1.uid(), attribute2.uid(), "ALLERGY,LATEX")
 
-        fun evaluateExpression(expression: String, expected: String) {
+        suspend fun evaluateExpression(expression: String, expected: String) {
             val programIndicator = generator.generate()
             helper.setProgramIndicatorExpression(
                 programIndicator,
@@ -317,7 +318,7 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
     }
 
     @Test
-    fun evaluate_orgunit_filters() {
+    fun evaluate_orgunit_filters() = runTest {
         val event1 = generator.generate()
         helper.createSingleEvent(event1, program.uid(), programStage1.uid(), orgunitChild1.uid())
         val event2 = generator.generate()
@@ -340,7 +341,7 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
     }
 
     @Test
-    fun evaluate_single_events() {
+    fun evaluate_single_events() = runTest {
         val event1 = generator.generate()
         helper.createSingleEvent(event1, program.uid(), programStage1.uid(), orgunitChild1.uid())
         val event2 = generator.generate()
@@ -360,7 +361,7 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
     }
 
     @Test
-    fun evaluate_shared_properties() {
+    fun evaluate_shared_properties() = runTest {
         val event1 = generator.generate()
         helper.createSingleEvent(
             event1,
@@ -389,7 +390,7 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
     }
 
     @Test
-    fun evaluate_paging() {
+    fun evaluate_paging() = runTest {
         val event1 = generator.generate()
         helper.createSingleEvent(event1, program.uid(), programStage1.uid(), orgunitChild1.uid())
         val event2 = generator.generate()
@@ -424,7 +425,7 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
     }
 
     @Test
-    fun evaluate_sorting() {
+    fun evaluate_sorting() = runTest {
         val event1 = generator.generate()
         helper.createSingleEvent(event1, program.uid(), programStage1.uid(), orgunitChild1.uid())
         val event2 = generator.generate()
@@ -466,7 +467,7 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
         created: Date? = null,
         lastUpdated: Date? = null,
         status: EnrollmentStatus? = EnrollmentStatus.ACTIVE,
-    ) {
+    ) = runTest {
         helper.createEnrollment(
             teiUid,
             enrollmentUid,
@@ -492,7 +493,7 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
         lastUpdated: Date? = null,
         status: EventStatus? = EventStatus.ACTIVE,
         attributeOptionComboUid: String = attributeOptionCombo.uid(),
-    ) {
+    ) = runTest {
         helper.createTrackerEvent(
             eventUid,
             enrollmentUid,

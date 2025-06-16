@@ -29,6 +29,7 @@ package org.hisp.dhis.android.testapp.fileresource
 
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper.getFileResourceDirectory
 import org.hisp.dhis.android.core.data.fileresource.RandomGeneratedInputStream
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceStoreImpl
@@ -44,7 +45,7 @@ import java.io.InputStream
 class FileResourceAddMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() {
 
     @Test
-    fun add_fileResources_to_the_repository() {
+    fun add_fileResources_to_the_repository() = runTest {
         val file = storeFile()
         assertThat(file.exists()).isTrue()
 

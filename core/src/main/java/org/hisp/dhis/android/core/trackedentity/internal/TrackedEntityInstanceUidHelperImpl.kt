@@ -40,13 +40,13 @@ internal class TrackedEntityInstanceUidHelperImpl(
     private val organisationUnitStore: OrganisationUnitStore,
 ) : TrackedEntityInstanceUidHelper {
 
-    override fun hasMissingOrganisationUnitUids(
+    override suspend fun hasMissingOrganisationUnitUids(
         trackedEntityInstances: Collection<TrackedEntityInstance>,
     ): Boolean {
         return getMissingOrganisationUnitUids(trackedEntityInstances).isNotEmpty()
     }
 
-    override fun getMissingOrganisationUnitUids(
+    override suspend fun getMissingOrganisationUnitUids(
         trackedEntityInstances: Collection<TrackedEntityInstance>,
     ): Set<String> {
         val uids = trackedEntityInstances.flatMap {
@@ -54,7 +54,7 @@ internal class TrackedEntityInstanceUidHelperImpl(
             getEnrollmentsUids(enrollments) + it.organisationUnit()
         }.filterNotNull().toSet()
 
-        return uids - organisationUnitStore.selectUids()
+        return uids - organisationUnitStore.selectUids().toSet()
     }
 
     private fun getEnrollmentsUids(enrollments: List<Enrollment>?): Set<String> {

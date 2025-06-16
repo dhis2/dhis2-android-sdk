@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class DataSetCompleteRegistrationStoreImpl constructor(
+internal class DataSetCompleteRegistrationStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : DataSetCompleteRegistrationStore,
     ObjectWithoutUidStoreImpl<DataSetCompleteRegistration>(
@@ -57,17 +57,17 @@ internal class DataSetCompleteRegistrationStoreImpl constructor(
      * @param dataSetCompleteRegistration DataSetCompleteRegistration element you want to update
      * @param newState                    The new state to be set for the DataValue
      */
-    override fun setState(dataSetCompleteRegistration: DataSetCompleteRegistration, newState: State?) {
+    override suspend fun setState(dataSetCompleteRegistration: DataSetCompleteRegistration, newState: State?) {
         val updatedDataSetCompleteRegistration = dataSetCompleteRegistration.toBuilder().syncState(newState).build()
         updateWhere(updatedDataSetCompleteRegistration)
     }
 
-    override fun setDeleted(dataSetCompleteRegistration: DataSetCompleteRegistration) {
+    override suspend fun setDeleted(dataSetCompleteRegistration: DataSetCompleteRegistration) {
         val updatedDataSetCompleteRegistration = dataSetCompleteRegistration.toBuilder().deleted(true).build()
         updateWhere(updatedDataSetCompleteRegistration)
     }
 
-    override fun removeNotPresentAndSynced(
+    override suspend fun removeNotPresentAndSynced(
         dataSetUids: Collection<String>,
         periodIds: Collection<String>,
         rootOrgunitUid: String,
@@ -87,7 +87,7 @@ internal class DataSetCompleteRegistrationStoreImpl constructor(
         return deleteWhere(whereClause.build())
     }
 
-    override fun isBeingUpload(dscr: DataSetCompleteRegistration): Boolean {
+    override suspend fun isBeingUpload(dscr: DataSetCompleteRegistration): Boolean {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.PERIOD, dscr.period())
             .appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.DATA_SET, dscr.dataSet())

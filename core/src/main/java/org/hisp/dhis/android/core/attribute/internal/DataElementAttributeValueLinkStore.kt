@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLink
 
 internal interface DataElementAttributeValueLinkStore : LinkStore<DataElementAttributeValueLink> {
-    fun getLinksForDataElement(dataElementUid: String): List<DataElementAttributeValueLink>
+    suspend fun getLinksForDataElement(dataElementUid: String): List<DataElementAttributeValueLink>
 }

@@ -61,7 +61,7 @@ class CategoryComboHandlerShould {
     private lateinit var categories: List<Category>
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         categories = listOf(category)
         whenever(combo.uid()).doReturn(comboUid)
         whenever(accessCategoryOptionCombos(combo)).doReturn(optionCombos)

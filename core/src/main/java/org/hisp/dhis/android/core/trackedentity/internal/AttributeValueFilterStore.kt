@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
 
 internal interface AttributeValueFilterStore : ObjectWithoutUidStore<AttributeValueFilter> {
-    fun getForTrackedEntityInstanceFilter(trackedEntityInstanceFilterUid: String): List<AttributeValueFilter>
+    suspend fun getForTrackedEntityInstanceFilter(trackedEntityInstanceFilterUid: String): List<AttributeValueFilter>
 }

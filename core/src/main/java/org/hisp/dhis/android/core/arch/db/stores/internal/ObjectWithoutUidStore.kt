@@ -31,14 +31,14 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 
 internal interface ObjectWithoutUidStore<O> : ObjectStore<O> {
     @Throws(RuntimeException::class)
-    fun updateWhere(o: O)
+    suspend fun updateWhere(o: O)
 
     @Throws(RuntimeException::class)
-    fun deleteWhere(o: O)
+    suspend fun deleteWhere(o: O)
 
     @Throws(RuntimeException::class)
-    fun deleteWhereIfExists(o: O)
+    suspend fun deleteWhereIfExists(o: O)
 
     @Throws(RuntimeException::class)
-    fun updateOrInsertWhere(o: O): HandleAction
+    suspend fun updateOrInsertWhere(o: O): HandleAction
 }

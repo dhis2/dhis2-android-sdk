@@ -37,7 +37,7 @@ internal class E1006Interpreter internal constructor(
 ) : ErrorCodeInterpreter {
     // "Attribute: `Kv4fmHVAzwX`, does not exist."
     override val unformattedDescription = R.string.E1006
-    override fun companions(error: JobValidationError): List<String> {
+    override suspend fun companions(error: JobValidationError): List<String> {
         val attributeUid = regex.find(error.message)!!.groupValues.last()
         return listOf(interpreterHelper.trackedEntityAttributeStoreDisplayName(attributeUid))
     }

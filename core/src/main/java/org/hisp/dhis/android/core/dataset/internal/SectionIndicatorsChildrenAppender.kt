@@ -37,7 +37,7 @@ internal class SectionIndicatorsChildrenAppender private constructor(
     private val childStore: IndicatorStore,
 ) : ChildrenAppender<Section>() {
 
-    override fun appendChildren(m: Section): Section {
+    override suspend fun appendChildren(m: Section): Section {
         val children = childStore.getForSection(m.uid())
         return m.toBuilder()
             .indicators(children)

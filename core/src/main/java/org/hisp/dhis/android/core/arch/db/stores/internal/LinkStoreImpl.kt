@@ -63,7 +63,7 @@ internal open class LinkStoreImpl<O : CoreObject>(
         objectFactory,
     )
 
-    override fun insertIfNotExists(o: O): HandleAction {
+    override suspend fun insertIfNotExists(o: O): HandleAction {
         return try {
             insert(o)
             HandleAction.Insert
@@ -73,20 +73,20 @@ internal open class LinkStoreImpl<O : CoreObject>(
     }
 
     @Throws(RuntimeException::class)
-    override fun deleteLinksForMasterUid(masterUid: String) {
+    override suspend fun deleteLinksForMasterUid(masterUid: String) {
         deleteWhere("$masterColumn='$masterUid';")
     }
 
-    override fun deleteAllLinks(): Int {
+    override suspend fun deleteAllLinks(): Int {
         return delete()
     }
 
-    override fun selectDistinctSlaves(slaveColumn: String): Set<String> {
+    override suspend fun selectDistinctSlaves(slaveColumn: String): Set<String> {
         val cursor = databaseAdapter.rawQuery(builder.selectDistinct(slaveColumn))
         return mapStringColumnSetFromCursor(cursor).toSet()
     }
 
-    override fun selectLinksForMasterUid(masterUid: String): List<O> {
+    override suspend fun selectLinksForMasterUid(masterUid: String): List<O> {
         return selectWhere("$masterColumn='$masterUid'")
     }
 }

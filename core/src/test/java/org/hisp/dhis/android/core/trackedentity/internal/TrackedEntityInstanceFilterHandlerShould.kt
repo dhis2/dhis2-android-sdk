@@ -59,7 +59,7 @@ class TrackedEntityInstanceFilterHandlerShould {
 
     @Before
     @Throws(Exception::class)
-    fun setUp() {
+    fun setUp() = runTest {
         trackedEntityInstanceFilterHandler = TrackedEntityInstanceFilterHandler(
             trackedEntityInstanceFilterStore,
             trackedEntityInstanceEventFilterHandler,

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.period.internal
 import com.google.common.truth.Truth.assertThat
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
@@ -41,7 +42,7 @@ import java.util.*
 class PeriodHelperIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() {
 
     @Test
-    fun should_not_crash_when_creating_same_period() {
+    fun should_not_crash_when_creating_same_period() = runTest {
         val date = Date()
 
         val s1 = Single.fromCallable {

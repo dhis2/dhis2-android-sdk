@@ -79,7 +79,7 @@ class EnrollmentImportHandlerShould {
 
     @Before
     @Throws(Exception::class)
-    fun setUp() {
+    fun setUp() = runTest {
         enrollmentImportHandler = EnrollmentImportHandler(
             enrollmentStore,
             eventImportHandler,

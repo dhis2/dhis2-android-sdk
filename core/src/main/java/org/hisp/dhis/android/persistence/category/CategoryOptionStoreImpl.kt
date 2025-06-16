@@ -30,17 +30,18 @@ package org.hisp.dhis.android.persistence.category
 
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.category.internal.CategoryOptionStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
 
 internal class CategoryOptionStoreImpl(
     val dao: CategoryOptionDao,
-) : IdentifiableObjectStoreImpl<CategoryOption, CategoryOptionDB>(
+) : CategoryOptionStore, IdentifiableObjectStoreImpl<CategoryOption, CategoryOptionDB>(
     dao,
     CategoryOption::toDB,
     SQLStatementBuilderImpl(CategoryOptionTableInfo.TABLE_INFO),
 ) {
-    suspend fun getForCategoryOptionCombo(categoryOptionComboUid: String): List<CategoryOption> {
+    override suspend fun getForCategoryOptionCombo(categoryOptionComboUid: String): List<CategoryOption> {
         val projection = LinkTableChildProjection(
             CategoryOptionTableInfo.TABLE_INFO,
             CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION_COMBO,
@@ -54,7 +55,7 @@ internal class CategoryOptionStoreImpl(
         return selectRawQuery(query)
     }
 
-    suspend fun getForCategory(categoryUid: String): List<CategoryOption> {
+    override suspend fun getForCategory(categoryUid: String): List<CategoryOption> {
         val projection = LinkTableChildProjection(
             CategoryOptionTableInfo.TABLE_INFO,
             CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY,

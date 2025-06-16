@@ -30,6 +30,7 @@ package org.hisp.dhis.android.persistence.dataelement
 
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
 import org.hisp.dhis.android.persistence.dataset.SectionDataElementLinkTableInfo
@@ -37,12 +38,12 @@ import org.hisp.dhis.android.persistence.program.ProgramStageSectionDataElementL
 
 internal class DataElementStoreImpl(
     val dao: DataElementDao,
-) : IdentifiableObjectStoreImpl<DataElement, DataElementDB>(
+) : DataElementStore, IdentifiableObjectStoreImpl<DataElement, DataElementDB>(
     dao,
     DataElement::toDB,
     SQLStatementBuilderImpl(DataElementTableInfo.TABLE_INFO),
 ) {
-    suspend fun getForSection(sectionUid: String): List<DataElement> {
+    override suspend fun getForSection(sectionUid: String): List<DataElement> {
         val projection = LinkTableChildProjection(
             org.hisp.dhis.android.core.dataelement.DataElementTableInfo.TABLE_INFO,
             SectionDataElementLinkTableInfo.Columns.SECTION,
@@ -59,7 +60,7 @@ internal class DataElementStoreImpl(
         return selectRawQuery(query)
     }
 
-    suspend fun getForProgramStageSection(programStageSection: String): List<DataElement> {
+    override suspend fun getForProgramStageSection(programStageSection: String): List<DataElement> {
         val projection = LinkTableChildProjection(
             org.hisp.dhis.android.core.dataelement.DataElementTableInfo.TABLE_INFO,
             ProgramStageSectionDataElementLinkTableInfo.Columns.PROGRAM_STAGE_SECTION,

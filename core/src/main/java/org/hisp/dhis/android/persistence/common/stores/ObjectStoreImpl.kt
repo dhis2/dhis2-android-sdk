@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.persistence.common.stores
 
+import android.content.ContentValues
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.MapperToDB
@@ -38,24 +40,29 @@ internal open class ObjectStoreImpl<D : CoreObject, P : EntityDB<D>>(
     protected val objectDao: ObjectDao<P>,
     protected val mapper: MapperToDB<D, P>,
     override val builder: ReadOnlySQLStatementBuilder,
-) : ReadableStoreImpl<D, P>(objectDao, builder), MapperToDB<D, P> by mapper {
+) : ObjectStore<D>, ReadableStoreImpl<D, P>(objectDao, builder), MapperToDB<D, P> by mapper {
 
-    suspend fun selectStringColumnsWhereClause(column: String, clause: String): List<String> {
+    override suspend fun selectStringColumnsWhereClause(column: String, clause: String): List<String> {
         val query = builder.selectStringColumn(column, clause)
         return objectDao.stringListRawQuery(query)
     }
 
-    open suspend fun insert(domainObj: D): Long {
-        return objectDao.insert(domainObj.toDB())
-    }
-
-    suspend fun insert(objects: Collection<D>) {
-        objectDao.insert(objects.map { it.toDB() })
-    }
-
-    suspend fun deleteTable(): Int {
+    override suspend fun delete(): Int {
         val query = builder.deleteTable()
         return objectDao.intRawQuery(query)
+    }
+
+    override suspend fun deleteById(o: D): Boolean {
+        val entityDB = o.toDB()
+        return objectDao.delete(entityDB) > 0
+    }
+
+    open override suspend fun insert(o: D): Long {
+        return objectDao.insert(o.toDB())
+    }
+
+    override suspend fun insert(objects: Collection<D>) {
+        objectDao.insert(objects.map { it.toDB() })
     }
 
     suspend fun deleteByEntity(domainObj: D): Boolean {
@@ -63,12 +70,19 @@ internal open class ObjectStoreImpl<D : CoreObject, P : EntityDB<D>>(
         return objectDao.delete(entityDB) > 0
     }
 
-    suspend fun deleteWhere(clause: String): Boolean {
+    override suspend fun deleteWhere(clause: String): Boolean {
         val query = builder.deleteWhere(clause)
         return objectDao.intRawQuery(query) > 0
     }
 
-    suspend fun deleteWhereIfExists(whereClause: String) {
+    override suspend fun updateWhere(updates: ContentValues, whereClause: String): Int {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun deleteWhereIfExists(whereClause: String) {
         deleteWhere(whereClause)
     }
+
+    override val isReady: Boolean
+        get() = TODO("Not yet implemented")
 }

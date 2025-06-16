@@ -28,41 +28,20 @@
 
 package org.hisp.dhis.android.persistence.category
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLink
 import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLinkTableInfo
+import org.hisp.dhis.android.core.category.internal.CategoryOptionOrganisationUnitLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
 
 internal class CategoryOptionOrganisationUnitLinkStoreImpl(
     val dao: CategoryOptionOrganisationUnitLinkDao,
-) : LinkStoreImpl<CategoryOptionOrganisationUnitLink, CategoryOptionOrganisationUnitLinkDB>(
-    dao,
-    CategoryOptionOrganisationUnitLink::toDB,
-    LinkSQLStatementBuilderImpl(
-        CategoryOptionOrganisationUnitLinkTableInfo.TABLE_INFO,
-        CategoryOptionOrganisationUnitLinkTableInfo.Columns.CATEGORY_OPTION,
-    ),
-) {
-    suspend fun getLinksForCategoryOption(categoryOptionUid: String): List<CategoryOptionOrganisationUnitLink> {
-        val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(
-                CategoryOptionOrganisationUnitLinkTableInfo.Columns.CATEGORY_OPTION,
-                categoryOptionUid,
-            ).build()
-        val query = builder.selectWhere(whereClause)
-        val dbEntities = dao.objectListRawQuery(query)
-        return dbEntities.map { it.toDomain() }
-    }
-
-    suspend fun getLinksForOrganisationUnit(organisationUnitUid: String): List<CategoryOptionOrganisationUnitLink> {
-        val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(
-                CategoryOptionOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
-                organisationUnitUid,
-            ).build()
-        val query = builder.selectWhere(whereClause)
-        val dbEntities = dao.objectListRawQuery(query)
-        return dbEntities.map { it.toDomain() }
-    }
-}
+) : CategoryOptionOrganisationUnitLinkStore,
+    LinkStoreImpl<CategoryOptionOrganisationUnitLink, CategoryOptionOrganisationUnitLinkDB>(
+        dao,
+        CategoryOptionOrganisationUnitLink::toDB,
+        LinkSQLStatementBuilderImpl(
+            CategoryOptionOrganisationUnitLinkTableInfo.TABLE_INFO,
+            CategoryOptionOrganisationUnitLinkTableInfo.Columns.CATEGORY_OPTION,
+        ),
+    )

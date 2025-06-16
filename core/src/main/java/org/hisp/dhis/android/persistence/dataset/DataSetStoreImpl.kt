@@ -29,12 +29,13 @@
 package org.hisp.dhis.android.persistence.dataset
 
 import org.hisp.dhis.android.core.dataset.DataSet
+import org.hisp.dhis.android.core.dataset.internal.DataSetStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
 
 internal class DataSetStoreImpl(
     val dao: DataSetDao,
-) : IdentifiableObjectStoreImpl<DataSet, DataSetDB>(
+) : DataSetStore, IdentifiableObjectStoreImpl<DataSet, DataSetDB>(
     dao,
     DataSet::toDB,
     SQLStatementBuilderImpl(DataSetTableInfo.TABLE_INFO),

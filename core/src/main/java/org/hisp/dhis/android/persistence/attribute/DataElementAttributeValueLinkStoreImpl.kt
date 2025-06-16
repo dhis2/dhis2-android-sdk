@@ -30,12 +30,13 @@ package org.hisp.dhis.android.persistence.attribute
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLink
+import org.hisp.dhis.android.core.attribute.internal.DataElementAttributeValueLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
 
 internal class DataElementAttributeValueLinkStoreImpl(
     val dao: DataElementAttributeValueLinkDao,
-) : LinkStoreImpl<DataElementAttributeValueLink, DataElementAttributeValueLinkDB>(
+) : DataElementAttributeValueLinkStore, LinkStoreImpl<DataElementAttributeValueLink, DataElementAttributeValueLinkDB>(
     dao,
     DataElementAttributeValueLink::toDB,
     LinkSQLStatementBuilderImpl(
@@ -43,7 +44,7 @@ internal class DataElementAttributeValueLinkStoreImpl(
         DataElementAttributeValueLinkTableInfo.Columns.DATA_ELEMENT,
     ),
 ) {
-    suspend fun getLinksForDataElement(dataElementUid: String): List<DataElementAttributeValueLink> {
+    override suspend fun getLinksForDataElement(dataElementUid: String): List<DataElementAttributeValueLink> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(
                 DataElementAttributeValueLinkTableInfo.Columns.DATA_ELEMENT,

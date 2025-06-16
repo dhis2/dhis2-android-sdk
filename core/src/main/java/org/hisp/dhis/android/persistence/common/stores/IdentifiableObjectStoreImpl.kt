@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.common.stores
 
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.CoreObject
@@ -41,35 +42,36 @@ internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
     protected val identifiableObjectDao: ObjectDao<P>,
     mapper: MapperToDB<D, P>,
     override val builder: SQLStatementBuilder,
-) : ObjectStoreImpl<D, P>(identifiableObjectDao, mapper, builder) where D : CoreObject, D : ObjectWithUidInterface {
+) : IdentifiableObjectStore<D>,
+    ObjectStoreImpl<D, P>(identifiableObjectDao, mapper, builder) where D : CoreObject, D : ObjectWithUidInterface {
 
     @Throws(RuntimeException::class)
-    override suspend fun insert(domainObj: D): Long {
-        CollectionsHelper.isNull(domainObj)
-        CollectionsHelper.isNull(domainObj.uid())
-        return super.insert(domainObj)
+    override suspend fun insert(o: D): Long {
+        CollectionsHelper.isNull(o)
+        CollectionsHelper.isNull(o.uid())
+        return super.insert(o)
     }
 
     @Throws(RuntimeException::class)
-    suspend fun selectUids(): List<String> {
+    override suspend fun selectUids(): List<String> {
         val query = builder.selectUids()
         return identifiableObjectDao.stringListRawQuery(query)
     }
 
     @Throws(RuntimeException::class)
-    suspend fun selectUidsWhere(whereClause: String): List<String> {
+    override suspend fun selectUidsWhere(whereClause: String): List<String> {
         val query = builder.selectUidsWhere(whereClause)
         return identifiableObjectDao.stringListRawQuery(query)
     }
 
     @Throws(RuntimeException::class)
-    suspend fun selectUidsWhere(whereClause: String, orderByClause: String): List<String> {
+    override suspend fun selectUidsWhere(whereClause: String, orderByClause: String?): List<String> {
         val query = builder.selectUidsWhere(whereClause, orderByClause)
         return identifiableObjectDao.stringListRawQuery(query)
     }
 
     @Throws(RuntimeException::class)
-    suspend fun selectByUid(uid: String): D? {
+    override suspend fun selectByUid(uid: String): D? {
         CollectionsHelper.isNull(uid)
         val query = builder.selectByUid(uid)
         val dbEntity = identifiableObjectDao.objectRawQuery(query)
@@ -77,8 +79,8 @@ internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
     }
 
     @Throws(RuntimeException::class)
-    suspend fun selectByUids(uids: List<String>): List<D> {
-        val whereClause = "uid IN (${uids.joinToString(",") { "'$it'" }})"
+    override suspend fun selectByUids(uid: List<String>): List<D> {
+        val whereClause = "uid IN (${uid.joinToString(",") { "'$it'" }})"
         val query = builder.selectWhere(whereClause)
         val dbEntities = identifiableObjectDao.objectListRawQuery(query)
         return dbEntities.map { it.toDomain() }
@@ -86,9 +88,9 @@ internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
 
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionThrown")
-    suspend fun update(domainObj: D) {
-        CollectionsHelper.isNull(domainObj)
-        val entity = domainObj.toDB()
+    override suspend fun update(o: D) {
+        CollectionsHelper.isNull(o)
+        val entity = o.toDB()
         val updated = identifiableObjectDao.update(entity)
         if (updated == 0) {
             throw RuntimeException("No rows affected")
@@ -97,19 +99,19 @@ internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
 
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionCaught")
-    suspend fun updateOrInsert(domainObj: D): HandleAction {
+    override suspend fun updateOrInsert(o: D): HandleAction {
         return try {
-            update(domainObj)
+            update(o)
             HandleAction.Update
         } catch (e: Exception) {
-            insert(domainObj)
+            insert(o)
             HandleAction.Insert
         }
     }
 
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionThrown")
-    suspend fun delete(uid: String) {
+    override suspend fun delete(uid: String) {
         CollectionsHelper.isNull(uid)
         val query = builder.deleteByUid(uid)
         val deleted = identifiableObjectDao.intRawQuery(query)
@@ -120,7 +122,7 @@ internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
 
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionCaught")
-    suspend fun deleteIfExists(uid: String) {
+    override suspend fun deleteIfExists(uid: String) {
         try {
             delete(uid)
         } catch (e: RuntimeException) {

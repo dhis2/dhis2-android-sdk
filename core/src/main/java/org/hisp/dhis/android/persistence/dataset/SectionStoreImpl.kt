@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.persistence.dataset
 
 import org.hisp.dhis.android.core.dataset.Section
+import org.hisp.dhis.android.core.dataset.internal.SectionStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilder
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
@@ -36,7 +37,7 @@ import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreIm
 internal class SectionStoreImpl(
     val dao: SectionDao,
     override val builder: SQLStatementBuilder,
-) : IdentifiableObjectStoreImpl<Section, SectionDB>(
+) : SectionStore, IdentifiableObjectStoreImpl<Section, SectionDB>(
     dao,
     Section::toDB,
     SQLStatementBuilderImpl(SectionTableInfo.TABLE_INFO),

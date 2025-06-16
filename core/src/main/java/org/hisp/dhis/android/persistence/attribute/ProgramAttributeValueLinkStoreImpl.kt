@@ -30,12 +30,13 @@ package org.hisp.dhis.android.persistence.attribute
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.attribute.ProgramAttributeValueLink
+import org.hisp.dhis.android.core.attribute.internal.ProgramAttributeValueLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
 
 internal class ProgramAttributeValueLinkStoreImpl(
     val dao: ProgramAttributeValueLinkDao,
-) : LinkStoreImpl<ProgramAttributeValueLink, ProgramAttributeValueLinkDB>(
+) : ProgramAttributeValueLinkStore, LinkStoreImpl<ProgramAttributeValueLink, ProgramAttributeValueLinkDB>(
     dao,
     ProgramAttributeValueLink::toDB,
     LinkSQLStatementBuilderImpl(
@@ -43,7 +44,7 @@ internal class ProgramAttributeValueLinkStoreImpl(
         ProgramAttributeValueLinkTableInfo.Columns.PROGRAM,
     ),
 ) {
-    suspend fun getLinksForProgram(programUid: String): List<ProgramAttributeValueLink> {
+    override suspend fun getLinksForProgram(programUid: String): List<ProgramAttributeValueLink> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(
                 ProgramAttributeValueLinkTableInfo.Columns.PROGRAM,

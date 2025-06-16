@@ -29,14 +29,15 @@
 package org.hisp.dhis.android.persistence.dataapproval
 
 import org.hisp.dhis.android.core.dataapproval.DataApproval
+import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilder
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
-import org.hisp.dhis.android.persistence.common.stores.ObjectStoreImpl
+import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 
 internal class DataApprovalStoreImpl(
     val dao: DataApprovalDao,
     override val builder: SQLStatementBuilder,
-) : ObjectStoreImpl<DataApproval, DataApprovalDB>(
+) : DataApprovalStore, ObjectWithoutUidStoreImpl<DataApproval, DataApprovalDB>(
     dao,
     DataApproval::toDB,
     SQLStatementBuilderImpl(DataApprovalTableInfo.TABLE_INFO),

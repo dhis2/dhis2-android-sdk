@@ -65,8 +65,16 @@ class MockLocalDbRepository : LocalDbRepository {
         return Single.fromCallable { gatewayNumber ?: "" }
     }
 
+    override suspend fun getGatewayNumberSuspend(): String {
+        return gatewayNumber ?: ""
+    }
+
     override fun setGatewayNumber(number: String): Completable {
         return Completable.fromAction { gatewayNumber = number }
+    }
+
+    override suspend fun setGatewayNumberSuspend(number: String) {
+        gatewayNumber = number
     }
 
     override fun deleteGatewayNumber(): Completable {
@@ -75,6 +83,10 @@ class MockLocalDbRepository : LocalDbRepository {
 
     override fun getWaitingResultTimeout(): Single<Int> {
         return Single.fromCallable { resultWaitingTimeout }
+    }
+
+    override suspend fun getWaitingResultTimeoutSuspend(): Int {
+        return resultWaitingTimeout
     }
 
     override fun setWaitingResultTimeout(timeoutSeconds: Int): Completable {
@@ -87,6 +99,10 @@ class MockLocalDbRepository : LocalDbRepository {
 
     override fun getConfirmationSenderNumber(): Single<String> {
         return Single.fromCallable { confirmationSenderNumber ?: "" }
+    }
+
+    override suspend fun getConfirmationSenderNumberSuspend(): String {
+        return confirmationSenderNumber ?: ""
     }
 
     override fun setConfirmationSenderNumber(number: String): Completable {
@@ -173,6 +189,10 @@ class MockLocalDbRepository : LocalDbRepository {
 
     override fun getWaitingForResultEnabled(): Single<Boolean> {
         return Single.fromCallable { waitingForResult }
+    }
+
+    override suspend fun getWaitingForResultEnabledSuspend(): Boolean {
+        return waitingForResult
     }
 
     override fun getOngoingSubmissions(): Single<Map<Int, SubmissionType>> {

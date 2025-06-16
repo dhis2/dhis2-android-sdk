@@ -30,14 +30,15 @@ package org.hisp.dhis.android.persistence.constant
 
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.constant.internal.ConstantStore
-import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilder
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
 
 internal class ConstantStoreImpl(
-    val constantDao: ConstantDao,
-    override val builder: SQLStatementBuilder,
+    val dao: ConstantDao,
 ) : ConstantStore, IdentifiableObjectStoreImpl<Constant, ConstantDB>(
-    constantDao,
+    dao,
     Constant::toDB,
-    builder,
+    SQLStatementBuilderImpl(
+        ConstantTableInfo.TABLE_INFO
+    ),
 )

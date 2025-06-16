@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.handlers.internal
 
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
@@ -52,7 +51,7 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
     @JvmSuppressWildcards
     protected suspend fun handle(
         o: O?,
-        transformer: (O) -> O,
+        transformer: suspend (O) -> O,
         oTransformedCollection: MutableList<O>,
         params: IdentifiableDataHandlerParams,
     ) {
@@ -66,7 +65,7 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
     @JvmSuppressWildcards
     protected suspend fun handle(
         o: O?,
-        transformer: (O) -> O,
+        transformer: suspend (O) -> O,
         oTransformedCollection: MutableList<O>,
         params: IdentifiableDataHandlerParams,
         relatives: RelationshipItemRelatives?,
@@ -78,7 +77,7 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         oTransformedCollection.add(oTransformed)
     }
 
-    private suspend fun handleInternal(o: O, transformer: (O) -> O, params: IdentifiableDataHandlerParams): O {
+    private suspend fun handleInternal(o: O, transformer: suspend (O) -> O, params: IdentifiableDataHandlerParams): O {
         val o2 = beforeObjectHandled(o, params)
         val o3 = transformer(o2)
         val action = deleteOrPersist(o3)
@@ -88,7 +87,7 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
 
     private suspend fun handleInternal(
         o: O,
-        transformer: (O) -> O,
+        transformer: suspend (O) -> O,
         params: IdentifiableDataHandlerParams,
         relatives: RelationshipItemRelatives?,
     ): O {
@@ -108,12 +107,13 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         if (oCollection == null) {
             return
         }
-        val transformer =
+        val transformer: suspend (O) -> O =
             if (params.asRelationship) {
                 relationshipTransformer()
             } else {
                 { o: O -> addSyncedState(o) }
             }
+
         val preHandledCollection = beforeCollectionHandled(oCollection, params)
         val transformedCollection: MutableList<O> = ArrayList(preHandledCollection.size)
         for (o in preHandledCollection) {
@@ -122,9 +122,9 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         afterCollectionHandled(transformedCollection, params)
     }
 
-    private fun relationshipTransformer(): (O) -> O {
+    private fun relationshipTransformer(): suspend (O) -> O {
         return { o: O ->
-            val currentState = runBlocking { store.getSyncState(o.uid()) }
+            val currentState = store.getSyncState(o.uid())
             if (currentState == State.RELATIONSHIP || currentState == null) {
                 addRelationshipState(o)
             } else {
@@ -234,8 +234,8 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
 
         return os.filter { o ->
             !storedObjectUids.contains(o.uid()) ||
-                allowedObjectUids.contains(o.uid()) ||
-                CollectionsHelper.isDeleted(o)
+                    allowedObjectUids.contains(o.uid()) ||
+                    CollectionsHelper.isDeleted(o)
         }
     }
 

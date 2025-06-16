@@ -29,12 +29,13 @@
 package org.hisp.dhis.android.persistence.dataset
 
 import org.hisp.dhis.android.core.dataset.internal.SectionIndicatorLink
+import org.hisp.dhis.android.core.dataset.internal.SectionIndicatorLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
 
 internal class SectionIndicatorLinkStoreImpl(
     val dao: SectionIndicatorLinkDao,
-) : LinkStoreImpl<SectionIndicatorLink, SectionIndicatorLinkDB>(
+) : SectionIndicatorLinkStore, LinkStoreImpl<SectionIndicatorLink, SectionIndicatorLinkDB>(
     dao,
     SectionIndicatorLink::toDB,
     LinkSQLStatementBuilderImpl(

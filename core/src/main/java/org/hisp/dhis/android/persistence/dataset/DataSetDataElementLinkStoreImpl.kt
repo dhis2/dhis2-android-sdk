@@ -30,12 +30,13 @@ package org.hisp.dhis.android.persistence.dataset
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.dataset.DataSetElement
+import org.hisp.dhis.android.core.dataset.internal.DataSetElementStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
 
 internal class DataSetDataElementLinkStoreImpl(
     val dao: DataSetDataElementLinkDao,
-) : LinkStoreImpl<DataSetElement, DataSetDataElementLinkDB>(
+) : DataSetElementStore, LinkStoreImpl<DataSetElement, DataSetDataElementLinkDB>(
     dao,
     DataSetElement::toDB,
     LinkSQLStatementBuilderImpl(
@@ -43,7 +44,7 @@ internal class DataSetDataElementLinkStoreImpl(
         DataSetDataElementLinkTableInfo.Columns.DATA_SET,
     ),
 ) {
-    suspend fun getForDataSet(dataSetUid: String): List<DataSetElement> {
+    override suspend fun getForDataSet(dataSetUid: String): List<DataSetElement> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(DataSetDataElementLinkTableInfo.Columns.DATA_SET, dataSetUid)
             .build()

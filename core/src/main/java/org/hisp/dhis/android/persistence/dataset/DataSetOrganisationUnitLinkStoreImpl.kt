@@ -31,12 +31,13 @@ package org.hisp.dhis.android.persistence.dataset
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink
+import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
 
 internal class DataSetOrganisationUnitLinkStoreImpl(
     val dao: DataSetOrganisationUnitLinkDao,
-) : LinkStoreImpl<DataSetOrganisationUnitLink, DataSetOrganisationUnitLinkDB>(
+) : DataSetOrganisationUnitLinkStore, LinkStoreImpl<DataSetOrganisationUnitLink, DataSetOrganisationUnitLinkDB>(
     dao,
     DataSetOrganisationUnitLink::toDB,
     LinkSQLStatementBuilderImpl(
@@ -44,7 +45,7 @@ internal class DataSetOrganisationUnitLinkStoreImpl(
         DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
     ),
 ) {
-    suspend fun getForOrganisationUnit(orgUnitUid: String): List<ObjectWithUid> {
+    override suspend fun getForOrganisationUnit(orgUnitUid: String): List<ObjectWithUid> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT, orgUnitUid)
             .build()

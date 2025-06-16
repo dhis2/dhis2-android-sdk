@@ -31,17 +31,18 @@ package org.hisp.dhis.android.persistence.dataset
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.dataset.DataInputPeriod
 import org.hisp.dhis.android.core.dataset.DataInputPeriodTableInfo
-import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
-import org.hisp.dhis.android.persistence.common.stores.ObjectStoreImpl
+import org.hisp.dhis.android.core.dataset.internal.DataInputPeriodStore
+import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
 
 internal class DataInputPeriodStoreImpl(
     val dao: DataInputPeriodDao,
-) : ObjectStoreImpl<DataInputPeriod, DataInputPeriodDB>(
+) : DataInputPeriodStore, LinkStoreImpl<DataInputPeriod, DataInputPeriodDB>(
     dao,
     DataInputPeriod::toDB,
-    SQLStatementBuilderImpl(DataInputPeriodTableInfo.TABLE_INFO),
+    LinkSQLStatementBuilderImpl(DataInputPeriodTableInfo.TABLE_INFO, DataInputPeriodTableInfo.Columns.DATA_SET),
 ) {
-    suspend fun getForDataSet(dataSetUid: String): List<DataInputPeriod> {
+    override suspend fun getForDataSet(dataSetUid: String): List<DataInputPeriod> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(DataInputPeriodTableInfo.Columns.DATA_SET, dataSetUid)
             .build()

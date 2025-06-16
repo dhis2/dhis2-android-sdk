@@ -30,12 +30,13 @@ package org.hisp.dhis.android.persistence.dataset
 
 import org.hisp.dhis.android.core.dataset.SectionDataElementLink
 import org.hisp.dhis.android.core.dataset.SectionDataElementLinkTableInfo
+import org.hisp.dhis.android.core.dataset.internal.SectionDataElementLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
 
 internal class SectionDataElementLinkStoreImpl(
     val dao: SectionDataElementLinkDao,
-) : LinkStoreImpl<SectionDataElementLink, SectionDataElementLinkDB>(
+) : SectionDataElementLinkStore, LinkStoreImpl<SectionDataElementLink, SectionDataElementLinkDB>(
     dao,
     SectionDataElementLink::toDB,
     LinkSQLStatementBuilderImpl(

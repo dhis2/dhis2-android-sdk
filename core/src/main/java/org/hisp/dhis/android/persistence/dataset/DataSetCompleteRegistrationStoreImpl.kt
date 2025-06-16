@@ -31,33 +31,35 @@ package org.hisp.dhis.android.persistence.dataset
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
+import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitTableInfo
 
 internal class DataSetCompleteRegistrationStoreImpl(
     val dao: DataSetCompleteRegistrationDao,
-) : ObjectWithoutUidStoreImpl<DataSetCompleteRegistration, DataSetCompleteRegistrationDB>(
-    dao,
-    DataSetCompleteRegistration::toDB,
-    SQLStatementBuilderImpl(DataSetCompleteRegistrationTableInfo.TABLE_INFO),
-) {
+) : DataSetCompleteRegistrationStore,
+    ObjectWithoutUidStoreImpl<DataSetCompleteRegistration, DataSetCompleteRegistrationDB>(
+        dao,
+        DataSetCompleteRegistration::toDB,
+        SQLStatementBuilderImpl(DataSetCompleteRegistrationTableInfo.TABLE_INFO),
+    ) {
 
     /**
      * @param dataSetCompleteRegistration DataSetCompleteRegistration element you want to update
      * @param newState                    The new state to be set for the DataValue
      */
-    suspend fun setState(dataSetCompleteRegistration: DataSetCompleteRegistration, newState: State?) {
+    override suspend fun setState(dataSetCompleteRegistration: DataSetCompleteRegistration, newState: State?) {
         val updatedDataSetCompleteRegistration = dataSetCompleteRegistration.toBuilder().syncState(newState).build()
         updateWhere(updatedDataSetCompleteRegistration)
     }
 
-    suspend fun setDeleted(dataSetCompleteRegistration: DataSetCompleteRegistration) {
+    override suspend fun setDeleted(dataSetCompleteRegistration: DataSetCompleteRegistration) {
         val updatedDataSetCompleteRegistration = dataSetCompleteRegistration.toBuilder().deleted(true).build()
         updateWhere(updatedDataSetCompleteRegistration)
     }
 
-    suspend fun removeNotPresentAndSynced(
+    override suspend fun removeNotPresentAndSynced(
         dataSetUids: Collection<String>,
         periodIds: Collection<String>,
         rootOrgunitUid: String,
@@ -77,7 +79,7 @@ internal class DataSetCompleteRegistrationStoreImpl(
         return deleteWhere(whereClause.build())
     }
 
-    suspend fun isBeingUpload(dscr: DataSetCompleteRegistration): Boolean {
+    override suspend fun isBeingUpload(dscr: DataSetCompleteRegistration): Boolean {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.PERIOD, dscr.period())
             .appendKeyStringValue(DataSetCompleteRegistrationTableInfo.Columns.DATA_SET, dscr.dataSet())

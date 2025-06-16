@@ -102,12 +102,10 @@ class EventCollectionRepository internal constructor(
     override fun upload(): Observable<D2Progress> {
         val progressFlow: Flow<D2Progress> = flow {
             emitAll(jobQueryCall.queryPendingJobs().asFlow())
-
             val events = byAggregatedSyncState()
                 .`in`(*uploadableStatesIncludingError())
                 .byEnrollmentUid().isNull
                 .blockingGetWithoutChildren()
-
             emitAll(postCall.uploadEvents(events).asFlow())
         }
 

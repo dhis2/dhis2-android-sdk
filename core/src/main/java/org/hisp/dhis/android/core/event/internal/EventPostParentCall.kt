@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.event.internal
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.trackedentity.internal.OldTrackerImporterPostCall
@@ -43,9 +44,11 @@ internal class EventPostParentCall internal constructor(
     private val trackerParentCallHelper: TrackerPostParentCallHelper,
 ) {
 
-    suspend fun uploadEvents(events: List<Event>): Flow<D2Progress> = when {
-        events.isEmpty() -> emptyFlow()
-        trackerParentCallHelper.useNewTrackerImporter() -> trackerImporterCall.uploadEvents(events)
-        else -> oldTrackerImporterCall.uploadEvents(events)
+    fun uploadEvents(events: List<Event>): Flow<D2Progress> = flow {
+        when {
+            events.isEmpty() -> return@flow
+            trackerParentCallHelper.useNewTrackerImporter() -> emitAll(trackerImporterCall.uploadEvents(events))
+            else -> emitAll(oldTrackerImporterCall.uploadEvents(events))
+        }
     }
 }

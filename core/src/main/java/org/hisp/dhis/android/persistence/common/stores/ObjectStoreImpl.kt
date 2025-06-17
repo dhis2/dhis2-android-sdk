@@ -79,7 +79,7 @@ internal open class ObjectStoreImpl<D : CoreObject, P : EntityDB<D>>(
     override suspend fun updateWhere(updates: ContentValues, whereClause: String): Int {
         val updatesMap = ArrayMap<String, Any>()
         for (key in updates.keySet()) {
-            updates.get(key)?.let { updatesMap[key] = it }
+            updates[key]?.let { updatesMap[key] = it }
         }
         val query = builder.updateWhere(updatesMap, whereClause)
         return objectDao.intRawQuery(query)

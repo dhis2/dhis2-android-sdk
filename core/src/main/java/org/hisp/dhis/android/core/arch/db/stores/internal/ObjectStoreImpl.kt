@@ -128,14 +128,6 @@ internal open class ObjectStoreImpl<O : CoreObject> internal constructor(
         return deleteWhere(CoreColumns.ID + "='" + o.id() + "';")
     }
 
-    protected suspend fun popOneWhere(whereClause: String): O? {
-        val m = selectOneWhere(whereClause)
-        if (m != null) {
-            deleteById(m)
-        }
-        return m
-    }
-
     override suspend fun deleteWhere(clause: String): Boolean {
         return databaseAdapter.delete(builder.getTableName(), clause, null) > 0
     }

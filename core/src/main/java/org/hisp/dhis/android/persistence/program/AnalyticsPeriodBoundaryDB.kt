@@ -50,7 +50,6 @@ internal data class AnalyticsPeriodBoundaryDB(
 
 internal fun AnalyticsPeriodBoundary.toDB(): AnalyticsPeriodBoundaryDB {
     return AnalyticsPeriodBoundaryDB(
-        id = id()?.toInt(),
         programIndicator = programIndicator()!!,
         boundaryTarget = boundaryTarget(),
         analyticsPeriodBoundaryType = analyticsPeriodBoundaryType()?.name,

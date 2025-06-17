@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine.internal
 
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByUid
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.constant.Constant
@@ -58,20 +59,28 @@ internal class ProgramIndicatorEngineImpl(
     private val programStageStore: ProgramStageStore,
 ) : ProgramIndicatorEngine {
 
-    @Deprecated("Deprecated in Java")
-    override suspend fun getProgramIndicatorValue(
+    private suspend fun getProgramIndicatorValueInternal(
         enrollmentUid: String?,
         eventUid: String?,
         programIndicatorUid: String,
     ): String? {
         return when {
-            eventUid != null -> getEventProgramIndicatorValue(eventUid, programIndicatorUid)
-            enrollmentUid != null -> getEnrollmentProgramIndicatorValue(enrollmentUid, programIndicatorUid)
+            eventUid != null -> getEventProgramIndicatorValueInternal(eventUid, programIndicatorUid)
+            enrollmentUid != null -> getEnrollmentProgramIndicatorValueInternal(enrollmentUid, programIndicatorUid)
             else -> return null
         }
     }
 
-    override suspend fun getEnrollmentProgramIndicatorValue(
+    @Deprecated("Deprecated in Java")
+    override fun getProgramIndicatorValue(
+        enrollmentUid: String?,
+        eventUid: String?,
+        programIndicatorUid: String,
+    ): String? {
+        return runBlocking { getProgramIndicatorValueInternal(enrollmentUid, eventUid, programIndicatorUid) }
+    }
+
+    private suspend fun getEnrollmentProgramIndicatorValueInternal(
         enrollmentUid: String,
         programIndicatorUid: String,
     ): String? {
@@ -90,7 +99,11 @@ internal class ProgramIndicatorEngineImpl(
         return evaluateProgramIndicatorContext(programIndicatorContext)
     }
 
-    override suspend fun getEventProgramIndicatorValue(eventUid: String, programIndicatorUid: String): String? {
+    override fun getEnrollmentProgramIndicatorValue(enrollmentUid: String, programIndicatorUid: String): String? {
+        return runBlocking { getEnrollmentProgramIndicatorValueInternal(enrollmentUid, programIndicatorUid) }
+    }
+
+    private suspend fun getEventProgramIndicatorValueInternal(eventUid: String, programIndicatorUid: String): String? {
         val programIndicator = programIndicatorStore.selectByUid(programIndicatorUid) ?: return null
 
         val event = eventRepository
@@ -111,6 +124,10 @@ internal class ProgramIndicatorEngineImpl(
         )
 
         return evaluateProgramIndicatorContext(programIndicatorContext)
+    }
+
+    override fun getEventProgramIndicatorValue(eventUid: String, programIndicatorUid: String): String? {
+        return runBlocking { getEventProgramIndicatorValueInternal(eventUid, programIndicatorUid) }
     }
 
     private suspend fun evaluateProgramIndicatorContext(context: ProgramIndicatorContext): String? {

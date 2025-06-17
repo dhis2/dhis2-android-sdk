@@ -40,7 +40,7 @@ interface ProgramIndicatorEngine {
      
       """,
     )
-    suspend fun getProgramIndicatorValue(
+    fun getProgramIndicatorValue(
         enrollmentUid: String?,
         eventUid: String?,
         programIndicatorUid: String,
@@ -54,7 +54,7 @@ interface ProgramIndicatorEngine {
      * @param programIndicatorUid Program indicator to evaluate
      * @return Program indicator evaluation
      */
-    suspend fun getEnrollmentProgramIndicatorValue(enrollmentUid: String, programIndicatorUid: String): String?
+    fun getEnrollmentProgramIndicatorValue(enrollmentUid: String, programIndicatorUid: String): String?
 
     /**
      * Evaluates a program indicator in the context of an event (single or tracker). This is only intended to
@@ -65,5 +65,5 @@ interface ProgramIndicatorEngine {
      * @param programIndicatorUid Program indicator to evaluate
      * @return Program indicator evaluation
      */
-    suspend fun getEventProgramIndicatorValue(eventUid: String, programIndicatorUid: String): String?
+    fun getEventProgramIndicatorValue(eventUid: String, programIndicatorUid: String): String?
 }

@@ -85,7 +85,7 @@ internal class ProgramIndicatorEvaluator(
         queryMods: QueryMods?,
     ): List<String?> {
         return getFilteredEventUids(programIndicator, evaluationItem, metadata, queryMods).map {
-            programIndicatorEngine.getEventProgramIndicatorValueSuspend(it, programIndicator.uid())
+            programIndicatorEngine.getEventProgramIndicatorValue(it, programIndicator.uid())
         }
     }
 
@@ -109,7 +109,7 @@ internal class ProgramIndicatorEvaluator(
         queryMods: QueryMods?,
     ): List<String?> {
         return getFilteredEnrollmentUids(programIndicator, evaluationItem, metadata, queryMods).map {
-            programIndicatorEngine.getEnrollmentProgramIndicatorValueSuspend(it, programIndicator.uid())
+            programIndicatorEngine.getEnrollmentProgramIndicatorValue(it, programIndicator.uid())
         }
     }
 

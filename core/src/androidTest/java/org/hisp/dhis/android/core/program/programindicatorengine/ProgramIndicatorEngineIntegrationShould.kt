@@ -153,7 +153,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         createTrackerEvent(eventUid = event1, programStageUid = programStage1, eventDate = Date())
         insertTrackedEntityDataValue(event1, dataElement1, "4")
         setProgramIndicatorExpression(de(programStage1, dataElement1))
-        val result = programIndicatorEngine.getEnrollmentProgramIndicatorValueSuspend(enrollmentUid, programIndicatorUid)
+        val result = programIndicatorEngine.getEnrollmentProgramIndicatorValue(enrollmentUid, programIndicatorUid)
         assertThat(result).isEqualTo("4")
     }
 
@@ -163,7 +163,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         createTrackerEvent(eventUid = event1, programStageUid = programStage1, eventDate = Date())
         insertTrackedEntityDataValue(event1, dataElement1, "text data-value")
         setProgramIndicatorExpression(de(programStage1, dataElement1))
-        val result = programIndicatorEngine.getEnrollmentProgramIndicatorValueSuspend(enrollmentUid, programIndicatorUid)
+        val result = programIndicatorEngine.getEnrollmentProgramIndicatorValue(enrollmentUid, programIndicatorUid)
         assertThat(result).isEqualTo("text data-value")
     }
 
@@ -174,7 +174,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         insertTrackedEntityDataValue(event1, dataElement1, "5")
         insertTrackedEntityDataValue(event1, dataElement2, "3")
         setProgramIndicatorExpression("${de(programStage1, dataElement1)} * ${de(programStage1, dataElement2)}")
-        val result = programIndicatorEngine.getEnrollmentProgramIndicatorValueSuspend(enrollmentUid, programIndicatorUid)
+        val result = programIndicatorEngine.getEnrollmentProgramIndicatorValue(enrollmentUid, programIndicatorUid)
         assertThat(result).isEqualTo("15")
     }
 
@@ -185,7 +185,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         insertTrackedEntityDataValue(event1, dataElement1, "3")
         insertTrackedEntityDataValue(event1, dataElement2, "5")
         setProgramIndicatorExpression("${de(programStage1, dataElement1)} / ${de(programStage1, dataElement2)}")
-        val result = programIndicatorEngine.getEnrollmentProgramIndicatorValueSuspend(enrollmentUid, programIndicatorUid)
+        val result = programIndicatorEngine.getEnrollmentProgramIndicatorValue(enrollmentUid, programIndicatorUid)
         assertThat(result).isEqualTo("0.6")
     }
 
@@ -214,7 +214,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         insertTrackedEntityDataValue(event2, dataElement1, "2") // Expected as last value
         insertTrackedEntityDataValue(event3, dataElement1, "3")
         setProgramIndicatorExpression(de(programStage1, dataElement1))
-        val result = programIndicatorEngine.getEnrollmentProgramIndicatorValueSuspend(enrollmentUid, programIndicatorUid)
+        val result = programIndicatorEngine.getEnrollmentProgramIndicatorValue(enrollmentUid, programIndicatorUid)
         assertThat(result).isEqualTo("2")
     }
 
@@ -244,7 +244,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         insertTrackedEntityDataValue(event2, dataElement1, "2") // Expected as last value
         insertTrackedEntityDataValue(event3, dataElement1, "3")
         setProgramIndicatorExpression(de(programStage1, dataElement1))
-        val result = programIndicatorEngine.getEnrollmentProgramIndicatorValueSuspend(enrollmentUid, programIndicatorUid)
+        val result = programIndicatorEngine.getEnrollmentProgramIndicatorValue(enrollmentUid, programIndicatorUid)
         assertThat(result).isEqualTo("2")
     }
 
@@ -260,12 +260,12 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
             "(${de(programStage1, dataElement1)} + ${de(programStage2, dataElement2)})" +
                 " / ${att(attribute1)}",
         )
-        val enrollmentValue = programIndicatorEngine.getEnrollmentProgramIndicatorValueSuspend(
+        val enrollmentValue = programIndicatorEngine.getEnrollmentProgramIndicatorValue(
             enrollmentUid,
             programIndicatorUid,
         )
-        val event1Value = programIndicatorEngine.getEventProgramIndicatorValueSuspend(event1, programIndicatorUid)
-        val event2Value = programIndicatorEngine.getEventProgramIndicatorValueSuspend(event2, programIndicatorUid)
+        val event1Value = programIndicatorEngine.getEventProgramIndicatorValue(event1, programIndicatorUid)
+        val event2Value = programIndicatorEngine.getEventProgramIndicatorValue(event2, programIndicatorUid)
         assertThat(enrollmentValue).isEqualTo("3.25")
         assertThat(event1Value).isEqualTo("2.5")
         assertThat(event2Value).isEqualTo("0.75")
@@ -278,7 +278,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         createTrackerEvent(event2, programStage2)
         createTrackerEvent(event3, programStage2, deleted = true)
         setProgramIndicatorExpression(`var`("event_count"))
-        val result = programIndicatorEngine.getEnrollmentProgramIndicatorValueSuspend(
+        val result = programIndicatorEngine.getEnrollmentProgramIndicatorValue(
             enrollmentUid,
             programIndicatorUid,
         )
@@ -294,7 +294,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         setProgramIndicatorExpression(
             "d2:round(${de(programStage1, dataElement1)}) * ${de(programStage1, dataElement2)}",
         )
-        val result = programIndicatorEngine.getEnrollmentProgramIndicatorValueSuspend(enrollmentUid, programIndicatorUid)
+        val result = programIndicatorEngine.getEnrollmentProgramIndicatorValue(enrollmentUid, programIndicatorUid)
         assertThat(result).isEqualTo("15")
     }
 
@@ -305,7 +305,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         val incidentDate = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").parse("2018-05-21T00:00:00.000")
         createEnrollment(enrollmentDate, incidentDate)
         setProgramIndicatorExpression("d2:daysBetween(V{enrollment_date}, V{incident_date})")
-        val result = programIndicatorEngine.getEnrollmentProgramIndicatorValueSuspend(enrollmentUid, programIndicatorUid)
+        val result = programIndicatorEngine.getEnrollmentProgramIndicatorValue(enrollmentUid, programIndicatorUid)
         assertThat(result).isEqualTo("16")
     }
 
@@ -315,7 +315,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         insertTrackedEntityDataValue(event1, dataElement1, "3.0")
         insertTrackedEntityDataValue(event1, dataElement2, "4.0")
         setProgramIndicatorExpression("${de(programStage1, dataElement1)} + ${de(programStage1, dataElement2)}")
-        val result = programIndicatorEngine.getEventProgramIndicatorValueSuspend(event1, programIndicatorUid)
+        val result = programIndicatorEngine.getEventProgramIndicatorValue(event1, programIndicatorUid)
         assertThat(result).isEqualTo("7")
     }
 

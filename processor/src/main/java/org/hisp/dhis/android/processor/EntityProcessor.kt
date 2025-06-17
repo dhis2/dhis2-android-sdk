@@ -98,18 +98,18 @@ class EntityProcessor(
                     override fun all(): Array<String> {
                         return arrayOf(
                             ${columns.joinToString(
-                                separator = "\n                            ",
-                            ) { c ->
-                                "${c.propertyName}," 
-                            }}
+                separator = "\n                            ",
+            ) { c ->
+                "${c.propertyName},"
+            }}
                         )
                     }
                     companion object {
                         ${columns.joinToString(
-                            separator = "\n                        ",
-                        ) { c ->
-                            "const val ${c.propertyName} = \"${c.columnName}\"" 
-                        }}
+                separator = "\n                        ",
+            ) { c ->
+                "const val ${c.propertyName} = \"${c.columnName}\""
+            }}
                     }
                 }
             }

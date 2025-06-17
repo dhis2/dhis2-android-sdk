@@ -40,24 +40,6 @@ interface ProgramIndicatorEngine {
      
       """,
     )
-    suspend fun getProgramIndicatorValueSuspend(
-        enrollmentUid: String?,
-        eventUid: String?,
-        programIndicatorUid: String,
-    ): String?
-
-    /**
-     * @param enrollmentUid Enrollment uid to evaluate the program indicator
-     * @param eventUid Single event to evaluate the program indicator
-     * @param programIndicatorUid Program indicator to evaluate
-     * @return Program indicator evaluation
-     */
-    @Deprecated(
-        """ Use {@link #getEnrollmentProgramIndicatorValue(String, String)} or
-      {@link #getEventProgramIndicatorValue(String, String)} instead.
-     
-      """,
-    )
     fun getProgramIndicatorValue(
         enrollmentUid: String?,
         eventUid: String?,
@@ -72,28 +54,7 @@ interface ProgramIndicatorEngine {
      * @param programIndicatorUid Program indicator to evaluate
      * @return Program indicator evaluation
      */
-    suspend fun getEnrollmentProgramIndicatorValueSuspend(enrollmentUid: String, programIndicatorUid: String): String?
-
-    /**
-     * Evaluates a program indicator in the context of an enrollment. This is only intended to evaluate the
-     * called "inline program indicator" (those indicators that appear at data entry) or line-list indicators.
-     *
-     * @param enrollmentUid Enrollment to evaluate
-     * @param programIndicatorUid Program indicator to evaluate
-     * @return Program indicator evaluation
-     */
     fun getEnrollmentProgramIndicatorValue(enrollmentUid: String, programIndicatorUid: String): String?
-
-    /**
-     * Evaluates a program indicator in the context of an event (single or tracker). This is only intended to
-     * evaluate the called "inline program indicator" (those indicators that appear at data entry) or line-list
-     * indicators.
-     *
-     * @param eventUid Event to evaluate
-     * @param programIndicatorUid Program indicator to evaluate
-     * @return Program indicator evaluation
-     */
-    suspend fun getEventProgramIndicatorValueSuspend(eventUid: String, programIndicatorUid: String): String?
 
     /**
      * Evaluates a program indicator in the context of an event (single or tracker). This is only intended to

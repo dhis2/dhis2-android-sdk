@@ -32,4 +32,4 @@ import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableDeletableDataObjectStoreDao
 
 @Dao
-internal abstract class EventDao : IdentifiableDeletableDataObjectStoreDao<EventDB>
+internal interface EventDao : IdentifiableDeletableDataObjectStoreDao<EventDB>

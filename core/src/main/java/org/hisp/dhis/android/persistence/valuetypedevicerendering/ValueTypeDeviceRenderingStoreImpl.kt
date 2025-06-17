@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.persistence.valuetypedevicerendering
 
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering
-import org.hisp.dhis.android.persistence.common.ValueTypeDeviceRenderingTableInfo
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 

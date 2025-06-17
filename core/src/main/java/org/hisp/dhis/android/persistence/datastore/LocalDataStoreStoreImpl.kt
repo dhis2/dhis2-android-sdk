@@ -34,9 +34,9 @@ import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilde
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 
 internal class LocalDataStoreStoreImpl(
-    val dao: LocalDataStoreDao
+    val dao: LocalDataStoreDao,
 ) : LocalDataStoreStore, ObjectWithoutUidStoreImpl<KeyValuePair, LocalDataStoreDB>(
     dao,
     KeyValuePair::toDB,
-    SQLStatementBuilderImpl(LocalDataStoreTableInfo.TABLE_INFO)
+    SQLStatementBuilderImpl(LocalDataStoreTableInfo.TABLE_INFO),
 )

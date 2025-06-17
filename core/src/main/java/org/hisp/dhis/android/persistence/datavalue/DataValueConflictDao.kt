@@ -32,4 +32,4 @@ import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
 @Dao
-internal abstract class DataValueConflictDao : ObjectDao<DataValueConflictDB>
+internal interface DataValueConflictDao : ObjectDao<DataValueConflictDB>

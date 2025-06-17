@@ -34,9 +34,9 @@ import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilde
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 
 internal class EventSyncStoreImpl(
-    val dao: EventSyncDao
+    val dao: EventSyncDao,
 ) : EventSyncStore, ObjectWithoutUidStoreImpl<EventSync, EventSyncDB>(
     dao,
     EventSync::toDB,
-    SQLStatementBuilderImpl(EventSyncTableInfo.TABLE_INFO)
+    SQLStatementBuilderImpl(EventSyncTableInfo.TABLE_INFO),
 )

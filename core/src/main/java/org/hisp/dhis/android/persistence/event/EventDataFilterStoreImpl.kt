@@ -36,14 +36,17 @@ import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 import org.hisp.dhis.android.persistence.itemfilter.ItemFilterTableInfo
 
 internal class EventDataFilterStoreImpl(
-    val dao: EventDataFilterDao
+    val dao: EventDataFilterDao,
 ) : EventDataFilterStore, ObjectWithoutUidStoreImpl<EventDataFilter, EventDataFilterDB>(
-    dao, EventDataFilter::toDB, SQLStatementBuilderImpl(ItemFilterTableInfo.TABLE_INFO)
+    dao,
+    EventDataFilter::toDB,
+    SQLStatementBuilderImpl(ItemFilterTableInfo.TABLE_INFO),
 ) {
     override suspend fun getForEventFilter(eventFilterUid: String): List<EventDataFilter> {
         val whereClause = WhereClauseBuilder().appendKeyStringValue(
-                ItemFilterTableInfo.Columns.EVENT_FILTER, eventFilterUid
-            ).build()
+            ItemFilterTableInfo.Columns.EVENT_FILTER,
+            eventFilterUid,
+        ).build()
         val query = builder.selectWhere(whereClause)
         return selectRawQuery(query)
     }

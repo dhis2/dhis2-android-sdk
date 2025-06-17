@@ -35,9 +35,9 @@ import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilde
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
 
 internal class EventFilterStoreImpl(
-    val dao: EventFilterDao
+    val dao: EventFilterDao,
 ) : EventFilterStore, IdentifiableObjectStoreImpl<EventFilter, EventFilterDB>(
     dao,
     EventFilter::toDB,
-    SQLStatementBuilderImpl(EventFilterTableInfo.TABLE_INFO)
+    SQLStatementBuilderImpl(EventFilterTableInfo.TABLE_INFO),
 )

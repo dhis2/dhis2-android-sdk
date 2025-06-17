@@ -38,11 +38,11 @@ import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilde
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 
 internal class DataValueStoreImpl(
-    val dao: DataValueDao
+    val dao: DataValueDao,
 ) : DataValueStore, ObjectWithoutUidStoreImpl<DataValue, DataValueDB>(
     dao,
     DataValue::toDB,
-    SQLStatementBuilderImpl(DataValueTableInfo.TABLE_INFO)
+    SQLStatementBuilderImpl(DataValueTableInfo.TABLE_INFO),
 ) {
     override suspend fun getDataValuesWithState(state: State): Collection<DataValue> {
         val whereClause = WhereClauseBuilder()

@@ -44,18 +44,18 @@ import org.hisp.dhis.android.persistence.common.stores.IdentifiableDeletableData
 import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
 
 internal class EventStoreImpl(
-    val dao: EventDao
+    val dao: EventDao,
 ) : EventStore, IdentifiableDeletableDataObjectStoreImpl<Event, EventDB>(
     dao,
     Event::toDB,
-    IdentifiableDeletableDataObjectSQLStatementBuilderImpl(EventTableInfo.TABLE_INFO)
+    IdentifiableDeletableDataObjectSQLStatementBuilderImpl(EventTableInfo.TABLE_INFO),
 ) {
 
     override suspend fun queryEventsAttachedToEnrollmentToPost(): Map<String, List<Event>> {
         val eventsAttachedToEnrollmentsQuery = WhereClauseBuilder()
-            .appendIsNotNullValue(org.hisp.dhis.android.core.event.EventTableInfo.Columns.ENROLLMENT)
+            .appendIsNotNullValue(EventTableInfo.Columns.ENROLLMENT)
             .appendInKeyStringValues(
-                org.hisp.dhis.android.core.event.EventTableInfo.Columns.AGGREGATED_SYNC_STATE,
+                EventTableInfo.Columns.AGGREGATED_SYNC_STATE,
                 asStringList(uploadableStatesIncludingError().toList()),
             ).build()
         val eventList = selectWhere(eventsAttachedToEnrollmentsQuery)
@@ -68,7 +68,7 @@ internal class EventStoreImpl(
             CollectionsHelper.withSingleQuotationMarksArray(asStringList(uploadableStatesIncludingError().toList())),
         )
         val singleEventsToPostQuery = QUERY_SINGLE_EVENTS +
-            " AND (" + org.hisp.dhis.android.core.event.EventTableInfo.Columns.SYNC_STATE + " IN (" + states + "))"
+            " AND (" + EventTableInfo.Columns.SYNC_STATE + " IN (" + states + "))"
         return eventListFromQuery(singleEventsToPostQuery)
     }
 
@@ -82,24 +82,28 @@ internal class EventStoreImpl(
         includeDeleted: Boolean,
     ): List<Event> {
         val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(org.hisp.dhis.android.core.event.EventTableInfo.Columns.ENROLLMENT, enrollmentUid)
-            .appendKeyStringValue(org.hisp.dhis.android.core.event.EventTableInfo.Columns.PROGRAM_STAGE, programStageUid)
+            .appendKeyStringValue(EventTableInfo.Columns.ENROLLMENT, enrollmentUid)
+            .appendKeyStringValue(
+                EventTableInfo.Columns.PROGRAM_STAGE,
+                programStageUid,
+            )
         if (!includeDeleted) {
-            whereClause.appendIsNullOrValue(org.hisp.dhis.android.core.event.EventTableInfo.Columns.DELETED, "0")
+            whereClause.appendIsNullOrValue(EventTableInfo.Columns.DELETED, "0")
         }
-        val query = "SELECT * FROM " + org.hisp.dhis.android.core.event.EventTableInfo.TABLE_INFO.name() + " " +
+        val query = "SELECT * FROM " + EventTableInfo.TABLE_INFO.name() + " " +
             "WHERE " + whereClause.build() +
-            "ORDER BY " + org.hisp.dhis.android.core.event.EventTableInfo.Columns.EVENT_DATE + ", " + org.hisp.dhis.android.core.event.EventTableInfo.Columns.LAST_UPDATED
+            "ORDER BY " + EventTableInfo.Columns.EVENT_DATE + ", " +
+            EventTableInfo.Columns.LAST_UPDATED
         return eventListFromQuery(query)
     }
 
     override suspend fun countEventsForEnrollment(enrollmentUid: String, includeDeleted: Boolean): Int {
         val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(org.hisp.dhis.android.core.event.EventTableInfo.Columns.ENROLLMENT, enrollmentUid)
+            .appendKeyStringValue(EventTableInfo.Columns.ENROLLMENT, enrollmentUid)
         if (!includeDeleted) {
-            whereClause.appendIsNullOrValue(org.hisp.dhis.android.core.event.EventTableInfo.Columns.DELETED, "0")
+            whereClause.appendIsNullOrValue(EventTableInfo.Columns.DELETED, "0")
         }
-        val query = "SELECT * FROM " + org.hisp.dhis.android.core.event.EventTableInfo.TABLE_INFO.name() + " " +
+        val query = "SELECT * FROM " + EventTableInfo.TABLE_INFO.name() + " " +
             "WHERE " + whereClause.build()
         val events = eventListFromQuery(query)
         return events.size
@@ -109,16 +113,16 @@ internal class EventStoreImpl(
         val query = "SELECT COUNT(DISTINCT a." + EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE + ") " +
             "FROM " + EnrollmentTableInfo.TABLE_INFO.name() + " a " +
             "INNER JOIN " +
-            "(SELECT DISTINCT " + org.hisp.dhis.android.core.event.EventTableInfo.Columns.ENROLLMENT +
-            " FROM " + org.hisp.dhis.android.core.event.EventTableInfo.TABLE_INFO.name() + " WHERE $whereClause) b " +
-            "ON a." + IdentifiableColumns.UID + " = b." + org.hisp.dhis.android.core.event.EventTableInfo.Columns.ENROLLMENT
+            "(SELECT DISTINCT " + EventTableInfo.Columns.ENROLLMENT +
+            " FROM " + EventTableInfo.TABLE_INFO.name() + " WHERE $whereClause) b " +
+            "ON a." + IdentifiableColumns.UID + " = b." + EventTableInfo.Columns.ENROLLMENT
         return dao.intRawQuery(RoomRawQuery(query))
     }
 
     override suspend fun queryMissingRelationshipsUids(): List<String> {
         val whereRelationshipsClause = WhereClauseBuilder()
             .appendKeyStringValue(DataColumns.SYNC_STATE, State.RELATIONSHIP)
-            .appendIsNullValue(org.hisp.dhis.android.core.event.EventTableInfo.Columns.ORGANISATION_UNIT)
+            .appendIsNullValue(EventTableInfo.Columns.ORGANISATION_UNIT)
             .build()
         return selectUidsWhere(whereRelationshipsClause)
     }
@@ -148,5 +152,4 @@ internal class EventStoreImpl(
     companion object {
         private const val QUERY_SINGLE_EVENTS = "SELECT Event.* FROM Event WHERE Event.enrollment IS NULL"
     }
-
 }

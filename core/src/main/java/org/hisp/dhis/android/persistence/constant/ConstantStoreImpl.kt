@@ -39,6 +39,6 @@ internal class ConstantStoreImpl(
     dao,
     Constant::toDB,
     SQLStatementBuilderImpl(
-        ConstantTableInfo.TABLE_INFO
+        ConstantTableInfo.TABLE_INFO,
     ),
 )

@@ -34,9 +34,9 @@ import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilde
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 
 internal class AggregatedDataSyncStoreImpl(
-    val dao: AggregatedDataSyncDao
+    val dao: AggregatedDataSyncDao,
 ) : AggregatedDataSyncStore, ObjectWithoutUidStoreImpl<AggregatedDataSync, AggregatedDataSyncDB>(
     dao,
     AggregatedDataSync::toDB,
-    SQLStatementBuilderImpl(AggregatedDataSyncTableInfo.TABLE_INFO)
+    SQLStatementBuilderImpl(AggregatedDataSyncTableInfo.TABLE_INFO),
 )

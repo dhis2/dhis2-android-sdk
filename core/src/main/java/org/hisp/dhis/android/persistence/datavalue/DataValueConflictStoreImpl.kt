@@ -34,9 +34,9 @@ import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilde
 import org.hisp.dhis.android.persistence.common.stores.ObjectStoreImpl
 
 internal class DataValueConflictStoreImpl(
-    val dao: DataValueConflictDao
+    val dao: DataValueConflictDao,
 ) : DataValueConflictStore, ObjectStoreImpl<DataValueConflict, DataValueConflictDB>(
     dao,
     DataValueConflict::toDB,
-    SQLStatementBuilderImpl(DataValueConflictTableInfo.TABLE_INFO)
+    SQLStatementBuilderImpl(DataValueConflictTableInfo.TABLE_INFO),
 )

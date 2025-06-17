@@ -38,5 +38,5 @@ internal class ConfigurationStoreImpl(
 ) : ConfigurationStore, ObjectStoreImpl<Configuration, ConfigurationDB>(
     dao,
     Configuration::toDB,
-    SQLStatementBuilderImpl(ConfigurationTableInfo.TABLE_INFO)
+    SQLStatementBuilderImpl(ConfigurationTableInfo.TABLE_INFO),
 )

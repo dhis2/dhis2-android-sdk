@@ -32,4 +32,4 @@ import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
 @Dao
-internal abstract class LocalDataStoreDao : ObjectDao<LocalDataStoreDB>
+internal interface LocalDataStoreDao : ObjectDao<LocalDataStoreDB>

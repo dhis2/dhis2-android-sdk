@@ -32,4 +32,4 @@ import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableDeletableDataObjectStoreDao
 
 @Dao
-internal abstract class EnrollmentDao : IdentifiableDeletableDataObjectStoreDao<EnrollmentDB>
+internal interface EnrollmentDao : IdentifiableDeletableDataObjectStoreDao<EnrollmentDB>

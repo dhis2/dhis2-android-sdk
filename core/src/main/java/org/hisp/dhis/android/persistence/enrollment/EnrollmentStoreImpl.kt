@@ -42,11 +42,11 @@ import org.hisp.dhis.android.persistence.event.EventTableInfo
 import org.hisp.dhis.android.persistence.program.ProgramTrackedEntityAttributeTableInfo
 
 internal class EnrollmentStoreImpl(
-    val dao: EnrollmentDao
+    val dao: EnrollmentDao,
 ) : EnrollmentStore, IdentifiableDeletableDataObjectStoreImpl<Enrollment, EnrollmentDB>(
     dao,
     Enrollment::toDB,
-    IdentifiableDeletableDataObjectSQLStatementBuilderImpl(EnrollmentTableInfo.TABLE_INFO)
+    IdentifiableDeletableDataObjectSQLStatementBuilderImpl(EnrollmentTableInfo.TABLE_INFO),
 ) {
     override suspend fun queryEnrollmentsToPost(): Map<String, List<Enrollment>> {
         val enrollmentsToPostQuery = WhereClauseBuilder()
@@ -56,7 +56,8 @@ internal class EnrollmentStoreImpl(
             ).build()
         val enrollmentList: List<Enrollment> = selectWhere(enrollmentsToPostQuery)
 
-        return enrollmentList.groupBy { it.trackedEntityInstance()!! }    }
+        return enrollmentList.groupBy { it.trackedEntityInstance()!! }
+    }
 
     override suspend fun queryMissingRelationshipsUids(): List<String> {
         val whereRelationshipsClause = WhereClauseBuilder()
@@ -80,14 +81,18 @@ internal class EnrollmentStoreImpl(
     override suspend fun selectAggregatedSyncStateWhere(whereClause: String): List<State> {
         val statesStr = selectStringColumnsWhereClause(DataColumns.AGGREGATED_SYNC_STATE, whereClause)
 
-        return statesStr.map { State.valueOf(it) }    }
+        return statesStr.map { State.valueOf(it) }
+    }
 
     override suspend fun selectByTrackedEntityInstanceAndAttribute(
         teiUid: String,
-        attributeUid: String
+        attributeUid: String,
     ): List<Enrollment> {
         val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE, teiUid)
+            .appendKeyStringValue(
+                org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
+                teiUid,
+            )
             .appendInSubQuery(
                 org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo.Columns.PROGRAM,
                 "SELECT ${ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM} " +
@@ -96,5 +101,6 @@ internal class EnrollmentStoreImpl(
                     "'$attributeUid'",
             ).build()
 
-        return selectWhere(whereClause)    }
+        return selectWhere(whereClause)
+    }
 }

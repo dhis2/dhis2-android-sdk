@@ -38,14 +38,13 @@ import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilde
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 
 internal class DataStoreStoreImpl(
-    val dao: DataStoreDao
+    val dao: DataStoreDao,
 ) : DataStoreEntryStore, ObjectWithoutUidStoreImpl<DataStoreEntry, DataStoreDB>(
     dao,
     DataStoreEntry::toDB,
-    SQLStatementBuilderImpl(DataStoreTableInfo.TABLE_INFO)
+    SQLStatementBuilderImpl(DataStoreTableInfo.TABLE_INFO),
 ) {
     override suspend fun setState(entry: DataStoreEntry, state: State) {
-
         val updates = ContentValues()
         updates.put(DataColumns.SYNC_STATE, state.toString())
         val whereClause = WhereClauseBuilder()
@@ -65,5 +64,4 @@ internal class DataStoreStoreImpl(
             .build()
         updateWhere(updates, whereClause)
     }
-
 }

@@ -10475,9 +10475,9 @@ public class org/hisp/dhis/android/core/program/internal/ProgramDataDownloadPara
 }
 
 public abstract interface class org/hisp/dhis/android/core/program/programindicatorengine/ProgramIndicatorEngine {
-	public abstract fun getEnrollmentProgramIndicatorValue (Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun getEventProgramIndicatorValue (Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun getProgramIndicatorValue (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getEnrollmentProgramIndicatorValue (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public abstract fun getEventProgramIndicatorValue (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public abstract fun getProgramIndicatorValue (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/core/program/programindicatorengine/internal/ProgramIndicatorContext {

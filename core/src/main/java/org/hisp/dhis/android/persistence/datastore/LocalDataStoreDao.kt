@@ -26,26 +26,10 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.common.querybuilders
+package org.hisp.dhis.android.persistence.datastore
 
-import android.util.ArrayMap
-import androidx.room.RoomRawQuery
-import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
+import androidx.room.Dao
+import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
-@Suppress("TooManyFunctions")
-internal interface ReadOnlySQLStatementBuilder {
-    fun selectWhere(whereClause: String): RoomRawQuery
-    fun selectWhere(whereClause: String, limit: Int): RoomRawQuery
-    fun selectWhere(whereClause: String, orderByClause: String?): RoomRawQuery
-    fun selectWhere(whereClause: String, orderByClause: String?, limit: Int): RoomRawQuery
-    fun selectWhere(whereClause: String, orderByClause: String?, limit: Int, offset: Int?): RoomRawQuery
-    fun selectOneOrderedBy(orderingColumName: String, orderingType: SQLOrderType): RoomRawQuery
-    fun selectAll(): RoomRawQuery
-    fun selectStringColumn(column: String, clause: String): RoomRawQuery
-    fun count(): RoomRawQuery
-    fun countWhere(whereClause: String): RoomRawQuery
-    fun countAndGroupBy(column: String): RoomRawQuery
-    fun deleteTable(): RoomRawQuery
-    fun deleteWhere(whereClause: String): RoomRawQuery
-    fun updateWhere(updates: ArrayMap<String, Any>, whereClause: String): RoomRawQuery
-}
+@Dao
+internal abstract class LocalDataStoreDao : ObjectDao<LocalDataStoreDB>

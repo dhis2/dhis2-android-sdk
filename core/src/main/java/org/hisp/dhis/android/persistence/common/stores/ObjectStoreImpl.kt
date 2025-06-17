@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.persistence.common.stores
 
 import android.content.ContentValues
+import android.util.ArrayMap
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.persistence.common.EntityDB
@@ -76,7 +77,17 @@ internal open class ObjectStoreImpl<D : CoreObject, P : EntityDB<D>>(
     }
 
     override suspend fun updateWhere(updates: ContentValues, whereClause: String): Int {
-        TODO("Not yet implemented")
+        val updatesMap = ArrayMap<String, Any>()
+        for (key in updates.keySet()) {
+            updates.get(key)?.let { updatesMap[key] = it }
+        }
+        val query = builder.updateWhere(updatesMap, whereClause)
+        return objectDao.intRawQuery(query)
+    }
+
+    suspend fun updateWhere(updates: ArrayMap<String, Any>, whereClause: String): Int {
+        val query = builder.updateWhere(updates, whereClause)
+        return objectDao.intRawQuery(query)
     }
 
     override suspend fun deleteWhereIfExists(whereClause: String) {

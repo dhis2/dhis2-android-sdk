@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinde
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
-import org.hisp.dhis.android.core.common.CoreColumns
 import org.hisp.dhis.android.core.common.CoreObject
 
 @Suppress("TooManyFunctions")
@@ -122,10 +121,6 @@ internal open class ObjectStoreImpl<O : CoreObject> internal constructor(
         } else if (numberOfAffectedRows > 1) {
             throw RuntimeException("Unexpected number of affected rows: $numberOfAffectedRows")
         }
-    }
-
-    override suspend fun deleteById(o: O): Boolean {
-        return deleteWhere(CoreColumns.ID + "='" + o.id() + "';")
     }
 
     override suspend fun deleteWhere(clause: String): Boolean {

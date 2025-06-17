@@ -82,14 +82,6 @@ abstract class ObjectStoreAbstractIntegrationShould<M : CoreObject> internal con
         assertEqualsIgnoreId(objectsFromDb.iterator().next())
     }
 
-    @Test
-    fun delete_inserted_object_by_id() = runTest {
-        store.insert(`object`)
-        val m = store.selectFirst()!!
-        store.deleteById(m)
-        assertThat(store.selectFirst()).isEqualTo(null)
-    }
-
     fun assertEqualsIgnoreId(localObject: M?) {
         assertEqualsIgnoreId(localObject, `object`)
     }

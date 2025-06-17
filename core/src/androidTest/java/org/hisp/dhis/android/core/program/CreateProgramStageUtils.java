@@ -60,9 +60,8 @@ public class CreateProgramStageUtils {
     // used for timestamps
     private static final String DATE = "2017-01-05T15:39:00.000";
 
-    public static ContentValues create(long id, String uid, String programId) {
+    public static ContentValues create(String uid, String programId) {
         ContentValues programStage = new ContentValues();
-        programStage.put(IdentifiableColumns.ID, id);
         programStage.put(IdentifiableColumns.UID, uid);
         programStage.put(IdentifiableColumns.CODE, CODE);
         programStage.put(IdentifiableColumns.NAME, NAME);

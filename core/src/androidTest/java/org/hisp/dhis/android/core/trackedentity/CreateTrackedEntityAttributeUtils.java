@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.content.ContentValues;
 
-import org.hisp.dhis.android.core.common.CoreColumns;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo.Columns;
 
@@ -68,11 +67,10 @@ public class CreateTrackedEntityAttributeUtils {
     private static final Integer INHERIT = 0; // false
     private static final Integer CONFIDENTIAL = 0; // false
 
-    public static ContentValues create(long id, String uid, String optionSetUid) {
+    public static ContentValues create(String uid, String optionSetUid) {
 
         ContentValues values = new ContentValues();
 
-        values.put(CoreColumns.ID, id);
         values.put(Columns.UID, uid);
         values.put(Columns.CODE, CODE);
         values.put(Columns.NAME, NAME);

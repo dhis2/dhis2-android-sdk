@@ -31,7 +31,6 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBui
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl.Companion.getOffset
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl.Companion.getOrderBy
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
-import org.hisp.dhis.android.core.common.DeletableDataColumns
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo
@@ -99,7 +98,6 @@ class DataSetInstanceSummarySQLStatementBuilder : DataSetInstanceSQLStatementBui
             "ELSE 5 END)"
 
         private val SELECT_CLAUSE = "SELECT " +
-            dot(DS_LIST_TABLE_ALIAS, DeletableDataColumns.ID) + AS + DeletableDataColumns.ID + "," +
             IdentifiableColumns.UID + AS + DATASET_UID_ALIAS + "," +
             IdentifiableColumns.NAME + AS + DATASET_NAME_ALIAS + "," +
             "SUM($VALUE_COUNT_ALIAS)" + AS + VALUE_COUNT_ALIAS + "," +
@@ -109,7 +107,6 @@ class DataSetInstanceSummarySQLStatementBuilder : DataSetInstanceSQLStatementBui
             SELECT_STATE_ORDERING
 
         private val DATASET_LIST_CLAUSE = "SELECT " +
-            DeletableDataColumns.ID + ", " +
             IdentifiableColumns.UID + ", " +
             IdentifiableColumns.NAME + " " +
             "FROM " + DataSetTableInfo.TABLE_INFO.name()

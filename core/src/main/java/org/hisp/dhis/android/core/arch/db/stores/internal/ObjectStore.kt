@@ -39,7 +39,6 @@ internal interface ObjectStore<O> : ReadableStore<O> {
     @Throws(RuntimeException::class)
     suspend fun insert(objects: Collection<O>)
     suspend fun delete(): Int
-    suspend fun deleteById(o: O): Boolean
     suspend fun deleteWhere(clause: String): Boolean
 
     suspend fun updateWhere(updates: ContentValues, whereClause: String): Int

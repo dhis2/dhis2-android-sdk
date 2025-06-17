@@ -55,9 +55,8 @@ public class CreateDataElementUtils {
     // timestamp
     private static final String DATE = "2014-03-20T13:37:00.007";
 
-    public static ContentValues create(long id, @NonNull String uid, @NonNull String categoryComboId, @Nullable String optionSetId) {
+    public static ContentValues create(@NonNull String uid, @NonNull String categoryComboId, @Nullable String optionSetId) {
         ContentValues dataElement = new ContentValues();
-        dataElement.put(DataElementTableInfo.Columns.ID, id);
         dataElement.put(DataElementTableInfo.Columns.UID, uid);
         dataElement.put(DataElementTableInfo.Columns.CODE, CODE);
         dataElement.put(DataElementTableInfo.Columns.NAME, NAME);

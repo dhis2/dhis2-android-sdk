@@ -96,23 +96,23 @@ class ProgramEndpointCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnq
             val executor = objects.d2DIComponent.coroutineApiCallExecutor
             executor.wrapTransactionally {
                 val categoryComboUid = "m2jTvAj5kkm"
-                val categoryCombo = CreateCategoryComboUtils.create(1L, categoryComboUid)
+                val categoryCombo = CreateCategoryComboUtils.create(categoryComboUid)
                 databaseAdapter.insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo)
 
                 // inserting tracked entity
-                val trackedEntityType = CreateTrackedEntityUtils.create(1L, "nEenWmSyUEp")
+                val trackedEntityType = CreateTrackedEntityUtils.create("nEenWmSyUEp")
                 databaseAdapter.insert(TrackedEntityTypeTableInfo.TABLE_INFO.name(), null, trackedEntityType)
 
                 // inserting tracked entity attributes
-                val trackedEntityAttribute1 = CreateTrackedEntityAttributeUtils.create(1L, "aejWyOfXge6", null)
+                val trackedEntityAttribute1 = CreateTrackedEntityAttributeUtils.create("aejWyOfXge6", null)
                 databaseAdapter.insert(TrackedEntityAttributeTableInfo.TABLE_INFO.name(), null, trackedEntityAttribute1)
-                val trackedEntityAttribute2 = CreateTrackedEntityAttributeUtils.create(2L, "cejWyOfXge6", null)
+                val trackedEntityAttribute2 = CreateTrackedEntityAttributeUtils.create("cejWyOfXge6", null)
                 databaseAdapter.insert(TrackedEntityAttributeTableInfo.TABLE_INFO.name(), null, trackedEntityAttribute2)
-                val dataElement1 = CreateDataElementUtils.create(1L, "vANAXwtLwcT", categoryComboUid, null)
+                val dataElement1 = CreateDataElementUtils.create("vANAXwtLwcT", categoryComboUid, null)
                 databaseAdapter.insert(DataElementTableInfo.TABLE_INFO.name(), null, dataElement1)
-                val dataElement2 = CreateDataElementUtils.create(2L, "sWoqcoByYmD", categoryComboUid, null)
+                val dataElement2 = CreateDataElementUtils.create("sWoqcoByYmD", categoryComboUid, null)
                 databaseAdapter.insert(DataElementTableInfo.TABLE_INFO.name(), null, dataElement2)
-                val programStage = CreateProgramStageUtils.create(1L, "dBwrot7S420", PROGRAM_UID)
+                val programStage = CreateProgramStageUtils.create("dBwrot7S420", PROGRAM_UID)
                 databaseAdapter.insert(ProgramStageTableInfo.TABLE_INFO.name(), null, programStage)
                 dhis2MockServer.enqueueMockResponse("program/programs.json")
 

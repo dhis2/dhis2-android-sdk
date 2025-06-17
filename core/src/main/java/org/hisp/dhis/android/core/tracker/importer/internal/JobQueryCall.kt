@@ -27,12 +27,10 @@
  */
 package org.hisp.dhis.android.core.tracker.importer.internal
 
-import io.reactivex.Observable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
@@ -59,7 +57,7 @@ internal class JobQueryCall internal constructor(
     private val stateManager: NewTrackerImporterTrackedEntityPostStateManager,
 ) {
 
-    fun queryPendingJobs(): Observable<D2Progress> = flow {
+    fun queryPendingJobs(): Flow<D2Progress> = flow {
         val pendingJobs = trackerJobObjectStore.selectAll()
             .sortedBy { it.lastUpdated() }
             .groupBy { it.jobUid() }
@@ -71,7 +69,7 @@ internal class JobQueryCall internal constructor(
             emitAll(queryJobInternal(it.first, it.second, it.third, ATTEMPTS_WHEN_QUERYING))
             updateFileResourceStates(it.second)
         }
-    }.asObservable()
+    }
 
     fun queryJob(jobId: String): Flow<D2Progress> = flow {
         val jobObjects = trackerJobObjectStore.selectWhere(byJobIdClause(jobId))

@@ -6113,7 +6113,6 @@ public class org/hisp/dhis/android/core/dataset/internal/DataSetInstanceSQLState
 	public static final field Companion Lorg/hisp/dhis/android/core/dataset/internal/DataSetInstanceSQLStatementBuilder$Companion;
 	public static final field DATASET_NAME_ALIAS Ljava/lang/String;
 	public static final field DATASET_UID_ALIAS Ljava/lang/String;
-	public static final field DATAVALUE_ID Ljava/lang/String;
 	public static final field LAST_UPDATED_ALIAS Ljava/lang/String;
 	public static final field ORGANISATION_UNIT_UID_ALIAS Ljava/lang/String;
 	public static final field PERIOD_ALIAS Ljava/lang/String;

@@ -47,7 +47,7 @@ internal class TrackedEntityInstancePostParentCall internal constructor(
         when {
             trackedEntityInstances.isEmpty() -> return@flow
             trackerParentCallHelper.useNewTrackerImporter() -> emitAll(
-                trackerImporterCall.uploadTrackedEntityInstances(trackedEntityInstances)
+                trackerImporterCall.uploadTrackedEntityInstances(trackedEntityInstances),
             )
 
             else -> emitAll(oldTrackerImporterCall.uploadTrackedEntityInstances(trackedEntityInstances))

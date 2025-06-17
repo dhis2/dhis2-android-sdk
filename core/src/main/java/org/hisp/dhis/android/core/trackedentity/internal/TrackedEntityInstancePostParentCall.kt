@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.flow
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.tracker.TrackerPostParentCallHelper
@@ -43,14 +42,12 @@ internal class TrackedEntityInstancePostParentCall internal constructor(
     private val trackerParentCallHelper: TrackerPostParentCallHelper,
 ) {
 
-    fun uploadTrackedEntityInstances(trackedEntityInstances: List<TrackedEntityInstance>): Flow<D2Progress> = flow {
+    suspend fun uploadTrackedEntityInstances(trackedEntityInstances: List<TrackedEntityInstance>): Flow<D2Progress> =
         when {
             trackedEntityInstances.isEmpty() -> emptyFlow()
             trackerParentCallHelper.useNewTrackerImporter() -> trackerImporterCall.uploadTrackedEntityInstances(
                 trackedEntityInstances,
             )
-
             else -> oldTrackerImporterCall.uploadTrackedEntityInstances(trackedEntityInstances)
         }
-    }
 }

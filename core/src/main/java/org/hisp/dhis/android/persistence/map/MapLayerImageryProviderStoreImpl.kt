@@ -40,6 +40,6 @@ internal class MapLayerImageryProviderStoreImpl(
     MapLayerImageryProvider::toDB,
     LinkSQLStatementBuilderImpl(
         MapLayerImageryProviderTableInfo.TABLE_INFO,
-        MapLayerImageryProviderTableInfo.Columns.MAP_LAYER
+        MapLayerImageryProviderTableInfo.Columns.MAP_LAYER,
     ),
 )

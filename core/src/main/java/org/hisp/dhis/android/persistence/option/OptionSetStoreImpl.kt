@@ -30,7 +30,7 @@ package org.hisp.dhis.android.persistence.option
 
 import org.hisp.dhis.android.core.option.OptionSet
 import org.hisp.dhis.android.core.option.internal.OptionSetStore
-import org.hisp.dhis.android.persistence.common.querybuilders.IdentifiableDataObjectSQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
 
 internal class OptionSetStoreImpl(
@@ -38,5 +38,5 @@ internal class OptionSetStoreImpl(
 ) : OptionSetStore, IdentifiableObjectStoreImpl<OptionSet, OptionSetDB>(
     dao,
     OptionSet::toDB,
-    IdentifiableDataObjectSQLStatementBuilderImpl(OptionSetTableInfo.TABLE_INFO),
+    SQLStatementBuilderImpl(OptionSetTableInfo.TABLE_INFO),
 )

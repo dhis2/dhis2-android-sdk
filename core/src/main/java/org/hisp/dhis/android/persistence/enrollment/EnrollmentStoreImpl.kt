@@ -90,11 +90,11 @@ internal class EnrollmentStoreImpl(
     ): List<Enrollment> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(
-                org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
+                EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
                 teiUid,
             )
             .appendInSubQuery(
-                org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo.Columns.PROGRAM,
+                EnrollmentTableInfo.Columns.PROGRAM,
                 "SELECT ${ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM} " +
                     "FROM ${ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name()} " +
                     "WHERE ${ProgramTrackedEntityAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} = " +

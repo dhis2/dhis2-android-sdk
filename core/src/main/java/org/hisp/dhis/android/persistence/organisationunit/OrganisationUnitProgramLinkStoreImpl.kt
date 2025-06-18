@@ -43,7 +43,7 @@ internal class OrganisationUnitProgramLinkStoreImpl(
         OrganisationUnitProgramLink::toDB,
         LinkSQLStatementBuilderImpl(
             OrganisationUnitProgramLinkTableInfo.TABLE_INFO,
-            OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT
+            OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT,
         ),
     ) {
     override suspend fun getForOrganisationUnit(organisationUnitUid: String): List<ObjectWithUid> {

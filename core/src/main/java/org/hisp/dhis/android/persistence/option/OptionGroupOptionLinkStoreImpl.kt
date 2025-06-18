@@ -42,12 +42,15 @@ internal class OptionGroupOptionLinkStoreImpl(
     OptionGroupOptionLink::toDB,
     LinkSQLStatementBuilderImpl(
         OptionGroupOptionLinkTableInfo.TABLE_INFO,
-        OptionGroupOptionLinkTableInfo.Columns.OPTION_GROUP
+        OptionGroupOptionLinkTableInfo.Columns.OPTION_GROUP,
     ),
 ) {
     override suspend fun getForOptionGroup(optionGroupUid: String): List<ObjectWithUid> {
         val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(org.hisp.dhis.android.core.option.OptionGroupOptionLinkTableInfo.Columns.OPTION_GROUP, optionGroupUid)
+            .appendKeyStringValue(
+                OptionGroupOptionLinkTableInfo.Columns.OPTION_GROUP,
+                optionGroupUid,
+            )
             .build()
         val selectStatement = builder.selectWhere(whereClause)
         return selectRawQuery(selectStatement).map { ObjectWithUid.create(it.option()) }

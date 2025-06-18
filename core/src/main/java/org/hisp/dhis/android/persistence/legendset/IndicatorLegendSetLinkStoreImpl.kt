@@ -48,7 +48,7 @@ internal class IndicatorLegendSetLinkStoreImpl(
     override suspend fun getForIndicator(indicatorUid: String): List<ObjectWithUid> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(
-                org.hisp.dhis.android.core.indicator.IndicatorLegendSetLinkTableInfo.Columns.INDICATOR,
+                IndicatorLegendSetLinkTableInfo.Columns.INDICATOR,
                 indicatorUid,
             )
             .build()

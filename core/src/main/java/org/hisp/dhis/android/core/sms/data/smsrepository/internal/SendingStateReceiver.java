@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.sms.data.smsrepository.internal;
 
+import static android.os.Binder.getCallingUid;
+
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -35,6 +37,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 class SendingStateReceiver extends BroadcastReceiver {
@@ -69,19 +72,24 @@ class SendingStateReceiver extends BroadcastReceiver {
             return;
         }
 
-        Log.d(TAG, intent.getAction());
+        Log.d(TAG, Objects.requireNonNull(intent.getAction()));
         if (!sendSmsAction.equals(intent.getAction()) || smsResultsWaiting.isEmpty()) {
-            return;
-        }
-        String smsKey = intent.getStringExtra(SmsRepositoryImpl.SMS_KEY);
-        if (smsKey == null) {
+            Log.w(TAG, "Received an unexpected action. Ignoring...");
             return;
         }
 
-        if (!smsResultsWaiting.contains(smsKey)) {
-            Log.d(TAG, "Received sms result for different dataset");
+        int callingUid = getCallingUid();
+        if (callingUid != context.getApplicationInfo().uid) {
+            Log.w(TAG, "Broadcast received from an untrusted source (UID=" + callingUid + "). Ignoring...");
             return;
         }
+
+        String smsKey = intent.getStringExtra(SmsRepositoryImpl.SMS_KEY);
+        if (smsKey == null || !smsResultsWaiting.contains(smsKey)) {
+            Log.d(TAG, "Received SMS result for a different dataset or missing key. Ignoring...");
+            return;
+        }
+
         int resultCode = getResultCode();
         if (resultCode == Activity.RESULT_OK) {
             smsResultsWaiting.remove(smsKey);

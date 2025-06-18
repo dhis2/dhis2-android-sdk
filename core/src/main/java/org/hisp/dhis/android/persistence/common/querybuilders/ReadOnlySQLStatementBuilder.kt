@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.persistence.common.querybuilders
 
-import android.util.ArrayMap
 import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
 
@@ -47,5 +46,5 @@ internal interface ReadOnlySQLStatementBuilder {
     fun countAndGroupBy(column: String): RoomRawQuery
     fun deleteTable(): RoomRawQuery
     fun deleteWhere(whereClause: String): RoomRawQuery
-    fun updateWhere(updates: ArrayMap<String, Any>, whereClause: String): RoomRawQuery
+    fun updateWhere(updates: Map<String, Any>, whereClause: String): RoomRawQuery
 }

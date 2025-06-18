@@ -77,7 +77,7 @@ internal open class ObjectStoreImpl<D : CoreObject, P : EntityDB<D>>(
     }
 
     override suspend fun updateWhere(updates: ContentValues, whereClause: String): Int {
-        val updatesMap = ArrayMap<String, Any>()
+        val updatesMap = mutableMapOf<String, Any>()
         for (key in updates.keySet()) {
             updates[key]?.let { updatesMap[key] = it }
         }

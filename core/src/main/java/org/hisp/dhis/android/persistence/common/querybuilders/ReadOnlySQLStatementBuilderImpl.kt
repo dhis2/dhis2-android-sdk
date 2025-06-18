@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.persistence.common.querybuilders
 
-import android.util.ArrayMap
 import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
@@ -111,12 +110,13 @@ internal open class ReadOnlySQLStatementBuilderImpl(
         return RoomRawQuery("DELETE FROM $tableName WHERE $whereClause;")
     }
 
-    override fun updateWhere(updates: ArrayMap<String, Any>, whereClause: String): RoomRawQuery {
+    override fun updateWhere(updates: Map<String, Any>, whereClause: String): RoomRawQuery {
         val setClause = updates.entries.joinToString(", ") { "${it.key} = ${formatValue(it.value)}" }
         return RoomRawQuery("UPDATE $tableName SET $setClause WHERE $whereClause")
     }
 
     private fun formatValue(value: Any): String = when (value) {
+        is String -> "'${value.replace("'", "''")}'"
         is Boolean -> if (value) "1" else "0"
         else -> value.toString()
     }

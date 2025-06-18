@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.option.internal.OptionStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
 
-
 internal class OptionStoreImpl(
     val dao: OptionDao,
 ) : OptionStore, IdentifiableObjectStoreImpl<Option, OptionDB>(

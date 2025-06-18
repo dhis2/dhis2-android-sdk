@@ -30,7 +30,7 @@ package org.hisp.dhis.android.persistence.option
 
 import org.hisp.dhis.android.core.option.OptionGroup
 import org.hisp.dhis.android.core.option.internal.OptionGroupStore
-import org.hisp.dhis.android.persistence.common.querybuilders.IdentifiableDataObjectSQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
 
 internal class OptionGroupStoreImpl(
@@ -38,5 +38,5 @@ internal class OptionGroupStoreImpl(
 ) : OptionGroupStore, IdentifiableObjectStoreImpl<OptionGroup, OptionGroupDB>(
     dao,
     OptionGroup::toDB,
-    IdentifiableDataObjectSQLStatementBuilderImpl(OptionGroupTableInfo.TABLE_INFO),
+    SQLStatementBuilderImpl(OptionGroupTableInfo.TABLE_INFO),
 )

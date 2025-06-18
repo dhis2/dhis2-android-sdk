@@ -41,6 +41,6 @@ internal class OrganisationUnitOrganisationUnitGroupLinkStoreImpl(
         OrganisationUnitOrganisationUnitGroupLink::toDB,
         LinkSQLStatementBuilderImpl(
             OrganisationUnitOrganisationUnitGroupLinkTableInfo.TABLE_INFO,
-            OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT
+            OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT,
         ),
     )

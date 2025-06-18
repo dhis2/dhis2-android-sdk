@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo
 import org.hisp.dhis.android.core.common.DataColumns
-import org.hisp.dhis.android.core.common.DeletableDataColumns
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.dataelement.DataElementTableInfo
@@ -145,7 +144,6 @@ open class DataSetInstanceSQLStatementBuilder : ReadOnlySQLStatementBuilder {
         const val VALUE_STATE_ALIAS = "dataValueState"
         const val COMPLETION_STATE_ALIAS = "completionState"
         const val STATE_ALIAS = "state"
-        const val DATAVALUE_ID = DATAVALUE_TABLE_ALIAS + "." + DeletableDataColumns.ID
         private const val DATASET_UID = DATASET_TABLE_ALIAS + "." + IdentifiableColumns.UID
         private const val DATASET_NAME = DATASET_TABLE_ALIAS + "." + IdentifiableColumns.DISPLAY_NAME
         private const val PERIOD = DATAVALUE_TABLE_ALIAS + "." + DataValueTableInfo.Columns.PERIOD
@@ -207,7 +205,6 @@ open class DataSetInstanceSQLStatementBuilder : ReadOnlySQLStatementBuilder {
             joinDataSetCompleteRegistration
 
         private val INNER_SELECT_CLAUSE = "SELECT " +
-            DATAVALUE_ID + AS + DeletableDataColumns.ID + "," +
             DATASET_UID + AS + DATASET_UID_ALIAS + "," +
             DATASET_NAME + AS + DATASET_NAME_ALIAS + "," +
             PERIOD + AS + PERIOD_ALIAS + "," +

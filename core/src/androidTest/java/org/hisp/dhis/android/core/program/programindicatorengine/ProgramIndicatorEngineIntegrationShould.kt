@@ -97,7 +97,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
             val trackedEntityType = TrackedEntityType.builder().uid(teiTypeUid).build()
             TrackedEntityTypeStoreImpl(databaseAdapter).insert(trackedEntityType)
 
-            val categoryCombo = CreateCategoryComboUtils.create(1L, CategoryCombo.DEFAULT_UID)
+            val categoryCombo = CreateCategoryComboUtils.create(CategoryCombo.DEFAULT_UID)
             databaseAdapter.insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo)
 
             val access = Access.create(true, false, DataAccess.create(true, true))

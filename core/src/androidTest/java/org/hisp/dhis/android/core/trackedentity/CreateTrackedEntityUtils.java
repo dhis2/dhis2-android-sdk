@@ -45,9 +45,8 @@ public class CreateTrackedEntityUtils {
     public static final String TEST_DESCRIPTION = "test_description";
     public static final String TEST_DISPLAY_DESCRIPTION = "test_display_description";
 
-    public static ContentValues create(long id, String uid) {
+    public static ContentValues create(String uid) {
         ContentValues trackedEntityType = new ContentValues();
-        trackedEntityType.put(IdentifiableColumns.ID, id);
         trackedEntityType.put(IdentifiableColumns.UID, uid);
         trackedEntityType.put(IdentifiableColumns.CODE, TEST_CODE);
         trackedEntityType.put(IdentifiableColumns.NAME, TEST_NAME);

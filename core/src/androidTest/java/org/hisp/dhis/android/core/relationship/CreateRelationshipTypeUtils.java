@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.relationship;
 
 import android.content.ContentValues;
 
-import org.hisp.dhis.android.core.common.CoreColumns;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 
 public class CreateRelationshipTypeUtils {
@@ -49,15 +48,13 @@ public class CreateRelationshipTypeUtils {
      * A method to createTrackedEntityAttribute ContentValues from a RelationshipType.
      * To be used by other tests that have RelationshipType as foreign key.
      *
-     * @param id
      * @param uid
      * @return
      */
-    public static ContentValues create(long id, String uid) {
+    public static ContentValues create(String uid) {
 
         ContentValues relationshipType = new ContentValues();
 
-        relationshipType.put(CoreColumns.ID, id);
         relationshipType.put(IdentifiableColumns.UID, uid);
         relationshipType.put(IdentifiableColumns.CODE, CODE);
         relationshipType.put(IdentifiableColumns.NAME, NAME);

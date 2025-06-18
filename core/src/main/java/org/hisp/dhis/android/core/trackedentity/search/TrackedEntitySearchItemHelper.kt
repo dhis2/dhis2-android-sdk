@@ -50,7 +50,7 @@ object TrackedEntitySearchItemHelper {
             syncState = i.syncState(),
             aggregatedSyncState = i.aggregatedSyncState(),
             deleted = i.deleted() ?: false,
-            isOnline = i.id() == null,
+            isOnline = i.syncState() == null,
             type = type,
         )
     }

@@ -73,7 +73,9 @@ internal class TrackedEntityAttributeReservedValueStoreImpl(
     }
 
     override suspend fun popOne(ownerUid: String, organisationUnitUid: String?): TrackedEntityAttributeReservedValue? {
-        return popOneWhere(where(ownerUid, organisationUnitUid, null))
+        return selectOneWhere(where(ownerUid, organisationUnitUid, null))?.also {
+            deleteWhereIfExists(it)
+        }
     }
 
     override suspend fun count(ownerUid: String, organisationUnitUid: String?, pattern: String?): Int {

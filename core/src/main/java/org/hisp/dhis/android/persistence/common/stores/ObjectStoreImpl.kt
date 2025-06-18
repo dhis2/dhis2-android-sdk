@@ -52,11 +52,6 @@ internal open class ObjectStoreImpl<D : CoreObject, P : EntityDB<D>>(
         return objectDao.intRawQuery(query)
     }
 
-    override suspend fun deleteById(o: D): Boolean {
-        val entityDB = o.toDB()
-        return objectDao.delete(entityDB) > 0
-    }
-
     open override suspend fun insert(o: D): Long {
         return objectDao.insert(o.toDB())
     }

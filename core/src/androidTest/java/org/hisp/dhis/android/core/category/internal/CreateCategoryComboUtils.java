@@ -40,9 +40,8 @@ public class CreateCategoryComboUtils {
     public static final String TEST_CREATED = "2001-02-07T16:04:40.387";
     public static final String TEST_LAST_UPDATED = "2001-02-07T16:04:40.387";
 
-    public static ContentValues create(long id, String uid) {
+    public static ContentValues create(String uid) {
         ContentValues categoryCombo = new ContentValues();
-        categoryCombo.put(CategoryComboTableInfo.Columns.ID, id);
         categoryCombo.put(CategoryComboTableInfo.Columns.UID, uid);
         categoryCombo.put(CategoryComboTableInfo.Columns.CODE, TEST_CODE);
         categoryCombo.put(CategoryComboTableInfo.Columns.NAME, TEST_NAME);

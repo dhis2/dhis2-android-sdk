@@ -31,7 +31,6 @@ import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
-import org.hisp.dhis.android.core.common.CoreColumns
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 
 // TODO save TableInfo instead of separate files when architecture 1.0 is ready
@@ -193,7 +192,7 @@ internal class SQLStatementBuilderImpl internal constructor(
         // TODO refactor to only generate for object without uids store.
         val whereClause =
             if (whereColumns.isEmpty()) {
-                CoreColumns.ID + " = -1"
+                "0"
             } else {
                 andSeparatedColumnEqualInterrogationMark(
                     *whereColumns,
@@ -206,7 +205,7 @@ internal class SQLStatementBuilderImpl internal constructor(
     override fun deleteWhere(): String {
         val whereClause =
             if (whereColumns.isEmpty()) {
-                CoreColumns.ID + " = -1"
+                "0"
             } else {
                 andSeparatedColumnEqualInterrogationMark(
                     *whereColumns,

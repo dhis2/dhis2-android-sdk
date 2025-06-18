@@ -82,7 +82,7 @@ internal class DataSetCompleteRegistrationImportHandler(
 
         deletedDataSetCompleteRegistrations
             .filter { dataSetCompleteRegistrationStore.isBeingUpload(it) }
-            .forEach { dataSetCompleteRegistrationStore.deleteById(it) }
+            .forEach { dataSetCompleteRegistrationStore.deleteWhereIfExists(it) }
 
         return conflicts
     }

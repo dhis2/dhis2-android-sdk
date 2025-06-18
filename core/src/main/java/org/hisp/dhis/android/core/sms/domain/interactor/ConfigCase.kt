@@ -45,27 +45,16 @@ class ConfigCase(
     private val localDbRepository: LocalDbRepository,
 ) {
 
-    fun getSmsModuleConfig(): Single<SmsConfig> {
-        return Single.zip(
-            rxSingle { localDbRepository.isModuleEnabledSuspend() },
-            localDbRepository.getGatewayNumber(),
-            localDbRepository.getWaitingForResultEnabled(),
-            localDbRepository.getConfirmationSenderNumber(),
-            localDbRepository.getWaitingResultTimeout(),
-        ) { moduleEnabled: Boolean,
-            gateway: String,
-            waitingForResult: Boolean,
-            resultSender: String,
-            resultWaitingTimeout: Int,
-            ->
-            SmsConfig(
-                moduleEnabled,
-                gateway,
-                waitingForResult,
-                resultSender,
-                resultWaitingTimeout,
-            )
-        }
+    fun getSmsModuleConfig(): Single<SmsConfig> = rxSingle { getSmsModuleConfigSuspend() }
+
+    private suspend fun getSmsModuleConfigSuspend(): SmsConfig {
+        return SmsConfig(
+            isModuleEnabled = localDbRepository.isModuleEnabledSuspend(),
+            gateway = localDbRepository.getGatewayNumberSuspend(),
+            isWaitingForResult = localDbRepository.getWaitingForResultEnabledSuspend(),
+            resultSender = localDbRepository.getConfirmationSenderNumberSuspend(),
+            resultWaitingTimeout = localDbRepository.getWaitingResultTimeoutSuspend(),
+        )
     }
 
     /**

@@ -8371,10 +8371,6 @@ public final class org/hisp/dhis/android/core/maintenance/PerformanceHintsServic
 	public final fun invoke (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;II)Lorg/hisp/dhis/android/core/maintenance/PerformanceHintsService;
 }
 
-public abstract interface class org/hisp/dhis/android/core/maintenance/internal/ForeignKeyCleaner {
-	public abstract fun cleanForeignKeyErrors (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public abstract interface class org/hisp/dhis/android/core/map/MapModule {
 	public abstract fun mapLayers ()Lorg/hisp/dhis/android/core/map/layer/MapLayerCollectionRepository;
 	public abstract fun mapLayersDownloader ()Lorg/hisp/dhis/android/core/arch/modules/internal/UntypedModuleDownloader;
@@ -12727,8 +12723,10 @@ public abstract interface class org/hisp/dhis/android/core/sms/domain/repository
 	public abstract fun deleteWaitingResultTimeout ()Lio/reactivex/Completable;
 	public abstract fun generateNextSubmissionId ()Lio/reactivex/Single;
 	public abstract fun getConfirmationSenderNumber ()Lio/reactivex/Single;
+	public abstract fun getConfirmationSenderNumberSuspend (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun getDataValueSet (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
 	public abstract fun getGatewayNumber ()Lio/reactivex/Single;
+	public abstract fun getGatewayNumberSuspend (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun getMetadataDownloadConfig (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun getMetadataIds ()Lio/reactivex/Single;
 	public abstract fun getOngoingSubmissions ()Lio/reactivex/Single;
@@ -12738,12 +12736,15 @@ public abstract interface class org/hisp/dhis/android/core/sms/domain/repository
 	public abstract fun getTrackerEventToSubmit (Ljava/lang/String;)Lio/reactivex/Single;
 	public abstract fun getUserName ()Lio/reactivex/Single;
 	public abstract fun getWaitingForResultEnabled ()Lio/reactivex/Single;
+	public abstract fun getWaitingForResultEnabledSuspend (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun getWaitingResultTimeout ()Lio/reactivex/Single;
+	public abstract fun getWaitingResultTimeoutSuspend (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun isModuleEnabled ()Lio/reactivex/Single;
 	public abstract fun isModuleEnabledSuspend (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun removeOngoingSubmission (I)Lio/reactivex/Completable;
 	public abstract fun setConfirmationSenderNumber (Ljava/lang/String;)Lio/reactivex/Completable;
 	public abstract fun setGatewayNumber (Ljava/lang/String;)Lio/reactivex/Completable;
+	public abstract fun setGatewayNumberSuspend (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun setMetadataDownloadConfig (Lorg/hisp/dhis/android/core/sms/domain/repository/WebApiRepository$GetMetadataIdsConfig;)Lio/reactivex/Completable;
 	public abstract fun setMetadataIds (Lorg/hisp/dhis/smscompression/models/SMSMetadata;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun setModuleEnabled (Z)Lio/reactivex/Completable;

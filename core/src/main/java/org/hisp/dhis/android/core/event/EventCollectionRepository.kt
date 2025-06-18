@@ -28,7 +28,10 @@
 package org.hisp.dhis.android.core.event
 
 import io.reactivex.Observable
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
@@ -94,17 +97,14 @@ class EventCollectionRepository internal constructor(
     ReadWriteWithUploadWithUidCollectionRepository<Event, EventCreateProjection> {
 
     @Suppress("SpreadOperator")
-    override fun upload(): Observable<D2Progress> {
-        return Observable.concat(
-            jobQueryCall.queryPendingJobs(),
-            Observable.fromCallable {
-                byAggregatedSyncState().`in`(*uploadableStatesIncludingError())
-                    .byEnrollmentUid().isNull
-                    .blockingGetWithoutChildren()
-            }
-                .flatMap { events: List<Event> -> runBlocking { postCall.uploadEvents(events) } },
-        )
-    }
+    override fun upload(): Observable<D2Progress> = flow {
+        emitAll(jobQueryCall.queryPendingJobs())
+        val events = byAggregatedSyncState()
+            .`in`(*uploadableStatesIncludingError())
+            .byEnrollmentUid().isNull
+            .blockingGetWithoutChildren()
+        emitAll(postCall.uploadEvents(events))
+    }.asObservable()
 
     override fun blockingUpload() {
         upload().blockingSubscribe()

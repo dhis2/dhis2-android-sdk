@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.arch.db.stores.internal
 
 import android.content.ContentValues
 import android.database.Cursor
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl
@@ -61,10 +63,11 @@ internal open class ObjectStoreImpl<O : CoreObject> internal constructor(
 
     private var insertStatement: StatementWrapper? = null
     private var adapterHashCode: Int? = null
+    private val insertMutex = Mutex()
 
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionThrown")
-    override suspend fun insert(o: O): Long {
+    override suspend fun insert(o: O): Long = insertMutex.withLock {
         CollectionsHelper.isNull(o)
         compileStatements()
         binder.bindToStatement(o, insertStatement!!)

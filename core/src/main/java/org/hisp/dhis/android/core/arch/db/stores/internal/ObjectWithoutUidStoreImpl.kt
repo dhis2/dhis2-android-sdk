@@ -73,10 +73,11 @@ internal open class ObjectWithoutUidStoreImpl<O : CoreObject>(
     private var updateWhereStatement: StatementWrapper? = null
     private var deleteWhereStatement: StatementWrapper? = null
     private var adapterHashCode: Int? = null
+    private val updateWhereMutex = Mutex()
     private val upsertMutex = Mutex()
 
     @Throws(RuntimeException::class)
-    override suspend fun updateWhere(o: O) {
+    override suspend fun updateWhere(o: O) = updateWhereMutex.withLock {
         CollectionsHelper.isNull(o)
         compileStatements()
         binder.bindToStatement(o, updateWhereStatement!!)

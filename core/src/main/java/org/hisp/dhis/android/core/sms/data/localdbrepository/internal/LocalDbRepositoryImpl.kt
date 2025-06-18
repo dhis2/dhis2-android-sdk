@@ -87,11 +87,19 @@ internal class LocalDbRepositoryImpl(
     }
 
     override fun getGatewayNumber(): Single<String> {
-        return rxSingle { smsConfigStore.get(SMSConfigKey.GATEWAY) ?: "" }
+        return rxSingle { getGatewayNumberSuspend() }
+    }
+
+    override suspend fun getGatewayNumberSuspend(): String {
+        return smsConfigStore.get(SMSConfigKey.GATEWAY) ?: ""
     }
 
     override fun setGatewayNumber(number: String): Completable {
-        return rxCompletable { smsConfigStore.set(SMSConfigKey.GATEWAY, number) }
+        return rxCompletable { setGatewayNumberSuspend(number) }
+    }
+
+    override suspend fun setGatewayNumberSuspend(number: String) {
+        smsConfigStore.set(SMSConfigKey.GATEWAY, number)
     }
 
     override fun deleteGatewayNumber(): Completable {
@@ -99,9 +107,11 @@ internal class LocalDbRepositoryImpl(
     }
 
     override fun getWaitingResultTimeout(): Single<Int> {
-        return rxSingle {
-            smsConfigStore.get(SMSConfigKey.WAITING_RESULT_TIMEOUT)?.toInt() ?: DEFAULT_WAIT_TIMEOUT
-        }
+        return rxSingle { getWaitingResultTimeoutSuspend() }
+    }
+
+    override suspend fun getWaitingResultTimeoutSuspend(): Int {
+        return smsConfigStore.get(SMSConfigKey.WAITING_RESULT_TIMEOUT)?.toInt() ?: DEFAULT_WAIT_TIMEOUT
     }
 
     override fun setWaitingResultTimeout(timeoutSeconds: Int): Completable {
@@ -115,7 +125,11 @@ internal class LocalDbRepositoryImpl(
     }
 
     override fun getConfirmationSenderNumber(): Single<String> {
-        return rxSingle { smsConfigStore.get(SMSConfigKey.CONFIRMATION_SENDER) ?: "" }
+        return rxSingle { getConfirmationSenderNumberSuspend() }
+    }
+
+    override suspend fun getConfirmationSenderNumberSuspend(): String {
+        return smsConfigStore.get(SMSConfigKey.CONFIRMATION_SENDER) ?: ""
     }
 
     override fun setConfirmationSenderNumber(number: String): Completable {
@@ -252,7 +266,11 @@ internal class LocalDbRepositoryImpl(
     }
 
     override fun getWaitingForResultEnabled(): Single<Boolean> {
-        return rxSingle { smsConfigStore.get(SMSConfigKey.WAIT_FOR_RESULT)?.toBoolean() ?: false }
+        return rxSingle { getWaitingForResultEnabledSuspend() }
+    }
+
+    override suspend fun getWaitingForResultEnabledSuspend(): Boolean {
+        return smsConfigStore.get(SMSConfigKey.WAIT_FOR_RESULT)?.toBoolean() ?: false
     }
 
     override fun getOngoingSubmissions(): Single<Map<Int, SubmissionType>> {

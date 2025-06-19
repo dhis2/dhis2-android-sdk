@@ -40,6 +40,6 @@ internal class ProgramSectionAttributeLinkStoreImpl(
     ProgramSectionAttributeLink::toDB,
     LinkSQLStatementBuilderImpl(
         ProgramSectionAttributeLinkTableInfo.TABLE_INFO,
-        ProgramSectionAttributeLinkTableInfo.Columns.PROGRAM_SECTION
+        ProgramSectionAttributeLinkTableInfo.Columns.PROGRAM_SECTION,
     ),
 )

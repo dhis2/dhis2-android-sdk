@@ -29,14 +29,16 @@
 package org.hisp.dhis.android.persistence.program
 
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo
 import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
 
 internal class ProgramTrackedEntityAttributeStoreImpl(
     val dao: ProgramTrackedEntityAttributeDao,
-) : ProgramTrackedEntityAttributeStore, IdentifiableObjectStoreImpl<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeDB>(
-    dao,
-    ProgramTrackedEntityAttribute::toDB,
-    SQLStatementBuilderImpl(ProgramTrackedEntityAttributeTableInfo.TABLE_INFO),
-)
+) : ProgramTrackedEntityAttributeStore,
+    IdentifiableObjectStoreImpl<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeDB>(
+        dao,
+        ProgramTrackedEntityAttribute::toDB,
+        SQLStatementBuilderImpl(ProgramTrackedEntityAttributeTableInfo.TABLE_INFO),
+    )

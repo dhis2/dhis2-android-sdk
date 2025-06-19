@@ -41,6 +41,6 @@ internal class ProgramStageSectionProgramIndicatorLinkStoreImpl(
         ProgramStageSectionProgramIndicatorLink::toDB,
         LinkSQLStatementBuilderImpl(
             ProgramStageSectionProgramIndicatorLinkTableInfo.TABLE_INFO,
-            ProgramStageSectionProgramIndicatorLinkTableInfo.Columns.PROGRAM_STAGE_SECTION
+            ProgramStageSectionProgramIndicatorLinkTableInfo.Columns.PROGRAM_STAGE_SECTION,
         ),
     )

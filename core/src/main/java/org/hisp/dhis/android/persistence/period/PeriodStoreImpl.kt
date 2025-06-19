@@ -73,5 +73,4 @@ internal class PeriodStoreImpl(
         val period = selectOneOrderedBy(PeriodTableInfo.Columns.START_DATE, SQLOrderType.ASC)
         return period?.startDate()
     }
-
 }

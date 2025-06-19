@@ -48,5 +48,4 @@ internal class ProgramStoreImpl(
             .appendKeyStringValue(ProgramTableInfo.Columns.PROGRAM_TYPE, programType.toString()).build()
         return selectStringColumnsWhereClause(IdentifiableColumns.UID, whereClause)
     }
-
 }

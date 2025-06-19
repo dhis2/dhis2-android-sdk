@@ -45,7 +45,7 @@ internal class ProgramRuleActionStoreImpl(
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(
                 ProgramRuleActionTableInfo.Columns.PROGRAM_RULE,
-                programRuleUid
+                programRuleUid,
             )
             .build()
         val query = builder.selectWhere(whereClause)

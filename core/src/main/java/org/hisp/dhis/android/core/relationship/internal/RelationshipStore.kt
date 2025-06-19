@@ -34,9 +34,9 @@ import org.hisp.dhis.android.core.relationship.RelationshipItem
 
 internal interface RelationshipStore : IdentifiableDeletableDataObjectStore<Relationship> {
 
-    fun getRelationshipsByItem(relationshipItem: RelationshipItem): List<Relationship>
+    suspend fun getRelationshipsByItem(relationshipItem: RelationshipItem): List<Relationship>
 
-    fun getRelationshipsByItem(
+    suspend fun getRelationshipsByItem(
         relationshipItem: RelationshipItem,
         type: RelationshipConstraintType?,
     ): List<Relationship>

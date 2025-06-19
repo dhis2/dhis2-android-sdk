@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.persistence.resource
 
 import androidx.room.Dao
-import org.hisp.dhis.android.persistence.common.daos.ObjectWithoutUidDao
+import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
 @Dao
-internal interface ResourceDao : ObjectWithoutUidDao<ResourceDB>
+internal interface ResourceDao : ObjectDao<ResourceDB>

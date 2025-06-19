@@ -40,6 +40,6 @@ internal class CustomIntentAttributeStoreImpl(
     CustomIntentAttribute::toDB,
     LinkSQLStatementBuilderImpl(
         CustomIntentAttributeTableInfo.TABLE_INFO,
-        CustomIntentAttributeTableInfo.Columns.CUSTOM_INTENT_UID
+        CustomIntentAttributeTableInfo.Columns.CUSTOM_INTENT_UID,
     ),
 )

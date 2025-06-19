@@ -57,7 +57,7 @@ internal class JobReportRelationshipHandler internal constructor(
         }
     }
 
-    override fun getRelatedRelationships(uid: String): List<String> {
+    override suspend fun getRelatedRelationships(uid: String): List<String> {
         return emptyList()
     }
 }

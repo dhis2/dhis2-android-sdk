@@ -35,8 +35,9 @@ import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 
 internal class AnalyticsDhisVisualizationStoreImpl(
     val dao: AnalyticsDhisVisualizationDao,
-) : AnalyticsDhisVisualizationStore, ObjectWithoutUidStoreImpl<AnalyticsDhisVisualization, AnalyticsDhisVisualizationDB>(
-    dao,
-    AnalyticsDhisVisualization::toDB,
-    SQLStatementBuilderImpl(AnalyticsDhisVisualizationTableInfo.TABLE_INFO),
-)
+) : AnalyticsDhisVisualizationStore,
+    ObjectWithoutUidStoreImpl<AnalyticsDhisVisualization, AnalyticsDhisVisualizationDB>(
+        dao,
+        AnalyticsDhisVisualization::toDB,
+        SQLStatementBuilderImpl(AnalyticsDhisVisualizationTableInfo.TABLE_INFO),
+    )

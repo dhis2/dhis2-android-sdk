@@ -40,5 +40,6 @@ internal class AnalyticsTeiDataElementStoreImpl(
     AnalyticsTeiDataElement::toDB,
     LinkSQLStatementBuilderImpl(
         AnalyticsTeiDataElementTableInfo.TABLE_INFO,
-        AnalyticsTeiDataElementTableInfo.Columns.TEI_SETTING),
+        AnalyticsTeiDataElementTableInfo.Columns.TEI_SETTING,
+    ),
 )

@@ -46,4 +46,5 @@ internal interface ReadOnlySQLStatementBuilder {
     fun countAndGroupBy(column: String): RoomRawQuery
     fun deleteTable(): RoomRawQuery
     fun deleteWhere(whereClause: String): RoomRawQuery
+    fun updateWhere(updates: Map<String, Any>, whereClause: String): RoomRawQuery
 }

@@ -26,10 +26,10 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.valuetypedevicerendering
+package org.hisp.dhis.android.persistence.enrollment
 
 import androidx.room.Dao
-import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.persistence.common.daos.IdentifiableDeletableDataObjectStoreDao
 
 @Dao
-internal interface ValueTypeDeviceRenderingDao : ObjectDao<ValueTypeDeviceRenderingDB>
+internal interface EnrollmentDao : IdentifiableDeletableDataObjectStoreDao<EnrollmentDB>

@@ -26,10 +26,18 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.valuetypedevicerendering
+package org.hisp.dhis.android.persistence.event
 
-import androidx.room.Dao
-import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.core.event.EventFilter
+import org.hisp.dhis.android.core.event.EventFilterTableInfo
+import org.hisp.dhis.android.core.event.internal.EventFilterStore
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
 
-@Dao
-internal interface ValueTypeDeviceRenderingDao : ObjectDao<ValueTypeDeviceRenderingDB>
+internal class EventFilterStoreImpl(
+    val dao: EventFilterDao,
+) : EventFilterStore, IdentifiableObjectStoreImpl<EventFilter, EventFilterDB>(
+    dao,
+    EventFilter::toDB,
+    SQLStatementBuilderImpl(EventFilterTableInfo.TABLE_INFO),
+)

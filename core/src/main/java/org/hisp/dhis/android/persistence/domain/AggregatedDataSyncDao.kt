@@ -26,10 +26,10 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.valuetypedevicerendering
+package org.hisp.dhis.android.persistence.domain
 
 import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
 @Dao
-internal interface ValueTypeDeviceRenderingDao : ObjectDao<ValueTypeDeviceRenderingDB>
+internal interface AggregatedDataSyncDao : ObjectDao<AggregatedDataSyncDB>

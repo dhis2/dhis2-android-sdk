@@ -26,10 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.valuetypedevicerendering
+package org.hisp.dhis.android.persistence.domain
 
-import androidx.room.Dao
-import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataSync
+import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataSyncStore
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 
-@Dao
-internal interface ValueTypeDeviceRenderingDao : ObjectDao<ValueTypeDeviceRenderingDB>
+internal class AggregatedDataSyncStoreImpl(
+    val dao: AggregatedDataSyncDao,
+) : AggregatedDataSyncStore, ObjectWithoutUidStoreImpl<AggregatedDataSync, AggregatedDataSyncDB>(
+    dao,
+    AggregatedDataSync::toDB,
+    SQLStatementBuilderImpl(AggregatedDataSyncTableInfo.TABLE_INFO),
+)

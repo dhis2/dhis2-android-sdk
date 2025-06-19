@@ -15969,29 +15969,6 @@ public final class org/hisp/dhis/android/persistence/category/CategoryTableInfo$
 public final class org/hisp/dhis/android/persistence/category/CategoryTableInfo$Columns$Companion {
 }
 
-public final class org/hisp/dhis/android/persistence/common/ValueTypeDeviceRenderingTableInfo {
-	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/common/ValueTypeDeviceRenderingTableInfo;
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public final class org/hisp/dhis/android/persistence/common/ValueTypeDeviceRenderingTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field Companion Lorg/hisp/dhis/android/persistence/common/ValueTypeDeviceRenderingTableInfo$Columns$Companion;
-	public static final field DECIMAL_POINTS Ljava/lang/String;
-	public static final field DEVICE_TYPE Ljava/lang/String;
-	public static final field MAX Ljava/lang/String;
-	public static final field MIN Ljava/lang/String;
-	public static final field OBJECT_TABLE Ljava/lang/String;
-	public static final field STEP Ljava/lang/String;
-	public static final field TYPE Ljava/lang/String;
-	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/persistence/common/ValueTypeDeviceRenderingTableInfo$Columns$Companion {
-}
-
 public final class org/hisp/dhis/android/persistence/configuration/ConfigurationTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/configuration/ConfigurationTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
@@ -18806,6 +18783,29 @@ public final class org/hisp/dhis/android/persistence/validation/ValidationRuleTa
 }
 
 public final class org/hisp/dhis/android/persistence/validation/ValidationRuleTableInfo$Columns$Companion {
+}
+
+public final class org/hisp/dhis/android/persistence/valuetypedevicerendering/ValueTypeDeviceRenderingTableInfo {
+	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/valuetypedevicerendering/ValueTypeDeviceRenderingTableInfo;
+	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+}
+
+public final class org/hisp/dhis/android/persistence/valuetypedevicerendering/ValueTypeDeviceRenderingTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
+	public static final field Companion Lorg/hisp/dhis/android/persistence/valuetypedevicerendering/ValueTypeDeviceRenderingTableInfo$Columns$Companion;
+	public static final field DECIMAL_POINTS Ljava/lang/String;
+	public static final field DEVICE_TYPE Ljava/lang/String;
+	public static final field MAX Ljava/lang/String;
+	public static final field MIN Ljava/lang/String;
+	public static final field OBJECT_TABLE Ljava/lang/String;
+	public static final field STEP Ljava/lang/String;
+	public static final field TYPE Ljava/lang/String;
+	public static final field UID Ljava/lang/String;
+	public static final field _ID Ljava/lang/String;
+	public fun <init> ()V
+	public fun all ()[Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/persistence/valuetypedevicerendering/ValueTypeDeviceRenderingTableInfo$Columns$Companion {
 }
 
 public final class org/hisp/dhis/android/persistence/visualization/TrackerVisualizationDimensionTableInfo {

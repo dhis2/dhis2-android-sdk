@@ -26,10 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.valuetypedevicerendering
+package org.hisp.dhis.android.persistence.configuration
 
-import androidx.room.Dao
-import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.core.configuration.internal.Configuration
+import org.hisp.dhis.android.core.configuration.internal.ConfigurationStore
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.stores.ObjectStoreImpl
 
-@Dao
-internal interface ValueTypeDeviceRenderingDao : ObjectDao<ValueTypeDeviceRenderingDB>
+internal class ConfigurationStoreImpl(
+    val dao: ConfigurationDao,
+) : ConfigurationStore, ObjectStoreImpl<Configuration, ConfigurationDB>(
+    dao,
+    Configuration::toDB,
+    SQLStatementBuilderImpl(ConfigurationTableInfo.TABLE_INFO),
+)

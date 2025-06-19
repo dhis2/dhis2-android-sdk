@@ -26,10 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.valuetypedevicerendering
+package org.hisp.dhis.android.persistence.datavalue
 
-import androidx.room.Dao
-import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.core.datavalue.DataValueConflict
+import org.hisp.dhis.android.core.datavalue.internal.DataValueConflictStore
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.stores.ObjectStoreImpl
 
-@Dao
-internal interface ValueTypeDeviceRenderingDao : ObjectDao<ValueTypeDeviceRenderingDB>
+internal class DataValueConflictStoreImpl(
+    val dao: DataValueConflictDao,
+) : DataValueConflictStore, ObjectStoreImpl<DataValueConflict, DataValueConflictDB>(
+    dao,
+    DataValueConflict::toDB,
+    SQLStatementBuilderImpl(DataValueConflictTableInfo.TABLE_INFO),
+)

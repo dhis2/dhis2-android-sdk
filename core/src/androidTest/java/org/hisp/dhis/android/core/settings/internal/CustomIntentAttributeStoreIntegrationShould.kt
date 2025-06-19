@@ -28,32 +28,21 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
-import org.hisp.dhis.android.core.settings.CustomIntentDataElement
-import org.hisp.dhis.android.core.settings.CustomIntentDataElementTableInfo
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.settings.CustomIntentSamples
+import org.hisp.dhis.android.core.settings.CustomIntentAttribute
+import org.hisp.dhis.android.core.settings.CustomIntentAttributeTableInfo
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-@Singleton
-@Suppress("MagicNumber")
-internal class CustomIntentDataElementTriggerStoreImpl(
-    databaseAdapter: DatabaseAdapter,
-) : CustomIntentDataElementTriggerStore,
-    LinkStoreImpl<CustomIntentDataElement>(
-        databaseAdapter,
-        CustomIntentDataElementTableInfo.TABLE_INFO,
-        CustomIntentDataElementTableInfo.Columns.CUSTOM_INTENT_UID,
-        BINDER,
-        { cursor: Cursor -> CustomIntentDataElement.create(cursor) },
-    ) {
-
-    companion object {
-        private val BINDER = StatementBinder { o: CustomIntentDataElement, w: StatementWrapper ->
-            w.bind(1, o.uid())
-            w.bind(2, o.customIntentUid())
-        }
+@RunWith(D2JunitRunner::class)
+class CustomIntentAttributeStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<CustomIntentAttribute>(
+    CustomIntentAttributeStoreImpl(TestDatabaseAdapterFactory.get()),
+    CustomIntentAttributeTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
+) {
+    override fun buildObject(): CustomIntentAttribute {
+        return CustomIntentSamples.getCustomIntentAttributeTrigger()
     }
 }

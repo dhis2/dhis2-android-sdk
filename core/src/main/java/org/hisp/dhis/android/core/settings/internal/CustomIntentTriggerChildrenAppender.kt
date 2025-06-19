@@ -34,8 +34,8 @@ import org.hisp.dhis.android.core.settings.CustomIntent
 import org.hisp.dhis.android.core.settings.CustomIntentTrigger
 
 internal class CustomIntentTriggerChildrenAppender private constructor(
-    private val dataElementLinkChildStore: CustomIntentDataElementTriggerStore,
-    private val attributeLinkChildStore: CustomIntentAttributeTriggerStore,
+    private val dataElementLinkChildStore: CustomIntentDataElementStore,
+    private val attributeLinkChildStore: CustomIntentAttributeStore,
 ) : ChildrenAppender<CustomIntent>() {
     override suspend fun appendChildren(m: CustomIntent): CustomIntent {
         val builder = m.toBuilder()
@@ -51,8 +51,8 @@ internal class CustomIntentTriggerChildrenAppender private constructor(
     companion object {
         fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<CustomIntent> {
             return CustomIntentTriggerChildrenAppender(
-                CustomIntentDataElementTriggerStoreImpl(databaseAdapter),
-                CustomIntentAttributeTriggerStoreImpl(databaseAdapter),
+                CustomIntentDataElementStoreImpl(databaseAdapter),
+                CustomIntentAttributeStoreImpl(databaseAdapter),
             )
         }
     }

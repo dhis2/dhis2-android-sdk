@@ -28,11 +28,32 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.arch.handlers.internal.ChildElementHandlerImpl
-import org.hisp.dhis.android.core.settings.CustomIntentAttribute
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
+import org.hisp.dhis.android.core.settings.CustomIntentDataElement
+import org.hisp.dhis.android.core.settings.CustomIntentDataElementTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class CustomIntentAttributeTriggerHandler(
-    store: CustomIntentAttributeTriggerStore,
-) : ChildElementHandlerImpl<CustomIntentAttribute>(store)
+@Suppress("MagicNumber")
+internal class CustomIntentDataElementStoreImpl(
+    databaseAdapter: DatabaseAdapter,
+) : CustomIntentDataElementStore,
+    LinkStoreImpl<CustomIntentDataElement>(
+        databaseAdapter,
+        CustomIntentDataElementTableInfo.TABLE_INFO,
+        CustomIntentDataElementTableInfo.Columns.CUSTOM_INTENT_UID,
+        BINDER,
+        { cursor: Cursor -> CustomIntentDataElement.create(cursor) },
+    ) {
+
+    companion object {
+        private val BINDER = StatementBinder { o: CustomIntentDataElement, w: StatementWrapper ->
+            w.bind(1, o.uid())
+            w.bind(2, o.customIntentUid())
+        }
+    }
+}

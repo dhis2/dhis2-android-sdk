@@ -61,5 +61,4 @@ internal class ResourceStoreImpl(
 
         return deleteWhere(whereClause)
     }
-
 }

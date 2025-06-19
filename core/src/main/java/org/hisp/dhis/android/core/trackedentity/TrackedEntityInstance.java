@@ -141,8 +141,6 @@ public abstract class TrackedEntityInstance extends BaseDeletableDataObject impl
 
     @AutoValue.Builder
     public abstract static class Builder extends BaseDeletableDataObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
         public abstract Builder uid(String uid);
 
         public abstract Builder created(Date created);

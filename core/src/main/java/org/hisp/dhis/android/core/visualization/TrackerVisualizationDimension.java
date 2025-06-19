@@ -93,8 +93,6 @@ public abstract class TrackerVisualizationDimension implements CoreObject {
     @AutoValue.Builder
     public abstract static class Builder {
 
-        public abstract Builder id(Long id);
-
         public abstract Builder trackerVisualization(String trackerVisualization);
 
         public abstract Builder position(LayoutPosition position);

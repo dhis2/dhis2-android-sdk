@@ -71,7 +71,6 @@ internal data class TrackerVisualizationDB(
     override fun toDomain(): TrackerVisualization {
         return TrackerVisualization.builder().apply {
             applyBaseIdentifiableFields(this@TrackerVisualizationDB)
-            id(id?.toLong())
             description(description)
             displayDescription(displayDescription)
             type(type?.let { TrackerVisualizationType.valueOf(it) })

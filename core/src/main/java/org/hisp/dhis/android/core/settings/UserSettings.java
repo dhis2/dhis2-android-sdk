@@ -57,8 +57,6 @@ public abstract class UserSettings implements CoreObject {
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder id(Long id);
-
         public abstract Builder keyUiLocale(String keyUiLocale);
 
         public abstract Builder keyDbLocale(String keyDbLocale);

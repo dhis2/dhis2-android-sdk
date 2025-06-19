@@ -60,7 +60,6 @@ internal data class ProgramStageDataElementDB(
     override fun toDomain(): ProgramStageDataElement {
         return ProgramStageDataElement.builder().apply {
             applyBaseIdentifiableFields(this@ProgramStageDataElementDB)
-            id(id?.toLong())
             displayInReports(displayInReports)
             compulsory(compulsory)
             allowProvidedElsewhere(allowProvidedElsewhere)

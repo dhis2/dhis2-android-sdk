@@ -95,7 +95,7 @@ public abstract class TrackerImportConflict extends BaseObject {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder extends BaseObject.Builder {
         public abstract Builder conflict(String conflict);
 
         public abstract Builder value(String value);

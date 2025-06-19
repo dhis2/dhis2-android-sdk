@@ -43,7 +43,6 @@ internal data class DataSetIndicatorLinkDB(
 
     override fun toDomain(): DataSetIndicatorLink {
         return DataSetIndicatorLink.builder()
-            .id(id?.toLong())
             .dataSet(dataSet)
             .indicator(indicator)
             .build()

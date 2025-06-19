@@ -40,7 +40,6 @@ internal data class TrackedEntityInstanceEventFilterDB(
 ) : EntityDB<TrackedEntityInstanceEventFilter> {
     override fun toDomain(): TrackedEntityInstanceEventFilter {
         return TrackedEntityInstanceEventFilter.builder()
-            .id(id?.toLong())
             .trackedEntityInstanceFilter(trackedEntityInstanceFilter)
             .programStage(programStage)
             .eventStatus(eventStatus?.let { EventStatus.valueOf(it) })

@@ -59,7 +59,6 @@ internal data class TrackedEntityInstanceDB(
 ) : EntityDB<TrackedEntityInstance>, DataObjectDB, DeletableObjectDB {
     override fun toDomain(): TrackedEntityInstance {
         return TrackedEntityInstance.builder().apply {
-            id(id?.toLong())
             uid(uid)
             created(created.toJavaDate())
             lastUpdated(lastUpdated.toJavaDate())

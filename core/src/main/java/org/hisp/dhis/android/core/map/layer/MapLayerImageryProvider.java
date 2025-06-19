@@ -66,7 +66,7 @@ public abstract class MapLayerImageryProvider implements CoreObject {
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder extends BaseObject.Builder {
 
         public abstract Builder mapLayer(String mapLayer);
 

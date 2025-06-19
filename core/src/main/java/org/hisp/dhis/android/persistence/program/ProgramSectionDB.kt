@@ -57,7 +57,6 @@ internal data class ProgramSectionDB(
         return ProgramSection.builder().apply {
             applyBaseIdentifiableFields(this@ProgramSectionDB)
             applyStyleFields(this@ProgramSectionDB)
-            id(id?.toLong())
             description(description)
             program?.let { program(ObjectWithUid.create(it)) }
             sortOrder(sortOrder)

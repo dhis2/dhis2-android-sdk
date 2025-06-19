@@ -53,7 +53,7 @@ public abstract class TrackerBaseSync extends BaseObject {
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
-    public abstract static class Builder<T extends BaseObject.Builder> extends BaseObject.Builder<T> {
+    public abstract static class Builder<T extends BaseObject.Builder> extends BaseObject.Builder {
 
         public abstract T program(String program);
 

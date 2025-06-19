@@ -61,8 +61,6 @@ public abstract class OrganisationUnitGroup extends BaseIdentifiableObject imple
     @AutoValue.Builder
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
 
-        public abstract Builder id(Long id);
-
         public abstract Builder shortName(String shortName);
 
         public abstract Builder displayShortName(String displayShortName);

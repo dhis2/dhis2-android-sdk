@@ -71,9 +71,7 @@ public abstract class Period implements CoreObject {
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
+    public abstract static class Builder extends BaseObject.Builder {
         public abstract Builder periodId(String periodId);
 
         public abstract Builder periodType(PeriodType periodType);

@@ -62,7 +62,6 @@ internal data class ProgramTrackedEntityAttributeDB(
 
     override fun toDomain(): ProgramTrackedEntityAttribute {
         return ProgramTrackedEntityAttribute.builder()
-            .id(id?.toLong())
             .applyBaseNameableFields(this)
             .mandatory(mandatory)
             .trackedEntityAttribute(ObjectWithUid.create(trackedEntityAttribute))

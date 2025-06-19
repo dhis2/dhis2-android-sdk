@@ -74,7 +74,7 @@ public abstract class DataInputPeriod extends BaseObject {
 
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<DataInputPeriod.Builder> {
+    public abstract static class Builder extends BaseObject.Builder {
 
         public abstract Builder dataSet(ObjectWithUid dataSet);
 

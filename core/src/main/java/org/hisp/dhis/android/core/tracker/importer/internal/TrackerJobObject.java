@@ -76,7 +76,7 @@ public abstract class TrackerJobObject extends BaseObject {
     abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder extends BaseObject.Builder {
         public abstract Builder trackerType(TrackerImporterObjectType trackerType);
 
         public abstract Builder objectUid(String objectUid);

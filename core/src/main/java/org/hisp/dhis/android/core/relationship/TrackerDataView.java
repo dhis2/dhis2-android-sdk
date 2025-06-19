@@ -66,7 +66,7 @@ public abstract class TrackerDataView extends BaseObject {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder extends BaseObject.Builder {
 
         public abstract Builder attributes(List<String> attributes);
 

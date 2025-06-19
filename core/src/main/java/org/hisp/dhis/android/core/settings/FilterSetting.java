@@ -67,8 +67,6 @@ public abstract class FilterSetting implements CoreObject {
     @AutoValue.Builder
     public abstract static class Builder {
 
-        public abstract Builder id(Long id);
-
         public abstract Builder scope(String scope);
 
         public abstract Builder filterType(String filterType);

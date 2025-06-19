@@ -57,9 +57,7 @@ public abstract class LatestAppVersion implements CoreObject {
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
+    public abstract static class Builder extends BaseObject.Builder {
         public abstract Builder version(String version);
 
         public abstract Builder downloadURL(String downloadURL);

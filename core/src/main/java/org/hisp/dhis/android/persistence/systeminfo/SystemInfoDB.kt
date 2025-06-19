@@ -22,7 +22,6 @@ internal data class SystemInfoDB(
 
     override fun toDomain(): SystemInfo {
         return SystemInfo.builder()
-            .id(id?.toLong())
             .serverDate(serverDate.toJavaDate())
             .dateFormat(dateFormat)
             .version(version)

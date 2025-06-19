@@ -72,7 +72,7 @@ public abstract class SystemInfo extends BaseObject {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<SystemInfo.Builder> {
+    public abstract static class Builder extends BaseObject.Builder {
         public abstract Builder serverDate(Date serverDate);
 
         public abstract Builder dateFormat(String dateFormat);

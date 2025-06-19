@@ -80,7 +80,7 @@ public abstract class AggregatedDataSync extends BaseObject {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder extends BaseObject.Builder {
 
         public abstract Builder dataSet(String dataSet);
 

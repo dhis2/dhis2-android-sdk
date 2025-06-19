@@ -55,7 +55,6 @@ internal data class NoteDB(
 
     override fun toDomain(): Note {
         return Note.builder().apply {
-            id(id?.toLong())
             uid(uid)
             noteType?.let { noteType(Note.NoteType.valueOf(it)) }
             event(event)

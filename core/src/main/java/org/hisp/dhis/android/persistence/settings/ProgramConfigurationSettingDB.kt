@@ -25,7 +25,6 @@ internal data class ProgramConfigurationSettingDB(
 
     override fun toDomain(): ProgramConfigurationSetting {
         return ProgramConfigurationSetting.builder().apply {
-            id(id?.toLong())
             uid(uid)
             completionSpinner(completionSpinner)
             optionalSearch(optionalSearch)

@@ -98,7 +98,6 @@ internal data class EventDB(
 
     override fun toDomain(): Event {
         return Event.builder().apply {
-            id(id?.toLong())
             uid(uid)
             enrollment(enrollment)
             created(created.toJavaDate())

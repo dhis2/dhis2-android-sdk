@@ -81,9 +81,7 @@ public abstract class Resource implements CoreObject {
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
+    public abstract static class Builder extends BaseObject.Builder {
         public abstract Builder resourceType(Resource.Type resourceType);
 
         public abstract Builder lastSynced(Date lastSynced);

@@ -56,9 +56,7 @@ public abstract class OrganisationUnitProgramLink implements CoreObject {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-
-        public abstract Builder id(Long id);
+    public abstract static class Builder extends BaseObject.Builder {
 
         public abstract Builder program(@Nullable String program);
 

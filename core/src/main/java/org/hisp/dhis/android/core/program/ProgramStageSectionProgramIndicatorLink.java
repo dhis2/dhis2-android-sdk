@@ -57,9 +57,7 @@ public abstract class ProgramStageSectionProgramIndicatorLink implements CoreObj
 
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-
-        public abstract Builder id(Long id);
+    public abstract static class Builder extends BaseObject.Builder {
 
         public abstract Builder programStageSection(@Nullable String programStageSection);
 

@@ -110,7 +110,7 @@ public abstract class MapLayer extends BaseObject implements ObjectWithUidInterf
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder extends BaseObject.Builder {
 
         public abstract Builder uid(String uid);
 

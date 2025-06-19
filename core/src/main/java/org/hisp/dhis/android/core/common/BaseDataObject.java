@@ -55,7 +55,7 @@ public abstract class BaseDataObject extends BaseObject implements DataObject {
     @ColumnAdapter(StateColumnAdapter.class)
     public abstract State syncState();
 
-    protected abstract static class Builder<T extends Builder> extends BaseObject.Builder<T> {
+    protected abstract static class Builder<T extends Builder> extends BaseObject.Builder {
         public abstract T syncState(@Nullable State syncState);
 
         /**

@@ -48,7 +48,6 @@ internal data class OrganisationUnitDB(
     override fun toDomain(): OrganisationUnit {
         return OrganisationUnit.builder()
             .applyBaseNameableFields(this)
-            .id(id?.toLong())
             .path(path)
             .openingDate(openingDate.toJavaDate())
             .closedDate(closedDate.toJavaDate())

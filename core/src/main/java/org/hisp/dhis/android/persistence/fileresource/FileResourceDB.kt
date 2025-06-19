@@ -36,7 +36,6 @@ internal data class FileResourceDB(
 
     override fun toDomain(): FileResource {
         return FileResource.builder().apply {
-            id(id?.toLong())
             uid(uid)
             name?.let { name(it) }
             created?.let { created(it.toJavaDate()!!) }

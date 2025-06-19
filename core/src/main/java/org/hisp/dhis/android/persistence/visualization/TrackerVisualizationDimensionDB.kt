@@ -61,7 +61,6 @@ internal data class TrackerVisualizationDimensionDB(
 ) : EntityDB<TrackerVisualizationDimension> {
     override fun toDomain(): TrackerVisualizationDimension {
         return TrackerVisualizationDimension.builder()
-            .id(id?.toLong())
             .trackerVisualization(trackerVisualization)
             .position(position.let { LayoutPosition.valueOf(it) })
             .dimension(dimension)

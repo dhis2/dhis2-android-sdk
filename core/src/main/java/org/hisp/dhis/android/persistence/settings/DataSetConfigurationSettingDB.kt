@@ -18,7 +18,6 @@ internal data class DataSetConfigurationSettingDB(
 
     override fun toDomain(): DataSetConfigurationSetting {
         return DataSetConfigurationSetting.builder()
-            .id(id?.toLong())
             .uid(uid)
             .minimumLocationAccuracy(minimumLocationAccuracy)
             .disableManualLocation(disableManualLocation)

@@ -36,7 +36,6 @@ internal data class VisualizationDimensionItemDB(
 ) : EntityDB<VisualizationDimensionItem> {
     override fun toDomain(): VisualizationDimensionItem {
         return VisualizationDimensionItem.builder()
-            .id(id?.toLong())
             .visualization(visualization)
             .position(LayoutPosition.valueOf(position))
             .dimension(dimension)

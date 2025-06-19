@@ -42,7 +42,6 @@ internal data class OrganisationUnitOrganisationUnitGroupLinkDB(
 
     override fun toDomain(): OrganisationUnitOrganisationUnitGroupLink {
         return OrganisationUnitOrganisationUnitGroupLink.builder()
-            .id(id?.toLong())
             .organisationUnit(organisationUnit)
             .organisationUnitGroup(organisationUnitGroup)
             .build()

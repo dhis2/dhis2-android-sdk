@@ -61,9 +61,7 @@ public abstract class VisualizationCategoryDimensionLink implements CoreObject {
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
+    public abstract static class Builder extends BaseObject.Builder {
         public abstract Builder visualization(String visualization);
 
         public abstract Builder category(String category);

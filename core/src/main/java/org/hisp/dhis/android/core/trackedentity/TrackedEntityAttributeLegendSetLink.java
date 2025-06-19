@@ -60,9 +60,7 @@ public abstract class TrackedEntityAttributeLegendSetLink implements CoreObject 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
+    public abstract static class Builder extends BaseObject.Builder {
         public abstract Builder trackedEntityAttribute(String trackedEntityAttribute);
 
         public abstract Builder legendSet(String legendSet);

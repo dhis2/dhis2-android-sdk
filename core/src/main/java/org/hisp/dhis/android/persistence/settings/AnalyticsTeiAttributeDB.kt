@@ -44,7 +44,6 @@ internal data class AnalyticsTeiAttributeDB(
 
     override fun toDomain(): AnalyticsTeiAttribute {
         return AnalyticsTeiAttribute.builder().apply {
-            id(id?.toLong())
             teiSetting(teiSetting)
             whoComponent?.let { whoComponent(WHONutritionComponent.valueOf(it)) }
             attribute(attribute)

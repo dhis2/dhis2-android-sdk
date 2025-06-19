@@ -68,7 +68,6 @@ internal data class TrackedEntityInstanceFilterDB(
         return TrackedEntityInstanceFilter.builder().apply {
             applyBaseIdentifiableFields(this@TrackedEntityInstanceFilterDB)
             applyStyleFields(this@TrackedEntityInstanceFilterDB)
-            id(id?.toLong())
             program(ObjectWithUid.create(program))
             description(description)
             sortOrder(sortOrder)

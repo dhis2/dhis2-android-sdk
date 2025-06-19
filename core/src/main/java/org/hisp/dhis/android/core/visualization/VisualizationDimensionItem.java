@@ -71,8 +71,6 @@ public abstract class VisualizationDimensionItem implements CoreObject {
     @AutoValue.Builder
     public abstract static class Builder {
 
-        public abstract Builder id(Long id);
-
         public abstract Builder visualization(String visualization);
 
         public abstract Builder position(LayoutPosition position);

@@ -58,9 +58,7 @@ public abstract class AuthenticatedUser implements CoreObject {
 
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-
-        public abstract Builder id(Long id);
+    public abstract static class Builder extends BaseObject.Builder {
 
         public abstract Builder user(@Nullable String user);
 

@@ -57,9 +57,7 @@ public abstract class OrganisationUnitOrganisationUnitGroupLink implements CoreO
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-
-        public abstract Builder id(Long id);
+    public abstract static class Builder extends BaseObject.Builder {
 
         public abstract Builder organisationUnit(String organisationUnit);
 

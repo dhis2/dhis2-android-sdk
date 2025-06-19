@@ -119,9 +119,7 @@ public abstract class DataSetInstance implements CoreObject {
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
+    public abstract static class Builder extends BaseObject.Builder {
         public abstract Builder dataSetUid(String dataSetUid);
 
         public abstract Builder dataSetDisplayName(String dataSetDisplayName);

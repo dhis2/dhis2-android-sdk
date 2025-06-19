@@ -81,9 +81,7 @@ public abstract class InternalStockUseCase extends BaseObject implements ObjectW
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
+    public abstract static class Builder extends BaseObject.Builder {
         public abstract Builder uid(String uid);
 
         public abstract Builder itemCode(String itemCode);

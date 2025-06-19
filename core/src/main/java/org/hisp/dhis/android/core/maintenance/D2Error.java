@@ -91,7 +91,7 @@ public abstract class D2Error extends Exception implements CoreObject {
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder extends BaseObject.Builder {
 
         public abstract Builder url(String url);
 

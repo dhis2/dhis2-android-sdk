@@ -101,7 +101,6 @@ internal data class ItemFilterDB(
     fun toEventDataFilterDomain(): EventDataFilter {
         return EventDataFilter.builder()
             .applyFilterOperatorsFields(this@ItemFilterDB)
-            .id(id?.toLong())
             .eventFilter(eventFilter)
             .dataItem(dataItem)
             .build()
@@ -110,7 +109,6 @@ internal data class ItemFilterDB(
     fun toAttributeValueFilterDomain(): AttributeValueFilter {
         return AttributeValueFilter.builder()
             .applyFilterOperatorsFields(this@ItemFilterDB)
-            .id(id?.toLong())
             .trackedEntityInstanceFilter(trackedEntityInstanceFilter)
             .attribute(attribute)
             .sw(sw)
@@ -121,7 +119,6 @@ internal data class ItemFilterDB(
     fun toProgramStageWorkingListEventDataFilterDomain(): ProgramStageWorkingListEventDataFilter {
         return ProgramStageWorkingListEventDataFilter.builder()
             .applyFilterOperatorsFields(this@ItemFilterDB)
-            .id(id?.toLong())
             .programStageWorkingList(programStageWorkingList)
             .dataItem(dataItem)
             .build()
@@ -130,7 +127,6 @@ internal data class ItemFilterDB(
     fun toProgramStageWorkingListAttributeValueFilterDomain(): ProgramStageWorkingListAttributeValueFilter {
         return ProgramStageWorkingListAttributeValueFilter.builder()
             .applyFilterOperatorsFields(this@ItemFilterDB)
-            .id(id?.toLong())
             .attribute(attribute)
             .programStageWorkingList(programStageWorkingList)
             .sw(sw)

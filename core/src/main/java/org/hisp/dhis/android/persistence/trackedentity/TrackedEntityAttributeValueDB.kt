@@ -51,7 +51,6 @@ internal data class TrackedEntityAttributeValueDB(
 
     override fun toDomain(): TrackedEntityAttributeValue {
         return TrackedEntityAttributeValue.builder().apply {
-            id(id?.toLong())
             created(created.toJavaDate())
             lastUpdated(lastUpdated.toJavaDate())
             value(value)

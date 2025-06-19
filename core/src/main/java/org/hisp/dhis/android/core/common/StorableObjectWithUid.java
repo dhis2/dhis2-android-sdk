@@ -47,6 +47,6 @@ public abstract class StorableObjectWithUid extends BaseObject implements Object
     }
 
     public static StorableObjectWithUid create(String uid) {
-        return new AutoValue_StorableObjectWithUid(null, uid);
+        return new AutoValue_StorableObjectWithUid(uid);
     }
 }

@@ -74,7 +74,7 @@ public abstract class DataElementOperand extends BaseObject
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder extends BaseObject.Builder {
 
         public abstract Builder uid(String uid);
 

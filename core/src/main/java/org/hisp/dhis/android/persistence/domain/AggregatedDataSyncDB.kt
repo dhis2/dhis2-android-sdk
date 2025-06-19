@@ -42,7 +42,6 @@ internal data class AggregatedDataSyncDB(
 
     override fun toDomain(): AggregatedDataSync {
         return AggregatedDataSync.builder()
-            .id(id?.toLong())
             .dataSet(dataSet)
             .periodType(PeriodType.valueOf(periodType))
             .pastPeriods(pastPeriods)

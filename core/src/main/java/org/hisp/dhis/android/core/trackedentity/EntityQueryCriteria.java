@@ -87,8 +87,6 @@ public abstract class EntityQueryCriteria extends FilterQueryCriteria implements
 
     @AutoValue.Builder
     public abstract static class Builder extends FilterQueryCriteria.Builder<Builder> {
-        public abstract Builder id(Long id);
-
         public abstract Builder programStage(String programStage);
 
         public abstract Builder trackedEntityInstances(List<String> trackedEntityInstances);

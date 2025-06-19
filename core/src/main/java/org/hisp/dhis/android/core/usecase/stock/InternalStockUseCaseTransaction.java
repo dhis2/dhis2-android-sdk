@@ -72,7 +72,7 @@ public abstract class InternalStockUseCaseTransaction extends BaseObject {
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder extends BaseObject.Builder {
 
         public abstract Builder programUid(String programUid);
 

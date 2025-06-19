@@ -18,7 +18,6 @@ internal data class SMSOngoingSubmissionDB(
 
     override fun toDomain(): SMSOngoingSubmission {
         return SMSOngoingSubmission.builder()
-            .id(id?.toLong())
             .submissionId(submissionId)
             .type(type?.let { SubmissionType.valueOf(it) })
             .build()

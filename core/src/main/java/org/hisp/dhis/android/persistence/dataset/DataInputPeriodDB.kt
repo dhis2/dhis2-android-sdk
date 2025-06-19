@@ -38,7 +38,6 @@ internal data class DataInputPeriodDB(
 
     override fun toDomain(): DataInputPeriod {
         return DataInputPeriod.builder()
-            .id(id?.toLong())
             .dataSet(ObjectWithUid.create(dataSet))
             .period(ObjectWithUid.create(period))
             .openingDate(openingDate.toJavaDate())

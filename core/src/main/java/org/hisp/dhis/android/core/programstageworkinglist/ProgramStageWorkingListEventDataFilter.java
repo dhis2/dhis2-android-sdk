@@ -64,8 +64,6 @@ public abstract class ProgramStageWorkingListEventDataFilter extends FilterOpera
 
     @AutoValue.Builder
     public abstract static class Builder extends FilterOperators.Builder<Builder> {
-        public abstract Builder id(Long id);
-
         public abstract Builder programStageWorkingList(String programStageWorkingList);
 
         public abstract Builder dataItem(String dataItem);

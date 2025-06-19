@@ -55,7 +55,6 @@ internal data class SectionDB(
     override fun toDomain(): Section {
         return Section.builder().apply {
             applyBaseIdentifiableFields(this@SectionDB)
-            id(id?.toLong())
             description(description)
             sortOrder(sortOrder)
             dataSet(ObjectWithUid.create(dataSet))

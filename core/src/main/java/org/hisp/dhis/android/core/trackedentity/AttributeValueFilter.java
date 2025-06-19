@@ -76,8 +76,6 @@ public abstract class AttributeValueFilter extends FilterOperators implements Co
 
     @AutoValue.Builder
     public abstract static class Builder extends FilterOperators.Builder<Builder> {
-        public abstract Builder id(Long id);
-
         public abstract Builder trackedEntityInstanceFilter(String trackedEntityInstanceFilter);
 
         public abstract Builder attribute(String attribute);

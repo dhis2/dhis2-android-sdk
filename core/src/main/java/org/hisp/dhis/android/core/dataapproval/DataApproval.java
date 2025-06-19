@@ -67,7 +67,7 @@ public abstract class DataApproval extends BaseObject {
 
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<DataApproval.Builder> {
+    public abstract static class Builder extends BaseObject.Builder {
 
         public abstract Builder workflow(@NonNull String workflow);
 

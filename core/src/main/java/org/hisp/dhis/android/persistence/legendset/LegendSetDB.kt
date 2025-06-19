@@ -32,7 +32,6 @@ internal data class LegendSetDB(
     override fun toDomain(): LegendSet {
         return LegendSet.builder()
             .applyBaseIdentifiableFields(this@LegendSetDB)
-            .id(id?.toLong())
             .symbolizer(symbolizer)
             .build()
     }

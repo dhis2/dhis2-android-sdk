@@ -37,7 +37,6 @@ internal data class MapLayerDB(
 
     override fun toDomain(): MapLayer {
         return MapLayer.builder().apply {
-            id(id?.toLong())
             uid(uid)
             name(name)
             displayName(displayName)

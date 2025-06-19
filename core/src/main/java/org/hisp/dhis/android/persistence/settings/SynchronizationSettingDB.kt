@@ -24,7 +24,6 @@ internal data class SynchronizationSettingDB(
 
     override fun toDomain(): SynchronizationSettings {
         return SynchronizationSettings.builder().apply {
-            id(id?.toLong())
             dataSync?.let { dataSync(DataSyncPeriod.valueOf(it)) }
             metadataSync?.let { metadataSync(MetadataSyncPeriod.valueOf(it)) }
             trackerImporterVersion?.let { trackerImporterVersion(TrackerImporterVersion.valueOf(it)) }

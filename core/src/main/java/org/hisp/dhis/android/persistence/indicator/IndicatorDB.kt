@@ -60,7 +60,6 @@ internal data class IndicatorDB(
         return Indicator.builder().apply {
             applyBaseNameableFields(this@IndicatorDB)
             applyStyleFields(this@IndicatorDB)
-            id(id?.toLong())
             annualized(annualized)
             indicatorType?.let { indicatorType(ObjectWithUid.create(indicatorType)) }
             numerator(numerator)

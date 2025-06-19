@@ -81,7 +81,6 @@ internal data class DataSetDB(
         return DataSet.builder().apply {
             applyBaseNameableFields(this@DataSetDB)
             applyStyleFields(this@DataSetDB)
-            id(id?.toLong())
             periodType?.let { periodType(PeriodType.valueOf(it)) }
             categoryCombo(ObjectWithUid.create(categoryCombo))
             mobile(mobile)

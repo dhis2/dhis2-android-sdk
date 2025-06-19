@@ -65,8 +65,6 @@ public abstract class AnalyticsTeiDataElement implements CoreObject {
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder id(Long id);
-
         public abstract Builder teiSetting(String teiSetting);
 
         public abstract Builder whoComponent(WHONutritionComponent component);

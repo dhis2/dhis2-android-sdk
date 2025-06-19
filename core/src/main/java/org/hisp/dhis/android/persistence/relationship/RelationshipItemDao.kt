@@ -37,11 +37,10 @@ import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 internal interface RelationshipItemDao : ObjectDao<RelationshipItemDB> {
     @RawQuery
     suspend fun getRelationshipRow(query: RoomRawQuery): List<RelationshipRow>
-
 }
 
-internal  data class RelationshipRow(
+internal data class RelationshipRow(
     val relationship: String,
     val fromElementUid: String?,
-    val toElementUid: String?
+    val toElementUid: String?,
 )

@@ -29,49 +29,37 @@
 package org.hisp.dhis.android.persistence.resource
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.resource.internal.Resource
 import org.hisp.dhis.android.core.resource.internal.ResourceStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
-import org.hisp.dhis.android.persistence.common.stores.ObjectStoreImpl
+import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 
 internal class ResourceStoreImpl(
     val dao: ResourceDao,
-) : ResourceStore, ObjectStoreImpl<Resource, ResourceDB>(
+) : ResourceStore, ObjectWithoutUidStoreImpl<Resource, ResourceDB>(
     dao,
     Resource::toDB,
-    SQLStatementBuilderImpl("Resource"),
+    SQLStatementBuilderImpl(ResourceTableInfo.TABLE_INFO),
 ) {
-    override suspend fun getLastUpdated(resourceType: Resource.Type): String? {
-        val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue("resourceType", resourceType.name)
-            .build()
-            
-        val resource = selectOneWhere(whereClause)
-        return resource?.lastSynced()
+    override suspend fun getLastUpdated(type: Resource.Type): String? {
+        val whereClause =
+            WhereClauseBuilder()
+                .appendKeyStringValue(ResourceTableInfo.Columns.RESOURCE_TYPE, type.name)
+                .build()
+        val resourceList = selectWhere(whereClause)
+
+        return resourceList.firstOrNull()?.lastSynced()?.let {
+            DateUtils.DATE_FORMAT.format(it)
+        }
     }
 
-    override suspend fun getResource(resourceType: Resource.Type): Resource? {
-        val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue("resourceType", resourceType.name)
-            .build()
-            
-        return selectOneWhere(whereClause)
-    }
-    
     override suspend fun deleteResource(type: Resource.Type): Boolean {
         val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue("resourceType", type.name)
+            .appendKeyStringValue(ResourceTableInfo.Columns.RESOURCE_TYPE, type.name)
             .build()
-            
-        return deleteWhere(whereClause) > 0
+
+        return deleteWhere(whereClause)
     }
-    
-    override suspend fun updateWhere(o: Resource) {
-        val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue("resourceType", o.resourceType().name)
-            .build()
-        
-        deleteWhere(whereClause)
-        insert(o)
-    }
+
 }

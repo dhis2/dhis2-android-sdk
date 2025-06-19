@@ -40,6 +40,6 @@ internal class AnalyticsTeiAttributeStoreImpl(
     AnalyticsTeiAttribute::toDB,
     LinkSQLStatementBuilderImpl(
         AnalyticsTeiAttributeTableInfo.TABLE_INFO,
-        AnalyticsTeiAttributeTableInfo.Columns.TEI_SETTING
+        AnalyticsTeiAttributeTableInfo.Columns.TEI_SETTING,
     ),
 )

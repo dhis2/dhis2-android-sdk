@@ -35,8 +35,9 @@ import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 
 internal class DataSetConfigurationSettingStoreImpl(
     val dao: DataSetConfigurationSettingDao,
-) : DataSetConfigurationSettingStore, ObjectWithoutUidStoreImpl<DataSetConfigurationSetting, DataSetConfigurationSettingDB>(
-    dao,
-    DataSetConfigurationSetting::toDB,
-    SQLStatementBuilderImpl(DataSetConfigurationSettingTableInfo.TABLE_INFO),
-)
+) : DataSetConfigurationSettingStore,
+    ObjectWithoutUidStoreImpl<DataSetConfigurationSetting, DataSetConfigurationSettingDB>(
+        dao,
+        DataSetConfigurationSetting::toDB,
+        SQLStatementBuilderImpl(DataSetConfigurationSettingTableInfo.TABLE_INFO),
+    )

@@ -46,13 +46,11 @@ internal class RelationshipItemStoreImpl(
 
     @Suppress("NestedBlockDepth")
     override suspend fun getRelationshipUidsForItems(from: RelationshipItem, to: RelationshipItem): List<String> {
-
         val relationshipRows = getAllItemsOfSameType(from.elementType(), to.elementType())
 
         return relationshipRows.filter {
             it.fromElementUid == from.elementUid() && it.toElementUid == to.elementUid()
         }.map { it.relationship }
-
     }
 
     override suspend fun getForRelationshipUidAndConstraintType(

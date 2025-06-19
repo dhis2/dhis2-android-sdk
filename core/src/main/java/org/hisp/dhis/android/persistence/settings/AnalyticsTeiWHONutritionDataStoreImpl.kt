@@ -40,6 +40,6 @@ internal class AnalyticsTeiWHONutritionDataStoreImpl(
     AnalyticsTeiWHONutritionData::toDB,
     LinkSQLStatementBuilderImpl(
         AnalyticsTeiWHONutritionDataTableInfo.TABLE_INFO,
-        AnalyticsTeiWHONutritionDataTableInfo.Columns.TEI_SETTING
+        AnalyticsTeiWHONutritionDataTableInfo.Columns.TEI_SETTING,
     ),
 )

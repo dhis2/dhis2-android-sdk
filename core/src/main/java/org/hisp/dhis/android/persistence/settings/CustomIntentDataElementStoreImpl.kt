@@ -40,6 +40,6 @@ internal class CustomIntentDataElementStoreImpl(
     CustomIntentDataElement::toDB,
     LinkSQLStatementBuilderImpl(
         CustomIntentDataElementTableInfo.TABLE_INFO,
-        CustomIntentDataElementTableInfo.Columns.CUSTOM_INTENT_UID
+        CustomIntentDataElementTableInfo.Columns.CUSTOM_INTENT_UID,
     ),
 )

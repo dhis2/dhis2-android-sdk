@@ -40,6 +40,6 @@ internal class AnalyticsTeiIndicatorStoreImpl(
     AnalyticsTeiIndicator::toDB,
     LinkSQLStatementBuilderImpl(
         AnalyticsTeiIndicatorTableInfo.TABLE_INFO,
-        AnalyticsTeiIndicatorTableInfo.Columns.TEI_SETTING
+        AnalyticsTeiIndicatorTableInfo.Columns.TEI_SETTING,
     ),
 )

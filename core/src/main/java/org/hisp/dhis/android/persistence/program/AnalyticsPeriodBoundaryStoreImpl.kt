@@ -40,6 +40,6 @@ internal class AnalyticsPeriodBoundaryStoreImpl(
     AnalyticsPeriodBoundary::toDB,
     LinkSQLStatementBuilderImpl(
         AnalyticsPeriodBoundaryTableInfo.TABLE_INFO,
-        AnalyticsPeriodBoundaryTableInfo.Columns.PROGRAM_INDICATOR
+        AnalyticsPeriodBoundaryTableInfo.Columns.PROGRAM_INDICATOR,
     ),
 )

@@ -48,7 +48,7 @@ internal class ProgramIndicatorStoreImpl(
             ProgramStageSectionProgramIndicatorLinkTableInfo.Columns.PROGRAM_INDICATOR,
         )
         val sectionSqlBuilder = SQLStatementBuilderImpl(
-            ProgramStageSectionProgramIndicatorLinkTableInfo.TABLE_INFO
+            ProgramStageSectionProgramIndicatorLinkTableInfo.TABLE_INFO,
         )
         val query = sectionSqlBuilder.selectChildrenWithLinkTable(
             projection,

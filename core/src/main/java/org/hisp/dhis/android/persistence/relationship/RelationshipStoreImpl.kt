@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,32 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+package org.hisp.dhis.android.persistence.relationship
+
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStoreImpl
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipItem
-import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo
-import org.hisp.dhis.android.core.relationship.RelationshipTableInfo
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
+import org.hisp.dhis.android.persistence.common.querybuilders.IdentifiableDeletableDataObjectSQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.stores.IdentifiableDeletableDataObjectStoreImpl
 
-@Singleton
 internal class RelationshipStoreImpl(
-    databaseAdapter: DatabaseAdapter,
-) : RelationshipStore,
-    IdentifiableDeletableDataObjectStoreImpl<Relationship>(
-        databaseAdapter,
-        RelationshipTableInfo.TABLE_INFO,
-        BINDER,
-        { cursor: Cursor -> Relationship.create(cursor) },
-    ) {
-
+    val dao: RelationshipDao,
+) : RelationshipStore, IdentifiableDeletableDataObjectStoreImpl<Relationship, RelationshipDB>(
+    dao,
+    Relationship::toDB,
+    IdentifiableDeletableDataObjectSQLStatementBuilderImpl(RelationshipTableInfo.TABLE_INFO),
+) {
     override suspend fun getRelationshipsByItem(relationshipItem: RelationshipItem): List<Relationship> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(
@@ -64,9 +56,7 @@ internal class RelationshipStoreImpl(
             "ON Relationship.uid = RelationshipItem.relationship) " +
             "WHERE " + whereClause + ";"
 
-        val relationships: MutableList<Relationship> = ArrayList()
-        addObjectsToCollection(databaseAdapter.rawQuery(queryStatement), relationships)
-        return relationships
+        return selectWhere(queryStatement)
     }
 
     override suspend fun getRelationshipsByItem(
@@ -98,20 +88,6 @@ internal class RelationshipStoreImpl(
             "$itemTable.${RelationshipItemTableInfo.Columns.RELATIONSHIP}) " +
             "WHERE " + whereClause + ";"
 
-        val relationships: MutableList<Relationship> = ArrayList()
-        addObjectsToCollection(databaseAdapter.rawQuery(queryStatement), relationships)
-        return relationships
-    }
-
-    companion object {
-        private val BINDER = StatementBinder { o: Relationship, w: StatementWrapper ->
-            w.bind(1, o.uid())
-            w.bind(2, o.name())
-            w.bind(3, o.created())
-            w.bind(4, o.lastUpdated())
-            w.bind(5, o.relationshipType())
-            w.bind(6, o.syncState())
-            w.bind(7, o.deleted())
-        }
+        return selectWhere(queryStatement)
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,52 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+package org.hisp.dhis.android.persistence.relationship
+
+import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipItem
-import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStore
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 
-@Singleton
 internal class RelationshipItemStoreImpl(
-    databaseAdapter: DatabaseAdapter,
-) : RelationshipItemStore,
-    ObjectWithoutUidStoreImpl<RelationshipItem>(
-        databaseAdapter,
-        RelationshipItemTableInfo.TABLE_INFO,
-        BINDER,
-        WHERE_UPDATE_BINDER,
-        WHERE_DELETE_BINDER,
-        { cursor: Cursor -> RelationshipItem.create(cursor) },
-    ) {
+    val dao: RelationshipItemDao,
+) : RelationshipItemStore, ObjectWithoutUidStoreImpl<RelationshipItem, RelationshipItemDB>(
+    dao,
+    RelationshipItem::toDB,
+    SQLStatementBuilderImpl(RelationshipItemTableInfo.TABLE_INFO),
+) {
 
     @Suppress("NestedBlockDepth")
     override suspend fun getRelationshipUidsForItems(from: RelationshipItem, to: RelationshipItem): List<String> {
-        val relationships: MutableList<String> = ArrayList()
 
-        getAllItemsOfSameType(from, to).use { cursor ->
-            if (cursor.count > 0) {
-                cursor.moveToFirst()
-                do {
-                    val relationshipInDb = cursor.getString(0)
-                    val fromElementUidInDb = cursor.getString(1)
-                    val toElementUidInDb = cursor.getString(2)
-                    if (from.elementUid() == fromElementUidInDb && to.elementUid() == toElementUidInDb) {
-                        relationships.add(relationshipInDb)
-                    }
-                } while (cursor.moveToNext())
-            }
-        }
-        return relationships
+        val relationshipRows = getAllItemsOfSameType(from.elementType(), to.elementType())
+
+        return relationshipRows.filter {
+            it.fromElementUid == from.elementUid() && it.toElementUid == to.elementUid()
+        }.map { it.relationship }
+
     }
 
     override suspend fun getForRelationshipUidAndConstraintType(
@@ -146,40 +128,14 @@ internal class RelationshipItemStoreImpl(
         return selectWhere(clauseBuilder.build())
     }
 
-    private fun getAllItemsOfSameType(from: RelationshipItem, to: RelationshipItem): Cursor {
+    internal suspend fun getAllItemsOfSameType(fromType: String, toType: String): List<RelationshipRow> {
         val query = "SELECT " + RelationshipItemTableInfo.Columns.RELATIONSHIP + ", " +
             "MAX(CASE WHEN " + RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE + " = 'FROM' " +
-            "THEN " + from.elementType() + " END) AS fromElementUid, " +
+            "THEN " + fromType + " END) AS fromElementUid, " +
             "MAX(CASE WHEN " + RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE + " = 'TO' " +
-            "THEN " + to.elementType() + " END) AS toElementUid " +
+            "THEN " + toType + " END) AS toElementUid " +
             "FROM " + RelationshipItemTableInfo.TABLE_INFO.name() +
             " GROUP BY " + RelationshipItemTableInfo.Columns.RELATIONSHIP
-        return databaseAdapter.rawQuery(query)
-    }
-
-    companion object {
-        private val BINDER = StatementBinder { o: RelationshipItem, w: StatementWrapper ->
-            val trackedEntityInstance = if (o.trackedEntityInstance() == null) {
-                null
-            } else {
-                o.trackedEntityInstance()!!
-                    .trackedEntityInstance()
-            }
-            val enrollment = if (o.enrollment() == null) null else o.enrollment()!!.enrollment()
-            val event = if (o.event() == null) null else o.event()!!.event()
-            w.bind(1, getUidOrNull(o.relationship()))
-            w.bind(2, o.relationshipItemType())
-            w.bind(3, trackedEntityInstance)
-            w.bind(4, enrollment)
-            w.bind(5, event)
-        }
-        private val WHERE_UPDATE_BINDER = WhereStatementBinder { o: RelationshipItem, w: StatementWrapper ->
-            w.bind(6, getUidOrNull(o.relationship()))
-            w.bind(7, o.relationshipItemType())
-        }
-        private val WHERE_DELETE_BINDER = WhereStatementBinder { o: RelationshipItem, w: StatementWrapper ->
-            w.bind(1, getUidOrNull(o.relationship()))
-            w.bind(2, o.relationshipItemType())
-        }
+        return dao.getRelationshipRow(RoomRawQuery(query))
     }
 }

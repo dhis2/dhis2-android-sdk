@@ -128,8 +128,8 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
         val dbAfroArabicClinic = organisationUnitStore.selectByUid(expectedAfroArabicClinic.uid())
         val dbAdonkiaCHP = organisationUnitStore.selectByUid(expectedAdonkiaCHP.uid())
 
-        assertThat(expectedAfroArabicClinic).isEqualTo(dbAfroArabicClinic!!.toBuilder().id(null).build())
-        assertThat(expectedAdonkiaCHP).isEqualTo(dbAdonkiaCHP!!.toBuilder().id(null).build())
+        assertThat(expectedAfroArabicClinic).isEqualTo(dbAfroArabicClinic)
+        assertThat(expectedAdonkiaCHP).isEqualTo(dbAdonkiaCHP)
     }
 
     @Test

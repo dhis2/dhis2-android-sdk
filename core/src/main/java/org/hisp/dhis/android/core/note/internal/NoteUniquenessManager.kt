@@ -59,9 +59,7 @@ internal class NoteUniquenessManager(private val noteStore: NoteStore) {
             .map { it.toBuilder().syncState(State.SYNCED).build() }
             .toSet()
 
-        val pendingNotes = toPostNotes
-            .map { it.toBuilder().build() }
-            .toSet()
+        val pendingNotes = toPostNotes.toSet()
 
         return newNotes + pendingNotes
     }

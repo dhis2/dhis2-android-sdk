@@ -220,7 +220,7 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
         val teiAttributeValuesStore = TrackedEntityAttributeValueStoreImpl(databaseAdapter)
         val attValues = teiAttributeValuesStore.queryByTrackedEntityInstance(teiUid)
         val attValuesWithoutIdAndTEI = attValues.map {
-            it.toBuilder().id(null).trackedEntityInstance(null).build()
+            it.toBuilder().trackedEntityInstance(null).build()
         }
 
         val teiStore = TrackedEntityInstanceStoreImpl(databaseAdapter)
@@ -231,13 +231,13 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
                 .appendKeyStringValue(EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE, teiUid).build(),
         )
         val downloadedEnrollmentsWithoutIdAndDeleteFalse = downloadedEnrollments.map {
-            it.toBuilder().id(null).deleted(false).notes(ArrayList()).build()
+            it.toBuilder().deleted(false).notes(ArrayList()).build()
         }
 
         val eventStore = EventStoreImpl(databaseAdapter)
         val downloadedEventsWithoutValues = eventStore.selectAll()
         val downloadedEventsWithoutValuesAndDeleteFalse = downloadedEventsWithoutValues.map {
-            it.toBuilder().id(null).deleted(false).build()
+            it.toBuilder().deleted(false).build()
         }
 
         val dataValueList = TrackedEntityDataValueStoreImpl(databaseAdapter).selectAll()
@@ -261,7 +261,7 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
     ): TrackedEntityInstance? {
         val downloadedEvents = downloadedEventsWithoutValues.map { event ->
             val trackedEntityDataValuesWithNullIdsAndEvents = downloadedValues[event.uid()]!!.map {
-                it.toBuilder().id(null).event(null).build()
+                it.toBuilder().event(null).build()
             }
 
             event.toBuilder().trackedEntityDataValues(trackedEntityDataValuesWithNullIdsAndEvents).build()
@@ -285,7 +285,6 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
             ),
             downloadedEnrollments,
         )
-            .id(null)
             .deleted(false)
             .trackedEntityAttributeValues(attValuesWithoutIdAndTEI)
             .build()

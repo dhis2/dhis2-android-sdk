@@ -41,7 +41,6 @@ import org.hisp.dhis.android.core.settings.CustomIntentTrigger
 object CustomIntentSamples {
     fun getCustomIntent(): CustomIntent {
         return CustomIntent.builder()
-            .id(1L)
             .uid("uid")
             .name("Face Recognition")
             .action(listOf(CustomIntentActionType.SEARCH))
@@ -87,7 +86,6 @@ object CustomIntentSamples {
 
     fun getCustomIntentDataElementTrigger(): CustomIntentDataElement {
         return CustomIntentDataElement.builder()
-            .id(1L)
             .uid("deUid")
             .customIntentUid("uid")
             .build()
@@ -95,7 +93,6 @@ object CustomIntentSamples {
 
     fun getCustomIntentAttributeTrigger(): CustomIntentAttribute {
         return CustomIntentAttribute.builder()
-            .id(1L)
             .uid("attUid")
             .customIntentUid("uid")
             .build()

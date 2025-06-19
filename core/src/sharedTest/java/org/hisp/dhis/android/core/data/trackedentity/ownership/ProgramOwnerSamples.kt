@@ -34,7 +34,6 @@ object ProgramOwnerSamples {
 
     val programOwner: ProgramOwner
         get() = ProgramOwner.builder()
-            .id(1L)
             .program("lxAQ7Zs9VYR")
             .trackedEntityInstance("nWrB0TfWlvh")
             .ownerOrgUnit("DiszpKrYNg8")

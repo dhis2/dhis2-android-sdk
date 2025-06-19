@@ -46,7 +46,6 @@ public class TrackedEntityInstanceSamples {
 
     public static TrackedEntityInstance get(String uid, String organisationUnit, String trackedEntityType) {
         return TrackedEntityInstance.builder()
-                .id(1L)
                 .uid(uid)
                 .created(getDate("2014-08-20T12:28:56.409"))
                 .lastUpdated(getDate("2015-10-14T13:36:53.063"))

@@ -38,7 +38,6 @@ import java.util.*
 internal object EventDataFilterSamples {
     fun get(): EventDataFilter {
         return EventDataFilter.builder()
-            .id(1L)
             .eventFilter("eventFilter")
             .dataItem("abcDataElementUid")
             .le("20")

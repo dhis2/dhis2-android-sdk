@@ -34,7 +34,6 @@ public class DataSetOrganisationUnitLinkSamples {
 
     public static DataSetOrganisationUnitLink getDataSetOrganisationUnitLink() {
         return DataSetOrganisationUnitLink.builder()
-                .id(1L)
                 .dataSet("data_set")
                 .organisationUnit("organisation_unit")
                 .build();

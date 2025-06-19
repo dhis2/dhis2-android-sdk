@@ -36,7 +36,6 @@ object TrackerVisualizationDimensionSamples {
 
     fun trackerVisualizationDimension(): TrackerVisualizationDimension =
         TrackerVisualizationDimension.builder()
-            .id(1L)
             .trackerVisualization("tracker_visualization_uid")
             .position(LayoutPosition.COLUMN)
             .dimension("ou")

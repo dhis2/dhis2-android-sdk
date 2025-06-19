@@ -50,7 +50,6 @@ public class ValidationRuleSamples {
 
         fillNameableProperties(builder);
         return builder
-                .id(1L)
                 .instruction("instruction")
                 .importance(ValidationRuleImportance.HIGH)
                 .operator(ValidationRuleOperator.compulsory_pair)

@@ -38,7 +38,6 @@ public class ProgramSettingSamples {
 
     public static ProgramSetting getProgramSetting() {
         return ProgramSetting.builder()
-                .id(1L)
                 .uid("IpHINAT79UW")
                 .name("Child Programme")
                 .lastUpdated(FillPropertiesTestUtils.LAST_UPDATED)

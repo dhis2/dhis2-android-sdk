@@ -34,7 +34,6 @@ object VisualizationDimensionItemSamples {
 
     fun visualizationDimensionItem(): VisualizationDimensionItem =
         VisualizationDimensionItem.builder()
-            .id(1L)
             .visualization("visualization_uid")
             .position(LayoutPosition.COLUMN)
             .dimension("dx")

@@ -30,19 +30,20 @@ package org.hisp.dhis.android.core.settings.internal
 
 import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.settings.CustomIntentSamples
-import org.hisp.dhis.android.core.settings.CustomIntentAttribute
-import org.hisp.dhis.android.core.settings.CustomIntentAttributeTableInfo
+import org.hisp.dhis.android.core.settings.CustomIntentDataElement
+import org.hisp.dhis.android.core.settings.CustomIntentDataElementTableInfo
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-class CustomIntentAttributeTriggerStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<CustomIntentAttribute>(
-    CustomIntentAttributeTriggerStoreImpl(TestDatabaseAdapterFactory.get()),
-    CustomIntentAttributeTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get(),
-) {
-    override fun buildObject(): CustomIntentAttribute {
-        return CustomIntentSamples.getCustomIntentAttributeTrigger()
+class CustomIntentDataElementStoreIntegrationShould :
+    ObjectStoreAbstractIntegrationShould<CustomIntentDataElement>(
+        CustomIntentDataElementStoreImpl(TestDatabaseAdapterFactory.get()),
+        CustomIntentDataElementTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get(),
+    ) {
+    override fun buildObject(): CustomIntentDataElement {
+        return CustomIntentSamples.getCustomIntentDataElementTrigger()
     }
 }

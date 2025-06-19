@@ -28,22 +28,11 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
-import org.hisp.dhis.android.core.data.settings.CustomIntentSamples
-import org.hisp.dhis.android.core.settings.CustomIntentDataElement
-import org.hisp.dhis.android.core.settings.CustomIntentDataElementTableInfo
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.junit.runner.RunWith
+import org.hisp.dhis.android.core.arch.handlers.internal.ChildElementHandlerImpl
+import org.hisp.dhis.android.core.settings.CustomIntentAttribute
+import org.koin.core.annotation.Singleton
 
-@RunWith(D2JunitRunner::class)
-class CustomIntentDataElementTriggerStoreIntegrationShould :
-    ObjectStoreAbstractIntegrationShould<CustomIntentDataElement>(
-        CustomIntentDataElementTriggerStoreImpl(TestDatabaseAdapterFactory.get()),
-        CustomIntentDataElementTableInfo.TABLE_INFO,
-        TestDatabaseAdapterFactory.get(),
-    ) {
-    override fun buildObject(): CustomIntentDataElement {
-        return CustomIntentSamples.getCustomIntentDataElementTrigger()
-    }
-}
+@Singleton
+internal class CustomIntentAttributeHandler(
+    store: CustomIntentAttributeStore,
+) : ChildElementHandlerImpl<CustomIntentAttribute>(store)

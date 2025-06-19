@@ -28,11 +28,7 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.arch.handlers.internal.ChildElementHandlerImpl
-import org.hisp.dhis.android.core.settings.CustomIntentDataElement
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.settings.CustomIntentAttribute
 
-@Singleton
-internal class CustomIntentDataElementTriggerHandler(
-    store: CustomIntentDataElementTriggerStore,
-) : ChildElementHandlerImpl<CustomIntentDataElement>(store)
+internal interface CustomIntentAttributeStore : LinkStore<CustomIntentAttribute>

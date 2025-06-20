@@ -42,7 +42,7 @@ internal class VisualizationDimensionItemStoreImpl(
         VisualizationDimensionItem::toDB,
         LinkSQLStatementBuilderImpl(
             VisualizationDimensionItemTableInfo.TABLE_INFO,
-            VisualizationDimensionItemTableInfo.Columns.VISUALIZATION
+            VisualizationDimensionItemTableInfo.Columns.VISUALIZATION,
         ),
     ) {
     override suspend fun getVisualizationDimensionItemForVisualization(
@@ -50,7 +50,7 @@ internal class VisualizationDimensionItemStoreImpl(
     ): List<VisualizationDimensionItem> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(
-                org.hisp.dhis.android.core.visualization.VisualizationDimensionItemTableInfo.Columns.VISUALIZATION,
+                VisualizationDimensionItemTableInfo.Columns.VISUALIZATION,
                 visualizationId,
             ).build()
         val query = builder.selectWhere(whereClause)

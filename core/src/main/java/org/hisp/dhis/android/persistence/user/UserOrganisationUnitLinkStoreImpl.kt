@@ -93,5 +93,4 @@ internal class UserOrganisationUnitLinkStoreImpl(
 
         return countWhere(whereClause) == 1
     }
-
 }

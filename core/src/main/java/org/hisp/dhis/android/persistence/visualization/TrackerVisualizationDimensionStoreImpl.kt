@@ -42,7 +42,7 @@ internal class TrackerVisualizationDimensionStoreImpl(
         TrackerVisualizationDimension::toDB,
         LinkSQLStatementBuilderImpl(
             TrackerVisualizationDimensionTableInfo.TABLE_INFO,
-            TrackerVisualizationDimensionTableInfo.Columns.TRACKER_VISUALIZATION
+            TrackerVisualizationDimensionTableInfo.Columns.TRACKER_VISUALIZATION,
         ),
     ) {
     override suspend fun getTrackerVisualizationDimensionForTrackerVisualization(
@@ -50,7 +50,7 @@ internal class TrackerVisualizationDimensionStoreImpl(
     ): List<TrackerVisualizationDimension> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(
-                org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionTableInfo.Columns.TRACKER_VISUALIZATION,
+                TrackerVisualizationDimensionTableInfo.Columns.TRACKER_VISUALIZATION,
                 trackerVisualizationId,
             ).build()
         val query = builder.selectWhere(whereClause)

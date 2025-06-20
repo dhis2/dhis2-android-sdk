@@ -41,6 +41,6 @@ internal class DataSetValidationRuleLinkStoreImpl(
         DataSetValidationRuleLink::toDB,
         LinkSQLStatementBuilderImpl(
             DataSetValidationRuleLinkTableInfo.TABLE_INFO,
-            DataSetValidationRuleLinkTableInfo.Columns.DATA_SET
+            DataSetValidationRuleLinkTableInfo.Columns.DATA_SET,
         ),
     )

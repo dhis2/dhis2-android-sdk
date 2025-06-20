@@ -41,6 +41,6 @@ internal class StockUseCaseTransactionLinkStoreImpl(
         InternalStockUseCaseTransaction::toDB,
         LinkSQLStatementBuilderImpl(
             StockUseCaseTransactionTableInfo.TABLE_INFO,
-            StockUseCaseTransactionTableInfo.Columns.PROGRAM_UID
+            StockUseCaseTransactionTableInfo.Columns.PROGRAM_UID,
         ),
     )

@@ -58,7 +58,7 @@ internal class TrackedEntityAttributeValueStoreImpl(
         { cursor: Cursor -> TrackedEntityAttributeValue.create(cursor) },
     ) {
 
-    override fun queryTrackedEntityAttributeValueToPost(): Map<String, List<TrackedEntityAttributeValue>> {
+    override suspend fun queryTrackedEntityAttributeValueToPost(): Map<String, List<TrackedEntityAttributeValue>> {
         val toPostQuery = "SELECT TrackedEntityAttributeValue.* " +
             "FROM (TrackedEntityAttributeValue INNER JOIN TrackedEntityInstance " +
             "ON TrackedEntityAttributeValue.trackedEntityInstance = TrackedEntityInstance.uid) " +
@@ -172,7 +172,7 @@ internal class TrackedEntityAttributeValueStoreImpl(
         deleteWhere(deleteWhereQuery)
     }
 
-    override fun setSyncStateByInstance(trackedEntityInstanceUid: String, syncState: State) {
+    override suspend fun setSyncStateByInstance(trackedEntityInstanceUid: String, syncState: State) {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(
                 TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,

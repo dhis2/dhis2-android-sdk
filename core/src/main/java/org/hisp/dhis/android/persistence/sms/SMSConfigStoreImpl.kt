@@ -46,7 +46,10 @@ internal class SMSConfigStoreImpl(
 
     override suspend fun get(key: SMSConfigKey): String? {
         val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigTableInfo.Columns.KEY, key.name)
+            .appendKeyStringValue(
+                SMSConfigTableInfo.Columns.KEY,
+                key.name,
+            )
             .build()
 
         return selectOneWhere(whereClause)?.value()
@@ -63,10 +66,12 @@ internal class SMSConfigStoreImpl(
 
     override suspend fun delete(key: SMSConfigKey) {
         val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigTableInfo.Columns.KEY, key.name)
+            .appendKeyStringValue(
+                SMSConfigTableInfo.Columns.KEY,
+                key.name,
+            )
             .build()
 
         return deleteWhereIfExists(whereClause)
     }
-
 }

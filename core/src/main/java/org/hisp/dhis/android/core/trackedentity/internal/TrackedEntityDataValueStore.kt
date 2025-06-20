@@ -35,11 +35,11 @@ internal interface TrackedEntityDataValueStore : ObjectWithoutUidStore<TrackedEn
     suspend fun deleteByEventAndNotInDataElements(eventUid: String, dataElementUids: List<String>): Boolean
     suspend fun deleteByEvent(eventUid: String): Boolean
     suspend fun queryTrackedEntityDataValuesByEventUid(eventUid: String): List<TrackedEntityDataValue>
-    fun querySingleEventsTrackedEntityDataValues(): Map<String, List<TrackedEntityDataValue>>
-    fun queryTrackerTrackedEntityDataValues(): Map<String, List<TrackedEntityDataValue>>
+    suspend fun querySingleEventsTrackedEntityDataValues(): Map<String, List<TrackedEntityDataValue>>
+    suspend fun queryTrackerTrackedEntityDataValues(): Map<String, List<TrackedEntityDataValue>>
     suspend fun queryToPostByEvent(eventUid: String): List<TrackedEntityDataValue>
     suspend fun removeDeletedDataValuesByEvent(eventUid: String)
     suspend fun removeUnassignedDataValuesByEvent(eventUid: String)
-    fun setSyncStateByEvent(eventUid: String, syncState: State)
+    suspend fun setSyncStateByEvent(eventUid: String, syncState: State)
     suspend fun getForEvent(eventUid: String): List<TrackedEntityDataValue>
 }

@@ -83,7 +83,7 @@ internal class TrackedEntityDataValueStoreImpl(
         return selectWhere(whereClauseBuilder.build())
     }
 
-    override fun querySingleEventsTrackedEntityDataValues(): Map<String, List<TrackedEntityDataValue>> {
+    override suspend fun querySingleEventsTrackedEntityDataValues(): Map<String, List<TrackedEntityDataValue>> {
         val queryStatement = "SELECT TrackedEntityDataValue.* " +
             " FROM (TrackedEntityDataValue INNER JOIN Event ON TrackedEntityDataValue.event = Event.uid)" +
             " WHERE Event.enrollment ISNULL " +
@@ -119,7 +119,7 @@ internal class TrackedEntityDataValueStoreImpl(
         return "(Event." + EventTableInfo.Columns.AGGREGATED_SYNC_STATE + " IN (" + states + "))"
     }
 
-    override fun queryTrackerTrackedEntityDataValues(): Map<String, List<TrackedEntityDataValue>> {
+    override suspend fun queryTrackerTrackedEntityDataValues(): Map<String, List<TrackedEntityDataValue>> {
         val queryStatement = "SELECT TrackedEntityDataValue.* " +
             " FROM (TrackedEntityDataValue INNER JOIN Event ON TrackedEntityDataValue.event = Event.uid) " +
             " WHERE Event.enrollment IS NOT NULL " +
@@ -138,7 +138,7 @@ internal class TrackedEntityDataValueStoreImpl(
         return selectWhere(queryStatement)
     }
 
-    override fun setSyncStateByEvent(eventUid: String, syncState: State) {
+    override suspend fun setSyncStateByEvent(eventUid: String, syncState: State) {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(
                 TrackedEntityDataValueTableInfo.Columns.EVENT,

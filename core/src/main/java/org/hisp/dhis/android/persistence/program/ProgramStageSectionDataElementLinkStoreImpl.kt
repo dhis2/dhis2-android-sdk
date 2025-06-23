@@ -26,33 +26,21 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.legendset
+package org.hisp.dhis.android.persistence.program
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
-import org.hisp.dhis.android.core.legendset.internal.IndicatorLegendSetLinkStore
+import org.hisp.dhis.android.core.program.ProgramStageSectionDataElementLink
+import org.hisp.dhis.android.core.program.internal.ProgramStageSectionDataElementLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
 
-internal class IndicatorLegendSetLinkStoreImpl(
-    val dao: IndicatorLegendSetLinkDao,
-) : IndicatorLegendSetLinkStore, LinkStoreImpl<IndicatorLegendSetLink, IndicatorLegendSetLinkDB>(
-    dao,
-    IndicatorLegendSetLink::toDB,
-    LinkSQLStatementBuilderImpl(
-        IndicatorLegendSetLinkTableInfo.TABLE_INFO,
-        IndicatorLegendSetLinkTableInfo.Columns.INDICATOR,
-    ),
-) {
-    override suspend fun getForIndicator(indicatorUid: String): List<ObjectWithUid> {
-        val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(
-                IndicatorLegendSetLinkTableInfo.Columns.INDICATOR,
-                indicatorUid,
-            )
-            .build()
-        val selectStatement = builder.selectWhere(whereClause)
-        return selectRawQuery(selectStatement).map { ObjectWithUid.create(it.legendSet()) }
-    }
-}
+internal class ProgramStageSectionDataElementLinkStoreImpl(
+    val dao: ProgramStageSectionDataElementLinkDao,
+) : ProgramStageSectionDataElementLinkStore,
+    LinkStoreImpl<ProgramStageSectionDataElementLink, ProgramStageSectionDataElementLinkDB>(
+        dao,
+        ProgramStageSectionDataElementLink::toDB,
+        LinkSQLStatementBuilderImpl(
+            ProgramStageSectionDataElementLinkTableInfo.TABLE_INFO,
+            ProgramStageSectionDataElementLinkTableInfo.Columns.PROGRAM_STAGE_SECTION,
+        ),
+    )

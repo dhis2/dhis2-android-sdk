@@ -26,33 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.legendset
+package org.hisp.dhis.android.persistence.program
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
-import org.hisp.dhis.android.core.legendset.internal.IndicatorLegendSetLinkStore
-import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
-import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.hisp.dhis.android.core.common.IdentifiableColumns
+import org.hisp.dhis.android.core.program.Program
+import org.hisp.dhis.android.core.program.ProgramType
+import org.hisp.dhis.android.core.program.internal.ProgramStore
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
 
-internal class IndicatorLegendSetLinkStoreImpl(
-    val dao: IndicatorLegendSetLinkDao,
-) : IndicatorLegendSetLinkStore, LinkStoreImpl<IndicatorLegendSetLink, IndicatorLegendSetLinkDB>(
+internal class ProgramStoreImpl(
+    val dao: ProgramDao,
+) : ProgramStore, IdentifiableObjectStoreImpl<Program, ProgramDB>(
     dao,
-    IndicatorLegendSetLink::toDB,
-    LinkSQLStatementBuilderImpl(
-        IndicatorLegendSetLinkTableInfo.TABLE_INFO,
-        IndicatorLegendSetLinkTableInfo.Columns.INDICATOR,
-    ),
+    Program::toDB,
+    SQLStatementBuilderImpl(ProgramTableInfo.TABLE_INFO),
 ) {
-    override suspend fun getForIndicator(indicatorUid: String): List<ObjectWithUid> {
+    override suspend fun getUidsByProgramType(programType: ProgramType): List<String> {
         val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(
-                IndicatorLegendSetLinkTableInfo.Columns.INDICATOR,
-                indicatorUid,
-            )
-            .build()
-        val selectStatement = builder.selectWhere(whereClause)
-        return selectRawQuery(selectStatement).map { ObjectWithUid.create(it.legendSet()) }
+            .appendKeyStringValue(ProgramTableInfo.Columns.PROGRAM_TYPE, programType.toString()).build()
+        return selectStringColumnsWhereClause(IdentifiableColumns.UID, whereClause)
     }
 }

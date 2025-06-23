@@ -26,33 +26,29 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.legendset
+package org.hisp.dhis.android.persistence.program
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
-import org.hisp.dhis.android.core.legendset.internal.IndicatorLegendSetLinkStore
-import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
-import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.hisp.dhis.android.core.program.ProgramRuleAction
+import org.hisp.dhis.android.core.program.internal.ProgramRuleActionStore
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
 
-internal class IndicatorLegendSetLinkStoreImpl(
-    val dao: IndicatorLegendSetLinkDao,
-) : IndicatorLegendSetLinkStore, LinkStoreImpl<IndicatorLegendSetLink, IndicatorLegendSetLinkDB>(
+internal class ProgramRuleActionStoreImpl(
+    val dao: ProgramRuleActionDao,
+) : ProgramRuleActionStore, IdentifiableObjectStoreImpl<ProgramRuleAction, ProgramRuleActionDB>(
     dao,
-    IndicatorLegendSetLink::toDB,
-    LinkSQLStatementBuilderImpl(
-        IndicatorLegendSetLinkTableInfo.TABLE_INFO,
-        IndicatorLegendSetLinkTableInfo.Columns.INDICATOR,
-    ),
+    ProgramRuleAction::toDB,
+    SQLStatementBuilderImpl(ProgramRuleActionTableInfo.TABLE_INFO),
 ) {
-    override suspend fun getForIndicator(indicatorUid: String): List<ObjectWithUid> {
+    override suspend fun getForProgramRule(programRuleUid: String): List<ProgramRuleAction> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(
-                IndicatorLegendSetLinkTableInfo.Columns.INDICATOR,
-                indicatorUid,
+                ProgramRuleActionTableInfo.Columns.PROGRAM_RULE,
+                programRuleUid,
             )
             .build()
-        val selectStatement = builder.selectWhere(whereClause)
-        return selectRawQuery(selectStatement).map { ObjectWithUid.create(it.legendSet()) }
+        val query = builder.selectWhere(whereClause)
+        return selectRawQuery(query)
     }
 }

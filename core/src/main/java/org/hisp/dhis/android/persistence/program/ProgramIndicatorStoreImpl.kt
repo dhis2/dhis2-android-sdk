@@ -26,33 +26,35 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.legendset
+package org.hisp.dhis.android.persistence.program
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
-import org.hisp.dhis.android.core.legendset.internal.IndicatorLegendSetLinkStore
-import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
-import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
+import org.hisp.dhis.android.core.program.ProgramIndicator
+import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStore
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
 
-internal class IndicatorLegendSetLinkStoreImpl(
-    val dao: IndicatorLegendSetLinkDao,
-) : IndicatorLegendSetLinkStore, LinkStoreImpl<IndicatorLegendSetLink, IndicatorLegendSetLinkDB>(
+internal class ProgramIndicatorStoreImpl(
+    val dao: ProgramIndicatorDao,
+) : ProgramIndicatorStore, IdentifiableObjectStoreImpl<ProgramIndicator, ProgramIndicatorDB>(
     dao,
-    IndicatorLegendSetLink::toDB,
-    LinkSQLStatementBuilderImpl(
-        IndicatorLegendSetLinkTableInfo.TABLE_INFO,
-        IndicatorLegendSetLinkTableInfo.Columns.INDICATOR,
-    ),
+    ProgramIndicator::toDB,
+    SQLStatementBuilderImpl(ProgramIndicatorTableInfo.TABLE_INFO),
 ) {
-    override suspend fun getForIndicator(indicatorUid: String): List<ObjectWithUid> {
-        val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(
-                IndicatorLegendSetLinkTableInfo.Columns.INDICATOR,
-                indicatorUid,
-            )
-            .build()
-        val selectStatement = builder.selectWhere(whereClause)
-        return selectRawQuery(selectStatement).map { ObjectWithUid.create(it.legendSet()) }
+    override suspend fun getForProgramStageSection(programStageSectionUid: String): List<ProgramIndicator> {
+        val projection = LinkTableChildProjection(
+            ProgramIndicatorTableInfo.TABLE_INFO,
+            ProgramStageSectionProgramIndicatorLinkTableInfo.Columns.PROGRAM_STAGE_SECTION,
+            ProgramStageSectionProgramIndicatorLinkTableInfo.Columns.PROGRAM_INDICATOR,
+        )
+        val sectionSqlBuilder = SQLStatementBuilderImpl(
+            ProgramStageSectionProgramIndicatorLinkTableInfo.TABLE_INFO,
+        )
+        val query = sectionSqlBuilder.selectChildrenWithLinkTable(
+            projection,
+            programStageSectionUid,
+            null,
+        )
+        return selectRawQuery(query)
     }
 }

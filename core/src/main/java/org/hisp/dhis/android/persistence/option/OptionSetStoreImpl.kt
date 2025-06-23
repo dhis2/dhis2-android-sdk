@@ -26,33 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.legendset
+package org.hisp.dhis.android.persistence.option
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
-import org.hisp.dhis.android.core.legendset.internal.IndicatorLegendSetLinkStore
-import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
-import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.hisp.dhis.android.core.option.OptionSet
+import org.hisp.dhis.android.core.option.internal.OptionSetStore
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
 
-internal class IndicatorLegendSetLinkStoreImpl(
-    val dao: IndicatorLegendSetLinkDao,
-) : IndicatorLegendSetLinkStore, LinkStoreImpl<IndicatorLegendSetLink, IndicatorLegendSetLinkDB>(
+internal class OptionSetStoreImpl(
+    val dao: OptionSetDao,
+) : OptionSetStore, IdentifiableObjectStoreImpl<OptionSet, OptionSetDB>(
     dao,
-    IndicatorLegendSetLink::toDB,
-    LinkSQLStatementBuilderImpl(
-        IndicatorLegendSetLinkTableInfo.TABLE_INFO,
-        IndicatorLegendSetLinkTableInfo.Columns.INDICATOR,
-    ),
-) {
-    override suspend fun getForIndicator(indicatorUid: String): List<ObjectWithUid> {
-        val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(
-                IndicatorLegendSetLinkTableInfo.Columns.INDICATOR,
-                indicatorUid,
-            )
-            .build()
-        val selectStatement = builder.selectWhere(whereClause)
-        return selectRawQuery(selectStatement).map { ObjectWithUid.create(it.legendSet()) }
-    }
-}
+    OptionSet::toDB,
+    SQLStatementBuilderImpl(OptionSetTableInfo.TABLE_INFO),
+)

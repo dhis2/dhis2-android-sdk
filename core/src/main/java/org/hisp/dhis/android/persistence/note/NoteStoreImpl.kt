@@ -26,33 +26,34 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.legendset
+package org.hisp.dhis.android.persistence.note
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
-import org.hisp.dhis.android.core.legendset.internal.IndicatorLegendSetLinkStore
-import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
-import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.hisp.dhis.android.core.note.Note
+import org.hisp.dhis.android.core.note.internal.NoteStore
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
 
-internal class IndicatorLegendSetLinkStoreImpl(
-    val dao: IndicatorLegendSetLinkDao,
-) : IndicatorLegendSetLinkStore, LinkStoreImpl<IndicatorLegendSetLink, IndicatorLegendSetLinkDB>(
+internal class NoteStoreImpl(
+    val dao: NoteDao,
+) : NoteStore, IdentifiableObjectStoreImpl<Note, NoteDB>(
     dao,
-    IndicatorLegendSetLink::toDB,
-    LinkSQLStatementBuilderImpl(
-        IndicatorLegendSetLinkTableInfo.TABLE_INFO,
-        IndicatorLegendSetLinkTableInfo.Columns.INDICATOR,
-    ),
+    Note::toDB,
+    SQLStatementBuilderImpl(NoteTableInfo.TABLE_INFO),
 ) {
-    override suspend fun getForIndicator(indicatorUid: String): List<ObjectWithUid> {
+    override suspend fun getForEvent(eventUid: String): List<Note> {
         val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(
-                IndicatorLegendSetLinkTableInfo.Columns.INDICATOR,
-                indicatorUid,
-            )
+            .appendKeyStringValue(NoteTableInfo.Columns.EVENT, eventUid)
             .build()
         val selectStatement = builder.selectWhere(whereClause)
-        return selectRawQuery(selectStatement).map { ObjectWithUid.create(it.legendSet()) }
+        return selectRawQuery(selectStatement)
+    }
+
+    override suspend fun getForEnrollment(enrollmentUid: String): List<Note> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(NoteTableInfo.Columns.ENROLLMENT, enrollmentUid)
+            .build()
+        val selectStatement = builder.selectWhere(whereClause)
+        return selectRawQuery(selectStatement)
     }
 }

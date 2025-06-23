@@ -45,7 +45,7 @@ internal class DataElementStoreImpl(
 ) {
     override suspend fun getForSection(sectionUid: String): List<DataElement> {
         val projection = LinkTableChildProjection(
-            org.hisp.dhis.android.core.dataelement.DataElementTableInfo.TABLE_INFO,
+            DataElementTableInfo.TABLE_INFO,
             SectionDataElementLinkTableInfo.Columns.SECTION,
             SectionDataElementLinkTableInfo.Columns.DATA_ELEMENT,
         )
@@ -62,7 +62,7 @@ internal class DataElementStoreImpl(
 
     override suspend fun getForProgramStageSection(programStageSection: String): List<DataElement> {
         val projection = LinkTableChildProjection(
-            org.hisp.dhis.android.core.dataelement.DataElementTableInfo.TABLE_INFO,
+            DataElementTableInfo.TABLE_INFO,
             ProgramStageSectionDataElementLinkTableInfo.Columns.PROGRAM_STAGE_SECTION,
             ProgramStageSectionDataElementLinkTableInfo.Columns.DATA_ELEMENT,
         )

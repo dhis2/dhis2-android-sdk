@@ -26,13 +26,21 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal
+package org.hisp.dhis.android.persistence.relationship
 
-import org.hisp.dhis.android.core.arch.handlers.internal.ChildElementHandlerImpl
-import org.hisp.dhis.android.core.settings.CustomIntentDataElement
-import org.koin.core.annotation.Singleton
+import androidx.room.Dao
+import androidx.room.RawQuery
+import androidx.room.RoomRawQuery
+import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
-@Singleton
-internal class CustomIntentDataElementTriggerHandler(
-    store: CustomIntentDataElementTriggerStore,
-) : ChildElementHandlerImpl<CustomIntentDataElement>(store)
+@Dao
+internal interface RelationshipItemDao : ObjectDao<RelationshipItemDB> {
+    @RawQuery
+    suspend fun getRelationshipRow(query: RoomRawQuery): List<RelationshipRow>
+}
+
+internal data class RelationshipRow(
+    val relationship: String,
+    val fromElementUid: String?,
+    val toElementUid: String?,
+)

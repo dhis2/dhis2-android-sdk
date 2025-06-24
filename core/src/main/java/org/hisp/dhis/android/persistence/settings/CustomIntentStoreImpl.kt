@@ -26,10 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal
+package org.hisp.dhis.android.persistence.settings
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.settings.CustomIntentDataElement
+import org.hisp.dhis.android.core.settings.CustomIntent
+import org.hisp.dhis.android.core.settings.internal.CustomIntentStore
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
 
-@Suppress("EmptyClassBlock")
-internal interface CustomIntentDataElementTriggerStore : LinkStore<CustomIntentDataElement>
+internal class CustomIntentStoreImpl(
+    val dao: CustomIntentDao,
+) : CustomIntentStore, IdentifiableObjectStoreImpl<CustomIntent, CustomIntentDB>(
+    dao,
+    CustomIntent::toDB,
+    SQLStatementBuilderImpl(CustomIntentTableInfo.TABLE_INFO),
+)

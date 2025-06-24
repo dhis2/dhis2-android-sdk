@@ -26,9 +26,10 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal
+package org.hisp.dhis.android.persistence.settings
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
-import org.hisp.dhis.android.core.settings.CustomIntentAttribute
+import androidx.room.Dao
+import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
-internal interface CustomIntentAttributeTriggerStore : LinkStore<CustomIntentAttribute>
+@Dao
+internal interface CustomIntentAttributeDao : ObjectDao<CustomIntentAttributeDB>

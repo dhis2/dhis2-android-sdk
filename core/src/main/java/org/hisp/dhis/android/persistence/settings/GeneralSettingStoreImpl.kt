@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,26 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
-import org.hisp.dhis.android.core.relationship.RelationshipItem
+package org.hisp.dhis.android.persistence.settings
 
-internal interface RelationshipItemStore : ObjectWithoutUidStore<RelationshipItem> {
+import org.hisp.dhis.android.core.settings.GeneralSettings
+import org.hisp.dhis.android.core.settings.internal.GeneralSettingStore
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 
-    suspend fun getRelationshipUidsForItems(from: RelationshipItem, to: RelationshipItem): List<String>
-
-    suspend fun getForRelationshipUidAndConstraintType(
-        uid: String,
-        constraintType: RelationshipConstraintType,
-    ): RelationshipItem?
-
-    suspend fun getForRelationshipUid(relationshipUid: String): List<RelationshipItem>
-
-    suspend fun getRelatedTeiUids(trackedEntityInstanceUids: List<String>): List<String>
-
-    suspend fun getByItem(item: RelationshipItem): List<RelationshipItem>
-
-    suspend fun getByEntityUid(entityUid: String): List<RelationshipItem>
-}
+internal class GeneralSettingStoreImpl(
+    val dao: GeneralSettingDao,
+) : GeneralSettingStore, ObjectWithoutUidStoreImpl<GeneralSettings, GeneralSettingDB>(
+    dao,
+    GeneralSettings::toDB,
+    SQLStatementBuilderImpl(GeneralSettingTableInfo.TABLE_INFO),
+)

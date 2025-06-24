@@ -26,34 +26,20 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal
+package org.hisp.dhis.android.persistence.settings
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
 import org.hisp.dhis.android.core.settings.CustomIntentAttribute
-import org.hisp.dhis.android.core.settings.CustomIntentAttributeTableInfo
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.settings.internal.CustomIntentAttributeStore
+import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
 
-@Singleton
-@Suppress("MagicNumber")
-internal class CustomIntentAttributeTriggerStoreImpl(
-    databaseAdapter: DatabaseAdapter,
-) : CustomIntentAttributeTriggerStore,
-    LinkStoreImpl<CustomIntentAttribute>(
-        databaseAdapter,
+internal class CustomIntentAttributeStoreImpl(
+    val dao: CustomIntentAttributeDao,
+) : CustomIntentAttributeStore, LinkStoreImpl<CustomIntentAttribute, CustomIntentAttributeDB>(
+    dao,
+    CustomIntentAttribute::toDB,
+    LinkSQLStatementBuilderImpl(
         CustomIntentAttributeTableInfo.TABLE_INFO,
         CustomIntentAttributeTableInfo.Columns.CUSTOM_INTENT_UID,
-        BINDER,
-        { cursor: Cursor -> CustomIntentAttribute.create(cursor) },
-    ) {
-
-    companion object {
-        private val BINDER = StatementBinder { o: CustomIntentAttribute, w: StatementWrapper ->
-            w.bind(1, o.uid())
-            w.bind(2, o.customIntentUid())
-        }
-    }
-}
+    ),
+)

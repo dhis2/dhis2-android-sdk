@@ -26,34 +26,10 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal
+package org.hisp.dhis.android.persistence.settings
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
-import org.hisp.dhis.android.core.settings.CustomIntentDataElement
-import org.hisp.dhis.android.core.settings.CustomIntentDataElementTableInfo
-import org.koin.core.annotation.Singleton
+import androidx.room.Dao
+import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
-@Singleton
-@Suppress("MagicNumber")
-internal class CustomIntentDataElementTriggerStoreImpl(
-    databaseAdapter: DatabaseAdapter,
-) : CustomIntentDataElementTriggerStore,
-    LinkStoreImpl<CustomIntentDataElement>(
-        databaseAdapter,
-        CustomIntentDataElementTableInfo.TABLE_INFO,
-        CustomIntentDataElementTableInfo.Columns.CUSTOM_INTENT_UID,
-        BINDER,
-        { cursor: Cursor -> CustomIntentDataElement.create(cursor) },
-    ) {
-
-    companion object {
-        private val BINDER = StatementBinder { o: CustomIntentDataElement, w: StatementWrapper ->
-            w.bind(1, o.uid())
-            w.bind(2, o.customIntentUid())
-        }
-    }
-}
+@Dao
+internal interface ProgramSettingDao : ObjectDao<ProgramSettingDB>

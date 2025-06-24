@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,26 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
-import org.hisp.dhis.android.core.relationship.RelationshipItem
+package org.hisp.dhis.android.core.settings.internal
 
-internal interface RelationshipItemStore : ObjectWithoutUidStore<RelationshipItem> {
+import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.settings.CustomIntentSamples
+import org.hisp.dhis.android.core.settings.CustomIntentAttribute
+import org.hisp.dhis.android.core.settings.CustomIntentAttributeTableInfo
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.junit.runner.RunWith
 
-    suspend fun getRelationshipUidsForItems(from: RelationshipItem, to: RelationshipItem): List<String>
-
-    suspend fun getForRelationshipUidAndConstraintType(
-        uid: String,
-        constraintType: RelationshipConstraintType,
-    ): RelationshipItem?
-
-    suspend fun getForRelationshipUid(relationshipUid: String): List<RelationshipItem>
-
-    suspend fun getRelatedTeiUids(trackedEntityInstanceUids: List<String>): List<String>
-
-    suspend fun getByItem(item: RelationshipItem): List<RelationshipItem>
-
-    suspend fun getByEntityUid(entityUid: String): List<RelationshipItem>
+@RunWith(D2JunitRunner::class)
+class CustomIntentAttributeStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<CustomIntentAttribute>(
+    CustomIntentAttributeStoreImpl(TestDatabaseAdapterFactory.get()),
+    CustomIntentAttributeTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
+) {
+    override fun buildObject(): CustomIntentAttribute {
+        return CustomIntentSamples.getCustomIntentAttributeTrigger()
+    }
 }

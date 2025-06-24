@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,26 +25,40 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
-import org.hisp.dhis.android.core.relationship.RelationshipItem
+package org.hisp.dhis.android.persistence.resource
 
-internal interface RelationshipItemStore : ObjectWithoutUidStore<RelationshipItem> {
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.resource.internal.Resource
+import org.hisp.dhis.android.core.resource.internal.ResourceStore
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 
-    suspend fun getRelationshipUidsForItems(from: RelationshipItem, to: RelationshipItem): List<String>
+internal class ResourceStoreImpl(
+    val dao: ResourceDao,
+) : ResourceStore, ObjectWithoutUidStoreImpl<Resource, ResourceDB>(
+    dao,
+    Resource::toDB,
+    SQLStatementBuilderImpl(ResourceTableInfo.TABLE_INFO),
+) {
+    override suspend fun getLastUpdated(type: Resource.Type): String? {
+        val whereClause =
+            WhereClauseBuilder()
+                .appendKeyStringValue(ResourceTableInfo.Columns.RESOURCE_TYPE, type.name)
+                .build()
+        val resourceList = selectWhere(whereClause)
 
-    suspend fun getForRelationshipUidAndConstraintType(
-        uid: String,
-        constraintType: RelationshipConstraintType,
-    ): RelationshipItem?
+        return resourceList.firstOrNull()?.lastSynced()?.let {
+            DateUtils.DATE_FORMAT.format(it)
+        }
+    }
 
-    suspend fun getForRelationshipUid(relationshipUid: String): List<RelationshipItem>
+    override suspend fun deleteResource(type: Resource.Type): Boolean {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(ResourceTableInfo.Columns.RESOURCE_TYPE, type.name)
+            .build()
 
-    suspend fun getRelatedTeiUids(trackedEntityInstanceUids: List<String>): List<String>
-
-    suspend fun getByItem(item: RelationshipItem): List<RelationshipItem>
-
-    suspend fun getByEntityUid(entityUid: String): List<RelationshipItem>
+        return deleteWhere(whereClause)
+    }
 }

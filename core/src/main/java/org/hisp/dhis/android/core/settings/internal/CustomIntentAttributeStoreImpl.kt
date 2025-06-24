@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,26 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
-import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
-import org.hisp.dhis.android.core.relationship.RelationshipItem
+package org.hisp.dhis.android.core.settings.internal
 
-internal interface RelationshipItemStore : ObjectWithoutUidStore<RelationshipItem> {
+import android.database.Cursor
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
+import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
+import org.hisp.dhis.android.core.settings.CustomIntentAttribute
+import org.hisp.dhis.android.core.settings.CustomIntentAttributeTableInfo
+import org.koin.core.annotation.Singleton
 
-    suspend fun getRelationshipUidsForItems(from: RelationshipItem, to: RelationshipItem): List<String>
+@Singleton
+@Suppress("MagicNumber")
+internal class CustomIntentAttributeStoreImpl(
+    databaseAdapter: DatabaseAdapter,
+) : CustomIntentAttributeStore,
+    LinkStoreImpl<CustomIntentAttribute>(
+        databaseAdapter,
+        CustomIntentAttributeTableInfo.TABLE_INFO,
+        CustomIntentAttributeTableInfo.Columns.CUSTOM_INTENT_UID,
+        BINDER,
+        { cursor: Cursor -> CustomIntentAttribute.create(cursor) },
+    ) {
 
-    suspend fun getForRelationshipUidAndConstraintType(
-        uid: String,
-        constraintType: RelationshipConstraintType,
-    ): RelationshipItem?
-
-    suspend fun getForRelationshipUid(relationshipUid: String): List<RelationshipItem>
-
-    suspend fun getRelatedTeiUids(trackedEntityInstanceUids: List<String>): List<String>
-
-    suspend fun getByItem(item: RelationshipItem): List<RelationshipItem>
-
-    suspend fun getByEntityUid(entityUid: String): List<RelationshipItem>
+    companion object {
+        private val BINDER = StatementBinder { o: CustomIntentAttribute, w: StatementWrapper ->
+            w.bind(1, o.uid())
+            w.bind(2, o.customIntentUid())
+        }
+    }
 }

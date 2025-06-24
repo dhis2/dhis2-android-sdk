@@ -26,13 +26,18 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal
+package org.hisp.dhis.android.persistence.settings
 
-import org.hisp.dhis.android.core.arch.handlers.internal.ChildElementHandlerImpl
-import org.hisp.dhis.android.core.settings.CustomIntentAttribute
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualization
+import org.hisp.dhis.android.core.settings.internal.AnalyticsDhisVisualizationStore
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 
-@Singleton
-internal class CustomIntentAttributeTriggerHandler(
-    store: CustomIntentAttributeTriggerStore,
-) : ChildElementHandlerImpl<CustomIntentAttribute>(store)
+internal class AnalyticsDhisVisualizationStoreImpl(
+    val dao: AnalyticsDhisVisualizationDao,
+) : AnalyticsDhisVisualizationStore,
+    ObjectWithoutUidStoreImpl<AnalyticsDhisVisualization, AnalyticsDhisVisualizationDB>(
+        dao,
+        AnalyticsDhisVisualization::toDB,
+        SQLStatementBuilderImpl(AnalyticsDhisVisualizationTableInfo.TABLE_INFO),
+    )

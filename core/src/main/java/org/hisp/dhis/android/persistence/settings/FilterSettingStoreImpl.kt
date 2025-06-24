@@ -26,23 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal
+package org.hisp.dhis.android.persistence.settings
 
-import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
-import org.hisp.dhis.android.core.data.settings.CustomIntentSamples
-import org.hisp.dhis.android.core.settings.CustomIntentAttribute
-import org.hisp.dhis.android.core.settings.CustomIntentAttributeTableInfo
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.junit.runner.RunWith
+import org.hisp.dhis.android.core.settings.FilterSetting
+import org.hisp.dhis.android.core.settings.internal.FilterSettingStore
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 
-@RunWith(D2JunitRunner::class)
-class CustomIntentAttributeTriggerStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<CustomIntentAttribute>(
-    CustomIntentAttributeTriggerStoreImpl(TestDatabaseAdapterFactory.get()),
-    CustomIntentAttributeTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get(),
-) {
-    override fun buildObject(): CustomIntentAttribute {
-        return CustomIntentSamples.getCustomIntentAttributeTrigger()
-    }
-}
+internal class FilterSettingStoreImpl(
+    val dao: FilterSettingDao,
+) : FilterSettingStore, ObjectWithoutUidStoreImpl<FilterSetting, FilterSettingDB>(
+    dao,
+    FilterSetting::toDB,
+    SQLStatementBuilderImpl(FilterSettingTableInfo.TABLE_INFO),
+)

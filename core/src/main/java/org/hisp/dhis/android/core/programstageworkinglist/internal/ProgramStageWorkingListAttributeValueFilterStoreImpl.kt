@@ -35,8 +35,8 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinde
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl
-import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilterTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -46,7 +46,7 @@ internal class ProgramStageWorkingListAttributeValueFilterStoreImpl(
 ) : ProgramStageWorkingListAttributeValueFilterStore,
     ObjectWithoutUidStoreImpl<ProgramStageWorkingListAttributeValueFilter>(
         databaseAdapter,
-        ItemFilterTableInfo.TABLE_INFO,
+        ProgramStageWorkingListAttributeValueFilterTableInfo.TABLE_INFO,
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
@@ -79,7 +79,10 @@ internal class ProgramStageWorkingListAttributeValueFilterStoreImpl(
         programStageWorkingList: String,
     ): List<ProgramStageWorkingListAttributeValueFilter> {
         val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(ItemFilterTableInfo.Columns.PROGRAM_STAGE_WORKING_LIST, programStageWorkingList)
+            .appendKeyStringValue(
+                ProgramStageWorkingListAttributeValueFilterTableInfo.Columns.PROGRAM_STAGE_WORKING_LIST,
+                programStageWorkingList
+            )
             .build()
         val query = builder.selectWhere(whereClause)
         return selectRawQuery(query)

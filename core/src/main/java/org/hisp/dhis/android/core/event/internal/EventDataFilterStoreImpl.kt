@@ -35,8 +35,8 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinde
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl
-import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo
 import org.hisp.dhis.android.core.event.EventDataFilter
+import org.hisp.dhis.android.core.event.EventDataFilterTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -46,7 +46,7 @@ internal class EventDataFilterStoreImpl(
 ) : EventDataFilterStore,
     ObjectWithoutUidStoreImpl<EventDataFilter>(
         databaseAdapter,
-        ItemFilterTableInfo.TABLE_INFO,
+        EventDataFilterTableInfo.TABLE_INFO,
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
@@ -78,7 +78,7 @@ internal class EventDataFilterStoreImpl(
 
     override suspend fun getForEventFilter(eventFilterUid: String): List<EventDataFilter> {
         val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(ItemFilterTableInfo.Columns.EVENT_FILTER, eventFilterUid)
+            .appendKeyStringValue(EventDataFilterTableInfo.Columns.EVENT_FILTER, eventFilterUid)
             .build()
         val query = builder.selectWhere(whereClause)
         return selectRawQuery(query)

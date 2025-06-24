@@ -35,8 +35,8 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinde
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl
-import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo
 import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
+import org.hisp.dhis.android.core.trackedentity.AttributeValueFilterTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -46,7 +46,7 @@ internal class AttributeValueFilterStoreImpl(
 ) : AttributeValueFilterStore,
     ObjectWithoutUidStoreImpl<AttributeValueFilter>(
         databaseAdapter,
-        ItemFilterTableInfo.TABLE_INFO,
+        AttributeValueFilterTableInfo.TABLE_INFO,
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
@@ -81,7 +81,7 @@ internal class AttributeValueFilterStoreImpl(
     ): List<AttributeValueFilter> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(
-                ItemFilterTableInfo.Columns.TRACKED_ENTITY_INSTANCE_FILTER,
+                AttributeValueFilterTableInfo.Columns.TRACKED_ENTITY_INSTANCE_FILTER,
                 trackedEntityInstanceFilterUid,
             )
             .build()

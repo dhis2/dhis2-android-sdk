@@ -27,7 +27,8 @@
  */
 package org.hisp.dhis.android.core.programstageworkinglist.internal
 
-import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilterTableInfo
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListEventDataFilterTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
 import org.koin.core.annotation.Singleton
@@ -39,7 +40,8 @@ internal class ProgramStageWorkingListModuleWiper(
     override fun wipeMetadata() {
         tableWiper.wipeTables(
             ProgramStageWorkingListTableInfo.TABLE_INFO,
-            ItemFilterTableInfo.TABLE_INFO,
+            ProgramStageWorkingListEventDataFilterTableInfo.TABLE_INFO,
+            ProgramStageWorkingListAttributeValueFilterTableInfo.TABLE_INFO
         )
     }
 

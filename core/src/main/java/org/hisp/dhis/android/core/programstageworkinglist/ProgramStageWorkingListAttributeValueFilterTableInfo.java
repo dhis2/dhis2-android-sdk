@@ -32,7 +32,7 @@ package org.hisp.dhis.android.core.programstageworkinglist;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.CoreColumns;
-import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo;
+import org.hisp.dhis.android.core.common.tableinfo.FilterOperatorsColumns;
 
 public final class ProgramStageWorkingListAttributeValueFilterTableInfo {
 
@@ -52,7 +52,7 @@ public final class ProgramStageWorkingListAttributeValueFilterTableInfo {
         }
     };
 
-    public static class Columns extends ItemFilterTableInfo {
+    public static class Columns extends FilterOperatorsColumns {
         public final static String PROGRAM_STAGE_WORKING_LIST = "programStageWorkingList";
         public final static String ATTRIBUTE = "attribute";
         public static final String SW = "sw";

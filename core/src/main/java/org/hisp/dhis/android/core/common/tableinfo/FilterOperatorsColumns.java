@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,46 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.common.tableinfo;
 
-
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.CoreColumns;
-import org.hisp.dhis.android.core.common.tableinfo.FilterOperatorsColumns;
 
-public final class AttributeValueFilterTableInfo {
+public class FilterOperatorsColumns extends CoreColumns {
+    public final static String LE = "le";
+    public static final String GE = "ge";
+    public static final String GT = "gt";
+    public static final String LT = "lt";
+    public static final String EQ = "eq";
+    public static final String IN = "inProperty";
+    public static final String LIKE = "like";
+    public static final String DATE_FILTER = "dateFilter";
 
-    private AttributeValueFilterTableInfo() {
-    }
-
-    public static final TableInfo TABLE_INFO = new TableInfo() {
-
-        @Override
-        public String name() {
-            return "AttributeValueFilter";
-        }
-
-        @Override
-        public CoreColumns columns() {
-            return new AttributeValueFilterTableInfo.Columns();
-        }
-    };
-
-    public static class Columns extends FilterOperatorsColumns {
-        public final static String TRACKED_ENTITY_INSTANCE_FILTER = "trackedEntityInstanceFilter";
-        public final static String ATTRIBUTE = "attribute";
-        public static final String SW = "sw";
-        public static final String EW = "ew";
-
-        @Override
-        public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(),
-                    TRACKED_ENTITY_INSTANCE_FILTER,
-                    ATTRIBUTE,
-                    SW,
-                    EW
-            );
-        }
+    @Override
+    public String[] all() {
+        return CollectionsHelper.appendInNewArray(
+                super.all(), LE, GE, GT, LT, EQ, IN, LIKE, DATE_FILTER
+        );
     }
 }

@@ -35,7 +35,7 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DateFilterPeriodColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringSetColumnAdapter;
-import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo;
+import org.hisp.dhis.android.core.common.tableinfo.FilterOperatorsColumns;
 
 import java.util.Set;
 
@@ -76,7 +76,7 @@ public abstract class FilterOperators {
      */
     @Nullable
     @ColumnAdapter(StringSetColumnAdapter.class)
-    @ColumnName(ItemFilterTableInfo.Columns.IN)
+    @ColumnName(FilterOperatorsColumns.IN)
     public abstract Set<String> in();
 
     /**

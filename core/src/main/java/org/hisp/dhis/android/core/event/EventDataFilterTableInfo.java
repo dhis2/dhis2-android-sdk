@@ -32,7 +32,7 @@ package org.hisp.dhis.android.core.event;
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.CoreColumns;
-import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo;
+import org.hisp.dhis.android.core.common.tableinfo.FilterOperatorsColumns;
 
 public final class EventDataFilterTableInfo {
 
@@ -52,7 +52,7 @@ public final class EventDataFilterTableInfo {
         }
     };
 
-    public static class Columns extends ItemFilterTableInfo {
+    public static class Columns extends FilterOperatorsColumns {
         public final static String EVENT_FILTER = "eventFilter";
         public final static String DATA_ITEM = "dataItem";
 

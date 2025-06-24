@@ -16398,10 +16398,6 @@ public final class org/hisp/dhis/android/persistence/datavalue/DataValueTableInf
 public final class org/hisp/dhis/android/persistence/datavalue/DataValueTableInfo$Columns$Companion {
 }
 
-public final class org/hisp/dhis/android/persistence/db/migrations/RoomGeneratedMigrations {
-	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/db/migrations/RoomGeneratedMigrations;
-}
-
 public final class org/hisp/dhis/android/persistence/domain/AggregatedDataSyncTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/domain/AggregatedDataSyncTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;

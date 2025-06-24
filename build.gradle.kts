@@ -88,6 +88,8 @@ val nexusPassword: String? = System.getenv("NEXUS_PASSWORD")
 nexusPublishing {
     this.repositories {
         sonatype {
+            nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://central.sonatype.com/repository/maven-snapshots/"))
             username.set(nexusUsername)
             password.set(nexusPassword)
         }

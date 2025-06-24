@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import kotlinx.coroutines.runBlocking
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
@@ -44,7 +43,6 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactor
 @Suppress("TooManyFunctions")
 internal class TrackedEntityInstanceQueryDataFetcher(
     private val store: TrackedEntityInstanceStore,
-    private val databaseAdapter: DatabaseAdapter,
     private val trackerParentCallFactory: TrackerParentCallFactory,
     private val scope: TrackedEntityInstanceQueryRepositoryScope,
     private val childrenAppenders: ChildrenAppenderGetter<TrackedEntityInstance>,
@@ -216,7 +214,6 @@ internal class TrackedEntityInstanceQueryDataFetcher(
     private suspend fun appendAttributes(withoutChildren: List<TrackedEntityInstance>): List<TrackedEntityInstance> {
         return ChildrenAppenderExecutor.appendInObjectCollection(
             withoutChildren,
-            databaseAdapter,
             childrenAppenders,
             ChildrenSelection(
                 setOf(

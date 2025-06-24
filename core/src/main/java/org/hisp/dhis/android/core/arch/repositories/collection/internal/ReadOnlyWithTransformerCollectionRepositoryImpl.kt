@@ -39,7 +39,6 @@ import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
@@ -63,7 +62,6 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
     R : ReadOnlyCollectionRepository<T>,
     > internal constructor(
     private val store: ReadableStore<M>,
-    internal val databaseAdapter: DatabaseAdapter,
     internal val childrenAppenders: ChildrenAppenderGetter<M>,
     scope: RepositoryScope,
     cf: FilterConnectorFactory<R>,
@@ -91,7 +89,6 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
     override fun one(): ReadOnlyObjectRepository<T> {
         return ReadOnlyWithTransformerObjectRepositoryImpl(
             store,
-            databaseAdapter,
             childrenAppenders,
             scope,
             transformer,
@@ -120,7 +117,6 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
     private suspend fun getInternal(): List<T> {
         return ChildrenAppenderExecutor.appendInObjectCollection(
             getWithoutChildrenInternal(),
-            databaseAdapter,
             childrenAppenders,
             scope.children(),
         ).map { transformer.transform(it) }
@@ -159,10 +155,10 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
     }
 
     val dataSource: DataSource<Int, T>
-        get() = RepositoryDataSourceWithTransformer(store, databaseAdapter, scope, childrenAppenders, transformer)
+        get() = RepositoryDataSourceWithTransformer(store, scope, childrenAppenders, transformer)
 
     private val pagingSource: PagingSource<Int, T>
-        get() = RepositoryPagingSourceWithTransformer(store, databaseAdapter, scope, childrenAppenders, transformer)
+        get() = RepositoryPagingSourceWithTransformer(store, scope, childrenAppenders, transformer)
 
     /**
      * Get the count of elements in an asynchronous way, returning a `Single`.

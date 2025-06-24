@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
 
@@ -42,8 +42,8 @@ internal class CategoryOptionComboCategoryOptionChildrenAppender private constru
     }
 
     companion object {
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<CategoryOptionCombo> {
-            return CategoryOptionComboCategoryOptionChildrenAppender(CategoryOptionStoreImpl(databaseAdapter))
+        fun create(): ChildrenAppender<CategoryOptionCombo> {
+            return CategoryOptionComboCategoryOptionChildrenAppender(koin.get())
         }
     }
 }

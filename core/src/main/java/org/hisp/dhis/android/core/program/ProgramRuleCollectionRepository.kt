@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.program
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -41,11 +40,9 @@ import org.koin.core.annotation.Singleton
 @Singleton
 class ProgramRuleCollectionRepository internal constructor(
     store: ProgramRuleStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramRule, ProgramRuleCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -53,7 +50,6 @@ class ProgramRuleCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         ProgramRuleCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },

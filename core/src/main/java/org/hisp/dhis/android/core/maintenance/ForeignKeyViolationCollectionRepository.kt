@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.maintenance
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
@@ -40,11 +39,9 @@ import org.koin.core.annotation.Singleton
 @Singleton
 class ForeignKeyViolationCollectionRepository internal constructor(
     store: ForeignKeyViolationStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyCollectionRepositoryImpl<ForeignKeyViolation, ForeignKeyViolationCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -52,7 +49,6 @@ class ForeignKeyViolationCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         ForeignKeyViolationCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },

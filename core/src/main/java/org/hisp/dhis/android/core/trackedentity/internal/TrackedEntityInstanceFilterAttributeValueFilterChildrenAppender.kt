@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 
@@ -42,12 +42,8 @@ internal class TrackedEntityInstanceFilterAttributeValueFilterChildrenAppender p
     }
 
     companion object {
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<TrackedEntityInstanceFilter> {
-            return TrackedEntityInstanceFilterAttributeValueFilterChildrenAppender(
-                AttributeValueFilterStoreImpl(
-                    databaseAdapter,
-                ),
-            )
+        fun create(): ChildrenAppender<TrackedEntityInstanceFilter> {
+            return TrackedEntityInstanceFilterAttributeValueFilterChildrenAppender(koin.get())
         }
     }
 }

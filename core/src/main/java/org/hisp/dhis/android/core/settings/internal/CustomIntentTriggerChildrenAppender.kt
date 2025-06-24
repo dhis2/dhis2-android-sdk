@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.settings.CustomIntent
 import org.hisp.dhis.android.core.settings.CustomIntentTrigger
@@ -49,11 +49,8 @@ internal class CustomIntentTriggerChildrenAppender private constructor(
     }
 
     companion object {
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<CustomIntent> {
-            return CustomIntentTriggerChildrenAppender(
-                CustomIntentDataElementStoreImpl(databaseAdapter),
-                CustomIntentAttributeStoreImpl(databaseAdapter),
-            )
+        fun create(): ChildrenAppender<CustomIntent> {
+            return CustomIntentTriggerChildrenAppender(koin.get(), koin.get())
         }
     }
 }

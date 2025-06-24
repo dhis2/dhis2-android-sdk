@@ -27,11 +27,10 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.dataset.Section
 import org.hisp.dhis.android.core.indicator.internal.IndicatorStore
-import org.hisp.dhis.android.core.indicator.internal.IndicatorStoreImpl
 
 internal class SectionIndicatorsChildrenAppender private constructor(
     private val childStore: IndicatorStore,
@@ -45,8 +44,8 @@ internal class SectionIndicatorsChildrenAppender private constructor(
     }
 
     companion object {
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<Section> {
-            return SectionIndicatorsChildrenAppender(IndicatorStoreImpl(databaseAdapter))
+        fun create(): ChildrenAppender<Section> {
+            return SectionIndicatorsChildrenAppender(koin.get())
         }
     }
 }

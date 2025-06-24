@@ -31,7 +31,6 @@ import androidx.paging.ItemKeyedDataSource
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode
@@ -48,7 +47,16 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.ArgumentMatchers.anyString
-import org.mockito.kotlin.*
+import org.mockito.kotlin.KArgumentCaptor
+import org.mockito.kotlin.any
+import org.mockito.kotlin.argThat
+import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.stub
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
+import org.mockito.kotlin.whenever
 import java.util.concurrent.TimeUnit
 
 @RunWith(JUnit4::class)
@@ -58,7 +66,6 @@ class TrackedEntityInstanceQueryDataSourceShould {
     private lateinit var multipleEventFilterScope: TrackedEntityInstanceQueryRepositoryScope
 
     private val store: TrackedEntityInstanceStore = mock()
-    private val databaseAdapter: DatabaseAdapter = mock()
     private val trackerParentCallFactory: TrackerParentCallFactory = mock()
     private val onlineCallFactory: TrackedEntityEndpointCallFactory = mock()
     private val trackedEntity: TrackedEntityInstance = mock()
@@ -122,7 +129,7 @@ class TrackedEntityInstanceQueryDataSourceShould {
                 .doReturn(TrackerQueryResult(emptyList(), true))
         }
 
-        whenever(childrenAppenders[anyString()]).doReturn { _ -> identityAppender() }
+        whenever(childrenAppenders[anyString()]).doReturn { identityAppender() }
     }
 
     @Test
@@ -266,7 +273,6 @@ class TrackedEntityInstanceQueryDataSourceShould {
     ): TrackedEntityInstanceQueryDataFetcher {
         return TrackedEntityInstanceQueryDataFetcher(
             store,
-            databaseAdapter,
             trackerParentCallFactory,
             scope,
             childrenAppenders,

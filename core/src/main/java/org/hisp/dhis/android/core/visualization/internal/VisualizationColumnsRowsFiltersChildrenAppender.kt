@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.visualization.LayoutPosition
 import org.hisp.dhis.android.core.visualization.Visualization
@@ -58,10 +58,8 @@ internal class VisualizationColumnsRowsFiltersChildrenAppender private construct
     }
 
     companion object {
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<Visualization> {
-            return VisualizationColumnsRowsFiltersChildrenAppender(
-                VisualizationDimensionItemStoreImpl(databaseAdapter),
-            )
+        fun create(): ChildrenAppender<Visualization> {
+            return VisualizationColumnsRowsFiltersChildrenAppender(koin.get())
         }
     }
 }

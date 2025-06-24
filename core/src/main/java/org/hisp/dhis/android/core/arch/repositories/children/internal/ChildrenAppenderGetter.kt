@@ -28,6 +28,4 @@
 
 package org.hisp.dhis.android.core.arch.repositories.children.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-
-internal typealias ChildrenAppenderGetter<M> = Map<String, (DatabaseAdapter) -> ChildrenAppender<M>>
+internal typealias ChildrenAppenderGetter<M> = Map<String, () -> ChildrenAppender<M>>

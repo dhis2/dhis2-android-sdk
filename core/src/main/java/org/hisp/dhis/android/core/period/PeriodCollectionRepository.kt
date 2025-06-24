@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.period
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
@@ -41,11 +40,9 @@ import org.koin.core.annotation.Singleton
 @Singleton
 class PeriodCollectionRepository internal constructor(
     store: PeriodStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyCollectionRepositoryImpl<Period, PeriodCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -53,7 +50,6 @@ class PeriodCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         PeriodCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },

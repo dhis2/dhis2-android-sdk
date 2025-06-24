@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 
@@ -40,12 +40,8 @@ internal class OrganisationUnitOrganisationUnitGroupProgramChildrenAppender priv
     }
 
     companion object {
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<OrganisationUnit> {
-            return OrganisationUnitOrganisationUnitGroupProgramChildrenAppender(
-                OrganisationUnitGroupStoreImpl(
-                    databaseAdapter,
-                ),
-            )
+        fun create(): ChildrenAppender<OrganisationUnit> {
+            return OrganisationUnitOrganisationUnitGroupProgramChildrenAppender(koin.get())
         }
     }
 }

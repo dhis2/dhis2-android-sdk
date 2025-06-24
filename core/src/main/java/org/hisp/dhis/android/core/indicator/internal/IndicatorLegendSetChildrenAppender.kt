@@ -27,11 +27,10 @@
  */
 package org.hisp.dhis.android.core.indicator.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.legendset.internal.IndicatorLegendSetLinkStore
-import org.hisp.dhis.android.core.legendset.internal.IndicatorLegendSetLinkStoreImpl
 
 internal class IndicatorLegendSetChildrenAppender(
     private val linkStore: IndicatorLegendSetLinkStore,
@@ -43,8 +42,8 @@ internal class IndicatorLegendSetChildrenAppender(
     }
 
     companion object {
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<Indicator> {
-            return IndicatorLegendSetChildrenAppender(IndicatorLegendSetLinkStoreImpl(databaseAdapter))
+        fun create(): ChildrenAppender<Indicator> {
+            return IndicatorLegendSetChildrenAppender(koin.get())
         }
     }
 }

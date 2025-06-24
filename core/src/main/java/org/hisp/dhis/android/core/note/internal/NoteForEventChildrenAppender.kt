@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.note.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.event.Event
 
@@ -42,8 +42,8 @@ internal class NoteForEventChildrenAppender private constructor(
     }
 
     companion object {
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<Event> {
-            return NoteForEventChildrenAppender(NoteStoreImpl(databaseAdapter))
+        fun create(): ChildrenAppender<Event> {
+            return NoteForEventChildrenAppender(koin.get())
         }
     }
 }

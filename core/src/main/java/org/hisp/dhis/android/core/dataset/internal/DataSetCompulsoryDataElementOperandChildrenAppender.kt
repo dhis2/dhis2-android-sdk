@@ -27,10 +27,9 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandStore
-import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandStoreImpl
 import org.hisp.dhis.android.core.dataset.DataSet
 
 internal class DataSetCompulsoryDataElementOperandChildrenAppender private constructor(
@@ -44,10 +43,8 @@ internal class DataSetCompulsoryDataElementOperandChildrenAppender private const
     }
 
     companion object {
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<DataSet> {
-            return DataSetCompulsoryDataElementOperandChildrenAppender(
-                DataElementOperandStoreImpl(databaseAdapter),
-            )
+        fun create(): ChildrenAppender<DataSet> {
+            return DataSetCompulsoryDataElementOperandChildrenAppender(koin.get())
         }
     }
 }

@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.arch.repositories.paging.internal
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
@@ -44,7 +43,6 @@ import java.io.IOException
 
 internal class RepositoryPagingSourceWithTransformer<M : CoreObject, T : Any> internal constructor(
     private val store: ReadableStore<M>,
-    private val databaseAdapter: DatabaseAdapter,
     private val scope: RepositoryScope,
     private val childrenAppenders: ChildrenAppenderGetter<M>,
     private val transformer: TwoWayTransformer<M, T>,
@@ -66,7 +64,6 @@ internal class RepositoryPagingSourceWithTransformer<M : CoreObject, T : Any> in
             )
             val items = ChildrenAppenderExecutor.appendInObjectCollection(
                 withoutChildren,
-                databaseAdapter,
                 childrenAppenders,
                 scope.children(),
             )

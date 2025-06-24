@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.trackedentity.search
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
@@ -39,7 +38,6 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactor
 
 internal class TrackedEntitySearchPagingSource(
     store: TrackedEntityInstanceStore,
-    databaseAdapter: DatabaseAdapter,
     trackerParentCallFactory: TrackerParentCallFactory,
     scope: TrackedEntityInstanceQueryRepositoryScope,
     childrenAppenders: ChildrenAppenderGetter<TrackedEntityInstance>,
@@ -51,7 +49,6 @@ internal class TrackedEntitySearchPagingSource(
 
     private val dataFetcher = TrackedEntitySearchDataFetcher(
         store,
-        databaseAdapter,
         trackerParentCallFactory,
         scope,
         childrenAppenders,

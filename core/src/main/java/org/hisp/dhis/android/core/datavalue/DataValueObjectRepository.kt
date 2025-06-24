@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.datavalue
 import io.reactivex.Completable
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxCompletable
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteValueObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
@@ -43,7 +42,6 @@ import java.util.Date
 
 class DataValueObjectRepository internal constructor(
     store: DataValueStore,
-    databaseAdapter: DatabaseAdapter,
     childrenAppenders: ChildrenAppenderGetter<DataValue>,
     scope: RepositoryScope,
     private val period: String,
@@ -53,13 +51,11 @@ class DataValueObjectRepository internal constructor(
     private val attributeOptionCombo: String,
 ) : ReadWriteWithValueObjectRepositoryImpl<DataValue, DataValueObjectRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     ObjectRepositoryFactory { s: RepositoryScope ->
         DataValueObjectRepository(
             store,
-            databaseAdapter,
             childrenAppenders,
             s,
             period,

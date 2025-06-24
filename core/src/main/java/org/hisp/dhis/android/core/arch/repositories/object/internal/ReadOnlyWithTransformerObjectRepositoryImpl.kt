@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 import io.reactivex.Single
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
 import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
@@ -43,7 +42,6 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFr
 internal class ReadOnlyWithTransformerObjectRepositoryImpl<M, T, R : ReadOnlyObjectRepository<T>>
 internal constructor(
     private val store: ReadableStore<M>,
-    private val databaseAdapter: DatabaseAdapter,
     private val childrenAppenders: ChildrenAppenderGetter<M>,
     private val scope: RepositoryScope,
     private val transformer: TwoWayTransformer<M, T>,
@@ -78,7 +76,6 @@ internal constructor(
     private suspend fun getInternal(): T? {
         val item = ChildrenAppenderExecutor.appendInObject(
             getWithoutChildrenInternal(),
-            databaseAdapter,
             childrenAppenders,
             scope.children(),
         )

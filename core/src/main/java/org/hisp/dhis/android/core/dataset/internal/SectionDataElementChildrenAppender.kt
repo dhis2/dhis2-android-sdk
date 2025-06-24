@@ -27,10 +27,9 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
-import org.hisp.dhis.android.core.dataelement.internal.DataElementStoreImpl
 import org.hisp.dhis.android.core.dataset.Section
 
 internal class SectionDataElementChildrenAppender private constructor(
@@ -46,10 +45,8 @@ internal class SectionDataElementChildrenAppender private constructor(
 
     companion object {
 
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<Section> {
-            return SectionDataElementChildrenAppender(
-                DataElementStoreImpl(databaseAdapter),
-            )
+        fun create(): ChildrenAppender<Section> {
+            return SectionDataElementChildrenAppender(koin.get())
         }
     }
 }

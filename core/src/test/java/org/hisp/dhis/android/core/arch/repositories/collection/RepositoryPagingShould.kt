@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.arch.repositories.collection
 
 import androidx.paging.PageKeyedDataSource
 import kotlinx.coroutines.test.runTest
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.paging.internal.RepositoryDataSource
@@ -56,7 +55,6 @@ class RepositoryPagingShould {
     private val emptyScope = RepositoryScope.empty()
 
     private val store: IdentifiableObjectStore<CategoryOption> = mock()
-    private val databaseAdapter: DatabaseAdapter = mock()
     private val `object`: CategoryOption = mock()
 
     private val objects = listOf(`object`)
@@ -74,7 +72,7 @@ class RepositoryPagingShould {
     @Test
     fun get_initial_page_objects_without_order_by() = runTest {
         val dataSource: RepositoryDataSource<CategoryOption> =
-            RepositoryDataSource(store, databaseAdapter, emptyScope, childrenAppenders)
+            RepositoryDataSource(store, emptyScope, childrenAppenders)
 
         dataSource.loadInitial(PageKeyedDataSource.LoadInitialParams(3, false), initialCallback)
         verify(store).selectWhere("1", null, 3)
@@ -91,7 +89,7 @@ class RepositoryPagingShould {
                 .build(),
         )
         val dataSource: RepositoryDataSource<CategoryOption> =
-            RepositoryDataSource(store, databaseAdapter, updatedScope, childrenAppenders)
+            RepositoryDataSource(store, updatedScope, childrenAppenders)
 
         dataSource.loadInitial(PageKeyedDataSource.LoadInitialParams(3, false), initialCallback)
         verify(store).selectWhere("1", "name ASC", 3)
@@ -108,7 +106,7 @@ class RepositoryPagingShould {
                 .build(),
         )
         val dataSource: RepositoryDataSource<CategoryOption> =
-            RepositoryDataSource(store, databaseAdapter, updatedScope, childrenAppenders)
+            RepositoryDataSource(store, updatedScope, childrenAppenders)
 
         dataSource.loadInitial(PageKeyedDataSource.LoadInitialParams(3, false), initialCallback)
         verify(store).selectWhere("1", "name DESC", 3)
@@ -132,7 +130,7 @@ class RepositoryPagingShould {
                 .build(),
         )
         val dataSource: RepositoryDataSource<CategoryOption> =
-            RepositoryDataSource(store, databaseAdapter, updatedScope2, childrenAppenders)
+            RepositoryDataSource(store, updatedScope2, childrenAppenders)
 
         dataSource.loadInitial(PageKeyedDataSource.LoadInitialParams(3, false), initialCallback)
         verify(store).selectWhere("1", "c1 DESC, c2 ASC", 3)
@@ -160,7 +158,7 @@ class RepositoryPagingShould {
                 .build(),
         )
         val dataSource: RepositoryDataSource<CategoryOption> =
-            RepositoryDataSource(store, databaseAdapter, updatedScope2, childrenAppenders)
+            RepositoryDataSource(store, updatedScope2, childrenAppenders)
         dataSource.loadAfter(PageKeyedDataSource.LoadParams(6, 3), loadCallback)
         verify(store).selectWhere(
             "program = 'uid'",

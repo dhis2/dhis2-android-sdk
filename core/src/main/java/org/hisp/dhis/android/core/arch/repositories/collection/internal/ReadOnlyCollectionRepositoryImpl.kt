@@ -39,7 +39,6 @@ import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
@@ -57,7 +56,6 @@ import org.hisp.dhis.android.core.common.CoreObject
 @Suppress("TooManyFunctions")
 open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollectionRepository<M>> internal constructor(
     private val store: ReadableStore<M>,
-    internal val databaseAdapter: DatabaseAdapter,
     internal val childrenAppenders: ChildrenAppenderGetter<M>,
     scope: RepositoryScope,
     cf: FilterConnectorFactory<R>,
@@ -82,7 +80,7 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
      * @return Object repository
      */
     override fun one(): ReadOnlyOneObjectRepositoryFinalImpl<M> {
-        return ReadOnlyOneObjectRepositoryFinalImpl(store, databaseAdapter, childrenAppenders, scope)
+        return ReadOnlyOneObjectRepositoryFinalImpl(store, childrenAppenders, scope)
     }
 
     /**
@@ -109,7 +107,6 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
     private suspend fun getInternal(): List<M> {
         return ChildrenAppenderExecutor.appendInObjectCollection(
             getWithoutChildrenInternal(),
-            databaseAdapter,
             childrenAppenders,
             scope.children(),
         )
@@ -145,10 +142,10 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
 
     @Deprecated("Use {@link #getPagingData()} instead}", replaceWith = ReplaceWith("getPagingData()"))
     val dataSource: DataSource<Int, M>
-        get() = RepositoryDataSource(store, databaseAdapter, scope, childrenAppenders)
+        get() = RepositoryDataSource(store, scope, childrenAppenders)
 
     private val pagingSource: PagingSource<Int, M>
-        get() = RepositoryPagingSource(store, databaseAdapter, scope, childrenAppenders)
+        get() = RepositoryPagingSource(store, scope, childrenAppenders)
 
     /**
      * Get the count of elements in an asynchronous way, returning a `Single`.

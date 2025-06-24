@@ -31,7 +31,6 @@ import android.util.Log
 import io.reactivex.Completable
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxCompletable
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
@@ -49,11 +48,10 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 @Suppress("TooManyFunctions")
 abstract class ReadWriteWithUidDataObjectRepositoryImpl<M, R : ReadOnlyObjectRepository<M>> internal constructor(
     store: IdentifiableDeletableDataObjectStore<M>,
-    databaseAdapter: DatabaseAdapter,
     childrenAppenders: ChildrenAppenderGetter<M>,
     scope: RepositoryScope,
     repositoryFactory: ObjectRepositoryFactory<R>,
-) : ReadWriteWithUidObjectRepositoryImpl<M, R>(store, databaseAdapter, childrenAppenders, scope, repositoryFactory),
+) : ReadWriteWithUidObjectRepositoryImpl<M, R>(store, childrenAppenders, scope, repositoryFactory),
     ReadWriteObjectRepository<M> where M : CoreObject, M : ObjectWithUidInterface, M : DeletableDataObject {
     /**
      * Removes the object in scope in an asynchronous way. Field [DataObject.syncState] is marked as

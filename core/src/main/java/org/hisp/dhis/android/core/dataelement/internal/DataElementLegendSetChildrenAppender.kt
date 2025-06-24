@@ -27,11 +27,10 @@
  */
 package org.hisp.dhis.android.core.dataelement.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.legendset.internal.DataElementLegendSetLinkStore
-import org.hisp.dhis.android.core.legendset.internal.DataElementLegendSetLinkStoreImpl
 
 internal class DataElementLegendSetChildrenAppender private constructor(
     private val linkStore: DataElementLegendSetLinkStore,
@@ -44,10 +43,8 @@ internal class DataElementLegendSetChildrenAppender private constructor(
     }
 
     companion object {
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<DataElement> {
-            return DataElementLegendSetChildrenAppender(
-                DataElementLegendSetLinkStoreImpl(databaseAdapter),
-            )
+        fun create(): ChildrenAppender<DataElement> {
+            return DataElementLegendSetChildrenAppender(koin.get())
         }
     }
 }

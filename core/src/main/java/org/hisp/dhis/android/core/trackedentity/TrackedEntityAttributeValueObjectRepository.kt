@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity
 
 import io.reactivex.Completable
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteValueObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
@@ -42,7 +41,6 @@ import java.util.Date
 
 class TrackedEntityAttributeValueObjectRepository internal constructor(
     store: TrackedEntityAttributeValueStore,
-    databaseAdapter: DatabaseAdapter,
     childrenAppenders: ChildrenAppenderGetter<TrackedEntityAttributeValue>,
     scope: RepositoryScope,
     private val dataStatePropagator: DataStatePropagator,
@@ -50,13 +48,11 @@ class TrackedEntityAttributeValueObjectRepository internal constructor(
     private val trackedEntityInstance: String,
 ) : ReadWriteWithValueObjectRepositoryImpl<TrackedEntityAttributeValue, TrackedEntityAttributeValueObjectRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     ObjectRepositoryFactory { s: RepositoryScope ->
         TrackedEntityAttributeValueObjectRepository(
             store,
-            databaseAdapter,
             childrenAppenders,
             s,
             dataStatePropagator,

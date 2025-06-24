@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.relationship
 import io.reactivex.Single
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
@@ -64,7 +63,6 @@ import org.koin.core.annotation.Singleton
 @Suppress("TooManyFunctions")
 class RelationshipCollectionRepository internal constructor(
     private val relationshipStore: RelationshipStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
     private val relationshipHandler: RelationshipHandler,
     private val storeSelector: RelationshipItemElementStoreSelector,
@@ -72,7 +70,6 @@ class RelationshipCollectionRepository internal constructor(
     private val trackerDataManager: TrackerDataManager,
 ) : BaseReadOnlyWithUidCollectionRepositoryImpl<Relationship, RelationshipCollectionRepository>(
     relationshipStore,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -80,7 +77,6 @@ class RelationshipCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         RelationshipCollectionRepository(
             relationshipStore,
-            databaseAdapter,
             s,
             relationshipHandler,
             storeSelector,
@@ -157,7 +153,6 @@ class RelationshipCollectionRepository internal constructor(
         return RelationshipObjectRepository(
             relationshipStore,
             uid,
-            databaseAdapter,
             childrenAppenders,
             updatedScope,
             trackerDataManager,
@@ -265,7 +260,7 @@ class RelationshipCollectionRepository internal constructor(
         private const val ITEMS = "items"
 
         val childrenAppenders: ChildrenAppenderGetter<Relationship> = mapOf(
-            ITEMS to ::RelationshipItemChildrenAppender,
+            ITEMS to RelationshipItemChildrenAppender::create,
         )
     }
 }

@@ -39,7 +39,6 @@ import androidx.paging.PagingSource
 import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.runBlocking
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper
@@ -61,7 +60,6 @@ import org.koin.core.annotation.Singleton
 class TrackedEntitySearchCollectionRepository internal constructor(
     private val store: TrackedEntityInstanceStore,
     private val trackerParentCallFactory: TrackerParentCallFactory,
-    private val databaseAdapter: DatabaseAdapter,
     scope: TrackedEntityInstanceQueryRepositoryScope,
     scopeHelper: TrackedEntityInstanceQueryRepositoryScopeHelper,
     versionManager: DHISVersionManager,
@@ -87,7 +85,7 @@ class TrackedEntitySearchCollectionRepository internal constructor(
             > =
         ScopedFilterConnectorFactory { s: TrackedEntityInstanceQueryRepositoryScope ->
             TrackedEntitySearchCollectionRepository(
-                store, trackerParentCallFactory, databaseAdapter,
+                store, trackerParentCallFactory,
                 s, scopeHelper, versionManager, filtersRepository, workingListRepository, onlineCache,
                 onlineHelper, localQueryHelper, searchDataFetcherHelper,
             )
@@ -122,7 +120,6 @@ class TrackedEntitySearchCollectionRepository internal constructor(
     val pagingSource: PagingSource<TrackedEntitySearchItem, TrackedEntitySearchItem>
         get() = TrackedEntitySearchPagingSource(
             store,
-            databaseAdapter,
             trackerParentCallFactory,
             scope,
             childrenAppenders,
@@ -184,7 +181,6 @@ class TrackedEntitySearchCollectionRepository internal constructor(
     private fun getDataFetcher(): TrackedEntitySearchDataFetcher {
         return TrackedEntitySearchDataFetcher(
             store,
-            databaseAdapter,
             trackerParentCallFactory,
             scope,
             childrenAppenders,

@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.event
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
@@ -45,11 +44,9 @@ import org.koin.core.annotation.Singleton
 @Suppress("TooManyFunctions")
 class EventFilterCollectionRepository internal constructor(
     store: EventFilterStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<EventFilter, EventFilterCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -57,7 +54,6 @@ class EventFilterCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         EventFilterCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },

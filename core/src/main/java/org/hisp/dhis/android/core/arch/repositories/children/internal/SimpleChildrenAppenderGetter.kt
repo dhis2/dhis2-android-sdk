@@ -25,33 +25,7 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user
 
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
-import org.hisp.dhis.android.core.user.internal.UserGroupStore
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.core.arch.repositories.children.internal
 
-@Singleton
-class UserGroupCollectionRepository internal constructor(
-    store: UserGroupStore,
-    scope: RepositoryScope,
-) : ReadOnlyIdentifiableCollectionRepositoryImpl<UserGroup, UserGroupCollectionRepository>(
-    store,
-    childrenAppenders,
-    scope,
-    FilterConnectorFactory(
-        scope,
-    ) { s: RepositoryScope ->
-        UserGroupCollectionRepository(
-            store,
-            s,
-        )
-    },
-) {
-    internal companion object {
-        val childrenAppenders: ChildrenAppenderGetter<UserGroup> = emptyMap()
-    }
-}
+internal typealias SimpleChildrenAppenderGetter<M> = Map<String, () -> ChildrenAppender<M>>

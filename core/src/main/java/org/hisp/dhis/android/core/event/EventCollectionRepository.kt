@@ -33,7 +33,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadWithUidCollectionRepository
@@ -69,7 +68,6 @@ import org.koin.core.annotation.Singleton
 class EventCollectionRepository internal constructor(
     private val eventStore: EventStore,
     private val userStore: UserStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
     private val postCall: EventPostParentCall,
     transformer: EventProjectionTransformer,
@@ -77,7 +75,6 @@ class EventCollectionRepository internal constructor(
     private val jobQueryCall: JobQueryCall,
 ) : ReadWriteWithUidCollectionRepositoryImpl<Event, EventCreateProjection, EventCollectionRepository>(
     eventStore,
-    databaseAdapter,
     childrenAppenders,
     scope,
     transformer,
@@ -85,7 +82,6 @@ class EventCollectionRepository internal constructor(
         EventCollectionRepository(
             eventStore,
             userStore,
-            databaseAdapter,
             s,
             postCall,
             transformer,
@@ -120,7 +116,6 @@ class EventCollectionRepository internal constructor(
             eventStore,
             userStore,
             uid,
-            databaseAdapter,
             childrenAppenders,
             updatedScope,
             trackerDataManager,

@@ -120,8 +120,8 @@ pipeline {
                 }
             }
             environment {
-                NEXUS_USERNAME = credentials('android-sonatype-nexus-username')
-                NEXUS_PASSWORD = credentials('android-sonatype-nexus-password')
+                NEXUS_USERNAME = credentials('sonatype-portal-username')
+                NEXUS_PASSWORD = credentials('sonatype-portal-password')
             }
             steps {
                 echo 'Deploy to Sonatype nexus'

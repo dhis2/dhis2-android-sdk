@@ -215,6 +215,10 @@ dependencies {
     androidTestImplementation(libs.androidx.paging.testing)
 }
 
+ksp {
+    arg("migrationDir", "$rootDir/core/src/main/assets/migrations")
+}
+
 detekt {
     toolVersion = libs.versions.detekt.get()
     config = files("config/detekt.yml")

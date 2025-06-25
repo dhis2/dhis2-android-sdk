@@ -27,10 +27,9 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.legendset.internal.ProgramIndicatorLegendSetLinkStore
-import org.hisp.dhis.android.core.legendset.internal.ProgramIndicatorLegendSetLinkStoreImpl
 import org.hisp.dhis.android.core.program.ProgramIndicator
 
 internal class ProgramIndicatorLegendSetChildrenAppender private constructor(
@@ -44,8 +43,8 @@ internal class ProgramIndicatorLegendSetChildrenAppender private constructor(
     }
 
     companion object {
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<ProgramIndicator> {
-            return ProgramIndicatorLegendSetChildrenAppender(ProgramIndicatorLegendSetLinkStoreImpl(databaseAdapter))
+        fun create(): ChildrenAppender<ProgramIndicator> {
+            return ProgramIndicatorLegendSetChildrenAppender(koin.get())
         }
     }
 }

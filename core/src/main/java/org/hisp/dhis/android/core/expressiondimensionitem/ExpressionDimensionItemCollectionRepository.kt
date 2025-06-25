@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.expressiondimensionitem
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -39,11 +38,9 @@ import org.koin.core.annotation.Singleton
 @Singleton
 class ExpressionDimensionItemCollectionRepository internal constructor(
     store: ExpressionDimensionItemStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<ExpressionDimensionItem, ExpressionDimensionItemCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -51,7 +48,6 @@ class ExpressionDimensionItemCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         ExpressionDimensionItemCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },

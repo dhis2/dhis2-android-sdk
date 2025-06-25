@@ -35,7 +35,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
 import kotlinx.coroutines.withContext
 import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepository
@@ -62,21 +61,18 @@ import java.io.File
 @Suppress("TooManyFunctions", "TooGenericExceptionCaught")
 class FileResourceCollectionRepository internal constructor(
     private val fileResourceStore: FileResourceStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
     transformer: FileResourceProjectionTransformer,
     dataStatePropagator: DataStatePropagator,
     private val context: Context,
 ) : ReadWriteWithUidCollectionRepositoryImpl<FileResource, File, FileResourceCollectionRepository>(
     fileResourceStore,
-    databaseAdapter,
     childrenAppenders,
     scope,
     transformer,
     FilterConnectorFactory(scope) { s: RepositoryScope ->
         FileResourceCollectionRepository(
             fileResourceStore,
-            databaseAdapter,
             s,
             transformer,
             dataStatePropagator,
@@ -133,7 +129,7 @@ class FileResourceCollectionRepository internal constructor(
 
     override fun uid(uid: String?): FileResourceObjectRepository {
         val updatedScope = withUidFilterItem(scope, uid)
-        return FileResourceObjectRepository(fileResourceStore, uid, databaseAdapter, childrenAppenders, updatedScope)
+        return FileResourceObjectRepository(fileResourceStore, uid, childrenAppenders, updatedScope)
     }
 
     fun byUid(): StringFilterConnector<FileResourceCollectionRepository> {

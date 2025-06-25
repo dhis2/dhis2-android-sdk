@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.user
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyOneObjectRepositoryImpl
@@ -38,17 +37,14 @@ import org.koin.core.annotation.Singleton
 @Singleton(binds = [AuthenticatedUserObjectRepository::class])
 class AuthenticatedUserObjectRepository internal constructor(
     store: AuthenticatedUserStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyOneObjectRepositoryImpl<AuthenticatedUser, AuthenticatedUserObjectRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     ObjectRepositoryFactory { updatedScope: RepositoryScope ->
         AuthenticatedUserObjectRepository(
             store,
-            databaseAdapter,
             updatedScope,
         )
     },

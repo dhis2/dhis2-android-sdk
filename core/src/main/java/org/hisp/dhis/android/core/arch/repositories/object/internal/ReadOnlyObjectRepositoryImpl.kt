@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 import io.reactivex.Single
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -38,7 +37,6 @@ import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepos
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 
 abstract class ReadOnlyObjectRepositoryImpl<M, R : ReadOnlyObjectRepository<M>> internal constructor(
-    private val databaseAdapter: DatabaseAdapter,
     private val childrenAppenderGetter: ChildrenAppenderGetter<M>,
     protected val scope: RepositoryScope,
     repositoryFactory: ObjectRepositoryFactory<R>,
@@ -68,7 +66,6 @@ abstract class ReadOnlyObjectRepositoryImpl<M, R : ReadOnlyObjectRepository<M>> 
     protected suspend fun getInternal(): M? {
         return ChildrenAppenderExecutor.appendInObject(
             blockingGetWithoutChildren(),
-            databaseAdapter,
             childrenAppenderGetter,
             scope.children(),
         )

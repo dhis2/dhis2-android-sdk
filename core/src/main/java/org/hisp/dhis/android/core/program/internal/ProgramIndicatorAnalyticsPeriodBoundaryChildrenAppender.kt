@@ -27,16 +27,15 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryTableInfo
 import org.hisp.dhis.android.core.program.ProgramIndicator
 
 internal class ProgramIndicatorAnalyticsPeriodBoundaryChildrenAppender private constructor(
-    private val childStore: LinkStore<AnalyticsPeriodBoundary>,
+    private val childStore: AnalyticsPeriodBoundaryStore,
 ) : ChildrenAppender<ProgramIndicator>() {
     override suspend fun appendChildren(programIndicator: ProgramIndicator): ProgramIndicator {
         return programIndicator.toBuilder().analyticsPeriodBoundaries(getChildren(programIndicator)).build()
@@ -50,10 +49,8 @@ internal class ProgramIndicatorAnalyticsPeriodBoundaryChildrenAppender private c
     }
 
     companion object {
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<ProgramIndicator> {
-            return ProgramIndicatorAnalyticsPeriodBoundaryChildrenAppender(
-                AnalyticsPeriodBoundaryStoreImpl(databaseAdapter),
-            )
+        fun create(): ChildrenAppender<ProgramIndicator> {
+            return ProgramIndicatorAnalyticsPeriodBoundaryChildrenAppender(koin.get())
         }
     }
 }

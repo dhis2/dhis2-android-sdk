@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.settings
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyWithUidCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -41,11 +40,9 @@ import org.koin.core.annotation.Singleton
 @Singleton
 class CustomIntentCollectionRepository internal constructor(
     store: CustomIntentStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyWithUidCollectionRepositoryImpl<CustomIntent, CustomIntentCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope.toBuilder().children(
         scope.children()
@@ -53,7 +50,7 @@ class CustomIntentCollectionRepository internal constructor(
     ).build(),
     FilterConnectorFactory(
         scope,
-    ) { s: RepositoryScope -> CustomIntentCollectionRepository(store, databaseAdapter, s) },
+    ) { s: RepositoryScope -> CustomIntentCollectionRepository(store, s) },
 ) {
 
     fun byUid(): StringFilterConnector<CustomIntentCollectionRepository> {

@@ -27,20 +27,25 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.user.User
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class UserGroupChildrenAppender(
-    databaseAdapter: DatabaseAdapter,
+    private val store: UserGroupStore,
 ) : ChildrenAppender<User>() {
-    private val store = UserGroupStoreImpl(databaseAdapter)
 
     override suspend fun appendChildren(user: User): User {
         val builder = user.toBuilder()
         builder.userGroups(store.selectAll())
         return builder.build()
+    }
+
+    companion object {
+        fun create(): ChildrenAppender<User> {
+            return UserGroupChildrenAppender(koin.get())
+        }
     }
 }

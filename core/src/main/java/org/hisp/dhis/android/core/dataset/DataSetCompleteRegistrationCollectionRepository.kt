@@ -32,7 +32,6 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
@@ -54,14 +53,12 @@ import org.koin.core.annotation.Singleton
 @Suppress("SpreadOperator", "TooManyFunctions")
 class DataSetCompleteRegistrationCollectionRepository internal constructor(
     private val dataSetCompleteRegistrationStore: DataSetCompleteRegistrationStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
     handler: DataSetCompleteRegistrationHandler,
     private val postCall: DataSetCompleteRegistrationPostCall,
     private val credentialsRepository: UserCredentialsObjectRepository,
 ) : ReadOnlyCollectionRepositoryImpl<DataSetCompleteRegistration, DataSetCompleteRegistrationCollectionRepository>(
     dataSetCompleteRegistrationStore,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -69,7 +66,6 @@ class DataSetCompleteRegistrationCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         DataSetCompleteRegistrationCollectionRepository(
             dataSetCompleteRegistrationStore,
-            databaseAdapter,
             s,
             handler,
             postCall,
@@ -90,7 +86,6 @@ class DataSetCompleteRegistrationCollectionRepository internal constructor(
             .byAttributeOptionComboUid().eq(attributeOptionCombo).scope
         return DataSetCompleteRegistrationObjectRepository(
             dataSetCompleteRegistrationStore,
-            databaseAdapter,
             credentialsRepository,
             childrenAppenders,
             updatedScope,

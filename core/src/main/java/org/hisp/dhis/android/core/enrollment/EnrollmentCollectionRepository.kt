@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.enrollment
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl
@@ -52,20 +51,17 @@ import org.koin.core.annotation.Singleton
 @Suppress("TooManyFunctions")
 class EnrollmentCollectionRepository internal constructor(
     private val enrollmentStore: EnrollmentStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
     transformer: EnrollmentProjectionTransformer,
     private val trackerDataManager: TrackerDataManager,
 ) : ReadWriteWithUidCollectionRepositoryImpl<Enrollment, EnrollmentCreateProjection, EnrollmentCollectionRepository>(
     enrollmentStore,
-    databaseAdapter,
     childrenAppenders,
     scope,
     transformer,
     FilterConnectorFactory(scope) { s: RepositoryScope ->
         EnrollmentCollectionRepository(
             enrollmentStore,
-            databaseAdapter,
             s,
             transformer,
             trackerDataManager,
@@ -81,7 +77,6 @@ class EnrollmentCollectionRepository internal constructor(
         return EnrollmentObjectRepository(
             enrollmentStore,
             uid,
-            databaseAdapter,
             childrenAppenders,
             updatedScope,
             trackerDataManager,

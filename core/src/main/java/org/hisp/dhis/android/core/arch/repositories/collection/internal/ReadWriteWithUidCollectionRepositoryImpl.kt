@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.arch.repositories.collection.internal
 import io.reactivex.Single
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
@@ -47,14 +46,12 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 
 abstract class ReadWriteWithUidCollectionRepositoryImpl<M, P, R : ReadOnlyCollectionRepository<M>>internal constructor(
     store: IdentifiableObjectStore<M>,
-    databaseAdapter: DatabaseAdapter,
     childrenAppenders: ChildrenAppenderGetter<M>,
     scope: RepositoryScope,
     @JvmField protected val transformer: Transformer<P, M>,
     cf: FilterConnectorFactory<R>,
 ) : BaseReadOnlyWithUidCollectionRepositoryImpl<M, R>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     cf,

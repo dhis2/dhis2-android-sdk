@@ -27,11 +27,10 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.program.ProgramSection
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStoreImpl
 
 internal class ProgramSectionAttributeChildrenAppender private constructor(
     private val childStore: TrackedEntityAttributeStore,
@@ -43,8 +42,8 @@ internal class ProgramSectionAttributeChildrenAppender private constructor(
     }
 
     companion object {
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<ProgramSection> {
-            return ProgramSectionAttributeChildrenAppender(TrackedEntityAttributeStoreImpl(databaseAdapter))
+        fun create(): ChildrenAppender<ProgramSection> {
+            return ProgramSectionAttributeChildrenAppender(koin.get())
         }
     }
 }

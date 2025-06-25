@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.dataset
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
@@ -43,11 +42,9 @@ import org.koin.core.annotation.Singleton
 @Singleton
 class DataSetInstanceSummaryCollectionRepository internal constructor(
     store: DataSetInstanceSummaryStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyCollectionRepositoryImpl<DataSetInstanceSummary, DataSetInstanceSummaryCollectionRepository>(
     store,
-    databaseAdapter,
     emptyMap(),
     scope,
     FilterConnectorFactory(
@@ -55,7 +52,6 @@ class DataSetInstanceSummaryCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         DataSetInstanceSummaryCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },

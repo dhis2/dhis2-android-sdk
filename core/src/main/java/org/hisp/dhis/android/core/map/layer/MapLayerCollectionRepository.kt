@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.map.layer
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyWithUidCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
@@ -43,16 +42,14 @@ import org.koin.core.annotation.Singleton
 @Singleton
 class MapLayerCollectionRepository internal constructor(
     store: MapLayerStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyWithUidCollectionRepositoryImpl<MapLayer, MapLayerCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
         scope,
-    ) { s: RepositoryScope -> MapLayerCollectionRepository(store, databaseAdapter, s) },
+    ) { s: RepositoryScope -> MapLayerCollectionRepository(store, s) },
 ) {
 
     fun byUid(): StringFilterConnector<MapLayerCollectionRepository> {
@@ -105,7 +102,7 @@ class MapLayerCollectionRepository internal constructor(
 
     internal companion object {
         val childrenAppenders: ChildrenAppenderGetter<MapLayer> = mapOf(
-            MapLayer.IMAGERY_PROVIDERS to ::MapLayerImagerProviderChildrenAppender,
+            MapLayer.IMAGERY_PROVIDERS to MapLayerImagerProviderChildrenAppender::create,
         )
     }
 }

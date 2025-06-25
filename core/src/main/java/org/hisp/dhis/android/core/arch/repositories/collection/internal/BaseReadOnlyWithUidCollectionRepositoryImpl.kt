@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.arch.repositories.collection.internal
 import io.reactivex.Single
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
@@ -43,11 +42,10 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
 abstract class BaseReadOnlyWithUidCollectionRepositoryImpl<M, R : ReadOnlyCollectionRepository<M>> internal constructor(
     @JvmField internal val store: IdentifiableObjectStore<M>,
-    databaseAdapter: DatabaseAdapter,
     childrenAppenders: ChildrenAppenderGetter<M>,
     scope: RepositoryScope,
     cf: FilterConnectorFactory<R>,
-) : ReadOnlyCollectionRepositoryImpl<M, R>(store, databaseAdapter, childrenAppenders, scope, cf),
+) : ReadOnlyCollectionRepositoryImpl<M, R>(store, childrenAppenders, scope, cf),
     ReadOnlyWithUidCollectionRepository<M> where M : CoreObject, M : ObjectWithUidInterface {
 
     /**

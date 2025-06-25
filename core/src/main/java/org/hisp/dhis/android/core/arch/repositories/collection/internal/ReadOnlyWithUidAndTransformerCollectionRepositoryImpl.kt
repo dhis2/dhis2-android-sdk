@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.arch.repositories.collection.internal
 import io.reactivex.Single
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
@@ -51,14 +50,12 @@ internal class ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<
     R : ReadOnlyCollectionRepository<T>,
     > internal constructor(
     private val store: IdentifiableObjectStore<M>,
-    databaseAdapter: DatabaseAdapter,
     childrenAppenders: ChildrenAppenderGetter<M>,
     scope: RepositoryScope,
     cf: FilterConnectorFactory<R>,
     override val transformer: TwoWayTransformer<M, T>,
 ) : ReadOnlyWithTransformerCollectionRepositoryImpl<M, T, R>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     cf,
@@ -104,7 +101,6 @@ internal class ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<
         val updatedScope: RepositoryScope = RepositoryScopeHelper.withUidFilterItem(scope, uid)
         return ReadOnlyWithTransformerObjectRepositoryImpl(
             store,
-            databaseAdapter,
             childrenAppenders,
             updatedScope,
             transformer,

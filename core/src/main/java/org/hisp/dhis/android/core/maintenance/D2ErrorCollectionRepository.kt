@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.maintenance
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
@@ -42,11 +41,9 @@ import org.koin.core.annotation.Singleton
 @Singleton
 class D2ErrorCollectionRepository internal constructor(
     store: D2ErrorStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyCollectionRepositoryImpl<D2Error, D2ErrorCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -54,7 +51,6 @@ class D2ErrorCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         D2ErrorCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },

@@ -27,18 +27,23 @@
  */
 package org.hisp.dhis.android.core.map.layer.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.map.layer.MapLayer
 
 internal class MapLayerImagerProviderChildrenAppender(
-    databaseAdapter: DatabaseAdapter,
+    private val mapLayerImageryProviderStore: MapLayerImageryProviderStore,
 ) : ChildrenAppender<MapLayer>() {
-    private val mapLayerImageryProviderStore = MapLayerImageryProviderStoreImpl(databaseAdapter)
 
     override suspend fun appendChildren(mapLayer: MapLayer): MapLayer {
         return mapLayer.toBuilder()
             .imageryProviders(mapLayerImageryProviderStore.selectLinksForMasterUid(mapLayer.uid()))
             .build()
+    }
+
+    companion object {
+        fun create(): ChildrenAppender<MapLayer> {
+            return MapLayerImagerProviderChildrenAppender(koin.get())
+        }
     }
 }

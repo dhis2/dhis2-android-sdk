@@ -31,7 +31,6 @@ import android.util.Log
 import io.reactivex.Completable
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxCompletable
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
@@ -46,11 +45,10 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 open class ReadWriteWithValueObjectRepositoryImpl<M : CoreObject, R : ReadOnlyObjectRepository<M>>
 internal constructor(
     private val store: ObjectWithoutUidStore<M>,
-    databaseAdapter: DatabaseAdapter,
     childrenAppenders: ChildrenAppenderGetter<M>,
     scope: RepositoryScope,
     repositoryFactory: ObjectRepositoryFactory<R>,
-) : ReadOnlyOneObjectRepositoryImpl<M, R>(store, databaseAdapter, childrenAppenders, scope, repositoryFactory),
+) : ReadOnlyOneObjectRepositoryImpl<M, R>(store, childrenAppenders, scope, repositoryFactory),
     ReadWriteObjectRepository<M> {
 
     /**

@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.program.ProgramStageSection
 
@@ -41,8 +41,8 @@ internal class ProgramStageSectionProgramIndicatorChildrenAppender private const
     }
 
     companion object {
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<ProgramStageSection> {
-            return ProgramStageSectionProgramIndicatorChildrenAppender(ProgramIndicatorStoreImpl(databaseAdapter))
+        fun create(): ChildrenAppender<ProgramStageSection> {
+            return ProgramStageSectionProgramIndicatorChildrenAppender(koin.get())
         }
     }
 }

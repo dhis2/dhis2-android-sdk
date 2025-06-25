@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.trackedentity.search
 
 import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.cache.internal.ExpirableCache
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -43,7 +42,6 @@ import java.util.concurrent.TimeUnit
 
 internal class TrackedEntitySearchDataFetcher(
     store: TrackedEntityInstanceStore,
-    databaseAdapter: DatabaseAdapter,
     trackerParentCallFactory: TrackerParentCallFactory,
     scope: TrackedEntityInstanceQueryRepositoryScope,
     childrenAppenders: ChildrenAppenderGetter<TrackedEntityInstance>,
@@ -55,7 +53,6 @@ internal class TrackedEntitySearchDataFetcher(
 
     private val instanceFetcher = TrackedEntityInstanceQueryDataFetcher(
         store,
-        databaseAdapter,
         trackerParentCallFactory,
         scope,
         childrenAppenders,

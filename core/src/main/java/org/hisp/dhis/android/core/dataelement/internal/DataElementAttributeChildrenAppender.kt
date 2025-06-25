@@ -28,11 +28,10 @@
 
 package org.hisp.dhis.android.core.dataelement.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.attribute.AttributeValue
 import org.hisp.dhis.android.core.attribute.internal.DataElementAttributeValueLinkStore
-import org.hisp.dhis.android.core.attribute.internal.DataElementAttributeValueLinkStoreImpl
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataelement.DataElement
 
@@ -55,10 +54,8 @@ internal class DataElementAttributeChildrenAppender private constructor(
     }
 
     companion object {
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<DataElement> {
-            return DataElementAttributeChildrenAppender(
-                DataElementAttributeValueLinkStoreImpl(databaseAdapter),
-            )
+        fun create(): ChildrenAppender<DataElement> {
+            return DataElementAttributeChildrenAppender(koin.get())
         }
     }
 }

@@ -32,11 +32,14 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.*
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper.dataValueKey
@@ -50,16 +53,14 @@ import org.koin.core.annotation.Singleton
 @Singleton
 class DataValueCollectionRepository internal constructor(
     private val store: DataValueStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
     private val postCall: DataValuePostCall,
 ) : ReadOnlyCollectionRepositoryImpl<DataValue, DataValueCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(scope) { s: RepositoryScope ->
-        DataValueCollectionRepository(store, databaseAdapter, s, postCall)
+        DataValueCollectionRepository(store, s, postCall)
     },
 ),
     ReadOnlyWithUploadCollectionRepository<DataValue> {
@@ -88,7 +89,6 @@ class DataValueCollectionRepository internal constructor(
             .byAttributeOptionComboUid().eq(attributeOptionCombo).scope
         return DataValueObjectRepository(
             store,
-            databaseAdapter,
             childrenAppenders,
             updatedScope,
             period,

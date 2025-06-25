@@ -27,16 +27,15 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.relationship.RelationshipConstraint
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipType
 
 internal class RelationshipConstraintChildrenAppender(
-    databaseAdapter: DatabaseAdapter,
+    private val constraintStore: RelationshipConstraintStore,
 ) : ChildrenAppender<RelationshipType>() {
-    private val constraintStore = RelationshipConstraintStoreImpl(databaseAdapter)
 
     private var constraints: List<RelationshipConstraint>? = null
 
@@ -56,5 +55,11 @@ internal class RelationshipConstraintChildrenAppender(
             }
         }
         return builder.build()
+    }
+
+    companion object {
+        fun create(): ChildrenAppender<RelationshipType> {
+            return RelationshipConstraintChildrenAppender(koin.get())
+        }
     }
 }

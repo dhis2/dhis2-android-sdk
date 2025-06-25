@@ -27,19 +27,17 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.category.CategoryOption
-import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLink
 import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLinkTableInfo
 import org.hisp.dhis.android.core.category.internal.CategoryOptionOrganisationUnitsCall.CategoryOptionRestriction.Companion.NOT_ACCESSIBLE_TO_USER
 import org.hisp.dhis.android.core.category.internal.CategoryOptionOrganisationUnitsCall.CategoryOptionRestriction.Companion.NOT_RESTRICTED
 import org.hisp.dhis.android.core.common.ObjectWithUid
 
 internal class CategoryOptionOrganisationUnitChildrenAppender private constructor(
-    private val childStore: LinkStore<CategoryOptionOrganisationUnitLink>,
+    private val childStore: CategoryOptionOrganisationUnitLinkStore,
 ) : ChildrenAppender<CategoryOption>() {
 
     override suspend fun appendChildren(categoryOption: CategoryOption): CategoryOption {
@@ -63,10 +61,8 @@ internal class CategoryOptionOrganisationUnitChildrenAppender private constructo
     }
 
     companion object {
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<CategoryOption> {
-            return CategoryOptionOrganisationUnitChildrenAppender(
-                CategoryOptionOrganisationUnitLinkStoreImpl(databaseAdapter),
-            )
+        fun create(): ChildrenAppender<CategoryOption> {
+            return CategoryOptionOrganisationUnitChildrenAppender(koin.get())
         }
     }
 }

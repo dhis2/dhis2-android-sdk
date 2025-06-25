@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyNameableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
@@ -45,11 +44,9 @@ import org.koin.core.annotation.Singleton
 @Suppress("TooManyFunctions")
 class TrackedEntityAttributeCollectionRepository internal constructor(
     store: TrackedEntityAttributeStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyNameableCollectionRepositoryImpl<TrackedEntityAttribute, TrackedEntityAttributeCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -57,7 +54,6 @@ class TrackedEntityAttributeCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         TrackedEntityAttributeCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,21 +26,29 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.bing
+package org.hisp.dhis.android.core.map.layer.internal.microsoft
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.map.layer.MapLayer
-import org.hisp.dhis.android.core.map.layer.internal.microsoft.BingBasemap
-import org.hisp.dhis.android.core.map.layer.internal.microsoft.BingNetworkHandler
-import org.koin.core.annotation.Singleton
-
-@Singleton
-internal class BingNetworkHandlerImpl(
-    httpServiceClient: HttpServiceClient,
-) : BingNetworkHandler {
-    private val service = BingService(httpServiceClient)
-    override suspend fun getBaseMap(url: String, basemap: BingBasemap): List<MapLayer> {
-        val apiPayload = service.getBaseMap(url)
-        return apiPayload.toDomain(basemap)
-    }
+internal object BingBasemaps {
+    val list: List<BingBasemap> = listOf(
+        BingBasemap(
+            id = "bingLight",
+            name = "Bing Road",
+            style = "CanvasLight",
+        ),
+        BingBasemap(
+            id = "bingDark",
+            name = "Bing Dark",
+            style = "CanvasDark",
+        ),
+        BingBasemap(
+            id = "bingAerial",
+            name = "Bing Aerial",
+            style = "Aerial",
+        ),
+        BingBasemap(
+            id = "bingHybrid",
+            name = "Bing Aerial Labels",
+            style = "AerialWithLabelsOnDemand",
+        ),
+    )
 }

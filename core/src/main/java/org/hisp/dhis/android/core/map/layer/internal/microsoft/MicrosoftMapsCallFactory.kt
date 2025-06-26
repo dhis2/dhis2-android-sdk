@@ -73,6 +73,7 @@ internal class MicrosoftMapsCallFactory(
         }.getOrDefault(emptyList())
     }
 
+    @Suppress("TooGenericExceptionCaught")
     private suspend fun <T> downloadWithTimeout(
         key: String,
         baseMaps: List<T>,

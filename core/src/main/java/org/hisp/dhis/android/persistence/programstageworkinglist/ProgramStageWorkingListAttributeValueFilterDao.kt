@@ -32,5 +32,5 @@ import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
 @Dao
-internal interface ProgramStageWorkingListAttributeValueFilterDao : 
+internal interface ProgramStageWorkingListAttributeValueFilterDao :
     ObjectDao<ProgramStageWorkingListAttributeValueFilterDB>

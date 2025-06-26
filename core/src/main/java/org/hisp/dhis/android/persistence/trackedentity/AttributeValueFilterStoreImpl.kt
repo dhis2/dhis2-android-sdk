@@ -36,7 +36,7 @@ import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 
 internal class AttributeValueFilterStoreImpl(
     private val dao: AttributeValueFilterDao,
-) : AttributeValueFilterStore, 
+) : AttributeValueFilterStore,
     ObjectWithoutUidStoreImpl<AttributeValueFilter, AttributeValueFilterDB>(
         dao,
         AttributeValueFilter::toDB,
@@ -55,4 +55,4 @@ internal class AttributeValueFilterStoreImpl(
         val selectStatement = builder.selectWhere(whereClause)
         return selectRawQuery(selectStatement)
     }
-    }
+}

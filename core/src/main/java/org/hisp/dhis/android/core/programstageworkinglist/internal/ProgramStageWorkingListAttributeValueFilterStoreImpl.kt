@@ -78,7 +78,7 @@ internal class ProgramStageWorkingListAttributeValueFilterStoreImpl(
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(
                 ProgramStageWorkingListAttributeValueFilterTableInfo.Columns.PROGRAM_STAGE_WORKING_LIST,
-                programStageWorkingList
+                programStageWorkingList,
             )
             .build()
         val query = builder.selectWhere(whereClause)

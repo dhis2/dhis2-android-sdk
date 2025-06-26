@@ -41,7 +41,7 @@ internal class ProgramStageWorkingListModuleWiper(
         tableWiper.wipeTables(
             ProgramStageWorkingListTableInfo.TABLE_INFO,
             ProgramStageWorkingListEventDataFilterTableInfo.TABLE_INFO,
-            ProgramStageWorkingListAttributeValueFilterTableInfo.TABLE_INFO
+            ProgramStageWorkingListAttributeValueFilterTableInfo.TABLE_INFO,
         )
     }
 

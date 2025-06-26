@@ -4703,26 +4703,15 @@ public final class org/hisp/dhis/android/core/common/internal/DataStateUidHolder
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class org/hisp/dhis/android/core/common/tableinfo/ItemFilterTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/common/tableinfo/ItemFilterTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field ATTRIBUTE Ljava/lang/String;
-	public static final field DATA_ITEM Ljava/lang/String;
+public class org/hisp/dhis/android/core/common/tableinfo/FilterOperatorsColumns : org/hisp/dhis/android/core/common/CoreColumns {
 	public static final field DATE_FILTER Ljava/lang/String;
 	public static final field EQ Ljava/lang/String;
-	public static final field EVENT_FILTER Ljava/lang/String;
-	public static final field EW Ljava/lang/String;
 	public static final field GE Ljava/lang/String;
 	public static final field GT Ljava/lang/String;
 	public static final field IN Ljava/lang/String;
 	public static final field LE Ljava/lang/String;
 	public static final field LIKE Ljava/lang/String;
 	public static final field LT Ljava/lang/String;
-	public static final field PROGRAM_STAGE_WORKING_LIST Ljava/lang/String;
-	public static final field SW Ljava/lang/String;
-	public static final field TRACKED_ENTITY_INSTANCE_FILTER Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -6922,6 +6911,17 @@ public abstract class org/hisp/dhis/android/core/event/EventDataFilter$Builder :
 	public abstract fun dataItem (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/EventDataFilter$Builder;
 	public abstract fun eventFilter (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/EventDataFilter$Builder;
 	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/event/EventDataFilter$Builder;
+}
+
+public final class org/hisp/dhis/android/core/event/EventDataFilterTableInfo {
+	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+}
+
+public class org/hisp/dhis/android/core/event/EventDataFilterTableInfo$Columns : org/hisp/dhis/android/core/common/tableinfo/FilterOperatorsColumns {
+	public static final field DATA_ITEM Ljava/lang/String;
+	public static final field EVENT_FILTER Ljava/lang/String;
+	public fun <init> ()V
+	public fun all ()[Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/core/event/EventDownloader : org/hisp/dhis/android/core/arch/repositories/collection/internal/BaseRepositoryImpl {
@@ -10604,6 +10604,19 @@ public abstract class org/hisp/dhis/android/core/programstageworkinglist/Program
 	public abstract fun sw (Ljava/lang/String;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListAttributeValueFilter$Builder;
 }
 
+public final class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListAttributeValueFilterTableInfo {
+	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+}
+
+public class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListAttributeValueFilterTableInfo$Columns : org/hisp/dhis/android/core/common/tableinfo/FilterOperatorsColumns {
+	public static final field ATTRIBUTE Ljava/lang/String;
+	public static final field EW Ljava/lang/String;
+	public static final field PROGRAM_STAGE_WORKING_LIST Ljava/lang/String;
+	public static final field SW Ljava/lang/String;
+	public fun <init> ()V
+	public fun all ()[Ljava/lang/String;
+}
+
 public final class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
 	public final fun byAssignedUserMode ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
 	public final fun byDescription ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
@@ -10634,6 +10647,17 @@ public abstract class org/hisp/dhis/android/core/programstageworkinglist/Program
 	public abstract fun dataItem (Ljava/lang/String;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListEventDataFilter$Builder;
 	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListEventDataFilter$Builder;
 	public abstract fun programStageWorkingList (Ljava/lang/String;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListEventDataFilter$Builder;
+}
+
+public final class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListEventDataFilterTableInfo {
+	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+}
+
+public class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListEventDataFilterTableInfo$Columns : org/hisp/dhis/android/core/common/tableinfo/FilterOperatorsColumns {
+	public static final field DATA_ITEM Ljava/lang/String;
+	public static final field PROGRAM_STAGE_WORKING_LIST Ljava/lang/String;
+	public fun <init> ()V
+	public fun all ()[Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/core/programstageworkinglist/internal/AttributeValueFilterHelper {
@@ -12962,6 +12986,19 @@ public abstract class org/hisp/dhis/android/core/trackedentity/AttributeValueFil
 	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/trackedentity/AttributeValueFilter$Builder;
 	public abstract fun sw (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/AttributeValueFilter$Builder;
 	public abstract fun trackedEntityInstanceFilter (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/AttributeValueFilter$Builder;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/AttributeValueFilterTableInfo {
+	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+}
+
+public class org/hisp/dhis/android/core/trackedentity/AttributeValueFilterTableInfo$Columns : org/hisp/dhis/android/core/common/tableinfo/FilterOperatorsColumns {
+	public static final field ATTRIBUTE Ljava/lang/String;
+	public static final field EW Ljava/lang/String;
+	public static final field SW Ljava/lang/String;
+	public static final field TRACKED_ENTITY_INSTANCE_FILTER Ljava/lang/String;
+	public fun <init> ()V
+	public fun all ()[Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/trackedentity/EntityQueryCriteria : org/hisp/dhis/android/core/common/FilterQueryCriteria, org/hisp/dhis/android/core/common/CoreObject {
@@ -16453,6 +16490,31 @@ public final class org/hisp/dhis/android/persistence/enrollment/EnrollmentTableI
 public final class org/hisp/dhis/android/persistence/enrollment/EnrollmentTableInfo$Columns$Companion {
 }
 
+public final class org/hisp/dhis/android/persistence/event/EventDataFilterTableInfo {
+	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/event/EventDataFilterTableInfo;
+	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+}
+
+public final class org/hisp/dhis/android/persistence/event/EventDataFilterTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
+	public static final field Companion Lorg/hisp/dhis/android/persistence/event/EventDataFilterTableInfo$Columns$Companion;
+	public static final field DATA_ITEM Ljava/lang/String;
+	public static final field DATE_FILTER Ljava/lang/String;
+	public static final field EQ Ljava/lang/String;
+	public static final field EVENT_FILTER Ljava/lang/String;
+	public static final field GE Ljava/lang/String;
+	public static final field GT Ljava/lang/String;
+	public static final field IN_PROPERTY Ljava/lang/String;
+	public static final field LE Ljava/lang/String;
+	public static final field LIKE Ljava/lang/String;
+	public static final field LT Ljava/lang/String;
+	public static final field _ID Ljava/lang/String;
+	public fun <init> ()V
+	public fun all ()[Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/persistence/event/EventDataFilterTableInfo$Columns$Companion {
+}
+
 public final class org/hisp/dhis/android/persistence/event/EventFilterTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/event/EventFilterTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
@@ -16708,36 +16770,6 @@ public final class org/hisp/dhis/android/persistence/indicator/IndicatorTypeTabl
 }
 
 public final class org/hisp/dhis/android/persistence/indicator/IndicatorTypeTableInfo$Columns$Companion {
-}
-
-public final class org/hisp/dhis/android/persistence/itemfilter/ItemFilterTableInfo {
-	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/itemfilter/ItemFilterTableInfo;
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public final class org/hisp/dhis/android/persistence/itemfilter/ItemFilterTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field ATTRIBUTE Ljava/lang/String;
-	public static final field Companion Lorg/hisp/dhis/android/persistence/itemfilter/ItemFilterTableInfo$Columns$Companion;
-	public static final field DATA_ITEM Ljava/lang/String;
-	public static final field DATE_FILTER Ljava/lang/String;
-	public static final field EQ Ljava/lang/String;
-	public static final field EVENT_FILTER Ljava/lang/String;
-	public static final field EW Ljava/lang/String;
-	public static final field GE Ljava/lang/String;
-	public static final field GT Ljava/lang/String;
-	public static final field IN_PROPERTY Ljava/lang/String;
-	public static final field LE Ljava/lang/String;
-	public static final field LIKE Ljava/lang/String;
-	public static final field LT Ljava/lang/String;
-	public static final field PROGRAM_STAGE_WORKING_LIST Ljava/lang/String;
-	public static final field SW Ljava/lang/String;
-	public static final field TRACKED_ENTITY_INSTANCE_FILTER Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/persistence/itemfilter/ItemFilterTableInfo$Columns$Companion {
 }
 
 public final class org/hisp/dhis/android/persistence/legendset/DataElementLegendSetLinkTableInfo {
@@ -17592,6 +17624,58 @@ public final class org/hisp/dhis/android/persistence/program/ProgramTrackedEntit
 public final class org/hisp/dhis/android/persistence/program/ProgramTrackedEntityAttributeTableInfo$Columns$Companion {
 }
 
+public final class org/hisp/dhis/android/persistence/programstageworkinglist/ProgramStageWorkingListAttributeValueFilterTableInfo {
+	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/programstageworkinglist/ProgramStageWorkingListAttributeValueFilterTableInfo;
+	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+}
+
+public final class org/hisp/dhis/android/persistence/programstageworkinglist/ProgramStageWorkingListAttributeValueFilterTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
+	public static final field ATTRIBUTE Ljava/lang/String;
+	public static final field Companion Lorg/hisp/dhis/android/persistence/programstageworkinglist/ProgramStageWorkingListAttributeValueFilterTableInfo$Columns$Companion;
+	public static final field DATE_FILTER Ljava/lang/String;
+	public static final field EQ Ljava/lang/String;
+	public static final field EW Ljava/lang/String;
+	public static final field GE Ljava/lang/String;
+	public static final field GT Ljava/lang/String;
+	public static final field IN_PROPERTY Ljava/lang/String;
+	public static final field LE Ljava/lang/String;
+	public static final field LIKE Ljava/lang/String;
+	public static final field LT Ljava/lang/String;
+	public static final field PROGRAM_STAGE_WORKING_LIST Ljava/lang/String;
+	public static final field SW Ljava/lang/String;
+	public static final field _ID Ljava/lang/String;
+	public fun <init> ()V
+	public fun all ()[Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/persistence/programstageworkinglist/ProgramStageWorkingListAttributeValueFilterTableInfo$Columns$Companion {
+}
+
+public final class org/hisp/dhis/android/persistence/programstageworkinglist/ProgramStageWorkingListEventDataFilterTableInfo {
+	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/programstageworkinglist/ProgramStageWorkingListEventDataFilterTableInfo;
+	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+}
+
+public final class org/hisp/dhis/android/persistence/programstageworkinglist/ProgramStageWorkingListEventDataFilterTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
+	public static final field Companion Lorg/hisp/dhis/android/persistence/programstageworkinglist/ProgramStageWorkingListEventDataFilterTableInfo$Columns$Companion;
+	public static final field DATA_ITEM Ljava/lang/String;
+	public static final field DATE_FILTER Ljava/lang/String;
+	public static final field EQ Ljava/lang/String;
+	public static final field GE Ljava/lang/String;
+	public static final field GT Ljava/lang/String;
+	public static final field IN_PROPERTY Ljava/lang/String;
+	public static final field LE Ljava/lang/String;
+	public static final field LIKE Ljava/lang/String;
+	public static final field LT Ljava/lang/String;
+	public static final field PROGRAM_STAGE_WORKING_LIST Ljava/lang/String;
+	public static final field _ID Ljava/lang/String;
+	public fun <init> ()V
+	public fun all ()[Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/persistence/programstageworkinglist/ProgramStageWorkingListEventDataFilterTableInfo$Columns$Companion {
+}
+
 public final class org/hisp/dhis/android/persistence/programstageworkinglist/ProgramStageWorkingListTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/programstageworkinglist/ProgramStageWorkingListTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
@@ -18192,6 +18276,33 @@ public final class org/hisp/dhis/android/persistence/systeminfo/SystemInfoTableI
 }
 
 public final class org/hisp/dhis/android/persistence/systeminfo/SystemInfoTableInfo$Columns$Companion {
+}
+
+public final class org/hisp/dhis/android/persistence/trackedentity/AttributeValueFilterTableInfo {
+	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/trackedentity/AttributeValueFilterTableInfo;
+	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+}
+
+public final class org/hisp/dhis/android/persistence/trackedentity/AttributeValueFilterTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
+	public static final field ATTRIBUTE Ljava/lang/String;
+	public static final field Companion Lorg/hisp/dhis/android/persistence/trackedentity/AttributeValueFilterTableInfo$Columns$Companion;
+	public static final field DATE_FILTER Ljava/lang/String;
+	public static final field EQ Ljava/lang/String;
+	public static final field EW Ljava/lang/String;
+	public static final field GE Ljava/lang/String;
+	public static final field GT Ljava/lang/String;
+	public static final field IN_PROPERTY Ljava/lang/String;
+	public static final field LE Ljava/lang/String;
+	public static final field LIKE Ljava/lang/String;
+	public static final field LT Ljava/lang/String;
+	public static final field SW Ljava/lang/String;
+	public static final field TRACKED_ENTITY_INSTANCE_FILTER Ljava/lang/String;
+	public static final field _ID Ljava/lang/String;
+	public fun <init> ()V
+	public fun all ()[Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/persistence/trackedentity/AttributeValueFilterTableInfo$Columns$Companion {
 }
 
 public final class org/hisp/dhis/android/persistence/trackedentity/ProgramOwnerTableInfo {

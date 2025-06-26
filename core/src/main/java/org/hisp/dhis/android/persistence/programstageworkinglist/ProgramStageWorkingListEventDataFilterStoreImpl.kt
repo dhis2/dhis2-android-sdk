@@ -36,7 +36,7 @@ import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 
 internal class ProgramStageWorkingListEventDataFilterStoreImpl(
     private val dao: ProgramStageWorkingListEventDataFilterDao,
-) : ProgramStageWorkingListEventDataFilterStore, 
+) : ProgramStageWorkingListEventDataFilterStore,
     ObjectWithoutUidStoreImpl<ProgramStageWorkingListEventDataFilter, ProgramStageWorkingListEventDataFilterDB>(
         dao,
         ProgramStageWorkingListEventDataFilter::toDB,
@@ -54,4 +54,4 @@ internal class ProgramStageWorkingListEventDataFilterStoreImpl(
         val query = builder.selectWhere(whereClause)
         return selectRawQuery(query)
     }
-    }
+}

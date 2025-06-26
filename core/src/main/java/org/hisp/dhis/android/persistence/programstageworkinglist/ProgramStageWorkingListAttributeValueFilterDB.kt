@@ -26,51 +26,56 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.event
+package org.hisp.dhis.android.persistence.programstageworkinglist
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import org.hisp.dhis.android.core.event.EventDataFilter
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
+import org.hisp.dhis.android.persistence.attribute.AttributeDB
 import org.hisp.dhis.android.persistence.common.DateFilterPeriodDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.FilterOperatorsDB
 import org.hisp.dhis.android.persistence.common.StringSetDB
 import org.hisp.dhis.android.persistence.common.applyFilterOperatorsFields
 import org.hisp.dhis.android.persistence.common.toDB
-import org.hisp.dhis.android.persistence.dataelement.DataElementDB
 
+//CREATE TABLE ProgramStageWorkingListAttributeValueFilter (_id INTEGER PRIMARY KEY AUTOINCREMENT, programStageWorkingList TEXT, attribute TEXT, sw TEXT, ew TEXT, le TEXT, ge TEXT, gt TEXT, lt TEXT, eq TEXT, inProperty TEXT, like TEXT, dateFilter TEXT,
+// FOREIGN KEY (programStageWorkingList) REFERENCES ProgramStageWorkingList (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED),
+// FOREIGN KEY (attribute) REFERENCES Attribute (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
 @Entity(
-    tableName = "EventDataFilter",
+    tableName = "ProgramStageWorkingListAttributeValueFilter",
     foreignKeys = [
         ForeignKey(
-            entity = EventFilterDB::class,
+            entity = ProgramStageWorkingListDB::class,
             parentColumns = ["uid"],
-            childColumns = ["eventFilter"],
+            childColumns = ["programStageWorkingList"],
             onDelete = ForeignKey.CASCADE,
             deferred = true,
         ),
         ForeignKey(
-            entity = DataElementDB::class,
+            entity = AttributeDB::class,
             parentColumns = ["uid"],
-            childColumns = ["dataItem"],
+            childColumns = ["attribute"],
             onDelete = ForeignKey.CASCADE,
             deferred = true,
         ),
     ],
     indices = [
-        Index(value = ["eventFilter"]),
-        Index(value = ["dataItem"]),
+        Index(value = ["programStageWorkingList"]),
+        Index(value = ["attribute"]),
     ],
 )
-internal data class EventDataFilterDB(
+internal data class ProgramStageWorkingListAttributeValueFilterDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
     val id: Int? = 0,
-    val eventFilter: String?,
-    val dataItem: String?,
+    val programStageWorkingList: String?,
+    val attribute: String?,
+    val sw: String?,
+    val ew: String?,
     override val le: String?,
     override val ge: String?,
     override val gt: String?,
@@ -79,21 +84,25 @@ internal data class EventDataFilterDB(
     override val inProperty: StringSetDB?,
     override val like: String?,
     override val dateFilter: DateFilterPeriodDB?,
-) : EntityDB<EventDataFilter>, FilterOperatorsDB {
-    override fun toDomain(): EventDataFilter {
-        return EventDataFilter.builder()
-            .applyFilterOperatorsFields(this@EventDataFilterDB)
+) : EntityDB<ProgramStageWorkingListAttributeValueFilter>, FilterOperatorsDB {
+    override fun toDomain(): ProgramStageWorkingListAttributeValueFilter {
+        return ProgramStageWorkingListAttributeValueFilter.builder()
             .id(id?.toLong())
-            .eventFilter(eventFilter)
-            .dataItem(dataItem)
+            .applyFilterOperatorsFields(this@ProgramStageWorkingListAttributeValueFilterDB)
+            .programStageWorkingList(programStageWorkingList)
+            .attribute(attribute)
+            .sw(sw)
+            .ew(ew)
             .build()
     }
 }
 
-internal fun EventDataFilter.toDB(): EventDataFilterDB {
-    return EventDataFilterDB(
-        eventFilter = eventFilter(),
-        dataItem = dataItem(),
+internal fun ProgramStageWorkingListAttributeValueFilter.toDB(): ProgramStageWorkingListAttributeValueFilterDB {
+    return ProgramStageWorkingListAttributeValueFilterDB(
+        programStageWorkingList = programStageWorkingList(),
+        attribute = attribute(),
+        sw = sw(),
+        ew = ew(),
         le = le(),
         ge = ge(),
         gt = gt(),

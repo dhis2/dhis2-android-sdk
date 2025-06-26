@@ -26,26 +26,32 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.dataset
+package org.hisp.dhis.android.persistence.programstageworkinglist
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.dataset.DataInputPeriod
-import org.hisp.dhis.android.core.dataset.internal.DataInputPeriodStore
-import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
-import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListEventDataFilter
+import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListEventDataFilterStore
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 
-internal class DataInputPeriodStoreImpl(
-    val dao: DataInputPeriodDao,
-) : DataInputPeriodStore, LinkStoreImpl<DataInputPeriod, DataInputPeriodDB>(
-    dao,
-    DataInputPeriod::toDB,
-    LinkSQLStatementBuilderImpl(DataInputPeriodTableInfo.TABLE_INFO, DataInputPeriodTableInfo.Columns.DATA_SET),
-) {
-    override suspend fun getForDataSet(dataSetUid: String): List<DataInputPeriod> {
+internal class ProgramStageWorkingListEventDataFilterStoreImpl(
+    private val dao: ProgramStageWorkingListEventDataFilterDao,
+) : ProgramStageWorkingListEventDataFilterStore, 
+    ObjectWithoutUidStoreImpl<ProgramStageWorkingListEventDataFilter, ProgramStageWorkingListEventDataFilterDB>(
+        dao,
+        ProgramStageWorkingListEventDataFilter::toDB,
+        SQLStatementBuilderImpl(ProgramStageWorkingListEventDataFilterTableInfo.TABLE_INFO),
+    ) {
+
+    override suspend fun getForProgramStageWorkingList(
+        programStageWorkingListUid: String,
+    ): List<ProgramStageWorkingListEventDataFilter> {
         val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(DataInputPeriodTableInfo.Columns.DATA_SET, dataSetUid)
-            .build()
+            .appendKeyStringValue(
+                ProgramStageWorkingListEventDataFilterTableInfo.Columns.PROGRAM_STAGE_WORKING_LIST,
+                programStageWorkingListUid,
+            ).build()
         val query = builder.selectWhere(whereClause)
         return selectRawQuery(query)
     }
-}
+    }

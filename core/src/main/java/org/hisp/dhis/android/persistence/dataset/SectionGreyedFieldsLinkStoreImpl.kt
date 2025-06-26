@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.persistence.dataset
 
 import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLink
-import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLinkTableInfo
 import org.hisp.dhis.android.core.dataset.internal.SectionGreyedFieldsLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl

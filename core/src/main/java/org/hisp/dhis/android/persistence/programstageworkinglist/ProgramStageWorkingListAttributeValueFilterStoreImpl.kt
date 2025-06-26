@@ -26,24 +26,30 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.dataset
+package org.hisp.dhis.android.persistence.programstageworkinglist
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.dataset.DataInputPeriod
-import org.hisp.dhis.android.core.dataset.internal.DataInputPeriodStore
-import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
-import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
+import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListAttributeValueFilterStore
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 
-internal class DataInputPeriodStoreImpl(
-    val dao: DataInputPeriodDao,
-) : DataInputPeriodStore, LinkStoreImpl<DataInputPeriod, DataInputPeriodDB>(
-    dao,
-    DataInputPeriod::toDB,
-    LinkSQLStatementBuilderImpl(DataInputPeriodTableInfo.TABLE_INFO, DataInputPeriodTableInfo.Columns.DATA_SET),
-) {
-    override suspend fun getForDataSet(dataSetUid: String): List<DataInputPeriod> {
+internal class ProgramStageWorkingListAttributeValueFilterStoreImpl(
+    private val dao: ProgramStageWorkingListAttributeValueFilterDao,
+) : ProgramStageWorkingListAttributeValueFilterStore,
+    ObjectWithoutUidStoreImpl<ProgramStageWorkingListAttributeValueFilter, ProgramStageWorkingListAttributeValueFilterDB>(
+        dao,
+        ProgramStageWorkingListAttributeValueFilter::toDB,
+        SQLStatementBuilderImpl(ProgramStageWorkingListAttributeValueFilterTableInfo.TABLE_INFO),
+    ) {
+    override suspend fun getForProgramStageWorkingList(
+        programStageWorkingList: String,
+    ): List<ProgramStageWorkingListAttributeValueFilter> {
         val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(DataInputPeriodTableInfo.Columns.DATA_SET, dataSetUid)
+            .appendKeyStringValue(
+                ProgramStageWorkingListAttributeValueFilterTableInfo.Columns.PROGRAM_STAGE_WORKING_LIST,
+                programStageWorkingList
+            )
             .build()
         val query = builder.selectWhere(whereClause)
         return selectRawQuery(query)

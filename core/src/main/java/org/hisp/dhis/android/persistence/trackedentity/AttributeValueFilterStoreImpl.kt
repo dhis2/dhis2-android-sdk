@@ -26,26 +26,33 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.dataset
+package org.hisp.dhis.android.persistence.trackedentity
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.dataset.DataInputPeriod
-import org.hisp.dhis.android.core.dataset.internal.DataInputPeriodStore
-import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
-import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
+import org.hisp.dhis.android.core.trackedentity.internal.AttributeValueFilterStore
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 
-internal class DataInputPeriodStoreImpl(
-    val dao: DataInputPeriodDao,
-) : DataInputPeriodStore, LinkStoreImpl<DataInputPeriod, DataInputPeriodDB>(
-    dao,
-    DataInputPeriod::toDB,
-    LinkSQLStatementBuilderImpl(DataInputPeriodTableInfo.TABLE_INFO, DataInputPeriodTableInfo.Columns.DATA_SET),
-) {
-    override suspend fun getForDataSet(dataSetUid: String): List<DataInputPeriod> {
+internal class AttributeValueFilterStoreImpl(
+    private val dao: AttributeValueFilterDao,
+) : AttributeValueFilterStore, 
+    ObjectWithoutUidStoreImpl<AttributeValueFilter, AttributeValueFilterDB>(
+        dao,
+        AttributeValueFilter::toDB,
+        SQLStatementBuilderImpl(AttributeValueFilterTableInfo.TABLE_INFO),
+    ) {
+
+    override suspend fun getForTrackedEntityInstanceFilter(
+        trackedEntityInstanceFilterUid: String,
+    ): List<AttributeValueFilter> {
         val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(DataInputPeriodTableInfo.Columns.DATA_SET, dataSetUid)
+            .appendKeyStringValue(
+                AttributeValueFilterTableInfo.Columns.TRACKED_ENTITY_INSTANCE_FILTER,
+                trackedEntityInstanceFilterUid,
+            )
             .build()
-        val query = builder.selectWhere(whereClause)
-        return selectRawQuery(query)
+        val selectStatement = builder.selectWhere(whereClause)
+        return selectRawQuery(selectStatement)
     }
-}
+    }

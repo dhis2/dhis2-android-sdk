@@ -26,26 +26,10 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.dataset
+package org.hisp.dhis.android.persistence.trackedentity
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.dataset.DataInputPeriod
-import org.hisp.dhis.android.core.dataset.internal.DataInputPeriodStore
-import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
-import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import androidx.room.Dao
+import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
-internal class DataInputPeriodStoreImpl(
-    val dao: DataInputPeriodDao,
-) : DataInputPeriodStore, LinkStoreImpl<DataInputPeriod, DataInputPeriodDB>(
-    dao,
-    DataInputPeriod::toDB,
-    LinkSQLStatementBuilderImpl(DataInputPeriodTableInfo.TABLE_INFO, DataInputPeriodTableInfo.Columns.DATA_SET),
-) {
-    override suspend fun getForDataSet(dataSetUid: String): List<DataInputPeriod> {
-        val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(DataInputPeriodTableInfo.Columns.DATA_SET, dataSetUid)
-            .build()
-        val query = builder.selectWhere(whereClause)
-        return selectRawQuery(query)
-    }
-}
+@Dao
+internal interface AttributeValueFilterDao : ObjectDao<AttributeValueFilterDB>

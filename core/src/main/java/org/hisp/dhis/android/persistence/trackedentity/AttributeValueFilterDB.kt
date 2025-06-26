@@ -26,51 +26,53 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.event
+package org.hisp.dhis.android.persistence.trackedentity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import org.hisp.dhis.android.core.event.EventDataFilter
+import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
+import org.hisp.dhis.android.persistence.attribute.AttributeDB
 import org.hisp.dhis.android.persistence.common.DateFilterPeriodDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.FilterOperatorsDB
 import org.hisp.dhis.android.persistence.common.StringSetDB
 import org.hisp.dhis.android.persistence.common.applyFilterOperatorsFields
 import org.hisp.dhis.android.persistence.common.toDB
-import org.hisp.dhis.android.persistence.dataelement.DataElementDB
 
 @Entity(
-    tableName = "EventDataFilter",
+    tableName = "AttributeValueFilter",
     foreignKeys = [
         ForeignKey(
-            entity = EventFilterDB::class,
+            entity = TrackedEntityInstanceFilterDB::class,
             parentColumns = ["uid"],
-            childColumns = ["eventFilter"],
+            childColumns = ["trackedEntityInstanceFilter"],
             onDelete = ForeignKey.CASCADE,
             deferred = true,
         ),
         ForeignKey(
-            entity = DataElementDB::class,
+            entity = AttributeDB::class,
             parentColumns = ["uid"],
-            childColumns = ["dataItem"],
+            childColumns = ["attribute"],
             onDelete = ForeignKey.CASCADE,
             deferred = true,
         ),
     ],
     indices = [
-        Index(value = ["eventFilter"]),
-        Index(value = ["dataItem"]),
+        Index(value = ["trackedEntityInstanceFilter"]),
+        Index(value = ["attribute"]),
     ],
 )
-internal data class EventDataFilterDB(
+internal data class AttributeValueFilterDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
     val id: Int? = 0,
-    val eventFilter: String?,
-    val dataItem: String?,
+    val trackedEntityInstanceFilter: String?,
+    val attribute: String?,
+    val sw: String?,
+    val ew: String?,
     override val le: String?,
     override val ge: String?,
     override val gt: String?,
@@ -79,21 +81,25 @@ internal data class EventDataFilterDB(
     override val inProperty: StringSetDB?,
     override val like: String?,
     override val dateFilter: DateFilterPeriodDB?,
-) : EntityDB<EventDataFilter>, FilterOperatorsDB {
-    override fun toDomain(): EventDataFilter {
-        return EventDataFilter.builder()
-            .applyFilterOperatorsFields(this@EventDataFilterDB)
+) : EntityDB<AttributeValueFilter>, FilterOperatorsDB {
+    override fun toDomain(): AttributeValueFilter {
+        return AttributeValueFilter.builder()
+            .applyFilterOperatorsFields(this@AttributeValueFilterDB)
             .id(id?.toLong())
-            .eventFilter(eventFilter)
-            .dataItem(dataItem)
+            .trackedEntityInstanceFilter(trackedEntityInstanceFilter)
+            .attribute(attribute)
+            .sw(sw)
+            .ew(ew)
             .build()
     }
 }
 
-internal fun EventDataFilter.toDB(): EventDataFilterDB {
-    return EventDataFilterDB(
-        eventFilter = eventFilter(),
-        dataItem = dataItem(),
+internal fun AttributeValueFilter.toDB(): AttributeValueFilterDB {
+    return AttributeValueFilterDB(
+        trackedEntityInstanceFilter = trackedEntityInstanceFilter(),
+        attribute = attribute(),
+        sw = sw(),
+        ew = ew(),
         le = le(),
         ge = ge(),
         gt = gt(),

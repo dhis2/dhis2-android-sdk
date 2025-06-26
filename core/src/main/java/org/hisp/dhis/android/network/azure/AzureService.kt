@@ -26,21 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.bing
+package org.hisp.dhis.android.network.azure
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.map.layer.MapLayer
-import org.hisp.dhis.android.core.map.layer.internal.microsoft.BingBasemap
-import org.hisp.dhis.android.core.map.layer.internal.microsoft.BingNetworkHandler
-import org.koin.core.annotation.Singleton
 
-@Singleton
-internal class BingNetworkHandlerImpl(
-    httpServiceClient: HttpServiceClient,
-) : BingNetworkHandler {
-    private val service = BingService(httpServiceClient)
-    override suspend fun getBaseMap(url: String, basemap: BingBasemap): List<MapLayer> {
-        val apiPayload = service.getBaseMap(url)
-        return apiPayload.toDomain(basemap)
+internal class AzureService(private val client: HttpServiceClient) {
+
+    suspend fun getBaseMap(
+        url: String,
+    ): AzureServerResponseDTO {
+        return client.get {
+            absoluteUrl(url)
+        }
     }
 }

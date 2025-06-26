@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderArea
 import org.hisp.dhis.android.core.map.layer.MapLayerPosition
 import org.hisp.dhis.android.core.map.layer.MapService
 import org.hisp.dhis.android.core.map.layer.internal.microsoft.AzureBasemap
+import java.util.Locale
 
 @Serializable
 internal data class AzureServerResponseDTO(
@@ -72,13 +73,13 @@ internal data class AzureServerResponseDTO(
                 .uid(basemap.id)
                 .name(basemap.name)
                 .displayName(basemap.name)
-                .style(name)
+                .style(basemap.style)
                 .external(false)
                 .mapLayerPosition(MapLayerPosition.BASEMAP)
                 .imageUrl(tileTemplate)
                 .subdomains(emptyList())
                 .imageryProviders(providers)
-                .mapService(scheme?.let { MapService.valueOf(it) })
+                .mapService(scheme?.uppercase(Locale.ROOT)?.let { MapService.valueOf(it) })
                 .imageFormat(ImageFormat.PNG)
                 .build()
         }

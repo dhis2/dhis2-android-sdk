@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.persistence.trackedentity
 
-import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper.asStringList
@@ -165,17 +164,6 @@ internal class TrackedEntityAttributeValueStoreImpl(
     }
 
     override suspend fun setSyncStateByInstance(trackedEntityInstanceUid: String, syncState: State) {
-        val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(
-                TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
-                trackedEntityInstanceUid,
-            )
-            .build()
-
-        val query = "UPDATE ${TrackedEntityAttributeValueTableInfo.TABLE_INFO.name()} " +
-            "SET ${TrackedEntityAttributeValueTableInfo.Columns.SYNC_STATE} = '${syncState.name}' " +
-            "WHERE $whereClause"
-
-        dao.rawQuery(RoomRawQuery(query))
+        dao.setSyncStateByInstance(syncState.name, trackedEntityInstanceUid)
     }
 }

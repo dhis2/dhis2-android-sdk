@@ -76,6 +76,7 @@ internal open class IdentifiableDeletableDataObjectStoreImpl<D, P : EntityDB<D>>
 
     @Throws(RuntimeException::class)
     override suspend fun setDeleted(uid: String): Int {
+        //TODO: FIX THIS WHEN MIGRATION TO ROOM IS DONE, RAWQUERY CANNOT PERFORM CHANGES
         CollectionsHelper.isNull(uid)
         val query = builder.setDeleted(uid)
         return identifiableDeletableDataObjectDao.intRawQuery(query)

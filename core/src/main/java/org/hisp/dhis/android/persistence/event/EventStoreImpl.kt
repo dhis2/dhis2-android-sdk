@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.persistence.event
 
-import android.content.ContentValues
 import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
@@ -128,13 +127,7 @@ internal class EventStoreImpl(
     }
 
     override suspend fun setAggregatedSyncState(uid: String, state: State): Int {
-        val updates = ContentValues()
-        updates.put(DataColumns.AGGREGATED_SYNC_STATE, state.toString())
-        val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(IdentifiableColumns.UID, uid)
-            .build()
-
-        return updateWhere(updates, whereClause)
+        return dao.setAggregatedSyncState(state.name, uid)
     }
 
     override suspend fun selectAggregatedSyncStateWhere(whereClause: String): List<State> {

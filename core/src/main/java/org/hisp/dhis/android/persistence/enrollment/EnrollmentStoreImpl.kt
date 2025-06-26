@@ -28,11 +28,9 @@
 
 package org.hisp.dhis.android.persistence.enrollment
 
-import android.content.ContentValues
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper
 import org.hisp.dhis.android.core.common.DataColumns
-import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
@@ -69,13 +67,7 @@ internal class EnrollmentStoreImpl(
     }
 
     override suspend fun setAggregatedSyncState(uid: String, state: State): Int {
-        val updates = ContentValues()
-        updates.put(DataColumns.AGGREGATED_SYNC_STATE, state.toString())
-        val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(IdentifiableColumns.UID, uid)
-            .build()
-
-        return updateWhere(updates, whereClause)
+        return dao.setAggregatedSyncState(state.name, uid)
     }
 
     override suspend fun selectAggregatedSyncStateWhere(whereClause: String): List<State> {

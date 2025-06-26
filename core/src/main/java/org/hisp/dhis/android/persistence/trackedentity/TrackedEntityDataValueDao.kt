@@ -29,13 +29,16 @@
 package org.hisp.dhis.android.persistence.trackedentity
 
 import androidx.room.Dao
-import androidx.room.RawQuery
-import androidx.room.RoomRawQuery
+import androidx.room.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
 @Dao
 internal interface TrackedEntityDataValueDao : ObjectDao<TrackedEntityDataValueDB> {
 
-    @RawQuery
-    suspend fun rawQuery(sqlRawQuery: RoomRawQuery)
+    @Query(
+        """UPDATE TrackedEntityDataValue
+        SET ${TrackedEntityDataValueTableInfo.Columns.SYNC_STATE} = :state 
+        WHERE ${TrackedEntityDataValueTableInfo.Columns.EVENT} = :uid;""",
+    )
+    suspend fun setSyncStateByEvent(uid: String, state: String)
 }

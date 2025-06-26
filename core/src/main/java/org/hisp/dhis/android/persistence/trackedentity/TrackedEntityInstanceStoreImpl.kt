@@ -28,10 +28,8 @@
 
 package org.hisp.dhis.android.persistence.trackedentity
 
-import android.content.ContentValues
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.DataColumns
-import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludingError
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
@@ -78,11 +76,6 @@ internal class TrackedEntityInstanceStoreImpl(
     }
 
     override suspend fun setAggregatedSyncState(uid: String, state: State): Int {
-        val updates = ContentValues()
-        updates.put(DataColumns.AGGREGATED_SYNC_STATE, state.toString())
-        val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(IdentifiableColumns.UID, uid)
-            .build()
-        return updateWhere(updates, whereClause)
+        return dao.setAggregatedSyncState(state.name, uid)
     }
 }

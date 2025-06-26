@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.persistence.trackedentity
 
-import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.State
@@ -129,17 +128,7 @@ internal class TrackedEntityDataValueStoreImpl(
     }
 
     override suspend fun setSyncStateByEvent(eventUid: String, syncState: State) {
-        val whereClause = WhereClauseBuilder().appendKeyStringValue(
-            TrackedEntityDataValueTableInfo.Columns.EVENT,
-            eventUid,
-        ).build()
-
-        val query =
-            "UPDATE ${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} " +
-                "SET ${TrackedEntityDataValueTableInfo.Columns.SYNC_STATE} = '${syncState.name}' " +
-                "WHERE $whereClause"
-
-        dao.rawQuery(RoomRawQuery(query))
+        dao.setSyncStateByEvent(eventUid, syncState.name)
     }
 
     override suspend fun getForEvent(eventUid: String): List<TrackedEntityDataValue> {

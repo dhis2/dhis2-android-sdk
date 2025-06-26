@@ -64,7 +64,15 @@ public final class AttributeValueFilterTableInfo {
                     TRACKED_ENTITY_INSTANCE_FILTER,
                     ATTRIBUTE,
                     SW,
-                    EW
+                    EW,
+                    LE,
+                    GE,
+                    GT,
+                    LT,
+                    EQ,
+                    IN,
+                    LIKE,
+                    DATE_FILTER
             );
         }
     }

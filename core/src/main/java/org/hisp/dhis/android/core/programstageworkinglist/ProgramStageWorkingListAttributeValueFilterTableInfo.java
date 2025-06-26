@@ -65,7 +65,14 @@ public final class ProgramStageWorkingListAttributeValueFilterTableInfo {
                     ATTRIBUTE,
                     SW,
                     EW,
-                    LE
+                    LE,
+                    GE,
+                    GT,
+                    LT,
+                    EQ,
+                    IN,
+                    LIKE,
+                    DATE_FILTER
             );
         }
     }

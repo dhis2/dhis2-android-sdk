@@ -56,11 +56,21 @@ public final class EventDataFilterTableInfo {
         public final static String EVENT_FILTER = "eventFilter";
         public final static String DATA_ITEM = "dataItem";
 
+
         @Override
         public String[] all() {
-            return CollectionsHelper.appendInNewArray(super.all(),
+            return CollectionsHelper.appendInNewArray(
+                    super.all(),
                     EVENT_FILTER,
-                    DATA_ITEM
+                    DATA_ITEM,
+                    LE,
+                    GE,
+                    GT,
+                    LT,
+                    EQ,
+                    IN,
+                    LIKE,
+                    DATE_FILTER
             );
         }
     }

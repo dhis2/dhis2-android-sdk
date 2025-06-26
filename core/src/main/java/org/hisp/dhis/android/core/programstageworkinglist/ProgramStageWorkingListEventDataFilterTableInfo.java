@@ -61,7 +61,14 @@ public final class ProgramStageWorkingListEventDataFilterTableInfo {
             return CollectionsHelper.appendInNewArray(super.all(),
                     PROGRAM_STAGE_WORKING_LIST,
                     DATA_ITEM,
-                    LE
+                    LE,
+                    GE,
+                    GT,
+                    LT,
+                    EQ,
+                    IN,
+                    LIKE,
+                    DATE_FILTER
             );
         }
     }

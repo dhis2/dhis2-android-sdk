@@ -44,7 +44,7 @@ public class FilterOperatorsColumns extends CoreColumns {
     @Override
     public String[] all() {
         return CollectionsHelper.appendInNewArray(
-                super.all(), LE, GE, GT, LT, EQ, IN, LIKE, DATE_FILTER
+                super.all()
         );
     }
 }

@@ -73,6 +73,35 @@
         "color": "#556",
         "icon": "attribute-icon"
       }
+    },
+    {
+      "code": "MMD_PER_NAM",
+      "name": "First name",
+      "created": "2014-06-06T20:41:25.233",
+      "lastUpdated": "2015-10-20T13:57:00.939",
+      "shortName": "First name",
+      "legendSets": [],
+      "valueType": "TEXT",
+      "inherit": false,
+      "displayOnVisitSchedule": false,
+      "displayInListNoProgram": true,
+      "sortOrderInListNoProgram": 1,
+      "confidential": false,
+      "unique": false,
+      "generated": false,
+      "pattern": "",
+      "orgunitScope": false,
+      "displayName": "First name",
+      "access": {
+        "manage": true,
+        "externalize": true,
+        "write": true,
+        "read": true,
+        "update": true,
+        "delete": true
+      },
+      "displayFormName": "First name",
+      "id": "w75KJ2mc4zz"
     }
   ]
 }

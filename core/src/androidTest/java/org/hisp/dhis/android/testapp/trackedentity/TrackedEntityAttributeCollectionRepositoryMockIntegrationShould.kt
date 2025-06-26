@@ -37,7 +37,7 @@ class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould : BaseMock
     fun find_all() {
         val trackedEntityAttributes = d2.trackedEntityModule().trackedEntityAttributes().blockingGet()
 
-        assertThat(trackedEntityAttributes.size).isEqualTo(2)
+        assertThat(trackedEntityAttributes.size).isEqualTo(3)
     }
 
     @Test
@@ -100,7 +100,7 @@ class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould : BaseMock
             .byDisplayInListNoProgram().isTrue
             .blockingGet()
 
-        assertThat(trackedEntityAttributes.size).isEqualTo(1)
+        assertThat(trackedEntityAttributes.size).isEqualTo(2)
     }
 
     @Test

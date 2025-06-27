@@ -6,6 +6,7 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCaseTransaction
+import org.hisp.dhis.android.persistence.common.EntityDB
 
 @Entity(
     tableName = "StockUseCaseTransaction",
@@ -33,8 +34,8 @@ internal data class StockUseCaseTransactionDB(
     val stockDistributed: String?,
     val stockDiscarded: String?,
     val stockCount: String?,
-) {
-    fun toDomain(): InternalStockUseCaseTransaction {
+) : EntityDB<InternalStockUseCaseTransaction> {
+    override fun toDomain(): InternalStockUseCaseTransaction {
         return InternalStockUseCaseTransaction.builder()
             .programUid(programUid)
             .sortOrder(sortOrder)

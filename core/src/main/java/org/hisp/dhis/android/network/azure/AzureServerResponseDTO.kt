@@ -50,7 +50,7 @@ internal data class AzureServerResponseDTO(
     val attribution: String? = null,
     val scheme: String? = null,
 ) {
-    fun toDomain(basemap: AzureBasemap): List<MapLayer> {
+    fun toDomain(basemap: AzureBasemap, key: String): List<MapLayer> {
         return tiles.map { tileTemplate ->
             val coverageAreas = listOf(
                 MapLayerImageryProviderArea.builder()
@@ -76,7 +76,7 @@ internal data class AzureServerResponseDTO(
                 .style(basemap.style)
                 .external(false)
                 .mapLayerPosition(MapLayerPosition.BASEMAP)
-                .imageUrl(tileTemplate)
+                .imageUrl("$tileTemplate&subscription-key=$key")
                 .subdomains(emptyList())
                 .imageryProviders(providers)
                 .mapService(scheme?.uppercase(Locale.ROOT)?.let { MapService.valueOf(it) })

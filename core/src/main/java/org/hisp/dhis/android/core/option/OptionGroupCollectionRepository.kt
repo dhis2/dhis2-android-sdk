@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.option
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -40,11 +39,9 @@ import org.koin.core.annotation.Singleton
 @Singleton
 class OptionGroupCollectionRepository internal constructor(
     store: OptionGroupStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<OptionGroup, OptionGroupCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -52,7 +49,6 @@ class OptionGroupCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         OptionGroupCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },

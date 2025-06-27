@@ -28,11 +28,10 @@
 
 package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.attribute.AttributeValue
 import org.hisp.dhis.android.core.attribute.internal.ProgramStageAttributeValueLinkStore
-import org.hisp.dhis.android.core.attribute.internal.ProgramStageAttributeValueLinkStoreImpl
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramStage
 
@@ -52,8 +51,8 @@ internal class ProgramStageAttributeChildrenAppender private constructor(
     }
 
     companion object {
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<ProgramStage> {
-            return ProgramStageAttributeChildrenAppender(ProgramStageAttributeValueLinkStoreImpl(databaseAdapter))
+        fun create(): ChildrenAppender<ProgramStage> {
+            return ProgramStageAttributeChildrenAppender(koin.get())
         }
     }
 }

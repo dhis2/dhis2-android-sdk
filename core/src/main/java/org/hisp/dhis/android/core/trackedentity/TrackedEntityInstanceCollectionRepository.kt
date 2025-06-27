@@ -32,7 +32,6 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadWithUidCollectionRepository
@@ -62,7 +61,6 @@ import org.koin.core.annotation.Singleton
 @Suppress("TooManyFunctions")
 class TrackedEntityInstanceCollectionRepository internal constructor(
     private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
     transformer: TrackedEntityInstanceProjectionTransformer,
     private val trackerDataManager: TrackerDataManager,
@@ -74,7 +72,6 @@ class TrackedEntityInstanceCollectionRepository internal constructor(
     TrackedEntityInstanceCollectionRepository,
     >(
     trackedEntityInstanceStore,
-    databaseAdapter,
     childrenAppenders,
     scope,
     transformer,
@@ -83,7 +80,6 @@ class TrackedEntityInstanceCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         TrackedEntityInstanceCollectionRepository(
             trackedEntityInstanceStore,
-            databaseAdapter,
             s,
             transformer,
             trackerDataManager,
@@ -115,7 +111,6 @@ class TrackedEntityInstanceCollectionRepository internal constructor(
         return TrackedEntityInstanceObjectRepository(
             trackedEntityInstanceStore,
             uid,
-            databaseAdapter,
             childrenAppenders,
             updatedScope,
             trackerDataManager,
@@ -221,7 +216,7 @@ class TrackedEntityInstanceCollectionRepository internal constructor(
 
         val childrenAppenders: ChildrenAppenderGetter<TrackedEntityInstance> = mapOf(
             TRACKED_ENTITY_ATTRIBUTE_VALUES to TrackedEntityAttributeValueChildrenAppender::create,
-            PROGRAM_OWNERS to ::ProgramOwnerChildrenAppender,
+            PROGRAM_OWNERS to ProgramOwnerChildrenAppender::create,
         )
     }
 }

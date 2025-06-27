@@ -51,7 +51,7 @@ internal class RelationshipStoreImpl(
         { cursor: Cursor -> Relationship.create(cursor) },
     ) {
 
-    override fun getRelationshipsByItem(relationshipItem: RelationshipItem): List<Relationship> {
+    override suspend fun getRelationshipsByItem(relationshipItem: RelationshipItem): List<Relationship> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(
                 "RelationshipItem." + relationshipItem.elementType(),
@@ -69,7 +69,7 @@ internal class RelationshipStoreImpl(
         return relationships
     }
 
-    override fun getRelationshipsByItem(
+    override suspend fun getRelationshipsByItem(
         relationshipItem: RelationshipItem,
         type: RelationshipConstraintType?,
     ): List<Relationship> {

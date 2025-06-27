@@ -39,7 +39,6 @@ import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
@@ -65,7 +64,6 @@ import java.util.Date
 class TrackedEntityInstanceQueryCollectionRepository internal constructor(
     private val store: TrackedEntityInstanceStore,
     private val trackerParentCallFactory: TrackerParentCallFactory,
-    private val databaseAdapter: DatabaseAdapter,
     scope: TrackedEntityInstanceQueryRepositoryScope,
     scopeHelper: TrackedEntityInstanceQueryRepositoryScopeHelper,
     versionManager: DHISVersionManager,
@@ -90,7 +88,7 @@ class TrackedEntityInstanceQueryCollectionRepository internal constructor(
             > =
         ScopedFilterConnectorFactory { s: TrackedEntityInstanceQueryRepositoryScope ->
             TrackedEntityInstanceQueryCollectionRepository(
-                store, trackerParentCallFactory, databaseAdapter,
+                store, trackerParentCallFactory,
                 s, scopeHelper, versionManager, filtersRepository, workingListRepository, onlineCache,
                 onlineHelper, localQueryHelper,
             )
@@ -156,7 +154,6 @@ class TrackedEntityInstanceQueryCollectionRepository internal constructor(
     val pagingSource: PagingSource<TrackedEntityInstance, TrackedEntityInstance>
         get() = TrackedEntityInstanceQueryPagingSource(
             store,
-            databaseAdapter,
             trackerParentCallFactory,
             scope,
             childrenAppenders,
@@ -226,7 +223,6 @@ class TrackedEntityInstanceQueryCollectionRepository internal constructor(
     private fun getDataFetcher(): TrackedEntityInstanceQueryDataFetcher {
         return TrackedEntityInstanceQueryDataFetcher(
             store,
-            databaseAdapter,
             trackerParentCallFactory,
             scope,
             childrenAppenders,

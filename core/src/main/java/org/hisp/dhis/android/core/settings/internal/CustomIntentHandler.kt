@@ -38,8 +38,8 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class CustomIntentHandler(
     store: CustomIntentStore,
-    private val customIntentDataElementTriggerHandler: CustomIntentDataElementTriggerHandler,
-    private val customIntentAttributeTriggerHandler: CustomIntentAttributeTriggerHandler,
+    private val customIntentDataElementHandler: CustomIntentDataElementHandler,
+    private val customIntentAttributeHandler: CustomIntentAttributeHandler,
 ) : IdentifiableWithoutDeleteInterfaceHandlerImpl<CustomIntent>(store) {
 
     override suspend fun afterObjectHandled(o: CustomIntent, action: HandleAction) {
@@ -51,10 +51,10 @@ internal class CustomIntentHandler(
         customIntentUid: String,
         dataElementList: List<CustomIntentDataElement>,
     ) {
-        customIntentDataElementTriggerHandler.handleMany(customIntentUid, dataElementList)
+        customIntentDataElementHandler.handleMany(customIntentUid, dataElementList)
     }
 
     private suspend fun handleAttributeTrigger(customIntentUid: String, attributeList: List<CustomIntentAttribute>) {
-        customIntentAttributeTriggerHandler.handleMany(customIntentUid, attributeList)
+        customIntentAttributeHandler.handleMany(customIntentUid, attributeList)
     }
 }

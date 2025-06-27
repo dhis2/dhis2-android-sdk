@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.relationship
 
 import kotlinx.coroutines.runBlocking
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
@@ -53,11 +52,9 @@ class RelationshipTypeCollectionRepository internal constructor(
     private val teiStore: TrackedEntityInstanceStore,
     private val enrollmentStore: EnrollmentStore,
     private val eventStore: EventStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<RelationshipType, RelationshipTypeCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(scope) { s: RepositoryScope ->
@@ -66,7 +63,6 @@ class RelationshipTypeCollectionRepository internal constructor(
             teiStore,
             enrollmentStore,
             eventStore,
-            databaseAdapter,
             s,
         )
     },
@@ -167,7 +163,7 @@ class RelationshipTypeCollectionRepository internal constructor(
         private const val CONSTRAINTS = "constraints"
 
         val childrenAppenders: ChildrenAppenderGetter<RelationshipType> = mapOf(
-            CONSTRAINTS to ::RelationshipConstraintChildrenAppender,
+            CONSTRAINTS to RelationshipConstraintChildrenAppender::create,
         )
     }
 }

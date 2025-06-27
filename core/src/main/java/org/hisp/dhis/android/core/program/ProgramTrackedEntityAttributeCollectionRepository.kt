@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.program
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyNameableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
@@ -43,14 +42,12 @@ import org.koin.core.annotation.Singleton
 @Singleton
 class ProgramTrackedEntityAttributeCollectionRepository internal constructor(
     store: ProgramTrackedEntityAttributeStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyNameableCollectionRepositoryImpl<
     ProgramTrackedEntityAttribute,
     ProgramTrackedEntityAttributeCollectionRepository,
     >(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -58,7 +55,6 @@ class ProgramTrackedEntityAttributeCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         ProgramTrackedEntityAttributeCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },
@@ -105,8 +101,7 @@ class ProgramTrackedEntityAttributeCollectionRepository internal constructor(
         private const val RENDER_TYPE = "renderType"
 
         val childrenAppenders: ChildrenAppenderGetter<ProgramTrackedEntityAttribute> = mapOf(
-            RENDER_TYPE to
-                ::ProgramTrackedEntityAttributeValueTypeRenderingChildrenAppender,
+            RENDER_TYPE to ProgramTrackedEntityAttributeValueTypeRenderingChildrenAppender::create,
         )
     }
 }

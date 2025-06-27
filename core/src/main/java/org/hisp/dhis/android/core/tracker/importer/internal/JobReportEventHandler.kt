@@ -84,7 +84,7 @@ internal class JobReportEventHandler internal constructor(
         }
     }
 
-    override fun getRelatedRelationships(uid: String): List<String> {
+    override suspend fun getRelatedRelationships(uid: String): List<String> {
         return relationshipStore.getRelationshipsByItem(RelationshipHelper.eventItem(uid)).mapNotNull { it.uid() }
     }
 

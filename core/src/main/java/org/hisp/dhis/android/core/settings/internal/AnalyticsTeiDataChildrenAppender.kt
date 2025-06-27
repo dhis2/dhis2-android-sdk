@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
 import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
@@ -39,16 +39,11 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class AnalyticsTeiDataChildrenAppender(
-    databaseAdapter: DatabaseAdapter,
+    private val analyticsTeiDataElementStore: AnalyticsTeiDataElementStore,
+    private val analyticsTeiIndicatorStore: AnalyticsTeiIndicatorStore,
+    private val analyticsTeiAttributeStore: AnalyticsTeiAttributeStore,
+    private val analyticsTeiWHONutritionDataStore: AnalyticsTeiWHONutritionDataStore,
 ) : ChildrenAppender<AnalyticsTeiSetting>() {
-    private val analyticsTeiDataElementStore = AnalyticsTeiDataElementStoreImpl(databaseAdapter)
-    private val analyticsTeiIndicatorStore = AnalyticsTeiIndicatorStoreImpl(databaseAdapter)
-    private val analyticsTeiAttributeStore = AnalyticsTeiAttributeStoreImpl(databaseAdapter)
-    private val analyticsTeiWHONutritionDataStore = AnalyticsTeiWHONutritionDataStoreImpl(databaseAdapter)
-
-    companion object {
-        const val KEY = "DATA"
-    }
 
     private var dataElements: List<AnalyticsTeiDataElement>? = null
     private var indicators: List<AnalyticsTeiIndicator>? = null
@@ -70,5 +65,13 @@ internal class AnalyticsTeiDataChildrenAppender(
             attributes!!,
             whoNutritionData!!,
         )
+    }
+
+    companion object {
+        const val KEY = "DATA"
+
+        fun create(): ChildrenAppender<AnalyticsTeiSetting> {
+            return AnalyticsTeiDataChildrenAppender(koin.get(), koin.get(), koin.get(), koin.get())
+        }
     }
 }

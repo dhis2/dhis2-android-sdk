@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.attribute
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -39,11 +38,9 @@ import org.koin.core.annotation.Singleton
 @Singleton
 class AttributeCollectionRepository internal constructor(
     store: AttributeStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<Attribute, AttributeCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -51,7 +48,6 @@ class AttributeCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         AttributeCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },

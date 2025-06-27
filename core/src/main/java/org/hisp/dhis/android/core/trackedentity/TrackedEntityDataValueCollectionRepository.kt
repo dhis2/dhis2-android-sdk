@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
@@ -43,12 +42,10 @@ import org.koin.core.annotation.Singleton
 @Singleton
 class TrackedEntityDataValueCollectionRepository internal constructor(
     private val store: TrackedEntityDataValueStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
     private val dataStatePropagator: DataStatePropagator,
 ) : ReadOnlyCollectionRepositoryImpl<TrackedEntityDataValue, TrackedEntityDataValueCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -56,7 +53,6 @@ class TrackedEntityDataValueCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         TrackedEntityDataValueCollectionRepository(
             store,
-            databaseAdapter,
             s,
             dataStatePropagator,
         )
@@ -66,7 +62,6 @@ class TrackedEntityDataValueCollectionRepository internal constructor(
         val updatedScope = byEvent().eq(event).byDataElement().eq(dataElement).scope
         return TrackedEntityDataValueObjectRepository(
             store,
-            databaseAdapter,
             childrenAppenders,
             updatedScope,
             dataStatePropagator,

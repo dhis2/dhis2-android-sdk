@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.indicator.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.dataset.DataSet
 
@@ -42,8 +42,8 @@ internal class DataSetIndicatorChildrenAppender private constructor(
     }
 
     companion object {
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<DataSet> {
-            return DataSetIndicatorChildrenAppender(IndicatorStoreImpl(databaseAdapter))
+        fun create(): ChildrenAppender<DataSet> {
+            return DataSetIndicatorChildrenAppender(koin.get())
         }
     }
 }

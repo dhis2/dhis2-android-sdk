@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.usecase.stock
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyWithUidAndTransformerCollectionRepositoryImpl
@@ -41,23 +40,21 @@ import org.koin.core.annotation.Singleton
 @Singleton
 class StockUseCaseCollectionRepository internal constructor(
     store: StockUseCaseStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
     transformer: StockUseCaseTransformer,
 ) : ReadOnlyWithUidCollectionRepository<StockUseCase> by
 ReadOnlyWithUidAndTransformerCollectionRepositoryImpl(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(scope) { s: RepositoryScope ->
-        StockUseCaseCollectionRepository(store, databaseAdapter, s, transformer)
+        StockUseCaseCollectionRepository(store, s, transformer)
     },
     transformer,
 ) {
     private val cf: FilterConnectorFactory<StockUseCaseCollectionRepository> =
         FilterConnectorFactory(scope) { s: RepositoryScope ->
-            StockUseCaseCollectionRepository(store, databaseAdapter, s, transformer)
+            StockUseCaseCollectionRepository(store, s, transformer)
         }
 
     fun withTransactions(): StockUseCaseCollectionRepository {
@@ -66,7 +63,7 @@ ReadOnlyWithUidAndTransformerCollectionRepositoryImpl(
 
     internal companion object {
         val childrenAppenders: ChildrenAppenderGetter<InternalStockUseCase> = mapOf(
-            InternalStockUseCase.TRANSACTIONS to ::StockUseCaseTransactionChildrenAppender,
+            InternalStockUseCase.TRANSACTIONS to StockUseCaseTransactionChildrenAppender::create,
         )
     }
 }

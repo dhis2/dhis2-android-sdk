@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.imports
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
@@ -41,11 +40,9 @@ import org.koin.core.annotation.Singleton
 @Singleton
 class TrackerImportConflictCollectionRepository internal constructor(
     store: TrackerImportConflictStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyCollectionRepositoryImpl<TrackerImportConflict, TrackerImportConflictCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -53,7 +50,6 @@ class TrackerImportConflictCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         TrackerImportConflictCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },

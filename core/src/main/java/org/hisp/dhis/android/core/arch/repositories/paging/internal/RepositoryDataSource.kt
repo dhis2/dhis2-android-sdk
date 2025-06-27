@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.arch.repositories.paging.internal
 
 import androidx.paging.PageKeyedDataSource
 import kotlinx.coroutines.runBlocking
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
@@ -41,7 +40,6 @@ import org.hisp.dhis.android.core.common.CoreObject
 
 class RepositoryDataSource<M : CoreObject> internal constructor(
     private val store: ReadableStore<M>,
-    private val databaseAdapter: DatabaseAdapter,
     private val scope: RepositoryScope,
     private val childrenAppenders: ChildrenAppenderGetter<M>,
 ) : PageKeyedDataSource<Int, M>() {
@@ -81,6 +79,6 @@ class RepositoryDataSource<M : CoreObject> internal constructor(
     }
 
     private suspend fun appendChildren(withoutChildren: List<M>): List<M> {
-        return appendInObjectCollection(withoutChildren, databaseAdapter, childrenAppenders, scope.children())
+        return appendInObjectCollection(withoutChildren, childrenAppenders, scope.children())
     }
 }

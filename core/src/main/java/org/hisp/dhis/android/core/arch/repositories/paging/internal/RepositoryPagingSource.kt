@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.arch.repositories.paging.internal
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
@@ -43,7 +42,6 @@ import java.io.IOException
 
 class RepositoryPagingSource<M : CoreObject> internal constructor(
     private val store: ReadableStore<M>,
-    private val databaseAdapter: DatabaseAdapter,
     private val scope: RepositoryScope,
     private val childrenAppenders: ChildrenAppenderGetter<M>,
 ) : PagingSource<Int, M>() {
@@ -64,7 +62,7 @@ class RepositoryPagingSource<M : CoreObject> internal constructor(
                 offset,
             )
 
-            val items = appendInObjectCollection(withoutChildren, databaseAdapter, childrenAppenders, scope.children())
+            val items = appendInObjectCollection(withoutChildren, childrenAppenders, scope.children())
 
             val prevKey = if (offset == null) null else offset - params.loadSize
             val nextKey = if (items.size < params.loadSize) null else (offset ?: 0) + params.loadSize

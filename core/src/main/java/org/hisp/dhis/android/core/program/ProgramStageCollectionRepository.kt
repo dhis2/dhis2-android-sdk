@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.program
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
@@ -49,11 +48,9 @@ import org.koin.core.annotation.Singleton
 @Suppress("TooManyFunctions")
 class ProgramStageCollectionRepository internal constructor(
     store: ProgramStageStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramStage, ProgramStageCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -61,7 +58,6 @@ class ProgramStageCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         ProgramStageCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },

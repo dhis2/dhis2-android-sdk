@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipItem
 
 internal interface RelationshipItemStore : ObjectWithoutUidStore<RelationshipItem> {
 
-    fun getRelationshipUidsForItems(from: RelationshipItem, to: RelationshipItem): List<String>
+    suspend fun getRelationshipUidsForItems(from: RelationshipItem, to: RelationshipItem): List<String>
 
     suspend fun getForRelationshipUidAndConstraintType(
         uid: String,

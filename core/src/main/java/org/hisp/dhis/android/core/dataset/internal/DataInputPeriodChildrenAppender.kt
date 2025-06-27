@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.dataset.DataSet
 
@@ -42,8 +42,8 @@ internal class DataInputPeriodChildrenAppender private constructor(
     }
 
     companion object {
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<DataSet> {
-            return DataInputPeriodChildrenAppender(DataInputPeriodStoreImpl(databaseAdapter))
+        fun create(): ChildrenAppender<DataSet> {
+            return DataInputPeriodChildrenAppender(koin.get())
         }
     }
 }

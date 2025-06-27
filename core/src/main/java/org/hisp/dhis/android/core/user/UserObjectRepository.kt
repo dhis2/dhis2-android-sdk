@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.user
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyOneObjectRepositoryImpl
@@ -39,17 +38,14 @@ import org.koin.core.annotation.Singleton
 @Singleton(binds = [UserObjectRepository::class])
 class UserObjectRepository internal constructor(
     store: UserStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyOneObjectRepositoryImpl<User, UserObjectRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     ObjectRepositoryFactory { s: RepositoryScope ->
         UserObjectRepository(
             store,
-            databaseAdapter,
             s,
         )
     },
@@ -62,7 +58,7 @@ class UserObjectRepository internal constructor(
         private const val USER_ROLES = "userRoles"
 
         val childrenAppenders: ChildrenAppenderGetter<User> = mapOf(
-            USER_ROLES to ::UserRoleChildrenAppender,
+            USER_ROLES to UserRoleChildrenAppender::create,
         )
     }
 }

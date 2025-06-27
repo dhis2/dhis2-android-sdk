@@ -29,7 +29,25 @@
 package org.hisp.dhis.android.persistence.datastore
 
 import androidx.room.Dao
+import androidx.room.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
 @Dao
-internal interface DataStoreDao : ObjectDao<DataStoreDB>
+internal interface DataStoreDao : ObjectDao<DataStoreDB> {
+    @Query(
+        """UPDATE DataStore 
+        SET ${DataStoreTableInfo.Columns.SYNC_STATE} = :state 
+        WHERE ${DataStoreTableInfo.Columns.NAMESPACE} = :namespace 
+        AND `${DataStoreTableInfo.Columns.KEY}` = :key;""",
+    )
+    fun setSyncState(state: String, namespace: String, key: String)
+
+    @Query(
+        """UPDATE DataStore 
+        SET ${DataStoreTableInfo.Columns.SYNC_STATE} = :state 
+        WHERE ${DataStoreTableInfo.Columns.NAMESPACE} = :namespace 
+        AND `${DataStoreTableInfo.Columns.KEY}` = :key 
+        AND ${DataStoreTableInfo.Columns.SYNC_STATE} = 'UPLOADING';""",
+    )
+    fun setStateIfUploading(state: String, namespace: String, key: String)
+}

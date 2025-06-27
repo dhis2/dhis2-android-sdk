@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.category
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
@@ -40,11 +39,9 @@ import org.koin.core.annotation.Singleton
 @Singleton
 class CategoryComboCollectionRepository internal constructor(
     store: CategoryComboStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<CategoryCombo, CategoryComboCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -52,7 +49,6 @@ class CategoryComboCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         CategoryComboCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },

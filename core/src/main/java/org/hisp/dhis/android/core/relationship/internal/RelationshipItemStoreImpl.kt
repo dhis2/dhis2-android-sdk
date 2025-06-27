@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipItem
 import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo
 import org.koin.core.annotation.Singleton
-import java.util.*
 
 @Singleton
 internal class RelationshipItemStoreImpl(
@@ -55,7 +54,7 @@ internal class RelationshipItemStoreImpl(
     ) {
 
     @Suppress("NestedBlockDepth")
-    override fun getRelationshipUidsForItems(from: RelationshipItem, to: RelationshipItem): List<String> {
+    override suspend fun getRelationshipUidsForItems(from: RelationshipItem, to: RelationshipItem): List<String> {
         val relationships: MutableList<String> = ArrayList()
 
         getAllItemsOfSameType(from, to).use { cursor ->

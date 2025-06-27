@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.note.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.enrollment.Enrollment
 
@@ -42,8 +42,8 @@ internal class NoteForEnrollmentChildrenAppender private constructor(
     }
 
     companion object {
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<Enrollment> {
-            return NoteForEnrollmentChildrenAppender(NoteStoreImpl(databaseAdapter))
+        fun create(): ChildrenAppender<Enrollment> {
+            return NoteForEnrollmentChildrenAppender(koin.get())
         }
     }
 }

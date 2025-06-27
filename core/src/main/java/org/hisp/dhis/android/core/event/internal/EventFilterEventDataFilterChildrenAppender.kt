@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.event.EventFilter
 
@@ -45,8 +45,8 @@ internal class EventFilterEventDataFilterChildrenAppender private constructor(
     }
 
     companion object {
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<EventFilter> {
-            return EventFilterEventDataFilterChildrenAppender(EventDataFilterStoreImpl(databaseAdapter))
+        fun create(): ChildrenAppender<EventFilter> {
+            return EventFilterEventDataFilterChildrenAppender(koin.get())
         }
     }
 }

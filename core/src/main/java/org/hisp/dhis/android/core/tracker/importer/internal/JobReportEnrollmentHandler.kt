@@ -89,7 +89,7 @@ internal class JobReportEnrollmentHandler internal constructor(
         }
     }
 
-    override fun getRelatedRelationships(uid: String): List<String> {
+    override suspend fun getRelatedRelationships(uid: String): List<String> {
         return relationshipStore.getRelationshipsByItem(RelationshipHelper.enrollmentItem(uid)).mapNotNull { it.uid() }
     }
 }

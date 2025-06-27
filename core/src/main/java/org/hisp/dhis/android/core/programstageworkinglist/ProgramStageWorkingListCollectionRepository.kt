@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.programstageworkinglist
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
@@ -48,11 +47,9 @@ import org.koin.core.annotation.Singleton
 @Suppress("TooManyFunctions")
 class ProgramStageWorkingListCollectionRepository internal constructor(
     store: ProgramStageWorkingListStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramStageWorkingList, ProgramStageWorkingListCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -60,7 +57,6 @@ class ProgramStageWorkingListCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         ProgramStageWorkingListCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },

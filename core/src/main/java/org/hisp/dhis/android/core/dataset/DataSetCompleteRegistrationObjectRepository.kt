@@ -31,7 +31,6 @@ import android.util.Log
 import io.reactivex.Completable
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxCompletable
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
@@ -47,7 +46,6 @@ import java.util.Date
 
 class DataSetCompleteRegistrationObjectRepository internal constructor(
     private val dataSetCompleteRegistrationStore: DataSetCompleteRegistrationStore,
-    databaseAdapter: DatabaseAdapter,
     private val credentialsRepository: UserCredentialsObjectRepository,
     childrenAppenders: ChildrenAppenderGetter<DataSetCompleteRegistration>,
     scope: RepositoryScope,
@@ -57,13 +55,11 @@ class DataSetCompleteRegistrationObjectRepository internal constructor(
     private val attributeOptionCombo: String,
 ) : ReadOnlyOneObjectRepositoryImpl<DataSetCompleteRegistration, DataSetCompleteRegistrationObjectRepository>(
     dataSetCompleteRegistrationStore,
-    databaseAdapter,
     childrenAppenders,
     scope,
     ObjectRepositoryFactory { s: RepositoryScope ->
         DataSetCompleteRegistrationObjectRepository(
             dataSetCompleteRegistrationStore,
-            databaseAdapter,
             credentialsRepository,
             childrenAppenders,
             s,

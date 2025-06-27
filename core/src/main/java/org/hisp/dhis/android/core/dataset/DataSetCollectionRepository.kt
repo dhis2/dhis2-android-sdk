@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.dataset
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
@@ -51,11 +50,9 @@ import org.koin.core.annotation.Singleton
 @Suppress("TooManyFunctions")
 class DataSetCollectionRepository internal constructor(
     store: DataSetStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<DataSet, DataSetCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -63,7 +60,6 @@ class DataSetCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         DataSetCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },

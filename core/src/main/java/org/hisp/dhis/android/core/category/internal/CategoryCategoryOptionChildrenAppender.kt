@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.category.Category
 
@@ -42,8 +42,8 @@ internal class CategoryCategoryOptionChildrenAppender private constructor(
     }
 
     companion object {
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<Category> {
-            return CategoryCategoryOptionChildrenAppender(CategoryOptionStoreImpl(databaseAdapter))
+        fun create(): ChildrenAppender<Category> {
+            return CategoryCategoryOptionChildrenAppender(koin.get())
         }
     }
 }

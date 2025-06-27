@@ -54,5 +54,5 @@ internal abstract class JobReportTypeHandler(
 
     protected abstract suspend fun handleObject(uid: String, state: State): HandleAction
     protected abstract suspend fun storeConflict(errorReport: JobValidationError)
-    protected abstract fun getRelatedRelationships(uid: String): List<String>
+    protected abstract suspend fun getRelatedRelationships(uid: String): List<String>
 }

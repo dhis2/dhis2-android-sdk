@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.`object`
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
@@ -36,18 +35,15 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 
 class ReadOnlyOneObjectRepositoryFinalImpl<M> internal constructor(
     store: ReadableStore<M>,
-    databaseAdapter: DatabaseAdapter,
     childrenAppenders: ChildrenAppenderGetter<M>,
     scope: RepositoryScope,
 ) : ReadOnlyOneObjectRepositoryImpl<M, ReadOnlyOneObjectRepositoryFinalImpl<M>>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     ObjectRepositoryFactory { s: RepositoryScope ->
         ReadOnlyOneObjectRepositoryFinalImpl(
             store,
-            databaseAdapter,
             childrenAppenders,
             s,
         )

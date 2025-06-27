@@ -102,7 +102,7 @@ internal class MicrosoftMapsCallFactory(
 
     private suspend fun downloadAzureBasemap(key: String, basemap: AzureBasemap): List<MapLayer> {
         return coroutineExecutor.wrap(storeError = false) {
-            azureNetworkHandler.getBaseMap(getAzureUrl(basemap.style, key), basemap)
+            azureNetworkHandler.getBaseMap(getAzureUrl(basemap.style, key), basemap, key)
         }.let { result ->
             when (result) {
                 is Success -> result.value

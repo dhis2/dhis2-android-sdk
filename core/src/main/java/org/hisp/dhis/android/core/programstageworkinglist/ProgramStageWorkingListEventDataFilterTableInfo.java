@@ -53,8 +53,8 @@ public final class ProgramStageWorkingListEventDataFilterTableInfo {
     };
 
     public static class Columns extends FilterOperatorsColumns {
-        public final static String PROGRAM_STAGE_WORKING_LIST = "programStageWorkingList";
-        public final static String DATA_ITEM = "dataItem";
+        public static final String PROGRAM_STAGE_WORKING_LIST = "programStageWorkingList";
+        public static final String DATA_ITEM = "dataItem";
 
         @Override
         public String[] all() {

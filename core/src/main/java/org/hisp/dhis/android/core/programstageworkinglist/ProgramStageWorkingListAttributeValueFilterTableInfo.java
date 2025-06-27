@@ -53,8 +53,8 @@ public final class ProgramStageWorkingListAttributeValueFilterTableInfo {
     };
 
     public static class Columns extends FilterOperatorsColumns {
-        public final static String PROGRAM_STAGE_WORKING_LIST = "programStageWorkingList";
-        public final static String ATTRIBUTE = "attribute";
+        public static final String PROGRAM_STAGE_WORKING_LIST = "programStageWorkingList";
+        public static final String ATTRIBUTE = "attribute";
         public static final String SW = "sw";
         public static final String EW = "ew";
 

@@ -53,8 +53,8 @@ public final class AttributeValueFilterTableInfo {
     };
 
     public static class Columns extends FilterOperatorsColumns {
-        public final static String TRACKED_ENTITY_INSTANCE_FILTER = "trackedEntityInstanceFilter";
-        public final static String ATTRIBUTE = "attribute";
+        public static final String TRACKED_ENTITY_INSTANCE_FILTER = "trackedEntityInstanceFilter";
+        public static final String ATTRIBUTE = "attribute";
         public static final String SW = "sw";
         public static final String EW = "ew";
 

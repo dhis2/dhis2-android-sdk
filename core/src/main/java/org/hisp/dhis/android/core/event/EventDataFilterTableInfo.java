@@ -53,8 +53,8 @@ public final class EventDataFilterTableInfo {
     };
 
     public static class Columns extends FilterOperatorsColumns {
-        public final static String EVENT_FILTER = "eventFilter";
-        public final static String DATA_ITEM = "dataItem";
+        public static final String EVENT_FILTER = "eventFilter";
+        public static final String DATA_ITEM = "dataItem";
 
 
         @Override

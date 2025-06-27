@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
 import org.hisp.dhis.android.core.common.CoreColumns;
 
 public class FilterOperatorsColumns extends CoreColumns {
-    public final static String LE = "le";
+    public static final String LE = "le";
     public static final String GE = "ge";
     public static final String GT = "gt";
     public static final String LT = "lt";

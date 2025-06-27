@@ -39,8 +39,8 @@ internal class AzureNetworkHandlerImpl(
     httpServiceClient: HttpServiceClient,
 ) : AzureNetworkHandler {
     private val service = AzureService(httpServiceClient)
-    override suspend fun getBaseMap(url: String, basemap: AzureBasemap): List<MapLayer> {
+    override suspend fun getBaseMap(url: String, basemap: AzureBasemap, key: String): List<MapLayer> {
         val apiPayload = service.getBaseMap(url)
-        return apiPayload.toDomain(basemap)
+        return apiPayload.toDomain(basemap, key)
     }
 }

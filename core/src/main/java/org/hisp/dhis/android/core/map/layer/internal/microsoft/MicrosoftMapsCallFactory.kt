@@ -63,7 +63,9 @@ internal class MicrosoftMapsCallFactory(
 
         return runCatching {
             val key = coroutineExecutor.wrap(storeError = true) { networkHandler.getBingApiKey() }
-                .getOrNull()?.value().orEmpty()
+                .getOrNull()?.value()
+            if (key.isNullOrBlank()) return@runCatching emptyList()
+
             val azureLayers = downloadWithTimeout(key, AzureBasemaps.list, ::downloadAzureBasemap, true)
             val resultLayers = azureLayers.takeIf { it.isNotEmpty() }
                 ?: downloadWithTimeout(key, BingBasemaps.list, ::downloadBingBasemap)
@@ -102,7 +104,7 @@ internal class MicrosoftMapsCallFactory(
 
     private suspend fun downloadAzureBasemap(key: String, basemap: AzureBasemap): List<MapLayer> {
         return coroutineExecutor.wrap(storeError = false) {
-            azureNetworkHandler.getBaseMap(getAzureUrl(basemap.style, key), basemap)
+            azureNetworkHandler.getBaseMap(getAzureUrl(basemap.style, key), basemap, key)
         }.let { result ->
             when (result) {
                 is Success -> result.value

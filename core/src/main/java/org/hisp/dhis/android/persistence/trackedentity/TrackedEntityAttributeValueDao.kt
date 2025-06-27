@@ -26,17 +26,19 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.organisationunit
+package org.hisp.dhis.android.persistence.trackedentity
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
-import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
-import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import androidx.room.Dao
+import androidx.room.Query
+import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
-internal class OrganisationUnitLevelStoreImpl(
-    val dao: OrganisationUnitLevelDao,
-) : OrganisationUnitLevelStore, IdentifiableObjectStoreImpl<OrganisationUnitLevel, OrganisationUnitLevelDB>(
-    dao,
-    OrganisationUnitLevel::toDB,
-    SQLStatementBuilderImpl(OrganisationUnitLevelTableInfo.TABLE_INFO),
-)
+@Dao
+internal interface TrackedEntityAttributeValueDao : ObjectDao<TrackedEntityAttributeValueDB> {
+
+    @Query(
+        """UPDATE TrackedEntityAttributeValue 
+        SET ${TrackedEntityAttributeValueTableInfo.Columns.SYNC_STATE} = :state 
+        WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = :uid""",
+    )
+    suspend fun setSyncStateByInstance(state: String, uid: String)
+}

@@ -26,17 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.organisationunit
+package org.hisp.dhis.android.persistence.trackedentity
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
+import org.hisp.dhis.android.core.trackedentity.ReservedValueSetting
+import org.hisp.dhis.android.core.trackedentity.internal.ReservedValueSettingStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
 
-internal class OrganisationUnitLevelStoreImpl(
-    val dao: OrganisationUnitLevelDao,
-) : OrganisationUnitLevelStore, IdentifiableObjectStoreImpl<OrganisationUnitLevel, OrganisationUnitLevelDB>(
+internal class ReservedValueSettingStoreImpl(
+    val dao: ReservedValueSettingDao,
+) : ReservedValueSettingStore, IdentifiableObjectStoreImpl<ReservedValueSetting, ReservedValueSettingDB>(
     dao,
-    OrganisationUnitLevel::toDB,
-    SQLStatementBuilderImpl(OrganisationUnitLevelTableInfo.TABLE_INFO),
+    ReservedValueSetting::toDB,
+    SQLStatementBuilderImpl(ReservedValueSettingTableInfo.TABLE_INFO),
 )

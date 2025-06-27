@@ -26,17 +26,19 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.organisationunit
+package org.hisp.dhis.android.persistence.trackedentity
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
-import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
-import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import androidx.room.Dao
+import androidx.room.Query
+import org.hisp.dhis.android.core.common.IdentifiableColumns
+import org.hisp.dhis.android.persistence.common.daos.IdentifiableDeletableDataObjectStoreDao
 
-internal class OrganisationUnitLevelStoreImpl(
-    val dao: OrganisationUnitLevelDao,
-) : OrganisationUnitLevelStore, IdentifiableObjectStoreImpl<OrganisationUnitLevel, OrganisationUnitLevelDB>(
-    dao,
-    OrganisationUnitLevel::toDB,
-    SQLStatementBuilderImpl(OrganisationUnitLevelTableInfo.TABLE_INFO),
-)
+@Dao
+internal interface TrackedEntityInstanceDao : IdentifiableDeletableDataObjectStoreDao<TrackedEntityInstanceDB> {
+    @Query(
+        """UPDATE TrackedEntityInstance
+        SET ${TrackedEntityInstanceTableInfo.Columns.AGGREGATED_SYNC_STATE} = :state
+        WHERE ${IdentifiableColumns.UID} = :uid;""",
+    )
+    fun setAggregatedSyncState(state: String, uid: String): Int
+}

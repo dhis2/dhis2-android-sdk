@@ -72,12 +72,7 @@ internal open class ObjectStoreImpl<D : CoreObject, P : EntityDB<D>>(
     }
 
     override suspend fun updateWhere(updates: ContentValues, whereClause: String): Int {
-        val updatesMap = mutableMapOf<String, Any>()
-        for (key in updates.keySet()) {
-            updates[key]?.let { updatesMap[key] = it }
-        }
-        val query = builder.updateWhere(updatesMap, whereClause)
-        return objectDao.intRawQuery(query)
+        TODO("To be removed after Room migration")
     }
 
     suspend fun updateWhere(updates: ArrayMap<String, Any>, whereClause: String): Int {
@@ -90,5 +85,5 @@ internal open class ObjectStoreImpl<D : CoreObject, P : EntityDB<D>>(
     }
 
     override val isReady: Boolean
-        get() = TODO("Not yet implemented")
+        get() = TODO("To be removed after Room migration")
 }

@@ -26,17 +26,18 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.organisationunit
+package org.hisp.dhis.android.persistence.trackedentity
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceSync
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceSyncStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
-import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 
-internal class OrganisationUnitLevelStoreImpl(
-    val dao: OrganisationUnitLevelDao,
-) : OrganisationUnitLevelStore, IdentifiableObjectStoreImpl<OrganisationUnitLevel, OrganisationUnitLevelDB>(
-    dao,
-    OrganisationUnitLevel::toDB,
-    SQLStatementBuilderImpl(OrganisationUnitLevelTableInfo.TABLE_INFO),
-)
+internal class TrackedEntityInstanceSyncStoreImpl(
+    private val dao: TrackedEntityInstanceSyncDao,
+) : TrackedEntityInstanceSyncStore,
+    ObjectWithoutUidStoreImpl<TrackedEntityInstanceSync, TrackedEntityInstanceSyncDB>(
+        dao,
+        TrackedEntityInstanceSync::toDB,
+        SQLStatementBuilderImpl(TrackedEntityInstanceSyncTableInfo.TABLE_INFO),
+    )

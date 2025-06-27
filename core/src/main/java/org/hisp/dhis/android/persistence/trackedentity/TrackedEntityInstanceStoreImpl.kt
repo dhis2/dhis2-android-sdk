@@ -26,73 +26,56 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.enrollment
+package org.hisp.dhis.android.persistence.trackedentity
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
+import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludingError
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.persistence.common.querybuilders.IdentifiableDeletableDataObjectSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableDeletableDataObjectStoreImpl
-import org.hisp.dhis.android.persistence.event.EventTableInfo
-import org.hisp.dhis.android.persistence.program.ProgramTrackedEntityAttributeTableInfo
 
-internal class EnrollmentStoreImpl(
-    val dao: EnrollmentDao,
-) : EnrollmentStore, IdentifiableDeletableDataObjectStoreImpl<Enrollment, EnrollmentDB>(
-    dao,
-    Enrollment::toDB,
-    IdentifiableDeletableDataObjectSQLStatementBuilderImpl(EnrollmentTableInfo.TABLE_INFO),
-) {
-    override suspend fun queryEnrollmentsToPost(): Map<String, List<Enrollment>> {
-        val enrollmentsToPostQuery = WhereClauseBuilder()
-            .appendInKeyStringValues(
-                DataColumns.AGGREGATED_SYNC_STATE,
-                EnumHelper.asStringList(State.uploadableStatesIncludingError().toList()),
-            ).build()
-        val enrollmentList: List<Enrollment> = selectWhere(enrollmentsToPostQuery)
+internal class TrackedEntityInstanceStoreImpl(
+    private val dao: TrackedEntityInstanceDao,
+) : TrackedEntityInstanceStore,
+    IdentifiableDeletableDataObjectStoreImpl<TrackedEntityInstance, TrackedEntityInstanceDB>(
+        dao,
+        TrackedEntityInstance::toDB,
+        IdentifiableDeletableDataObjectSQLStatementBuilderImpl(TrackedEntityInstanceTableInfo.TABLE_INFO),
+    ) {
+    override suspend fun queryTrackedEntityInstancesToSync(): List<TrackedEntityInstance> {
+        val uploadableStatesString = uploadableStatesIncludingError().map { it.name }
+        val whereToSyncClause = WhereClauseBuilder()
+            .appendInKeyStringValues(DataColumns.AGGREGATED_SYNC_STATE, uploadableStatesString)
+            .build()
+        return selectWhere(whereToSyncClause)
+    }
 
-        return enrollmentList.groupBy { it.trackedEntityInstance()!! }
+    override suspend fun queryTrackedEntityInstancesToPost(): List<TrackedEntityInstance> {
+        val whereToPostClause = WhereClauseBuilder()
+            .appendKeyStringValue(DataColumns.AGGREGATED_SYNC_STATE, State.TO_POST.name)
+            .build()
+        return selectWhere(whereToPostClause)
+    }
+
+    override suspend fun querySyncedTrackedEntityInstanceUids(): List<String> {
+        val whereSyncedClause = WhereClauseBuilder()
+            .appendKeyStringValue(DataColumns.AGGREGATED_SYNC_STATE, State.SYNCED)
+            .build()
+        return selectUidsWhere(whereSyncedClause)
     }
 
     override suspend fun queryMissingRelationshipsUids(): List<String> {
         val whereRelationshipsClause = WhereClauseBuilder()
             .appendKeyStringValue(DataColumns.AGGREGATED_SYNC_STATE, State.RELATIONSHIP)
-            .appendIsNullValue(EventTableInfo.Columns.ORGANISATION_UNIT)
+            .appendIsNullValue(TrackedEntityInstanceTableInfo.Columns.ORGANISATION_UNIT)
             .build()
-
         return selectUidsWhere(whereRelationshipsClause)
     }
 
     override suspend fun setAggregatedSyncState(uid: String, state: State): Int {
         return dao.setAggregatedSyncState(state.name, uid)
-    }
-
-    override suspend fun selectAggregatedSyncStateWhere(whereClause: String): List<State> {
-        val statesStr = selectStringColumnsWhereClause(DataColumns.AGGREGATED_SYNC_STATE, whereClause)
-
-        return statesStr.map { State.valueOf(it) }
-    }
-
-    override suspend fun selectByTrackedEntityInstanceAndAttribute(
-        teiUid: String,
-        attributeUid: String,
-    ): List<Enrollment> {
-        val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(
-                EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
-                teiUid,
-            )
-            .appendInSubQuery(
-                EnrollmentTableInfo.Columns.PROGRAM,
-                "SELECT ${ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM} " +
-                    "FROM ${ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name()} " +
-                    "WHERE ${ProgramTrackedEntityAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} = " +
-                    "'$attributeUid'",
-            ).build()
-
-        return selectWhere(whereClause)
     }
 }

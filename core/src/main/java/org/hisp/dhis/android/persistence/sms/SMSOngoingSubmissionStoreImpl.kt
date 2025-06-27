@@ -26,17 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.organisationunit
+package org.hisp.dhis.android.persistence.sms
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
+import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoingSubmission
+import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoingSubmissionStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
-import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 
-internal class OrganisationUnitLevelStoreImpl(
-    val dao: OrganisationUnitLevelDao,
-) : OrganisationUnitLevelStore, IdentifiableObjectStoreImpl<OrganisationUnitLevel, OrganisationUnitLevelDB>(
+internal class SMSOngoingSubmissionStoreImpl(
+    val dao: SMSOngoingSubmissionDao,
+) : SMSOngoingSubmissionStore, ObjectWithoutUidStoreImpl<SMSOngoingSubmission, SMSOngoingSubmissionDB>(
     dao,
-    OrganisationUnitLevel::toDB,
-    SQLStatementBuilderImpl(OrganisationUnitLevelTableInfo.TABLE_INFO),
+    SMSOngoingSubmission::toDB,
+    SQLStatementBuilderImpl(SMSOngoingSubmissionTableInfo.TABLE_INFO),
 )

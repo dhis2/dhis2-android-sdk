@@ -31,7 +31,7 @@ package org.hisp.dhis.android.persistence.indicator
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.internal.IndicatorStore
-import org.hisp.dhis.android.persistence.common.querybuilders.IdentifiableDataObjectSQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
 import org.hisp.dhis.android.persistence.dataset.SectionIndicatorLinkTableInfo
 
@@ -40,7 +40,7 @@ internal class IndicatorStoreImpl(
 ) : IndicatorStore, IdentifiableObjectStoreImpl<Indicator, IndicatorDB>(
     dao,
     Indicator::toDB,
-    IdentifiableDataObjectSQLStatementBuilderImpl(IndicatorTableInfo.TABLE_INFO),
+    SQLStatementBuilderImpl(IndicatorTableInfo.TABLE_INFO),
 ) {
     override suspend fun getForDataSet(dataSetUid: String): List<Indicator> {
         val projection = LinkTableChildProjection(

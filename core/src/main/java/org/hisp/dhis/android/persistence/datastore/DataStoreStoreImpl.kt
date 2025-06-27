@@ -28,9 +28,6 @@
 
 package org.hisp.dhis.android.persistence.datastore
 
-import android.content.ContentValues
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.DataStoreEntry
 import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryStore
@@ -45,23 +42,10 @@ internal class DataStoreStoreImpl(
     SQLStatementBuilderImpl(DataStoreTableInfo.TABLE_INFO),
 ) {
     override suspend fun setState(entry: DataStoreEntry, state: State) {
-        val updates = ContentValues()
-        updates.put(DataColumns.SYNC_STATE, state.toString())
-        val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(DataStoreTableInfo.Columns.NAMESPACE, entry.namespace())
-            .appendKeyStringValue(DataStoreTableInfo.Columns.KEY, entry.key())
-            .build()
-        updateWhere(updates, whereClause)
+        dao.setSyncState(state.name, entry.namespace(), entry.key())
     }
 
     override suspend fun setStateIfUploading(entry: DataStoreEntry, state: State) {
-        val updates = ContentValues()
-        updates.put(DataColumns.SYNC_STATE, state.toString())
-        val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(DataStoreTableInfo.Columns.NAMESPACE, entry.namespace())
-            .appendKeyStringValue(DataStoreTableInfo.Columns.KEY, entry.key())
-            .appendKeyStringValue(DataColumns.SYNC_STATE, State.UPLOADING.toString())
-            .build()
-        updateWhere(updates, whereClause)
+        dao.setStateIfUploading(state.name, entry.namespace(), entry.key())
     }
 }

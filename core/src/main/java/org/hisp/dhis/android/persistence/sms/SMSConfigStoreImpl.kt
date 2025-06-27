@@ -26,17 +26,52 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.organisationunit
+package org.hisp.dhis.android.persistence.sms
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.datastore.KeyValuePair
+import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigKey
+import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
-import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 
-internal class OrganisationUnitLevelStoreImpl(
-    val dao: OrganisationUnitLevelDao,
-) : OrganisationUnitLevelStore, IdentifiableObjectStoreImpl<OrganisationUnitLevel, OrganisationUnitLevelDB>(
+internal class SMSConfigStoreImpl(
+    val dao: SMSConfigDao,
+) : SMSConfigStore, ObjectWithoutUidStoreImpl<KeyValuePair, SMSConfigDB>(
     dao,
-    OrganisationUnitLevel::toDB,
-    SQLStatementBuilderImpl(OrganisationUnitLevelTableInfo.TABLE_INFO),
-)
+    KeyValuePair::toDB,
+    SQLStatementBuilderImpl(SMSConfigTableInfo.TABLE_INFO),
+) {
+
+    override suspend fun get(key: SMSConfigKey): String? {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(
+                SMSConfigTableInfo.Columns.KEY,
+                key.name,
+            )
+            .build()
+
+        return selectOneWhere(whereClause)?.value()
+    }
+
+    override suspend fun set(key: SMSConfigKey, value: String): HandleAction {
+        val keyValuePair = KeyValuePair.builder()
+            .key(key.name)
+            .value(value)
+            .build()
+
+        return updateOrInsertWhere(keyValuePair)
+    }
+
+    override suspend fun delete(key: SMSConfigKey) {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(
+                SMSConfigTableInfo.Columns.KEY,
+                key.name,
+            )
+            .build()
+
+        return deleteWhereIfExists(whereClause)
+    }
+}

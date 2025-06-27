@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,37 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+package org.hisp.dhis.android.persistence.trackedentity
+
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper.asStringList
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludingError
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttributeTableInfo
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.hisp.dhis.android.persistence.program.ProgramTrackedEntityAttributeTableInfo
 
-@Singleton
 internal class TrackedEntityAttributeValueStoreImpl(
-    databaseAdapter: DatabaseAdapter,
+    private val dao: TrackedEntityAttributeValueDao,
 ) : TrackedEntityAttributeValueStore,
-    ObjectWithoutUidStoreImpl<TrackedEntityAttributeValue>(
-        databaseAdapter,
-        TrackedEntityAttributeValueTableInfo.TABLE_INFO,
-        BINDER,
-        WHERE_UPDATE_BINDER,
-        WHERE_DELETE_BINDER,
-        { cursor: Cursor -> TrackedEntityAttributeValue.create(cursor) },
+    ObjectWithoutUidStoreImpl<TrackedEntityAttributeValue, TrackedEntityAttributeValueDB>(
+        dao,
+        TrackedEntityAttributeValue::toDB,
+        SQLStatementBuilderImpl(TrackedEntityAttributeValueTableInfo.TABLE_INFO),
     ) {
 
     override suspend fun queryTrackedEntityAttributeValueToPost(): Map<String, List<TrackedEntityAttributeValue>> {
@@ -63,7 +54,7 @@ internal class TrackedEntityAttributeValueStoreImpl(
             "FROM (TrackedEntityAttributeValue INNER JOIN TrackedEntityInstance " +
             "ON TrackedEntityAttributeValue.trackedEntityInstance = TrackedEntityInstance.uid) " +
             "WHERE " + teiInUploadableState() + ";"
-        val valueList = trackedEntityAttributeValueListFromQuery(toPostQuery)
+        val valueList = selectWhere(toPostQuery)
 
         return valueList.filter { it.trackedEntityInstance() != null }.groupBy { it.trackedEntityInstance()!! }
     }
@@ -173,46 +164,6 @@ internal class TrackedEntityAttributeValueStoreImpl(
     }
 
     override suspend fun setSyncStateByInstance(trackedEntityInstanceUid: String, syncState: State) {
-        val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(
-                TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
-                trackedEntityInstanceUid,
-            )
-            .build()
-
-        databaseAdapter.execSQL(
-            "UPDATE ${TrackedEntityAttributeValueTableInfo.TABLE_INFO.name()} " +
-                "SET ${TrackedEntityAttributeValueTableInfo.Columns.SYNC_STATE} = '${syncState.name}' " +
-                "WHERE $whereClause",
-        )
-    }
-
-    private fun trackedEntityAttributeValueListFromQuery(query: String): List<TrackedEntityAttributeValue> {
-        val trackedEntityAttributeValueList: MutableList<TrackedEntityAttributeValue> = ArrayList()
-        val cursor = databaseAdapter.rawQuery(query)
-        addObjectsToCollection(cursor, trackedEntityAttributeValueList)
-        return trackedEntityAttributeValueList
-    }
-
-    companion object {
-        private val BINDER =
-            StatementBinder { o: TrackedEntityAttributeValue, w: StatementWrapper ->
-                w.bind(1, o.value())
-                w.bind(2, o.created())
-                w.bind(3, o.lastUpdated())
-                w.bind(4, o.trackedEntityAttribute())
-                w.bind(5, o.trackedEntityInstance())
-                w.bind(6, o.syncState())
-            }
-        private val WHERE_UPDATE_BINDER =
-            WhereStatementBinder { o: TrackedEntityAttributeValue, w: StatementWrapper ->
-                w.bind(7, o.trackedEntityAttribute())
-                w.bind(8, o.trackedEntityInstance())
-            }
-        private val WHERE_DELETE_BINDER =
-            WhereStatementBinder { o: TrackedEntityAttributeValue, w: StatementWrapper ->
-                w.bind(1, o.trackedEntityAttribute())
-                w.bind(2, o.trackedEntityInstance())
-            }
+        dao.setSyncStateByInstance(syncState.name, trackedEntityInstanceUid)
     }
 }

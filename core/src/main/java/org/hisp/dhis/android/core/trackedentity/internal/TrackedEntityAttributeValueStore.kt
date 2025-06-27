@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 
 internal interface TrackedEntityAttributeValueStore : ObjectWithoutUidStore<TrackedEntityAttributeValue> {
-    fun queryTrackedEntityAttributeValueToPost(): Map<String, List<TrackedEntityAttributeValue>>
+    suspend fun queryTrackedEntityAttributeValueToPost(): Map<String, List<TrackedEntityAttributeValue>>
     suspend fun queryByTrackedEntityInstance(trackedEntityInstanceUid: String): List<TrackedEntityAttributeValue>
     suspend fun deleteByInstanceAndNotInAttributes(
         trackedEntityInstanceUid: String,
@@ -52,5 +52,5 @@ internal interface TrackedEntityAttributeValueStore : ObjectWithoutUidStore<Trac
 
     suspend fun removeDeletedAttributeValuesByInstance(trackedEntityInstanceUid: String)
 
-    fun setSyncStateByInstance(trackedEntityInstanceUid: String, syncState: State)
+    suspend fun setSyncStateByInstance(trackedEntityInstanceUid: String, syncState: State)
 }

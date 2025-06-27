@@ -26,17 +26,37 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.organisationunit
+package org.hisp.dhis.android.persistence.trackedentity
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
+import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.hisp.dhis.android.persistence.program.ProgramSectionAttributeLinkTableInfo
 
-internal class OrganisationUnitLevelStoreImpl(
-    val dao: OrganisationUnitLevelDao,
-) : OrganisationUnitLevelStore, IdentifiableObjectStoreImpl<OrganisationUnitLevel, OrganisationUnitLevelDB>(
+internal class TrackedEntityAttributeStoreImpl(
+    val dao: TrackedEntityAttributeDao,
+) : TrackedEntityAttributeStore, IdentifiableObjectStoreImpl<TrackedEntityAttribute, TrackedEntityAttributeDB>(
     dao,
-    OrganisationUnitLevel::toDB,
-    SQLStatementBuilderImpl(OrganisationUnitLevelTableInfo.TABLE_INFO),
-)
+    TrackedEntityAttribute::toDB,
+    SQLStatementBuilderImpl(TrackedEntityAttributeTableInfo.TABLE_INFO),
+) {
+    override suspend fun getForProgramSection(programSectionUid: String): List<TrackedEntityAttribute> {
+        val projection = LinkTableChildProjection(
+            TrackedEntityAttributeTableInfo.TABLE_INFO,
+            ProgramSectionAttributeLinkTableInfo.Columns.PROGRAM_SECTION,
+            ProgramSectionAttributeLinkTableInfo.Columns.ATTRIBUTE,
+        )
+
+        val sectionSqlBuilder = SQLStatementBuilderImpl(
+            ProgramSectionAttributeLinkTableInfo.TABLE_INFO,
+        )
+        val query = sectionSqlBuilder.selectChildrenWithLinkTable(
+            projection,
+            programSectionUid,
+            null,
+        )
+        return selectRawQuery(query)
+    }
+}

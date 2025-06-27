@@ -26,17 +26,32 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.organisationunit
+package org.hisp.dhis.android.persistence.trackedentity
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
-import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
-import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeAttributeStore
+import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
 
-internal class OrganisationUnitLevelStoreImpl(
-    val dao: OrganisationUnitLevelDao,
-) : OrganisationUnitLevelStore, IdentifiableObjectStoreImpl<OrganisationUnitLevel, OrganisationUnitLevelDB>(
+internal class TrackedEntityTypeAttributeStoreImpl(
+    private val dao: TrackedEntityTypeAttributeDao,
+) : TrackedEntityTypeAttributeStore, LinkStoreImpl<TrackedEntityTypeAttribute, TrackedEntityTypeAttributeDB>(
     dao,
-    OrganisationUnitLevel::toDB,
-    SQLStatementBuilderImpl(OrganisationUnitLevelTableInfo.TABLE_INFO),
-)
+    TrackedEntityTypeAttribute::toDB,
+    LinkSQLStatementBuilderImpl(
+        TrackedEntityTypeAttributeTableInfo.TABLE_INFO,
+        TrackedEntityTypeAttributeTableInfo.Columns.TRACKED_ENTITY_TYPE,
+    ),
+) {
+    override suspend fun getForTrackedEntityType(
+        trackedEntityTypeUid: String,
+    ): List<TrackedEntityTypeAttribute> {
+        val whereClause = WhereClauseBuilder().appendKeyStringValue(
+            TrackedEntityTypeAttributeTableInfo.Columns.TRACKED_ENTITY_TYPE,
+            trackedEntityTypeUid,
+        ).build()
+        val selectStatement = builder.selectWhere(whereClause)
+        return selectRawQuery(selectStatement)
+    }
+}

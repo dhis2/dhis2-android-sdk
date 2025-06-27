@@ -42,9 +42,6 @@ import org.hisp.dhis.android.persistence.common.StringSetDB
 import org.hisp.dhis.android.persistence.common.applyFilterOperatorsFields
 import org.hisp.dhis.android.persistence.common.toDB
 
-// CREATE TABLE ProgramStageWorkingListAttributeValueFilter (_id INTEGER PRIMARY KEY AUTOINCREMENT, programStageWorkingList TEXT, attribute TEXT, sw TEXT, ew TEXT, le TEXT, ge TEXT, gt TEXT, lt TEXT, eq TEXT, inProperty TEXT, like TEXT, dateFilter TEXT,
-// FOREIGN KEY (programStageWorkingList) REFERENCES ProgramStageWorkingList (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED),
-// FOREIGN KEY (attribute) REFERENCES Attribute (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
 @Entity(
     tableName = "ProgramStageWorkingListAttributeValueFilter",
     foreignKeys = [

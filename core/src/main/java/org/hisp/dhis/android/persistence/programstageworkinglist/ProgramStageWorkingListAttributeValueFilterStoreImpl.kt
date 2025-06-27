@@ -30,6 +30,7 @@ package org.hisp.dhis.android.persistence.programstageworkinglist
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilterTableInfo
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListAttributeValueFilterStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
@@ -37,7 +38,10 @@ import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 internal class ProgramStageWorkingListAttributeValueFilterStoreImpl(
     private val dao: ProgramStageWorkingListAttributeValueFilterDao,
 ) : ProgramStageWorkingListAttributeValueFilterStore,
-    ObjectWithoutUidStoreImpl<ProgramStageWorkingListAttributeValueFilter, ProgramStageWorkingListAttributeValueFilterDB>(
+    ObjectWithoutUidStoreImpl<
+        ProgramStageWorkingListAttributeValueFilter,
+        ProgramStageWorkingListAttributeValueFilterDB,
+        >(
         dao,
         ProgramStageWorkingListAttributeValueFilter::toDB,
         SQLStatementBuilderImpl(ProgramStageWorkingListAttributeValueFilterTableInfo.TABLE_INFO),
@@ -45,12 +49,10 @@ internal class ProgramStageWorkingListAttributeValueFilterStoreImpl(
     override suspend fun getForProgramStageWorkingList(
         programStageWorkingList: String,
     ): List<ProgramStageWorkingListAttributeValueFilter> {
-        val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(
-                ProgramStageWorkingListAttributeValueFilterTableInfo.Columns.PROGRAM_STAGE_WORKING_LIST,
-                programStageWorkingList,
-            )
-            .build()
+        val whereClause = WhereClauseBuilder().appendKeyStringValue(
+            ProgramStageWorkingListAttributeValueFilterTableInfo.Columns.PROGRAM_STAGE_WORKING_LIST,
+            programStageWorkingList,
+        ).build()
         val query = builder.selectWhere(whereClause)
         return selectRawQuery(query)
     }

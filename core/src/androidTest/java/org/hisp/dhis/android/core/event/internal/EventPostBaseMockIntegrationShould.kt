@@ -29,12 +29,12 @@ package org.hisp.dhis.android.core.event.internal
 
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityDataValueSamples
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
-import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStoreImpl
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
 import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
@@ -55,7 +55,7 @@ abstract class EventPostBaseMockIntegrationShould : BaseMockIntegrationTestMetad
     private val event4Id = "event4Id"
 
     private lateinit var initSyncParams: SynchronizationSettings
-    private val syncStore = SynchronizationSettingStoreImpl(databaseAdapter)
+    private val syncStore: SynchronizationSettingStore = koin.get()
 
     @Before
     fun setUp() = runTest {
@@ -169,7 +169,7 @@ abstract class EventPostBaseMockIntegrationShould : BaseMockIntegrationTestMetad
         eventStore.insert(event3)
         eventStore.insert(event4)
 
-        val tedvStore = TrackedEntityDataValueStoreImpl(databaseAdapter)
+        val tedvStore: TrackedEntityDataValueStore = koin.get()
         tedvStore.insert(dataValue1)
         tedvStore.insert(dataValue2)
         tedvStore.insert(dataValue3)

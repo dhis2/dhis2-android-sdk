@@ -76,45 +76,46 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.relationshipTypeFrom
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.relationshipTypeTo
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntityType
-import org.hisp.dhis.android.core.category.internal.CategoryCategoryComboLinkStoreImpl
-import org.hisp.dhis.android.core.category.internal.CategoryCategoryOptionLinkStoreImpl
-import org.hisp.dhis.android.core.category.internal.CategoryComboStoreImpl
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
+import org.hisp.dhis.android.core.category.internal.CategoryCategoryComboLinkStore
+import org.hisp.dhis.android.core.category.internal.CategoryCategoryOptionLinkStore
+import org.hisp.dhis.android.core.category.internal.CategoryComboStore
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboCategoryOptionLinkStoreImpl
-import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStoreImpl
-import org.hisp.dhis.android.core.category.internal.CategoryOptionStoreImpl
-import org.hisp.dhis.android.core.category.internal.CategoryStoreImpl
+import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
+import org.hisp.dhis.android.core.category.internal.CategoryOptionStore
+import org.hisp.dhis.android.core.category.internal.CategoryStore
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod
-import org.hisp.dhis.android.core.constant.internal.ConstantStoreImpl
-import org.hisp.dhis.android.core.dataelement.internal.DataElementStoreImpl
+import org.hisp.dhis.android.core.constant.internal.ConstantStore
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.core.datavalue.internal.DataValueStoreImpl
+import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.event.internal.EventStoreImpl
-import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemStoreImpl
-import org.hisp.dhis.android.core.indicator.internal.IndicatorStoreImpl
-import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeStoreImpl
-import org.hisp.dhis.android.core.option.internal.OptionSetStoreImpl
-import org.hisp.dhis.android.core.option.internal.OptionStoreImpl
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitGroupStoreImpl
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStoreImpl
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl
+import org.hisp.dhis.android.core.event.internal.EventStore
+import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemStore
+import org.hisp.dhis.android.core.indicator.internal.IndicatorStore
+import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeStore
+import org.hisp.dhis.android.core.option.internal.OptionSetStore
+import org.hisp.dhis.android.core.option.internal.OptionStore
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitGroupStore
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.parser.internal.service.ExpressionService
-import org.hisp.dhis.android.core.period.internal.PeriodStoreImpl
-import org.hisp.dhis.android.core.program.internal.ProgramStageStoreImpl
-import org.hisp.dhis.android.core.program.internal.ProgramStoreImpl
-import org.hisp.dhis.android.core.relationship.internal.RelationshipConstraintStoreImpl
-import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStoreImpl
+import org.hisp.dhis.android.core.period.internal.PeriodStore
+import org.hisp.dhis.android.core.program.internal.ProgramStageStore
+import org.hisp.dhis.android.core.program.internal.ProgramStore
+import org.hisp.dhis.android.core.relationship.internal.RelationshipConstraintStore
+import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStoreImpl
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStoreImpl
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStoreImpl
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
 import org.junit.After
 import org.junit.Before
@@ -122,45 +123,45 @@ import org.junit.Before
 internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() {
 
     // Data stores
-    protected val dataValueStore = DataValueStoreImpl(databaseAdapter)
-    protected val eventStore = EventStoreImpl(databaseAdapter)
-    protected val enrollmentStore = EnrollmentStoreImpl(databaseAdapter)
-    protected val trackedEntityStore = TrackedEntityInstanceStoreImpl(databaseAdapter)
-    protected val trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl(databaseAdapter)
-    protected val trackedEntityAttributeValueStore = TrackedEntityAttributeValueStoreImpl(databaseAdapter)
+    protected val dataValueStore: DataValueStore = koin.get()
+    protected val eventStore: EventStore = koin.get()
+    protected val enrollmentStore: EnrollmentStore = koin.get()
+    protected val trackedEntityStore: TrackedEntityInstanceStore = koin.get()
+    protected val trackedEntityDataValueStore: TrackedEntityDataValueStore = koin.get()
+    protected val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore = koin.get()
 
     // Metadata stores
-    protected val categoryStore = CategoryStoreImpl(databaseAdapter)
-    protected val categoryOptionStore = CategoryOptionStoreImpl(databaseAdapter)
-    protected val categoryCategoryOptionStore = CategoryCategoryOptionLinkStoreImpl(databaseAdapter)
-    protected val categoryComboStore = CategoryComboStoreImpl(databaseAdapter)
-    protected val categoryOptionComboStore = CategoryOptionComboStoreImpl(databaseAdapter)
-    protected val categoryCategoryComboLinkStore = CategoryCategoryComboLinkStoreImpl(databaseAdapter)
+    protected val categoryStore: CategoryStore = koin.get()
+    protected val categoryOptionStore: CategoryOptionStore = koin.get()
+    protected val categoryCategoryOptionStore: CategoryCategoryOptionLinkStore = koin.get()
+    protected val categoryComboStore: CategoryComboStore = koin.get()
+    protected val categoryOptionComboStore: CategoryOptionComboStore = koin.get()
+    protected val categoryCategoryComboLinkStore: CategoryCategoryComboLinkStore = koin.get()
     protected val categoryOptionComboCategoryOptionLinkStore = CategoryOptionComboCategoryOptionLinkStoreImpl(
         databaseAdapter,
     )
-    protected val optionSetStore = OptionSetStoreImpl(databaseAdapter)
-    protected val optionStore = OptionStoreImpl(databaseAdapter)
-    protected val dataElementStore = DataElementStoreImpl(databaseAdapter)
-    protected val organisationUnitStore = OrganisationUnitStoreImpl(databaseAdapter)
-    protected val organisationUnitLevelStore = OrganisationUnitLevelStoreImpl(databaseAdapter)
-    protected val organisationUnitGroupStore = OrganisationUnitGroupStoreImpl(databaseAdapter)
-    protected val periodStore = PeriodStoreImpl(databaseAdapter)
+    protected val optionSetStore: OptionSetStore = koin.get()
+    protected val optionStore: OptionStore = koin.get()
+    protected val dataElementStore: DataElementStore = koin.get()
+    protected val organisationUnitStore: OrganisationUnitStore = koin.get()
+    protected val organisationUnitLevelStore: OrganisationUnitLevelStore = koin.get()
+    protected val organisationUnitGroupStore: OrganisationUnitGroupStore = koin.get()
+    protected val periodStore: PeriodStore = koin.get()
 
-    protected val trackedEntityTypeStore = TrackedEntityTypeStoreImpl(databaseAdapter)
-    protected val trackedEntityAttributeStore = TrackedEntityAttributeStoreImpl(databaseAdapter)
-    protected val programStore = ProgramStoreImpl(databaseAdapter)
-    protected val programStageStore = ProgramStageStoreImpl(databaseAdapter)
+    protected val trackedEntityTypeStore: TrackedEntityTypeStore = koin.get()
+    protected val trackedEntityAttributeStore: TrackedEntityAttributeStore = koin.get()
+    protected val programStore: ProgramStore = koin.get()
+    protected val programStageStore: ProgramStageStore = koin.get()
 
-    protected val indicatorTypeStore = IndicatorTypeStoreImpl(databaseAdapter)
-    protected val indicatorStore = IndicatorStoreImpl(databaseAdapter)
+    protected val indicatorTypeStore: IndicatorTypeStore = koin.get()
+    protected val indicatorStore: IndicatorStore = koin.get()
 
-    protected val relationshipTypeStore = RelationshipTypeStoreImpl(databaseAdapter)
-    protected val relationshipConstraintStore = RelationshipConstraintStoreImpl(databaseAdapter)
+    protected val relationshipTypeStore: RelationshipTypeStore = koin.get()
+    protected val relationshipConstraintStore: RelationshipConstraintStore = koin.get()
 
-    protected val constantStore = ConstantStoreImpl(databaseAdapter)
+    protected val constantStore: ConstantStore = koin.get()
 
-    protected val expressionDimensionItemStore = ExpressionDimensionItemStoreImpl(databaseAdapter)
+    protected val expressionDimensionItemStore: ExpressionDimensionItemStore = koin.get()
 
     protected val expressionService = ExpressionService(
         dataElementStore,

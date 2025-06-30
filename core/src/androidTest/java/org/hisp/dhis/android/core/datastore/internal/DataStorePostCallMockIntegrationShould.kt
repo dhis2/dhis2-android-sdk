@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.datastore.internal
 import com.google.common.truth.Truth.assertThat
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
@@ -136,7 +137,7 @@ class DataStorePostCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
     private suspend fun setState(state: State) {
         val entries = d2.dataStoreModule().dataStore().blockingGet()
 
-        val store = DataStoreEntryStoreImpl(databaseAdapter)
+        val store: DataStoreEntryStore = koin.get()
         entries.forEach {
             store.setState(it, state)
         }

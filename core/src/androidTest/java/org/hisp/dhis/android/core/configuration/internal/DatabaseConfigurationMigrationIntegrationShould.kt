@@ -185,7 +185,7 @@ class DatabaseConfigurationMigrationIntegrationShould {
         databaseAdapter.execSQL("CREATE TABLE UserCredentials (_id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT)")
         databaseAdapter.setForeignKeyConstraintsEnabled(false)
         databaseAdapter.execSQL("INSERT INTO UserCredentials (username) VALUES ('${credentials.username()}')")
-        val configurationStore = ConfigurationStoreImpl(databaseAdapter)
+        val configurationStore: ConfigurationStore = koin.get()
         configurationStore.insert(Configuration.forServerUrl(serverUrl))
     }
 

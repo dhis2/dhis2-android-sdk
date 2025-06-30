@@ -30,18 +30,19 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import com.google.common.truth.Truth.assertThat
 import junit.framework.Assert.fail
 import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.event.internal.EventStoreImpl
+import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
-import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStoreImpl
+import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
@@ -66,7 +67,7 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
     abstract val teiAsRelationshipFile: String
 
     private lateinit var initSyncParams: SynchronizationSettings
-    private val syncStore = SynchronizationSettingStoreImpl(databaseAdapter)
+    private val syncStore: SynchronizationSettingStore = koin.get()
 
     @Before
     fun setUp() = runTest {
@@ -217,15 +218,15 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
     }
 
     private suspend fun getDownloadedTei(teiUid: String): TrackedEntityInstance? {
-        val teiAttributeValuesStore = TrackedEntityAttributeValueStoreImpl(databaseAdapter)
+        val teiAttributeValuesStore: TrackedEntityAttributeValueStore = koin.get()
         val attValues = teiAttributeValuesStore.queryByTrackedEntityInstance(teiUid)
         val attValuesWithoutIdAndTEI = attValues.map {
             it.toBuilder().id(null).trackedEntityInstance(null).build()
         }
 
-        val teiStore = TrackedEntityInstanceStoreImpl(databaseAdapter)
+        val teiStore: TrackedEntityInstanceStore = koin.get()
         val downloadedTei = teiStore.selectByUid(teiUid)
-        val enrollmentStore = EnrollmentStoreImpl(databaseAdapter)
+        val enrollmentStore: EnrollmentStore = koin.get()
         val downloadedEnrollments = enrollmentStore.selectWhere(
             WhereClauseBuilder()
                 .appendKeyStringValue(EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE, teiUid).build(),
@@ -234,13 +235,14 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
             it.toBuilder().id(null).deleted(false).notes(ArrayList()).build()
         }
 
-        val eventStore = EventStoreImpl(databaseAdapter)
+        val eventStore: EventStore = koin.get()
         val downloadedEventsWithoutValues = eventStore.selectAll()
         val downloadedEventsWithoutValuesAndDeleteFalse = downloadedEventsWithoutValues.map {
             it.toBuilder().id(null).deleted(false).build()
         }
 
-        val dataValueList = TrackedEntityDataValueStoreImpl(databaseAdapter).selectAll()
+        val dataValueStore: TrackedEntityDataValueStore = koin.get()
+        val dataValueList = dataValueStore.selectAll()
         val downloadedValues = dataValueList.groupBy { it.event() }
 
         return createTei(

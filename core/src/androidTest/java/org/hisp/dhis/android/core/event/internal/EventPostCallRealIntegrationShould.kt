@@ -31,6 +31,7 @@ import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.helpers.UidGenerator
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.common.State
@@ -40,9 +41,8 @@ import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl
 import org.junit.Before
-import java.util.*
+import java.util.Date
 
 class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
     private lateinit var eventStore: EventStore
@@ -59,8 +59,8 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
     @Before
     override fun setUp() {
         super.setUp()
-        eventStore = EventStoreImpl(d2.databaseAdapter())
-        trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl(d2.databaseAdapter())
+        eventStore = koin.get()
+        trackedEntityDataValueStore = koin.get()
         val uidGenerator: UidGenerator = UidGeneratorImpl()
         eventUid1 = uidGenerator.generate()
         eventUid2 = uidGenerator.generate()

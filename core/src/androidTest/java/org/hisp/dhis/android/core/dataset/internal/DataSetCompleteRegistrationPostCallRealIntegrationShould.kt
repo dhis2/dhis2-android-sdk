@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.dataset.internal
 import com.google.common.truth.Truth
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationCollectionRepository
@@ -42,7 +43,7 @@ class DataSetCompleteRegistrationPostCallRealIntegrationShould : BaseRealIntegra
     @Before
     override fun setUp() {
         super.setUp()
-        dataSetCompleteRegistrationStore = DataSetCompleteRegistrationStoreImpl(d2.databaseAdapter())
+        dataSetCompleteRegistrationStore = koin.get()
     }
 
     // commented out since it is a flaky test that works against a real server.

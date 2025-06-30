@@ -29,9 +29,10 @@ package org.hisp.dhis.android.core.event
 
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
-import org.hisp.dhis.android.core.event.internal.EventStoreImpl
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
+import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
-import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStoreImpl
+import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
 import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
@@ -47,7 +48,7 @@ abstract class EventWithLimitCallBaseMockIntegrationShould : BaseMockIntegration
     abstract val downloadEventsByUidLimitedByOneFile: String
 
     private lateinit var initSyncParams: SynchronizationSettings
-    private val syncStore = SynchronizationSettingStoreImpl(databaseAdapter)
+    private val syncStore: SynchronizationSettingStore = koin.get()
 
     @Before
     fun setUp() = runTest {
@@ -71,7 +72,7 @@ abstract class EventWithLimitCallBaseMockIntegrationShould : BaseMockIntegration
         dhis2MockServer.enqueueSystemInfoResponse()
         dhis2MockServer.enqueueMockResponse(downloadEventsFile)
         d2.eventModule().eventDownloader().limit(eventLimitByOrgUnit).blockingDownload()
-        val eventStore = EventStoreImpl(databaseAdapter)
+        val eventStore: EventStore = koin.get()
         val downloadedEvents = eventStore.querySingleEvents()
         assertThat(downloadedEvents.size).isEqualTo(eventLimitByOrgUnit)
     }
@@ -86,7 +87,7 @@ abstract class EventWithLimitCallBaseMockIntegrationShould : BaseMockIntegration
             .`in`("wAiGPfJGMxt", "PpNGhvEYnXe")
             .limit(eventLimitByOrgUnit)
             .blockingDownload()
-        val eventStore = EventStoreImpl(databaseAdapter)
+        val eventStore: EventStore = koin.get()
         val downloadedEvents = eventStore.querySingleEvents()
         assertThat(downloadedEvents.size).isEqualTo(eventLimitByOrgUnit)
     }

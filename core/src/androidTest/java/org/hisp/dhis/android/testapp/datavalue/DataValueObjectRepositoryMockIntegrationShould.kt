@@ -29,9 +29,10 @@ package org.hisp.dhis.android.testapp.datavalue
 
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValueObjectRepository
-import org.hisp.dhis.android.core.datavalue.internal.DataValueStoreImpl
+import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
@@ -84,7 +85,7 @@ class DataValueObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
     fun set_state_to_delete_if_state_is_not_to_post() = runTest {
         val repository = objectRepository()
         repository.blockingSet("value")
-        DataValueStoreImpl(databaseAdapter).setState(repository.blockingGet()!!, State.ERROR)
+        dataValueStore().setState(repository.blockingGet()!!, State.ERROR)
 
         assertThat(repository.blockingExists()).isTrue()
         assertThat(repository.blockingGet()!!.syncState()).isEqualTo(State.ERROR)
@@ -99,7 +100,7 @@ class DataValueObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
     fun set_not_deleted_when_updating_deleted_value() = runTest {
         val repository = objectRepository()
         repository.blockingSet("value")
-        DataValueStoreImpl(databaseAdapter).setState(repository.blockingGet()!!, State.TO_UPDATE)
+        dataValueStore().setState(repository.blockingGet()!!, State.TO_UPDATE)
         repository.blockingDelete()
 
         assertThat(repository.blockingGet()!!.deleted()).isTrue()
@@ -141,7 +142,7 @@ class DataValueObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
         val repository = objectRepository()
         repository.blockingSet("test_value")
         repository.setComment("Hey!")
-        DataValueStoreImpl(databaseAdapter).setState(repository.blockingGet()!!, State.SYNCED)
+        dataValueStore().setState(repository.blockingGet()!!, State.SYNCED)
 
         repository.setComment("Hey!")
         assertThat(repository.blockingGet()!!.syncState()).isEqualTo(State.SYNCED)
@@ -150,7 +151,7 @@ class DataValueObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
         assertThat(repository.blockingGet()!!.syncState()).isEqualTo(State.TO_UPDATE)
 
         // Set to TO_POST state to truly delete de data value
-        DataValueStoreImpl(databaseAdapter).setState(repository.blockingGet()!!, State.TO_POST)
+        dataValueStore().setState(repository.blockingGet()!!, State.TO_POST)
         repository.blockingDelete()
         assertThat(repository.blockingExists()).isFalse()
     }
@@ -164,5 +165,9 @@ class DataValueObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
                 "Gmbgme7z9BF",
                 "bRowv6yZOF2",
             )
+    }
+
+    private fun dataValueStore(): DataValueStore {
+        return koin.get<DataValueStore>()
     }
 }

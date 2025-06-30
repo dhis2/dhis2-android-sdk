@@ -63,7 +63,7 @@ import java.util.Date
 @RunWith(D2JunitRunner::class)
 internal class TrackerEntityInstanceLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrationShould() {
 
-    private val helper = BaseTrackerDataIntegrationHelper(databaseAdapter)
+    private val helper = BaseTrackerDataIntegrationHelper()
 
     val programOther: Program = Program.builder()
         .uid(generator.generate())

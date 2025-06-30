@@ -69,7 +69,7 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
 
     private val eventDataItemEvaluator = EventDataItemSQLEvaluator(databaseAdapter)
 
-    private val helper = BaseTrackerDataIntegrationHelper(databaseAdapter)
+    private val helper = BaseTrackerDataIntegrationHelper()
     private val event1 = generator.generate()
     private val enrollment1 = generator.generate()
     private val event2 = generator.generate()

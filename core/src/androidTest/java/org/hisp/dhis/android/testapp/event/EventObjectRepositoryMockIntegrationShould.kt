@@ -31,6 +31,7 @@ import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
+import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.Geometry
 import org.hisp.dhis.android.core.event.EventCreateProjection

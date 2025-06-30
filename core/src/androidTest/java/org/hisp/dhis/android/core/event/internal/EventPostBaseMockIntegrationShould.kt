@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityDataValueSamples
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
+import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
 import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.TrackerImporterVersion

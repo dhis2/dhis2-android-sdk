@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.configuration.internal
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
-import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
@@ -186,7 +185,7 @@ class DatabaseConfigurationMigrationIntegrationShould {
         databaseAdapter.execSQL("CREATE TABLE UserCredentials (_id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT)")
         databaseAdapter.setForeignKeyConstraintsEnabled(false)
         databaseAdapter.execSQL("INSERT INTO UserCredentials (username) VALUES ('${credentials.username()}')")
-        val configurationStore: ConfigurationStore = koin.get()
+        val configurationStore = ConfigurationStoreImpl(databaseAdapter)
         configurationStore.insert(Configuration.forServerUrl(serverUrl))
     }
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,48 +28,52 @@
 
 package org.hisp.dhis.android.core.programstageworkinglist;
 
-import android.database.Cursor;
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.tableinfo.FilterOperatorsColumns;
 
-import com.google.auto.value.AutoValue;
+public final class ProgramStageWorkingListAttributeValueFilterTableInfo {
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.FilterOperators;
-
-@AutoValue
-public abstract class ProgramStageWorkingListEventDataFilter extends FilterOperators implements CoreObject {
-
-    /**
-     * The related program stage working list
-     */
-    @NonNull
-    public abstract String programStageWorkingList();
-
-    /**
-     * The data element id or data item
-     */
-    @NonNull
-    public abstract String dataItem();
-
-    public static Builder builder() {
-        return new $$AutoValue_ProgramStageWorkingListEventDataFilter.Builder();
+    private ProgramStageWorkingListAttributeValueFilterTableInfo() {
     }
 
-    public static ProgramStageWorkingListEventDataFilter create(Cursor cursor) {
-        return $AutoValue_ProgramStageWorkingListEventDataFilter.createFromCursor(cursor);
-    }
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    public abstract Builder toBuilder();
+        @Override
+        public String name() {
+            return "ProgramStageWorkingListAttributeValueFilter";
+        }
 
-    @AutoValue.Builder
-    public abstract static class Builder extends FilterOperators.Builder<Builder> {
-        public abstract Builder id(Long id);
+        @Override
+        public CoreColumns columns() {
+            return new ProgramStageWorkingListAttributeValueFilterTableInfo.Columns();
+        }
+    };
 
-        public abstract Builder programStageWorkingList(String programStageWorkingList);
+    public static class Columns extends FilterOperatorsColumns {
+        public static final String PROGRAM_STAGE_WORKING_LIST = "programStageWorkingList";
+        public static final String ATTRIBUTE = "attribute";
+        public static final String SW = "sw";
+        public static final String EW = "ew";
 
-        public abstract Builder dataItem(String dataItem);
-
-        public abstract ProgramStageWorkingListEventDataFilter build();
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    PROGRAM_STAGE_WORKING_LIST,
+                    ATTRIBUTE,
+                    SW,
+                    EW,
+                    LE,
+                    GE,
+                    GT,
+                    LT,
+                    EQ,
+                    IN,
+                    LIKE,
+                    DATE_FILTER
+            );
+        }
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,35 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.programstageworkinglist
+package org.hisp.dhis.android.core.common.tableinfo;
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
-import org.hisp.dhis.android.network.common.dto.DateFilterPeriodDTO
-import org.hisp.dhis.android.network.common.dto.FilterOperatorsDTO
-import org.hisp.dhis.android.network.common.dto.applyFilterOperatorsFields
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
 
-@Serializable
-internal data class ProgramStageWorkingListAttributeValueFilterDTO(
-    override val le: String?,
-    override val ge: String?,
-    override val gt: String?,
-    override val lt: String?,
-    override val eq: String?,
-    override val `in`: Set<String>?,
-    override val like: String?,
-    override val dateFilter: DateFilterPeriodDTO?,
-    val attribute: String,
-    val ew: String?,
-    val sw: String?,
-) : FilterOperatorsDTO {
-    fun toDomain(programStageWorkingList: String): ProgramStageWorkingListAttributeValueFilter {
-        return ProgramStageWorkingListAttributeValueFilter.builder()
-            .applyFilterOperatorsFields(this)
-            .programStageWorkingList(programStageWorkingList)
-            .attribute(attribute)
-            .ew(ew)
-            .sw(sw)
-            .build()
+public class FilterOperatorsColumns extends CoreColumns {
+    public static final String LE = "le";
+    public static final String GE = "ge";
+    public static final String GT = "gt";
+    public static final String LT = "lt";
+    public static final String EQ = "eq";
+    public static final String IN = "inProperty";
+    public static final String LIKE = "like";
+    public static final String DATE_FILTER = "dateFilter";
+
+    @Override
+    public String[] all() {
+        return CollectionsHelper.appendInNewArray(
+                super.all()
+        );
     }
 }

@@ -183,6 +183,6 @@ class EventFilterCollectionRepositoryMockIntegrationShould : BaseMockIntegration
             .withEventDataFilters().one().blockingGet()
 
         assertThat(eventFilter!!.eventQueryCriteria()!!.dataFilters()!!.size).isEqualTo(4)
-        assertThat(eventFilter.eventQueryCriteria()!!.dataFilters()!![0].dataItem()).isEqualTo("abcDataElementUid")
+        assertThat(eventFilter.eventQueryCriteria()!!.dataFilters()!![0].dataItem()).isEqualTo("g9eOBujte1U")
     }
 }

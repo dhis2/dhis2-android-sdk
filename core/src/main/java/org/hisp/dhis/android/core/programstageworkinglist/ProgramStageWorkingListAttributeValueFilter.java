@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.programstageworkinglist;
 
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -43,13 +44,13 @@ public abstract class ProgramStageWorkingListAttributeValueFilter extends Filter
     /**
      * The related program stage working list
      */
-    @Nullable
+    @NonNull
     public abstract String programStageWorkingList();
 
     /**
      * The attribute id
      */
-    @Nullable
+    @NonNull
     public abstract String attribute();
 
     /**

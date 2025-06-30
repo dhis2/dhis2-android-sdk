@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.network.programstageworkinglist
 
-import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilterTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
 
@@ -37,16 +37,16 @@ internal object ProgramStageWorkingListAttributeValueFilterFields :
     private const val API_IN = "in"
 
     val allFields = Fields.from(
-        fh.field(ItemFilterTableInfo.Columns.ATTRIBUTE),
-        fh.field(ItemFilterTableInfo.Columns.SW),
-        fh.field(ItemFilterTableInfo.Columns.EW),
-        fh.field(ItemFilterTableInfo.Columns.LE),
-        fh.field(ItemFilterTableInfo.Columns.GE),
-        fh.field(ItemFilterTableInfo.Columns.GT),
-        fh.field(ItemFilterTableInfo.Columns.LT),
-        fh.field(ItemFilterTableInfo.Columns.EQ),
+        fh.field(Columns.ATTRIBUTE),
+        fh.field(Columns.SW),
+        fh.field(Columns.EW),
+        fh.field(Columns.LE),
+        fh.field(Columns.GE),
+        fh.field(Columns.GT),
+        fh.field(Columns.LT),
+        fh.field(Columns.EQ),
         fh.field(API_IN),
-        fh.field(ItemFilterTableInfo.Columns.LIKE),
-        fh.field(ItemFilterTableInfo.Columns.DATE_FILTER),
+        fh.field(Columns.LIKE),
+        fh.field(Columns.DATE_FILTER),
     )
 }

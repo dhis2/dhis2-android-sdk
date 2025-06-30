@@ -29,7 +29,11 @@ package org.hisp.dhis.android.core.trackedentity.search
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
-import org.hisp.dhis.android.core.common.*
+import org.hisp.dhis.android.core.common.AssignedUserMode
+import org.hisp.dhis.android.core.common.DateFilterPeriod
+import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
+import org.hisp.dhis.android.core.common.FilterPeriod
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
@@ -174,10 +178,12 @@ class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
                         listOf(
                             AttributeValueFilter.builder()
                                 .attribute("attribute1")
+                                .trackedEntityInstanceFilter(filterUid)
                                 .like("like_str")
                                 .build(),
                             AttributeValueFilter.builder()
                                 .attribute("attribute2")
+                                .trackedEntityInstanceFilter(filterUid)
                                 .eq("eq_str")
                                 .build(),
                         ),

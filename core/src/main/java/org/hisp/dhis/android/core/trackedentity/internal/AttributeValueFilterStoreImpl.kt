@@ -35,8 +35,8 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinde
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl
-import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo
 import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
+import org.hisp.dhis.android.core.trackedentity.AttributeValueFilterTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -46,7 +46,7 @@ internal class AttributeValueFilterStoreImpl(
 ) : AttributeValueFilterStore,
     ObjectWithoutUidStoreImpl<AttributeValueFilter>(
         databaseAdapter,
-        ItemFilterTableInfo.TABLE_INFO,
+        AttributeValueFilterTableInfo.TABLE_INFO,
         BINDER,
         WHERE_UPDATE_BINDER,
         WHERE_DELETE_BINDER,
@@ -55,21 +55,18 @@ internal class AttributeValueFilterStoreImpl(
 
     companion object {
         private val BINDER = StatementBinder { o: AttributeValueFilter, w: StatementWrapper ->
-            w.bindNull(1)
-            w.bindNull(2)
-            w.bind(3, o.trackedEntityInstanceFilter())
-            w.bind(4, o.attribute())
-            w.bindNull(5)
-            w.bind(6, o.sw())
-            w.bind(7, o.ew())
-            w.bind(8, o.le())
-            w.bind(9, o.ge())
-            w.bind(10, o.gt())
-            w.bind(11, o.lt())
-            w.bind(12, o.eq())
-            w.bind(13, StringSetColumnAdapter.serialize(o.`in`()))
-            w.bind(14, o.like())
-            w.bind(15, DateFilterPeriodColumnAdapter.serialize(o.dateFilter()))
+            w.bind(1, o.trackedEntityInstanceFilter())
+            w.bind(2, o.attribute())
+            w.bind(3, o.sw())
+            w.bind(4, o.ew())
+            w.bind(5, o.le())
+            w.bind(6, o.ge())
+            w.bind(7, o.gt())
+            w.bind(8, o.lt())
+            w.bind(9, o.eq())
+            w.bind(10, StringSetColumnAdapter.serialize(o.`in`()))
+            w.bind(11, o.like())
+            w.bind(12, DateFilterPeriodColumnAdapter.serialize(o.dateFilter()))
         }
 
         private val WHERE_UPDATE_BINDER = WhereStatementBinder { _: AttributeValueFilter, _ -> }
@@ -81,7 +78,7 @@ internal class AttributeValueFilterStoreImpl(
     ): List<AttributeValueFilter> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(
-                ItemFilterTableInfo.Columns.TRACKED_ENTITY_INSTANCE_FILTER,
+                AttributeValueFilterTableInfo.Columns.TRACKED_ENTITY_INSTANCE_FILTER,
                 trackedEntityInstanceFilterUid,
             )
             .build()

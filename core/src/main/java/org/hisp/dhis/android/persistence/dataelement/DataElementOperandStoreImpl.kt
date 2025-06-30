@@ -31,9 +31,9 @@ package org.hisp.dhis.android.persistence.dataelement
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandStore
-import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLinkTableInfo
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.hisp.dhis.android.persistence.dataset.DataSetCompulsoryDataElementOperandsLinkTableInfo
 import org.hisp.dhis.android.persistence.dataset.SectionGreyedFieldsLinkTableInfo
 
 internal class DataElementOperandStoreImpl(
@@ -61,10 +61,10 @@ internal class DataElementOperandStoreImpl(
     override suspend fun getForDataSet(dataSetUid: String): List<DataElementOperand> {
         val projection = LinkTableChildProjection(
             DataElementOperandTableInfo.TABLE_INFO,
-            DataSetCompulsoryDataElementOperandLinkTableInfo.Columns.DATA_SET,
-            DataSetCompulsoryDataElementOperandLinkTableInfo.Columns.DATA_ELEMENT_OPERAND,
+            DataSetCompulsoryDataElementOperandsLinkTableInfo.Columns.DATA_SET,
+            DataSetCompulsoryDataElementOperandsLinkTableInfo.Columns.DATA_ELEMENT_OPERAND,
         )
-        val sectionSqlBuilder = SQLStatementBuilderImpl(DataSetCompulsoryDataElementOperandLinkTableInfo.TABLE_INFO)
+        val sectionSqlBuilder = SQLStatementBuilderImpl(DataSetCompulsoryDataElementOperandsLinkTableInfo.TABLE_INFO)
         val query = sectionSqlBuilder.selectChildrenWithLinkTable(
             projection,
             dataSetUid,

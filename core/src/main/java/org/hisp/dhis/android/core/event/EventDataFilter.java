@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.event;
 
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -49,7 +50,7 @@ public abstract class EventDataFilter extends FilterOperators implements CoreObj
     /**
      * The data element id or data item
      */
-    @Nullable
+    @NonNull
     public abstract String dataItem();
 
     public static Builder builder() {

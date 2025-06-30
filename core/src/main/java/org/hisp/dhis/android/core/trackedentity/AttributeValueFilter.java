@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity;
 
 import android.database.Cursor;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -49,7 +50,7 @@ public abstract class AttributeValueFilter extends FilterOperators implements Co
     /**
      * The attribute id
      */
-    @Nullable
+    @NonNull
     public abstract String attribute();
 
     /**

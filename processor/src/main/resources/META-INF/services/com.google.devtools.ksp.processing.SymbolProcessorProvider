@@ -1,1 +1,2 @@
 org.hisp.dhis.android.processor.EntityProcessorProvider
+org.hisp.dhis.android.processor.MigrationProcessorProvider

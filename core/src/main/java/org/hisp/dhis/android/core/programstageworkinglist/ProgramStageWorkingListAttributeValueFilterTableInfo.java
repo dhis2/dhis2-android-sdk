@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,63 +28,52 @@
 
 package org.hisp.dhis.android.core.programstageworkinglist;
 
-import android.database.Cursor;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.tableinfo.FilterOperatorsColumns;
 
-import com.google.auto.value.AutoValue;
+public final class ProgramStageWorkingListAttributeValueFilterTableInfo {
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.FilterOperators;
-
-@AutoValue
-public abstract class ProgramStageWorkingListAttributeValueFilter extends FilterOperators implements CoreObject {
-
-    /**
-     * The related program stage working list
-     */
-    @NonNull
-    public abstract String programStageWorkingList();
-
-    /**
-     * The attribute id
-     */
-    @NonNull
-    public abstract String attribute();
-
-    /**
-     * End with
-     */
-    @Nullable
-    public abstract String ew();
-
-    /**
-     * Starts with
-     */
-    @Nullable
-    public abstract String sw();
-
-    public static Builder builder() {
-        return new $$AutoValue_ProgramStageWorkingListAttributeValueFilter.Builder();
+    private ProgramStageWorkingListAttributeValueFilterTableInfo() {
     }
 
-    public static ProgramStageWorkingListAttributeValueFilter create(Cursor cursor) {
-        return $AutoValue_ProgramStageWorkingListAttributeValueFilter.createFromCursor(cursor);
-    }
+    public static final TableInfo TABLE_INFO = new TableInfo() {
 
-    public abstract Builder toBuilder();
+        @Override
+        public String name() {
+            return "ProgramStageWorkingListAttributeValueFilter";
+        }
 
-    @AutoValue.Builder
-    public abstract static class Builder extends FilterOperators.Builder<Builder> {
-        public abstract Builder programStageWorkingList(String programStageWorkingList);
+        @Override
+        public CoreColumns columns() {
+            return new ProgramStageWorkingListAttributeValueFilterTableInfo.Columns();
+        }
+    };
 
-        public abstract Builder attribute(String attribute);
+    public static class Columns extends FilterOperatorsColumns {
+        public static final String PROGRAM_STAGE_WORKING_LIST = "programStageWorkingList";
+        public static final String ATTRIBUTE = "attribute";
+        public static final String SW = "sw";
+        public static final String EW = "ew";
 
-        public abstract Builder ew(String ew);
-
-        public abstract Builder sw(String sw);
-
-        public abstract ProgramStageWorkingListAttributeValueFilter build();
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(super.all(),
+                    PROGRAM_STAGE_WORKING_LIST,
+                    ATTRIBUTE,
+                    SW,
+                    EW,
+                    LE,
+                    GE,
+                    GT,
+                    LT,
+                    EQ,
+                    IN,
+                    LIKE,
+                    DATE_FILTER
+            );
+        }
     }
 }

@@ -26,35 +26,34 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.programstageworkinglist
+package org.hisp.dhis.android.persistence.programstageworkinglist
 
-import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
-import org.hisp.dhis.android.network.common.dto.DateFilterPeriodDTO
-import org.hisp.dhis.android.network.common.dto.FilterOperatorsDTO
-import org.hisp.dhis.android.network.common.dto.applyFilterOperatorsFields
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilterTableInfo
+import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListAttributeValueFilterStore
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 
-@Serializable
-internal data class ProgramStageWorkingListAttributeValueFilterDTO(
-    override val le: String?,
-    override val ge: String?,
-    override val gt: String?,
-    override val lt: String?,
-    override val eq: String?,
-    override val `in`: Set<String>?,
-    override val like: String?,
-    override val dateFilter: DateFilterPeriodDTO?,
-    val attribute: String,
-    val ew: String?,
-    val sw: String?,
-) : FilterOperatorsDTO {
-    fun toDomain(programStageWorkingList: String): ProgramStageWorkingListAttributeValueFilter {
-        return ProgramStageWorkingListAttributeValueFilter.builder()
-            .applyFilterOperatorsFields(this)
-            .programStageWorkingList(programStageWorkingList)
-            .attribute(attribute)
-            .ew(ew)
-            .sw(sw)
-            .build()
+internal class ProgramStageWorkingListAttributeValueFilterStoreImpl(
+    private val dao: ProgramStageWorkingListAttributeValueFilterDao,
+) : ProgramStageWorkingListAttributeValueFilterStore,
+    ObjectWithoutUidStoreImpl<
+        ProgramStageWorkingListAttributeValueFilter,
+        ProgramStageWorkingListAttributeValueFilterDB,
+        >(
+        dao,
+        ProgramStageWorkingListAttributeValueFilter::toDB,
+        SQLStatementBuilderImpl(ProgramStageWorkingListAttributeValueFilterTableInfo.TABLE_INFO),
+    ) {
+    override suspend fun getForProgramStageWorkingList(
+        programStageWorkingList: String,
+    ): List<ProgramStageWorkingListAttributeValueFilter> {
+        val whereClause = WhereClauseBuilder().appendKeyStringValue(
+            ProgramStageWorkingListAttributeValueFilterTableInfo.Columns.PROGRAM_STAGE_WORKING_LIST,
+            programStageWorkingList,
+        ).build()
+        val query = builder.selectWhere(whereClause)
+        return selectRawQuery(query)
     }
 }

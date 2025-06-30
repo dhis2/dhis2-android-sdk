@@ -44,7 +44,7 @@ internal data class EventDataFilterDTO(
     override val `in`: Set<String>?,
     override val like: String?,
     override val dateFilter: DateFilterPeriodDTO?,
-    val dataItem: String?,
+    val dataItem: String,
 ) : FilterOperatorsDTO {
     fun toDomain(eventFilter: String): EventDataFilter {
         return EventDataFilter.builder()

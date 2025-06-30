@@ -31,10 +31,10 @@ package org.hisp.dhis.android.persistence.trackedentity
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueTableInfo.Columns
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeReservedValueTableInfo.Columns
 import java.util.Date
 
 internal class TrackedEntityAttributeReservedValueStoreImpl(
@@ -78,8 +78,7 @@ internal class TrackedEntityAttributeReservedValueStoreImpl(
         organisationUnit: String?,
         pattern: String?,
     ): String {
-        val builder = WhereClauseBuilder()
-            .appendKeyStringValue(Columns.OWNER_UID, ownerUid)
+        val builder = WhereClauseBuilder().appendKeyStringValue(Columns.OWNER_UID, ownerUid)
         if (organisationUnit != null) {
             builder.appendKeyStringValue(Columns.ORGANISATION_UNIT, organisationUnit)
         }

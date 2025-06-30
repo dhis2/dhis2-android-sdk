@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.programstageworkinglist;
 
 import android.database.Cursor;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 
 import com.google.auto.value.AutoValue;
 
@@ -43,13 +43,13 @@ public abstract class ProgramStageWorkingListEventDataFilter extends FilterOpera
     /**
      * The related program stage working list
      */
-    @Nullable
+    @NonNull
     public abstract String programStageWorkingList();
 
     /**
      * The data element id or data item
      */
-    @Nullable
+    @NonNull
     public abstract String dataItem();
 
     public static Builder builder() {

@@ -26,35 +26,33 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.programstageworkinglist
+package org.hisp.dhis.android.persistence.trackedentity
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
-import org.hisp.dhis.android.network.common.dto.DateFilterPeriodDTO
-import org.hisp.dhis.android.network.common.dto.FilterOperatorsDTO
-import org.hisp.dhis.android.network.common.dto.applyFilterOperatorsFields
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
+import org.hisp.dhis.android.core.trackedentity.internal.AttributeValueFilterStore
+import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 
-@Serializable
-internal data class ProgramStageWorkingListAttributeValueFilterDTO(
-    override val le: String?,
-    override val ge: String?,
-    override val gt: String?,
-    override val lt: String?,
-    override val eq: String?,
-    override val `in`: Set<String>?,
-    override val like: String?,
-    override val dateFilter: DateFilterPeriodDTO?,
-    val attribute: String,
-    val ew: String?,
-    val sw: String?,
-) : FilterOperatorsDTO {
-    fun toDomain(programStageWorkingList: String): ProgramStageWorkingListAttributeValueFilter {
-        return ProgramStageWorkingListAttributeValueFilter.builder()
-            .applyFilterOperatorsFields(this)
-            .programStageWorkingList(programStageWorkingList)
-            .attribute(attribute)
-            .ew(ew)
-            .sw(sw)
+internal class AttributeValueFilterStoreImpl(
+    private val dao: AttributeValueFilterDao,
+) : AttributeValueFilterStore,
+    ObjectWithoutUidStoreImpl<AttributeValueFilter, AttributeValueFilterDB>(
+        dao,
+        AttributeValueFilter::toDB,
+        SQLStatementBuilderImpl(AttributeValueFilterTableInfo.TABLE_INFO),
+    ) {
+
+    override suspend fun getForTrackedEntityInstanceFilter(
+        trackedEntityInstanceFilterUid: String,
+    ): List<AttributeValueFilter> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(
+                AttributeValueFilterTableInfo.Columns.TRACKED_ENTITY_INSTANCE_FILTER,
+                trackedEntityInstanceFilterUid,
+            )
             .build()
+        val selectStatement = builder.selectWhere(whereClause)
+        return selectRawQuery(selectStatement)
     }
 }

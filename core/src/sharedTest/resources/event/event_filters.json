@@ -68,7 +68,7 @@
         ],
         "dataFilters": [
           {
-            "dataItem": "abcDataElementUid",
+            "dataItem": "g9eOBujte1U",
             "le": "20",
             "ge": "10",
             "lt": "20",
@@ -80,7 +80,7 @@
             "like": "abc"
           },
           {
-            "dataItem": "dateDataElementUid",
+            "dataItem": "ciWE5jde1ax",
             "dateFilter": {
               "startDate": "2014-05-01",
               "endDate": "2019-03-20",
@@ -88,7 +88,7 @@
             }
           },
           {
-            "dataItem": "anotherDateDataElementUid",
+            "dataItem": "jDx8LZlznYu",
             "dateFilter": {
               "startBuffer": -5,
               "endBuffer": 5,
@@ -96,7 +96,7 @@
             }
           },
           {
-            "dataItem": "yetAnotherDateDataElementUid",
+            "dataItem": "uFAQYm3UgBL",
             "dateFilter": {
               "period": "LAST_WEEK",
               "type": "RELATIVE"

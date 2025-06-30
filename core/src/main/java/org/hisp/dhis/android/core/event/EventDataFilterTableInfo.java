@@ -26,35 +26,52 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.programstageworkinglist
+package org.hisp.dhis.android.core.event;
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
-import org.hisp.dhis.android.network.common.dto.DateFilterPeriodDTO
-import org.hisp.dhis.android.network.common.dto.FilterOperatorsDTO
-import org.hisp.dhis.android.network.common.dto.applyFilterOperatorsFields
 
-@Serializable
-internal data class ProgramStageWorkingListAttributeValueFilterDTO(
-    override val le: String?,
-    override val ge: String?,
-    override val gt: String?,
-    override val lt: String?,
-    override val eq: String?,
-    override val `in`: Set<String>?,
-    override val like: String?,
-    override val dateFilter: DateFilterPeriodDTO?,
-    val attribute: String,
-    val ew: String?,
-    val sw: String?,
-) : FilterOperatorsDTO {
-    fun toDomain(programStageWorkingList: String): ProgramStageWorkingListAttributeValueFilter {
-        return ProgramStageWorkingListAttributeValueFilter.builder()
-            .applyFilterOperatorsFields(this)
-            .programStageWorkingList(programStageWorkingList)
-            .attribute(attribute)
-            .ew(ew)
-            .sw(sw)
-            .build()
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.tableinfo.FilterOperatorsColumns;
+
+public final class EventDataFilterTableInfo {
+
+    private EventDataFilterTableInfo() {
+    }
+
+    public static final TableInfo TABLE_INFO = new TableInfo() {
+
+        @Override
+        public String name() {
+            return "EventDataFilter";
+        }
+
+        @Override
+        public CoreColumns columns() {
+            return new EventDataFilterTableInfo.Columns();
+        }
+    };
+
+    public static class Columns extends FilterOperatorsColumns {
+        public static final String EVENT_FILTER = "eventFilter";
+        public static final String DATA_ITEM = "dataItem";
+
+
+        @Override
+        public String[] all() {
+            return CollectionsHelper.appendInNewArray(
+                    super.all(),
+                    EVENT_FILTER,
+                    DATA_ITEM,
+                    LE,
+                    GE,
+                    GT,
+                    LT,
+                    EQ,
+                    IN,
+                    LIKE,
+                    DATE_FILTER
+            );
+        }
     }
 }

@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.persistence.event
 
 import org.hisp.dhis.android.core.event.EventFilter
-import org.hisp.dhis.android.core.event.EventFilterTableInfo
 import org.hisp.dhis.android.core.event.internal.EventFilterStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl

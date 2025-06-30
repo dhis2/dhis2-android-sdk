@@ -26,14 +26,14 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.event
+package org.hisp.dhis.android.persistence.programstageworkinglist
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import org.hisp.dhis.android.core.event.EventDataFilter
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListEventDataFilter
 import org.hisp.dhis.android.persistence.common.DateFilterPeriodDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.FilterOperatorsDB
@@ -43,12 +43,12 @@ import org.hisp.dhis.android.persistence.common.toDB
 import org.hisp.dhis.android.persistence.dataelement.DataElementDB
 
 @Entity(
-    tableName = "EventDataFilter",
+    tableName = "ProgramStageWorkingListEventDataFilter",
     foreignKeys = [
         ForeignKey(
-            entity = EventFilterDB::class,
+            entity = ProgramStageWorkingListDB::class,
             parentColumns = ["uid"],
-            childColumns = ["eventFilter"],
+            childColumns = ["programStageWorkingList"],
             onDelete = ForeignKey.CASCADE,
             deferred = true,
         ),
@@ -61,15 +61,15 @@ import org.hisp.dhis.android.persistence.dataelement.DataElementDB
         ),
     ],
     indices = [
-        Index(value = ["eventFilter"]),
+        Index(value = ["programStageWorkingList"]),
         Index(value = ["dataItem"]),
     ],
 )
-internal data class EventDataFilterDB(
+internal data class ProgramStageWorkingListEventDataFilterDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
     val id: Int? = 0,
-    val eventFilter: String?,
+    val programStageWorkingList: String?,
     val dataItem: String?,
     override val le: String?,
     override val ge: String?,
@@ -79,20 +79,20 @@ internal data class EventDataFilterDB(
     override val inProperty: StringSetDB?,
     override val like: String?,
     override val dateFilter: DateFilterPeriodDB?,
-) : EntityDB<EventDataFilter>, FilterOperatorsDB {
-    override fun toDomain(): EventDataFilter {
-        return EventDataFilter.builder()
-            .applyFilterOperatorsFields(this@EventDataFilterDB)
+) : EntityDB<ProgramStageWorkingListEventDataFilter>, FilterOperatorsDB {
+    override fun toDomain(): ProgramStageWorkingListEventDataFilter {
+        return ProgramStageWorkingListEventDataFilter.builder()
             .id(id?.toLong())
-            .eventFilter(eventFilter)
+            .applyFilterOperatorsFields(this@ProgramStageWorkingListEventDataFilterDB)
+            .programStageWorkingList(programStageWorkingList)
             .dataItem(dataItem)
             .build()
     }
 }
 
-internal fun EventDataFilter.toDB(): EventDataFilterDB {
-    return EventDataFilterDB(
-        eventFilter = eventFilter(),
+internal fun ProgramStageWorkingListEventDataFilter.toDB(): ProgramStageWorkingListEventDataFilterDB {
+    return ProgramStageWorkingListEventDataFilterDB(
+        programStageWorkingList = programStageWorkingList(),
         dataItem = dataItem(),
         le = le(),
         ge = ge(),

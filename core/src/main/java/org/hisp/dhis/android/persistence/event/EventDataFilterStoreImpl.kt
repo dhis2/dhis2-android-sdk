@@ -33,18 +33,17 @@ import org.hisp.dhis.android.core.event.EventDataFilter
 import org.hisp.dhis.android.core.event.internal.EventDataFilterStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
-import org.hisp.dhis.android.persistence.itemfilter.ItemFilterTableInfo
 
 internal class EventDataFilterStoreImpl(
     val dao: EventDataFilterDao,
 ) : EventDataFilterStore, ObjectWithoutUidStoreImpl<EventDataFilter, EventDataFilterDB>(
     dao,
     EventDataFilter::toDB,
-    SQLStatementBuilderImpl(ItemFilterTableInfo.TABLE_INFO),
+    SQLStatementBuilderImpl(EventDataFilterTableInfo.TABLE_INFO),
 ) {
     override suspend fun getForEventFilter(eventFilterUid: String): List<EventDataFilter> {
         val whereClause = WhereClauseBuilder().appendKeyStringValue(
-            ItemFilterTableInfo.Columns.EVENT_FILTER,
+            EventDataFilterTableInfo.Columns.EVENT_FILTER,
             eventFilterUid,
         ).build()
         val query = builder.selectWhere(whereClause)

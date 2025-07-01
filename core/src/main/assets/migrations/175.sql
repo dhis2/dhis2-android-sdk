@@ -51,8 +51,8 @@ INSERT INTO Constant(uid, code, name, displayName, created, lastUpdated, value) 
 DROP TABLE Constant_Old;
 
 ALTER TABLE SystemInfo RENAME TO SystemInfo_Old;
-CREATE TABLE SystemInfo(contextPath TEXT NOT NULL PRIMARY KEY, serverDate TEXT, dateFormat TEXT, version TEXT, systemName TEXT);
-INSERT INTO SystemInfo(contextPath, serverDate, dateFormat, version, systemName) SELECT contextPath, serverDate, dateFormat, version, systemName FROM SystemInfo_Old;
+CREATE TABLE SystemInfo(serverDate TEXT, dateFormat TEXT, version TEXT, contextPath TEXT NOT NULL PRIMARY KEY, systemName TEXT);
+INSERT INTO SystemInfo(serverDate, dateFormat, version, contextPath, systemName) SELECT serverDate, dateFormat, version, contextPath, systemName FROM SystemInfo_Old;
 DROP TABLE SystemInfo_Old;
 
 ALTER TABLE ProgramRule RENAME TO ProgramRule_Old;
@@ -136,17 +136,17 @@ INSERT INTO DataSetIndicatorLink(dataSet, indicator) SELECT dataSet, indicator F
 DROP TABLE DataSetIndicatorLink_Old;
 
 ALTER TABLE Period RENAME TO Period_Old;
-CREATE TABLE Period(periodId TEXT NOT NULL PRIMARY KEY, periodType TEXT, startDate TEXT, endDate TEXT);
+CREATE TABLE Period(periodId TEXT PRIMARY KEY, periodType TEXT, startDate TEXT, endDate TEXT);
 INSERT INTO Period(periodId, periodType, startDate, endDate) SELECT periodId, periodType, startDate, endDate FROM Period_Old;
 DROP TABLE Period_Old;
 
 ALTER TABLE ValueTypeDeviceRendering RENAME TO ValueTypeDeviceRendering_Old;
-CREATE TABLE ValueTypeDeviceRendering(uid TEXT NOT NULL, objectTable TEXT, deviceType TEXT NOT NULL, type TEXT, min INTEGER, max INTEGER, step INTEGER, decimalPoints INTEGER, PRIMARY KEY(uid, deviceType));
+CREATE TABLE ValueTypeDeviceRendering(uid TEXT, objectTable TEXT, deviceType TEXT, type TEXT, min INTEGER, max INTEGER, step INTEGER, decimalPoints INTEGER, PRIMARY KEY(uid, deviceType));
 INSERT INTO ValueTypeDeviceRendering(uid, objectTable, deviceType, type, min, max, step, decimalPoints) SELECT uid, objectTable, deviceType, type, min, max, step, decimalPoints FROM ValueTypeDeviceRendering_Old;
 DROP TABLE ValueTypeDeviceRendering_Old;
 
 ALTER TABLE Note RENAME TO Note_Old;
-CREATE TABLE Note(noteType TEXT NOT NULL, event TEXT NOT NULL, enrollment TEXT NOT NULL, value TEXT NOT NULL, storedBy TEXT NOT NULL, storedDate TEXT NOT NULL, uid TEXT, syncState TEXT, deleted INTEGER, FOREIGN KEY(event) REFERENCES Event(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(enrollment) REFERENCES Enrollment(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, PRIMARY KEY(noteType, event, enrollment, value, storedBy, storedDate));
+CREATE TABLE Note(noteType TEXT, event TEXT, enrollment TEXT, value TEXT, storedBy TEXT, storedDate TEXT, uid TEXT, syncState TEXT, deleted INTEGER, FOREIGN KEY(event) REFERENCES Event(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(enrollment) REFERENCES Enrollment(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, PRIMARY KEY(noteType, event, enrollment, value, storedBy, storedDate));
 INSERT INTO Note(noteType, event, enrollment, value, storedBy, storedDate, uid, syncState, deleted) SELECT noteType, event, enrollment, value, storedBy, storedDate, uid, syncState, deleted FROM Note_Old;
 DROP TABLE Note_Old;
 
@@ -211,7 +211,7 @@ INSERT INTO RelationshipConstraint(relationshipType, constraintType, relationshi
 DROP TABLE RelationshipConstraint_Old;
 
 ALTER TABLE RelationshipItem RENAME TO RelationshipItem_Old;
-CREATE TABLE RelationshipItem(relationship TEXT NOT NULL, relationshipItemType TEXT NOT NULL, trackedEntityInstance TEXT NOT NULL, enrollment TEXT NOT NULL, event TEXT NOT NULL, FOREIGN KEY(relationship) REFERENCES Relationship(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(trackedEntityInstance) REFERENCES TrackedEntityInstance(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(enrollment) REFERENCES Enrollment(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(event) REFERENCES Event(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, PRIMARY KEY(relationship, trackedEntityInstance, enrollment, event));
+CREATE TABLE RelationshipItem(relationship TEXT NOT NULL, relationshipItemType TEXT NOT NULL, trackedEntityInstance TEXT, enrollment TEXT, event TEXT, FOREIGN KEY(relationship) REFERENCES Relationship(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(trackedEntityInstance) REFERENCES TrackedEntityInstance(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(enrollment) REFERENCES Enrollment(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(event) REFERENCES Event(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, PRIMARY KEY(relationship, trackedEntityInstance, enrollment, event));
 INSERT INTO RelationshipItem(relationship, relationshipItemType, trackedEntityInstance, enrollment, event) SELECT relationship, relationshipItemType, trackedEntityInstance, enrollment, event FROM RelationshipItem_Old;
 DROP TABLE RelationshipItem_Old;
 
@@ -266,7 +266,7 @@ INSERT INTO TrackedEntityTypeAttribute(trackedEntityType, trackedEntityAttribute
 DROP TABLE TrackedEntityTypeAttribute_Old;
 
 ALTER TABLE Relationship RENAME TO Relationship_Old;
-CREATE TABLE Relationship(uid TEXT NOT NULL PRIMARY KEY, name TEXT, created TEXT, lastUpdated TEXT, relationshipType TEXT, syncState TEXT, deleted INTEGER, FOREIGN KEY(relationshipType) REFERENCES RelationshipType(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+CREATE TABLE Relationship(uid TEXT NOT NULL PRIMARY KEY, name TEXT, created TEXT, lastUpdated TEXT, relationshipType TEXT NOT NULL, syncState TEXT, deleted INTEGER, FOREIGN KEY(relationshipType) REFERENCES RelationshipType(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
 INSERT INTO Relationship(uid, name, created, lastUpdated, relationshipType, syncState, deleted) SELECT uid, name, created, lastUpdated, relationshipType, syncState, deleted FROM Relationship_Old;
 DROP TABLE Relationship_Old;
 
@@ -286,7 +286,7 @@ INSERT INTO OptionGroupOptionLink(optionGroup, option) SELECT optionGroup, optio
 DROP TABLE OptionGroupOptionLink_Old;
 
 ALTER TABLE ProgramRuleAction RENAME TO ProgramRuleAction_Old;
-CREATE TABLE ProgramRuleAction(uid TEXT NOT NULL PRIMARY KEY, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, data TEXT, content TEXT, location TEXT, trackedEntityAttribute TEXT, programIndicator TEXT, programStageSection TEXT, programRuleActionType TEXT, programStage TEXT, dataElement TEXT, programRule TEXT, option TEXT, optionGroup TEXT, displayContent TEXT, FOREIGN KEY(programRule) REFERENCES ProgramRule(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(trackedEntityAttribute) REFERENCES TrackedEntityAttribute(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(programIndicator) REFERENCES ProgramIndicator(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(programStageSection) REFERENCES ProgramStageSection(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(programStage) REFERENCES ProgramStage(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(dataElement) REFERENCES DataElement(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(option) REFERENCES Option(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(optionGroup) REFERENCES OptionGroup(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+CREATE TABLE ProgramRuleAction(uid TEXT NOT NULL PRIMARY KEY, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, data TEXT, content TEXT, location TEXT, trackedEntityAttribute TEXT, programIndicator TEXT, programStageSection TEXT, programRuleActionType TEXT, programStage TEXT, dataElement TEXT, programRule TEXT NOT NULL, option TEXT, optionGroup TEXT, displayContent TEXT, FOREIGN KEY(programRule) REFERENCES ProgramRule(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(trackedEntityAttribute) REFERENCES TrackedEntityAttribute(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(programIndicator) REFERENCES ProgramIndicator(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(programStageSection) REFERENCES ProgramStageSection(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(programStage) REFERENCES ProgramStage(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(dataElement) REFERENCES DataElement(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(option) REFERENCES Option(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(optionGroup) REFERENCES OptionGroup(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
 INSERT INTO ProgramRuleAction(uid, code, name, displayName, created, lastUpdated, data, content, location, trackedEntityAttribute, programIndicator, programStageSection, programRuleActionType, programStage, dataElement, programRule, option, optionGroup, displayContent) SELECT uid, code, name, displayName, created, lastUpdated, data, content, location, trackedEntityAttribute, programIndicator, programStageSection, programRuleActionType, programStage, dataElement, programRule, option, optionGroup, displayContent FROM ProgramRuleAction_Old;
 DROP TABLE ProgramRuleAction_Old;
 
@@ -316,7 +316,7 @@ INSERT INTO TrackerImportConflict(conflict, value, trackedEntityInstance, enroll
 DROP TABLE TrackerImportConflict_Old;
 
 ALTER TABLE DataSetOrganisationUnitLink RENAME TO DataSetOrganisationUnitLink_Old;
-CREATE TABLE DataSetOrganisationUnitLink(dataSet TEXT NOT NULL, organisationUnit TEXT NOT NULL, PRIMARY KEY(organisationUnit, dataSet), FOREIGN KEY(dataSet) REFERENCES DataSet(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(organisationUnit) REFERENCES OrganisationUnit(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+CREATE TABLE DataSetOrganisationUnitLink(dataSet TEXT NOT NULL, organisationUnit TEXT NOT NULL, PRIMARY KEY(dataSet, organisationUnit), FOREIGN KEY(dataSet) REFERENCES DataSet(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(organisationUnit) REFERENCES OrganisationUnit(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
 INSERT INTO DataSetOrganisationUnitLink(dataSet, organisationUnit) SELECT dataSet, organisationUnit FROM DataSetOrganisationUnitLink_Old;
 DROP TABLE DataSetOrganisationUnitLink_Old;
 

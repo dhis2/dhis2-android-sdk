@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core
 
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.data.server.RealServerMother
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 import org.junit.After
@@ -59,7 +60,7 @@ abstract class BaseRealIntegrationTest {
     internal fun getGenericCallData(d2: D2): GenericCallData {
         return GenericCallData(
             d2.databaseAdapter(),
-            ResourceHandler.create(d2.databaseAdapter()),
+            ResourceHandler(koin.get()),
             d2.systemInfoModule().versionManager(),
         )
     }

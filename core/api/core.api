@@ -8367,15 +8367,10 @@ public abstract interface class org/hisp/dhis/android/core/maintenance/Maintenan
 }
 
 public final class org/hisp/dhis/android/core/maintenance/PerformanceHintsService {
-	public static final field Companion Lorg/hisp/dhis/android/core/maintenance/PerformanceHintsService$Companion;
 	public final fun areThereExcessiveOrganisationUnits ()Z
 	public final fun areThereProgramsWithExcessiveProgramRules ()Z
 	public final fun areThereVulnerabilities ()Z
 	public final fun getProgramsWithExcessiveProgramRules ()Ljava/util/List;
-}
-
-public final class org/hisp/dhis/android/core/maintenance/PerformanceHintsService$Companion {
-	public final fun invoke (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;II)Lorg/hisp/dhis/android/core/maintenance/PerformanceHintsService;
 }
 
 public abstract interface class org/hisp/dhis/android/core/map/MapModule {

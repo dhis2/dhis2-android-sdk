@@ -31,9 +31,10 @@ import androidx.test.runner.AndroidJUnit4
 import com.google.common.truth.Truth
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleanerImpl
-import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyViolationStoreImpl
+import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyViolationStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
 import org.junit.Before
 import org.junit.Test
@@ -107,7 +108,7 @@ class OptionCallShould : BaseMockIntegrationTestEmptyEnqueable() {
             }
             ForeignKeyCleanerImpl(
                 databaseAdapter,
-                ForeignKeyViolationStoreImpl(databaseAdapter),
+                koin.get<ForeignKeyViolationStore>(),
             ).cleanForeignKeyErrors()
             optionSets!!
         }
@@ -121,7 +122,7 @@ class OptionCallShould : BaseMockIntegrationTestEmptyEnqueable() {
                 options = optionCall.invoke()
             } catch (ignored: Exception) {
             }
-            ForeignKeyCleanerImpl(databaseAdapter, ForeignKeyViolationStoreImpl(databaseAdapter))
+            ForeignKeyCleanerImpl(databaseAdapter, koin.get<ForeignKeyViolationStore>())
                 .cleanForeignKeyErrors()
             options
         }

@@ -28,15 +28,8 @@
 package org.hisp.dhis.android.core.sms
 
 import android.content.Context
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.sms.data.internal.DeviceStateRepositoryImpl
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.LocalDbRepositoryImpl
-import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigStore
-import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigStoreImpl
-import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSMetadataIdStore
-import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSMetadataIdStoreImpl
-import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoingSubmissionStore
-import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoingSubmissionStoreImpl
 import org.hisp.dhis.android.core.sms.data.smsrepository.internal.SmsRepositoryImpl
 import org.hisp.dhis.android.core.sms.data.webapirepository.internal.MetadataNetworkHandler
 import org.hisp.dhis.android.core.sms.data.webapirepository.internal.WebApiRepositoryImpl
@@ -69,20 +62,5 @@ internal class SmsDIModule {
     @Singleton
     fun webApiRepository(networkHandler: MetadataNetworkHandler): WebApiRepository {
         return WebApiRepositoryImpl(networkHandler)
-    }
-
-    @Singleton
-    fun smsMetadataIdStore(databaseAdapter: DatabaseAdapter): SMSMetadataIdStore {
-        return SMSMetadataIdStoreImpl(databaseAdapter)
-    }
-
-    @Singleton
-    fun smsConfigStore(databaseAdapter: DatabaseAdapter): SMSConfigStore {
-        return SMSConfigStoreImpl(databaseAdapter)
-    }
-
-    @Singleton
-    fun smsOngoingSubmissionStore(databaseAdapter: DatabaseAdapter): SMSOngoingSubmissionStore {
-        return SMSOngoingSubmissionStoreImpl(databaseAdapter)
     }
 }

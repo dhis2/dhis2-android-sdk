@@ -32,8 +32,10 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinde
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
 @Suppress("MagicNumber")
+@Singleton
 internal class SMSOngoingSubmissionStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : SMSOngoingSubmissionStore,

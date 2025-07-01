@@ -41,12 +41,11 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntity1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntity2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntityType
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.AnalyticsType
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.RelativePeriod
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl
-import org.hisp.dhis.android.core.event.internal.EventStoreImpl
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryType
 import org.hisp.dhis.android.core.program.ProgramIndicator
@@ -60,12 +59,12 @@ import org.junit.runner.RunWith
 internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegrationShould() {
 
     private val programIndicatorEvaluator = ProgramIndicatorEvaluator(
-        EventStoreImpl(databaseAdapter),
-        EnrollmentStoreImpl(databaseAdapter),
+        koin.get(),
+        koin.get(),
         d2.programModule().programIndicatorEngine(),
     )
 
-    private val helper = BaseTrackerDataIntegrationHelper(databaseAdapter)
+    private val helper = BaseTrackerDataIntegrationHelper()
 
     @Test
     fun should_aggregate_data_from_multiple_teis() = runTest {

@@ -30,32 +30,31 @@ package org.hisp.dhis.android.core.common.internal
 import androidx.test.runner.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl
 import org.hisp.dhis.android.core.event.EventCreateProjection
 import org.hisp.dhis.android.core.event.internal.EventStore
-import org.hisp.dhis.android.core.event.internal.EventStoreImpl
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
-import org.hisp.dhis.android.core.relationship.internal.*
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStore
+import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
+import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
-import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.IOException
 import java.text.ParseException
-import java.util.*
+import java.util.Date
 
 @RunWith(AndroidJUnit4::class)
 class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
@@ -73,13 +72,13 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
     @Before
     @Throws(IOException::class)
     fun setUp() {
-        trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl(d2.databaseAdapter())
-        enrollmentStore = EnrollmentStoreImpl(d2.databaseAdapter())
-        eventStore = EventStoreImpl(d2.databaseAdapter())
-        relationshipStore = RelationshipStoreImpl(d2.databaseAdapter())
-        relationshipItemStore = RelationshipItemStoreImpl(d2.databaseAdapter())
-        relationshipTypeStore = RelationshipTypeStoreImpl(d2.databaseAdapter())
-        programOwnerStore = ProgramOwnerStoreImpl(d2.databaseAdapter())
+        trackedEntityInstanceStore = koin.get()
+        enrollmentStore = koin.get()
+        eventStore = koin.get()
+        relationshipStore = koin.get()
+        relationshipItemStore = koin.get()
+        relationshipTypeStore = koin.get()
+        programOwnerStore = koin.get()
 
         propagator = DataStatePropagatorImpl(
             trackedEntityInstanceStore,

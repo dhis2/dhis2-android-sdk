@@ -31,12 +31,8 @@ import org.hisp.dhis.android.core.D2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.DataElementSQLEvaluator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.EventDataItemSQLEvaluator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.ProgramIndicatorSQLEvaluator
-import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStoreImpl
-import org.hisp.dhis.android.core.constant.internal.ConstantStoreImpl
-import org.hisp.dhis.android.core.dataelement.internal.DataElementStoreImpl
-import org.hisp.dhis.android.core.program.internal.ProgramStoreImpl
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLExecutor
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStoreImpl
 
 internal object AnalyticExpressionEngineFactoryHelper {
 
@@ -46,9 +42,9 @@ internal object AnalyticExpressionEngineFactoryHelper {
         val dataElementEvaluator = DataElementSQLEvaluator(databaseAdapter)
 
         val programIndicatorExecutor = ProgramIndicatorSQLExecutor(
-            ConstantStoreImpl(databaseAdapter),
-            DataElementStoreImpl(databaseAdapter),
-            TrackedEntityAttributeStoreImpl(databaseAdapter),
+            koin.get(),
+            koin.get(),
+            koin.get(),
             databaseAdapter,
         )
 
@@ -59,15 +55,15 @@ internal object AnalyticExpressionEngineFactoryHelper {
         val eventDataItemEvaluator = EventDataItemSQLEvaluator(databaseAdapter)
 
         return AnalyticExpressionEngineFactory(
-            DataElementStoreImpl(databaseAdapter),
-            TrackedEntityAttributeStoreImpl(databaseAdapter),
-            CategoryOptionComboStoreImpl(databaseAdapter),
-            ProgramStoreImpl(databaseAdapter),
+            koin.get(),
+            koin.get(),
+            koin.get(),
+            koin.get(),
             d2.programModule().programIndicators(),
             dataElementEvaluator,
             programIndicatorEvaluator,
             eventDataItemEvaluator,
-            ConstantStoreImpl(databaseAdapter),
+            koin.get(),
         )
     }
 }

@@ -32,6 +32,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.category.CategoryCombo
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo
 import org.hisp.dhis.android.core.common.Access
@@ -42,19 +43,16 @@ import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.FUTURE_DATE
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStoreImpl
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute
-import org.hisp.dhis.android.core.program.internal.ProgramStoreImpl
-import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeStoreImpl
+import org.hisp.dhis.android.core.program.internal.ProgramStore
+import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueHandler
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueQuery
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStore
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStoreImpl
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStoreImpl
 import org.junit.Before
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers
@@ -92,13 +90,11 @@ internal class TrackedEntityAttributeReservedValueManagerRealIntegrationShould :
     override fun setUp() = runTest {
         super.setUp()
         login()
-        store = TrackedEntityAttributeReservedValueStoreImpl(d2.databaseAdapter())
-        val organisationUnitStore: OrganisationUnitStore =
-            OrganisationUnitStoreImpl(d2.databaseAdapter())
-        val trackedEntityAttributeStore: TrackedEntityAttributeStore =
-            TrackedEntityAttributeStoreImpl(d2.databaseAdapter())
+        store = koin.get()
+        val organisationUnitStore: OrganisationUnitStore = koin.get()
+        val trackedEntityAttributeStore: TrackedEntityAttributeStore = koin.get()
         manager = d2.trackedEntityModule().reservedValueManager()
-        val handler = TrackedEntityAttributeReservedValueHandler(store as TrackedEntityAttributeReservedValueStoreImpl)
+        val handler = TrackedEntityAttributeReservedValueHandler(store)
         val trackedEntityAttributeReservedValues: MutableList<TrackedEntityAttributeReservedValue> =
             ArrayList()
         val reservedValueBuilder = TrackedEntityAttributeReservedValue.builder()
@@ -129,19 +125,19 @@ internal class TrackedEntityAttributeReservedValueManagerRealIntegrationShould :
         val program = Program.builder().uid(programUid)
             .categoryCombo(ObjectWithUid.create(categoryCombo.uid()))
             .access(Access.create(null, null, DataAccess.create(true, true))).build()
-        ProgramStoreImpl(d2.databaseAdapter()).insert(program)
+        koin.get<ProgramStore>().insert(program)
         val programTrackedEntityAttribute = ProgramTrackedEntityAttribute.builder()
             .uid("ptea_uid")
             .trackedEntityAttribute(ObjectWithUid.create(ownerUid))
             .program(ObjectWithUid.create(programUid))
             .build()
-        ProgramTrackedEntityAttributeStoreImpl(d2.databaseAdapter()).insert(
+        koin.get<ProgramTrackedEntityAttributeStore>().insert(
             programTrackedEntityAttribute,
         )
         val organisationUnitProgramLink =
             OrganisationUnitProgramLink.builder().organisationUnit(organisationUnitUid)
                 .program(programUid).build()
-        OrganisationUnitProgramLinkStoreImpl(d2.databaseAdapter()).insert(
+        koin.get<OrganisationUnitProgramLinkStore>().insert(
             organisationUnitProgramLink,
         )
         runBlocking {

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.datavalue.internal
 import com.google.common.truth.Truth
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.junit.Before
@@ -40,7 +41,7 @@ class DataValuePostCallRealIntegrationShould : BaseRealIntegrationTest() {
     @Before
     override fun setUp() {
         super.setUp()
-        dataValueStore = DataValueStoreImpl(d2.databaseAdapter())
+        dataValueStore = koin.get()
     }
 
     // commented out since it is a flaky test that works against a real server.

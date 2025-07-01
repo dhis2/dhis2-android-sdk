@@ -43,7 +43,7 @@ import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
 class ProgramStageSectionHandlerShould {
-    private val programStageSectionStore: ProgramStageSectionStoreImpl = mock()
+    private val programStageSectionStore: ProgramStageSectionStore = mock()
     private val programStageSectionProgramIndicatorLinkHandler: ProgramStageSectionProgramIndicatorLinkHandler = mock()
     private val programStageSectionDataElementLinkHandler: ProgramStageSectionDataElementLinkHandler = mock()
     private val programStageSection: ProgramStageSection = mock()

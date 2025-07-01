@@ -32,6 +32,7 @@ import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloaderImpl
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.data.datavalue.DataValueUtils
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataCallBundle
@@ -63,7 +64,7 @@ class DataValueEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
     }
 
     private suspend fun download(): List<DataValue> {
-        val dataValueHandler = DataValueHandler(DataValueStoreImpl(d2.databaseAdapter()))
+        val dataValueHandler = DataValueHandler(koin.get())
 
         val key = AggregatedDataCallBundleKey(
             periodType = PeriodType.Daily,

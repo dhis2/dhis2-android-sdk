@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.user.internal
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.db.access.SqliteCheckerUtility
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.event.EventTableInfo
@@ -43,7 +44,7 @@ class LogoutCallRealIntegrationShould : BaseRealIntegrationTest() {
     @Before
     override fun setUp() {
         super.setUp()
-        authenticatedUserStore = AuthenticatedUserStoreImpl(d2.databaseAdapter())
+        authenticatedUserStore = koin.get()
     }
 
     // @Test

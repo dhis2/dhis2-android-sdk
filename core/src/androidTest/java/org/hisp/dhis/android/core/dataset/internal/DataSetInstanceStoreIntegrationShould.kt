@@ -30,10 +30,10 @@ package org.hisp.dhis.android.core.dataset.internal
 
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
-import org.hisp.dhis.android.core.datavalue.internal.DataValueStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataDispatcher
 import org.junit.After
 import org.junit.Before
@@ -46,8 +46,8 @@ class DataSetInstanceStoreIntegrationShould : BaseMockIntegrationTestMetadataDis
 
     @Before
     fun setUp() = runTest {
-        dataSetInstanceStore = DataSetInstanceStoreImpl(databaseAdapter)
-        dataValueStore = DataValueStoreImpl(databaseAdapter)
+        dataSetInstanceStore = koin.get()
+        dataValueStore = koin.get()
 
         dataValueStore.delete()
     }

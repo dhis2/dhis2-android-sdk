@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.program.internal
 
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo
 import org.hisp.dhis.android.core.category.internal.CreateCategoryComboUtils
 import org.hisp.dhis.android.core.data.program.ProgramRuleVariableSamples
@@ -38,7 +39,7 @@ import org.hisp.dhis.android.core.dataelement.CreateDataElementUtils
 import org.hisp.dhis.android.core.dataelement.DataElementTableInfo
 import org.hisp.dhis.android.core.program.CreateProgramStageUtils
 import org.hisp.dhis.android.core.program.ProgramStageTableInfo
-import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStoreImpl
+import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStore
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityAttributeUtils
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo
@@ -55,7 +56,7 @@ class ProgramEndpointCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnq
 
     @Test
     fun persist_program_when_call() = runTest {
-        val store = ProgramStoreImpl(databaseAdapter)
+        val store: ProgramStore = koin.get()
 
         assertThat(store.count()).isEqualTo(3)
         assertThat(store.selectByUid(PROGRAM_UID)!!.toBuilder().id(null).build())
@@ -64,7 +65,7 @@ class ProgramEndpointCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnq
 
     @Test
     fun persist_program_rule_variables_on_call() = runTest {
-        val store = ProgramRuleVariableStoreImpl(databaseAdapter)
+        val store: ProgramRuleVariableStore = koin.get()
 
         assertThat(store.count()).isEqualTo(2)
         assertThat(store.selectByUid("omrL0gtPpDL")).isEqualTo(ProgramRuleVariableSamples.getHemoglobin())
@@ -72,7 +73,7 @@ class ProgramEndpointCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnq
 
     @Test
     fun persist_program_tracker_entity_attributes_when_call() = runTest {
-        val store = ProgramTrackedEntityAttributeStoreImpl(databaseAdapter)
+        val store: ProgramTrackedEntityAttributeStore = koin.get()
 
         assertThat(store.count()).isEqualTo(2)
         assertThat(store.selectByUid("YhqgQ6Iy4c4"))
@@ -81,7 +82,7 @@ class ProgramEndpointCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnq
 
     @Test
     fun not_persist_relationship_type_when_call() = runTest {
-        val store = RelationshipTypeStoreImpl(databaseAdapter)
+        val store: RelationshipTypeStore = koin.get()
         assertThat(store.count()).isEqualTo(0)
     }
 

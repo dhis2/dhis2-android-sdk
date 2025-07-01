@@ -28,15 +28,11 @@
 package org.hisp.dhis.android.core.maintenance
 
 import kotlinx.coroutines.runBlocking
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByParentUid
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramRule
-import org.hisp.dhis.android.core.program.internal.ProgramRuleStoreImpl
-import org.hisp.dhis.android.core.program.internal.ProgramStoreImpl
 
 class PerformanceHintsService internal constructor(
     private val organisationUnitStore: IdentifiableObjectStore<OrganisationUnit>,
@@ -75,21 +71,5 @@ class PerformanceHintsService internal constructor(
 
     fun areThereVulnerabilities(): Boolean {
         return this.areThereExcessiveOrganisationUnits() || areThereProgramsWithExcessiveProgramRules()
-    }
-
-    companion object {
-        operator fun invoke(
-            databaseAdapter: DatabaseAdapter,
-            organisationUnitThreshold: Int,
-            programRulesPerProgramThreshold: Int,
-        ): PerformanceHintsService {
-            return PerformanceHintsService(
-                OrganisationUnitStoreImpl(databaseAdapter),
-                ProgramStoreImpl(databaseAdapter),
-                ProgramRuleStoreImpl(databaseAdapter),
-                organisationUnitThreshold,
-                programRulesPerProgramThreshold,
-            )
-        }
     }
 }

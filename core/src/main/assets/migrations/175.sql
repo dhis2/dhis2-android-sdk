@@ -1,4 +1,4 @@
-# Removes _id primary key (ANDROSDK-2128)
+-- Removes _id primary key (ANDROSDK-2128)
 
 -- MIGRATE PRIMARY KEYS
 
@@ -239,7 +239,7 @@ CREATE TABLE OrganisationUnitLevel(uid TEXT NOT NULL PRIMARY KEY, code TEXT, nam
 INSERT INTO OrganisationUnitLevel(uid, code, name, displayName, created, lastUpdated, level) SELECT uid, code, name, displayName, created, lastUpdated, level FROM OrganisationUnitLevel_Old;
 
 ALTER TABLE ProgramSection RENAME TO ProgramSection_Old;
-CREATE TABLE ProgramSection(uid TEXT NOT NULL PRIMARY KEY, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, description TEXT, program TEXT, sortOrder INTEGER, formName TEXT, color TEXT, icon TEXT, desktopRenderType TEXT, mobileRenderType TEXT FOREIGN KEY(program) REFERENCES Program(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+CREATE TABLE ProgramSection(uid TEXT NOT NULL PRIMARY KEY, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, description TEXT, program TEXT, sortOrder INTEGER, formName TEXT, color TEXT, icon TEXT, desktopRenderType TEXT, mobileRenderType TEXT, FOREIGN KEY(program) REFERENCES Program(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
 INSERT INTO ProgramSection(uid, code, name, displayName, created, lastUpdated, description, program, sortOrder, formName, color, icon, desktopRenderType, mobileRenderType) SELECT uid, code, name, displayName, created, lastUpdated, description, program, sortOrder, formName, color, icon, desktopRenderType, mobileRenderType FROM ProgramSection_Old;
 
 ALTER TABLE DataApproval RENAME TO DataApproval_Old;
@@ -319,11 +319,11 @@ CREATE TABLE GeneralSetting(encryptDB INTEGER PRIMARY KEY, lastUpdated TEXT, res
 INSERT INTO GeneralSetting(encryptDB, lastUpdated, reservedValues, smsGateway, smsResultSender, matomoID, matomoURL, allowScreenCapture, messageOfTheDay, experimentalFeatures, bypassDHIS2VersionCheck) SELECT encryptDB, lastUpdated, reservedValues, smsGateway, smsResultSender, matomoID, matomoURL, allowScreenCapture, messageOfTheDay, experimentalFeatures, bypassDHIS2VersionCheck FROM GeneralSetting_Old;
 
 ALTER TABLE DataSetSetting RENAME TO DataSetSetting_Old;
-CREATE TABLE DataSetSetting(uid TEXT NOT NULL PRIMARY KEY, name TEXT, lastUpdated TEXT, periodDSDownload INTEGER, periodDSDBTrimming INTEGER, FOREIGN KEY(uid) REFERENCES DataSet(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+CREATE TABLE DataSetSetting(uid TEXT PRIMARY KEY, name TEXT, lastUpdated TEXT, periodDSDownload INTEGER, periodDSDBTrimming INTEGER, FOREIGN KEY(uid) REFERENCES DataSet(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
 INSERT INTO DataSetSetting(uid, name, lastUpdated, periodDSDownload, periodDSDBTrimming) SELECT uid, name, lastUpdated, periodDSDownload, periodDSDBTrimming FROM DataSetSetting_Old;
 
 ALTER TABLE ProgramSetting RENAME TO ProgramSetting_Old;
-CREATE TABLE ProgramSetting(uid TEXT NOT NULL PRIMARY KEY, name TEXT, lastUpdated TEXT, teiDownload INTEGER, teiDBTrimming INTEGER, eventsDownload INTEGER, eventsDBTrimming INTEGER, updateDownload TEXT, updateDBTrimming TEXT, settingDownload TEXT, settingDBTrimming TEXT, enrollmentDownload TEXT, enrollmentDBTrimming TEXT, eventDateDownload TEXT, eventDateDBTrimming TEXT, enrollmentDateDownload TEXT, enrollmentDateDBTrimming TEXT, FOREIGN KEY(uid) REFERENCES Program(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+CREATE TABLE ProgramSetting(uid TEXT PRIMARY KEY, name TEXT, lastUpdated TEXT, teiDownload INTEGER, teiDBTrimming INTEGER, eventsDownload INTEGER, eventsDBTrimming INTEGER, updateDownload TEXT, updateDBTrimming TEXT, settingDownload TEXT, settingDBTrimming TEXT, enrollmentDownload TEXT, enrollmentDBTrimming TEXT, eventDateDownload TEXT, eventDateDBTrimming TEXT, enrollmentDateDownload TEXT, enrollmentDateDBTrimming TEXT, FOREIGN KEY(uid) REFERENCES Program(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
 INSERT INTO ProgramSetting(uid, name, lastUpdated, teiDownload, teiDBTrimming, eventsDownload, eventsDBTrimming, updateDownload, updateDBTrimming, settingDownload, settingDBTrimming, enrollmentDownload, enrollmentDBTrimming, eventDateDownload, eventDateDBTrimming, enrollmentDateDownload, enrollmentDateDBTrimming) SELECT uid, name, lastUpdated, teiDownload, teiDBTrimming, eventsDownload, eventsDBTrimming, updateDownload, updateDBTrimming, settingDownload, settingDBTrimming, enrollmentDownload, enrollmentDBTrimming, eventDateDownload, eventDateDBTrimming, enrollmentDateDownload, enrollmentDateDBTrimming FROM ProgramSetting_Old;
 
 ALTER TABLE SynchronizationSetting RENAME TO SynchronizationSetting_Old;
@@ -335,11 +335,11 @@ CREATE TABLE FilterSetting(scope TEXT, filterType TEXT, uid TEXT, sort INTEGER, 
 INSERT INTO FilterSetting(scope, filterType, uid, sort, filter) SELECT scope, filterType, uid, sort, filter FROM FilterSetting_Old;
 
 ALTER TABLE ProgramConfigurationSetting RENAME TO ProgramConfigurationSetting_Old;
-CREATE TABLE ProgramConfigurationSetting(uid TEXT NOT NULL PRIMARY KEY, completionSpinner INTEGER, optionalSearch INTEGER, disableReferrals INTEGER, disableCollapsibleSections INTEGER, itemHeaderProgramIndicator TEXT, minimumLocationAccuracy INTEGER, disableManualLocation INTEGER, quickActions TEXT);
+CREATE TABLE ProgramConfigurationSetting(uid TEXT PRIMARY KEY, completionSpinner INTEGER, optionalSearch INTEGER, disableReferrals INTEGER, disableCollapsibleSections INTEGER, itemHeaderProgramIndicator TEXT, minimumLocationAccuracy INTEGER, disableManualLocation INTEGER, quickActions TEXT);
 INSERT INTO ProgramConfigurationSetting(uid, completionSpinner, optionalSearch, disableReferrals, disableCollapsibleSections, itemHeaderProgramIndicator, minimumLocationAccuracy, disableManualLocation, quickActions) SELECT uid, completionSpinner, optionalSearch, disableReferrals, disableCollapsibleSections, itemHeaderProgramIndicator, minimumLocationAccuracy, disableManualLocation, quickActions FROM ProgramConfigurationSetting_Old;
 
 ALTER TABLE DataSetConfigurationSetting RENAME TO DataSetConfigurationSetting_Old;
-CREATE TABLE DataSetConfigurationSetting(uid TEXT NOT NULL PRIMARY KEY, minimumLocationAccuracy INTEGER, disableManualLocation INTEGER);
+CREATE TABLE DataSetConfigurationSetting(uid TEXT PRIMARY KEY, minimumLocationAccuracy INTEGER, disableManualLocation INTEGER);
 INSERT INTO DataSetConfigurationSetting(uid, minimumLocationAccuracy, disableManualLocation) SELECT uid, minimumLocationAccuracy, disableManualLocation FROM DataSetConfigurationSetting_Old;
 
 ALTER TABLE CustomIntent RENAME TO CustomIntent_Old;
@@ -415,7 +415,7 @@ CREATE TABLE EventFilter(uid TEXT NOT NULL PRIMARY KEY, code TEXT, name TEXT, di
 INSERT INTO EventFilter(uid, code, name, displayName, created, lastUpdated, program, programStage, description, followUp, organisationUnit, ouMode, assignedUserMode, orderProperty, displayColumnOrder, events, eventStatus, eventDate, dueDate, lastUpdatedDate, completedDate) SELECT uid, code, name, displayName, created, lastUpdated, program, programStage, description, followUp, organisationUnit, ouMode, assignedUserMode, orderProperty, displayColumnOrder, events, eventStatus, eventDate, dueDate, lastUpdatedDate, completedDate FROM EventFilter_Old;
 
 ALTER TABLE ReservedValueSetting RENAME TO ReservedValueSetting_Old;
-CREATE TABLE ReservedValueSetting(uid TEXT NOT NULL PRIMARY KEY, numberOfValuesToReserve INTEGER, FOREIGN KEY(uid) REFERENCES TrackedEntityAttribute(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+CREATE TABLE ReservedValueSetting(uid TEXT PRIMARY KEY, numberOfValuesToReserve INTEGER, FOREIGN KEY(uid) REFERENCES TrackedEntityAttribute(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
 INSERT INTO ReservedValueSetting(uid, numberOfValuesToReserve) SELECT uid, numberOfValuesToReserve FROM ReservedValueSetting_Old;
 
 ALTER TABLE SectionIndicatorLink RENAME TO SectionIndicatorLink_Old;
@@ -451,7 +451,7 @@ CREATE TABLE DataValueConflict(conflict TEXT, value TEXT, attributeOptionCombo T
 INSERT INTO DataValueConflict(conflict, value, attributeOptionCombo, categoryOptionCombo, dataElement, period, orgUnit, errorCode, status, created, displayDescription) SELECT conflict, value, attributeOptionCombo, categoryOptionCombo, dataElement, period, orgUnit, errorCode, status, created, displayDescription FROM DataValueConflict_Old;
 
 ALTER TABLE AnalyticsDhisVisualization RENAME TO AnalyticsDhisVisualization_Old;
-CREATE TABLE AnalyticsDhisVisualization(uid TEXT NOT NULL PRIMARY KEY, scopeUid TEXT, scope TEXT, groupUid TEXT, groupName TEXT, timestamp TEXT, name TEXT, type TEXT NOT NULL);
+CREATE TABLE AnalyticsDhisVisualization(uid TEXT NOT NULL, scopeUid TEXT, scope TEXT, groupUid TEXT, groupName TEXT, timestamp TEXT, name TEXT, type TEXT NOT NULL, PRIMARY KEY(uid, groupUid));
 INSERT INTO AnalyticsDhisVisualization(uid, scopeUid, scope, groupUid, groupName, timestamp, name, type) SELECT uid, scopeUid, scope, groupUid, groupName, timestamp, name, type FROM AnalyticsDhisVisualization_Old;
 
 ALTER TABLE Visualization RENAME TO Visualization_Old;
@@ -459,8 +459,8 @@ CREATE TABLE Visualization(uid TEXT NOT NULL PRIMARY KEY, code TEXT, name TEXT, 
 INSERT INTO Visualization(uid, code, name, displayName, created, lastUpdated, description, displayDescription, displayFormName, title, displayTitle, subtitle, displaySubtitle, type, hideTitle, hideSubtitle, hideEmptyColumns, hideEmptyRows, hideEmptyRowItems, hideLegend, showHierarchy, rowTotals, rowSubTotals, colTotals, colSubTotals, showDimensionLabels, percentStackedValues, noSpaceBetweenColumns, skipRounding, displayDensity, digitGroupSeparator, legendShowKey, legendStyle, legendSetId, legendStrategy, aggregationType) SELECT uid, code, name, displayName, created, lastUpdated, description, displayDescription, displayFormName, title, displayTitle, subtitle, displaySubtitle, type, hideTitle, hideSubtitle, hideEmptyColumns, hideEmptyRows, hideEmptyRowItems, hideLegend, showHierarchy, rowTotals, rowSubTotals, colTotals, colSubTotals, showDimensionLabels, percentStackedValues, noSpaceBetweenColumns, skipRounding, displayDensity, digitGroupSeparator, legendShowKey, legendStyle, legendSetId, legendStrategy, aggregationType FROM Visualization_Old;
 
 ALTER TABLE VisualizationDimensionItem RENAME TO VisualizationDimensionItem_Old;
-CREATE TABLE VisualizationDimensionItem(visualization TEXT NOT NULL, position TEXT NOT NULL, dimension TEXT NOT NULL, dimensionItem TEXT, dimensionItemType TEXT, PRIMARY KEY(visualization, position, dimension), FOREIGN KEY(visualization) REFERENCES Visualization(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
-INSERT INTO VisualizationDimensionItem(visualization, position, dimension, dimensionItem, dimensionItemType) SELECT visualization, position, dimension, dimensionItem, dimensionItemType FROM VisualizationDimensionItem_Old;
+CREATE TABLE VisualizationDimensionItem(visualization TEXT NOT NULL, position TEXT NOT NULL, dimension TEXT NOT NULL, dimensionItem TEXT, dimensionItemType TEXT, sortOrder INTEGER, PRIMARY KEY(visualization, dimensionItem), FOREIGN KEY(visualization) REFERENCES Visualization(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO VisualizationDimensionItem(visualization, position, dimension, dimensionItem, dimensionItemType, sortOrder) SELECT visualization, position, dimension, dimensionItem, dimensionItemType, _id FROM VisualizationDimensionItem_Old;
 
 ALTER TABLE LocalDataStore RENAME TO LocalDataStore_Old;
 CREATE TABLE LocalDataStore(key TEXT NOT NULL PRIMARY KEY, value TEXT);

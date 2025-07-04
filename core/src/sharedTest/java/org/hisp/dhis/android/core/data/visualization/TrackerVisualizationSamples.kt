@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.data.visualization
 
 import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.common.SortingDirection
 import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils
 import org.hisp.dhis.android.core.visualization.*
 
@@ -66,6 +67,14 @@ internal object TrackerVisualizationSamples {
                     .dimension("enrollmentDate")
                     .dimensionType("PERIOD")
                     .items(listOf(ObjectWithUid.create("LAST_5_YEARS")))
+                    .build(),
+            ),
+        )
+        .sorting(
+            listOf(
+                TrackerVisualizationSorting.builder()
+                    .dimension("dimension")
+                    .direction(SortingDirection.ASC)
                     .build(),
             ),
         )

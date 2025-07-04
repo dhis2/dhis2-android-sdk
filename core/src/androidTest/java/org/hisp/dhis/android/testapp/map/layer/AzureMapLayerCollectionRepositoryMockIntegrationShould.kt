@@ -30,9 +30,10 @@ package org.hisp.dhis.android.testapp.map.layer
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.map.layer.ImageFormat
+import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderArea
 import org.hisp.dhis.android.core.map.layer.MapLayerPosition
 import org.hisp.dhis.android.core.map.layer.MapService
-import org.hisp.dhis.android.core.map.layer.internal.microsoft.BingBasemaps
+import org.hisp.dhis.android.core.map.layer.internal.microsoft.AzureBasemaps
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.BeforeClass
@@ -40,19 +41,19 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-class MapLayerCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
+class AzureMapLayerCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
 
     @Test
     fun filter_all() {
         val mapLayers = d2.mapsModule().mapLayers().blockingGet()
 
-        assertThat(mapLayers.size).isEqualTo(9)
+        assertThat(mapLayers.size).isEqualTo(8)
     }
 
     @Test
     fun filter_by_uid() {
         val mapLayers = d2.mapsModule().mapLayers()
-            .byUid().eq(BingBasemaps.list.first().id)
+            .byUid().eq(AzureBasemaps.list.first().id)
             .blockingGet()
 
         assertThat(mapLayers.size).isEqualTo(1)
@@ -61,7 +62,7 @@ class MapLayerCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTes
     @Test
     fun filter_by_name() {
         val mapLayers = d2.mapsModule().mapLayers()
-            .byName().eq(BingBasemaps.list.first().name)
+            .byName().eq(AzureBasemaps.list.first().name)
             .blockingGet()
 
         assertThat(mapLayers.size).isEqualTo(1)
@@ -70,7 +71,7 @@ class MapLayerCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTes
     @Test
     fun filter_by_display_name() {
         val mapLayers = d2.mapsModule().mapLayers()
-            .byName().eq(BingBasemaps.list.first().name)
+            .byName().eq(AzureBasemaps.list.first().name)
             .blockingGet()
 
         assertThat(mapLayers.size).isEqualTo(1)
@@ -91,7 +92,7 @@ class MapLayerCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTes
             .byExternal().isFalse
             .blockingGet()
 
-        assertThat(mapLayers.size).isEqualTo(5)
+        assertThat(mapLayers.size).isEqualTo(4)
     }
 
     @Test
@@ -100,13 +101,13 @@ class MapLayerCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTes
             .byMapLayerPosition().eq(MapLayerPosition.BASEMAP)
             .blockingGet()
 
-        assertThat(mapLayers.size).isEqualTo(7)
+        assertThat(mapLayers.size).isEqualTo(6)
     }
 
     @Test
     fun filter_by_style() {
         val mapLayers = d2.mapsModule().mapLayers()
-            .byStyle().eq(BingBasemaps.list.first().style)
+            .byStyle().eq(AzureBasemaps.list.first().style)
             .blockingGet()
 
         assertThat(mapLayers.size).isEqualTo(1)
@@ -115,12 +116,14 @@ class MapLayerCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTes
     @Test
     fun with_imagery_providers() {
         val mapLayers = d2.mapsModule().mapLayers()
-            .byUid().eq(BingBasemaps.list.first().id)
+            .byUid().eq(AzureBasemaps.list.first().id)
             .withImageryProviders()
             .blockingGet()
 
         assertThat(mapLayers.first().imageryProviders()).isNotEmpty()
-        assertThat(mapLayers.first().imageryProviders()?.first()?.coverageAreas()?.first()?.zoomMax()).isEqualTo(21)
+        assertThat(mapLayers.first().imageryProviders()?.first()?.coverageAreas()?.first()).isInstanceOf(
+            MapLayerImageryProviderArea::class.java,
+        )
     }
 
     @Test
@@ -157,11 +160,10 @@ class MapLayerCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTes
             setUpClass()
 
             dhis2MockServer.enqueueMockResponse("settings/system_settings.json")
+            dhis2MockServer.enqueueMockResponse("map/layer/microsoft/azure_server_response.json")
             dhis2MockServer.enqueueMockResponse(401)
-            dhis2MockServer.enqueueMockResponse("map/layer/microsoft/bing_server_response.json")
-            dhis2MockServer.enqueueMockResponse("map/layer/microsoft/bing_server_response.json")
+            dhis2MockServer.enqueueMockResponse("map/layer/microsoft/azure_server_response.json")
             dhis2MockServer.enqueueMockResponse(401)
-            dhis2MockServer.enqueueMockResponse("map/layer/microsoft/bing_server_response.json")
             dhis2MockServer.enqueueMockResponse("map/layer/externalmap/external_map_layers.json")
 
             d2.mapsModule().mapLayersDownloader().downloadMetadata().blockingAwait()

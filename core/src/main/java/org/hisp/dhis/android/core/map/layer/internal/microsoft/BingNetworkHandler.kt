@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,50 +26,10 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.visualization
+package org.hisp.dhis.android.core.map.layer.internal.microsoft
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
-import org.hisp.dhis.android.core.common.CoreColumns
-import org.hisp.dhis.android.core.common.IdentifiableColumns
+import org.hisp.dhis.android.core.map.layer.MapLayer
 
-object TrackerVisualizationTableInfo {
-
-    @JvmField
-    val TABLE_INFO: TableInfo = object : TableInfo() {
-        override fun name(): String {
-            return "TrackerVisualization"
-        }
-
-        override fun columns(): CoreColumns {
-            return Columns()
-        }
-    }
-
-    class Columns : IdentifiableColumns() {
-        override fun all(): Array<String> {
-            return CollectionsHelper.appendInNewArray(
-                super.all(),
-                DESCRIPTION,
-                DISPLAY_DESCRIPTION,
-                TYPE,
-                OUTPUT_TYPE,
-                PROGRAM,
-                PROGRAM_STAGE,
-                TRACKED_ENTITY_TYPE,
-                SORTING,
-            )
-        }
-
-        companion object {
-            const val DESCRIPTION = "description"
-            const val DISPLAY_DESCRIPTION = "displayDescription"
-            const val TYPE = "type"
-            const val OUTPUT_TYPE = "outputType"
-            const val PROGRAM = "program"
-            const val PROGRAM_STAGE = "programStage"
-            const val TRACKED_ENTITY_TYPE = "trackedEntityType"
-            const val SORTING = "sorting"
-        }
-    }
+internal fun interface BingNetworkHandler {
+    suspend fun getBaseMap(url: String, basemap: BingBasemap): List<MapLayer>
 }

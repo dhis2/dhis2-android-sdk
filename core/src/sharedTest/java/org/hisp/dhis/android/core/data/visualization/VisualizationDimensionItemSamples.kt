@@ -39,5 +39,6 @@ object VisualizationDimensionItemSamples {
             .dimension("dx")
             .dimensionItem("item")
             .dimensionItemType("DATA_ELEMENT")
+            .sortOrder(3)
             .build()
 }

@@ -57,6 +57,8 @@ public abstract class VisualizationDimensionItem implements CoreObject {
     @Nullable
     public abstract String dimensionItemType();
 
+    @Nullable
+    public abstract Integer sortOrder();
 
     public static Builder builder() {
         return new $$AutoValue_VisualizationDimensionItem.Builder();
@@ -80,6 +82,8 @@ public abstract class VisualizationDimensionItem implements CoreObject {
         public abstract Builder dimensionItem(String dimensionItem);
 
         public abstract Builder dimensionItemType(String dimensionItemType);
+
+        public abstract Builder sortOrder(Integer sortOrder);
 
         public abstract VisualizationDimensionItem build();
     }

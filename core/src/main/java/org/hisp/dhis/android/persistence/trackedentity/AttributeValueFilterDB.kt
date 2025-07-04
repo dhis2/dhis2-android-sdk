@@ -85,7 +85,6 @@ internal data class AttributeValueFilterDB(
     override fun toDomain(): AttributeValueFilter {
         return AttributeValueFilter.builder()
             .applyFilterOperatorsFields(this@AttributeValueFilterDB)
-            .id(id?.toLong())
             .trackedEntityInstanceFilter(trackedEntityInstanceFilter)
             .attribute(attribute)
             .sw(sw)

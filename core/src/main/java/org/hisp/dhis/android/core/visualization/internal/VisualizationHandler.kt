@@ -48,8 +48,8 @@ internal class VisualizationHandler(
     override suspend fun afterObjectHandled(o: Visualization, action: HandleAction) {
         val items =
             toItems(o.columns(), LayoutPosition.COLUMN) +
-                    toItems(o.rows(), LayoutPosition.ROW) +
-                    toItems(o.filters(), LayoutPosition.FILTER)
+                toItems(o.rows(), LayoutPosition.ROW) +
+                toItems(o.filters(), LayoutPosition.FILTER)
 
         itemHandler.handleMany(o.uid(), items)
     }
@@ -68,7 +68,7 @@ internal class VisualizationHandler(
     ): List<VisualizationDimensionItem> = dimensions.orEmpty().flatMap { it.toDimensionItems(position) }
 
     private fun VisualizationDimension.toDimensionItems(
-        position: LayoutPosition
+        position: LayoutPosition,
     ): List<VisualizationDimensionItem> {
         val baseItems = items().orEmpty().filterNotNull()
         val nonEmptyItems = baseItems.ifEmpty { listOf(createEmptyItem(position)) }

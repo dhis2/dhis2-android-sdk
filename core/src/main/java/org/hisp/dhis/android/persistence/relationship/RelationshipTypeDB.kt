@@ -38,7 +38,7 @@ internal data class RelationshipTypeDB(
         return RelationshipType.builder()
             .apply {
                 applyBaseIdentifiableFields(this@RelationshipTypeDB)
-                    fromToName(fromToName)
+                fromToName(fromToName)
                 toFromName(toFromName)
                 bidirectional(bidirectional)
                 accessDataWrite?.let { access(it.toDomain()) }

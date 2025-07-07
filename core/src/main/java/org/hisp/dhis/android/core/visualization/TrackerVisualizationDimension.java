@@ -79,6 +79,8 @@ public abstract class TrackerVisualizationDimension implements CoreObject {
     @ColumnAdapter(TrackerVisualizationDimensionRepetitionColumnAdapter.class)
     public abstract TrackerVisualizationDimensionRepetition repetition();
 
+    @Nullable
+    public abstract Integer sortOrder();
 
     public static Builder builder() {
         return new AutoValue_TrackerVisualizationDimension.Builder();
@@ -110,6 +112,8 @@ public abstract class TrackerVisualizationDimension implements CoreObject {
         public abstract Builder filter(String filter);
 
         public abstract Builder repetition(TrackerVisualizationDimensionRepetition repetition);
+
+        public abstract Builder sortOrder(Integer sortOrder);
 
         public abstract TrackerVisualizationDimension build();
     }

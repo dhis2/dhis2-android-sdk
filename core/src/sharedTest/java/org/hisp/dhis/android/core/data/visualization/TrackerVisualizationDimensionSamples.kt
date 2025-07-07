@@ -53,5 +53,6 @@ object TrackerVisualizationDimensionSamples {
                     .indexes(listOf(-1, 1, 0))
                     .build(),
             )
+            .sortOrder(3)
             .build()
 }

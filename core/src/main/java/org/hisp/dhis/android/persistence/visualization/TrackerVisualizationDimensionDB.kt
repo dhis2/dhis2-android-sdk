@@ -58,6 +58,7 @@ internal data class TrackerVisualizationDimensionDB(
     val items: ObjectWithUidListDB?,
     val filter: String?,
     val repetition: RepetitionDB?,
+    val sortOrder: Int?,
 ) : EntityDB<TrackerVisualizationDimension> {
     override fun toDomain(): TrackerVisualizationDimension {
         return TrackerVisualizationDimension.builder()
@@ -70,6 +71,7 @@ internal data class TrackerVisualizationDimensionDB(
             .items(items?.toDomain())
             .filter(filter)
             .repetition(repetition?.toDomain())
+            .sortOrder(sortOrder)
             .build()
     }
 }
@@ -85,5 +87,6 @@ internal fun TrackerVisualizationDimension.toDB(): TrackerVisualizationDimension
         items = items()?.toDB(),
         filter = filter(),
         repetition = repetition()?.toDB(),
+        sortOrder = sortOrder(),
     )
 }

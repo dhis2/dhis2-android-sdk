@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.visualization
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.CoreColumns
+import org.hisp.dhis.android.core.visualization.VisualizationDimensionItemTableInfo.Columns.Companion.SORT_ORDER
 
 object TrackerVisualizationDimensionTableInfo {
 
@@ -58,6 +59,7 @@ object TrackerVisualizationDimensionTableInfo {
                 ITEMS,
                 FILTER,
                 REPETITION,
+                SORT_ORDER,
             )
         }
 
@@ -68,6 +70,7 @@ object TrackerVisualizationDimensionTableInfo {
                 POSITION,
                 DIMENSION,
                 DIMENSION_TYPE,
+                SORT_ORDER,
             )
         }
 
@@ -81,6 +84,7 @@ object TrackerVisualizationDimensionTableInfo {
             const val ITEMS = "items"
             const val FILTER = "filter"
             const val REPETITION = "repetition"
+            const val SORT_ORDER = "sortOrder"
         }
     }
 }

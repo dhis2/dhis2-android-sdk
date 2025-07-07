@@ -33,6 +33,7 @@ internal data class VisualizationDimensionItemDB(
     val dimension: String,
     val dimensionItem: String?,
     val dimensionItemType: String?,
+    val sortOrder: Int?,
 ) : EntityDB<VisualizationDimensionItem> {
     override fun toDomain(): VisualizationDimensionItem {
         return VisualizationDimensionItem.builder()
@@ -41,6 +42,7 @@ internal data class VisualizationDimensionItemDB(
             .dimension(dimension)
             .dimensionItem(dimensionItem)
             .dimensionItemType(dimensionItemType)
+            .sortOrder(sortOrder)
             .build()
     }
 }
@@ -52,5 +54,6 @@ internal fun VisualizationDimensionItem.toDB(): VisualizationDimensionItemDB {
         dimension = dimension()!!,
         dimensionItem = dimensionItem(),
         dimensionItemType = dimensionItemType(),
+        sortOrder = sortOrder()
     )
 }

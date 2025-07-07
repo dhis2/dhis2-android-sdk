@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.configuration.internal
 
 import android.content.Context
+import org.hisp.dhis.android.core.arch.db.access.internal.BaseDatabaseExport
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseExport
 import org.hisp.dhis.android.core.common.BaseCallShould
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfigurationUtil.buildUserConfiguration
 import org.junit.Before
@@ -44,7 +44,7 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
     private val context: Context = mock()
     private val databaseConfigurationSecureStore: DatabaseConfigurationInsecureStore = mock()
     private val configurationHelper: DatabaseConfigurationHelper = mock()
-    private val databaseExport: DatabaseExport = mock()
+    private val databaseExport: BaseDatabaseExport = mock()
     private val databaseAdapterFactory: DatabaseAdapterFactory = mock()
 
     private val username = "username"
@@ -77,7 +77,7 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
         .accounts(listOf(userConfigurationEncrypted))
         .build()
 
-    private lateinit var manager: MultiUserDatabaseManager
+    private lateinit var manager: BaseMultiUserDatabaseManager
 
     @Before
     @Throws(Exception::class)

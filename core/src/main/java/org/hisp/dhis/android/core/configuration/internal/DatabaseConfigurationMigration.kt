@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.configuration.internal
 import android.content.Context
 import android.database.sqlite.SQLiteException
 import org.hisp.dhis.android.BuildConfig
+import org.hisp.dhis.android.core.arch.db.access.BaseDatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
 import org.hisp.dhis.android.core.configuration.internal.migration.DatabaseConfigurationInsecureStoreOld
@@ -46,7 +46,7 @@ internal class DatabaseConfigurationMigration(
     private val insecureStore: InsecureStore,
     private val nameGenerator: DatabaseNameGenerator,
     private val renamer: DatabaseRenamer,
-    private val databaseAdapterFactory: DatabaseAdapterFactory,
+    private val databaseAdapterFactory: BaseDatabaseAdapterFactory,
 ) {
     @Suppress("TooGenericExceptionCaught")
     suspend fun apply() {

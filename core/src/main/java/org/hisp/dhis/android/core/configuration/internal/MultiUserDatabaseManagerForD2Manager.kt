@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.configuration.internal
 
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
+import org.hisp.dhis.android.core.arch.db.access.BaseDatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.koin.core.annotation.Singleton
@@ -39,7 +39,7 @@ import java.util.Date
 internal class MultiUserDatabaseManagerForD2Manager(
     private val databaseAdapter: DatabaseAdapter,
     private val migration: DatabaseConfigurationMigration,
-    private val databaseAdapterFactory: DatabaseAdapterFactory,
+    private val databaseAdapterFactory: BaseDatabaseAdapterFactory,
     private val databaseConfigurationStore: DatabaseConfigurationInsecureStore,
 ) {
     fun loadIfLogged(credentials: Credentials?) {

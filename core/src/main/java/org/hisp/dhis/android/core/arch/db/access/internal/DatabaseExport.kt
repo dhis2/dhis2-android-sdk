@@ -44,8 +44,8 @@ internal class DatabaseExport(
     private val context: Context,
     private val passwordManager: DatabaseEncryptionPasswordManager,
     private val configurationHelper: DatabaseConfigurationHelper,
-) {
-    fun encrypt(serverUrl: String, oldConfiguration: DatabaseAccount) {
+) : BaseDatabaseExport {
+    override fun encrypt(serverUrl: String, oldConfiguration: DatabaseAccount) {
         val newConfiguration = configurationHelper.changeEncryption(serverUrl, oldConfiguration)
         export(
             oldDatabaseFile = context.getDatabasePath(oldConfiguration.databaseName()),
@@ -58,7 +58,7 @@ internal class DatabaseExport(
         )
     }
 
-    fun encryptAndCopyTo(newConfiguration: DatabaseAccount, sourceFile: File, targetFile: File) {
+    override fun encryptAndCopyTo(newConfiguration: DatabaseAccount, sourceFile: File, targetFile: File) {
         export(
             oldDatabaseFile = sourceFile,
             newDatabaseFile = targetFile,
@@ -70,7 +70,7 @@ internal class DatabaseExport(
         )
     }
 
-    fun decrypt(serverUrl: String, oldConfiguration: DatabaseAccount) {
+    override fun decrypt(serverUrl: String, oldConfiguration: DatabaseAccount) {
         val newConfiguration = configurationHelper.changeEncryption(serverUrl, oldConfiguration)
         export(
             oldDatabaseFile = context.getDatabasePath(oldConfiguration.databaseName()),
@@ -83,7 +83,7 @@ internal class DatabaseExport(
         )
     }
 
-    fun decryptAndCopyTo(account: DatabaseAccount, destinationFile: File) {
+    override fun decryptAndCopyTo(account: DatabaseAccount, destinationFile: File) {
         export(
             oldDatabaseFile = context.getDatabasePath(account.databaseName()),
             newDatabaseFile = destinationFile,

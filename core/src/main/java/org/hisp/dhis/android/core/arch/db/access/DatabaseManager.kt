@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,47 +26,45 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration.internal;
+package org.hisp.dhis.android.core.arch.db.access
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+/**
+ * Interface for managing database lifecycle operations.
+ * Designed to be platform-agnostic for future KMP support.
+ */
+interface DatabaseManager {
+    /**
+     * Creates or opens a database with the specified name.
+     *
+     * @param databaseName The name of the database to create or open
+     * @return A DatabaseAdapter for the created/opened database
+     */
+    fun createOrOpenDatabase(databaseName: String): DatabaseAdapter
 
-import com.google.auto.value.AutoValue;
+    /**
+     * Creates or opens an encrypted database with the specified name and password.
+     *
+     * @param databaseName The name of the database to create or open
+     * @param password The password to use for encryption
+     * @return A DatabaseAdapter for the created/opened encrypted database
+     */
+    fun createOrOpenEncryptedDatabase(databaseName: String, password: String): DatabaseAdapter
 
-import org.hisp.dhis.android.BuildConfig;
+    /**
+     * Deletes the database with the specified name.
+     *
+     * @param databaseName The name of the database to delete
+     * @return true if the database was successfully deleted, false otherwise
+     */
+    fun deleteDatabase(databaseName: String, isEncrypted: Boolean): Boolean
 
-import java.util.Collections;
-import java.util.List;
+    /**
+     * Checks if a database with the specified name exists.
+     *
+     * @param databaseName The name of the database to check
+     * @return true if the database exists, false otherwise
+     */
+    fun databaseExists(databaseName: String): Boolean
 
-@AutoValue
-public abstract class DatabasesConfiguration {
-
-    public abstract long versionCode();
-
-    @Nullable
-    public abstract Integer maxAccounts();
-
-    @NonNull
-    public abstract List<DatabaseAccount> accounts();
-
-    public static Builder builder() {
-        return new AutoValue_DatabasesConfiguration.Builder()
-                .versionCode(BuildConfig.VERSION_CODE)
-                .maxAccounts(BaseMultiUserDatabaseManager.DefaultMaxAccounts)
-                .accounts(Collections.emptyList());
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder versionCode(long versionCode);
-
-        public abstract Builder maxAccounts(Integer maxAccounts);
-
-        public abstract Builder accounts(List<DatabaseAccount> accounts);
-
-        public abstract DatabasesConfiguration build();
-    }
+    fun disableDatabase()
 }

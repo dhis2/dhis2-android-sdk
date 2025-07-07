@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,47 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration.internal;
+package org.hisp.dhis.android.core.arch.db.access;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount;
 
-import com.google.auto.value.AutoValue;
+public interface BaseDatabaseAdapterFactory {
+    DatabaseAdapter newParentDatabaseAdapter();
 
-import org.hisp.dhis.android.BuildConfig;
+    DatabaseAdapter getDatabaseAdapter(DatabaseAccount databaseAccount, boolean force);
 
-import java.util.Collections;
-import java.util.List;
+    void removeDatabaseAdapter(DatabaseAdapter adapter);
+    // disableDatabase
+    void createOrOpenDatabase(DatabaseAdapter adapter, String databaseName, boolean encrypt, Integer version);
+    // check
+    void createOrOpenDatabase(DatabaseAdapter adapter, String databaseName, boolean encrypt);
+    // check
+    void createOrOpenDatabase(DatabaseAdapter adapter, DatabaseAccount userConfiguration);
+    // check
+    void createOrRecreateDatabase(DatabaseAdapter adapter, DatabaseAccount userConfiguration);
 
-@AutoValue
-public abstract class DatabasesConfiguration {
+    void deleteDatabase(DatabaseAccount userConfiguration);
+        // check
 
-    public abstract long versionCode();
-
-    @Nullable
-    public abstract Integer maxAccounts();
-
-    @NonNull
-    public abstract List<DatabaseAccount> accounts();
-
-    public static Builder builder() {
-        return new AutoValue_DatabasesConfiguration.Builder()
-                .versionCode(BuildConfig.VERSION_CODE)
-                .maxAccounts(BaseMultiUserDatabaseManager.DefaultMaxAccounts)
-                .accounts(Collections.emptyList());
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder versionCode(long versionCode);
-
-        public abstract Builder maxAccounts(Integer maxAccounts);
-
-        public abstract Builder accounts(List<DatabaseAccount> accounts);
-
-        public abstract DatabasesConfiguration build();
-    }
 }

@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.attribute.internal.AttributeModuleDownloader
 import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader
 import org.hisp.dhis.android.core.common.BaseCallShould
-import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
+import org.hisp.dhis.android.core.configuration.internal.BaseMultiUserDatabaseManager
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleDownloader
 import org.hisp.dhis.android.core.dataset.internal.DataSetModuleDownloader
 import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemModuleDownloader
@@ -90,7 +90,7 @@ class MetadataCallShould : BaseCallShould() {
     private val smsModule: SmsModule = mock()
     private val configCase: ConfigCase = mock()
     private val generalSettingCall: GeneralSettingCall = mock()
-    private val multiUserDatabaseManager: MultiUserDatabaseManager = mock()
+    private val multiUserDatabaseManager: BaseMultiUserDatabaseManager = mock()
     private val credentialsSecureStore: CredentialsSecureStore = mock()
     private val legendSetModuleDownloader: LegendSetModuleDownloader = mock()
     private val attributeModuleDownloader: AttributeModuleDownloader = mock()

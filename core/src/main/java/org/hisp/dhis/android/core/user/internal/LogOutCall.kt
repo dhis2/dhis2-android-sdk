@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.user.internal
 
 import io.reactivex.Completable
+import org.hisp.dhis.android.core.arch.db.access.BaseDatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -40,7 +40,7 @@ import org.koin.core.annotation.Singleton
 @Singleton
 class LogOutCall internal constructor(
     private val databaseAdapter: DatabaseAdapter,
-    private val databaseAdapterFactory: DatabaseAdapterFactory,
+    private val databaseAdapterFactory: BaseDatabaseAdapterFactory,
     private val credentialsSecureStore: CredentialsSecureStore,
     private val userIdStore: UserIdInMemoryStore,
 ) {

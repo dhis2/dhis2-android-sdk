@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.db.access.internal;
 
 import android.content.Context;
 
+import org.hisp.dhis.android.core.arch.db.access.BaseDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount;
@@ -40,7 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DatabaseAdapterFactory {
+public class DatabaseAdapterFactory implements BaseDatabaseAdapterFactory {
 
     private static Map<String, UnencryptedDatabaseOpenHelper> unencryptedOpenHelpers = new HashMap<>();
     private static Map<String, EncryptedDatabaseOpenHelper> encryptedOpenHelpers = new HashMap<>();

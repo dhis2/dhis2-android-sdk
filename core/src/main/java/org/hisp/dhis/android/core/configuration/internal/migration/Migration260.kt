@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.configuration.internal.migration
 
 import android.content.Context
+import org.hisp.dhis.android.core.arch.db.access.BaseDatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
@@ -42,7 +42,7 @@ import java.io.File
 internal class Migration260(
     private val context: Context,
     private val databaseConfigurationStore: ObjectKeyValueStore<DatabasesConfiguration>,
-    private val databaseAdapterFactory: DatabaseAdapterFactory,
+    private val databaseAdapterFactory: BaseDatabaseAdapterFactory,
 ) {
     suspend fun apply() {
         val configuration = databaseConfigurationStore.get()

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,47 +26,38 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration.internal;
+package org.hisp.dhis.android.core.arch.db.access
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.room.RoomDatabase
 
-import com.google.auto.value.AutoValue;
+interface DatabaseAdapter {
+    val isReady: Boolean
 
-import org.hisp.dhis.android.BuildConfig;
+    fun activate(database: RoomDatabase)
 
-import java.util.Collections;
-import java.util.List;
+    fun deactivate()
 
-@AutoValue
-public abstract class DatabasesConfiguration {
+    fun beginNewTransaction(): Transaction
 
-    public abstract long versionCode();
+    fun setTransactionSuccessful()
 
-    @Nullable
-    public abstract Integer maxAccounts();
+    fun runInTransaction(block: Runnable)
 
-    @NonNull
-    public abstract List<DatabaseAccount> accounts();
+    fun endTransaction()
 
-    public static Builder builder() {
-        return new AutoValue_DatabasesConfiguration.Builder()
-                .versionCode(BuildConfig.VERSION_CODE)
-                .maxAccounts(BaseMultiUserDatabaseManager.DefaultMaxAccounts)
-                .accounts(Collections.emptyList());
-    }
+    fun execSQL(sql: String)
 
-    public abstract Builder toBuilder();
+    fun delete(tableName: String, whereClause: String, whereArgs: Array<Any>): Int
 
-    @AutoValue.Builder
-    public abstract static class Builder {
+    fun delete(tableName: String): Int
 
-        public abstract Builder versionCode(long versionCode);
+    fun setForeignKeyConstraintsEnabled(enable: Boolean)
 
-        public abstract Builder maxAccounts(Integer maxAccounts);
+    fun enableWriteAheadLogging()
 
-        public abstract Builder accounts(List<DatabaseAccount> accounts);
+    fun close()
 
-        public abstract DatabasesConfiguration build();
-    }
+    fun getDatabaseName(): String
+
+    fun getVersion(): Int
 }

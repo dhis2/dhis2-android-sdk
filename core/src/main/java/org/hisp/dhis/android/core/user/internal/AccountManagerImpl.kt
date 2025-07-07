@@ -31,15 +31,15 @@ package org.hisp.dhis.android.core.user.internal
 import android.content.Context
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
+import org.hisp.dhis.android.core.arch.db.access.BaseDatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
+import org.hisp.dhis.android.core.configuration.internal.BaseMultiUserDatabaseManager
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccountImportStatus
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationInsecureStore
-import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
@@ -51,8 +51,8 @@ import org.koin.core.annotation.Singleton
 @Suppress("TooManyFunctions")
 internal class AccountManagerImpl(
     private val databasesConfigurationStore: DatabaseConfigurationInsecureStore,
-    private val multiUserDatabaseManager: MultiUserDatabaseManager,
-    private val databaseAdapterFactory: DatabaseAdapterFactory,
+    private val multiUserDatabaseManager: BaseMultiUserDatabaseManager,
+    private val databaseAdapterFactory: BaseDatabaseAdapterFactory,
     private val credentialsSecureStore: CredentialsSecureStore,
     private val logOutCall: LogOutCall,
     private val context: Context,

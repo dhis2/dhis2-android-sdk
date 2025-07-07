@@ -26,47 +26,23 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration.internal;
+package org.hisp.dhis.android.core.arch.db.access
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+/**
+ * Represents a database transaction.
+ * Used to ensure proper transaction handling and resource cleanup.
+ */
+interface Transaction {
+    /**
+     * Sets the transaction as successful.
+     * If not called, the transaction will be rolled back when end is called.
+     */
+    fun setSuccessful()
 
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.BuildConfig;
-
-import java.util.Collections;
-import java.util.List;
-
-@AutoValue
-public abstract class DatabasesConfiguration {
-
-    public abstract long versionCode();
-
-    @Nullable
-    public abstract Integer maxAccounts();
-
-    @NonNull
-    public abstract List<DatabaseAccount> accounts();
-
-    public static Builder builder() {
-        return new AutoValue_DatabasesConfiguration.Builder()
-                .versionCode(BuildConfig.VERSION_CODE)
-                .maxAccounts(BaseMultiUserDatabaseManager.DefaultMaxAccounts)
-                .accounts(Collections.emptyList());
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder versionCode(long versionCode);
-
-        public abstract Builder maxAccounts(Integer maxAccounts);
-
-        public abstract Builder accounts(List<DatabaseAccount> accounts);
-
-        public abstract DatabasesConfiguration build();
-    }
+    /**
+     * Ends the transaction.
+     * If setSuccessful() was called, the transaction will be committed;
+     * otherwise it will be rolled back.
+     */
+    fun end()
 }

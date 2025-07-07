@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.programstageworkinglist
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListEventDataFilter
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListEventDataFilterStore
@@ -37,10 +38,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramStageWorkingListEventDataFilterStoreImpl(
-    private val dao: ProgramStageWorkingListEventDataFilterDao,
+    private val appDatabase: AppDatabase,
 ) : ProgramStageWorkingListEventDataFilterStore,
     ObjectWithoutUidStoreImpl<ProgramStageWorkingListEventDataFilter, ProgramStageWorkingListEventDataFilterDB>(
-        dao,
+        appDatabase.programStageWorkingListEventDataFilterDao(),
         ProgramStageWorkingListEventDataFilter::toDB,
         SQLStatementBuilderImpl(ProgramStageWorkingListEventDataFilterTableInfo.TABLE_INFO),
     ) {

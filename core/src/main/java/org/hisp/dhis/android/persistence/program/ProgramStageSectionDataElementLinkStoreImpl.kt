@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.program
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.program.ProgramStageSectionDataElementLink
 import org.hisp.dhis.android.core.program.internal.ProgramStageSectionDataElementLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
@@ -36,10 +37,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramStageSectionDataElementLinkStoreImpl(
-    val dao: ProgramStageSectionDataElementLinkDao,
+    private val appDatabase: AppDatabase,
 ) : ProgramStageSectionDataElementLinkStore,
     LinkStoreImpl<ProgramStageSectionDataElementLink, ProgramStageSectionDataElementLinkDB>(
-        dao,
+        appDatabase.programStageSectionDataElementLinkDao(),
         ProgramStageSectionDataElementLink::toDB,
         LinkSQLStatementBuilderImpl(
             ProgramStageSectionDataElementLinkTableInfo.TABLE_INFO,

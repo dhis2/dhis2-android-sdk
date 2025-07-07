@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.category
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.internal.CategoryStore
@@ -37,13 +38,14 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class CategoryStoreImpl(
-    val dao: CategoryDao,
+    private val appDatabase: AppDatabase,
 ) : CategoryStore, IdentifiableObjectStoreImpl<Category, CategoryDB>(
-    dao,
+    appDatabase.categoryDao(),
     Category::toDB,
     SQLStatementBuilderImpl(CategoryTableInfo.TABLE_INFO),
 ) {
     override suspend fun getForCategoryCombo(categoryComboUid: String): List<Category> {
+        val dao = appDatabase.categoryDao()
         val projection = LinkTableChildProjection(
             CategoryTableInfo.TABLE_INFO,
             CategoryCategoryComboLinkTableInfo.Columns.CATEGORY_COMBO,

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.configuration
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.configuration.internal.Configuration
 import org.hisp.dhis.android.core.configuration.internal.ConfigurationStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
@@ -36,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ConfigurationStoreImpl(
-    val dao: ConfigurationDao,
+    private val appDatabase: AppDatabase,
 ) : ConfigurationStore, ObjectStoreImpl<Configuration, ConfigurationDB>(
-    dao,
+    appDatabase.configurationDao(),
     Configuration::toDB,
     SQLStatementBuilderImpl(ConfigurationTableInfo.TABLE_INFO),
 )

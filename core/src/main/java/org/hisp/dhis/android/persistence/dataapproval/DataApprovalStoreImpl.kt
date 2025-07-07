@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.dataapproval
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.dataapproval.DataApproval
 import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilder
@@ -37,10 +38,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DataApprovalStoreImpl(
-    val dao: DataApprovalDao,
+    private val appDatabase: AppDatabase,
     override val builder: SQLStatementBuilder,
 ) : DataApprovalStore, ObjectWithoutUidStoreImpl<DataApproval, DataApprovalDB>(
-    dao,
+    appDatabase.dataApprovalDao(),
     DataApproval::toDB,
     SQLStatementBuilderImpl(DataApprovalTableInfo.TABLE_INFO),
 )

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.visualization
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
 import org.hisp.dhis.android.core.visualization.internal.VisualizationDimensionItemStore
@@ -37,10 +38,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class VisualizationDimensionItemStoreImpl(
-    private val dao: VisualizationDimensionItemDao,
+    private val appDatabase: AppDatabase,
 ) : VisualizationDimensionItemStore,
     LinkStoreImpl<VisualizationDimensionItem, VisualizationDimensionItemDB>(
-        dao,
+        appDatabase.visualizationDimensionItemDao(),
         VisualizationDimensionItem::toDB,
         LinkSQLStatementBuilderImpl(
             VisualizationDimensionItemTableInfo.TABLE_INFO,

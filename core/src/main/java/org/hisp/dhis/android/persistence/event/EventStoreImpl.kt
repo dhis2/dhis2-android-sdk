@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.persistence.event
 
 import androidx.room.RoomRawQuery
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper.asStringList
@@ -45,9 +46,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class EventStoreImpl(
-    val dao: EventDao,
+    private val appDatabase: AppDatabase,
 ) : EventStore, IdentifiableDeletableDataObjectStoreImpl<Event, EventDB>(
-    dao,
+    appDatabase.eventDao(),
     Event::toDB,
     IdentifiableDeletableDataObjectSQLStatementBuilderImpl(EventTableInfo.TABLE_INFO),
 ) {
@@ -111,6 +112,7 @@ internal class EventStoreImpl(
     }
 
     override suspend fun countTeisWhereEvents(whereClause: String): Int {
+        val dao = appDatabase.eventDao()
         val query = "SELECT COUNT(DISTINCT a." + EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE + ") " +
             "FROM " + EnrollmentTableInfo.TABLE_INFO.name() + " a " +
             "INNER JOIN " +
@@ -129,6 +131,7 @@ internal class EventStoreImpl(
     }
 
     override suspend fun setAggregatedSyncState(uid: String, state: State): Int {
+        val dao = appDatabase.eventDao()
         return dao.setAggregatedSyncState(state.name, uid)
     }
 
@@ -139,6 +142,7 @@ internal class EventStoreImpl(
     }
 
     private suspend fun eventListFromQuery(query: String): List<Event> {
+        val dao = appDatabase.eventDao()
         val roomQuery = RoomRawQuery(query)
         val entitiesDB = dao.objectListRawQuery(roomQuery)
         return entitiesDB.map { it.toDomain() }

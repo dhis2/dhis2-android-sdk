@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.map
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.map.layer.MapLayer
 import org.hisp.dhis.android.core.map.layer.internal.MapLayerStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
@@ -36,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class MapLayerStoreImpl(
-    val dao: MapLayerDao,
+    private val appDatabase: AppDatabase,
 ) : MapLayerStore, IdentifiableObjectStoreImpl<MapLayer, MapLayerDB>(
-    dao,
+    appDatabase.mapLayerDao(),
     MapLayer::toDB,
     SQLStatementBuilderImpl(MapLayerTableInfo.TABLE_INFO),
 )

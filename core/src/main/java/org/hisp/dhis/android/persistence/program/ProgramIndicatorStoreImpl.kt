@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.program
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStore
@@ -37,9 +38,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramIndicatorStoreImpl(
-    val dao: ProgramIndicatorDao,
+    private val appDatabase: AppDatabase,
 ) : ProgramIndicatorStore, IdentifiableObjectStoreImpl<ProgramIndicator, ProgramIndicatorDB>(
-    dao,
+    appDatabase.programIndicatorDao(),
     ProgramIndicator::toDB,
     SQLStatementBuilderImpl(ProgramIndicatorTableInfo.TABLE_INFO),
 ) {

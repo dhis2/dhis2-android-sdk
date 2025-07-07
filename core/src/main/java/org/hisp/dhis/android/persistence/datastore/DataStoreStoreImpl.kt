@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.datastore
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.DataStoreEntry
 import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryStore
@@ -37,17 +38,19 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DataStoreStoreImpl(
-    val dao: DataStoreDao,
+    private val appDatabase: AppDatabase,
 ) : DataStoreEntryStore, ObjectWithoutUidStoreImpl<DataStoreEntry, DataStoreDB>(
-    dao,
+    appDatabase.dataStoreDao(),
     DataStoreEntry::toDB,
     SQLStatementBuilderImpl(DataStoreTableInfo.TABLE_INFO),
 ) {
     override suspend fun setState(entry: DataStoreEntry, state: State) {
+        val dao = appDatabase.dataStoreDao()
         dao.setSyncState(state.name, entry.namespace(), entry.key())
     }
 
     override suspend fun setStateIfUploading(entry: DataStoreEntry, state: State) {
+        val dao = appDatabase.dataStoreDao()
         dao.setStateIfUploading(state.name, entry.namespace(), entry.key())
     }
 }

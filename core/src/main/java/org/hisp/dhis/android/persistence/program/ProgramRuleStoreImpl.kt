@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.program
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.program.ProgramRule
 import org.hisp.dhis.android.core.program.internal.ProgramRuleStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
@@ -36,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramRuleStoreImpl(
-    val dao: ProgramRuleDao,
+    private val appDatabase: AppDatabase,
 ) : ProgramRuleStore, IdentifiableObjectStoreImpl<ProgramRule, ProgramRuleDB>(
-    dao,
+    appDatabase.programRuleDao(),
     ProgramRule::toDB,
     SQLStatementBuilderImpl(ProgramRuleTableInfo.TABLE_INFO),
 )

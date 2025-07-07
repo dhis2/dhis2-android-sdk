@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.dataset
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink
@@ -38,9 +39,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DataSetOrganisationUnitLinkStoreImpl(
-    val dao: DataSetOrganisationUnitLinkDao,
+    private val appDatabase: AppDatabase,
 ) : DataSetOrganisationUnitLinkStore, LinkStoreImpl<DataSetOrganisationUnitLink, DataSetOrganisationUnitLinkDB>(
-    dao,
+    appDatabase.dataSetOrganisationUnitLinkDao(),
     DataSetOrganisationUnitLink::toDB,
     LinkSQLStatementBuilderImpl(
         DataSetOrganisationUnitLinkTableInfo.TABLE_INFO,

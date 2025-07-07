@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.program
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
 import org.hisp.dhis.android.core.program.internal.AnalyticsPeriodBoundaryStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
@@ -36,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class AnalyticsPeriodBoundaryStoreImpl(
-    val dao: AnalyticsPeriodBoundaryDao,
+    private val appDatabase: AppDatabase,
 ) : AnalyticsPeriodBoundaryStore, LinkStoreImpl<AnalyticsPeriodBoundary, AnalyticsPeriodBoundaryDB>(
-    dao,
+    appDatabase.analyticsPeriodBoundaryDao(),
     AnalyticsPeriodBoundary::toDB,
     LinkSQLStatementBuilderImpl(
         AnalyticsPeriodBoundaryTableInfo.TABLE_INFO,

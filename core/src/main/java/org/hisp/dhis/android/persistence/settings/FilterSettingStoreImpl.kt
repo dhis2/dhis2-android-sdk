@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.settings
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.settings.FilterSetting
 import org.hisp.dhis.android.core.settings.internal.FilterSettingStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
@@ -36,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class FilterSettingStoreImpl(
-    val dao: FilterSettingDao,
+    private val appDatabase: AppDatabase,
 ) : FilterSettingStore, ObjectWithoutUidStoreImpl<FilterSetting, FilterSettingDB>(
-    dao,
+    appDatabase.filterSettingDao(),
     FilterSetting::toDB,
     SQLStatementBuilderImpl(FilterSettingTableInfo.TABLE_INFO),
 )

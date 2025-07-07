@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.expressiondimensionitem
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
 import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
@@ -36,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ExpressionDimensionItemStoreImpl(
-    val dao: ExpressionDimensionItemDao,
+    private val appDatabase: AppDatabase,
 ) : ExpressionDimensionItemStore, IdentifiableObjectStoreImpl<ExpressionDimensionItem, ExpressionDimensionItemDB>(
-    dao,
+    appDatabase.expressionDimensionItemDao(),
     ExpressionDimensionItem::toDB,
     SQLStatementBuilderImpl(ExpressionDimensionItemTableInfo.TABLE_INFO),
 )

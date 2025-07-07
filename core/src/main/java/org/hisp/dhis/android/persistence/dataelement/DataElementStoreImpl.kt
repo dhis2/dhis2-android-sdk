@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.dataelement
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
@@ -39,9 +40,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DataElementStoreImpl(
-    val dao: DataElementDao,
+    private val appDatabase: AppDatabase,
 ) : DataElementStore, IdentifiableObjectStoreImpl<DataElement, DataElementDB>(
-    dao,
+    appDatabase.dataElementDao(),
     DataElement::toDB,
     SQLStatementBuilderImpl(DataElementTableInfo.TABLE_INFO),
 ) {

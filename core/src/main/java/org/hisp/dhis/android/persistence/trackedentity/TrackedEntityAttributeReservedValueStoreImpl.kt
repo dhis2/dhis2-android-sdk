@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.trackedentity
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue
@@ -40,10 +41,10 @@ import java.util.Date
 
 @Singleton
 internal class TrackedEntityAttributeReservedValueStoreImpl(
-    val dao: TrackedEntityAttributeReservedValueDao,
+    private val appDatabase: AppDatabase,
 ) : TrackedEntityAttributeReservedValueStore,
     ObjectWithoutUidStoreImpl<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueDB>(
-        dao,
+        appDatabase.trackedEntityAttributeReservedValueDao(),
         TrackedEntityAttributeReservedValue::toDB,
         SQLStatementBuilderImpl(TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO),
     ) {

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.settings
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.settings.CustomIntent
 import org.hisp.dhis.android.core.settings.internal.CustomIntentStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
@@ -36,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class CustomIntentStoreImpl(
-    val dao: CustomIntentDao,
+    private val appDatabase: AppDatabase,
 ) : CustomIntentStore, IdentifiableObjectStoreImpl<CustomIntent, CustomIntentDB>(
-    dao,
+    appDatabase.customIntentDao(),
     CustomIntent::toDB,
     SQLStatementBuilderImpl(CustomIntentTableInfo.TABLE_INFO),
 )

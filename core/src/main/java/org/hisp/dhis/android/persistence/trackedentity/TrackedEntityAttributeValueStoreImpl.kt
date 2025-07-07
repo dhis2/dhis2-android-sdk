@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.trackedentity
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper.asStringList
@@ -43,10 +44,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackedEntityAttributeValueStoreImpl(
-    private val dao: TrackedEntityAttributeValueDao,
+    private val appDatabase: AppDatabase,
 ) : TrackedEntityAttributeValueStore,
     ObjectWithoutUidStoreImpl<TrackedEntityAttributeValue, TrackedEntityAttributeValueDB>(
-        dao,
+        appDatabase.trackedEntityAttributeValueDao(),
         TrackedEntityAttributeValue::toDB,
         SQLStatementBuilderImpl(TrackedEntityAttributeValueTableInfo.TABLE_INFO),
     ) {
@@ -166,6 +167,7 @@ internal class TrackedEntityAttributeValueStoreImpl(
     }
 
     override suspend fun setSyncStateByInstance(trackedEntityInstanceUid: String, syncState: State) {
+        val dao = appDatabase.trackedEntityAttributeValueDao()
         dao.setSyncStateByInstance(syncState.name, trackedEntityInstanceUid)
     }
 }

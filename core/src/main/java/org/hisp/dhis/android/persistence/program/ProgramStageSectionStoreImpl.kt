@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.program
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.program.ProgramStageSection
 import org.hisp.dhis.android.core.program.internal.ProgramStageSectionStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
@@ -36,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramStageSectionStoreImpl(
-    val dao: ProgramStageSectionDao,
+    private val appDatabase: AppDatabase,
 ) : ProgramStageSectionStore, IdentifiableObjectStoreImpl<ProgramStageSection, ProgramStageSectionDB>(
-    dao,
+    appDatabase.programStageSectionDao(),
     ProgramStageSection::toDB,
     SQLStatementBuilderImpl(ProgramStageSectionTableInfo.TABLE_INFO),
 )

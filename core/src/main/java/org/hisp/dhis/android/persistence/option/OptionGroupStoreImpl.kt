@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.option
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.option.OptionGroup
 import org.hisp.dhis.android.core.option.internal.OptionGroupStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
@@ -36,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class OptionGroupStoreImpl(
-    val dao: OptionGroupDao,
+    private val appDatabase: AppDatabase,
 ) : OptionGroupStore, IdentifiableObjectStoreImpl<OptionGroup, OptionGroupDB>(
-    dao,
+    appDatabase.optionGroupDao(),
     OptionGroup::toDB,
     SQLStatementBuilderImpl(OptionGroupTableInfo.TABLE_INFO),
 )

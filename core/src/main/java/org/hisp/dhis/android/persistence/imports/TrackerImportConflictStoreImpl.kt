@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.imports
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
@@ -40,9 +41,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackerImportConflictStoreImpl(
-    val dao: TrackerImportConflictDao,
+    private val appDatabase: AppDatabase,
 ) : TrackerImportConflictStore, ObjectStoreImpl<TrackerImportConflict, TrackerImportConflictDB>(
-    dao,
+    appDatabase.trackerImportConflictDao(),
     TrackerImportConflict::toDB,
     SQLStatementBuilderImpl(TrackerImportConflictTableInfo.TABLE_INFO),
 ) {

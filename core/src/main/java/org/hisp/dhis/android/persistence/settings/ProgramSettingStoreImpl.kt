@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.settings
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.internal.ProgramSettingStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
@@ -36,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramSettingStoreImpl(
-    val dao: ProgramSettingDao,
+    private val appDatabase: AppDatabase,
 ) : ProgramSettingStore, ObjectWithoutUidStoreImpl<ProgramSetting, ProgramSettingDB>(
-    dao,
+    appDatabase.programSettingDao(),
     ProgramSetting::toDB,
     SQLStatementBuilderImpl(ProgramSettingTableInfo.TABLE_INFO),
 )

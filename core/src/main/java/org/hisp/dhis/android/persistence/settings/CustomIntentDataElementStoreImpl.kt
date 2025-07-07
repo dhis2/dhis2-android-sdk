@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.settings
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.settings.CustomIntentDataElement
 import org.hisp.dhis.android.core.settings.internal.CustomIntentDataElementStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
@@ -36,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class CustomIntentDataElementStoreImpl(
-    val dao: CustomIntentDataElementDao,
+    private val appDatabase: AppDatabase,
 ) : CustomIntentDataElementStore, LinkStoreImpl<CustomIntentDataElement, CustomIntentDataElementDB>(
-    dao,
+    appDatabase.customIntentDataElementDao(),
     CustomIntentDataElement::toDB,
     LinkSQLStatementBuilderImpl(
         CustomIntentDataElementTableInfo.TABLE_INFO,

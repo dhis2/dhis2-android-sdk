@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.settings
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
 import org.hisp.dhis.android.core.settings.internal.AnalyticsTeiAttributeStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
@@ -36,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class AnalyticsTeiAttributeStoreImpl(
-    val dao: AnalyticsTeiAttributeDao,
+    private val appDatabase: AppDatabase,
 ) : AnalyticsTeiAttributeStore, LinkStoreImpl<AnalyticsTeiAttribute, AnalyticsTeiAttributeDB>(
-    dao,
+    appDatabase.analyticsTeiAttributeDao(),
     AnalyticsTeiAttribute::toDB,
     LinkSQLStatementBuilderImpl(
         AnalyticsTeiAttributeTableInfo.TABLE_INFO,

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.legendset
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink
@@ -38,10 +39,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramIndicatorLegendSetLinkStoreImpl(
-    val dao: ProgramIndicatorLegendSetLinkDao,
+    private val appDatabase: AppDatabase,
 ) : ProgramIndicatorLegendSetLinkStore,
     LinkStoreImpl<ProgramIndicatorLegendSetLink, ProgramIndicatorLegendSetLinkDB>(
-        dao,
+        appDatabase.programIndicatorLegendSetLinkDao(),
         ProgramIndicatorLegendSetLink::toDB,
         LinkSQLStatementBuilderImpl(
             ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO,

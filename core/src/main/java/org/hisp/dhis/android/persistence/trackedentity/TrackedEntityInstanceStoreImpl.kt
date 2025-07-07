@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.trackedentity
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
@@ -40,10 +41,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackedEntityInstanceStoreImpl(
-    private val dao: TrackedEntityInstanceDao,
+    private val appDatabase: AppDatabase,
 ) : TrackedEntityInstanceStore,
     IdentifiableDeletableDataObjectStoreImpl<TrackedEntityInstance, TrackedEntityInstanceDB>(
-        dao,
+        appDatabase.trackedEntityInstanceDao(),
         TrackedEntityInstance::toDB,
         IdentifiableDeletableDataObjectSQLStatementBuilderImpl(TrackedEntityInstanceTableInfo.TABLE_INFO),
     ) {
@@ -78,6 +79,7 @@ internal class TrackedEntityInstanceStoreImpl(
     }
 
     override suspend fun setAggregatedSyncState(uid: String, state: State): Int {
+        val dao = appDatabase.trackedEntityInstanceDao()
         return dao.setAggregatedSyncState(state.name, uid)
     }
 }

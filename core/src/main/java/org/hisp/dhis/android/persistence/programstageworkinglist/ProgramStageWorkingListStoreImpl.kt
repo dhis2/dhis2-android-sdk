@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.programstageworkinglist
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
@@ -36,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramStageWorkingListStoreImpl(
-    val dao: ProgramStageWorkingListDao,
+    private val appDatabase: AppDatabase,
 ) : ProgramStageWorkingListStore, IdentifiableObjectStoreImpl<ProgramStageWorkingList, ProgramStageWorkingListDB>(
-    dao,
+    appDatabase.programStageWorkingListDao(),
     ProgramStageWorkingList::toDB,
     SQLStatementBuilderImpl(ProgramStageWorkingListTableInfo.TABLE_INFO),
 )

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.user
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.user.UserRole
 import org.hisp.dhis.android.core.user.internal.UserRoleStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
@@ -36,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class UserRoleStoreImpl(
-    private val dao: UserRoleDao,
+    private val appDatabase: AppDatabase,
 ) : UserRoleStore, IdentifiableObjectStoreImpl<UserRole, UserRoleDB>(
-    dao,
+    appDatabase.userRoleDao(),
     UserRole::toDB,
     SQLStatementBuilderImpl(UserRoleTableInfo.TABLE_INFO),
 )

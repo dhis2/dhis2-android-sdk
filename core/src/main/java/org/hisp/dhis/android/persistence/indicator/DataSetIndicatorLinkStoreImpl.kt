@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.indicator
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLink
 import org.hisp.dhis.android.core.indicator.internal.DataSetIndicatorLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
@@ -36,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DataSetIndicatorLinkStoreImpl(
-    val dao: DataSetIndicatorLinkDao,
+    private val appDatabase: AppDatabase,
 ) : DataSetIndicatorLinkStore, LinkStoreImpl<DataSetIndicatorLink, DataSetIndicatorLinkDB>(
-    dao,
+    appDatabase.dataSetIndicatorLinkDao(),
     DataSetIndicatorLink::toDB,
     LinkSQLStatementBuilderImpl(
         DataSetIndicatorLinkTableInfo.TABLE_INFO,

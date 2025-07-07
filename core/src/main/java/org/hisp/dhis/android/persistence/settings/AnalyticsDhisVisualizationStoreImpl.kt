@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.settings
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualization
 import org.hisp.dhis.android.core.settings.internal.AnalyticsDhisVisualizationStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
@@ -36,10 +37,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class AnalyticsDhisVisualizationStoreImpl(
-    val dao: AnalyticsDhisVisualizationDao,
+    private val appDatabase: AppDatabase,
 ) : AnalyticsDhisVisualizationStore,
     ObjectWithoutUidStoreImpl<AnalyticsDhisVisualization, AnalyticsDhisVisualizationDB>(
-        dao,
+        appDatabase.analyticsDhisVisualizationDao(),
         AnalyticsDhisVisualization::toDB,
         SQLStatementBuilderImpl(AnalyticsDhisVisualizationTableInfo.TABLE_INFO),
     )

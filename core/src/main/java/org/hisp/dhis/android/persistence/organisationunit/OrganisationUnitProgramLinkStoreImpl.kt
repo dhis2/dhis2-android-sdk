@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.organisationunit
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
@@ -38,10 +39,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class OrganisationUnitProgramLinkStoreImpl(
-    val dao: OrganisationUnitProgramLinkDao,
+    private val appDatabase: AppDatabase,
 ) : OrganisationUnitProgramLinkStore,
     LinkStoreImpl<OrganisationUnitProgramLink, OrganisationUnitProgramLinkDB>(
-        dao,
+        appDatabase.organisationUnitProgramLinkDao(),
         OrganisationUnitProgramLink::toDB,
         LinkSQLStatementBuilderImpl(
             OrganisationUnitProgramLinkTableInfo.TABLE_INFO,

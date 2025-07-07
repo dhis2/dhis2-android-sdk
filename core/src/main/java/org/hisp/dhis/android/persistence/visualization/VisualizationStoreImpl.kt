@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.visualization
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.internal.VisualizationStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
@@ -36,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class VisualizationStoreImpl(
-    private val dao: VisualizationDao,
+    private val appDatabase: AppDatabase,
 ) : VisualizationStore, IdentifiableObjectStoreImpl<Visualization, VisualizationDB>(
-    dao,
+    appDatabase.visualizationDao(),
     Visualization::toDB,
     SQLStatementBuilderImpl(VisualizationTableInfo.TABLE_INFO),
 )

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.trackedentity
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.State
@@ -43,9 +44,9 @@ import org.koin.core.annotation.Singleton
 @Singleton
 @Suppress("TooManyFunctions")
 internal class TrackedEntityDataValueStoreImpl(
-    private val dao: TrackedEntityDataValueDao,
+    private val appDatabase: AppDatabase,
 ) : TrackedEntityDataValueStore, ObjectWithoutUidStoreImpl<TrackedEntityDataValue, TrackedEntityDataValueDB>(
-    dao,
+    appDatabase.trackedEntityDataValueDao(),
     TrackedEntityDataValue::toDB,
     SQLStatementBuilderImpl(TrackedEntityDataValueTableInfo.TABLE_INFO),
 ) {
@@ -130,6 +131,7 @@ internal class TrackedEntityDataValueStoreImpl(
     }
 
     override suspend fun setSyncStateByEvent(eventUid: String, syncState: State) {
+        val dao = appDatabase.trackedEntityDataValueDao()
         dao.setSyncStateByEvent(eventUid, syncState.name)
     }
 

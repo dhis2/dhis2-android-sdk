@@ -8,7 +8,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.smscompression.SMSConsts
 
 @Entity(tableName = "SmsMetadataId")
-internal data class SmsMetadataIdDB(
+internal data class SMSMetadataIdDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
     val id: Int? = 0,
@@ -25,8 +25,8 @@ internal data class SmsMetadataIdDB(
     }
 }
 
-internal fun SMSMetadataId.toDB(): SmsMetadataIdDB {
-    return SmsMetadataIdDB(
+internal fun SMSMetadataId.toDB(): SMSMetadataIdDB {
+    return SMSMetadataIdDB(
         type = type().name,
         uid = uid(),
     )

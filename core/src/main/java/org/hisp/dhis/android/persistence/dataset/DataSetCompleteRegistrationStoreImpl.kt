@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.dataset
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
@@ -39,10 +40,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DataSetCompleteRegistrationStoreImpl(
-    val dao: DataSetCompleteRegistrationDao,
+    private val appDatabase: AppDatabase,
 ) : DataSetCompleteRegistrationStore,
     ObjectWithoutUidStoreImpl<DataSetCompleteRegistration, DataSetCompleteRegistrationDB>(
-        dao,
+        appDatabase.dataSetCompleteRegistrationDao(),
         DataSetCompleteRegistration::toDB,
         SQLStatementBuilderImpl(DataSetCompleteRegistrationTableInfo.TABLE_INFO),
     ) {

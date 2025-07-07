@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.legendset
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.legendset.Legend
 import org.hisp.dhis.android.core.legendset.internal.LegendStore
@@ -37,9 +38,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class LegendStoreImpl(
-    val dao: LegendDao,
+    private val appDatabase: AppDatabase,
 ) : LegendStore, IdentifiableObjectStoreImpl<Legend, LegendDB>(
-    dao,
+    appDatabase.legendDao(),
     Legend::toDB,
     SQLStatementBuilderImpl(LegendTableInfo.TABLE_INFO),
 ) {

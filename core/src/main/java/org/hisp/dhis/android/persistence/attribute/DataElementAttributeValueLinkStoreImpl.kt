@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.attribute
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLink
 import org.hisp.dhis.android.core.attribute.internal.DataElementAttributeValueLinkStore
@@ -37,9 +38,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DataElementAttributeValueLinkStoreImpl(
-    val dao: DataElementAttributeValueLinkDao,
+    private val appDatabase: AppDatabase,
 ) : DataElementAttributeValueLinkStore, LinkStoreImpl<DataElementAttributeValueLink, DataElementAttributeValueLinkDB>(
-    dao,
+    appDatabase.dataElementAttributeValueLinkDao(),
     DataElementAttributeValueLink::toDB,
     LinkSQLStatementBuilderImpl(
         DataElementAttributeValueLinkTableInfo.TABLE_INFO,
@@ -47,6 +48,7 @@ internal class DataElementAttributeValueLinkStoreImpl(
     ),
 ) {
     override suspend fun getLinksForDataElement(dataElementUid: String): List<DataElementAttributeValueLink> {
+        val dao = appDatabase.dataElementAttributeValueLinkDao()
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(
                 DataElementAttributeValueLinkTableInfo.Columns.DATA_ELEMENT,

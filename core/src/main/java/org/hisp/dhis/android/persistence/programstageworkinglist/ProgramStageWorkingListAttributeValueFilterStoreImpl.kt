@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.programstageworkinglist
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilterTableInfo
@@ -38,15 +39,17 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramStageWorkingListAttributeValueFilterStoreImpl(
-    private val dao: ProgramStageWorkingListAttributeValueFilterDao,
+    private val appDatabase: AppDatabase,
 ) : ProgramStageWorkingListAttributeValueFilterStore,
     ObjectWithoutUidStoreImpl<
         ProgramStageWorkingListAttributeValueFilter,
         ProgramStageWorkingListAttributeValueFilterDB,
         >(
-        dao,
+        appDatabase.programStageWorkingListAttributeValueFilterDao(),
         ProgramStageWorkingListAttributeValueFilter::toDB,
-        SQLStatementBuilderImpl(ProgramStageWorkingListAttributeValueFilterTableInfo.TABLE_INFO),
+        SQLStatementBuilderImpl(
+            ProgramStageWorkingListAttributeValueFilterTableInfo.TABLE_INFO
+        ),
     ) {
     override suspend fun getForProgramStageWorkingList(
         programStageWorkingList: String,

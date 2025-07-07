@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.attribute
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.attribute.ProgramAttributeValueLink
 import org.hisp.dhis.android.core.attribute.internal.ProgramAttributeValueLinkStore
@@ -37,9 +38,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramAttributeValueLinkStoreImpl(
-    val dao: ProgramAttributeValueLinkDao,
+    private val appDatabase: AppDatabase,
 ) : ProgramAttributeValueLinkStore, LinkStoreImpl<ProgramAttributeValueLink, ProgramAttributeValueLinkDB>(
-    dao,
+    appDatabase.programAttributeValueLinkDao(),
     ProgramAttributeValueLink::toDB,
     LinkSQLStatementBuilderImpl(
         ProgramAttributeValueLinkTableInfo.TABLE_INFO,
@@ -47,6 +48,7 @@ internal class ProgramAttributeValueLinkStoreImpl(
     ),
 ) {
     override suspend fun getLinksForProgram(programUid: String): List<ProgramAttributeValueLink> {
+        val dao = appDatabase.programAttributeValueLinkDao()
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(
                 ProgramAttributeValueLinkTableInfo.Columns.PROGRAM,

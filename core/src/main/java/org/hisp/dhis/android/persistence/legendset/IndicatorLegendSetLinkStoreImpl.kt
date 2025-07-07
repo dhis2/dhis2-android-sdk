@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.legendset
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
@@ -38,9 +39,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class IndicatorLegendSetLinkStoreImpl(
-    val dao: IndicatorLegendSetLinkDao,
+    private val appDatabase: AppDatabase,
 ) : IndicatorLegendSetLinkStore, LinkStoreImpl<IndicatorLegendSetLink, IndicatorLegendSetLinkDB>(
-    dao,
+    appDatabase.indicatorLegendSetLinkDao(),
     IndicatorLegendSetLink::toDB,
     LinkSQLStatementBuilderImpl(
         IndicatorLegendSetLinkTableInfo.TABLE_INFO,

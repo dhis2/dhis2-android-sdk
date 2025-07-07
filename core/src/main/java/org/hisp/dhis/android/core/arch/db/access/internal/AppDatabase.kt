@@ -242,10 +242,10 @@ import org.hisp.dhis.android.persistence.settings.UserSettingsDB
 import org.hisp.dhis.android.persistence.settings.UserSettingsDao
 import org.hisp.dhis.android.persistence.sms.SMSConfigDB
 import org.hisp.dhis.android.persistence.sms.SMSConfigDao
+import org.hisp.dhis.android.persistence.sms.SMSMetadataIdDB
+import org.hisp.dhis.android.persistence.sms.SMSMetadataIdDao
 import org.hisp.dhis.android.persistence.sms.SMSOngoingSubmissionDB
 import org.hisp.dhis.android.persistence.sms.SMSOngoingSubmissionDao
-import org.hisp.dhis.android.persistence.sms.SmsMetadataIdDB
-import org.hisp.dhis.android.persistence.sms.SmsMetadataIdDao
 import org.hisp.dhis.android.persistence.systeminfo.SystemInfoDB
 import org.hisp.dhis.android.persistence.systeminfo.SystemInfoDao
 import org.hisp.dhis.android.persistence.trackedentity.AttributeValueFilterDB
@@ -420,7 +420,7 @@ import org.hisp.dhis.android.persistence.visualization.VisualizationDimensionIte
         SystemSettingDB::class,
         UserSettingsDB::class,
         SMSConfigDB::class,
-        SmsMetadataIdDB::class,
+        SMSMetadataIdDB::class,
         SMSOngoingSubmissionDB::class,
         SystemInfoDB::class,
         AttributeValueFilterDB::class,
@@ -564,9 +564,9 @@ internal abstract class AppDatabase : RoomDatabase() {
     abstract fun synchronizationSettingDao(): SynchronizationSettingDao
     abstract fun systemSettingDao(): SystemSettingDao
     abstract fun userSettingsDao(): UserSettingsDao
-    abstract fun sMSConfigDao(): SMSConfigDao
-    abstract fun smsMetadataIdDao(): SmsMetadataIdDao
-    abstract fun sMSOngoingSubmissionDao(): SMSOngoingSubmissionDao
+    abstract fun SMSConfigDao(): SMSConfigDao
+    abstract fun SMSMetadataIdDao(): SMSMetadataIdDao
+    abstract fun SMSOngoingSubmissionDao(): SMSOngoingSubmissionDao
     abstract fun systemInfoDao(): SystemInfoDao
     abstract fun attributeValueFilterDao(): AttributeValueFilterDao
     abstract fun programOwnerDao(): ProgramOwnerDao

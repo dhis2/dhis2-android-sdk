@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.sms
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.datastore.KeyValuePair
@@ -39,9 +40,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class SMSConfigStoreImpl(
-    val dao: SMSConfigDao,
+    private val appDatabase: AppDatabase,
 ) : SMSConfigStore, ObjectWithoutUidStoreImpl<KeyValuePair, SMSConfigDB>(
-    dao,
+    appDatabase.SMSConfigDao(),
     KeyValuePair::toDB,
     SQLStatementBuilderImpl(SMSConfigTableInfo.TABLE_INFO),
 ) {

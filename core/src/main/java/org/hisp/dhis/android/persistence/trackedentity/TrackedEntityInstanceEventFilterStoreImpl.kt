@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.trackedentity
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceEventFilterStore
@@ -37,10 +38,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackedEntityInstanceEventFilterStoreImpl(
-    private val dao: TrackedEntityInstanceEventFilterDao,
+    private val appDatabase: AppDatabase,
 ) : TrackedEntityInstanceEventFilterStore,
     ObjectWithoutUidStoreImpl<TrackedEntityInstanceEventFilter, TrackedEntityInstanceEventFilterDB>(
-        dao,
+        appDatabase.trackedEntityInstanceEventFilterDao(),
         TrackedEntityInstanceEventFilter::toDB,
         SQLStatementBuilderImpl(TrackedEntityInstanceEventFilterTableInfo.TABLE_INFO),
     ) {

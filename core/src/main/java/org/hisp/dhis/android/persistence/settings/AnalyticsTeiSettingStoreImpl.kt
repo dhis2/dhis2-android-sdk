@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.settings
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.settings.AnalyticsTeiSetting
 import org.hisp.dhis.android.core.settings.internal.AnalyticsTeiSettingStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
@@ -36,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class AnalyticsTeiSettingStoreImpl(
-    val dao: AnalyticsTeiSettingDao,
+    private val appDatabase: AppDatabase,
 ) : AnalyticsTeiSettingStore, ObjectWithoutUidStoreImpl<AnalyticsTeiSetting, AnalyticsTeiSettingDB>(
-    dao,
+    appDatabase.analyticsTeiSettingDao(),
     AnalyticsTeiSetting::toDB,
     SQLStatementBuilderImpl(AnalyticsTeiSettingTableInfo.TABLE_INFO),
 )

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.datavalue
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
 import org.hisp.dhis.android.core.datavalue.internal.DataValueConflictStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
@@ -36,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DataValueConflictStoreImpl(
-    val dao: DataValueConflictDao,
+    private val appDatabase: AppDatabase,
 ) : DataValueConflictStore, ObjectStoreImpl<DataValueConflict, DataValueConflictDB>(
-    dao,
+    appDatabase.dataValueConflictDao(),
     DataValueConflict::toDB,
     SQLStatementBuilderImpl(DataValueConflictTableInfo.TABLE_INFO),
 )

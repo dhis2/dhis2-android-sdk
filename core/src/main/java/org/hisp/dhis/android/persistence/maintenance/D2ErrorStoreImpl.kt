@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.maintenance
 
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
@@ -36,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class D2ErrorStoreImpl(
-    val dao: D2ErrorDao,
+    private val appDatabase: AppDatabase,
 ) : D2ErrorStore, ObjectStoreImpl<D2Error, D2ErrorDB>(
-    dao,
+    appDatabase.d2ErrorDao(),
     D2Error::toDB,
     SQLStatementBuilderImpl(D2ErrorTableInfo.TABLE_INFO),
 )

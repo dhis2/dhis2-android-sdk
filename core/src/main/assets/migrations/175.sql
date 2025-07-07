@@ -465,7 +465,7 @@ CREATE TABLE LocalDataStore(key TEXT NOT NULL PRIMARY KEY, value TEXT);
 INSERT INTO LocalDataStore(key, value) SELECT key, value FROM LocalDataStore_Old;
 
 ALTER TABLE AnalyticsPeriodBoundary RENAME TO AnalyticsPeriodBoundary_Old;
-CREATE TABLE AnalyticsPeriodBoundary(programIndicator TEXT NOT NULL, boundaryTarget TEXT, analyticsPeriodBoundaryType TEXT, offsetPeriods INTEGER, offsetPeriodType TEXT, PRIMARY KEY(programIndicator, boundaryTarget), FOREIGN KEY(programIndicator) REFERENCES ProgramIndicator(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+CREATE TABLE AnalyticsPeriodBoundary(programIndicator TEXT NOT NULL, boundaryTarget TEXT, analyticsPeriodBoundaryType TEXT, offsetPeriods INTEGER, offsetPeriodType TEXT, PRIMARY KEY(programIndicator, boundaryTarget, analyticsPeriodBoundaryType), FOREIGN KEY(programIndicator) REFERENCES ProgramIndicator(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
 INSERT INTO AnalyticsPeriodBoundary(programIndicator, boundaryTarget, analyticsPeriodBoundaryType, offsetPeriods, offsetPeriodType) SELECT programIndicator, boundaryTarget, analyticsPeriodBoundaryType, offsetPeriods, offsetPeriodType FROM AnalyticsPeriodBoundary_Old;
 
 ALTER TABLE IndicatorLegendSetLink RENAME TO IndicatorLegendSetLink_Old;

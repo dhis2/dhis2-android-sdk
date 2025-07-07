@@ -41,7 +41,9 @@ import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.persistence.common.querybuilders.IdentifiableDeletableDataObjectSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableDeletableDataObjectStoreImpl
 import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class EventStoreImpl(
     val dao: EventDao,
 ) : EventStore, IdentifiableDeletableDataObjectStoreImpl<Event, EventDB>(

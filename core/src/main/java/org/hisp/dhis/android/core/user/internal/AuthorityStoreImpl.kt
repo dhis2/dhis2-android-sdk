@@ -35,9 +35,7 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatement
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl
 import org.hisp.dhis.android.core.user.Authority
 import org.hisp.dhis.android.core.user.AuthorityTableInfo
-import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class AuthorityStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : AuthorityStore,

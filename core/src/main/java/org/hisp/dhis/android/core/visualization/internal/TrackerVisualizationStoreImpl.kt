@@ -36,9 +36,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper
 import org.hisp.dhis.android.core.visualization.TrackerVisualization
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationTableInfo
-import org.koin.core.annotation.Singleton
 
-@Singleton
 @Suppress("MagicNumber")
 internal class TrackerVisualizationStoreImpl(
     databaseAdapter: DatabaseAdapter,

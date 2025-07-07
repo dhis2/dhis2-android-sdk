@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.program.ProgramStageSection
 import org.hisp.dhis.android.core.program.internal.ProgramStageSectionStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ProgramStageSectionStoreImpl(
     val dao: ProgramStageSectionDao,
 ) : ProgramStageSectionStore, IdentifiableObjectStoreImpl<ProgramStageSection, ProgramStageSectionDB>(

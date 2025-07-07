@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.dataapproval.DataApproval
 import org.hisp.dhis.android.core.dataapproval.DataApprovalTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class DataApprovalStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : DataApprovalStore,

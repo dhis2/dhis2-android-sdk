@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.program.ProgramRuleAction
 import org.hisp.dhis.android.core.program.ProgramRuleActionTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 @Suppress("MagicNumber")
 internal class ProgramRuleActionStoreImpl(
     databaseAdapter: DatabaseAdapter,

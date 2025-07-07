@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoing
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoingSubmissionStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class SMSOngoingSubmissionStoreImpl(
     val dao: SMSOngoingSubmissionDao,
 ) : SMSOngoingSubmissionStore, ObjectWithoutUidStoreImpl<SMSOngoingSubmission, SMSOngoingSubmissionDB>(

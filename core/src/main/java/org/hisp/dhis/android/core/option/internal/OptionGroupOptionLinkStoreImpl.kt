@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.option.OptionGroupOptionLink
 import org.hisp.dhis.android.core.option.OptionGroupOptionLinkTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class OptionGroupOptionLinkStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : OptionGroupOptionLinkStore,

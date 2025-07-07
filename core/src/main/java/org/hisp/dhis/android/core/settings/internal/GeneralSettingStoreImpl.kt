@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.settings.GeneralSettingTableInfo
 import org.hisp.dhis.android.core.settings.GeneralSettings
 import org.koin.core.annotation.Singleton
 
-@Singleton
 @Suppress("MagicNumber")
 internal class GeneralSettingStoreImpl(
     databaseAdapter: DatabaseAdapter,

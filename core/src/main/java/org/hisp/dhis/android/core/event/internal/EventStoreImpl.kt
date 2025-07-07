@@ -46,7 +46,6 @@ import org.hisp.dhis.android.core.event.EventTableInfo
 import org.koin.core.annotation.Singleton
 import java.util.*
 
-@Singleton
 @Suppress("TooManyFunctions")
 internal class EventStoreImpl(
     databaseAdapter: DatabaseAdapter,

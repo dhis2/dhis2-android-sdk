@@ -33,7 +33,9 @@ import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
 import org.hisp.dhis.android.core.visualization.internal.VisualizationDimensionItemStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class VisualizationDimensionItemStoreImpl(
     private val dao: VisualizationDimensionItemDao,
 ) : VisualizationDimensionItemStore,

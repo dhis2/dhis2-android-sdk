@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 @Suppress("MagicNumber")
 internal class OrganisationUnitStoreImpl(
     databaseAdapter: DatabaseAdapter,

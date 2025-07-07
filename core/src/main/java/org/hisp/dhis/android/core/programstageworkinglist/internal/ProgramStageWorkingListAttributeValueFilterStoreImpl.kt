@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingLis
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilterTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 @Suppress("MagicNumber")
 internal class ProgramStageWorkingListAttributeValueFilterStoreImpl(
     databaseAdapter: DatabaseAdapter,

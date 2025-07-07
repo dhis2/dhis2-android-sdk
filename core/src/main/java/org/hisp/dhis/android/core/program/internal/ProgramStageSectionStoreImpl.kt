@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.program.ProgramStageSection
 import org.hisp.dhis.android.core.program.ProgramStageSectionTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 @Suppress("MagicNumber")
 internal class ProgramStageSectionStoreImpl(
     databaseAdapter: DatabaseAdapter,

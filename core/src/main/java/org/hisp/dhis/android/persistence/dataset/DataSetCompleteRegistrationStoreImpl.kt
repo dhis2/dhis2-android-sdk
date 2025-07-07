@@ -35,7 +35,9 @@ import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationSt
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataSetCompleteRegistrationStoreImpl(
     val dao: DataSetCompleteRegistrationDao,
 ) : DataSetCompleteRegistrationStore,

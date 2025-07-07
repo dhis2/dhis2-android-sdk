@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.legendset.Legend
 import org.hisp.dhis.android.core.legendset.LegendTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 @Suppress("MagicNumber")
 internal class LegendStoreImpl(
     databaseAdapter: DatabaseAdapter,

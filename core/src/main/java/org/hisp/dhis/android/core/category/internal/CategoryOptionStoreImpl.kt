@@ -39,9 +39,7 @@ import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkTableInfo
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkTableInfo
 import org.hisp.dhis.android.core.category.CategoryOptionTableInfo
-import org.koin.core.annotation.Singleton
 
-@Singleton
 @Suppress("MagicNumber")
 internal class CategoryOptionStoreImpl(
     databaseAdapter: DatabaseAdapter,

@@ -31,7 +31,9 @@ package org.hisp.dhis.android.persistence.valuetypedevicerendering
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ValueTypeDeviceRenderingStoreImpl(
     val dao: ValueTypeDeviceRenderingDao,
 ) :

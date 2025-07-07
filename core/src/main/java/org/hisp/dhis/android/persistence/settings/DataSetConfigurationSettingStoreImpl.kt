@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.settings.DataSetConfigurationSetting
 import org.hisp.dhis.android.core.settings.internal.DataSetConfigurationSettingStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataSetConfigurationSettingStoreImpl(
     val dao: DataSetConfigurationSettingDao,
 ) : DataSetConfigurationSettingStore,

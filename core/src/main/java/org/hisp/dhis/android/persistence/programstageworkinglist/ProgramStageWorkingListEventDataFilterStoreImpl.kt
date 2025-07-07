@@ -33,7 +33,9 @@ import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingLis
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListEventDataFilterStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ProgramStageWorkingListEventDataFilterStoreImpl(
     private val dao: ProgramStageWorkingListEventDataFilterDao,
 ) : ProgramStageWorkingListEventDataFilterStore,

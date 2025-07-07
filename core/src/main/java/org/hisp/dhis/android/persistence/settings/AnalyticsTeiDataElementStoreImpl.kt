@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
 import org.hisp.dhis.android.core.settings.internal.AnalyticsTeiDataElementStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class AnalyticsTeiDataElementStoreImpl(
     val dao: AnalyticsTeiDataElementDao,
 ) : AnalyticsTeiDataElementStore, LinkStoreImpl<AnalyticsTeiDataElement, AnalyticsTeiDataElementDB>(

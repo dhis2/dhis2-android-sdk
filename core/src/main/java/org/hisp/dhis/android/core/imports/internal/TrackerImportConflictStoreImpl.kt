@@ -39,9 +39,7 @@ import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
 import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
-import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class TrackerImportConflictStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : TrackerImportConflictStore,

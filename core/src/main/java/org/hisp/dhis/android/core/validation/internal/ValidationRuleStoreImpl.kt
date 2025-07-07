@@ -36,9 +36,7 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapp
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStoreImpl
 import org.hisp.dhis.android.core.validation.ValidationRule
 import org.hisp.dhis.android.core.validation.ValidationRuleTableInfo
-import org.koin.core.annotation.Singleton
 
-@Singleton
 @Suppress("MagicNumber")
 internal class ValidationRuleStoreImpl(
     databaseAdapter: DatabaseAdapter,

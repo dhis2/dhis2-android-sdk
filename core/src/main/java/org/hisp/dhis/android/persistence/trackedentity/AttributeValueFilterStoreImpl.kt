@@ -33,7 +33,9 @@ import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
 import org.hisp.dhis.android.core.trackedentity.internal.AttributeValueFilterStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class AttributeValueFilterStoreImpl(
     private val dao: AttributeValueFilterDao,
 ) : AttributeValueFilterStore,

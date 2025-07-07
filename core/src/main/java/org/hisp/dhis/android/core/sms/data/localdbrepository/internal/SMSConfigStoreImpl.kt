@@ -35,10 +35,8 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatement
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.datastore.KeyValuePair
-import org.koin.core.annotation.Singleton
 
 @Suppress("MagicNumber")
-@Singleton
 internal class SMSConfigStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : SMSConfigStore,

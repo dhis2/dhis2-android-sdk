@@ -37,9 +37,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetLink
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetLinkTableInfo
-import org.koin.core.annotation.Singleton
 
-@Singleton
 @Suppress("MagicNumber")
 internal class TrackedEntityAttributeLegendSetLinkStoreImpl(
     databaseAdapter: DatabaseAdapter,

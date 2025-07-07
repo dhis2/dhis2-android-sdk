@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.indicator.IndicatorLegendSetLinkTableInfo
 import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
 import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class IndicatorLegendSetLinkStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : IndicatorLegendSetLinkStore,

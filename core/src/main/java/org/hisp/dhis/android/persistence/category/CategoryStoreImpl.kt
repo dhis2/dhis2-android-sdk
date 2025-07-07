@@ -33,7 +33,9 @@ import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.internal.CategoryStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class CategoryStoreImpl(
     val dao: CategoryDao,
 ) : CategoryStore, IdentifiableObjectStoreImpl<Category, CategoryDB>(

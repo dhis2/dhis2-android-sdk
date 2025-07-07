@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.indicator.IndicatorType
 import org.hisp.dhis.android.core.indicator.IndicatorTypeTableInfo.TABLE_INFO
 import org.koin.core.annotation.Singleton
 
-@Singleton
 @Suppress("MagicNumber")
 internal class IndicatorTypeStoreImpl(
     databaseAdapter: DatabaseAdapter,

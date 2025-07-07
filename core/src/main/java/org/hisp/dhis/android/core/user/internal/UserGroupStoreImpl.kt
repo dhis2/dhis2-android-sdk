@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.user.UserGroup
 import org.hisp.dhis.android.core.user.UserGroupTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class UserGroupStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : UserGroupStore,

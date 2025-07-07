@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLink
 import org.hisp.dhis.android.core.dataset.internal.SectionGreyedFieldsLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class SectionGreyedFieldsLinkStoreImpl(
     val dao: SectionGreyedFieldsLinkDao,
 ) : SectionGreyedFieldsLinkStore, LinkStoreImpl<SectionGreyedFieldsLink, SectionGreyedFieldsLinkDB>(

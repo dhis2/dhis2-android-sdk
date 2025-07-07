@@ -35,7 +35,9 @@ import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilde
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
 import org.hisp.dhis.android.persistence.dataset.SectionDataElementLinkTableInfo
 import org.hisp.dhis.android.persistence.program.ProgramStageSectionDataElementLinkTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataElementStoreImpl(
     val dao: DataElementDao,
 ) : DataElementStore, IdentifiableObjectStoreImpl<DataElement, DataElementDB>(

@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.settings.SynchronizationSettings
 import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class SynchronizationSettingStoreImpl(
     val dao: SynchronizationSettingDao,
 ) : SynchronizationSettingStore, ObjectWithoutUidStoreImpl<SynchronizationSettings, SynchronizationSettingDB>(

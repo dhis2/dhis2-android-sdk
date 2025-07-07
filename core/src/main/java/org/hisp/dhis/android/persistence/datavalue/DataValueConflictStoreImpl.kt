@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.datavalue.DataValueConflict
 import org.hisp.dhis.android.core.datavalue.internal.DataValueConflictStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataValueConflictStoreImpl(
     val dao: DataValueConflictDao,
 ) : DataValueConflictStore, ObjectStoreImpl<DataValueConflict, DataValueConflictDB>(

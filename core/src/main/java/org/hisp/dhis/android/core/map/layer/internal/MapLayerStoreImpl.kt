@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.map.layer.MapLayer
 import org.hisp.dhis.android.core.map.layer.MapLayerTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 @Suppress("MagicNumber")
 internal class MapLayerStoreImpl(
     databaseAdapter: DatabaseAdapter,

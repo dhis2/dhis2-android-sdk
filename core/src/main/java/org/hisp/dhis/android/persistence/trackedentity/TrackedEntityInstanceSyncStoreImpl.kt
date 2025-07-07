@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceSy
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceSyncStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class TrackedEntityInstanceSyncStoreImpl(
     private val dao: TrackedEntityInstanceSyncDao,
 ) : TrackedEntityInstanceSyncStore,

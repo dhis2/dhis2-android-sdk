@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionIte
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItemTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 @Suppress("MagicNumber")
 internal class ExpressionDimensionItemStoreImpl(
     databaseAdapter: DatabaseAdapter,

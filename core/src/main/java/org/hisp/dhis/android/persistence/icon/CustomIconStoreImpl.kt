@@ -33,7 +33,9 @@ import org.hisp.dhis.android.core.icon.CustomIcon
 import org.hisp.dhis.android.core.icon.internal.CustomIconStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class CustomIconStoreImpl(
     val dao: CustomIconDao,
 ) : CustomIconStore, ObjectWithoutUidStoreImpl<CustomIcon, CustomIconDB>(

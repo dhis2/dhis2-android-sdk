@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.option.OptionGroup
 import org.hisp.dhis.android.core.option.OptionGroupTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 @Suppress("MagicNumber")
 internal class OptionGroupStoreImpl(
     databaseAdapter: DatabaseAdapter,

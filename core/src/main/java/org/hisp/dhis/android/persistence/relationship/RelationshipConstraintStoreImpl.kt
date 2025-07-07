@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.relationship.RelationshipConstraint
 import org.hisp.dhis.android.core.relationship.internal.RelationshipConstraintStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class RelationshipConstraintStoreImpl(
     val dao: RelationshipConstraintDao,
 ) : RelationshipConstraintStore, ObjectWithoutUidStoreImpl<RelationshipConstraint, RelationshipConstraintDB>(

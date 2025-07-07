@@ -28,9 +28,7 @@
 package org.hisp.dhis.android.core.arch.storage.internal
 
 import net.openid.appauth.AuthState
-import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class CredentialsSecureStoreImpl(private val secureStore: ChunkedSecureStore) :
     CredentialsSecureStore {
 

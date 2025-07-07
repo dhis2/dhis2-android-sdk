@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.dataset.DataInputPeriod
 import org.hisp.dhis.android.core.dataset.DataInputPeriodTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class DataInputPeriodStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : DataInputPeriodStore,

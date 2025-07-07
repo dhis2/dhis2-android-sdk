@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
 import org.hisp.dhis.android.core.settings.internal.AnalyticsTeiIndicatorStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class AnalyticsTeiIndicatorStoreImpl(
     val dao: AnalyticsTeiIndicatorDao,
 ) : AnalyticsTeiIndicatorStore, LinkStoreImpl<AnalyticsTeiIndicator, AnalyticsTeiIndicatorDB>(

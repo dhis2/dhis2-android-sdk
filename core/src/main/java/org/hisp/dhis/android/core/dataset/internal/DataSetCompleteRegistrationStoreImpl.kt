@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationTableInfo
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class DataSetCompleteRegistrationStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : DataSetCompleteRegistrationStore,

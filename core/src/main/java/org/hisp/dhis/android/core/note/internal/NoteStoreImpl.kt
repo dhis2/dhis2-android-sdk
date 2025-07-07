@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.NoteTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class NoteStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : NoteStore,

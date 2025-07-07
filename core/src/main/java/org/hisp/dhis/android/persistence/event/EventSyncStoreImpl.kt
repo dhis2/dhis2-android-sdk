@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.event.internal.EventSync
 import org.hisp.dhis.android.core.event.internal.EventSyncStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class EventSyncStoreImpl(
     val dao: EventSyncDao,
 ) : EventSyncStore, ObjectWithoutUidStoreImpl<EventSync, EventSyncDB>(

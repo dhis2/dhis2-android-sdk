@@ -41,7 +41,6 @@ import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper.whereC
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class DataValueStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : DataValueStore,

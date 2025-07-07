@@ -33,7 +33,9 @@ import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLink
 import org.hisp.dhis.android.core.attribute.internal.DataElementAttributeValueLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataElementAttributeValueLinkStoreImpl(
     val dao: DataElementAttributeValueLinkDao,
 ) : DataElementAttributeValueLinkStore, LinkStoreImpl<DataElementAttributeValueLink, DataElementAttributeValueLinkDB>(

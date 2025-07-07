@@ -34,7 +34,9 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetL
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeLegendSetLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class TrackedEntityAttributeLegendSetLinkStoreImpl(
     private val dao: TrackedEntityAttributeLegendSetLinkDao,
 ) : TrackedEntityAttributeLegendSetLinkStore,

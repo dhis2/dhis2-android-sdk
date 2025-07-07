@@ -34,7 +34,9 @@ import org.hisp.dhis.android.core.legendset.DataElementLegendSetLink
 import org.hisp.dhis.android.core.legendset.internal.DataElementLegendSetLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataElementLegendSetLinkStoreImpl(
     val dao: DataElementLegendSetLinkDao,
 ) : DataElementLegendSetLinkStore, LinkStoreImpl<DataElementLegendSetLink, DataElementLegendSetLinkDB>(

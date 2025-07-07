@@ -34,7 +34,9 @@ import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink
 import org.hisp.dhis.android.core.legendset.internal.ProgramIndicatorLegendSetLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ProgramIndicatorLegendSetLinkStoreImpl(
     val dao: ProgramIndicatorLegendSetLinkDao,
 ) : ProgramIndicatorLegendSetLinkStore,

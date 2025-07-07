@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
 import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class StockUseCaseStoreImpl(
     private val dao: StockUseCaseDao,
 ) : StockUseCaseStore, IdentifiableObjectStoreImpl<InternalStockUseCase, StockUseCaseDB>(

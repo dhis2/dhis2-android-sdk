@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.settings.FilterSetting
 import org.hisp.dhis.android.core.settings.internal.FilterSettingStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class FilterSettingStoreImpl(
     val dao: FilterSettingDao,
 ) : FilterSettingStore, ObjectWithoutUidStoreImpl<FilterSetting, FilterSettingDB>(

@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.AuthenticatedUserTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class AuthenticatedUserStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : AuthenticatedUserStore,

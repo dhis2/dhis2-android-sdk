@@ -33,7 +33,9 @@ import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ProgramIndicatorStoreImpl(
     val dao: ProgramIndicatorDao,
 ) : ProgramIndicatorStore, IdentifiableObjectStoreImpl<ProgramIndicator, ProgramIndicatorDB>(

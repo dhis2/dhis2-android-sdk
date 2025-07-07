@@ -36,7 +36,9 @@ import org.hisp.dhis.android.persistence.common.stores.ObjectStoreImpl
 import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.persistence.event.EventTableInfo
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class TrackerImportConflictStoreImpl(
     val dao: TrackerImportConflictDao,
 ) : TrackerImportConflictStore, ObjectStoreImpl<TrackerImportConflict, TrackerImportConflictDB>(

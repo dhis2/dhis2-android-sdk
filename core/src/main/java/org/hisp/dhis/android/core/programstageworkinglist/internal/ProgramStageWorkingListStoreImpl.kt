@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStor
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
 import org.koin.core.annotation.Singleton
 
-@Singleton
 @Suppress("MagicNumber")
 internal class ProgramStageWorkingListStoreImpl(
     databaseAdapter: DatabaseAdapter,

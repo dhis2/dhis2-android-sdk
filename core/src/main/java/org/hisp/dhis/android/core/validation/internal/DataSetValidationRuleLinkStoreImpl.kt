@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.validation.DataSetValidationRuleLink
 import org.hisp.dhis.android.core.validation.DataSetValidationRuleLinkTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class DataSetValidationRuleLinkStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : DataSetValidationRuleLinkStore,

@@ -33,7 +33,9 @@ import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.internal.CategoryOptionStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class CategoryOptionStoreImpl(
     val dao: CategoryOptionDao,
 ) : CategoryOptionStore, IdentifiableObjectStoreImpl<CategoryOption, CategoryOptionDB>(

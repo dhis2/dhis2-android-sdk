@@ -33,7 +33,9 @@ import org.hisp.dhis.android.core.legendset.Legend
 import org.hisp.dhis.android.core.legendset.internal.LegendStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class LegendStoreImpl(
     val dao: LegendDao,
 ) : LegendStore, IdentifiableObjectStoreImpl<Legend, LegendDB>(

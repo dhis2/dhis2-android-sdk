@@ -35,9 +35,7 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapp
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStoreImpl
 import org.hisp.dhis.android.core.settings.CustomIntent
 import org.hisp.dhis.android.core.settings.CustomIntentTableInfo
-import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class CustomIntentStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : CustomIntentStore,

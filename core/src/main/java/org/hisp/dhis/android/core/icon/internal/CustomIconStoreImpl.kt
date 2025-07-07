@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.icon.CustomIcon
 import org.hisp.dhis.android.core.icon.CustomIconTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class CustomIconStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : CustomIconStore,

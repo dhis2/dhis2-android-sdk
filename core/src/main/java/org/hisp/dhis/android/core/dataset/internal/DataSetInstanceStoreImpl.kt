@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStoreImpl
 import org.hisp.dhis.android.core.dataset.DataSetInstance
 import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class DataSetInstanceStoreImpl constructor(
     databaseAdapter: DatabaseAdapter,
 ) : DataSetInstanceStore,

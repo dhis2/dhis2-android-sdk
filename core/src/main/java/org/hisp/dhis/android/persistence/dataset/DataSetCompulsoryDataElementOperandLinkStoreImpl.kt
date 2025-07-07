@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLin
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompulsoryDataElementOperandLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataSetCompulsoryDataElementOperandLinkStoreImpl(
     val dao: DataSetCompulsoryDataElementOperandLinkDao,
 ) : DataSetCompulsoryDataElementOperandLinkStore,

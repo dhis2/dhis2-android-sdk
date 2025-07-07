@@ -35,9 +35,7 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatement
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl
 import org.hisp.dhis.android.core.datastore.KeyValuePair
 import org.hisp.dhis.android.core.datastore.LocalDataStoreTableInfo
-import org.koin.core.annotation.Singleton
 
-@Singleton
 @Suppress("MagicNumber")
 internal class LocalDataStoreStoreImpl(
     databaseAdapter: DatabaseAdapter,

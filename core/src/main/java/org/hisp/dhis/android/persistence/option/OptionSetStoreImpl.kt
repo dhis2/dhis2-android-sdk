@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.option.OptionSet
 import org.hisp.dhis.android.core.option.internal.OptionSetStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class OptionSetStoreImpl(
     val dao: OptionSetDao,
 ) : OptionSetStore, IdentifiableObjectStoreImpl<OptionSet, OptionSetDB>(

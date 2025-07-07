@@ -36,8 +36,10 @@ import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.internal.PeriodStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 import java.util.Date
 
+@Singleton
 internal class PeriodStoreImpl(
     val dao: PeriodDao,
 ) : PeriodStore, ObjectWithoutUidStoreImpl<Period, PeriodDB>(

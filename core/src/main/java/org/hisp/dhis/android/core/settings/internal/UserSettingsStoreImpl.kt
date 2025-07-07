@@ -35,9 +35,7 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatement
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl
 import org.hisp.dhis.android.core.settings.UserSettings
 import org.hisp.dhis.android.core.settings.UserSettingsTableInfo
-import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class UserSettingsStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : UserSettingsStore,

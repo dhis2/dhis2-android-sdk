@@ -45,7 +45,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTable
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttributeTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class TrackedEntityAttributeValueStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : TrackedEntityAttributeValueStore,

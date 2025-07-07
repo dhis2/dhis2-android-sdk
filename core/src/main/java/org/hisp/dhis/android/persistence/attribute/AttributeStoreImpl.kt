@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.attribute.Attribute
 import org.hisp.dhis.android.core.attribute.internal.AttributeStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import javax.inject.Singleton
 
+@Singleton
 internal class AttributeStoreImpl(
     val dao: AttributeDao,
 ) : AttributeStore, IdentifiableObjectStoreImpl<Attribute, AttributeDB>(

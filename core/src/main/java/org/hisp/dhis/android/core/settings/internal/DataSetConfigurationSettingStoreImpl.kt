@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.settings.DataSetConfigurationSetting
 import org.hisp.dhis.android.core.settings.DataSetConfigurationSettingTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 @Suppress("MagicNumber")
 internal class DataSetConfigurationSettingStoreImpl(
     databaseAdapter: DatabaseAdapter,

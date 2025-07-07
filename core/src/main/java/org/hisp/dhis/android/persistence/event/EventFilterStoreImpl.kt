@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.event.EventFilter
 import org.hisp.dhis.android.core.event.internal.EventFilterStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class EventFilterStoreImpl(
     val dao: EventFilterDao,
 ) : EventFilterStore, IdentifiableObjectStoreImpl<EventFilter, EventFilterDB>(

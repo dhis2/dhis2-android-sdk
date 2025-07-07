@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.constant.internal.ConstantStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ConstantStoreImpl(
     val dao: ConstantDao,
 ) : ConstantStore, IdentifiableObjectStoreImpl<Constant, ConstantDB>(

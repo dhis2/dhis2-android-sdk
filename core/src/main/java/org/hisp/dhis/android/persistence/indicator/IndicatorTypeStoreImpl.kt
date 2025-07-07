@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.indicator.IndicatorType
 import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class IndicatorTypeStoreImpl(
     val dao: IndicatorTypeDao,
 ) : IndicatorTypeStore, IdentifiableObjectStoreImpl<IndicatorType, IndicatorTypeDB>(

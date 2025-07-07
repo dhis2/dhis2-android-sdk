@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore
 import org.hisp.dhis.android.persistence.common.querybuilders.IdentifiableDataObjectSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableDataObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class FileResourceStoreImpl(
     val dao: FileResourceDao,
 ) : FileResourceStore, IdentifiableDataObjectStoreImpl<FileResource, FileResourceDB>(

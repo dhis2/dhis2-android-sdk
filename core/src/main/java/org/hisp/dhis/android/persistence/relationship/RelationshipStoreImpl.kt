@@ -35,7 +35,9 @@ import org.hisp.dhis.android.core.relationship.RelationshipItem
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.persistence.common.querybuilders.IdentifiableDeletableDataObjectSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableDeletableDataObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class RelationshipStoreImpl(
     val dao: RelationshipDao,
 ) : RelationshipStore, IdentifiableDeletableDataObjectStoreImpl<Relationship, RelationshipDB>(

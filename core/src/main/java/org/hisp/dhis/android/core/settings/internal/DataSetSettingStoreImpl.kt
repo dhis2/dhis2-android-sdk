@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.settings.DataSetSetting
 import org.hisp.dhis.android.core.settings.DataSetSettingTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class DataSetSettingStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : DataSetSettingStore,

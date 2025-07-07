@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.settings.CustomIntent
 import org.hisp.dhis.android.core.settings.internal.CustomIntentStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class CustomIntentStoreImpl(
     val dao: CustomIntentDao,
 ) : CustomIntentStore, IdentifiableObjectStoreImpl<CustomIntent, CustomIntentDB>(

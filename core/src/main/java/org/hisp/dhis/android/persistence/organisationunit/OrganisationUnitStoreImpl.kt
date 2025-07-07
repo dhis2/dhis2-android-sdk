@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class OrganisationUnitStoreImpl(
     val dao: OrganisationUnitDao,
 ) : OrganisationUnitStore, IdentifiableObjectStoreImpl<OrganisationUnit, OrganisationUnitDB>(

@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.settings.CustomIntentAttribute
 import org.hisp.dhis.android.core.settings.CustomIntentAttributeTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 @Suppress("MagicNumber")
 internal class CustomIntentAttributeStoreImpl(
     databaseAdapter: DatabaseAdapter,

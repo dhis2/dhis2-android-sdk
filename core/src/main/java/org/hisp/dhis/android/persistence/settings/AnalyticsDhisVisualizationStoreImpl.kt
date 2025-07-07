@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualization
 import org.hisp.dhis.android.core.settings.internal.AnalyticsDhisVisualizationStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class AnalyticsDhisVisualizationStoreImpl(
     val dao: AnalyticsDhisVisualizationDao,
 ) : AnalyticsDhisVisualizationStore,

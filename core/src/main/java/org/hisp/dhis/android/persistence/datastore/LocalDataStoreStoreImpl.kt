@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.datastore.KeyValuePair
 import org.hisp.dhis.android.core.datastore.internal.LocalDataStoreStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class LocalDataStoreStoreImpl(
     val dao: LocalDataStoreDao,
 ) : LocalDataStoreStore, ObjectWithoutUidStoreImpl<KeyValuePair, LocalDataStoreDB>(

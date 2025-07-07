@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.relationship.RelationshipItem
 import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class RelationshipItemStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : RelationshipItemStore,

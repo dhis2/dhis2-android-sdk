@@ -38,7 +38,9 @@ import org.hisp.dhis.android.persistence.common.querybuilders.IdentifiableDeleta
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableDeletableDataObjectStoreImpl
 import org.hisp.dhis.android.persistence.event.EventTableInfo
 import org.hisp.dhis.android.persistence.program.ProgramTrackedEntityAttributeTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class EnrollmentStoreImpl(
     val dao: EnrollmentDao,
 ) : EnrollmentStore, IdentifiableDeletableDataObjectStoreImpl<Enrollment, EnrollmentDB>(

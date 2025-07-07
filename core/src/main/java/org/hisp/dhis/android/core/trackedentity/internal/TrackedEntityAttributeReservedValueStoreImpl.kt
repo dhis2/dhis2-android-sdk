@@ -38,10 +38,8 @@ import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValueTableInfo.Columns
-import org.koin.core.annotation.Singleton
 import java.util.Date
 
-@Singleton
 @Suppress("MagicNumber")
 internal class TrackedEntityAttributeReservedValueStoreImpl(
     databaseAdapter: DatabaseAdapter,

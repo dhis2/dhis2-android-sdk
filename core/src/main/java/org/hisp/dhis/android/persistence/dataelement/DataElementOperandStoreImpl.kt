@@ -35,7 +35,9 @@ import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilde
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
 import org.hisp.dhis.android.persistence.dataset.DataSetCompulsoryDataElementOperandsLinkTableInfo
 import org.hisp.dhis.android.persistence.dataset.SectionGreyedFieldsLinkTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataElementOperandStoreImpl(
     val dao: DataElementOperandDao,
 ) : DataElementOperandStore, IdentifiableObjectStoreImpl<DataElementOperand, DataElementOperandDB>(

@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLin
 import org.hisp.dhis.android.core.program.internal.ProgramStageSectionProgramIndicatorLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ProgramStageSectionProgramIndicatorLinkStoreImpl(
     val dao: ProgramStageSectionProgramIndicatorLinkDao,
 ) : ProgramStageSectionProgramIndicatorLinkStore,

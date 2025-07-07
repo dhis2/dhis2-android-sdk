@@ -33,7 +33,9 @@ import org.hisp.dhis.android.core.program.ProgramRuleAction
 import org.hisp.dhis.android.core.program.internal.ProgramRuleActionStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ProgramRuleActionStoreImpl(
     val dao: ProgramRuleActionDao,
 ) : ProgramRuleActionStore, IdentifiableObjectStoreImpl<ProgramRuleAction, ProgramRuleActionDB>(

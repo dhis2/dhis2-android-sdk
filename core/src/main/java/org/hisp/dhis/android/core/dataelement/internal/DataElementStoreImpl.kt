@@ -41,7 +41,6 @@ import org.hisp.dhis.android.core.dataset.SectionDataElementLinkTableInfo
 import org.hisp.dhis.android.core.program.ProgramStageSectionDataElementLinkTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 @Suppress("MagicNumber")
 internal class DataElementStoreImpl(
     databaseAdapter: DatabaseAdapter,

@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.validation.ValidationRule
 import org.hisp.dhis.android.core.validation.internal.ValidationRuleStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ValidationRuleStoreImpl(
     private val dao: ValidationRuleDao,
 ) : ValidationRuleStore, IdentifiableObjectStoreImpl<ValidationRule, ValidationRuleDB>(

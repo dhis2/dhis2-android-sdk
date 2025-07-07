@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.settings.LatestAppVersion
 import org.hisp.dhis.android.core.settings.internal.LatestAppVersionStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class LatestAppVersionStoreImpl(
     val dao: LatestAppVersionDao,
 ) : LatestAppVersionStore, ObjectWithoutUidStoreImpl<LatestAppVersion, LatestAppVersionDB>(

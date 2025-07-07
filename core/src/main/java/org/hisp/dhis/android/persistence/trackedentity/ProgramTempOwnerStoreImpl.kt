@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwner
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ProgramTempOwnerStoreImpl(
     val dao: ProgramTempOwnerDao,
 ) : ProgramTempOwnerStore, ObjectWithoutUidStoreImpl<ProgramTempOwner, ProgramTempOwnerDB>(

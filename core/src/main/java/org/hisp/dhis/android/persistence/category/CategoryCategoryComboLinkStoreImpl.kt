@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.category.CategoryCategoryComboLink
 import org.hisp.dhis.android.core.category.internal.CategoryCategoryComboLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import javax.inject.Singleton
 
+@Singleton
 internal class CategoryCategoryComboLinkStoreImpl(
     val dao: CategoryCategoryComboLinkDao,
 ) : CategoryCategoryComboLinkStore, LinkStoreImpl<CategoryCategoryComboLink, CategoryCategoryComboLinkDB>(

@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.settings.LatestAppVersion
 import org.hisp.dhis.android.core.settings.LatestAppVersionTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 @Suppress("MagicNumber")
 internal class LatestAppVersionStoreImpl(
     databaseAdapter: DatabaseAdapter,

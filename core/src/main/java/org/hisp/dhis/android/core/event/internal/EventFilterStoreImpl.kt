@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.event.EventFilter
 import org.hisp.dhis.android.core.event.EventFilterTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 @Suppress("MagicNumber")
 internal class EventFilterStoreImpl(
     databaseAdapter: DatabaseAdapter,

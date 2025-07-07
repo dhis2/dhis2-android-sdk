@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.settings.FilterSetting
 import org.hisp.dhis.android.core.settings.FilterSettingTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 @Suppress("MagicNumber")
 internal class FilterSettingStoreImpl(
     databaseAdapter: DatabaseAdapter,

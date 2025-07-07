@@ -33,7 +33,9 @@ import org.hisp.dhis.android.core.datastore.DataStoreEntry
 import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataStoreStoreImpl(
     val dao: DataStoreDao,
 ) : DataStoreEntryStore, ObjectWithoutUidStoreImpl<DataStoreEntry, DataStoreDB>(

@@ -34,9 +34,7 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapp
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLink
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo
-import org.koin.core.annotation.Singleton
 
-@Singleton
 @Suppress("MagicNumber")
 internal class CategoryCategoryComboLinkStoreImpl(
     databaseAdapter: DatabaseAdapter,

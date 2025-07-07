@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class RelationshipItemElementStoreSelectorImpl(
     private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
     private val enrollmentStore: EnrollmentStore,

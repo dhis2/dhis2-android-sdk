@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class SystemInfoStoreImpl(
     val dao: SystemInfoDao,
 ) : SystemInfoStore, ObjectWithoutUidStoreImpl<SystemInfo, SystemInfoDB>(

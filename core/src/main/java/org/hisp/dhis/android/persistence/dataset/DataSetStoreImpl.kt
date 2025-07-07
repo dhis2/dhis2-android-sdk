@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.internal.DataSetStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataSetStoreImpl(
     val dao: DataSetDao,
 ) : DataSetStore, IdentifiableObjectStoreImpl<DataSet, DataSetDB>(

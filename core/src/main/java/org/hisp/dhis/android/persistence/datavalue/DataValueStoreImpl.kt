@@ -36,7 +36,9 @@ import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper.whereC
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataValueStoreImpl(
     val dao: DataValueDao,
 ) : DataValueStore, ObjectWithoutUidStoreImpl<DataValue, DataValueDB>(

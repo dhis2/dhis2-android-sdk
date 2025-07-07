@@ -33,7 +33,9 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeAttributeStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class TrackedEntityTypeAttributeStoreImpl(
     private val dao: TrackedEntityTypeAttributeDao,
 ) : TrackedEntityTypeAttributeStore, LinkStoreImpl<TrackedEntityTypeAttribute, TrackedEntityTypeAttributeDB>(

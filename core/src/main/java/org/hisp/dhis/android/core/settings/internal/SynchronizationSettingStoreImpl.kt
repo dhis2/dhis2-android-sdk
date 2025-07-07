@@ -35,9 +35,7 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatement
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl
 import org.hisp.dhis.android.core.settings.SynchronizationSettingTableInfo
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
-import org.koin.core.annotation.Singleton
 
-@Singleton
 @Suppress("MagicNumber")
 internal class SynchronizationSettingStoreImpl(
     databaseAdapter: DatabaseAdapter,

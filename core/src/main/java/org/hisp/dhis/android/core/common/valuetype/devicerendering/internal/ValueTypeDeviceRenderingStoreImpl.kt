@@ -35,9 +35,8 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatement
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingTableInfo
-import org.koin.core.annotation.Singleton
 
-@Singleton
+
 internal class ValueTypeDeviceRenderingStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : ValueTypeDeviceRenderingStore,

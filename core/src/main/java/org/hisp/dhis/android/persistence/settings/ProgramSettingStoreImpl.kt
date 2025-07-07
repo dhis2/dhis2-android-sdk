@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.internal.ProgramSettingStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ProgramSettingStoreImpl(
     val dao: ProgramSettingDao,
 ) : ProgramSettingStore, ObjectWithoutUidStoreImpl<ProgramSetting, ProgramSettingDB>(

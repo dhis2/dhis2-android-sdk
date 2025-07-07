@@ -36,9 +36,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
-import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class UserOrganisationUnitLinkStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : UserOrganisationUnitLinkStore,

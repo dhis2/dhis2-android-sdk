@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.settings.GeneralSettings
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class GeneralSettingStoreImpl(
     val dao: GeneralSettingDao,
 ) : GeneralSettingStore, ObjectWithoutUidStoreImpl<GeneralSettings, GeneralSettingDB>(

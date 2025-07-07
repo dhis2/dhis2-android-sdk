@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObject
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObjectStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class TrackerJobObjectStoreImpl(
     private val dao: TrackerJobObjectDao,
 ) : TrackerJobObjectStore, ObjectWithoutUidStoreImpl<TrackerJobObject, TrackerJobObjectDB>(

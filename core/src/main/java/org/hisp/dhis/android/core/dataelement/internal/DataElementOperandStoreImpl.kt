@@ -41,7 +41,6 @@ import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLin
 import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLinkTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class DataElementOperandStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : DataElementOperandStore,

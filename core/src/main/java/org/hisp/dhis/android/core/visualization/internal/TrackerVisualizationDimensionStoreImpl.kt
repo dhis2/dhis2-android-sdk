@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 @Suppress("MagicNumber")
 internal class TrackerVisualizationDimensionStoreImpl(
     databaseAdapter: DatabaseAdapter,

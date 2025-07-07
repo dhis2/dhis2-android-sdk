@@ -34,7 +34,9 @@ import org.hisp.dhis.android.core.indicator.internal.IndicatorStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
 import org.hisp.dhis.android.persistence.dataset.SectionIndicatorLinkTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class IndicatorStoreImpl(
     val dao: IndicatorDao,
 ) : IndicatorStore, IdentifiableObjectStoreImpl<Indicator, IndicatorDB>(

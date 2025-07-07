@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.relationship.RelationshipConstraint
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class RelationshipConstraintStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : RelationshipConstraintStore,

@@ -33,7 +33,6 @@ import org.hisp.dhis.android.persistence.configuration.DatabasesConfigurationDB
 import org.hisp.dhis.android.persistence.configuration.toDB
 import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class DatabaseConfigurationInsecureStoreImpl(
     insecureStore: InsecureStore,
 ) : DatabaseConfigurationInsecureStore {

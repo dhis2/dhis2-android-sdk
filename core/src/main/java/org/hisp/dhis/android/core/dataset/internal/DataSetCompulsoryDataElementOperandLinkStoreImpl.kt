@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLin
 import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLinkTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class DataSetCompulsoryDataElementOperandLinkStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : DataSetCompulsoryDataElementOperandLinkStore,

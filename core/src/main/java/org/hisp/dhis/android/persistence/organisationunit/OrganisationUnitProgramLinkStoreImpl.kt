@@ -34,7 +34,9 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class OrganisationUnitProgramLinkStoreImpl(
     val dao: OrganisationUnitProgramLinkDao,
 ) : OrganisationUnitProgramLinkStore,

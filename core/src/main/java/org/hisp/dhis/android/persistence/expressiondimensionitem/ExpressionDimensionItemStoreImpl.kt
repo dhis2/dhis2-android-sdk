@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionIte
 import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ExpressionDimensionItemStoreImpl(
     val dao: ExpressionDimensionItemDao,
 ) : ExpressionDimensionItemStore, IdentifiableObjectStoreImpl<ExpressionDimensionItem, ExpressionDimensionItemDB>(

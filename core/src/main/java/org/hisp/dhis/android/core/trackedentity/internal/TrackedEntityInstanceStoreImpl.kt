@@ -40,9 +40,7 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludingError
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
-import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class TrackedEntityInstanceStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : TrackedEntityInstanceStore,

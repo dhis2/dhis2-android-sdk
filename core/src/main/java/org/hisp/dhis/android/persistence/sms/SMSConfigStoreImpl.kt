@@ -35,7 +35,9 @@ import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigK
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class SMSConfigStoreImpl(
     val dao: SMSConfigDao,
 ) : SMSConfigStore, ObjectWithoutUidStoreImpl<KeyValuePair, SMSConfigDB>(

@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.settings.UserSettings
 import org.hisp.dhis.android.core.settings.internal.UserSettingsStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class UserSettingsStoreImpl(
     val dao: UserSettingsDao,
 ) : UserSettingsStore, ObjectWithoutUidStoreImpl<UserSettings, UserSettingsDB>(

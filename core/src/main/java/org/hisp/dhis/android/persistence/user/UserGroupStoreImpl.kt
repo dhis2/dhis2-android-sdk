@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.user.UserGroup
 import org.hisp.dhis.android.core.user.internal.UserGroupStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class UserGroupStoreImpl(
     private val dao: UserGroupDao,
 ) : UserGroupStore, IdentifiableObjectStoreImpl<UserGroup, UserGroupDB>(

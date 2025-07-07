@@ -33,7 +33,9 @@ import org.hisp.dhis.android.core.dataset.DataSetElement
 import org.hisp.dhis.android.core.dataset.internal.DataSetElementStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataSetDataElementLinkStoreImpl(
     val dao: DataSetDataElementLinkDao,
 ) : DataSetElementStore, LinkStoreImpl<DataSetElement, DataSetDataElementLinkDB>(

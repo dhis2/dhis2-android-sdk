@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.indicator.DataSetIndicatorLink
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class DataSetIndicatorLinkStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : DataSetIndicatorLinkStore,

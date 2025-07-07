@@ -38,7 +38,9 @@ import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilde
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 import org.hisp.dhis.android.persistence.event.EventTableInfo
 import org.hisp.dhis.android.persistence.program.ProgramStageDataElementTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 @Suppress("TooManyFunctions")
 internal class TrackedEntityDataValueStoreImpl(
     private val dao: TrackedEntityDataValueDao,

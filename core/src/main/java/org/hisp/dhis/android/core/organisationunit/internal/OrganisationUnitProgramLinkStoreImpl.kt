@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class OrganisationUnitProgramLinkStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : OrganisationUnitProgramLinkStore,

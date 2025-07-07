@@ -35,8 +35,10 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeR
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeReservedValueTableInfo.Columns
+import org.koin.core.annotation.Singleton
 import java.util.Date
 
+@Singleton
 internal class TrackedEntityAttributeReservedValueStoreImpl(
     val dao: TrackedEntityAttributeReservedValueDao,
 ) : TrackedEntityAttributeReservedValueStore,

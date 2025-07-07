@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingLis
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ProgramStageWorkingListStoreImpl(
     val dao: ProgramStageWorkingListDao,
 ) : ProgramStageWorkingListStore, IdentifiableObjectStoreImpl<ProgramStageWorkingList, ProgramStageWorkingListDB>(

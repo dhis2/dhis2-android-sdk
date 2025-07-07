@@ -44,7 +44,6 @@ import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class EnrollmentStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : EnrollmentStore,

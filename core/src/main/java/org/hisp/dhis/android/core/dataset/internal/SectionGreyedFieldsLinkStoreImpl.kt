@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLink
 import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLinkTableInfo
 import org.koin.core.annotation.Singleton
 
-@Singleton
 internal class SectionGreyedFieldsLinkStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : SectionGreyedFieldsLinkStore,

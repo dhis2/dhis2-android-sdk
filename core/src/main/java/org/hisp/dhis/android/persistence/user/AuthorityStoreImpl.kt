@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.user.Authority
 import org.hisp.dhis.android.core.user.internal.AuthorityStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class AuthorityStoreImpl(
     private val dao: AuthorityDao,
 ) : AuthorityStore, ObjectWithoutUidStoreImpl<Authority, AuthorityDB>(

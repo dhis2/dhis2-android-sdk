@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLink
 import org.hisp.dhis.android.core.category.internal.CategoryOptionOrganisationUnitLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class CategoryOptionOrganisationUnitLinkStoreImpl(
     val dao: CategoryOptionOrganisationUnitLinkDao,
 ) : CategoryOptionOrganisationUnitLinkStore,

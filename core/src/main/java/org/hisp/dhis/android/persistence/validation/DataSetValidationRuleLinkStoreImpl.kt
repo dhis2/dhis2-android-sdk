@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.validation.DataSetValidationRuleLink
 import org.hisp.dhis.android.core.validation.internal.DataSetValidationRuleLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataSetValidationRuleLinkStoreImpl(
     private val dao: DataSetValidationRuleLinkDao,
 ) : DataSetValidationRuleLinkStore,

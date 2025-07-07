@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
 import org.hisp.dhis.android.core.map.layer.internal.MapLayerImageryProviderStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class MapLayerImageryProviderStoreImpl(
     val dao: MapLayerImageryProviderDao,
 ) : MapLayerImageryProviderStore, LinkStoreImpl<MapLayerImageryProvider, MapLayerImageryProviderDB>(

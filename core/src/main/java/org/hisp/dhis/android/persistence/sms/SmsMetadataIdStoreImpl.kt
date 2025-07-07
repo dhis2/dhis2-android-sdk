@@ -32,7 +32,9 @@ import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSMetadat
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSMetadataIdStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class SmsMetadataIdStoreImpl(
     val dao: SmsMetadataIdDao,
 ) : SMSMetadataIdStore, ObjectWithoutUidStoreImpl<SMSMetadataId, SmsMetadataIdDB>(

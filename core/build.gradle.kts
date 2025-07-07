@@ -217,6 +217,7 @@ dependencies {
 
 ksp {
     arg("migrationDir", "$rootDir/core/src/main/assets/migrations")
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 detekt {

@@ -441,7 +441,7 @@ CREATE TABLE ProgramAttributeValueLink(program TEXT NOT NULL, attribute TEXT NOT
 INSERT INTO ProgramAttributeValueLink(program, attribute, value) SELECT program, attribute, value FROM ProgramAttributeValueLink_Old;
 
 ALTER TABLE TrackerJobObject RENAME TO TrackerJobObject_Old;
-CREATE TABLE TrackerJobObject(trackerType TEXT NOT NULL, objectUid TEXT NOT NULL, jobUid TEXT NOT NULL PRIMARY KEY,  lastUpdated TEXT NOT NULL, fileResources TEXT);
+CREATE TABLE TrackerJobObject(trackerType TEXT NOT NULL, objectUid TEXT NOT NULL, jobUid TEXT NOT NULL PRIMARY KEY, lastUpdated TEXT NOT NULL, fileResources TEXT);
 INSERT INTO TrackerJobObject(trackerType, objectUid, jobUid, lastUpdated, fileResources) SELECT trackerType, objectUid, jobUid, lastUpdated, fileResources FROM TrackerJobObject_Old;
 
 ALTER TABLE DataValueConflict RENAME TO DataValueConflict_Old;

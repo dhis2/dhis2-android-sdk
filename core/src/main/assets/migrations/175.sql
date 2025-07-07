@@ -1,6 +1,4 @@
--- Removes _id primary key (ANDROSDK-2128)
-
--- MIGRATE PRIMARY KEYS
+# Removes _id primary key (ANDROSDK-2128)
 
 ALTER TABLE Configuration RENAME TO Configuration_Old;
 CREATE TABLE Configuration(serverUrl TEXT NOT NULL PRIMARY KEY);
@@ -67,8 +65,8 @@ CREATE TABLE UserRole(uid TEXT NOT NULL PRIMARY KEY, code TEXT, name TEXT, displ
 INSERT INTO UserRole(uid, code, name, displayName, created, lastUpdated) SELECT uid, code, name, displayName, created, lastUpdated FROM UserRole_Old;
 
 ALTER TABLE ProgramStageSectionProgramIndicatorLink RENAME TO ProgramStageSectionProgramIndicatorLink_Old;
-CREATE TABLE ProgramStageSectionProgramIndicatorLink(programStageSection TEXT NOT NULL, programIndicator TEXT NOT NULL, sortOrder INTEGER, PRIMARY KEY(programStageSection, programIndicator), FOREIGN KEY(programStageSection) REFERENCES ProgramStageSection(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(programIndicator) REFERENCES ProgramIndicator(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
-INSERT INTO ProgramStageSectionProgramIndicatorLink(programStageSection, programIndicator, sortOrder) SELECT programStageSection, programIndicator, sortOrder FROM ProgramStageSectionProgramIndicatorLink_Old;
+CREATE TABLE ProgramStageSectionProgramIndicatorLink(programStageSection TEXT NOT NULL, programIndicator TEXT NOT NULL, PRIMARY KEY(programStageSection, programIndicator), FOREIGN KEY(programStageSection) REFERENCES ProgramStageSection(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(programIndicator) REFERENCES ProgramIndicator(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO ProgramStageSectionProgramIndicatorLink(programStageSection, programIndicator) SELECT programStageSection, programIndicator FROM ProgramStageSectionProgramIndicatorLink_Old;
 
 ALTER TABLE Category RENAME TO Category_Old;
 CREATE TABLE Category(uid TEXT NOT NULL PRIMARY KEY, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, dataDimensionType TEXT);
@@ -562,7 +560,6 @@ ALTER TABLE ProgramStageWorkingListAttributeValueFilter RENAME TO ProgramStageWo
 CREATE TABLE ProgramStageWorkingListAttributeValueFilter(programStageWorkingList TEXT NOT NULL, attribute TEXT NOT NULL, sw TEXT, ew TEXT, le TEXT, ge TEXT, gt TEXT, lt TEXT, eq TEXT, inProperty TEXT, like TEXT, dateFilter TEXT, PRIMARY KEY(programStageWorkingList, attribute), FOREIGN KEY(programStageWorkingList) REFERENCES ProgramStageWorkingList(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(attribute) REFERENCES TrackedEntityAttribute(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
 INSERT INTO ProgramStageWorkingListAttributeValueFilter(programStageWorkingList, attribute, sw, ew, le, ge, gt, lt, eq, inProperty, like, dateFilter) SELECT programStageWorkingList, attribute, sw, ew, le, ge, gt, lt, eq, inProperty, like, dateFilter FROM ProgramStageWorkingListAttributeValueFilter_Old;
 
--- DROP OLD TABLES
 DROP TABLE Configuration_Old;
 DROP TABLE User_Old;
 DROP TABLE OrganisationUnit_Old;
@@ -704,5 +701,4 @@ DROP TABLE AttributeValueFilter_Old;
 DROP TABLE ProgramStageWorkingListEventDataFilter_Old;
 DROP TABLE ProgramStageWorkingListAttributeValueFilter_Old;
 
--- INDEXES
 CREATE INDEX optionset_optioncode ON Option(optionSet, code);

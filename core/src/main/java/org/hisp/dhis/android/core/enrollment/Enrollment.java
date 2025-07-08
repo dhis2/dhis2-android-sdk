@@ -32,10 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
@@ -56,7 +52,6 @@ import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentFields;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.relationship.Relationship;
@@ -66,96 +61,77 @@ import java.util.List;
 
 @AutoValue
 @SuppressWarnings("PMD.ExcessiveImports")
-@JsonDeserialize(builder = AutoValue_Enrollment.Builder.class)
 public abstract class Enrollment extends BaseDeletableDataObject implements ObjectWithUidInterface {
 
     @Override
-    @JsonProperty(EnrollmentFields.UID)
     public abstract String uid();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date createdAtClient();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdatedAtClient();
 
     @Nullable
-    @JsonProperty(EnrollmentFields.ORGANISATION_UNIT)
     public abstract String organisationUnit();
 
     @Nullable
-    @JsonProperty()
     public abstract String program();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date enrollmentDate();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date incidentDate();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date completedDate();
 
     @Nullable
-    @JsonProperty(EnrollmentTableInfo.Columns.FOLLOW_UP)
     @ColumnName(EnrollmentTableInfo.Columns.FOLLOW_UP)
     public abstract Boolean followUp();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(EnrollmentStatusColumnAdapter.class)
     public abstract EnrollmentStatus status();
 
     @Nullable
-    @JsonIgnore()
     public abstract String trackedEntityInstance();
 
     /**
      * @deprecated since 2.30, replaced by {@link #geometry()}
      */
     @Nullable
-    @JsonProperty()
     @Deprecated
     @ColumnAdapter(IgnoreCoordinatesColumnAdapter.class)
     abstract Coordinates coordinate();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbGeometryColumnAdapter.class)
     public abstract Geometry geometry();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreEventListColumnAdapter.class)
     abstract List<Event> events();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreNoteListColumnAdapter.class)
     public abstract List<Note> notes();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreRelationshipListColumnAdapter.class)
     abstract List<Relationship> relationships();
 
@@ -185,11 +161,9 @@ public abstract class Enrollment extends BaseDeletableDataObject implements Obje
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseDeletableDataObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
-        @JsonProperty(EnrollmentFields.UID)
         public abstract Builder uid(String uid);
 
         public abstract Builder created(Date created);
@@ -200,7 +174,6 @@ public abstract class Enrollment extends BaseDeletableDataObject implements Obje
 
         public abstract Builder lastUpdatedAtClient(Date lastUpdatedAtClient);
 
-        @JsonProperty(EnrollmentFields.ORGANISATION_UNIT)
         public abstract Builder organisationUnit(String organisationUnit);
 
         public abstract Builder program(String program);
@@ -211,7 +184,6 @@ public abstract class Enrollment extends BaseDeletableDataObject implements Obje
 
         public abstract Builder completedDate(Date completedDate);
 
-        @JsonProperty(EnrollmentTableInfo.Columns.FOLLOW_UP)
         public abstract Builder followUp(Boolean followUp);
 
         public abstract Builder status(EnrollmentStatus status);

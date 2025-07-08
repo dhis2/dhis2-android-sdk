@@ -28,7 +28,15 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.doAnswer
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.never
+import com.nhaarman.mockitokotlin2.stub
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
+import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
@@ -46,6 +54,7 @@ class AppearanceSettingsCallShould {
 
     private val filterSettingHandler: FilterSettingHandler = mock()
     private val programConfigurationHandler: ProgramConfigurationSettingHandler = mock()
+    private val dataSetConfigurationHandler: DataSetConfigurationSettingHandler = mock()
     private val service: SettingAppService = mock()
     private val appVersionManager: SettingsAppInfoManager = mock()
 
@@ -61,6 +70,7 @@ class AppearanceSettingsCallShould {
         appearanceSettingsCall = AppearanceSettingCall(
             filterSettingHandler,
             programConfigurationHandler,
+            dataSetConfigurationHandler,
             service,
             coroutineAPICallExecutor,
             appVersionManager,
@@ -105,5 +115,7 @@ class AppearanceSettingsCallShould {
         verifyNoMoreInteractions(filterSettingHandler)
         verify(programConfigurationHandler).handleMany(emptyList())
         verifyNoMoreInteractions(programConfigurationHandler)
+        verify(dataSetConfigurationHandler).handleMany(emptyList())
+        verifyNoMoreInteractions(dataSetConfigurationHandler)
     }
 }

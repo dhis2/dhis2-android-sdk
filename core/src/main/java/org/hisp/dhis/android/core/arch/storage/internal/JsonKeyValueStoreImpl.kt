@@ -27,42 +27,44 @@
  */
 package org.hisp.dhis.android.core.arch.storage.internal
 
-import com.fasterxml.jackson.core.JsonProcessingException
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerializationException
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import java.io.IOException
 
 @Suppress("TooGenericExceptionThrown")
-internal open class JsonKeyValueStoreImpl<O>(
+internal open class JsonKeyValueStoreImpl<T>(
     private val secureStore: KeyValueStore,
     private val key: String,
-    private val clazz: Class<O>,
-) : ObjectKeyValueStore<O> {
-    private var value: O? = null
+    private val serializer: KSerializer<T>,
+) : ObjectKeyValueStore<T> {
+    private var value: T? = null
 
-    override fun set(o: O) {
+    override fun set(t: T) {
         try {
-            val strObject = objectMapper().writeValueAsString(o)
+            val strObject = KotlinxJsonParser.instance.encodeToString(serializer, t)
             secureStore.setData(key, strObject)
-            this.value = o
-        } catch (e: JsonProcessingException) {
+            this.value = t
+        } catch (e: SerializationException) {
             throw RuntimeException("Couldn't persist object in key value store")
         }
     }
 
-    override fun get(): O? {
-        return if (this.value == null) {
-            val strObject = secureStore.getData(key)
-            if (strObject == null) {
-                null
-            } else {
-                try {
-                    objectMapper().readValue(strObject, clazz)
+    override fun get(): T? {
+        val strObject = secureStore.getData(key)
+        return when {
+            strObject == null -> null
+            this.value != null -> this.value
+            else -> {
+                val parsedValue = try {
+                    KotlinxJsonParser.instance.decodeFromString(serializer, strObject)
                 } catch (e: IOException) {
                     throw RuntimeException("Couldn't read object from key value store")
                 }
+                @Suppress("UNCHECKED_CAST")
+                this.value = parsedValue
+                return this.value
             }
-        } else {
-            this.value
         }
     }
 

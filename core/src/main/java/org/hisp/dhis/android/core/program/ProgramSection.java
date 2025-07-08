@@ -32,10 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -47,41 +43,32 @@ import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.program.internal.ProgramSectionFields;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_ProgramSection.Builder.class)
 public abstract class ProgramSection extends BaseIdentifiableObject
         implements CoreObject, ObjectWithStyle<ProgramSection, ProgramSection.Builder> {
 
     @Nullable
-    @JsonProperty()
     public abstract String description();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid program();
 
     @Nullable
-    @JsonProperty(ProgramSectionFields.TRACKED_ENTITY_ATTRIBUTES)
-    @JsonAlias({ProgramSectionFields.ATTRIBUTES})
     @ColumnAdapter(IgnoreTrackedEntityAttributeListColumnAdapter.class)
     public abstract List<TrackedEntityAttribute> attributes();
 
     @Nullable
-    @JsonProperty()
     public abstract Integer sortOrder();
 
     @Nullable
-    @JsonProperty()
     public abstract String formName();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(SectionRenderingColumnAdapter.class)
     public abstract SectionRendering renderType();
 
@@ -96,7 +83,6 @@ public abstract class ProgramSection extends BaseIdentifiableObject
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder>
             implements ObjectWithStyle.Builder<ProgramSection, Builder> {
 
@@ -106,8 +92,6 @@ public abstract class ProgramSection extends BaseIdentifiableObject
 
         public abstract Builder program(ObjectWithUid program);
 
-        @JsonProperty(ProgramSectionFields.TRACKED_ENTITY_ATTRIBUTES)
-        @JsonAlias({ProgramSectionFields.ATTRIBUTES})
         public abstract Builder attributes(List<TrackedEntityAttribute> attributes);
 
         public abstract Builder sortOrder(Integer sortOrder);

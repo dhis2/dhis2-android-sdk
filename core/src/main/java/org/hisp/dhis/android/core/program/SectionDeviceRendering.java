@@ -28,23 +28,18 @@
 
 package org.hisp.dhis.android.core.program;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.auto.value.AutoValue;
-
 import androidx.annotation.Nullable;
+
+import com.google.auto.value.AutoValue;
 
 @AutoValue
 public abstract class SectionDeviceRendering {
-    private static final String TYPE = "type";
 
     @Nullable
-    @JsonProperty(TYPE)
     public abstract SectionRenderingType type();
 
-    @JsonCreator
     public static SectionDeviceRendering create(
-            @JsonProperty(TYPE) SectionRenderingType type) {
+            SectionRenderingType type) {
 
         return new AutoValue_SectionDeviceRendering(type);
     }

@@ -32,9 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
@@ -58,75 +55,60 @@ import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageW
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_ProgramStageQueryCriteria.Builder.class)
 public abstract class ProgramStageQueryCriteria implements CoreObject {
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(EventStatusColumnAdapter.class)
     public abstract EventStatus eventStatus();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DateFilterPeriodColumnAdapter.class)
     public abstract DateFilterPeriod eventCreatedAt();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DateFilterPeriodColumnAdapter.class)
     public abstract DateFilterPeriod eventOccurredAt();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DateFilterPeriodColumnAdapter.class)
     public abstract DateFilterPeriod eventScheduledAt();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(EnrollmentStatusColumnAdapter.class)
     public abstract EnrollmentStatus enrollmentStatus();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DateFilterPeriodColumnAdapter.class)
     public abstract DateFilterPeriod enrolledAt();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DateFilterPeriodColumnAdapter.class)
     public abstract DateFilterPeriod enrollmentOccurredAt();
 
     @Nullable
-    @JsonProperty()
     @ColumnName(ProgramStageWorkingListTableInfo.Columns.ORDER)
     public abstract String order();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(StringListColumnAdapter.class)
     public abstract List<String> displayColumnOrder();
 
     @Nullable
-    @JsonProperty()
     public abstract String orgUnit();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(OrganisationUnitModeColumnAdapter.class)
     public abstract OrganisationUnitMode ouMode();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(AssignedUserModeColumnAdapter.class)
     public abstract AssignedUserMode assignedUserMode();
 
     @Nullable
-    @JsonProperty
     @ColumnAdapter(IgnoreProgramStageWorkingListEventDataFilterListColumnAdapter.class)
     public abstract List<ProgramStageWorkingListEventDataFilter> dataFilters();
 
     @Nullable
-    @JsonProperty
     @ColumnAdapter(IgnoreProgramStageWorkingListAttributeValueFilterListColumnAdapter.class)
     public abstract List<ProgramStageWorkingListAttributeValueFilter> attributeValueFilters();
 
@@ -142,7 +124,6 @@ public abstract class ProgramStageQueryCriteria implements CoreObject {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
         public abstract Builder id(Long id);

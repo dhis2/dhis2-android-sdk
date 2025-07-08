@@ -47,6 +47,7 @@ import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
 import org.hisp.dhis.android.core.fileresource.FileResourceElementType
 import org.hisp.dhis.android.core.fileresource.FileResourceInternalAccessor
 import org.hisp.dhis.android.core.fileresource.FileResourceRoutine
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.computeScalingDimension
 import org.hisp.dhis.android.core.icon.CustomIcon
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
@@ -57,7 +58,7 @@ import org.koin.core.annotation.Singleton
 internal class FileResourceDownloadCall(
     private val fileResourceStore: FileResourceStore,
     private val helper: FileResourceDownloadCallHelper,
-    private val fileResourceService: FileResourceService,
+    private val fileResourceNetworkHandlder: FileResourceNetworkHandler,
     private val handler: FileResourceHandler,
     private val fileResourceRoutine: FileResourceRoutine,
     private val synchronizationSettingsStore: SynchronizationSettingStore,
@@ -101,13 +102,10 @@ internal class FileResourceDownloadCall(
             downloadAndPersistFiles(
                 values = dataValues,
                 maxContentLength = params.maxContentLength,
-                download = { v ->
-                    fileResourceService.getFileFromDataValue(
-                        v.dataElement()!!,
-                        v.period()!!,
-                        v.organisationUnit()!!,
-                        v.attributeOptionCombo()!!,
-                        getDimension(params.dimension),
+                download = { v, _ ->
+                    fileResourceNetworkHandlder.getFileFromDataValue(
+                        v,
+                        FileResizerHelper.Dimension.MEDIUM.name,
                     )
                 },
                 getUid = { v -> v.value() },
@@ -126,20 +124,14 @@ internal class FileResourceDownloadCall(
                 downloadAndPersistFiles(
                     values = attributeDataValues,
                     maxContentLength = params.maxContentLength,
-                    download = { v ->
+                    download = { v, _ ->
                         when (v.valueType) {
                             ValueType.IMAGE ->
-                                fileResourceService.getImageFromTrackedEntityAttribute(
-                                    v.value.trackedEntityInstance()!!,
-                                    v.value.trackedEntityAttribute()!!,
-                                    getDimension(params.dimension),
-                                )
+                                fileResourceNetworkHandlder.getImageFromTrackedEntityAttribute(v,
+                                    FileResizerHelper.Dimension.MEDIUM.name)
 
                             ValueType.FILE_RESOURCE ->
-                                fileResourceService.getFileFromTrackedEntityAttribute(
-                                    v.value.trackedEntityInstance()!!,
-                                    v.value.trackedEntityAttribute()!!,
-                                )
+                                fileResourceNetworkHandlder.getFileFromTrackedEntityAttribute(v)
 
                             else -> null
                         }
@@ -154,11 +146,10 @@ internal class FileResourceDownloadCall(
                 downloadAndPersistFiles(
                     values = trackerDataValues,
                     maxContentLength = params.maxContentLength,
-                    download = { v ->
-                        fileResourceService.getFileFromEventValue(
-                            v.event()!!,
-                            v.dataElement()!!,
-                            getDimension(params.dimension),
+                    download = { v, _ ->
+                        fileResourceNetworkHandlder.getFileFromEventValue(
+                            v,
+                            FileResizerHelper.Dimension.MEDIUM.name,
                         )
                     },
                     getUid = { v -> v.value() },
@@ -174,9 +165,7 @@ internal class FileResourceDownloadCall(
             downloadAndPersistFiles(
                 values = iconKeys,
                 maxContentLength = params.maxContentLength,
-                download = { v ->
-                    fileResourceService.getCustomIcon(v.href())
-                },
+                download = { v, _ -> fileResourceNetworkHandlder.getCustomIcon(v) },
                 getUid = { v -> v.fileResource().uid() },
             )
         }
@@ -185,7 +174,7 @@ internal class FileResourceDownloadCall(
     private suspend fun <V> downloadAndPersistFiles(
         values: List<V>,
         maxContentLength: Int?,
-        download: suspend (V) -> ByteArray?,
+        download: suspend (V, String) -> ByteArray?,
         getUid: (V) -> String?,
     ) {
         val fileResources = getFileResources(values, getUid)
@@ -238,11 +227,7 @@ internal class FileResourceDownloadCall(
                 coroutineAPICallExecutor,
             ) {
                 override suspend fun getCall(query: UidsQuery): Payload<FileResource> {
-                    return fileResourceService.getFileResources(
-                        FileResourceFields.allFields,
-                        FileResourceFields.uid.`in`(query.uids),
-                        false,
-                    )
+                    return fileResourceNetworkHandlder.getFileResources(query)
                 }
             }.fetch()
         return fileResourcesList.mapNotNull { fileResource ->
@@ -256,7 +241,7 @@ internal class FileResourceDownloadCall(
         return valueMap.mapNotNull { (uid, value) ->
             uid?.let {
                 val frResult = coroutineAPICallExecutor.wrap {
-                    fileResourceService.getFileResource(
+                    fileResourceNetworkHandlder.getFileResource(
                         uid,
                     )
                 }
@@ -278,16 +263,18 @@ internal class FileResourceDownloadCall(
     private suspend fun <V> downloadFile(
         value: V,
         maxContentLength: Int?,
-        download: suspend (V) -> ByteArray?,
+        download: suspend (V, String) -> ByteArray?,
         fileResource: FileResource,
     ): FileResource? {
-        val acceptedContentLength = (maxContentLength == null) ||
-                (fileResource.contentLength() == null) ||
-                (fileResource.contentLength()!! <= maxContentLength)
+        val contentLength = fileResource.contentLength()
+        val fileIsImage = fileResource.contentType()?.startsWith("image") ?: false
+        val scalingDimension = computeScalingDimension(contentLength, maxContentLength?.toLong(), fileIsImage)
 
         return try {
-            if (acceptedContentLength && FileResourceInternalAccessor.isStored(fileResource)) {
-                val responseByteArray = coroutineAPICallExecutor.wrap { download(value) }.getOrThrow()
+            if (scalingDimension != FileResizerHelper.DimensionSize.NotSupported.name &&
+                FileResourceInternalAccessor.isStored(fileResource)
+            ) {
+                val responseByteArray = coroutineAPICallExecutor.wrap { download(value, scalingDimension) }.getOrThrow()
                 responseByteArray?.let {
                     val file = FileResourceUtil.saveFileFromResponse(it, fileResource, context)
                     fileResource.toBuilder().path(file.absolutePath).build()

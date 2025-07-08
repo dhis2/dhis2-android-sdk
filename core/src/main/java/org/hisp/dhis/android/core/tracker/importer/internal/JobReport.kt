@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.tracker.importer.internal
 
-import com.fasterxml.jackson.annotation.JsonProperty
-
 internal data class JobImportCount(
     val created: Int,
     val updated: Int,
@@ -61,10 +59,10 @@ internal data class JobTypeReport(
 )
 
 internal data class JobTypeReportMap(
-    @JsonProperty("TRACKED_ENTITY") val trackedEntity: JobTypeReport,
-    @JsonProperty("EVENT") val event: JobTypeReport,
-    @JsonProperty("RELATIONSHIP") val relationship: JobTypeReport,
-    @JsonProperty("ENROLLMENT") val enrollment: JobTypeReport,
+    val trackedEntity: JobTypeReport,
+    val event: JobTypeReport,
+    val relationship: JobTypeReport,
+    val enrollment: JobTypeReport,
 )
 
 internal data class JobBundleReport(

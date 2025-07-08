@@ -32,10 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -43,10 +39,8 @@ import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.NoteTypeColumn
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.note.internal.NoteFields;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_Note.Builder.class)
 public abstract class Note extends BaseDeletableDataObject implements ObjectWithUidInterface {
 
     public enum NoteType {
@@ -54,32 +48,25 @@ public abstract class Note extends BaseDeletableDataObject implements ObjectWith
         EVENT_NOTE
     }
 
-    @JsonProperty(NoteFields.UID)
     public abstract String uid();
 
     @Nullable
-    @JsonIgnore()
     @ColumnAdapter(NoteTypeColumnAdapter.class)
     public abstract NoteType noteType();
 
     @Nullable
-    @JsonIgnore()
     public abstract String event();
 
     @Nullable
-    @JsonIgnore()
     public abstract String enrollment();
 
     @Nullable
-    @JsonProperty()
     public abstract String value();
 
     @Nullable
-    @JsonProperty()
     public abstract String storedBy();
 
     @Nullable
-    @JsonProperty()
     public abstract String storedDate();
 
     public static Builder builder() {
@@ -93,11 +80,9 @@ public abstract class Note extends BaseDeletableDataObject implements ObjectWith
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseDeletableDataObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
-        @JsonProperty(NoteFields.UID)
         public abstract Builder uid(String uid);
 
         public abstract Builder noteType(NoteType noteType);

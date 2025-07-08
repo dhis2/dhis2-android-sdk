@@ -31,6 +31,8 @@ import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.api.testutils.HttpServiceClientFactory
 import org.hisp.dhis.android.core.event.Event
@@ -39,6 +41,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParamsSamples.get
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
+import org.hisp.dhis.android.network.event.EventNetworkHandlerImpl
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Test
@@ -102,7 +105,7 @@ class EventEndpointCallShould {
     }
 
     private suspend fun givenACallForQuery(eventQuery: TrackerAPIQuery): Payload<Event> {
-        return OldEventEndpointCallFactory(eventService).getCollectionCall(eventQuery)
+        return OldEventEndpointCallFactory(eventNetworkHandler).getCollectionCall(eventQuery)
     }
 
     private suspend fun givenAEventCallByOrgUnitAndProgram(
@@ -130,14 +133,16 @@ class EventEndpointCallShould {
     companion object {
         private lateinit var mockWebServer: Dhis2MockServer
         private lateinit var httpServiceClient: HttpServiceClient
-        private lateinit var eventService: EventService
+        private lateinit var coroutineAPICallExecutor: CoroutineAPICallExecutor
+        private lateinit var eventNetworkHandler: EventNetworkHandler
 
         @BeforeClass
         @JvmStatic
         fun setUpClass() {
             mockWebServer = Dhis2MockServer(0)
             httpServiceClient = HttpServiceClientFactory.fromDHIS2MockServer(mockWebServer)
-            eventService = EventService(httpServiceClient)
+            coroutineAPICallExecutor = CoroutineAPICallExecutorMock()
+            eventNetworkHandler = EventNetworkHandlerImpl(httpServiceClient, coroutineAPICallExecutor)
         }
 
         @AfterClass

@@ -30,11 +30,11 @@ package org.hisp.dhis.android.core.enrollment;
 
 import android.content.ContentValues;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo.Columns;
-
-import androidx.annotation.NonNull;
 
 public class CreateEnrollmentUtils {
     private static final String UID = "test_enrollment";

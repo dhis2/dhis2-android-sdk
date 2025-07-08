@@ -30,17 +30,14 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 
 import androidx.annotation.NonNull;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.imports.internal.WebResponse;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_ObjectWithUidWebResponse.Builder.class)
 public abstract class ObjectWithUidWebResponse extends WebResponse {
-    
+
     @NonNull
     public abstract ObjectWithUid response();
 
@@ -49,7 +46,6 @@ public abstract class ObjectWithUidWebResponse extends WebResponse {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends WebResponse.Builder<Builder> {
         public abstract Builder response(ObjectWithUid response);
 

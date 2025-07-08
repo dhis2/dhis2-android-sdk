@@ -37,7 +37,7 @@ internal class CoroutineAPICallExecutorMock : CoroutineAPICallExecutor {
         storeError: Boolean,
         acceptedErrorCodes: List<Int>?,
         errorCatcher: APICallErrorCatcher?,
-        errorClass: Class<P>?,
+        errorClassParser: ((body: String) -> P)?,
         block: suspend () -> P,
     ): Result<P, D2Error> {
         return try {

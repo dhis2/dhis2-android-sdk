@@ -32,9 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -48,7 +45,6 @@ import java.util.Date;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_GeneralSettings.Builder.class)
 public abstract class GeneralSettings implements CoreObject {
 
     /**
@@ -130,7 +126,6 @@ public abstract class GeneralSettings implements CoreObject {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
         public abstract Builder id(Long id);
 
@@ -146,10 +141,8 @@ public abstract class GeneralSettings implements CoreObject {
 
         public abstract Builder reservedValues(Integer reservedValues);
 
-        @JsonAlias("numberSmsToSend")
         public abstract Builder smsGateway(String smsGateway);
 
-        @JsonAlias("numberSmsConfirmation")
         public abstract Builder smsResultSender(String smsGateway);
 
         public abstract Builder matomoID(Integer matomoID);

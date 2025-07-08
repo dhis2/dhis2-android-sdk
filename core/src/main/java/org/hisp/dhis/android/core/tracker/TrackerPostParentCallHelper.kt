@@ -40,28 +40,24 @@ internal class TrackerPostParentCallHelper(
 ) {
 
     fun useNewTrackerImporter(): Boolean {
-        return if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_38)) {
-            val explicitTrackerVersion = synchronizationSettingStore.selectFirst()?.trackerImporterVersion()
-            if (explicitTrackerVersion == null) {
-                dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_40)
-            } else {
-                explicitTrackerVersion == TrackerImporterVersion.V2
-            }
-        } else {
-            false
+        val explicitTrackerVersion = synchronizationSettingStore.selectFirst()?.trackerImporterVersion()
+        return when {
+            !dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_38) -> false
+            dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_42) -> true
+            explicitTrackerVersion == TrackerImporterVersion.V2 -> true
+            explicitTrackerVersion == null && dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_40) -> true
+            else -> false
         }
     }
 
     fun useNewTrackerExporter(): Boolean {
-        return if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_40)) {
-            val explicitTrackerVersion = synchronizationSettingStore.selectFirst()?.trackerExporterVersion()
-            if (explicitTrackerVersion == null) {
-                dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_40)
-            } else {
-                explicitTrackerVersion == TrackerExporterVersion.V2
-            }
-        } else {
-            false
+        val explicitTrackerVersion = synchronizationSettingStore.selectFirst()?.trackerExporterVersion()
+        return when {
+            !dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_40) -> false
+            dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_42) -> true
+            explicitTrackerVersion == TrackerExporterVersion.V2 -> true
+            explicitTrackerVersion == null -> true
+            else -> false
         }
     }
 }

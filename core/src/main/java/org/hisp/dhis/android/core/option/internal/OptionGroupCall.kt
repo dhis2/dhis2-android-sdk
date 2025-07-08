@@ -34,7 +34,7 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 class OptionGroupCall internal constructor(
-    private val service: OptionGroupService,
+    private val networkHandler: OptionGroupNetworkHandler,
     private val handler: OptionGroupHandler,
     private val apiDownloader: APIDownloader,
 ) : UidsCallCoroutines<OptionGroup> {
@@ -43,11 +43,8 @@ class OptionGroupCall internal constructor(
             optionSetUids,
             MAX_UID_LIST_SIZE,
             handler,
-        ) { partitionUids: Set<String> ->
-            val optionSetUidsFilterStr =
-                "optionSet." + OptionSetFields.uid.`in`(partitionUids).generateString()
-            service.optionGroups(OptionGroupFields.allFields, optionSetUidsFilterStr, false)
-        }
+            networkHandler::getOptionGroups,
+        )
     }
 
     companion object {

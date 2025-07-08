@@ -31,9 +31,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationType
 import org.hisp.dhis.android.core.settings.internal.AnalyticsDhisVisualizationCleaner
-import org.hisp.dhis.android.core.visualization.LayoutPosition
 import org.hisp.dhis.android.core.visualization.TrackerVisualization
-import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -46,12 +44,10 @@ internal class TrackerVisualizationHandler(
 
     override fun afterObjectHandled(o: TrackerVisualization, action: HandleAction) {
         val dimensions =
-            toDimensions(o.columns(), LayoutPosition.COLUMN) +
-                toDimensions(o.filters(), LayoutPosition.FILTER)
+            (o.columns() ?: emptyList()) +
+                (o.filters() ?: emptyList())
 
-        dimensionHandler.handleMany(o.uid(), dimensions) {
-            it.toBuilder().trackerVisualization(o.uid()).build()
-        }
+        dimensionHandler.handleMany(o.uid(), dimensions)
     }
 
     override fun afterCollectionHandled(oCollection: Collection<TrackerVisualization>?) {
@@ -60,16 +56,5 @@ internal class TrackerVisualizationHandler(
             uids = store.selectUids(),
             type = AnalyticsDhisVisualizationType.TRACKER_VISUALIZATION,
         )
-    }
-
-    private fun toDimensions(
-        dimensions: List<TrackerVisualizationDimension>?,
-        position: LayoutPosition,
-    ): List<TrackerVisualizationDimension> {
-        return dimensions?.map { dimension ->
-            dimension.toBuilder()
-                .position(position)
-                .build()
-        } ?: emptyList()
     }
 }

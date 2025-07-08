@@ -28,17 +28,18 @@
 package org.hisp.dhis.android.core.configuration.internal
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.junit.Test
 
 class DatabasesConfigurationShould :
-    BaseObjectShould("configuration/databases_configuration.json"),
+    BaseObjectKotlinxShould("configuration/databases_configuration.json"),
     ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val configuration = deserialize(DatabasesConfiguration::class.java)
+        val configurationDao = deserialize(DatabasesConfigurationDAO.serializer())
+        val configuration = configurationDao.toDomain()
 
         assertThat(configuration.versionCode()).isEqualTo(260)
         assertThat(configuration.maxAccounts()).isEqualTo(3)
@@ -54,10 +55,13 @@ class DatabasesConfigurationShould :
 
     @Test
     fun equal_when_deserialize_serialize_deserialize() {
-        val configuration = deserialize(DatabasesConfiguration::class.java)
+        val configurationDao = deserialize(DatabasesConfigurationDAO.serializer())
+        val configuration = configurationDao.toDomain()
 
-        val serialized = serialize(configuration)
-        val deserialized = deserialize(serialized, DatabasesConfiguration::class.java)
+        val serialized =
+            serialize(DatabasesConfigurationDAO.toDao(configuration), DatabasesConfigurationDAO.serializer())
+        val deserializedDao = deserialize(serialized, DatabasesConfigurationDAO.serializer())
+        val deserialized = deserializedDao.toDomain()
 
         assertThat(deserialized).isEqualTo(configuration)
     }

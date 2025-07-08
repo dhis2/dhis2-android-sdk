@@ -32,9 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -52,50 +49,40 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_ProgramIndicator.Builder.class)
 public abstract class ProgramIndicator extends BaseNameableObject implements CoreObject {
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean displayInForm();
 
     @Nullable
-    @JsonProperty()
     public abstract String expression();
 
     @Nullable
-    @JsonProperty()
     public abstract String dimensionItem();
 
     @Nullable
-    @JsonProperty()
     public abstract String filter();
 
     @Nullable
-    @JsonProperty()
     public abstract Integer decimals();
+
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(AggregationTypeColumnAdapter.class)
     public abstract AggregationType aggregationType();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid program();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(AnalyticsTypeColumnAdapter.class)
     public abstract AnalyticsType analyticsType();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreAnalyticsPeriodBoundaryListColumnAdapter.class)
     public abstract List<AnalyticsPeriodBoundary> analyticsPeriodBoundaries();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)
     public abstract List<ObjectWithUid> legendSets();
 
@@ -111,7 +98,6 @@ public abstract class ProgramIndicator extends BaseNameableObject implements Cor
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder  extends BaseNameableObject.Builder<Builder> {
         public abstract Builder id(Long id);
 

@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.arch.api.internal.ktorToD2Response
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.Transaction
 import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore
 import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleaner
@@ -62,14 +61,14 @@ internal class CoroutineAPICallExecutorImpl(
         storeError: Boolean,
         acceptedErrorCodes: List<Int>?,
         errorCatcher: APICallErrorCatcher?,
-        errorClass: Class<P>?,
+        errorClassParser: ((body: String) -> P)?,
         block: suspend () -> P,
     ): Result<P, D2Error> {
         return try {
             Result.Success(block.invoke())
         } catch (ktorException: ClientRequestException) {
             val d2ErrorResponse = ktorException.ktorToD2Response()
-            handleHttpException(d2ErrorResponse, storeError, acceptedErrorCodes, errorCatcher, errorClass)
+            handleHttpException(d2ErrorResponse, storeError, acceptedErrorCodes, errorCatcher, errorClassParser)
         } catch (d2Error: D2Error) {
             Result.Failure(d2Error)
         } catch (t: Throwable) {
@@ -82,7 +81,7 @@ internal class CoroutineAPICallExecutorImpl(
         storeError: Boolean,
         acceptedErrorCodes: List<Int>?,
         errorCatcher: APICallErrorCatcher?,
-        errorClass: Class<P>?,
+        errorClassParser: ((body: String) -> P)?,
     ): Result<P, D2Error> {
         return if (d2ExceptionResponse.errorBody.isEmpty()) {
             Result.Failure(
@@ -102,9 +101,9 @@ internal class CoroutineAPICallExecutorImpl(
                         catchError(userAccountDisabledErrorCatcher, errorBuilder, d2ExceptionResponse, storeError),
                     )
                 }
-                errorClass != null && acceptedErrorCodes?.contains(d2ExceptionResponse.statusCode) == true -> {
+                errorClassParser != null && acceptedErrorCodes?.contains(d2ExceptionResponse.statusCode) == true -> {
                     Result.Success(
-                        ObjectMapperFactory.objectMapper().readValue(d2ExceptionResponse.errorBody, errorClass),
+                        errorClassParser.invoke(d2ExceptionResponse.errorBody),
                     )
                 }
                 errorCatcher != null -> {

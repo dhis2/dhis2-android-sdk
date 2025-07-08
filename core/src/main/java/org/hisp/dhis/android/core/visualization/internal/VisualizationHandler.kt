@@ -51,9 +51,7 @@ internal class VisualizationHandler(
                 toItems(o.rows(), LayoutPosition.ROW) +
                 toItems(o.filters(), LayoutPosition.FILTER)
 
-        itemHandler.handleMany(o.uid(), items) {
-            it.toBuilder().visualization(o.uid()).build()
-        }
+        itemHandler.handleMany(o.uid(), items)
     }
 
     override fun afterCollectionHandled(oCollection: Collection<Visualization>?) {
@@ -71,6 +69,7 @@ internal class VisualizationHandler(
         return dimensions?.map { dimension ->
             val nonNullItems = dimension.items()?.filterNotNull()
             if (nonNullItems.isNullOrEmpty()) {
+                // Add auxiliary empty item to persist in the database
                 listOf(
                     VisualizationDimensionItem.builder()
                         .position(position)
@@ -78,12 +77,7 @@ internal class VisualizationHandler(
                         .build(),
                 )
             } else {
-                nonNullItems.map { item ->
-                    item.toBuilder()
-                        .position(position)
-                        .dimension(dimension.id())
-                        .build()
-                }
+                nonNullItems
             }
         }?.flatten() ?: emptyList()
     }

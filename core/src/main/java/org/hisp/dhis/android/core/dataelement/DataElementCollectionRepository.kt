@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.dataelement.internal.DataElementAttributeChildrenAppender
-import org.hisp.dhis.android.core.dataelement.internal.DataElementFields
 import org.hisp.dhis.android.core.dataelement.internal.DataElementLegendSetChildrenAppender
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.koin.core.annotation.Singleton
@@ -108,17 +107,20 @@ class DataElementCollectionRepository internal constructor(
     }
 
     fun withLegendSets(): DataElementCollectionRepository {
-        return cf.withChild(DataElementFields.LEGEND_SETS)
+        return cf.withChild(LEGEND_SETS)
     }
 
     fun withAttributes(): DataElementCollectionRepository {
-        return cf.withChild(DataElementFields.ATTRIBUTE_VALUES)
+        return cf.withChild(ATTRIBUTE_VALUES)
     }
 
     internal companion object {
+        private const val LEGEND_SETS = "legendSets"
+        private const val ATTRIBUTE_VALUES = "attributeValues"
+
         val childrenAppenders: ChildrenAppenderGetter<DataElement> = mapOf(
-            DataElementFields.LEGEND_SETS to DataElementLegendSetChildrenAppender::create,
-            DataElementFields.ATTRIBUTE_VALUES to DataElementAttributeChildrenAppender::create,
+            LEGEND_SETS to DataElementLegendSetChildrenAppender::create,
+            ATTRIBUTE_VALUES to DataElementAttributeChildrenAppender::create,
         )
     }
 }

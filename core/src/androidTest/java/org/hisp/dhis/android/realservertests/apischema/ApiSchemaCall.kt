@@ -35,6 +35,6 @@ internal class ApiSchemaCall internal constructor(
 ) : ListCall<ApiSchema> {
     override suspend fun download(): List<ApiSchema> {
         val payload = ApiSchemaService(httpClient).getSchema(ApiSchemaFields.allFields)
-        return payload.items()
+        return payload.items
     }
 }

@@ -32,30 +32,24 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.FilterOperators;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_EventDataFilter.Builder.class)
 public abstract class EventDataFilter extends FilterOperators implements CoreObject {
 
     /**
      * The related event filter
      */
     @Nullable
-    @JsonProperty()
     public abstract String eventFilter();
 
     /**
      * The data element id or data item
      */
     @Nullable
-    @JsonProperty()
     public abstract String dataItem();
 
     public static Builder builder() {
@@ -69,7 +63,6 @@ public abstract class EventDataFilter extends FilterOperators implements CoreObj
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends FilterOperators.Builder<Builder> {
         public abstract Builder id(Long id);
 

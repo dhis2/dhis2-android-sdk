@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.datastore.internal
 
 import com.google.common.truth.Truth.assertThat
+import io.ktor.http.HttpStatusCode
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
@@ -49,7 +50,10 @@ class DataStorePostCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
     @Test
     fun post_dataStore_success() {
         // Given user sets valid value
-        dhis2MockServer.enqueueMockResponse(201, "datastore/actions/namespace_key_post_201.json")
+        dhis2MockServer.enqueueMockResponse(
+            code = HttpStatusCode.Created.value,
+            fileName = "datastore/actions/namespace_key_post_201.json",
+        )
         provideDataStore("config", "key", "{\"enabled\": true}")
 
         assertExistWithState(State.TO_POST)
@@ -59,7 +63,10 @@ class DataStorePostCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
 
     @Test
     fun put_if_already_exists() {
-        dhis2MockServer.enqueueMockResponse(409, "datastore/actions/namespace_key_post_already_exists_409.json")
+        dhis2MockServer.enqueueMockResponse(
+            code = HttpStatusCode.Conflict.value,
+            fileName = "datastore/actions/namespace_key_post_already_exists_409.json",
+        )
         dhis2MockServer.enqueueMockResponse("datastore/actions/namespace_key_put_200.json")
         provideDataStore("config", "key", "{\"enabled\": true}")
 
@@ -70,8 +77,14 @@ class DataStorePostCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
 
     @Test
     fun post_if_not_found() {
-        dhis2MockServer.enqueueMockResponse(404, "datastore/actions/namespace_key_put_not_found_404.json")
-        dhis2MockServer.enqueueMockResponse(201, "datastore/actions/namespace_key_post_201.json")
+        dhis2MockServer.enqueueMockResponse(
+            code = HttpStatusCode.NotFound.value,
+            fileName = "datastore/actions/namespace_key_put_not_found_404.json",
+        )
+        dhis2MockServer.enqueueMockResponse(
+            code = HttpStatusCode.Created.value,
+            fileName = "datastore/actions/namespace_key_post_201.json",
+        )
         provideDataStore("config", "key", "{\"enabled\": true}")
         setState(State.TO_UPDATE)
 
@@ -94,7 +107,10 @@ class DataStorePostCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
 
     @Test
     fun delete_locally_even_if_not_found() {
-        dhis2MockServer.enqueueMockResponse(404, "datastore/actions/namespace_key_deleted_not_found_404.json")
+        dhis2MockServer.enqueueMockResponse(
+            code = HttpStatusCode.NotFound.value,
+            fileName = "datastore/actions/namespace_key_deleted_not_found_404.json",
+        )
         provideDataStore("config", "key", "{\"enabled\": true}")
         setState(State.TO_UPDATE)
         d2.dataStoreModule().dataStore().value("config", "key").blockingDelete()

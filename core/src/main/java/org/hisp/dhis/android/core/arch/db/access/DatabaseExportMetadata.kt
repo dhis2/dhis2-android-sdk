@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.core.arch.db.access
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class DatabaseExportMetadata(
     val version: Int,
     val date: String,

@@ -27,15 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.json.internal
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.koin.core.annotation.Module
-import org.koin.core.annotation.Singleton
 
 @Module
-internal class JSONSerializationDIModule {
-
-    @Singleton
-    fun objectMapper(): ObjectMapper {
-        return ObjectMapperFactory.objectMapper()
-    }
-}
+internal class JSONSerializationDIModule

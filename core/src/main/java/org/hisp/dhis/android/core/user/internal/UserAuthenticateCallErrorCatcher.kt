@@ -28,19 +28,16 @@
 package org.hisp.dhis.android.core.user.internal
 
 import android.util.Log
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIErrorMapper
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
-import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.network.common.dto.HttpMessageResponseDTO
 import org.koin.core.annotation.Singleton
-import java.lang.Exception
 import java.net.HttpURLConnection
 
 @Singleton
-internal class UserAuthenticateCallErrorCatcher(private val objectMapper: ObjectMapper) :
-    APICallErrorCatcher {
+internal class UserAuthenticateCallErrorCatcher : APICallErrorCatcher {
     override fun mustBeStored(): Boolean {
         return true
     }
@@ -51,7 +48,7 @@ internal class UserAuthenticateCallErrorCatcher(private val objectMapper: Object
             if (response.errorBody == APIErrorMapper.noErrorMessage) {
                 D2ErrorCode.NO_DHIS2_SERVER
             } else {
-                val errorResponse = objectMapper.readValue(response.errorBody, HttpMessageResponse::class.java)
+                val errorResponse = HttpMessageResponseDTO.toErrorClass(response.errorBody)
                 val isUnauthorized = response.statusCode == HttpURLConnection.HTTP_UNAUTHORIZED
                 if (isUnauthorized && errorResponse.message().contains("Account locked")) {
                     D2ErrorCode.USER_ACCOUNT_LOCKED

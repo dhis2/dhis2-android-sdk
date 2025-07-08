@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.common;
 
-public interface DataObject extends CoreObject {
+public interface DataObject extends CoreObject, ObjectWithSyncStateInterface {
     @Deprecated
     State state();
 

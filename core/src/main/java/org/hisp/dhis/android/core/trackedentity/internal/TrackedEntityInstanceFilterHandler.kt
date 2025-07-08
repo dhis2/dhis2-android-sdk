@@ -29,8 +29,6 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
-import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 import org.koin.core.annotation.Singleton
 
@@ -50,15 +48,8 @@ internal class TrackedEntityInstanceFilterHandler(
 
     override fun afterObjectHandled(o: TrackedEntityInstanceFilter, action: HandleAction) {
         if (action !== HandleAction.Delete) {
-            trackedEntityInstanceEventFilterHandler
-                .handleMany(o.eventFilters()) { ef: TrackedEntityInstanceEventFilter ->
-                    ef.toBuilder().trackedEntityInstanceFilter(o.uid()).build()
-                }
-            o.entityQueryCriteria().attributeValueFilters()?.let {
-                attributeValueFilterHandler.handleMany(it) { avf: AttributeValueFilter ->
-                    avf.toBuilder().trackedEntityInstanceFilter(o.uid()).build()
-                }
-            }
+            trackedEntityInstanceEventFilterHandler.handleMany(o.eventFilters())
+            o.entityQueryCriteria().attributeValueFilters()?.let { attributeValueFilterHandler.handleMany(it) }
         }
     }
 }

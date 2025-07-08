@@ -61,8 +61,6 @@ internal class AnalyticsTeiSettingHandler(
             att.toBuilder().teiSetting(o.uid()).build()
         }
 
-        whoNutritionDataHandler.handleMany(o.uid(), listOfNotNull(o.whoNutritionData())) { whoData ->
-            whoData.toBuilder().teiSetting(o.uid()).build()
-        }
+        whoNutritionDataHandler.handleMany(o.uid(), listOfNotNull(o.whoNutritionData()))
     }
 }

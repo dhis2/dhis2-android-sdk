@@ -40,6 +40,7 @@ import java.net.HttpURLConnection
 internal class AppearanceSettingCall(
     private val filterSettingHandler: FilterSettingHandler,
     private val programConfigurationSettingHandler: ProgramConfigurationSettingHandler,
+    private val dataSetConfigurationSettingHandler: DataSetConfigurationSettingHandler,
     private val settingAppService: SettingAppService,
     coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val appVersionManager: SettingsAppInfoManager,
@@ -75,5 +76,10 @@ internal class AppearanceSettingCall(
             SettingsAppHelper.getProgramConfigurationSettingList(it)
         } ?: emptyList()
         programConfigurationSettingHandler.handleMany(programConfigurationSettings)
+
+        val dataSetConfigurationSettings = item?.let {
+            SettingsAppHelper.getDataSetConfigurationSettingList(it)
+        } ?: emptyList()
+        dataSetConfigurationSettingHandler.handleMany(dataSetConfigurationSettings)
     }
 }

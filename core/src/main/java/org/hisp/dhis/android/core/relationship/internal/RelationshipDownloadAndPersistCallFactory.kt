@@ -69,8 +69,8 @@ internal class RelationshipDownloadAndPersistCallFactory(
                     trackerParentCallFactory.getEventCall().getRelationshipEntityCall(item)
                 }.fold(
                     onSuccess = { eventPayload ->
-                        events.addAll(eventPayload.items())
-                        eventPayload.items().mapNotNull { it.enrollment() }.forEach { enrollment ->
+                        events.addAll(eventPayload.items)
+                        eventPayload.items.mapNotNull { it.enrollment() }.forEach { enrollment ->
                             val relativeEnrollment = RelationshipItemRelative(
                                 itemUid = enrollment,
                                 itemType = RelationshipItemTableInfo.Columns.ENROLLMENT,
@@ -130,7 +130,7 @@ internal class RelationshipDownloadAndPersistCallFactory(
                 coroutineAPICallExecutor.wrap(storeError = true) {
                     trackerParentCallFactory.getTrackedEntityCall().getRelationshipEntityCall(item)
                 }.fold(
-                    onSuccess = { teiPayload -> teis.addAll(teiPayload.items()) },
+                    onSuccess = { teiPayload -> teis.addAll(teiPayload.items) },
                     onFailure = { failedTeis.add(item.itemUid) },
                 )
             }

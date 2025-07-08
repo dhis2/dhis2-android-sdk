@@ -29,15 +29,17 @@ package org.hisp.dhis.android.core.visualization
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.trackervisualization.TrackerVisualizationDTO
 import org.junit.Test
 
-class TrackerVisualizationShould : BaseObjectShould("visualization/tracker_visualization.json"), ObjectShould {
+class TrackerVisualizationShould : BaseObjectKotlinxShould("visualization/tracker_visualization.json"), ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val visualization = objectMapper.readValue(jsonStream, TrackerVisualization::class.java)
+        val visualizationDTO = deserialize(TrackerVisualizationDTO.serializer())
+        val visualization = visualizationDTO.toDomain()
 
         assertThat(visualization.uid()).isEqualTo("s85urBIkN0z")
         assertThat(visualization.name()).isEqualTo("TB program")

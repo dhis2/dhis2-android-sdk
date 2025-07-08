@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.datavalue.internal
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.helpers.Result
@@ -38,21 +37,18 @@ import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper.forcedOr
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
-import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.koin.core.annotation.Singleton
-import java.net.HttpURLConnection
 
 @Singleton
 internal class DataValuePostCall(
-    private val dataValueService: DataValueService,
+    private val networkHandler: DataValueNetworkHandler,
     private val dataValueImportHandler: DataValueImportHandler,
     private val fileResourcePostCall: DataValueFileResourcePostCall,
     private val dataValueStore: DataValueStore,
     private val versionManager: DHISVersionManager,
-    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) {
     fun uploadDataValues(dataValues: List<DataValue>): Flow<D2Progress> = flow {
         if (dataValues.isEmpty()) {
@@ -85,16 +81,9 @@ internal class DataValuePostCall(
 
     private suspend fun executePostCall(dataValueSet: DataValueSet): Result<DataValueImportSummary, D2Error> {
         return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_38)) {
-            coroutineAPICallExecutor.wrap(
-                acceptedErrorCodes = listOf(HttpURLConnection.HTTP_CONFLICT),
-                errorClass = DataValueImportSummaryWebResponse::class.java,
-            ) {
-                dataValueService.postDataValuesWebResponse(dataValueSet)
-            }.map { it.response }
+            networkHandler.postDataValuesWebResponse(dataValueSet).map { it.response }
         } else {
-            coroutineAPICallExecutor.wrap {
-                dataValueService.postDataValues(dataValueSet)
-            }
+            networkHandler.postDataValues(dataValueSet)
         }
     }
 

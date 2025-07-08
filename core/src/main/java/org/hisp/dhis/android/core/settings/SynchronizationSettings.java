@@ -32,8 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -48,7 +46,6 @@ import org.hisp.dhis.android.core.tracker.TrackerExporterVersion;
 import org.hisp.dhis.android.core.tracker.TrackerImporterVersion;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_SynchronizationSettings.Builder.class)
 public abstract class SynchronizationSettings implements CoreObject {
 
     @Nullable
@@ -91,7 +88,6 @@ public abstract class SynchronizationSettings implements CoreObject {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
         public abstract Builder id(Long id);
 

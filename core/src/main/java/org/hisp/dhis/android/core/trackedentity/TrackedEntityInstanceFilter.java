@@ -33,9 +33,6 @@ import android.database.Cursor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -54,21 +51,17 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_TrackedEntityInstanceFilter.Builder.class)
 public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObject implements CoreObject,
         ObjectWithStyle<TrackedEntityInstanceFilter, TrackedEntityInstanceFilter.Builder> {
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid program();
 
     @Nullable
-    @JsonProperty()
     public abstract String description();
 
     @Nullable
-    @JsonProperty()
     public abstract Integer sortOrder();
 
     /**
@@ -104,12 +97,10 @@ public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObject
     }
 
     @NonNull
-    @JsonProperty()
     @ColumnAdapter(EntityQueryCriteriaColumnAdapter.class)
     public abstract EntityQueryCriteria entityQueryCriteria();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreTrackedEntityInstanceEventFilterListColumnAdapter.class)
     public abstract List<TrackedEntityInstanceEventFilter> eventFilters();
 
@@ -124,7 +115,6 @@ public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObject
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder>
             implements ObjectWithStyle.Builder<TrackedEntityInstanceFilter, Builder> {
 

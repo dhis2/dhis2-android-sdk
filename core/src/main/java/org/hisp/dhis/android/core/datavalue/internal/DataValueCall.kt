@@ -29,31 +29,19 @@ package org.hisp.dhis.android.core.datavalue.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedCollectionValues
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedUids
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DataValueCall(
-    private val service: DataValueService,
+    private val networkHandler: DataValueNetworkHandler,
     private val handler: DataValueHandler,
     private val apiDownloader: APIDownloader,
 ) : QueryCall<DataValue, DataValueQuery> {
 
     override suspend fun download(query: DataValueQuery): List<DataValue> {
-        val b = query.bundle
         return apiDownloader.downloadListAsCoroutine(handler) {
-            service.getDataValues(
-                fields = DataValueFields.allFields,
-                lastUpdated = b.key.lastUpdatedStr(),
-                dataSetUids = commaSeparatedUids(b.dataSets),
-                periodIds = commaSeparatedCollectionValues(b.periodIds),
-                orgUnitUids = commaSeparatedCollectionValues(b.rootOrganisationUnitUids),
-                children = true,
-                paging = false,
-                includeDeleted = true,
-            ).dataValues
+            networkHandler.getDataValues(query.bundle)
         }
     }
 }

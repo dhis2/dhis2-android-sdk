@@ -32,9 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
@@ -45,144 +42,110 @@ import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ValueType;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_Attribute.Builder.class)
 @SuppressWarnings({"PMD.ExcessivePublicCount"})
 public abstract class Attribute extends BaseNameableObject implements CoreObject {
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbValueTypeColumnAdapter.class)
     public abstract ValueType valueType();
 
     @Nullable
-    @JsonProperty()
     @ColumnName(AttributeTableInfo.Columns.UNIQUE)
     public abstract Boolean unique();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean mandatory();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean indicatorAttribute();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean indicatorGroupAttribute();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean userGroupAttribute();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean dataElementAttribute();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean constantAttribute();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean categoryOptionAttribute();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean optionSetAttribute();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean sqlViewAttribute();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean legendSetAttribute();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean trackedEntityAttributeAttribute();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean organisationUnitAttribute();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean dataSetAttribute();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean documentAttribute();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean validationRuleGroupAttribute();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean dataElementGroupAttribute();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean sectionAttribute();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean trackedEntityTypeAttribute();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean userAttribute();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean categoryOptionGroupAttribute();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean programStageAttribute();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean programAttribute();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean categoryAttribute();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean categoryOptionComboAttribute();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean categoryOptionGroupSetAttribute();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean validationRuleAttribute();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean programIndicatorAttribute();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean organisationUnitGroupAttribute();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean dataElementGroupSetAttribute();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean organisationUnitGroupSetAttribute();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean optionAttribute();
-    
+
 
     public static Builder builder() {
         return new $$AutoValue_Attribute.Builder();
@@ -195,7 +158,6 @@ public abstract class Attribute extends BaseNameableObject implements CoreObject
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseNameableObject.Builder<Builder> {
 
         public abstract Builder id(Long id);

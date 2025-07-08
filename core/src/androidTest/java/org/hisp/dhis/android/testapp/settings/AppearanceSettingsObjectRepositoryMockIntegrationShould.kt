@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -31,6 +31,7 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.settings.DataSetFilter
 import org.hisp.dhis.android.core.settings.HomeFilter
 import org.hisp.dhis.android.core.settings.ProgramFilter
+import org.hisp.dhis.android.core.settings.QuickAction
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 
@@ -140,7 +141,7 @@ class AppearanceSettingsObjectRepositoryMockIntegrationShould :
     }
 
     @Test
-    fun should_return_minimumLocationAccuracy_settings() {
+    fun should_return_minimumLocationAccuracy_program_settings() {
         val setting = d2.settingModule().appearanceSettings().getGlobalProgramConfigurationSetting()
         assertThat(setting?.minimumLocationAccuracy()).isEqualTo(7)
 
@@ -154,7 +155,7 @@ class AppearanceSettingsObjectRepositoryMockIntegrationShould :
     }
 
     @Test
-    fun should_return_disableManualLocation_settings() {
+    fun should_return_disableManualLocation_program_settings() {
         val setting = d2.settingModule().appearanceSettings().getGlobalProgramConfigurationSetting()
         assertThat(setting?.disableManualLocation()).isEqualTo(false)
 
@@ -167,9 +168,45 @@ class AppearanceSettingsObjectRepositoryMockIntegrationShould :
         assertThat(program2Setting?.disableManualLocation()).isEqualTo(false)
     }
 
+    @Test
+    fun should_return_minimumLocationAccuracy_dataSet_settings() {
+        val setting = d2.settingModule().appearanceSettings().getGlobalDataSetConfigurationSetting()
+        assertThat(setting?.minimumLocationAccuracy()).isEqualTo(7)
+
+        val dataSet1Setting =
+            d2.settingModule().appearanceSettings().getDataSetConfigurationByUid(dataSet1)
+        assertThat(dataSet1Setting?.minimumLocationAccuracy()).isEqualTo(8)
+    }
+
+    @Test
+    fun should_return_disableManualLocation_dataSet_settings() {
+        val setting = d2.settingModule().appearanceSettings().getGlobalDataSetConfigurationSetting()
+        assertThat(setting?.disableManualLocation()).isEqualTo(false)
+
+        val dataSet1Setting =
+            d2.settingModule().appearanceSettings().getDataSetConfigurationByUid(dataSet1)
+        assertThat(dataSet1Setting?.disableManualLocation()).isEqualTo(true)
+    }
+
+    @Test
+    fun should_return_quickAction_settings() {
+        val setting = d2.settingModule().appearanceSettings().getGlobalProgramConfigurationSetting()
+        assertThat(setting?.quickActions()?.size).isEqualTo(0)
+
+        val program1Setting =
+            d2.settingModule().appearanceSettings().getProgramConfigurationByUid(program1)
+        assertThat(program1Setting?.quickActions()?.size).isEqualTo(2)
+        assertThat(program1Setting?.quickActions()?.first()).isInstanceOf(QuickAction::class.java)
+
+        val program2Setting =
+            d2.settingModule().appearanceSettings().getProgramConfigurationByUid(program2)
+        assertThat(program2Setting?.quickActions()?.size).isEqualTo(3)
+    }
+
     companion object {
         const val program1 = "IpHINAT79UW"
         const val program2 = "IpHINAT79UQ"
         const val program3 = "lyLU2wR22tC"
+        const val dataSet1 = "lyLU2wR22tC"
     }
 }

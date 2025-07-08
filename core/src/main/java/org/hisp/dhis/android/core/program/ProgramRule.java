@@ -32,9 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -47,29 +44,23 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_ProgramRule.Builder.class)
 public abstract class ProgramRule extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable
-    @JsonProperty()
     public abstract Integer priority();
 
     @Nullable
-    @JsonProperty()
     public abstract String condition();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid program();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid programStage();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreProgramRuleActionListAdapter.class)
     public abstract List<ProgramRuleAction> programRuleActions();
 
@@ -84,7 +75,6 @@ public abstract class ProgramRule extends BaseIdentifiableObject implements Core
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseIdentifiableObject.Builder<ProgramRule.Builder> {
 
         public abstract Builder id(Long id);

@@ -47,6 +47,8 @@ import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjec
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType.EVENT
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType.RELATIONSHIP
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType.TRACKED_ENTITY
+import org.hisp.dhis.android.network.tracker.IMPORT_STRATEGY_CREATE_AND_UPDATE
+import org.hisp.dhis.android.network.tracker.IMPORT_STRATEGY_DELETE
 import org.koin.core.annotation.Singleton
 import java.util.Date
 
@@ -54,7 +56,7 @@ import java.util.Date
 internal class TrackerImporterPostCall internal constructor(
     private val payloadGenerator: NewTrackerImporterTrackedEntityPostPayloadGenerator,
     private val stateManager: NewTrackerImporterTrackedEntityPostStateManager,
-    private val service: TrackerImporterService,
+    private val networkHandler: TrackerImporterNetworkHandler,
     private val fileResourcesPostCall: TrackerImporterFileResourcesPostCall,
     private val programOwnerPostCall: TrackerImporterProgramOwnerPostCall,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
@@ -124,7 +126,7 @@ internal class TrackerImporterPostCall internal constructor(
         importStrategy: String,
     ): Result<String, D2Error> {
         return coroutineAPICallExecutor.wrap(storeError = true) {
-            service.postTrackerPayload(payload, ATOMIC_MODE_OBJECT, importStrategy)
+            networkHandler.postTrackerPayload(payload, importStrategy)
         }.map { res ->
             val jobId = res.response().uid()
             jobObjectHandler.handleMany(generateJobObjects(payload, jobId))
@@ -141,8 +143,8 @@ internal class TrackerImporterPostCall internal constructor(
             .jobUid(jobUid)
             .lastUpdated(Date())
 
-        val enrollments = payload.trackedEntities.flatMap { it.enrollments() ?: emptyList() } + payload.enrollments
-        val events = enrollments.flatMap { it.events() ?: emptyList() } + payload.events
+        val enrollments = payload.trackedEntities.flatMap { it.enrollments ?: emptyList() } + payload.enrollments
+        val events = enrollments.flatMap { it.events ?: emptyList() } + payload.events
 
         return generateTypeObjects(builder, TRACKED_ENTITY, payload.trackedEntities, payload.fileResourcesMap) +
             generateTypeObjects(builder, ENROLLMENT, enrollments, payload.fileResourcesMap) +

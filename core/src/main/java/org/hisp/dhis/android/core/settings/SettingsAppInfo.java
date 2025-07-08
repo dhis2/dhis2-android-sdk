@@ -30,14 +30,11 @@ package org.hisp.dhis.android.core.settings;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.settings.internal.SettingsAppDataStoreVersion;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_SettingsAppInfo.Builder.class)
 public abstract class SettingsAppInfo {
 
     public abstract SettingsAppDataStoreVersion dataStoreVersion();
@@ -52,7 +49,6 @@ public abstract class SettingsAppInfo {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
         public abstract Builder dataStoreVersion(SettingsAppDataStoreVersion dataStoreVersion);

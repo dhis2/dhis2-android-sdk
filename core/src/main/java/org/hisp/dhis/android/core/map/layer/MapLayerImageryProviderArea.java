@@ -30,25 +30,18 @@ package org.hisp.dhis.android.core.map.layer;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_MapLayerImageryProviderArea.Builder.class)
 public abstract class MapLayerImageryProviderArea {
 
     @Nullable
-    @JsonProperty()
     public abstract List<Double> bbox();
 
-    @JsonProperty()
     public abstract int zoomMax();
 
-    @JsonProperty()
     public abstract int zoomMin();
 
     public abstract Builder toBuilder();
@@ -58,7 +51,6 @@ public abstract class MapLayerImageryProviderArea {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
         public abstract Builder bbox(List<Double> bbox);

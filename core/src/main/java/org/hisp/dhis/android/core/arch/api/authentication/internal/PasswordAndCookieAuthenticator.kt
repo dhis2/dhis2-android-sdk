@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -27,10 +27,14 @@
  */
 package org.hisp.dhis.android.core.arch.api.authentication.internal
 
-import okhttp3.Interceptor
-import okhttp3.Request
-import okhttp3.Response
+import io.ktor.client.call.HttpClientCall
+import io.ktor.client.plugins.api.Send.Sender
+import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.header
+import io.ktor.client.request.takeFrom
+import io.ktor.client.statement.HttpResponse
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
+import org.hisp.dhis.android.core.arch.api.internal.isRedirection
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.user.internal.ConnectLogoutHandler
 import org.koin.core.annotation.Singleton
@@ -43,52 +47,65 @@ internal class PasswordAndCookieAuthenticator(
     ) {
 
     companion object {
-        private const val LOGIN_URL = "dhis-web-login"
-        private val LOGIN_KEY_LIST = listOf("login.action", LOGIN_URL)
+        private val LOGIN_KEY_LIST = listOf("login.action", "dhis-web-login")
         const val LOCATION_KEY = "Location"
     }
 
-    fun handlePasswordCall(chain: Interceptor.Chain, credentials: Credentials): Response {
-        val builder = userIdHelper.builderWithUserId(chain)
+    suspend fun handlePasswordCall(
+        sender: Sender,
+        requestBuilder: HttpRequestBuilder,
+        credentials: Credentials,
+    ): HttpClientCall {
+        userIdHelper.builderWithUserId(requestBuilder)
         val useCookie = cookieHelper.isCookieDefined()
-        val builderWithAuthentication =
-            if (useCookie) cookieHelper.addCookieHeader(builder) else addPasswordHeader(builder, credentials)
-        val res = chain.proceed(builderWithAuthentication.build())
+        if (useCookie) {
+            cookieHelper.addCookieHeader(requestBuilder)
+        } else {
+            addPasswordHeader(requestBuilder, credentials)
+        }
+        val call = sender.proceed(requestBuilder)
 
-        val isFromLoginCall = res.request.url.encodedPath.contains("auth/login")
+        val isFromLoginCall = call.request.url.encodedPath.contains("auth/login")
 
-        val finalRes = if (useCookie && hasAuthenticationFailed(res)) {
-            res.close()
+        val finalCall = if (useCookie && hasAuthenticationFailed(call.response)) {
             cookieHelper.removeCookie()
-            val newReqWithBasicAuth = addPasswordHeader(userIdHelper.builderWithUserId(chain), credentials).build()
-            val res = chain.proceed(newReqWithBasicAuth)
+            val originalRequest: HttpRequestBuilder = HttpRequestBuilder().apply {
+                takeFrom(call.request)
+            }
 
-            logoutOrReturnRes(res, isFromLoginCall)
+            userIdHelper.builderWithUserId(originalRequest)
+            addPasswordHeader(originalRequest, credentials)
+            logoutOrReturnRes(sender.proceed(originalRequest), isFromLoginCall)
         } else {
-            logoutOrReturnRes(res, isFromLoginCall)
+            logoutOrReturnRes(call, isFromLoginCall)
         }
 
-        cookieHelper.storeCookieIfSentByServer(finalRes)
-        return finalRes
+        cookieHelper.storeCookieIfSentByServer(finalCall.response)
+        return finalCall
     }
 
-    private fun logoutOrReturnRes(res: Response, isFromLoginCall: Boolean) =
-        if (res.code == 401 && !isFromLoginCall && ServerURLWrapper.serverUrl?.contains(res.request.url.host) == true) {
+    private fun logoutOrReturnRes(call: HttpClientCall, isFromLoginCall: Boolean) =
+        if (call.response.status.value == 401 && !isFromLoginCall && ServerURLWrapper.serverUrl?.contains(call.request.url.host) == true) {
             logoutHandler.logOut()
-            res
+            call
         } else {
-            res
+            call
         }
 
-    private fun hasAuthenticationFailed(res: Response): Boolean {
-        val location = res.header(LOCATION_KEY)
-        return res.isRedirect && location != null && LOGIN_KEY_LIST.any { location.contains(it) }
+    private fun hasAuthenticationFailed(res: HttpResponse): Boolean {
+        val location = res.headers[LOCATION_KEY]
+        return res.status.isRedirection() &&
+            location != null &&
+            LOGIN_KEY_LIST.any { location.contains(it) }
     }
 
-    private fun addPasswordHeader(builder: Request.Builder, credentials: Credentials): Request.Builder {
-        return builder.addHeader(
-            UserIdAuthenticatorHelper.AUTHORIZATION_KEY,
-            UserIdAuthenticatorHelper.basic(credentials),
-        )
+    private fun addPasswordHeader(requestBuilder: HttpRequestBuilder, credentials: Credentials) {
+        requestBuilder.apply {
+            headers.remove(UserIdAuthenticatorHelper.AUTHORIZATION_KEY)
+            header(
+                UserIdAuthenticatorHelper.AUTHORIZATION_KEY,
+                UserIdAuthenticatorHelper.basic(credentials),
+            )
+        }
     }
 }

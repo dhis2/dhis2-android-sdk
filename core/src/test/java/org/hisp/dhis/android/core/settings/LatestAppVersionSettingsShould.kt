@@ -28,15 +28,17 @@
 package org.hisp.dhis.android.core.settings
 
 import com.google.common.truth.Truth
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.apkdistribution.LatestAppVersionDTO
 import org.junit.Test
 
-class LatestAppVersionSettingsShould : BaseObjectShould("settings/latest_app_version.json"), ObjectShould {
+class LatestAppVersionSettingsShould : BaseObjectKotlinxShould("settings/latest_app_version.json"), ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val latestAppVersion = objectMapper.readValue(jsonStream, LatestAppVersion::class.java)
+        val latestAppVersioDTO = deserialize(LatestAppVersionDTO.serializer())
+        val latestAppVersion = latestAppVersioDTO.toDomain()
 
         Truth.assertThat(latestAppVersion.version()).isEqualTo("v2.7.1.1")
         Truth.assertThat(latestAppVersion.downloadURL()).isEqualTo(

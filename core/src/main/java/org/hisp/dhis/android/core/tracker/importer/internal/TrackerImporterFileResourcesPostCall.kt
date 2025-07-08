@@ -90,26 +90,26 @@ internal class TrackerImporterFileResourcesPostCall internal constructor(
         val successfulEntities: List<NewTrackerImporterTrackedEntity> = entities.mapNotNull { entity ->
             catchErrorToNull {
                 val updatedAttributes = getUpdatedAttributes(
-                    entityUid = entity.uid()!!,
-                    attributeValues = entity.trackedEntityAttributeValues(),
+                    entityUid = entity.uid(),
+                    attributeValues = entity.trackedEntityAttributeValues,
                     fileResources = fileResources,
                     uploadedFileResources = uploadedFileResourcesMap,
                     fileResourcesByEntity = fileResourcesByEntity,
                 )
-                entity.toBuilder().trackedEntityAttributeValues(updatedAttributes).build()
+                entity.copy(trackedEntityAttributeValues = updatedAttributes)
             }
         }
 
         val successfulEnrollments: List<NewTrackerImporterEnrollment> = enrollments.mapNotNull { enrollment ->
             catchErrorToNull {
                 val updatedAttributes = getUpdatedAttributes(
-                    entityUid = enrollment.uid()!!,
-                    attributeValues = enrollment.attributes(),
+                    entityUid = enrollment.uid(),
+                    attributeValues = enrollment.attributes,
                     fileResources = fileResources,
                     uploadedFileResources = uploadedFileResourcesMap,
                     fileResourcesByEntity = fileResourcesByEntity,
                 )
-                enrollment.toBuilder().attributes(updatedAttributes).build()
+                enrollment.copy(attributes = updatedAttributes)
             }
         }
 
@@ -131,13 +131,13 @@ internal class TrackerImporterFileResourcesPostCall internal constructor(
                 val newUid = if (uploadedFileResource != null) {
                     uploadedFileResource.uid()!!
                 } else {
-                    val fValue = FileResourceValue.AttributeValue(attributeValue.trackedEntityAttribute()!!)
+                    val fValue = FileResourceValue.AttributeValue(attributeValue.trackedEntityAttribute!!)
                     fileResourcePostCall.uploadFileResource(fileResource, fValue)?.also {
                         uploadedFileResources[fileResource.uid()!!] = fileResource.toBuilder().uid(it).build()
                     }
                 }
                 newUid?.let { entityFileResources.add(it) }
-                attributeValue.toBuilder().value(newUid).build()
+                attributeValue.copy(value = newUid)
             } ?: attributeValue
         }
 
@@ -157,19 +157,19 @@ internal class TrackerImporterFileResourcesPostCall internal constructor(
         val successfulEvents = events.mapNotNull { event ->
             catchErrorToNull {
                 val eventFileResources = mutableListOf<String>()
-                val updatedDataValues = event.trackedEntityDataValues()?.map { dataValue ->
+                val updatedDataValues = event.trackedEntityDataValues?.map { dataValue ->
                     fileResourceHelper.findDataValueFileResource(dataValue, fileResources)?.let { fileResource ->
-                        val fValue = FileResourceValue.EventValue(dataValue.dataElement()!!)
+                        val fValue = FileResourceValue.EventValue(dataValue.dataElement!!)
                         val newUid = fileResourcePostCall.uploadFileResource(fileResource, fValue)?.also {
                             eventFileResources.add(it)
                         }
-                        dataValue.toBuilder().value(newUid).build()
+                        dataValue.copy(value = newUid)
                     } ?: dataValue
                 }
                 if (eventFileResources.isNotEmpty()) {
-                    uploadedFileResources[event.uid()!!] = eventFileResources
+                    uploadedFileResources[event.uid()] = eventFileResources
                 }
-                event.toBuilder().trackedEntityDataValues(updatedDataValues).build()
+                event.copy(trackedEntityDataValues = updatedDataValues)
             }
         }
 

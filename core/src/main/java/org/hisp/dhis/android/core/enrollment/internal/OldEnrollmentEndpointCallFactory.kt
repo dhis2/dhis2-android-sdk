@@ -33,12 +33,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class OldEnrollmentEndpointCallFactory(
-    private val service: EnrollmentService,
+    private val enrollmentNetworkHandler: EnrollmentNetworkHandler,
 ) : EnrollmentEndpointCallFactory {
     override suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Enrollment {
-        return service.getEnrollmentSingle(
-            enrollmentUid = item.itemUid,
-            fields = EnrollmentFields.asRelationshipFields,
-        )
+        return enrollmentNetworkHandler.getRelationshipEntityCall(item)
     }
 }

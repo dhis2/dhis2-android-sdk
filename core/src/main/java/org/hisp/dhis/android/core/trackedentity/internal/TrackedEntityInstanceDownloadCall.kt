@@ -62,7 +62,9 @@ internal class TrackedEntityInstanceDownloadCall(
         return queryFactory.getQueries(params)
     }
 
-    override suspend fun getPayloadResult(query: TrackerAPIQuery): Result<Payload<TrackedEntityInstance>, D2Error> {
+    override suspend fun getPayloadResult(
+        query: TrackerAPIQuery,
+    ): Result<Payload<TrackedEntityInstance>, D2Error> {
         return coroutineCallExecutor.wrap(storeError = true) {
             trackerCallFactory.getTrackedEntityCall().getCollectionCall(query)
         }
@@ -136,7 +138,7 @@ internal class TrackedEntityInstanceDownloadCall(
             val collectionQuery = query.copy(uids = listOf(uid))
             coroutineCallExecutor.wrap(storeError = true) {
                 trackerCallFactory.getTrackedEntityCall().getCollectionCall(collectionQuery)
-            }.map { it.items().firstOrNull() }
+            }.map { it.items.firstOrNull() }
         }
     }
 

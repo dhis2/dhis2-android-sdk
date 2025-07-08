@@ -36,7 +36,6 @@ import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
@@ -44,7 +43,8 @@ import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.systeminfo.internal.PingCall
-import org.hisp.dhis.android.core.trackedentity.*
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
 import org.koin.core.annotation.Singleton
@@ -53,7 +53,7 @@ import java.io.IOException
 
 @Singleton
 internal class FileResourcePostCall(
-    private val fileResourceService: FileResourceService,
+    private val fileResourceNetworkHandler: FileResourceNetworkHandler,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val dataValueStore: DataValueStore,
     private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
@@ -78,10 +78,10 @@ internal class FileResourcePostCall(
         return if (file != null) {
             val fileName = fileResource.name() ?: file.name
             val filePart = getFilePart(file, fileName)
-            val responseByteArray = coroutineAPICallExecutor.wrap(storeError = true) {
-                fileResourceService.uploadFile(filePart)
+            val responseFileResource = coroutineAPICallExecutor.wrap(storeError = true) {
+                fileResourceNetworkHandler.uploadFile(filePart)
             }.getOrThrow()
-            handleResponse(String(responseByteArray), fileResource, file, value)
+            handleResponse(responseFileResource, fileResource, file, value)
         } else {
             handleMissingFile(fileResource, value)
             null
@@ -107,13 +107,12 @@ internal class FileResourcePostCall(
     }
 
     private fun handleResponse(
-        responseString: String,
+        downloadedFileResource: FileResource,
         fileResource: FileResource,
         file: File,
         value: FileResourceValue,
     ): String {
         try {
-            val downloadedFileResource = getDownloadedFileResource(responseString)
             updateValue(fileResource, downloadedFileResource.uid(), value)
 
             val downloadedFile = FileResourceUtil.renameFile(file, downloadedFileResource.uid()!!, context)
@@ -134,12 +133,6 @@ internal class FileResourcePostCall(
             updateValue(fileResource, null, value)
             fileResourceStore.deleteIfExists(fileResource.uid()!!)
         }
-    }
-
-    @Throws(IOException::class)
-    private fun getDownloadedFileResource(responseString: String): FileResource {
-        val fileResourceResponse = objectMapper().readValue(responseString, FileResourceResponse::class.java)
-        return fileResourceResponse.response()!!.fileResource()!!
     }
 
     private fun updateValue(

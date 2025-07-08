@@ -39,11 +39,13 @@ import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
 import org.hisp.dhis.android.core.period.PeriodTableInfo
+import org.hisp.dhis.android.core.util.SqlAggregator
 import org.koin.core.annotation.Singleton
 import org.hisp.dhis.android.core.datavalue.DataValueTableInfo.Columns as dvColumns
 import org.hisp.dhis.android.core.period.PeriodTableInfo.Columns as peColumns
 
 @Singleton
+@Suppress("TooManyFunctions")
 internal class DataElementSQLEvaluator(
     private val databaseAdapter: DatabaseAdapter,
 ) : AnalyticsEvaluator {
@@ -61,7 +63,7 @@ internal class DataElementSQLEvaluator(
         }
     }
 
-    @Suppress("LongMethod")
+    @Suppress("ComplexMethod", "LongMethod")
     override fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
@@ -96,38 +98,40 @@ internal class DataElementSQLEvaluator(
                     "WHERE $whereClause"
             }
             AggregationType.AVERAGE_SUM_ORG_UNIT -> {
-                "SELECT SUM(${dvColumns.VALUE}) " +
-                    "FROM (" +
-                    "SELECT AVG(${dvColumns.VALUE}) AS ${dvColumns.VALUE} " +
-                    "FROM ${DataValueTableInfo.TABLE_INFO.name()} " +
-                    "WHERE $whereClause " +
-                    "GROUP BY ${dvColumns.ORGANISATION_UNIT}" +
-                    ")"
+                aggregateByDataValueAndSumOrgunit(SqlAggregator.AVG, whereClause)
             }
             AggregationType.FIRST -> {
                 "SELECT SUM(${dvColumns.VALUE}) " +
-                    "FROM (${firstOrLastValueClauseByOrgunit(whereClause, "MIN")})"
+                    "FROM (${firstOrLastValueClauseByOrgunit(whereClause, ValuePosition.FIRST)})"
             }
             AggregationType.FIRST_AVERAGE_ORG_UNIT -> {
                 "SELECT AVG(${dvColumns.VALUE}) " +
-                    "FROM (${firstOrLastValueClauseByOrgunit(whereClause, "MIN")})"
+                    "FROM (${firstOrLastValueClauseByOrgunit(whereClause, ValuePosition.FIRST)})"
+            }
+            AggregationType.FIRST_FIRST_ORG_UNIT -> {
+                firstOrLastValueGlobally(whereClause, ValuePosition.FIRST)
             }
             AggregationType.LAST,
             AggregationType.LAST_IN_PERIOD,
             -> {
                 "SELECT SUM(${dvColumns.VALUE}) " +
-                    "FROM (${firstOrLastValueClauseByOrgunit(whereClause, "MAX")})"
+                    "FROM (${firstOrLastValueClauseByOrgunit(whereClause, ValuePosition.LAST)})"
             }
             AggregationType.LAST_AVERAGE_ORG_UNIT,
             AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT,
             -> {
                 "SELECT AVG(${dvColumns.VALUE}) " +
-                    "FROM (${firstOrLastValueClauseByOrgunit(whereClause, "MAX")})"
+                    "FROM (${firstOrLastValueClauseByOrgunit(whereClause, ValuePosition.LAST)})"
             }
-            AggregationType.LAST_LAST_ORG_UNIT,
-            AggregationType.FIRST_FIRST_ORG_UNIT,
-            AggregationType.MAX_SUM_ORG_UNIT,
-            AggregationType.MIN_SUM_ORG_UNIT,
+            AggregationType.LAST_LAST_ORG_UNIT -> {
+                firstOrLastValueGlobally(whereClause, ValuePosition.LAST)
+            }
+            AggregationType.MAX_SUM_ORG_UNIT -> {
+                aggregateByDataValueAndSumOrgunit(SqlAggregator.MAX, whereClause)
+            }
+            AggregationType.MIN_SUM_ORG_UNIT -> {
+                aggregateByDataValueAndSumOrgunit(SqlAggregator.MIN, whereClause)
+            }
 
             AggregationType.CUSTOM,
             AggregationType.STDDEV,
@@ -138,7 +142,20 @@ internal class DataElementSQLEvaluator(
         }
     }
 
-    private fun firstOrLastValueClauseByOrgunit(whereClause: String, minOrMax: String): String {
+    private fun aggregateByDataValueAndSumOrgunit(
+        dataValueAggregator: String,
+        whereClause: String,
+    ): String {
+        return "SELECT SUM(${dvColumns.VALUE}) " +
+            "FROM (" +
+            "SELECT $dataValueAggregator(${dvColumns.VALUE}) AS ${dvColumns.VALUE} " +
+            "FROM ${DataValueTableInfo.TABLE_INFO.name()} " +
+            "WHERE $whereClause " +
+            "GROUP BY ${dvColumns.ORGANISATION_UNIT}" +
+            ")"
+    }
+
+    private fun firstOrLastValueClauseByOrgunit(whereClause: String, position: ValuePosition): String {
         val orderColumn = "SELECT ${peColumns.START_DATE} || ${peColumns.END_DATE} " +
             "FROM ${PeriodTableInfo.TABLE_INFO.name()} pe " +
             "WHERE pe.${peColumns.PERIOD_ID} = ${dvColumns.PERIOD}"
@@ -146,7 +163,7 @@ internal class DataElementSQLEvaluator(
         val firstOrLastValueClause = "SELECT " +
             "${dvColumns.VALUE}, " +
             "${dvColumns.ORGANISATION_UNIT}, " +
-            "$minOrMax(($orderColumn)) " +
+            "${position.aggregator}(($orderColumn)) " +
             "FROM ${DataValueTableInfo.TABLE_INFO.name()} " +
             "WHERE $whereClause " +
             "GROUP BY ${dvColumns.ORGANISATION_UNIT}, " +
@@ -157,6 +174,21 @@ internal class DataElementSQLEvaluator(
         return "SELECT SUM(${dvColumns.VALUE}) as ${dvColumns.VALUE} " +
             "FROM ($firstOrLastValueClause)" +
             "GROUP BY ${dvColumns.ORGANISATION_UNIT}"
+    }
+
+    private fun firstOrLastValueGlobally(whereClause: String, position: ValuePosition): String {
+        val orderColumn = "SELECT ${peColumns.START_DATE} || ${peColumns.END_DATE} " +
+            "FROM ${PeriodTableInfo.TABLE_INFO.name()} pe " +
+            "WHERE pe.${peColumns.PERIOD_ID} = ${dvColumns.PERIOD}"
+
+        val firstOrLastValueClause = "SELECT " +
+            "${dvColumns.VALUE}, " +
+            "${position.aggregator}(($orderColumn)) " +
+            "FROM ${DataValueTableInfo.TABLE_INFO.name()} " +
+            "WHERE $whereClause"
+
+        return "SELECT ${dvColumns.VALUE} " +
+            "FROM ($firstOrLastValueClause)"
     }
 
     private fun appendDataWhereClause(

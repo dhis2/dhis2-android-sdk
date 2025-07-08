@@ -32,9 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -50,39 +47,31 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_EntityQueryCriteria.Builder.class)
 public abstract class EntityQueryCriteria extends FilterQueryCriteria implements CoreObject {
 
     @Nullable
-    @JsonProperty()
     public abstract String programStage();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(StringListColumnAdapter.class)
     public abstract List<String> trackedEntityInstances();
 
     @Nullable
-    @JsonProperty()
     public abstract String trackedEntityType();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(EnrollmentStatusColumnAdapter.class)
     public abstract EnrollmentStatus enrollmentStatus();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DateFilterPeriodColumnAdapter.class)
     public abstract DateFilterPeriod enrollmentIncidentDate();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DateFilterPeriodColumnAdapter.class)
     public abstract DateFilterPeriod enrollmentCreatedDate();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreAttributeValueFilterListColumnAdapter.class)
     public abstract List<AttributeValueFilter> attributeValueFilters();
 
@@ -97,7 +86,6 @@ public abstract class EntityQueryCriteria extends FilterQueryCriteria implements
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends FilterQueryCriteria.Builder<Builder> {
         public abstract Builder id(Long id);
 

@@ -27,20 +27,20 @@
  */
 package org.hisp.dhis.android.realservertests.apischema.tests
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.truth.Truth
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.realservertests.apischema.ApiSchema
 import org.junit.Test
-import java.io.InputStream
 
 class ApiSchemaShould {
-    private var objectMapper: ObjectMapper = ObjectMapperFactory.objectMapper()
-    private var jsonStream: InputStream = this.javaClass.classLoader!!.getResourceAsStream("common/api_schema.json")
+    private var jsonString = this.javaClass.classLoader!!.getResourceAsStream(
+        "common/api_schema.json",
+    ).bufferedReader()
+        .use { it.readText() }
 
     @Test
     fun map_from_json_string() {
-        val apiSchema: ApiSchema = objectMapper.readValue(jsonStream, ApiSchema::class.java)
+        val apiSchema: ApiSchema = KotlinxJsonParser.instance.decodeFromString(ApiSchema.serializer(), jsonString)
 
         Truth.assertThat(apiSchema).isNotNull()
         Truth.assertThat(apiSchema.properties[0].klass).isEqualTo("java.util.List")

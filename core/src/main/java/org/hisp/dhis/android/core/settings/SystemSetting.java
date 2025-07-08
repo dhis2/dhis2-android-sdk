@@ -46,6 +46,7 @@ public abstract class SystemSetting implements CoreObject {
         FLAG,
         STYLE,
         DEFAULT_BASE_MAP,
+        BING_BASE_MAP,
     }
 
     @Nullable

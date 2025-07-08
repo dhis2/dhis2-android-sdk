@@ -31,7 +31,7 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludingError
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
@@ -223,7 +223,7 @@ internal class LocalDbRepositoryImpl(
 
     override fun setMetadataDownloadConfig(config: GetMetadataIdsConfig): Completable {
         return Completable.fromAction {
-            val value = objectMapper().writeValueAsString(config)
+            val value = KotlinxJsonParser.instance.encodeToString(GetMetadataIdsConfig.serializer(), config)
             smsConfigStore.set(SMSConfigKey.METADATA_CONFIG, value)
         }
     }
@@ -231,8 +231,8 @@ internal class LocalDbRepositoryImpl(
     override fun getMetadataDownloadConfig(): Single<GetMetadataIdsConfig> {
         return Single.fromCallable {
             val stringVal = smsConfigStore.get(SMSConfigKey.METADATA_CONFIG)
-            objectMapper()
-                .readValue(stringVal, GetMetadataIdsConfig::class.java)
+            stringVal?.let { KotlinxJsonParser.instance.decodeFromString<GetMetadataIdsConfig>(it) }
+                ?: GetMetadataIdsConfig()
         }
     }
 

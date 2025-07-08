@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitDataSetChildrenAppender
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitFields
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitOrganisationUnitGroupProgramChildrenAppender
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramChildrenAppender
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
@@ -133,22 +132,26 @@ class OrganisationUnitCollectionRepository internal constructor(
     }
 
     fun withProgramUids(): OrganisationUnitCollectionRepository {
-        return cf.withChild(OrganisationUnitFields.PROGRAMS)
+        return cf.withChild(PROGRAMS)
     }
 
     fun withDataSetUids(): OrganisationUnitCollectionRepository {
-        return cf.withChild(OrganisationUnitFields.DATA_SETS)
+        return cf.withChild(DATA_SETS)
     }
 
     fun withOrganisationUnitGroups(): OrganisationUnitCollectionRepository {
-        return cf.withChild(OrganisationUnitFields.ORGANISATION_UNIT_GROUPS)
+        return cf.withChild(ORGANISATION_UNIT_GROUPS)
     }
 
     internal companion object {
+        private const val PROGRAMS = "programs"
+        private const val DATA_SETS = "dataSets"
+        private const val ORGANISATION_UNIT_GROUPS = "organisationUnitGroups"
+
         val childrenAppenders: ChildrenAppenderGetter<OrganisationUnit> = mapOf(
-            OrganisationUnitFields.PROGRAMS to OrganisationUnitProgramChildrenAppender::create,
-            OrganisationUnitFields.DATA_SETS to OrganisationUnitDataSetChildrenAppender::create,
-            OrganisationUnitFields.ORGANISATION_UNIT_GROUPS to
+            PROGRAMS to OrganisationUnitProgramChildrenAppender::create,
+            DATA_SETS to OrganisationUnitDataSetChildrenAppender::create,
+            ORGANISATION_UNIT_GROUPS to
                 OrganisationUnitOrganisationUnitGroupProgramChildrenAppender::create,
         )
     }

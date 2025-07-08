@@ -94,6 +94,13 @@ class TrackerPostParentCallHelperShould {
     }
 
     @Test
+    fun should_always_return_true_if_greater_or_equal_than_42_in_importer() {
+        whenever(systemInfo.version()).doReturn(DHISPatchVersion.V2_42_0.strValue)
+        whenever(syncSettings.trackerImporterVersion()).doReturn(TrackerImporterVersion.V1)
+        assertThat(helper.useNewTrackerImporter()).isTrue()
+    }
+
+    @Test
     fun should_return_true_if_explicitly_set_in_exporter() {
         whenever(systemInfo.version()).doReturn(DHISPatchVersion.V2_40_0.strValue)
         whenever(syncSettings.trackerExporterVersion()).doReturn(TrackerExporterVersion.V2)
@@ -112,5 +119,12 @@ class TrackerPostParentCallHelperShould {
         whenever(systemInfo.version()).doReturn(DHISPatchVersion.V2_39_0.strValue)
         whenever(syncSettings.trackerExporterVersion()).doReturn(TrackerExporterVersion.V2)
         assertThat(helper.useNewTrackerExporter()).isFalse()
+    }
+
+    @Test
+    fun should_always_return_true_if_greater_or_equal_than_42_in_exporter() {
+        whenever(systemInfo.version()).doReturn(DHISPatchVersion.V2_42_0.strValue)
+        whenever(syncSettings.trackerExporterVersion()).doReturn(TrackerExporterVersion.V1)
+        assertThat(helper.useNewTrackerExporter()).isTrue()
     }
 }

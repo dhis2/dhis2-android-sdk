@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyOneObjectRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
-import org.hisp.dhis.android.core.user.internal.UserFields
 import org.hisp.dhis.android.core.user.internal.UserRoleChildrenAppender
 import org.hisp.dhis.android.core.user.internal.UserStore
 import org.koin.core.annotation.Singleton
@@ -56,12 +55,14 @@ class UserObjectRepository internal constructor(
     },
 ) {
     fun withUserRoles(): UserObjectRepository {
-        return cf.withChild(UserFields.USER_ROLES)
+        return cf.withChild(USER_ROLES)
     }
 
     internal companion object {
+        private const val USER_ROLES = "userRoles"
+
         val childrenAppenders: ChildrenAppenderGetter<User> = mapOf(
-            UserFields.USER_ROLES to ::UserRoleChildrenAppender,
+            USER_ROLES to ::UserRoleChildrenAppender,
         )
     }
 }

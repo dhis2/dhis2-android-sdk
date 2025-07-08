@@ -53,7 +53,7 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 @Suppress("LongParameterList")
-internal class AggregatedDataCall constructor(
+internal class AggregatedDataCall(
     private val systemInfoModuleDownloader: SystemInfoModuleDownloader,
     private val dataValueCall: DataValueCall,
     private val dsCompleteRegistrationCall: DataSetCompleteRegistrationCall,
@@ -160,7 +160,7 @@ internal class AggregatedDataCall constructor(
             val attributeOptionComboUids = getAttributeOptionCombosUidsFrom(dataSetsWithWorkflow)
             val dataApprovalQuery = DataApprovalQuery(
                 workflowsUids = workflowUids,
-                organisationUnistUids = bundle.allOrganisationUnitUidsSet,
+                organisationUnitsUids = bundle.allOrganisationUnitUidsSet,
                 periodIds = bundle.periodIds,
                 attributeOptionCombosUids = attributeOptionComboUids,
                 lastUpdatedStr = bundle.key.lastUpdatedStr(),

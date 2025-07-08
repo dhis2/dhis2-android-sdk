@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope.OrderByDirection
 import org.hisp.dhis.android.core.program.internal.DataElementValueTypeRenderingChildrenAppender
-import org.hisp.dhis.android.core.program.internal.ProgramStageDataElementFields
 import org.hisp.dhis.android.core.program.internal.ProgramStageDataElementStore
 import org.koin.core.annotation.Singleton
 
@@ -90,7 +89,7 @@ class ProgramStageDataElementCollectionRepository internal constructor(
     }
 
     fun withRenderType(): ProgramStageDataElementCollectionRepository {
-        return cf.withChild(ProgramStageDataElementFields.RENDER_TYPE)
+        return cf.withChild(RENDER_TYPE)
     }
 
     fun orderBySortOrder(direction: OrderByDirection?): ProgramStageDataElementCollectionRepository {
@@ -98,8 +97,10 @@ class ProgramStageDataElementCollectionRepository internal constructor(
     }
 
     internal companion object {
+        private const val RENDER_TYPE = "renderType"
+
         val childrenAppenders: ChildrenAppenderGetter<ProgramStageDataElement> = mapOf(
-            ProgramStageDataElementFields.RENDER_TYPE to ::DataElementValueTypeRenderingChildrenAppender,
+            RENDER_TYPE to ::DataElementValueTypeRenderingChildrenAppender,
         )
     }
 }

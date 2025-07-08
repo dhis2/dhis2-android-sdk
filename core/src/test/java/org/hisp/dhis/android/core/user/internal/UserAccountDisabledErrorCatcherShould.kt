@@ -32,7 +32,6 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.user.AccountDeletionReason
 import org.junit.Before
@@ -48,7 +47,7 @@ class UserAccountDisabledErrorCatcherShould {
 
     @Before
     fun setUp() {
-        catcher = UserAccountDisabledErrorCatcher(objectMapper(), accountManager)
+        catcher = UserAccountDisabledErrorCatcher(accountManager)
 
         val responseError = "{\"httpStatus\": \"Unauthorized\",\"httpStatusCode\": 401,\"status\": \"ERROR\"," +
             "\"message\": \"Account disabled\"}"

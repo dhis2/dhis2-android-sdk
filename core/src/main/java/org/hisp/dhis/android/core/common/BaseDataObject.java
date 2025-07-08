@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.common;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 
@@ -56,7 +55,6 @@ public abstract class BaseDataObject extends BaseObject implements DataObject {
     @ColumnAdapter(StateColumnAdapter.class)
     public abstract State syncState();
 
-    @JsonPOJOBuilder(withPrefix = "")
     protected abstract static class Builder<T extends Builder> extends BaseObject.Builder<T> {
         public abstract T syncState(@Nullable State syncState);
 

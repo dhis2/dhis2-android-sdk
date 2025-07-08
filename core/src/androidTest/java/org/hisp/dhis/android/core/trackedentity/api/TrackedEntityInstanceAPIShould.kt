@@ -33,6 +33,7 @@ import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
@@ -44,9 +45,9 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFields
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePayload
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceService
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceNetworkHandler
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
+import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.junit.Assert
 import org.junit.Before
 import java.util.*
@@ -58,13 +59,13 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
     private val strategy: String,
 ) : BaseRealIntegrationTest() {
     private lateinit var executor: CoroutineAPICallExecutor
-    private lateinit var trackedEntityInstanceService: TrackedEntityInstanceService
+    private lateinit var networkHandler: TrackedEntityInstanceNetworkHandler
 
     @Before
     override fun setUp() {
         super.setUp()
         executor = d2.coroutineAPICallExecutor()
-        trackedEntityInstanceService = TrackedEntityInstanceService(d2.httpServiceClient())
+        networkHandler = DhisAndroidSdkKoinContext.koin.get()
     }
 
     // @Test
@@ -73,8 +74,7 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         login()
         val validTEI = TrackedEntityInstanceUtils.createValidTrackedEntityInstance()
         val invalidTEI = TrackedEntityInstanceUtils.createTrackedEntityInstanceWithInvalidAttribute()
-        val payload = TrackedEntityInstancePayload.create(listOf(validTEI, invalidTEI))
-        val response = executePostCall(payload)
+        val response = executePostCall(listOf(validTEI, invalidTEI))
 
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.ERROR)
 
@@ -103,8 +103,7 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         login()
         val validTEI = TrackedEntityInstanceUtils.createValidTrackedEntityInstance()
         val invalidTEI = TrackedEntityInstanceUtils.createTrackedEntityInstanceWithInvalidOrgunit()
-        val payload = TrackedEntityInstancePayload.create(listOf(validTEI, invalidTEI))
-        val response = executePostCall(payload)
+        val response = executePostCall(listOf(validTEI, invalidTEI))
 
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.ERROR)
 
@@ -133,8 +132,7 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         login()
         val validTEI = TrackedEntityInstanceUtils.createValidTrackedEntityInstance()
         val invalidTEI = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceAndEnrollment()
-        val payload = TrackedEntityInstancePayload.create(listOf(validTEI, invalidTEI))
-        val response = executePostCall(payload)
+        val response = executePostCall(listOf(validTEI, invalidTEI))
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
         for (importSummary in response.response()!!.importSummaries()!!) {
             if (validTEI.uid() == importSummary.reference()) {
@@ -155,8 +153,7 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         login()
         val validTEI = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceAndEnrollment()
         val invalidTEI = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceWithFutureEnrollment()
-        val payload = TrackedEntityInstancePayload.create(listOf(validTEI, invalidTEI))
-        val response = executePostCall(payload)
+        val response = executePostCall(listOf(validTEI, invalidTEI))
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
         for (importSummary in response.response()!!.importSummaries()!!) {
             if (validTEI.uid() == importSummary.reference()) {
@@ -179,8 +176,7 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         login()
         val validTEI = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceAndEnrollment()
         val invalidTEI = TrackedEntityInstanceUtils.createTrackedEntityInstanceAndTwoActiveEnrollment()
-        val payload = TrackedEntityInstancePayload.create(listOf(validTEI, invalidTEI))
-        val response = executePostCall(payload)
+        val response = executePostCall(listOf(validTEI, invalidTEI))
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
         for (importSummary in response.response()!!.importSummaries()!!) {
             if (validTEI.uid() == importSummary.reference()) {
@@ -205,8 +201,7 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         login()
         val validTEI1 = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceAndEnrollment()
         val validTEI2 = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceWithEnrollmentAndEvent()
-        val payload = TrackedEntityInstancePayload.create(listOf(validTEI1, validTEI2))
-        val response = executePostCall(payload)
+        val response = executePostCall(listOf(validTEI1, validTEI2))
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
         for (importSummary in response.response()!!.importSummaries()!!) {
             if (validTEI1.uid() == importSummary.reference()) {
@@ -232,8 +227,7 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         login()
         val validTEI1 = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceAndEnrollment()
         val validTEI2 = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceWithEnrollmentAndEvent()
-        val payload = TrackedEntityInstancePayload.create(listOf(validTEI1, validTEI2))
-        val response = executePostCall(payload)
+        val response = executePostCall(listOf(validTEI1, validTEI2))
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
         for (importSummary in response.response()!!.importSummaries()!!) {
             if (validTEI1.uid() == importSummary.reference()) {
@@ -259,8 +253,7 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         login()
         val validTEI = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceWithEnrollmentAndEvent()
         val invalidTEI = TrackedEntityInstanceUtils.createTrackedEntityInstanceWithEnrollmentAndFutureEvent()
-        val payload = TrackedEntityInstancePayload.create(listOf(validTEI, invalidTEI))
-        val response = executePostCall(payload)
+        val response = executePostCall(listOf(validTEI, invalidTEI))
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
         for (importSummary in response.response()!!.importSummaries()!!) {
             if (validTEI.uid() == importSummary.reference()) {
@@ -287,8 +280,7 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         login()
         val validTEI = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceWithEnrollmentAndEvent()
         val invalidTEI = TrackedEntityInstanceUtils.createTrackedEntityInstanceWithInvalidDataElement()
-        val payload = TrackedEntityInstancePayload.create(listOf(validTEI, invalidTEI))
-        val response = executePostCall(payload)
+        val response = executePostCall(listOf(validTEI, invalidTEI))
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
         for (importSummary in response.response()!!.importSummaries()!!) {
             if (validTEI.uid() == importSummary.reference()) {
@@ -323,8 +315,7 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         login()
         val validTEI = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceWithEnrollmentAndEvent()
         val invalidTEI = TrackedEntityInstanceUtils.createTrackedEntityInstanceWithValidAndInvalidDataValue()
-        val payload = TrackedEntityInstancePayload.create(listOf(validTEI, invalidTEI))
-        val response = executePostCall(payload)
+        val response = executePostCall(listOf(validTEI, invalidTEI))
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
         for (importSummary in response.response()!!.importSummaries()!!) {
             if (validTEI.uid() == importSummary.reference()) {
@@ -360,8 +351,7 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         login()
         val completedEnrollment =
             TrackedEntityInstanceUtils.createTrackedEntityInstanceWithCompletedEnrollmentAndEvent()
-        val payload = TrackedEntityInstancePayload.create(listOf(completedEnrollment))
-        val response = executePostCall(payload)
+        val response = executePostCall(listOf(completedEnrollment))
         assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
         for (importSummary in response.response()!!.importSummaries()!!) {
             if (completedEnrollment.uid() == importSummary.reference()) {
@@ -396,8 +386,7 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(100).blockingDownload()
         val instance = instanceWithOneEnrollmentAndOneEvent
         val deletedEvents = setEventsToDelete(instance)
-        val deletedEventsPayload = TrackedEntityInstancePayload.create(listOf(deletedEvents))
-        val deletedEventsResponse = executePostCall(deletedEventsPayload)
+        val deletedEventsResponse = executePostCall(listOf(deletedEvents))
         assertThat(deletedEventsResponse.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
         for (teiImportSummaries in deletedEventsResponse.response()!!.importSummaries()!!) {
             assertThat(teiImportSummaries.importCount().updated()).isEqualTo(1)
@@ -422,26 +411,25 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
     }
 
     @Throws(D2Error::class)
-    private suspend fun executePostCall(payload: TrackedEntityInstancePayload): TEIWebResponse {
-        return executor.wrap(
-            storeError = false,
-            acceptedErrorCodes = listOf(409),
-            errorClass = TEIWebResponse::class.java,
-        ) {
-            trackedEntityInstanceService.postTrackedEntityInstances(payload, strategy)
-        }.getOrThrow()
+    private suspend fun executePostCall(instances: List<TrackedEntityInstance>): TEIWebResponse {
+        return networkHandler.postTrackedEntityInstances(instances, strategy).getOrThrow()
     }
 
     private suspend fun getTrackedEntity(teiUid: String): Payload<TrackedEntityInstance> {
+        val commonParams = TrackerQueryCommonParams(
+            emptyList(),
+            emptyList(),
+            null,
+            null,
+            false,
+            OrganisationUnitMode.ACCESSIBLE,
+            emptyList(),
+            1,
+        )
+        val query = TrackerAPIQuery(commonParams, uids = listOf(teiUid))
         return executor.wrap {
-            trackedEntityInstanceService
-                .getTrackedEntityInstance(
-                    teiUid,
-                    OrganisationUnitMode.ACCESSIBLE.name,
-                    TrackedEntityInstanceFields.allFields,
-                    includeAllAttributes = true,
-                    includeDeleted = true,
-                )
+            networkHandler
+                .getTrackedEntityInstances(query)
         }.getOrThrow()
     }
 

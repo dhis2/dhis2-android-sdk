@@ -1,3 +1,6 @@
+import org.jetbrains.dokka.gradle.DokkaTask
+
+
 /*
  * Copyright (c) 2016, University of Oslo
  *
@@ -36,6 +39,8 @@ plugins {
 /*    id("maven-publish-conventions")
     id("jacoco-conventions")*/
     alias(libs.plugins.detekt)
+    alias(libs.plugins.api.compatibility)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 apply(from = project.file("plugins/android-checkstyle.gradle"))
@@ -49,6 +54,10 @@ repositories {
 group = rootProject.group
 version = rootProject.version
 
+kotlin {
+    jvmToolchain(17)
+}
+
 android {
     compileSdk = libs.versions.targetSdkVersion.get().toInt()
 
@@ -61,6 +70,10 @@ android {
 
         buildConfigField("long", "VERSION_CODE", libs.versions.dhis2AndroidSdkCode.get())
         buildConfigField("String", "VERSION_NAME", "\"$version\"")
+
+        kotlinOptions {
+            freeCompilerArgs += "-opt-in=kotlinx.serialization.ExperimentalSerializationApi"
+        }
     }
 
     compileOptions {
@@ -141,10 +154,6 @@ dependencies {
     implementation(libs.koin.annotations)
     ksp(libs.koin.compiler)
 
-    // Jackson
-    api(libs.jackson.core)
-    api(libs.jackson.kotlin)
-
     // Square libraries
     api(libs.okhttp)
     api(libs.okhttp.mockwebserver)
@@ -153,13 +162,14 @@ dependencies {
     api(libs.ktor)
     api(libs.ktor.okhttp)
     api(libs.ktor.negotiation)
-    api(libs.ktor.jackson)
+    api(libs.ktor.serialization.kotlinx.json)
     api(libs.ktor.client.mock)
 
     // Kotlin
     api(libs.kotlinx.datetime)
     api(libs.kotlinx.coroutines.core)
     api(libs.kotlinx.coroutines.rx2)
+    api(libs.kotlinx.serialization.json)
 
     // DHIS2 libraries
     api(libs.dhis2.compression)
@@ -212,9 +222,8 @@ detekt {
 }
 
 // EyeSeeTea customization - not used by us?
-/*tasks.dokkaJavadoc.configure {
-    dependsOn("kaptReleaseKotlin")
-
+/*
+tasks.withType<DokkaTask>().configureEach {
     dokkaSourceSets {
         configureEach {
             perPackageOption {
@@ -223,4 +232,25 @@ detekt {
             }
         }
     }
-}*/
+    dokkaSourceSets {
+        configureEach {
+            moduleName.set("DHIS2 Android SDK")
+        }
+    }
+
+    val dokkaBaseConfiguration = """
+    {
+      "customAssets": ["${file("../assets/logo-icon.svg")}"]
+    }
+    """
+    pluginsMapConfiguration.set(
+        mapOf(
+            "org.jetbrains.dokka.base.DokkaBase" to dokkaBaseConfiguration,
+        ),
+    )
+}
+
+tasks.dokkaJavadoc.configure {
+    dependsOn("kaptReleaseKotlin")
+}
+*/

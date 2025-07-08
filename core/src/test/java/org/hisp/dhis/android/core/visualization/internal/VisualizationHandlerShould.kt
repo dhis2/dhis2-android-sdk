@@ -69,7 +69,7 @@ class VisualizationHandlerShould {
     @Test
     fun call_items_handler() {
         visualizationHandler.handleMany(listOf(visualization))
-        verify(visualizationDimensionItemHandler).handleMany(any(), any(), any())
+        verify(visualizationDimensionItemHandler).handleMany(any(), any())
     }
 
     @Test

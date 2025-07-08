@@ -34,12 +34,8 @@ import org.hisp.dhis.android.core.D2Manager
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
 import org.hisp.dhis.android.core.map.layer.MapLayer
-import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
-import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderArea
-import org.hisp.dhis.android.core.map.layer.MapLayerPosition
 import org.hisp.dhis.android.core.map.layer.internal.MapLayerHandler
-import org.hisp.dhis.android.core.settings.internal.SettingService
-import org.hisp.dhis.android.core.settings.internal.SystemSettingsFields
+import org.hisp.dhis.android.core.settings.internal.SystemSettingsNetworkHandler
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.koin.core.annotation.Singleton
@@ -50,20 +46,21 @@ internal class BingCallFactory(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val mapLayerHandler: MapLayerHandler,
     private val versionManager: DHISVersionManager,
-    private val settingsService: SettingService,
-    private val bingService: BingService,
+    private val networkHandler: SystemSettingsNetworkHandler,
+    private val bingNetworkHandler: BingNetworkHandler,
+
 ) {
 
     @Suppress("TooGenericExceptionCaught")
     suspend fun download(): List<MapLayer> {
         return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_34)) {
             try {
-                val settings = coroutineAPICallExecutor.wrap(storeError = true) {
-                    settingsService.getSystemSettings(SystemSettingsFields.bingApiKey)
+                val setting = coroutineAPICallExecutor.wrap(storeError = true) {
+                    networkHandler.getBingApiKey()
                 }
 
-                val mapLayers = settings.getOrNull()?.keyBingMapsApiKey
-                    ?.let { key -> downloadBingBasemaps(key) }
+                val mapLayers = setting.getOrNull()?.value()
+                    ?.let { bingKey -> downloadBingBasemaps(bingKey) }
                     ?: emptyList()
 
                 mapLayers.also {
@@ -104,43 +101,10 @@ internal class BingCallFactory(
         basemap: BingBasemap,
     ): List<MapLayer> {
         val bingResponseResult = coroutineAPICallExecutor.wrap(storeError = false) {
-            bingService.getBaseMap(getUrl(basemap.style, bingkey))
+            bingNetworkHandler.getBaseMap(getUrl(basemap.style, bingkey), basemap)
         }
 
-        return bingResponseResult.map { bingResponse ->
-            bingResponse.resourceSets.firstOrNull()?.resources?.firstOrNull()?.let { resource ->
-                listOf(
-                    MapLayer.builder()
-                        .uid(basemap.id)
-                        .name(basemap.name)
-                        .displayName(basemap.name)
-                        .style(basemap.style)
-                        .mapLayerPosition(MapLayerPosition.BASEMAP)
-                        .external(false)
-                        .imageUrl(resource.imageUrl)
-                        .subdomains(resource.imageUrlSubdomains)
-                        .subdomainPlaceholder("{subdomain}")
-                        .imageryProviders(
-                            resource.imageryProviders.map { i ->
-                                MapLayerImageryProvider.builder()
-                                    .mapLayer(basemap.id)
-                                    .attribution(i.attribution)
-                                    .coverageAreas(
-                                        i.coverageAreas.map { ca ->
-                                            MapLayerImageryProviderArea.builder()
-                                                .bbox(ca.bbox)
-                                                .zoomMax(ca.zoomMax)
-                                                .zoomMin(ca.zoomMin)
-                                                .build()
-                                        },
-                                    )
-                                    .build()
-                            },
-                        )
-                        .build(),
-                )
-            }
-        }.getOrNull() ?: emptyList()
+        return bingResponseResult.getOrNull() ?: emptyList<MapLayer>()
     }
 
     private fun getUrl(style: String, bingKey: String): String {

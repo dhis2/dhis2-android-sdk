@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import com.nhaarman.mockitokotlin2.*
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
+import org.hisp.dhis.android.core.arch.handlers.internal.ChildElementHandlerImpl
 import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionData
 import org.junit.Before
 import org.junit.Test
@@ -43,7 +43,7 @@ class AnalyticsTeiWHONutritionDataHandlerShould {
     private val whoData: AnalyticsTeiWHONutritionData = mock()
 
     private lateinit var analyticsTeiSettingHandler:
-        LinkHandler<AnalyticsTeiWHONutritionData, AnalyticsTeiWHONutritionData>
+        ChildElementHandlerImpl<AnalyticsTeiWHONutritionData>
 
     @Before
     @Throws(Exception::class)
@@ -59,7 +59,7 @@ class AnalyticsTeiWHONutritionDataHandlerShould {
 
     @Test
     fun call_data_handlers() {
-        analyticsTeiSettingHandler.handleMany(whoData.teiSetting()!!, listOf(whoData)) { x -> x }
+        analyticsTeiSettingHandler.handleMany(whoData.teiSetting()!!, listOf(whoData))
 
         verify(teiDataElementHandler).handleMany(any(), any(), any())
         verify(teiIndicatorHandler).handleMany(any(), any(), any())

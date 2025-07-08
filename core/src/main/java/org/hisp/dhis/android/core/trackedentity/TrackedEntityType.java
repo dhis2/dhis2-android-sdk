@@ -32,9 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -52,21 +49,17 @@ import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_TrackedEntityType.Builder.class)
 public abstract class TrackedEntityType extends BaseNameableObject implements CoreObject,
         ObjectWithStyle<TrackedEntityType, TrackedEntityType.Builder> {
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreTrackedEntityTypeAttributeListColumnAdapter.class)
     public abstract List<TrackedEntityTypeAttribute> trackedEntityTypeAttributes();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(FeatureTypeColumnAdapter.class)
     public abstract FeatureType featureType();
 
-    @JsonProperty()
     @ColumnAdapter(AccessColumnAdapter.class)
     public abstract Access access();
 
@@ -81,7 +74,6 @@ public abstract class TrackedEntityType extends BaseNameableObject implements Co
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseNameableObject.Builder<Builder>
             implements ObjectWithStyle.Builder<TrackedEntityType, Builder> {
 

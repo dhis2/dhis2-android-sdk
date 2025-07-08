@@ -65,8 +65,8 @@
       },
       "toConstraint": {
         "relationshipEntity": "PROGRAM_STAGE_INSTANCE",
-        "program": {
-          "id": "lxAQ7Zs9VYR"
+        "programStage": {
+          "id": "dBwrot7S420"
         }
       }
     },
@@ -91,8 +91,8 @@
       },
       "fromConstraint": {
         "relationshipEntity": "PROGRAM_STAGE_INSTANCE",
-        "program": {
-          "id": "lxAQ7Zs9VYR"
+        "programStage": {
+          "id": "dBwrot7S420"
         }
       },
       "toConstraint": {

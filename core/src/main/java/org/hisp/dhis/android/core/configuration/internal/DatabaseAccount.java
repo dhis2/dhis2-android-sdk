@@ -30,41 +30,31 @@ package org.hisp.dhis.android.core.configuration.internal;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.State;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_DatabaseAccount.Builder.class)
 public abstract class DatabaseAccount {
 
-    @JsonProperty()
     @NonNull
     public abstract String username();
 
-    @JsonProperty()
     @NonNull
     public abstract String serverUrl();
 
-    @JsonProperty()
     @NonNull
     public abstract String databaseName();
 
-    @JsonProperty()
     @NonNull
     public abstract String databaseCreationDate();
 
-    @JsonProperty()
     @NonNull
     public abstract boolean encrypted();
 
     @Nullable
     public abstract State syncState();
 
-    @JsonProperty()
     @Nullable
     public abstract DatabaseAccountImportDB importDB();
 
@@ -75,7 +65,6 @@ public abstract class DatabaseAccount {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
         public abstract Builder username(String username);

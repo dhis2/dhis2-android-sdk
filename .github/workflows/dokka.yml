@@ -1,0 +1,17 @@
+name: Deploy API docs
+
+on:
+  push:
+    branches:
+      - master
+
+  workflow_dispatch:
+
+jobs:
+  api-docs:
+    uses: dhis2/workflows/.github/workflows/publish-dokka-to-github-pages.yml@a0b4d50d9606c734b785451774a325846931f1ee
+    with:
+      java_version: 17
+      gradle_args: "-PremoveSnapshotSuffix"
+      gradle_module: "core"
+      output_folder: "api"

@@ -53,7 +53,6 @@ class OrganisationUnitHandlerShould {
     private val program: ObjectWithUid = mock()
     private val user: User = mock()
 
-    private lateinit var pathTransformer: OrganisationUnitDisplayPathTransformer
     private lateinit var organisationUnitWithoutGroups: OrganisationUnit
     private lateinit var organisationUnitHandler: OrganisationUnitHandler
     private lateinit var organisationUnits: List<OrganisationUnit>
@@ -62,7 +61,6 @@ class OrganisationUnitHandlerShould {
     @Throws(Exception::class)
     fun setUp() {
         val programUid = "test_program_uid"
-        pathTransformer = OrganisationUnitDisplayPathTransformer()
         organisationUnitHandler = OrganisationUnitHandler(
             organisationUnitStore,
             userOrganisationUnitLinkHandler,
@@ -92,41 +90,41 @@ class OrganisationUnitHandlerShould {
     @Test
     fun persist_user_organisation_unit_link() {
         organisationUnitHandler.setData(user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-        organisationUnitHandler.handleMany(organisationUnits, pathTransformer)
+        organisationUnitHandler.handleMany(organisationUnits)
     }
 
     @Test
     fun persist_program_organisation_unit_link_when_programs_uids() {
         organisationUnitHandler.setData(user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-        organisationUnitHandler.handleMany(organisationUnits, pathTransformer)
+        organisationUnitHandler.handleMany(organisationUnits)
         verify(organisationUnitProgramLinkHandler).handleMany(any(), any(), any())
     }
 
     @Test
     fun persist_program_organisation_unit_link_when_no_programs_uids() {
         organisationUnitHandler.setData(user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-        organisationUnitHandler.handleMany(organisationUnits, pathTransformer)
+        organisationUnitHandler.handleMany(organisationUnits)
         verifyNoMoreInteractions(organisationUnitProgramLinkStore)
     }
 
     @Test
     fun persist_organisation_unit_groups() {
         organisationUnitHandler.setData(user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-        organisationUnitHandler.handleMany(organisationUnits, pathTransformer)
+        organisationUnitHandler.handleMany(organisationUnits)
         verify(organisationUnitGroupHandler).handleMany(any())
     }
 
     @Test
     fun persist_organisation_unit_organisation_unit_group_link() {
         organisationUnitHandler.setData(user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-        organisationUnitHandler.handleMany(organisationUnits, pathTransformer)
+        organisationUnitHandler.handleMany(organisationUnits)
         verify(organisationUnitGroupLinkHandler).handleMany(any(), any(), any())
     }
 
     @Test
     fun dont_persist_organisation_unit_organisation_unit_group_link_when_no_organisation_unit_groups() {
         organisationUnitHandler.setData(user, OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-        organisationUnitHandler.handleMany(listOf(organisationUnitWithoutGroups), pathTransformer)
+        organisationUnitHandler.handleMany(listOf(organisationUnitWithoutGroups))
         verify(organisationUnitGroupLinkHandler, never()).handleMany(any(), any(), any())
     }
 }

@@ -30,21 +30,15 @@ package org.hisp.dhis.android.core.common;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_ObjectStyle.Builder.class)
 public abstract class ObjectStyle {
 
     @Nullable
-    @JsonProperty()
     public abstract String color();
 
     @Nullable
-    @JsonProperty()
     public abstract String icon();
 
     public abstract Builder toBuilder();
@@ -54,7 +48,6 @@ public abstract class ObjectStyle {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
         public abstract Builder color(String color);
 

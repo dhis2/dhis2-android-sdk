@@ -46,6 +46,7 @@ object ProgramConfigurationSettingSamples {
             )
             .minimumLocationAccuracy(null)
             .disableManualLocation(false)
+            .quickActions(listOf())
             .build()
     }
 }

@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.dataset
 
 import io.reactivex.Single
+import org.hisp.dhis.android.core.dataelement.DataElementOperand
 
 interface DataSetInstanceService {
 
@@ -49,4 +50,32 @@ interface DataSetInstanceService {
     fun hasDataWriteAccess(dataSetUid: String): Single<Boolean>
 
     fun blockingHasDataWriteAccess(dataSetUid: String): Boolean
+
+    fun getMissingMandatoryDataElementOperands(
+        dataSetUid: String,
+        periodId: String,
+        organisationUnitUid: String,
+        attributeOptionComboUid: String,
+    ): Single<List<DataElementOperand>>
+
+    fun blockingGetMissingMandatoryDataElementOperands(
+        dataSetUid: String,
+        periodId: String,
+        organisationUnitUid: String,
+        attributeOptionComboUid: String,
+    ): List<DataElementOperand>
+
+    fun getMissingMandatoryFieldsCombination(
+        dataSetUid: String,
+        periodId: String,
+        organisationUnitUid: String,
+        attributeOptionComboUid: String,
+    ): Single<List<DataElementOperand>>
+
+    fun blockingGetMissingMandatoryFieldsCombination(
+        dataSetUid: String,
+        periodId: String,
+        organisationUnitUid: String,
+        attributeOptionComboUid: String,
+    ): List<DataElementOperand>
 }

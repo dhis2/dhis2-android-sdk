@@ -40,11 +40,12 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class SettingAppService(
-    private val settingService: SettingService,
+    private val settingNetworkHandler: SettingsNetworkHandler,
+    private val apkDistributionNetworkHandler: ApkDistributionNetworkHandler,
 ) {
 
     suspend fun info(): SettingsAppInfo {
-        return settingService.settingsAppInfo("$ANDROID_APP_NAMESPACE_V2/info")
+        return settingNetworkHandler.settingsAppInfo("$ANDROID_APP_NAMESPACE_V2/info")
     }
 
     suspend fun generalSettings(version: SettingsAppDataStoreVersion): GeneralSettings {
@@ -53,35 +54,35 @@ internal class SettingAppService(
             else -> "generalSettings"
         }
 
-        return settingService.generalSettings("${getNamespace(version)}/$key")
+        return settingNetworkHandler.generalSettings("${getNamespace(version)}/$key")
     }
 
     suspend fun dataSetSettings(version: SettingsAppDataStoreVersion): DataSetSettings {
-        return settingService.dataSetSettings("${getNamespace(version)}/dataSet_settings")
+        return settingNetworkHandler.dataSetSettings("${getNamespace(version)}/dataSet_settings")
     }
 
     suspend fun programSettings(version: SettingsAppDataStoreVersion): ProgramSettings {
-        return settingService.programSettings("${getNamespace(version)}/program_settings")
+        return settingNetworkHandler.programSettings("${getNamespace(version)}/program_settings")
     }
 
     suspend fun synchronizationSettings(version: SettingsAppDataStoreVersion): SynchronizationSettings {
-        return settingService.synchronizationSettings("${getNamespace(version)}/synchronization")
+        return settingNetworkHandler.synchronizationSettings("${getNamespace(version)}/synchronization")
     }
 
     suspend fun appearanceSettings(version: SettingsAppDataStoreVersion): AppearanceSettings {
-        return settingService.appearanceSettings("${getNamespace(version)}/appearance")
+        return settingNetworkHandler.appearanceSettings("${getNamespace(version)}/appearance")
     }
 
     suspend fun analyticsSettings(version: SettingsAppDataStoreVersion): AnalyticsSettings {
-        return settingService.analyticsSettings("${getNamespace(version)}/analytics")
+        return settingNetworkHandler.analyticsSettings("${getNamespace(version)}/analytics")
     }
 
     suspend fun latestAppVersion(): LatestAppVersion {
-        return settingService.latestAppVersion("$APK_DISTRIBUTION_NAMESPACE/latestVersion")
+        return apkDistributionNetworkHandler.latestAppVersion("$APK_DISTRIBUTION_NAMESPACE/latestVersion")
     }
 
     suspend fun versions(): Payload<ApkDistributionVersion> {
-        return settingService.versions("$APK_DISTRIBUTION_NAMESPACE/versions")
+        return apkDistributionNetworkHandler.versions("$APK_DISTRIBUTION_NAMESPACE/versions")
     }
 
     private fun getNamespace(version: SettingsAppDataStoreVersion): String {

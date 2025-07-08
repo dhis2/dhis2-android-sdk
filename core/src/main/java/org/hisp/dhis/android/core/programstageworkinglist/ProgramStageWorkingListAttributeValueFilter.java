@@ -32,44 +32,36 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.FilterOperators;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_ProgramStageWorkingListAttributeValueFilter.Builder.class)
 public abstract class ProgramStageWorkingListAttributeValueFilter extends FilterOperators implements CoreObject {
 
     /**
      * The related program stage working list
      */
     @Nullable
-    @JsonProperty()
     public abstract String programStageWorkingList();
 
     /**
      * The attribute id
      */
     @Nullable
-    @JsonProperty()
     public abstract String attribute();
 
     /**
      * End with
      */
     @Nullable
-    @JsonProperty()
     public abstract String ew();
 
     /**
      * Starts with
      */
     @Nullable
-    @JsonProperty()
     public abstract String sw();
 
     public static Builder builder() {
@@ -83,7 +75,6 @@ public abstract class ProgramStageWorkingListAttributeValueFilter extends Filter
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends FilterOperators.Builder<Builder> {
         public abstract Builder id(Long id);
 

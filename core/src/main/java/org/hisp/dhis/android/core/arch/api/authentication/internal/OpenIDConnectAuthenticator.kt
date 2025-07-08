@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -27,9 +27,10 @@
  */
 package org.hisp.dhis.android.core.arch.api.authentication.internal
 
-import okhttp3.Interceptor
-import okhttp3.Request
-import okhttp3.Response
+import io.ktor.client.call.HttpClientCall
+import io.ktor.client.plugins.api.Send.Sender
+import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.header
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectLogoutHandler
@@ -46,14 +47,20 @@ internal class OpenIDConnectAuthenticator(
     private val logoutHandler: OpenIDConnectLogoutHandler,
 ) {
 
-    fun handleTokenCall(chain: Interceptor.Chain, credentials: Credentials): Response {
-        val builder = userIdHelper.builderWithUserId(chain)
-        val builderWithAuthentication = addTokenHeader(builder, getUpdatedToken(credentials))
-        val res = chain.proceed(builderWithAuthentication.build())
-        if (res.code == UNAUTHORIZED) {
+    suspend fun handleTokenCall(
+        sender: Sender,
+        requestBuilder: HttpRequestBuilder,
+        credentials: Credentials,
+    ): HttpClientCall {
+        userIdHelper.builderWithUserId(requestBuilder)
+        addTokenHeader(requestBuilder, getUpdatedToken(credentials))
+
+        val call = sender.proceed(requestBuilder)
+
+        if (call.response.status.value == UNAUTHORIZED) {
             logoutHandler.logOut()
         }
-        return res
+        return call
     }
 
     private fun getUpdatedToken(credentials: Credentials): String {
@@ -67,10 +74,10 @@ internal class OpenIDConnectAuthenticator(
         }
     }
 
-    private fun addTokenHeader(builder: Request.Builder, token: String): Request.Builder {
-        return builder.addHeader(
-            UserIdAuthenticatorHelper.AUTHORIZATION_KEY,
-            "Bearer $token",
-        )
+    private fun addTokenHeader(requestBuilder: HttpRequestBuilder, token: String) {
+        requestBuilder.apply {
+            headers.remove(UserIdAuthenticatorHelper.AUTHORIZATION_KEY)
+            header(UserIdAuthenticatorHelper.AUTHORIZATION_KEY, "Bearer $token")
+        }
     }
 }

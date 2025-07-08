@@ -30,19 +30,14 @@ package org.hisp.dhis.android.core.visualization;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_TrackerVisualizationDimensionRepetition.Builder.class)
 public abstract class TrackerVisualizationDimensionRepetition {
 
     @Nullable
-    @JsonProperty()
     public abstract List<Integer> indexes();
 
     public static Builder builder() {
@@ -52,7 +47,6 @@ public abstract class TrackerVisualizationDimensionRepetition {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
         public abstract Builder indexes(List<Integer> indexes);

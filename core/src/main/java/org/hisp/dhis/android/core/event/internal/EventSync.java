@@ -32,14 +32,11 @@ import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerBaseSync;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_EventSync.Builder.class)
 abstract class EventSync extends TrackerBaseSync {
 
     @NonNull
@@ -48,13 +45,12 @@ abstract class EventSync extends TrackerBaseSync {
     }
 
     static Builder builder() {
-        return new $$AutoValue_EventSync.Builder();
+        return new AutoValue_EventSync.Builder();
     }
 
     abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     abstract static class Builder extends TrackerBaseSync.Builder<Builder> {
         abstract EventSync build();
     }

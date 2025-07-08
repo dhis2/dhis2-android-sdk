@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.event.internal.EventFilterEventDataFilterChildrenAppender
 import org.hisp.dhis.android.core.event.internal.EventFilterStore
-import org.hisp.dhis.android.core.event.internal.EventQueryCriteriaFields
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.koin.core.annotation.Singleton
 
@@ -124,12 +123,14 @@ class EventFilterCollectionRepository internal constructor(
     }
 
     fun withEventDataFilters(): EventFilterCollectionRepository {
-        return cf.withChild(EventQueryCriteriaFields.DATA_FILTERS)
+        return cf.withChild(DATA_FILTERS)
     }
 
     internal companion object {
+        private const val DATA_FILTERS = "dataFilters"
+
         val childrenAppenders: ChildrenAppenderGetter<EventFilter> = mapOf(
-            EventQueryCriteriaFields.DATA_FILTERS to EventFilterEventDataFilterChildrenAppender::create,
+            DATA_FILTERS to EventFilterEventDataFilterChildrenAppender::create,
         )
     }
 }

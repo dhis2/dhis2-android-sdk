@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilt
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.program.internal.ProgramSectionAttributeChildrenAppender
-import org.hisp.dhis.android.core.program.internal.ProgramSectionFields
 import org.hisp.dhis.android.core.program.internal.ProgramSectionStore
 import org.koin.core.annotation.Singleton
 
@@ -92,12 +91,14 @@ class ProgramSectionCollectionRepository internal constructor(
     }
 
     fun withAttributes(): ProgramSectionCollectionRepository {
-        return cf.withChild(ProgramSectionFields.TRACKED_ENTITY_ATTRIBUTES)
+        return cf.withChild(TRACKED_ENTITY_ATTRIBUTES)
     }
 
     internal companion object {
+        private const val TRACKED_ENTITY_ATTRIBUTES = "trackedEntityAttributes"
+
         val childrenAppenders: ChildrenAppenderGetter<ProgramSection> = mapOf(
-            ProgramSectionFields.TRACKED_ENTITY_ATTRIBUTES to ProgramSectionAttributeChildrenAppender::create,
+            TRACKED_ENTITY_ATTRIBUTES to ProgramSectionAttributeChildrenAppender::create,
         )
     }
 }

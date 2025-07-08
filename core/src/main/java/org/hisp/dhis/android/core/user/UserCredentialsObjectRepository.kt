@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyWithTransformerObjectRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
-import org.hisp.dhis.android.core.user.internal.UserCredentialsFields
 import org.hisp.dhis.android.core.user.internal.UserRoleChildrenAppender
 import org.hisp.dhis.android.core.user.internal.UserStore
 import org.hisp.dhis.android.core.user.internal.UserUserCredentialsTransformer
@@ -58,12 +57,14 @@ class UserCredentialsObjectRepository internal constructor(
     }
 
     fun withUserRoles(): UserCredentialsObjectRepository {
-        return cf.withChild(UserCredentialsFields.USER_ROLES)
+        return cf.withChild(USER_ROLES)
     }
 
     internal companion object {
+        private const val USER_ROLES = "userRoles"
+
         val childrenAppenders: ChildrenAppenderGetter<User> = mapOf(
-            UserCredentialsFields.USER_ROLES to ::UserRoleChildrenAppender,
+            USER_ROLES to ::UserRoleChildrenAppender,
         )
     }
 }

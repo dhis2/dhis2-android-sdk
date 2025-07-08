@@ -28,19 +28,13 @@
 
 package org.hisp.dhis.android.core.common;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_DataAccess.Builder.class)
 public abstract class DataAccess {
 
-    @JsonProperty()
     public abstract Boolean read();
 
-    @JsonProperty()
     public abstract Boolean write();
 
     public static DataAccess create(Boolean read,
@@ -55,7 +49,6 @@ public abstract class DataAccess {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
         public abstract Builder read(Boolean read);
 

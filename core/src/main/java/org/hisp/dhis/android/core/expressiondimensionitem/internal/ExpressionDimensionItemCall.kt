@@ -34,7 +34,7 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ExpressionDimensionItemCall(
-    private val service: ExpressionDimensionItemService,
+    private val networkHandler: ExpressionDimensionItemNetworkHandler,
     private val handler: ExpressionDimensionItemHandler,
     private val apiDownloader: APIDownloader,
 ) : UidsCallCoroutines<ExpressionDimensionItem> {
@@ -43,13 +43,8 @@ internal class ExpressionDimensionItemCall(
             uids,
             MAX_UID_LIST_SIZE,
             handler,
-        ) { partitionUids: Set<String> ->
-            service.getExpressionDimensionItems(
-                ExpressionDimensionItemFields.uid.`in`(partitionUids),
-                ExpressionDimensionItemFields.allFields,
-                false,
-            )
-        }
+            networkHandler::getExpressionDimensionItems,
+        )
     }
 
     companion object {

@@ -362,8 +362,6 @@ internal class TrackedEntityInstanceLocalQueryHelper(
 
     private fun appendFiltersWhere(where: WhereClauseBuilder, scope: TrackedEntityInstanceQueryRepositoryScope) {
         for (item in scope.filter()) {
-            // EyeSeeTea customization - Not include filters with %DELETE%
-            if (item.value() != "%DELETE%"){
                 val sub = String.format(
                     "SELECT 1 FROM %s %s WHERE %s = %s AND %s = '%s' AND %s %s %s",
                     TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(), teavAlias,
@@ -375,7 +373,6 @@ internal class TrackedEntityInstanceLocalQueryHelper(
                 )
 
                 where.appendExistsSubQuery(sub)
-            }
         }
     }
 

@@ -32,9 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -45,31 +42,24 @@ import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
-
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_DataElementOperand.Builder.class)
 public abstract class DataElementOperand extends BaseObject
         implements ObjectWithUidInterface, ObjectWithDeleteInterface {
 
     @Override
     @Nullable
-    @JsonProperty(UID)
     public abstract String uid();
 
     @Override
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreBooleanColumnAdapter.class)
     public abstract Boolean deleted();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid dataElement();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid categoryOptionCombo();
 
@@ -84,10 +74,8 @@ public abstract class DataElementOperand extends BaseObject
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseObject.Builder<Builder> {
 
-        @JsonProperty(UID)
         public abstract Builder uid(String uid);
 
         public abstract Builder deleted(Boolean deleted);

@@ -59,6 +59,7 @@ public class ProgramConfigurationSettingTableInfo {
         public static final String ITEM_HEADER_PROGRAM_INDICATOR = "itemHeaderProgramIndicator";
         public static final String MINIMUM_LOCATION_ACCURACY = "minimumLocationAccuracy";
         public static final String DISABLE_MANUAL_LOCATION = "disableManualLocation";
+        public static final String QUICK_ACTIONS = "quickActions";
 
         @Override
         public String[] all() {
@@ -70,7 +71,8 @@ public class ProgramConfigurationSettingTableInfo {
                     DISABLE_COLLAPSIBLE_SECTIONS,
                     ITEM_HEADER_PROGRAM_INDICATOR,
                     MINIMUM_LOCATION_ACCURACY,
-                    DISABLE_MANUAL_LOCATION
+                    DISABLE_MANUAL_LOCATION,
+                    QUICK_ACTIONS
             );
         }
     }

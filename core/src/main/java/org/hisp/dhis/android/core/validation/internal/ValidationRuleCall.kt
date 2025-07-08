@@ -29,13 +29,12 @@ package org.hisp.dhis.android.core.validation.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
-import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.validation.ValidationRule
 import org.koin.core.annotation.Singleton
 
 @Singleton
 class ValidationRuleCall internal constructor(
-    private val service: ValidationRuleService,
+    private val networkHandler: ValidationRuleNetworkHandler,
     private val handler: ValidationRuleHandler,
     private val apiDownloader: APIDownloader,
 ) : UidsCallCoroutines<ValidationRule> {
@@ -44,10 +43,8 @@ class ValidationRuleCall internal constructor(
             validationRuleUids,
             MAX_UID_LIST_SIZE,
             handler,
-        ) { partitionUids: Set<String> ->
-            val uidsFilterStr = ObjectWithUid.uid.`in`(partitionUids).generateString()
-            service.getValidationRules(ValidationRuleFields.allFields, uidsFilterStr, false)
-        }
+            networkHandler::getValidationRules,
+        )
     }
 
     companion object {

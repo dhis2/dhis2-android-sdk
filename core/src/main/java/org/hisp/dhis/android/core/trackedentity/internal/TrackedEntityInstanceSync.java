@@ -32,12 +32,9 @@ import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_TrackedEntityInstanceSync.Builder.class)
 abstract class TrackedEntityInstanceSync extends TrackerBaseSync {
 
     @NonNull
@@ -46,13 +43,12 @@ abstract class TrackedEntityInstanceSync extends TrackerBaseSync {
     }
 
     static Builder builder() {
-        return new $$AutoValue_TrackedEntityInstanceSync.Builder();
+        return new AutoValue_TrackedEntityInstanceSync.Builder();
     }
 
     abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     abstract static class Builder extends TrackerBaseSync.Builder<Builder> {
 
         abstract TrackedEntityInstanceSync build();

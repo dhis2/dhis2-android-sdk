@@ -29,18 +29,20 @@ package org.hisp.dhis.android.core.program
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.FormType
 import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.core.common.ValidationStrategy
 import org.hisp.dhis.android.core.period.PeriodType
+import org.hisp.dhis.android.network.programstage.ProgramStageDTO
 import org.junit.Test
 
-class ProgramStageShould : BaseObjectShould("program/program_stage.json"), ObjectShould {
+class ProgramStageShould : BaseObjectKotlinxShould("program/program_stage.json"), ObjectShould {
     @Test
     override fun map_from_json_string() {
-        val programStage = objectMapper.readValue(jsonStream, ProgramStage::class.java)
+        val programStageDTO = deserialize(ProgramStageDTO.serializer())
+        val programStage = programStageDTO.toDomain()
 
         assertThat(programStage.lastUpdated()).isEqualTo(DateUtils.DATE_FORMAT.parse("2013-04-10T12:15:02.041"))
         assertThat(programStage.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2013-03-04T11:41:07.541"))
@@ -75,22 +77,22 @@ class ProgramStageShould : BaseObjectShould("program/program_stage.json"), Objec
         assertThat(programStage.displayEventLabel()).isEqualTo("Event Label")
 
         val dataElements = ProgramStageInternalAccessor.accessProgramStageDataElements(programStage)
-        assertThat(dataElements[0].uid()).isEqualTo("EQCf1l2Mdr8")
-        assertThat(dataElements[1].uid()).isEqualTo("muxw4SGzUwJ")
-        assertThat(dataElements[2].uid()).isEqualTo("KWybjio9UZT")
-        assertThat(dataElements[3].uid()).isEqualTo("ejm0g2hwHHc")
-        assertThat(dataElements[4].uid()).isEqualTo("yvV3txhSCyc")
-        assertThat(dataElements[5].uid()).isEqualTo("fzQrjBpbwQD")
-        assertThat(dataElements[6].uid()).isEqualTo("BbvkNf9PCxX")
-        assertThat(dataElements[7].uid()).isEqualTo("MbdCfd4HaMQ")
-        assertThat(dataElements[8].uid()).isEqualTo("SBn4XCFRbyT")
-        assertThat(dataElements[9].uid()).isEqualTo("F0PZ4nZ86vo")
-        assertThat(dataElements[10].uid()).isEqualTo("gFBRqVFh60H")
-        assertThat(dataElements[11].uid()).isEqualTo("ljAoyjH4GYA")
-        assertThat(dataElements[12].uid()).isEqualTo("MAdsNY2gOlv")
-        assertThat(dataElements[13].uid()).isEqualTo("IpVUTCDdlGW")
-        assertThat(dataElements[14].uid()).isEqualTo("psBtdqepNVM")
-        assertThat(dataElements[15].uid()).isEqualTo("UzB6pZxZ2Rb")
-        assertThat(dataElements[16].uid()).isEqualTo("FQZEMbBVabW")
+        assertThat(dataElements?.get(0)?.uid()).isEqualTo("EQCf1l2Mdr8")
+        assertThat(dataElements?.get(1)?.uid()).isEqualTo("muxw4SGzUwJ")
+        assertThat(dataElements?.get(2)?.uid()).isEqualTo("KWybjio9UZT")
+        assertThat(dataElements?.get(3)?.uid()).isEqualTo("ejm0g2hwHHc")
+        assertThat(dataElements?.get(4)?.uid()).isEqualTo("yvV3txhSCyc")
+        assertThat(dataElements?.get(5)?.uid()).isEqualTo("fzQrjBpbwQD")
+        assertThat(dataElements?.get(6)?.uid()).isEqualTo("BbvkNf9PCxX")
+        assertThat(dataElements?.get(7)?.uid()).isEqualTo("MbdCfd4HaMQ")
+        assertThat(dataElements?.get(8)?.uid()).isEqualTo("SBn4XCFRbyT")
+        assertThat(dataElements?.get(9)?.uid()).isEqualTo("F0PZ4nZ86vo")
+        assertThat(dataElements?.get(10)?.uid()).isEqualTo("gFBRqVFh60H")
+        assertThat(dataElements?.get(11)?.uid()).isEqualTo("ljAoyjH4GYA")
+        assertThat(dataElements?.get(12)?.uid()).isEqualTo("MAdsNY2gOlv")
+        assertThat(dataElements?.get(13)?.uid()).isEqualTo("IpVUTCDdlGW")
+        assertThat(dataElements?.get(14)?.uid()).isEqualTo("psBtdqepNVM")
+        assertThat(dataElements?.get(15)?.uid()).isEqualTo("UzB6pZxZ2Rb")
+        assertThat(dataElements?.get(16)?.uid()).isEqualTo("FQZEMbBVabW")
     }
 }

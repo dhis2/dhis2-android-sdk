@@ -29,15 +29,17 @@ package org.hisp.dhis.android.core.program
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.program.ProgramDTO
 import org.junit.Test
 
-class ProgramShould : BaseObjectShould("program/program.json"), ObjectShould {
+class ProgramShould : BaseObjectKotlinxShould("program/program.json"), ObjectShould {
     @Test
     override fun map_from_json_string() {
-        val program = objectMapper.readValue(jsonStream, Program::class.java)
+        val programDTO = deserialize(ProgramDTO.serializer())
+        val program = programDTO.toDomain()
 
         assertThat(program.lastUpdated()).isEqualTo(DateUtils.DATE_FORMAT.parse("2015-10-15T11:32:27.242"))
         assertThat(program.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2014-06-06T20:44:21.375"))

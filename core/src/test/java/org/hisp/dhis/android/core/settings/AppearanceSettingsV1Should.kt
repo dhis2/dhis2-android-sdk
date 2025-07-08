@@ -28,14 +28,16 @@
 package org.hisp.dhis.android.core.settings
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.settings.AppearanceSettingsDTO
 import org.junit.Test
 
-class AppearanceSettingsV1Should : BaseObjectShould("settings/appearance_settings_v1.json"), ObjectShould {
+class AppearanceSettingsV1Should : BaseObjectKotlinxShould("settings/appearance_settings_v1.json"), ObjectShould {
     @Test
     override fun map_from_json_string() {
-        val appearanceSettings = objectMapper.readValue(jsonStream, AppearanceSettings::class.java)
+        val appearanceSettingsDTO = deserialize(AppearanceSettingsDTO.serializer())
+        val appearanceSettings = appearanceSettingsDTO.toDomain()
 
         val filterSorting = appearanceSettings.filterSorting()
         val homeFilters = filterSorting!!.home()

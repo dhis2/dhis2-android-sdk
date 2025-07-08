@@ -32,22 +32,16 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_UserSettings.Builder.class)
 public abstract class UserSettings implements CoreObject {
 
-    @JsonProperty()
     @Nullable
     public abstract String keyUiLocale();
 
-    @JsonProperty()
     @Nullable
     public abstract String keyDbLocale();
 
@@ -62,7 +56,6 @@ public abstract class UserSettings implements CoreObject {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
         public abstract Builder id(Long id);
 

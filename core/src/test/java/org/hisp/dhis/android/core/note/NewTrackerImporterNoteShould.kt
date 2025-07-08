@@ -28,19 +28,21 @@
 package org.hisp.dhis.android.core.note
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.tracker.NewNoteDTO
 import org.junit.Test
 
-class NewTrackerImporterNoteShould : BaseObjectShould("note/new_tracker_importer_note.json"), ObjectShould {
+class NewTrackerImporterNoteShould : BaseObjectKotlinxShould("note/new_tracker_importer_note.json"), ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val note = objectMapper.readValue(jsonStream, NewTrackerImporterNote::class.java)
+        val noteDTO = deserialize(NewNoteDTO.serializer())
+        val note = noteDTO.toDomain()
 
         assertThat(note.uid()).isEqualTo("zCBxfBfjnQZ")
         assertThat(note.value()).isEqualTo("This is a note")
         assertThat(note.storedBy()).isEqualTo("admin")
-        assertThat(note.storedAt()).isEqualTo("2022-09-28T14:44:15.320")
+        assertThat(note.storedDate()).isEqualTo("2022-09-28T14:44:15.320")
     }
 }

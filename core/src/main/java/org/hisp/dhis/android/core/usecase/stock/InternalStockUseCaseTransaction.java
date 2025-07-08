@@ -28,49 +28,37 @@
 
 package org.hisp.dhis.android.core.usecase.stock;
 
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
-
 import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseObject;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_InternalStockUseCaseTransaction.Builder.class)
 public abstract class InternalStockUseCaseTransaction extends BaseObject {
 
     @Nullable
     public abstract String programUid();
 
     @NonNull
-    @JsonProperty()
     public abstract Integer sortOrder();
 
     @NonNull
-    @JsonProperty()
     public abstract String transactionType();
 
     @Nullable
-    @JsonProperty()
     public abstract String distributedTo();
 
     @Nullable
-    @JsonProperty()
     public abstract String stockDistributed();
 
     @Nullable
-    @JsonProperty()
     public abstract String stockDiscarded();
 
     @Nullable
-    @JsonProperty()
     public abstract String stockCount();
 
     public static InternalStockUseCaseTransaction create(Cursor cursor) {
@@ -84,10 +72,8 @@ public abstract class InternalStockUseCaseTransaction extends BaseObject {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseObject.Builder<Builder> {
 
-        @JsonProperty(UID)
         public abstract Builder programUid(String programUid);
 
         public abstract Builder sortOrder(Integer sortOrder);

@@ -40,10 +40,8 @@ import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
-import org.hisp.dhis.android.core.trackedentity.internal.EntityQueryCriteriaFields
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterAttributeValueFilterChildrenAppender
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterEvenFilterChildrenAppender
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterFields
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterStore
 import org.koin.core.annotation.Singleton
 
@@ -148,19 +146,20 @@ class TrackedEntityInstanceFilterCollectionRepository internal constructor(
     }
 
     fun withTrackedEntityInstanceEventFilters(): TrackedEntityInstanceFilterCollectionRepository {
-        return cf.withChild(TrackedEntityInstanceFilterFields.EVENT_FILTERS)
+        return cf.withChild(EVENT_FILTERS)
     }
 
     fun withAttributeValueFilters(): TrackedEntityInstanceFilterCollectionRepository {
-        return cf.withChild(EntityQueryCriteriaFields.ATTRIBUTE_VALUE_FILTER)
+        return cf.withChild(ATTRIBUTE_VALUE_FILTER)
     }
 
     internal companion object {
+        private const val EVENT_FILTERS = "eventFilters"
+        private const val ATTRIBUTE_VALUE_FILTER = "attributeValueFilters"
+
         val childrenAppenders: ChildrenAppenderGetter<TrackedEntityInstanceFilter> = mapOf(
-            TrackedEntityInstanceFilterFields.EVENT_FILTERS to
-                TrackedEntityInstanceFilterEvenFilterChildrenAppender::create,
-            EntityQueryCriteriaFields.ATTRIBUTE_VALUE_FILTER to
-                TrackedEntityInstanceFilterAttributeValueFilterChildrenAppender::create,
+            EVENT_FILTERS to TrackedEntityInstanceFilterEvenFilterChildrenAppender::create,
+            ATTRIBUTE_VALUE_FILTER to TrackedEntityInstanceFilterAttributeValueFilterChildrenAppender::create,
         )
     }
 }

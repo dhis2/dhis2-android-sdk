@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.settings.internal
 
 import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.QuickActionListColumnAdapter
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
@@ -63,6 +64,7 @@ internal class ProgramConfigurationSettingStoreImpl(
                 w.bind(6, o.itemHeader()?.programIndicator())
                 w.bind(7, o.minimumLocationAccuracy())
                 w.bind(8, o.disableManualLocation())
+                w.bind(9, QuickActionListColumnAdapter.serialize(o.quickActions()))
             }
 
         private val WHERE_UPDATE_BINDER =

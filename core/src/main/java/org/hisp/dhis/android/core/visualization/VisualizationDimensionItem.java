@@ -32,9 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -42,7 +39,6 @@ import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.LayoutPosition
 import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_VisualizationDimensionItem.Builder.class)
 public abstract class VisualizationDimensionItem implements CoreObject {
 
     @Nullable
@@ -56,11 +52,9 @@ public abstract class VisualizationDimensionItem implements CoreObject {
     public abstract String dimension();
 
     @Nullable
-    @JsonProperty()
     public abstract String dimensionItem();
 
     @Nullable
-    @JsonProperty()
     public abstract String dimensionItemType();
 
 
@@ -75,7 +69,6 @@ public abstract class VisualizationDimensionItem implements CoreObject {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
         public abstract Builder id(Long id);

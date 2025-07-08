@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.sms.domain.repository
 
+import kotlinx.serialization.Serializable
 import org.hisp.dhis.smscompression.models.SMSMetadata
 
 fun interface WebApiRepository {
@@ -34,15 +35,17 @@ fun interface WebApiRepository {
      * @return Metadata object that contains ids lists needed to properly compress sms data
      */
     suspend fun getMetadataIds(config: GetMetadataIdsConfig): SMSMetadata
-    class GetMetadataIdsConfig {
-        var dataElements = true
-        var categoryOptionCombos = true
-        var organisationUnits = true
-        var users = true
-        var trackedEntityTypes = true
-        var trackedEntityAttributes = true
-        var programs = true
-    }
+
+    @Serializable
+    data class GetMetadataIdsConfig(
+        val dataElements: Boolean = true,
+        val categoryOptionCombos: Boolean = true,
+        val organisationUnits: Boolean = true,
+        val users: Boolean = true,
+        val trackedEntityTypes: Boolean = true,
+        val trackedEntityAttributes: Boolean = true,
+        val programs: Boolean = true,
+    )
 
     class HttpException(private val code: Int) : RuntimeException() {
         override fun toString(): String {

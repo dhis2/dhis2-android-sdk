@@ -36,9 +36,6 @@ import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.koin.core.annotation.Singleton
 import java.util.Date
-import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
 
 @Singleton
 internal class TrackedEntityInstanceQueryOnlineHelper(
@@ -155,26 +152,6 @@ internal class TrackedEntityInstanceQueryOnlineHelper(
                         val operator = if (upper) item.operator().apiUpperOperator else item.operator().apiOperator
 
                         ":" + operator + ":" + getAPIValue(item)
-                    }
-
-                    key + clause.joinToString(separator = "")
-                }
-        }
-
-        fun toAPIFilterFormatWithDeleteValue(items: List<RepositoryScopeFilterItem>, upper: Boolean): List<String> {
-            return items
-                .groupBy { it.key() }
-                .map { (key, items) ->
-                    val clause = items.map { item ->
-                        val operator = if (upper) item.operator().apiUpperOperator else item.operator().apiOperator
-                        val value = getAPIValue(item)
-
-                        if (value == "%DELETE%"){
-                            ""
-                        } else{
-                            ":" + operator + ":" + getAPIValue(item)
-                        }
-
                     }
 
                     key + clause.joinToString(separator = "")

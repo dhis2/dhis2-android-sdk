@@ -85,6 +85,6 @@ class AnalyticsTeiSettingHandlerShould {
         verify(teiDataElementHandler).handleMany(any(), any(), any())
         verify(teiIndicatorHandler).handleMany(any(), any(), any())
         verify(teiAttributeHandler).handleMany(any(), any(), any())
-        verify(whoDataHandler).handleMany(any(), any(), any())
+        verify(whoDataHandler).handleMany(any(), any())
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -41,6 +41,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
+import io.ktor.util.AttributeKey
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -83,10 +84,10 @@ class HttpServiceClient(
             header(key, value)
         }
         if (requestBuilder.isAbsoluteUrl) {
-            header(IsAbsouteUrlHeader, true)
+            attributes.put(IS_ABSOLUTE_URL_ATTRIBUTE_KEY, true)
         }
         if (requestBuilder.isExternalRequest) {
-            header(IsExternalRequestHeader, true)
+            attributes.put(IS_EXTERNAL_REQUEST_ATTRIBUTE_KEY, true)
         }
         requestBuilder.authorizationHeader?.let {
             header(HttpHeaders.Authorization, it)
@@ -108,9 +109,9 @@ class HttpServiceClient(
     suspend inline fun <reified T> delete(block: RequestBuilder.() -> Unit): T {
         return request(HttpMethod.Delete, block)
     }
-    companion object {
-        @PublishedApi internal val IsAbsouteUrlHeader = "isAbsoluteUrl"
 
-        @PublishedApi internal val IsExternalRequestHeader = "isExternalRequest"
+    companion object {
+        internal val IS_ABSOLUTE_URL_ATTRIBUTE_KEY = AttributeKey<Boolean>("isAbsoluteUrl")
+        internal val IS_EXTERNAL_REQUEST_ATTRIBUTE_KEY = AttributeKey<Boolean>("isExternalRequest")
     }
 }

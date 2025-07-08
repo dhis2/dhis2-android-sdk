@@ -41,11 +41,13 @@ import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
+import org.hisp.dhis.android.core.util.SqlAggregator
 import org.koin.core.annotation.Singleton
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo.Columns as tavColumns
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo.Columns as dvColumns
 
 @Singleton
+@Suppress("TooManyFunctions")
 internal class EventDataItemSQLEvaluator(
     private val databaseAdapter: DatabaseAdapter,
 ) : AnalyticsEvaluator {
@@ -63,7 +65,7 @@ internal class EventDataItemSQLEvaluator(
         }
     }
 
-    @Suppress("LongMethod")
+    @Suppress("ComplexMethod", "LongMethod")
     override fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
@@ -78,7 +80,7 @@ internal class EventDataItemSQLEvaluator(
         val whereClause = WhereClauseBuilder().apply {
             items.entries.forEach { entry ->
                 when (entry.key) {
-                    is Dimension.Data -> appendDataWhereClause(entry.value, this)
+                    is Dimension.Data -> appendDataWhereClause(entry.value, this, metadata)
                     is Dimension.Period -> appendPeriodWhereClause(entry.value, this, metadata, aggregator, queryMods)
                     is Dimension.OrganisationUnit -> appendOrgunitWhereClause(entry.value, this, metadata)
                     is Dimension.Category -> appendCategoryWhereClause(entry.value, this, metadata)
@@ -98,39 +100,50 @@ internal class EventDataItemSQLEvaluator(
                     "FROM $fromClause " +
                     "WHERE $whereClause"
             }
+
             AggregationType.AVERAGE_SUM_ORG_UNIT -> {
-                "SELECT SUM($valueColumn) " +
-                    "FROM (" +
-                    "SELECT AVG($valueColumn) as $valueColumn " +
-                    "FROM $fromClause " +
-                    "WHERE $whereClause " +
-                    "GROUP BY $EventAlias.${EventTableInfo.Columns.ORGANISATION_UNIT}" +
-                    ")"
+                aggregateByDataValueAndSumOrgunit(SqlAggregator.AVG, valueColumn, fromClause, whereClause)
             }
+
             AggregationType.FIRST -> {
                 "SELECT SUM($valueColumn) " +
-                    "FROM (${firstOrLastValueClauseByOrunit(valueColumn, fromClause, whereClause, "MIN")})"
+                    "FROM (${firstOrLastValueByOrunit(valueColumn, fromClause, whereClause, ValuePosition.FIRST)})"
             }
+
             AggregationType.FIRST_AVERAGE_ORG_UNIT -> {
                 "SELECT AVG(${dvColumns.VALUE}) " +
-                    "FROM (${firstOrLastValueClauseByOrunit(valueColumn, fromClause, whereClause, "MIN")})"
+                    "FROM (${firstOrLastValueByOrunit(valueColumn, fromClause, whereClause, ValuePosition.FIRST)})"
             }
+
+            AggregationType.FIRST_FIRST_ORG_UNIT -> {
+                firstOrLastValueGlobally(valueColumn, fromClause, whereClause, ValuePosition.FIRST)
+            }
+
             AggregationType.LAST,
             AggregationType.LAST_IN_PERIOD,
             -> {
                 "SELECT SUM(${dvColumns.VALUE}) " +
-                    "FROM (${firstOrLastValueClauseByOrunit(valueColumn, fromClause, whereClause, "MAX")})"
+                    "FROM (${firstOrLastValueByOrunit(valueColumn, fromClause, whereClause, ValuePosition.LAST)})"
             }
+
             AggregationType.LAST_AVERAGE_ORG_UNIT,
             AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT,
             -> {
                 "SELECT AVG(${dvColumns.VALUE}) " +
-                    "FROM (${firstOrLastValueClauseByOrunit(valueColumn, fromClause, whereClause, "MAX")})"
+                    "FROM (${firstOrLastValueByOrunit(valueColumn, fromClause, whereClause, ValuePosition.LAST)})"
             }
-            AggregationType.LAST_LAST_ORG_UNIT,
-            AggregationType.FIRST_FIRST_ORG_UNIT,
-            AggregationType.MAX_SUM_ORG_UNIT,
-            AggregationType.MIN_SUM_ORG_UNIT,
+
+            AggregationType.LAST_LAST_ORG_UNIT -> {
+                firstOrLastValueGlobally(valueColumn, fromClause, whereClause, ValuePosition.LAST)
+            }
+
+            AggregationType.MAX_SUM_ORG_UNIT -> {
+                aggregateByDataValueAndSumOrgunit(SqlAggregator.MAX, valueColumn, fromClause, whereClause)
+            }
+
+            AggregationType.MIN_SUM_ORG_UNIT -> {
+                aggregateByDataValueAndSumOrgunit(SqlAggregator.MIN, valueColumn, fromClause, whereClause)
+            }
 
             AggregationType.CUSTOM,
             AggregationType.STDDEV,
@@ -150,6 +163,12 @@ internal class EventDataItemSQLEvaluator(
 
             is DimensionItem.DataItem.EventDataItem.Attribute ->
                 Pair(tavColumns.VALUE, attributeValueFromClauseWithJoins)
+
+            is DimensionItem.DataItem.EventDataItem.DataElementOption ->
+                Pair(dvColumns.VALUE, dataValueFromClauseWithJoins)
+
+            is DimensionItem.DataItem.EventDataItem.AttributeOption ->
+                Pair(tavColumns.VALUE, attributeValueFromClauseWithJoins)
         }
     }
 
@@ -168,16 +187,31 @@ internal class EventDataItemSQLEvaluator(
             "ON $EnrollmentAlias.${EnrollmentTableInfo.Columns.UID} = " +
             "$EventAlias.${EventTableInfo.Columns.ENROLLMENT} "
 
-    private fun firstOrLastValueClauseByOrunit(
+    private fun aggregateByDataValueAndSumOrgunit(
+        dataValueAggregator: String,
         valueColumn: String,
         fromClause: String,
         whereClause: String,
-        minOrMax: String,
+    ): String {
+        return "SELECT SUM($valueColumn) " +
+            "FROM (" +
+            "SELECT $dataValueAggregator($valueColumn) as $valueColumn " +
+            "FROM $fromClause " +
+            "WHERE $whereClause " +
+            "GROUP BY $EventAlias.${EventTableInfo.Columns.ORGANISATION_UNIT}" +
+            ")"
+    }
+
+    private fun firstOrLastValueByOrunit(
+        valueColumn: String,
+        fromClause: String,
+        whereClause: String,
+        position: ValuePosition,
     ): String {
         val firstOrLastValueClause = "SELECT " +
             "$valueColumn, " +
             "$EventAlias.${EventTableInfo.Columns.ORGANISATION_UNIT}, " +
-            "$minOrMax($EventAlias.${EventTableInfo.Columns.EVENT_DATE}) " +
+            "${position.aggregator}($EventAlias.${EventTableInfo.Columns.EVENT_DATE}) " +
             "FROM $fromClause " +
             "WHERE $whereClause " +
             "AND $EventAlias.${EventTableInfo.Columns.EVENT_DATE} IS NOT NULL " +
@@ -189,9 +223,28 @@ internal class EventDataItemSQLEvaluator(
             "GROUP BY ${EventTableInfo.Columns.ORGANISATION_UNIT}"
     }
 
+    private fun firstOrLastValueGlobally(
+        valueColumn: String,
+        fromClause: String,
+        whereClause: String,
+        position: ValuePosition,
+    ): String {
+        val firstOrLastValueClause = "SELECT " +
+            "$valueColumn, " +
+            "${position.aggregator}($EventAlias.${EventTableInfo.Columns.EVENT_DATE}) " +
+            "FROM $fromClause " +
+            "WHERE $whereClause " +
+            "AND $EventAlias.${EventTableInfo.Columns.EVENT_DATE} IS NOT NULL "
+
+        return "SELECT $valueColumn " +
+            "FROM ($firstOrLastValueClause)"
+    }
+
+    @Suppress("LongMethod")
     private fun appendDataWhereClause(
         items: List<DimensionItem>,
         builder: WhereClauseBuilder,
+        metadata: Map<String, MetadataItem>,
     ): WhereClauseBuilder {
         val innerClause = items.map { it as DimensionItem.DataItem }
             .foldRight(WhereClauseBuilder()) { item, innerBuilder ->
@@ -206,9 +259,13 @@ internal class EventDataItemSQLEvaluator(
                                 "$EventAlias.${EventTableInfo.Columns.PROGRAM}",
                                 item.program,
                             )
+                            .appendIsNotNullValue(
+                                "$DataValueAlias.${TrackedEntityDataValueTableInfo.Columns.VALUE}",
+                            )
                             .build()
                         innerBuilder.appendOrComplexQuery(operandClause)
                     }
+
                     is DimensionItem.DataItem.EventDataItem.Attribute -> {
                         val operandClause = WhereClauseBuilder()
                             .appendKeyStringValue(
@@ -219,9 +276,55 @@ internal class EventDataItemSQLEvaluator(
                                 "$EventAlias.${EventTableInfo.Columns.PROGRAM}",
                                 item.program,
                             )
+                            .appendIsNotNullValue(
+                                "$AttAlias.${TrackedEntityAttributeValueTableInfo.Columns.VALUE}",
+                            )
                             .build()
                         innerBuilder.appendOrComplexQuery(operandClause)
                     }
+
+                    is DimensionItem.DataItem.EventDataItem.DataElementOption -> {
+                        val operandClause = WhereClauseBuilder()
+                            .appendKeyStringValue(
+                                "$DataValueAlias.${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT}",
+                                item.dataElement,
+                            )
+                            .appendKeyStringValue(
+                                "$EventAlias.${EventTableInfo.Columns.PROGRAM}",
+                                item.program,
+                            )
+                            .appendKeyStringValue(
+                                "$DataValueAlias.${TrackedEntityDataValueTableInfo.Columns.VALUE}",
+                                (metadata[item.id] as MetadataItem.EventDataElementOptionItem).option.code()!!,
+                            )
+                            .appendIsNotNullValue(
+                                "$DataValueAlias.${TrackedEntityDataValueTableInfo.Columns.VALUE}",
+                            )
+                            .build()
+                        innerBuilder.appendOrComplexQuery(operandClause)
+                    }
+
+                    is DimensionItem.DataItem.EventDataItem.AttributeOption -> {
+                        val operandClause = WhereClauseBuilder()
+                            .appendKeyStringValue(
+                                "$AttAlias.${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE}",
+                                item.attribute,
+                            )
+                            .appendKeyStringValue(
+                                "$EventAlias.${EventTableInfo.Columns.PROGRAM}",
+                                item.program,
+                            )
+                            .appendKeyStringValue(
+                                "$AttAlias.${TrackedEntityAttributeValueTableInfo.Columns.VALUE}",
+                                (metadata[item.id] as MetadataItem.EventAttributeOptionItem).option.code()!!,
+                            )
+                            .appendIsNotNullValue(
+                                "$AttAlias.${TrackedEntityAttributeValueTableInfo.Columns.VALUE}",
+                            )
+                            .build()
+                        innerBuilder.appendOrComplexQuery(operandClause)
+                    }
+
                     else ->
                         throw AnalyticsException.InvalidArguments(
                             "Invalid arguments: unexpected " +
@@ -309,8 +412,16 @@ internal class EventDataItemSQLEvaluator(
             val aggregationType = when (val metadataItem = metadata[item.id]) {
                 is MetadataItem.EventDataElementItem ->
                     metadataItem.item.aggregationType()
+
                 is MetadataItem.EventAttributeItem ->
                     metadataItem.item.aggregationType()?.name
+
+                is MetadataItem.EventDataElementOptionItem ->
+                    metadataItem.item.aggregationType()
+
+                is MetadataItem.EventAttributeOptionItem ->
+                    metadataItem.item.aggregationType()?.name
+
                 else ->
                     throw AnalyticsException.InvalidArguments("Invalid arguments: invalid event data item ${item.id}.")
             }

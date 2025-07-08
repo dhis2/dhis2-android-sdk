@@ -29,15 +29,17 @@ package org.hisp.dhis.android.core.systeminfo
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.systeminfo.SystemInfoDTO
 import org.junit.Test
 
-class SystemInfoShould : BaseObjectShould("systeminfo/system_info.json"), ObjectShould {
+class SystemInfoShould : BaseObjectKotlinxShould("systeminfo/system_info.json"), ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val systemInfo = objectMapper.readValue(jsonStream, SystemInfo::class.java)
+        val systemInfoDTO = deserialize(SystemInfoDTO.serializer())
+        val systemInfo = systemInfoDTO.toDomain()
 
         assertThat(systemInfo.serverDate()).isEqualTo(DateUtils.DATE_FORMAT.parse("2017-11-29T11:27:46.935"))
         assertThat(systemInfo.dateFormat()).isEqualTo("yyyy-mm-dd")

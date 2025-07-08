@@ -28,16 +28,16 @@
 
 package org.hisp.dhis.android.core.imports.internal;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_HttpMessageResponse.Builder.class)
 public abstract class HttpMessageResponse extends WebResponse {
 
+    public static Builder builder() {
+        return new AutoValue_HttpMessageResponse.Builder();
+    }
+
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends WebResponse.Builder<Builder> {
 
         public abstract HttpMessageResponse build();

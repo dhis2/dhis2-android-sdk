@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.map.layer.internal.externalmap
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.map.layer.MapLayer
-import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
-import org.hisp.dhis.android.core.map.layer.MapLayerPosition
 import org.hisp.dhis.android.core.map.layer.internal.MapLayerHandler
 import org.koin.core.annotation.Singleton
 
@@ -39,44 +37,12 @@ import org.koin.core.annotation.Singleton
 internal class ExternalMapLayerCallFactory(
     private val mapLayerHandler: MapLayerHandler,
     val apiDownloader: APIDownloader,
-    val service: ExternalMapLayerService,
+    val networkHandler: ExternalMapLayerNetworkHandler,
 ) {
 
     suspend fun download(): List<MapLayer> {
-        val mapLayers = getExternalMapLayers()
+        val mapLayers = networkHandler.getExternalMapLayers().items
         mapLayerHandler.handleMany(mapLayers)
         return mapLayers
-    }
-
-    private suspend fun getExternalMapLayers(): List<MapLayer> {
-        return service.getExternalMapLayers(
-            ExternalMapLayerFields.allFields,
-            ExternalMapLayerFields.mapLayerPosition.eq(MapLayerPosition.BASEMAP),
-            false,
-        ).items()
-            .map { externalMapLayer ->
-                MapLayer.builder()
-                    .uid(externalMapLayer.id)
-                    .name(externalMapLayer.name)
-                    .displayName(externalMapLayer.displayName)
-                    .code(externalMapLayer.code)
-                    .mapLayerPosition(externalMapLayer.mapLayerPosition)
-                    .mapService(externalMapLayer.mapService)
-                    .imageFormat(externalMapLayer.imageFormat)
-                    .layers(externalMapLayer.layers)
-                    .external(true)
-                    .imageUrl(externalMapLayer.url)
-                    .imageryProviders(
-                        externalMapLayer.attribution?.let { attribution ->
-                            listOf(
-                                MapLayerImageryProvider.builder()
-                                    .mapLayer(externalMapLayer.id)
-                                    .attribution(attribution)
-                                    .build(),
-                            )
-                        } ?: emptyList(),
-                    )
-                    .build()
-            }
     }
 }

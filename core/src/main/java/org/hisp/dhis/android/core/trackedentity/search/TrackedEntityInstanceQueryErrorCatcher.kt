@@ -27,13 +27,11 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search
 
-import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.JsonMappingException
+import kotlinx.serialization.SerializationException
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory.objectMapper
-import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.network.common.dto.HttpMessageResponseDTO
 import java.io.IOException
 import javax.net.ssl.HttpsURLConnection
 
@@ -58,7 +56,7 @@ internal class TrackedEntityInstanceQueryErrorCatcher : APICallErrorCatcher {
 
     private fun parseErrorMessage(errorBody: String): D2ErrorCode {
         return try {
-            val parsed = objectMapper().readValue(errorBody, HttpMessageResponse::class.java)
+            val parsed = HttpMessageResponseDTO.toErrorClass(errorBody)
             if (
                 parsed.httpStatusCode() == HttpsURLConnection.HTTP_UNAUTHORIZED ||
                 parsed.httpStatusCode() == HttpsURLConnection.HTTP_CONFLICT ||
@@ -75,9 +73,7 @@ internal class TrackedEntityInstanceQueryErrorCatcher : APICallErrorCatcher {
             }
         } catch (e: IOException) {
             DefaultErrorCode
-        } catch (e: JsonProcessingException) {
-            DefaultErrorCode
-        } catch (e: JsonMappingException) {
+        } catch (e: SerializationException) {
             DefaultErrorCode
         }
     }

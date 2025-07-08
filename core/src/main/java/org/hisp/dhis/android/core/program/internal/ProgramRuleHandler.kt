@@ -29,9 +29,7 @@ package org.hisp.dhis.android.core.program.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
-import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramRule
-import org.hisp.dhis.android.core.program.ProgramRuleAction
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -45,9 +43,7 @@ internal class ProgramRuleHandler(
     override fun afterObjectHandled(o: ProgramRule, action: HandleAction) {
         programRuleActionHandler.handleMany(
             o.programRuleActions(),
-        ) { pra: ProgramRuleAction ->
-            pra.toBuilder().programRule(ObjectWithUid.create(o.uid())).build()
-        }
+        )
 
         if (action === HandleAction.Update) {
             programRuleActionCleaner.deleteOrphan(o, o.programRuleActions())

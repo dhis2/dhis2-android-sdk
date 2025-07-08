@@ -46,6 +46,7 @@ sealed class AnalyticsException(message: String) : Throwable(message) {
     class InvalidOrganisationUnitLevel(val id: String) : AnalyticsException("Missing organisation unit level $id")
     class InvalidCategory(val uid: String) : AnalyticsException("Missing category $uid")
     class InvalidCategoryOption(val uid: String) : AnalyticsException("Missing category option $uid")
+    class InvalidOption(val uid: String) : AnalyticsException("Missing option $uid")
     class InvalidTrackedEntityAttribute(val uid: String) : AnalyticsException("Missing tracked entity attribute $uid")
     class UnsupportedAggregationType(val aggregationType: AggregationType) :
         AnalyticsException("Unsupported aggregation type ${aggregationType.name}")

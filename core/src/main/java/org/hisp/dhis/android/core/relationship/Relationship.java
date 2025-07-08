@@ -30,12 +30,9 @@ package org.hisp.dhis.android.core.relationship;
 
 import android.database.Cursor;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_Relationship.Builder.class)
 public abstract class Relationship extends BaseRelationship {
 
     public static Builder builder() {
@@ -49,7 +46,6 @@ public abstract class Relationship extends BaseRelationship {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseRelationship.Builder<Builder> {
 
         public abstract Relationship build();

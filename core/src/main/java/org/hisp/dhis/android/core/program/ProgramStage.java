@@ -4,9 +4,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -36,17 +33,14 @@ import org.hisp.dhis.android.core.period.PeriodType;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_ProgramStage.Builder.class)
 @SuppressWarnings({"PMD.ExcessivePublicCount", "PMD.ExcessiveImports", "PMD.CouplingBetweenObjects", "PMD.GodClass"})
 public abstract class ProgramStage extends BaseIdentifiableObject
         implements ObjectWithStyle<ProgramStage, ProgramStage.Builder>, CoreObject {
 
     @Nullable
-    @JsonProperty()
     public abstract String description();
 
     @Nullable
-    @JsonProperty()
     public abstract String displayDescription();
 
     /**
@@ -59,7 +53,6 @@ public abstract class ProgramStage extends BaseIdentifiableObject
     }
 
     @Nullable
-    @JsonProperty()
     public abstract String displayExecutionDateLabel();
 
     /**
@@ -72,27 +65,21 @@ public abstract class ProgramStage extends BaseIdentifiableObject
     }
 
     @Nullable
-    @JsonProperty()
     public abstract String displayDueDateLabel();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean allowGenerateNextVisit();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean validCompleteOnly();
 
     @Nullable
-    @JsonProperty()
     public abstract String reportDateToUse();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean openAfterEnrollment();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean repeatable();
 
     /**
@@ -100,86 +87,67 @@ public abstract class ProgramStage extends BaseIdentifiableObject
      */
     @Deprecated
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DBCaptureCoordinatesFromFeatureTypeColumnAdapter.class)
     abstract Boolean captureCoordinates();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(FeatureTypeColumnAdapter.class)
     public abstract FeatureType featureType();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbFormTypeColumnAdapter.class)
     public abstract FormType formType();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean displayGenerateEventBox();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean generatedByEnrollmentDate();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean autoGenerateEvent();
 
     @Nullable
-    @JsonProperty()
     public abstract Integer sortOrder();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean hideDueDate();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean blockEntryForm();
 
     @Nullable
-    @JsonProperty()
     public abstract Integer minDaysFromStart();
 
     @Nullable
-    @JsonProperty()
     public abstract Integer standardInterval();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean enableUserAssignment();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreProgramStageSectionListColumnAdapter.class)
     abstract List<ProgramStageSection> programStageSections();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreProgramStageDataElementListColumnAdapter.class)
     abstract List<ProgramStageDataElement> programStageDataElements();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(PeriodTypeColumnAdapter.class)
     public abstract PeriodType periodType();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid program();
 
-    @JsonProperty()
     @ColumnAdapter(AccessColumnAdapter.class)
     public abstract Access access();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean remindCompleted();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(ValidationStrategyColumnAdapter.class)
     public abstract ValidationStrategy validationStrategy();
 
@@ -193,7 +161,6 @@ public abstract class ProgramStage extends BaseIdentifiableObject
     }
 
     @Nullable
-    @JsonProperty()
     public abstract String displayProgramStageLabel();
 
     /**
@@ -206,11 +173,9 @@ public abstract class ProgramStage extends BaseIdentifiableObject
     }
 
     @Nullable
-    @JsonProperty()
     public abstract String displayEventLabel();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreAttributeValuesListAdapter.class)
     public abstract List<AttributeValue> attributeValues();
 
@@ -225,7 +190,6 @@ public abstract class ProgramStage extends BaseIdentifiableObject
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder>
             implements ObjectWithStyle.Builder<ProgramStage, Builder> {
 

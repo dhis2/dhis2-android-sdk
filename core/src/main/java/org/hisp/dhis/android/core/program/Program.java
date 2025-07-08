@@ -32,9 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -66,17 +63,14 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_Program.Builder.class)
 @SuppressWarnings({"PMD.ExcessivePublicCount", "PMD.ExcessiveImports", "PMD.CouplingBetweenObjects", "PMD.GodClass"})
 public abstract class Program extends BaseNameableObject
         implements CoreObject, ObjectWithStyle<Program, Program.Builder> {
 
     @Nullable
-    @JsonProperty()
     public abstract Integer version();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean onlyEnrollOnce();
 
     /**
@@ -89,11 +83,9 @@ public abstract class Program extends BaseNameableObject
     }
 
     @Nullable
-    @JsonProperty()
     public abstract String displayEnrollmentDateLabel();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean displayIncidentDate();
 
     /**
@@ -106,27 +98,21 @@ public abstract class Program extends BaseNameableObject
     }
 
     @Nullable
-    @JsonProperty()
     public abstract String displayIncidentDateLabel();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean registration();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean selectEnrollmentDatesInFuture();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean dataEntryMethod();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean ignoreOverdueEvents();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean selectIncidentDatesInFuture();
 
     /**
@@ -134,40 +120,32 @@ public abstract class Program extends BaseNameableObject
      */
     @Deprecated
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DBCaptureCoordinatesFromFeatureTypeColumnAdapter.class)
     abstract Boolean captureCoordinates();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean useFirstStageDuringRegistration();
 
     @Nullable
-    @JsonProperty()
     public abstract Boolean displayFrontPageList();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbProgramTypeColumnAdapter.class)
     public abstract ProgramType programType();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreProgramTrackedEntityAttributeListColumnAdapter.class)
     abstract List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid relatedProgram();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(TrackedEntityTypeWithUidColumnAdapter.class)
     public abstract TrackedEntityType trackedEntityType();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid categoryCombo();
 
@@ -176,48 +154,38 @@ public abstract class Program extends BaseNameableObject
         return combo == null ? CategoryCombo.DEFAULT_UID : combo.uid();
     }
 
-    @JsonProperty()
     @ColumnAdapter(AccessColumnAdapter.class)
     public abstract Access access();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreProgramRuleVariableListColumnAdapter.class)
     abstract List<ProgramRuleVariable> programRuleVariables();
 
     @Nullable
-    @JsonProperty()
     public abstract Integer expiryDays();
 
     @Nullable
-    @JsonProperty()
     public abstract Integer completeEventsExpiryDays();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(PeriodTypeColumnAdapter.class)
     public abstract PeriodType expiryPeriodType();
 
     @Nullable
-    @JsonProperty()
     public abstract Integer minAttributesRequiredToSearch();
 
     @Nullable
-    @JsonProperty()
     public abstract Integer maxTeiCountToReturn();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreProgramSectionListColumnAdapter.class)
     public abstract List<ProgramSection> programSections();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(FeatureTypeColumnAdapter.class)
     public abstract FeatureType featureType();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(AccessLevelColumnAdapter.class)
     public abstract AccessLevel accessLevel();
 
@@ -231,7 +199,6 @@ public abstract class Program extends BaseNameableObject
     }
 
     @Nullable
-    @JsonProperty()
     public abstract String displayEnrollmentLabel();
 
     /**
@@ -244,7 +211,6 @@ public abstract class Program extends BaseNameableObject
     }
 
     @Nullable
-    @JsonProperty()
     public abstract String displayFollowUpLabel();
 
     /**
@@ -257,7 +223,6 @@ public abstract class Program extends BaseNameableObject
     }
 
     @Nullable
-    @JsonProperty()
     public abstract String displayOrgUnitLabel();
 
     /**
@@ -270,7 +235,6 @@ public abstract class Program extends BaseNameableObject
     }
 
     @Nullable
-    @JsonProperty()
     public abstract String displayRelationshipLabel();
 
     /**
@@ -283,7 +247,6 @@ public abstract class Program extends BaseNameableObject
     }
 
     @Nullable
-    @JsonProperty()
     public abstract String displayNoteLabel();
 
     /**
@@ -296,7 +259,6 @@ public abstract class Program extends BaseNameableObject
     }
 
     @Nullable
-    @JsonProperty()
     public abstract String displayTrackedEntityAttributeLabel();
 
     /**
@@ -309,7 +271,6 @@ public abstract class Program extends BaseNameableObject
     }
 
     @Nullable
-    @JsonProperty()
     public abstract String displayProgramStageLabel();
 
     /**
@@ -322,11 +283,9 @@ public abstract class Program extends BaseNameableObject
     }
 
     @Nullable
-    @JsonProperty()
     public abstract String displayEventLabel();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreAttributeValuesListAdapter.class)
     public abstract List<AttributeValue> attributeValues();
 
@@ -341,7 +300,6 @@ public abstract class Program extends BaseNameableObject
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseNameableObject.Builder<Builder>
             implements ObjectWithStyle.Builder<Program, Builder> {
 

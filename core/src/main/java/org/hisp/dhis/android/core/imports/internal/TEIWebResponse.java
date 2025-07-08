@@ -28,21 +28,14 @@
 
 package org.hisp.dhis.android.core.imports.internal;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.google.auto.value.AutoValue;
-
 import androidx.annotation.Nullable;
 
+import com.google.auto.value.AutoValue;
+
 @AutoValue
-@JsonDeserialize(builder = AutoValue_TEIWebResponse.Builder.class)
 public abstract class TEIWebResponse extends WebResponse {
 
-    private static final String RESPONSE = "response"; // is called response from api
-
     @Nullable
-    @JsonProperty(RESPONSE)
     public abstract TEIImportSummaries response();
 
     public static Builder builder() {
@@ -59,7 +52,6 @@ public abstract class TEIWebResponse extends WebResponse {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends WebResponse.Builder<Builder> {
         public abstract Builder response(TEIImportSummaries response);
 

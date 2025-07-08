@@ -32,9 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -48,7 +45,6 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_TrackerVisualizationDimension.Builder.class)
 public abstract class TrackerVisualizationDimension implements CoreObject {
 
     @Nullable
@@ -59,34 +55,27 @@ public abstract class TrackerVisualizationDimension implements CoreObject {
     public abstract LayoutPosition position();
 
     @Nullable
-    @JsonProperty()
     public abstract String dimension();
 
     @Nullable
-    @JsonProperty()
     public abstract String dimensionType();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid program();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid programStage();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(ObjectWithUidListColumnAdapter.class)
     public abstract List<ObjectWithUid> items();
 
     @Nullable
-    @JsonProperty()
     public abstract String filter();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(TrackerVisualizationDimensionRepetitionColumnAdapter.class)
     public abstract TrackerVisualizationDimensionRepetition repetition();
 
@@ -102,7 +91,6 @@ public abstract class TrackerVisualizationDimension implements CoreObject {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
 
         public abstract Builder id(Long id);

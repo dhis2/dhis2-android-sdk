@@ -33,67 +33,51 @@ import android.database.Cursor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.datavalue.internal.DataValueFields;
 
 import java.util.Date;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_DataValue.Builder.class)
 public abstract class DataValue extends BaseDeletableDataObject {
 
     @Nullable
-    @JsonProperty
     public abstract String dataElement();
 
     @Nullable
-    @JsonProperty
     public abstract String period();
 
     @Nullable
-    @JsonProperty(DataValueFields.ORGANISATION_UNIT)
     public abstract String organisationUnit();
 
     @Nullable
-    @JsonProperty
     public abstract String categoryOptionCombo();
 
     @Nullable
-    @JsonProperty
     public abstract String attributeOptionCombo();
 
     @Nullable
-    @JsonProperty
     public abstract String value();
 
     @Nullable
-    @JsonProperty
     public abstract String storedBy();
 
     @Nullable
-    @JsonProperty
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
     @Nullable
-    @JsonProperty
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
     @Nullable
-    @JsonProperty
     public abstract String comment();
 
     @Nullable
-    @JsonProperty(DataValueFields.FOLLOW_UP)
     public abstract Boolean followUp();
 
     @NonNull
@@ -101,44 +85,41 @@ public abstract class DataValue extends BaseDeletableDataObject {
         return AutoValue_DataValue.createFromCursor(cursor);
     }
 
-    public abstract Builder toBuilder();
+    public abstract DataValue.Builder toBuilder();
 
-    public static Builder builder() {
+    public static DataValue.Builder builder() {
         return new $$AutoValue_DataValue.Builder();
     }
 
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
-    public abstract static class Builder extends BaseDeletableDataObject.Builder<Builder> {
+    public abstract static class Builder extends BaseDeletableDataObject.Builder<DataValue.Builder> {
 
         public Builder() {
             syncState(State.SYNCED);
         }
 
-        public abstract Builder dataElement(@NonNull String dataElement);
+        public abstract DataValue.Builder dataElement(@NonNull String dataElement);
 
-        public abstract Builder period(@NonNull String period);
+        public abstract DataValue.Builder period(@NonNull String period);
 
-        @JsonProperty(DataValueFields.ORGANISATION_UNIT)
-        public abstract Builder organisationUnit(@NonNull String organisationUnit);
+        public abstract DataValue.Builder organisationUnit(@NonNull String organisationUnit);
 
-        public abstract Builder categoryOptionCombo(@NonNull String categoryOptionCombo);
+        public abstract DataValue.Builder categoryOptionCombo(@NonNull String categoryOptionCombo);
 
-        public abstract Builder attributeOptionCombo(@NonNull String attributeOptionCombo);
+        public abstract DataValue.Builder attributeOptionCombo(@NonNull String attributeOptionCombo);
 
-        public abstract Builder value(@Nullable String value);
+        public abstract DataValue.Builder value(@Nullable String value);
 
-        public abstract Builder storedBy(@Nullable String storedBy);
+        public abstract DataValue.Builder storedBy(@Nullable String storedBy);
 
-        public abstract Builder created(@NonNull Date created);
+        public abstract DataValue.Builder created(@NonNull Date created);
 
-        public abstract Builder lastUpdated(@NonNull Date lastUpdated);
+        public abstract DataValue.Builder lastUpdated(@NonNull Date lastUpdated);
 
-        public abstract Builder comment(@Nullable String comment);
+        public abstract DataValue.Builder comment(@Nullable String comment);
 
-        @JsonProperty(DataValueFields.FOLLOW_UP)
-        public abstract Builder followUp(@Nullable Boolean followUp);
+        public abstract DataValue.Builder followUp(@Nullable Boolean followUp);
 
         abstract DataValue autoBuild();
 

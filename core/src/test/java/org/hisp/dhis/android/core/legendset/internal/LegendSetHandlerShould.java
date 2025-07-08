@@ -90,7 +90,7 @@ public class LegendSetHandlerShould {
     @Test
     public void call_style_handler() {
         legendSetHandler.handle(legendSet);
-        verify(legendHandler).handleMany(eq(legendSet.legends()), any());
+        verify(legendHandler).handleMany(eq(legendSet.legends()));
     }
 
     @Test

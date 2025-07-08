@@ -30,7 +30,12 @@ package org.hisp.dhis.android.core;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
+
+import org.hisp.dhis.android.core.arch.api.NetworkPlugin;
 
 import java.util.Collections;
 import java.util.List;
@@ -39,7 +44,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper;
-import org.jetbrains.annotations.NotNull;
 
 import okhttp3.Interceptor;
 
@@ -67,7 +71,10 @@ public abstract class D2Configuration {
     @NonNull
     public abstract List<Interceptor> networkInterceptors();
 
-    @NotNull
+    @NonNull
+    public abstract List<NetworkPlugin> networkPlugins();
+
+    @NonNull
     public abstract FileResizerHelper.Dimension fileResizerDimension();
 
     @NonNull
@@ -81,8 +88,9 @@ public abstract class D2Configuration {
                 .connectTimeoutInSeconds(30)
                 .writeTimeoutInSeconds(30)
                 .networkInterceptors(Collections.emptyList())
-                .fileResizerDimension(FileResizerHelper.Dimension.MEDIUM)
-                .interceptors(Collections.emptyList());
+                .interceptors(Collections.emptyList())
+                .networkPlugins(Collections.emptyList())
+                .fileResizerDimension(FileResizerHelper.Dimension.MEDIUM);
     }
 
     @AutoValue.Builder
@@ -99,15 +107,14 @@ public abstract class D2Configuration {
         public abstract Builder connectTimeoutInSeconds(Integer connectTimeoutInSeconds);
 
         public abstract Builder writeTimeoutInSeconds(Integer writeTimeoutInSeconds);
-
-        public abstract Builder fileResizerDimension(FileResizerHelper.Dimension dimension);
-
         public abstract Builder interceptors(List<Interceptor> interceptors);
 
         public abstract Builder networkInterceptors(List<Interceptor> networkInterceptors);
 
+        public abstract Builder networkPlugins(List<NetworkPlugin> networkPlugins);
+
+        public abstract Builder fileResizerDimension(FileResizerHelper.Dimension dimension);
+
         public abstract D2Configuration build();
-
-
     }
 }

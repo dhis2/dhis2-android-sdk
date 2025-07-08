@@ -28,9 +28,7 @@
 package org.hisp.dhis.android.core.enrollment
 
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.event.NewTrackerImporterEventTransformer
 import org.hisp.dhis.android.core.note.NewTrackerImporterNoteTransformer
-import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipTransformer
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityAttributeValueTransformer
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 
@@ -48,63 +46,26 @@ internal object NewTrackerImporterEnrollmentTransformer {
             .filter { programAttributeUids.contains(it.trackedEntityAttribute()) }
             .map { NewTrackerImporterTrackedEntityAttributeValueTransformer.transform(it) }
 
-        return NewTrackerImporterEnrollment.builder()
-            .id(o.id())
-            .uid(o.uid())
-            .deleted(o.deleted())
-            .createdAt(o.created())
-            .updatedAt(o.lastUpdated())
-            .createdAtClient(o.createdAtClient())
-            .updatedAtClient(o.lastUpdatedAtClient())
-            .organisationUnit(o.organisationUnit())
-            .program(o.program())
-            .enrolledAt(o.enrollmentDate())
-            .occurredAt(o.incidentDate())
-            .completedAt(o.completedDate())
-            .followUp(o.followUp())
-            .status(o.status())
-            .trackedEntity(o.trackedEntityInstance())
-            .geometry(o.geometry())
-            .syncState(o.syncState())
-            .aggregatedSyncState(o.aggregatedSyncState())
-            .notes(
-                o.notes()?.map {
-                    NewTrackerImporterNoteTransformer.transform(it)
-                },
-            )
-            .attributes(enrollmentAttributeValues)
-            .build()
-    }
-
-    fun deTransform(
-        o: NewTrackerImporterEnrollment,
-    ): Enrollment {
-        val notes = o.notes()?.map { NewTrackerImporterNoteTransformer.deTransform(it) }
-        val events = o.events()?.map { NewTrackerImporterEventTransformer.deTransform(it) }
-        val relationships = o.relationships()?.map { NewTrackerImporterRelationshipTransformer.deTransform(it) }
-
-        return Enrollment.builder()
-            .id(o.id())
-            .uid(o.uid())
-            .deleted(o.deleted())
-            .created(o.createdAt())
-            .lastUpdated(o.updatedAt())
-            .createdAtClient(o.createdAtClient())
-            .lastUpdatedAtClient(o.updatedAtClient())
-            .organisationUnit(o.organisationUnit())
-            .program(o.program())
-            .enrollmentDate(o.enrolledAt())
-            .incidentDate(o.occurredAt())
-            .completedDate(o.completedAt())
-            .followUp(o.followUp())
-            .status(o.status())
-            .trackedEntityInstance(o.trackedEntity())
-            .geometry(o.geometry())
-            .syncState(o.syncState())
-            .aggregatedSyncState(o.aggregatedSyncState())
-            .notes(notes)
-            .events(events)
-            .relationships(relationships)
-            .build()
+        return NewTrackerImporterEnrollment(
+            uid = o.uid(),
+            deleted = o.deleted(),
+            createdAt = o.created(),
+            updatedAt = o.lastUpdated(),
+            createdAtClient = o.createdAtClient(),
+            updatedAtClient = o.lastUpdatedAtClient(),
+            organisationUnit = o.organisationUnit(),
+            program = o.program(),
+            enrolledAt = o.enrollmentDate(),
+            occurredAt = o.incidentDate(),
+            completedAt = o.completedDate(),
+            followUp = o.followUp(),
+            status = o.status(),
+            trackedEntity = o.trackedEntityInstance(),
+            geometry = o.geometry(),
+            syncState = o.syncState(),
+            aggregatedSyncState = o.aggregatedSyncState(),
+            notes = o.notes()?.map { NewTrackerImporterNoteTransformer.transform(it) },
+            attributes = enrollmentAttributeValues,
+        )
     }
 }

@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionData
 import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionItem
 import org.hisp.dhis.android.core.settings.AppearanceSettings
 import org.hisp.dhis.android.core.settings.ChartType
+import org.hisp.dhis.android.core.settings.DataSetConfigurationSetting
 import org.hisp.dhis.android.core.settings.DataSetFilter
 import org.hisp.dhis.android.core.settings.DataSetFilters
 import org.hisp.dhis.android.core.settings.DataSetSetting
@@ -96,7 +97,6 @@ internal object SettingsAppHelper {
                 filter.value.toBuilder()
                     .scope(DataSetFilter::class.simpleName)
                     .filterType(filter.key.name)
-                    .uid(entry.key)
                     .build()
             }
         }
@@ -117,7 +117,6 @@ internal object SettingsAppHelper {
                 filter.value.toBuilder()
                     .scope(ProgramFilter::class.simpleName)
                     .filterType(filter.key.name)
-                    .uid(entry.key)
                     .build()
             }
         }
@@ -135,9 +134,24 @@ internal object SettingsAppHelper {
             }
             list.addAll(
                 settings.specificSettings()?.map { entry ->
-                    entry.value.toBuilder()
-                        .uid(entry.key)
-                        .build()
+                    entry.value
+                } ?: emptyList(),
+            )
+        }
+        return list
+    }
+
+    fun getDataSetConfigurationSettingList(
+        appearanceSettings: AppearanceSettings,
+    ): List<DataSetConfigurationSetting> {
+        val list = mutableListOf<DataSetConfigurationSetting>()
+        appearanceSettings.dataSetConfiguration()?.let { settings ->
+            settings.globalSettings()?.let {
+                list.add(it)
+            }
+            list.addAll(
+                settings.specificSettings()?.map { entry ->
+                    entry.value
                 } ?: emptyList(),
             )
         }

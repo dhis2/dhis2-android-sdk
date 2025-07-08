@@ -31,9 +31,6 @@ package org.hisp.dhis.android.core.common;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 
 import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
@@ -60,7 +57,6 @@ public abstract class BaseIdentifiableObject implements IdentifiableObject, Obje
     public static final String DELETED = "deleted";
 
     @Override
-    @JsonProperty(UID)
     public abstract String uid();
 
     @Override
@@ -106,11 +102,8 @@ public abstract class BaseIdentifiableObject implements IdentifiableObject, Obje
         return BaseIdentifiableObject.DATE_FORMAT.format(date);
     }
 
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder<T extends Builder> {
 
-        @JsonProperty(UID)
-        @JsonAlias({UUID})  // Introduced in 2.38 due to changes in userCredentials model DHIS2-12577
         public abstract T uid(String uid);
 
         public abstract T code(@Nullable String code);

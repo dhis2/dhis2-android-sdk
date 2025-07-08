@@ -33,8 +33,6 @@ import android.database.Cursor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -44,7 +42,6 @@ import org.hisp.dhis.android.core.common.BaseObject;
 import java.util.Date;
 
 @AutoValue
-@JsonDeserialize(builder = AutoValue_SystemInfo.Builder.class)
 public abstract class SystemInfo extends BaseObject {
 
     @Nullable
@@ -75,7 +72,6 @@ public abstract class SystemInfo extends BaseObject {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseObject.Builder<SystemInfo.Builder> {
         public abstract Builder serverDate(Date serverDate);
 

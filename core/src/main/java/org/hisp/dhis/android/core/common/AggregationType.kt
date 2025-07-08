@@ -27,12 +27,12 @@
  */
 package org.hisp.dhis.android.core.common
 
-import com.fasterxml.jackson.annotation.JsonEnumDefaultValue
+import org.hisp.dhis.android.core.util.SqlAggregator
 
 enum class AggregationType(val sql: String?) {
-    SUM("SUM"),
-    AVERAGE("AVG"),
-    AVERAGE_SUM_ORG_UNIT("AVG"),
+    SUM(SqlAggregator.SUM),
+    AVERAGE(SqlAggregator.AVG),
+    AVERAGE_SUM_ORG_UNIT(SqlAggregator.AVG),
     LAST(null),
     LAST_AVERAGE_ORG_UNIT(null),
     LAST_LAST_ORG_UNIT(null),
@@ -41,16 +41,14 @@ enum class AggregationType(val sql: String?) {
     FIRST(null),
     FIRST_AVERAGE_ORG_UNIT(null),
     FIRST_FIRST_ORG_UNIT(null),
-    COUNT("COUNT"),
+    COUNT(SqlAggregator.COUNT),
     STDDEV(null),
     VARIANCE(null),
-    MIN("MIN"),
-    MAX("MAX"),
+    MIN(SqlAggregator.MIN),
+    MAX(SqlAggregator.MAX),
     MIN_SUM_ORG_UNIT(null),
     MAX_SUM_ORG_UNIT(null),
     NONE(null),
     CUSTOM(null),
-
-    @JsonEnumDefaultValue
     DEFAULT(null),
 }

@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.programstageworkinglist.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
-import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
@@ -37,27 +36,19 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramStageWorkingListCall(
-    private val service: ProgramStageWorkingListService,
+    private val networkHandler: ProgramStageWorkingListNetworkHandler,
     private val handler: ProgramStageWorkingListHandler,
     private val apiDownloader: APIDownloader,
     private val versionManager: DHISVersionManager,
 ) : UidsCallCoroutines<ProgramStageWorkingList> {
     override suspend fun download(uids: Set<String>): List<ProgramStageWorkingList> {
-        val accessDataReadFilter = "access." + DataAccessFields.read.eq(true).generateString()
-
         return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_40)) {
             apiDownloader.downloadPartitioned(
                 uids,
                 MAX_UID_LIST_SIZE,
                 handler,
-            ) { partitionUids: Set<String> ->
-                service.getProgramStageWorkingLists(
-                    ProgramStageWorkingListFields.programUid.`in`(partitionUids),
-                    accessDataReadFilter,
-                    ProgramStageWorkingListFields.allFields,
-                    false,
-                )
-            }
+                networkHandler::getProgramStageWorkingLists,
+            )
         } else {
             emptyList()
         }

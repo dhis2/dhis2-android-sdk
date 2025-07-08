@@ -32,9 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -46,88 +43,68 @@ import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
-
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_ProgramSetting.Builder.class)
 public abstract class ProgramSetting implements CoreObject {
 
     @Nullable
-    @JsonProperty(UID)
     public abstract String uid();
 
     @Nullable
-    @JsonProperty()
     public abstract String name();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
     @Nullable
-    @JsonProperty()
     public abstract Integer teiDownload();
 
     @Nullable
-    @JsonProperty()
     public abstract Integer teiDBTrimming();
 
     @Nullable
-    @JsonProperty()
     public abstract Integer eventsDownload();
 
     @Nullable
-    @JsonProperty()
     public abstract Integer eventsDBTrimming();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DownloadPeriodColumnAdapter.class)
     public abstract DownloadPeriod updateDownload();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DownloadPeriodColumnAdapter.class)
     public abstract DownloadPeriod updateDBTrimming();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(LimitScopeColumnAdapter.class)
     public abstract LimitScope settingDownload();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(LimitScopeColumnAdapter.class)
     public abstract LimitScope settingDBTrimming();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(EnrollmentScopeColumnAdapter.class)
     public abstract EnrollmentScope enrollmentDownload();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(EnrollmentScopeColumnAdapter.class)
     public abstract EnrollmentScope enrollmentDBTrimming();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DownloadPeriodColumnAdapter.class)
     public abstract DownloadPeriod eventDateDownload();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DownloadPeriodColumnAdapter.class)
     public abstract DownloadPeriod eventDateDBTrimming();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DownloadPeriodColumnAdapter.class)
     public abstract DownloadPeriod enrollmentDateDownload();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DownloadPeriodColumnAdapter.class)
     public abstract DownloadPeriod enrollmentDateDBTrimming();
 
@@ -142,11 +119,9 @@ public abstract class ProgramSetting implements CoreObject {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
         public abstract Builder id(Long id);
 
-        @JsonProperty(UID)
         public abstract Builder uid(String uid);
 
         public abstract Builder name(String name);

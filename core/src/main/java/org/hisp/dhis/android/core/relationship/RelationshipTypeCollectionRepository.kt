@@ -42,7 +42,6 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipConstraintCh
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollectionRepositoryHelper.availableForEnrollmentRawQuery
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollectionRepositoryHelper.availableForEventRawQuery
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollectionRepositoryHelper.availableForTrackedEntityInstanceRawQuery
-import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeFields
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.koin.core.annotation.Singleton
@@ -135,7 +134,7 @@ class RelationshipTypeCollectionRepository internal constructor(
     }
 
     fun withConstraints(): RelationshipTypeCollectionRepository {
-        return cf.withChild(RelationshipTypeFields.CONSTRAINTS)!!
+        return cf.withChild(CONSTRAINTS)
     }
 
     private fun constraintClauseBuilder(
@@ -164,8 +163,10 @@ class RelationshipTypeCollectionRepository internal constructor(
     }
 
     internal companion object {
+        private const val CONSTRAINTS = "constraints"
+
         val childrenAppenders: ChildrenAppenderGetter<RelationshipType> = mapOf(
-            RelationshipTypeFields.CONSTRAINTS to ::RelationshipConstraintChildrenAppender,
+            CONSTRAINTS to ::RelationshipConstraintChildrenAppender,
         )
     }
 }

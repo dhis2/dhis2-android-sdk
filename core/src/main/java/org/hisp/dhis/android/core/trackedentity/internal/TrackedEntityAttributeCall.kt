@@ -34,7 +34,7 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackedEntityAttributeCall(
-    private val service: TrackedEntityAttributeService,
+    private val networkHandler: TrackedEntityAttributeNetworkHandler,
     private val handler: TrackedEntityAttributeHandler,
     private val apiDownloader: APIDownloader,
 ) : UidsCallCoroutines<TrackedEntityAttribute> {
@@ -43,13 +43,8 @@ internal class TrackedEntityAttributeCall(
             uids,
             MAX_UID_LIST_SIZE,
             handler,
-        ) { partitionUids: Set<String> ->
-            service.getTrackedEntityAttributes(
-                TrackedEntityAttributeFields.allFields,
-                TrackedEntityAttributeFields.uid.`in`(partitionUids),
-                false,
-            )
-        }
+            networkHandler::getTrackedEntityAttributes,
+        )
     }
 
     companion object {

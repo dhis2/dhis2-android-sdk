@@ -30,6 +30,7 @@ plugins {
     alias(libs.plugins.sonarqube)
     alias(libs.plugins.dokka)
     alias(libs.plugins.nexus.publish)
+    alias(libs.plugins.cyclonedx)
 }
 
 sonarqube {

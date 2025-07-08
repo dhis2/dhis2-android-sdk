@@ -55,6 +55,34 @@
         3,
         4
       ]
+    },
+    {
+      "created": "2014-07-16T12:56:42.441",
+      "lastUpdated": "2014-07-16T17:23:51.253",
+      "name": "fafafefe",
+      "id": "P2igXCbiteg",
+      "displayDescription": "PCV 2 must be equal or lower than PCV 1 doses given",
+      "displayName": "PCV 2 <= PCV 1",
+      "importance": "LOW",
+      "description": "PCV 2 must be equal or lower than PCV 1 doses given",
+      "operator": "less_than_or_equal_to",
+      "periodType": "Monthly",
+      "instruction": "PCV 2 cannot be higher than PCV 1 doses given",
+      "skipFormValidation": true,
+      "rightSide": {
+        "description": "asdasd",
+        "missingValueStrategy": "NEVER_SKIP"
+      },
+      "leftSide": {
+        "expression": "#{mGN1az8Xub6}",
+        "description": "PCV 2",
+        "missingValueStrategy": "NEVER_SKIP"
+      },
+      "organisationUnitLevels": [
+        2,
+        3,
+        4
+      ]
     }
   ]
 }

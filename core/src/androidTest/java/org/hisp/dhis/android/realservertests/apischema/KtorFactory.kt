@@ -34,21 +34,20 @@ import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.request
 import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.bodyAsText
-import io.ktor.http.ContentType
+import io.ktor.client.statement.readBytes
 import io.ktor.http.HttpMethod
-import io.ktor.http.contentType
-import io.ktor.serialization.jackson.JacksonConverter
+import io.ktor.serialization.kotlinx.json.json
 import org.hisp.dhis.android.core.arch.api.RequestBuilder
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
+import org.hisp.dhis.android.core.arch.api.internal.PreventURLDecodePlugin
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 
 internal object KtorFactory {
     fun getClient(serverUrl: String): HttpTestClient {
         val client = HttpClient(OkHttp) {
             install(ContentNegotiation) {
-                val converter = JacksonConverter(ObjectMapperFactory.objectMapper())
-                register(ContentType.Application.Json, converter)
+                json(KotlinxJsonParser.instance)
             }
+            install(PreventURLDecodePlugin.instance)
             expectSuccess = true
         }
         return HttpTestClient(client, serverUrl)
@@ -70,9 +69,8 @@ internal object KtorFactory {
                     }
                 }
             }
-            return if (response.contentType().toString().startsWith("text/plain")) {
-                val mapper = ObjectMapperFactory.objectMapper()
-                return mapper.readValue(response.bodyAsText(), T::class.java)
+            return if (T::class == ByteArray::class) {
+                response.readBytes() as T
             } else {
                 response.body()
             }

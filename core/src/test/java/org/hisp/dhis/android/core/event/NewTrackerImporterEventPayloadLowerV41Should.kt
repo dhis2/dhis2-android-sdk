@@ -27,26 +27,23 @@
  */
 package org.hisp.dhis.android.core.event
 
-import com.fasterxml.jackson.core.type.TypeReference
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.arch.api.payload.internal.TrackerPayload
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.tracker.NewEventPayload
 import org.junit.Test
 
 class NewTrackerImporterEventPayloadLowerV41Should :
-    BaseObjectShould("event/new_tracker_importer_events_lower_v41.json"),
+    BaseObjectKotlinxShould("event/new_tracker_importer_events_lower_v41.json"),
     ObjectShould {
 
     @Test
     override fun map_from_json_string() {
-        val eventPayload = objectMapper.readValue(
-            jsonStream,
-            object : TypeReference<TrackerPayload<NewTrackerImporterEvent>>() {},
-        )
+        val eventPayloadDTO = deserialize(NewEventPayload.serializer())
+        val eventPayload = eventPayloadDTO
 
-        assertThat(eventPayload.pager()?.page).isEqualTo(1)
-        assertThat(eventPayload.pager()?.pageSize).isEqualTo(50)
+        assertThat(eventPayload.pager().page).isEqualTo(1)
+        assertThat(eventPayload.pager().pageSize).isEqualTo(50)
         assertThat(eventPayload.items().size).isEqualTo(2)
     }
 }

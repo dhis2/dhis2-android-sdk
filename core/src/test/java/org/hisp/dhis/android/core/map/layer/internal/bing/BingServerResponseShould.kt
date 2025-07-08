@@ -28,37 +28,77 @@
 package org.hisp.dhis.android.core.map.layer.internal.bing
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.map.layer.MapLayerPosition
+import org.hisp.dhis.android.network.bing.BingServerResponseDTO
 import org.junit.Test
 
-class BingServerResponseShould : BaseObjectShould("map/layer/bing/bing_server_response.json"), ObjectShould {
+class BingServerResponseShould : BaseObjectKotlinxShould("map/layer/bing/bing_server_response.json"), ObjectShould {
     @Test
     override fun map_from_json_string() {
-        objectMapper.readValue(jsonStream, BingServerResponse::class.java)?.let {
-            assertThat(it.resourceSets.size).isEqualTo(1)
+        val bingServerResponseDTO = deserialize(BingServerResponseDTO.serializer())
+        assertThat(bingServerResponseDTO.resourceSets!!.size).isEqualTo(1)
 
-            it.resourceSets.first().let { s ->
-                assertThat(s.resources.size).isEqualTo(1)
+        bingServerResponseDTO.resourceSets.first().let { s ->
+            assertThat(s.resources.size).isEqualTo(1)
 
-                val r = s.resources.first()
-                assertThat(r.imageHeight).isEqualTo(256)
-                assertThat(r.imageWidth).isEqualTo(256)
-                assertThat(r.imageUrl).startsWith("https://{subdomain}.ssl.ak.dynamic.tiles.virtualearth.net/comp/")
-                assertThat(r.imageUrlSubdomains.size).isEqualTo(4)
-                assertThat(r.zoomMax).isEqualTo(21)
-                assertThat(r.zoomMin).isEqualTo(1)
-                assertThat(r.imageryProviders.size).isEqualTo(5)
+            val r = s.resources.first()
+            assertThat(r.imageHeight).isEqualTo(256)
+            assertThat(r.imageWidth).isEqualTo(256)
+            assertThat(r.imageUrl).startsWith("https://{subdomain}.ssl.ak.dynamic.tiles.virtualearth.net/comp/")
+            assertThat(r.imageUrlSubdomains.size).isEqualTo(4)
+            assertThat(r.zoomMax).isEqualTo(21)
+            assertThat(r.zoomMin).isEqualTo(1)
+            assertThat(r.imageryProviders.size).isEqualTo(5)
 
-                val p = r.imageryProviders.first()
-                assertThat(p.attribution).isEqualTo("© 2022 Microsoft Corporation")
-                assertThat(p.coverageAreas.size).isEqualTo(1)
+            val p = r.imageryProviders.first()
+            assertThat(p.attribution).isEqualTo("© 2022 Microsoft Corporation")
+            assertThat(p.coverageAreas.size).isEqualTo(1)
 
-                val c = p.coverageAreas.first()
-                assertThat(c.bbox).isEqualTo(listOf(-90.0, -180.0, 90.0, 180.0))
-                assertThat(c.zoomMax).isEqualTo(21)
-                assertThat(c.zoomMin).isEqualTo(1)
-            }
+            val c = p.coverageAreas.first()
+            assertThat(c.bbox).isEqualTo(listOf(-90.0, -180.0, 90.0, 180.0))
+            assertThat(c.zoomMax).isEqualTo(21)
+            assertThat(c.zoomMin).isEqualTo(1)
         }
+
+        val mapLayerList = bingServerResponseDTO.toDomain(
+            BingBasemap(
+                id = "bingLight",
+                name = "Bing Road",
+                style = "CanvasLight",
+            ),
+        )
+
+        assertThat(mapLayerList.size).isEqualTo(1)
+        val mapLayer = mapLayerList.first()
+
+        assertThat(mapLayer.uid()).isEqualTo("bingLight")
+        assertThat(mapLayer.name()).isEqualTo("Bing Road")
+        assertThat(mapLayer.style()).isEqualTo("CanvasLight")
+
+        assertThat(mapLayer.mapLayerPosition()).isEqualTo(MapLayerPosition.BASEMAP)
+        assertThat(mapLayer.external()).isFalse()
+        assertThat(mapLayer.imageUrl()).startsWith("https://{subdomain}.ssl.ak.dynamic.tiles.virtualearth.net/comp/")
+        assertThat(mapLayer.subdomains()?.size).isEqualTo(4)
+        assertThat(mapLayer.subdomainPlaceholder()).isEqualTo("{subdomain}")
+
+        assertThat(mapLayer.imageryProviders()).hasSize(5)
+        assertThat(mapLayer.imageryProviders()!![0].attribution()).isEqualTo("© 2022 Microsoft Corporation")
+        assertThat(mapLayer.imageryProviders()!![0].coverageAreas()).hasSize(1)
+        assertThat(mapLayer.imageryProviders()!![0].coverageAreas()!![0].bbox()).isEqualTo(
+            listOf(
+                -90.0,
+                -180.0,
+                90.0,
+                180.0,
+            ),
+        )
+        assertThat(mapLayer.imageryProviders()!![0].coverageAreas()!![0].zoomMax()).isEqualTo(21)
+        assertThat(mapLayer.imageryProviders()!![0].coverageAreas()!![0].zoomMin()).isEqualTo(1)
+
+        assertThat(mapLayer.mapService()).isNull()
+        assertThat(mapLayer.imageFormat()).isNull()
+        assertThat(mapLayer.layers()).isNull()
     }
 }

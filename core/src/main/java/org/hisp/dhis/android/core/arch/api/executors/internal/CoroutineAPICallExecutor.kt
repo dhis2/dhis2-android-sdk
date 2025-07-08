@@ -35,7 +35,7 @@ internal interface CoroutineAPICallExecutor {
         storeError: Boolean = true,
         acceptedErrorCodes: List<Int>? = null,
         errorCatcher: APICallErrorCatcher? = null,
-        errorClass: Class<P>? = null,
+        errorClassParser: ((body: String) -> P)? = null,
         block: suspend () -> P,
     ): Result<P, D2Error>
 

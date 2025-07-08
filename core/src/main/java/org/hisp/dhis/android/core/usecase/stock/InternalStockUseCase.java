@@ -33,9 +33,6 @@ import android.database.Cursor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -46,38 +43,30 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import java.util.List;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_InternalStockUseCase.Builder.class)
 public abstract class InternalStockUseCase extends BaseObject implements ObjectWithUidInterface {
 
     public static final String TRANSACTIONS = "transactions";
 
     @Override
     @NonNull
-    @JsonProperty("programUid")
     public abstract String uid();
 
     @NonNull
-    @JsonProperty()
     public abstract String itemCode();
 
     @NonNull
-    @JsonProperty()
     public abstract String itemDescription();
 
     @NonNull
-    @JsonProperty()
     public abstract String programType();
 
     @NonNull
-    @JsonProperty()
     public abstract String description();
 
     @NonNull
-    @JsonProperty()
     public abstract String stockOnHand();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(IgnoreInternalStockUseCaseTransactionListColumnAdapter.class)
     public abstract List<InternalStockUseCaseTransaction> transactions();
 
@@ -92,11 +81,9 @@ public abstract class InternalStockUseCase extends BaseObject implements ObjectW
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseObject.Builder<Builder> {
         public abstract Builder id(Long id);
 
-        @JsonProperty("programUid")
         public abstract Builder uid(String uid);
 
         public abstract Builder itemCode(String itemCode);

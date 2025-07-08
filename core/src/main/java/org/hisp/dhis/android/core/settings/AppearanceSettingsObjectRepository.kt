@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.settings.AppearanceSettingsHelper.getSpecifics
 import org.hisp.dhis.android.core.settings.AppearanceSettingsHelper.programToCompletionSpinner
 import org.hisp.dhis.android.core.settings.AppearanceSettingsHelper.toCompletionSpinner
 import org.hisp.dhis.android.core.settings.internal.AppearanceSettingCall
+import org.hisp.dhis.android.core.settings.internal.DataSetConfigurationSettingStore
 import org.hisp.dhis.android.core.settings.internal.FilterSettingStore
 import org.hisp.dhis.android.core.settings.internal.ProgramConfigurationSettingStore
 import org.koin.core.annotation.Singleton
@@ -43,14 +44,19 @@ import org.koin.core.annotation.Singleton
 class AppearanceSettingsObjectRepository internal constructor(
     private val filterSettingStore: FilterSettingStore,
     private val programConfigurationSettingStore: ProgramConfigurationSettingStore,
+    private val dataSetConfigurationSettingStore: DataSetConfigurationSettingStore,
     appearanceSettingCall: AppearanceSettingCall,
 ) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<AppearanceSettings>(appearanceSettingCall),
     ReadOnlyWithDownloadObjectRepository<AppearanceSettings> {
     override fun blockingGet(): AppearanceSettings? {
         val filters = filterSettingStore.selectAll()
         val programConfigurationSettingList = programConfigurationSettingStore.selectAll()
+        val dataSetConfigurationSettingList = dataSetConfigurationSettingStore.selectAll()
 
-        return if (filters.isEmpty() && programConfigurationSettingList.isEmpty()) {
+        return if (filters.isEmpty() &&
+            programConfigurationSettingList.isEmpty() &&
+            dataSetConfigurationSettingList.isEmpty()
+        ) {
             null
         } else {
             // FilterSorting
@@ -66,9 +72,15 @@ class AppearanceSettingsObjectRepository internal constructor(
                 .specificSettings(getSpecifics(programConfigurationSettingList))
                 .build()
 
+            val dataSetConfigurationSettings = DataSetConfigurationSettings.builder()
+                .globalSettings(getGlobal(dataSetConfigurationSettingList))
+                .specificSettings(getSpecifics(dataSetConfigurationSettingList))
+                .build()
+
             AppearanceSettings.builder()
                 .filterSorting(filterSorting)
                 .programConfiguration(programConfigurationSettings)
+                .dataSetConfiguration(dataSetConfigurationSettings)
                 .completionSpinner(programToCompletionSpinner(programConfigurationSettings))
                 .build()
         }
@@ -153,6 +165,11 @@ class AppearanceSettingsObjectRepository internal constructor(
         return getGlobal(programSettingList)
     }
 
+    fun getGlobalDataSetConfigurationSetting(): DataSetConfigurationSetting? {
+        val dataSetSettingList = dataSetConfigurationSettingStore.selectAll()
+        return getGlobal(dataSetSettingList)
+    }
+
     @Deprecated("")
     fun getGlobalCompletionSpinner(): CompletionSpinner? {
         val setting = getGlobalProgramConfigurationSetting()
@@ -164,6 +181,13 @@ class AppearanceSettingsObjectRepository internal constructor(
         var result = getSpecifics(programSettingList)[uid]
 
         return result ?: getGlobalProgramConfigurationSetting()
+    }
+
+    fun getDataSetConfigurationByUid(uid: String?): DataSetConfigurationSetting? {
+        val dataSetSettingList = dataSetConfigurationSettingStore.selectAll()
+        var result = getSpecifics(dataSetSettingList)[uid]
+
+        return result ?: getGlobalDataSetConfigurationSetting()
     }
 
     @Deprecated("")

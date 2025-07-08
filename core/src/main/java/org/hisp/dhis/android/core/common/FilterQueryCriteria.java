@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.common;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 
@@ -52,45 +50,36 @@ public abstract class FilterQueryCriteria {
     public abstract Boolean followUp();
 
     @Nullable
-    @JsonProperty()
     public abstract String organisationUnit();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(OrganisationUnitModeColumnAdapter.class)
     public abstract OrganisationUnitMode ouMode();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(AssignedUserModeColumnAdapter.class)
     public abstract AssignedUserMode assignedUserMode();
 
     @Nullable
-    @JsonProperty()
     @ColumnName(EventFilterTableInfo.Columns.ORDER)
     public abstract String order();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(StringListColumnAdapter.class)
     public abstract List<String> displayColumnOrder();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(EventStatusColumnAdapter.class)
     public abstract EventStatus eventStatus();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DateFilterPeriodColumnAdapter.class)
     public abstract DateFilterPeriod eventDate();
 
     @Nullable
-    @JsonProperty()
     @ColumnAdapter(DateFilterPeriodColumnAdapter.class)
     public abstract DateFilterPeriod lastUpdatedDate();
 
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder<T extends Builder> {
 
         public abstract T followUp(Boolean followUp);

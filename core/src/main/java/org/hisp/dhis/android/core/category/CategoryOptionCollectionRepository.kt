@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilt
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
-import org.hisp.dhis.android.core.category.internal.CategoryOptionFields
 import org.hisp.dhis.android.core.category.internal.CategoryOptionOrganisationUnitChildrenAppender
 import org.hisp.dhis.android.core.category.internal.CategoryOptionStore
 import org.hisp.dhis.android.core.common.IdentifiableColumns
@@ -95,12 +94,14 @@ class CategoryOptionCollectionRepository internal constructor(
      * @return Collection repository
      */
     fun withOrganisationUnits(): CategoryOptionCollectionRepository {
-        return cf.withChild(CategoryOptionFields.ORGANISATION_UNITS)
+        return cf.withChild(ORGANISATION_UNITS)
     }
 
     internal companion object {
+        private const val ORGANISATION_UNITS = "organisationUnits"
+
         val childrenAppenders: ChildrenAppenderGetter<CategoryOption> = mapOf(
-            CategoryOptionFields.ORGANISATION_UNITS to CategoryOptionOrganisationUnitChildrenAppender::create,
+            ORGANISATION_UNITS to CategoryOptionOrganisationUnitChildrenAppender::create,
         )
     }
 }

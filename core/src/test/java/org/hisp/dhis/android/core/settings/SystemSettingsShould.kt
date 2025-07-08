@@ -28,17 +28,25 @@
 package org.hisp.dhis.android.core.settings
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectShould
+import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.network.systemsettings.SystemSettingsDTO
 import org.junit.Test
 
-class SystemSettingsShould : BaseObjectShould("settings/system_settings.json"), ObjectShould {
+class SystemSettingsShould : BaseObjectKotlinxShould("settings/system_settings.json"), ObjectShould {
     @Test
     override fun map_from_json_string() {
-        val settings = objectMapper.readValue(jsonStream, SystemSettings::class.java)
-        assertThat(settings.keyFlag).isEqualTo("sierra_leone")
-        assertThat(settings.keyStyle).isEqualTo("light_blue/light_blue.css")
-        assertThat(settings.keyDefaultBaseMap).isEqualTo("keyDefaultBaseMap")
-        assertThat(settings.keyBingMapsApiKey).isEqualTo("keyBingMapsApiKey")
+        val settingsDTO = deserialize(SystemSettingsDTO.serializer())
+        val settingsSplitted = settingsDTO.toDomainSplitted()
+        assertThat(settingsSplitted.get(0).key()).isEqualTo(SystemSetting.SystemSettingKey.FLAG)
+        assertThat(settingsSplitted.get(0).value()).isEqualTo("sierra_leone")
+        assertThat(settingsSplitted.get(1).key()).isEqualTo(SystemSetting.SystemSettingKey.STYLE)
+        assertThat(settingsSplitted.get(1).value()).isEqualTo("light_blue/light_blue.css")
+        assertThat(settingsSplitted.get(2).key()).isEqualTo(SystemSetting.SystemSettingKey.DEFAULT_BASE_MAP)
+        assertThat(settingsSplitted.get(2).value()).isEqualTo("keyDefaultBaseMap")
+
+        val settingsBingMaps = settingsDTO.toDomainBingMapsApiKey()
+        assertThat(settingsBingMaps.key()).isEqualTo(SystemSetting.SystemSettingKey.BING_BASE_MAP)
+        assertThat(settingsBingMaps.value()).isEqualTo("keyBingMapsApiKey")
     }
 }

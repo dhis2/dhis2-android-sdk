@@ -38,6 +38,7 @@ internal class RelationshipServiceImpl(
     private val programRepository: ProgramCollectionRepository,
     private val programStageRepository: ProgramStageCollectionRepository,
     private val trackedEntityTypeRepository: TrackedEntityTypeCollectionRepository,
+    private val relationshipTypeRepository: RelationshipTypeCollectionRepository,
 ) : RelationshipService {
     override fun hasAccessPermission(relationshipType: RelationshipType): Boolean {
         val fromAccess = relationshipType.fromConstraint()?.let { constraintAccess(it) } ?: false
@@ -52,6 +53,57 @@ internal class RelationshipServiceImpl(
         return writeAccess
     }
 
+    override fun getRelationshipTypesForTrackedEntities(
+        trackedEntityType: String,
+        programUid: String?,
+    ): List<RelationshipTypeWithEntitySide> {
+        val entityType = RelationshipEntityType.TRACKED_ENTITY_INSTANCE
+
+        val potentialRelTypes = relationshipTypeRepository
+            .byConstraint(entityType, trackedEntityType)
+            .withConstraints()
+            .blockingGet()
+
+        return mapToApplicableSides(entityType, potentialRelTypes) { constraint ->
+            constraint.trackedEntityType()?.uid() == trackedEntityType &&
+                (
+                    programUid == null ||
+                        constraint.program()?.uid() == null ||
+                        constraint.program()?.uid() == programUid
+                    )
+        }
+    }
+
+    override fun getRelationshipTypesForEnrollments(
+        programUid: String,
+    ): List<RelationshipTypeWithEntitySide> {
+        val entityType = RelationshipEntityType.PROGRAM_INSTANCE
+
+        val potentialRelTypes = relationshipTypeRepository
+            .byConstraint(entityType, programUid)
+            .withConstraints()
+            .blockingGet()
+
+        return mapToApplicableSides(entityType, potentialRelTypes) { constraint ->
+            constraint.program()?.uid() == programUid
+        }
+    }
+
+    override fun getRelationshipTypesForEvents(
+        programStageUid: String,
+    ): List<RelationshipTypeWithEntitySide> {
+        val entityType = RelationshipEntityType.PROGRAM_STAGE_INSTANCE
+
+        val potentialRelTypes = relationshipTypeRepository
+            .byConstraint(entityType, programStageUid)
+            .withConstraints()
+            .blockingGet()
+
+        return mapToApplicableSides(entityType, potentialRelTypes) { constraint ->
+            constraint.programStage()?.uid() == programStageUid
+        }
+    }
+
     private fun constraintAccess(
         constraint: RelationshipConstraint,
     ): Boolean = when (constraint.relationshipEntity()) {
@@ -59,6 +111,7 @@ internal class RelationshipServiceImpl(
             val programUid = constraint.program()?.uid()
             programRepository.uid(programUid).blockingGet()!!.access().data().write()!!
         }
+
         RelationshipEntityType.PROGRAM_STAGE_INSTANCE -> {
             if (constraint.programStage()?.uid() != null) {
                 val programStageUid = constraint.programStage()?.uid()
@@ -68,10 +121,39 @@ internal class RelationshipServiceImpl(
                 programRepository.uid(programUid).blockingGet()!!.access().data().write()!!
             }
         }
+
         RelationshipEntityType.TRACKED_ENTITY_INSTANCE -> {
             val teTypeUid = constraint.trackedEntityType()?.uid()
             trackedEntityTypeRepository.uid(teTypeUid).blockingGet()!!.access().data().write()!!
         }
+
         else -> false
+    }
+
+    private fun mapToApplicableSides(
+        entityType: RelationshipEntityType,
+        relationshipTypes: List<RelationshipType>,
+        matchesSide: (RelationshipConstraint) -> Boolean,
+    ): List<RelationshipTypeWithEntitySide> {
+        return relationshipTypes.flatMap { relType ->
+            val applicableSides = mutableListOf<RelationshipTypeWithEntitySide>()
+            if (matchesConstraint(relType.fromConstraint(), entityType, matchesSide)) {
+                applicableSides.add(RelationshipTypeWithEntitySide(relType, RelationshipConstraintType.FROM))
+            }
+            if (relType.bidirectional() == true && matchesConstraint(relType.toConstraint(), entityType, matchesSide)) {
+                applicableSides.add(RelationshipTypeWithEntitySide(relType, RelationshipConstraintType.TO))
+            }
+            applicableSides
+        }
+    }
+
+    private fun matchesConstraint(
+        constraint: RelationshipConstraint?,
+        entityType: RelationshipEntityType,
+        matchesSide: (RelationshipConstraint) -> Boolean,
+    ): Boolean {
+        return constraint?.let {
+            constraint.relationshipEntity() == entityType && matchesSide(constraint)
+        } ?: false
     }
 }

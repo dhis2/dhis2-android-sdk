@@ -32,13 +32,11 @@ import android.content.ContentValues;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gabrielittner.auto.value.cursor.ColumnName;
 
 public interface CoreObject {
     @Nullable
     @ColumnName(CoreColumns.ID)
-    @JsonIgnore()
     Long id();
 
     ContentValues toContentValues();

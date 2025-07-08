@@ -32,20 +32,9 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 
-internal abstract class EventEndpointCallFactory {
+internal interface EventEndpointCallFactory {
 
-    abstract suspend fun getCollectionCall(eventQuery: TrackerAPIQuery): Payload<Event>
+    suspend fun getCollectionCall(eventQuery: TrackerAPIQuery): Payload<Event>
 
-    abstract suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Payload<Event>
-
-    protected fun getUidStr(query: TrackerAPIQuery): String? {
-        return if (query.uids.isEmpty()) null else query.uids.joinToString(";")
-    }
-
-    protected fun getEventStartDate(query: TrackerAPIQuery): String? {
-        return when {
-            query.commonParams.program != null -> query.commonParams.startDate
-            else -> null
-        }
-    }
+    suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Payload<Event>
 }

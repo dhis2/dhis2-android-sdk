@@ -70,6 +70,10 @@ public final class DataSetTableInfo {
         public static final String RENDER_HORIZONTALLY = "renderHorizontally";
         public static final String ACCESS_DATA_WRITE = "accessDataWrite";
         public static final String WORKFLOW = "workflow";
+        public static final String HEADER = "header";
+        public static final String SUB_HEADER = "subHeader";
+        public static final String CUSTOM_TEXT_ALIGN = "customTextAlign";
+        public static final String TABS_DIRECTION = "tabsDirection";
 
         @Override
         public String[] all() {
@@ -90,7 +94,11 @@ public final class DataSetTableInfo {
                     RENDER_AS_TABS,
                     RENDER_HORIZONTALLY,
                     ACCESS_DATA_WRITE,
-                    WORKFLOW
+                    WORKFLOW,
+                    HEADER,
+                    SUB_HEADER,
+                    CUSTOM_TEXT_ALIGN,
+                    TABS_DIRECTION
             );
         }
     }

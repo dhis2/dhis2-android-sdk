@@ -78,7 +78,7 @@ class CategoryComboHandlerShould {
     @Test
     fun handle_option_combos() {
         categoryComboHandler.handle(combo)
-        verify(optionComboHandler).handleMany(eq(optionCombos), any())
+        verify(optionComboHandler).handleMany(eq(optionCombos))
     }
 
     @Test

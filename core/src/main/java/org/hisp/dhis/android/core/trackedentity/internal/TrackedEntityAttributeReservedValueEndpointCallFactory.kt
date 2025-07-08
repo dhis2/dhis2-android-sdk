@@ -40,7 +40,7 @@ import org.koin.core.annotation.Singleton
 internal class TrackedEntityAttributeReservedValueEndpointCallFactory internal constructor(
     data: GenericCallData,
     coroutineAPICallExecutor: CoroutineAPICallExecutor,
-    private val service: TrackedEntityAttributeReservedValueService,
+    private val networkHandler: TrackedEntityAttributeReservedValueNetworkHandler,
     private val handler: TrackedEntityAttributeReservedValueHandler,
 ) : QueryCoroutineCallFactoryImpl<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueQuery>(
     data,
@@ -58,7 +58,7 @@ internal class TrackedEntityAttributeReservedValueEndpointCallFactory internal c
             ),
             CoroutineCallFetcher<TrackedEntityAttributeReservedValue> {
             override suspend fun call(): List<TrackedEntityAttributeReservedValue> {
-                return service.generateAndReserveWithOrgUnitCode(
+                return networkHandler.getReservedValues(
                     query.trackedEntityAttributeUid,
                     query.numberToReserve,
                     query.organisationUnit?.code(),

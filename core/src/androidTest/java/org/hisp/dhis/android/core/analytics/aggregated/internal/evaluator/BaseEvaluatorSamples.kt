@@ -27,9 +27,17 @@
  */
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
-import org.hisp.dhis.android.core.category.*
+import org.hisp.dhis.android.core.category.Category
+import org.hisp.dhis.android.core.category.CategoryCategoryComboLink
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink
+import org.hisp.dhis.android.core.category.CategoryCombo
+import org.hisp.dhis.android.core.category.CategoryDataDimensionType
+import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.category.CategoryOptionCombo
+import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLink
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.FormType
 import org.hisp.dhis.android.core.common.ObjectWithUid
@@ -37,6 +45,8 @@ import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
+import org.hisp.dhis.android.core.option.Option
+import org.hisp.dhis.android.core.option.OptionSet
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
@@ -140,6 +150,28 @@ object BaseEvaluatorSamples {
         .categoryOptionCombo(categoryOptionCombo.uid())
         .build()
 
+    val optionSet = OptionSet.builder()
+        .uid(generator.generate())
+        .displayName("Option set 1")
+        .valueType(ValueType.TEXT)
+        .build()
+
+    val option1 = Option.builder()
+        .uid(generator.generate())
+        .code("optionCode1")
+        .name("Option name 1")
+        .optionSet(ObjectWithUid.create(optionSet.uid()))
+        .displayName("Option name 1")
+        .build()
+
+    val option2 = Option.builder()
+        .uid(generator.generate())
+        .code("optionCode2")
+        .name("Option name 2")
+        .optionSet(ObjectWithUid.create(optionSet.uid()))
+        .displayName("Option name 2")
+        .build()
+
     val attribute: Category = Category.builder()
         .uid(generator.generate())
         .displayName("Attribute 1")
@@ -208,6 +240,15 @@ object BaseEvaluatorSamples {
         .categoryCombo(ObjectWithUid.fromIdentifiable(categoryCombo))
         .build()
 
+    val dataElement5 = DataElement.builder()
+        .uid(generator.generate())
+        .displayName("Data element 5")
+        .valueType(ValueType.TEXT)
+        .aggregationType(AggregationType.DEFAULT.name)
+        .categoryCombo(ObjectWithUid.fromIdentifiable(categoryCombo))
+        .optionSet(ObjectWithUid.create(optionSet.uid()))
+        .build()
+
     val dataElementOperand = DataElementOperand.builder()
         .uid("${dataElement1.uid()}.${categoryOptionCombo.uid()}")
         .dataElement(ObjectWithUid.create(dataElement1.uid()))
@@ -224,6 +265,13 @@ object BaseEvaluatorSamples {
         .uid(generator.generate())
         .displayName("Attribute 2")
         .valueType(ValueType.TEXT)
+        .build()
+
+    val attribute3 = TrackedEntityAttribute.builder()
+        .uid(generator.generate())
+        .displayName("Attribute 3")
+        .valueType(ValueType.TEXT)
+        .optionSet(ObjectWithUid.create(optionSet.uid()))
         .build()
 
     val period2019SunW25: Period = Period.builder()
@@ -330,6 +378,7 @@ object BaseEvaluatorSamples {
         .uid(generator.generate())
         .name("Relationship type")
         .bidirectional(false)
+        .access(AccessHelper.createForDataWrite(true))
         .build()
 
     val relationshipTypeFrom = RelationshipConstraint.builder()

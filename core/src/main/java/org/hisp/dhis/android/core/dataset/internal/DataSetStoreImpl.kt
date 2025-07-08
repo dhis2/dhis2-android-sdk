@@ -71,6 +71,10 @@ internal class DataSetStoreImpl(
                 w.bind(27, o.renderHorizontally())
                 w.bind(28, o.access().data().write())
                 w.bind(29, getUidOrNull(o.workflow()))
+                w.bind(30, o.displayOptions()?.customText()?.header())
+                w.bind(31, o.displayOptions()?.customText()?.subHeader())
+                w.bind(32, o.displayOptions()?.customText()?.align()?.name)
+                w.bind(33, o.displayOptions()?.tabsDirection()?.name)
             }
         }
     }

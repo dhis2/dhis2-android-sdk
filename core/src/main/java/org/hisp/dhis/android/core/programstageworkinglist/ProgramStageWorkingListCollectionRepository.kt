@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
-import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageQueryCriteriaFields
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListAttributeValueFilterChildrenAppender
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListDataFilterChildrenAppender
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListStore
@@ -107,18 +106,21 @@ class ProgramStageWorkingListCollectionRepository internal constructor(
     }
 
     fun withDataFilters(): ProgramStageWorkingListCollectionRepository {
-        return cf.withChild(ProgramStageQueryCriteriaFields.DATA_FILTERS)
+        return cf.withChild(DATA_FILTER)
     }
 
     fun withAttributeValueFilters(): ProgramStageWorkingListCollectionRepository {
-        return cf.withChild(ProgramStageQueryCriteriaFields.ATTRIBUTE_VALUE_FILTER)
+        return cf.withChild(ATTRIBUTE_FILTER)
     }
 
     internal companion object {
+        private const val DATA_FILTER = "ProgramStageWorkingListEventDataFilter"
+        private const val ATTRIBUTE_FILTER = "ProgramStageWorkingListAttributeValueFilter"
+
         val childrenAppenders: ChildrenAppenderGetter<ProgramStageWorkingList> = mapOf(
-            ProgramStageQueryCriteriaFields.DATA_FILTERS to
+            DATA_FILTER to
                 ProgramStageWorkingListDataFilterChildrenAppender::create,
-            ProgramStageQueryCriteriaFields.ATTRIBUTE_VALUE_FILTER to
+            ATTRIBUTE_FILTER to
                 ProgramStageWorkingListAttributeValueFilterChildrenAppender::create,
         )
     }

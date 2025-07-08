@@ -32,9 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -46,16 +43,13 @@ import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_RelationshipConstraint.Builder.class)
 public abstract class RelationshipConstraint extends BaseObject {
 
     @Nullable
-    @JsonIgnore()
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid relationshipType();
 
     @Nullable
-    @JsonIgnore()
     @ColumnAdapter(RelationshipConstraintTypeColumnAdapter.class)
     public abstract RelationshipConstraintType constraintType();
 
@@ -84,13 +78,12 @@ public abstract class RelationshipConstraint extends BaseObject {
     }
 
     public static Builder builder() {
-        return new $$AutoValue_RelationshipConstraint.Builder();
+        return new AutoValue_RelationshipConstraint.Builder();
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder extends BaseObject.Builder<Builder> {
 
         public abstract Builder relationshipType(ObjectWithUid relationshipType);

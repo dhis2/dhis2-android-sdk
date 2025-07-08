@@ -55,7 +55,7 @@ import org.mockito.stubbing.Answer
 
 @RunWith(JUnit4::class)
 class LogInCallUnitShould : BaseCallShould() {
-    private val userService: UserService = mock()
+    private val userNetworkHandler: UserNetworkHandler = mock()
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor = CoroutineAPICallExecutorMock()
     private val userHandler: UserHandler = mock()
     private val authenticatedUserStore: AuthenticatedUserStore = mock()
@@ -63,7 +63,7 @@ class LogInCallUnitShould : BaseCallShould() {
     private val userIdStore: UserIdInMemoryStore = mock()
     private val apiErrorCatcher: UserAuthenticateCallErrorCatcher = mock()
 
-    private val credentialsCaptor: KArgumentCaptor<LoginPayload> = argumentCaptor()
+   private val credentialsCaptor: KArgumentCaptor<LoginPayload> = argumentCaptor()
 
     private val apiUser: User = mock()
     private val loginResponse: LoginResponse = mock()
@@ -95,8 +95,8 @@ class LogInCallUnitShould : BaseCallShould() {
             onBlocking { download(any()) }.doReturn(Unit)
         }
         whenLoginAPICall { loginResponse }
-        userService.stub {
-            onBlocking { getUser(any()) }.doAnswer { apiUser }
+        userNetworkHandler.stub {
+            onBlocking { getUser() }.doAnswer { apiUser }
         }
         whenOldLoginAPICall { apiUser }
         whenever(userStore.selectFirst()).thenReturn(dbUser)
@@ -119,7 +119,7 @@ class LogInCallUnitShould : BaseCallShould() {
         twoFactorCode: String?
     ): User {
         return LogInCall(
-            coroutineAPICallExecutor, userService, credentialsSecureStore,
+            coroutineAPICallExecutor, userNetworkHandler, credentialsSecureStore,
             userIdStore, userHandler, authenticatedUserStore, systemInfoCall, userStore,
             LogInDatabaseManager(multiUserDatabaseManager, generalSettingCall),
             LogInExceptions(credentialsSecureStore), accountManager, apiErrorCatcher,
@@ -127,14 +127,14 @@ class LogInCallUnitShould : BaseCallShould() {
     }
 
     private fun whenLoginAPICall(answer: Answer<LoginResponse>) {
-        userService.stub {
+        userNetworkHandler.stub {
             onBlocking { login(any()) }.doAnswer(answer)
         }
     }
 
     private fun whenOldLoginAPICall(answer: Answer<User>) {
-        userService.stub {
-            onBlocking { authenticate(any(), any()) }.doAnswer(answer)
+        userNetworkHandler.stub {
+            onBlocking { authenticate(any()) }.doAnswer(answer)
         }
     }
 
@@ -173,11 +173,10 @@ class LogInCallUnitShould : BaseCallShould() {
     @Test
     fun invoke_server_with_correct_parameters_after_call() = runTest {
         whenever(
-            userService.login(
-                credentialsCaptor.capture()
+            userNetworkHandler.login(
+                credentialsCaptor.capture(),
             ),
         ).thenReturn(loginResponse)
-
         login()
 
         assertThat(USERNAME).isEqualTo(credentialsCaptor.firstValue.username)
@@ -187,7 +186,7 @@ class LogInCallUnitShould : BaseCallShould() {
     @Test
     fun invoke_server_with_correct_parameters_including_two_factor_after_call() = runTest {
         whenever(
-            userService.login(
+            userNetworkHandler.login(
                 credentialsCaptor.capture()
             ),
         ).thenReturn(loginResponse)
@@ -203,6 +202,7 @@ class LogInCallUnitShould : BaseCallShould() {
     @Throws(D2Error::class)
     fun not_invoke_stores_on_exception_on_call() = runTest {
         whenLoginAPICall { throw d2Error }
+        whenOldLoginAPICall { throw d2Error }
         whenever(d2Error.errorCode()).thenReturn(D2ErrorCode.UNEXPECTED)
 
         assertD2Error { login() }
@@ -289,8 +289,8 @@ class LogInCallUnitShould : BaseCallShould() {
 
         login()
 
-        verify(userService).login(any())
-        verify(userService).authenticate(any(), any())
+        verify(userNetworkHandler).login(any())
+        verify(userNetworkHandler).authenticate(any())
     }
 
     private fun verifySuccess() {

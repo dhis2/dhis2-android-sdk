@@ -32,17 +32,13 @@ import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.WHONutritionComponentColumnAdapter;
-import org.hisp.dhis.android.core.arch.json.internal.AnalyticsTEIDataElementDeserializer;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
-@JsonDeserialize(using = AnalyticsTEIDataElementDeserializer.class)
 public abstract class AnalyticsTeiDataElement implements CoreObject {
 
     @Nullable
@@ -68,7 +64,6 @@ public abstract class AnalyticsTeiDataElement implements CoreObject {
     }
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     public abstract static class Builder {
         public abstract Builder id(Long id);
 

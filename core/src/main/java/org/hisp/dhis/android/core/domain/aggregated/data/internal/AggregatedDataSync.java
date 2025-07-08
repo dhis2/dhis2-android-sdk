@@ -32,8 +32,6 @@ import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
@@ -45,7 +43,6 @@ import org.hisp.dhis.android.core.period.PeriodType;
 import java.util.Date;
 
 @AutoValue
-@JsonDeserialize(builder = $$AutoValue_AggregatedDataSync.Builder.class)
 abstract class AggregatedDataSync extends BaseObject {
 
     @NonNull
@@ -83,7 +80,6 @@ abstract class AggregatedDataSync extends BaseObject {
     abstract Builder toBuilder();
 
     @AutoValue.Builder
-    @JsonPOJOBuilder(withPrefix = "")
     abstract static class Builder extends BaseObject.Builder<Builder> {
 
         abstract Builder dataSet(String dataSet);

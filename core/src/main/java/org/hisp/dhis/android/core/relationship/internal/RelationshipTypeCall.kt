@@ -29,14 +29,13 @@ package org.hisp.dhis.android.core.relationship.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallCoroutines
-import org.hisp.dhis.android.core.common.internal.DataAccessFields
 import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.hisp.dhis.android.core.resource.internal.Resource
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class RelationshipTypeCall(
-    private val service: RelationshipTypeService,
+    private val networkHandler: RelationshipTypeNetworkHandler,
     private val handler: RelationshipTypeHandler,
     private val apiDownloader: APIDownloader,
 ) : ListCallCoroutines<RelationshipType> {
@@ -45,14 +44,7 @@ internal class RelationshipTypeCall(
         return apiDownloader.downloadWithLastUpdated(
             handler,
             resourceType,
-        ) { lastUpdated: String? ->
-            val accessDataFilter = "access.data." + DataAccessFields.read.eq(true).generateString()
-            service.getRelationshipTypes(
-                RelationshipTypeFields.allFields,
-                lastUpdated.takeIf { !it.isNullOrEmpty() }?.let { RelationshipTypeFields.lastUpdated.gt(it) },
-                accessDataFilter,
-                false,
-            )
-        }
+            networkHandler::getRelationshipTypes,
+        )
     }
 }

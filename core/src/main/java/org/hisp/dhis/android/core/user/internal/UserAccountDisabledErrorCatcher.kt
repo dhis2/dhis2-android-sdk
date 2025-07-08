@@ -27,19 +27,17 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
-import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.user.AccountDeletionReason
+import org.hisp.dhis.android.network.common.dto.HttpMessageResponseDTO
 import org.koin.core.annotation.Singleton
 import java.net.HttpURLConnection
 
 @Singleton
 @Suppress("TooGenericExceptionCaught")
 internal class UserAccountDisabledErrorCatcher(
-    private val objectMapper: ObjectMapper,
     private val accountManager: AccountManagerImpl,
 ) : APICallErrorCatcher {
 
@@ -59,7 +57,7 @@ internal class UserAccountDisabledErrorCatcher(
     fun isUserAccountLocked(response: D2HttpResponse): Boolean {
         return try {
             val isUnauthorized = response.statusCode == HttpURLConnection.HTTP_UNAUTHORIZED
-            val responseErrorBody = objectMapper.readValue(response.errorBody, HttpMessageResponse::class.java)
+            val responseErrorBody = HttpMessageResponseDTO.toErrorClass(response.errorBody)
             isUnauthorized && responseErrorBody.message().contains("Account disabled")
         } catch (e: Exception) {
             false

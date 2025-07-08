@@ -110,6 +110,7 @@ internal interface IndicatorDataItem : ExpressionItem {
                     coc.displayName(),
                 )
             }
+
             is DimensionItem.DataItem.DataElementItem -> {
                 val dataElement =
                     visitor.indicatorContext!!.dataElementStore.selectByUid(dataItem.uid)
@@ -117,6 +118,7 @@ internal interface IndicatorDataItem : ExpressionItem {
 
                 dataItem.uid to MetadataItem.DataElementItem(dataElement)
             }
+
             is DimensionItem.DataItem.ProgramIndicatorItem -> {
                 val programIndicator = visitor.indicatorContext!!.programIndicatorRepository
                     .withAnalyticsPeriodBoundaries()
@@ -126,6 +128,7 @@ internal interface IndicatorDataItem : ExpressionItem {
 
                 dataItem.uid to MetadataItem.ProgramIndicatorItem(programIndicator)
             }
+
             is DimensionItem.DataItem.EventDataItem.DataElement -> {
                 val program = visitor.indicatorContext!!.programStore.selectByUid(dataItem.program)
                     ?: throw AnalyticsException.InvalidProgram(dataItem.program)
@@ -136,6 +139,7 @@ internal interface IndicatorDataItem : ExpressionItem {
                 val metadataItem = MetadataItem.EventDataElementItem(dataElement, program)
                 metadataItem.id to metadataItem
             }
+
             is DimensionItem.DataItem.EventDataItem.Attribute -> {
                 val program = visitor.indicatorContext!!.programStore.selectByUid(dataItem.program)
                     ?: throw AnalyticsException.InvalidProgram(dataItem.program)
@@ -146,6 +150,7 @@ internal interface IndicatorDataItem : ExpressionItem {
                 val metadataItem = MetadataItem.EventAttributeItem(attribute, program)
                 metadataItem.id to metadataItem
             }
+
             else ->
                 null
         }

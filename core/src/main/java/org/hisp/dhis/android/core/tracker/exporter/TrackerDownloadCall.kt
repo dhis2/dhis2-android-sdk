@@ -331,7 +331,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
     @Suppress("TooGenericExceptionCaught")
     protected suspend fun getItems(query: TrackerAPIQuery): List<T> {
         return try {
-            getPayloadResult(query).getOrThrow().items()
+            getPayloadResult(query).getOrThrow().items
         } catch (e: RuntimeException) {
             if (e.cause is D2Error) {
                 throw e.cause as D2Error

@@ -29,37 +29,35 @@ package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 
 import android.content.ContentValues
 import android.database.Cursor
-import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.JsonMappingException
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
-import org.hisp.dhis.android.core.arch.json.internal.ObjectMapperFactory
+import kotlinx.serialization.SerializationException
 
 internal abstract class JSONObjectColumnAdapter<O> : ColumnTypeAdapter<O> {
-    protected abstract fun getEnumClass(): Class<O>
-
     override fun fromCursor(cursor: Cursor, columnName: String): O? {
         val columnIndex = cursor.getColumnIndex(columnName)
         val str = cursor.getString(columnIndex)
-        return try {
-            ObjectMapperFactory.objectMapper().readValue(str, getEnumClass())
-        } catch (e: JsonProcessingException) {
-            null
-        } catch (e: JsonMappingException) {
-            null
-        } catch (e: IllegalArgumentException) {
-            null
-        } catch (e: IllegalStateException) {
-            null
+        return str?.let {
+            try {
+                deserialize(it)
+            } catch (e: SerializationException) {
+                null
+            } catch (e: IllegalArgumentException) {
+                null
+            } catch (e: IllegalStateException) {
+                null
+            }
         }
     }
 
     override fun toContentValues(contentValues: ContentValues, columnName: String, o: O?) {
         try {
             contentValues.put(columnName, serialize(o))
-        } catch (e: JsonProcessingException) {
+        } catch (e: SerializationException) {
             e.printStackTrace()
         }
     }
 
     abstract fun serialize(o: O?): String?
+
+    abstract fun deserialize(str: String): O
 }

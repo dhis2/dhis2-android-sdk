@@ -33,13 +33,13 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class PingCall internal constructor(
-    private val pingService: PingService,
+    private val pingNetworkHandler: PingNetworkHandler,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : DownloadProvider {
 
     override suspend fun download(storeError: Boolean) {
         coroutineAPICallExecutor.wrap(storeError = storeError) {
-            pingService.getPing()
+            pingNetworkHandler.getPing()
         }
     }
 }

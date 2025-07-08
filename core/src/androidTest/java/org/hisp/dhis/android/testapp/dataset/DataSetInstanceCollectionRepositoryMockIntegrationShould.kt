@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,8 @@ package org.hisp.dhis.android.testapp.dataset
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.dataset.DataSetInstance
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
@@ -135,5 +137,22 @@ class DataSetInstanceCollectionRepositoryMockIntegrationShould :
 
         assertThat(dataSetInstances.size).isEqualTo(1)
         assertThat(dataSetInstances.first().valueCount()).isEqualTo(1)
+    }
+
+    @Test
+    fun returns_a_unique_data_set_instance() {
+        val dataSetInstance: DataSetInstance? = d2.dataSetModule().dataSetInstances()
+            .dataSetInstance(
+                "BfMAe6Itzgt",
+                "201908",
+                "DiszpKrYNg8",
+                "Gmbgme7z9BF",
+            ).blockingGet()
+
+        assertThat(dataSetInstance).isNotNull()
+        assertThat(dataSetInstance?.periodType()).isEqualTo(PeriodType.Monthly)
+        assertThat(dataSetInstance?.dataValueState()).isEqualTo(State.SYNCED)
+        assertThat(dataSetInstance?.valueCount()).isEqualTo(1)
+        assertThat(dataSetInstance?.completed()).isFalse()
     }
 }

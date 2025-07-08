@@ -35,7 +35,7 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class CategoryCall(
     private val handler: CategoryHandler,
-    private val service: CategoryService,
+    private val networkHandler: CategoryNetworkHandler,
     private val apiDownloader: APIDownloader,
 ) : UidsCallCoroutines<Category> {
 
@@ -44,16 +44,6 @@ internal class CategoryCall(
     }
 
     override suspend fun download(uids: Set<String>): List<Category> {
-        return apiDownloader.downloadPartitioned(
-            uids,
-            MAX_UID_LIST_SIZE,
-            handler,
-        ) { partitionUids: Set<String> ->
-            service.getCategories(
-                CategoryFields.allFields,
-                CategoryFields.uid.`in`(partitionUids),
-                paging = false,
-            )
-        }
+        return apiDownloader.downloadPartitioned(uids, MAX_UID_LIST_SIZE, handler, networkHandler::getCategories)
     }
 }

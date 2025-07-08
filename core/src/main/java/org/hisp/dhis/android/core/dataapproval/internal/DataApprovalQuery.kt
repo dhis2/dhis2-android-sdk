@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.arch.call.queries.internal.BaseQuery
 
 internal data class DataApprovalQuery(
     val workflowsUids: Collection<String>,
-    val organisationUnistUids: Collection<String>,
+    val organisationUnitsUids: Collection<String>,
     val periodIds: Collection<String>,
     val attributeOptionCombosUids: Collection<String>,
     val lastUpdatedStr: String?,

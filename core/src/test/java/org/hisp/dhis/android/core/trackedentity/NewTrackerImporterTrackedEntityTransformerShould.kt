@@ -27,20 +27,17 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.Inject
-import org.junit.Before
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromStream
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
+import org.hisp.dhis.android.network.trackedentityinstance.TrackedEntityInstanceDTO
+import org.hisp.dhis.android.network.tracker.NewTrackedEntityDTO
 import org.junit.Test
 
 class NewTrackerImporterTrackedEntityTransformerShould {
 
-    private lateinit var objectMapper: ObjectMapper
-
-    @Before
-    fun setup() {
-        objectMapper = Inject.objectMapper()
-    }
+    private val jsonParser: Json = KotlinxJsonParser.instance
 
     @Test
     fun detransform_tracked_entity() {
@@ -50,10 +47,10 @@ class NewTrackerImporterTrackedEntityTransformerShould {
         val newJson = this.javaClass.classLoader
             ?.getResourceAsStream("trackedentity/new_tracker_transformer_new_tracked_entity.json")
 
-        val oldTrackedEntity = objectMapper.readValue(oldJson, TrackedEntityInstance::class.java)
-        val newTrackedEntity = objectMapper.readValue(newJson, NewTrackerImporterTrackedEntity::class.java)
+        val oldTrackedEntity = jsonParser.decodeFromStream(TrackedEntityInstanceDTO.serializer(), oldJson!!).toDomain()
+        val newTrackedEntity = jsonParser.decodeFromStream(NewTrackedEntityDTO.serializer(), newJson!!)
 
-        val transformedTrackedEntity = NewTrackerImporterTrackedEntityTransformer.deTransform(newTrackedEntity)
+        val transformedTrackedEntity = newTrackedEntity.toDomain()
 
         assertThat(transformedTrackedEntity).isEqualTo(oldTrackedEntity)
     }

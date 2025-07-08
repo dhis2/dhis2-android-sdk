@@ -42,7 +42,6 @@ import org.hisp.dhis.android.core.common.FormType
 import org.hisp.dhis.android.core.common.ValidationStrategy
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.program.internal.ProgramStageAttributeChildrenAppender
-import org.hisp.dhis.android.core.program.internal.ProgramStageFields
 import org.hisp.dhis.android.core.program.internal.ProgramStageStore
 import org.koin.core.annotation.Singleton
 
@@ -188,12 +187,14 @@ class ProgramStageCollectionRepository internal constructor(
     }
 
     fun withAttributes(): ProgramStageCollectionRepository {
-        return cf.withChild(ProgramStageFields.ATTRIBUTE_VALUES)
+        return cf.withChild(ATTRIBUTE_VALUES)
     }
 
     internal companion object {
+        private const val ATTRIBUTE_VALUES = "attributeValues"
+
         val childrenAppenders: ChildrenAppenderGetter<ProgramStage> = mapOf(
-            ProgramStageFields.ATTRIBUTE_VALUES to ProgramStageAttributeChildrenAppender::create,
+            ATTRIBUTE_VALUES to ProgramStageAttributeChildrenAppender::create,
         )
     }
 }

@@ -473,7 +473,7 @@ CREATE TABLE IndicatorLegendSetLink(indicator TEXT NOT NULL, legendSet TEXT NOT 
 INSERT INTO IndicatorLegendSetLink(indicator, legendSet, sortOrder) SELECT indicator, legendSet, sortOrder FROM IndicatorLegendSetLink_Old;
 
 ALTER TABLE ProgramTempOwner RENAME TO ProgramTempOwner_Old;
-CREATE TABLE ProgramTempOwner(program TEXT NOT NULL, trackedEntityInstance TEXT NOT NULL, created TEXT NOT NULL, validUntil TEXT NOT NULL, reason TEXT NOT NULL, PRIMARY KEY(program, trackedEntityInstance), FOREIGN KEY(program) REFERENCES Program(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(trackedEntityInstance) REFERENCES TrackedEntityInstance(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+CREATE TABLE ProgramTempOwner(program TEXT NOT NULL, trackedEntityInstance TEXT NOT NULL, created TEXT NOT NULL, validUntil TEXT NOT NULL, reason TEXT NOT NULL, PRIMARY KEY(program, trackedEntityInstance, created), FOREIGN KEY(program) REFERENCES Program(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
 INSERT INTO ProgramTempOwner(program, trackedEntityInstance, created, validUntil, reason) SELECT program, trackedEntityInstance, created, validUntil, reason FROM ProgramTempOwner_Old;
 
 ALTER TABLE ProgramOwner RENAME TO ProgramOwner_Old;

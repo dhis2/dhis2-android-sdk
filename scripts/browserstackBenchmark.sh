@@ -35,8 +35,9 @@ source "$(dirname $0)/browserstackCommon.sh"
 log_file=$1
 benchmark_config_file="$(dirname $0)/../core/src/androidTest/assets/benchmark.json"
 
+SERVER_URL=${SERVER_URL:-https://play.dhis2.org/demo}
 CONFIG="{
-  \"serverUrl\": \"${SERVER_URL:-https://play.im.dhis2.org/stable-2-42-1}\",
+  \"serverUrl\": \"${SERVER_URL}\",
   \"username\": \"${USERNAME:-android}\",
   \"password\": \"${PASSWORD:-Android123}\"
 }

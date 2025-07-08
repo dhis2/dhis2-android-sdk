@@ -36,13 +36,13 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsService
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.AggregationType
-import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
+import org.hisp.dhis.android.persistence.datavalue.DataValueTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
-import org.hisp.dhis.android.core.period.PeriodTableInfo
+import org.hisp.dhis.android.persistence.period.PeriodTableInfo
 import org.hisp.dhis.android.core.util.SqlAggregator
 import org.koin.core.annotation.Singleton
-import org.hisp.dhis.android.core.datavalue.DataValueTableInfo.Columns as dvColumns
-import org.hisp.dhis.android.core.period.PeriodTableInfo.Columns as peColumns
+import org.hisp.dhis.android.persistence.datavalue.DataValueTableInfo.Columns as dvColumns
+import org.hisp.dhis.android.persistence.period.PeriodTableInfo.Columns as peColumns
 
 @Singleton
 @Suppress("TooManyFunctions")

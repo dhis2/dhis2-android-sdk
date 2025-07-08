@@ -30,10 +30,11 @@ package org.hisp.dhis.android.core.dataelement;
 
 import android.content.ContentValues;
 
-import org.hisp.dhis.android.core.common.ValueType;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.persistence.dataelement.DataElementTableInfo;
 
 public class CreateDataElementUtils {
     private static final long ID = 2L;

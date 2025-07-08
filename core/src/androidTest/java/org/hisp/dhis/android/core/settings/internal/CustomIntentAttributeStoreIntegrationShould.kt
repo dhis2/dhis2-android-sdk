@@ -31,9 +31,10 @@ package org.hisp.dhis.android.core.settings.internal
 import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.settings.CustomIntentSamples
 import org.hisp.dhis.android.core.settings.CustomIntentAttribute
-import org.hisp.dhis.android.core.settings.CustomIntentAttributeTableInfo
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.settings.CustomIntentAttributeStoreImpl
+import org.hisp.dhis.android.persistence.settings.CustomIntentAttributeTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

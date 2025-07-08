@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.arch.db.adapters.custom.internal;
 
-import static org.hisp.dhis.android.core.validation.ValidationRuleTableInfo.Columns.LEFT_SIDE_DESCRIPTION;
-import static org.hisp.dhis.android.core.validation.ValidationRuleTableInfo.Columns.LEFT_SIDE_EXPRESSION;
-import static org.hisp.dhis.android.core.validation.ValidationRuleTableInfo.Columns.LEFT_SIDE_MISSING_VALUE_STRATEGY;
+import static org.hisp.dhis.android.persistence.validation.ValidationRuleTableInfo.Columns.LEFT_SIDE_DESCRIPTION;
+import static org.hisp.dhis.android.persistence.validation.ValidationRuleTableInfo.Columns.LEFT_SIDE_EXPRESSION;
+import static org.hisp.dhis.android.persistence.validation.ValidationRuleTableInfo.Columns.LEFT_SIDE_MISSING_VALUE_STRATEGY;
 
 public class LeftValidationRuleExpressionColumnAdapter extends ValidationRuleExpressionColumnAdapter {
 

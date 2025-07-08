@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
-import org.hisp.dhis.android.core.relationship.RelationshipConstraintTableInfo
-import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo
-import org.hisp.dhis.android.core.relationship.RelationshipTableInfo
-import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo
+import org.hisp.dhis.android.persistence.relationship.RelationshipConstraintTableInfo
+import org.hisp.dhis.android.persistence.relationship.RelationshipItemTableInfo
+import org.hisp.dhis.android.persistence.relationship.RelationshipTableInfo
+import org.hisp.dhis.android.persistence.relationship.RelationshipTypeTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
 import org.koin.core.annotation.Singleton

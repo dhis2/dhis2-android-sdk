@@ -31,6 +31,8 @@ package org.hisp.dhis.android.core.event.internal;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.hisp.dhis.android.persistence.event.EventSyncStoreImpl;
+import org.hisp.dhis.android.persistence.event.EventSyncTableInfo;
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)

@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.option.internal
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.option.OptionGroup
-import org.hisp.dhis.android.core.option.OptionGroupTableInfo
+import org.hisp.dhis.android.persistence.option.OptionGroupTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

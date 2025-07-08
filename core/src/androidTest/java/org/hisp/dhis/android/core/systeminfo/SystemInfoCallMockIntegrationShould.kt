@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownl
 import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.systeminfo.SystemInfoTableInfo
 import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test

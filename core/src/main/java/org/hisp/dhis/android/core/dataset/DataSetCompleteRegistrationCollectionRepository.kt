@@ -47,6 +47,7 @@ import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationHa
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationPostCall
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationStore
 import org.hisp.dhis.android.core.user.UserCredentialsObjectRepository
+import org.hisp.dhis.android.persistence.dataset.DataSetCompleteRegistrationTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

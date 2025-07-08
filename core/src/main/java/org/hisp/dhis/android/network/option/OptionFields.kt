@@ -29,7 +29,7 @@ package org.hisp.dhis.android.network.option
 
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.option.Option
-import org.hisp.dhis.android.core.option.OptionTableInfo.Columns
+import org.hisp.dhis.android.persistence.option.OptionTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Field
 import org.hisp.dhis.android.network.common.fields.Fields

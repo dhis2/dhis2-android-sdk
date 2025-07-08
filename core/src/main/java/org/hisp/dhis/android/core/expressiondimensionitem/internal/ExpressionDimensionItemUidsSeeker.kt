@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.expressiondimensionitem.internal
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.uidseeker.internal.BaseUidsSeeker
 import org.hisp.dhis.android.core.visualization.DimensionItemType
-import org.hisp.dhis.android.core.visualization.VisualizationDimensionItemTableInfo
+import org.hisp.dhis.android.persistence.visualization.VisualizationDimensionItemTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

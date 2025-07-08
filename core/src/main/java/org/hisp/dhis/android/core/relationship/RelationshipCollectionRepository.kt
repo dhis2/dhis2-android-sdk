@@ -57,6 +57,8 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipItemChildren
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemElementStoreSelector
 import org.hisp.dhis.android.core.relationship.internal.RelationshipManager
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
+import org.hisp.dhis.android.persistence.relationship.RelationshipItemTableInfo
+import org.hisp.dhis.android.persistence.relationship.RelationshipTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

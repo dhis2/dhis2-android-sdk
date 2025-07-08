@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope.OrderByDirection
 import org.hisp.dhis.android.core.option.internal.OptionStore
+import org.hisp.dhis.android.persistence.option.OptionTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

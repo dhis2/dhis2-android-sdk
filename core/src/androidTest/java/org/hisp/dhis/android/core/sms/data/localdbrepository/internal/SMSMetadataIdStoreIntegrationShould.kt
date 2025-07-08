@@ -31,12 +31,14 @@ import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractInt
 import org.hisp.dhis.android.core.data.sms.SMSMetadataIdSample
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.sms.SMSMetadataIdStoreImpl
+import org.hisp.dhis.android.persistence.sms.SmsMetadataIdTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class SMSMetadataIdStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<SMSMetadataId>(
     SMSMetadataIdStoreImpl(TestDatabaseAdapterFactory.get()),
-    SMSMetadataIdTableInfo.TABLE_INFO,
+    SmsMetadataIdTableInfo.TABLE_INFO,
     TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): SMSMetadataId {

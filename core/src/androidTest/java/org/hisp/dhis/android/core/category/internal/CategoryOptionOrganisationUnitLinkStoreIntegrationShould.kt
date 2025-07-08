@@ -29,11 +29,12 @@
 package org.hisp.dhis.android.core.category.internal
 
 import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLink
-import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLinkTableInfo
 import org.hisp.dhis.android.core.data.category.CategoryOptionOrganisationUnitLinkSamples
 import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.category.CategoryOptionOrganisationUnitLinkStoreImpl
+import org.hisp.dhis.android.persistence.category.CategoryOptionOrganisationUnitLinkTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

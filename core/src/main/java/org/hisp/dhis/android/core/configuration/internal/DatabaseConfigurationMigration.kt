@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
 import org.hisp.dhis.android.core.configuration.internal.migration.DatabaseConfigurationInsecureStoreOld
 import org.hisp.dhis.android.core.configuration.internal.migration.Migration260
+import org.hisp.dhis.android.persistence.configuration.ConfigurationStoreImpl
 import org.koin.core.annotation.Singleton
 
 @Singleton

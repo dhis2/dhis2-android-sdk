@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.validation.internal
 
-import org.hisp.dhis.android.core.validation.DataSetValidationRuleLinkTableInfo
-import org.hisp.dhis.android.core.validation.ValidationRuleTableInfo
+import org.hisp.dhis.android.persistence.validation.DataSetValidationRuleLinkTableInfo
+import org.hisp.dhis.android.persistence.validation.ValidationRuleTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
 import org.koin.core.annotation.Singleton

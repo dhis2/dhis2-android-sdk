@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koi
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
-import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryTableInfo
+import org.hisp.dhis.android.persistence.program.AnalyticsPeriodBoundaryTableInfo
 import org.hisp.dhis.android.core.program.ProgramIndicator
 
 internal class ProgramIndicatorAnalyticsPeriodBoundaryChildrenAppender private constructor(

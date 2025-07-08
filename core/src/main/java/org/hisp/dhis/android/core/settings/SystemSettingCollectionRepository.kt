@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyOneObjectRe
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.settings.SystemSetting.SystemSettingKey
 import org.hisp.dhis.android.core.settings.internal.SystemSettingStore
+import org.hisp.dhis.android.persistence.settings.SystemSettingTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

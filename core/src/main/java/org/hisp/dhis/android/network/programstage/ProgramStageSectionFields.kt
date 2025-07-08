@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.network.programstage
 
 import org.hisp.dhis.android.core.program.ProgramStageSection
-import org.hisp.dhis.android.core.program.ProgramStageSectionTableInfo.Columns
+import org.hisp.dhis.android.persistence.program.ProgramStageSectionTableInfo.Columns
 import org.hisp.dhis.android.core.program.SectionRendering
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields

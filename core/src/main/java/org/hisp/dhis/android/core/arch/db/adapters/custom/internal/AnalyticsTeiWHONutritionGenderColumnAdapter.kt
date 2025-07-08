@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 import android.content.ContentValues
 import android.database.Cursor
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
-import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionDataTableInfo.Columns
+import org.hisp.dhis.android.persistence.settings.AnalyticsTeiWHONutritionDataTableInfo.Columns
 import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionGender
 import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionGenderValues
 

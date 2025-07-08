@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.resource.internal
 
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import org.hisp.dhis.android.persistence.resource.ResourceTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

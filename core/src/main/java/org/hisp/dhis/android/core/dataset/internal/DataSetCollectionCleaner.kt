@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.dataset.internal
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.dataset.DataSet
-import org.hisp.dhis.android.core.dataset.DataSetTableInfo
+import org.hisp.dhis.android.persistence.dataset.DataSetTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

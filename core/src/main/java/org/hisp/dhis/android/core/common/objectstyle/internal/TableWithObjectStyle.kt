@@ -28,16 +28,16 @@
 
 package org.hisp.dhis.android.core.common.objectstyle.internal
 
-import org.hisp.dhis.android.core.dataelement.DataElementTableInfo
-import org.hisp.dhis.android.core.dataset.DataSetTableInfo
-import org.hisp.dhis.android.core.indicator.IndicatorTableInfo
-import org.hisp.dhis.android.core.option.OptionTableInfo
-import org.hisp.dhis.android.core.program.ProgramSectionTableInfo
-import org.hisp.dhis.android.core.program.ProgramStageTableInfo
-import org.hisp.dhis.android.core.program.ProgramTableInfo
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterTableInfo
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeTableInfo
+import org.hisp.dhis.android.persistence.dataelement.DataElementTableInfo
+import org.hisp.dhis.android.persistence.dataset.DataSetTableInfo
+import org.hisp.dhis.android.persistence.indicator.IndicatorTableInfo
+import org.hisp.dhis.android.persistence.option.OptionTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramSectionTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramStageTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceFilterTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityTypeTableInfo
 
 internal object TableWithObjectStyle {
     val allTableNames: List<String> = setOf(

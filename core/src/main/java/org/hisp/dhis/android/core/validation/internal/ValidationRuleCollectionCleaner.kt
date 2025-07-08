@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.validation.internal
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.validation.ValidationRule
-import org.hisp.dhis.android.core.validation.ValidationRuleTableInfo
+import org.hisp.dhis.android.persistence.validation.ValidationRuleTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

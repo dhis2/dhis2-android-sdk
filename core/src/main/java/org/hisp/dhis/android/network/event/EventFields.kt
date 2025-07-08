@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.network.event
 
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.event.EventTableInfo.Columns
+import org.hisp.dhis.android.persistence.event.EventTableInfo.Columns
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue

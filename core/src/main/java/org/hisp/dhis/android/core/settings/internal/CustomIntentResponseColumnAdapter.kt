@@ -33,8 +33,8 @@ import android.database.Cursor
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
 import org.hisp.dhis.android.core.settings.CustomIntentResponse
 import org.hisp.dhis.android.core.settings.CustomIntentResponseData
-import org.hisp.dhis.android.core.settings.CustomIntentTableInfo.Columns.RESPONSE_DATA_ARGUMENT
-import org.hisp.dhis.android.core.settings.CustomIntentTableInfo.Columns.RESPONSE_DATA_PATH
+import org.hisp.dhis.android.persistence.settings.CustomIntentTableInfo.Columns.RESPONSE_DATA_ARGUMENT
+import org.hisp.dhis.android.persistence.settings.CustomIntentTableInfo.Columns.RESPONSE_DATA_PATH
 
 internal class CustomIntentResponseColumnAdapter : ColumnTypeAdapter<CustomIntentResponse> {
 

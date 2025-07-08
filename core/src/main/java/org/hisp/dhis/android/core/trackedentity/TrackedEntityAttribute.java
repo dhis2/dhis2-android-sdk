@@ -50,6 +50,7 @@ import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeTableInfo;
 
 import java.util.List;
 
@@ -94,11 +95,11 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
     public abstract Boolean confidential();
 
     @Nullable
-    @ColumnName(TrackedEntityAttributeTableInfo.Columns.ORG_UNIT_SCOPE)
+    @ColumnName(TrackedEntityAttributeTableInfo.Columns.ORGUNIT_SCOPE)
     public abstract Boolean orgUnitScope();
 
     @Nullable
-    @ColumnName(TrackedEntityAttributeTableInfo.Columns.UNIQUE)
+    @ColumnName(TrackedEntityAttributeTableInfo.Columns.UNIQUE_PROPERTY)
     public abstract Boolean unique();
 
     @Nullable

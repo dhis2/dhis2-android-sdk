@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.network.expressiondimensionitem
 
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
-import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItemTableInfo.Columns
+import org.hisp.dhis.android.persistence.expressiondimensionitem.ExpressionDimensionItemTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
 

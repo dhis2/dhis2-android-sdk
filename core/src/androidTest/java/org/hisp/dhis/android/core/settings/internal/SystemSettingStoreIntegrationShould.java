@@ -31,9 +31,10 @@ package org.hisp.dhis.android.core.settings.internal;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.settings.SystemSettingSamples;
 import org.hisp.dhis.android.core.settings.SystemSetting;
-import org.hisp.dhis.android.core.settings.SystemSettingTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.hisp.dhis.android.persistence.settings.SystemSettingStoreImpl;
+import org.hisp.dhis.android.persistence.settings.SystemSettingTableInfo;
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)

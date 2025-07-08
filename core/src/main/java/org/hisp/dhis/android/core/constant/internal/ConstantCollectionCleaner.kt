@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.constant.internal
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.constant.Constant
-import org.hisp.dhis.android.core.constant.ConstantTableInfo
+import org.hisp.dhis.android.persistence.constant.ConstantTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

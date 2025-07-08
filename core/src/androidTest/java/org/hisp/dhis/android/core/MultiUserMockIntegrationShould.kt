@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.core
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.category.CategoryOptionTableInfo
 import org.hisp.dhis.android.core.configuration.internal.BaseMultiUserDatabaseManager
 import org.hisp.dhis.android.core.data.category.CategoryOptionSamples
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
+import org.hisp.dhis.android.persistence.category.CategoryOptionTableInfo
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Test

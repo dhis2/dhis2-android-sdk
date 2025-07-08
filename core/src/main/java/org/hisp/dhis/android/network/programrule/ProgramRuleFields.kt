@@ -29,7 +29,7 @@ package org.hisp.dhis.android.network.programrule
 
 import org.hisp.dhis.android.core.program.ProgramRule
 import org.hisp.dhis.android.core.program.ProgramRuleAction
-import org.hisp.dhis.android.core.program.ProgramRuleTableInfo.Columns
+import org.hisp.dhis.android.persistence.program.ProgramRuleTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
 

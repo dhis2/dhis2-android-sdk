@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.core.dataelement.DataElementTableInfo.Columns
+import org.hisp.dhis.android.persistence.dataelement.DataElementTableInfo.Columns
 import org.hisp.dhis.android.core.legendset.LegendSet
 import org.hisp.dhis.android.network.attribute.AttributeValueFields
 import org.hisp.dhis.android.network.common.fields.AccessFields

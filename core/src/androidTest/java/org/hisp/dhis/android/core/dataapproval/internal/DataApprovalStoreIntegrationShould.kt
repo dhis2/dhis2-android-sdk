@@ -32,9 +32,10 @@ import org.hisp.dhis.android.core.data.dataapproval.DataApprovalSamples
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.dataapproval.DataApproval
 import org.hisp.dhis.android.core.dataapproval.DataApprovalState
-import org.hisp.dhis.android.core.dataapproval.DataApprovalTableInfo
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.dataapproval.DataApprovalStoreImpl
+import org.hisp.dhis.android.persistence.dataapproval.DataApprovalTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

@@ -33,9 +33,10 @@ import org.hisp.dhis.android.core.data.database.IdentifiableDataObjectStoreAbstr
 import org.hisp.dhis.android.core.data.trackedentity.EventSamples;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
-import org.hisp.dhis.android.core.event.EventTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.hisp.dhis.android.persistence.event.EventStoreImpl;
+import org.hisp.dhis.android.persistence.event.EventTableInfo;
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)

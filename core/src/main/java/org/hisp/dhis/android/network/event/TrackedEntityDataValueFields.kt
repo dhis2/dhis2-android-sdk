@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.network.event
 
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo.Columns
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityDataValueTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
 

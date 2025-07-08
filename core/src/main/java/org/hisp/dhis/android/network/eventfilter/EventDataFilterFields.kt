@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.network.eventfilter
 
 import org.hisp.dhis.android.core.event.EventDataFilter
-import org.hisp.dhis.android.core.event.EventDataFilterTableInfo.Columns
+import org.hisp.dhis.android.persistence.event.EventDataFilterTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
 

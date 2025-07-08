@@ -32,6 +32,7 @@ import androidx.test.runner.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples
 import org.hisp.dhis.android.core.util.dateFormat
+import org.hisp.dhis.android.persistence.systeminfo.SystemInfoTableInfo
 import org.junit.Test
 import org.junit.runner.RunWith
 

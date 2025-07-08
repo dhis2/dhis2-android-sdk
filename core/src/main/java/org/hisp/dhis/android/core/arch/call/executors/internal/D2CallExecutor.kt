@@ -28,12 +28,12 @@
 package org.hisp.dhis.android.core.arch.call.executors.internal
 
 import android.util.Log
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore
-import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStoreImpl
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -78,7 +78,7 @@ internal class D2CallExecutor(
     companion object {
         @JvmStatic
         fun create(databaseAdapter: DatabaseAdapter): D2CallExecutor {
-            return D2CallExecutor(databaseAdapter, D2ErrorStoreImpl(databaseAdapter))
+            return D2CallExecutor(databaseAdapter, koin.get<D2ErrorStore>())
         }
     }
 }

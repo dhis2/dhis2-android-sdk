@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.network.trackedentityinstancefilter
 
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilterTableInfo.Columns
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceEventFilterTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
 

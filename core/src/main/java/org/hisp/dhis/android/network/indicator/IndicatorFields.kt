@@ -29,7 +29,7 @@ package org.hisp.dhis.android.network.indicator
 
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.indicator.Indicator
-import org.hisp.dhis.android.core.indicator.IndicatorTableInfo.Columns
+import org.hisp.dhis.android.persistence.indicator.IndicatorTableInfo.Columns
 import org.hisp.dhis.android.core.legendset.LegendSet
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Field

@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListAttributeValueFilterChildrenAppender
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListDataFilterChildrenAppender
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListStore
-import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListTableInfo
+import org.hisp.dhis.android.persistence.programstageworkinglist.ProgramStageWorkingListTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -82,7 +82,7 @@ class ProgramStageWorkingListCollectionRepository internal constructor(
     }
 
     fun byOrder(): StringFilterConnector<ProgramStageWorkingListCollectionRepository> {
-        return cf.string(ProgramStageWorkingListTableInfo.Columns.ORDER)
+        return cf.string(ProgramStageWorkingListTableInfo.Columns.ORDER_PROPERTY)
     }
 
     fun byDisplayColumnOrder(): StringFilterConnector<ProgramStageWorkingListCollectionRepository> {

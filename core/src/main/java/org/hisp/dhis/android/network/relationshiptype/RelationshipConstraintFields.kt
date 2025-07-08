@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.network.relationshiptype
 
 import org.hisp.dhis.android.core.relationship.RelationshipConstraint
-import org.hisp.dhis.android.core.relationship.RelationshipConstraintTableInfo.Columns
+import org.hisp.dhis.android.persistence.relationship.RelationshipConstraintTableInfo.Columns
 import org.hisp.dhis.android.core.relationship.TrackerDataView
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields

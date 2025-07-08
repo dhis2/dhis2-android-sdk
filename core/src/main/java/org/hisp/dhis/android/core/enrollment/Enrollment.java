@@ -55,6 +55,7 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo;
 
 import java.util.Date;
 import java.util.List;
@@ -101,7 +102,7 @@ public abstract class Enrollment extends BaseDeletableDataObject implements Obje
     public abstract Date completedDate();
 
     @Nullable
-    @ColumnName(EnrollmentTableInfo.Columns.FOLLOW_UP)
+    @ColumnName(EnrollmentTableInfo.Columns.FOLLOWUP)
     public abstract Boolean followUp();
 
     @Nullable

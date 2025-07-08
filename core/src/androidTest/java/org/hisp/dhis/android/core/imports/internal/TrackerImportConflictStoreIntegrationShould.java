@@ -31,9 +31,10 @@ package org.hisp.dhis.android.core.imports.internal;
 import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.imports.TrackerImportConflictSamples;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
-import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.hisp.dhis.android.persistence.imports.TrackerImportConflictStoreImpl;
+import org.hisp.dhis.android.persistence.imports.TrackerImportConflictTableInfo;
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)

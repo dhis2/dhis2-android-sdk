@@ -38,6 +38,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.persistence.relationship.RelationshipConstraintTableInfo;
 
 import java.util.Collections;
 import java.util.List;

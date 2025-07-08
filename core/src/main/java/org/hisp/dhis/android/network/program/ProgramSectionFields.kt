@@ -29,7 +29,7 @@ package org.hisp.dhis.android.network.program
 
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.program.ProgramSection
-import org.hisp.dhis.android.core.program.ProgramSectionTableInfo.Columns
+import org.hisp.dhis.android.persistence.program.ProgramSectionTableInfo.Columns
 import org.hisp.dhis.android.core.program.SectionRendering
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields

@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.user.internal
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.user.UserGroup
-import org.hisp.dhis.android.core.user.UserGroupTableInfo
+import org.hisp.dhis.android.persistence.user.UserGroupTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

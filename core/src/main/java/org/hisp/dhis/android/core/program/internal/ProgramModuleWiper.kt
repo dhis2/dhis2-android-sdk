@@ -27,20 +27,20 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryTableInfo
-import org.hisp.dhis.android.core.program.ProgramIndicatorTableInfo
-import org.hisp.dhis.android.core.program.ProgramRuleActionTableInfo
-import org.hisp.dhis.android.core.program.ProgramRuleTableInfo
-import org.hisp.dhis.android.core.program.ProgramRuleVariableTableInfo
-import org.hisp.dhis.android.core.program.ProgramSectionAttributeLinkTableInfo
-import org.hisp.dhis.android.core.program.ProgramSectionTableInfo
-import org.hisp.dhis.android.core.program.ProgramStageDataElementTableInfo
-import org.hisp.dhis.android.core.program.ProgramStageSectionDataElementLinkTableInfo
-import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLinkTableInfo
-import org.hisp.dhis.android.core.program.ProgramStageSectionTableInfo
-import org.hisp.dhis.android.core.program.ProgramStageTableInfo
-import org.hisp.dhis.android.core.program.ProgramTableInfo
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo
+import org.hisp.dhis.android.persistence.program.AnalyticsPeriodBoundaryTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramIndicatorTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramRuleActionTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramRuleTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramRuleVariableTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramSectionAttributeLinkTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramSectionTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramStageDataElementTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramStageSectionDataElementLinkTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramStageSectionProgramIndicatorLinkTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramStageSectionTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramStageTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramTrackedEntityAttributeTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
 import org.koin.core.annotation.Singleton

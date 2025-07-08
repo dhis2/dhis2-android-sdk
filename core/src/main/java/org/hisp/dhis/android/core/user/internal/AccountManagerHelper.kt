@@ -31,15 +31,15 @@ package org.hisp.dhis.android.core.user.internal
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationTableInfo
-import org.hisp.dhis.android.core.datastore.DataStoreEntryTableInfo
-import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
-import org.hisp.dhis.android.core.event.EventTableInfo
-import org.hisp.dhis.android.core.fileresource.FileResourceTableInfo
-import org.hisp.dhis.android.core.note.NoteTableInfo
-import org.hisp.dhis.android.core.relationship.RelationshipTableInfo
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
+import org.hisp.dhis.android.persistence.dataset.DataSetCompleteRegistrationTableInfo
+import org.hisp.dhis.android.persistence.datastore.DataStoreEntryTableInfo
+import org.hisp.dhis.android.persistence.datavalue.DataValueTableInfo
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.persistence.event.EventTableInfo
+import org.hisp.dhis.android.persistence.fileresource.FileResourceTableInfo
+import org.hisp.dhis.android.persistence.note.NoteTableInfo
+import org.hisp.dhis.android.persistence.relationship.RelationshipTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceTableInfo
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerTableInfo
 
 internal object AccountManagerHelper {

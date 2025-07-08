@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.RelationshipCo
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo.Columns;
+import org.hisp.dhis.android.persistence.relationship.RelationshipItemTableInfo.Columns;
 
 @AutoValue
 public abstract class RelationshipItem implements CoreObject {

@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.network.dataset
 
 import org.hisp.dhis.android.core.dataset.DataInputPeriod
-import org.hisp.dhis.android.core.dataset.DataInputPeriodTableInfo
+import org.hisp.dhis.android.persistence.dataset.DataInputPeriodTableInfo
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
 

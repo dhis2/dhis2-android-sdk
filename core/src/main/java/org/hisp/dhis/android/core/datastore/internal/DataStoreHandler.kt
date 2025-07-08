@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.DataStoreEntry
-import org.hisp.dhis.android.core.datastore.DataStoreEntryTableInfo
+import org.hisp.dhis.android.persistence.datastore.DataStoreEntryTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

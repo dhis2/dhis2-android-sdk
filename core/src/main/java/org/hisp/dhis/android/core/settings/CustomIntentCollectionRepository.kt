@@ -35,6 +35,9 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.settings.internal.CustomIntentStore
 import org.hisp.dhis.android.core.settings.internal.CustomIntentTriggerChildrenAppender
+import org.hisp.dhis.android.persistence.settings.CustomIntentAttributeTableInfo
+import org.hisp.dhis.android.persistence.settings.CustomIntentDataElementTableInfo
+import org.hisp.dhis.android.persistence.settings.CustomIntentTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

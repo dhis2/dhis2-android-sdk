@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.map.internal
 
-import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderTableInfo
-import org.hisp.dhis.android.core.map.layer.MapLayerTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import org.hisp.dhis.android.persistence.map.MapLayerImageryProviderTableInfo
+import org.hisp.dhis.android.persistence.map.MapLayerTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

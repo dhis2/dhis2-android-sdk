@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.constant.internal
 
-import org.hisp.dhis.android.core.constant.ConstantTableInfo
+import org.hisp.dhis.android.persistence.constant.ConstantTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
 import org.koin.core.annotation.Singleton

@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.category.internal.CategoryCategoryComboChildrenAppender
 import org.hisp.dhis.android.core.category.internal.CategoryComboStore
+import org.hisp.dhis.android.persistence.category.CategoryComboTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

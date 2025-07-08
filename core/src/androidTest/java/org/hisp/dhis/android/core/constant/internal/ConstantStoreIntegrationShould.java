@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.constant.internal;
 
 import org.hisp.dhis.android.core.constant.Constant;
-import org.hisp.dhis.android.core.constant.ConstantTableInfo;
+import org.hisp.dhis.android.persistence.constant.ConstantTableInfo;
 import org.hisp.dhis.android.core.data.constant.ConstantSamples;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;

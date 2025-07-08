@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.category.internal;
 
 import android.content.ContentValues;
 
-import org.hisp.dhis.android.core.category.CategoryComboTableInfo;
+import org.hisp.dhis.android.persistence.category.CategoryComboTableInfo;
 
 public class CreateCategoryComboUtils {
 

@@ -27,9 +27,10 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import org.hisp.dhis.android.persistence.event.EventSyncTableInfo
+import org.hisp.dhis.android.persistence.event.EventTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

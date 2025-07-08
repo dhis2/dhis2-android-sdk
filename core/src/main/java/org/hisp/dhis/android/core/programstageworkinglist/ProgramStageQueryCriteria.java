@@ -50,7 +50,7 @@ import org.hisp.dhis.android.core.common.DateFilterPeriod;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
-import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListTableInfo;
+import org.hisp.dhis.android.persistence.programstageworkinglist.ProgramStageWorkingListTableInfo;
 
 import java.util.List;
 
@@ -86,7 +86,7 @@ public abstract class ProgramStageQueryCriteria implements CoreObject {
     public abstract DateFilterPeriod enrollmentOccurredAt();
 
     @Nullable
-    @ColumnName(ProgramStageWorkingListTableInfo.Columns.ORDER)
+    @ColumnName(ProgramStageWorkingListTableInfo.Columns.ORDER_PROPERTY)
     public abstract String order();
 
     @Nullable

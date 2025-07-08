@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.network.systeminfo
 
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
-import org.hisp.dhis.android.core.systeminfo.SystemInfoTableInfo.Columns
+import org.hisp.dhis.android.persistence.systeminfo.SystemInfoTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
 

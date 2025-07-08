@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.maintenance.internal
 
-import org.hisp.dhis.android.core.maintenance.D2ErrorTableInfo
-import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo
+import org.hisp.dhis.android.persistence.maintenance.D2ErrorTableInfo
+import org.hisp.dhis.android.persistence.maintenance.ForeignKeyViolationTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
 import org.koin.core.annotation.Singleton

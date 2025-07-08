@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.legendset.internal
 
-import org.hisp.dhis.android.core.legendset.LegendSetTableInfo
-import org.hisp.dhis.android.core.legendset.LegendTableInfo
-import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLinkTableInfo
+import org.hisp.dhis.android.persistence.legendset.LegendSetTableInfo
+import org.hisp.dhis.android.persistence.legendset.LegendTableInfo
+import org.hisp.dhis.android.persistence.legendset.ProgramIndicatorLegendSetLinkTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
 import org.koin.core.annotation.Singleton

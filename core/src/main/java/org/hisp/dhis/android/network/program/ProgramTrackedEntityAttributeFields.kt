@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.network.program
 
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo.Columns
+import org.hisp.dhis.android.persistence.program.ProgramTrackedEntityAttributeTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
 

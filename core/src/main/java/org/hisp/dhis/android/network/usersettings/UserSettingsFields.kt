@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.network.usersettings
 
 import org.hisp.dhis.android.core.settings.UserSettings
-import org.hisp.dhis.android.core.settings.UserSettingsTableInfo.Columns
+import org.hisp.dhis.android.persistence.settings.UserSettingsTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
 

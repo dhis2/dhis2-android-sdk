@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.common.ValidationStrategy
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.program.internal.ProgramStageAttributeChildrenAppender
 import org.hisp.dhis.android.core.program.internal.ProgramStageStore
+import org.hisp.dhis.android.persistence.program.ProgramStageTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -111,7 +112,7 @@ class ProgramStageCollectionRepository internal constructor(
     }
 
     fun byGeneratedByEnrollmentDate(): BooleanFilterConnector<ProgramStageCollectionRepository> {
-        return cf.bool(ProgramStageTableInfo.Columns.GENERATED_BY_ENROLMENT_DATE)
+        return cf.bool(ProgramStageTableInfo.Columns.GENERATED_BY_ENROLLMENT_DATE)
     }
 
     fun byAutoGenerateEvent(): BooleanFilterConnector<ProgramStageCollectionRepository> {

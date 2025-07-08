@@ -48,13 +48,14 @@ import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludingError
 import org.hisp.dhis.android.core.common.internal.TrackerDataManager
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.trackedentity.internal.ProgramOwnerChildrenAppender
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueChildrenAppender
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostParentCall
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceProjectionTransformer
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

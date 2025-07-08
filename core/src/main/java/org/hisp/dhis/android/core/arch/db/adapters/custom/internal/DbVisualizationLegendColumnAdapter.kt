@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.visualization.LegendStrategy
 import org.hisp.dhis.android.core.visualization.LegendStyle
 import org.hisp.dhis.android.core.visualization.VisualizationLegend
-import org.hisp.dhis.android.core.visualization.VisualizationTableInfo
+import org.hisp.dhis.android.persistence.visualization.VisualizationTableInfo
 
 internal class DbVisualizationLegendColumnAdapter : ColumnTypeAdapter<VisualizationLegend> {
 

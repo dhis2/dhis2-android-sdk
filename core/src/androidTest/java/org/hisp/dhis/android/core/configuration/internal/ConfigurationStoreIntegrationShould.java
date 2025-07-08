@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.data.configuration.ConfigurationSamples;
 import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.hisp.dhis.android.persistence.configuration.ConfigurationTableInfo;
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)

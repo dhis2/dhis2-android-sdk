@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.indicator.internal
 
-import org.hisp.dhis.android.core.indicator.DataSetIndicatorLinkTableInfo
-import org.hisp.dhis.android.core.indicator.IndicatorTableInfo
-import org.hisp.dhis.android.core.indicator.IndicatorTypeTableInfo
+import org.hisp.dhis.android.persistence.indicator.DataSetIndicatorLinkTableInfo
+import org.hisp.dhis.android.persistence.indicator.IndicatorTableInfo
+import org.hisp.dhis.android.persistence.indicator.IndicatorTypeTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
 import org.koin.core.annotation.Singleton

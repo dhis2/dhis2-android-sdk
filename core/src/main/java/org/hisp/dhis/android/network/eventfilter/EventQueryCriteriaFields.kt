@@ -29,7 +29,7 @@ package org.hisp.dhis.android.network.eventfilter
 
 import org.hisp.dhis.android.core.common.DateFilterPeriod
 import org.hisp.dhis.android.core.event.EventDataFilter
-import org.hisp.dhis.android.core.event.EventFilterTableInfo.Columns
+import org.hisp.dhis.android.persistence.event.EventFilterTableInfo.Columns
 import org.hisp.dhis.android.core.event.EventQueryCriteria
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.DateFilterPeriodFields

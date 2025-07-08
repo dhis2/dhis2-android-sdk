@@ -34,9 +34,9 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceStoreImpl
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigKey
-import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigStoreImpl
+import org.hisp.dhis.android.persistence.fileresource.FileResourceStoreImpl
+import org.hisp.dhis.android.persistence.sms.SMSConfigStoreImpl
 import java.io.File
 
 internal class Migration260(
@@ -62,7 +62,7 @@ internal class Migration260(
     }
 
     private suspend fun migrateFileResources260(databaseAdapter: DatabaseAdapter) {
-        val accountSubFolder = FileResourceDirectoryHelper.getSubfolderName(databaseAdapter.databaseName)
+        val accountSubFolder = FileResourceDirectoryHelper.getSubfolderName(databaseAdapter.getDatabaseName())
 
         val rootResources = FileResourceDirectoryHelper.getRootFileResourceDirectory(context)
         val dstResources = FileResourceDirectoryHelper.getFileResourceDirectory(context, accountSubFolder)

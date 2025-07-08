@@ -33,7 +33,8 @@ import org.hisp.dhis.android.core.data.validation.DataSetValidationRuleLinkSampl
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.hisp.dhis.android.core.validation.DataSetValidationRuleLink
-import org.hisp.dhis.android.core.validation.DataSetValidationRuleLinkTableInfo
+import org.hisp.dhis.android.persistence.validation.DataSetValidationRuleLinkStoreImpl
+import org.hisp.dhis.android.persistence.validation.DataSetValidationRuleLinkTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

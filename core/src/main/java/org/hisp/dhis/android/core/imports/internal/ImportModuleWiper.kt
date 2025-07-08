@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.imports.internal
 
-import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo
+import org.hisp.dhis.android.persistence.imports.TrackerImportConflictTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
 import org.koin.core.annotation.Singleton

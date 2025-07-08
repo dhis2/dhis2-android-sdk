@@ -31,9 +31,10 @@ package org.hisp.dhis.android.core.dataset.internal;
 import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.dataset.SectionGreyedFieldsLinkSamples;
 import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLink;
-import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLinkTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.hisp.dhis.android.persistence.dataset.SectionGreyedFieldsLinkStoreImpl;
+import org.hisp.dhis.android.persistence.dataset.SectionGreyedFieldsLinkTableInfo;
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)

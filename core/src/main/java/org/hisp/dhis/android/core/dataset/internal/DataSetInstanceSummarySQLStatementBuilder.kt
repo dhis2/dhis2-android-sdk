@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBui
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.dataset.DataSetTableInfo
+import org.hisp.dhis.android.persistence.dataset.DataSetTableInfo
 
 class DataSetInstanceSummarySQLStatementBuilder : DataSetInstanceSQLStatementBuilder() {
     override fun selectWhere(whereClause: String): String {

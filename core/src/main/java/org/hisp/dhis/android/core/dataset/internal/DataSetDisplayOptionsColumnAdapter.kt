@@ -33,10 +33,10 @@ import android.database.Cursor
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
 import org.hisp.dhis.android.core.dataset.CustomText
 import org.hisp.dhis.android.core.dataset.DataSetDisplayOptions
-import org.hisp.dhis.android.core.dataset.DataSetTableInfo.Columns.CUSTOM_TEXT_ALIGN
-import org.hisp.dhis.android.core.dataset.DataSetTableInfo.Columns.HEADER
-import org.hisp.dhis.android.core.dataset.DataSetTableInfo.Columns.SUB_HEADER
-import org.hisp.dhis.android.core.dataset.DataSetTableInfo.Columns.TABS_DIRECTION
+import org.hisp.dhis.android.persistence.dataset.DataSetTableInfo.Columns.CUSTOM_TEXT_ALIGN
+import org.hisp.dhis.android.persistence.dataset.DataSetTableInfo.Columns.HEADER
+import org.hisp.dhis.android.persistence.dataset.DataSetTableInfo.Columns.SUB_HEADER
+import org.hisp.dhis.android.persistence.dataset.DataSetTableInfo.Columns.TABS_DIRECTION
 import org.hisp.dhis.android.core.dataset.TabsDirection
 import org.hisp.dhis.android.core.dataset.TextAlign
 

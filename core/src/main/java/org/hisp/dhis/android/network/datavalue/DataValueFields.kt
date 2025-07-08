@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.network.datavalue
 
 import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.core.datavalue.DataValueTableInfo.Columns
+import org.hisp.dhis.android.persistence.datavalue.DataValueTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
 

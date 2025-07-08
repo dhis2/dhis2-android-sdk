@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
-import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionTableInfo
-import org.hisp.dhis.android.core.visualization.TrackerVisualizationTableInfo
-import org.hisp.dhis.android.core.visualization.VisualizationDimensionItemTableInfo
-import org.hisp.dhis.android.core.visualization.VisualizationTableInfo
+import org.hisp.dhis.android.persistence.visualization.TrackerVisualizationDimensionTableInfo
+import org.hisp.dhis.android.persistence.visualization.TrackerVisualizationTableInfo
+import org.hisp.dhis.android.persistence.visualization.VisualizationDimensionItemTableInfo
+import org.hisp.dhis.android.persistence.visualization.VisualizationTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
 import org.koin.core.annotation.Singleton

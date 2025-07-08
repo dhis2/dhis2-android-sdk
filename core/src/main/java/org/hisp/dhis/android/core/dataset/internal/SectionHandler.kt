@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandHandler
 import org.hisp.dhis.android.core.dataset.Section
 import org.hisp.dhis.android.core.dataset.SectionDataElementLink
 import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLink
-import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLinkTableInfo
+import org.hisp.dhis.android.persistence.dataset.SectionGreyedFieldsLinkTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

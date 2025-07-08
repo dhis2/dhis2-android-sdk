@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.event.internal.EventFilterCall
 import org.hisp.dhis.android.core.option.internal.OptionCall
 import org.hisp.dhis.android.core.option.internal.OptionGroupCall
 import org.hisp.dhis.android.core.option.internal.OptionSetCall
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitProgramLinkTableInfo
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStore
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListCall
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCall

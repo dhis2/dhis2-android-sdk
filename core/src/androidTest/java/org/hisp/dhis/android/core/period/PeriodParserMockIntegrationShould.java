@@ -28,15 +28,16 @@
 
 package org.hisp.dhis.android.core.period;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher;
+import org.hisp.dhis.android.persistence.period.PeriodTableInfo;
 import org.junit.AfterClass;
 import org.junit.Test;
 
 import java.util.List;
-
-import static com.google.common.truth.Truth.assertThat;
 
 public class PeriodParserMockIntegrationShould extends BaseMockIntegrationTestEmptyDispatcher {
 

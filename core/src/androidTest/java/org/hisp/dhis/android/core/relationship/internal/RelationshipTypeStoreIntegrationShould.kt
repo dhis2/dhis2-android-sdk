@@ -32,9 +32,10 @@ import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractI
 import org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples
 import org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.TO_CONSTRAINT_2
 import org.hisp.dhis.android.core.relationship.RelationshipType
-import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.relationship.RelationshipTypeStoreImpl
+import org.hisp.dhis.android.persistence.relationship.RelationshipTypeTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

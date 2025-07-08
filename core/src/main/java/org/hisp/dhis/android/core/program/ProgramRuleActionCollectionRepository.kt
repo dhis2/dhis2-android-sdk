@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.program.internal.ProgramRuleActionStore
+import org.hisp.dhis.android.persistence.program.ProgramRuleActionTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -103,7 +104,7 @@ class ProgramRuleActionCollectionRepository internal constructor(
     }
 
     fun byDisplayContent(): StringFilterConnector<ProgramRuleActionCollectionRepository> {
-        return cf.string(ProgramRuleActionTableInfo.Columns.DISPLAYCONTENT)
+        return cf.string(ProgramRuleActionTableInfo.Columns.DISPLAY_CONTENT)
     }
 
     internal companion object {

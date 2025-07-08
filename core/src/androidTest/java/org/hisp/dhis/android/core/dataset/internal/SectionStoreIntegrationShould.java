@@ -31,9 +31,10 @@ package org.hisp.dhis.android.core.dataset.internal;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.dataset.SectionSamples;
 import org.hisp.dhis.android.core.dataset.Section;
-import org.hisp.dhis.android.core.dataset.SectionTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.hisp.dhis.android.persistence.dataset.SectionStoreImpl;
+import org.hisp.dhis.android.persistence.dataset.SectionTableInfo;
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)

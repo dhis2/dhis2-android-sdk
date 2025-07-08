@@ -32,9 +32,9 @@ import org.hisp.dhis.android.core.relationship.BaseRelationship
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipItem
-import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo.Columns.ENROLLMENT
-import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo.Columns.EVENT
-import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE
+import org.hisp.dhis.android.persistence.relationship.RelationshipItemTableInfo.Columns.ENROLLMENT
+import org.hisp.dhis.android.persistence.relationship.RelationshipItemTableInfo.Columns.EVENT
+import org.hisp.dhis.android.persistence.relationship.RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE
 import org.koin.core.annotation.Singleton
 
 @Singleton

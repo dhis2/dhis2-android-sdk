@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.dataset.internal;
 import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.dataset.SectionDataElementLinkSamples;
 import org.hisp.dhis.android.core.dataset.SectionDataElementLink;
-import org.hisp.dhis.android.core.dataset.SectionDataElementLinkTableInfo;
+import org.hisp.dhis.android.persistence.dataset.SectionDataElementLinkTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.runner.RunWith;

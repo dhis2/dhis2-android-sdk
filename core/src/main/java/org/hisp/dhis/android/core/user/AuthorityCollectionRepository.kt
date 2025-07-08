@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.user.internal.AuthorityStore
+import org.hisp.dhis.android.persistence.user.AuthorityTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

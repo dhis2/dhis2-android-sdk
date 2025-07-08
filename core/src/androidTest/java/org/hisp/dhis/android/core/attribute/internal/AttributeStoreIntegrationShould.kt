@@ -28,12 +28,13 @@
 package org.hisp.dhis.android.core.attribute.internal
 
 import org.hisp.dhis.android.core.attribute.Attribute
-import org.hisp.dhis.android.core.attribute.AttributeTableInfo
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.data.attribute.AttributeSamples
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.attribute.AttributeStoreImpl
+import org.hisp.dhis.android.persistence.attribute.AttributeTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

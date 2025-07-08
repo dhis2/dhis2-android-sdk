@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.period.internal
 
-import org.hisp.dhis.android.core.period.PeriodTableInfo
+import org.hisp.dhis.android.persistence.period.PeriodTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
 import org.koin.core.annotation.Singleton

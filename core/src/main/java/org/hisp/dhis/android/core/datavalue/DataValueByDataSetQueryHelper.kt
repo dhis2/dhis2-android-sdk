@@ -28,11 +28,13 @@
 package org.hisp.dhis.android.core.datavalue
 
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
-import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo
-import org.hisp.dhis.android.core.dataelement.DataElementTableInfo
-import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkTableInfo
-import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo
-import org.hisp.dhis.android.core.dataset.DataSetTableInfo
+import org.hisp.dhis.android.persistence.category.CategoryOptionComboTableInfo
+import org.hisp.dhis.android.persistence.dataelement.DataElementTableInfo
+import org.hisp.dhis.android.persistence.dataset.DataSetDataElementLinkTableInfo
+import org.hisp.dhis.android.persistence.dataset.DataSetOrganisationUnitLinkTableInfo
+import org.hisp.dhis.android.persistence.dataset.DataSetTableInfo
+import org.hisp.dhis.android.persistence.datavalue.DataValueConflictTableInfo
+import org.hisp.dhis.android.persistence.datavalue.DataValueTableInfo
 
 internal object DataValueByDataSetQueryHelper {
 

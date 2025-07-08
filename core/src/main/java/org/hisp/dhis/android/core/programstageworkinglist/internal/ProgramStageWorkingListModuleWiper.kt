@@ -27,10 +27,11 @@
  */
 package org.hisp.dhis.android.core.programstageworkinglist.internal
 
-import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilterTableInfo
-import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListEventDataFilterTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import org.hisp.dhis.android.persistence.programstageworkinglist.ProgramStageWorkingListAttributeValueFilterTableInfo
+import org.hisp.dhis.android.persistence.programstageworkinglist.ProgramStageWorkingListEventDataFilterTableInfo
+import org.hisp.dhis.android.persistence.programstageworkinglist.ProgramStageWorkingListTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

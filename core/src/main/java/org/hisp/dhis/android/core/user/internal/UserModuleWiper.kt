@@ -27,12 +27,12 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
-import org.hisp.dhis.android.core.user.AuthenticatedUserTableInfo
-import org.hisp.dhis.android.core.user.AuthorityTableInfo
-import org.hisp.dhis.android.core.user.UserGroupTableInfo
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
-import org.hisp.dhis.android.core.user.UserRoleTableInfo
-import org.hisp.dhis.android.core.user.UserTableInfo
+import org.hisp.dhis.android.persistence.user.AuthenticatedUserTableInfo
+import org.hisp.dhis.android.persistence.user.AuthorityTableInfo
+import org.hisp.dhis.android.persistence.user.UserGroupTableInfo
+import org.hisp.dhis.android.persistence.user.UserOrganisationUnitLinkTableInfo
+import org.hisp.dhis.android.persistence.user.UserRoleTableInfo
+import org.hisp.dhis.android.persistence.user.UserTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
 import org.koin.core.annotation.Singleton

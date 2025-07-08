@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.content.ContentValues;
 
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo.Columns;
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeTableInfo.Columns;
 
 public class CreateTrackedEntityAttributeUtils {
 

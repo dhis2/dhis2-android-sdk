@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.network.constant
 
 import org.hisp.dhis.android.core.constant.Constant
-import org.hisp.dhis.android.core.constant.ConstantTableInfo
+import org.hisp.dhis.android.persistence.constant.ConstantTableInfo
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
 

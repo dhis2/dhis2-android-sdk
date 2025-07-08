@@ -33,8 +33,9 @@ import org.hisp.dhis.android.core.BaseIntegrationTestWithDatabase
 import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitStoreImpl
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeReservedValueStoreImpl
 import org.junit.After
 import org.junit.Before
 import org.junit.Test

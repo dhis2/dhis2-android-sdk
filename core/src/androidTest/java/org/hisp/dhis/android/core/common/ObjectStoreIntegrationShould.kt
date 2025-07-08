@@ -31,9 +31,9 @@ import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseIntegrationTestWithDatabase
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.option.OptionSet
-import org.hisp.dhis.android.core.option.OptionSetTableInfo
-import org.hisp.dhis.android.core.option.internal.OptionSetStoreImpl
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.option.OptionSetStoreImpl
+import org.hisp.dhis.android.persistence.option.OptionSetTableInfo
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

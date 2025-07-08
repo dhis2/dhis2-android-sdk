@@ -27,15 +27,15 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
-import org.hisp.dhis.android.core.dataset.DataInputPeriodTableInfo
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationTableInfo
-import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLinkTableInfo
-import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkTableInfo
-import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo
-import org.hisp.dhis.android.core.dataset.DataSetTableInfo
-import org.hisp.dhis.android.core.dataset.SectionDataElementLinkTableInfo
-import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLinkTableInfo
-import org.hisp.dhis.android.core.dataset.SectionTableInfo
+import org.hisp.dhis.android.persistence.dataset.DataInputPeriodTableInfo
+import org.hisp.dhis.android.persistence.dataset.DataSetCompleteRegistrationTableInfo
+import org.hisp.dhis.android.persistence.dataset.DataSetCompulsoryDataElementOperandLinkTableInfo
+import org.hisp.dhis.android.persistence.dataset.DataSetDataElementLinkTableInfo
+import org.hisp.dhis.android.persistence.dataset.DataSetOrganisationUnitLinkTableInfo
+import org.hisp.dhis.android.persistence.dataset.DataSetTableInfo
+import org.hisp.dhis.android.persistence.dataset.SectionDataElementLinkTableInfo
+import org.hisp.dhis.android.persistence.dataset.SectionGreyedFieldsLinkTableInfo
+import org.hisp.dhis.android.persistence.dataset.SectionTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
 import org.koin.core.annotation.Singleton

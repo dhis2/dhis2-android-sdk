@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.network.enrollment
 
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo.Columns
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo.Columns
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.relationship.Relationship

@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.event.internal.EventFilterEventDataFilterChildrenAppender
 import org.hisp.dhis.android.core.event.internal.EventFilterStore
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import org.hisp.dhis.android.persistence.event.EventFilterTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -87,7 +88,7 @@ class EventFilterCollectionRepository internal constructor(
     }
 
     fun byOrder(): StringFilterConnector<EventFilterCollectionRepository> {
-        return cf.string(EventFilterTableInfo.Columns.ORDER)
+        return cf.string(EventFilterTableInfo.Columns.ORDER_PROPERTY)
     }
 
     fun byDisplayColumnOrder(): StringFilterConnector<EventFilterCollectionRepository> {

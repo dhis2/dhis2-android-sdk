@@ -33,10 +33,10 @@ import android.database.Cursor
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
 import org.hisp.dhis.android.core.dataset.SectionDisplayOptions
 import org.hisp.dhis.android.core.dataset.SectionPivotMode
-import org.hisp.dhis.android.core.dataset.SectionTableInfo.Columns.AFTER_SECTION_TEXT
-import org.hisp.dhis.android.core.dataset.SectionTableInfo.Columns.BEFORE_SECTION_TEXT
-import org.hisp.dhis.android.core.dataset.SectionTableInfo.Columns.PIVOTED_CATEGORY
-import org.hisp.dhis.android.core.dataset.SectionTableInfo.Columns.PIVOT_MODE
+import org.hisp.dhis.android.persistence.dataset.SectionTableInfo.Columns.AFTER_SECTION_TEXT
+import org.hisp.dhis.android.persistence.dataset.SectionTableInfo.Columns.BEFORE_SECTION_TEXT
+import org.hisp.dhis.android.persistence.dataset.SectionTableInfo.Columns.PIVOTED_CATEGORY
+import org.hisp.dhis.android.persistence.dataset.SectionTableInfo.Columns.PIVOT_MODE
 
 internal class SectionDisplayOptionsColumnAdapter : ColumnTypeAdapter<SectionDisplayOptions> {
     override fun fromCursor(cursor: Cursor, columnName: String?): SectionDisplayOptions {

@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbValueTypeCo
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ValueType;
+import org.hisp.dhis.android.persistence.attribute.AttributeTableInfo;
 
 @AutoValue
 @SuppressWarnings({"PMD.ExcessivePublicCount"})
@@ -50,7 +51,7 @@ public abstract class Attribute extends BaseNameableObject implements CoreObject
     public abstract ValueType valueType();
 
     @Nullable
-    @ColumnName(AttributeTableInfo.Columns.UNIQUE)
+    @ColumnName(AttributeTableInfo.Columns.UNIQUE_PROPERTY)
     public abstract Boolean unique();
 
     @Nullable

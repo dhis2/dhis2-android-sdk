@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.systeminfo.internal
 
-import org.hisp.dhis.android.core.systeminfo.SystemInfoTableInfo
+import org.hisp.dhis.android.persistence.systeminfo.SystemInfoTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
 import org.koin.core.annotation.Singleton

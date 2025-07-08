@@ -29,11 +29,12 @@
 package org.hisp.dhis.android.core.category.internal
 
 import org.hisp.dhis.android.core.category.CategoryCombo
-import org.hisp.dhis.android.core.category.CategoryComboTableInfo
 import org.hisp.dhis.android.core.data.category.CategoryComboSamples
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.category.CategoryComboStoreImpl
+import org.hisp.dhis.android.persistence.category.CategoryComboTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

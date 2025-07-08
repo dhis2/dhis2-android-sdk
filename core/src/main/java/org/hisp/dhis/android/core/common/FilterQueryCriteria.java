@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListCol
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AssignedUserModeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EventStatusColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.OrganisationUnitModeColumnAdapter;
-import org.hisp.dhis.android.core.event.EventFilterTableInfo;
+import org.hisp.dhis.android.persistence.event.EventFilterTableInfo;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 

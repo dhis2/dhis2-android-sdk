@@ -31,9 +31,10 @@ package org.hisp.dhis.android.core.user.internal;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.user.AuthenticatedUserSamples;
 import org.hisp.dhis.android.core.user.AuthenticatedUser;
-import org.hisp.dhis.android.core.user.AuthenticatedUserTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.hisp.dhis.android.persistence.user.AuthenticatedUserStoreImpl;
+import org.hisp.dhis.android.persistence.user.AuthenticatedUserTableInfo;
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)

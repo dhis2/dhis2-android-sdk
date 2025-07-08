@@ -74,6 +74,8 @@ import org.hisp.dhis.android.persistence.dataset.DataSetDB
 import org.hisp.dhis.android.persistence.dataset.DataSetDao
 import org.hisp.dhis.android.persistence.dataset.DataSetDataElementLinkDB
 import org.hisp.dhis.android.persistence.dataset.DataSetDataElementLinkDao
+import org.hisp.dhis.android.persistence.dataset.DataSetInstanceDao
+import org.hisp.dhis.android.persistence.dataset.DataSetInstanceSummaryDao
 import org.hisp.dhis.android.persistence.dataset.DataSetOrganisationUnitLinkDB
 import org.hisp.dhis.android.persistence.dataset.DataSetOrganisationUnitLinkDao
 import org.hisp.dhis.android.persistence.dataset.SectionDB
@@ -481,6 +483,8 @@ internal abstract class AppDatabase : RoomDatabase() {
     abstract fun dataSetCompulsoryDataElementOperandLinkDao(): DataSetCompulsoryDataElementOperandLinkDao
     abstract fun dataSetDao(): DataSetDao
     abstract fun dataSetDataElementLinkDao(): DataSetDataElementLinkDao
+    abstract fun dataSetInstanceDao(): DataSetInstanceDao
+    abstract fun dataSetInstanceSummaryDao(): DataSetInstanceSummaryDao
     abstract fun dataSetOrganisationUnitLinkDao(): DataSetOrganisationUnitLinkDao
     abstract fun sectionDao(): SectionDao
     abstract fun sectionDataElementLinkDao(): SectionDataElementLinkDao

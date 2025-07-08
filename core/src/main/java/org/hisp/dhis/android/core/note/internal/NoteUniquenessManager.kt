@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.Note.NoteType
-import org.hisp.dhis.android.core.note.NoteTableInfo
+import org.hisp.dhis.android.persistence.note.NoteTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

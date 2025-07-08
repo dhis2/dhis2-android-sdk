@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.arch.db.adapters.custom.internal
 import android.content.ContentValues
 import android.database.Cursor
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
-import org.hisp.dhis.android.core.settings.ProgramConfigurationSettingTableInfo
+import org.hisp.dhis.android.persistence.settings.ProgramConfigurationSettingTableInfo
 import org.hisp.dhis.android.core.settings.ProgramItemHeader
 
 class ProgramItemHeaderColumnAdapter : ColumnTypeAdapter<ProgramItemHeader> {

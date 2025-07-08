@@ -32,6 +32,7 @@ import android.content.ContentValues;
 
 import org.hisp.dhis.android.core.common.FormType;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
+import org.hisp.dhis.android.persistence.program.ProgramStageTableInfo;
 
 public class CreateProgramStageUtils {
 
@@ -77,7 +78,7 @@ public class CreateProgramStageUtils {
         programStage.put(ProgramStageTableInfo.Columns.REPEATABLE, REPEATABLE);
         programStage.put(ProgramStageTableInfo.Columns.FORM_TYPE, FORM_TYPE.name());
         programStage.put(ProgramStageTableInfo.Columns.DISPLAY_GENERATE_EVENT_BOX, DISPLAY_GENERATE_EVENT_BOX);
-        programStage.put(ProgramStageTableInfo.Columns.GENERATED_BY_ENROLMENT_DATE, GENERATED_BY_ENROLMENT_DATE);
+        programStage.put(ProgramStageTableInfo.Columns.GENERATED_BY_ENROLLMENT_DATE, GENERATED_BY_ENROLMENT_DATE);
         programStage.put(ProgramStageTableInfo.Columns.AUTO_GENERATE_EVENT, AUTO_GENERATE_EVENT);
         programStage.put(ProgramStageTableInfo.Columns.SORT_ORDER, SORT_ORDER);
         programStage.put(ProgramStageTableInfo.Columns.HIDE_DUE_DATE, HIDE_DUE_DATE);

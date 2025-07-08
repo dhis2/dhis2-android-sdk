@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.network.legendset
 
 import org.hisp.dhis.android.core.legendset.Legend
-import org.hisp.dhis.android.core.legendset.LegendTableInfo.Columns
+import org.hisp.dhis.android.persistence.legendset.LegendTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
 

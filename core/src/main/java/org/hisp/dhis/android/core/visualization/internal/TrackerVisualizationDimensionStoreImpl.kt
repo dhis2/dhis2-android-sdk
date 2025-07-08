@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionTableInfo
-import org.hisp.dhis.android.core.visualization.VisualizationDimensionItemTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

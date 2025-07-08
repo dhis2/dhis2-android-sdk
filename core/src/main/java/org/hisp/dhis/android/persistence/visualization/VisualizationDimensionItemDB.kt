@@ -54,6 +54,6 @@ internal fun VisualizationDimensionItem.toDB(): VisualizationDimensionItemDB {
         dimension = dimension()!!,
         dimensionItem = dimensionItem(),
         dimensionItemType = dimensionItemType(),
-        sortOrder = sortOrder()
+        sortOrder = sortOrder(),
     )
 }

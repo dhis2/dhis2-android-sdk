@@ -26,7 +26,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.realservertests.performance
+package org.hisp.dhis.android.instrumentedTestApp.performance
 
 import kotlinx.serialization.Serializable
 

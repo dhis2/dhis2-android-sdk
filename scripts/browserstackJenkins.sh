@@ -38,8 +38,8 @@ coverage_result_path="$(dirname $0)/../core/build/outputs/code_coverage"
 ./gradlew :core:assembleDebugAndroidTest -Pcoverage
 ./gradlew :instrumented-test-app:assembleDebug
 
-app_apk_path=$(findApkPath "instrumented-test-app")
-test_apk_path=$(findApkPath "core")
+app_apk_path=$(findApkPath "instrumented-test-app" "debug")
+test_apk_path=$(findApkPath "core" "androidTest/debug")
 
 # Upload app and testing apk
 echo "Uploading app APK to Browserstack..."

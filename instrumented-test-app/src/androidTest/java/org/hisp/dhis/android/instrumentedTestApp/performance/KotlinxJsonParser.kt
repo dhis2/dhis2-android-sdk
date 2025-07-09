@@ -26,32 +26,15 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.realservertests.performance
+package org.hisp.dhis.android.instrumentedTestApp.performance
 
-import okhttp3.Interceptor
-import okhttp3.Response
+import kotlinx.serialization.json.Json
 
-class IgnoreIOTimeInterceptor : Interceptor {
-    override fun intercept(chain: Interceptor.Chain): Response {
-        val startTime = System.nanoTime()
-        val response = chain.proceed(chain.request())
-
-        val responseBody = response.body ?: return response
-
-        val source = responseBody.source()
-        source.request(Long.MAX_VALUE)
-        val buffer = source.buffer.clone()
-
-        val networkTime = System.nanoTime() - startTime
-
-        synchronized(NetworkTimeTracker) {
-            NetworkTimeTracker.totalNetworkTime += networkTime
-        }
-
-        return response
+internal object KotlinxJsonParser {
+    val instance: Json = Json {
+        isLenient = true
+        ignoreUnknownKeys = true
+        coerceInputValues = true
+        explicitNulls = false
     }
-}
-
-object NetworkTimeTracker {
-    var totalNetworkTime = 0L
 }

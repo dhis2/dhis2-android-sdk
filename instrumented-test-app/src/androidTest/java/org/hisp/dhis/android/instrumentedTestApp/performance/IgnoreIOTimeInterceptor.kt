@@ -26,54 +26,32 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.realservertests.performance
+package org.hisp.dhis.android.instrumentedTestApp.performance
 
-import kotlin.math.round
-import kotlin.random.Random
+import okhttp3.Interceptor
+import okhttp3.Response
 
-internal data class RandomChild(
-    val firstName: String,
-    val lastName: String,
-    val gender: String,
-    val weight: Int,
-    val coordinates: List<Double>,
-) {
-    companion object {
-        val firstNameUid = "w75KJ2mc4zz"
-        val lastNameUid = "zDhUuAYrxNC"
-        val genderUid = "cejWyOfXge6"
-        val birthStageUid = "A03MvHHogjR"
-        val weightDeUid = "UXz7xuGCEhU"
+class IgnoreIOTimeInterceptor : Interceptor {
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val startTime = System.nanoTime()
+        val response = chain.proceed(chain.request())
 
-        private val firstNameList =
-            listOf("John", "Jane", "Bob", "Alice", "Tom", "Mary", "David", "Linda", "Mike", "Karen")
-        private val lastNameList = listOf(
-            "Smith",
-            "Johnson",
-            "Williams",
-            "Brown",
-            "Jones",
-            "Garcia",
-            "Miller",
-            "Davis",
-            "Rodriguez",
-            "Martinez",
-        )
-        private val genderList = listOf("Male", "Female")
+        val responseBody = response.body ?: return response
 
-        fun generateChild(): RandomChild {
-            return RandomChild(
-                firstName = firstNameList.random(),
-                lastName = lastNameList.random(),
-                gender = genderList.random(),
-                weight = Random.nextInt(1000, 4000),
-                coordinates = listOf(randomCoordinate(-180.0, 180.0), randomCoordinate(-90.0, 90.0)),
-            )
+        val source = responseBody.source()
+        source.request(Long.MAX_VALUE)
+        val buffer = source.buffer.clone()
+
+        val networkTime = System.nanoTime() - startTime
+
+        synchronized(NetworkTimeTracker) {
+            NetworkTimeTracker.totalNetworkTime += networkTime
         }
+
+        return response
     }
 }
 
-fun randomCoordinate(min: Double, max: Double): Double {
-    val value = Random.nextDouble(min, max)
-    return round(value * 100) / 100
+object NetworkTimeTracker {
+    var totalNetworkTime = 0L
 }

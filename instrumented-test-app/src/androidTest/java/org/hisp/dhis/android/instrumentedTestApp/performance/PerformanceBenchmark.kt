@@ -26,17 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.realservertests.performance
+package org.hisp.dhis.android.instrumentedTestApp.performance
 
 import android.app.ActivityManager
 import android.content.Context
 import android.util.Log
 import androidx.test.platform.app.InstrumentationRegistry
 import org.hisp.dhis.android.core.D2
-import org.hisp.dhis.android.core.D2Factory
+import org.hisp.dhis.android.core.D2Configuration
+import org.hisp.dhis.android.core.D2Manager
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
-import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.Geometry
@@ -50,6 +50,7 @@ import org.junit.After
 import org.junit.Assume.assumeNotNull
 import org.junit.Test
 import java.io.FileNotFoundException
+import java.time.Instant
 import java.util.Date
 import kotlin.random.Random
 import kotlin.system.measureNanoTime
@@ -64,18 +65,20 @@ class PerformanceBenchmark {
 
     init {
         try {
-            context.assets.open("benchmark.json").use { inputStream ->
+            val assets = InstrumentationRegistry.getInstrumentation().context.assets
+            assets.open("benchmark.json").use { inputStream ->
                 val json = inputStream.bufferedReader().use { it.readText() }
                 config = KotlinxJsonParser.instance.decodeFromString<BenchmarkConfiguration>(json)
             }
         } catch (_: FileNotFoundException) {
+            print("")
             // Ignore if missing file
         }
     }
 
     @After
     fun tearDown() {
-        D2Factory.clear()
+        D2Manager.clear()
         elapsedTimes.clear()
         freeMemory.clear()
     }
@@ -144,13 +147,13 @@ class PerformanceBenchmark {
 
     private fun instantiateD2() {
         runWithTrace("D2 Instantiation") {
-            d2 = D2Factory.forNewDatabase(isRealIntegration = true)
+            d2 = D2Manager.blockingInstantiateD2(d2Configuration(context))!!
         }
     }
 
     private fun login(config: BenchmarkConfiguration) {
         runWithTrace("D2 Login") {
-            d2.userModule().logIn(config.username, config.password, config.serverUrl).blockingGet()
+            d2.userModule().blockingLogIn(config.username, config.password, config.serverUrl)
         }
     }
 
@@ -202,10 +205,10 @@ class PerformanceBenchmark {
                     EnrollmentCreateProjection.create(orgUnit.uid(), childProgram.uid(), personUid),
                 )
                 d2.enrollmentModule().enrollments().uid(enrollment).setEnrollmentDate(
-                    Date.from(java.time.Instant.now()),
+                    Date.from(Instant.now()),
                 )
                 d2.enrollmentModule().enrollments().uid(enrollment)
-                    .setIncidentDate(Date.from(java.time.Instant.now()))
+                    .setIncidentDate(Date.from(Instant.now()))
 
                 d2.trackedEntityModule().trackedEntityAttributeValues()
                     .value(RandomChild.genderUid, personUid)
@@ -234,7 +237,7 @@ class PerformanceBenchmark {
                 )
 
                 d2.eventModule().events().uid(eventUid).setEventDate(
-                    Date.from(java.time.Instant.now()),
+                    Date.from(Instant.now()),
                 )
 
                 d2.trackedEntityModule().trackedEntityDataValues()
@@ -356,5 +359,17 @@ class PerformanceBenchmark {
 
             uploadData()
         }
+    }
+
+    private fun d2Configuration(context: Context): D2Configuration {
+        return D2Configuration.builder()
+            .appVersion("1.0.0")
+            .readTimeoutInSeconds(30)
+            .connectTimeoutInSeconds(30)
+            .writeTimeoutInSeconds(30)
+            .interceptors(emptyList())
+            .networkInterceptors(listOf(IgnoreIOTimeInterceptor()))
+            .context(context)
+            .build()
     }
 }

@@ -60,7 +60,7 @@ echo "Uploading test APK to Browserstack..."
 test_url="$(upload_test_apk $test_apk_path)"
 
 # Prepare json and run tests
-echo "Starting execution of espresso tests..."
+echo "Starting execution of benchmark..."
 
 json=$(jq -n \
                 --argjson app_url $app_url \

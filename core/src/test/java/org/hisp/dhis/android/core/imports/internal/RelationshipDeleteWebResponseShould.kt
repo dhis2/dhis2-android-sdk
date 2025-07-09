@@ -37,7 +37,7 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class RelationshipDeleteWebResponseShould : CoreObjectShould("imports/relationship_delete_web_response.json") {
     @Test
-    fun map_from_json_string() {
+    override fun map_from_json_string() {
         val webResponse = deserialize(RelationshipDeleteWebResponseDTO.serializer()).toDomain()
 
         assertThat(webResponse.message()).isEqualTo("Import was successful.")

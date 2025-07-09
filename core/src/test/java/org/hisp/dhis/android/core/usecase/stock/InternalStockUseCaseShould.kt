@@ -35,7 +35,7 @@ import org.junit.Test
 class InternalStockUseCaseShould : CoreObjectShould("usecase.stock/stock_use_case.json") {
 
     @Test
-    fun map_from_json_string() {
+    override fun map_from_json_string() {
         val stockUseCaseDTO = deserialize(StockUseCaseDTO.serializer())
         val internalStockUseCase = stockUseCaseDTO.toDomain()
 

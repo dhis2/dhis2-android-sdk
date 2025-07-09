@@ -35,7 +35,7 @@ import org.junit.Test
 
 class SearchGridMapperShould : CoreObjectShould("trackedentity/search_grid.json") {
     @Test
-    fun map_from_json_string() {
+    override fun map_from_json_string() {
         val searchGrid = deserialize(SearchGridDTO.serializer())
         val teis = searchGrid.toDomain()
 

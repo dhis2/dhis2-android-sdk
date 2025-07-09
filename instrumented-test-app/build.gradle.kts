@@ -68,7 +68,7 @@ dependencies {
     coreLibraryDesugaring(libs.desugaring)
 
     if (sdkVersion != null && sdkVersion != "") {
-        implementation("org.hisp.dhis:android-core:$sdkVersion")
+        implementation("org.hisp.dhis:android-core:$sdkVersion!!")
     } else {
         implementation(project(":core"))
     }

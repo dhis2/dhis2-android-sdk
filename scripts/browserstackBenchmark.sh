@@ -35,11 +35,11 @@ source "$(dirname $0)/browserstackCommon.sh"
 log_file=$1
 benchmark_config_file="$(dirname $0)/../core/src/androidTest/assets/benchmark.json"
 
-SERVER_URL=${SERVER_URL:-https://play.dhis2.org/demo}
+SERVER_URL=${BENCHMARK_SERVER_URL:-https://play.dhis2.org/demo}
 CONFIG="{
   \"serverUrl\": \"${SERVER_URL}\",
-  \"username\": \"${USERNAME:-android}\",
-  \"password\": \"${PASSWORD:-Android123}\"
+  \"username\": \"${BENCHMARK_USERNAME:-android}\",
+  \"password\": \"${BENCHMARK_PASSWORD:-Android123}\"
 }
 "
 echo "$CONFIG" > $benchmark_config_file

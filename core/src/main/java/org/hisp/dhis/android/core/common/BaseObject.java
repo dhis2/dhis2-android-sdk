@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.common;
 
-@SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
+@SuppressWarnings({"PMD.EmptyMethodInAbstractClassShouldBeAbstract", "PMD.AbstractClassWithoutAbstractMethod"})
 public abstract class BaseObject implements CoreObject {
 
     public abstract static class Builder {

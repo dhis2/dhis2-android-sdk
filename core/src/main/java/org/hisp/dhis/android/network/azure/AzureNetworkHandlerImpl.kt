@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,39 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user.internal
 
-import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
-import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
-import org.hisp.dhis.android.core.data.user.UserSamples
-import org.hisp.dhis.android.core.user.User
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
+package org.hisp.dhis.android.network.azure
 
-@OptIn(ExperimentalCoroutinesApi::class)
-@RunWith(D2JunitRunner::class)
-class UserCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.map.layer.MapLayer
+import org.hisp.dhis.android.core.map.layer.internal.microsoft.AzureBasemap
+import org.hisp.dhis.android.core.map.layer.internal.microsoft.AzureNetworkHandler
+import org.koin.core.annotation.Singleton
 
-    private lateinit var userStore: UserStore
-    private lateinit var userCall: suspend() -> User
-
-    @Before
-    fun setUp() {
-        userStore = koin.get()
-        userCall = { objects.d2DIComponent.internalModules.user.userCall.call() }
-    }
-
-    @Test
-    fun persist_user_in_database_when_call() = runTest {
-        dhis2MockServer.enqueueMockResponse("user/user38.json")
-        userCall.invoke()
-
-        assertThat(userStore.count()).isEqualTo(1)
-        assertThat(userStore.selectFirst()).isEqualTo(UserSamples.getUser())
+@Singleton
+internal class AzureNetworkHandlerImpl(
+    httpServiceClient: HttpServiceClient,
+) : AzureNetworkHandler {
+    private val service = AzureService(httpServiceClient)
+    override suspend fun getBaseMap(url: String, basemap: AzureBasemap, key: String): List<MapLayer> {
+        val apiPayload = service.getBaseMap(url)
+        return apiPayload.toDomain(basemap, key)
     }
 }

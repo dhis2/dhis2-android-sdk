@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core
 import android.util.Log
 import org.hisp.dhis.android.core.D2Factory.clear
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
 import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
@@ -37,7 +38,7 @@ import org.hisp.dhis.android.core.period.clock.internal.setFixed
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 import org.hisp.dhis.android.core.utils.integration.mock.MockIntegrationTestDatabaseContent
 import java.io.IOException
-import java.util.*
+import java.util.Date
 
 class MockIntegrationTestObjects(
     val d2: D2,
@@ -47,7 +48,7 @@ class MockIntegrationTestObjects(
     val databaseAdapter: DatabaseAdapter = d2.databaseAdapter()
 
     private var serverDate = Date()
-    private var resourceHandler: ResourceHandler = ResourceHandler.create(databaseAdapter)
+    private var resourceHandler: ResourceHandler = ResourceHandler(koin.get())
 
     @JvmField
     internal val d2DIComponent: D2DIComponent = d2.d2DIComponent

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import com.google.common.truth.Truth
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.UidGenerator
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
@@ -41,11 +42,9 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.event.internal.EventStore
-import org.hisp.dhis.android.core.event.internal.EventStoreImpl
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
@@ -92,11 +91,11 @@ class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTe
     override fun setUp() {
         super.setUp()
 
-        trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl(d2.databaseAdapter())
-        enrollmentStore = EnrollmentStoreImpl(d2.databaseAdapter())
-        eventStore = EventStoreImpl(d2.databaseAdapter())
-        trackedEntityAttributeValueStore = TrackedEntityAttributeValueStoreImpl(d2.databaseAdapter())
-        trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl(d2.databaseAdapter())
+        trackedEntityInstanceStore = koin.get()
+        enrollmentStore = koin.get()
+        eventStore = koin.get()
+        trackedEntityAttributeValueStore = koin.get()
+        trackedEntityDataValueStore = koin.get()
 
         uidGenerator = UidGeneratorImpl()
         orgUnitUid = "DiszpKrYNg8"

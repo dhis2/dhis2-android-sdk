@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.wipe
 
 import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.data.database.DatabaseAssert.Companion.assertThatDatabase
 import org.hisp.dhis.android.core.data.datastore.KeyValuePairSamples
 import org.hisp.dhis.android.core.data.maps.MapLayerImageryProviderSamples
@@ -38,24 +39,24 @@ import org.hisp.dhis.android.core.data.tracker.importer.internal.TrackerJobObjec
 import org.hisp.dhis.android.core.data.usecase.stock.InternalStockUseCaseSamples
 import org.hisp.dhis.android.core.data.usecase.stock.InternalStockUseCaseTransactionSamples
 import org.hisp.dhis.android.core.datastore.KeyValuePair
-import org.hisp.dhis.android.core.datastore.internal.LocalDataStoreStoreImpl
+import org.hisp.dhis.android.core.datastore.internal.LocalDataStoreStore
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
-import org.hisp.dhis.android.core.datavalue.internal.DataValueConflictStoreImpl
+import org.hisp.dhis.android.core.datavalue.internal.DataValueConflictStore
 import org.hisp.dhis.android.core.fileresource.FileResource
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceStoreImpl
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
-import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStoreImpl
+import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
-import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStoreImpl
-import org.hisp.dhis.android.core.map.layer.internal.MapLayerImageryProviderStoreImpl
-import org.hisp.dhis.android.core.map.layer.internal.MapLayerStoreImpl
-import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigStoreImpl
-import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoingSubmissionStoreImpl
-import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerStoreImpl
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObjectStoreImpl
-import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseStoreImpl
-import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseTransactionLinkStoreImpl
+import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore
+import org.hisp.dhis.android.core.map.layer.internal.MapLayerImageryProviderStore
+import org.hisp.dhis.android.core.map.layer.internal.MapLayerStore
+import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigStore
+import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoingSubmissionStore
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerStore
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObjectStore
+import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseStore
+import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseTransactionLinkStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
@@ -95,43 +96,43 @@ class WipeDBCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher()
     }
 
     private suspend fun givenOthersInDatabase() {
-        D2ErrorStoreImpl(databaseAdapter).insert(
+        koin.get<D2ErrorStore>().insert(
             D2Error.builder()
                 .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
                 .errorDescription("Sample error")
                 .build(),
         )
-        TrackerImportConflictStoreImpl(databaseAdapter).insert(TrackerImportConflict.builder().build())
-        FileResourceStoreImpl(databaseAdapter).insert(FileResource.builder().uid("uid").build())
-        TrackerJobObjectStoreImpl(databaseAdapter).insert(TrackerJobObjectSamples.get1())
-        DataValueConflictStoreImpl(databaseAdapter).insert(DataValueConflict.builder().build())
-        LocalDataStoreStoreImpl(databaseAdapter).insert(
+        koin.get<TrackerImportConflictStore>().insert(TrackerImportConflict.builder().build())
+        koin.get<FileResourceStore>().insert(FileResource.builder().uid("uid").build())
+        koin.get<TrackerJobObjectStore>().insert(TrackerJobObjectSamples.get1())
+        koin.get<DataValueConflictStore>().insert(DataValueConflict.builder().build())
+        koin.get<LocalDataStoreStore>().insert(
             KeyValuePair.builder()
                 .key("key1")
                 .value("value1")
                 .build(),
         )
-        LocalDataStoreStoreImpl(databaseAdapter).insert(
+        koin.get<LocalDataStoreStore>().insert(
             KeyValuePair.builder()
                 .key("key2")
                 .value("value2")
                 .build(),
         )
-        ProgramTempOwnerStoreImpl(databaseAdapter).insert(ProgramTempOwnerSamples.programTempOwner)
+        koin.get<ProgramTempOwnerStore>().insert(ProgramTempOwnerSamples.programTempOwner)
 
-        SMSConfigStoreImpl(databaseAdapter).insert(KeyValuePairSamples.keyValuePairSample)
-        SMSOngoingSubmissionStoreImpl(databaseAdapter).insert(SMSOngoingSubmissionSample.get)
+        koin.get<SMSConfigStore>().insert(KeyValuePairSamples.keyValuePairSample)
+        koin.get<SMSOngoingSubmissionStore>().insert(SMSOngoingSubmissionSample.get)
 
-        StockUseCaseStoreImpl(databaseAdapter).insert(
+        koin.get<StockUseCaseStore>().insert(
             InternalStockUseCaseSamples.get()
                 .toBuilder().uid("lxAQ7Zs9VYR").build(),
         )
-        StockUseCaseTransactionLinkStoreImpl(databaseAdapter).insert(
+        koin.get<StockUseCaseTransactionLinkStore>().insert(
             InternalStockUseCaseTransactionSamples.get()
                 .toBuilder().programUid("lxAQ7Zs9VYR").build(),
         )
 
-        MapLayerStoreImpl(databaseAdapter).insert(MapLayerSamples.get())
-        MapLayerImageryProviderStoreImpl(databaseAdapter).insert(MapLayerImageryProviderSamples.get())
+        koin.get<MapLayerStore>().insert(MapLayerSamples.get())
+        koin.get<MapLayerImageryProviderStore>().insert(MapLayerImageryProviderSamples.get())
     }
 }

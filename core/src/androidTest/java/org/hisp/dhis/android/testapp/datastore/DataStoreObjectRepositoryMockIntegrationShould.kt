@@ -29,8 +29,9 @@ package org.hisp.dhis.android.testapp.datastore
 
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryStoreImpl
+import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 
@@ -77,7 +78,7 @@ class DataStoreObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
             .value("new_namespace", "new_key")
         repository.blockingSet("value")
 
-        DataStoreEntryStoreImpl(databaseAdapter)
+        koin.get<DataStoreEntryStore>()
             .updateWhere(repository.blockingGet()!!.toBuilder().syncState(State.ERROR).build())
 
         assertThat(repository.blockingExists()).isTrue()
@@ -88,7 +89,7 @@ class DataStoreObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
         assertThat(repository.blockingGet()!!.deleted()).isTrue()
         assertThat(repository.blockingGet()!!.syncState()).isEqualTo(State.TO_UPDATE)
 
-        DataStoreEntryStoreImpl(databaseAdapter)
+        koin.get<DataStoreEntryStore>()
             .deleteWhere(repository.blockingGet()!!)
     }
 
@@ -98,7 +99,7 @@ class DataStoreObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
             .value("new_namespace", "new_key")
         repository.blockingSet("value")
 
-        DataStoreEntryStoreImpl(databaseAdapter)
+        koin.get<DataStoreEntryStore>()
             .updateWhere(repository.blockingGet()!!.toBuilder().syncState(State.TO_UPDATE).build())
 
         repository.blockingDelete()
@@ -110,7 +111,7 @@ class DataStoreObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
         assertThat(repository.blockingGet()!!.deleted()).isFalse()
         assertThat(repository.blockingGet()!!.syncState()).isEqualTo(State.TO_UPDATE)
 
-        DataStoreEntryStoreImpl(databaseAdapter)
+        koin.get<DataStoreEntryStore>()
             .deleteWhere(repository.blockingGet()!!)
     }
 }

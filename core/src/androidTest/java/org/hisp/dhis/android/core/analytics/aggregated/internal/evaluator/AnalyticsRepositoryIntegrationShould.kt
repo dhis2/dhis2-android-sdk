@@ -32,10 +32,11 @@ import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.RelativePeriod
-import org.hisp.dhis.android.core.dataelement.internal.DataElementStoreImpl
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 
@@ -92,7 +93,7 @@ class AnalyticsRepositoryIntegrationShould : BaseMockIntegrationTestFullDispatch
 
     @Test
     fun should_fail_if_unsupported_aggregation_type() = runTest {
-        val dataElementStore = DataElementStoreImpl(databaseAdapter)
+        val dataElementStore: DataElementStore = koin.get()
         val dataElement = dataElementStore.selectByUid("g9eOBujte1U")!!
 
         val varianceDataElement = dataElement.toBuilder().aggregationType(AggregationType.VARIANCE.name).build()

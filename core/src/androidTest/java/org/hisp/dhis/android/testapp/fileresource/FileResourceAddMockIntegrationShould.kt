@@ -30,9 +30,10 @@ package org.hisp.dhis.android.testapp.fileresource
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper.getFileResourceDirectory
 import org.hisp.dhis.android.core.data.fileresource.RandomGeneratedInputStream
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceStoreImpl
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.writeInputStream
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
@@ -65,7 +66,7 @@ class FileResourceAddMockIntegrationShould : BaseMockIntegrationTestEmptyDispatc
         assertThat(savedFile.exists()).isTrue()
 
         savedFile.delete()
-        FileResourceStoreImpl(databaseAdapter).delete(fileResource.uid()!!)
+        koin.get<FileResourceStore>().delete(fileResource.uid()!!)
     }
 
     private fun storeFile(): File {

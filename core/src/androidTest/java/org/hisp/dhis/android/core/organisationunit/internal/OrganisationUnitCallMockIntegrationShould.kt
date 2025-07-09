@@ -31,21 +31,21 @@ import android.content.ContentValues
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.category.CategoryComboTableInfo
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples
 import org.hisp.dhis.android.core.dataset.DataSetTableInfo
 import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkHandler
-import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkStoreImpl
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.program.ProgramTableInfo
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
 import org.hisp.dhis.android.core.user.UserTableInfo
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkHandler
-import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStoreImpl
-import org.hisp.dhis.android.core.user.internal.UserStoreImpl
+import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import org.hisp.dhis.android.core.user.internal.UserStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.AfterClass
@@ -84,22 +84,20 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
         // inserting dataSets for creating OrgUnitDataSetLinks
         insertDataSet()
         val organisationUnitHandler = OrganisationUnitHandler(
-            OrganisationUnitStoreImpl(databaseAdapter),
-            UserOrganisationUnitLinkHandler(UserOrganisationUnitLinkStoreImpl(databaseAdapter)),
-            OrganisationUnitProgramLinkHandler(OrganisationUnitProgramLinkStoreImpl(databaseAdapter)),
-            DataSetOrganisationUnitLinkHandler(DataSetOrganisationUnitLinkStoreImpl(databaseAdapter)),
-            OrganisationUnitGroupHandler(OrganisationUnitGroupStoreImpl(databaseAdapter)),
-            OrganisationUnitOrganisationUnitGroupLinkHandler(
-                OrganisationUnitOrganisationUnitGroupLinkStoreImpl(databaseAdapter),
-            ),
+            koin.get(),
+            UserOrganisationUnitLinkHandler(koin.get()),
+            OrganisationUnitProgramLinkHandler(koin.get()),
+            DataSetOrganisationUnitLinkHandler(koin.get()),
+            OrganisationUnitGroupHandler(koin.get()),
+            OrganisationUnitOrganisationUnitGroupLinkHandler(koin.get()),
         )
         val organisationUnitCollectionCleaner = OrganisationUnitCollectionCleaner(databaseAdapter)
         organisationUnitCall = {
             OrganisationUnitCall(
                 organisationUnitNetworkHandler,
                 organisationUnitHandler,
-                UserOrganisationUnitLinkStoreImpl(databaseAdapter),
-                OrganisationUnitStoreImpl(databaseAdapter),
+                koin.get(),
+                koin.get(),
                 organisationUnitCollectionCleaner,
             ).download(user)
         }
@@ -124,7 +122,7 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
     @Test
     fun persist_organisation_unit_tree() = runTest {
         organisationUnitCall.invoke()
-        val organisationUnitStore = OrganisationUnitStoreImpl(databaseAdapter)
+        val organisationUnitStore: OrganisationUnitStore = koin.get()
         val dbAfroArabicClinic = organisationUnitStore.selectByUid(expectedAfroArabicClinic.uid())
         val dbAdonkiaCHP = organisationUnitStore.selectByUid(expectedAdonkiaCHP.uid())
 
@@ -135,7 +133,7 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
     @Test
     fun persist_organisation_unit_user_links() = runTest {
         organisationUnitCall.invoke()
-        val userOrganisationUnitStore = UserOrganisationUnitLinkStoreImpl(databaseAdapter)
+        val userOrganisationUnitStore: UserOrganisationUnitLinkStore = koin.get()
         val userOrganisationUnitLinks = userOrganisationUnitStore.selectAll()
         val linkOrganisationUnits: MutableSet<String> = HashSet(2)
 
@@ -156,7 +154,7 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
             d2.databaseAdapter().delete(ProgramTableInfo.TABLE_INFO.name())
             d2.databaseAdapter().delete(DataSetTableInfo.TABLE_INFO.name())
             d2.databaseAdapter().delete(CategoryComboTableInfo.TABLE_INFO.name())
-            UserStoreImpl(d2.databaseAdapter()).delete(userId)
+            koin.get<UserStore>().delete(userId)
         }
     }
 }

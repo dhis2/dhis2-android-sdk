@@ -30,9 +30,10 @@ package org.hisp.dhis.android.core.wipe
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.data.database.DatabaseAssert.Companion.assertThatDatabase
 import org.hisp.dhis.android.core.event.internal.EventCallFactory.create
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 
 class WipeDBCallRealIntegrationShould : BaseRealIntegrationTest() {
     // @Test
@@ -75,7 +76,7 @@ class WipeDBCallRealIntegrationShould : BaseRealIntegrationTest() {
         d2.userModule().logIn(username, password, url).blockingGet()
         d2.metadataModule().blockingDownload()
         d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(5).blockingDownload()
-        val trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl(d2.databaseAdapter())
+        val trackedEntityInstanceStore: TrackedEntityInstanceStore = koin.get()
         var hasTrackedEntities = trackedEntityInstanceStore.count() > 0
         assertThat(hasTrackedEntities).isTrue()
         d2.wipeModule().wipeData()

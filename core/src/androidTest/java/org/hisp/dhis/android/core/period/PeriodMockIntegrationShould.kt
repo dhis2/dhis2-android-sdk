@@ -29,9 +29,9 @@ package org.hisp.dhis.android.core.period
 
 import com.google.common.truth.Truth
 import kotlinx.coroutines.test.runTest
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.period.internal.PeriodStore
-import org.hisp.dhis.android.core.period.internal.PeriodStoreImpl
+import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 import java.text.ParseException
@@ -42,7 +42,7 @@ class PeriodMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     fun get_period_passing_period_type_and_a_date() {
         val period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodTypeAndDate(
             PeriodType.BiWeekly,
-            BaseIdentifiableObject.DATE_FORMAT.parse("2019-07-08T12:24:25.319"),
+            "2019-07-08T12:24:25.319".toJavaDate()!!,
         )
         Truth.assertThat(period.periodId()).isEqualTo("2019BiW14")
     }
@@ -50,9 +50,9 @@ class PeriodMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
     @Throws(ParseException::class)
     fun create_period_in_database_if_not_exist() = runTest {
-        val periodStore: PeriodStore = PeriodStoreImpl(databaseAdapter)
+        val periodStore: PeriodStore = koin.get()
 
-        val date = BaseIdentifiableObject.DATE_FORMAT.parse("2010-12-24T12:24:25.319")
+        val date = "2010-12-24T12:24:25.319".toJavaDate()!!
 
         var periodInDb = periodStore.selectPeriodByTypeAndDate(PeriodType.Monthly, date)
         Truth.assertThat(periodInDb).isNull()

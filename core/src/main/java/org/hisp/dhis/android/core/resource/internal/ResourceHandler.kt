@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.resource.internal
 
-import androidx.annotation.VisibleForTesting
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.koin.core.annotation.Singleton
 import java.util.Date
 
@@ -64,12 +62,5 @@ internal class ResourceHandler(private val resourceStore: ResourceStore) {
      */
     suspend fun getLastUpdated(type: Resource.Type): String? {
         return resourceStore.getLastUpdated(type)
-    }
-
-    companion object {
-        @VisibleForTesting
-        fun create(databaseAdapter: DatabaseAdapter): ResourceHandler {
-            return ResourceHandler(ResourceStoreImpl(databaseAdapter))
-        }
     }
 }

@@ -33,29 +33,27 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsService
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorIntegrationShould
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.generator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.program
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.AnalyticsType
 import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.constant.internal.ConstantStoreImpl
-import org.hisp.dhis.android.core.dataelement.internal.DataElementStoreImpl
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryType
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.`var`
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLExecutor
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStoreImpl
 
 internal open class BaseProgramIndicatorSQLExecutorIntegrationShould : BaseEvaluatorIntegrationShould() {
 
     protected val programIndicatorEvaluator = ProgramIndicatorSQLExecutor(
-        ConstantStoreImpl(databaseAdapter),
-        DataElementStoreImpl(databaseAdapter),
-        TrackedEntityAttributeStoreImpl(databaseAdapter),
+        koin.get(),
+        koin.get(),
+        koin.get(),
         databaseAdapter,
     )
 
-    protected val helper = BaseTrackerDataIntegrationHelper(databaseAdapter)
+    protected val helper = BaseTrackerDataIntegrationHelper()
 
     protected suspend fun evaluateTeiCount(
         filter: String? = null,

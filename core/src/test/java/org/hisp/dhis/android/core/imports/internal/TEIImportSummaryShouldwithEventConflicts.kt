@@ -29,15 +29,12 @@
 package org.hisp.dhis.android.core.imports.internal
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.network.trackedentityinstance.TEIImportSummaryDTO
 import org.junit.Test
 
-class TEIImportSummaryShouldwithEventConflicts :
-    BaseObjectKotlinxShould("imports/import_summary_with_event_conflicts.json"),
-    ObjectShould {
+class TEIImportSummaryShouldwithEventConflicts : CoreObjectShould("imports/import_summary_with_event_conflicts.json") {
     @Test
     @Throws(Exception::class)
     override fun map_from_json_string() {

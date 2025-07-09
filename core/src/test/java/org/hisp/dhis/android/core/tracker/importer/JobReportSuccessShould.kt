@@ -28,8 +28,7 @@
 package org.hisp.dhis.android.core.tracker.importer
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.core.tracker.importer.internal.JobImportCount
 import org.hisp.dhis.android.core.tracker.importer.internal.JobObjectReport
 import org.hisp.dhis.android.core.tracker.importer.internal.JobTypeReport
@@ -37,7 +36,7 @@ import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjec
 import org.hisp.dhis.android.network.tracker.JobReportDTO
 import org.junit.Test
 
-class JobReportSuccessShould : BaseObjectKotlinxShould("tracker/importer/jobreport-success.json"), ObjectShould {
+class JobReportSuccessShould : CoreObjectShould("tracker/importer/jobreport-success.json") {
 
     @Test
     override fun map_from_json_string() {

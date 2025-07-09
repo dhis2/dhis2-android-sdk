@@ -28,12 +28,11 @@
 package org.hisp.dhis.android.core.dataapproval
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.dataapproval.DataApprovalDTO
 import org.junit.Test
 
-class DataApprovalShould : BaseObjectKotlinxShould("dataapproval/data_approval.json"), ObjectShould {
+class DataApprovalShould : CoreObjectShould("dataapproval/data_approval.json") {
 
     @Test
     override fun map_from_json_string() {

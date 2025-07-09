@@ -29,12 +29,11 @@ package org.hisp.dhis.android.core.legendset
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.legendset.LegendSetDTO
 import org.junit.Test
 
-class LegendSetShould : BaseObjectKotlinxShould("legendset/legend_set.json"), ObjectShould {
+class LegendSetShould : CoreObjectShould("legendset/legend_set.json") {
 
     @Test
     override fun map_from_json_string() {

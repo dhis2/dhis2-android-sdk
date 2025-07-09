@@ -31,9 +31,11 @@ package org.hisp.dhis.android.core.common
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import java.io.InputStream
 
-open class BaseObjectKotlinxShould(private val jsonPath: String) {
+abstract class CoreObjectShould(private val jsonPath: String) {
 
     private val jsonParser = KotlinxJsonParser.instance
+
+    abstract fun map_from_json_string()
 
     protected fun <T> deserialize(serializer: kotlinx.serialization.KSerializer<T>): T {
         return deserializePath(jsonPath, serializer)
@@ -56,7 +58,7 @@ open class BaseObjectKotlinxShould(private val jsonPath: String) {
         return getStringValueFromFile(jsonPath)
     }
 
-    protected fun getStringValueFromFile(path: String): String {
+    private fun getStringValueFromFile(path: String): String {
         val jsonStream: InputStream = this::class.java.classLoader?.getResourceAsStream(path)
             ?: throw IllegalArgumentException("File not found: $jsonPath")
         return jsonStream.bufferedReader().use { it.readText() }

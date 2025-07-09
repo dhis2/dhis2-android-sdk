@@ -30,13 +30,12 @@ package org.hisp.dhis.android.core.program
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.network.program.ProgramSectionDTO
 import org.junit.Test
 
-class ProgramSectionShould : BaseObjectKotlinxShould("program/program_section.json"), ObjectShould {
+class ProgramSectionShould : CoreObjectShould("program/program_section.json") {
     @Test
     override fun map_from_json_string() {
         val programSectionDTO = deserialize(ProgramSectionDTO.serializer())

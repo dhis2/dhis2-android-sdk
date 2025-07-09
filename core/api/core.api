@@ -3616,7 +3616,7 @@ public abstract class org/hisp/dhis/android/core/attribute/DataElementAttributeV
 	public abstract fun value ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/attribute/DataElementAttributeValueLink$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/attribute/DataElementAttributeValueLink$Builder {
 	public fun <init> ()V
 	public abstract fun attribute (Ljava/lang/String;)Lorg/hisp/dhis/android/core/attribute/DataElementAttributeValueLink$Builder;
 	public abstract fun build ()Lorg/hisp/dhis/android/core/attribute/DataElementAttributeValueLink;
@@ -3648,7 +3648,7 @@ public abstract class org/hisp/dhis/android/core/attribute/ProgramAttributeValue
 	public abstract fun value ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/attribute/ProgramAttributeValueLink$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/attribute/ProgramAttributeValueLink$Builder {
 	public fun <init> ()V
 	public abstract fun attribute (Ljava/lang/String;)Lorg/hisp/dhis/android/core/attribute/ProgramAttributeValueLink$Builder;
 	public abstract fun build ()Lorg/hisp/dhis/android/core/attribute/ProgramAttributeValueLink;
@@ -3680,7 +3680,7 @@ public abstract class org/hisp/dhis/android/core/attribute/ProgramStageAttribute
 	public abstract fun value ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/attribute/ProgramStageAttributeValueLink$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/attribute/ProgramStageAttributeValueLink$Builder {
 	public fun <init> ()V
 	public abstract fun attribute (Ljava/lang/String;)Lorg/hisp/dhis/android/core/attribute/ProgramStageAttributeValueLink$Builder;
 	public abstract fun build ()Lorg/hisp/dhis/android/core/attribute/ProgramStageAttributeValueLink;
@@ -3728,7 +3728,7 @@ public abstract class org/hisp/dhis/android/core/category/CategoryCategoryComboL
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/category/CategoryCategoryComboLink$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/category/CategoryCategoryComboLink$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/category/CategoryCategoryComboLink$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/category/CategoryCategoryComboLink;
 	public abstract fun category (Ljava/lang/String;)Lorg/hisp/dhis/android/core/category/CategoryCategoryComboLink$Builder;
@@ -3759,7 +3759,7 @@ public abstract class org/hisp/dhis/android/core/category/CategoryCategoryOption
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/category/CategoryCategoryOptionLink$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/category/CategoryCategoryOptionLink$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/category/CategoryCategoryOptionLink$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/category/CategoryCategoryOptionLink;
 	public abstract fun category (Ljava/lang/String;)Lorg/hisp/dhis/android/core/category/CategoryCategoryOptionLink$Builder;
@@ -3889,7 +3889,7 @@ public abstract class org/hisp/dhis/android/core/category/CategoryOptionComboCat
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/category/CategoryOptionComboCategoryOptionLink$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/category/CategoryOptionComboCategoryOptionLink$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/category/CategoryOptionComboCategoryOptionLink$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/category/CategoryOptionComboCategoryOptionLink;
 	public abstract fun categoryOption (Ljava/lang/String;)Lorg/hisp/dhis/android/core/category/CategoryOptionComboCategoryOptionLink$Builder;
@@ -3944,7 +3944,7 @@ public abstract class org/hisp/dhis/android/core/category/CategoryOptionOrganisa
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/category/CategoryOptionOrganisationUnitLink$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/category/CategoryOptionOrganisationUnitLink$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/category/CategoryOptionOrganisationUnitLink$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/category/CategoryOptionOrganisationUnitLink;
 	public abstract fun categoryOption (Ljava/lang/String;)Lorg/hisp/dhis/android/core/category/CategoryOptionOrganisationUnitLink$Builder;
@@ -4053,13 +4053,13 @@ public final class org/hisp/dhis/android/core/common/AssignedUserMode : java/lan
 	public static fun values ()[Lorg/hisp/dhis/android/core/common/AssignedUserMode;
 }
 
-public abstract class org/hisp/dhis/android/core/common/BaseDataObject : org/hisp/dhis/android/core/common/BaseObject, org/hisp/dhis/android/core/common/DataObject {
+public abstract class org/hisp/dhis/android/core/common/BaseDataObject : org/hisp/dhis/android/core/common/DataObject {
 	public fun <init> ()V
 	public fun state ()Lorg/hisp/dhis/android/core/common/State;
 	public abstract fun syncState ()Lorg/hisp/dhis/android/core/common/State;
 }
 
-protected abstract class org/hisp/dhis/android/core/common/BaseDataObject$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+protected abstract class org/hisp/dhis/android/core/common/BaseDataObject$Builder {
 	protected fun <init> ()V
 	public fun state (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/common/BaseDataObject$Builder;
 	public abstract fun syncState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/common/BaseDataObject$Builder;
@@ -4131,14 +4131,6 @@ public abstract class org/hisp/dhis/android/core/common/BaseNameableObject$Build
 	public abstract fun displayDescription (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseNameableObject$Builder;
 	public abstract fun displayShortName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseNameableObject$Builder;
 	public abstract fun shortName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseNameableObject$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/common/BaseObject : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-}
-
-public abstract class org/hisp/dhis/android/core/common/BaseObject$Builder {
-	public fun <init> ()V
 }
 
 public abstract class org/hisp/dhis/android/core/common/Coordinates {
@@ -4532,7 +4524,7 @@ public final class org/hisp/dhis/android/core/common/State$Companion {
 	public final fun uploadableStatesIncludingError ()[Lorg/hisp/dhis/android/core/common/State;
 }
 
-public abstract class org/hisp/dhis/android/core/common/StorableObjectWithUid : org/hisp/dhis/android/core/common/BaseObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
+public abstract class org/hisp/dhis/android/core/common/StorableObjectWithUid : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
 	public fun <init> ()V
 	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/common/StorableObjectWithUid;
 	public static fun create (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/StorableObjectWithUid;
@@ -4615,7 +4607,7 @@ public abstract class org/hisp/dhis/android/core/common/ValueTypeDeviceRendering
 	public abstract fun uid ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/common/ValueTypeDeviceRendering$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/common/ValueTypeDeviceRendering$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/common/ValueTypeDeviceRendering;
 	public abstract fun decimalPoints (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/common/ValueTypeDeviceRendering$Builder;
@@ -5098,7 +5090,7 @@ public abstract class org/hisp/dhis/android/core/configuration/internal/Configur
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/configuration/internal/Configuration$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/configuration/internal/Configuration$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/configuration/internal/Configuration$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/configuration/internal/Configuration;
 	public abstract fun serverUrl (Ljava/lang/String;)Lorg/hisp/dhis/android/core/configuration/internal/Configuration$Builder;
@@ -5213,7 +5205,7 @@ public class org/hisp/dhis/android/core/constant/ConstantTableInfo$Columns : org
 	public fun all ()[Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/dataapproval/DataApproval : org/hisp/dhis/android/core/common/BaseObject {
+public abstract class org/hisp/dhis/android/core/dataapproval/DataApproval : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public abstract fun attributeOptionCombo ()Ljava/lang/String;
 	public static fun builder ()Lorg/hisp/dhis/android/core/dataapproval/DataApproval$Builder;
@@ -5225,7 +5217,7 @@ public abstract class org/hisp/dhis/android/core/dataapproval/DataApproval : org
 	public abstract fun workflow ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/dataapproval/DataApproval$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/dataapproval/DataApproval$Builder {
 	public fun <init> ()V
 	public abstract fun attributeOptionCombo (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataapproval/DataApproval$Builder;
 	public abstract fun build ()Lorg/hisp/dhis/android/core/dataapproval/DataApproval;
@@ -5331,7 +5323,7 @@ public abstract interface class org/hisp/dhis/android/core/dataelement/DataEleme
 	public abstract fun dataElements ()Lorg/hisp/dhis/android/core/dataelement/DataElementCollectionRepository;
 }
 
-public abstract class org/hisp/dhis/android/core/dataelement/DataElementOperand : org/hisp/dhis/android/core/common/BaseObject, org/hisp/dhis/android/core/common/ObjectWithDeleteInterface, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
+public abstract class org/hisp/dhis/android/core/dataelement/DataElementOperand : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithDeleteInterface, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/dataelement/DataElementOperand$Builder;
 	public abstract fun categoryOptionCombo ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
@@ -5342,7 +5334,7 @@ public abstract class org/hisp/dhis/android/core/dataelement/DataElementOperand 
 	public abstract fun uid ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/dataelement/DataElementOperand$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/dataelement/DataElementOperand$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/dataelement/DataElementOperand;
 	public abstract fun categoryOptionCombo (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/dataelement/DataElementOperand$Builder;
@@ -5396,7 +5388,7 @@ public abstract class org/hisp/dhis/android/core/dataset/CustomText$Builder {
 	public abstract fun subHeader (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/CustomText$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/dataset/DataInputPeriod : org/hisp/dhis/android/core/common/BaseObject {
+public abstract class org/hisp/dhis/android/core/dataset/DataInputPeriod : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/dataset/DataInputPeriod$Builder;
 	public abstract fun closingDate ()Ljava/util/Date;
@@ -5407,7 +5399,7 @@ public abstract class org/hisp/dhis/android/core/dataset/DataInputPeriod : org/h
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/DataInputPeriod$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/dataset/DataInputPeriod$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/dataset/DataInputPeriod$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/dataset/DataInputPeriod;
 	public abstract fun closingDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/dataset/DataInputPeriod$Builder;
@@ -5593,7 +5585,7 @@ public abstract class org/hisp/dhis/android/core/dataset/DataSetCompulsoryDataEl
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink;
 	public abstract fun dataElementOperand (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink$Builder;
@@ -5661,7 +5653,7 @@ public abstract class org/hisp/dhis/android/core/dataset/DataSetElement : org/hi
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/DataSetElement$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/dataset/DataSetElement$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/dataset/DataSetElement$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/dataset/DataSetElement;
 	public abstract fun categoryCombo (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/dataset/DataSetElement$Builder;
@@ -5705,7 +5697,7 @@ public abstract class org/hisp/dhis/android/core/dataset/DataSetInstance : org/h
 	public abstract fun valueCount ()Ljava/lang/Integer;
 }
 
-public abstract class org/hisp/dhis/android/core/dataset/DataSetInstance$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/dataset/DataSetInstance$Builder {
 	public fun <init> ()V
 	public abstract fun attributeOptionComboDisplayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
 	public abstract fun attributeOptionComboUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
@@ -5762,7 +5754,7 @@ public abstract class org/hisp/dhis/android/core/dataset/DataSetInstanceSummary 
 	public abstract fun valueCount ()Ljava/lang/Integer;
 }
 
-public abstract class org/hisp/dhis/android/core/dataset/DataSetInstanceSummary$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/dataset/DataSetInstanceSummary$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/dataset/DataSetInstanceSummary;
 	public abstract fun dataSetDisplayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetInstanceSummary$Builder;
@@ -5817,7 +5809,7 @@ public abstract class org/hisp/dhis/android/core/dataset/DataSetOrganisationUnit
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLink$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLink$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLink$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLink;
 	public abstract fun dataSet (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLink$Builder;
@@ -5924,7 +5916,7 @@ public abstract class org/hisp/dhis/android/core/dataset/SectionDataElementLink 
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/SectionDataElementLink$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/dataset/SectionDataElementLink$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/dataset/SectionDataElementLink$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/dataset/SectionDataElementLink;
 	public abstract fun dataElement (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/SectionDataElementLink$Builder;
@@ -5973,7 +5965,7 @@ public abstract class org/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink;
 	public abstract fun categoryOptionCombo (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink$Builder;
@@ -6128,7 +6120,7 @@ public abstract class org/hisp/dhis/android/core/dataset/internal/SectionIndicat
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink;
 	public abstract fun indicator (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink$Builder;
@@ -6307,7 +6299,7 @@ public final class org/hisp/dhis/android/core/datavalue/DataValueCollectionRepos
 	public final fun value (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValueObjectRepository;
 }
 
-public abstract class org/hisp/dhis/android/core/datavalue/DataValueConflict : org/hisp/dhis/android/core/common/BaseObject {
+public abstract class org/hisp/dhis/android/core/datavalue/DataValueConflict : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public abstract fun attributeOptionCombo ()Ljava/lang/String;
 	public static fun builder ()Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Builder;
@@ -6325,7 +6317,7 @@ public abstract class org/hisp/dhis/android/core/datavalue/DataValueConflict : o
 	public abstract fun value ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/datavalue/DataValueConflict$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/datavalue/DataValueConflict$Builder {
 	public fun <init> ()V
 	public abstract fun attributeOptionCombo (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Builder;
 	public abstract fun build ()Lorg/hisp/dhis/android/core/datavalue/DataValueConflict;
@@ -6511,7 +6503,7 @@ public final class org/hisp/dhis/android/core/domain/aggregated/data/internal/Ag
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync : org/hisp/dhis/android/core/common/BaseObject {
+public abstract class org/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
 	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync;
@@ -6525,7 +6517,7 @@ public abstract class org/hisp/dhis/android/core/domain/aggregated/data/internal
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync;
 	public abstract fun dataElementsHash (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
@@ -7424,7 +7416,7 @@ public final class org/hisp/dhis/android/core/imports/ImportStatus : java/lang/E
 	public static fun values ()[Lorg/hisp/dhis/android/core/imports/ImportStatus;
 }
 
-public abstract class org/hisp/dhis/android/core/imports/TrackerImportConflict : org/hisp/dhis/android/core/common/BaseObject {
+public abstract class org/hisp/dhis/android/core/imports/TrackerImportConflict : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
 	public abstract fun conflict ()Ljava/lang/String;
@@ -7443,7 +7435,7 @@ public abstract class org/hisp/dhis/android/core/imports/TrackerImportConflict :
 	public abstract fun value ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/imports/TrackerImportConflict$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/imports/TrackerImportConflict$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/imports/TrackerImportConflict;
 	public abstract fun conflict (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
@@ -7785,7 +7777,7 @@ public abstract class org/hisp/dhis/android/core/indicator/DataSetIndicatorLink 
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/indicator/DataSetIndicatorLink$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/indicator/DataSetIndicatorLink$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/indicator/DataSetIndicatorLink$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/indicator/DataSetIndicatorLink;
 	public abstract fun dataSet (Ljava/lang/String;)Lorg/hisp/dhis/android/core/indicator/DataSetIndicatorLink$Builder;
@@ -7958,7 +7950,7 @@ public abstract class org/hisp/dhis/android/core/legendset/DataElementLegendSetL
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/legendset/DataElementLegendSetLink$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/legendset/DataElementLegendSetLink$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/legendset/DataElementLegendSetLink$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/legendset/DataElementLegendSetLink;
 	public abstract fun dataElement (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/DataElementLegendSetLink$Builder;
@@ -7990,7 +7982,7 @@ public abstract class org/hisp/dhis/android/core/legendset/IndicatorLegendSetLin
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/legendset/IndicatorLegendSetLink$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/legendset/IndicatorLegendSetLink$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/legendset/IndicatorLegendSetLink$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/legendset/IndicatorLegendSetLink;
 	public abstract fun indicator (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/IndicatorLegendSetLink$Builder;
@@ -8084,7 +8076,7 @@ public abstract class org/hisp/dhis/android/core/legendset/ProgramIndicatorLegen
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink;
 	public abstract fun legendSet (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink$Builder;
@@ -8121,7 +8113,7 @@ public abstract class org/hisp/dhis/android/core/maintenance/D2Error : java/lang
 	public abstract fun url ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/maintenance/D2Error$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/maintenance/D2Error$Builder {
 	public fun <init> ()V
 	public fun build ()Lorg/hisp/dhis/android/core/maintenance/D2Error;
 	public abstract fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/maintenance/D2Error$Builder;
@@ -8233,7 +8225,7 @@ public class org/hisp/dhis/android/core/maintenance/D2ErrorTableInfo$Columns : o
 	public fun all ()[Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/maintenance/ForeignKeyViolation : org/hisp/dhis/android/core/common/BaseObject {
+public abstract class org/hisp/dhis/android/core/maintenance/ForeignKeyViolation : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Builder;
 	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation;
@@ -8248,7 +8240,7 @@ public abstract class org/hisp/dhis/android/core/maintenance/ForeignKeyViolation
 	public abstract fun toTable ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation;
 	public abstract fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Builder;
@@ -8327,7 +8319,7 @@ public final class org/hisp/dhis/android/core/map/layer/ImageFormat : java/lang/
 	public static fun values ()[Lorg/hisp/dhis/android/core/map/layer/ImageFormat;
 }
 
-public abstract class org/hisp/dhis/android/core/map/layer/MapLayer : org/hisp/dhis/android/core/common/BaseObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
+public abstract class org/hisp/dhis/android/core/map/layer/MapLayer : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
 	public static final field IMAGERY_PROVIDERS Ljava/lang/String;
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
@@ -8349,7 +8341,7 @@ public abstract class org/hisp/dhis/android/core/map/layer/MapLayer : org/hisp/d
 	public abstract fun uid ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/map/layer/MapLayer$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/map/layer/MapLayer$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/map/layer/MapLayer;
 	public abstract fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
@@ -8397,7 +8389,7 @@ public abstract class org/hisp/dhis/android/core/map/layer/MapLayerImageryProvid
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProvider$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/map/layer/MapLayerImageryProvider$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/map/layer/MapLayerImageryProvider$Builder {
 	public fun <init> ()V
 	public abstract fun attribution (Ljava/lang/String;)Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProvider$Builder;
 	public abstract fun build ()Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProvider;
@@ -8711,7 +8703,7 @@ public abstract class org/hisp/dhis/android/core/option/OptionGroupOptionLink : 
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/option/OptionGroupOptionLink$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/option/OptionGroupOptionLink$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/option/OptionGroupOptionLink$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/option/OptionGroupOptionLink;
 	public abstract fun option (Ljava/lang/String;)Lorg/hisp/dhis/android/core/option/OptionGroupOptionLink$Builder;
@@ -8967,7 +8959,7 @@ public abstract class org/hisp/dhis/android/core/organisationunit/OrganisationUn
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLink$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLink$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLink$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLink;
 	public abstract fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLink$Builder;
@@ -8995,7 +8987,7 @@ public abstract class org/hisp/dhis/android/core/organisationunit/OrganisationUn
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink;
 	public abstract fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink$Builder;
@@ -9179,7 +9171,7 @@ public abstract class org/hisp/dhis/android/core/period/Period : org/hisp/dhis/a
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/period/Period$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/period/Period$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/period/Period$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/period/Period;
 	public abstract fun endDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/period/Period$Builder;
@@ -9291,7 +9283,7 @@ public abstract class org/hisp/dhis/android/core/program/AnalyticsPeriodBoundary
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/program/AnalyticsPeriodBoundary$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/program/AnalyticsPeriodBoundary$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/program/AnalyticsPeriodBoundary$Builder {
 	public fun <init> ()V
 	public abstract fun analyticsPeriodBoundaryType (Lorg/hisp/dhis/android/core/program/AnalyticsPeriodBoundaryType;)Lorg/hisp/dhis/android/core/program/AnalyticsPeriodBoundary$Builder;
 	public abstract fun boundaryTarget (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/AnalyticsPeriodBoundary$Builder;
@@ -9833,7 +9825,7 @@ public abstract class org/hisp/dhis/android/core/program/ProgramSectionAttribute
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/program/ProgramSectionAttributeLink$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/program/ProgramSectionAttributeLink$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/program/ProgramSectionAttributeLink$Builder {
 	public fun <init> ()V
 	public abstract fun attribute (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramSectionAttributeLink$Builder;
 	public abstract fun build ()Lorg/hisp/dhis/android/core/program/ProgramSectionAttributeLink;
@@ -10085,7 +10077,7 @@ public abstract class org/hisp/dhis/android/core/program/ProgramStageSectionData
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/program/ProgramStageSectionDataElementLink$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/program/ProgramStageSectionDataElementLink$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/program/ProgramStageSectionDataElementLink$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/program/ProgramStageSectionDataElementLink;
 	public abstract fun dataElement (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStageSectionDataElementLink$Builder;
@@ -10115,7 +10107,7 @@ public abstract class org/hisp/dhis/android/core/program/ProgramStageSectionProg
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/program/ProgramStageSectionProgramIndicatorLink$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/program/ProgramStageSectionProgramIndicatorLink$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/program/ProgramStageSectionProgramIndicatorLink$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/program/ProgramStageSectionProgramIndicatorLink;
 	public abstract fun programIndicator (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStageSectionProgramIndicatorLink$Builder;
@@ -10622,7 +10614,7 @@ public final class org/hisp/dhis/android/core/relationship/RelationshipCollectio
 	public final fun withItems ()Lorg/hisp/dhis/android/core/relationship/RelationshipCollectionRepository;
 }
 
-public abstract class org/hisp/dhis/android/core/relationship/RelationshipConstraint : org/hisp/dhis/android/core/common/BaseObject {
+public abstract class org/hisp/dhis/android/core/relationship/RelationshipConstraint : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint$Builder;
 	public abstract fun constraintType ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;
@@ -10636,7 +10628,7 @@ public abstract class org/hisp/dhis/android/core/relationship/RelationshipConstr
 	public abstract fun trackerDataView ()Lorg/hisp/dhis/android/core/relationship/TrackerDataView;
 }
 
-public abstract class org/hisp/dhis/android/core/relationship/RelationshipConstraint$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/relationship/RelationshipConstraint$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;
 	public abstract fun constraintType (Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;)Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint$Builder;
@@ -10871,7 +10863,7 @@ public final class org/hisp/dhis/android/core/relationship/RelationshipTypeWithE
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/relationship/TrackerDataView : org/hisp/dhis/android/core/common/BaseObject {
+public abstract class org/hisp/dhis/android/core/relationship/TrackerDataView : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public abstract fun attributes ()Ljava/util/List;
 	public static fun builder ()Lorg/hisp/dhis/android/core/relationship/TrackerDataView$Builder;
@@ -10880,7 +10872,7 @@ public abstract class org/hisp/dhis/android/core/relationship/TrackerDataView : 
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/relationship/TrackerDataView$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/relationship/TrackerDataView$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/relationship/TrackerDataView$Builder {
 	public fun <init> ()V
 	public abstract fun attributes (Ljava/util/List;)Lorg/hisp/dhis/android/core/relationship/TrackerDataView$Builder;
 	public fun build ()Lorg/hisp/dhis/android/core/relationship/TrackerDataView;
@@ -10903,7 +10895,7 @@ public abstract class org/hisp/dhis/android/core/resource/internal/Resource : or
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/resource/internal/Resource$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/resource/internal/Resource$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/resource/internal/Resource$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/resource/internal/Resource;
 	public abstract fun lastSynced (Ljava/util/Date;)Lorg/hisp/dhis/android/core/resource/internal/Resource$Builder;
@@ -11907,7 +11899,7 @@ public abstract class org/hisp/dhis/android/core/settings/LatestAppVersion : org
 	public abstract fun version ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/LatestAppVersion$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/settings/LatestAppVersion$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/LatestAppVersion;
 	public abstract fun downloadURL (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/LatestAppVersion$Builder;
@@ -12252,7 +12244,7 @@ public abstract class org/hisp/dhis/android/core/settings/SystemSetting : org/hi
 	public abstract fun value ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/SystemSetting$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/settings/SystemSetting$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/SystemSetting;
 	public abstract fun key (Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;)Lorg/hisp/dhis/android/core/settings/SystemSetting$Builder;
@@ -12785,7 +12777,7 @@ public final class org/hisp/dhis/android/core/systeminfo/SMSVersion$Companion {
 	public static synthetic fun getValue$default (Lorg/hisp/dhis/android/core/systeminfo/SMSVersion$Companion;Ljava/lang/String;Ljava/lang/Boolean;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/systeminfo/SMSVersion;
 }
 
-public abstract class org/hisp/dhis/android/core/systeminfo/SystemInfo : org/hisp/dhis/android/core/common/BaseObject {
+public abstract class org/hisp/dhis/android/core/systeminfo/SystemInfo : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/systeminfo/SystemInfo$Builder;
 	public abstract fun contextPath ()Ljava/lang/String;
@@ -12797,7 +12789,7 @@ public abstract class org/hisp/dhis/android/core/systeminfo/SystemInfo : org/his
 	public abstract fun version ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/systeminfo/SystemInfo$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/systeminfo/SystemInfo$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/systeminfo/SystemInfo;
 	public abstract fun contextPath (Ljava/lang/String;)Lorg/hisp/dhis/android/core/systeminfo/SystemInfo$Builder;
@@ -13032,7 +13024,7 @@ public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttr
 	public abstract fun trackedEntityAttribute ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink;
 	public abstract fun legendSet (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink$Builder;
@@ -13079,7 +13071,7 @@ public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttr
 	public abstract fun value ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue;
 	public abstract fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Builder;
@@ -13660,7 +13652,7 @@ public abstract class org/hisp/dhis/android/core/trackedentity/internal/TrackedE
 	public abstract fun build ()Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync : org/hisp/dhis/android/core/common/BaseObject {
+public abstract class org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public abstract fun downloadLimit ()Ljava/lang/Integer;
 	public abstract fun lastUpdated ()Ljava/util/Date;
@@ -13668,12 +13660,12 @@ public abstract class org/hisp/dhis/android/core/trackedentity/internal/TrackerB
 	public abstract fun program ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync$Builder {
 	public fun <init> ()V
-	public abstract fun downloadLimit (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/common/BaseObject$Builder;
-	public abstract fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseObject$Builder;
-	public abstract fun organisationUnitIdsHash (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/common/BaseObject$Builder;
-	public abstract fun program (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseObject$Builder;
+	public abstract fun downloadLimit (Ljava/lang/Integer;)Ljava/lang/Object;
+	public abstract fun lastUpdated (Ljava/util/Date;)Ljava/lang/Object;
+	public abstract fun organisationUnitIdsHash (Ljava/lang/Integer;)Ljava/lang/Object;
+	public abstract fun program (Ljava/lang/String;)Ljava/lang/Object;
 }
 
 public class org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSyncColumns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14107,7 +14099,7 @@ public final class org/hisp/dhis/android/core/tracker/importer/internal/TrackerJ
 	public fun wipeMetadata ()V
 }
 
-public abstract class org/hisp/dhis/android/core/tracker/importer/internal/TrackerJobObject : org/hisp/dhis/android/core/common/BaseObject {
+public abstract class org/hisp/dhis/android/core/tracker/importer/internal/TrackerJobObject : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/tracker/importer/internal/TrackerJobObject$Builder;
 	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/tracker/importer/internal/TrackerJobObject;
@@ -14118,7 +14110,7 @@ public abstract class org/hisp/dhis/android/core/tracker/importer/internal/Track
 	public abstract fun trackerType ()Lorg/hisp/dhis/android/core/tracker/importer/internal/TrackerImporterObjectType;
 }
 
-public abstract class org/hisp/dhis/android/core/tracker/importer/internal/TrackerJobObject$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/tracker/importer/internal/TrackerJobObject$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/tracker/importer/internal/TrackerJobObject;
 	public abstract fun fileResources (Ljava/util/List;)Lorg/hisp/dhis/android/core/tracker/importer/internal/TrackerJobObject$Builder;
@@ -14151,7 +14143,7 @@ public final class org/hisp/dhis/android/core/usecase/internal/UseCaseModuleWipe
 	public fun wipeMetadata ()V
 }
 
-public abstract class org/hisp/dhis/android/core/usecase/stock/InternalStockUseCase : org/hisp/dhis/android/core/common/BaseObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
+public abstract class org/hisp/dhis/android/core/usecase/stock/InternalStockUseCase : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
 	public static final field TRANSACTIONS Ljava/lang/String;
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/usecase/stock/InternalStockUseCase$Builder;
@@ -14166,7 +14158,7 @@ public abstract class org/hisp/dhis/android/core/usecase/stock/InternalStockUseC
 	public abstract fun uid ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/usecase/stock/InternalStockUseCase$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/usecase/stock/InternalStockUseCase$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/usecase/stock/InternalStockUseCase;
 	public abstract fun description (Ljava/lang/String;)Lorg/hisp/dhis/android/core/usecase/stock/InternalStockUseCase$Builder;
@@ -14178,7 +14170,7 @@ public abstract class org/hisp/dhis/android/core/usecase/stock/InternalStockUseC
 	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/usecase/stock/InternalStockUseCase$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/usecase/stock/InternalStockUseCaseTransaction : org/hisp/dhis/android/core/common/BaseObject {
+public abstract class org/hisp/dhis/android/core/usecase/stock/InternalStockUseCaseTransaction : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/usecase/stock/InternalStockUseCaseTransaction$Builder;
 	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/usecase/stock/InternalStockUseCaseTransaction;
@@ -14192,7 +14184,7 @@ public abstract class org/hisp/dhis/android/core/usecase/stock/InternalStockUseC
 	public abstract fun transactionType ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/usecase/stock/InternalStockUseCaseTransaction$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/usecase/stock/InternalStockUseCaseTransaction$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/usecase/stock/InternalStockUseCaseTransaction;
 	public abstract fun distributedTo (Ljava/lang/String;)Lorg/hisp/dhis/android/core/usecase/stock/InternalStockUseCaseTransaction$Builder;
@@ -14376,7 +14368,7 @@ public abstract class org/hisp/dhis/android/core/user/AuthenticatedUser : org/hi
 	public abstract fun user ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/user/AuthenticatedUser$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/user/AuthenticatedUser$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/user/AuthenticatedUser;
 	public abstract fun hash (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/AuthenticatedUser$Builder;
@@ -14406,7 +14398,7 @@ public abstract class org/hisp/dhis/android/core/user/Authority : org/hisp/dhis/
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/user/Authority$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/user/Authority$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/user/Authority$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/user/Authority;
 	public abstract fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/Authority$Builder;
@@ -14566,7 +14558,7 @@ public abstract class org/hisp/dhis/android/core/user/UserOrganisationUnitLink :
 	public abstract fun userAssigned ()Ljava/lang/Boolean;
 }
 
-public abstract class org/hisp/dhis/android/core/user/UserOrganisationUnitLink$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/user/UserOrganisationUnitLink$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/user/UserOrganisationUnitLink;
 	public abstract fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/UserOrganisationUnitLink$Builder;
@@ -14771,7 +14763,7 @@ public abstract class org/hisp/dhis/android/core/validation/DataSetValidationRul
 	public abstract fun validationRule ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/validation/DataSetValidationRuleLink$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/validation/DataSetValidationRuleLink$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/validation/DataSetValidationRuleLink;
 	public abstract fun dataSet (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/DataSetValidationRuleLink$Builder;
@@ -15358,7 +15350,7 @@ public abstract class org/hisp/dhis/android/core/visualization/VisualizationCate
 	public abstract fun visualization ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/visualization/VisualizationCategoryDimensionLink$Builder : org/hisp/dhis/android/core/common/BaseObject$Builder {
+public abstract class org/hisp/dhis/android/core/visualization/VisualizationCategoryDimensionLink$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/visualization/VisualizationCategoryDimensionLink;
 	public abstract fun category (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/VisualizationCategoryDimensionLink$Builder;

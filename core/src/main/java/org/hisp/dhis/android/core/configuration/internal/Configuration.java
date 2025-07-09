@@ -34,7 +34,6 @@ import androidx.annotation.NonNull;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 /**
@@ -59,7 +58,7 @@ public abstract class Configuration implements CoreObject {
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder {
+    public abstract static class Builder {
         public abstract Builder serverUrl(String serverUrl);
 
         public abstract Configuration build();

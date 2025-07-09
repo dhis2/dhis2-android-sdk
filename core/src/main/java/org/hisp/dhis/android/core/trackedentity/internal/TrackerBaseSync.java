@@ -34,11 +34,11 @@ import androidx.annotation.Nullable;
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
 
-public abstract class TrackerBaseSync extends BaseObject {
+public abstract class TrackerBaseSync implements CoreObject {
 
     @Nullable
     public abstract String program();
@@ -53,7 +53,7 @@ public abstract class TrackerBaseSync extends BaseObject {
     @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
-    public abstract static class Builder<T extends BaseObject.Builder> extends BaseObject.Builder {
+    public abstract static class Builder<T> {
 
         public abstract T program(String program);
 

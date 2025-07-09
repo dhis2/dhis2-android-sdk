@@ -76,7 +76,7 @@ public abstract class ValueTypeDeviceRendering implements CoreObject {
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder {
+    public abstract static class Builder {
 
         public abstract Builder uid(String uid);
 

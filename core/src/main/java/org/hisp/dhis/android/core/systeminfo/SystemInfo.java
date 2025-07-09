@@ -37,12 +37,12 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
 
 @AutoValue
-public abstract class SystemInfo extends BaseObject {
+public abstract class SystemInfo implements CoreObject {
 
     @Nullable
     @ColumnAdapter(DbDateColumnAdapter.class)
@@ -72,7 +72,7 @@ public abstract class SystemInfo extends BaseObject {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder {
+    public abstract static class Builder {
         public abstract Builder serverDate(Date serverDate);
 
         public abstract Builder dateFormat(String dateFormat);

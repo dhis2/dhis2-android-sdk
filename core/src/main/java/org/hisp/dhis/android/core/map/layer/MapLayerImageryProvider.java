@@ -37,7 +37,6 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.MapLayerImagerProviderAreaListColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.List;
@@ -66,7 +65,7 @@ public abstract class MapLayerImageryProvider implements CoreObject {
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder {
+    public abstract static class Builder {
 
         public abstract Builder mapLayer(String mapLayer);
 

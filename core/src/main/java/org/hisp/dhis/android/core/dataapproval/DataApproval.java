@@ -37,10 +37,10 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.DataApprovalStateColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
-public abstract class DataApproval extends BaseObject {
+public abstract class DataApproval implements CoreObject {
 
     public abstract String workflow();
 
@@ -67,7 +67,7 @@ public abstract class DataApproval extends BaseObject {
 
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder {
+    public abstract static class Builder {
 
         public abstract Builder workflow(@NonNull String workflow);
 

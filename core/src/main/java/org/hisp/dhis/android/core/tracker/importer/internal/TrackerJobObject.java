@@ -38,13 +38,13 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringArrayColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.TrackerImporterObjectTypeColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
 import java.util.List;
 
 @AutoValue
-public abstract class TrackerJobObject extends BaseObject {
+public abstract class TrackerJobObject implements CoreObject {
 
     @NonNull
     @ColumnAdapter(TrackerImporterObjectTypeColumnAdapter.class)
@@ -76,7 +76,7 @@ public abstract class TrackerJobObject extends BaseObject {
     abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder {
+    public abstract static class Builder {
         public abstract Builder trackerType(TrackerImporterObjectType trackerType);
 
         public abstract Builder objectUid(String objectUid);

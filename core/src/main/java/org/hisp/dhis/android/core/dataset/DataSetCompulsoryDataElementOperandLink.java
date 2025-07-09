@@ -34,7 +34,6 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
@@ -57,7 +56,7 @@ public abstract class DataSetCompulsoryDataElementOperandLink implements CoreObj
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder {
+    public abstract static class Builder {
 
         public abstract Builder dataSet(String dataSet);
 

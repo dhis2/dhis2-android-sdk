@@ -38,7 +38,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.State;
 
@@ -79,7 +78,7 @@ public abstract class DataSetInstanceSummary implements CoreObject {
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder {
+    public abstract static class Builder {
         public abstract Builder dataSetUid(String dataSetUid);
 
         public abstract Builder dataSetDisplayName(String dataSetDisplayName);

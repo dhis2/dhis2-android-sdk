@@ -30,12 +30,11 @@ package org.hisp.dhis.android.core.legendset;
 
 import android.database.Cursor;
 
+import androidx.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.CoreObject;
-
-import androidx.annotation.Nullable;
 
 @AutoValue
 public abstract class DataElementLegendSetLink implements CoreObject {
@@ -60,7 +59,7 @@ public abstract class DataElementLegendSetLink implements CoreObject {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder {
+    public abstract static class Builder {
         public abstract Builder dataElement(String dataElement);
 
         public abstract Builder legendSet(String legendSet);

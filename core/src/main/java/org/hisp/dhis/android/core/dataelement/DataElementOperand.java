@@ -37,14 +37,13 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreBooleanColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 @AutoValue
-public abstract class DataElementOperand extends BaseObject
-        implements ObjectWithUidInterface, ObjectWithDeleteInterface {
+public abstract class DataElementOperand implements CoreObject, ObjectWithUidInterface, ObjectWithDeleteInterface {
 
     @Override
     @Nullable
@@ -74,7 +73,7 @@ public abstract class DataElementOperand extends BaseObject
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder {
+    public abstract static class Builder {
 
         public abstract Builder uid(String uid);
 

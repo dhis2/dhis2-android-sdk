@@ -34,7 +34,6 @@ internal data class OptionSetDB(
     override fun toDomain(): OptionSet {
         return OptionSet.builder().apply {
             applyBaseIdentifiableFields(this@OptionSetDB)
-            id(id?.toLong())
             version(version)
             valueType?.let { valueType(ValueType.valueOf(it)) }
         }.build()

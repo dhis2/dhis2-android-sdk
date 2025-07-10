@@ -29,17 +29,14 @@
 package org.hisp.dhis.android.core.imports.internal
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.trackedentityinstance.TEIWebResponseDTO
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class TEIWebResponseShouldWithImportConflicts :
-    BaseObjectKotlinxShould("imports/web_response_with_import_conflicts.json"),
-    ObjectShould {
+class TEIWebResponseShouldWithImportConflicts : CoreObjectShould("imports/web_response_with_import_conflicts.json") {
     @Test
     override fun map_from_json_string() {
         val webResponseDto = deserialize(TEIWebResponseDTO.serializer())

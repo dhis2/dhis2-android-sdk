@@ -22,7 +22,6 @@ internal data class ConfigurationDB(
 
     override fun toDomain(): Configuration {
         return Configuration.builder()
-            .id(id?.toLong())
             .serverUrl(serverUrl)
             .build()
     }

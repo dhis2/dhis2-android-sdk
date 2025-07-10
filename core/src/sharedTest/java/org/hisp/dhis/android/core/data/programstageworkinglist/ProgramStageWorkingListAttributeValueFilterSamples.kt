@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingLis
 internal object ProgramStageWorkingListAttributeValueFilterSamples {
     fun get(): ProgramStageWorkingListAttributeValueFilter {
         return ProgramStageWorkingListAttributeValueFilter.builder()
-            .id(1L)
             .programStageWorkingList("programStageWorkingList")
             .attribute("attributeUid")
             .sw("as")

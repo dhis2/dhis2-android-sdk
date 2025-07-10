@@ -36,7 +36,6 @@ public class D2ErrorSamples {
 
     public static D2Error get() {
         return D2Error.builder()
-                .id(1L)
                 .url("http://dhis2.org/api/programs/test_uid")
                 .errorComponent(D2ErrorComponent.Server)
                 .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)

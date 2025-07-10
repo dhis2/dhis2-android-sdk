@@ -38,7 +38,6 @@ public class DataElementOperandSamples {
     public static DataElementOperand getDataElementOperand() {
         DataElementOperand.Builder builder = DataElementOperand.builder();
         builder
-                .id(1L)
                 .uid(UID)
                 .dataElement(ObjectWithUid.create("dataElement"))
                 .categoryOptionCombo(ObjectWithUid.create("optionCombo"));

@@ -38,7 +38,6 @@ object OptionSetSamples {
             val optionSetBuilder = OptionSet.builder()
             fillIdentifiableProperties(optionSetBuilder)
             optionSetBuilder
-                .id(1L)
                 .version(1)
                 .valueType(ValueType.BOOLEAN)
 

@@ -38,13 +38,13 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 import java.util.Date;
 
 @AutoValue
-public abstract class DataInputPeriod extends BaseObject {
+public abstract class DataInputPeriod implements CoreObject {
 
     @Nullable
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
@@ -74,7 +74,7 @@ public abstract class DataInputPeriod extends BaseObject {
 
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<DataInputPeriod.Builder> {
+    public abstract static class Builder {
 
         public abstract Builder dataSet(ObjectWithUid dataSet);
 

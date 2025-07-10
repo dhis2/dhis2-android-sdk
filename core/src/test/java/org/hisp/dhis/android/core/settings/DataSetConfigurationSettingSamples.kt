@@ -32,7 +32,6 @@ object DataSetConfigurationSettingSamples {
 
     fun get(): DataSetConfigurationSetting {
         return DataSetConfigurationSetting.builder()
-            .id(1L)
             .uid("fAFaFEFe")
             .minimumLocationAccuracy(8)
             .disableManualLocation(false)

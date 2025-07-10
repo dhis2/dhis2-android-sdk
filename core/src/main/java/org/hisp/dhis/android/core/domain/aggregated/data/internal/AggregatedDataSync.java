@@ -37,13 +37,13 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.Date;
 
 @AutoValue
-public abstract class AggregatedDataSync extends BaseObject {
+public abstract class AggregatedDataSync implements CoreObject {
 
     @NonNull
     public static AggregatedDataSync create(Cursor cursor) {
@@ -80,7 +80,7 @@ public abstract class AggregatedDataSync extends BaseObject {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder {
 
         public abstract Builder dataSet(String dataSet);
 

@@ -57,7 +57,6 @@ internal data class ProgramOwnerDB(
 
     override fun toDomain(): ProgramOwner {
         return ProgramOwner.builder().apply {
-            id(id?.toLong())
             program(program)
             trackedEntityInstance(trackedEntityInstance)
             ownerOrgUnit(ownerOrgUnit)

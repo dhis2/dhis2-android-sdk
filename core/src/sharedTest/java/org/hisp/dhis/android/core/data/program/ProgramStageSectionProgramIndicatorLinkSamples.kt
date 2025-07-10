@@ -34,7 +34,6 @@ internal object ProgramStageSectionProgramIndicatorLinkSamples {
     val programStageSectionProgramIndicatorLink: ProgramStageSectionProgramIndicatorLink
         get() {
             return ProgramStageSectionProgramIndicatorLink.builder()
-                .id(1L)
                 .programStageSection("program_stage_section_uid")
                 .programIndicator("program_indicator_uid")
                 .build()

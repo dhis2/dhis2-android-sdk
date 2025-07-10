@@ -42,7 +42,6 @@ internal data class OptionGroupOptionLinkDB(
 
     override fun toDomain(): OptionGroupOptionLink {
         return OptionGroupOptionLink.builder()
-            .id(id?.toLong())
             .optionGroup(optionGroup)
             .option(option)
             .build()

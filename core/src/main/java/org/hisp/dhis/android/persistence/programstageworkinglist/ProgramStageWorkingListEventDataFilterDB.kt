@@ -82,7 +82,6 @@ internal data class ProgramStageWorkingListEventDataFilterDB(
 ) : EntityDB<ProgramStageWorkingListEventDataFilter>, FilterOperatorsDB {
     override fun toDomain(): ProgramStageWorkingListEventDataFilter {
         return ProgramStageWorkingListEventDataFilter.builder()
-            .id(id?.toLong())
             .applyFilterOperatorsFields(this@ProgramStageWorkingListEventDataFilterDB)
             .programStageWorkingList(programStageWorkingList)
             .dataItem(dataItem)

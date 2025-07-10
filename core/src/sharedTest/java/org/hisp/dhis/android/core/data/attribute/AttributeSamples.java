@@ -40,7 +40,6 @@ public class AttributeSamples {
 
         fillNameableProperties(attributeBuilder);
         attributeBuilder
-                .id(1L)
                 .valueType(ValueType.TEXT)
                 .mandatory(false)
                 .unique(false)

@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.dataset.internal.SectionIndicatorLink
 internal object SectionIndicatorLinkSamples {
     fun getSectionIndicatorLink(): SectionIndicatorLink {
         return SectionIndicatorLink.builder()
-            .id(1L)
             .section("section")
             .indicator("indicator")
             .build()

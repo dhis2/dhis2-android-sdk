@@ -83,7 +83,6 @@ internal data class EventDataFilterDB(
     override fun toDomain(): EventDataFilter {
         return EventDataFilter.builder()
             .applyFilterOperatorsFields(this@EventDataFilterDB)
-            .id(id?.toLong())
             .eventFilter(eventFilter)
             .dataItem(dataItem)
             .build()

@@ -37,7 +37,6 @@ object ExpressionDimensionItemSamples {
         val builder = ExpressionDimensionItem.builder()
         fillIdentifiableProperties(builder)
         return builder
-            .id(1L)
             .expression("#{fbfJHSPpUQD}+#{cYeuwXTCPkU}")
             .build()
     }

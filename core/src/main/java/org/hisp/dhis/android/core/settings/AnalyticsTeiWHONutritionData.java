@@ -70,8 +70,6 @@ public abstract class AnalyticsTeiWHONutritionData implements CoreObject {
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder id(Long id);
-
         public abstract Builder teiSetting(String teiSetting);
 
         public abstract Builder chartType(WHONutritionChartType chartType);

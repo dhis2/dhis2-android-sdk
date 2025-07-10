@@ -28,15 +28,12 @@
 package org.hisp.dhis.android.core.dataset
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.core.util.toJavaSimpleDate
 import org.hisp.dhis.android.network.datasetcompleteregistration.DataSetCompleteRegistrationDTO
 import org.junit.Test
 
-class DataSetCompleteRegistrationShould :
-    BaseObjectKotlinxShould("dataset/data_set_complete_registration.json"),
-    ObjectShould {
+class DataSetCompleteRegistrationShould : CoreObjectShould("dataset/data_set_complete_registration.json") {
     @Test
     override fun map_from_json_string() {
         val dataSetCompleteRegistrationDTO = deserialize(DataSetCompleteRegistrationDTO.serializer())

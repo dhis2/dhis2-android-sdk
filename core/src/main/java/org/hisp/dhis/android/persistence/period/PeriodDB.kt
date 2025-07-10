@@ -28,7 +28,6 @@ internal data class PeriodDB(
 
     override fun toDomain(): Period {
         return Period.builder()
-            .id(id?.toLong())
             .periodId(periodId)
             .periodType(periodType?.let { PeriodType.valueOf(it) })
             .startDate(startDate.toJavaDate())

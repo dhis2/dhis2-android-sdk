@@ -38,7 +38,6 @@ import java.util.*
 internal object AttributeValueFilterSamples {
     fun get(): AttributeValueFilter {
         return AttributeValueFilter.builder()
-            .id(1L)
             .trackedEntityInstanceFilter("trackedEntityInstanceFilter")
             .attribute("attributeUid")
             .sw("as")

@@ -44,7 +44,7 @@ import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fill
 
 public class OrganisationUnitSamples {
 
-    public static OrganisationUnit getOrganisationUnit(Long id, String uid) {
+    public static OrganisationUnit getOrganisationUnit(String uid) {
         OrganisationUnit.Builder builder = OrganisationUnit.builder();
 
         List<String> displayNamePathArray = new ArrayList<>(3);
@@ -54,7 +54,6 @@ public class OrganisationUnitSamples {
 
         fillNameableProperties(builder);
         return builder
-                .id(id)
                 .uid(uid)
                 .path("test_path")
                 .openingDate(FillPropertiesTestUtils.CREATED)
@@ -69,12 +68,8 @@ public class OrganisationUnitSamples {
                 .build();
     }
 
-    public static OrganisationUnit getOrganisationUnit(String uid) {
-        return getOrganisationUnit(1L, uid);
-    }
-
     public static OrganisationUnit getOrganisationUnit() {
-        return getOrganisationUnit(1L, "UID");
+        return getOrganisationUnit("UID");
     }
 
     public static OrganisationUnit getAfroArabClinic() throws ParseException {

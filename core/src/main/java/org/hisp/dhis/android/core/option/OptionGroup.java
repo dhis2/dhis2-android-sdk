@@ -66,8 +66,6 @@ public abstract class OptionGroup extends BaseIdentifiableObject implements Core
 
     @AutoValue.Builder
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
         public abstract Builder optionSet(@Nullable ObjectWithUid optionSet);
 
         public abstract Builder options(@Nullable List<ObjectWithUid> options);

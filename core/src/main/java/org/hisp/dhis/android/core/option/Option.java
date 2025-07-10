@@ -67,8 +67,6 @@ public abstract class Option extends BaseIdentifiableObject
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder>
             implements ObjectWithStyle.Builder<Option, Option.Builder> {
 
-        public abstract Builder id(Long id);
-
         public abstract Builder sortOrder(@Nullable Integer sortOrder);
 
         public abstract Builder optionSet(@Nullable ObjectWithUid optionSet);

@@ -17,7 +17,6 @@ internal data class UserSettingsDB(
 
     override fun toDomain(): UserSettings {
         return UserSettings.builder()
-            .id(id?.toLong())
             .keyUiLocale(keyUiLocale)
             .keyDbLocale(keyDbLocale)
             .build()

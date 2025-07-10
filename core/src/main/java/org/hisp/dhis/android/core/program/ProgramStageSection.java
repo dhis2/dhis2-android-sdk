@@ -86,8 +86,6 @@ public abstract class ProgramStageSection extends BaseIdentifiableObject impleme
 
     @AutoValue.Builder
     public abstract static class Builder  extends BaseIdentifiableObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
         public abstract Builder sortOrder(Integer sortOrder);
 
         public abstract Builder programIndicators(List<ProgramIndicator> programIndicators);

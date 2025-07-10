@@ -221,7 +221,7 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
         val teiAttributeValuesStore: TrackedEntityAttributeValueStore = koin.get()
         val attValues = teiAttributeValuesStore.queryByTrackedEntityInstance(teiUid)
         val attValuesWithoutIdAndTEI = attValues.map {
-            it.toBuilder().id(null).trackedEntityInstance(null).build()
+            it.toBuilder().trackedEntityInstance(null).build()
         }
 
         val teiStore: TrackedEntityInstanceStore = koin.get()
@@ -232,13 +232,13 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
                 .appendKeyStringValue(EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE, teiUid).build(),
         )
         val downloadedEnrollmentsWithoutIdAndDeleteFalse = downloadedEnrollments.map {
-            it.toBuilder().id(null).deleted(false).notes(ArrayList()).build()
+            it.toBuilder().deleted(false).notes(ArrayList()).build()
         }
 
         val eventStore: EventStore = koin.get()
         val downloadedEventsWithoutValues = eventStore.selectAll()
         val downloadedEventsWithoutValuesAndDeleteFalse = downloadedEventsWithoutValues.map {
-            it.toBuilder().id(null).deleted(false).build()
+            it.toBuilder().deleted(false).build()
         }
 
         val dataValueStore: TrackedEntityDataValueStore = koin.get()
@@ -263,7 +263,7 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
     ): TrackedEntityInstance? {
         val downloadedEvents = downloadedEventsWithoutValues.map { event ->
             val trackedEntityDataValuesWithNullIdsAndEvents = downloadedValues[event.uid()]!!.map {
-                it.toBuilder().id(null).event(null).build()
+                it.toBuilder().event(null).build()
             }
 
             event.toBuilder().trackedEntityDataValues(trackedEntityDataValuesWithNullIdsAndEvents).build()
@@ -287,7 +287,6 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
             ),
             downloadedEnrollments,
         )
-            .id(null)
             .deleted(false)
             .trackedEntityAttributeValues(attValuesWithoutIdAndTEI)
             .build()

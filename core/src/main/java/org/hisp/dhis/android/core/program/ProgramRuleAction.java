@@ -104,8 +104,6 @@ public abstract class ProgramRuleAction extends BaseIdentifiableObject implement
 
     @AutoValue.Builder
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
         public abstract Builder data(String data);
 
         public abstract Builder content(String content);

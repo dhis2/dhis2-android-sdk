@@ -37,7 +37,6 @@ internal data class UserOrganisationUnitDB(
 
     override fun toDomain(): UserOrganisationUnitLink {
         return UserOrganisationUnitLink.builder()
-            .id(id?.toLong())
             .user(user)
             .organisationUnit(organisationUnit)
             .organisationUnitScope(organisationUnitScope)

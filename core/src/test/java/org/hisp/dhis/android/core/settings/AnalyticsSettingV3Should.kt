@@ -29,12 +29,11 @@
 package org.hisp.dhis.android.core.settings
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.settings.AnalyticsSettingsDTO
 import org.junit.Test
 
-class AnalyticsSettingV3Should : BaseObjectKotlinxShould("settings/analytics_settings_v3.json"), ObjectShould {
+class AnalyticsSettingV3Should : CoreObjectShould("settings/analytics_settings_v3.json") {
 
     @Test
     override fun map_from_json_string() {

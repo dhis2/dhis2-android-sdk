@@ -30,12 +30,11 @@ package org.hisp.dhis.android.core.dataset
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.dataset.DataInputPeriodDTO
 import org.junit.Test
 
-class DataInputPeriodShould : BaseObjectKotlinxShould("dataset/data_input_period.json"), ObjectShould {
+class DataInputPeriodShould : CoreObjectShould("dataset/data_input_period.json") {
     @Test
     override fun map_from_json_string() {
         val dataInputPeriodDTO = deserialize(DataInputPeriodDTO.serializer())

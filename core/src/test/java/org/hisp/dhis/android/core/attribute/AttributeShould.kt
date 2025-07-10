@@ -29,13 +29,12 @@ package org.hisp.dhis.android.core.attribute
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.network.attribute.AttributeDTO
 import org.junit.Test
 
-class AttributeShould : BaseObjectKotlinxShould("attribute/attribute.json"), ObjectShould {
+class AttributeShould : CoreObjectShould("attribute/attribute.json") {
 
     @Test
     override fun map_from_json_string() {

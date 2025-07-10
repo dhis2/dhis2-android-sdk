@@ -43,7 +43,6 @@ internal object EventFilterSamples {
     @JvmStatic
     fun get(): EventFilter {
         return EventFilter.builder()
-            .id(1L)
             .uid("event_filter_uid")
             .code("tb_events")
             .name("TB events")

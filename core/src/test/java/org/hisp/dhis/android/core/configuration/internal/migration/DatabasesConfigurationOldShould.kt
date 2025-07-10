@@ -28,14 +28,11 @@
 package org.hisp.dhis.android.core.configuration.internal.migration
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.persistence.configuration.migration.DatabasesConfigurationOldDB
 import org.junit.Test
 
-class DatabasesConfigurationOldShould :
-    BaseObjectKotlinxShould("configuration/databases_configuration_old.json"),
-    ObjectShould {
+class DatabasesConfigurationOldShould : CoreObjectShould("configuration/databases_configuration_old.json") {
 
     @Test
     override fun map_from_json_string() {

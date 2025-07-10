@@ -28,15 +28,14 @@
 package org.hisp.dhis.android.core.imports.internal
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.common.dto.ImportCountDTO
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class ImportCountShould : BaseObjectKotlinxShould("imports/import_count.json"), ObjectShould {
+class ImportCountShould : CoreObjectShould("imports/import_count.json") {
     @Test
     override fun map_from_json_string() {
         val importCountDTO = deserialize(ImportCountDTO.serializer())

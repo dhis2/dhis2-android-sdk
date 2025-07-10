@@ -17,7 +17,6 @@ internal data class LatestAppVersionDB(
 
     override fun toDomain(): LatestAppVersion {
         return LatestAppVersion.builder()
-            .id(id?.toLong())
             .downloadURL(downloadURL)
             .version(version)
             .build()

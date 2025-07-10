@@ -43,7 +43,6 @@ internal data class DataSetValidationRuleLinkDB(
 
     override fun toDomain(): DataSetValidationRuleLink {
         return DataSetValidationRuleLink.builder()
-            .id(id?.toLong())
             .dataSet(dataSet)
             .validationRule(validationRule)
             .build()

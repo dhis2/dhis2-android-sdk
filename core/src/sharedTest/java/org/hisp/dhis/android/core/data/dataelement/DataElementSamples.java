@@ -42,7 +42,6 @@ public class DataElementSamples {
 
         fillNameableProperties(dataElementBuilder);
         dataElementBuilder
-                .id(1L)
                 .formName("form-name")
                 .displayFormName("display-form-name")
                 .valueType(ValueType.TEXT)

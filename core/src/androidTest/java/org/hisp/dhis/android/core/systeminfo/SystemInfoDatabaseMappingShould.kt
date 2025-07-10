@@ -56,11 +56,10 @@ class SystemInfoDatabaseMappingShould {
 
         cursor.moveToFirst()
 
-        val dbSystemInfo = SystemInfo.create(cursor).toBuilder().id(null).build()
-        val expectedInfo = systemInfo.toBuilder().id(null).build()
+        val dbSystemInfo = SystemInfo.create(cursor)
         cursor.close()
 
-        assertThat(dbSystemInfo).isEqualTo(expectedInfo)
+        assertThat(dbSystemInfo).isEqualTo(systemInfo)
     }
 
     @Test

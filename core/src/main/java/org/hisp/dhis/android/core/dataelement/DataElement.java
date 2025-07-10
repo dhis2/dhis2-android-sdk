@@ -115,9 +115,6 @@ public abstract class DataElement extends BaseNameableObject
     @AutoValue.Builder
     public abstract static class Builder extends BaseNameableObject.Builder<DataElement.Builder>
             implements ObjectWithStyle.Builder<DataElement, DataElement.Builder> {
-
-        public abstract DataElement.Builder id(Long id);
-
         public abstract DataElement.Builder valueType(ValueType valueType);
 
         public abstract DataElement.Builder zeroIsSignificant(Boolean zeroIsSignificant);

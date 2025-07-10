@@ -45,7 +45,6 @@ internal data class TrackedEntityTypeDB(
         return TrackedEntityType.builder().apply {
             applyBaseNameableFields(this@TrackedEntityTypeDB)
             applyStyleFields(this@TrackedEntityTypeDB)
-            id(id?.toLong())
             featureType(featureType?.let { FeatureType.valueOf(it) })
             accessDataWrite?.let { access(it.toDomain()) }
         }.build()

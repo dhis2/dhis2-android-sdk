@@ -44,7 +44,6 @@ internal data class IndicatorLegendSetLinkDB(
 
     override fun toDomain(): IndicatorLegendSetLink {
         return IndicatorLegendSetLink.builder()
-            .id(id?.toLong())
             .indicator(indicator)
             .legendSet(legendSet)
             .sortOrder(sortOrder)

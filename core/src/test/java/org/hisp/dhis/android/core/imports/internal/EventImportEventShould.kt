@@ -28,8 +28,7 @@
 package org.hisp.dhis.android.core.imports.internal
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.network.event.EventImportSummariesDTO
 import org.junit.Test
@@ -37,7 +36,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class EventImportEventShould : BaseObjectKotlinxShould("imports/import_event.json"), ObjectShould {
+class EventImportEventShould : CoreObjectShould("imports/import_event.json") {
     @Test
     override fun map_from_json_string() {
         val importEventDTO = deserialize(EventImportSummariesDTO.serializer())

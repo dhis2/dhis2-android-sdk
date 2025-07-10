@@ -33,7 +33,6 @@ internal data class CustomIntentDataElementDB(
 
     override fun toDomain(): CustomIntentDataElement {
         return CustomIntentDataElement.builder()
-            .id(id?.toLong())
             .uid(uid)
             .customIntentUid(customIntentUid)
             .build()

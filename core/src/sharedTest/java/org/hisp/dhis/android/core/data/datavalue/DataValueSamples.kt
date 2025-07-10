@@ -43,7 +43,6 @@ object DataValueSamples {
         value: String,
     ): DataValue {
         return DataValue.builder()
-            .id(1L)
             .syncState(State.TO_POST)
             .deleted(false)
             .dataElement(dataElement)
@@ -62,7 +61,6 @@ object DataValueSamples {
 
     fun getDataValueDatabase(): DataValue {
         return DataValue.builder()
-            .id(1L)
             .syncState(State.TO_POST)
             .deleted(false)
             .dataElement("dataElement")

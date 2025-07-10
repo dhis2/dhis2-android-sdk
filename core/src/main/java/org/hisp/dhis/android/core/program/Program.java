@@ -303,8 +303,6 @@ public abstract class Program extends BaseNameableObject
     public abstract static class Builder extends BaseNameableObject.Builder<Builder>
             implements ObjectWithStyle.Builder<Program, Builder> {
 
-        public abstract Builder id(Long id);
-
         public abstract Builder version(Integer version);
 
         public abstract Builder onlyEnrollOnce(Boolean onlyEnrollOnce);

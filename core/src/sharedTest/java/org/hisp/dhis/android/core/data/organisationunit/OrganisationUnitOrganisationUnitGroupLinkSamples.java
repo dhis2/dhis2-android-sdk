@@ -35,7 +35,6 @@ public class OrganisationUnitOrganisationUnitGroupLinkSamples {
 
     public static OrganisationUnitOrganisationUnitGroupLink getOrganisationUnitOrganisationUnitGroupLink() {
         return OrganisationUnitOrganisationUnitGroupLink.builder()
-                .id(1L)
                 .organisationUnit("organisation_unit")
                 .organisationUnitGroup("organisation_unit_group")
                 .build();

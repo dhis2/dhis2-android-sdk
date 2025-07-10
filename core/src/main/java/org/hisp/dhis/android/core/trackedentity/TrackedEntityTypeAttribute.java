@@ -72,8 +72,6 @@ public abstract class TrackedEntityTypeAttribute implements CoreObject {
     @AutoValue.Builder
     public abstract static class Builder {
 
-        public abstract Builder id(Long id);
-
         public abstract Builder trackedEntityType(ObjectWithUid trackedEntityType);
 
         public abstract Builder trackedEntityAttribute(ObjectWithUid trackedEntityAttribute);

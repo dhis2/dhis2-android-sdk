@@ -30,15 +30,12 @@ package org.hisp.dhis.android.core.trackedentity
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.network.trackedentityattribute.TrackedEntityAttributeDTO
 import org.junit.Test
 
-class TrackedEntityAttributeShould :
-    BaseObjectKotlinxShould("trackedentity/tracked_entity_attribute.json"),
-    ObjectShould {
+class TrackedEntityAttributeShould : CoreObjectShould("trackedentity/tracked_entity_attribute.json") {
     @Test
     override fun map_from_json_string() {
         val trackedEntityAttributeDTO = deserialize(TrackedEntityAttributeDTO.serializer())

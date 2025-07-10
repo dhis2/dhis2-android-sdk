@@ -68,8 +68,6 @@ public abstract class Legend extends BaseIdentifiableObject implements CoreObjec
 
     @AutoValue.Builder
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
         public abstract Builder startValue(Double startValue);
 
         public abstract Builder endValue(Double endValue);

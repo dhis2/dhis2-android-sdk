@@ -72,7 +72,6 @@ internal data class DataElementDB(
         return DataElement.builder().apply {
             applyBaseNameableFields(this@DataElementDB)
             applyStyleFields(this@DataElementDB)
-            id(id?.toLong())
             valueType?.let { valueType(ValueType.valueOf(it)) }
             zeroIsSignificant(zeroIsSignificant)
             aggregationType(aggregationType)

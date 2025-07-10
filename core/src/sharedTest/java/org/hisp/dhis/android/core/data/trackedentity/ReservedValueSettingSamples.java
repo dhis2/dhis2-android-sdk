@@ -34,7 +34,6 @@ public class ReservedValueSettingSamples {
 
     public static ReservedValueSetting get() {
         return ReservedValueSetting.builder()
-                .id(1L)
                 .uid("attribute_uid")
                 .numberOfValuesToReserve(50)
                 .build();

@@ -28,16 +28,13 @@
 package org.hisp.dhis.android.core.settings
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 import org.hisp.dhis.android.network.settings.SynchronizationSettingsDTO
 import org.junit.Test
 
-class SynchronizationSettingsShould :
-    BaseObjectKotlinxShould("settings/synchronization_settings.json"),
-    ObjectShould {
+class SynchronizationSettingsShould : CoreObjectShould("settings/synchronization_settings.json") {
     @Test
     override fun map_from_json_string() {
         val syncSettingsDTO = deserialize(SynchronizationSettingsDTO.serializer())

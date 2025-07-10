@@ -28,16 +28,16 @@
 package org.hisp.dhis.android.core.imports.internal
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.relationship.RelationshipWebResponseDTO
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class RelationshipWebResponseShould : BaseObjectKotlinxShould("imports/relationship_web_response.json") {
+class RelationshipWebResponseShould : CoreObjectShould("imports/relationship_web_response.json") {
     @Test
-    fun map_from_json_string() {
+    override fun map_from_json_string() {
         val webResponse = deserialize(RelationshipWebResponseDTO.serializer()).toDomain()
 
         assertThat(webResponse.message()).isEqualTo("Import was successful.")

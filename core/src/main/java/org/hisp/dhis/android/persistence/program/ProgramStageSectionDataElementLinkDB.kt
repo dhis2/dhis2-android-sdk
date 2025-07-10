@@ -43,7 +43,6 @@ internal data class ProgramStageSectionDataElementLinkDB(
 
     override fun toDomain(): ProgramStageSectionDataElementLink {
         return ProgramStageSectionDataElementLink.builder()
-            .id(id?.toLong())
             .programStageSection(programStageSection)
             .dataElement(dataElement)
             .sortOrder(sortOrder)

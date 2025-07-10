@@ -54,7 +54,6 @@ internal data class ProgramSettingDB(
 
     override fun toDomain(): ProgramSetting {
         return ProgramSetting.builder().apply {
-            id(id?.toLong())
             uid(uid)
             name(name)
             lastUpdated(lastUpdated.toJavaDate())

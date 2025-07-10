@@ -28,10 +28,13 @@
 package org.hisp.dhis.android.core.visualization.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem
 import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
 import org.hisp.dhis.android.core.visualization.VisualizationDimensionItemTableInfo
 import org.koin.core.annotation.Singleton
@@ -55,6 +58,7 @@ internal class VisualizationDimensionItemStoreImpl(
             w.bind(3, o.dimension())
             w.bind(4, o.dimensionItem())
             w.bind(5, o.dimensionItemType())
+            w.bind(6, o.sortOrder())
         }
     }
 
@@ -66,7 +70,13 @@ internal class VisualizationDimensionItemStoreImpl(
                 VisualizationDimensionItemTableInfo.Columns.VISUALIZATION,
                 visualizationId,
             ).build()
-        val query = builder.selectWhere(whereClause)
+        val orderByClause = OrderByClauseBuilder.orderByFromItems(
+            listOf(
+                RepositoryScopeOrderByItem.builder().column(VisualizationDimensionItemTableInfo.Columns.SORT_ORDER)
+                    .direction(RepositoryScope.OrderByDirection.ASC).build(),
+            ),
+        )
+        val query = builder.selectWhere(whereClause, orderByClause)
         return selectRawQuery(query)
     }
 }

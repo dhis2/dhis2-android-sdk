@@ -86,8 +86,6 @@ public abstract class ValidationRule extends BaseNameableObject implements CoreO
     @AutoValue.Builder
     public abstract static class Builder extends BaseNameableObject.Builder<Builder> {
 
-        public abstract Builder id(Long id);
-
         public abstract Builder instruction(String instruction);
 
         public abstract Builder importance(ValidationRuleImportance importance);

@@ -29,13 +29,12 @@ package org.hisp.dhis.android.core.validation
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.network.validationrule.ValidationRuleDTO
 import org.junit.Test
 
-class ValidationRuleShould : BaseObjectKotlinxShould("validation/validation_rule.json"), ObjectShould {
+class ValidationRuleShould : CoreObjectShould("validation/validation_rule.json") {
 
     @Test
     override fun map_from_json_string() {

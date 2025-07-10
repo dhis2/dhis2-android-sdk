@@ -69,7 +69,6 @@ internal data class VisualizationDB(
     override fun toDomain(): Visualization {
         return Visualization.builder().apply {
             applyBaseIdentifiableFields(this@VisualizationDB)
-            id(id?.toLong())
             description(description)
             displayDescription(displayDescription)
             displayFormName(displayFormName)

@@ -30,7 +30,6 @@ internal data class DataStoreDB(
 
     override fun toDomain(): DataStoreEntry {
         return DataStoreEntry.builder()
-            .id(id?.toLong())
             .namespace(namespace)
             .key(key)
             .value(value)

@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationType
 import org.hisp.dhis.android.core.settings.internal.AnalyticsDhisVisualizationCleaner
 import org.hisp.dhis.android.core.visualization.TrackerVisualization
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -43,10 +44,7 @@ internal class TrackerVisualizationHandler(
 ) : IdentifiableHandlerImpl<TrackerVisualization>(store) {
 
     override suspend fun afterObjectHandled(o: TrackerVisualization, action: HandleAction) {
-        val dimensions =
-            (o.columns() ?: emptyList()) +
-                (o.filters() ?: emptyList())
-
+        val dimensions = o.columns().addSortOrder() + o.filters().addSortOrder()
         dimensionHandler.handleMany(o.uid(), dimensions)
     }
 
@@ -56,5 +54,9 @@ internal class TrackerVisualizationHandler(
             uids = store.selectUids(),
             type = AnalyticsDhisVisualizationType.TRACKER_VISUALIZATION,
         )
+    }
+
+    private fun List<TrackerVisualizationDimension>?.addSortOrder(): List<TrackerVisualizationDimension> {
+        return this?.mapIndexed { index, it -> it.toBuilder().sortOrder(index).build() } ?: emptyList()
     }
 }

@@ -36,7 +36,6 @@ object DataSetSamples {
     val dataSet: DataSet
         get() {
             return DataSet.builder()
-                .id(1L)
                 .uid("uid")
                 .name("dataset")
                 .periodType(PeriodType.BiMonthly)

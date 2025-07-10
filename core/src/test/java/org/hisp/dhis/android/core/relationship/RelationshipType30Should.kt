@@ -29,14 +29,11 @@ package org.hisp.dhis.android.core.relationship
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.relationshiptype.RelationshipTypeDTO
 import org.junit.Test
 
-class RelationshipType30Should :
-    BaseObjectKotlinxShould("relationship/relationship_type_30.json"),
-    ObjectShould {
+class RelationshipType30Should : CoreObjectShould("relationship/relationship_type_30.json") {
     @Test
     override fun map_from_json_string() {
         val relationshipTypeDTO = deserialize(RelationshipTypeDTO.serializer())

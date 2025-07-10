@@ -34,7 +34,6 @@ object SMSMetadataIdSample {
 
     val get: SMSMetadataId =
         SMSMetadataId.builder()
-            .id(1L)
             .type(SMSConsts.MetadataType.DATA_ELEMENT)
             .uid("uid")
             .build()

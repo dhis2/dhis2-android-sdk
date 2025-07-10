@@ -32,7 +32,6 @@ internal data class CategoryDB(
     override fun toDomain(): Category {
         return Category.builder()
             .applyBaseIdentifiableFields(this)
-            .id(id?.toLong())
             .dataDimensionType(dataDimensionType)
             .build()
     }

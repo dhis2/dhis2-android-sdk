@@ -61,35 +61,30 @@ object RelationshipTypeSamples {
 
     var FROM_CONSTRAINT_1 = RelationshipConstraint
         .builder()
-        .id(100L)
         .constraintType(RelationshipConstraintType.FROM)
         .relationshipType(ObjectWithUid.create(RELATIONSHIP_TYPE_UID_1))
         .trackerDataView(TRACKER_DATA_VIEW_1)
         .build()
     var TO_CONSTRAINT_1 = RelationshipConstraint
         .builder()
-        .id(200L)
         .constraintType(RelationshipConstraintType.TO)
         .relationshipType(ObjectWithUid.create(RELATIONSHIP_TYPE_UID_1))
         .trackerDataView(TRACKER_DATA_VIEW_2)
         .build()
     var FROM_CONSTRAINT_2 = RelationshipConstraint
         .builder()
-        .id(300L)
         .constraintType(RelationshipConstraintType.FROM)
         .relationshipType(ObjectWithUid.create(RELATIONSHIP_TYPE_UID_2))
         .trackerDataView(TRACKER_DATA_VIEW_2)
         .build()
     var TO_CONSTRAINT_2 = RelationshipConstraint
         .builder()
-        .id(400L)
         .constraintType(RelationshipConstraintType.TO)
         .relationshipType(ObjectWithUid.create(RELATIONSHIP_TYPE_UID_2))
         .trackerDataView(TRACKER_DATA_VIEW_1)
         .build()
     var FROM_CONSTRAINT_3 = RelationshipConstraint
         .builder()
-        .id(500L)
         .constraintType(RelationshipConstraintType.FROM)
         .relationshipType(ObjectWithUid.create(RELATIONSHIP_TYPE_UID_3))
         .relationshipEntity(RelationshipEntityType.TRACKED_ENTITY_INSTANCE)
@@ -98,14 +93,12 @@ object RelationshipTypeSamples {
         .build()
     var TO_CONSTRAINT_3 = RelationshipConstraint
         .builder()
-        .id(600L)
         .constraintType(RelationshipConstraintType.TO)
         .relationshipType(ObjectWithUid.create(RELATIONSHIP_TYPE_UID_3))
         .trackerDataView(TRACKER_DATA_VIEW_2)
         .build()
     var RELATIONSHIP_TYPE_1 = RelationshipType
         .builder()
-        .id(100L)
         .uid(RELATIONSHIP_TYPE_UID_1)
         .fromConstraint(FROM_CONSTRAINT_1)
         .toConstraint(TO_CONSTRAINT_1)
@@ -113,7 +106,6 @@ object RelationshipTypeSamples {
         .build()
     var RELATIONSHIP_TYPE_2 = RelationshipType
         .builder()
-        .id(200L)
         .uid(RELATIONSHIP_TYPE_UID_2)
         .fromConstraint(FROM_CONSTRAINT_2)
         .toConstraint(TO_CONSTRAINT_2)
@@ -121,7 +113,6 @@ object RelationshipTypeSamples {
         .build()
     var RELATIONSHIP_TYPE_3 = RelationshipType
         .builder()
-        .id(300L)
         .uid(RELATIONSHIP_TYPE_UID_3)
         .fromConstraint(FROM_CONSTRAINT_3)
         .toConstraint(TO_CONSTRAINT_3)

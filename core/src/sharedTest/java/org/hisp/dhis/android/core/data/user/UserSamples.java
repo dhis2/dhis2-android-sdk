@@ -37,7 +37,6 @@ public class UserSamples {
         User.Builder builder = User.builder();
 
         return builder
-                .id(1L)
                 .uid("DXyJmlo9rge")
                 .name("John Barnes")
                 .displayName("John Barnes")

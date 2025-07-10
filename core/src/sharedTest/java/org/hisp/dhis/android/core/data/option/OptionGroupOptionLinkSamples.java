@@ -34,7 +34,6 @@ public class OptionGroupOptionLinkSamples {
 
     public static OptionGroupOptionLink getOptionGroupOptionLink() {
         return OptionGroupOptionLink.builder()
-                .id(1L)
                 .optionGroup("option_group")
                 .option("option")
                 .build();

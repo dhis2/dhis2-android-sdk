@@ -55,7 +55,6 @@ internal data class ProgramRuleDB(
     override fun toDomain(): ProgramRule {
         return ProgramRule.builder().apply {
             applyBaseIdentifiableFields(this@ProgramRuleDB)
-            id(id?.toLong())
             priority(priority)
             condition(condition)
             program(ObjectWithUid.create(program))

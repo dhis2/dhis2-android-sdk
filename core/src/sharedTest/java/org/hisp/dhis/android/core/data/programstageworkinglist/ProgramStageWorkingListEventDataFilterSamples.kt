@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingLis
 internal object ProgramStageWorkingListEventDataFilterSamples {
     fun get(): ProgramStageWorkingListEventDataFilter {
         return ProgramStageWorkingListEventDataFilter.builder()
-            .id(1L)
             .programStageWorkingList("programStageWorkingList")
             .dataItem("abcDataElementUid")
             .le("20")

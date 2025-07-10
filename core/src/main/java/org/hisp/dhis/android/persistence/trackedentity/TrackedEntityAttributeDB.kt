@@ -72,7 +72,6 @@ internal data class TrackedEntityAttributeDB(
         return TrackedEntityAttribute.builder().apply {
             applyBaseNameableFields(this@TrackedEntityAttributeDB)
             applyStyleFields(this@TrackedEntityAttributeDB)
-            id(id?.toLong())
             pattern(pattern)
             sortOrderInListNoProgram(sortOrderInListNoProgram)
             optionSet?.let { optionSet(ObjectWithUidDB(it).toDomain()) }

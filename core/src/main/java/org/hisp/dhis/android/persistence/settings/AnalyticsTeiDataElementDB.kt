@@ -54,7 +54,6 @@ internal data class AnalyticsTeiDataElementDB(
 
     override fun toDomain(): AnalyticsTeiDataElement {
         return AnalyticsTeiDataElement.builder().apply {
-            id(id?.toLong())
             teiSetting(teiSetting)
             whoComponent?.let { whoComponent(WHONutritionComponent.valueOf(it)) }
             programStage(programStage)

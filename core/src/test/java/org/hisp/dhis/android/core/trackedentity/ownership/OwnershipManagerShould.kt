@@ -88,7 +88,7 @@ class OwnershipManagerShould {
 
         ownershipManager.breakGlass("tei_uid", "program", "reason").blockingAwait()
 
-        verify(programTempOwnerStore, times(1)).insert(any<ProgramTempOwner>())
+        verify(programTempOwnerStore, times(1)).updateOrInsertWhere(any<ProgramTempOwner>())
     }
 
     @Test

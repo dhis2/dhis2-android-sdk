@@ -48,7 +48,6 @@ internal data class AnalyticsTeiWHONutritionDataDB(
 
     override fun toDomain(): AnalyticsTeiWHONutritionData {
         return AnalyticsTeiWHONutritionData.builder().apply {
-            id(id?.toLong())
             teiSetting(teiSetting)
             chartType?.let { chartType(WHONutritionChartType.valueOf(it)) }
             gender(

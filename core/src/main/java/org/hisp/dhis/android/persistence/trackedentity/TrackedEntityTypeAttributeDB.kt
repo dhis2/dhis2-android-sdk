@@ -45,7 +45,6 @@ internal data class TrackedEntityTypeAttributeDB(
 ) : EntityDB<TrackedEntityTypeAttribute> {
     override fun toDomain(): TrackedEntityTypeAttribute {
         return TrackedEntityTypeAttribute.builder()
-            .id(id?.toLong())
             .trackedEntityType(ObjectWithUid.create(trackedEntityType))
             .trackedEntityAttribute(trackedEntityAttribute?.let { ObjectWithUid.create(it) })
             .displayInList(displayInList)

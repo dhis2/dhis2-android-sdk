@@ -93,7 +93,7 @@ public abstract class DataValue extends BaseDeletableDataObject {
 
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseDeletableDataObject.Builder<DataValue.Builder> {
+    public abstract static class Builder implements BaseDeletableDataObject.Builder<DataValue.Builder> {
 
         public Builder() {
             syncState(State.SYNCED);

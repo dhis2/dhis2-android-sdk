@@ -99,8 +99,6 @@ public abstract class Section extends BaseIdentifiableObject implements CoreObje
 
     @AutoValue.Builder
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
         public abstract Builder description(String description);
 
         public abstract Builder sortOrder(Integer sortOrder);

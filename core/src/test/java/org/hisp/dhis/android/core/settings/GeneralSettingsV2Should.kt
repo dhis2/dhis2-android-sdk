@@ -28,14 +28,11 @@
 package org.hisp.dhis.android.core.settings
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.settings.GeneralSettingsDTO
 import org.junit.Test
 
-class GeneralSettingsV2Should :
-    BaseObjectKotlinxShould("settings/general_settings_v2.json"),
-    ObjectShould {
+class GeneralSettingsV2Should : CoreObjectShould("settings/general_settings_v2.json") {
     @Test
     override fun map_from_json_string() {
         val generalSettingsDTO = deserialize(GeneralSettingsDTO.serializer())

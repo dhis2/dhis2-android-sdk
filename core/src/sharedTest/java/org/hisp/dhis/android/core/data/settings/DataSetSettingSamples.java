@@ -36,7 +36,6 @@ public class DataSetSettingSamples {
 
     public static DataSetSetting getDataSetSetting() {
         return DataSetSetting.builder()
-                .id(1L)
                 .uid("BfMAe6Itzgt")
                 .name("Child Health")
                 .lastUpdated(FillPropertiesTestUtils.LAST_UPDATED)

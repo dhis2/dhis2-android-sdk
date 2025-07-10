@@ -71,8 +71,6 @@ public abstract class CategoryCombo extends BaseIdentifiableObject implements Co
     @AutoValue.Builder
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
 
-        public abstract Builder id(Long id);
-
         public abstract Builder isDefault(Boolean isDefault);
 
         public abstract Builder categories(List<Category> categories);

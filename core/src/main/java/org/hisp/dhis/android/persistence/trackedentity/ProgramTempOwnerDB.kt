@@ -40,7 +40,6 @@ internal data class ProgramTempOwnerDB(
 
     override fun toDomain(): ProgramTempOwner {
         return ProgramTempOwner.builder()
-            .id(id?.toLong())
             .program(program)
             .trackedEntityInstance(trackedEntityInstance)
             .created(created.toJavaDate())

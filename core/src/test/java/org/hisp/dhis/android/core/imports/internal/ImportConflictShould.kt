@@ -28,15 +28,14 @@
 package org.hisp.dhis.android.core.imports.internal
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.common.dto.ImportConflictDTO
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class ImportConflictShould : BaseObjectKotlinxShould("imports/import_conflict.json"), ObjectShould {
+class ImportConflictShould : CoreObjectShould("imports/import_conflict.json") {
     @Test
     override fun map_from_json_string() {
         val importConflictDTO = deserialize(ImportConflictDTO.serializer())

@@ -31,7 +31,6 @@ internal data class UserRoleDB(
     override fun toDomain(): UserRole {
         return UserRole.builder().apply {
             applyBaseIdentifiableFields(this@UserRoleDB)
-            id(id?.toLong())
         }.build()
     }
 }

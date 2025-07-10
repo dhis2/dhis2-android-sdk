@@ -31,9 +31,7 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.network.programstage.ValueTypeDeviceRenderingDTO
 import org.junit.Test
 
-class ValueTypeDeviceRenderingShould :
-    BaseObjectKotlinxShould("common/value_type_device_rendering.json"),
-    ObjectShould {
+class ValueTypeDeviceRenderingShould : CoreObjectShould("common/value_type_device_rendering.json") {
     @Test
     override fun map_from_json_string() {
         val valueTypeDeviceRenderingDTO = deserialize(ValueTypeDeviceRenderingDTO.serializer())

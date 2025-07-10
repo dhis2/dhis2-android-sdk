@@ -67,8 +67,6 @@ public abstract class CategoryOptionCombo extends BaseIdentifiableObject impleme
     @AutoValue.Builder
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
 
-        public abstract Builder id(Long id);
-
         public abstract Builder categoryCombo(ObjectWithUid categoryCombo);
 
         public abstract Builder categoryOptions(List<CategoryOption> categoryOptions);

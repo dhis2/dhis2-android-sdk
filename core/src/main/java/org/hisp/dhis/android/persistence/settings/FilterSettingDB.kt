@@ -20,7 +20,6 @@ internal data class FilterSettingDB(
 
     override fun toDomain(): FilterSetting {
         return FilterSetting.builder()
-            .id(id?.toLong())
             .scope(scope)
             .filterType(filterType)
             .uid(uid)

@@ -43,7 +43,6 @@ internal data class OrganisationUnitProgramLinkDB(
 
     override fun toDomain(): OrganisationUnitProgramLink {
         return OrganisationUnitProgramLink.builder()
-            .id(id?.toLong())
             .organisationUnit(organisationUnit)
             .program(program)
             .build()

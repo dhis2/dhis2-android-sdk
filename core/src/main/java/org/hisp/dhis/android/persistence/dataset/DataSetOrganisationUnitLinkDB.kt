@@ -43,7 +43,6 @@ internal data class DataSetOrganisationUnitLinkDB(
 
     override fun toDomain(): DataSetOrganisationUnitLink {
         return DataSetOrganisationUnitLink.builder()
-            .id(id?.toLong())
             .dataSet(dataSet)
             .organisationUnit(organisationUnit)
             .build()

@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCaseTransaction
 internal object InternalStockUseCaseTransactionSamples {
     fun get(): InternalStockUseCaseTransaction {
         return InternalStockUseCaseTransaction.builder()
-            .id(1L)
             .programUid("program_uid")
             .sortOrder(2)
             .transactionType("CORRECTED")

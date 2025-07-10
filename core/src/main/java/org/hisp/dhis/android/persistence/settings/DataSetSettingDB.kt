@@ -39,7 +39,6 @@ internal data class DataSetSettingDB(
 
     override fun toDomain(): DataSetSetting {
         return DataSetSetting.builder()
-            .id(id?.toLong())
             .uid(uid)
             .name(name)
             .lastUpdated(lastUpdated.toJavaDate())

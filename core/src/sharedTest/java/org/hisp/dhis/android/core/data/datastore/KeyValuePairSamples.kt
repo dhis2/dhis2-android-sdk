@@ -33,7 +33,6 @@ object KeyValuePairSamples {
 
     val keyValuePairSample: KeyValuePair =
         KeyValuePair.builder()
-            .id(1L)
             .key("key1")
             .value("value1")
             .build()

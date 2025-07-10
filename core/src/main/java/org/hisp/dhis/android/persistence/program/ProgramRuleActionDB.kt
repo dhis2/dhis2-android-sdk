@@ -117,7 +117,6 @@ internal data class ProgramRuleActionDB(
     override fun toDomain(): ProgramRuleAction {
         return ProgramRuleAction.builder().apply {
             applyBaseIdentifiableFields(this@ProgramRuleActionDB)
-            id(id?.toLong())
             data(data)
             content(content)
             location(location)

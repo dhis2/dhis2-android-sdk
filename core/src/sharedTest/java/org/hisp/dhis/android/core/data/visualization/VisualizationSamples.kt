@@ -40,7 +40,6 @@ internal object VisualizationSamples {
 
     @JvmStatic
     fun visualization(): Visualization = Visualization.builder()
-        .id(1L)
         .uid("PYBH8ZaAQnC")
         .name("Android SDK Visualization sample")
         .displayName("Android SDK Visualization sample")

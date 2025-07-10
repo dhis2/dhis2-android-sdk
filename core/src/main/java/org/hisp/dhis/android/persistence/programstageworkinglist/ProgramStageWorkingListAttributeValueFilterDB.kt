@@ -84,7 +84,6 @@ internal data class ProgramStageWorkingListAttributeValueFilterDB(
 ) : EntityDB<ProgramStageWorkingListAttributeValueFilter>, FilterOperatorsDB {
     override fun toDomain(): ProgramStageWorkingListAttributeValueFilter {
         return ProgramStageWorkingListAttributeValueFilter.builder()
-            .id(id?.toLong())
             .applyFilterOperatorsFields(this@ProgramStageWorkingListAttributeValueFilterDB)
             .programStageWorkingList(programStageWorkingList)
             .attribute(attribute)

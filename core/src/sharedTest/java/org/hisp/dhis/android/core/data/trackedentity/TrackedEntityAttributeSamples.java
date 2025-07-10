@@ -44,7 +44,6 @@ public class TrackedEntityAttributeSamples {
         fillNameableProperties(builder);
 
         return builder
-                .id(1L)
                 .pattern("pattern")
                 .sortOrderInListNoProgram(1)
                 .optionSet(ObjectWithUid.create("option_set_uid"))

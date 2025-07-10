@@ -61,8 +61,6 @@ public abstract class SMSOngoingSubmission implements CoreObject {
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder id(Long id);
-
         public abstract Builder submissionId(Integer submissionId);
 
         public abstract Builder type(SubmissionType type);

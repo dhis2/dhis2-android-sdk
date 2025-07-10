@@ -30,9 +30,8 @@ package org.hisp.dhis.android.core.dataset
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.core.common.DataAccess
-import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.indicator.Indicator
@@ -40,7 +39,7 @@ import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.network.dataset.DataSetDTO
 import org.junit.Test
 
-class DataSetShould : BaseObjectKotlinxShould("dataset/data_set.json"), ObjectShould {
+class DataSetShould : CoreObjectShould("dataset/data_set.json") {
     @Test
     override fun map_from_json_string() {
         val dataSetDTO = deserialize(DataSetDTO.serializer())

@@ -40,7 +40,6 @@ public class ProgramRuleSamples {
 
         fillIdentifiableProperties(builder);
         return builder
-                .id(1L)
                 .priority(2)
                 .condition("condition")
                 .program(ObjectWithUid.create("program_uid"))

@@ -60,7 +60,6 @@ internal data class ConstantDB(
     override fun toDomain(): Constant {
         return Constant.builder()
             .applyBaseIdentifiableFields(this)
-            .id(id?.toLong())
             .value(value?.toDoubleOrNull())
             .build()
     }

@@ -34,7 +34,6 @@ public class ProgramSectionAttributeLinkSamples {
 
     public static ProgramSectionAttributeLink getProgramSectionAttributeLink() {
         return ProgramSectionAttributeLink.builder()
-                .id(1L)
                 .programSection("program_section")
                 .attribute("attribute")
                 .sortOrder(1)

@@ -114,8 +114,6 @@ public abstract class RelationshipItem implements CoreObject {
     @AutoValue.Builder
     public abstract static class Builder {
 
-        public abstract Builder id(Long id);
-
         public abstract Builder trackedEntityInstance(RelationshipItemTrackedEntityInstance trackedEntityInstance);
 
         public abstract Builder enrollment(RelationshipItemEnrollment enrollment);

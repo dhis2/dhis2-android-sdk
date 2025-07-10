@@ -51,7 +51,6 @@ internal data class AnalyticsTeiSettingDB(
 
     override fun toDomain(): AnalyticsTeiSetting {
         return AnalyticsTeiSetting.builder().apply {
-            id(id?.toLong())
             uid(uid)
             name(name)
             shortName(shortName)

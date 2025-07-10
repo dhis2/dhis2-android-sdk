@@ -28,14 +28,11 @@
 package org.hisp.dhis.android.core.category
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.categoryoption.CategoryOptionOrganisationUnitsDTO
 import org.junit.Test
 
-class CategoryOptionOrganisationUnitsShould :
-    BaseObjectKotlinxShould("category/category_option_orgunits.json"),
-    ObjectShould {
+class CategoryOptionOrganisationUnitsShould : CoreObjectShould("category/category_option_orgunits.json") {
 
     @Test
     override fun map_from_json_string() {

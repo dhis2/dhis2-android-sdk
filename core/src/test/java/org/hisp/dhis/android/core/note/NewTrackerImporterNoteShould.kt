@@ -28,12 +28,11 @@
 package org.hisp.dhis.android.core.note
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.tracker.NewNoteDTO
 import org.junit.Test
 
-class NewTrackerImporterNoteShould : BaseObjectKotlinxShould("note/new_tracker_importer_note.json"), ObjectShould {
+class NewTrackerImporterNoteShould : CoreObjectShould("note/new_tracker_importer_note.json") {
 
     @Test
     override fun map_from_json_string() {

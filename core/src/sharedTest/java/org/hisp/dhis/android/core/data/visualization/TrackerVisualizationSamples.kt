@@ -39,7 +39,6 @@ internal object TrackerVisualizationSamples {
 
     @JvmStatic
     fun trackerVisualization(): TrackerVisualization = TrackerVisualization.builder()
-        .id(1L)
         .uid("PYBH8ZaAQnC")
         .name("Android SDK Tracker Visualization sample")
         .displayName("Android SDK Tracker Visualization sample")

@@ -77,8 +77,6 @@ public abstract class TrackedEntityType extends BaseNameableObject implements Co
     public abstract static class Builder extends BaseNameableObject.Builder<Builder>
             implements ObjectWithStyle.Builder<TrackedEntityType, Builder> {
 
-        public abstract Builder id(Long id);
-
         public abstract Builder trackedEntityTypeAttributes(List<TrackedEntityTypeAttribute> trackedEntityAttributes);
 
         public abstract Builder featureType(FeatureType featureType);

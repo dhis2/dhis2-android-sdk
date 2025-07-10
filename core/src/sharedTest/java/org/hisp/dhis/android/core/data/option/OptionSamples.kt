@@ -38,7 +38,6 @@ object OptionSamples {
             val optionBuilder = Option.builder()
             fillIdentifiableProperties(optionBuilder)
             optionBuilder
-                .id(1L)
                 .optionSet(ObjectWithUid.create("optionSet"))
                 .sortOrder(1)
 

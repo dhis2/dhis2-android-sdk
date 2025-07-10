@@ -35,7 +35,6 @@ public class OrganisationUnitProgramLinkSamples {
 
     public static OrganisationUnitProgramLink getOrganisationUnitProgramLink() {
         return OrganisationUnitProgramLink.builder()
-                .id(1L)
                 .organisationUnit("organisation_unit")
                 .program("program")
                 .build();

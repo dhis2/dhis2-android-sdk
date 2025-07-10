@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.maintenance.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation
 
-internal interface ForeignKeyViolationStore : ObjectStore<ForeignKeyViolation>
+internal interface ForeignKeyViolationStore : ObjectWithoutUidStore<ForeignKeyViolation>

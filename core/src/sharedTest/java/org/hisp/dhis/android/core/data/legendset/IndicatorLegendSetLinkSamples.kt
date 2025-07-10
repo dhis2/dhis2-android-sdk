@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
 object IndicatorLegendSetLinkSamples {
     fun getIndicatorLegendSetLink(): IndicatorLegendSetLink {
         return IndicatorLegendSetLink.builder()
-            .id(1L)
             .indicator("indicator")
             .legendSet("legendSet")
             .sortOrder(1)

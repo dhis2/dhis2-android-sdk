@@ -46,7 +46,7 @@ public class OrganisationUnitStoreIntegrationShould extends IdentifiableObjectSt
 
     @Override
     protected OrganisationUnit buildObject() {
-        return OrganisationUnitSamples.getOrganisationUnit(1L, "UID");
+        return OrganisationUnitSamples.getOrganisationUnit("UID");
     }
 
     @Override

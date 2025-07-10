@@ -83,8 +83,6 @@ public abstract class AnalyticsDhisVisualization implements CoreObject, ObjectWi
     @AutoValue.Builder
     public abstract static class Builder {
 
-        public abstract Builder id(Long id);
-
         public abstract Builder scopeUid(String scopeUid);
 
         public abstract Builder groupUid(String groupUid);

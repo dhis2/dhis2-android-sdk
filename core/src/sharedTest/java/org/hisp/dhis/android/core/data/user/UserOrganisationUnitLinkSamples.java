@@ -35,7 +35,6 @@ public class UserOrganisationUnitLinkSamples {
 
     public static UserOrganisationUnitLink getUserOrganisationUnitLink() {
         return UserOrganisationUnitLink.builder()
-                .id(1L)
                 .user("user")
                 .organisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE.name())
                 .organisationUnit("organisation_unit")
@@ -46,7 +45,6 @@ public class UserOrganisationUnitLinkSamples {
 
     public static UserOrganisationUnitLink getAssignedUserOrganisationUnitLink(OrganisationUnit.Scope scope) {
         return UserOrganisationUnitLink.builder()
-                .id(2L)
                 .user("user")
                 .organisationUnitScope(scope.name())
                 .organisationUnit("organisation_unit_child_1")
@@ -57,7 +55,6 @@ public class UserOrganisationUnitLinkSamples {
 
     public static UserOrganisationUnitLink getUnassignedUserOrganisationUnitLink(OrganisationUnit.Scope scope) {
         return UserOrganisationUnitLink.builder()
-                .id(2L)
                 .user("user")
                 .organisationUnitScope(scope.name())
                 .organisationUnit("organisation_unit_child_2")

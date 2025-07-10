@@ -65,7 +65,6 @@ internal data class RelationshipConstraintDB(
 
     override fun toDomain(): RelationshipConstraint {
         return RelationshipConstraint.builder()
-            .id(id?.toLong())
             .relationshipType(ObjectWithUidDB(relationshipType).toDomain())
             .constraintType(RelationshipConstraintType.valueOf(constraintType))
             .relationshipEntity(relationshipEntity?.let { RelationshipEntityType.valueOf(it) })

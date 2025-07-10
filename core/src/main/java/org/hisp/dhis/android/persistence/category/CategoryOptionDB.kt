@@ -41,7 +41,6 @@ internal data class CategoryOptionDB(
     override fun toDomain(): CategoryOption {
         return CategoryOption.builder().apply {
             applyBaseNameableFields(this@CategoryOptionDB)
-            id(id?.toLong())
             startDate(startDate.toJavaDate())
             endDate(endDate.toJavaDate())
             accessDataWrite?.let { access(it.toDomain()) }

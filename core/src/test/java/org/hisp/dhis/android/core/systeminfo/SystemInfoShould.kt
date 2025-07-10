@@ -29,12 +29,11 @@ package org.hisp.dhis.android.core.systeminfo
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.systeminfo.SystemInfoDTO
 import org.junit.Test
 
-class SystemInfoShould : BaseObjectKotlinxShould("systeminfo/system_info.json"), ObjectShould {
+class SystemInfoShould : CoreObjectShould("systeminfo/system_info.json") {
 
     @Test
     override fun map_from_json_string() {

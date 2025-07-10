@@ -77,8 +77,6 @@ public abstract class ProgramRule extends BaseIdentifiableObject implements Core
     @AutoValue.Builder
     public abstract static class Builder extends BaseIdentifiableObject.Builder<ProgramRule.Builder> {
 
-        public abstract Builder id(Long id);
-
         public abstract Builder priority(Integer priority);
 
         public abstract Builder condition(String condition);

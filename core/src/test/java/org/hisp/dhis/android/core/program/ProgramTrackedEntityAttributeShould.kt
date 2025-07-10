@@ -29,16 +29,13 @@ package org.hisp.dhis.android.core.program
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering
 import org.hisp.dhis.android.core.common.ValueTypeRenderingType
 import org.hisp.dhis.android.network.program.ProgramTrackedEntityAttributeDTO
 import org.junit.Test
 
-class ProgramTrackedEntityAttributeShould :
-    BaseObjectKotlinxShould("program/program_tracked_entity_attribute.json"),
-    ObjectShould {
+class ProgramTrackedEntityAttributeShould : CoreObjectShould("program/program_tracked_entity_attribute.json") {
     @Test
     override fun map_from_json_string() {
         val programTrackedEntityAttributeDTO = deserialize(ProgramTrackedEntityAttributeDTO.serializer())

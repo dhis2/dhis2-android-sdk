@@ -37,7 +37,6 @@ internal data class TrackedEntityInstanceSyncDB(
 ) : EntityDB<TrackedEntityInstanceSync> {
     override fun toDomain(): TrackedEntityInstanceSync {
         return TrackedEntityInstanceSync.builder()
-            .id(id?.toLong())
             .program(program)
             .organisationUnitIdsHash(organisationUnitIdsHash!!)
             .downloadLimit(downloadLimit)

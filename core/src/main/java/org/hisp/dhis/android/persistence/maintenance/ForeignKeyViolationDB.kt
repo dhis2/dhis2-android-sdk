@@ -25,7 +25,6 @@ internal data class ForeignKeyViolationDB(
 
     override fun toDomain(): ForeignKeyViolation {
         return ForeignKeyViolation.builder()
-            .id(id?.toLong())
             .fromTable(fromTable)
             .fromColumn(fromColumn)
             .toTable(toTable)

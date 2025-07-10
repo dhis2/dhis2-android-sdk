@@ -44,7 +44,6 @@ internal data class DataElementLegendSetLinkDB(
 
     override fun toDomain(): DataElementLegendSetLink {
         return DataElementLegendSetLink.builder()
-            .id(id?.toLong())
             .dataElement(dataElement)
             .legendSet(legendSet)
             .sortOrder(sortOrder)

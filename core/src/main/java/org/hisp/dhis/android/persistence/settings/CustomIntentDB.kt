@@ -31,7 +31,6 @@ internal data class CustomIntentDB(
 
     override fun toDomain(): CustomIntent {
         return CustomIntent.builder().apply {
-            id(id?.toLong())
             uid(uid)
             name(name)
             action(action?.toDomain())

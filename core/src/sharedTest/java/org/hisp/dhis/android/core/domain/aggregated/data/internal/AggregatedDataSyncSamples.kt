@@ -34,7 +34,6 @@ internal object AggregatedDataSyncSamples {
 
     fun get1(): AggregatedDataSync {
         return AggregatedDataSync.builder()
-            .id(1L)
             .dataSet("dataSet")
             .periodType(PeriodType.Daily)
             .pastPeriods(10)

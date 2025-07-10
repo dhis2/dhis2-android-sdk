@@ -51,7 +51,6 @@ public class ProgramSamples {
 
         fillNameableProperties(builder);
         builder
-                .id(1L)
                 .version(1)
                 .onlyEnrollOnce(true)
                 .displayEnrollmentDateLabel("enrollment_date_label")

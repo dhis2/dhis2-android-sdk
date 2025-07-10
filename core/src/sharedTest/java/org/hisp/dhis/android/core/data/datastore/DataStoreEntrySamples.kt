@@ -34,7 +34,6 @@ object DataStoreEntrySamples {
 
     fun get(): DataStoreEntry =
         DataStoreEntry.builder()
-            .id(1L)
             .namespace("namespace")
             .key("key1")
             .value("value1")

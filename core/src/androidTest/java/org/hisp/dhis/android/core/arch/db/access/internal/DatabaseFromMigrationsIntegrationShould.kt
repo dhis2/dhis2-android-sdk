@@ -95,6 +95,7 @@ class DatabaseFromMigrationsIntegrationShould {
         val cursorExecutor = CursorExecutorImpl { c -> SchemaRow(c.getString(0), c.getString(1)) }
         cursorExecutor.addObjectsToCollection(cursor, list)
         return list.toList().map { row -> row.copy(sql = row.sql?.replace("\"", "")) }
+            .filterNot { it.name == "sqlite_sequence" }
     }
 
     private data class SchemaRow(val name: String, val sql: String?)

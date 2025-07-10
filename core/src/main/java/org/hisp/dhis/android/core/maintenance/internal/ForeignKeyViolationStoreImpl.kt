@@ -31,7 +31,8 @@ import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStoreImpl
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo
 import org.koin.core.annotation.Singleton
@@ -40,10 +41,12 @@ import org.koin.core.annotation.Singleton
 internal class ForeignKeyViolationStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : ForeignKeyViolationStore,
-    ObjectStoreImpl<ForeignKeyViolation>(
+    ObjectWithoutUidStoreImpl<ForeignKeyViolation>(
         databaseAdapter,
         ForeignKeyViolationTableInfo.TABLE_INFO,
         BINDER,
+        WHERE_UPDATE_BINDER,
+        WHERE_DELETE_BINDER,
         { cursor: Cursor -> ForeignKeyViolation.create(cursor) },
     ) {
     companion object {
@@ -56,6 +59,24 @@ internal class ForeignKeyViolationStoreImpl(
             w.bind(6, o.fromObjectUid())
             w.bind(7, o.fromObjectRow())
             w.bind(8, o.created())
+        }
+
+        private val WHERE_UPDATE_BINDER = WhereStatementBinder { o: ForeignKeyViolation, w: StatementWrapper ->
+            w.bind(9, o.fromTable())
+            w.bind(10, o.fromColumn())
+            w.bind(11, o.toTable())
+            w.bind(12, o.toColumn())
+            w.bind(13, o.notFoundValue())
+            w.bind(14, o.fromObjectUid())
+        }
+
+        private val WHERE_DELETE_BINDER = WhereStatementBinder { o: ForeignKeyViolation, w: StatementWrapper ->
+            w.bind(1, o.fromTable())
+            w.bind(2, o.fromColumn())
+            w.bind(3, o.toTable())
+            w.bind(4, o.toColumn())
+            w.bind(5, o.notFoundValue())
+            w.bind(6, o.fromObjectUid())
         }
     }
 }

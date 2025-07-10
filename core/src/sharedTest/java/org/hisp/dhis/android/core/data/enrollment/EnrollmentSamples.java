@@ -48,7 +48,6 @@ public class EnrollmentSamples {
 
     public static Enrollment get(String uid, String organisationUnit, String program, String tei, Date date) {
         return Enrollment.builder()
-                .id(1L)
                 .uid(uid)
                 .created(getDate("2014-08-20T12:28:56.409"))
                 .lastUpdated(getDate("2015-10-14T13:36:53.063"))

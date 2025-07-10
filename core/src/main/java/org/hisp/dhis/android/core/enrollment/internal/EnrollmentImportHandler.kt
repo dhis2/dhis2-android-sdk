@@ -144,7 +144,7 @@ internal class EnrollmentImportHandler(
             )
         }
 
-        trackerImportConflicts.forEach { trackerImportConflictStore.insert(it) }
+        trackerImportConflicts.forEach { trackerImportConflictStore.updateOrInsertWhere(it) }
     }
 
     private suspend fun processIgnoredEnrollments(

@@ -54,7 +54,6 @@ internal data class ValidationRuleDB(
     override fun toDomain(): ValidationRule {
         return ValidationRule.builder().apply {
             applyBaseNameableFields(this@ValidationRuleDB)
-            id(id?.toLong())
             instruction(instruction)
             importance(importance?.let { ValidationRuleImportance.valueOf(it) })
             operator(operator?.let { ValidationRuleOperator.valueOf(it) })

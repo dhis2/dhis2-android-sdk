@@ -34,7 +34,6 @@ public class FilterSettingSamples {
 
     public static FilterSetting getFilterSetting() {
         return FilterSetting.builder()
-                .id(1L)
                 .scope("ProgramFilter")
                 .filterType("event")
                 .uid("aBcDeFg")

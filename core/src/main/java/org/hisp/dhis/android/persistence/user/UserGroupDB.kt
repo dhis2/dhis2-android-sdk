@@ -31,7 +31,6 @@ internal data class UserGroupDB(
     override fun toDomain(): UserGroup {
         return UserGroup.builder().apply {
             applyBaseIdentifiableFields(this@UserGroupDB)
-            id(id?.toLong())
         }.build()
     }
 }

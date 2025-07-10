@@ -68,8 +68,6 @@ public abstract class EventFilter extends BaseIdentifiableObject implements Core
     @AutoValue.Builder
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
 
-        public abstract Builder id(Long id);
-
         public abstract Builder program(String program);
 
         public abstract Builder programStage(String programStage);

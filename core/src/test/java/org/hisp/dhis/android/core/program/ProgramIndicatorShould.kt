@@ -31,12 +31,11 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.AnalyticsType
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.programindicator.ProgramIndicatorDTO
 import org.junit.Test
 
-class ProgramIndicatorShould : BaseObjectKotlinxShould("program/program_indicator.json"), ObjectShould {
+class ProgramIndicatorShould : CoreObjectShould("program/program_indicator.json") {
 
     @Test
     override fun map_from_json_string() {

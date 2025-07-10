@@ -91,8 +91,6 @@ public abstract class Indicator extends BaseNameableObject
     @AutoValue.Builder
     public abstract static class Builder extends BaseNameableObject.Builder<Builder>
             implements ObjectWithStyle.Builder<Indicator, Indicator.Builder> {
-        public abstract Builder id(Long id);
-
         public abstract Builder annualized(Boolean annualized);
 
         public abstract Builder indicatorType(ObjectWithUid indicatorType);

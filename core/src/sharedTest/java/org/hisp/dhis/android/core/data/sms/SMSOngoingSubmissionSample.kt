@@ -34,7 +34,6 @@ object SMSOngoingSubmissionSample {
 
     val get: SMSOngoingSubmission =
         SMSOngoingSubmission.builder()
-            .id(1L)
             .submissionId(123)
             .type(SubmissionType.DATA_SET)
             .build()

@@ -83,9 +83,7 @@ public abstract class TrackedEntityDataValue extends BaseDataObject implements O
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseDataObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
+    public abstract static class Builder implements BaseDataObject.Builder<Builder> {
         public abstract Builder event(String event);
 
         public abstract Builder created(Date created);

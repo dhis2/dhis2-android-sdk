@@ -29,12 +29,11 @@ package org.hisp.dhis.android.core.option
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.optiongroup.OptionGroupDTO
 import org.junit.Test
 
-class OptionGroupShould : BaseObjectKotlinxShould("option/option_group.json"), ObjectShould {
+class OptionGroupShould : CoreObjectShould("option/option_group.json") {
 
     @Test
     override fun map_from_json_string() {

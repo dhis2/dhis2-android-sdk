@@ -30,13 +30,11 @@ package org.hisp.dhis.android.core.trackedentity
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
 
-abstract class TrackedEntityInstanceFilterCommonShould(jsonPath: String) :
-    BaseObjectKotlinxShould(jsonPath), ObjectShould {
+abstract class TrackedEntityInstanceFilterCommonShould(jsonPath: String) : CoreObjectShould(jsonPath) {
     protected fun teiFilterCommonAsserts(trackedEntityInstanceFilter: TrackedEntityInstanceFilter) {
         assertThat(trackedEntityInstanceFilter.lastUpdated())
             .isEqualTo(BaseIdentifiableObject.parseDate("2019-09-27T00:19:06.590"))

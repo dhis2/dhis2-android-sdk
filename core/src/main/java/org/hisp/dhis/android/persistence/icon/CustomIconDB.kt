@@ -19,7 +19,6 @@ internal data class CustomIconDB(
 
     override fun toDomain(): CustomIcon {
         return CustomIcon.builder()
-            .id(id?.toLong())
             .key(key)
             .fileResource(ObjectWithUid.create(fileResource))
             .href(href)

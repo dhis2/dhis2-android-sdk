@@ -40,7 +40,6 @@ public class ProgramTrackedEntityAttributeSamples {
         ProgramTrackedEntityAttribute.Builder builder = ProgramTrackedEntityAttribute.builder();
         fillNameableProperties(builder);
         return builder
-                .id(1L)
                 .mandatory(Boolean.TRUE)
                 .trackedEntityAttribute(ObjectWithUid.create("tracked_entity_attribute"))
                 .allowFutureDate(Boolean.FALSE)
@@ -52,7 +51,6 @@ public class ProgramTrackedEntityAttributeSamples {
 
     public static ProgramTrackedEntityAttribute getChildProgrammeGender() {
         return ProgramTrackedEntityAttribute.builder()
-                .id(1L)
                 .created(parseDate("2016-10-11T10:41:40.401"))
                 .lastUpdated(parseDate("2016-10-11T10:41:40.401"))
                 .uid("YhqgQ6Iy4c4")

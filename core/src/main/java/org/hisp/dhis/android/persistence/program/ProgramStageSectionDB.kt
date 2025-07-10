@@ -52,7 +52,6 @@ internal data class ProgramStageSectionDB(
     override fun toDomain(): ProgramStageSection {
         return ProgramStageSection.builder()
             .applyBaseIdentifiableFields(this)
-            .id(id?.toLong())
             .sortOrder(sortOrder)
             .programStage(ObjectWithUid.create(programStage))
             .renderType(

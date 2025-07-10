@@ -100,7 +100,6 @@ internal data class ProgramDB(
     override fun toDomain(): Program {
         return Program.builder().apply {
             applyBaseNameableFields(this@ProgramDB)
-            id(id?.toLong())
             version(version)
             onlyEnrollOnce(onlyEnrollOnce)
             displayEnrollmentDateLabel(displayEnrollmentDateLabel)

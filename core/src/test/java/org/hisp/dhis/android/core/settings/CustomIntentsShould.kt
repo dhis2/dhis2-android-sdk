@@ -29,12 +29,11 @@
 package org.hisp.dhis.android.core.settings
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.settings.CustomIntentsDTO
 import org.junit.Test
 
-class CustomIntentsShould : BaseObjectKotlinxShould("settings/custom_intents.json"), ObjectShould {
+class CustomIntentsShould : CoreObjectShould("settings/custom_intents.json") {
     @Test
     override fun map_from_json_string() {
         val customIntentsDTO = deserialize(CustomIntentsDTO.serializer())

@@ -144,7 +144,7 @@ internal class EventImportHandler(
             )
         }
 
-        trackerImportConflicts.forEach { trackerImportConflictStore.insert(it) }
+        trackerImportConflicts.forEach { trackerImportConflictStore.updateOrInsertWhere(it) }
     }
 
     private suspend fun getConflictBuilder(

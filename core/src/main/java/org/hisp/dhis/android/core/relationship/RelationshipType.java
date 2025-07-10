@@ -76,8 +76,6 @@ public abstract class RelationshipType extends BaseIdentifiableObject implements
 
     @AutoValue.Builder
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
         public abstract Builder fromToName(String fromToName);
 
         public abstract Builder toFromName(String toFromName);

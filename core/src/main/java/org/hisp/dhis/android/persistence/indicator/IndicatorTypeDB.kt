@@ -33,7 +33,6 @@ internal data class IndicatorTypeDB(
     override fun toDomain(): IndicatorType {
         return IndicatorType.builder()
             .applyBaseIdentifiableFields(this@IndicatorTypeDB)
-            .id(id?.toLong())
             .number(number)
             .factor(factor)
             .build()

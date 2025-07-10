@@ -35,7 +35,6 @@ public class DataSetCompleteRegistrationSamples {
 
     public static DataSetCompleteRegistration getDataSetCompleteRegistration() {
         return DataSetCompleteRegistration.builder()
-                .id(1L)
                 .period("period")
                 .dataSet("data_set")
                 .organisationUnit("organisation_unit")

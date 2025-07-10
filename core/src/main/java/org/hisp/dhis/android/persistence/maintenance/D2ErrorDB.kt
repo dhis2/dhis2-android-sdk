@@ -27,7 +27,6 @@ internal data class D2ErrorDB(
 
     override fun toDomain(): D2Error {
         return D2Error.builder().apply {
-            id(id?.toLong())
             url(url)
             errorComponent?.let { errorComponent(D2ErrorComponent.valueOf(it)) }
             errorCode?.let { errorCode(D2ErrorCode.valueOf(it)) }

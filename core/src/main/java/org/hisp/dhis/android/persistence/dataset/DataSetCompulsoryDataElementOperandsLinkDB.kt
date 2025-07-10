@@ -43,7 +43,6 @@ internal data class DataSetCompulsoryDataElementOperandsLinkDB(
 
     override fun toDomain(): DataSetCompulsoryDataElementOperandLink {
         return DataSetCompulsoryDataElementOperandLink.builder()
-            .id(id?.toLong())
             .dataSet(dataSet)
             .dataElementOperand(dataElementOperand)
             .build()

@@ -35,10 +35,10 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
-public abstract class InternalStockUseCaseTransaction extends BaseObject {
+public abstract class InternalStockUseCaseTransaction implements CoreObject {
 
     @Nullable
     public abstract String programUid();
@@ -72,7 +72,7 @@ public abstract class InternalStockUseCaseTransaction extends BaseObject {
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder {
 
         public abstract Builder programUid(String programUid);
 

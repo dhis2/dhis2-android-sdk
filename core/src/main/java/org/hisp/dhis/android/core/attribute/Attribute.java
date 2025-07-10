@@ -159,9 +159,6 @@ public abstract class Attribute extends BaseNameableObject implements CoreObject
 
     @AutoValue.Builder
     public abstract static class Builder extends BaseNameableObject.Builder<Builder> {
-
-        public abstract Builder id(Long id);
-
         public abstract Builder valueType(ValueType valueType);
 
         public abstract Builder mandatory(Boolean mandatory);

@@ -63,8 +63,6 @@ public abstract class LegendSet extends BaseIdentifiableObject implements CoreOb
 
     @AutoValue.Builder
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
         public abstract Builder symbolizer(String symbolizer);
 
         public abstract Builder legends(List<Legend> legends);

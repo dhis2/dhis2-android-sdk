@@ -76,7 +76,6 @@ internal data class ProgramRuleVariableDB(
     override fun toDomain(): ProgramRuleVariable {
         return ProgramRuleVariable.builder().apply {
             applyBaseIdentifiableFields(this@ProgramRuleVariableDB)
-            id(id?.toLong())
             useCodeForOptionSet(useCodeForOptionSet)
             program(ObjectWithUid.create(program))
             programStage?.let { programStage(ObjectWithUid.create(it)) }

@@ -34,7 +34,6 @@ public class ConfigurationSamples {
 
     public static Configuration getConfiguration() {
         return Configuration.builder()
-                .id(1L)
                 .serverUrl("http://testserver.org/api/")
                 .build();
     }

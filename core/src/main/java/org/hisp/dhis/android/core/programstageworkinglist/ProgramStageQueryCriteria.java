@@ -126,8 +126,6 @@ public abstract class ProgramStageQueryCriteria implements CoreObject {
     @AutoValue.Builder
     public abstract static class Builder {
 
-        public abstract Builder id(Long id);
-
         public abstract Builder eventStatus(EventStatus eventStatus);
 
         public abstract Builder eventCreatedAt(DateFilterPeriod eventCreatedAt);

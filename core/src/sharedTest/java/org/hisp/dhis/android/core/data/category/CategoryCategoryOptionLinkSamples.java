@@ -34,7 +34,6 @@ public class CategoryCategoryOptionLinkSamples {
 
     public static CategoryCategoryOptionLink getCategoryCategoryOptionLink() {
         return CategoryCategoryOptionLink.builder()
-                .id(1L)
                 .category("category")
                 .categoryOption("category_option")
                 .sortOrder(3)

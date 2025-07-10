@@ -72,5 +72,16 @@ public final class ForeignKeyViolationTableInfo {
                     FROM_OBJECT_ROW,
                     CREATED);
         }
+
+        @Override
+        public String[] whereUpdate() {
+            return CollectionsHelper.appendInNewArray(super.whereUpdate(),
+                    FROM_TABLE,
+                    FROM_COLUMN,
+                    TO_TABLE,
+                    TO_COLUMN,
+                    NOT_FOUND_VALUE,
+                    FROM_OBJECT_UID);
+        }
     }
 }

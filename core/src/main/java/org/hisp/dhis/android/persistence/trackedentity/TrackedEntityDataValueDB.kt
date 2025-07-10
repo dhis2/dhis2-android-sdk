@@ -55,7 +55,6 @@ internal data class TrackedEntityDataValueDB(
 
     override fun toDomain(): TrackedEntityDataValue {
         return TrackedEntityDataValue.builder().apply {
-            id(id?.toLong())
             event(event)
             dataElement(dataElement)
             storedBy(storedBy)

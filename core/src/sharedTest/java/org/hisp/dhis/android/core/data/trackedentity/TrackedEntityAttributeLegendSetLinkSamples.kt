@@ -34,7 +34,6 @@ internal object TrackedEntityAttributeLegendSetLinkSamples {
     val trackedEntityAttributeLegendSetLink: TrackedEntityAttributeLegendSetLink
         get() {
             return TrackedEntityAttributeLegendSetLink.builder()
-                .id(1L)
                 .trackedEntityAttribute("tracked_entity_attribute_uid")
                 .legendSet("legend_set_uid")
                 .sortOrder(1)

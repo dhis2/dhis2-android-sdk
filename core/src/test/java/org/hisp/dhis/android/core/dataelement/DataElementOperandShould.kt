@@ -28,12 +28,11 @@
 package org.hisp.dhis.android.core.dataelement
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.dataset.DataElementOperandDTO
 import org.junit.Test
 
-class DataElementOperandShould : BaseObjectKotlinxShould("dataelement/data_element_operand.json"), ObjectShould {
+class DataElementOperandShould : CoreObjectShould("dataelement/data_element_operand.json") {
     @Test
     override fun map_from_json_string() {
         val dataElementOperandDTO = deserialize(DataElementOperandDTO.serializer())

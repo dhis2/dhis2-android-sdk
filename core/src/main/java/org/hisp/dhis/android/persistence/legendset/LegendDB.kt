@@ -47,7 +47,6 @@ internal data class LegendDB(
     override fun toDomain(): Legend {
         return Legend.builder().apply {
             applyBaseIdentifiableFields(this@LegendDB)
-            id(id?.toLong())
             startValue(startValue)
             endValue(endValue)
             color(color)

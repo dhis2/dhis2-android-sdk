@@ -76,8 +76,6 @@ public abstract class TrackedEntityInstanceEventFilter implements CoreObject {
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder id(Long id);
-
         public abstract Builder trackedEntityInstanceFilter(String trackedEntityInstanceFilter);
 
         public abstract Builder programStage(String programStage);

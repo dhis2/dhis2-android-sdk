@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.map.layer.MapService
 object MapLayerSamples {
     fun get(): MapLayer {
         return MapLayer.builder()
-            .id(1L)
             .uid("map_layer_uid")
             .name("Map Layer")
             .code("MAP_CODE")

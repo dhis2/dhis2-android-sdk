@@ -32,7 +32,6 @@ internal data class CategoryComboDB(
     override fun toDomain(): CategoryCombo {
         return CategoryCombo.builder()
             .applyBaseIdentifiableFields(this)
-            .id(id?.toLong())
             .isDefault(isDefault)
             .build()
     }

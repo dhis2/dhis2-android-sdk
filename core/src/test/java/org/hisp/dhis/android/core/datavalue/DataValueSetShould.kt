@@ -27,12 +27,11 @@
  */
 package org.hisp.dhis.android.core.datavalue
 
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.datavalue.DataValueSetDTO
 import org.junit.Test
 
-class DataValueSetShould : BaseObjectKotlinxShould("datavalue/data_values.json"), ObjectShould {
+class DataValueSetShould : CoreObjectShould("datavalue/data_values.json") {
     @Test
     override fun map_from_json_string() {
         deserialize(DataValueSetDTO.serializer()).toDomain()

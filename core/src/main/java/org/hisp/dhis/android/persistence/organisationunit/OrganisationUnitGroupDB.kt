@@ -33,7 +33,6 @@ internal data class OrganisationUnitGroupDB(
     override fun toDomain(): OrganisationUnitGroup {
         return OrganisationUnitGroup.builder()
             .applyBaseIdentifiableFields(this)
-            .id(id?.toLong())
             .shortName(shortName)
             .displayShortName(displayShortName)
             .build()

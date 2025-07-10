@@ -127,8 +127,6 @@ public abstract class GeneralSettings implements CoreObject {
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder id(Long id);
-
         @Deprecated
         public abstract Builder dataSync(DataSyncPeriod dataSync);
 

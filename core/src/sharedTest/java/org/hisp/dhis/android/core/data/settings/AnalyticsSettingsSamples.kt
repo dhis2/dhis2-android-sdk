@@ -48,7 +48,6 @@ object AnalyticsSettingsSamples {
 
     val analyticsTeiDataElementSample: AnalyticsTeiDataElement =
         AnalyticsTeiDataElement.builder()
-            .id(1L)
             .teiSetting("tei_setting")
             .whoComponent(WHONutritionComponent.X)
             .programStage("programStage")
@@ -57,7 +56,6 @@ object AnalyticsSettingsSamples {
 
     val analyticsTeiIndicator: AnalyticsTeiIndicator =
         AnalyticsTeiIndicator.builder()
-            .id(1L)
             .whoComponent(WHONutritionComponent.X)
             .teiSetting("tei_setting")
             .indicator("indicator")
@@ -65,7 +63,6 @@ object AnalyticsSettingsSamples {
 
     val analyticsTeiAttribute: AnalyticsTeiAttribute =
         AnalyticsTeiAttribute.builder()
-            .id(1L)
             .whoComponent(WHONutritionComponent.X)
             .teiSetting("tei_setting")
             .attribute("attribute")
@@ -73,7 +70,6 @@ object AnalyticsSettingsSamples {
 
     val analyticsTeiSetting: AnalyticsTeiSetting =
         AnalyticsTeiSetting.builder()
-            .id(1L)
             .uid("uid")
             .name("name")
             .shortName("short_name")
@@ -86,7 +82,6 @@ object AnalyticsSettingsSamples {
 
     val analyticsTeiWHONutritionData: AnalyticsTeiWHONutritionData =
         AnalyticsTeiWHONutritionData.builder()
-            .id(1L)
             .teiSetting("tei_setting")
             .chartType(WHONutritionChartType.WFH)
             .gender(
@@ -106,7 +101,6 @@ object AnalyticsSettingsSamples {
 
     val analyticsDhisVisualization: AnalyticsDhisVisualization =
         AnalyticsDhisVisualization.builder()
-            .id(1L)
             .groupName("Other group")
             .groupUid("123456")
             .scope(AnalyticsDhisVisualizationScope.HOME)

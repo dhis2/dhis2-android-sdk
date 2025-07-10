@@ -29,13 +29,13 @@ package org.hisp.dhis.android.core.trackedentity
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.tracker.NewTrackedEntityDataValueDTO
 import org.junit.Test
 
-class NewTrackerImporterTrackedEntityDataValueShould :
-    BaseObjectKotlinxShould("trackedentity/new_tracker_importer_tracked_entity_data_value.json"), ObjectShould {
+class NewTrackerImporterTrackedEntityDataValueShould : CoreObjectShould(
+    "trackedentity/new_tracker_importer_tracked_entity_data_value.json",
+) {
 
     @Test
     override fun map_from_json_string() {

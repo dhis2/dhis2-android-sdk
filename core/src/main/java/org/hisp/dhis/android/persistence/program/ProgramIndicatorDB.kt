@@ -57,7 +57,6 @@ internal data class ProgramIndicatorDB(
     override fun toDomain(): ProgramIndicator {
         return ProgramIndicator.builder().apply {
             applyBaseNameableFields(this@ProgramIndicatorDB)
-            id(id?.toLong())
             displayInForm(displayInForm)
             expression(expression)
             dimensionItem(dimensionItem)

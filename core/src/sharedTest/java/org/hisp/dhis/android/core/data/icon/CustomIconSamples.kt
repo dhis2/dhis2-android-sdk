@@ -35,7 +35,6 @@ object CustomIconSamples {
 
     fun getCustomIcon(): CustomIcon {
         return CustomIcon.builder()
-            .id(1L)
             .key("childIcon")
             .fileResource(ObjectWithUid.create("lNrwSpIy1Q9"))
             .href("https://play.im.dhis2.org/dev/api/icons/childIcon/icon")

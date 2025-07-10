@@ -87,8 +87,6 @@ public abstract class ProgramConfigurationSetting implements CoreObject, ObjectW
     @AutoValue.Builder
     public abstract static class Builder {
 
-        public abstract Builder id(Long id);
-
         public abstract Builder uid(String uid);
 
         public abstract Builder completionSpinner(Boolean completionSpinner);

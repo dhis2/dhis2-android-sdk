@@ -32,7 +32,6 @@ internal data class ExpressionDimensionItemDB(
     override fun toDomain(): ExpressionDimensionItem {
         return ExpressionDimensionItem.builder()
             .applyBaseIdentifiableFields(this@ExpressionDimensionItemDB)
-            .id(id?.toLong())
             .expression(expression)
             .build()
     }

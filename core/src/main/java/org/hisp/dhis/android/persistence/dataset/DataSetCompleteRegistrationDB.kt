@@ -73,7 +73,6 @@ internal data class DataSetCompleteRegistrationDB(
 
     override fun toDomain(): DataSetCompleteRegistration {
         return DataSetCompleteRegistration.builder().apply {
-            id(id?.toLong())
             period(period)
             dataSet(dataSet)
             organisationUnit(organisationUnit)

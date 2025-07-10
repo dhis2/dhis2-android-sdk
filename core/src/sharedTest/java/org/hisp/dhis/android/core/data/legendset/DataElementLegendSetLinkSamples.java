@@ -34,7 +34,6 @@ public class DataElementLegendSetLinkSamples {
 
     public static DataElementLegendSetLink getDataElementLegendSetLink() {
         return DataElementLegendSetLink.builder()
-                .id(1L)
                 .legendSet("legend_set")
                 .sortOrder(1)
                 .dataElement("data_element")

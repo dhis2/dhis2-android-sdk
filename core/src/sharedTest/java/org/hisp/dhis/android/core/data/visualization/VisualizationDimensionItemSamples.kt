@@ -34,11 +34,11 @@ object VisualizationDimensionItemSamples {
 
     fun visualizationDimensionItem(): VisualizationDimensionItem =
         VisualizationDimensionItem.builder()
-            .id(1L)
             .visualization("visualization_uid")
             .position(LayoutPosition.COLUMN)
             .dimension("dx")
             .dimensionItem("item")
             .dimensionItemType("DATA_ELEMENT")
+            .sortOrder(3)
             .build()
 }

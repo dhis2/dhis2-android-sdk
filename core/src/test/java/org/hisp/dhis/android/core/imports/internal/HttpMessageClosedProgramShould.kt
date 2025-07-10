@@ -28,14 +28,11 @@
 package org.hisp.dhis.android.core.imports.internal
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.common.dto.HttpMessageResponseDTO
 import org.junit.Test
 
-class HttpMessageClosedProgramShould :
-    BaseObjectKotlinxShould("trackedentity/glass/closed_program_failure.json"),
-    ObjectShould {
+class HttpMessageClosedProgramShould : CoreObjectShould("trackedentity/glass/closed_program_failure.json") {
 
     @Test
     override fun map_from_json_string() {

@@ -73,7 +73,7 @@ internal class ForeignKeyCleanerImpl(
 
         val violation = getForeignKeyViolation(foreignKeyId, fromTable, toTable, rowId)
         violation?.let {
-            foreignKeyViolationStore.insert(it)
+            foreignKeyViolationStore.updateOrInsertWhere(it)
 
             val deleteClause = "ROWID = ?"
             val rowsAffected = databaseAdapter.delete(fromTable, deleteClause, arrayOf(rowId))

@@ -39,7 +39,6 @@ public class SectionSamples {
         Section.Builder sectionBuilder = Section.builder();
         fillIdentifiableProperties(sectionBuilder);
         sectionBuilder
-                .id(1L)
                 .description("descr")
                 .sortOrder(2)
                 .showRowTotals(true)

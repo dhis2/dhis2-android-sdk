@@ -29,12 +29,11 @@ package org.hisp.dhis.android.core.constant
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.constant.ConstantDTO
 import org.junit.Test
 
-class ConstantShould : BaseObjectKotlinxShould("constant/constant.json"), ObjectShould {
+class ConstantShould : CoreObjectShould("constant/constant.json") {
 
     @Test
     override fun map_from_json_string() {

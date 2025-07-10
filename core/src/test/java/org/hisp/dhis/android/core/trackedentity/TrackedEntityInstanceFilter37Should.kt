@@ -27,13 +27,11 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
-import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.network.trackedentityinstancefilter.TrackedEntityInstanceFilter37DTO
 import org.junit.Test
 
 class TrackedEntityInstanceFilter37Should :
-    TrackedEntityInstanceFilterCommonShould("trackedentity/tracked_entity_instance_filter_v_37.json"),
-    ObjectShould {
+    TrackedEntityInstanceFilterCommonShould("trackedentity/tracked_entity_instance_filter_v_37.json") {
 
     @Test
     override fun map_from_json_string() {

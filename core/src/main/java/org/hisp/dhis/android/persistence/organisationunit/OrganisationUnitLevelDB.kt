@@ -32,7 +32,6 @@ internal data class OrganisationUnitLevelDB(
     override fun toDomain(): OrganisationUnitLevel {
         return OrganisationUnitLevel.builder()
             .applyBaseIdentifiableFields(this)
-            .id(id?.toLong())
             .level(level)
             .build()
     }

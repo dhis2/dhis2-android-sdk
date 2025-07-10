@@ -31,11 +31,11 @@ package org.hisp.dhis.android.persistence.maintenance
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation
 import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyViolationStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
-import org.hisp.dhis.android.persistence.common.stores.ObjectStoreImpl
+import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 
 internal class ForeignKeyViolationStoreImpl(
     val dao: ForeignKeyViolationDao,
-) : ForeignKeyViolationStore, ObjectStoreImpl<ForeignKeyViolation, ForeignKeyViolationDB>(
+) : ForeignKeyViolationStore, ObjectWithoutUidStoreImpl<ForeignKeyViolation, ForeignKeyViolationDB>(
     dao,
     ForeignKeyViolation::toDB,
     SQLStatementBuilderImpl(ForeignKeyViolationTableInfo.TABLE_INFO),

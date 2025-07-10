@@ -72,7 +72,7 @@ internal class JobReportEventHandler internal constructor(
             if (errorReport.errorCode == ImporterError.E1032.name && event.deleted() == true) {
                 eventStore.delete(event.uid())
             } else {
-                conflictStore.insert(
+                conflictStore.updateOrInsertWhere(
                     conflictHelper.getConflictBuilder(errorReport)
                         .tableReference(EventTableInfo.TABLE_INFO.name())
                         .trackedEntityInstance(trackedEntityInstanceUid)

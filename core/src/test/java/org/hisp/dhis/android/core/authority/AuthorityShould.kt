@@ -29,12 +29,11 @@ package org.hisp.dhis.android.core.authority
 
 import com.google.common.truth.Truth.assertThat
 import kotlinx.serialization.builtins.ListSerializer
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.authority.AuthorityDTO
 import org.junit.Test
 
-class AuthorityShould : BaseObjectKotlinxShould("authority/authorities.json"), ObjectShould {
+class AuthorityShould : CoreObjectShould("authority/authorities.json") {
 
     @Test
     override fun map_from_json_string() {

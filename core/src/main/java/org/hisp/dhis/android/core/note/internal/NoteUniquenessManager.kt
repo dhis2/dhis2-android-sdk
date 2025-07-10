@@ -56,12 +56,10 @@ internal class NoteUniquenessManager(private val noteStore: NoteStore) {
         noteStore.deleteWhere(deleteWhere)
 
         val newNotes = notes
-            .map { it.toBuilder().id(null).syncState(State.SYNCED).build() }
+            .map { it.toBuilder().syncState(State.SYNCED).build() }
             .toSet()
 
-        val pendingNotes = toPostNotes
-            .map { it.toBuilder().id(null).build() }
-            .toSet()
+        val pendingNotes = toPostNotes.toSet()
 
         return newNotes + pendingNotes
     }

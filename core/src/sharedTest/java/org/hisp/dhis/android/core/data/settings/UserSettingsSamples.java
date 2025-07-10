@@ -34,7 +34,6 @@ public class UserSettingsSamples {
 
     public static UserSettings getUserSettings() {
         return UserSettings.builder()
-                .id(1L)
                 .keyUiLocale("key_ui_locale")
                 .keyDbLocale("key_db_locale")
                 .build();

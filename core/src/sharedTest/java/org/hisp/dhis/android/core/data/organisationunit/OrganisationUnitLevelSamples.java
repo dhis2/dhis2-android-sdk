@@ -39,7 +39,6 @@ public class OrganisationUnitLevelSamples {
 
         fillIdentifiableProperties(builder);
         return builder
-                .id(1L)
                 .level(2)
                 .build();
     }

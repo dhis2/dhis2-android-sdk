@@ -59,7 +59,6 @@ internal data class TrackerImportConflictDB(
 
     override fun toDomain(): TrackerImportConflict {
         return TrackerImportConflict.builder().apply {
-            id(id?.toLong())
             conflict(conflict)
             value(value)
             trackedEntityInstance(trackedEntityInstance)

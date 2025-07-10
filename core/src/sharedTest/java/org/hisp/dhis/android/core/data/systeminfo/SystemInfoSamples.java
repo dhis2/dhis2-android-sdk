@@ -38,7 +38,6 @@ public class SystemInfoSamples {
 
     public static SystemInfo get1() {
         return SystemInfo.builder()
-                .id(1L)
                 .serverDate(getDate("2017-11-29T11:27:46.935"))
                 .dateFormat("yyyy-mm-dd")
                 .version("2.41.0")
@@ -49,7 +48,6 @@ public class SystemInfoSamples {
 
     public static SystemInfo get2() {
         return SystemInfo.builder()
-                .id(1L)
                 .serverDate(getDate("2018-04-29T11:27:46.935"))
                 .dateFormat("yyyy-DD-mm")
                 .version("2.29")

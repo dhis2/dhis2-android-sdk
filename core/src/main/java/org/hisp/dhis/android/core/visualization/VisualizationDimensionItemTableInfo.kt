@@ -54,6 +54,7 @@ object VisualizationDimensionItemTableInfo {
                 DIMENSION,
                 DIMENSION_ITEM,
                 DIMENSION_ITEM_TYPE,
+                SORT_ORDER,
             )
         }
 
@@ -65,6 +66,7 @@ object VisualizationDimensionItemTableInfo {
                 DIMENSION,
                 DIMENSION_ITEM,
                 DIMENSION_ITEM_TYPE,
+                SORT_ORDER,
             )
         }
 
@@ -74,6 +76,7 @@ object VisualizationDimensionItemTableInfo {
             const val DIMENSION = "dimension"
             const val DIMENSION_ITEM = "dimensionItem"
             const val DIMENSION_ITEM_TYPE = "dimensionItemType"
+            const val SORT_ORDER = "sortOrder"
         }
     }
 }

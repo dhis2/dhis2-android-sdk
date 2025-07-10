@@ -169,7 +169,7 @@ CREATE TABLE RelationshipConstraint(relationshipType TEXT NOT NULL, constraintTy
 INSERT INTO RelationshipConstraint(relationshipType, constraintType, relationshipEntity, trackedEntityType, program, programStage, trackerDataViewAttributes, trackerDataViewDataElements) SELECT relationshipType, constraintType, relationshipEntity, trackedEntityType, program, programStage, trackerDataViewAttributes, trackerDataViewDataElements FROM RelationshipConstraint_Old;
 
 ALTER TABLE RelationshipItem RENAME TO RelationshipItem_Old;
-CREATE TABLE RelationshipItem(relationship TEXT NOT NULL, relationshipItemType TEXT NOT NULL, trackedEntityInstance TEXT, enrollment TEXT, event TEXT, FOREIGN KEY(relationship) REFERENCES Relationship(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(trackedEntityInstance) REFERENCES TrackedEntityInstance(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(enrollment) REFERENCES Enrollment(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(event) REFERENCES Event(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, PRIMARY KEY(relationship, trackedEntityInstance, enrollment, event));
+CREATE TABLE RelationshipItem(relationship TEXT NOT NULL, relationshipItemType TEXT NOT NULL, trackedEntityInstance TEXT, enrollment TEXT, event TEXT, FOREIGN KEY(relationship) REFERENCES Relationship(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(trackedEntityInstance) REFERENCES TrackedEntityInstance(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(enrollment) REFERENCES Enrollment(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(event) REFERENCES Event(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, PRIMARY KEY(relationship, relationshipItemType));
 INSERT INTO RelationshipItem(relationship, relationshipItemType, trackedEntityInstance, enrollment, event) SELECT relationship, relationshipItemType, trackedEntityInstance, enrollment, event FROM RelationshipItem_Old;
 
 ALTER TABLE OrganisationUnitGroup RENAME TO OrganisationUnitGroup_Old;
@@ -345,11 +345,11 @@ CREATE TABLE CustomIntent(uid TEXT NOT NULL PRIMARY KEY, name TEXT, action TEXT,
 INSERT INTO CustomIntent(uid, name, action, packageName, requestArguments, responseDataArgument, responseDataPath) SELECT uid, name, action, packageName, requestArguments, responseDataArgument, responseDataPath FROM CustomIntent_Old;
 
 ALTER TABLE CustomIntentDataElement RENAME TO CustomIntentDataElement_Old;
-CREATE TABLE CustomIntentDataElement(uid TEXT NOT NULL, customIntentUid TEXT NOT NULL, FOREIGN KEY(customIntentUid) REFERENCES CustomIntent(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, PRIMARY KEY(customIntentUid));
+CREATE TABLE CustomIntentDataElement(uid TEXT NOT NULL, customIntentUid TEXT NOT NULL, FOREIGN KEY(customIntentUid) REFERENCES CustomIntent(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, PRIMARY KEY(customIntentUid, uid));
 INSERT INTO CustomIntentDataElement(uid, customIntentUid) SELECT uid, customIntentUid FROM CustomIntentDataElement_Old;
 
 ALTER TABLE CustomIntentAttribute RENAME TO CustomIntentAttribute_Old;
-CREATE TABLE CustomIntentAttribute(uid TEXT NOT NULL, customIntentUid TEXT NOT NULL, FOREIGN KEY(customIntentUid) REFERENCES CustomIntent(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, PRIMARY KEY(customIntentUid));
+CREATE TABLE CustomIntentAttribute(uid TEXT NOT NULL, customIntentUid TEXT NOT NULL, FOREIGN KEY(customIntentUid) REFERENCES CustomIntent(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, PRIMARY KEY(customIntentUid, uid));
 INSERT INTO CustomIntentAttribute(uid, customIntentUid) SELECT uid, customIntentUid FROM CustomIntentAttribute_Old;
 
 ALTER TABLE AnalyticsTeiSetting RENAME TO AnalyticsTeiSetting_Old;
@@ -441,7 +441,7 @@ CREATE TABLE ProgramAttributeValueLink(program TEXT NOT NULL, attribute TEXT NOT
 INSERT INTO ProgramAttributeValueLink(program, attribute, value) SELECT program, attribute, value FROM ProgramAttributeValueLink_Old;
 
 ALTER TABLE TrackerJobObject RENAME TO TrackerJobObject_Old;
-CREATE TABLE TrackerJobObject(trackerType TEXT NOT NULL, objectUid TEXT NOT NULL, jobUid TEXT NOT NULL, lastUpdated TEXT NOT NULL, fileResources TEXT, PRIMARY KEY(objectUid, jobUid));
+CREATE TABLE TrackerJobObject(trackerType TEXT NOT NULL, objectUid TEXT NOT NULL, jobUid TEXT NOT NULL, lastUpdated TEXT NOT NULL, fileResources TEXT, PRIMARY KEY(jobUid, objectUid));
 INSERT INTO TrackerJobObject(trackerType, objectUid, jobUid, lastUpdated, fileResources) SELECT trackerType, objectUid, jobUid, lastUpdated, fileResources FROM TrackerJobObject_Old;
 
 ALTER TABLE DataValueConflict RENAME TO DataValueConflict_Old;

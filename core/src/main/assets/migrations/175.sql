@@ -161,7 +161,7 @@ CREATE TABLE DataSetCompulsoryDataElementOperandsLink(dataSet TEXT NOT NULL, dat
 INSERT OR IGNORE INTO DataSetCompulsoryDataElementOperandsLink(dataSet, dataElementOperand) SELECT dataSet, dataElementOperand FROM DataSetCompulsoryDataElementOperandsLink_Old;
 
 ALTER TABLE DataInputPeriod RENAME TO DataInputPeriod_Old;
-CREATE TABLE DataInputPeriod(dataSet TEXT NOT NULL, period TEXT NOT NULL, openingDate TEXT, closingDate TEXT, FOREIGN KEY(dataSet) REFERENCES DataSet(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(period) REFERENCES Period(periodId) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, PRIMARY KEY(dataSet, period));
+CREATE TABLE DataInputPeriod(dataSet TEXT NOT NULL, period TEXT NOT NULL, openingDate TEXT, closingDate TEXT, FOREIGN KEY(dataSet) REFERENCES DataSet(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(period) REFERENCES Period(periodId) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, PRIMARY KEY(dataSet, period, openingDate, closingDate));
 INSERT OR IGNORE INTO DataInputPeriod(dataSet, period, openingDate, closingDate) SELECT dataSet, period, openingDate, closingDate FROM DataInputPeriod_Old;
 
 ALTER TABLE RelationshipConstraint RENAME TO RelationshipConstraint_Old;

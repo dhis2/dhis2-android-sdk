@@ -33,24 +33,27 @@ source "$(dirname $0)/config_jenkins.init"
 source "$(dirname $0)/browserstackCommon.sh"
 
 log_file=$1
-benchmark_config_file="$(dirname $0)/../core/src/androidTest/assets/benchmark.json"
+benchmark_config_file="$(dirname $0)/../instrumented-test-app/src/androidTest/assets/benchmark.json"
 
 SERVER_URL=${BENCHMARK_SERVER_URL:-https://play.dhis2.org/demo}
+USERNAME=${BENCHMARK_USERNAME:-android}
+PASSWORD=${BENCHMARK_PASSWORD:-Android123}
+
 CONFIG="{
   \"serverUrl\": \"${SERVER_URL}\",
-  \"username\": \"${BENCHMARK_USERNAME:-android}\",
-  \"password\": \"${BENCHMARK_PASSWORD:-Android123}\"
+  \"username\": \"${USERNAME}\",
+  \"password\": \"${PASSWORD}\"
 }
 "
 echo "$CONFIG" > $benchmark_config_file
 
 # Build apks
 ./gradlew :core:assembleDebug
-./gradlew :core:assembleDebugAndroidTest
+./gradlew :instrumented-test-app:assembleDebugAndroidTest -PsdkVersion=$SDK_VERSION
 ./gradlew :instrumented-test-app:assembleDebug -PsdkVersion=$SDK_VERSION
 
-app_apk_path=$(findApkPath "instrumented-test-app")
-test_apk_path=$(findApkPath "core")
+app_apk_path=$(findApkPath "instrumented-test-app" "debug")
+test_apk_path=$(findApkPath "instrumented-test-app" "androidTest/debug")
 
 # Upload app and testing apk
 echo "Uploading app APK to Browserstack..."

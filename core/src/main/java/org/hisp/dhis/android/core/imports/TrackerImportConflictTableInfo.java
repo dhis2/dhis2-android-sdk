@@ -80,5 +80,18 @@ public final class TrackerImportConflictTableInfo {
                     CREATED,
                     DISPLAY_DESCRIPTION);
         }
+
+        @Override
+        public String[] whereUpdate() {
+            return CollectionsHelper.appendInNewArray(super.whereUpdate(),
+                    CONFLICT,
+                    VALUE,
+                    TRACKED_ENTITY_INSTANCE,
+                    ENROLLMENT,
+                    EVENT,
+                    TRACKED_ENTITY_ATTRIBUTE,
+                    DATA_ELEMENT,
+                    TABLE_REFERENCE);
+        }
     }
 }

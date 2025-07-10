@@ -38,29 +38,28 @@ import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
 
-public abstract class TrackerBaseSync implements CoreObject {
+public interface TrackerBaseSync extends CoreObject {
 
     @Nullable
-    public abstract String program();
+    String program();
 
     @NonNull
-    public abstract Integer organisationUnitIdsHash();
+    Integer organisationUnitIdsHash();
 
     @NonNull
-    public abstract Integer downloadLimit();
+    Integer downloadLimit();
 
     @NonNull
     @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date lastUpdated();
+    Date lastUpdated();
 
-    public abstract static class Builder<T> {
+    interface Builder<T> {
+        T program(String program);
 
-        public abstract T program(String program);
+        T organisationUnitIdsHash(Integer organisationUnitIdsHash);
 
-        public abstract T organisationUnitIdsHash(Integer organisationUnitIdsHash);
+        T downloadLimit(Integer limit);
 
-        public abstract T downloadLimit(Integer limit);
-
-        public abstract T lastUpdated(Date lastUpdated);
+        T lastUpdated(Date lastUpdated);
     }
 }

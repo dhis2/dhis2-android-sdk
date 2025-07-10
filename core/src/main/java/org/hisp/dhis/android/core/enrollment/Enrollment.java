@@ -161,7 +161,7 @@ public abstract class Enrollment extends BaseDeletableDataObject implements Obje
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseDeletableDataObject.Builder<Builder> {
+    public abstract static class Builder implements BaseDeletableDataObject.Builder<Builder> {
         public abstract Builder uid(String uid);
 
         public abstract Builder created(Date created);

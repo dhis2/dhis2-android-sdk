@@ -55,14 +55,14 @@ public abstract class BaseDataObject implements DataObject {
     @ColumnAdapter(StateColumnAdapter.class)
     public abstract State syncState();
 
-    protected abstract static class Builder<T extends Builder> {
-        public abstract T syncState(@Nullable State syncState);
+    protected interface Builder<T extends Builder<T>> {
+        T syncState(@Nullable State syncState);
 
         /**
          * @deprecated Use {@link #syncState(State)} instead.
          */
         @Deprecated
-        public T state(State state) {
+        default T state(State state) {
             return syncState(state);
         }
     }

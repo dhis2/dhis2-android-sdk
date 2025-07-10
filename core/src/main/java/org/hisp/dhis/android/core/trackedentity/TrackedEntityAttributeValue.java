@@ -77,7 +77,7 @@ public abstract class TrackedEntityAttributeValue extends BaseDataObject impleme
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseDataObject.Builder<Builder> {
+    public abstract static class Builder implements BaseDataObject.Builder<Builder> {
         public abstract Builder trackedEntityAttribute(String trackedEntityAttribute);
 
         public abstract Builder value(String value);

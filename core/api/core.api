@@ -4059,8 +4059,7 @@ public abstract class org/hisp/dhis/android/core/common/BaseDataObject : org/his
 	public abstract fun syncState ()Lorg/hisp/dhis/android/core/common/State;
 }
 
-protected abstract class org/hisp/dhis/android/core/common/BaseDataObject$Builder {
-	protected fun <init> ()V
+protected abstract interface class org/hisp/dhis/android/core/common/BaseDataObject$Builder {
 	public fun state (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/common/BaseDataObject$Builder;
 	public abstract fun syncState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/common/BaseDataObject$Builder;
 }
@@ -4070,8 +4069,7 @@ public abstract class org/hisp/dhis/android/core/common/BaseDeletableDataObject 
 	public abstract fun deleted ()Ljava/lang/Boolean;
 }
 
-protected abstract class org/hisp/dhis/android/core/common/BaseDeletableDataObject$Builder : org/hisp/dhis/android/core/common/BaseDataObject$Builder {
-	protected fun <init> ()V
+protected abstract interface class org/hisp/dhis/android/core/common/BaseDeletableDataObject$Builder : org/hisp/dhis/android/core/common/BaseDataObject$Builder {
 	public abstract fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/BaseDeletableDataObject$Builder;
 }
 
@@ -5532,7 +5530,6 @@ public abstract class org/hisp/dhis/android/core/dataset/DataSetCompleteRegistra
 	public abstract fun date (Ljava/util/Date;)Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Builder;
 	public abstract fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Builder;
 	public abstract fun period (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Builder;
-	public synthetic fun state (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/common/BaseDataObject$Builder;
 	public abstract fun storedBy (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Builder;
 }
 
@@ -6159,7 +6156,6 @@ public abstract class org/hisp/dhis/android/core/datastore/DataStoreEntry$Builde
 	public abstract fun build ()Lorg/hisp/dhis/android/core/datastore/DataStoreEntry;
 	public abstract fun key (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datastore/DataStoreEntry$Builder;
 	public abstract fun namespace (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datastore/DataStoreEntry$Builder;
-	public synthetic fun state (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/common/BaseDataObject$Builder;
 	public abstract fun value (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datastore/DataStoreEntry$Builder;
 }
 
@@ -6273,7 +6269,6 @@ public abstract class org/hisp/dhis/android/core/datavalue/DataValue$Builder : o
 	public abstract fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
 	public abstract fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
 	public abstract fun period (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
-	public synthetic fun state (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/common/BaseDataObject$Builder;
 	public abstract fun storedBy (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
 	public abstract fun value (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
 }
@@ -7212,7 +7207,6 @@ public abstract class org/hisp/dhis/android/core/fileresource/FileResource$Build
 	public abstract fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/fileresource/FileResource$Builder;
 	public abstract fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/fileresource/FileResource$Builder;
 	public abstract fun path (Ljava/lang/String;)Lorg/hisp/dhis/android/core/fileresource/FileResource$Builder;
-	public synthetic fun state (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/common/BaseDataObject$Builder;
 	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/fileresource/FileResource$Builder;
 }
 
@@ -8575,7 +8569,6 @@ public abstract class org/hisp/dhis/android/core/note/Note$Builder : org/hisp/dh
 	public abstract fun enrollment (Ljava/lang/String;)Lorg/hisp/dhis/android/core/note/Note$Builder;
 	public abstract fun event (Ljava/lang/String;)Lorg/hisp/dhis/android/core/note/Note$Builder;
 	public abstract fun noteType (Lorg/hisp/dhis/android/core/note/Note$NoteType;)Lorg/hisp/dhis/android/core/note/Note$Builder;
-	public synthetic fun state (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/common/BaseDataObject$Builder;
 	public abstract fun storedBy (Ljava/lang/String;)Lorg/hisp/dhis/android/core/note/Note$Builder;
 	public abstract fun storedDate (Ljava/lang/String;)Lorg/hisp/dhis/android/core/note/Note$Builder;
 	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/note/Note$Builder;
@@ -10564,14 +10557,12 @@ public abstract class org/hisp/dhis/android/core/relationship/BaseRelationship :
 	public abstract fun uid ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/relationship/BaseRelationship$Builder : org/hisp/dhis/android/core/common/BaseDeletableDataObject$Builder {
-	public fun <init> ()V
+public abstract interface class org/hisp/dhis/android/core/relationship/BaseRelationship$Builder : org/hisp/dhis/android/core/common/BaseDeletableDataObject$Builder {
 	public abstract fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/relationship/BaseRelationship$Builder;
 	public abstract fun from (Lorg/hisp/dhis/android/core/relationship/RelationshipItem;)Lorg/hisp/dhis/android/core/relationship/BaseRelationship$Builder;
 	public abstract fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/relationship/BaseRelationship$Builder;
 	public abstract fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/BaseRelationship$Builder;
 	public abstract fun relationshipType (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/BaseRelationship$Builder;
-	public synthetic fun state (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/common/BaseDataObject$Builder;
 	public abstract fun to (Lorg/hisp/dhis/android/core/relationship/RelationshipItem;)Lorg/hisp/dhis/android/core/relationship/BaseRelationship$Builder;
 	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/BaseRelationship$Builder;
 }
@@ -13160,7 +13151,6 @@ public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttr
 	public abstract fun build ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue;
 	public abstract fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue$Builder;
 	public abstract fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue$Builder;
-	public synthetic fun state (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/common/BaseDataObject$Builder;
 	public abstract fun trackedEntityAttribute (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue$Builder;
 	public abstract fun trackedEntityInstance (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue$Builder;
 	public abstract fun value (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue$Builder;
@@ -13223,7 +13213,6 @@ public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityData
 	public abstract fun event (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue$Builder;
 	public abstract fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue$Builder;
 	public abstract fun providedElsewhere (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue$Builder;
-	public synthetic fun state (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/common/BaseDataObject$Builder;
 	public abstract fun storedBy (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue$Builder;
 	public abstract fun value (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue$Builder;
 }
@@ -13647,16 +13636,14 @@ public abstract class org/hisp/dhis/android/core/trackedentity/internal/TrackedE
 	public abstract fun build ()Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
+public abstract interface class org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync : org/hisp/dhis/android/core/common/CoreObject {
 	public abstract fun downloadLimit ()Ljava/lang/Integer;
 	public abstract fun lastUpdated ()Ljava/util/Date;
 	public abstract fun organisationUnitIdsHash ()Ljava/lang/Integer;
 	public abstract fun program ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync$Builder {
-	public fun <init> ()V
+public abstract interface class org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync$Builder {
 	public abstract fun downloadLimit (Ljava/lang/Integer;)Ljava/lang/Object;
 	public abstract fun lastUpdated (Ljava/util/Date;)Ljava/lang/Object;
 	public abstract fun organisationUnitIdsHash (Ljava/lang/Integer;)Ljava/lang/Object;
@@ -13706,7 +13693,6 @@ public abstract class org/hisp/dhis/android/core/trackedentity/ownership/Program
 	public abstract fun build ()Lorg/hisp/dhis/android/core/trackedentity/ownership/ProgramOwner;
 	public abstract fun ownerOrgUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/ownership/ProgramOwner$Builder;
 	public abstract fun program (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/ownership/ProgramOwner$Builder;
-	public synthetic fun state (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/common/BaseDataObject$Builder;
 	public abstract fun trackedEntityInstance (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/ownership/ProgramOwner$Builder;
 }
 

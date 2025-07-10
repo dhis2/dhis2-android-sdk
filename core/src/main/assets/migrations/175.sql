@@ -202,7 +202,7 @@ INSERT OR IGNORE INTO ForeignKeyViolation(fromTable, fromColumn, toTable, toColu
 
 ALTER TABLE D2Error RENAME TO D2Error_Old;
 CREATE TABLE D2Error(url TEXT, errorComponent TEXT, errorCode TEXT, errorDescription TEXT, httpErrorCode INTEGER, created TEXT);
-INSERT OR IGNORE INTO D2Error(resourceType, uid, url, errorComponent, errorCode, errorDescription, httpErrorCode, created) SELECT resourceType, uid, url, errorComponent, errorCode, errorDescription, httpErrorCode, created FROM D2Error_Old;
+INSERT OR IGNORE INTO D2Error(url, errorComponent, errorCode, errorDescription, httpErrorCode, created) SELECT url, errorComponent, errorCode, errorDescription, httpErrorCode, created FROM D2Error_Old;
 
 ALTER TABLE Authority RENAME TO Authority_Old;
 CREATE TABLE Authority(name TEXT NOT NULL PRIMARY KEY);

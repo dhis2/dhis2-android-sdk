@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.persistence.dataset
 
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.dataset.DataSetInstanceSummary
 import org.hisp.dhis.android.core.dataset.internal.DataSetInstanceSummaryStore
@@ -38,7 +39,8 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DataSetInstanceSummaryStoreImpl(
-    private val appDatabase: AppDatabase
+    private val databaseAdapter: DatabaseAdapter,
 ) : DataSetInstanceSummaryStore, ReadableStoreImpl<DataSetInstanceSummary, DataSetInstanceSummaryDB>(
-    appDatabase.dataSetInstanceSummaryDao(), DataSetInstanceSummarySQLStatementBuilderImpl()
+    { databaseAdapter.getCurrentDatabase()?.dataSetInstanceSummaryDao()!! },
+    DataSetInstanceSummarySQLStatementBuilderImpl()
 ) {}

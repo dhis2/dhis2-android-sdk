@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.persistence.relationship
 
 import androidx.room.RoomRawQuery
-import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipItem
@@ -40,9 +40,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class RelationshipItemStoreImpl(
-    private val appDatabase: AppDatabase,
+    private val databaseAdapter: DatabaseAdapter
 ) : RelationshipItemStore, ObjectWithoutUidStoreImpl<RelationshipItem, RelationshipItemDB>(
-    appDatabase.relationshipItemDao(),
+    { databaseAdapter.getCurrentDatabase()?.relationshipItemDao()!! },
     RelationshipItem::toDB,
     SQLStatementBuilderImpl(RelationshipItemTableInfo.TABLE_INFO),
 ) {
@@ -130,7 +130,7 @@ internal class RelationshipItemStoreImpl(
     }
 
     internal suspend fun getAllItemsOfSameType(fromType: String, toType: String): List<RelationshipRow> {
-        val dao = appDatabase.relationshipItemDao()
+        val dao = daoProvider() as RelationshipItemDao
         val query = "SELECT " + RelationshipItemTableInfo.Columns.RELATIONSHIP + ", " +
             "MAX(CASE WHEN " + RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE + " = 'FROM' " +
             "THEN " + fromType + " END) AS fromElementUid, " +

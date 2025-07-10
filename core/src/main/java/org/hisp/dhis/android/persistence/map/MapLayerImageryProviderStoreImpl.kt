@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.map
 
-import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
 import org.hisp.dhis.android.core.map.layer.internal.MapLayerImageryProviderStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class MapLayerImageryProviderStoreImpl(
-    private val appDatabase: AppDatabase,
+    private val databaseAdapter: DatabaseAdapter
 ) : MapLayerImageryProviderStore, LinkStoreImpl<MapLayerImageryProvider, MapLayerImageryProviderDB>(
-    appDatabase.mapLayerImageryProviderDao(),
+    { databaseAdapter.getCurrentDatabase()?.mapLayerImageryProviderDao()!! },
     MapLayerImageryProvider::toDB,
     LinkSQLStatementBuilderImpl(
         MapLayerImageryProviderTableInfo.TABLE_INFO,

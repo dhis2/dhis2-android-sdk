@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.trackedentity
 
-import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeAttributeStore
@@ -38,9 +38,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackedEntityTypeAttributeStoreImpl(
-    private val appDatabase: AppDatabase,
+    private val databaseAdapter: DatabaseAdapter
 ) : TrackedEntityTypeAttributeStore, LinkStoreImpl<TrackedEntityTypeAttribute, TrackedEntityTypeAttributeDB>(
-    appDatabase.trackedEntityTypeAttributeDao(),
+    { databaseAdapter.getCurrentDatabase()?.trackedEntityTypeAttributeDao()!! },
     TrackedEntityTypeAttribute::toDB,
     LinkSQLStatementBuilderImpl(
         TrackedEntityTypeAttributeTableInfo.TABLE_INFO,

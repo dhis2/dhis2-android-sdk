@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.option
 
-import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.option.OptionGroupOptionLink
@@ -39,9 +39,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class OptionGroupOptionLinkStoreImpl(
-    private val appDatabase: AppDatabase,
+    private val databaseAdapter: DatabaseAdapter
 ) : OptionGroupOptionLinkStore, LinkStoreImpl<OptionGroupOptionLink, OptionGroupOptionLinkDB>(
-    appDatabase.optionGroupOptionLinkDao(),
+    { databaseAdapter.getCurrentDatabase()?.optionGroupOptionLinkDao()!! },
     OptionGroupOptionLink::toDB,
     LinkSQLStatementBuilderImpl(
         OptionGroupOptionLinkTableInfo.TABLE_INFO,

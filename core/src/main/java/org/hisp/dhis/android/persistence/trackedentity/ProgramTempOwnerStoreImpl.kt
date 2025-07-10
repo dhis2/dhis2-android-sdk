@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.trackedentity
 
-import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwner
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramTempOwnerStoreImpl(
-    private val appDatabase: AppDatabase,
+    private val databaseAdapter: DatabaseAdapter
 ) : ProgramTempOwnerStore, ObjectWithoutUidStoreImpl<ProgramTempOwner, ProgramTempOwnerDB>(
-    appDatabase.programTempOwnerDao(),
+    { databaseAdapter.getCurrentDatabase()?.programTempOwnerDao()!! },
     ProgramTempOwner::toDB,
     SQLStatementBuilderImpl(ProgramTempOwnerTableInfo.TABLE_INFO),
 )

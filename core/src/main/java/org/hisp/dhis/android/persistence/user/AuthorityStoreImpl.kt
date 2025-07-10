@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.user
 
-import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.user.Authority
 import org.hisp.dhis.android.core.user.internal.AuthorityStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class AuthorityStoreImpl(
-    private val appDatabase: AppDatabase,
+    private val databaseAdapter: DatabaseAdapter
 ) : AuthorityStore, ObjectWithoutUidStoreImpl<Authority, AuthorityDB>(
-    appDatabase.authorityDao(),
+    { databaseAdapter.getCurrentDatabase()?.authorityDao()!! },
     Authority::toDB,
     SQLStatementBuilderImpl(AuthorityTableInfo.TABLE_INFO),
 )

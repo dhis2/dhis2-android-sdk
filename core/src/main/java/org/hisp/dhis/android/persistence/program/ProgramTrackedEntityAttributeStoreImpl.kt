@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.program
 
-import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute
 import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
@@ -37,10 +37,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramTrackedEntityAttributeStoreImpl(
-    private val appDatabase: AppDatabase,
+    private val databaseAdapter: DatabaseAdapter
 ) : ProgramTrackedEntityAttributeStore,
     IdentifiableObjectStoreImpl<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeDB>(
-        appDatabase.programTrackedEntityAttributeDao(),
+        { databaseAdapter.getCurrentDatabase()?.programTrackedEntityAttributeDao()!! },
         ProgramTrackedEntityAttribute::toDB,
         SQLStatementBuilderImpl(ProgramTrackedEntityAttributeTableInfo.TABLE_INFO),
     )

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.category
 
-import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
@@ -38,10 +38,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class CategoryOptionComboStoreImpl(
-    private val appDatabase: AppDatabase,
+    private val databaseAdapter: DatabaseAdapter
 ) : CategoryOptionComboStore,
     IdentifiableObjectStoreImpl<CategoryOptionCombo, CategoryOptionComboDB>(
-        appDatabase.categoryOptionComboDao(),
+        { databaseAdapter.getCurrentDatabase()?.categoryOptionComboDao()!! },
         CategoryOptionCombo::toDB,
         SQLStatementBuilderImpl(CategoryOptionComboTableInfo.TABLE_INFO),
     ) {

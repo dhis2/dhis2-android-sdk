@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.relationship
 
-import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class RelationshipTypeStoreImpl(
-    private val appDatabase: AppDatabase,
+    private val databaseAdapter: DatabaseAdapter
 ) : RelationshipTypeStore, IdentifiableObjectStoreImpl<RelationshipType, RelationshipTypeDB>(
-    appDatabase.relationshipTypeDao(),
+    { databaseAdapter.getCurrentDatabase()?.relationshipTypeDao()!! },
     RelationshipType::toDB,
     SQLStatementBuilderImpl(RelationshipTypeTableInfo.TABLE_INFO),
 )

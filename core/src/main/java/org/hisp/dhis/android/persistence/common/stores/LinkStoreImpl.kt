@@ -39,10 +39,10 @@ import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilder
 
 internal open class LinkStoreImpl<D : CoreObject, P : EntityDB<D>>(
-    protected val linkStoreDao: ObjectDao<P>,
+    override val daoProvider: () -> ObjectDao<P>,
     mapper: MapperToDB<D, P>,
     override val builder: LinkSQLStatementBuilder,
-) : LinkStore<D>, ObjectStoreImpl<D, P>(linkStoreDao, mapper, builder) {
+) : LinkStore<D>, ObjectStoreImpl<D, P>(daoProvider, mapper, builder) {
 
     @Throws(RuntimeException::class)
     override suspend fun insertIfNotExists(o: D): HandleAction {
@@ -56,6 +56,7 @@ internal open class LinkStoreImpl<D : CoreObject, P : EntityDB<D>>(
 
     @Throws(RuntimeException::class)
     override suspend fun deleteLinksForMasterUid(parentUid: String) {
+        val linkStoreDao = daoProvider()
         CollectionsHelper.isNull(parentUid)
         val query = builder.deleteLinksForParentUid(parentUid)
         linkStoreDao.intRawQuery(query)
@@ -63,12 +64,14 @@ internal open class LinkStoreImpl<D : CoreObject, P : EntityDB<D>>(
 
     @Throws(RuntimeException::class)
     override suspend fun deleteAllLinks(): Int {
+        val linkStoreDao = daoProvider()
         val query = builder.deleteTable()
         return linkStoreDao.intRawQuery(query)
     }
 
     @Throws(RuntimeException::class)
     override suspend fun selectDistinctSlaves(childColumn: String): Set<String> {
+        val linkStoreDao = daoProvider()
         CollectionsHelper.isNull(childColumn)
         val query = builder.selectDistinctChildren(childColumn)
         return linkStoreDao.stringListRawQuery(query).toSet()
@@ -76,6 +79,7 @@ internal open class LinkStoreImpl<D : CoreObject, P : EntityDB<D>>(
 
     @Throws(RuntimeException::class)
     override suspend fun selectLinksForMasterUid(parentUid: String): List<D> {
+        val linkStoreDao = daoProvider()
         CollectionsHelper.isNull(parentUid)
         val query = builder.selectLinksForParentUid(parentUid)
         val entitiesDB = linkStoreDao.objectListRawQuery(query)

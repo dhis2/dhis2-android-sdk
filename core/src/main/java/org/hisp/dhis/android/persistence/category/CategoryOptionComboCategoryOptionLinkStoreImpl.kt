@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.category
 
-import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLink
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboCategoryOptionLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
@@ -37,10 +37,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class CategoryOptionComboCategoryOptionLinkStoreImpl(
-    private val appDatabase: AppDatabase,
+    private val databaseAdapter: DatabaseAdapter
 ) : CategoryOptionComboCategoryOptionLinkStore,
     LinkStoreImpl<CategoryOptionComboCategoryOptionLink, CategoryOptionComboCategoryOptionLinkDB>(
-        appDatabase.categoryOptionComboCategoryOptionLinkDao(),
+        { databaseAdapter.getCurrentDatabase()?.categoryOptionComboCategoryOptionLinkDao()!! },
         CategoryOptionComboCategoryOptionLink::toDB,
         LinkSQLStatementBuilderImpl(
             CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO,

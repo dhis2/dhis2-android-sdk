@@ -39,11 +39,11 @@ import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilder
 
 internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
-    protected val identifiableObjectDao: ObjectDao<P>,
+    override val daoProvider: () -> ObjectDao<P>,
     mapper: MapperToDB<D, P>,
     override val builder: SQLStatementBuilder,
 ) : IdentifiableObjectStore<D>,
-    ObjectStoreImpl<D, P>(identifiableObjectDao, mapper, builder) where D : CoreObject, D : ObjectWithUidInterface {
+    ObjectStoreImpl<D, P>(daoProvider, mapper, builder) where D : CoreObject, D : ObjectWithUidInterface {
 
     @Throws(RuntimeException::class)
     override suspend fun insert(o: D): Long {
@@ -54,24 +54,28 @@ internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
 
     @Throws(RuntimeException::class)
     override suspend fun selectUids(): List<String> {
+        val identifiableObjectDao = daoProvider()
         val query = builder.selectUids()
         return identifiableObjectDao.stringListRawQuery(query)
     }
 
     @Throws(RuntimeException::class)
     override suspend fun selectUidsWhere(whereClause: String): List<String> {
+        val identifiableObjectDao = daoProvider()
         val query = builder.selectUidsWhere(whereClause)
         return identifiableObjectDao.stringListRawQuery(query)
     }
 
     @Throws(RuntimeException::class)
     override suspend fun selectUidsWhere(whereClause: String, orderByClause: String?): List<String> {
+        val identifiableObjectDao = daoProvider()
         val query = builder.selectUidsWhere(whereClause, orderByClause)
         return identifiableObjectDao.stringListRawQuery(query)
     }
 
     @Throws(RuntimeException::class)
     override suspend fun selectByUid(uid: String): D? {
+        val identifiableObjectDao = daoProvider()
         CollectionsHelper.isNull(uid)
         val query = builder.selectByUid(uid)
         val dbEntity = identifiableObjectDao.objectRawQuery(query)
@@ -80,6 +84,7 @@ internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
 
     @Throws(RuntimeException::class)
     override suspend fun selectByUids(uid: List<String>): List<D> {
+        val identifiableObjectDao = daoProvider()
         val whereClause = "uid IN (${uid.joinToString(",") { "'$it'" }})"
         val query = builder.selectWhere(whereClause)
         val dbEntities = identifiableObjectDao.objectListRawQuery(query)
@@ -89,6 +94,7 @@ internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionThrown")
     override suspend fun update(o: D) {
+        val identifiableObjectDao = daoProvider()
         CollectionsHelper.isNull(o)
         val entity = o.toDB()
         val updated = identifiableObjectDao.update(entity)
@@ -112,6 +118,7 @@ internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionThrown")
     override suspend fun delete(uid: String) {
+        val identifiableObjectDao = daoProvider()
         CollectionsHelper.isNull(uid)
         val query = builder.deleteByUid(uid)
         val deleted = identifiableObjectDao.intRawQuery(query)

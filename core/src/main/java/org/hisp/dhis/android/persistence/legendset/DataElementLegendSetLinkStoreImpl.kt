@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.legendset
 
-import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.legendset.DataElementLegendSetLink
@@ -39,9 +39,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DataElementLegendSetLinkStoreImpl(
-    private val appDatabase: AppDatabase,
+    private val databaseAdapter: DatabaseAdapter
 ) : DataElementLegendSetLinkStore, LinkStoreImpl<DataElementLegendSetLink, DataElementLegendSetLinkDB>(
-    appDatabase.dataElementLegendSetLinkDao(),
+    { databaseAdapter.getCurrentDatabase()?.dataElementLegendSetLinkDao()!! },
     DataElementLegendSetLink::toDB,
     LinkSQLStatementBuilderImpl(
         DataElementLegendSetLinkTableInfo.TABLE_INFO,

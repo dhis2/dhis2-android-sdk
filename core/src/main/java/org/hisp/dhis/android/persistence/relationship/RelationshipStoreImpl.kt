@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.relationship
 
-import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
@@ -40,9 +40,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class RelationshipStoreImpl(
-    private val appDatabase: AppDatabase,
+    private val databaseAdapter: DatabaseAdapter
 ) : RelationshipStore, IdentifiableDeletableDataObjectStoreImpl<Relationship, RelationshipDB>(
-    appDatabase.relationshipDao(),
+    { databaseAdapter.getCurrentDatabase()?.relationshipDao()!! },
     Relationship::toDB,
     IdentifiableDeletableDataObjectSQLStatementBuilderImpl(RelationshipTableInfo.TABLE_INFO),
 ) {

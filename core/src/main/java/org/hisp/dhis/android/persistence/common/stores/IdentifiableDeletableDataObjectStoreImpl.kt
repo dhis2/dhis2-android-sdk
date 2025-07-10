@@ -45,17 +45,18 @@ import org.hisp.dhis.android.persistence.common.daos.IdentifiableDeletableDataOb
 import org.hisp.dhis.android.persistence.common.querybuilders.IdentifiableDeletableDataObjectSQLStatementBuilder
 
 internal open class IdentifiableDeletableDataObjectStoreImpl<D, P : EntityDB<D>>(
-    protected val identifiableDeletableDataObjectDao: IdentifiableDeletableDataObjectStoreDao<P>,
+    override val daoProvider: () -> IdentifiableDeletableDataObjectStoreDao<P>,
     mapper: MapperToDB<D, P>,
     override val builder: IdentifiableDeletableDataObjectSQLStatementBuilder,
 ) : DeletableStoreWithState<D>, IdentifiableDataObjectStoreImpl<D, P>(
-    identifiableDeletableDataObjectDao,
+    daoProvider,
     mapper,
     builder,
 ) where D : CoreObject, D : DeletableDataObject, D : ObjectWithUidInterface {
 
     @Throws(RuntimeException::class)
     override suspend fun setSyncStateOrDelete(uid: String, state: State): HandleAction {
+        val identifiableDeletableDataObjectDao = daoProvider()
         CollectionsHelper.isNull(uid)
         var deleted = false
         if (state == State.SYNCED) {
@@ -76,6 +77,7 @@ internal open class IdentifiableDeletableDataObjectStoreImpl<D, P : EntityDB<D>>
 
     @Throws(RuntimeException::class)
     override suspend fun setDeleted(uid: String): Int {
+        val identifiableDeletableDataObjectDao = daoProvider()
         // FIX THIS WHEN MIGRATION TO ROOM IS DONE, RAWQUERY CANNOT PERFORM CHANGES
         CollectionsHelper.isNull(uid)
         val query = builder.setDeleted(uid)
@@ -83,6 +85,7 @@ internal open class IdentifiableDeletableDataObjectStoreImpl<D, P : EntityDB<D>>
     }
 
     override suspend fun selectSyncStateWhere(where: String): List<State> {
+        val identifiableDeletableDataObjectDao = daoProvider()
         val query = builder.selectSyncStateWhere(where)
         return identifiableDeletableDataObjectDao.stateListRawQuery(query)
     }

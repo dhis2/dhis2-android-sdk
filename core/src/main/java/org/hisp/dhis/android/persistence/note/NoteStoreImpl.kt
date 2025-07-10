@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.note
 
-import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.internal.NoteStore
@@ -38,9 +38,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class NoteStoreImpl(
-    private val appDatabase: AppDatabase,
+    private val databaseAdapter: DatabaseAdapter
 ) : NoteStore, IdentifiableObjectStoreImpl<Note, NoteDB>(
-    appDatabase.noteDao(),
+    { databaseAdapter.getCurrentDatabase()?.noteDao()!! },
     Note::toDB,
     SQLStatementBuilderImpl(NoteTableInfo.TABLE_INFO),
 ) {

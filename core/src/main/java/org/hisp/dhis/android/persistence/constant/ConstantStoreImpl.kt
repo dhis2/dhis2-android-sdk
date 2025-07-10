@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.constant
 
-import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.constant.internal.ConstantStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ConstantStoreImpl(
-    private val appDatabase: AppDatabase,
+    private val databaseAdapter: DatabaseAdapter
 ) : ConstantStore, IdentifiableObjectStoreImpl<Constant, ConstantDB>(
-    appDatabase.constantDao(),
+    { databaseAdapter.getCurrentDatabase()?.constantDao()!! },
     Constant::toDB,
     SQLStatementBuilderImpl(
         ConstantTableInfo.TABLE_INFO,

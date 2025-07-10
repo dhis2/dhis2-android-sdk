@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.settings
 
-import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.settings.LatestAppVersion
 import org.hisp.dhis.android.core.settings.internal.LatestAppVersionStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class LatestAppVersionStoreImpl(
-    private val appDatabase: AppDatabase,
+    private val databaseAdapter: DatabaseAdapter
 ) : LatestAppVersionStore, ObjectWithoutUidStoreImpl<LatestAppVersion, LatestAppVersionDB>(
-    appDatabase.latestAppVersionDao(),
+    { databaseAdapter.getCurrentDatabase()?.latestAppVersionDao()!! },
     LatestAppVersion::toDB,
     SQLStatementBuilderImpl(LatestAppVersionTableInfo.TABLE_INFO),
 )

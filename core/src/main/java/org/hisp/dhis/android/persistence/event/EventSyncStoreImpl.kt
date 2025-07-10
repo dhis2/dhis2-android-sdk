@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.event
 
-import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.event.internal.EventSync
 import org.hisp.dhis.android.core.event.internal.EventSyncStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class EventSyncStoreImpl(
-    private val appDatabase: AppDatabase,
+    private val databaseAdapter: DatabaseAdapter
 ) : EventSyncStore, ObjectWithoutUidStoreImpl<EventSync, EventSyncDB>(
-    appDatabase.eventSyncDao(),
+    { databaseAdapter.getCurrentDatabase()?.eventSyncDao()!! },
     EventSync::toDB,
     SQLStatementBuilderImpl(EventSyncTableInfo.TABLE_INFO),
 )

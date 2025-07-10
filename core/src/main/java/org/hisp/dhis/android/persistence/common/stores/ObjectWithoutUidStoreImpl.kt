@@ -38,11 +38,11 @@ import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilder
 
 internal open class ObjectWithoutUidStoreImpl<D : CoreObject, P : EntityDB<D>>(
-    protected val objectWithoutUidDao: ObjectDao<P>,
+    override val daoProvider: () -> ObjectDao<P>,
     mapper: MapperToDB<D, P>,
     override val builder: SQLStatementBuilder,
 ) : ObjectWithoutUidStore<D>, ObjectStoreImpl<D, P>(
-    objectWithoutUidDao,
+    daoProvider,
     mapper,
     builder,
 ) {
@@ -50,6 +50,7 @@ internal open class ObjectWithoutUidStoreImpl<D : CoreObject, P : EntityDB<D>>(
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionThrown")
     override suspend fun updateWhere(o: D) {
+        val objectWithoutUidDao = daoProvider()
         CollectionsHelper.isNull(o)
         val entityDB = o.toDB()
         val updated = objectWithoutUidDao.update(entityDB)
@@ -61,6 +62,7 @@ internal open class ObjectWithoutUidStoreImpl<D : CoreObject, P : EntityDB<D>>(
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionThrown")
     override suspend fun deleteWhere(o: D) {
+        val objectWithoutUidDao = daoProvider()
         CollectionsHelper.isNull(o)
         val entityDB = o.toDB()
         objectWithoutUidDao.delete(entityDB)
@@ -69,6 +71,7 @@ internal open class ObjectWithoutUidStoreImpl<D : CoreObject, P : EntityDB<D>>(
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionCaught")
     override suspend fun deleteWhereIfExists(o: D) {
+        val objectWithoutUidDao = daoProvider()
         try {
             val entityDB = o.toDB()
             objectWithoutUidDao.delete(entityDB)
@@ -82,6 +85,7 @@ internal open class ObjectWithoutUidStoreImpl<D : CoreObject, P : EntityDB<D>>(
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionCaught")
     override suspend fun updateOrInsertWhere(o: D): HandleAction {
+        val objectWithoutUidDao = daoProvider()
         val entityDB = o.toDB()
         val updated = objectWithoutUidDao.update(entityDB)
         return if (updated == 0) {

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.fileresource
 
-import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore
 import org.hisp.dhis.android.persistence.common.querybuilders.IdentifiableDataObjectSQLStatementBuilderImpl
@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class FileResourceStoreImpl(
-    private val appDatabase: AppDatabase,
+    private val databaseAdapter: DatabaseAdapter
 ) : FileResourceStore, IdentifiableDataObjectStoreImpl<FileResource, FileResourceDB>(
-    appDatabase.fileResourceDao(),
+    { databaseAdapter.getCurrentDatabase()?.fileResourceDao()!! },
     FileResource::toDB,
     IdentifiableDataObjectSQLStatementBuilderImpl(FileResourceTableInfo.TABLE_INFO),
 )

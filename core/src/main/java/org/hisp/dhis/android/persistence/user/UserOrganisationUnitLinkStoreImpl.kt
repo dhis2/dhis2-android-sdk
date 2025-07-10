@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.user
 
-import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink
@@ -39,9 +39,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class UserOrganisationUnitLinkStoreImpl(
-    private val appDatabase: AppDatabase,
+    private val databaseAdapter: DatabaseAdapter
 ) : UserOrganisationUnitLinkStore, LinkStoreImpl<UserOrganisationUnitLink, UserOrganisationUnitDB>(
-    appDatabase.userOrganisationUnitDao(),
+    { databaseAdapter.getCurrentDatabase()?.userOrganisationUnitDao()!! },
     UserOrganisationUnitLink::toDB,
     LinkSQLStatementBuilderImpl(
         UserOrganisationUnitTableInfo.TABLE_INFO,

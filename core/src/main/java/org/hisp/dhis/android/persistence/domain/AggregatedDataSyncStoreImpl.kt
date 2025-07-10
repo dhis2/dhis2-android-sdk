@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.domain
 
-import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataSync
 import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataSyncStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class AggregatedDataSyncStoreImpl(
-    private val appDatabase: AppDatabase,
+    private val databaseAdapter: DatabaseAdapter
 ) : AggregatedDataSyncStore, ObjectWithoutUidStoreImpl<AggregatedDataSync, AggregatedDataSyncDB>(
-    appDatabase.aggregatedDataSyncDao(),
+    { databaseAdapter.getCurrentDatabase()?.aggregatedDataSyncDao()!! },
     AggregatedDataSync::toDB,
     SQLStatementBuilderImpl(AggregatedDataSyncTableInfo.TABLE_INFO),
 )

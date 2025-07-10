@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.organisationunit
 
-import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class OrganisationUnitLevelStoreImpl(
-    private val appDatabase: AppDatabase,
+    private val databaseAdapter: DatabaseAdapter
 ) : OrganisationUnitLevelStore, IdentifiableObjectStoreImpl<OrganisationUnitLevel, OrganisationUnitLevelDB>(
-    appDatabase.organisationUnitLevelDao(),
+    { databaseAdapter.getCurrentDatabase()?.organisationUnitLevelDao()!! },
     OrganisationUnitLevel::toDB,
     SQLStatementBuilderImpl(OrganisationUnitLevelTableInfo.TABLE_INFO),
 )

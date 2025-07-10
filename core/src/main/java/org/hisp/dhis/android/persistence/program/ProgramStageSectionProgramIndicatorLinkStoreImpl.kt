@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.program
 
-import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLink
 import org.hisp.dhis.android.core.program.internal.ProgramStageSectionProgramIndicatorLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
@@ -37,10 +37,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramStageSectionProgramIndicatorLinkStoreImpl(
-    private val appDatabase: AppDatabase,
+    private val databaseAdapter: DatabaseAdapter
 ) : ProgramStageSectionProgramIndicatorLinkStore,
     LinkStoreImpl<ProgramStageSectionProgramIndicatorLink, ProgramStageSectionProgramIndicatorLinkDB>(
-        appDatabase.programStageSectionProgramIndicatorLinkDao(),
+        { databaseAdapter.getCurrentDatabase()?.programStageSectionProgramIndicatorLinkDao()!! },
         ProgramStageSectionProgramIndicatorLink::toDB,
         LinkSQLStatementBuilderImpl(
             ProgramStageSectionProgramIndicatorLinkTableInfo.TABLE_INFO,

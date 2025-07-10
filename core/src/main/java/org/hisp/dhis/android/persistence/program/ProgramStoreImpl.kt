@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.program
 
-import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.program.Program
@@ -40,9 +40,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramStoreImpl(
-    private val appDatabase: AppDatabase,
+    private val databaseAdapter: DatabaseAdapter
 ) : ProgramStore, IdentifiableObjectStoreImpl<Program, ProgramDB>(
-    appDatabase.programDao(),
+    { databaseAdapter.getCurrentDatabase()?.programDao()!! },
     Program::toDB,
     SQLStatementBuilderImpl(ProgramTableInfo.TABLE_INFO),
 ) {

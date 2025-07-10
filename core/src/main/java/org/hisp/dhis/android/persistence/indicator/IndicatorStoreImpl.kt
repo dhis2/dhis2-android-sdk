@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.indicator
 
-import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.internal.IndicatorStore
@@ -39,9 +39,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class IndicatorStoreImpl(
-    private val appDatabase: AppDatabase,
+    private val databaseAdapter: DatabaseAdapter
 ) : IndicatorStore, IdentifiableObjectStoreImpl<Indicator, IndicatorDB>(
-    appDatabase.indicatorDao(),
+    { databaseAdapter.getCurrentDatabase()?.indicatorDao()!! },
     Indicator::toDB,
     SQLStatementBuilderImpl(IndicatorTableInfo.TABLE_INFO),
 ) {

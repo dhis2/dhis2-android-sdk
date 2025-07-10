@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.enrollment
 
-import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper
 import org.hisp.dhis.android.core.common.DataColumns
@@ -43,9 +43,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class EnrollmentStoreImpl(
-    private val appDatabase: AppDatabase,
+    private val databaseAdapter: DatabaseAdapter
 ) : EnrollmentStore, IdentifiableDeletableDataObjectStoreImpl<Enrollment, EnrollmentDB>(
-    appDatabase.enrollmentDao(),
+    { databaseAdapter.getCurrentDatabase()?.enrollmentDao()!! },
     Enrollment::toDB,
     IdentifiableDeletableDataObjectSQLStatementBuilderImpl(EnrollmentTableInfo.TABLE_INFO),
 ) {
@@ -70,7 +70,7 @@ internal class EnrollmentStoreImpl(
     }
 
     override suspend fun setAggregatedSyncState(uid: String, state: State): Int {
-        val dao = appDatabase.enrollmentDao()
+        val dao = daoProvider() as EnrollmentDao
         return dao.setAggregatedSyncState(state.name, uid)
     }
 

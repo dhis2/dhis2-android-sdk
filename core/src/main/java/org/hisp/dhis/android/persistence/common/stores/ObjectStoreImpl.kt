@@ -38,35 +38,41 @@ import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.persistence.common.querybuilders.ReadOnlySQLStatementBuilder
 
 internal open class ObjectStoreImpl<D : CoreObject, P : EntityDB<D>>(
-    protected val objectDao: ObjectDao<P>,
+    override val daoProvider: () -> ObjectDao<P>,
     protected val mapper: MapperToDB<D, P>,
     override val builder: ReadOnlySQLStatementBuilder,
-) : ObjectStore<D>, ReadableStoreImpl<D, P>(objectDao, builder), MapperToDB<D, P> by mapper {
+) : ObjectStore<D>, ReadableStoreImpl<D, P>(daoProvider, builder), MapperToDB<D, P> by mapper {
 
     override suspend fun selectStringColumnsWhereClause(column: String, clause: String): List<String> {
+        val objectDao = daoProvider()
         val query = builder.selectStringColumn(column, clause)
         return objectDao.stringListRawQuery(query)
     }
 
     override suspend fun delete(): Int {
+        val objectDao = daoProvider()
         val query = builder.deleteTable()
         return objectDao.intRawQuery(query)
     }
 
     open override suspend fun insert(o: D): Long {
+        val objectDao = daoProvider()
         return objectDao.insert(o.toDB())
     }
 
     override suspend fun insert(objects: Collection<D>) {
+        val objectDao = daoProvider()
         objectDao.insert(objects.map { it.toDB() })
     }
 
     suspend fun deleteByEntity(domainObj: D): Boolean {
+        val objectDao = daoProvider()
         val entityDB = domainObj.toDB()
         return objectDao.delete(entityDB) > 0
     }
 
     override suspend fun deleteWhere(clause: String): Boolean {
+        val objectDao = daoProvider()
         val query = builder.deleteWhere(clause)
         return objectDao.intRawQuery(query) > 0
     }
@@ -76,6 +82,7 @@ internal open class ObjectStoreImpl<D : CoreObject, P : EntityDB<D>>(
     }
 
     suspend fun updateWhere(updates: ArrayMap<String, Any>, whereClause: String): Int {
+        val objectDao = daoProvider()
         val query = builder.updateWhere(updates, whereClause)
         return objectDao.intRawQuery(query)
     }

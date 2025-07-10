@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.organisationunit
 
-import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitOrganisationUnitGroupLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
@@ -37,10 +37,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class OrganisationUnitOrganisationUnitGroupLinkStoreImpl(
-    private val appDatabase: AppDatabase,
+    private val databaseAdapter: DatabaseAdapter
 ) : OrganisationUnitOrganisationUnitGroupLinkStore,
     LinkStoreImpl<OrganisationUnitOrganisationUnitGroupLink, OrganisationUnitOrganisationUnitGroupLinkDB>(
-        appDatabase.organisationUnitOrganisationUnitGroupLinkDao(),
+        { databaseAdapter.getCurrentDatabase()?.organisationUnitOrganisationUnitGroupLinkDao()!! },
         OrganisationUnitOrganisationUnitGroupLink::toDB,
         LinkSQLStatementBuilderImpl(
             OrganisationUnitOrganisationUnitGroupLinkTableInfo.TABLE_INFO,

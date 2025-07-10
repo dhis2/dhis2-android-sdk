@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.category
 
-import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.category.CategoryCombo
 import org.hisp.dhis.android.core.category.internal.CategoryComboStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class CategoryComboStoreImpl(
-    private val appDatabase: AppDatabase,
+    private val databaseAdapter: DatabaseAdapter,
 ) : CategoryComboStore, IdentifiableObjectStoreImpl<CategoryCombo, CategoryComboDB>(
-    appDatabase.categoryComboDao(),
+    { databaseAdapter.getCurrentDatabase()?.categoryComboDao()!! },
     CategoryCombo::toDB,
     SQLStatementBuilderImpl(CategoryComboTableInfo.TABLE_INFO),
 )

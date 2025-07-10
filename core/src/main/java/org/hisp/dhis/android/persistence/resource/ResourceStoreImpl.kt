@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.resource
 
-import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.resource.internal.Resource
@@ -39,9 +39,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ResourceStoreImpl(
-    private val appDatabase: AppDatabase,
+    private val databaseAdapter: DatabaseAdapter
 ) : ResourceStore, ObjectWithoutUidStoreImpl<Resource, ResourceDB>(
-    appDatabase.resourceDao(),
+    { databaseAdapter.getCurrentDatabase()?.resourceDao()!! },
     Resource::toDB,
     SQLStatementBuilderImpl(ResourceTableInfo.TABLE_INFO),
 ) {

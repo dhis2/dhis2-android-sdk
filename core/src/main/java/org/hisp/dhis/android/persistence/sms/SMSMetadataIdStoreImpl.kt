@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.sms
 
-import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSMetadataId
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSMetadataIdStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class SMSMetadataIdStoreImpl(
-    private val appDatabase: AppDatabase,
+    private val databaseAdapter: DatabaseAdapter
 ) : SMSMetadataIdStore, ObjectWithoutUidStoreImpl<SMSMetadataId, SMSMetadataIdDB>(
-    appDatabase.SMSMetadataIdDao(),
+    { databaseAdapter.getCurrentDatabase()?.SMSMetadataIdDao()!! },
     SMSMetadataId::toDB,
     SQLStatementBuilderImpl(SmsMetadataIdTableInfo.TABLE_INFO),
 )

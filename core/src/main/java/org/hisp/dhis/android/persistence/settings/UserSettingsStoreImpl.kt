@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.settings
 
-import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.settings.UserSettings
 import org.hisp.dhis.android.core.settings.internal.UserSettingsStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class UserSettingsStoreImpl(
-    private val appDatabase: AppDatabase,
+    private val databaseAdapter: DatabaseAdapter
 ) : UserSettingsStore, ObjectWithoutUidStoreImpl<UserSettings, UserSettingsDB>(
-    appDatabase.userSettingsDao(),
+    { databaseAdapter.getCurrentDatabase()?.userSettingsDao()!! },
     UserSettings::toDB,
     SQLStatementBuilderImpl(UserSettingsTableInfo.TABLE_INFO),
 )

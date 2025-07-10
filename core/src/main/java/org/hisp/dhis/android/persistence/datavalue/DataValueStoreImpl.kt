@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.datavalue
 
-import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValue
@@ -41,9 +41,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DataValueStoreImpl(
-    private val appDatabase: AppDatabase,
+    private val databaseAdapter: DatabaseAdapter
 ) : DataValueStore, ObjectWithoutUidStoreImpl<DataValue, DataValueDB>(
-    appDatabase.dataValueDao(),
+    { databaseAdapter.getCurrentDatabase()?.dataValueDao()!! },
     DataValue::toDB,
     SQLStatementBuilderImpl(DataValueTableInfo.TABLE_INFO),
 ) {

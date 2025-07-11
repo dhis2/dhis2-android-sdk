@@ -37,7 +37,8 @@ kotlin {
     jvmToolchain(17)
 }
 
-val sdkVersion = project.findProperty("sdkVersion")
+//val sdkVersion = project.findProperty("sdkVersion")
+val sdkVersion = "1.10.0"
 
 android {
     compileSdk = libs.versions.targetSdkVersion.get().toInt()
@@ -68,6 +69,7 @@ android {
 
 dependencies {
     coreLibraryDesugaring(libs.desugaring)
+    api(libs.kotlinx.serialization.json)
     androidTestImplementation(libs.androidx.test.runner)
 
     if (sdkVersion != null && sdkVersion != "") {

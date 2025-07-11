@@ -37,8 +37,7 @@ kotlin {
     jvmToolchain(17)
 }
 
-//val sdkVersion = project.findProperty("sdkVersion")
-val sdkVersion = "1.10.0"
+val sdkVersion = project.findProperty("sdkVersion")
 
 android {
     compileSdk = libs.versions.targetSdkVersion.get().toInt()

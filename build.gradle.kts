@@ -34,11 +34,10 @@ plugins {
 
 allprojects {
     repositories {
-        maven(url = "https://maven.google.com")
-        maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
-        google()
         mavenCentral()
-        maven(url = "https://maven.pkg.jetbrains.space/public/p/kotlinx-html/maven")
+        google()
+        maven(url = "https://maven.google.com")
+        maven(url = "https://central.sonatype.com/repository/maven-snapshots/")
         maven(url = "https://jitpack.io")
     }
 }

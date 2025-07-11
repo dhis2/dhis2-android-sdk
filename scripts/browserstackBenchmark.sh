@@ -1,6 +1,7 @@
 #!/bin/bash
+
 #
-#  Copyright (c) 2004-2022, University of Oslo
+#  Copyright (c) 2004-2025, University of Oslo
 #  All rights reserved.
 #
 #  Redistribution and use in source and binary forms, with or without
@@ -31,15 +32,28 @@ set -ex
 source "$(dirname $0)/config_jenkins.init"
 source "$(dirname $0)/browserstackCommon.sh"
 
-coverage_result_path="$(dirname $0)/../core/build/outputs/code_coverage"
+log_file=$1
+benchmark_config_file="$(dirname $0)/../instrumented-test-app/src/androidTest/assets/benchmark.json"
+
+SERVER_URL=${BENCHMARK_SERVER_URL:-https://play.dhis2.org/demo}
+USERNAME=${BENCHMARK_USERNAME:-android}
+PASSWORD=${BENCHMARK_PASSWORD:-Android123}
+
+CONFIG="{
+  \"serverUrl\": \"${SERVER_URL}\",
+  \"username\": \"${USERNAME}\",
+  \"password\": \"${PASSWORD}\"
+}
+"
+echo "$CONFIG" > $benchmark_config_file
 
 # Build apks
 ./gradlew :core:assembleDebug
-./gradlew :core:assembleDebugAndroidTest -Pcoverage
-./gradlew :instrumented-test-app:assembleDebug
+./gradlew :instrumented-test-app:assembleDebugAndroidTest -PsdkVersion=$SDK_VERSION
+./gradlew :instrumented-test-app:assembleDebug -PsdkVersion=$SDK_VERSION
 
 app_apk_path=$(findApkPath "instrumented-test-app" "debug")
-test_apk_path=$(findApkPath "core" "androidTest/debug")
+test_apk_path=$(findApkPath "instrumented-test-app" "androidTest/debug")
 
 # Upload app and testing apk
 echo "Uploading app APK to Browserstack..."
@@ -49,53 +63,58 @@ echo "Uploading test APK to Browserstack..."
 test_url="$(upload_test_apk $test_apk_path)"
 
 # Prepare json and run tests
-echo "Starting execution of espresso tests..."
+echo "Starting execution of benchmark..."
 
 json=$(jq -n \
                 --argjson app_url $app_url \
                 --argjson test_url $test_url \
                 --argjson devices ["$browserstack_device_list"] \
-                --argjson package ["$browserstack_package"] \
+                --argjson package ["$browserstack_package_benchmark"] \
                 --arg logs "$browserstack_device_logs" \
                 --arg video "$browserstack_video" \
                 --arg loc "$browserstack_local" \
                 --arg deviceLogs "$browserstack_deviceLogs" \
                 --arg allowDeviceMockServer "$browserstack_mock_server" \
                 --arg singleRunnerInvocation "$browserstack_singleRunnerInvocation" \
-                --arg coverage "$browserstack_coverage" \
-                '{devices: $devices, app: $app_url, testSuite: $test_url, package: $package, logs: $logs, video: $video, local: $loc, deviceLogs: $deviceLogs, allowDeviceMockServer: $allowDeviceMockServer, singleRunnerInvocation: $singleRunnerInvocation, coverage: $coverage}')
+                '{devices: $devices, app: $app_url, testSuite: $test_url, package: $package, logs: $logs, video: $video, local: $loc, deviceLogs: $deviceLogs, allowDeviceMockServer: $allowDeviceMockServer, singleRunnerInvocation: $singleRunnerInvocation}')
 
-# Get build
 build_id="$(execute_build "$json")"
 echo "build id running: $build_id"
 
 build_status_response="$(waitForBuildFinish $build_id)"
 
 build_status="$(get_build_status "$build_status_response")"
-build_session_id="$(get_build_session "$build_status_response")"
+build_session_details_url="$(get_build_session_details_url "$build_status_response")"
+build_device_logs_url="$(get_device_logs "$build_session_details_url")"
 
-# Export test reports to bitrise
-test_reports_url="https://app-automate.browserstack.com/dashboard/v2/builds/$build_id"
+devicelogs="$(curl -u $bs_auth $build_device_logs_url | grep "SDKPerformanceAnalysis")"
 
-# Download coverage report
-mkdir -p "$coverage_result_path"
-curl -u "$bs_auth" -X GET "$bs_automate_url/espresso/v2/builds/$build_id/sessions/$build_session_id/coverage" --output "$coverage_result_path/coverage.ec"
+# At this point, we have something like:
+# 2025-07-07 16:19:06.494 +0000 D/SDKPerformanceAnalysisTime(20150): Wipe data and dowload again: 14797 ms
+# 2025-07-07 16:19:06.494 +0000 D/SDKPerformanceAnalysisTime(20150): Delete data and push changes: 5150 ms
+# 2025-07-07 16:19:06.494 +0000 D/SDKPerformanceAnalysisMemory(20150): D2 Instantiation: 11 MB
+# 2025-07-07 16:19:06.495 +0000 D/SDKPerformanceAnalysisMemory(20150): D2 Login: 4 MB
 
-# weird behavior from Browserstack api, you can have "done" status with failed tests
-# "devices" only show one device result which is inconsistance
-# then "device_status" is checked
-if [[ $build_status = "failed" || $build_status = "error" ]];
-then
-	echo "Browserstack build failed, please check the execution of your tests $test_reports_url"
-  exit 1
-else
-  device_status=$(echo "$build_status_response" | jq -r '.device_statuses.error | to_entries[].value')
-  if [[ $device_status = "Failed" ]]; # for this Failed Browserstack used bloq mayus
-  then
-	  echo "Browserstack build failed, please check the execution of your tests $test_reports_url"
-    exit 1
-  else
-  	echo "Browserstack build passed, please check the execution of your tests $test_reports_url"
-    exit 0
-  fi
-fi
+echo "# Benchmark result" >> $log_file
+echo "**SDK version:** ${SDK_VERSION:-current}" >> $log_file
+echo "" >> $log_file
+echo "**Server url:** $SERVER_URL" >> $log_file
+
+echo -e "$devicelogs" | awk -F': ' '
+    /SDKPerformanceAnalysisTime/ {
+        time_rows = time_rows sprintf("| %-30s | %s |\n", $2, $3)
+    }
+    /SDKPerformanceAnalysisMemory/ {
+        memory_rows = memory_rows sprintf("| %-30s | %s |\n", $2, $3)
+    }
+    END {
+        if (time_rows != "") {
+            print "### Time Metrics\n| Operation                      | Duration |\n|-------------------------------|----------|"
+            printf "%s\n", time_rows
+        }
+        if (memory_rows != "") {
+            print "\n### Memory Metrics\n| Operation                      | Usage |\n|-------------------------------|--------|"
+            printf "%s\n", memory_rows
+        }
+    }
+    ' >> $log_file

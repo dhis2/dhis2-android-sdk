@@ -253,7 +253,7 @@ CREATE TABLE TrackerImportConflict(conflict TEXT, value TEXT, trackedEntityInsta
 INSERT OR IGNORE INTO TrackerImportConflict(conflict, value, trackedEntityInstance, enrollment, event, tableReference, errorCode, status, created, displayDescription, trackedEntityAttribute, dataElement) SELECT conflict, value, trackedEntityInstance, enrollment, event, tableReference, errorCode, status, created, displayDescription, trackedEntityAttribute, dataElement FROM TrackerImportConflict_Old;
 
 ALTER TABLE DataSetOrganisationUnitLink RENAME TO DataSetOrganisationUnitLink_Old;
-CREATE TABLE DataSetOrganisationUnitLink(dataSet TEXT NOT NULL, organisationUnit TEXT NOT NULL, PRIMARY KEY(dataSet, organisationUnit), FOREIGN KEY(dataSet) REFERENCES DataSet(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(organisationUnit) REFERENCES OrganisationUnit(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+CREATE TABLE DataSetOrganisationUnitLink(dataSet TEXT NOT NULL, organisationUnit TEXT NOT NULL, PRIMARY KEY(organisationUnit, dataSet), FOREIGN KEY(dataSet) REFERENCES DataSet(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(organisationUnit) REFERENCES OrganisationUnit(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
 INSERT OR IGNORE INTO DataSetOrganisationUnitLink(dataSet, organisationUnit) SELECT dataSet, organisationUnit FROM DataSetOrganisationUnitLink_Old;
 
 ALTER TABLE UserOrganisationUnit RENAME TO UserOrganisationUnit_Old;

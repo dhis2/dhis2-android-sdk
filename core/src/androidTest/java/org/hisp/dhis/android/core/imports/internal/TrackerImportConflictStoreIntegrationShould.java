@@ -56,7 +56,7 @@ public class TrackerImportConflictStoreIntegrationShould
     @Override
     protected TrackerImportConflict buildObjectToUpdate() {
         return TrackerImportConflictSamples.get().toBuilder()
-                .event("new_event")
+                .displayDescription("new_display_description")
                 .build();
     }
 }

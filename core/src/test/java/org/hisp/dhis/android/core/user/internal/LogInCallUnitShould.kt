@@ -50,7 +50,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.*
 import org.mockito.stubbing.Answer
 
 @RunWith(JUnit4::class)
@@ -96,7 +95,7 @@ class LogInCallUnitShould : BaseCallShould() {
         }
         whenLoginAPICall { loginResponse }
         userNetworkHandler.stub {
-            onBlocking { getUser() }.doAnswer { apiUser }
+            onBlocking { getUser(true) }.doAnswer { apiUser }
         }
         whenOldLoginAPICall { apiUser }
         whenever(userStore.selectFirst()).thenReturn(dbUser)

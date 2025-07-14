@@ -35,7 +35,7 @@ internal interface UserNetworkHandler {
         credentials: String,
     ): User
 
-    suspend fun getUser(): User
+    suspend fun getUser(withoutOrgUnit: Boolean?= null): User
 
     suspend fun login(payload: LoginPayload): LoginResponse
 }

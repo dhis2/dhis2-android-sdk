@@ -222,7 +222,7 @@ internal class LogInCall(
             credentialsSecureStore.set(credentials)
 
             val user = coroutineAPICallExecutor.wrap {
-                networkHandler.getUser()
+                networkHandler.getUser(true)
             }.getOrThrow()
 
             return user
@@ -234,23 +234,31 @@ internal class LogInCall(
 
                 val user = oldLogin(credentials)
 
-                return user;
+                return user
             } else{
+                credentialsSecureStore.remove()
+                userIdStore.remove()
                 throw d2Error
             }
         }
     }
 
     private suspend fun oldLogin(credentials: Credentials): User {
-        val parsedServerUrl = ServerUrlParser.parse(credentials.serverUrl)
-        ServerURLWrapper.setServerUrl(parsedServerUrl.toString())
+        try {
+            val parsedServerUrl = ServerUrlParser.parse(credentials.serverUrl)
+            ServerURLWrapper.setServerUrl(parsedServerUrl.toString())
 
-        val user = coroutineAPICallExecutor.wrap(errorCatcher = apiCallErrorCatcher) {
-            networkHandler.authenticate(
-                okhttp3.Credentials.basic(credentials.username, credentials.password!!),
-            )
-        }.getOrThrow()
+            val user = coroutineAPICallExecutor.wrap(errorCatcher = apiCallErrorCatcher) {
+                networkHandler.authenticate(
+                    okhttp3.Credentials.basic(credentials.username, credentials.password!!),
+                )
+            }.getOrThrow()
 
-        return user
+            return user
+        } catch (e: Exception) {
+            credentialsSecureStore.remove()
+            userIdStore.remove()
+            throw e
+        }
     }
 }

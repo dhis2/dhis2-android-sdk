@@ -49,8 +49,14 @@ internal class UserNetworkHandlerImpl(
         return userDTO.toDomain()
     }
 
-    override suspend fun getUser(): User {
-        val userDTO = service.getUser(UserFields.allFieldsWithOrgUnit(dhisVersionManager.getVersion()))
+    override suspend fun getUser(withoutOrgUnit: Boolean?): User {
+        val fields = if (withoutOrgUnit == true) {
+            UserFields.allFieldsWithoutOrgUnit
+        } else {
+            UserFields.allFieldsWithOrgUnit(dhisVersionManager.getVersion())
+        }
+
+        val userDTO = service.getUser(fields)
         return userDTO.toDomain()
     }
 

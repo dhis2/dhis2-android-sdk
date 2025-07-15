@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapp
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStoreImpl
 import org.hisp.dhis.android.core.settings.CustomIntent
 import org.hisp.dhis.android.core.settings.CustomIntentTableInfo
+import org.hisp.dhis.android.persistence.settings.toDB
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -55,8 +56,7 @@ internal class CustomIntentStoreImpl(
             w.bind(3, CustomIntentActionColumnAdapter.serialize(o.action()))
             w.bind(4, o.packageName())
             w.bind(5, CustomIntentRequestColumnAdapter.serialize(o.request()!!.arguments()!!))
-            w.bind(6, o.response()?.data()?.argument())
-            w.bind(7, o.response()?.data()?.path())
+            w.bind(6, o.response()?.data()?.extras()?.toDB()?.value)
         }
     }
 }

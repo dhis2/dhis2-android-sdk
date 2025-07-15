@@ -26,35 +26,39 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal
+package org.hisp.dhis.android.core.settings;
 
-import android.content.ContentValues
-import android.database.Cursor
-import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
-import org.hisp.dhis.android.core.settings.CustomIntentResponse
-import org.hisp.dhis.android.core.settings.CustomIntentResponseData
-import org.hisp.dhis.android.core.settings.CustomIntentTableInfo.Columns.RESPONSE_DATA_EXTRAS
-import org.hisp.dhis.android.persistence.settings.ResponseDataExtrasDB
-import org.hisp.dhis.android.persistence.settings.toDB
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-internal class CustomIntentResponseColumnAdapter : ColumnTypeAdapter<CustomIntentResponse> {
+import com.google.auto.value.AutoValue;
 
-    override fun fromCursor(cursor: Cursor, columnName: String): CustomIntentResponse {
-        val responseDataExtrasIndex = cursor.getColumnIndex(RESPONSE_DATA_EXTRAS)
-        val responseDataExtras = cursor.getString(responseDataExtrasIndex)
+@AutoValue
+public abstract class CustomIntentResponseDataExtra {
+    @NonNull
+    public abstract String extraName();
 
-        return CustomIntentResponse.builder()
-            .data(
-                CustomIntentResponseData.builder()
-                    .extras(ResponseDataExtrasDB(responseDataExtras).toDomain())
-                    .build(),
-            )
-            .build()
+    @NonNull
+    public abstract CustomIntentResponseExtraType extraType();
+
+    @Nullable
+    public abstract String key();
+
+
+    public static CustomIntentResponseDataExtra.Builder builder() {
+        return new AutoValue_CustomIntentResponseDataExtra.Builder();
     }
 
-    override fun toContentValues(values: ContentValues, columnName: String, value: CustomIntentResponse?) {
-        value?.data()?.extras()?.let {
-            values.put(RESPONSE_DATA_EXTRAS, it.toDB().value)
-        }
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract CustomIntentResponseDataExtra.Builder extraName(String extraName);
+
+        public abstract CustomIntentResponseDataExtra.Builder extraType(CustomIntentResponseExtraType extraName);
+
+        public abstract CustomIntentResponseDataExtra.Builder key(String extraName);
+
+
+        public abstract CustomIntentResponseDataExtra build();
     }
+
 }

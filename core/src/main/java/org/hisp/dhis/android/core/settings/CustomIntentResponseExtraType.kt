@@ -26,35 +26,13 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal
+package org.hisp.dhis.android.core.settings
 
-import android.content.ContentValues
-import android.database.Cursor
-import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
-import org.hisp.dhis.android.core.settings.CustomIntentResponse
-import org.hisp.dhis.android.core.settings.CustomIntentResponseData
-import org.hisp.dhis.android.core.settings.CustomIntentTableInfo.Columns.RESPONSE_DATA_EXTRAS
-import org.hisp.dhis.android.persistence.settings.ResponseDataExtrasDB
-import org.hisp.dhis.android.persistence.settings.toDB
-
-internal class CustomIntentResponseColumnAdapter : ColumnTypeAdapter<CustomIntentResponse> {
-
-    override fun fromCursor(cursor: Cursor, columnName: String): CustomIntentResponse {
-        val responseDataExtrasIndex = cursor.getColumnIndex(RESPONSE_DATA_EXTRAS)
-        val responseDataExtras = cursor.getString(responseDataExtrasIndex)
-
-        return CustomIntentResponse.builder()
-            .data(
-                CustomIntentResponseData.builder()
-                    .extras(ResponseDataExtrasDB(responseDataExtras).toDomain())
-                    .build(),
-            )
-            .build()
-    }
-
-    override fun toContentValues(values: ContentValues, columnName: String, value: CustomIntentResponse?) {
-        value?.data()?.extras()?.let {
-            values.put(RESPONSE_DATA_EXTRAS, it.toDB().value)
-        }
-    }
+enum class CustomIntentResponseExtraType {
+    STRING,
+    INTEGER,
+    BOOLEAN,
+    FLOAT,
+    OBJECT,
+    LIST_OF_OBJECTS,
 }

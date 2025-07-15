@@ -29,50 +29,24 @@
 
 set -ex
 source "$(dirname $0)/config_jenkins.init"
-
-bs_automate_url="https://api-cloud.browserstack.com/app-automate"
-bs_auth="$BROWSERSTACK_USR:$BROWSERSTACK_PSW"
+source "$(dirname $0)/browserstackCommon.sh"
 
 coverage_result_path="$(dirname $0)/../core/build/outputs/code_coverage"
-
-function get_build_info() {
-  local response
-  local build_id=$1
-  response="$(curl -u "$bs_auth" -X GET "$bs_automate_url/espresso/builds/$build_id")"
-  echo "$response"
-}
-
-function get_build_status() {
-  local response_json=$1
-  echo "$response_json" | jq -r .status
-}
-
-function get_build_session() {
-  local response_json=$1
-  echo "$response_json" | jq -r ".devices.$browserstack_device_list.session_id"
-}
-
-function findApkPath() {
-  local project=$1
-  find "$(dirname $0)"/../"$project"/build/outputs/apk/ -iname "*.apk"
-}
 
 # Build apks
 ./gradlew :core:assembleDebug
 ./gradlew :core:assembleDebugAndroidTest -Pcoverage
 ./gradlew :instrumented-test-app:assembleDebug
 
-app_apk_path=$(findApkPath "instrumented-test-app")
-test_apk_path=$(findApkPath "core")
+app_apk_path=$(findApkPath "instrumented-test-app" "debug")
+test_apk_path=$(findApkPath "core" "androidTest/debug")
 
 # Upload app and testing apk
 echo "Uploading app APK to Browserstack..."
-upload_app_response="$(curl -u "$bs_auth" -X POST $bs_automate_url/upload -F file=@$app_apk_path)"
-app_url=$(echo "$upload_app_response" | jq .app_url)
+app_url="$(upload_app_apk $app_apk_path)"
 
 echo "Uploading test APK to Browserstack..."
-upload_test_response="$(curl -u "$bs_auth" -X POST $bs_automate_url/espresso/test-suite -F file=@$test_apk_path)"
-test_url=$(echo "$upload_test_response" | jq .test_url)
+test_url="$(upload_test_apk $test_apk_path)"
 
 # Prepare json and run tests
 echo "Starting execution of espresso tests..."
@@ -91,29 +65,14 @@ json=$(jq -n \
                 --arg coverage "$browserstack_coverage" \
                 '{devices: $devices, app: $app_url, testSuite: $test_url, package: $package, logs: $logs, video: $video, local: $loc, deviceLogs: $deviceLogs, allowDeviceMockServer: $allowDeviceMockServer, singleRunnerInvocation: $singleRunnerInvocation, coverage: $coverage}')
 
-test_execution_response="$(curl -u "$bs_auth" -X POST $bs_automate_url/espresso/v2/build -d \ "$json" -H "Content-Type: application/json")"
-
 # Get build
-build_id=$(echo "$test_execution_response" | jq -r .build_id)
+build_id="$(execute_build "$json")"
 echo "build id running: $build_id"
 
-# Monitor build status
-build_status="running"
-sleep $build_time_average
-echo "Monitoring build status started...."
+build_status_response="$(waitForBuildFinish $build_id)"
 
-while [[ $build_status = "running" ]];
-do
-  # Get build status
-  build_status_response="$(get_build_info "$build_id")"
-  build_status="$(get_build_status "$build_status_response")"
-  build_session_id="$(get_build_session "$build_status_response")"
-
-  echo "current build status: $build_status"
-
-  # Sleep until next poll
-  sleep $polling_interval
-done
+build_status="$(get_build_status "$build_status_response")"
+build_session_id="$(get_build_session "$build_status_response")"
 
 # Export test reports to bitrise
 test_reports_url="https://app-automate.browserstack.com/dashboard/v2/builds/$build_id"

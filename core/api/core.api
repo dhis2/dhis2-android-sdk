@@ -11498,7 +11498,6 @@ public abstract class org/hisp/dhis/android/core/settings/CustomIntentRequestArg
 public abstract class org/hisp/dhis/android/core/settings/CustomIntentResponse {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/CustomIntentResponse$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/CustomIntentResponse;
 	public abstract fun data ()Lorg/hisp/dhis/android/core/settings/CustomIntentResponseData;
 }
 
@@ -11510,17 +11509,42 @@ public abstract class org/hisp/dhis/android/core/settings/CustomIntentResponse$B
 
 public abstract class org/hisp/dhis/android/core/settings/CustomIntentResponseData {
 	public fun <init> ()V
-	public abstract fun argument ()Ljava/lang/String;
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/CustomIntentResponseData$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/CustomIntentResponseData;
-	public abstract fun path ()Ljava/lang/String;
+	public abstract fun extras ()Ljava/util/List;
 }
 
 public abstract class org/hisp/dhis/android/core/settings/CustomIntentResponseData$Builder {
 	public fun <init> ()V
-	public abstract fun argument (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntentResponseData$Builder;
 	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/CustomIntentResponseData;
-	public abstract fun path (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntentResponseData$Builder;
+	public abstract fun extras (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/CustomIntentResponseData$Builder;
+}
+
+public abstract class org/hisp/dhis/android/core/settings/CustomIntentResponseDataExtra {
+	public fun <init> ()V
+	public static fun builder ()Lorg/hisp/dhis/android/core/settings/CustomIntentResponseDataExtra$Builder;
+	public abstract fun extraName ()Ljava/lang/String;
+	public abstract fun extraType ()Lorg/hisp/dhis/android/core/settings/CustomIntentResponseExtraType;
+	public abstract fun key ()Ljava/lang/String;
+}
+
+public abstract class org/hisp/dhis/android/core/settings/CustomIntentResponseDataExtra$Builder {
+	public fun <init> ()V
+	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/CustomIntentResponseDataExtra;
+	public abstract fun extraName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntentResponseDataExtra$Builder;
+	public abstract fun extraType (Lorg/hisp/dhis/android/core/settings/CustomIntentResponseExtraType;)Lorg/hisp/dhis/android/core/settings/CustomIntentResponseDataExtra$Builder;
+	public abstract fun key (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntentResponseDataExtra$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/CustomIntentResponseExtraType : java/lang/Enum {
+	public static final field BOOLEAN Lorg/hisp/dhis/android/core/settings/CustomIntentResponseExtraType;
+	public static final field FLOAT Lorg/hisp/dhis/android/core/settings/CustomIntentResponseExtraType;
+	public static final field INTEGER Lorg/hisp/dhis/android/core/settings/CustomIntentResponseExtraType;
+	public static final field LIST_OF_OBJECTS Lorg/hisp/dhis/android/core/settings/CustomIntentResponseExtraType;
+	public static final field OBJECT Lorg/hisp/dhis/android/core/settings/CustomIntentResponseExtraType;
+	public static final field STRING Lorg/hisp/dhis/android/core/settings/CustomIntentResponseExtraType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntentResponseExtraType;
+	public static fun values ()[Lorg/hisp/dhis/android/core/settings/CustomIntentResponseExtraType;
 }
 
 public final class org/hisp/dhis/android/core/settings/CustomIntentTableInfo {
@@ -11532,8 +11556,7 @@ public class org/hisp/dhis/android/core/settings/CustomIntentTableInfo$Columns :
 	public static final field NAME Ljava/lang/String;
 	public static final field PACKAGE_NAME Ljava/lang/String;
 	public static final field REQUEST_ARGUMENTS Ljava/lang/String;
-	public static final field RESPONSE_DATA_ARGUMENT Ljava/lang/String;
-	public static final field RESPONSE_DATA_PATH Ljava/lang/String;
+	public static final field RESPONSE_DATA_EXTRAS Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
@@ -17797,8 +17820,7 @@ public final class org/hisp/dhis/android/persistence/settings/CustomIntentTableI
 	public static final field NAME Ljava/lang/String;
 	public static final field PACKAGE_NAME Ljava/lang/String;
 	public static final field REQUEST_ARGUMENTS Ljava/lang/String;
-	public static final field RESPONSE_DATA_ARGUMENT Ljava/lang/String;
-	public static final field RESPONSE_DATA_PATH Ljava/lang/String;
+	public static final field RESPONSE_DATA_EXTRAS Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
 	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V

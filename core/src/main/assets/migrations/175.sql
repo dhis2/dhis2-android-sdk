@@ -341,8 +341,8 @@ CREATE TABLE DataSetConfigurationSetting(uid TEXT PRIMARY KEY, minimumLocationAc
 INSERT OR IGNORE INTO DataSetConfigurationSetting(uid, minimumLocationAccuracy, disableManualLocation) SELECT uid, minimumLocationAccuracy, disableManualLocation FROM DataSetConfigurationSetting_Old;
 
 ALTER TABLE CustomIntent RENAME TO CustomIntent_Old;
-CREATE TABLE CustomIntent(uid TEXT NOT NULL PRIMARY KEY, name TEXT, action TEXT, packageName TEXT, requestArguments TEXT, responseDataArgument TEXT, responseDataPath TEXT);
-INSERT OR IGNORE INTO CustomIntent(uid, name, action, packageName, requestArguments, responseDataArgument, responseDataPath) SELECT uid, name, action, packageName, requestArguments, responseDataArgument, responseDataPath FROM CustomIntent_Old;
+CREATE TABLE CustomIntent(uid TEXT NOT NULL PRIMARY KEY, name TEXT, action TEXT, packageName TEXT, requestArguments TEXT, responseDataExtras TEXT);
+INSERT OR IGNORE INTO CustomIntent(uid, name, action, packageName, requestArguments, responseDataExtras) SELECT uid, name, action, packageName, requestArguments, responseDataExtras FROM CustomIntent_Old;
 
 ALTER TABLE CustomIntentDataElement RENAME TO CustomIntentDataElement_Old;
 CREATE TABLE CustomIntentDataElement(uid TEXT NOT NULL, customIntentUid TEXT NOT NULL, FOREIGN KEY(customIntentUid) REFERENCES CustomIntent(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, PRIMARY KEY(customIntentUid, uid));

@@ -71,7 +71,6 @@ class PerformanceBenchmark {
                 config = KotlinxJsonParser.instance.decodeFromString<BenchmarkConfiguration>(json)
             }
         } catch (_: FileNotFoundException) {
-            print("")
             // Ignore if missing file
         }
     }

@@ -36,6 +36,8 @@ import org.hisp.dhis.android.core.settings.CustomIntentRequest
 import org.hisp.dhis.android.core.settings.CustomIntentRequestArgument
 import org.hisp.dhis.android.core.settings.CustomIntentResponse
 import org.hisp.dhis.android.core.settings.CustomIntentResponseData
+import org.hisp.dhis.android.core.settings.CustomIntentResponseDataExtra
+import org.hisp.dhis.android.core.settings.CustomIntentResponseExtraType
 import org.hisp.dhis.android.core.settings.CustomIntentTrigger
 
 object CustomIntentSamples {
@@ -75,8 +77,15 @@ object CustomIntentSamples {
                 CustomIntentResponse.builder()
                     .data(
                         CustomIntentResponseData.builder()
-                            .argument("response argument")
-                            .path("response path")
+                            .extras(
+                                listOf(
+                                    CustomIntentResponseDataExtra.builder()
+                                        .key("response path")
+                                        .extraName("response argument")
+                                        .extraType(CustomIntentResponseExtraType.BOOLEAN)
+                                        .build()
+                                )
+                            )
                             .build(),
                     )
                     .build(),

@@ -50,7 +50,7 @@ class CustomIntentsShould : CoreObjectShould("settings/custom_intents.json") {
         assertThat(firstCustomIntent.request()?.arguments()?.size).isEqualTo(3)
         assertThat(firstCustomIntent.request()?.arguments()?.get(0)?.key()).isEqualTo("projectID")
         assertThat(firstCustomIntent.request()?.arguments()?.get(0)?.value()).isEqualTo("project one")
-        assertThat(firstCustomIntent.response()?.data()?.argument()).isEqualTo("registration")
-        assertThat(firstCustomIntent.response()?.data()?.path()).isEqualTo("guid")
+        assertThat(firstCustomIntent.response()?.data()?.extras()?.get(0)?.extraName()).isEqualTo("registration")
+        assertThat(firstCustomIntent.response()?.data()?.extras()?.get(0)?.key()).isEqualTo("guid")
     }
 }

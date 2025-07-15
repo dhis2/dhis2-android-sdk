@@ -126,7 +126,7 @@ def main():
 
     with open(log_file, "a") as f:
         f.write("# Benchmark result\n")
-        f.write(f"**SDK Version:** {SDK_VERSION}\n")
+        f.write(f"**SDK Version:** {SDK_VERSION or 'current'}\n")
         f.write("\n")
         f.write(f"**Server url:** {SERVER_URL}\n")
         

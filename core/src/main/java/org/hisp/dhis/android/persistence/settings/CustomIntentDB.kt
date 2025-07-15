@@ -25,8 +25,7 @@ internal data class CustomIntentDB(
     val action: CustomIntentActionTypeListDB?,
     val packageName: String?,
     val requestArguments: CustomIntentRequestArgumentsDB?,
-    val responseDataArgument: String?,
-    val responseDataPath: String?,
+    val responseDataExtras: ResponseDataExtrasDB?,
 ) : EntityDB<CustomIntent> {
 
     override fun toDomain(): CustomIntent {
@@ -40,14 +39,15 @@ internal data class CustomIntentDB(
                     CustomIntentRequest.builder().arguments(requestArguments.toDomain()).build(),
                 )
             }
-            response(
-                CustomIntentResponse.builder().data(
-                    CustomIntentResponseData.builder()
-                        .argument(responseDataArgument)
-                        .path(responseDataPath)
-                        .build(),
-                ).build(),
-            )
+            responseDataExtras?.let {
+                response(
+                    CustomIntentResponse.builder().data(
+                        CustomIntentResponseData.builder()
+                            .extras(it.toDomain())
+                            .build(),
+                    ).build(),
+                )
+            }
         }.build()
     }
 }
@@ -59,7 +59,6 @@ internal fun CustomIntent.toDB(): CustomIntentDB {
         action = action()?.toDB(),
         packageName = packageName(),
         requestArguments = request()?.arguments()?.toDB(),
-        responseDataArgument = response()?.data()?.argument(),
-        responseDataPath = response()?.data()?.argument(),
+        responseDataExtras = response()?.data()?.extras()?.toDB(),
     )
 }

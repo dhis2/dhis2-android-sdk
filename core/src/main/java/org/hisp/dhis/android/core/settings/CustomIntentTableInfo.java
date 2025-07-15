@@ -57,8 +57,7 @@ public final class CustomIntentTableInfo {
         public static final String ACTION = "action";
         public static final String PACKAGE_NAME = "packageName";
         public static final String REQUEST_ARGUMENTS = "requestArguments";
-        public static final String RESPONSE_DATA_ARGUMENT = "responseDataArgument";
-        public static final String RESPONSE_DATA_PATH = "responseDataPath";
+        public static final String RESPONSE_DATA_EXTRAS = "responseDataExtras";
 
         @Override
         public String[] all() {
@@ -68,8 +67,7 @@ public final class CustomIntentTableInfo {
                     ACTION,
                     PACKAGE_NAME,
                     REQUEST_ARGUMENTS,
-                    RESPONSE_DATA_ARGUMENT,
-                    RESPONSE_DATA_PATH
+                    RESPONSE_DATA_EXTRAS
             );
         }
     }

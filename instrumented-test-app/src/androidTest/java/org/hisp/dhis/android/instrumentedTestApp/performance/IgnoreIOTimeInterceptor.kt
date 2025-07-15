@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,54 +26,32 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-plugins {
-    id("com.android.application")
-    id("jacoco-conventions")
-    kotlin("android")
-    alias(libs.plugins.kotlin.serialization)
-}
+package org.hisp.dhis.android.instrumentedTestApp.performance
 
-kotlin {
-    jvmToolchain(17)
-}
+import okhttp3.Interceptor
+import okhttp3.Response
 
-val sdkVersion = project.findProperty("sdkVersion")
+class IgnoreIOTimeInterceptor : Interceptor {
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val startTime = System.nanoTime()
+        val response = chain.proceed(chain.request())
 
-android {
-    compileSdk = libs.versions.targetSdkVersion.get().toInt()
+        val responseBody = response.body ?: return response
 
-    defaultConfig {
-        applicationId = "org.hisp.dhis.android.instrumentedTestApp"
-        minSdk = libs.versions.minSdkVersion.get().toInt()
-        targetSdk = libs.versions.targetSdkVersion.get().toInt()
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        versionCode = 1
-        versionName = "1.0"
-    }
+        val source = responseBody.source()
+        source.request(Long.MAX_VALUE)
+        val buffer = source.buffer.clone()
 
-    compileOptions {
-        isCoreLibraryDesugaringEnabled = true
+        val networkTime = System.nanoTime() - startTime
 
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    buildTypes {
-        getByName("debug") {
-            enableAndroidTestCoverage = true
+        synchronized(NetworkTimeTracker) {
+            NetworkTimeTracker.totalNetworkTime += networkTime
         }
+
+        return response
     }
-    namespace = "org.hisp.dhis.android.instrumentedTestApp"
 }
 
-dependencies {
-    coreLibraryDesugaring(libs.desugaring)
-    api(libs.kotlinx.serialization.json)
-    androidTestImplementation(libs.androidx.test.runner)
-
-    if (sdkVersion != null && sdkVersion != "") {
-        implementation("org.hisp.dhis:android-core:$sdkVersion!!")
-    } else {
-        implementation(project(":core"))
-    }
+object NetworkTimeTracker {
+    var totalNetworkTime = 0L
 }

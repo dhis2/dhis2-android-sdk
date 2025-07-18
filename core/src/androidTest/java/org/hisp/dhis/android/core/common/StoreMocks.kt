@@ -25,67 +25,61 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.option.OptionSet
+import java.util.Date
 
-import android.database.Cursor;
-
-import org.hisp.dhis.android.core.option.OptionSet;
-
-import java.util.Date;
-
-import static org.hisp.dhis.android.core.data.database.CursorAssert.assertThatCursor;
-
-class StoreMocks {
-    static OptionSet generateOptionSet() {
+internal object StoreMocks {
+    fun generateOptionSet(): OptionSet {
         return OptionSet.builder()
-                .uid("1234567890")
-                .code("code")
-                .name("name")
-                .displayName("displayName")
-                .created(new Date())
-                .lastUpdated(new Date())
-                .version(1)
-                .valueType(ValueType.AGE)
-                .build();
+            .uid("1234567890")
+            .code("code")
+            .name("name")
+            .displayName("displayName")
+            .created(Date())
+            .lastUpdated(Date())
+            .version(1)
+            .valueType(ValueType.AGE)
+            .build()
     }
 
-    static OptionSet generateUpdatedOptionSet() {
+    fun generateUpdatedOptionSet(): OptionSet {
         return OptionSet.builder()
-                .uid("1234567890")
-                .code("updated_code")
-                .name("name")
-                .displayName("updated_displayName")
-                .created(new Date())
-                .lastUpdated(new Date())
-                .version(2)
-                .valueType(ValueType.AGE)
-                .build();
+            .uid("1234567890")
+            .code("updated_code")
+            .name("name")
+            .displayName("updated_displayName")
+            .created(Date())
+            .lastUpdated(Date())
+            .version(2)
+            .valueType(ValueType.AGE)
+            .build()
     }
 
-    static OptionSet generateOptionSetWithoutUid() {
+    fun generateOptionSetWithoutUid(): OptionSet {
         return OptionSet.builder()
-                .uid(null)
-                .code("code")
-                .name("name")
-                .displayName("displayName")
-                .created(new Date())
-                .lastUpdated(new Date())
-                .version(1)
-                .valueType(ValueType.AGE)
-                .build();
+            .uid(null)
+            .code("code")
+            .name("name")
+            .displayName("displayName")
+            .created(Date())
+            .lastUpdated(Date())
+            .version(1)
+            .valueType(ValueType.AGE)
+            .build()
     }
 
-    static void optionSetCursorAssert(Cursor cursor, OptionSet o) {
-        assertThatCursor(cursor).hasRow(
-                o.uid(),
-                o.code(),
-                o.name(),
-                o.displayName(),
-                BaseIdentifiableObject.DATE_FORMAT.format(o.created()),
-                BaseIdentifiableObject.DATE_FORMAT.format(o.lastUpdated()),
-                o.version(),
-                o.valueType()
-        ).isExhausted();
+    suspend fun optionSetSelectAssert(store: IdentifiableObjectStore<OptionSet>, o: OptionSet) {
+        val insertedOptionSet = store.selectAll()
+        assertThat(insertedOptionSet).hasSize(1)
+        assertThat(insertedOptionSet[0]).isEqualTo(o)
+    }
+
+    suspend fun assertIsEmpty(store: IdentifiableObjectStore<OptionSet>) {
+        val insertedOptionSet = store.selectAll()
+        assertThat(insertedOptionSet).isEmpty()
     }
 }

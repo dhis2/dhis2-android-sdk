@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.arch.db.access.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.util.deleteIfExists
@@ -138,7 +139,7 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
     }
 
     @Test
-    fun export_fail_when_not_logged() {
+    fun export_fail_when_not_logged() = runTest {
         try {
             d2.maintenanceModule().databaseImportExport().exportLoggedUserDatabase()
             fail("It should throw an error")
@@ -163,7 +164,7 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
         })
     }
 
-    private fun test_export_and_reimport(beforeExport: () -> Unit) {
+    private fun test_export_and_reimport(beforeExport: suspend () -> Unit) = runTest {
         d2.userModule().blockingLogIn(username, password, serverUrl)
         d2.metadataModule().blockingDownload()
 

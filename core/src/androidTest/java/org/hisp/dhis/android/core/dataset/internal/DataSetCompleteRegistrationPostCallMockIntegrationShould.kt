@@ -44,7 +44,7 @@ class DataSetCompleteRegistrationPostCallMockIntegrationShould : BaseMockIntegra
 
     @After
     @Throws(D2Error::class)
-    fun tearDown() {
+    suspend fun tearDown() {
         d2.wipeModule().wipeData()
     }
 

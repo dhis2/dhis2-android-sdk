@@ -47,6 +47,7 @@ import org.hisp.dhis.android.persistence.datavalue.DataValueTableInfo
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.persistence.period.PeriodTableInfo
 
+@Suppress("TooManyFunctions")
 internal open class DataSetInstanceSQLStatementBuilderImpl : ReadOnlySQLStatementBuilder {
     override fun selectWhere(whereClause: String): RoomRawQuery {
         return RoomRawQuery("$SELECT_CLAUSE WHERE $whereClause")

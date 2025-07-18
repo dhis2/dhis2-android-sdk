@@ -71,12 +71,13 @@ class WipeDBCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher()
         givenAMetadataInDatabase()
         givenDataInDatabase()
         givenOthersInDatabase()
+        val d2Dao = databaseAdapter.getCurrentDatabase().d2Dao()
 
-        assertThatDatabase(databaseAdapter).isFull
+        assertThatDatabase(d2Dao).isFull()
 
         d2.wipeModule().wipeEverything()
 
-        assertThatDatabase(databaseAdapter).isEmpty
+        assertThatDatabase(d2Dao).isEmpty()
     }
 
     private fun activateSMSModule() {

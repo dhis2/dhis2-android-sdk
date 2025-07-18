@@ -80,7 +80,6 @@ import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koi
 import org.hisp.dhis.android.core.category.internal.CategoryCategoryComboLinkStore
 import org.hisp.dhis.android.core.category.internal.CategoryCategoryOptionLinkStore
 import org.hisp.dhis.android.core.category.internal.CategoryComboStore
-import org.hisp.dhis.android.core.category.internal.CategoryOptionComboCategoryOptionLinkStoreImpl
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
 import org.hisp.dhis.android.core.category.internal.CategoryOptionStore
 import org.hisp.dhis.android.core.category.internal.CategoryStore
@@ -117,6 +116,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueS
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
+import org.hisp.dhis.android.persistence.category.CategoryOptionComboCategoryOptionLinkStoreImpl
 import org.junit.After
 import org.junit.Before
 

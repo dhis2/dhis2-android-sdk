@@ -25,40 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.arch.db.access.internal
+import org.hisp.dhis.android.core.category.CategoryCombo
 
-import android.content.Context
-import android.content.res.AssetManager
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+object CreateCategoryComboUtils {
+    const val TEST_CODE: String = "test_code"
+    const val TEST_NAME: String = "test_name"
+    const val TEST_DISPLAY_NAME: String = "test_display_name"
+    const val TEST_CREATED: String = "2001-02-07T16:04:40.387"
+    const val TEST_LAST_UPDATED: String = "2001-02-07T16:04:40.387"
 
-internal class BaseDatabaseOpenHelper(context: Context, targetVersion: Int) {
-    private val assetManager: AssetManager
-    private val targetVersion: Int
-
-    init {
-        assetManager = context.assets
-        this.targetVersion = targetVersion
-    }
-
-    fun onOpen(databaseAdapter: DatabaseAdapter) {
-        databaseAdapter.setForeignKeyConstraintsEnabled(true)
-        databaseAdapter.enableWriteAheadLogging()
-    }
-
-    fun onCreate(databaseAdapter: DatabaseAdapter) {
-        executor(databaseAdapter).upgradeFromTo(0, targetVersion)
-    }
-
-    fun onUpgrade(databaseAdapter: DatabaseAdapter, oldVersion: Int, newVersion: Int) {
-        executor(databaseAdapter).upgradeFromTo(oldVersion, newVersion)
-    }
-
-    private fun executor(databaseAdapter: DatabaseAdapter): DatabaseMigrationExecutor {
-        return DatabaseMigrationExecutor(databaseAdapter, assetManager)
-    }
-
-    companion object {
-        const val VERSION = 174
+    fun create(uid: String?): CategoryCombo {
+        return CategoryCombo.builder()
+            .uid(uid)
+            .code(TEST_CODE)
+            .name(TEST_NAME)
+            .displayName(TEST_DISPLAY_NAME)
+            .created(TEST_CREATED)
+            .lastUpdated(TEST_LAST_UPDATED)
+            .build()
     }
 }

@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
-import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventStore
@@ -50,6 +49,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAcc
 import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
 import org.junit.After
 import org.junit.Before
 import org.junit.Test

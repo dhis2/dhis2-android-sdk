@@ -37,7 +37,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import java.io.IOException
-import kotlin.jvm.Throws
 
 abstract class ObjectStoreAbstractIntegrationShould<M : CoreObject> internal constructor(
     private val store: ObjectStore<M>,
@@ -69,8 +68,8 @@ abstract class ObjectStoreAbstractIntegrationShould<M : CoreObject> internal con
     }
 
     @Test
-    fun insert_as_content_values_and_select_first_object() = runTest {
-        databaseAdapter.insert(tableInfo.name(), null, `object`.toContentValues())
+    fun insert_object_and_select_first_object() = runTest {
+        store.insert(`object`)
         val objectFromDb = store.selectFirst()
         assertEqualsIgnoreId(objectFromDb)
     }

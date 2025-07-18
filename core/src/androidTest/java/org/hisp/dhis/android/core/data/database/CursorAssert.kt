@@ -25,58 +25,49 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.database
 
-package org.hisp.dhis.android.core.data.database;
+import android.database.Cursor
+import com.google.common.truth.Truth
 
-import android.database.Cursor;
+class CursorAssert // set to first row by default
+private constructor(private val cursor: Cursor) {
+    private var row = 0
 
-import androidx.annotation.NonNull;
+    fun hasRow(vararg values: Any): CursorAssert {
+        Truth.assertThat(cursor.moveToNext()).isTrue()
+        row = row + 1
 
-import static com.google.common.truth.Truth.assertThat;
-
-public final class CursorAssert {
-    private final Cursor cursor;
-    private int row;
-
-    public static CursorAssert assertThatCursor(Cursor cursor) {
-        return new CursorAssert(cursor);
-    }
-
-    private CursorAssert(Cursor cursor) {
-        this.cursor = cursor;
-
-        // set to first row by default
-        this.row = 0;
-    }
-
-    @NonNull
-    public CursorAssert hasRow(@NonNull Object... values) {
-        assertThat(cursor.moveToNext()).isTrue();
-        row = row + 1;
-
-        assertThat(cursor.getColumnCount()).isEqualTo(values.length);
-        for (int index = 0; index < values.length; index++) {
-            assertThat(cursor.getString(index))
-                    .isEqualTo(values[index] == null ? values[index] : String.valueOf(values[index]));
+        Truth.assertThat(cursor.columnCount).isEqualTo(values.size)
+        for (index in values.indices) {
+            Truth.assertThat(cursor.getString(index))
+                .isEqualTo(if (values[index] == null) values[index] else values[index].toString())
         }
 
-        return this;
+        return this
     }
 
-    public void isExhausted() {
-        if (cursor.moveToNext()) {
-            StringBuilder data = new StringBuilder();
-            for (int i = 0; i < cursor.getColumnCount(); i++) {
-                if (i > 0) {
-                    data.append(", ");
+    val isExhausted: Unit
+        get() {
+            if (cursor.moveToNext()) {
+                val data = StringBuilder()
+                for (i in 0..<cursor.columnCount) {
+                    if (i > 0) {
+                        data.append(", ")
+                    }
+
+                    data.append(cursor.getString(i))
                 }
 
-                data.append(cursor.getString(i));
+                throw AssertionError("Expected no more rows but was: $data")
             }
 
-            throw new AssertionError("Expected no more rows but was: " + data);
+            cursor.close()
         }
 
-        cursor.close();
+    companion object {
+        fun assertThatCursor(cursor: Cursor): CursorAssert {
+            return CursorAssert(cursor)
+        }
     }
 }

@@ -32,22 +32,27 @@ import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
-import org.hisp.dhis.android.persistence.category.CategoryComboTableInfo
+import org.hisp.dhis.android.core.category.CategoryCombo
+import org.hisp.dhis.android.core.category.internal.CategoryComboStore
 import org.hisp.dhis.android.core.common.IdentifiableColumns
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitSamples
-import org.hisp.dhis.android.persistence.dataset.DataSetTableInfo
+import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkHandler
+import org.hisp.dhis.android.core.dataset.internal.DataSetStore
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.persistence.program.ProgramTableInfo
+import org.hisp.dhis.android.core.program.Program
+import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
-import org.hisp.dhis.android.persistence.user.UserTableInfo
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkHandler
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 import org.hisp.dhis.android.core.user.internal.UserStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.category.CategoryComboTableInfo
+import org.hisp.dhis.android.persistence.dataset.DataSetTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramTableInfo
 import org.junit.AfterClass
 import org.junit.Before
 import org.junit.Test
@@ -61,7 +66,7 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
     private val expectedAdonkiaCHP = OrganisationUnitSamples.getAdonkiaCHP()
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         dhis2MockServer.enqueueMockResponse("organisationunit/admin_organisation_units.json")
         val orgUnit = OrganisationUnit.builder().uid("O6uvpzGd5pu").path("/ImspTQPwCqd/O6uvpzGd5pu").build()
         val organisationUnits = listOf(orgUnit)
@@ -70,16 +75,19 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
         val organisationUnitNetworkHandler: OrganisationUnitNetworkHandler = DhisAndroidSdkKoinContext.koin.get()
 
         // Create a user with the root as assigned organisation unit (for the test):
+        val userStore = koin.get<UserStore>()
         val user = UserInternalAccessor.insertOrganisationUnits(User.builder(), organisationUnits)
             .uid(userId).build()
-        databaseAdapter.insert(UserTableInfo.TABLE_INFO.name(), null, user.toContentValues())
         val userContentValues = ContentValues()
         userContentValues.put(IdentifiableColumns.UID, userId)
-        databaseAdapter.insert(UserTableInfo.TABLE_INFO.name(), null, userContentValues)
+
+        userStore.insert(user)
+        userStore.insert(User.builder().uid(userId).build())
 
         // inserting programs for creating OrgUnitProgramLinks
         val programUid = "lxAQ7Zs9VYR"
-        insertObjectWithUid(programUid, ProgramTableInfo.TABLE_INFO)
+        val programStore = koin.get<ProgramStore>()
+        programStore.insert(Program.builder().uid(programUid).build())
 
         // inserting dataSets for creating OrgUnitDataSetLinks
         insertDataSet()
@@ -103,20 +111,16 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
         }
     }
 
-    private fun insertObjectWithUid(uid: String, tableInfo: TableInfo) {
-        val contentValues = ContentValues()
-        contentValues.put(IdentifiableColumns.UID, uid)
-        databaseAdapter.insert(tableInfo.name(), null, contentValues)
-    }
-
-    private fun insertDataSet() {
+    private suspend fun insertDataSet() {
         val dataSetUid = "lyLU2wR22tC"
         val categoryComboUid = "category_combo_uid"
-        insertObjectWithUid(categoryComboUid, CategoryComboTableInfo.TABLE_INFO)
-        val contentValues = ContentValues()
-        contentValues.put(IdentifiableColumns.UID, dataSetUid)
-        contentValues.put(DataSetTableInfo.Columns.CATEGORY_COMBO, categoryComboUid)
-        databaseAdapter.insert(DataSetTableInfo.TABLE_INFO.name(), null, contentValues)
+        val categoryComboStore = koin.get<CategoryComboStore>()
+        categoryComboStore.insert(CategoryCombo.builder().uid(categoryComboUid).build())
+
+        val dataSetStore = koin.get<DataSetStore>()
+        dataSetStore.insert(
+            DataSet.builder().uid(dataSetUid).categoryCombo(ObjectWithUid.create(categoryComboUid)).build()
+        )
     }
 
     @Test

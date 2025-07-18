@@ -25,53 +25,57 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.note
 
-package org.hisp.dhis.android.core.note;
+import kotlinx.coroutines.runBlocking
+import org.hisp.dhis.android.core.BaseRealIntegrationTest
+import org.hisp.dhis.android.core.data.server.RealServerMother
 
-import org.hisp.dhis.android.core.BaseRealIntegrationTest;
-import org.hisp.dhis.android.core.data.server.RealServerMother;
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-
-public class NotePostCallRealIntegrationShould extends BaseRealIntegrationTest {
+class NotePostCallRealIntegrationShould : BaseRealIntegrationTest() {
     /**
      * A quick integration test that is probably flaky, but will help with finding bugs related to the
      * metadataSyncCall. It works against the demo server.
      */
-
     //@Test
-    public void download_tei_add_one_note_and_sync_in_2_29() throws Exception {
-        downloadUpdateAndSyncTei(RealServerMother.url2_29);
+    @Throws(Exception::class)
+    fun download_tei_add_one_note_and_sync_in_2_29() {
+        downloadUpdateAndSyncTei(RealServerMother.url2_29)
     }
 
     //@Test
-    public void download_tei_add_one_note_and_sync_in_2_30_or_more() throws Exception {
-        downloadUpdateAndSyncTei(RealServerMother.url2_31);
+    @Throws(Exception::class)
+    fun download_tei_add_one_note_and_sync_in_2_30_or_more() {
+        downloadUpdateAndSyncTei(RealServerMother.url2_31)
     }
 
-    private void downloadUpdateAndSyncTei(String serverUrl) throws Exception {
+    @Throws(Exception::class)
+    private fun downloadUpdateAndSyncTei(serverUrl: String) {
         if (d2.userModule().blockingIsLogged()) {
-            d2.userModule().blockingLogOut();
+            d2.userModule().blockingLogOut()
         }
 
-        d2.userModule().blockingLogIn(username, password, serverUrl);
+        d2.userModule().blockingLogIn(username, password, serverUrl)
 
-        d2.metadataModule().blockingDownload();
+        d2.metadataModule().blockingDownload()
 
-        d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(100).blockingDownload();
+        d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(100).blockingDownload()
 
-        addNote();
+        addNote()
 
-        d2.trackedEntityModule().trackedEntityInstances().blockingUpload();
+        d2.trackedEntityModule().trackedEntityInstances().blockingUpload()
 
-        d2.wipeModule().wipeEverything();
+        runBlocking { d2.wipeModule().wipeEverything() }
     }
 
-    private void addNote() {
-        Enrollment enrollment = d2.enrollmentModule().enrollments().one().blockingGet();
+    private fun addNote() {
+        val enrollment = d2.enrollmentModule().enrollments().one().blockingGet()
         try {
-            d2.noteModule().notes().blockingAdd(NoteCreateProjection.create(
-                    Note.NoteType.ENROLLMENT_NOTE, enrollment.uid(), "New note"));
-        } catch (Exception ignored) {
+            d2.noteModule().notes().blockingAdd(
+                NoteCreateProjection.create(
+                    Note.NoteType.ENROLLMENT_NOTE, enrollment!!.uid(), "New note"
+                )
+            )
+        } catch (ignored: Exception) {
         }
     }
 }

@@ -25,54 +25,43 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.access
 
-package org.hisp.dhis.android.core.arch.db.access;
+import androidx.room.RoomRawQuery
+import androidx.sqlite.db.SimpleSQLiteQuery
 
-import android.database.Cursor;
-
-public final class SqliteCheckerUtility {
-
-    private SqliteCheckerUtility() {
+object SqliteCheckerUtility {
+    suspend fun isTableEmpty(databaseAdapter: DatabaseAdapter, table: String): Boolean {
+        val d2Dao = databaseAdapter.getCurrentDatabase().d2Dao()
+        val query = RoomRawQuery("SELECT COUNT(*) FROM $table")
+        val count = d2Dao.intRawQuery(query)
+        return count == 0
     }
 
-    public static boolean isTableEmpty(DatabaseAdapter databaseAdapter, String table) {
-        boolean isTableEmpty = true;
-        Cursor cursor = databaseAdapter.rawQuery(" SELECT * FROM "+table);
-        int value = cursor.getCount();
-        if (value > 0) {
-            isTableEmpty = false;
+    suspend fun isDatabaseEmpty(databaseAdapter: DatabaseAdapter): Boolean {
+        val d2Dao = databaseAdapter.getCurrentDatabase().d2Dao()
+        val query = SimpleSQLiteQuery(
+            "SELECT name FROM sqlite_master WHERE type='table' AND " +
+                "name NOT LIKE 'android_%' AND name NOT LIKE 'sqlite_%' AND " +
+                "name NOT LIKE 'room_master_table'"
+        )
+        val tableNames = d2Dao.stringListRawQuery(query)
+
+        if (tableNames.isEmpty()) {
+            return true // No user tables found
         }
-        cursor.close();
-        return isTableEmpty;
-    }
 
-    public static boolean isDatabaseEmpty(DatabaseAdapter databaseAdapter) {
-        boolean isDatabaseEmpty = true;
-        Cursor cursor = databaseAdapter.rawQuery(" SELECT name FROM sqlite_master WHERE "
-                + "type='table' and name!='android_metadata' and name!='sqlite_sequence'");
-        int value = cursor.getColumnIndex("name");
-        if (value != -1) {
-            while (cursor.moveToNext()){
-                String tableName = cursor.getString(value);
-                Cursor resTable = databaseAdapter.rawQuery("SELECT * from " + tableName);
-                if (resTable.getCount() > 0) {
-                    isDatabaseEmpty = false;
-                    break;
-                }
+        for (tableName in tableNames) {
+            if (!isTableEmpty(databaseAdapter, tableName)) {
+                // If we find any table that is not empty, the database is not empty.
+                return false
             }
         }
-        cursor.close();
-        return isDatabaseEmpty;
+        return true
     }
 
-    public static boolean ifTableExist(String table, DatabaseAdapter databaseAdapter) {
-        boolean isExist = false;
-        Cursor cursor = databaseAdapter.rawQuery("PRAGMA table_info(" + table + ")");
-        int itemsCount = cursor.getCount();
-        if (itemsCount > 0) {
-            isExist = true;
-        }
-        cursor.close();
-        return isExist;
+    suspend fun ifTableExist(table: String, databaseAdapter: DatabaseAdapter): Boolean {
+        val result = databaseAdapter.rawQuery("PRAGMA table_info($table)")
+        return result.isNotEmpty()
     }
 }

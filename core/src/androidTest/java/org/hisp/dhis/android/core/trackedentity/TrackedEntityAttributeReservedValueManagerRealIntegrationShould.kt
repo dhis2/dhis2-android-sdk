@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.category.CategoryCombo
-import org.hisp.dhis.android.persistence.category.CategoryComboTableInfo
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.DataAccess
 import org.hisp.dhis.android.core.common.ObjectWithUid
@@ -53,6 +52,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeR
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueQuery
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
+import org.hisp.dhis.android.persistence.category.CategoryComboStoreImpl
 import org.junit.Before
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers
@@ -120,8 +120,8 @@ internal class TrackedEntityAttributeReservedValueManagerRealIntegrationShould :
             TrackedEntityAttribute.builder().uid(ownerUid).pattern(pattern).build(),
         )
         val categoryCombo = CategoryCombo.builder().uid(categoryComboUid).build()
-        d2.databaseAdapter()
-            .insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo.toContentValues())
+        val store = CategoryComboStoreImpl(d2.databaseAdapter())
+        store.insert(categoryCombo)
         val program = Program.builder().uid(programUid)
             .categoryCombo(ObjectWithUid.create(categoryCombo.uid()))
             .access(Access.create(null, null, DataAccess.create(true, true))).build()

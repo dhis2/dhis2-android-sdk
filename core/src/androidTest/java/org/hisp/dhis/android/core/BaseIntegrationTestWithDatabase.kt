@@ -25,38 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core
 
-package org.hisp.dhis.android.core;
+import androidx.test.platform.app.InstrumentationRegistry
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore
+import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
+import org.hisp.dhis.android.persistence.db.access.RoomDatabaseAdapter
+import org.hisp.dhis.android.persistence.db.access.RoomDatabaseManager
+import org.junit.After
+import org.junit.Before
+import java.io.IOException
 
-import android.content.Context;
-
-import androidx.test.platform.app.InstrumentationRegistry;
-
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
-import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore;
-import org.junit.After;
-import org.junit.Before;
-
-import java.io.IOException;
-
-public abstract class BaseIntegrationTestWithDatabase {
-    private DatabaseAdapter databaseAdapter;
+abstract class BaseIntegrationTestWithDatabase {
+    private var databaseAdapter = RoomDatabaseAdapter()
 
     @Before
-    public void setUp() throws IOException {
-        Context context = InstrumentationRegistry.getInstrumentation().getContext();
-        DatabaseAdapterFactory databaseAdapterFactory = DatabaseAdapterFactory.create(context, new InMemorySecureStore());
-        databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
-        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, null, false);
+    @Throws(IOException::class)
+    open fun setUp() {
+        val context = InstrumentationRegistry.getInstrumentation().context
+        val passwordManager = DatabaseEncryptionPasswordManager.create(InMemorySecureStore())
+        val roomDatabaseManager = RoomDatabaseManager(databaseAdapter, context, passwordManager)
+
+        roomDatabaseManager.createOrOpenUnencryptedDatabase("dbName")
     }
 
     @After
-    public void tearDown() {
-        databaseAdapter.close();
+    open fun tearDown() {
+        databaseAdapter.deactivate()
     }
 
-    protected DatabaseAdapter databaseAdapter() {
-        return databaseAdapter;
+    protected fun databaseAdapter(): DatabaseAdapter {
+        return databaseAdapter
     }
 }

@@ -25,74 +25,89 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.database.migrations
 
-package org.hisp.dhis.android.core.data.database.migrations;
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.runner.AndroidJUnit4
+import com.google.common.truth.Truth
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.access.SqliteCheckerUtility
+import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore
+import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
+import org.hisp.dhis.android.persistence.db.access.RoomDatabaseAdapter
+import org.hisp.dhis.android.persistence.db.access.RoomDatabaseManager
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeReservedValueTableInfo
+import org.hisp.dhis.android.persistence.user.UserTableInfo
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
 
-import android.content.Context;
-
-import androidx.test.platform.app.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
-
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
-import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore;
-import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeReservedValueTableInfo;
-import org.hisp.dhis.android.persistence.user.UserTableInfo;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import static com.google.common.truth.Truth.assertThat;
-import static org.hisp.dhis.android.core.arch.db.access.SqliteCheckerUtility.ifTableExist;
-
-@RunWith(AndroidJUnit4.class)
-public class DataBaseMigrationShould {
-    private DatabaseAdapter databaseAdapter;
-    private String dbName = null;
+@RunWith(AndroidJUnit4::class)
+class DataBaseMigrationShould {
+    private var databaseAdapter: DatabaseAdapter = RoomDatabaseAdapter()
+    private val dbName: String = "test.db"
 
     @Before
-    public void deleteDB() {
-        this.closeAndDeleteDatabase();
+    fun deleteDB() {
+        this.closeAndDeleteDatabase()
     }
 
     @After
-    public void tearDown() {
-        this.closeAndDeleteDatabase();
+    fun tearDown() {
+        this.closeAndDeleteDatabase()
     }
 
-    private void closeAndDeleteDatabase() {
-        if (databaseAdapter != null) {
-            databaseAdapter.close();
+    private fun closeAndDeleteDatabase() {
+        if (databaseAdapter.isReady) {
+            databaseAdapter.close()
         }
         if (dbName != null) {
-            InstrumentationRegistry.getInstrumentation().getContext().deleteDatabase(dbName);
+            InstrumentationRegistry.getInstrumentation().context.deleteDatabase(dbName)
         }
     }
 
     @Test
-    public void have_user_table_after_migration_1() {
-        initCoreDataBase(1);
-        assertThat(ifTableExist(UserTableInfo.TABLE_INFO.name(), databaseAdapter)).isTrue();
+    fun have_user_table_after_migration_1() = runTest {
+        initCoreDataBase(1)
+        Truth.assertThat(
+            SqliteCheckerUtility.ifTableExist(
+                UserTableInfo.TABLE_INFO.name(),
+                databaseAdapter
+            )
+        ).isTrue()
     }
 
     @Test
-    public void not_have_tracked_entity_attribute_reserved_value_table_after_migration_1() {
-        initCoreDataBase(1);
-        assertThat(ifTableExist(TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO.name(), databaseAdapter)).isFalse();
+    fun not_have_tracked_entity_attribute_reserved_value_table_after_migration_1() = runTest {
+        initCoreDataBase(1)
+        Truth.assertThat(
+            SqliteCheckerUtility.ifTableExist(
+                TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO.name(),
+                databaseAdapter
+            )
+        ).isFalse()
     }
 
     @Test
-    public void have_tracked_entity_attribute_reserved_value_table_after_first_migration_2() {
-        initCoreDataBase(2);
-        assertThat(ifTableExist(TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO.name(), databaseAdapter)).isTrue();
+    fun have_tracked_entity_attribute_reserved_value_table_after_first_migration_2() = runTest {
+        initCoreDataBase(2)
+        Truth.assertThat(
+            SqliteCheckerUtility.ifTableExist(
+                TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO.name(),
+                databaseAdapter
+            )
+        ).isTrue()
     }
 
-    public DatabaseAdapter initCoreDataBase(int databaseVersion) {
-        Context context = InstrumentationRegistry.getInstrumentation().getContext();
-        DatabaseAdapterFactory databaseAdapterFactory = DatabaseAdapterFactory.create(context, new InMemorySecureStore());
-        databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
-        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, dbName, false, databaseVersion);
-        return databaseAdapter;
+    fun initCoreDataBase(databaseVersion: Int): DatabaseAdapter? {
+        val context = InstrumentationRegistry.getInstrumentation().context
+        val secureStore = InMemorySecureStore()
+        val passwordManager = DatabaseEncryptionPasswordManager.create(secureStore)
+        val databaseManager = RoomDatabaseManager(databaseAdapter, context, passwordManager)
+        databaseManager.createOrOpenUnencryptedDatabase(dbName)
+
+        return databaseAdapter
     }
 }

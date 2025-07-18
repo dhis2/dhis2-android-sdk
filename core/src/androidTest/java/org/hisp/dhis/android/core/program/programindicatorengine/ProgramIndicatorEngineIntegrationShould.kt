@@ -32,7 +32,6 @@ import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.category.CategoryCombo
-import org.hisp.dhis.android.persistence.category.CategoryComboTableInfo
 import org.hisp.dhis.android.core.category.internal.CreateCategoryComboUtils
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.AggregationType
@@ -59,6 +58,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
+import org.hisp.dhis.android.persistence.category.CategoryComboStoreImpl
 import org.junit.After
 import org.junit.AfterClass
 import org.junit.Before
@@ -108,7 +108,8 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
             koin.get<TrackedEntityTypeStore>().insert(trackedEntityType)
 
             val categoryCombo = CreateCategoryComboUtils.create(CategoryCombo.DEFAULT_UID)
-            databaseAdapter.insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo)
+            val store = CategoryComboStoreImpl(d2.databaseAdapter())
+            store.insert(categoryCombo)
 
             val access = Access.create(true, false, DataAccess.create(true, true))
             val program = Program.builder().uid(programUid)
@@ -138,7 +139,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         @AfterClass
         @JvmStatic
         @Throws(D2Error::class)
-        fun tearDownClass() {
+        suspend fun tearDownClass() {
             d2.wipeModule().wipeEverything()
         }
     }
@@ -153,7 +154,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
 
     @After
     @Throws(D2Error::class)
-    fun tearDown() {
+    suspend fun tearDown() {
         d2.wipeModule().wipeData()
     }
 

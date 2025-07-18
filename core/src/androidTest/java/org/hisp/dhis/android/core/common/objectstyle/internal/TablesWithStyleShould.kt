@@ -27,7 +27,8 @@
  */
 package org.hisp.dhis.android.core.common.objectstyle.internal
 
-import android.database.Cursor
+import androidx.sqlite.db.SimpleSQLiteQuery
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.common.NameableWithStyleColumns
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
@@ -39,20 +40,22 @@ import org.junit.runner.RunWith
 class TablesWithStyleShould {
 
     private val databaseAdapter = TestDatabaseAdapterFactory.get()
+    private val d2Dao = databaseAdapter.getCurrentDatabase().d2Dao()
 
     private val excludedTables: List<String> = listOf()
 
     @Test
-    fun check_content_of_styled_tables() {
-        val tableListCursor = databaseAdapter.rawQuery("SELECT name FROM sqlite_master WHERE type='table'")
-        val tableList = readStringColumn(tableListCursor, "name")
+    fun check_content_of_styled_tables() = runTest {
+        val tableList = d2Dao.stringListRawQuery(
+            SimpleSQLiteQuery("SELECT name FROM sqlite_master WHERE type='table")
+        )
 
         val tablesWithStyle = tableList
             .filterNot { excludedTables.contains(it) }
             .filter { table ->
-                val columnListCursor = databaseAdapter.rawQuery("PRAGMA table_info($table);")
-                val columns = readStringColumn(columnListCursor, "name")
-
+                val columns = d2Dao.stringListRawQuery(
+                    SimpleSQLiteQuery("PRAGMA table_info($table);")
+                )
                 columns.contains(NameableWithStyleColumns.ICON)
             }
 
@@ -76,20 +79,5 @@ class TablesWithStyleShould {
 
             fail("Tables with style don't match with tables in TableWithStyle list.")
         }
-    }
-
-    private fun readStringColumn(cursor: Cursor, column: String): List<String> {
-        val result = mutableListOf<String>()
-        cursor.use { c ->
-            if (c.count > 0) {
-                c.moveToFirst()
-                do {
-                    val tableIdx = c.getColumnIndex(column)
-                    val tableName = c.getString(tableIdx)
-                    result.add(tableName)
-                } while (c.moveToNext())
-            }
-        }
-        return result
     }
 }

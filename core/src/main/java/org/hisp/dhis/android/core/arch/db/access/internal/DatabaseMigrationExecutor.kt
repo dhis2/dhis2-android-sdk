@@ -43,7 +43,7 @@ internal class DatabaseMigrationExecutor(private val databaseAdapter: DatabaseAd
         var USE_SNAPSHOT = true
     }
 
-    fun upgradeFromTo(oldVersion: Int, newVersion: Int) {
+    suspend fun upgradeFromTo(oldVersion: Int, newVersion: Int) {
         val transaction = databaseAdapter.beginNewTransaction()
         try {
             val initialMigrationVersion = if (USE_SNAPSHOT) performSnapshotIfRequired(oldVersion) else 0
@@ -61,16 +61,16 @@ internal class DatabaseMigrationExecutor(private val databaseAdapter: DatabaseAd
     }
 
     @Throws(IOException::class)
-    private fun performSnapshotIfRequired(oldVersion: Int): Int {
+    private suspend fun performSnapshotIfRequired(oldVersion: Int): Int {
         return if (oldVersion == 0) {
             executeFileSQL(parser.parseSnapshot())
-            BaseDatabaseOpenHelper.VERSION
+            AppDatabase.Companion.VERSION
         } else {
             oldVersion
         }
     }
 
-    private fun executeSQLMigration(migration: DatabaseMigration) {
+    private suspend fun executeSQLMigration(migration: DatabaseMigration) {
         if (MIGRATIONS_ACCEPTING_ERRORS.contains(migration.version)) {
             try {
                 executeFileSQL(migration.sql)
@@ -80,11 +80,11 @@ internal class DatabaseMigrationExecutor(private val databaseAdapter: DatabaseAd
         }
     }
 
-    private fun executeCodeMigration(migration: DatabaseMigration) {
+    private suspend fun executeCodeMigration(migration: DatabaseMigration) {
         migration.code?.migrate()
     }
 
-    private fun executeFileSQL(script: List<String>?) {
+    private suspend fun executeFileSQL(script: List<String>?) {
         script?.forEach { databaseAdapter.execSQL(it) }
     }
 }

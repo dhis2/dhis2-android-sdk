@@ -56,7 +56,7 @@ import org.junit.runner.RunWith
 class MetadataCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() {
 
     @After
-    fun tearDown() {
+    suspend fun tearDown() {
         d2.wipeModule().wipeEverything()
     }
 

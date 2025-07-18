@@ -27,8 +27,9 @@
  */
 package org.hisp.dhis.android.localanalytics.tests
 
-import android.database.Cursor
+import androidx.room.RoomRawQuery
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.enrollment.EnrollmentCollectionRepository
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventCollectionRepository
@@ -36,45 +37,42 @@ import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCollectionRepository
+import org.hisp.dhis.android.persistence.common.daos.D2Dao
 import org.junit.Test
 
 internal abstract class BaseLocalAnalyticsTrackerMockIntegrationShould : BaseLocalAnalyticsTest() {
+    private val d2Dao = d2.databaseAdapter().getCurrentDatabase().d2Dao()
+
 
     @Test
     fun count_events() {
-        val eventsCount = d2.eventModule().events()
-            .blockingCount()
+        val eventsCount = d2.eventModule().events().blockingCount()
         assertThat(eventsCount).isEqualTo(2000 * SizeFactor)
     }
 
     @Test
     fun count_events_for_program_with_registration() {
-        val eventsCount = d2.eventModule().events()
-            .byProgramUid().eq(getProgramWithRegistration().uid())
-            .blockingCount()
+        val eventsCount =
+            d2.eventModule().events().byProgramUid().eq(getProgramWithRegistration().uid()).blockingCount()
         assertThat(eventsCount).isEqualTo(1500 * SizeFactor)
     }
 
     @Test
     fun count_events_for_program_without_registration() {
-        val eventsCount = d2.eventModule().events()
-            .byProgramUid().eq(getProgramWithoutRegistration().uid())
-            .blockingCount()
+        val eventsCount =
+            d2.eventModule().events().byProgramUid().eq(getProgramWithoutRegistration().uid()).blockingCount()
         assertThat(eventsCount).isEqualTo(500 * SizeFactor)
     }
 
     @Test
     fun count_enrollments_by_program() {
-        val enrollmentsCount = getProgramEnrollmentsRepository()
-            .blockingCount()
+        val enrollmentsCount = getProgramEnrollmentsRepository().blockingCount()
         assertThat(enrollmentsCount).isEqualTo(500 * SizeFactor)
     }
 
     @Test
     fun count_enrollments_by_program_and_status() {
-        val enrollmentsCount = getProgramEnrollmentsRepository()
-            .byStatus().eq(EnrollmentStatus.ACTIVE)
-            .blockingCount()
+        val enrollmentsCount = getProgramEnrollmentsRepository().byStatus().eq(EnrollmentStatus.ACTIVE).blockingCount()
         assertThat(enrollmentsCount).isEqualTo(500 * SizeFactor)
     }
 
@@ -86,22 +84,19 @@ internal abstract class BaseLocalAnalyticsTrackerMockIntegrationShould : BaseLoc
 
     @Test
     fun count_events_by_condition_on_1_tracked_entity_data_value_and_status() {
-        val eventsCount = getEventRepositoryByTEDV(1).byStatus().eq(EventStatus.ACTIVE)
-            .blockingCount()
+        val eventsCount = getEventRepositoryByTEDV(1).byStatus().eq(EventStatus.ACTIVE).blockingCount()
         assertThat(eventsCount).isAtLeast(1)
     }
 
     @Test
     fun count_events_by_condition_on_2_tracked_entity_data_values_and_status() {
-        val eventsCount = getEventRepositoryByTEDV(2).byStatus().eq(EventStatus.ACTIVE)
-            .blockingCount()
+        val eventsCount = getEventRepositoryByTEDV(2).byStatus().eq(EventStatus.ACTIVE).blockingCount()
         assertThat(eventsCount).isAtLeast(1)
     }
 
     @Test
     fun count_events_by_condition_on_3_tracked_entity_data_values_and_status() {
-        val eventsCount = getEventRepositoryByTEDV(3).byStatus().eq(EventStatus.ACTIVE)
-            .blockingCount()
+        val eventsCount = getEventRepositoryByTEDV(3).byStatus().eq(EventStatus.ACTIVE).blockingCount()
         assertThat(eventsCount).isAtLeast(1)
     }
 
@@ -111,8 +106,8 @@ internal abstract class BaseLocalAnalyticsTrackerMockIntegrationShould : BaseLoc
     }
 
     @Test
-    fun count_teis_by_condition_on_1_tracked_entity_attribute_value_sql() {
-        assertThat(countTeisByConditionOnTEAVSql(1)).isAtLeast(1)
+    fun count_teis_by_condition_on_1_tracked_entity_attribute_value_sql() = runTest {
+        assertThat(countTeisByConditionOnTEAVSql(1, d2Dao)).isAtLeast(1)
     }
 
     @Test
@@ -121,8 +116,8 @@ internal abstract class BaseLocalAnalyticsTrackerMockIntegrationShould : BaseLoc
     }
 
     @Test
-    fun count_teis_by_condition_on_2_tracked_entity_attribute_values_sql() {
-        assertThat(countTeisByConditionOnTEAVSql(2)).isAtLeast(1)
+    fun count_teis_by_condition_on_2_tracked_entity_attribute_values_sql() = runTest {
+        assertThat(countTeisByConditionOnTEAVSql(2, d2Dao)).isAtLeast(1)
     }
 
     @Test
@@ -131,8 +126,8 @@ internal abstract class BaseLocalAnalyticsTrackerMockIntegrationShould : BaseLoc
     }
 
     @Test
-    fun count_teis_by_condition_on_3_tracked_entity_attribute_values_sql() {
-        assertThat(countTeisByConditionOnTEAVSql(3)).isAtLeast(1)
+    fun count_teis_by_condition_on_3_tracked_entity_attribute_values_sql() = runTest {
+        assertThat(countTeisByConditionOnTEAVSql(3, d2Dao)).isAtLeast(1)
     }
 
     @Test
@@ -141,8 +136,8 @@ internal abstract class BaseLocalAnalyticsTrackerMockIntegrationShould : BaseLoc
     }
 
     @Test
-    fun count_teis_by_condition_on_1_tracked_entity_data_values_sql() {
-        assertThat(countTeisByConditionOnTEDVSql(1)).isAtLeast(1)
+    fun count_teis_by_condition_on_1_tracked_entity_data_values_sql() = runTest {
+        assertThat(countTeisByConditionOnTEDVSql(1, d2Dao)).isAtLeast(1)
     }
 
     @Test
@@ -151,8 +146,8 @@ internal abstract class BaseLocalAnalyticsTrackerMockIntegrationShould : BaseLoc
     }
 
     @Test
-    fun count_teis_by_condition_on_2_tracked_entity_data_values_sql() {
-        assertThat(countTeisByConditionOnTEDVSql(2)).isAtLeast(1)
+    fun count_teis_by_condition_on_2_tracked_entity_data_values_sql() = runTest {
+        assertThat(countTeisByConditionOnTEDVSql(2, d2Dao)).isAtLeast(1)
     }
 
     @Test
@@ -161,101 +156,75 @@ internal abstract class BaseLocalAnalyticsTrackerMockIntegrationShould : BaseLoc
     }
 
     @Test
-    fun count_teis_by_condition_on_3_tracked_entity_data_values_sql() {
-        assertThat(countTeisByConditionOnTEDVSql(3)).isAtLeast(1)
+    fun count_teis_by_condition_on_3_tracked_entity_data_values_sql() = runTest {
+        assertThat(countTeisByConditionOnTEDVSql(3, d2Dao)).isAtLeast(1)
     }
 
     @Test
     fun count_tedv_for_a_data_element() {
-        val firstTedv = d2.trackedEntityModule().trackedEntityDataValues()
-            .one().blockingGet()!!
-        val tedvCount = d2.trackedEntityModule().trackedEntityDataValues()
-            .byDataElement().eq(firstTedv.dataElement())
+        val firstTedv = d2.trackedEntityModule().trackedEntityDataValues().one().blockingGet()!!
+        val tedvCount = d2.trackedEntityModule().trackedEntityDataValues().byDataElement().eq(firstTedv.dataElement())
             .blockingCount()
         assertThat(tedvCount).isEqualTo(2000 * SizeFactor)
     }
 
     @Test
     fun aggregate_tedv_for_a_data_element() {
-        val firstTedv = d2.trackedEntityModule().trackedEntityDataValues()
-            .one().blockingGet()!!
-        val tedv = d2.trackedEntityModule().trackedEntityDataValues()
-            .byDataElement().eq(firstTedv.dataElement())
-            .blockingGet()
+        val firstTedv = d2.trackedEntityModule().trackedEntityDataValues().one().blockingGet()!!
+        val tedv =
+            d2.trackedEntityModule().trackedEntityDataValues().byDataElement().eq(firstTedv.dataElement()).blockingGet()
         val aggregatedTedv = tedv.sumBy { v -> v.value()!!.count { it == 'a' } }
         assertThat(aggregatedTedv).isAtLeast(1)
     }
 
     private fun countTeisByConditionOnTEDV(tedvCount: Int): Int {
-        val events = getEventRepositoryByTEDV(tedvCount)
-            .byEnrollmentUid().isNotNull
-            .blockingGet()
+        val events = getEventRepositoryByTEDV(tedvCount).byEnrollmentUid().isNotNull.blockingGet()
         val enrollmentUids = events.groupBy { it.enrollment() }.keys.mapNotNull { it }
 
-        val enrollments = d2.enrollmentModule().enrollments()
-            .byUid().`in`(enrollmentUids)
-            .blockingGet()
+        val enrollments = d2.enrollmentModule().enrollments().byUid().`in`(enrollmentUids).blockingGet()
 
         return enrollments.groupBy { it.trackedEntityInstance() }.size
     }
 
     private fun getProgramEnrollmentsRepository(): EnrollmentCollectionRepository {
-        return d2.enrollmentModule().enrollments()
-            .byProgram().eq(getProgramWithRegistration().uid())
+        return d2.enrollmentModule().enrollments().byProgram().eq(getProgramWithRegistration().uid())
     }
 
     private fun getProgramWithRegistration(): Program {
-        return d2.programModule().programs()
-            .byProgramType().eq(ProgramType.WITH_REGISTRATION)
-            .one()
-            .blockingGet()!!
+        return d2.programModule().programs().byProgramType().eq(ProgramType.WITH_REGISTRATION).one().blockingGet()!!
     }
 
     private fun getProgramWithoutRegistration(): Program {
-        return d2.programModule().programs()
-            .byProgramType().eq(ProgramType.WITHOUT_REGISTRATION)
-            .one()
-            .blockingGet()!!
+        return d2.programModule().programs().byProgramType().eq(ProgramType.WITHOUT_REGISTRATION).one().blockingGet()!!
     }
 
     private fun getEventRepositoryByTEDV(tedvCount: Int): EventCollectionRepository {
-        val dataElements = d2.dataElementModule().dataElements()
-            .byDomainType().eq("TRACKER")
-            .blockingGet()
+        val dataElements = d2.dataElementModule().dataElements().byDomainType().eq("TRACKER").blockingGet()
         val eventsList = (0 until tedvCount).flatMap { i ->
             val de = dataElements[i]
-            val tedv = d2.trackedEntityModule().trackedEntityDataValues()
-                .byDataElement().eq(de.uid())
-                .byValue().like("a")
-                .blockingGet()
+            val tedv =
+                d2.trackedEntityModule().trackedEntityDataValues().byDataElement().eq(de.uid()).byValue().like("a")
+                    .blockingGet()
             tedv.map { it.event() }
         }.mapNotNull { it }
 
-        return d2.eventModule().events()
-            .byUid().`in`(eventsList.toSet())
-            .byStatus().eq(EventStatus.ACTIVE)
+        return d2.eventModule().events().byUid().`in`(eventsList.toSet()).byStatus().eq(EventStatus.ACTIVE)
     }
 
     private fun getTeiRepositoryByTEAV(teavCount: Int): TrackedEntityInstanceCollectionRepository {
-        val attributes = d2.trackedEntityModule().trackedEntityAttributes()
-            .blockingGet()
+        val attributes = d2.trackedEntityModule().trackedEntityAttributes().blockingGet()
         val teisList = (0 until teavCount).flatMap { i ->
             val tea = attributes[i]
-            val teav = d2.trackedEntityModule().trackedEntityAttributeValues()
-                .byTrackedEntityAttribute().eq(tea.uid())
-                .byValue().like("a")
-                .blockingGet()
+            val teav = d2.trackedEntityModule().trackedEntityAttributeValues().byTrackedEntityAttribute().eq(tea.uid())
+                .byValue().like("a").blockingGet()
             teav.map { it.trackedEntityInstance() }
         }.mapNotNull { it }
 
-        return d2.trackedEntityModule().trackedEntityInstances()
-            .byUid().`in`(teisList.toSet())
+        return d2.trackedEntityModule().trackedEntityInstances().byUid().`in`(teisList.toSet())
     }
 
-    private fun countTeisByConditionOnTEDVSql(tedvCount: Int): Int {
-        val dataElements = d2.dataElementModule().dataElements()
-            .byDomainType().eq("TRACKER")
-            .blockingGet()
+    private suspend fun countTeisByConditionOnTEDVSql(tedvCount: Int, dao: D2Dao): Int {
+        val dataElements = d2.dataElementModule().dataElements().byDomainType().eq("TRACKER").blockingGet()
 
         val dataElementQuery = (0 until tedvCount).joinToString(" OR") { i ->
             val de = dataElements[i]
@@ -266,13 +235,11 @@ internal abstract class BaseLocalAnalyticsTrackerMockIntegrationShould : BaseLoc
         val eventQuery = "SELECT enrollment FROM event WHERE enrollment IS NOT NULL AND uid IN ($dataValueQuery)"
         val enrollmentQuery = "SELECT trackedEntityInstance FROM enrollment WHERE uid IN ($eventQuery)"
         val query = "SELECT COUNT(*) FROM trackedEntityInstance WHERE uid IN ($enrollmentQuery)"
-
-        return getIntFromCursor(d2.databaseAdapter().rawQuery(query))
+        return dao.intRawQuery(RoomRawQuery(query))
     }
 
-    private fun countTeisByConditionOnTEAVSql(teavCount: Int): Int {
-        val attributes = d2.trackedEntityModule().trackedEntityAttributes()
-            .blockingGet()
+    private suspend fun countTeisByConditionOnTEAVSql(teavCount: Int, dao: D2Dao): Int {
+        val attributes = d2.trackedEntityModule().trackedEntityAttributes().blockingGet()
 
         val attributeValuesQuery = (0 until teavCount).joinToString(" OR") { i ->
             val tea = attributes[i]
@@ -281,19 +248,6 @@ internal abstract class BaseLocalAnalyticsTrackerMockIntegrationShould : BaseLoc
 
         val attributeQuery = "SELECT trackedEntityInstance FROM trackedEntityAttributeValue WHERE $attributeValuesQuery"
         val query = "SELECT COUNT(*) FROM trackedEntityInstance WHERE uid IN ($attributeQuery)"
-
-        return getIntFromCursor(d2.databaseAdapter().rawQuery(query))
-    }
-
-    private fun getIntFromCursor(cursor: Cursor): Int {
-        var count = 0
-
-        cursor.use { c ->
-            if (c.count > 0) {
-                c.moveToFirst()
-                count = c.getInt(0)
-            }
-        }
-        return count
+        return dao.intRawQuery(RoomRawQuery(query))
     }
 }

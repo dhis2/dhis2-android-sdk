@@ -25,35 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset.internal
 
-package org.hisp.dhis.android.core.dataset.internal;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.dataset.SectionSamples
+import org.hisp.dhis.android.core.dataset.Section
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory.get
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.dataset.SectionStoreImpl
+import org.hisp.dhis.android.persistence.dataset.SectionTableInfo
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.dataset.SectionSamples;
-import org.hisp.dhis.android.core.dataset.Section;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.dataset.SectionStoreImpl;
-import org.hisp.dhis.android.persistence.dataset.SectionTableInfo;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class SectionStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Section> {
-
-    public SectionStoreIntegrationShould() {
-        super(new SectionStoreImpl(TestDatabaseAdapterFactory.get()), SectionTableInfo.TABLE_INFO,
-                TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class SectionStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<Section>(
+    SectionStoreImpl(
+        get()
+    ), SectionTableInfo.TABLE_INFO,
+    get()
+) {
+    override fun buildObject(): Section {
+        return SectionSamples.getSection()
     }
 
-    @Override
-    protected Section buildObject() {
-        return SectionSamples.getSection();
-    }
-
-    @Override
-    protected Section buildObjectToUpdate() {
+    override fun buildObjectToUpdate(): Section {
         return SectionSamples.getSection().toBuilder()
-                .description("new description")
-                .build();
+            .description("new description")
+            .build()
     }
 }

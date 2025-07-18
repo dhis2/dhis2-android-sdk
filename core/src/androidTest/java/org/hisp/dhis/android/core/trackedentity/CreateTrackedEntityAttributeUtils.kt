@@ -25,77 +25,69 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity
 
-package org.hisp.dhis.android.core.trackedentity;
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.common.ValueType
 
-import android.content.ContentValues;
-
-import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeTableInfo.Columns;
-
-public class CreateTrackedEntityAttributeUtils {
-
+object CreateTrackedEntityAttributeUtils {
     /**
      * BaseIdentifiable properties
      */
-    private static final String CODE = "test_code";
-    private static final String NAME = "test_name";
-    private static final String DISPLAY_NAME = "test_display_name";
-    private static final String DATE = "2011-12-24T12:24:25.203";
+    private const val CODE = "test_code"
+    private const val NAME = "test_name"
+    private const val DISPLAY_NAME = "test_display_name"
+    private const val DATE = "2011-12-24T12:24:25.203"
 
     /**
      * BaseNameableProperties
      */
-    private static final String SHORT_NAME = "test_short_name";
-    private static final String DISPLAY_SHORT_NAME = "test_display_short_name";
-    private static final String DESCRIPTION = "test_description";
-    private static final String DISPLAY_DESCRIPTION = "test_display_description";
+    private const val SHORT_NAME = "test_short_name"
+    private const val DISPLAY_SHORT_NAME = "test_display_short_name"
+    private const val DESCRIPTION = "test_description"
+    private const val DISPLAY_DESCRIPTION = "test_display_description"
 
     /**
      * Properties bound to TrackedEntityAttribute
      */
-    private static final String PATTERN = "test_pattern";
-    private static final Integer SORT_ORDER_IN_LIST_NO_PROGRAM = 1;
-    private static final ValueType VALUE_TYPE = ValueType.BOOLEAN;
-    private static final String EXPRESSION = "test_expression";
-    private static final Integer PROGRAM_SCOPE = 0; // false
-    private static final Integer DISPLAY_IN_LIST_NO_PROGRAM = 1; // true
-    private static final Integer GENERATED = 0; // false
-    private static final Integer DISPLAY_ON_VISIT_SCHEDULE = 1; // true
-    private static final Integer ORG_UNIT_SCOPE = 0; // false
-    private static final Integer UNIQUE = 1; // true
-    private static final Integer INHERIT = 0; // false
-    private static final Integer CONFIDENTIAL = 0; // false
+    private const val PATTERN = "test_pattern"
+    private const val SORT_ORDER_IN_LIST_NO_PROGRAM = 1
+    private val VALUE_TYPE = ValueType.BOOLEAN
+    private const val EXPRESSION = "test_expression"
+    private const val PROGRAM_SCOPE = false
+    private const val DISPLAY_IN_LIST_NO_PROGRAM = true
+    private const val GENERATED = false
+    private const val DISPLAY_ON_VISIT_SCHEDULE = true
+    private const val ORG_UNIT_SCOPE = false
+    private const val UNIQUE = true
+    private const val INHERIT = false
+    private const val CONFIDENTIAL = false
 
-    public static ContentValues create(String uid, String optionSetUid) {
-
-        ContentValues values = new ContentValues();
-
-        values.put(Columns.UID, uid);
-        values.put(Columns.CODE, CODE);
-        values.put(Columns.NAME, NAME);
-        values.put(Columns.DISPLAY_NAME, DISPLAY_NAME);
-        values.put(Columns.CREATED, DATE);
-        values.put(Columns.LAST_UPDATED, DATE);
-        values.put(Columns.SHORT_NAME, SHORT_NAME);
-        values.put(Columns.DISPLAY_SHORT_NAME, DISPLAY_SHORT_NAME);
-        values.put(Columns.DESCRIPTION, DESCRIPTION);
-        values.put(Columns.DISPLAY_DESCRIPTION, DISPLAY_DESCRIPTION);
-        values.put(Columns.PATTERN, PATTERN);
-        values.put(Columns.SORT_ORDER_IN_LIST_NO_PROGRAM, SORT_ORDER_IN_LIST_NO_PROGRAM);
-        values.put(Columns.OPTION_SET, optionSetUid);
-        values.put(Columns.VALUE_TYPE, VALUE_TYPE.name());
-        values.put(Columns.EXPRESSION, EXPRESSION);
-        values.put(Columns.PROGRAM_SCOPE, PROGRAM_SCOPE);
-        values.put(Columns.DISPLAY_IN_LIST_NO_PROGRAM, DISPLAY_IN_LIST_NO_PROGRAM);
-        values.put(Columns.GENERATED, GENERATED);
-        values.put(Columns.DISPLAY_ON_VISIT_SCHEDULE, DISPLAY_ON_VISIT_SCHEDULE);
-        values.put(Columns.CONFIDENTIAL, CONFIDENTIAL);
-        values.put(Columns.ORG_UNIT_SCOPE, ORG_UNIT_SCOPE);
-        values.put(Columns.UNIQUE, UNIQUE);
-        values.put(Columns.INHERIT, INHERIT);
-
-        return values;
+    fun create(uid: String?, optionSetUid: String?): TrackedEntityAttribute {
+        return TrackedEntityAttribute.builder()
+            .uid(uid)
+            .code(CODE)
+            .name(NAME)
+            .displayName(DISPLAY_NAME)
+            .created(DATE)
+            .lastUpdated(DATE)
+            .shortName(SHORT_NAME)
+            .displayShortName(DISPLAY_SHORT_NAME)
+            .description(DESCRIPTION)
+            .displayDescription(DISPLAY_DESCRIPTION)
+            .pattern(PATTERN)
+            .sortOrderInListNoProgram(SORT_ORDER_IN_LIST_NO_PROGRAM)
+            .valueType(VALUE_TYPE)
+            .expression(EXPRESSION)
+            .programScope(PROGRAM_SCOPE)
+            .displayInListNoProgram(DISPLAY_IN_LIST_NO_PROGRAM)
+            .generated(GENERATED)
+            .displayOnVisitSchedule(DISPLAY_ON_VISIT_SCHEDULE)
+            .orgUnitScope(ORG_UNIT_SCOPE)
+            .unique(UNIQUE)
+            .inherit(INHERIT)
+            .confidential(CONFIDENTIAL)
+            .optionSet(ObjectWithUid.create(optionSetUid))
+            .build()
     }
-
 }

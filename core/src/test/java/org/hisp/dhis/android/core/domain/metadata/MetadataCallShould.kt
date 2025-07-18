@@ -48,7 +48,6 @@ import org.hisp.dhis.android.core.indicator.internal.IndicatorModuleDownloader
 import org.hisp.dhis.android.core.legendset.internal.LegendSetModuleDownloader
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
-import org.hisp.dhis.android.persistence.maintenance.ForeignKeyViolationTableInfo
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorModuleDownloader
 import org.hisp.dhis.android.core.program.internal.ProgramModuleDownloader
@@ -62,6 +61,7 @@ import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.UserModuleDownloader
 import org.hisp.dhis.android.core.visualization.internal.TrackerVisualizationModuleDownloader
 import org.hisp.dhis.android.core.visualization.internal.VisualizationModuleDownloader
+import org.hisp.dhis.android.persistence.maintenance.ForeignKeyViolationTableInfo
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test

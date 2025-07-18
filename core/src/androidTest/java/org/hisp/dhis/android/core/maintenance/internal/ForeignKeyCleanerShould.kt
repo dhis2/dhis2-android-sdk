@@ -35,10 +35,7 @@ import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koi
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation
-import org.hisp.dhis.android.persistence.maintenance.ForeignKeyViolationTableInfo
 import org.hisp.dhis.android.core.option.Option
-import org.hisp.dhis.android.persistence.option.OptionSetTableInfo
-import org.hisp.dhis.android.persistence.option.OptionTableInfo
 import org.hisp.dhis.android.core.option.internal.OptionStore
 import org.hisp.dhis.android.core.program.ProgramRule
 import org.hisp.dhis.android.core.program.ProgramRuleAction
@@ -46,6 +43,9 @@ import org.hisp.dhis.android.core.program.ProgramRuleActionType
 import org.hisp.dhis.android.core.program.internal.ProgramRuleActionStore
 import org.hisp.dhis.android.core.program.internal.ProgramRuleStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
+import org.hisp.dhis.android.persistence.maintenance.ForeignKeyViolationTableInfo
+import org.hisp.dhis.android.persistence.option.OptionSetTableInfo
+import org.hisp.dhis.android.persistence.option.OptionTableInfo
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -54,7 +54,7 @@ import org.junit.runner.RunWith
 class ForeignKeyCleanerShould : BaseMockIntegrationTestEmptyDispatcher() {
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         d2.databaseAdapter().delete(ForeignKeyViolationTableInfo.TABLE_INFO.name())
     }
 

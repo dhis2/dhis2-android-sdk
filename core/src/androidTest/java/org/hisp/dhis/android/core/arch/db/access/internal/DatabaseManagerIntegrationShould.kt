@@ -25,78 +25,80 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.access.internal
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+import androidx.room.RoomRawQuery
+import androidx.test.platform.app.InstrumentationRegistry
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
+import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore
+import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
+import org.hisp.dhis.android.persistence.db.access.RoomDatabaseAdapter
+import org.hisp.dhis.android.persistence.db.access.RoomDatabaseManager
+import org.junit.AfterClass
+import org.junit.BeforeClass
+import org.junit.Test
 
-import android.content.Context;
-import android.database.Cursor;
-
-import androidx.test.platform.app.InstrumentationRegistry;
-
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-public class DatabaseAdapterFactoryIntegrationShould {
-
-    private static final String DB_NAME = "database-adapter-factory-integration-should.db";
-    private static DatabaseAdapterFactory databaseAdapterFactory;
-    
-    @BeforeClass
-    public static void setUpClass() {
-        Context context = InstrumentationRegistry.getInstrumentation().getContext();
-        databaseAdapterFactory = DatabaseAdapterFactory.create(context, new InMemorySecureStore());
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-        Context context = InstrumentationRegistry.getInstrumentation().getContext();
-        context.deleteDatabase(DB_NAME);
+class DatabaseManagerIntegrationShould {
+    @Test
+    fun get_adapter() {
+        Companion.databaseManager.getAdapter()
     }
 
     @Test
-    public void get_adapter() {
-        databaseAdapterFactory.newParentDatabaseAdapter();
+    fun get_adapter_create_and_close() {
+        val databaseAdapter = Companion.databaseManager.getAdapter()
+        Companion.databaseManager.createOrOpenUnencryptedDatabase(DB_NAME)
+        databaseAdapter.close()
     }
 
     @Test
-    public void get_adapter_create_and_close() {
-        DatabaseAdapter databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
-        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, DB_NAME, false);
-        databaseAdapter.close();
+    fun get_adapter_create_close_and_recreate() {
+        val databaseAdapter = Companion.databaseManager.getAdapter()
+        Companion.databaseManager.createOrOpenUnencryptedDatabase(DB_NAME)
+        databaseAdapter.close()
+
+        Companion.databaseManager.createOrOpenUnencryptedDatabase(DB_NAME)
     }
 
     @Test
-    public void get_adapter_create_close_and_recreate() {
-        DatabaseAdapter databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
-        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, DB_NAME,  false);
-        databaseAdapter.close();
-
-        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, DB_NAME,  false);
+    fun create_and_recreate_without_closing() {
+        Companion.databaseManager.createOrOpenUnencryptedDatabase(DB_NAME)
+        Companion.databaseManager.createOrOpenUnencryptedDatabase(DB_NAME)
     }
 
     @Test
-    public void get_adapter_create_and_recreate_without_closing() {
-        DatabaseAdapter databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
-        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, DB_NAME, false);
-        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, DB_NAME, false);
+    fun get_adapter_create_close_and_recreate_reading_db() = runTest {
+        val databaseAdapter = Companion.databaseManager.getAdapter()
+        Companion.databaseManager.createOrOpenUnencryptedDatabase(DB_NAME)
+        val userDao1 = databaseAdapter.getCurrentDatabase().userDao()
+        val users1 = userDao1.objectListRawQuery(RoomRawQuery("SELECT * FROM User"))
+        databaseAdapter.close()
+
+        Companion.databaseManager.createOrOpenUnencryptedDatabase(DB_NAME)
+        val userDao2 = databaseAdapter.getCurrentDatabase().userDao()
+        val users2 = userDao2.objectListRawQuery(RoomRawQuery("SELECT * FROM User"))
+        databaseAdapter.close()
+
     }
 
-    @Test
-    public void get_adapter_create_close_and_recreate_reading_db() {
-        DatabaseAdapter databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
-        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, DB_NAME, false);
-        Cursor cursor1 = databaseAdapter.rawQuery("SELECT * FROM User");
-        int count1 = cursor1.getCount();
-        cursor1.close();
+    companion object {
+        private const val DB_NAME = "database-adapter-factory-integration-should.db"
+        private lateinit var databaseManager: DatabaseManager
 
-        databaseAdapter.close();
 
-        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, DB_NAME, false);
-        Cursor cursor2 = databaseAdapter.rawQuery("SELECT * FROM User");
-        int count2 = cursor2.getCount();
-        cursor2.close();
+        @BeforeClass
+        fun setUpClass() {
+            val databaseAdapter = RoomDatabaseAdapter()
+            val context = InstrumentationRegistry.getInstrumentation().context
+            val passwordManager = DatabaseEncryptionPasswordManager.create(InMemorySecureStore())
+            databaseManager = RoomDatabaseManager(databaseAdapter, context, passwordManager)
+        }
+
+        @AfterClass
+        fun tearDownClass() {
+            val context = InstrumentationRegistry.getInstrumentation().context
+            context.deleteDatabase(DB_NAME)
+        }
     }
 }

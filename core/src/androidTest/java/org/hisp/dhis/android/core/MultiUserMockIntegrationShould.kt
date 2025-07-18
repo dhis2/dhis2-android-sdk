@@ -28,11 +28,12 @@
 package org.hisp.dhis.android.core
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.configuration.internal.BaseMultiUserDatabaseManager
 import org.hisp.dhis.android.core.data.category.CategoryOptionSamples
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
-import org.hisp.dhis.android.persistence.category.CategoryOptionTableInfo
+import org.hisp.dhis.android.persistence.category.CategoryOptionStoreImpl
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Test
@@ -40,18 +41,15 @@ import org.junit.Test
 class MultiUserMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
 
     @Test
-    fun connect_to_server_with_2_different_users() {
+    fun connect_to_server_with_2_different_users() = runTest {
         if (d2.userModule().blockingIsLogged()) {
             d2.userModule().blockingLogOut()
         }
 
         dhis2MockServer.enqueueLoginResponses()
         d2.userModule().blockingLogIn("u1", "p1", dhis2MockServer.baseEndpoint)
-        d2.databaseAdapter().insert(
-            CategoryOptionTableInfo.TABLE_INFO.name(),
-            null,
-            CategoryOptionSamples.getCategoryOption().toContentValues(),
-        )
+        val store = CategoryOptionStoreImpl(d2.databaseAdapter())
+        store.insert(CategoryOptionSamples.getCategoryOption())
         assertThat(d2.categoryModule().categoryOptions().blockingCount()).isEqualTo(1)
         d2.userModule().blockingLogOut()
 
@@ -66,17 +64,14 @@ class MultiUserMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
     }
 
     @Test
-    fun connect_to_two_servers() {
+    fun connect_to_two_servers() = runTest {
         if (d2.userModule().blockingIsLogged()) {
             d2.userModule().blockingLogOut()
         }
         dhis2MockServer.enqueueLoginResponses()
         d2.userModule().blockingLogIn("u1", "p1", dhis2MockServer.baseEndpoint)
-        d2.databaseAdapter().insert(
-            CategoryOptionTableInfo.TABLE_INFO.name(),
-            null,
-            CategoryOptionSamples.getCategoryOption().toContentValues(),
-        )
+        val store = CategoryOptionStoreImpl(d2.databaseAdapter())
+        store.insert(CategoryOptionSamples.getCategoryOption())
         assertThat(d2.categoryModule().categoryOptions().blockingCount()).isEqualTo(1)
         d2.userModule().blockingLogOut()
 

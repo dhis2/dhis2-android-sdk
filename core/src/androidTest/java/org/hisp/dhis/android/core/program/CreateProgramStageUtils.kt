@@ -25,68 +25,62 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program
 
-package org.hisp.dhis.android.core.program;
+import org.hisp.dhis.android.core.common.FormType
+import org.hisp.dhis.android.core.common.ObjectWithUid
 
-import android.content.ContentValues;
+object CreateProgramStageUtils {
+    private const val CODE = "test_code"
+    private const val NAME = "test_name"
+    private const val DISPLAY_NAME = "test_display_name"
 
-import org.hisp.dhis.android.core.common.FormType;
-import org.hisp.dhis.android.core.common.IdentifiableColumns;
-import org.hisp.dhis.android.persistence.program.ProgramStageTableInfo;
+    private const val EXECUTION_DATE_LABEL = "test_executionDateLabel"
+    private const val DUE_DATE_LABEL = "test_dueDateLabel"
+    private const val ALLOW_GENERATE_NEXT_VISIT = false
+    private const val VALID_COMPLETE_ONLY = false
+    private const val REPORT_DATE_TO_USE = "test_reportDateToUse"
+    private const val OPEN_AFTER_ENROLLMENT = false
 
-public class CreateProgramStageUtils {
-
-    private static final String CODE = "test_code";
-    private static final String NAME = "test_name";
-    private static final String DISPLAY_NAME = "test_display_name";
-
-    private static final String EXECUTION_DATE_LABEL = "test_executionDateLabel";
-    private static final String DUE_DATE_LABEL = "test_dueDateLabel";
-    private static final Integer ALLOW_GENERATE_NEXT_VISIT = 0;
-    private static final Integer VALID_COMPLETE_ONLY = 0;
-    private static final String REPORT_DATE_TO_USE = "test_reportDateToUse";
-    private static final Integer OPEN_AFTER_ENROLLMENT = 0;
-
-    private static final Integer REPEATABLE = 0;
-    private static final FormType FORM_TYPE = FormType.DEFAULT;
-    private static final Integer DISPLAY_GENERATE_EVENT_BOX = 1;
-    private static final Integer GENERATED_BY_ENROLMENT_DATE = 1;
-    private static final Integer AUTO_GENERATE_EVENT = 0;
-    private static final Integer SORT_ORDER = 0;
-    private static final Integer HIDE_DUE_DATE = 1;
-    private static final Integer BLOCK_ENTRY_FORM = 0;
-    private static final Integer MIN_DAYS_FROM_START = 5;
-    private static final Integer STANDARD_INTERVAL = 7;
+    private const val REPEATABLE = false
+    private val FORM_TYPE = FormType.DEFAULT
+    private const val DISPLAY_GENERATE_EVENT_BOX = true
+    private const val GENERATED_BY_ENROLMENT_DATE = true
+    private const val AUTO_GENERATE_EVENT = false
+    private const val SORT_ORDER = 0
+    private const val HIDE_DUE_DATE = true
+    private const val BLOCK_ENTRY_FORM = false
+    private const val MIN_DAYS_FROM_START = 5
+    private const val STANDARD_INTERVAL = 7
 
     // used for timestamps
-    private static final String DATE = "2017-01-05T15:39:00.000";
+    private const val DATE = "2017-01-05T15:39:00.000"
 
-    public static ContentValues create(String uid, String programId) {
-        ContentValues programStage = new ContentValues();
-        programStage.put(IdentifiableColumns.UID, uid);
-        programStage.put(IdentifiableColumns.CODE, CODE);
-        programStage.put(IdentifiableColumns.NAME, NAME);
-        programStage.put(IdentifiableColumns.DISPLAY_NAME, DISPLAY_NAME);
-        programStage.put(IdentifiableColumns.CREATED, DATE);
-        programStage.put(IdentifiableColumns.LAST_UPDATED, DATE);
-        programStage.put(ProgramStageTableInfo.Columns.DISPLAY_EXECUTION_DATE_LABEL, EXECUTION_DATE_LABEL);
-        programStage.put(ProgramStageTableInfo.Columns.DISPLAY_DUE_DATE_LABEL, DUE_DATE_LABEL);
-        programStage.put(ProgramStageTableInfo.Columns.ALLOW_GENERATE_NEXT_VISIT, ALLOW_GENERATE_NEXT_VISIT);
-        programStage.put(ProgramStageTableInfo.Columns.VALID_COMPLETE_ONLY, VALID_COMPLETE_ONLY);
-        programStage.put(ProgramStageTableInfo.Columns.REPORT_DATE_TO_USE, REPORT_DATE_TO_USE);
-        programStage.put(ProgramStageTableInfo.Columns.OPEN_AFTER_ENROLLMENT, OPEN_AFTER_ENROLLMENT);
-        programStage.put(ProgramStageTableInfo.Columns.REPEATABLE, REPEATABLE);
-        programStage.put(ProgramStageTableInfo.Columns.FORM_TYPE, FORM_TYPE.name());
-        programStage.put(ProgramStageTableInfo.Columns.DISPLAY_GENERATE_EVENT_BOX, DISPLAY_GENERATE_EVENT_BOX);
-        programStage.put(ProgramStageTableInfo.Columns.GENERATED_BY_ENROLLMENT_DATE, GENERATED_BY_ENROLMENT_DATE);
-        programStage.put(ProgramStageTableInfo.Columns.AUTO_GENERATE_EVENT, AUTO_GENERATE_EVENT);
-        programStage.put(ProgramStageTableInfo.Columns.SORT_ORDER, SORT_ORDER);
-        programStage.put(ProgramStageTableInfo.Columns.HIDE_DUE_DATE, HIDE_DUE_DATE);
-        programStage.put(ProgramStageTableInfo.Columns.BLOCK_ENTRY_FORM, BLOCK_ENTRY_FORM);
-        programStage.put(ProgramStageTableInfo.Columns.MIN_DAYS_FROM_START, MIN_DAYS_FROM_START);
-        programStage.put(ProgramStageTableInfo.Columns.STANDARD_INTERVAL, STANDARD_INTERVAL);
-        programStage.put(ProgramStageTableInfo.Columns.PROGRAM, programId);
-
-        return programStage;
+    fun create(uid: String?, programId: String?): ProgramStage {
+        return ProgramStage.builder()
+            .uid(uid)
+            .code(CODE)
+            .name(NAME)
+            .displayName(DISPLAY_NAME)
+            .created(DATE)
+            .lastUpdated(DATE)
+            .executionDateLabel(EXECUTION_DATE_LABEL)
+            .dueDateLabel(DUE_DATE_LABEL)
+            .allowGenerateNextVisit(ALLOW_GENERATE_NEXT_VISIT)
+            .validCompleteOnly(VALID_COMPLETE_ONLY)
+            .reportDateToUse(REPORT_DATE_TO_USE)
+            .openAfterEnrollment(OPEN_AFTER_ENROLLMENT)
+            .repeatable(REPEATABLE)
+            .formType(FORM_TYPE)
+            .displayGenerateEventBox(DISPLAY_GENERATE_EVENT_BOX)
+            .generatedByEnrollmentDate(GENERATED_BY_ENROLMENT_DATE)
+            .autoGenerateEvent(AUTO_GENERATE_EVENT)
+            .sortOrder(SORT_ORDER)
+            .hideDueDate(HIDE_DUE_DATE)
+            .blockEntryForm(BLOCK_ENTRY_FORM)
+            .minDaysFromStart(MIN_DAYS_FROM_START)
+            .standardInterval(STANDARD_INTERVAL)
+            .program(ObjectWithUid.create(programId))
+            .build()
     }
 }

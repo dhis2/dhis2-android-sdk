@@ -29,8 +29,10 @@ package org.hisp.dhis.android.core
 
 import android.util.Log
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.user.User
+import org.junit.Test
 
 class MetadataCallRealIntegrationShould : BaseRealIntegrationTest() {
     /**
@@ -56,7 +58,7 @@ class MetadataCallRealIntegrationShould : BaseRealIntegrationTest() {
     // It depends on a live server to operate and the login is hardcoded here.
     // Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
 
-// @Test
+    @Test
     fun response_successful_on_sync_meta_data_once() {
         d2.userModule().logIn(username, password, url).blockingGet()
 
@@ -91,7 +93,7 @@ class MetadataCallRealIntegrationShould : BaseRealIntegrationTest() {
     }
 
     // @Test
-    fun response_successful_on_login_wipe_db_and_login() {
+    fun response_successful_on_login_wipe_db_and_login() = runTest {
         d2.userModule().logIn(username, password, url).blockingGet()
         d2.wipeModule().wipeEverything()
         d2.userModule().logIn(username, password, url).blockingGet()

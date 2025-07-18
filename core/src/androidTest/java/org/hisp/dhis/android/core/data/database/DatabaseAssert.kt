@@ -27,87 +27,114 @@
  */
 package org.hisp.dhis.android.core.data.database
 
-import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.junit.Assert.fail
+import androidx.room.RoomRawQuery
+import androidx.sqlite.db.SimpleSQLiteQuery
+import junit.framework.Assert.fail
+import org.hisp.dhis.android.persistence.common.daos.D2Dao
+import org.junit.Assert
 
-class DatabaseAssert private constructor(var databaseAdapter: DatabaseAdapter) {
 
-    val isEmpty: DatabaseAssert
-        get() {
-            tablesCount().forEach {
-                if (it.count > 0) { fail("Table ${it.tableName} is not empty") }
+internal class DatabaseAssert private constructor(private val d2Dao: D2Dao) {
+
+
+    // Properties might need to become suspend functions if they do DB work
+    suspend fun isEmpty(): DatabaseAssert {
+        tablesCount().forEach {
+            if (it.count > 0) {
+                fail("Table ${it.tableName} is not empty, count: ${it.count}")
             }
-            return this
         }
-
-    val isNotEmpty: DatabaseAssert
-        get() {
-            assertThat(tablesCount().any { c -> c.count > 0 }).isTrue()
-            return this
-        }
-
-    val isFull: DatabaseAssert
-        get() {
-            tablesCount().forEach {
-                if (it.count <= 0) { fail("Table ${it.tableName} is empty") }
-            }
-            return this
-        }
-
-    fun isEmptyTable(tableName: String): DatabaseAssert {
-        assertThat(tableCount(tableName) == 0).isTrue()
         return this
     }
 
-    fun isNotEmptyTable(tableName: String): DatabaseAssert {
-        assertThat(tableCount(tableName) == 0).isFalse()
+    suspend fun isNotEmpty(): DatabaseAssert {
+        Assert.assertTrue("Database should not be empty", tablesCount().any { c -> c.count > 0 })
         return this
     }
 
-    private fun tablesCount(): List<TableCount> {
-        val excludedTables = listOf("android_metadata", "sqlite_sequence", "Configuration")
+    suspend fun isFull(expectedTables: List<String>? = null): DatabaseAssert {
+        val counts = tablesCount()
+        val tablesWithData = counts.filter { it.count > 0 }.map { it.tableName }
 
-        val cursor = databaseAdapter.rawQuery(
-            " SELECT name FROM sqlite_master WHERE type='table' and " +
-                excludedTables.joinToString(" and ") { "name != '$it'" },
-        )
-
-        val tablesCount = ArrayList<TableCount>()
-        cursor.use { c ->
-            val value = cursor.getColumnIndex("name")
-            if (value != -1 && c.count > 0) {
-                c.moveToFirst()
-                do {
-                    val tableName = cursor.getString(value)
-                    val count = tableCount(tableName)
-
-                    tablesCount.add(TableCount(tableName, count))
-                } while (c.moveToNext())
+        if (expectedTables != null) {
+            expectedTables.forEach { expectedTable ->
+                val tableData = counts.find { it.tableName == expectedTable }
+                if (tableData == null || tableData.count <= 0) {
+                    fail("Table $expectedTable is empty or missing.")
+                }
+            }
+            // Optional: Check if ONLY expected tables have data
+            val unexpectedTablesWithData = tablesWithData.filterNot { expectedTables.contains(it) }
+            if (unexpectedTablesWithData.isNotEmpty()) {
+                fail("Unexpected tables have data: $unexpectedTablesWithData")
+            }
+        } else {
+            // Original "isFull" logic: all non-excluded tables must have some data
+            counts.forEach {
+                if (it.count <= 0) {
+                    fail("Table ${it.tableName} is empty, expected it to be full.")
+                }
             }
         }
-        return tablesCount
+        return this
     }
 
-    private fun tableCount(tableName: String): Int {
-        val cursor = databaseAdapter.rawQuery("SELECT COUNT(*) from $tableName")
+    suspend fun isEmptyTable(tableName: String): DatabaseAssert {
+        val count = tableCount(tableName)
+        Assert.assertTrue("Table $tableName should be empty, but count is $count", count == 0)
+        return this
+    }
 
-        return cursor.use { c ->
-            if (c.count >= 1) {
-                c.moveToFirst()
-                cursor.getInt(0)
-            } else {
-                0
-            }
+    suspend fun isNotEmptyTable(tableName: String): DatabaseAssert {
+        val count = tableCount(tableName)
+        Assert.assertTrue("Table $tableName should not be empty", count > 0)
+        return this
+    }
+
+    private suspend fun tablesCount(): List<TableCount> {
+        val excludedTables =
+            listOf("android_metadata", "sqlite_sequence", "Configuration", "room_master_table") // Add room_master_table
+        val queryBuilder = StringBuilder("SELECT name FROM sqlite_master WHERE type='table'")
+        excludedTables.forEach { excludedTable ->
+            queryBuilder.append(" AND name != '$excludedTable'")
         }
+        queryBuilder.append(" ORDER BY name")
+
+        val tableNames = d2Dao.stringListRawQuery(SimpleSQLiteQuery(queryBuilder.toString()))
+
+        val tablesCountResult = mutableListOf<TableCount>()
+        for (tableName in tableNames) {
+            val count = tableCount(tableName)
+            tablesCountResult.add(TableCount(tableName, count))
+        }
+        return tablesCountResult
+    }
+
+    private suspend fun tableCount(tableName: String): Int {
+        // Important: Table names with special characters might need quoting, but typically
+        // table names from sqlite_master are safe. If not, this part is tricky with SimpleSQLiteQuery.
+        // Room DAOs with @Query("SELECT COUNT(*) FROM ${tableName}") are safer if you could generate DAOs per table,
+        // but that's overkill for a generic assert.
+        // For SimpleSQLiteQuery, ensure `tableName` is sanitized or comes from a trusted source (like sqlite_master).
+        if (!tableName.matches(Regex("^[a-zA-Z_][a-zA-Z0-9_]*$"))) {
+            // Basic sanitization or warning, ideally table names are simple
+            // For true safety against SQL injection if tableName could be arbitrary,
+            // this is complex. But here it's from sqlite_master.
+            println("Warning: Table name '$tableName' might be problematic for direct SQL concatenation if it contains special characters.")
+        }
+        val query = RoomRawQuery("SELECT COUNT(*) FROM `$tableName`") // Use backticks for safety
+        return d2Dao.intRawQuery(query) ?: 0 // Assuming intRawQuery returns Int? or default to 0
     }
 
     companion object {
+        // The factory method doesn't change much, but the methods it returns are now suspend
         @JvmStatic
-        fun assertThatDatabase(databaseAdapter: DatabaseAdapter): DatabaseAssert {
-            return DatabaseAssert(databaseAdapter)
+        fun assertThatDatabase(d2Dao: D2Dao): DatabaseAssert { // Or your KMP DatabaseAdapter
+            return DatabaseAssert(d2Dao)
         }
     }
 
     data class TableCount(val tableName: String, val count: Int)
+
 }
+

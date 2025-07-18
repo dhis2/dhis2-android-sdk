@@ -25,62 +25,51 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataelement
 
-package org.hisp.dhis.android.core.dataelement;
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.common.ValueType
 
-import android.content.ContentValues;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.persistence.dataelement.DataElementTableInfo;
-
-public class CreateDataElementUtils {
-    private static final long ID = 2L;
-    private static final String UID = "test_uid";
-    private static final String CODE = "test_code";
-    private static final String NAME = "test_name";
-    private static final String DISPLAY_NAME = "test_display_name";
-    private static final String SHORT_NAME = "test_short_name";
-    private static final String DISPLAY_SHORT_NAME = "test_display_short_name";
-    private static final String DESCRIPTION = "test_description";
-    private static final String DISPLAY_DESCRIPTION = "test_display_description";
-    private static final ValueType VALUE_TYPE = ValueType.TEXT;
-    private static final Integer ZERO_IS_SIGNIFICANT = 0;
-    private static final String AGGREGATION_OPERATOR = "test_aggregationOperator";
-    private static final String FORM_NAME = "test_formName";
-    private static final String DOMAIN_TYPE = "test_domainType";
-    private static final String DISPLAY_FORM_NAME = "test_displayFormName";
+object CreateDataElementUtils {
+    private const val ID = 2L
+    private const val CODE = "test_code"
+    private const val NAME = "test_name"
+    private const val DISPLAY_NAME = "test_display_name"
+    private const val SHORT_NAME = "test_short_name"
+    private const val DISPLAY_SHORT_NAME = "test_display_short_name"
+    private const val DESCRIPTION = "test_description"
+    private const val DISPLAY_DESCRIPTION = "test_display_description"
+    private val VALUE_TYPE = ValueType.TEXT
+    private const val ZERO_IS_SIGNIFICANT = false
+    private const val AGGREGATION_OPERATOR = "test_aggregationOperator"
+    private const val FORM_NAME = "test_formName"
+    private const val DOMAIN_TYPE = "test_domainType"
+    private const val DISPLAY_FORM_NAME = "test_displayFormName"
 
     // timestamp
-    private static final String DATE = "2014-03-20T13:37:00.007";
+    private const val DATE = "2014-03-20T13:37:00.007"
 
-    public static ContentValues create(@NonNull String uid, @NonNull String categoryComboId, @Nullable String optionSetId) {
-        ContentValues dataElement = new ContentValues();
-        dataElement.put(DataElementTableInfo.Columns.UID, uid);
-        dataElement.put(DataElementTableInfo.Columns.CODE, CODE);
-        dataElement.put(DataElementTableInfo.Columns.NAME, NAME);
-        dataElement.put(DataElementTableInfo.Columns.DISPLAY_NAME, DISPLAY_NAME);
-        dataElement.put(DataElementTableInfo.Columns.CREATED, DATE);
-        dataElement.put(DataElementTableInfo.Columns.LAST_UPDATED, DATE);
-        dataElement.put(DataElementTableInfo.Columns.SHORT_NAME, SHORT_NAME);
-        dataElement.put(DataElementTableInfo.Columns.DISPLAY_SHORT_NAME, DISPLAY_SHORT_NAME);
-        dataElement.put(DataElementTableInfo.Columns.DESCRIPTION, DESCRIPTION);
-        dataElement.put(DataElementTableInfo.Columns.DISPLAY_DESCRIPTION, DISPLAY_DESCRIPTION);
-        dataElement.put(DataElementTableInfo.Columns.VALUE_TYPE, VALUE_TYPE.name());
-        dataElement.put(DataElementTableInfo.Columns.ZERO_IS_SIGNIFICANT, ZERO_IS_SIGNIFICANT);
-        dataElement.put(DataElementTableInfo.Columns.AGGREGATION_TYPE, AGGREGATION_OPERATOR);
-        dataElement.put(DataElementTableInfo.Columns.FORM_NAME, FORM_NAME);
-        dataElement.put(DataElementTableInfo.Columns.DOMAIN_TYPE, DOMAIN_TYPE);
-        dataElement.put(DataElementTableInfo.Columns.DISPLAY_FORM_NAME, DISPLAY_FORM_NAME);
-        dataElement.put(DataElementTableInfo.Columns.CATEGORY_COMBO, categoryComboId);
-        if (optionSetId == null) {
-            dataElement.putNull(DataElementTableInfo.Columns.OPTION_SET);
-        } else {
-            dataElement.put(DataElementTableInfo.Columns.OPTION_SET, optionSetId);
-        }
-
-        return dataElement;
+    fun create(uid: String, categoryComboId: String, optionSetId: String?): DataElement {
+        return DataElement.builder()
+            .id(ID)
+            .uid(uid)
+            .code(CODE)
+            .name(NAME)
+            .displayName(DISPLAY_NAME)
+            .created(DATE)
+            .lastUpdated(DATE)
+            .shortName(SHORT_NAME)
+            .displayShortName(DISPLAY_SHORT_NAME)
+            .description(DESCRIPTION)
+            .displayDescription(DISPLAY_DESCRIPTION)
+            .valueType(VALUE_TYPE)
+            .zeroIsSignificant(ZERO_IS_SIGNIFICANT)
+            .aggregationType(AGGREGATION_OPERATOR)
+            .formName(FORM_NAME)
+            .domainType(DOMAIN_TYPE)
+            .displayFormName(DISPLAY_FORM_NAME)
+            .categoryCombo(ObjectWithUid.create(categoryComboId))
+            .optionSet(ObjectWithUid.create(optionSetId))
+            .build()
     }
 }

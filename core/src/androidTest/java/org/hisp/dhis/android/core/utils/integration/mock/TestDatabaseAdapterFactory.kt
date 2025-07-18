@@ -25,42 +25,40 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.utils.integration.mock
 
-package org.hisp.dhis.android.core.utils.integration.mock;
+import androidx.test.platform.app.InstrumentationRegistry
+import kotlinx.coroutines.runBlocking
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore
+import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
+import org.hisp.dhis.android.persistence.db.access.RoomDatabaseAdapter
+import org.hisp.dhis.android.persistence.db.access.RoomDatabaseManager
 
-import android.content.Context;
 
-import androidx.test.platform.app.InstrumentationRegistry;
+object TestDatabaseAdapterFactory {
+    private val dbName: String = "testDB"
+    private var databaseAdapter: DatabaseAdapter = RoomDatabaseAdapter()
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory;
-import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore;
-
-public class TestDatabaseAdapterFactory {
-    private static String dbName = null;
-    private static DatabaseAdapter databaseAdapter = null;
-
-    public static DatabaseAdapter get() {
-        if (databaseAdapter == null) {
-            databaseAdapter = create();
+    @JvmStatic
+    fun get(): DatabaseAdapter = runBlocking {
+        if (!databaseAdapter.isReady) {
+            create()
         }
-        return databaseAdapter;
+        return@runBlocking databaseAdapter
     }
 
-    public static void tearDown() {
-        if (databaseAdapter != null) {
-            databaseAdapter.close();
-            databaseAdapter = null;
-        }
+    fun tearDown() {
+        databaseAdapter.close()
     }
 
-    private static DatabaseAdapter create() {
-        Context context = InstrumentationRegistry.getInstrumentation().getContext();
-        DatabaseAdapterFactory databaseAdapterFactory = DatabaseAdapterFactory.create(context,
-                new InMemorySecureStore());
-        DatabaseAdapter parentDatabaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter();
-        databaseAdapterFactory.createOrOpenDatabase(parentDatabaseAdapter, dbName,false);
-        parentDatabaseAdapter.setForeignKeyConstraintsEnabled(false);
-        return parentDatabaseAdapter;
+    private suspend fun create() {
+        val context = InstrumentationRegistry.getInstrumentation().context
+        val SecureStore = InMemorySecureStore()
+        val passwordManager = DatabaseEncryptionPasswordManager.create(SecureStore)
+        val databaseManager = RoomDatabaseManager(databaseAdapter, context, passwordManager)
+
+        databaseManager.createOrOpenUnencryptedDatabase(dbName)
+        databaseAdapter.setForeignKeyConstraintsEnabled(false)
     }
 }

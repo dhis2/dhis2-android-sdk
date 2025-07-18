@@ -27,19 +27,22 @@
  */
 package org.hisp.dhis.android.core.configuration.internal
 
+import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.*
 import org.hisp.dhis.android.core.configuration.internal.migration.DatabaseConfigurationInsecureStoreOld
 import org.hisp.dhis.android.core.user.UserCredentials
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.configuration.ConfigurationStoreImpl
 import org.hisp.dhis.android.persistence.configuration.migration.DatabaseServerConfigurationOldDB
 import org.hisp.dhis.android.persistence.configuration.migration.DatabaseUserConfigurationOldDB
 import org.hisp.dhis.android.persistence.configuration.migration.DatabasesConfigurationOldDB
+import org.hisp.dhis.android.persistence.db.access.RoomDatabaseAdapter
+import org.hisp.dhis.android.persistence.db.access.RoomDatabaseManager
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -55,7 +58,9 @@ class DatabaseConfigurationMigrationIntegrationShould {
 
     private val nameGenerator = DatabaseNameGenerator()
     private val renamer = DatabaseRenamer(context)
-    private val databaseAdapterFactory = DatabaseAdapterFactory.create(context, secureStore)
+    private val databaseAdapter: DatabaseAdapter = RoomDatabaseAdapter()
+    private val passwordManager = DatabaseEncryptionPasswordManager.create(secureStore)
+    private val databaseManager = RoomDatabaseManager(databaseAdapter, context, passwordManager)
 
     private val serverUrl = "https://server.org"
     private val serverUrlWithApi = "https://server.org/api/"
@@ -83,7 +88,7 @@ class DatabaseConfigurationMigrationIntegrationShould {
             insecureStore,
             nameGenerator,
             renamer,
-            databaseAdapterFactory,
+            databaseManager,
         )
 
         FileResourceDirectoryHelper.deleteRootFileResourceDirectory(context)
@@ -91,8 +96,7 @@ class DatabaseConfigurationMigrationIntegrationShould {
 
     @Test
     fun delete_empty_database() = runTest {
-        val databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter()
-        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, DatabaseConfigurationMigration.OLD_DBNAME, false)
+        databaseManager.createOrOpenUnencryptedDatabase(DatabaseConfigurationMigration.OLD_DBNAME)
         assertThat(context.databaseList().contains(DatabaseConfigurationMigration.OLD_DBNAME)).isTrue()
 
         migration.apply()
@@ -103,8 +107,7 @@ class DatabaseConfigurationMigrationIntegrationShould {
 
     @Test
     fun rename_database_with_credentials() = runTest {
-        val databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter()
-        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, DatabaseConfigurationMigration.OLD_DBNAME, false)
+        databaseManager.createOrOpenUnencryptedDatabase(DatabaseConfigurationMigration.OLD_DBNAME)
 
         setCredentialsAndServerUrl(databaseAdapter)
         assertThat(context.databaseList().contains(DatabaseConfigurationMigration.OLD_DBNAME)).isTrue()
@@ -113,7 +116,7 @@ class DatabaseConfigurationMigrationIntegrationShould {
         assertThat(context.databaseList().contains(DatabaseConfigurationMigration.OLD_DBNAME)).isFalse()
         assertThat(context.databaseList().contains(newName)).isTrue()
 
-        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, newName, false)
+        databaseManager.createOrOpenUnencryptedDatabase(newName)
         assertThat(getUsernameForOldDatabase(databaseAdapter)).isEqualTo(credentials.username())
 
         assertThat(credentialsSecureStore.get()).isNull()
@@ -121,8 +124,7 @@ class DatabaseConfigurationMigrationIntegrationShould {
 
     @Test
     fun return_empty_new_configuration_if_existing_empty_database() = runTest {
-        val databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter()
-        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, DatabaseConfigurationMigration.OLD_DBNAME, false)
+        databaseManager.createOrOpenUnencryptedDatabase(DatabaseConfigurationMigration.OLD_DBNAME)
 
         migration.apply()
 
@@ -189,17 +191,10 @@ class DatabaseConfigurationMigrationIntegrationShould {
         configurationStore.insert(Configuration.forServerUrl(serverUrl))
     }
 
-    private fun getUsernameForOldDatabase(databaseAdapter: DatabaseAdapter): String? {
-        val cursor = databaseAdapter.rawQuery("SELECT username FROM UserCredentials")
-        var username: String? = null
+    private suspend fun getUsernameForOldDatabase(databaseAdapter: DatabaseAdapter): String? {
+        val d2Dao = databaseAdapter.getCurrentDatabase().d2Dao()
+        val nameList = d2Dao.stringListRawQuery(SimpleSQLiteQuery("SELECT username FROM UserCredentials"))
 
-        cursor.use {
-            if (cursor.count > 0) {
-                cursor.moveToFirst()
-                username = it.getString(0)
-            }
-        }
-
-        return username
+        return nameList.first()
     }
 }

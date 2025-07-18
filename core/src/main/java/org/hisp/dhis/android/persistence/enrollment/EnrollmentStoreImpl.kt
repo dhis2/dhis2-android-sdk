@@ -43,9 +43,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class EnrollmentStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : EnrollmentStore, IdentifiableDeletableDataObjectStoreImpl<Enrollment, EnrollmentDB>(
-    { databaseAdapter.getCurrentDatabase()?.enrollmentDao()!! },
+    { databaseAdapter.getCurrentDatabase().enrollmentDao() },
     Enrollment::toDB,
     IdentifiableDeletableDataObjectSQLStatementBuilderImpl(EnrollmentTableInfo.TABLE_INFO),
 ) {

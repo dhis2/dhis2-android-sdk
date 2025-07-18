@@ -27,18 +27,18 @@
  */
 package org.hisp.dhis.android.core.legendset.internal
 
+import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
+import org.hisp.dhis.android.core.wipe.internal.TableWiper
 import org.hisp.dhis.android.persistence.legendset.LegendSetTableInfo
 import org.hisp.dhis.android.persistence.legendset.LegendTableInfo
 import org.hisp.dhis.android.persistence.legendset.ProgramIndicatorLegendSetLinkTableInfo
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
-import org.hisp.dhis.android.core.wipe.internal.TableWiper
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class LegendSetModuleWiper(
     private val tableWiper: TableWiper,
 ) : ModuleWiper {
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         tableWiper.wipeTables(
             LegendTableInfo.TABLE_INFO,
             LegendSetTableInfo.TABLE_INFO,
@@ -46,7 +46,7 @@ internal class LegendSetModuleWiper(
         )
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         // No metadata to wipe
     }
 }

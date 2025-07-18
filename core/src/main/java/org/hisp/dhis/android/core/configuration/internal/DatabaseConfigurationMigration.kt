@@ -29,13 +29,13 @@ package org.hisp.dhis.android.core.configuration.internal
 
 import android.content.Context
 import android.database.sqlite.SQLiteException
+import androidx.sqlite.db.SimpleSQLiteQuery
 import org.hisp.dhis.android.BuildConfig
-import org.hisp.dhis.android.core.arch.db.access.BaseDatabaseAdapterFactory
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
 import org.hisp.dhis.android.core.configuration.internal.migration.DatabaseConfigurationInsecureStoreOld
-import org.hisp.dhis.android.core.configuration.internal.migration.Migration260
 import org.hisp.dhis.android.persistence.configuration.ConfigurationStoreImpl
 import org.koin.core.annotation.Singleton
 
@@ -47,7 +47,7 @@ internal class DatabaseConfigurationMigration(
     private val insecureStore: InsecureStore,
     private val nameGenerator: DatabaseNameGenerator,
     private val renamer: DatabaseRenamer,
-    private val databaseAdapterFactory: BaseDatabaseAdapterFactory,
+    private val databaseManager: DatabaseManager,
 ) {
     @Suppress("TooGenericExceptionCaught")
     suspend fun apply() {
@@ -56,12 +56,7 @@ internal class DatabaseConfigurationMigration(
 
         if (oldDatabaseExist) {
             // This is the initial database in the SDK, named like OLD_DBNAME.
-            val databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter()
-            databaseAdapterFactory.createOrOpenDatabase(
-                databaseAdapter,
-                OLD_DBNAME,
-                false,
-            )
+            val databaseAdapter = databaseManager.createOrOpenUnencryptedDatabase(OLD_DBNAME)
             val username = getUsernameForOldDatabase(databaseAdapter)
             val serverUrl = getServerUrl(databaseAdapter)
             databaseAdapter.close()
@@ -96,9 +91,9 @@ internal class DatabaseConfigurationMigration(
             databaseConfigurationStore.set(DatabasesConfiguration.builder().build())
         }
 
-        if (existingVersionCode == null) {
-            Migration260(context, databaseConfigurationStore, databaseAdapterFactory).apply()
-        }
+//        if (existingVersionCode == null) {
+//            Migration260(context, databaseConfigurationStore, databaseAdapterFactory).apply()
+//        }
     }
 
     private fun migrateVersionCodeIfNeeded(configuration: DatabasesConfiguration) {
@@ -126,19 +121,11 @@ internal class DatabaseConfigurationMigration(
         }
     }
 
-    private fun getUsernameForOldDatabase(databaseAdapter: DatabaseAdapter): String? {
+    private suspend fun getUsernameForOldDatabase(databaseAdapter: DatabaseAdapter): String? {
         return try {
-            val cursor = databaseAdapter.rawQuery("SELECT username FROM UserCredentials")
-            var username: String? = null
-
-            cursor.use {
-                if (cursor.count > 0) {
-                    cursor.moveToFirst()
-                    username = it.getString(0)
-                }
-            }
-
-            username
+            val d2Dao = databaseAdapter.getCurrentDatabase().d2Dao()
+            val roomQuery = SimpleSQLiteQuery("SELECT username FROM UserCredentials")
+            d2Dao.queryStringValue(roomQuery)
         } catch (e: SQLiteException) {
             return null
         }

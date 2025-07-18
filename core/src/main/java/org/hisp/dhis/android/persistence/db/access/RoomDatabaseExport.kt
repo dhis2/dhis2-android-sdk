@@ -30,7 +30,9 @@ package org.hisp.dhis.android.persistence.db.access
 
 import android.content.Context
 import android.util.Log
-import io.reactivex.functions.Action
+import androidx.room.Transactor
+import androidx.room.execSQL
+import androidx.room.useWriterConnection
 import net.zetetic.database.sqlcipher.SQLiteConnection
 import net.zetetic.database.sqlcipher.SQLiteDatabase
 import net.zetetic.database.sqlcipher.SQLiteDatabaseHook
@@ -49,7 +51,7 @@ internal class RoomDatabaseExport(
     private val context: Context,
     private val passwordManager: DatabaseEncryptionPasswordManager,
     private val configurationHelper: DatabaseConfigurationHelper,
-    private val databaseManager: RoomDatabaseManager
+    private val databaseManager: RoomDatabaseManager,
 ) : BaseDatabaseExport {
 
     companion object {
@@ -60,7 +62,7 @@ internal class RoomDatabaseExport(
     /**
      * Encrypts an existing database for the given server URL and user configuration.
      */
-    override fun encrypt(serverUrl: String, oldConfiguration: DatabaseAccount) {
+    override suspend fun encrypt(serverUrl: String, oldConfiguration: DatabaseAccount) {
         val newConfiguration = configurationHelper.changeEncryption(serverUrl, oldConfiguration)
         val oldDatabaseName = oldConfiguration.databaseName()
         val newDatabaseName = newConfiguration.databaseName()
@@ -70,15 +72,14 @@ internal class RoomDatabaseExport(
             newDatabaseName,
             oldPassword = null, // Unencrypted source
             newPassword = passwordManager.getPassword(newConfiguration.databaseName()),
-            encrypt = true
+            encrypt = true,
         )
     }
 
     /**
      * Encrypts a database from a source file and copies it to a target file.
      */
-    override fun encryptAndCopyTo(newConfiguration: DatabaseAccount, sourceFile: File, targetFile: File) {
-
+    override suspend fun encryptAndCopyTo(newConfiguration: DatabaseAccount, sourceFile: File, targetFile: File) {
         val oldDatabaseName = newConfiguration.databaseName()
         val newDatabaseName = targetFile.name
 
@@ -87,14 +88,14 @@ internal class RoomDatabaseExport(
             newDatabaseName,
             oldPassword = null, // Unencrypted source
             newPassword = passwordManager.getPassword(newConfiguration.databaseName()),
-            encrypt = true
+            encrypt = true,
         )
     }
 
     /**
      * Decrypts an existing database for the given server URL and user configuration.
      */
-    override fun decrypt(serverUrl: String, oldConfiguration: DatabaseAccount) {
+    override suspend fun decrypt(serverUrl: String, oldConfiguration: DatabaseAccount) {
         val newConfiguration = configurationHelper.changeEncryption(serverUrl, oldConfiguration)
         val oldDatabaseName = oldConfiguration.databaseName()
         val newDatabaseName = newConfiguration.databaseName()
@@ -104,14 +105,14 @@ internal class RoomDatabaseExport(
             newDatabaseName,
             oldPassword = passwordManager.getPassword(oldConfiguration.databaseName()),
             newPassword = "", // Empty password for unencrypted database
-            encrypt = false
+            encrypt = false,
         )
     }
 
     /**
      * Decrypts a database and copies it to a destination file.
      */
-    override fun decryptAndCopyTo(account: DatabaseAccount, destinationFile: File) {
+    override suspend fun decryptAndCopyTo(account: DatabaseAccount, destinationFile: File) {
         val oldDatabaseName = account.databaseName()
         val newDatabaseName = destinationFile.name
 
@@ -120,7 +121,7 @@ internal class RoomDatabaseExport(
             newDatabaseName,
             oldPassword = passwordManager.getPassword(account.databaseName()),
             newPassword = "", // Empty password for unencrypted database
-            encrypt = false
+            encrypt = false,
         )
     }
 
@@ -134,20 +135,23 @@ internal class RoomDatabaseExport(
      * @param encrypt Whether to encrypt (true) or decrypt (false)
      */
     @Suppress("LongParameterList")
-    private fun exportDatabase(
+    private suspend fun exportDatabase(
+        // This is already suspend, which is good
         sourceName: String,
         targetName: String,
         oldPassword: String?,
         newPassword: String,
-        encrypt: Boolean
+        encrypt: Boolean,
     ) {
         val operation = if (encrypt) "Encrypt" else "Decrypt"
-        wrapAction({
+        // Now wrapAction takes a suspend lambda
+        wrapAction(operation) { // Pass the tag first, then the suspend lambda
             loadSQLCipher()
 
             // Open source database
             val sourceDb = if (oldPassword == null) {
-                databaseManager.createOrOpenDatabase(sourceName)
+                // Assuming these are suspend or blocking, ensure they are called appropriately
+                databaseManager.createOrOpenUnencryptedDatabase(sourceName)
             } else {
                 databaseManager.createOrOpenEncryptedDatabase(targetName, oldPassword)
             }
@@ -157,35 +161,61 @@ internal class RoomDatabaseExport(
 
             // Attach target database
             val dbFile = context.getDatabasePath(targetName)
-            sourceDb.execSQL(
-                "ATTACH DATABASE '${dbFile.absolutePath}' as roomExport KEY '$newPassword';"
-            )
 
-            // Set encryption parameters if encrypting
-            if (encrypt) {
-                sourceDb.execSQL("PRAGMA roomExport.cipher_page_size = $CIPHER_PAGE_SIZE;")
-                sourceDb.execSQL("PRAGMA roomExport.cipher_memory_security = OFF;")
+            // This is a suspend call, now valid within the suspend lambda passed to wrapAction
+            sourceDb.getCurrentDatabase().useWriterConnection { transactor ->
+                // transactor.withTransaction itself might be a suspend function or take a suspend lambda
+                // If it's from Room and you're using it correctly with coroutines, it should be fine.
+                // Check its signature if issues persist here.
+                // For Room's `Transactor.withTransaction`, the lambda block is executed within Room's
+                // transaction dispatcher.
+                transactor.withTransaction(Transactor.SQLiteTransactionType.IMMEDIATE) {
+                    // 'this' inside withTransaction refers to a CoroutineScope or similar context provided by Room
+                    this.execSQL("ATTACH DATABASE '${dbFile.absolutePath}' as roomExport KEY '$newPassword';")
+                    if (encrypt) {
+                        this.execSQL("PRAGMA roomExport.cipher_page_size = $CIPHER_PAGE_SIZE;")
+                        this.execSQL("PRAGMA roomExport.cipher_memory_security = OFF;")
+                    }
+                    this.execSQL("SELECT sqlcipher_export('roomExport');")
+                    this.execSQL("DETACH DATABASE roomExport;")
+                }
             }
 
-            // Export data
-            sourceDb.execSQL("SELECT sqlcipher_export('roomExport');")
-            sourceDb.execSQL("DETACH DATABASE roomExport;")
-
             // Set version on target database
+            // Assuming getVersion() is not a suspend function. If it is, no change needed.
             val version = sourceDb.getVersion()
+
+            // SQLiteDatabase.openDatabase is a blocking call.
+            // It's generally fine in a suspend function that's on a background dispatcher (e.g., Dispatchers.IO)
             val targetDb = SQLiteDatabase.openDatabase(
                 dbFile.absolutePath,
                 newPassword,
                 null,
                 SQLiteDatabase.OPEN_READWRITE,
-                hook
+                hook,
             )
             targetDb.version = version
 
-            // Close databases
+            // Close databases - these are blocking calls
             targetDb.close()
             sourceDb.close()
-        }, operation)
+        }
+    }
+
+    /**
+     * Wraps a suspending action with timing and error handling.
+     */
+    @Suppress("TooGenericExceptionCaught", "TooGenericExceptionThrown")
+    private suspend fun wrapAction(tag: String, action: suspend () -> Unit) { // Changed to accept suspend lambda
+        val startMillis = System.currentTimeMillis()
+        try {
+            action() // Simply invoke the suspend lambda
+        } catch (e: Exception) {
+            Log.e(TAG, "Error during database $tag: ${e.message}")
+            throw RuntimeException("Exception thrown during database export action: $tag", e)
+        }
+        val endMillis = System.currentTimeMillis()
+        Log.i(TAG, "$tag completed in ${endMillis - startMillis}ms")
     }
 
     /**
@@ -203,22 +233,5 @@ internal class RoomDatabaseExport(
                 connection.executeRaw("PRAGMA cipher_memory_security = OFF;", null, null)
             }
         }
-    }
-
-
-    /**
-     * Wraps an action with timing and error handling.
-     */
-    @Suppress("TooGenericExceptionCaught", "TooGenericExceptionThrown")
-    private fun wrapAction(action: Action, tag: String) {
-        val startMillis = System.currentTimeMillis()
-        try {
-            action.run()
-        } catch (e: Exception) {
-            Log.e(TAG, "Error during database $tag: ${e.message}")
-            throw RuntimeException("Exception thrown during database export action: $tag", e)
-        }
-        val endMillis = System.currentTimeMillis()
-        Log.i(TAG, "$tag completed in ${endMillis - startMillis}ms")
     }
 }

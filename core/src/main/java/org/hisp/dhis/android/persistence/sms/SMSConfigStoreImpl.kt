@@ -40,9 +40,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class SMSConfigStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : SMSConfigStore, ObjectWithoutUidStoreImpl<KeyValuePair, SMSConfigDB>(
-    { databaseAdapter.getCurrentDatabase()?.SMSConfigDao()!! },
+    { databaseAdapter.getCurrentDatabase().SMSConfigDao() },
     KeyValuePair::toDB,
     SQLStatementBuilderImpl(SMSConfigTableInfo.TABLE_INFO),
 ) {

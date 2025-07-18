@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class UserRoleStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : UserRoleStore, IdentifiableObjectStoreImpl<UserRole, UserRoleDB>(
-    { databaseAdapter.getCurrentDatabase()?.userRoleDao()!! },
+    { databaseAdapter.getCurrentDatabase().userRoleDao() },
     UserRole::toDB,
     SQLStatementBuilderImpl(UserRoleTableInfo.TABLE_INFO),
 )

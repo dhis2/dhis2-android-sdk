@@ -41,7 +41,7 @@ internal class AttributeUidsSeeker(
     databaseAdapter: DatabaseAdapter,
 ) : BaseUidsSeeker(databaseAdapter) {
 
-    fun seekUids(): Set<String> {
+    suspend fun seekUids(): Set<String> {
         val tableNames = listOf(
             DataElementAttributeValueLinkTableInfo.TABLE_INFO.name(),
             ProgramAttributeValueLinkTableInfo.TABLE_INFO.name(),

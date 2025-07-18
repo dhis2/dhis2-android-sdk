@@ -36,11 +36,11 @@ import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipItem
 import org.hisp.dhis.android.core.relationship.RelationshipItemEnrollment
 import org.hisp.dhis.android.core.relationship.RelationshipItemEvent
-import org.hisp.dhis.android.persistence.relationship.RelationshipItemTableInfo
 import org.hisp.dhis.android.core.relationship.RelationshipItemTrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePersistenceCallFactory
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
+import org.hisp.dhis.android.persistence.relationship.RelationshipItemTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.network.enrollment
 
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo.Columns
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.relationship.Relationship
@@ -37,6 +36,7 @@ import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.event.EventFields
 import org.hisp.dhis.android.network.note.NoteFields
 import org.hisp.dhis.android.network.relationship.RelationshipFields
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo.Columns
 
 internal object EnrollmentFields : BaseFields<Enrollment>() {
     const val UID = "enrollment"
@@ -68,7 +68,7 @@ internal object EnrollmentFields : BaseFields<Enrollment>() {
         fh.field(Columns.ENROLLMENT_DATE),
         fh.field(Columns.INCIDENT_DATE),
         fh.field(Columns.COMPLETED_DATE),
-        fh.field(Columns.FOLLOW_UP),
+        fh.field(Columns.FOLLOWUP),
         fh.field(Columns.STATUS),
         fh.field(DELETED),
         fh.field(Columns.TRACKED_ENTITY_INSTANCE),

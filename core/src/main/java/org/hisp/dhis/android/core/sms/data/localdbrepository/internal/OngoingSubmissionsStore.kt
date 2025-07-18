@@ -36,6 +36,7 @@ import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository.TooManySubmissionsException
 import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType
+import org.hisp.dhis.android.persistence.sms.SMSOngoingSubmissionTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

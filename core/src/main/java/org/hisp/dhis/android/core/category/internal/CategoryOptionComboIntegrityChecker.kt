@@ -43,7 +43,7 @@ internal class CategoryOptionComboIntegrityChecker(
      * access the CategoryOptionCombo linked to that CategoryOption.
      * This function removes those incomplete CategoryOptionCombos from the database.
      */
-    fun removeIncompleteCategoryOptionCombos() {
+    suspend fun removeIncompleteCategoryOptionCombos() {
         val notExistsInCategoryOptionSql =
             "SELECT ${CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION} " +
                 "FROM ${CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO.name()} " +

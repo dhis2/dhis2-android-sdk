@@ -43,7 +43,7 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackedEntityModuleWiper(private val tableWiper: TableWiper) : ModuleWiper {
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         tableWiper.wipeTables(
             ProgramTempOwnerTableInfo.TABLE_INFO,
             TrackedEntityAttributeTableInfo.TABLE_INFO,
@@ -53,7 +53,7 @@ internal class TrackedEntityModuleWiper(private val tableWiper: TableWiper) : Mo
         )
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         tableWiper.wipeTables(
             TrackedEntityInstanceTableInfo.TABLE_INFO,
             TrackedEntityInstanceSyncTableInfo.TABLE_INFO,

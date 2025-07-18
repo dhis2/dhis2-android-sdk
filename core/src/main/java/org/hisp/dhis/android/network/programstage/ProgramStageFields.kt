@@ -33,13 +33,13 @@ import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.ProgramStageDataElement
 import org.hisp.dhis.android.core.program.ProgramStageSection
-import org.hisp.dhis.android.persistence.program.ProgramStageTableInfo.Columns
 import org.hisp.dhis.android.network.attribute.AttributeValueFields
 import org.hisp.dhis.android.network.common.fields.AccessFields
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.DataAccessFields
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.fields.ObjectStyleFields
+import org.hisp.dhis.android.persistence.program.ProgramStageTableInfo.Columns
 
 internal object ProgramStageFields : BaseFields<ProgramStage>() {
     private const val PROGRAM_STAGE_DATA_ELEMENTS = "programStageDataElements"
@@ -66,7 +66,7 @@ internal object ProgramStageFields : BaseFields<ProgramStage>() {
         fh.field(Columns.FEATURE_TYPE),
         fh.field(Columns.FORM_TYPE),
         fh.field(Columns.DISPLAY_GENERATE_EVENT_BOX),
-        fh.field(Columns.GENERATED_BY_ENROLMENT_DATE),
+        fh.field(Columns.GENERATED_BY_ENROLLMENT_DATE),
         fh.field(Columns.AUTO_GENERATE_EVENT),
         fh.field(Columns.SORT_ORDER),
         fh.field(Columns.HIDE_DUE_DATE),

@@ -36,13 +36,13 @@ import org.koin.core.annotation.Singleton
 internal class AttributeModuleWiper(
     private val tableWiper: TableWiper,
 ) : ModuleWiper {
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         tableWiper.wipeTables(
             AttributeTableInfo.TABLE_INFO,
         )
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         // No data to wipe
     }
 }

@@ -27,20 +27,20 @@
  */
 package org.hisp.dhis.android.core.period.internal
 
-import org.hisp.dhis.android.persistence.period.PeriodTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import org.hisp.dhis.android.persistence.period.PeriodTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class PeriodModuleWiper(
     private val tableWiper: TableWiper,
 ) : ModuleWiper {
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         tableWiper.wipeTables(PeriodTableInfo.TABLE_INFO)
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         // No metadata to wipe
     }
 }

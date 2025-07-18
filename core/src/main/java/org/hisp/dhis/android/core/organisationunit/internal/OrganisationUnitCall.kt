@@ -32,8 +32,8 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
-import org.hisp.dhis.android.persistence.user.UserOrganisationUnitLinkTableInfo
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import org.hisp.dhis.android.persistence.user.UserOrganisationUnitTableInfo
 import org.koin.core.annotation.Singleton
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -66,7 +66,7 @@ internal class OrganisationUnitCall(
         )
         val assignedOrgunitIds = userOrganisationUnitLinkStore
             .selectStringColumnsWhereClause(
-                UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
+                UserOrganisationUnitTableInfo.Columns.ORGANISATION_UNIT,
                 "1",
             )
         collectionCleaner.deleteNotPresentByUid(assignedOrgunitIds)

@@ -31,7 +31,6 @@ import org.hisp.dhis.android.core.datastore.DataStoreCollectionRepository
 import org.hisp.dhis.android.core.datastore.DataStoreDownloader
 import org.hisp.dhis.android.core.datastore.DataStoreModule
 import org.hisp.dhis.android.core.datastore.LocalDataStoreCollectionRepository
-import org.koin.core.annotation.Singleton
 
 internal class DataStoreModuleImpl(
     private val localDataStore: LocalDataStoreCollectionRepository,

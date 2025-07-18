@@ -44,9 +44,9 @@ import org.koin.core.annotation.Singleton
 @Singleton
 @Suppress("TooManyFunctions")
 internal class TrackedEntityDataValueStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : TrackedEntityDataValueStore, ObjectWithoutUidStoreImpl<TrackedEntityDataValue, TrackedEntityDataValueDB>(
-    { databaseAdapter.getCurrentDatabase()?.trackedEntityDataValueDao()!! },
+    { databaseAdapter.getCurrentDatabase().trackedEntityDataValueDao() },
     TrackedEntityDataValue::toDB,
     SQLStatementBuilderImpl(TrackedEntityDataValueTableInfo.TABLE_INFO),
 ) {

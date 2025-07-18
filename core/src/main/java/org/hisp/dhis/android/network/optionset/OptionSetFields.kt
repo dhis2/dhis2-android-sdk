@@ -28,10 +28,10 @@
 package org.hisp.dhis.android.network.optionset
 
 import org.hisp.dhis.android.core.option.OptionSet
-import org.hisp.dhis.android.persistence.option.OptionSetTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Field
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.persistence.option.OptionSetTableInfo.Columns
 
 internal object OptionSetFields : BaseFields<OptionSet>() {
     val uid: Field<OptionSet> = fh.uid()

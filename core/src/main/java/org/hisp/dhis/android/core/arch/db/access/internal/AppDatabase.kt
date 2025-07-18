@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.db.access.internal
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import org.hisp.dhis.android.persistence.attribute.AttributeDB
 import org.hisp.dhis.android.persistence.attribute.AttributeDao
 import org.hisp.dhis.android.persistence.attribute.DataElementAttributeValueLinkDB
@@ -54,6 +55,8 @@ import org.hisp.dhis.android.persistence.category.CategoryOptionDB
 import org.hisp.dhis.android.persistence.category.CategoryOptionDao
 import org.hisp.dhis.android.persistence.category.CategoryOptionOrganisationUnitLinkDB
 import org.hisp.dhis.android.persistence.category.CategoryOptionOrganisationUnitLinkDao
+import org.hisp.dhis.android.persistence.common.AccessDBTypeConverter
+import org.hisp.dhis.android.persistence.common.daos.D2Dao
 import org.hisp.dhis.android.persistence.configuration.ConfigurationDB
 import org.hisp.dhis.android.persistence.configuration.ConfigurationDao
 import org.hisp.dhis.android.persistence.constant.ConstantDB
@@ -252,7 +255,6 @@ import org.hisp.dhis.android.persistence.systeminfo.SystemInfoDB
 import org.hisp.dhis.android.persistence.systeminfo.SystemInfoDao
 import org.hisp.dhis.android.persistence.trackedentity.AttributeValueFilterDB
 import org.hisp.dhis.android.persistence.trackedentity.AttributeValueFilterDao
-import org.hisp.dhis.android.persistence.trackedentity.EntityQueryCriteriaDB
 import org.hisp.dhis.android.persistence.trackedentity.ProgramOwnerDB
 import org.hisp.dhis.android.persistence.trackedentity.ProgramOwnerDao
 import org.hisp.dhis.android.persistence.trackedentity.ProgramTempOwnerDB
@@ -426,7 +428,6 @@ import org.hisp.dhis.android.persistence.visualization.VisualizationDimensionIte
         SMSOngoingSubmissionDB::class,
         SystemInfoDB::class,
         AttributeValueFilterDB::class,
-        EntityQueryCriteriaDB::class,
         ProgramOwnerDB::class,
         ProgramTempOwnerDB::class,
         ReservedValueSettingDB::class,
@@ -458,153 +459,157 @@ import org.hisp.dhis.android.persistence.visualization.VisualizationDimensionIte
         VisualizationDB::class,
         VisualizationDimensionItemDB::class,
     ],
-    version = BaseDatabaseOpenHelper.VERSION
+    version = AppDatabase.VERSION,
 )
-internal abstract class AppDatabase : RoomDatabase() {
-    abstract fun attributeDao(): AttributeDao
-    abstract fun dataElementAttributeValueLinkDao(): DataElementAttributeValueLinkDao
-    abstract fun programAttributeValueLinkDao(): ProgramAttributeValueLinkDao
-    abstract fun programStageAttributeValueLinkDao(): ProgramStageAttributeValueLinkDao
-    abstract fun categoryCategoryComboLinkDao(): CategoryCategoryComboLinkDao
-    abstract fun categoryCategoryOptionLinkDao(): CategoryCategoryOptionLinkDao
-    abstract fun categoryComboDao(): CategoryComboDao
-    abstract fun categoryDao(): CategoryDao
-    abstract fun categoryOptionComboCategoryOptionLinkDao(): CategoryOptionComboCategoryOptionLinkDao
-    abstract fun categoryOptionComboDao(): CategoryOptionComboDao
-    abstract fun categoryOptionDao(): CategoryOptionDao
-    abstract fun categoryOptionOrganisationUnitLinkDao(): CategoryOptionOrganisationUnitLinkDao
-    abstract fun configurationDao(): ConfigurationDao
-    abstract fun constantDao(): ConstantDao
-    abstract fun dataApprovalDao(): DataApprovalDao
-    abstract fun dataElementDao(): DataElementDao
-    abstract fun dataElementOperandDao(): DataElementOperandDao
-    abstract fun dataInputPeriodDao(): DataInputPeriodDao
-    abstract fun dataSetCompleteRegistrationDao(): DataSetCompleteRegistrationDao
-    abstract fun dataSetCompulsoryDataElementOperandLinkDao(): DataSetCompulsoryDataElementOperandLinkDao
-    abstract fun dataSetDao(): DataSetDao
-    abstract fun dataSetDataElementLinkDao(): DataSetDataElementLinkDao
-    abstract fun dataSetInstanceDao(): DataSetInstanceDao
-    abstract fun dataSetInstanceSummaryDao(): DataSetInstanceSummaryDao
-    abstract fun dataSetOrganisationUnitLinkDao(): DataSetOrganisationUnitLinkDao
-    abstract fun sectionDao(): SectionDao
-    abstract fun sectionDataElementLinkDao(): SectionDataElementLinkDao
-    abstract fun sectionGreyedFieldsLinkDao(): SectionGreyedFieldsLinkDao
-    abstract fun sectionIndicatorLinkDao(): SectionIndicatorLinkDao
-    abstract fun dataStoreDao(): DataStoreDao
-    abstract fun localDataStoreDao(): LocalDataStoreDao
-    abstract fun dataValueConflictDao(): DataValueConflictDao
-    abstract fun dataValueDao(): DataValueDao
-    abstract fun aggregatedDataSyncDao(): AggregatedDataSyncDao
-    abstract fun enrollmentDao(): EnrollmentDao
-    abstract fun eventDao(): EventDao
-    abstract fun eventDataFilterDao(): EventDataFilterDao
-    abstract fun eventFilterDao(): EventFilterDao
-    abstract fun eventSyncDao(): EventSyncDao
-    abstract fun expressionDimensionItemDao(): ExpressionDimensionItemDao
-    abstract fun fileResourceDao(): FileResourceDao
-    abstract fun customIconDao(): CustomIconDao
-    abstract fun trackerImportConflictDao(): TrackerImportConflictDao
-    abstract fun dataSetIndicatorLinkDao(): DataSetIndicatorLinkDao
-    abstract fun indicatorDao(): IndicatorDao
-    abstract fun indicatorTypeDao(): IndicatorTypeDao
-    abstract fun dataElementLegendSetLinkDao(): DataElementLegendSetLinkDao
-    abstract fun indicatorLegendSetLinkDao(): IndicatorLegendSetLinkDao
-    abstract fun legendDao(): LegendDao
-    abstract fun legendSetDao(): LegendSetDao
-    abstract fun programIndicatorLegendSetLinkDao(): ProgramIndicatorLegendSetLinkDao
-    abstract fun d2ErrorDao(): D2ErrorDao
-    abstract fun foreignKeyViolationDao(): ForeignKeyViolationDao
-    abstract fun mapLayerDao(): MapLayerDao
-    abstract fun mapLayerImageryProviderDao(): MapLayerImageryProviderDao
-    abstract fun noteDao(): NoteDao
-    abstract fun optionDao(): OptionDao
-    abstract fun optionGroupDao(): OptionGroupDao
-    abstract fun optionGroupOptionLinkDao(): OptionGroupOptionLinkDao
-    abstract fun optionSetDao(): OptionSetDao
-    abstract fun organisationUnitDao(): OrganisationUnitDao
-    abstract fun organisationUnitGroupDao(): OrganisationUnitGroupDao
-    abstract fun organisationUnitLevelDao(): OrganisationUnitLevelDao
-    abstract fun organisationUnitOrganisationUnitGroupLinkDao(): OrganisationUnitOrganisationUnitGroupLinkDao
-    abstract fun organisationUnitProgramLinkDao(): OrganisationUnitProgramLinkDao
-    abstract fun periodDao(): PeriodDao
-    abstract fun analyticsPeriodBoundaryDao(): AnalyticsPeriodBoundaryDao
-    abstract fun programDao(): ProgramDao
-    abstract fun programIndicatorDao(): ProgramIndicatorDao
-    abstract fun programRuleActionDao(): ProgramRuleActionDao
-    abstract fun programRuleDao(): ProgramRuleDao
-    abstract fun programRuleVariableDao(): ProgramRuleVariableDao
-    abstract fun programSectionAttributeLinkDao(): ProgramSectionAttributeLinkDao
-    abstract fun programSectionDao(): ProgramSectionDao
-    abstract fun programStageDao(): ProgramStageDao
-    abstract fun programStageDataElementDao(): ProgramStageDataElementDao
-    abstract fun programStageSectionDao(): ProgramStageSectionDao
-    abstract fun programStageSectionDataElementLinkDao(): ProgramStageSectionDataElementLinkDao
-    abstract fun programStageSectionProgramIndicatorLinkDao(): ProgramStageSectionProgramIndicatorLinkDao
-    abstract fun programTrackedEntityAttributeDao(): ProgramTrackedEntityAttributeDao
-    abstract fun programStageWorkingListAttributeValueFilterDao(): ProgramStageWorkingListAttributeValueFilterDao
-    abstract fun programStageWorkingListDao(): ProgramStageWorkingListDao
-    abstract fun programStageWorkingListEventDataFilterDao(): ProgramStageWorkingListEventDataFilterDao
-    abstract fun relationshipConstraintDao(): RelationshipConstraintDao
-    abstract fun relationshipDao(): RelationshipDao
-    abstract fun relationshipItemDao(): RelationshipItemDao
-    abstract fun relationshipTypeDao(): RelationshipTypeDao
-    abstract fun resourceDao(): ResourceDao
-    abstract fun analyticsDhisVisualizationDao(): AnalyticsDhisVisualizationDao
-    abstract fun analyticsTeiAttributeDao(): AnalyticsTeiAttributeDao
-    abstract fun analyticsTeiDataElementDao(): AnalyticsTeiDataElementDao
-    abstract fun analyticsTeiIndicatorDao(): AnalyticsTeiIndicatorDao
-    abstract fun analyticsTeiSettingDao(): AnalyticsTeiSettingDao
-    abstract fun analyticsTeiWHONutritionDataDao(): AnalyticsTeiWHONutritionDataDao
-    abstract fun customIntentAttributeDao(): CustomIntentAttributeDao
-    abstract fun customIntentDao(): CustomIntentDao
-    abstract fun customIntentDataElementDao(): CustomIntentDataElementDao
-    abstract fun dataSetConfigurationSettingDao(): DataSetConfigurationSettingDao
-    abstract fun dataSetSettingDao(): DataSetSettingDao
-    abstract fun filterSettingDao(): FilterSettingDao
-    abstract fun generalSettingDao(): GeneralSettingDao
-    abstract fun latestAppVersionDao(): LatestAppVersionDao
-    abstract fun programConfigurationSettingDao(): ProgramConfigurationSettingDao
-    abstract fun programSettingDao(): ProgramSettingDao
-    abstract fun synchronizationSettingDao(): SynchronizationSettingDao
-    abstract fun systemSettingDao(): SystemSettingDao
-    abstract fun userSettingsDao(): UserSettingsDao
-    abstract fun SMSConfigDao(): SMSConfigDao
-    abstract fun SMSMetadataIdDao(): SMSMetadataIdDao
-    abstract fun SMSOngoingSubmissionDao(): SMSOngoingSubmissionDao
-    abstract fun systemInfoDao(): SystemInfoDao
-    abstract fun attributeValueFilterDao(): AttributeValueFilterDao
-    abstract fun programOwnerDao(): ProgramOwnerDao
-    abstract fun programTempOwnerDao(): ProgramTempOwnerDao
-    abstract fun reservedValueSettingDao(): ReservedValueSettingDao
-    abstract fun trackedEntityAttributeDao(): TrackedEntityAttributeDao
-    abstract fun trackedEntityAttributeLegendSetLinkDao(): TrackedEntityAttributeLegendSetLinkDao
-    abstract fun trackedEntityAttributeReservedValueDao(): TrackedEntityAttributeReservedValueDao
-    abstract fun trackedEntityAttributeValueDao(): TrackedEntityAttributeValueDao
-    abstract fun trackedEntityDataValueDao(): TrackedEntityDataValueDao
-    abstract fun trackedEntityInstanceDao(): TrackedEntityInstanceDao
-    abstract fun trackedEntityInstanceEventFilterDao(): TrackedEntityInstanceEventFilterDao
-    abstract fun trackedEntityInstanceFilterDao(): TrackedEntityInstanceFilterDao
-    abstract fun trackedEntityInstanceSyncDao(): TrackedEntityInstanceSyncDao
-    abstract fun trackedEntityTypeAttributeDao(): TrackedEntityTypeAttributeDao
-    abstract fun trackedEntityTypeDao(): TrackedEntityTypeDao
-    abstract fun trackerJobObjectDao(): TrackerJobObjectDao
-    abstract fun stockUseCaseDao(): StockUseCaseDao
-    abstract fun stockUseCaseTransactionLinkDao(): StockUseCaseTransactionLinkDao
-    abstract fun authenticatedUserDao(): AuthenticatedUserDao
-    abstract fun authorityDao(): AuthorityDao
-    abstract fun userDao(): UserDao
-    abstract fun userGroupDao(): UserGroupDao
-    abstract fun userOrganisationUnitDao(): UserOrganisationUnitDao
-    abstract fun userRoleDao(): UserRoleDao
-    abstract fun dataSetValidationRuleLinkDao(): DataSetValidationRuleLinkDao
-    abstract fun validationRuleDao(): ValidationRuleDao
-    abstract fun valueTypeDeviceRenderingDao(): ValueTypeDeviceRenderingDao
-    abstract fun trackerVisualizationDao(): TrackerVisualizationDao
-    abstract fun trackerVisualizationDimensionDao(): TrackerVisualizationDimensionDao
-    abstract fun visualizationDao(): VisualizationDao
-    abstract fun visualizationDimensionItemDao(): VisualizationDimensionItemDao
+@TypeConverters(AccessDBTypeConverter::class)
+@Suppress("TooManyFunctions")
+abstract class AppDatabase : RoomDatabase() {
+    internal abstract fun d2Dao(): D2Dao
+    internal abstract fun attributeDao(): AttributeDao
+    internal abstract fun dataElementAttributeValueLinkDao(): DataElementAttributeValueLinkDao
+    internal abstract fun programAttributeValueLinkDao(): ProgramAttributeValueLinkDao
+    internal abstract fun programStageAttributeValueLinkDao(): ProgramStageAttributeValueLinkDao
+    internal abstract fun categoryCategoryComboLinkDao(): CategoryCategoryComboLinkDao
+    internal abstract fun categoryCategoryOptionLinkDao(): CategoryCategoryOptionLinkDao
+    internal abstract fun categoryComboDao(): CategoryComboDao
+    internal abstract fun categoryDao(): CategoryDao
+    internal abstract fun categoryOptionComboCategoryOptionLinkDao(): CategoryOptionComboCategoryOptionLinkDao
+    internal abstract fun categoryOptionComboDao(): CategoryOptionComboDao
+    internal abstract fun categoryOptionDao(): CategoryOptionDao
+    internal abstract fun categoryOptionOrganisationUnitLinkDao(): CategoryOptionOrganisationUnitLinkDao
+    internal abstract fun configurationDao(): ConfigurationDao
+    internal abstract fun constantDao(): ConstantDao
+    internal abstract fun dataApprovalDao(): DataApprovalDao
+    internal abstract fun dataElementDao(): DataElementDao
+    internal abstract fun dataElementOperandDao(): DataElementOperandDao
+    internal abstract fun dataInputPeriodDao(): DataInputPeriodDao
+    internal abstract fun dataSetCompleteRegistrationDao(): DataSetCompleteRegistrationDao
+    internal abstract fun dataSetCompulsoryDataElementOperandLinkDao(): DataSetCompulsoryDataElementOperandLinkDao
+    internal abstract fun dataSetDao(): DataSetDao
+    internal abstract fun dataSetDataElementLinkDao(): DataSetDataElementLinkDao
+    internal abstract fun dataSetInstanceDao(): DataSetInstanceDao
+    internal abstract fun dataSetInstanceSummaryDao(): DataSetInstanceSummaryDao
+    internal abstract fun dataSetOrganisationUnitLinkDao(): DataSetOrganisationUnitLinkDao
+    internal abstract fun sectionDao(): SectionDao
+    internal abstract fun sectionDataElementLinkDao(): SectionDataElementLinkDao
+    internal abstract fun sectionGreyedFieldsLinkDao(): SectionGreyedFieldsLinkDao
+    internal abstract fun sectionIndicatorLinkDao(): SectionIndicatorLinkDao
+    internal abstract fun dataStoreDao(): DataStoreDao
+    internal abstract fun localDataStoreDao(): LocalDataStoreDao
+    internal abstract fun dataValueConflictDao(): DataValueConflictDao
+    internal abstract fun dataValueDao(): DataValueDao
+    internal abstract fun aggregatedDataSyncDao(): AggregatedDataSyncDao
+    internal abstract fun enrollmentDao(): EnrollmentDao
+    internal abstract fun eventDao(): EventDao
+    internal abstract fun eventDataFilterDao(): EventDataFilterDao
+    internal abstract fun eventFilterDao(): EventFilterDao
+    internal abstract fun eventSyncDao(): EventSyncDao
+    internal abstract fun expressionDimensionItemDao(): ExpressionDimensionItemDao
+    internal abstract fun fileResourceDao(): FileResourceDao
+    internal abstract fun customIconDao(): CustomIconDao
+    internal abstract fun trackerImportConflictDao(): TrackerImportConflictDao
+    internal abstract fun dataSetIndicatorLinkDao(): DataSetIndicatorLinkDao
+    internal abstract fun indicatorDao(): IndicatorDao
+    internal abstract fun indicatorTypeDao(): IndicatorTypeDao
+    internal abstract fun dataElementLegendSetLinkDao(): DataElementLegendSetLinkDao
+    internal abstract fun indicatorLegendSetLinkDao(): IndicatorLegendSetLinkDao
+    internal abstract fun legendDao(): LegendDao
+    internal abstract fun legendSetDao(): LegendSetDao
+    internal abstract fun programIndicatorLegendSetLinkDao(): ProgramIndicatorLegendSetLinkDao
+    internal abstract fun d2ErrorDao(): D2ErrorDao
+    internal abstract fun foreignKeyViolationDao(): ForeignKeyViolationDao
+    internal abstract fun mapLayerDao(): MapLayerDao
+    internal abstract fun mapLayerImageryProviderDao(): MapLayerImageryProviderDao
+    internal abstract fun noteDao(): NoteDao
+    internal abstract fun optionDao(): OptionDao
+    internal abstract fun optionGroupDao(): OptionGroupDao
+    internal abstract fun optionGroupOptionLinkDao(): OptionGroupOptionLinkDao
+    internal abstract fun optionSetDao(): OptionSetDao
+    internal abstract fun organisationUnitDao(): OrganisationUnitDao
+    internal abstract fun organisationUnitGroupDao(): OrganisationUnitGroupDao
+    internal abstract fun organisationUnitLevelDao(): OrganisationUnitLevelDao
+    internal abstract fun organisationUnitOrganisationUnitGroupLinkDao(): OrganisationUnitOrganisationUnitGroupLinkDao
+    internal abstract fun organisationUnitProgramLinkDao(): OrganisationUnitProgramLinkDao
+    internal abstract fun periodDao(): PeriodDao
+    internal abstract fun analyticsPeriodBoundaryDao(): AnalyticsPeriodBoundaryDao
+    internal abstract fun programDao(): ProgramDao
+    internal abstract fun programIndicatorDao(): ProgramIndicatorDao
+    internal abstract fun programRuleActionDao(): ProgramRuleActionDao
+    internal abstract fun programRuleDao(): ProgramRuleDao
+    internal abstract fun programRuleVariableDao(): ProgramRuleVariableDao
+    internal abstract fun programSectionAttributeLinkDao(): ProgramSectionAttributeLinkDao
+    internal abstract fun programSectionDao(): ProgramSectionDao
+    internal abstract fun programStageDao(): ProgramStageDao
+    internal abstract fun programStageDataElementDao(): ProgramStageDataElementDao
+    internal abstract fun programStageSectionDao(): ProgramStageSectionDao
+    internal abstract fun programStageSectionDataElementLinkDao(): ProgramStageSectionDataElementLinkDao
+    internal abstract fun programStageSectionProgramIndicatorLinkDao(): ProgramStageSectionProgramIndicatorLinkDao
+    internal abstract fun programTrackedEntityAttributeDao(): ProgramTrackedEntityAttributeDao
+    internal abstract fun programStageWorkingListAttrValueFilterDao(): ProgramStageWorkingListAttributeValueFilterDao
+
+    internal abstract fun programStageWorkingListDao(): ProgramStageWorkingListDao
+    internal abstract fun programStageWorkingListEventDataFilterDao(): ProgramStageWorkingListEventDataFilterDao
+    internal abstract fun relationshipConstraintDao(): RelationshipConstraintDao
+    internal abstract fun relationshipDao(): RelationshipDao
+    internal abstract fun relationshipItemDao(): RelationshipItemDao
+    internal abstract fun relationshipTypeDao(): RelationshipTypeDao
+    internal abstract fun resourceDao(): ResourceDao
+    internal abstract fun analyticsDhisVisualizationDao(): AnalyticsDhisVisualizationDao
+    internal abstract fun analyticsTeiAttributeDao(): AnalyticsTeiAttributeDao
+    internal abstract fun analyticsTeiDataElementDao(): AnalyticsTeiDataElementDao
+    internal abstract fun analyticsTeiIndicatorDao(): AnalyticsTeiIndicatorDao
+    internal abstract fun analyticsTeiSettingDao(): AnalyticsTeiSettingDao
+    internal abstract fun analyticsTeiWHONutritionDataDao(): AnalyticsTeiWHONutritionDataDao
+    internal abstract fun customIntentAttributeDao(): CustomIntentAttributeDao
+    internal abstract fun customIntentDao(): CustomIntentDao
+    internal abstract fun customIntentDataElementDao(): CustomIntentDataElementDao
+    internal abstract fun dataSetConfigurationSettingDao(): DataSetConfigurationSettingDao
+    internal abstract fun dataSetSettingDao(): DataSetSettingDao
+    internal abstract fun filterSettingDao(): FilterSettingDao
+    internal abstract fun generalSettingDao(): GeneralSettingDao
+    internal abstract fun latestAppVersionDao(): LatestAppVersionDao
+    internal abstract fun programConfigurationSettingDao(): ProgramConfigurationSettingDao
+    internal abstract fun programSettingDao(): ProgramSettingDao
+    internal abstract fun synchronizationSettingDao(): SynchronizationSettingDao
+    internal abstract fun systemSettingDao(): SystemSettingDao
+    internal abstract fun userSettingsDao(): UserSettingsDao
+    internal abstract fun SMSConfigDao(): SMSConfigDao
+    internal abstract fun SMSMetadataIdDao(): SMSMetadataIdDao
+    internal abstract fun SMSOngoingSubmissionDao(): SMSOngoingSubmissionDao
+    internal abstract fun systemInfoDao(): SystemInfoDao
+    internal abstract fun attributeValueFilterDao(): AttributeValueFilterDao
+    internal abstract fun programOwnerDao(): ProgramOwnerDao
+    internal abstract fun programTempOwnerDao(): ProgramTempOwnerDao
+    internal abstract fun reservedValueSettingDao(): ReservedValueSettingDao
+    internal abstract fun trackedEntityAttributeDao(): TrackedEntityAttributeDao
+    internal abstract fun trackedEntityAttributeLegendSetLinkDao(): TrackedEntityAttributeLegendSetLinkDao
+    internal abstract fun trackedEntityAttributeReservedValueDao(): TrackedEntityAttributeReservedValueDao
+    internal abstract fun trackedEntityAttributeValueDao(): TrackedEntityAttributeValueDao
+    internal abstract fun trackedEntityDataValueDao(): TrackedEntityDataValueDao
+    internal abstract fun trackedEntityInstanceDao(): TrackedEntityInstanceDao
+    internal abstract fun trackedEntityInstanceEventFilterDao(): TrackedEntityInstanceEventFilterDao
+    internal abstract fun trackedEntityInstanceFilterDao(): TrackedEntityInstanceFilterDao
+    internal abstract fun trackedEntityInstanceSyncDao(): TrackedEntityInstanceSyncDao
+    internal abstract fun trackedEntityTypeAttributeDao(): TrackedEntityTypeAttributeDao
+    internal abstract fun trackedEntityTypeDao(): TrackedEntityTypeDao
+    internal abstract fun trackerJobObjectDao(): TrackerJobObjectDao
+    internal abstract fun stockUseCaseDao(): StockUseCaseDao
+    internal abstract fun stockUseCaseTransactionLinkDao(): StockUseCaseTransactionLinkDao
+    internal abstract fun authenticatedUserDao(): AuthenticatedUserDao
+    internal abstract fun authorityDao(): AuthorityDao
+    internal abstract fun userDao(): UserDao
+    internal abstract fun userGroupDao(): UserGroupDao
+    internal abstract fun userOrganisationUnitDao(): UserOrganisationUnitDao
+    internal abstract fun userRoleDao(): UserRoleDao
+    internal abstract fun dataSetValidationRuleLinkDao(): DataSetValidationRuleLinkDao
+    internal abstract fun validationRuleDao(): ValidationRuleDao
+    internal abstract fun valueTypeDeviceRenderingDao(): ValueTypeDeviceRenderingDao
+    internal abstract fun trackerVisualizationDao(): TrackerVisualizationDao
+    internal abstract fun trackerVisualizationDimensionDao(): TrackerVisualizationDimensionDao
+    internal abstract fun visualizationDao(): VisualizationDao
+    internal abstract fun visualizationDimensionItemDao(): VisualizationDimensionItemDao
 
     companion object {
-        const val DATABASE_NAME = "dhis2-db"
+        const val VERSION = 174
     }
 }

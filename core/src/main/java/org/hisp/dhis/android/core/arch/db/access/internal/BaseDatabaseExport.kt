@@ -33,11 +33,11 @@ import java.io.File
 
 interface BaseDatabaseExport {
 
-    fun encrypt(serverUrl: String, oldConfiguration: DatabaseAccount)
+    suspend fun encrypt(serverUrl: String, oldConfiguration: DatabaseAccount)
 
-    fun encryptAndCopyTo(newConfiguration: DatabaseAccount, sourceFile: File, targetFile: File)
+    suspend fun encryptAndCopyTo(newConfiguration: DatabaseAccount, sourceFile: File, targetFile: File)
 
-    fun decrypt(serverUrl: String, oldConfiguration: DatabaseAccount)
+    suspend fun decrypt(serverUrl: String, oldConfiguration: DatabaseAccount)
 
-    fun decryptAndCopyTo(account: DatabaseAccount, destinationFile: File)
+    suspend fun decryptAndCopyTo(account: DatabaseAccount, destinationFile: File)
 }

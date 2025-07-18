@@ -33,8 +33,8 @@ import android.database.Cursor
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
 import org.hisp.dhis.android.core.settings.CustomIntentRequest
 import org.hisp.dhis.android.core.settings.CustomIntentRequestArgument
-import org.hisp.dhis.android.persistence.settings.CustomIntentTableInfo
 import org.hisp.dhis.android.persistence.settings.CustomIntentRequestArgumentsDB
+import org.hisp.dhis.android.persistence.settings.CustomIntentTableInfo
 import org.hisp.dhis.android.persistence.settings.toDB
 
 internal class CustomIntentRequestColumnAdapter : ColumnTypeAdapter<CustomIntentRequest> {

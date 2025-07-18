@@ -28,12 +28,13 @@
 
 package org.hisp.dhis.android.core.arch.db.access
 
-import androidx.room.RoomDatabase
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 
+@Suppress("TooManyFunctions")
 interface DatabaseAdapter {
     val isReady: Boolean
 
-    fun activate(database: RoomDatabase)
+    fun activate(database: AppDatabase, databaseName: String)
 
     fun deactivate()
 
@@ -45,19 +46,28 @@ interface DatabaseAdapter {
 
     fun endTransaction()
 
-    fun execSQL(sql: String)
+    suspend fun execSQL(sql: String)
 
-    fun delete(tableName: String, whereClause: String, whereArgs: Array<Any>): Int
+    suspend fun delete(tableName: String, whereClause: String?, whereArgs: Array<Any>?): Int
 
-    fun delete(tableName: String): Int
+    suspend fun delete(tableName: String, whereClause: String): Int
 
-    fun setForeignKeyConstraintsEnabled(enable: Boolean)
+    suspend fun delete(tableName: String): Int
 
-    fun enableWriteAheadLogging()
+    suspend fun rawQuery(sqlQuery: String, queryArgs: Array<Any>? = null): List<Map<String, String?>>
+
+    suspend fun rawQueryWithTypedValues(
+        sqlQuery: String,
+        queryArgs: Array<Any>? = null,
+    ): List<Map<String, Any?>>
+
+    suspend fun setForeignKeyConstraintsEnabled(enabled: Boolean)
 
     fun close()
 
     fun getDatabaseName(): String
+
+    fun getCurrentDatabase(): AppDatabase
 
     fun getVersion(): Int
 }

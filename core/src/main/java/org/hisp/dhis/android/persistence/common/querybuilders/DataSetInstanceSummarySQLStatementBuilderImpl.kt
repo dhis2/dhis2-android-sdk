@@ -101,12 +101,17 @@ internal class DataSetInstanceSummarySQLStatementBuilderImpl : DataSetInstanceSQ
             "ELSE 5 END)"
 
         private val SELECT_CLAUSE = "SELECT " +
-            IdentifiableColumns.UID + DataSetInstanceSQLStatementBuilder.AS + DataSetInstanceSQLStatementBuilder.DATASET_UID_ALIAS + "," +
-            IdentifiableColumns.NAME + DataSetInstanceSQLStatementBuilder.AS + DataSetInstanceSQLStatementBuilder.DATASET_NAME_ALIAS + "," +
-            "SUM(${DataSetInstanceSQLStatementBuilder.VALUE_COUNT_ALIAS})" + DataSetInstanceSQLStatementBuilder.AS + DataSetInstanceSQLStatementBuilder.VALUE_COUNT_ALIAS + "," +
-            "COUNT(${DataSetInstanceSQLStatementBuilder.VALUE_COUNT_ALIAS})" + DataSetInstanceSQLStatementBuilder.AS + DATASETINSTANCE_COUNT_ALIAS + "," +
+            IdentifiableColumns.UID + DataSetInstanceSQLStatementBuilder.AS +
+            DataSetInstanceSQLStatementBuilder.DATASET_UID_ALIAS + "," +
+            IdentifiableColumns.NAME + DataSetInstanceSQLStatementBuilder.AS +
+            DataSetInstanceSQLStatementBuilder.DATASET_NAME_ALIAS + "," +
+            "SUM(${DataSetInstanceSQLStatementBuilder.VALUE_COUNT_ALIAS})" +
+            DataSetInstanceSQLStatementBuilder.AS + DataSetInstanceSQLStatementBuilder.VALUE_COUNT_ALIAS + "," +
+            "COUNT(${DataSetInstanceSQLStatementBuilder.VALUE_COUNT_ALIAS})" +
+            DataSetInstanceSQLStatementBuilder.AS + DATASETINSTANCE_COUNT_ALIAS + "," +
             "IFNULL($STATE,'SYNCED')" + DataSetInstanceSQLStatementBuilder.AS + STATE + "," +
-            "MAX(${DataSetInstanceSQLStatementBuilder.LAST_UPDATED_ALIAS})" + DataSetInstanceSQLStatementBuilder.AS + DataSetInstanceSQLStatementBuilder.LAST_UPDATED_ALIAS + "," +
+            "MAX(${DataSetInstanceSQLStatementBuilder.LAST_UPDATED_ALIAS})" +
+            DataSetInstanceSQLStatementBuilder.AS + DataSetInstanceSQLStatementBuilder.LAST_UPDATED_ALIAS + "," +
             SELECT_STATE_ORDERING
 
         private val DATASET_LIST_CLAUSE = "SELECT " +

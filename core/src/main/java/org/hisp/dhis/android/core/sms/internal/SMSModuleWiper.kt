@@ -39,7 +39,7 @@ class SMSModuleWiper internal constructor(
     private val tableWiper: TableWiper,
 ) : ModuleWiper {
 
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         tableWiper.wipeTables(
             SmsMetadataIdTableInfo.TABLE_INFO,
             SMSConfigTableInfo.TABLE_INFO,
@@ -47,7 +47,7 @@ class SMSModuleWiper internal constructor(
         )
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         // No data to wipe
     }
 }

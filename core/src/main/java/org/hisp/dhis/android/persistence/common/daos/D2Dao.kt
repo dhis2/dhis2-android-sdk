@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,28 +26,40 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category.internal;
+package org.hisp.dhis.android.persistence.common.daos
 
-import android.content.ContentValues;
+import androidx.room.Dao
+import androidx.room.Query
+import androidx.room.RawQuery
+import androidx.room.RoomRawQuery
+import androidx.room.TypeConverters
+import androidx.sqlite.db.SupportSQLiteQuery
+import org.hisp.dhis.android.core.arch.db.access.internal.migrations.DatabaseCodeMigration133DataValue
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.persistence.common.SchemaRow
 
-import org.hisp.dhis.android.persistence.category.CategoryComboTableInfo;
+@Dao
+internal interface D2Dao {
 
-public class CreateCategoryComboUtils {
+    @RawQuery
+    suspend fun intRawQuery(sqlRawQuery: RoomRawQuery): Int
 
-    public static final String TEST_CODE = "test_code";
-    public static final String TEST_NAME = "test_name";
-    public static final String TEST_DISPLAY_NAME = "test_display_name";
-    public static final String TEST_CREATED = "2001-02-07T16:04:40.387";
-    public static final String TEST_LAST_UPDATED = "2001-02-07T16:04:40.387";
+    @RawQuery
+    suspend fun stringListRawQuery(query: SupportSQLiteQuery): List<String>
 
-    public static ContentValues create(String uid) {
-        ContentValues categoryCombo = new ContentValues();
-        categoryCombo.put(CategoryComboTableInfo.Columns.UID, uid);
-        categoryCombo.put(CategoryComboTableInfo.Columns.CODE, TEST_CODE);
-        categoryCombo.put(CategoryComboTableInfo.Columns.NAME, TEST_NAME);
-        categoryCombo.put(CategoryComboTableInfo.Columns.DISPLAY_NAME, TEST_DISPLAY_NAME);
-        categoryCombo.put(CategoryComboTableInfo.Columns.CREATED, TEST_CREATED);
-        categoryCombo.put(CategoryComboTableInfo.Columns.LAST_UPDATED, TEST_LAST_UPDATED);
-        return categoryCombo;
-    }
+    @RawQuery
+    suspend fun stringRawQuery(query: RoomRawQuery): String
+
+    @RawQuery
+    suspend fun queryStringValue(query: SupportSQLiteQuery): String?
+
+    @TypeConverters(StateTypeConverter::class)
+    @RawQuery
+    suspend fun getTypedSyncStates(query: SupportSQLiteQuery): List<State>
+
+    @RawQuery
+    suspend fun getCodeMigration133DataValue(query: SupportSQLiteQuery): List<DatabaseCodeMigration133DataValue>
+
+    @Query("SELECT name, sql FROM sqlite_master ORDER BY name")
+    suspend fun getSchemaRows(): List<SchemaRow>
 }

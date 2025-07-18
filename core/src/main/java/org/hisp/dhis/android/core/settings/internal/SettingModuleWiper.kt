@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
+import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
+import org.hisp.dhis.android.core.wipe.internal.TableWiper
 import org.hisp.dhis.android.persistence.settings.AnalyticsDhisVisualizationTableInfo
 import org.hisp.dhis.android.persistence.settings.AnalyticsTeiAttributeTableInfo
 import org.hisp.dhis.android.persistence.settings.AnalyticsTeiDataElementTableInfo
@@ -45,15 +47,13 @@ import org.hisp.dhis.android.persistence.settings.ProgramSettingTableInfo
 import org.hisp.dhis.android.persistence.settings.SynchronizationSettingTableInfo
 import org.hisp.dhis.android.persistence.settings.SystemSettingTableInfo
 import org.hisp.dhis.android.persistence.settings.UserSettingsTableInfo
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
-import org.hisp.dhis.android.core.wipe.internal.TableWiper
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class SettingModuleWiper(
     private val tableWiper: TableWiper,
 ) : ModuleWiper {
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         tableWiper.wipeTable(SystemSettingTableInfo.TABLE_INFO)
         tableWiper.wipeTable(GeneralSettingTableInfo.TABLE_INFO)
         tableWiper.wipeTable(DataSetSettingTableInfo.TABLE_INFO)
@@ -74,7 +74,7 @@ internal class SettingModuleWiper(
         tableWiper.wipeTable(LatestAppVersionTableInfo.TABLE_INFO)
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         // No data to wipe
     }
 }

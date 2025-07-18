@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,10 +26,19 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access;
+package org.hisp.dhis.android.persistence.common
 
-public interface Transaction {
-    void setSuccessful();
+import androidx.room.TypeConverter
 
-    void end();
+internal class AccessDBTypeConverter {
+
+    @TypeConverter
+    fun fromAccessDB(accessDB: AccessDB?): Boolean {
+        return accessDB?.accessDataWrite ?: false
+    }
+
+    @TypeConverter
+    fun toAccessDB(value: Boolean?): AccessDB? {
+        return value?.let { AccessDB(it) }
+    }
 }

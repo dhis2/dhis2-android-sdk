@@ -28,19 +28,20 @@
 
 package org.hisp.dhis.android.core.user.internal
 
+import androidx.sqlite.db.SimpleSQLiteQuery
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.persistence.dataset.DataSetCompleteRegistrationTableInfo
-import org.hisp.dhis.android.persistence.datastore.DataStoreEntryTableInfo
+import org.hisp.dhis.android.persistence.datastore.DataStoreTableInfo
 import org.hisp.dhis.android.persistence.datavalue.DataValueTableInfo
 import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.persistence.event.EventTableInfo
 import org.hisp.dhis.android.persistence.fileresource.FileResourceTableInfo
 import org.hisp.dhis.android.persistence.note.NoteTableInfo
 import org.hisp.dhis.android.persistence.relationship.RelationshipTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.ProgramOwnerTableInfo
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceTableInfo
-import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerTableInfo
 
 internal object AccountManagerHelper {
 
@@ -54,28 +55,18 @@ internal object AccountManagerHelper {
         NoteTableInfo.TABLE_INFO,
         ProgramOwnerTableInfo.TABLE_INFO,
         RelationshipTableInfo.TABLE_INFO,
-        DataStoreEntryTableInfo.TABLE_INFO,
+        DataStoreTableInfo.TABLE_INFO,
     )
 
-    private val syncStateQuery =
+    private val syncStateQueryString =
         tablesWithSyncState.joinToString(" UNION ") { "SELECT ${DataColumns.SYNC_STATE} FROM ${it.name()}" }
 
-    @Suppress("NestedBlockDepth")
-    fun getSyncState(adapter: DatabaseAdapter): State {
-        val states = mutableSetOf<State>()
-
-        adapter.rawQuery(syncStateQuery).use { cursor ->
-            if (cursor.count > 0) {
-                cursor.moveToFirst()
-                do {
-                    State.values()
-                        .find { it.name == cursor.getString(0) }
-                        ?.let { states.add(it) }
-                } while (cursor.moveToNext())
-            }
-        }
-
-        return reduceSyncState(states)
+    suspend fun getSyncState(databaseAdapter: DatabaseAdapter): State {
+        val d2Dao = databaseAdapter.getCurrentDatabase().d2Dao()
+        val query = SimpleSQLiteQuery(syncStateQueryString)
+        val stateList = d2Dao.getTypedSyncStates(query)
+        val uniqueStates = stateList.toSet()
+        return reduceSyncState(uniqueStates)
     }
 
     private fun reduceSyncState(states: Collection<State>): State {

@@ -30,10 +30,10 @@ package org.hisp.dhis.android.network.trackedentityinstancefilter
 import org.hisp.dhis.android.core.common.DateFilterPeriod
 import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
 import org.hisp.dhis.android.core.trackedentity.EntityQueryCriteria
-import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceFilterTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.DateFilterPeriodFields
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceFilterTableInfo.Columns
 
 internal object EntityQueryCriteriaFields : BaseFields<EntityQueryCriteria>() {
     const val ATTRIBUTE_VALUE_FILTER = "attributeValueFilters"
@@ -43,7 +43,7 @@ internal object EntityQueryCriteriaFields : BaseFields<EntityQueryCriteria>() {
         fh.field(Columns.ORGANISATION_UNIT),
         fh.field(Columns.OU_MODE),
         fh.field(Columns.ASSIGNED_USER_MODE),
-        fh.field(Columns.ORDER),
+        fh.field(Columns.ORDER_PROPERTY),
         fh.field(Columns.DISPLAY_COLUMN_ORDER),
         fh.field(Columns.EVENT_STATUS),
         fh.field(Columns.PROGRAM_STAGE),

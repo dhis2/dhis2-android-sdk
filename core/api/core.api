@@ -1629,12 +1629,12 @@ public class org/hisp/dhis/android/core/arch/call/internal/D2ProgressManager {
 }
 
 public abstract interface class org/hisp/dhis/android/core/arch/cleaners/internal/CollectionCleaner {
-	public abstract fun deleteNotPresent (Ljava/util/Collection;)Z
-	public abstract fun deleteNotPresentByUid (Ljava/util/Collection;)Z
+	public abstract fun deleteNotPresent (Ljava/util/Collection;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun deleteNotPresentByUid (Ljava/util/Collection;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class org/hisp/dhis/android/core/arch/cleaners/internal/LinkCleaner {
-	public abstract fun deleteNotPresent (Ljava/util/Collection;)Z
+	public abstract fun deleteNotPresent (Ljava/util/Collection;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun deleteNotPresentInDb (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -1647,7 +1647,7 @@ public abstract interface class org/hisp/dhis/android/core/arch/cleaners/interna
 }
 
 public abstract interface class org/hisp/dhis/android/core/arch/cleaners/internal/SubCollectionCleaner {
-	public abstract fun deleteNotPresent (Ljava/util/Collection;)Z
+	public abstract fun deleteNotPresent (Ljava/util/Collection;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public class org/hisp/dhis/android/core/arch/dateformat/internal/SafeDateFormat {
@@ -1657,26 +1657,41 @@ public class org/hisp/dhis/android/core/arch/dateformat/internal/SafeDateFormat 
 	public fun raw ()Ljava/text/DateFormat;
 }
 
+public abstract interface class org/hisp/dhis/android/core/arch/db/access/BaseDatabaseAdapterFactory {
+	public abstract fun createOrOpenDatabase (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;Ljava/lang/String;Z)V
+	public abstract fun createOrOpenDatabase (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;Ljava/lang/String;ZLjava/lang/Integer;)V
+	public abstract fun createOrOpenDatabase (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;)V
+	public abstract fun createOrRecreateDatabase (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;)V
+	public abstract fun deleteDatabase (Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;)V
+	public abstract fun getDatabaseAdapter (Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;Z)Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;
+	public abstract fun newParentDatabaseAdapter ()Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;
+	public abstract fun removeDatabaseAdapter (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;)V
+}
+
 public abstract interface class org/hisp/dhis/android/core/arch/db/access/DatabaseAdapter {
+	public abstract fun activate (Lorg/hisp/dhis/android/core/arch/db/access/internal/AppDatabase;)V
 	public abstract fun beginNewTransaction ()Lorg/hisp/dhis/android/core/arch/db/access/Transaction;
 	public abstract fun close ()V
-	public abstract fun compileStatement (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/db/stores/binders/internal/StatementWrapper;
-	public abstract fun delete (Ljava/lang/String;)I
-	public abstract fun delete (Ljava/lang/String;Ljava/lang/String;[Ljava/lang/String;)I
-	public abstract fun enableWriteAheadLogging ()V
+	public abstract fun deactivate ()V
+	public abstract fun delete (Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun delete (Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun delete (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun endTransaction ()V
-	public abstract fun execSQL (Ljava/lang/String;)V
-	public abstract fun executeInsert (Lorg/hisp/dhis/android/core/arch/db/stores/binders/internal/StatementWrapper;)J
-	public abstract fun executeUpdateDelete (Lorg/hisp/dhis/android/core/arch/db/stores/binders/internal/StatementWrapper;)I
+	public abstract fun execSQL (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getCurrentDatabase ()Lorg/hisp/dhis/android/core/arch/db/access/internal/AppDatabase;
 	public abstract fun getDatabaseName ()Ljava/lang/String;
-	public abstract fun insert (Ljava/lang/String;Ljava/lang/String;Landroid/content/ContentValues;)J
+	public abstract fun getVersion ()I
 	public abstract fun isReady ()Z
-	public abstract fun query (Ljava/lang/String;[Ljava/lang/String;)Landroid/database/Cursor;
-	public abstract fun query (Ljava/lang/String;[Ljava/lang/String;Ljava/lang/String;[Ljava/lang/String;)Landroid/database/Cursor;
-	public abstract fun rawQuery (Ljava/lang/String;[Ljava/lang/String;)Landroid/database/Cursor;
-	public abstract fun setForeignKeyConstraintsEnabled (Z)V
+	public abstract fun rawQuery (Ljava/lang/String;[Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun rawQueryWithTypedValues (Ljava/lang/String;[Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun runInTransaction (Ljava/lang/Runnable;)V
+	public abstract fun setForeignKeyConstraintsEnabled (ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun setTransactionSuccessful ()V
-	public abstract fun update (Ljava/lang/String;Landroid/content/ContentValues;Ljava/lang/String;[Ljava/lang/String;)I
+}
+
+public final class org/hisp/dhis/android/core/arch/db/access/DatabaseAdapter$DefaultImpls {
+	public static synthetic fun rawQuery$default (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;Ljava/lang/String;[Ljava/lang/Object;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun rawQueryWithTypedValues$default (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;Ljava/lang/String;[Ljava/lang/Object;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/arch/db/access/DatabaseExportMetadata {
@@ -1715,7 +1730,7 @@ public final class org/hisp/dhis/android/core/arch/db/access/DatabaseExportMetad
 }
 
 public abstract interface class org/hisp/dhis/android/core/arch/db/access/DatabaseImportExport {
-	public abstract fun exportLoggedUserDatabase ()Ljava/io/File;
+	public abstract fun exportLoggedUserDatabase (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun importDatabase (Ljava/io/File;)Lorg/hisp/dhis/android/core/arch/db/access/DatabaseExportMetadata;
 }
 
@@ -1724,33 +1739,28 @@ public abstract interface class org/hisp/dhis/android/core/arch/db/access/Transa
 	public abstract fun setSuccessful ()V
 }
 
-public class org/hisp/dhis/android/core/arch/db/access/internal/DatabaseAdapterFactory {
-	public fun <init> (Landroid/content/Context;Lorg/hisp/dhis/android/core/configuration/internal/DatabaseEncryptionPasswordManager;)V
-	public static fun create (Landroid/content/Context;Lorg/hisp/dhis/android/core/arch/storage/internal/SecureStore;)Lorg/hisp/dhis/android/core/arch/db/access/internal/DatabaseAdapterFactory;
-	public fun createOrOpenDatabase (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;Ljava/lang/String;Z)V
-	public fun createOrOpenDatabase (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;Ljava/lang/String;ZLjava/lang/Integer;)V
-	public fun createOrOpenDatabase (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;Ljava/lang/String;ZLjava/lang/Integer;Z)V
-	public fun createOrOpenDatabase (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;)V
-	public fun createOrRecreateDatabase (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;)V
-	public fun deleteDatabase (Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;)V
-	public fun getDatabaseAdapter (Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;Z)Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;
-	public fun newParentDatabaseAdapter ()Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;
-	public fun removeDatabaseAdapter (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;)V
+public abstract class org/hisp/dhis/android/core/arch/db/access/internal/AppDatabase : androidx/room/RoomDatabase {
+	public static final field Companion Lorg/hisp/dhis/android/core/arch/db/access/internal/AppDatabase$Companion;
+	public static final field VERSION I
+	public fun <init> ()V
 }
 
-public class org/hisp/dhis/android/core/arch/db/access/internal/EncryptedStatementWrapper : org/hisp/dhis/android/core/arch/db/stores/binders/internal/StatementWrapper {
-	public fun bind (ILjava/lang/Boolean;)V
-	public fun bind (ILjava/lang/Double;)V
-	public fun bind (ILjava/lang/Enum;)V
-	public fun bind (ILjava/lang/Integer;)V
-	public fun bind (ILjava/lang/Long;)V
-	public fun bind (ILjava/lang/String;)V
-	public fun bind (ILjava/util/Date;)V
-	public fun bindNull (I)V
-	public fun clearBindings ()V
-	public fun close ()V
-	public fun executeInsert ()J
-	public fun executeUpdateDelete ()I
+public final class org/hisp/dhis/android/core/arch/db/access/internal/AppDatabase$Companion {
+}
+
+public final class org/hisp/dhis/android/core/arch/db/access/internal/AppDatabase_Impl : org/hisp/dhis/android/core/arch/db/access/internal/AppDatabase {
+	public fun <init> ()V
+	public fun clearAllTables ()V
+	public fun createAutoMigrations (Ljava/util/Map;)Ljava/util/List;
+	public synthetic fun createOpenDelegate ()Landroidx/room/RoomOpenDelegateMarker;
+	public fun getRequiredAutoMigrationSpecClasses ()Ljava/util/Set;
+}
+
+public abstract interface class org/hisp/dhis/android/core/arch/db/access/internal/BaseDatabaseExport {
+	public abstract fun decrypt (Ljava/lang/String;Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun decryptAndCopyTo (Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;Ljava/io/File;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun encrypt (Ljava/lang/String;Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun encryptAndCopyTo (Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;Ljava/io/File;Ljava/io/File;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/AccessColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
@@ -3545,48 +3555,6 @@ public abstract interface class org/hisp/dhis/android/core/attribute/AttributeMo
 	public abstract fun attributes ()Lorg/hisp/dhis/android/core/attribute/AttributeCollectionRepository;
 }
 
-public final class org/hisp/dhis/android/core/attribute/AttributeTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/attribute/AttributeTableInfo$Columns : org/hisp/dhis/android/core/common/NameableColumns {
-	public static final field CATEGORY_ATTRIBUTE Ljava/lang/String;
-	public static final field CATEGORY_OPTION_ATTRIBUTE Ljava/lang/String;
-	public static final field CATEGORY_OPTION_COMBO_ATTRIBUTE Ljava/lang/String;
-	public static final field CATEGORY_OPTION_GROUP_ATTRIBUTE Ljava/lang/String;
-	public static final field CATEGORY_OPTION_GROUP_SET_ATTRIBUTE Ljava/lang/String;
-	public static final field CONSTANT_ATTRIBUTE Ljava/lang/String;
-	public static final field DATA_ELEMENT_ATTRIBUTE Ljava/lang/String;
-	public static final field DATA_ELEMENT_GROUP_ATTRIBUTE Ljava/lang/String;
-	public static final field DATA_ELEMENT_GROUP_SET_ATTRIBUTE Ljava/lang/String;
-	public static final field DATA_SET_ATTRIBUTE Ljava/lang/String;
-	public static final field DOCUMENT_ATTRIBUTE Ljava/lang/String;
-	public static final field INDICATOR_ATTRIBUTE Ljava/lang/String;
-	public static final field INDICATOR_GROUP_ATTRIBUTE Ljava/lang/String;
-	public static final field LEGEND_SET_ATTRIBUTE Ljava/lang/String;
-	public static final field MANDATORY Ljava/lang/String;
-	public static final field OPTION_ATTRIBUTE Ljava/lang/String;
-	public static final field OPTION_SET_ATTRIBUTE Ljava/lang/String;
-	public static final field ORGANISATION_UNIT_ATTRIBUTE Ljava/lang/String;
-	public static final field ORGANISATION_UNIT_GROUP_ATTRIBUTE Ljava/lang/String;
-	public static final field ORGANISATION_UNIT_GROUP_SET_ATTRIBUTE Ljava/lang/String;
-	public static final field PROGRAM_ATTRIBUTE Ljava/lang/String;
-	public static final field PROGRAM_INDICATOR_ATTRIBUTE Ljava/lang/String;
-	public static final field PROGRAM_STAGE_ATTRIBUTE Ljava/lang/String;
-	public static final field SECTION_ATTRIBUTE Ljava/lang/String;
-	public static final field SQL_VIEW_ATTRIBUTE Ljava/lang/String;
-	public static final field TRACKED_ENTITY_ATTRIBUTE_ATTRIBUTE Ljava/lang/String;
-	public static final field TRACKED_ENTITY_TYPE_ATTRIBUTE Ljava/lang/String;
-	public static final field UNIQUE Ljava/lang/String;
-	public static final field USER_ATTRIBUTE Ljava/lang/String;
-	public static final field USER_GROUP_ATTRIBUTE Ljava/lang/String;
-	public static final field VALIDATION_RULE_ATTRIBUTE Ljava/lang/String;
-	public static final field VALIDATION_RULE_GROUP_ATTRIBUTE Ljava/lang/String;
-	public static final field VALUE_TYPE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/attribute/AttributeValue {
 	public fun <init> ()V
 	public abstract fun attribute ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
@@ -3627,20 +3595,6 @@ public abstract class org/hisp/dhis/android/core/attribute/DataElementAttributeV
 	public abstract fun value (Ljava/lang/String;)Lorg/hisp/dhis/android/core/attribute/DataElementAttributeValueLink$Builder;
 }
 
-public final class org/hisp/dhis/android/core/attribute/DataElementAttributeValueLinkTableInfo {
-	public static final field CHILD_PROJECTION Lorg/hisp/dhis/android/core/arch/db/stores/projections/internal/SingleParentChildProjection;
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/attribute/DataElementAttributeValueLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field ATTRIBUTE Ljava/lang/String;
-	public static final field DATA_ELEMENT Ljava/lang/String;
-	public static final field VALUE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/attribute/ProgramAttributeValueLink : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public abstract fun attribute ()Ljava/lang/String;
@@ -3661,20 +3615,6 @@ public abstract class org/hisp/dhis/android/core/attribute/ProgramAttributeValue
 	public abstract fun value (Ljava/lang/String;)Lorg/hisp/dhis/android/core/attribute/ProgramAttributeValueLink$Builder;
 }
 
-public final class org/hisp/dhis/android/core/attribute/ProgramAttributeValueLinkTableInfo {
-	public static final field CHILD_PROJECTION Lorg/hisp/dhis/android/core/arch/db/stores/projections/internal/SingleParentChildProjection;
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/attribute/ProgramAttributeValueLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field ATTRIBUTE Ljava/lang/String;
-	public static final field PROGRAM Ljava/lang/String;
-	public static final field VALUE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/attribute/ProgramStageAttributeValueLink : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public abstract fun attribute ()Ljava/lang/String;
@@ -3693,20 +3633,6 @@ public abstract class org/hisp/dhis/android/core/attribute/ProgramStageAttribute
 	public synthetic fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/common/BaseObject$Builder;
 	public abstract fun programStage (Ljava/lang/String;)Lorg/hisp/dhis/android/core/attribute/ProgramStageAttributeValueLink$Builder;
 	public abstract fun value (Ljava/lang/String;)Lorg/hisp/dhis/android/core/attribute/ProgramStageAttributeValueLink$Builder;
-}
-
-public final class org/hisp/dhis/android/core/attribute/ProgramStageAttributeValueLinkTableInfo {
-	public static final field CHILD_PROJECTION Lorg/hisp/dhis/android/core/arch/db/stores/projections/internal/SingleParentChildProjection;
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/attribute/ProgramStageAttributeValueLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field ATTRIBUTE Ljava/lang/String;
-	public static final field PROGRAM_STAGE Ljava/lang/String;
-	public static final field VALUE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/category/Category : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
@@ -3746,19 +3672,6 @@ public abstract class org/hisp/dhis/android/core/category/CategoryCategoryComboL
 	public abstract fun sortOrder (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/category/CategoryCategoryComboLink$Builder;
 }
 
-public final class org/hisp/dhis/android/core/category/CategoryCategoryComboLinkTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/category/CategoryCategoryComboLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field CATEGORY Ljava/lang/String;
-	public static final field CATEGORY_COMBO Ljava/lang/String;
-	public static final field SORT_ORDER Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/category/CategoryCategoryOptionLink : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/category/CategoryCategoryOptionLink$Builder;
@@ -3777,19 +3690,6 @@ public abstract class org/hisp/dhis/android/core/category/CategoryCategoryOption
 	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/category/CategoryCategoryOptionLink$Builder;
 	public synthetic fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/common/BaseObject$Builder;
 	public abstract fun sortOrder (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/category/CategoryCategoryOptionLink$Builder;
-}
-
-public final class org/hisp/dhis/android/core/category/CategoryCategoryOptionLinkTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/category/CategoryCategoryOptionLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field CATEGORY Ljava/lang/String;
-	public static final field CATEGORY_OPTION Ljava/lang/String;
-	public static final field SORT_ORDER Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/core/category/CategoryCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
@@ -3820,16 +3720,6 @@ public abstract class org/hisp/dhis/android/core/category/CategoryCombo$Builder 
 public final class org/hisp/dhis/android/core/category/CategoryComboCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
 	public final fun byIsDefault ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
 	public final fun withCategories ()Lorg/hisp/dhis/android/core/category/CategoryComboCollectionRepository;
-}
-
-public final class org/hisp/dhis/android/core/category/CategoryComboTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/category/CategoryComboTableInfo$Columns : org/hisp/dhis/android/core/common/IdentifiableColumns {
-	public static final field IS_DEFAULT Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/core/category/CategoryDataDimensionType : java/lang/Enum {
@@ -3913,18 +3803,6 @@ public abstract class org/hisp/dhis/android/core/category/CategoryOptionComboCat
 	public synthetic fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/common/BaseObject$Builder;
 }
 
-public final class org/hisp/dhis/android/core/category/CategoryOptionComboCategoryOptionLinkTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/category/CategoryOptionComboCategoryOptionLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field CATEGORY_OPTION Ljava/lang/String;
-	public static final field CATEGORY_OPTION_COMBO Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
 public final class org/hisp/dhis/android/core/category/CategoryOptionComboCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
 	public final fun byCategoryComboUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byCategoryOptions (Ljava/util/List;)Lorg/hisp/dhis/android/core/category/CategoryOptionComboCollectionRepository;
@@ -3939,16 +3817,6 @@ public final class org/hisp/dhis/android/core/category/CategoryOptionComboServic
 	public final fun blockingIsAssignedToOrgUnit (Ljava/lang/String;Ljava/lang/String;)Z
 	public final fun hasAccess (Ljava/lang/String;Ljava/util/Date;)Lio/reactivex/Single;
 	public final fun isInOptionRange (Ljava/util/List;Ljava/util/Date;)Z
-}
-
-public final class org/hisp/dhis/android/core/category/CategoryOptionComboTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/category/CategoryOptionComboTableInfo$Columns : org/hisp/dhis/android/core/common/IdentifiableColumns {
-	public static final field CATEGORY_COMBO Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/category/CategoryOptionOrganisationUnitLink : org/hisp/dhis/android/core/common/CoreObject {
@@ -3969,41 +3837,6 @@ public abstract class org/hisp/dhis/android/core/category/CategoryOptionOrganisa
 	public synthetic fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/common/BaseObject$Builder;
 	public abstract fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/category/CategoryOptionOrganisationUnitLink$Builder;
 	public abstract fun restriction (Ljava/lang/String;)Lorg/hisp/dhis/android/core/category/CategoryOptionOrganisationUnitLink$Builder;
-}
-
-public final class org/hisp/dhis/android/core/category/CategoryOptionOrganisationUnitLinkTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/category/CategoryOptionOrganisationUnitLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field CATEGORY_OPTION Ljava/lang/String;
-	public static final field ORGANISATION_UNIT Ljava/lang/String;
-	public static final field RESTRICTION Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/category/CategoryOptionTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/category/CategoryOptionTableInfo$Columns : org/hisp/dhis/android/core/common/NameableColumns {
-	public static final field ACCESS_DATA_WRITE Ljava/lang/String;
-	public static final field END_DATE Ljava/lang/String;
-	public static final field START_DATE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/category/CategoryTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/category/CategoryTableInfo$Columns : org/hisp/dhis/android/core/common/IdentifiableColumns {
-	public static final field DATA_DIMENSION_TYPE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/core/category/internal/CategoryModuleDownloader : org/hisp/dhis/android/core/arch/modules/internal/UntypedModuleDownloaderCoroutines {
@@ -4652,17 +4485,6 @@ public abstract class org/hisp/dhis/android/core/common/ValueTypeDeviceRendering
 	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/ValueTypeDeviceRendering$Builder;
 }
 
-public final class org/hisp/dhis/android/core/common/ValueTypeDeviceRenderingTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/common/ValueTypeDeviceRenderingTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field DEVICE_TYPE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/common/ValueTypeRendering {
 	public static final field DESKTOP Ljava/lang/String;
 	public static final field MOBILE Ljava/lang/String;
@@ -5230,16 +5052,6 @@ public abstract interface class org/hisp/dhis/android/core/constant/ConstantModu
 	public abstract fun constants ()Lorg/hisp/dhis/android/core/constant/ConstantCollectionRepository;
 }
 
-public final class org/hisp/dhis/android/core/constant/ConstantTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/constant/ConstantTableInfo$Columns : org/hisp/dhis/android/core/common/IdentifiableColumns {
-	public static final field VALUE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/dataapproval/DataApproval : org/hisp/dhis/android/core/common/BaseObject {
 	public fun <init> ()V
 	public abstract fun attributeOptionCombo ()Ljava/lang/String;
@@ -5283,21 +5095,6 @@ public final class org/hisp/dhis/android/core/dataapproval/DataApprovalState : j
 	public static final field UNAPPROVED_WAITING Lorg/hisp/dhis/android/core/dataapproval/DataApprovalState;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataapproval/DataApprovalState;
 	public static fun values ()[Lorg/hisp/dhis/android/core/dataapproval/DataApprovalState;
-}
-
-public class org/hisp/dhis/android/core/dataapproval/DataApprovalTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/dataapproval/DataApprovalTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field ATTRIBUTE_OPTION_COMBO Ljava/lang/String;
-	public static final field ORGANISATION_UNIT Ljava/lang/String;
-	public static final field PERIOD Ljava/lang/String;
-	public static final field STATE Ljava/lang/String;
-	public static final field WORKFLOW Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/dataelement/DataElement : org/hisp/dhis/android/core/common/BaseNameableObject, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyle {
@@ -5379,35 +5176,6 @@ public abstract class org/hisp/dhis/android/core/dataelement/DataElementOperand$
 	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataelement/DataElementOperand$Builder;
 }
 
-public final class org/hisp/dhis/android/core/dataelement/DataElementOperandTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/dataelement/DataElementOperandTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field CATEGORY_OPTION_COMBO Ljava/lang/String;
-	public static final field DATA_ELEMENT Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/dataelement/DataElementTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/dataelement/DataElementTableInfo$Columns : org/hisp/dhis/android/core/common/NameableWithStyleColumns {
-	public static final field AGGREGATION_TYPE Ljava/lang/String;
-	public static final field CATEGORY_COMBO Ljava/lang/String;
-	public static final field DISPLAY_FORM_NAME Ljava/lang/String;
-	public static final field DOMAIN_TYPE Ljava/lang/String;
-	public static final field FIELD_MASK Ljava/lang/String;
-	public static final field FORM_NAME Ljava/lang/String;
-	public static final field OPTION_SET Ljava/lang/String;
-	public static final field VALUE_TYPE Ljava/lang/String;
-	public static final field ZERO_IS_SIGNIFICANT Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/dataset/CustomText {
 	public fun <init> ()V
 	public abstract fun align ()Lorg/hisp/dhis/android/core/dataset/TextAlign;
@@ -5442,19 +5210,6 @@ public abstract class org/hisp/dhis/android/core/dataset/DataInputPeriod$Builder
 	public abstract fun dataSet (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/dataset/DataInputPeriod$Builder;
 	public abstract fun openingDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/dataset/DataInputPeriod$Builder;
 	public abstract fun period (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/dataset/DataInputPeriod$Builder;
-}
-
-public class org/hisp/dhis/android/core/dataset/DataInputPeriodTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/dataset/DataInputPeriodTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field CLOSING_DATE Ljava/lang/String;
-	public static final field DATA_SET Ljava/lang/String;
-	public static final field OPENING_DATE Ljava/lang/String;
-	public static final field PERIOD Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/dataset/DataSet : org/hisp/dhis/android/core/common/BaseNameableObject, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyle {
@@ -5597,22 +5352,6 @@ public final class org/hisp/dhis/android/core/dataset/DataSetCompleteRegistratio
 	public final fun set ()Lio/reactivex/Completable;
 }
 
-public final class org/hisp/dhis/android/core/dataset/DataSetCompleteRegistrationTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/dataset/DataSetCompleteRegistrationTableInfo$Columns : org/hisp/dhis/android/core/common/DeletableDataColumns {
-	public static final field ATTRIBUTE_OPTION_COMBO Ljava/lang/String;
-	public static final field DATA_SET Ljava/lang/String;
-	public static final field DATE Ljava/lang/String;
-	public static final field ORGANISATION_UNIT Ljava/lang/String;
-	public static final field PERIOD Ljava/lang/String;
-	public static final field STORED_BY Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink$Builder;
@@ -5629,31 +5368,6 @@ public abstract class org/hisp/dhis/android/core/dataset/DataSetCompulsoryDataEl
 	public abstract fun dataSet (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink$Builder;
 	public synthetic fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/common/BaseObject$Builder;
 	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink$Builder;
-}
-
-public final class org/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLinkTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field DATA_ELEMENT_OPERAND Ljava/lang/String;
-	public static final field DATA_SET Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/dataset/DataSetDataElementLinkTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/dataset/DataSetDataElementLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field CATEGORY_COMBO Ljava/lang/String;
-	public static final field DATA_ELEMENT Ljava/lang/String;
-	public static final field DATA_SET Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/dataset/DataSetDisplayOptions {
@@ -5700,19 +5414,6 @@ public abstract class org/hisp/dhis/android/core/dataset/DataSetElement$Builder 
 	public abstract fun dataSet (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/dataset/DataSetElement$Builder;
 	public synthetic fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/common/BaseObject$Builder;
 	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/dataset/DataSetElement$Builder;
-}
-
-public final class org/hisp/dhis/android/core/dataset/DataSetElementLinkTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/dataset/DataSetElementLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field CATEGORY_COMBO Ljava/lang/String;
-	public static final field DATA_ELEMENT Ljava/lang/String;
-	public static final field DATA_SET Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/dataset/DataSetInstance : org/hisp/dhis/android/core/common/CoreObject {
@@ -5863,48 +5564,6 @@ public abstract class org/hisp/dhis/android/core/dataset/DataSetOrganisationUnit
 	public abstract fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLink$Builder;
 }
 
-public final class org/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLinkTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field DATA_SET Ljava/lang/String;
-	public static final field ORGANISATION_UNIT Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/dataset/DataSetTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/dataset/DataSetTableInfo$Columns : org/hisp/dhis/android/core/common/NameableWithStyleColumns {
-	public static final field ACCESS_DATA_WRITE Ljava/lang/String;
-	public static final field CATEGORY_COMBO Ljava/lang/String;
-	public static final field CUSTOM_TEXT_ALIGN Ljava/lang/String;
-	public static final field DATA_ELEMENT_DECORATION Ljava/lang/String;
-	public static final field EXPIRY_DAYS Ljava/lang/String;
-	public static final field FIELD_COMBINATION_REQUIRED Ljava/lang/String;
-	public static final field HEADER Ljava/lang/String;
-	public static final field MOBILE Ljava/lang/String;
-	public static final field NOTIFY_COMPLETING_USER Ljava/lang/String;
-	public static final field NO_VALUE_REQUIRES_COMMENT Ljava/lang/String;
-	public static final field OPEN_FUTURE_PERIODS Ljava/lang/String;
-	public static final field PERIOD_TYPE Ljava/lang/String;
-	public static final field RENDER_AS_TABS Ljava/lang/String;
-	public static final field RENDER_HORIZONTALLY Ljava/lang/String;
-	public static final field SKIP_OFFLINE Ljava/lang/String;
-	public static final field SUB_HEADER Ljava/lang/String;
-	public static final field TABS_DIRECTION Ljava/lang/String;
-	public static final field TIMELY_DAYS Ljava/lang/String;
-	public static final field VALID_COMPLETE_ONLY Ljava/lang/String;
-	public static final field VERSION Ljava/lang/String;
-	public static final field WORKFLOW Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/dataset/Section : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/dataset/Section$Builder;
@@ -5974,19 +5633,6 @@ public abstract class org/hisp/dhis/android/core/dataset/SectionDataElementLink$
 	public abstract fun sortOrder (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/dataset/SectionDataElementLink$Builder;
 }
 
-public final class org/hisp/dhis/android/core/dataset/SectionDataElementLinkTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/dataset/SectionDataElementLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field DATA_ELEMENT Ljava/lang/String;
-	public static final field SECTION Ljava/lang/String;
-	public static final field SORT_ORDER Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/dataset/SectionDisplayOptions {
 	public fun <init> ()V
 	public abstract fun afterSectionText ()Ljava/lang/String;
@@ -6025,31 +5671,6 @@ public abstract class org/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink
 	public abstract fun section (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink$Builder;
 }
 
-public final class org/hisp/dhis/android/core/dataset/SectionGreyedFieldsLinkTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/dataset/SectionGreyedFieldsLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field CATEGORY_OPTION_COMBO Ljava/lang/String;
-	public static final field DATA_ELEMENT_OPERAND Ljava/lang/String;
-	public static final field SECTION Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/dataset/SectionIndicatorLinkTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/dataset/SectionIndicatorLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field INDICATOR Ljava/lang/String;
-	public static final field SECTION Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
 public final class org/hisp/dhis/android/core/dataset/SectionPivotMode : java/lang/Enum {
 	public static final field Companion Lorg/hisp/dhis/android/core/dataset/SectionPivotMode$Companion;
 	public static final field DEFAULT Lorg/hisp/dhis/android/core/dataset/SectionPivotMode;
@@ -6061,25 +5682,6 @@ public final class org/hisp/dhis/android/core/dataset/SectionPivotMode : java/la
 }
 
 public final class org/hisp/dhis/android/core/dataset/SectionPivotMode$Companion {
-}
-
-public final class org/hisp/dhis/android/core/dataset/SectionTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/dataset/SectionTableInfo$Columns : org/hisp/dhis/android/core/common/IdentifiableColumns {
-	public static final field AFTER_SECTION_TEXT Ljava/lang/String;
-	public static final field BEFORE_SECTION_TEXT Ljava/lang/String;
-	public static final field DATA_SET Ljava/lang/String;
-	public static final field DESCRIPTION Ljava/lang/String;
-	public static final field DISABLE_DATA_ELEMENT_AUTO_GROUP Ljava/lang/String;
-	public static final field PIVOTED_CATEGORY Ljava/lang/String;
-	public static final field PIVOT_MODE Ljava/lang/String;
-	public static final field SHOW_COLUMN_TOTALS Ljava/lang/String;
-	public static final field SHOW_ROW_TOTALS Ljava/lang/String;
-	public static final field SORT_ORDER Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/core/dataset/TabsDirection : java/lang/Enum {
@@ -6219,24 +5821,6 @@ public abstract class org/hisp/dhis/android/core/datastore/DataStoreEntry$Builde
 	public abstract fun value (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datastore/DataStoreEntry$Builder;
 }
 
-public final class org/hisp/dhis/android/core/datastore/DataStoreEntryTableInfo {
-	public static final field INSTANCE Lorg/hisp/dhis/android/core/datastore/DataStoreEntryTableInfo;
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public final class org/hisp/dhis/android/core/datastore/DataStoreEntryTableInfo$Columns : org/hisp/dhis/android/core/common/DeletableDataColumns {
-	public static final field Companion Lorg/hisp/dhis/android/core/datastore/DataStoreEntryTableInfo$Columns$Companion;
-	public static final field KEY Ljava/lang/String;
-	public static final field NAMESPACE Ljava/lang/String;
-	public static final field VALUE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/datastore/DataStoreEntryTableInfo$Columns$Companion {
-}
-
 public abstract interface class org/hisp/dhis/android/core/datastore/DataStoreModule {
 	public abstract fun dataStore ()Lorg/hisp/dhis/android/core/datastore/DataStoreCollectionRepository;
 	public abstract fun dataStoreDownloader ()Lorg/hisp/dhis/android/core/datastore/DataStoreDownloader;
@@ -6278,26 +5862,9 @@ public final class org/hisp/dhis/android/core/datastore/LocalDataStoreObjectRepo
 	public fun set (Ljava/lang/String;)Lio/reactivex/Completable;
 }
 
-public final class org/hisp/dhis/android/core/datastore/LocalDataStoreTableInfo {
-	public static final field INSTANCE Lorg/hisp/dhis/android/core/datastore/LocalDataStoreTableInfo;
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public final class org/hisp/dhis/android/core/datastore/LocalDataStoreTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field Companion Lorg/hisp/dhis/android/core/datastore/LocalDataStoreTableInfo$Columns$Companion;
-	public static final field KEY Ljava/lang/String;
-	public static final field VALUE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/datastore/LocalDataStoreTableInfo$Columns$Companion {
-}
-
 public final class org/hisp/dhis/android/core/datastore/internal/DataStoreModuleWiper : org/hisp/dhis/android/core/wipe/internal/ModuleWiper {
-	public fun wipeData ()V
-	public fun wipeMetadata ()V
+	public fun wipeData (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun wipeMetadata (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract class org/hisp/dhis/android/core/datavalue/DataValue : org/hisp/dhis/android/core/common/BaseDeletableDataObject {
@@ -6405,31 +5972,6 @@ public final class org/hisp/dhis/android/core/datavalue/DataValueConflictCollect
 	public final fun byValue ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 }
 
-public final class org/hisp/dhis/android/core/datavalue/DataValueConflictTableInfo {
-	public static final field INSTANCE Lorg/hisp/dhis/android/core/datavalue/DataValueConflictTableInfo;
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public final class org/hisp/dhis/android/core/datavalue/DataValueConflictTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field ATTRIBUTE_OPTION_COMBO Ljava/lang/String;
-	public static final field CATEGORY_OPTION_COMBO Ljava/lang/String;
-	public static final field CONFLICT Ljava/lang/String;
-	public static final field CREATED Ljava/lang/String;
-	public static final field Companion Lorg/hisp/dhis/android/core/datavalue/DataValueConflictTableInfo$Columns$Companion;
-	public static final field DATA_ELEMENT Ljava/lang/String;
-	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
-	public static final field ERROR_CODE Ljava/lang/String;
-	public static final field ORG_UNIT Ljava/lang/String;
-	public static final field PERIOD Ljava/lang/String;
-	public static final field STATUS Ljava/lang/String;
-	public static final field VALUE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/datavalue/DataValueConflictTableInfo$Columns$Companion {
-}
-
 public abstract interface class org/hisp/dhis/android/core/datavalue/DataValueModule {
 	public abstract fun dataValueConflicts ()Lorg/hisp/dhis/android/core/datavalue/DataValueConflictCollectionRepository;
 	public abstract fun dataValues ()Lorg/hisp/dhis/android/core/datavalue/DataValueCollectionRepository;
@@ -6444,30 +5986,9 @@ public final class org/hisp/dhis/android/core/datavalue/DataValueObjectRepositor
 	public final fun setFollowUp (Z)V
 }
 
-public class org/hisp/dhis/android/core/datavalue/DataValueTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/datavalue/DataValueTableInfo$Columns : org/hisp/dhis/android/core/common/DeletableDataColumns {
-	public static final field ATTRIBUTE_OPTION_COMBO Ljava/lang/String;
-	public static final field CATEGORY_OPTION_COMBO Ljava/lang/String;
-	public static final field COMMENT Ljava/lang/String;
-	public static final field CREATED Ljava/lang/String;
-	public static final field DATA_ELEMENT Ljava/lang/String;
-	public static final field FOLLOW_UP Ljava/lang/String;
-	public static final field LAST_UPDATED Ljava/lang/String;
-	public static final field ORGANISATION_UNIT Ljava/lang/String;
-	public static final field PERIOD Ljava/lang/String;
-	public static final field STORED_BY Ljava/lang/String;
-	public static final field VALUE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
 public final class org/hisp/dhis/android/core/datavalue/internal/DataValueModuleWiper : org/hisp/dhis/android/core/wipe/internal/ModuleWiper {
-	public fun wipeData ()V
-	public fun wipeMetadata ()V
+	public fun wipeData (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun wipeMetadata (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class org/hisp/dhis/android/core/domain/aggregated/AggregatedModule {
@@ -6584,22 +6105,6 @@ public abstract class org/hisp/dhis/android/core/domain/aggregated/data/internal
 	public abstract fun organisationUnitsHash (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
 	public abstract fun pastPeriods (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
 	public abstract fun periodType (Lorg/hisp/dhis/android/core/period/PeriodType;)Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
-}
-
-public final class org/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSyncTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSyncTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field DATA_ELEMENTS_HASH Ljava/lang/String;
-	public static final field DATA_SET Ljava/lang/String;
-	public static final field FUTURE_PERIODS Ljava/lang/String;
-	public static final field LAST_PERIODS Ljava/lang/String;
-	public static final field ORGANISATION_UNITS_HASH Ljava/lang/String;
-	public static final field PERIOD_TYPE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/enrollment/Enrollment : org/hisp/dhis/android/core/common/BaseDeletableDataObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
@@ -6753,31 +6258,6 @@ public final class org/hisp/dhis/android/core/enrollment/EnrollmentStatus : java
 	public static fun values ()[Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;
 }
 
-public final class org/hisp/dhis/android/core/enrollment/EnrollmentTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/enrollment/EnrollmentTableInfo$Columns : org/hisp/dhis/android/core/common/DeletableDataColumns {
-	public static final field COMPLETED_DATE Ljava/lang/String;
-	public static final field CREATED Ljava/lang/String;
-	public static final field CREATED_AT_CLIENT Ljava/lang/String;
-	public static final field ENROLLMENT_DATE Ljava/lang/String;
-	public static final field FOLLOW_UP Ljava/lang/String;
-	public static final field GEOMETRY_COORDINATES Ljava/lang/String;
-	public static final field GEOMETRY_TYPE Ljava/lang/String;
-	public static final field INCIDENT_DATE Ljava/lang/String;
-	public static final field LAST_UPDATED Ljava/lang/String;
-	public static final field LAST_UPDATED_AT_CLIENT Ljava/lang/String;
-	public static final field ORGANISATION_UNIT Ljava/lang/String;
-	public static final field PROGRAM Ljava/lang/String;
-	public static final field STATUS Ljava/lang/String;
-	public static final field TRACKED_ENTITY_INSTANCE Ljava/lang/String;
-	public static final field UID Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/event/Event : org/hisp/dhis/android/core/common/BaseDeletableDataObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
 	public fun <init> ()V
 	public abstract fun aggregatedSyncState ()Lorg/hisp/dhis/android/core/common/State;
@@ -6921,17 +6401,6 @@ public abstract class org/hisp/dhis/android/core/event/EventDataFilter$Builder :
 	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/event/EventDataFilter$Builder;
 }
 
-public final class org/hisp/dhis/android/core/event/EventDataFilterTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/event/EventDataFilterTableInfo$Columns : org/hisp/dhis/android/core/common/tableinfo/FilterOperatorsColumns {
-	public static final field DATA_ITEM Ljava/lang/String;
-	public static final field EVENT_FILTER Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
 public final class org/hisp/dhis/android/core/event/EventDownloader : org/hisp/dhis/android/core/arch/repositories/collection/internal/BaseRepositoryImpl {
 	public final fun blockingDownload ()V
 	public final fun byProgramUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/EventDownloader;
@@ -6992,30 +6461,6 @@ public final class org/hisp/dhis/android/core/event/EventFilterCollectionReposit
 	public final fun byProgram ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byProgramStage ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun withEventDataFilters ()Lorg/hisp/dhis/android/core/event/EventFilterCollectionRepository;
-}
-
-public final class org/hisp/dhis/android/core/event/EventFilterTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/event/EventFilterTableInfo$Columns : org/hisp/dhis/android/core/common/IdentifiableColumns {
-	public static final field ASSIGNED_USER_MODE Ljava/lang/String;
-	public static final field COMPLETED_DATE Ljava/lang/String;
-	public static final field DESCRIPTION Ljava/lang/String;
-	public static final field DISPLAY_COLUMN_ORDER Ljava/lang/String;
-	public static final field DUE_DATE Ljava/lang/String;
-	public static final field EVENTS Ljava/lang/String;
-	public static final field EVENT_DATE Ljava/lang/String;
-	public static final field EVENT_STATUS Ljava/lang/String;
-	public static final field FOLLOW_UP Ljava/lang/String;
-	public static final field LAST_UPDATED_DATE Ljava/lang/String;
-	public static final field ORDER Ljava/lang/String;
-	public static final field ORGANISATION_UNIT Ljava/lang/String;
-	public static final field OU_MODE Ljava/lang/String;
-	public static final field PROGRAM Ljava/lang/String;
-	public static final field PROGRAM_STAGE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
 }
 
 public abstract interface class org/hisp/dhis/android/core/event/EventModule {
@@ -7098,34 +6543,6 @@ public final class org/hisp/dhis/android/core/event/EventStatus : java/lang/Enum
 	public static final field VISITED Lorg/hisp/dhis/android/core/event/EventStatus;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/EventStatus;
 	public static fun values ()[Lorg/hisp/dhis/android/core/event/EventStatus;
-}
-
-public final class org/hisp/dhis/android/core/event/EventTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/event/EventTableInfo$Columns : org/hisp/dhis/android/core/common/DeletableDataColumns {
-	public static final field ASSIGNED_USER Ljava/lang/String;
-	public static final field ATTRIBUTE_OPTION_COMBO Ljava/lang/String;
-	public static final field COMPLETED_BY Ljava/lang/String;
-	public static final field COMPLETE_DATE Ljava/lang/String;
-	public static final field CREATED Ljava/lang/String;
-	public static final field CREATED_AT_CLIENT Ljava/lang/String;
-	public static final field DUE_DATE Ljava/lang/String;
-	public static final field ENROLLMENT Ljava/lang/String;
-	public static final field EVENT_DATE Ljava/lang/String;
-	public static final field GEOMETRY_COORDINATES Ljava/lang/String;
-	public static final field GEOMETRY_TYPE Ljava/lang/String;
-	public static final field LAST_UPDATED Ljava/lang/String;
-	public static final field LAST_UPDATED_AT_CLIENT Ljava/lang/String;
-	public static final field ORGANISATION_UNIT Ljava/lang/String;
-	public static final field PROGRAM Ljava/lang/String;
-	public static final field PROGRAM_STAGE Ljava/lang/String;
-	public static final field STATUS Ljava/lang/String;
-	public static final field UID Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/event/internal/EventSync : org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync {
@@ -7235,21 +6652,6 @@ public final class org/hisp/dhis/android/core/expressiondimensionitem/Expression
 
 public abstract interface class org/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItemModule {
 	public abstract fun expressionDimensionItems ()Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItemCollectionRepository;
-}
-
-public final class org/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItemTableInfo {
-	public static final field INSTANCE Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItemTableInfo;
-	public final fun getTABLE_INFO ()Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public final class org/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItemTableInfo$Columns : org/hisp/dhis/android/core/common/IdentifiableColumns {
-	public static final field Companion Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItemTableInfo$Columns$Companion;
-	public static final field EXPRESSION Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItemTableInfo$Columns$Companion {
 }
 
 public abstract class org/hisp/dhis/android/core/fileresource/FileResource : org/hisp/dhis/android/core/common/BaseDataObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
@@ -7364,24 +6766,6 @@ public abstract interface class org/hisp/dhis/android/core/fileresource/FileReso
 public final class org/hisp/dhis/android/core/fileresource/FileResourceObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyOneObjectRepositoryImpl {
 }
 
-public class org/hisp/dhis/android/core/fileresource/FileResourceTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/fileresource/FileResourceTableInfo$Columns : org/hisp/dhis/android/core/common/DataColumns {
-	public static final field CONTENT_LENGTH Ljava/lang/String;
-	public static final field CONTENT_TYPE Ljava/lang/String;
-	public static final field CREATED Ljava/lang/String;
-	public static final field DOMAIN Ljava/lang/String;
-	public static final field LAST_UPDATED Ljava/lang/String;
-	public static final field NAME Ljava/lang/String;
-	public static final field PATH Ljava/lang/String;
-	public static final field UID Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
 public final class org/hisp/dhis/android/core/fileresource/FileResourceValueType : java/lang/Enum {
 	public static final field FILE_RESOURCE Lorg/hisp/dhis/android/core/fileresource/FileResourceValueType;
 	public static final field IMAGE Lorg/hisp/dhis/android/core/fileresource/FileResourceValueType;
@@ -7407,24 +6791,6 @@ public abstract class org/hisp/dhis/android/core/icon/CustomIcon$Builder {
 	public abstract fun href (Ljava/lang/String;)Lorg/hisp/dhis/android/core/icon/CustomIcon$Builder;
 	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/icon/CustomIcon$Builder;
 	public abstract fun key (Ljava/lang/String;)Lorg/hisp/dhis/android/core/icon/CustomIcon$Builder;
-}
-
-public final class org/hisp/dhis/android/core/icon/CustomIconTableInfo {
-	public static final field INSTANCE Lorg/hisp/dhis/android/core/icon/CustomIconTableInfo;
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public final class org/hisp/dhis/android/core/icon/CustomIconTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field Companion Lorg/hisp/dhis/android/core/icon/CustomIconTableInfo$Columns$Companion;
-	public static final field FILE_RESOURCE Ljava/lang/String;
-	public static final field HREF Ljava/lang/String;
-	public static final field KEY Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/icon/CustomIconTableInfo$Columns$Companion {
 }
 
 public abstract class org/hisp/dhis/android/core/icon/Icon {
@@ -7528,22 +6894,6 @@ public final class org/hisp/dhis/android/core/imports/TrackerImportConflictColle
 	public final fun byTableReference ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byTrackedEntityInstanceUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byValue ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
-}
-
-public final class org/hisp/dhis/android/core/imports/TrackerImportConflictTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/imports/TrackerImportConflictTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field DATA_ELEMENT Ljava/lang/String;
-	public static final field ENROLLMENT Ljava/lang/String;
-	public static final field ERROR_CODE Ljava/lang/String;
-	public static final field EVENT Ljava/lang/String;
-	public static final field TABLE_REFERENCE Ljava/lang/String;
-	public static final field TRACKED_ENTITY_ATTRIBUTE Ljava/lang/String;
-	public static final field TRACKED_ENTITY_INSTANCE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/core/imports/TrackerJobManager {
@@ -7852,18 +7202,6 @@ public abstract class org/hisp/dhis/android/core/indicator/DataSetIndicatorLink$
 	public abstract fun indicator (Ljava/lang/String;)Lorg/hisp/dhis/android/core/indicator/DataSetIndicatorLink$Builder;
 }
 
-public final class org/hisp/dhis/android/core/indicator/DataSetIndicatorLinkTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/indicator/DataSetIndicatorLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field DATA_SET Ljava/lang/String;
-	public static final field INDICATOR Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/indicator/Indicator : org/hisp/dhis/android/core/common/BaseNameableObject, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyle {
 	public fun <init> ()V
 	public abstract fun annualized ()Ljava/lang/Boolean;
@@ -7912,55 +7250,10 @@ public final class org/hisp/dhis/android/core/indicator/IndicatorCollectionRepos
 	public final fun withLegendSets ()Lorg/hisp/dhis/android/core/indicator/IndicatorCollectionRepository;
 }
 
-public final class org/hisp/dhis/android/core/indicator/IndicatorLegendSetLinkTableInfo {
-	public static final field Companion Lorg/hisp/dhis/android/core/indicator/IndicatorLegendSetLinkTableInfo$Companion;
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/indicator/IndicatorLegendSetLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field Companion Lorg/hisp/dhis/android/core/indicator/IndicatorLegendSetLinkTableInfo$Columns$Companion;
-	public static final field INDICATOR Ljava/lang/String;
-	public static final field LEGEND_SET Ljava/lang/String;
-	public static final field SORT_ORDER Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/indicator/IndicatorLegendSetLinkTableInfo$Columns$Companion {
-}
-
-public final class org/hisp/dhis/android/core/indicator/IndicatorLegendSetLinkTableInfo$Companion {
-	public final fun getCHILD_PROJECTION ()Lorg/hisp/dhis/android/core/arch/db/stores/projections/internal/LinkTableChildProjection;
-	public final fun getTABLE_INFO ()Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
 public abstract interface class org/hisp/dhis/android/core/indicator/IndicatorModule {
 	public abstract fun dataSetIndicatorEngine ()Lorg/hisp/dhis/android/core/indicator/datasetindicatorengine/DataSetIndicatorEngine;
 	public abstract fun indicatorTypes ()Lorg/hisp/dhis/android/core/indicator/IndicatorTypeCollectionRepository;
 	public abstract fun indicators ()Lorg/hisp/dhis/android/core/indicator/IndicatorCollectionRepository;
-}
-
-public final class org/hisp/dhis/android/core/indicator/IndicatorTableInfo {
-	public static final field INSTANCE Lorg/hisp/dhis/android/core/indicator/IndicatorTableInfo;
-	public final fun getTABLE_INFO ()Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public final class org/hisp/dhis/android/core/indicator/IndicatorTableInfo$Columns : org/hisp/dhis/android/core/common/NameableWithStyleColumns {
-	public static final field ANNUALIZED Ljava/lang/String;
-	public static final field Companion Lorg/hisp/dhis/android/core/indicator/IndicatorTableInfo$Columns$Companion;
-	public static final field DECIMALS Ljava/lang/String;
-	public static final field DENOMINATOR Ljava/lang/String;
-	public static final field DENOMINATOR_DESCRIPTION Ljava/lang/String;
-	public static final field INDICATOR_TYPE Ljava/lang/String;
-	public static final field NUMERATOR Ljava/lang/String;
-	public static final field NUMERATOR_DESCRIPTION Ljava/lang/String;
-	public static final field URL Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/indicator/IndicatorTableInfo$Columns$Companion {
 }
 
 public abstract class org/hisp/dhis/android/core/indicator/IndicatorType : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
@@ -7983,22 +7276,6 @@ public abstract class org/hisp/dhis/android/core/indicator/IndicatorType$Builder
 public final class org/hisp/dhis/android/core/indicator/IndicatorTypeCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
 	public final fun byFactor ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/IntegerFilterConnector;
 	public final fun byNumber ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
-}
-
-public final class org/hisp/dhis/android/core/indicator/IndicatorTypeTableInfo {
-	public static final field INSTANCE Lorg/hisp/dhis/android/core/indicator/IndicatorTypeTableInfo;
-	public final fun getTABLE_INFO ()Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public final class org/hisp/dhis/android/core/indicator/IndicatorTypeTableInfo$Columns : org/hisp/dhis/android/core/common/IdentifiableColumns {
-	public static final field Companion Lorg/hisp/dhis/android/core/indicator/IndicatorTypeTableInfo$Columns$Companion;
-	public static final field FACTOR Ljava/lang/String;
-	public static final field NUMBER Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/indicator/IndicatorTypeTableInfo$Columns$Companion {
 }
 
 public abstract interface class org/hisp/dhis/android/core/indicator/datasetindicatorengine/DataSetIndicatorEngine {
@@ -8028,20 +7305,6 @@ public abstract class org/hisp/dhis/android/core/legendset/DataElementLegendSetL
 	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/legendset/DataElementLegendSetLink$Builder;
 	public abstract fun legendSet (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/DataElementLegendSetLink$Builder;
 	public abstract fun sortOrder (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/legendset/DataElementLegendSetLink$Builder;
-}
-
-public final class org/hisp/dhis/android/core/legendset/DataElementLegendSetLinkTableInfo {
-	public static final field CHILD_PROJECTION Lorg/hisp/dhis/android/core/arch/db/stores/projections/internal/LinkTableChildProjection;
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/legendset/DataElementLegendSetLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field DATA_ELEMENT Ljava/lang/String;
-	public static final field LEGEND_SET Ljava/lang/String;
-	public static final field SORT_ORDER Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/legendset/IndicatorLegendSetLink : org/hisp/dhis/android/core/common/CoreObject {
@@ -8119,29 +7382,6 @@ public abstract interface class org/hisp/dhis/android/core/legendset/LegendSetMo
 	public abstract fun legends ()Lorg/hisp/dhis/android/core/legendset/LegendCollectionRepository;
 }
 
-public final class org/hisp/dhis/android/core/legendset/LegendSetTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/legendset/LegendSetTableInfo$Columns : org/hisp/dhis/android/core/common/IdentifiableColumns {
-	public static final field SYMBOLIZER Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/legendset/LegendTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/legendset/LegendTableInfo$Columns : org/hisp/dhis/android/core/common/IdentifiableColumns {
-	public static final field COLOR Ljava/lang/String;
-	public static final field END_VALUE Ljava/lang/String;
-	public static final field LEGEND_SET Ljava/lang/String;
-	public static final field START_VALUE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink$Builder;
@@ -8160,20 +7400,6 @@ public abstract class org/hisp/dhis/android/core/legendset/ProgramIndicatorLegen
 	public abstract fun legendSet (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink$Builder;
 	public abstract fun programIndicator (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink$Builder;
 	public abstract fun sortOrder (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink$Builder;
-}
-
-public final class org/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLinkTableInfo {
-	public static final field CHILD_PROJECTION Lorg/hisp/dhis/android/core/arch/db/stores/projections/internal/LinkTableChildProjection;
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field LEGEND_SET Ljava/lang/String;
-	public static final field PROGRAM_INDICATOR Ljava/lang/String;
-	public static final field SORT_ORDER Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/maintenance/D2Error : java/lang/Exception, org/hisp/dhis/android/core/common/CoreObject {
@@ -8288,21 +7514,6 @@ public final class org/hisp/dhis/android/core/maintenance/D2ErrorComponent : jav
 	public static fun values ()[Lorg/hisp/dhis/android/core/maintenance/D2ErrorComponent;
 }
 
-public final class org/hisp/dhis/android/core/maintenance/D2ErrorTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/maintenance/D2ErrorTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field CREATED Ljava/lang/String;
-	public static final field ERROR_CODE Ljava/lang/String;
-	public static final field ERROR_COMPONENT Ljava/lang/String;
-	public static final field ERROR_DESCRIPTION Ljava/lang/String;
-	public static final field HTTP_ERROR_CODE Ljava/lang/String;
-	public static final field URL Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/maintenance/ForeignKeyViolation : org/hisp/dhis/android/core/common/BaseObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Builder;
@@ -8342,23 +7553,6 @@ public final class org/hisp/dhis/android/core/maintenance/ForeignKeyViolationCol
 	public final fun byToTable ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 }
 
-public final class org/hisp/dhis/android/core/maintenance/ForeignKeyViolationTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/maintenance/ForeignKeyViolationTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field CREATED Ljava/lang/String;
-	public static final field FROM_COLUMN Ljava/lang/String;
-	public static final field FROM_OBJECT_ROW Ljava/lang/String;
-	public static final field FROM_OBJECT_UID Ljava/lang/String;
-	public static final field FROM_TABLE Ljava/lang/String;
-	public static final field NOT_FOUND_VALUE Ljava/lang/String;
-	public static final field TO_COLUMN Ljava/lang/String;
-	public static final field TO_TABLE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
 public abstract interface class org/hisp/dhis/android/core/maintenance/MaintenanceModule {
 	public abstract fun d2Errors ()Lorg/hisp/dhis/android/core/maintenance/D2ErrorCollectionRepository;
 	public abstract fun databaseImportExport ()Lorg/hisp/dhis/android/core/arch/db/access/DatabaseImportExport;
@@ -8379,8 +7573,8 @@ public abstract interface class org/hisp/dhis/android/core/map/MapModule {
 }
 
 public final class org/hisp/dhis/android/core/map/internal/MapModuleWiper : org/hisp/dhis/android/core/wipe/internal/ModuleWiper {
-	public fun wipeData ()V
-	public fun wipeMetadata ()V
+	public fun wipeData (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun wipeMetadata (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/map/layer/ImageFormat : java/lang/Enum {
@@ -8486,56 +7680,12 @@ public abstract class org/hisp/dhis/android/core/map/layer/MapLayerImageryProvid
 	public abstract fun zoomMin (I)Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProviderArea$Builder;
 }
 
-public final class org/hisp/dhis/android/core/map/layer/MapLayerImageryProviderTableInfo {
-	public static final field INSTANCE Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProviderTableInfo;
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public final class org/hisp/dhis/android/core/map/layer/MapLayerImageryProviderTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field ATTRIBUTION Ljava/lang/String;
-	public static final field COVERAGE_AREAS Ljava/lang/String;
-	public static final field Companion Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProviderTableInfo$Columns$Companion;
-	public static final field MAP_LAYER Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/map/layer/MapLayerImageryProviderTableInfo$Columns$Companion {
-}
-
 public final class org/hisp/dhis/android/core/map/layer/MapLayerPosition : java/lang/Enum {
 	public static final field BASEMAP Lorg/hisp/dhis/android/core/map/layer/MapLayerPosition;
 	public static final field OVERLAY Lorg/hisp/dhis/android/core/map/layer/MapLayerPosition;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/map/layer/MapLayerPosition;
 	public static fun values ()[Lorg/hisp/dhis/android/core/map/layer/MapLayerPosition;
-}
-
-public final class org/hisp/dhis/android/core/map/layer/MapLayerTableInfo {
-	public static final field INSTANCE Lorg/hisp/dhis/android/core/map/layer/MapLayerTableInfo;
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public final class org/hisp/dhis/android/core/map/layer/MapLayerTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field CODE Ljava/lang/String;
-	public static final field Companion Lorg/hisp/dhis/android/core/map/layer/MapLayerTableInfo$Columns$Companion;
-	public static final field DISPLAY_NAME Ljava/lang/String;
-	public static final field EXTERNAL Ljava/lang/String;
-	public static final field IMAGE_FORMAT Ljava/lang/String;
-	public static final field IMAGE_URL Ljava/lang/String;
-	public static final field LAYERS Ljava/lang/String;
-	public static final field MAP_LAYER_POSITION Ljava/lang/String;
-	public static final field MAP_SERVICE Ljava/lang/String;
-	public static final field NAME Ljava/lang/String;
-	public static final field STYLE Ljava/lang/String;
-	public static final field SUBDOMAINS Ljava/lang/String;
-	public static final field SUBDOMAIN_PLACEHOLDER Ljava/lang/String;
-	public static final field UID Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/map/layer/MapLayerTableInfo$Columns$Companion {
 }
 
 public final class org/hisp/dhis/android/core/map/layer/MapService : java/lang/Enum {
@@ -8706,21 +7856,6 @@ public abstract interface class org/hisp/dhis/android/core/note/NoteModule {
 	public abstract fun notes ()Lorg/hisp/dhis/android/core/note/NoteCollectionRepository;
 }
 
-public final class org/hisp/dhis/android/core/note/NoteTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/note/NoteTableInfo$Columns : org/hisp/dhis/android/core/common/DeletableDataColumns {
-	public static final field ENROLLMENT Ljava/lang/String;
-	public static final field EVENT Ljava/lang/String;
-	public static final field NOTE_TYPE Ljava/lang/String;
-	public static final field STORED_BY Ljava/lang/String;
-	public static final field STORED_DATE Ljava/lang/String;
-	public static final field VALUE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/option/Option : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyle {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/option/Option$Builder;
@@ -8788,28 +7923,6 @@ public abstract class org/hisp/dhis/android/core/option/OptionGroupOptionLink$Bu
 	public abstract fun optionGroup (Ljava/lang/String;)Lorg/hisp/dhis/android/core/option/OptionGroupOptionLink$Builder;
 }
 
-public final class org/hisp/dhis/android/core/option/OptionGroupOptionLinkTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/option/OptionGroupOptionLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field OPTION Ljava/lang/String;
-	public static final field OPTION_GROUP Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/option/OptionGroupTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/option/OptionGroupTableInfo$Columns : org/hisp/dhis/android/core/common/IdentifiableColumns {
-	public static final field OPTION_SET Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
 public abstract interface class org/hisp/dhis/android/core/option/OptionModule {
 	public abstract fun optionGroups ()Lorg/hisp/dhis/android/core/option/OptionGroupCollectionRepository;
 	public abstract fun optionService ()Lorg/hisp/dhis/android/core/option/OptionService;
@@ -8853,28 +7966,6 @@ public abstract class org/hisp/dhis/android/core/option/OptionSet$Builder : org/
 public final class org/hisp/dhis/android/core/option/OptionSetCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
 	public final fun byValueType ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
 	public final fun byVersion ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/IntegerFilterConnector;
-}
-
-public final class org/hisp/dhis/android/core/option/OptionSetTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/option/OptionSetTableInfo$Columns : org/hisp/dhis/android/core/common/IdentifiableColumns {
-	public static final field VALUE_TYPE Ljava/lang/String;
-	public static final field VERSION Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/option/OptionTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/option/OptionTableInfo$Columns : org/hisp/dhis/android/core/common/IdentifiableWithStyleColumns {
-	public static final field OPTION_SET Ljava/lang/String;
-	public static final field SORT_ORDER Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/core/option/internal/OptionCall : org/hisp/dhis/android/core/arch/call/factories/internal/UidsCallCoroutines {
@@ -8974,17 +8065,6 @@ public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitG
 	public final fun byShortName ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 }
 
-public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitGroupTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/organisationunit/OrganisationUnitGroupTableInfo$Columns : org/hisp/dhis/android/core/common/IdentifiableColumns {
-	public static final field DISPLAY_SHORT_NAME Ljava/lang/String;
-	public static final field SHORT_NAME Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel$Builder;
@@ -9002,16 +8082,6 @@ public abstract class org/hisp/dhis/android/core/organisationunit/OrganisationUn
 
 public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitLevelCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
 	public final fun byLevel ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/IntegerFilterConnector;
-}
-
-public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitLevelTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/organisationunit/OrganisationUnitLevelTableInfo$Columns : org/hisp/dhis/android/core/common/IdentifiableColumns {
-	public static final field LEVEL Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitMode : java/lang/Enum {
@@ -9050,18 +8120,6 @@ public abstract class org/hisp/dhis/android/core/organisationunit/OrganisationUn
 	public abstract fun organisationUnitGroup (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLink$Builder;
 }
 
-public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLinkTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field ORGANISATION_UNIT Ljava/lang/String;
-	public static final field ORGANISATION_UNIT_GROUP Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink$Builder;
@@ -9080,41 +8138,12 @@ public abstract class org/hisp/dhis/android/core/organisationunit/OrganisationUn
 	public abstract fun program (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink$Builder;
 }
 
-public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLinkTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field ORGANISATION_UNIT Ljava/lang/String;
-	public static final field PROGRAM Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
 public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitService {
 	public fun <init> (Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitCollectionRepository;)V
 	public final fun blockingIsDateInOrgunitRange (Ljava/lang/String;Ljava/util/Date;)Z
 	public final fun blockingIsInCaptureScope (Ljava/lang/String;)Z
 	public final fun isDateInOrgunitRange (Ljava/lang/String;Ljava/util/Date;)Lio/reactivex/Single;
 	public final fun isInCaptureScope (Ljava/lang/String;)Lio/reactivex/Single;
-}
-
-public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/organisationunit/OrganisationUnitTableInfo$Columns : org/hisp/dhis/android/core/common/NameableColumns {
-	public static final field CLOSED_DATE Ljava/lang/String;
-	public static final field DISPLAY_NAME_PATH Ljava/lang/String;
-	public static final field GEOMETRY_COORDINATES Ljava/lang/String;
-	public static final field GEOMETRY_TYPE Ljava/lang/String;
-	public static final field LEVEL Ljava/lang/String;
-	public static final field OPENING_DATE Ljava/lang/String;
-	public static final field PARENT Ljava/lang/String;
-	public static final field PATH Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitTree {
@@ -9280,20 +8309,6 @@ public abstract interface class org/hisp/dhis/android/core/period/PeriodModule {
 	public abstract fun periods ()Lorg/hisp/dhis/android/core/period/PeriodCollectionRepository;
 }
 
-public final class org/hisp/dhis/android/core/period/PeriodTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/period/PeriodTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field END_DATE Ljava/lang/String;
-	public static final field PERIOD_ID Ljava/lang/String;
-	public static final field PERIOD_TYPE Ljava/lang/String;
-	public static final field START_DATE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
 public final class org/hisp/dhis/android/core/period/PeriodType : java/lang/Enum {
 	public static final field BiMonthly Lorg/hisp/dhis/android/core/period/PeriodType;
 	public static final field BiWeekly Lorg/hisp/dhis/android/core/period/PeriodType;
@@ -9381,25 +8396,6 @@ public abstract class org/hisp/dhis/android/core/program/AnalyticsPeriodBoundary
 	public abstract fun offsetPeriodType (Lorg/hisp/dhis/android/core/period/PeriodType;)Lorg/hisp/dhis/android/core/program/AnalyticsPeriodBoundary$Builder;
 	public abstract fun offsetPeriods (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/program/AnalyticsPeriodBoundary$Builder;
 	public abstract fun programIndicator (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/AnalyticsPeriodBoundary$Builder;
-}
-
-public final class org/hisp/dhis/android/core/program/AnalyticsPeriodBoundaryTableInfo {
-	public static final field INSTANCE Lorg/hisp/dhis/android/core/program/AnalyticsPeriodBoundaryTableInfo;
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public final class org/hisp/dhis/android/core/program/AnalyticsPeriodBoundaryTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field ANALYTICS_PERIOD_BOUNDARY_TYPE Ljava/lang/String;
-	public static final field BOUNDARY_TARGET Ljava/lang/String;
-	public static final field Companion Lorg/hisp/dhis/android/core/program/AnalyticsPeriodBoundaryTableInfo$Columns$Companion;
-	public static final field OFFSET_PERIODS Ljava/lang/String;
-	public static final field OFFSET_PERIOD_TYPE Ljava/lang/String;
-	public static final field PROGRAM_INDICATOR Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/program/AnalyticsPeriodBoundaryTableInfo$Columns$Companion {
 }
 
 public final class org/hisp/dhis/android/core/program/AnalyticsPeriodBoundaryType : java/lang/Enum {
@@ -9639,28 +8635,6 @@ public final class org/hisp/dhis/android/core/program/ProgramIndicatorCollection
 	public final fun withLegendSets ()Lorg/hisp/dhis/android/core/program/ProgramIndicatorCollectionRepository;
 }
 
-public final class org/hisp/dhis/android/core/program/ProgramIndicatorTableInfo {
-	public static final field INSTANCE Lorg/hisp/dhis/android/core/program/ProgramIndicatorTableInfo;
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public final class org/hisp/dhis/android/core/program/ProgramIndicatorTableInfo$Columns : org/hisp/dhis/android/core/common/NameableColumns {
-	public static final field AGGREGATION_TYPE Ljava/lang/String;
-	public static final field ANALYTICS_TYPE Ljava/lang/String;
-	public static final field Companion Lorg/hisp/dhis/android/core/program/ProgramIndicatorTableInfo$Columns$Companion;
-	public static final field DECIMALS Ljava/lang/String;
-	public static final field DIMENSION_ITEM Ljava/lang/String;
-	public static final field DISPLAY_IN_FORM Ljava/lang/String;
-	public static final field EXPRESSION Ljava/lang/String;
-	public static final field FILTER Ljava/lang/String;
-	public static final field PROGRAM Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/program/ProgramIndicatorTableInfo$Columns$Companion {
-}
-
 public abstract interface class org/hisp/dhis/android/core/program/ProgramModule {
 	public abstract fun programIndicatorEngine ()Lorg/hisp/dhis/android/core/program/programindicatorengine/ProgramIndicatorEngine;
 	public abstract fun programIndicators ()Lorg/hisp/dhis/android/core/program/ProgramIndicatorCollectionRepository;
@@ -9754,33 +8728,6 @@ public final class org/hisp/dhis/android/core/program/ProgramRuleActionCollectio
 	public final fun byTrackedEntityAttributeUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 }
 
-public final class org/hisp/dhis/android/core/program/ProgramRuleActionTableInfo {
-	public static final field INSTANCE Lorg/hisp/dhis/android/core/program/ProgramRuleActionTableInfo;
-	public final fun getTABLE_INFO ()Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public final class org/hisp/dhis/android/core/program/ProgramRuleActionTableInfo$Columns : org/hisp/dhis/android/core/common/IdentifiableColumns {
-	public static final field CONTENT Ljava/lang/String;
-	public static final field Companion Lorg/hisp/dhis/android/core/program/ProgramRuleActionTableInfo$Columns$Companion;
-	public static final field DATA Ljava/lang/String;
-	public static final field DATA_ELEMENT Ljava/lang/String;
-	public static final field DISPLAYCONTENT Ljava/lang/String;
-	public static final field LOCATION Ljava/lang/String;
-	public static final field OPTION Ljava/lang/String;
-	public static final field OPTION_GROUP Ljava/lang/String;
-	public static final field PROGRAM_INDICATOR Ljava/lang/String;
-	public static final field PROGRAM_RULE Ljava/lang/String;
-	public static final field PROGRAM_RULE_ACTION_TYPE Ljava/lang/String;
-	public static final field PROGRAM_STAGE Ljava/lang/String;
-	public static final field PROGRAM_STAGE_SECTION Ljava/lang/String;
-	public static final field TRACKED_ENTITY_ATTRIBUTE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/program/ProgramRuleActionTableInfo$Columns$Companion {
-}
-
 public final class org/hisp/dhis/android/core/program/ProgramRuleActionType : java/lang/Enum {
 	public static final field ASSIGN Lorg/hisp/dhis/android/core/program/ProgramRuleActionType;
 	public static final field CREATEEVENT Lorg/hisp/dhis/android/core/program/ProgramRuleActionType;
@@ -9809,19 +8756,6 @@ public final class org/hisp/dhis/android/core/program/ProgramRuleCollectionRepos
 	public final fun byProgramStageUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byProgramUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun withProgramRuleActions ()Lorg/hisp/dhis/android/core/program/ProgramRuleCollectionRepository;
-}
-
-public final class org/hisp/dhis/android/core/program/ProgramRuleTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/program/ProgramRuleTableInfo$Columns : org/hisp/dhis/android/core/common/IdentifiableColumns {
-	public static final field CONDITION Ljava/lang/String;
-	public static final field PRIORITY Ljava/lang/String;
-	public static final field PROGRAM Ljava/lang/String;
-	public static final field PROGRAM_STAGE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/program/ProgramRuleVariable : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
@@ -9867,21 +8801,6 @@ public final class org/hisp/dhis/android/core/program/ProgramRuleVariableSourceT
 	public static final field TEI_ATTRIBUTE Lorg/hisp/dhis/android/core/program/ProgramRuleVariableSourceType;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramRuleVariableSourceType;
 	public static fun values ()[Lorg/hisp/dhis/android/core/program/ProgramRuleVariableSourceType;
-}
-
-public final class org/hisp/dhis/android/core/program/ProgramRuleVariableTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/program/ProgramRuleVariableTableInfo$Columns : org/hisp/dhis/android/core/common/IdentifiableColumns {
-	public static final field DATA_ELEMENT Ljava/lang/String;
-	public static final field PROGRAM Ljava/lang/String;
-	public static final field PROGRAM_RULE_VARIABLE_SOURCE_TYPE Ljava/lang/String;
-	public static final field PROGRAM_STAGE Ljava/lang/String;
-	public static final field TRACKED_ENTITY_ATTRIBUTE Ljava/lang/String;
-	public static final field USE_CODE_FOR_OPTION_SET Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/program/ProgramSection : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyle {
@@ -9931,19 +8850,6 @@ public abstract class org/hisp/dhis/android/core/program/ProgramSectionAttribute
 	public abstract fun sortOrder (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/program/ProgramSectionAttributeLink$Builder;
 }
 
-public final class org/hisp/dhis/android/core/program/ProgramSectionAttributeLinkTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/program/ProgramSectionAttributeLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field ATTRIBUTE Ljava/lang/String;
-	public static final field PROGRAM_SECTION Ljava/lang/String;
-	public static final field SORT_ORDER Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
 public final class org/hisp/dhis/android/core/program/ProgramSectionCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
 	public final fun byColor ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byDescription ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
@@ -9954,21 +8860,6 @@ public final class org/hisp/dhis/android/core/program/ProgramSectionCollectionRe
 	public final fun byProgramUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun bySortOrder ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/IntegerFilterConnector;
 	public final fun withAttributes ()Lorg/hisp/dhis/android/core/program/ProgramSectionCollectionRepository;
-}
-
-public final class org/hisp/dhis/android/core/program/ProgramSectionTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/program/ProgramSectionTableInfo$Columns : org/hisp/dhis/android/core/common/IdentifiableWithStyleColumns {
-	public static final field DESCRIPTION Ljava/lang/String;
-	public static final field DESKTOP_RENDER_TYPE Ljava/lang/String;
-	public static final field FORM_NAME Ljava/lang/String;
-	public static final field MOBILE_RENDER_TYPE Ljava/lang/String;
-	public static final field PROGRAM Ljava/lang/String;
-	public static final field SORT_ORDER Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/program/ProgramStage : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyle {
@@ -10125,22 +9016,6 @@ public final class org/hisp/dhis/android/core/program/ProgramStageDataElementCol
 	public final fun withRenderType ()Lorg/hisp/dhis/android/core/program/ProgramStageDataElementCollectionRepository;
 }
 
-public class org/hisp/dhis/android/core/program/ProgramStageDataElementTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/program/ProgramStageDataElementTableInfo$Columns : org/hisp/dhis/android/core/common/IdentifiableColumns {
-	public static final field ALLOW_FUTURE_DATE Ljava/lang/String;
-	public static final field ALLOW_PROVIDED_ELSEWHERE Ljava/lang/String;
-	public static final field COMPULSORY Ljava/lang/String;
-	public static final field DATA_ELEMENT Ljava/lang/String;
-	public static final field DISPLAY_IN_REPORTS Ljava/lang/String;
-	public static final field PROGRAM_STAGE Ljava/lang/String;
-	public static final field SORT_ORDER Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/program/ProgramStageSection : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/program/ProgramStageSection$Builder;
@@ -10188,19 +9063,6 @@ public abstract class org/hisp/dhis/android/core/program/ProgramStageSectionData
 	public abstract fun sortOrder (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/program/ProgramStageSectionDataElementLink$Builder;
 }
 
-public final class org/hisp/dhis/android/core/program/ProgramStageSectionDataElementLinkTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/program/ProgramStageSectionDataElementLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field DATA_ELEMENT Ljava/lang/String;
-	public static final field PROGRAM_STAGE_SECTION Ljava/lang/String;
-	public static final field SORT_ORDER Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/program/ProgramStageSectionProgramIndicatorLink : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/program/ProgramStageSectionProgramIndicatorLink$Builder;
@@ -10219,33 +9081,6 @@ public abstract class org/hisp/dhis/android/core/program/ProgramStageSectionProg
 	public abstract fun programStageSection (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStageSectionProgramIndicatorLink$Builder;
 }
 
-public final class org/hisp/dhis/android/core/program/ProgramStageSectionProgramIndicatorLinkTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/program/ProgramStageSectionProgramIndicatorLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field PROGRAM_INDICATOR Ljava/lang/String;
-	public static final field PROGRAM_STAGE_SECTION Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/program/ProgramStageSectionTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/program/ProgramStageSectionTableInfo$Columns : org/hisp/dhis/android/core/common/IdentifiableColumns {
-	public static final field DESCRIPTION Ljava/lang/String;
-	public static final field DESKTOP_RENDER_TYPE Ljava/lang/String;
-	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
-	public static final field MOBILE_RENDER_TYPE Ljava/lang/String;
-	public static final field PROGRAM_STAGE Ljava/lang/String;
-	public static final field SORT_ORDER Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
 public final class org/hisp/dhis/android/core/program/ProgramStageSectionsCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
 	public final fun byDescription ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byDesktopRenderType ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
@@ -10255,83 +9090,6 @@ public final class org/hisp/dhis/android/core/program/ProgramStageSectionsCollec
 	public final fun bySortOrder ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/IntegerFilterConnector;
 	public final fun withDataElements ()Lorg/hisp/dhis/android/core/program/ProgramStageSectionsCollectionRepository;
 	public final fun withProgramIndicators ()Lorg/hisp/dhis/android/core/program/ProgramStageSectionsCollectionRepository;
-}
-
-public final class org/hisp/dhis/android/core/program/ProgramStageTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/program/ProgramStageTableInfo$Columns : org/hisp/dhis/android/core/common/IdentifiableWithStyleColumns {
-	public static final field ACCESS_DATA_WRITE Ljava/lang/String;
-	public static final field ALLOW_GENERATE_NEXT_VISIT Ljava/lang/String;
-	public static final field AUTO_GENERATE_EVENT Ljava/lang/String;
-	public static final field BLOCK_ENTRY_FORM Ljava/lang/String;
-	public static final field DESCRIPTION Ljava/lang/String;
-	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
-	public static final field DISPLAY_DUE_DATE_LABEL Ljava/lang/String;
-	public static final field DISPLAY_EVENT_LABEL Ljava/lang/String;
-	public static final field DISPLAY_EXECUTION_DATE_LABEL Ljava/lang/String;
-	public static final field DISPLAY_GENERATE_EVENT_BOX Ljava/lang/String;
-	public static final field DISPLAY_PROGRAM_STAGE_LABEL Ljava/lang/String;
-	public static final field ENABLE_USER_ASSIGNMENT Ljava/lang/String;
-	public static final field FEATURE_TYPE Ljava/lang/String;
-	public static final field FORM_TYPE Ljava/lang/String;
-	public static final field GENERATED_BY_ENROLMENT_DATE Ljava/lang/String;
-	public static final field HIDE_DUE_DATE Ljava/lang/String;
-	public static final field MIN_DAYS_FROM_START Ljava/lang/String;
-	public static final field OPEN_AFTER_ENROLLMENT Ljava/lang/String;
-	public static final field PERIOD_TYPE Ljava/lang/String;
-	public static final field PROGRAM Ljava/lang/String;
-	public static final field REMIND_COMPLETED Ljava/lang/String;
-	public static final field REPEATABLE Ljava/lang/String;
-	public static final field REPORT_DATE_TO_USE Ljava/lang/String;
-	public static final field SORT_ORDER Ljava/lang/String;
-	public static final field STANDARD_INTERVAL Ljava/lang/String;
-	public static final field VALIDATION_STRATEGY Ljava/lang/String;
-	public static final field VALID_COMPLETE_ONLY Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/program/ProgramTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/program/ProgramTableInfo$Columns : org/hisp/dhis/android/core/common/NameableWithStyleColumns {
-	public static final field ACCESS_DATA_WRITE Ljava/lang/String;
-	public static final field ACCESS_LEVEL Ljava/lang/String;
-	public static final field CATEGORY_COMBO Ljava/lang/String;
-	public static final field COMPLETE_EVENTS_EXPIRY_DAYS Ljava/lang/String;
-	public static final field DATA_ENTRY_METHOD Ljava/lang/String;
-	public static final field DISPLAY_ENROLLMENT_DATE_LABEL Ljava/lang/String;
-	public static final field DISPLAY_ENROLLMENT_LABEL Ljava/lang/String;
-	public static final field DISPLAY_EVENT_LABEL Ljava/lang/String;
-	public static final field DISPLAY_FOLLOW_UP_LABEL Ljava/lang/String;
-	public static final field DISPLAY_FRONT_PAGE_LIST Ljava/lang/String;
-	public static final field DISPLAY_INCIDENT_DATE Ljava/lang/String;
-	public static final field DISPLAY_INCIDENT_DATE_LABEL Ljava/lang/String;
-	public static final field DISPLAY_NOTE_LABEL Ljava/lang/String;
-	public static final field DISPLAY_ORG_UNIT_LABEL Ljava/lang/String;
-	public static final field DISPLAY_PROGRAM_STAGE_LABEL Ljava/lang/String;
-	public static final field DISPLAY_RELATIONSHIP_LABEL Ljava/lang/String;
-	public static final field DISPLAY_TRACKED_ENTITY_ATTRIBUTE_LABEL Ljava/lang/String;
-	public static final field EXPIRY_DAYS Ljava/lang/String;
-	public static final field EXPIRY_PERIOD_TYPE Ljava/lang/String;
-	public static final field FEATURE_TYPE Ljava/lang/String;
-	public static final field IGNORE_OVERDUE_EVENTS Ljava/lang/String;
-	public static final field MAX_TEI_COUNT_TO_RETURN Ljava/lang/String;
-	public static final field MIN_ATTRIBUTES_REQUIRED_TO_SEARCH Ljava/lang/String;
-	public static final field ONLY_ENROLL_ONCE Ljava/lang/String;
-	public static final field PROGRAM_TYPE Ljava/lang/String;
-	public static final field REGISTRATION Ljava/lang/String;
-	public static final field RELATED_PROGRAM Ljava/lang/String;
-	public static final field SELECT_ENROLLMENT_DATES_IN_FUTURE Ljava/lang/String;
-	public static final field SELECT_INCIDENT_DATES_IN_FUTURE Ljava/lang/String;
-	public static final field TRACKED_ENTITY_TYPE Ljava/lang/String;
-	public static final field USE_FIRST_STAGE_DURING_REGISTRATION Ljava/lang/String;
-	public static final field VERSION Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/program/ProgramTrackedEntityAttribute : org/hisp/dhis/android/core/common/BaseNameableObject, org/hisp/dhis/android/core/common/CoreObject {
@@ -10373,22 +9131,6 @@ public final class org/hisp/dhis/android/core/program/ProgramTrackedEntityAttrib
 	public final fun byTrackedEntityAttribute ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun orderBySortOrder (Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;)Lorg/hisp/dhis/android/core/program/ProgramTrackedEntityAttributeCollectionRepository;
 	public final fun withRenderType ()Lorg/hisp/dhis/android/core/program/ProgramTrackedEntityAttributeCollectionRepository;
-}
-
-public final class org/hisp/dhis/android/core/program/ProgramTrackedEntityAttributeTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/program/ProgramTrackedEntityAttributeTableInfo$Columns : org/hisp/dhis/android/core/common/NameableColumns {
-	public static final field ALLOW_FUTURE_DATE Ljava/lang/String;
-	public static final field DISPLAY_IN_LIST Ljava/lang/String;
-	public static final field MANDATORY Ljava/lang/String;
-	public static final field PROGRAM Ljava/lang/String;
-	public static final field SEARCHABLE Ljava/lang/String;
-	public static final field SORT_ORDER Ljava/lang/String;
-	public static final field TRACKED_ENTITY_ATTRIBUTE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/core/program/ProgramType : java/lang/Enum {
@@ -10607,19 +9349,6 @@ public abstract class org/hisp/dhis/android/core/programstageworkinglist/Program
 	public abstract fun sw (Ljava/lang/String;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListAttributeValueFilter$Builder;
 }
 
-public final class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListAttributeValueFilterTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListAttributeValueFilterTableInfo$Columns : org/hisp/dhis/android/core/common/tableinfo/FilterOperatorsColumns {
-	public static final field ATTRIBUTE Ljava/lang/String;
-	public static final field EW Ljava/lang/String;
-	public static final field PROGRAM_STAGE_WORKING_LIST Ljava/lang/String;
-	public static final field SW Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
 public final class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
 	public final fun byAssignedUserMode ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
 	public final fun byDescription ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
@@ -10650,17 +9379,6 @@ public abstract class org/hisp/dhis/android/core/programstageworkinglist/Program
 	public abstract fun dataItem (Ljava/lang/String;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListEventDataFilter$Builder;
 	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListEventDataFilter$Builder;
 	public abstract fun programStageWorkingList (Ljava/lang/String;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListEventDataFilter$Builder;
-}
-
-public final class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListEventDataFilterTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListEventDataFilterTableInfo$Columns : org/hisp/dhis/android/core/common/tableinfo/FilterOperatorsColumns {
-	public static final field DATA_ITEM Ljava/lang/String;
-	public static final field PROGRAM_STAGE_WORKING_LIST Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/core/programstageworkinglist/internal/AttributeValueFilterHelper {
@@ -10750,24 +9468,6 @@ public abstract class org/hisp/dhis/android/core/relationship/RelationshipConstr
 	public abstract fun trackerDataView (Lorg/hisp/dhis/android/core/relationship/TrackerDataView;)Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint$Builder;
 }
 
-public final class org/hisp/dhis/android/core/relationship/RelationshipConstraintTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/relationship/RelationshipConstraintTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field CONSTRAINT_TYPE Ljava/lang/String;
-	public static final field PROGRAM Ljava/lang/String;
-	public static final field PROGRAM_STAGE Ljava/lang/String;
-	public static final field RELATIONSHIP_ENTITY Ljava/lang/String;
-	public static final field RELATIONSHIP_TYPE Ljava/lang/String;
-	public static final field TRACKED_ENTITY_TYPE Ljava/lang/String;
-	public static final field TRACKER_DATA_VIEW_ATTRIBUTES Ljava/lang/String;
-	public static final field TRACKER_DATA_VIEW_DATA_ELEMENTS Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
 public final class org/hisp/dhis/android/core/relationship/RelationshipConstraintType : java/lang/Enum {
 	public static final field FROM Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;
 	public static final field TO Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;
@@ -10855,21 +9555,6 @@ public abstract class org/hisp/dhis/android/core/relationship/RelationshipItemEv
 	public abstract fun event (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipItemEvent$Builder;
 }
 
-public final class org/hisp/dhis/android/core/relationship/RelationshipItemTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/relationship/RelationshipItemTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field ENROLLMENT Ljava/lang/String;
-	public static final field EVENT Ljava/lang/String;
-	public static final field RELATIONSHIP Ljava/lang/String;
-	public static final field RELATIONSHIP_ITEM_TYPE Ljava/lang/String;
-	public static final field TRACKED_ENTITY_INSTANCE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance$Builder;
@@ -10897,20 +9582,6 @@ public abstract interface class org/hisp/dhis/android/core/relationship/Relation
 
 public final class org/hisp/dhis/android/core/relationship/RelationshipService$DefaultImpls {
 	public static synthetic fun getRelationshipTypesForTrackedEntities$default (Lorg/hisp/dhis/android/core/relationship/RelationshipService;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ljava/util/List;
-}
-
-public final class org/hisp/dhis/android/core/relationship/RelationshipTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/relationship/RelationshipTableInfo$Columns : org/hisp/dhis/android/core/common/DeletableDataColumns {
-	public static final field CREATED Ljava/lang/String;
-	public static final field LAST_UPDATED Ljava/lang/String;
-	public static final field NAME Ljava/lang/String;
-	public static final field RELATIONSHIP_TYPE Ljava/lang/String;
-	public static final field UID Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/relationship/RelationshipType : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
@@ -10947,19 +9618,6 @@ public final class org/hisp/dhis/android/core/relationship/RelationshipTypeColle
 	public final fun byConstraint (Lorg/hisp/dhis/android/core/relationship/RelationshipEntityType;Ljava/lang/String;Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;)Lorg/hisp/dhis/android/core/relationship/RelationshipTypeCollectionRepository;
 	public static synthetic fun byConstraint$default (Lorg/hisp/dhis/android/core/relationship/RelationshipTypeCollectionRepository;Lorg/hisp/dhis/android/core/relationship/RelationshipEntityType;Ljava/lang/String;Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/relationship/RelationshipTypeCollectionRepository;
 	public final fun withConstraints ()Lorg/hisp/dhis/android/core/relationship/RelationshipTypeCollectionRepository;
-}
-
-public final class org/hisp/dhis/android/core/relationship/RelationshipTypeTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/relationship/RelationshipTypeTableInfo$Columns : org/hisp/dhis/android/core/common/IdentifiableColumns {
-	public static final field ACCESS_DATA_WRITE Ljava/lang/String;
-	public static final field BIDIRECTIONAL Ljava/lang/String;
-	public static final field FROM_TO_NAME Ljava/lang/String;
-	public static final field TO_FROM_NAME Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/core/relationship/RelationshipTypeWithEntitySide {
@@ -11035,18 +9693,6 @@ public final class org/hisp/dhis/android/core/resource/internal/Resource$Type : 
 	public static fun values ()[Lorg/hisp/dhis/android/core/resource/internal/Resource$Type;
 }
 
-public final class org/hisp/dhis/android/core/resource/internal/ResourceTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/resource/internal/ResourceTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field LAST_SYNCED Ljava/lang/String;
-	public static final field RESOURCE_TYPE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualization : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Builder;
@@ -11083,28 +9729,6 @@ public final class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualizatio
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationScope;
 	public static fun values ()[Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationScope;
-}
-
-public final class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationTableInfo {
-	public static final field INSTANCE Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationTableInfo;
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public final class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field Companion Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationTableInfo$Columns$Companion;
-	public static final field GROUP_NAME Ljava/lang/String;
-	public static final field GROUP_UID Ljava/lang/String;
-	public static final field NAME Ljava/lang/String;
-	public static final field SCOPE Ljava/lang/String;
-	public static final field SCOPE_UID Ljava/lang/String;
-	public static final field TIME_STAMP Ljava/lang/String;
-	public static final field TYPE Ljava/lang/String;
-	public static final field UID Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationTableInfo$Columns$Companion {
 }
 
 public final class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationType : java/lang/Enum {
@@ -11199,18 +9823,6 @@ public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiAttribute$
 	public abstract fun whoComponent (Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiAttribute$Builder;
 }
 
-public final class org/hisp/dhis/android/core/settings/AnalyticsTeiAttributeTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/settings/AnalyticsTeiAttributeTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field ATTRIBUTE Ljava/lang/String;
-	public static final field TEI_SETTING Ljava/lang/String;
-	public static final field WHO_COMPONENT Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiData {
 	public fun <init> ()V
 	public abstract fun attributes ()Ljava/util/List;
@@ -11249,19 +9861,6 @@ public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiDataElemen
 	public abstract fun whoComponent (Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiDataElement$Builder;
 }
 
-public final class org/hisp/dhis/android/core/settings/AnalyticsTeiDataElementTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/settings/AnalyticsTeiDataElementTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field DATA_ELEMENT Ljava/lang/String;
-	public static final field PROGRAM_STAGE Ljava/lang/String;
-	public static final field TEI_SETTING Ljava/lang/String;
-	public static final field WHO_COMPONENT Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiIndicator : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiIndicator$Builder;
@@ -11281,19 +9880,6 @@ public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiIndicator$
 	public abstract fun programStage (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiIndicator$Builder;
 	public abstract fun teiSetting (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiIndicator$Builder;
 	public abstract fun whoComponent (Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiIndicator$Builder;
-}
-
-public final class org/hisp/dhis/android/core/settings/AnalyticsTeiIndicatorTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/settings/AnalyticsTeiIndicatorTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field INDICATOR Ljava/lang/String;
-	public static final field PROGRAM_STAGE Ljava/lang/String;
-	public static final field TEI_SETTING Ljava/lang/String;
-	public static final field WHO_COMPONENT Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiSetting : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
@@ -11337,22 +9923,6 @@ public final class org/hisp/dhis/android/core/settings/AnalyticsTeiSettingCollec
 	public final fun byUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 }
 
-public final class org/hisp/dhis/android/core/settings/AnalyticsTeiSettingTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/settings/AnalyticsTeiSettingTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field NAME Ljava/lang/String;
-	public static final field PERIOD Ljava/lang/String;
-	public static final field PROGRAM Ljava/lang/String;
-	public static final field PROGRAM_STAGE Ljava/lang/String;
-	public static final field SHORT_NAME Ljava/lang/String;
-	public static final field TYPE Ljava/lang/String;
-	public static final field UID Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData$Builder;
@@ -11374,20 +9944,6 @@ public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutriti
 	public abstract fun teiSetting (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData$Builder;
 	public abstract fun x (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData$Builder;
 	public abstract fun y (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData$Builder;
-}
-
-public final class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionDataTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionDataTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field CHART_TYPE Ljava/lang/String;
-	public static final field GENDER_ATTRIBUTE Ljava/lang/String;
-	public static final field GENDER_FEMALE Ljava/lang/String;
-	public static final field GENDER_MALE Ljava/lang/String;
-	public static final field TEI_SETTING Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender {
@@ -11559,17 +10115,6 @@ public abstract class org/hisp/dhis/android/core/settings/CustomIntentAttribute$
 	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntentAttribute$Builder;
 }
 
-public final class org/hisp/dhis/android/core/settings/CustomIntentAttributeTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/settings/CustomIntentAttributeTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field CUSTOM_INTENT_UID Ljava/lang/String;
-	public static final field UID Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
 public final class org/hisp/dhis/android/core/settings/CustomIntentCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyWithUidCollectionRepositoryImpl {
 	public final fun byAttribute (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntentCollectionRepository;
 	public final fun byDataElement (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntentCollectionRepository;
@@ -11591,17 +10136,6 @@ public abstract class org/hisp/dhis/android/core/settings/CustomIntentDataElemen
 	public abstract fun customIntentUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntentDataElement$Builder;
 	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/settings/CustomIntentDataElement$Builder;
 	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntentDataElement$Builder;
-}
-
-public final class org/hisp/dhis/android/core/settings/CustomIntentDataElementTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/settings/CustomIntentDataElementTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field CUSTOM_INTENT_UID Ljava/lang/String;
-	public static final field UID Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/settings/CustomIntentRequest {
@@ -11660,22 +10194,6 @@ public abstract class org/hisp/dhis/android/core/settings/CustomIntentResponseDa
 	public abstract fun path (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntentResponseData$Builder;
 }
 
-public final class org/hisp/dhis/android/core/settings/CustomIntentTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/settings/CustomIntentTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field ACTION Ljava/lang/String;
-	public static final field NAME Ljava/lang/String;
-	public static final field PACKAGE_NAME Ljava/lang/String;
-	public static final field REQUEST_ARGUMENTS Ljava/lang/String;
-	public static final field RESPONSE_DATA_ARGUMENT Ljava/lang/String;
-	public static final field RESPONSE_DATA_PATH Ljava/lang/String;
-	public static final field UID Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/settings/CustomIntentTrigger {
 	public fun <init> ()V
 	public abstract fun attributes ()Ljava/util/List;
@@ -11719,18 +10237,6 @@ public abstract class org/hisp/dhis/android/core/settings/DataSetConfigurationSe
 	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting$Builder;
 	public abstract fun minimumLocationAccuracy (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting$Builder;
 	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting$Builder;
-}
-
-public class org/hisp/dhis/android/core/settings/DataSetConfigurationSettingTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/settings/DataSetConfigurationSettingTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field DISABLE_MANUAL_LOCATION Ljava/lang/String;
-	public static final field MINIMUM_LOCATION_ACCURACY Ljava/lang/String;
-	public static final field UID Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/settings/DataSetConfigurationSettings {
@@ -11800,20 +10306,6 @@ public abstract class org/hisp/dhis/android/core/settings/DataSetSetting$Builder
 	public abstract fun periodDSDBTrimming (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/settings/DataSetSetting$Builder;
 	public abstract fun periodDSDownload (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/settings/DataSetSetting$Builder;
 	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/DataSetSetting$Builder;
-}
-
-public final class org/hisp/dhis/android/core/settings/DataSetSettingTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/settings/DataSetSettingTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field LAST_UPDATED Ljava/lang/String;
-	public static final field NAME Ljava/lang/String;
-	public static final field PERIOD_DS_DB_TRIMMING Ljava/lang/String;
-	public static final field PERIOD_DS_DOWNLOAD Ljava/lang/String;
-	public static final field UID Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/settings/DataSetSettings {
@@ -11899,20 +10391,6 @@ public abstract class org/hisp/dhis/android/core/settings/FilterSetting$Builder 
 	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/FilterSetting$Builder;
 }
 
-public final class org/hisp/dhis/android/core/settings/FilterSettingTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/settings/FilterSettingTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field FILTER Ljava/lang/String;
-	public static final field FILTER_TYPE Ljava/lang/String;
-	public static final field SCOPE Ljava/lang/String;
-	public static final field SORT Ljava/lang/String;
-	public static final field UID Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/settings/FilterSorting {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/FilterSorting$Builder;
@@ -11935,31 +10413,6 @@ public final class org/hisp/dhis/android/core/settings/GeneralSettingObjectRepos
 	public final fun blockingHasExperimentalFeature (Lorg/hisp/dhis/android/core/settings/ExperimentalFeature;)Z
 	public final fun hasExperimentalFeature (Ljava/lang/String;)Lio/reactivex/Single;
 	public final fun hasExperimentalFeature (Lorg/hisp/dhis/android/core/settings/ExperimentalFeature;)Lio/reactivex/Single;
-}
-
-public final class org/hisp/dhis/android/core/settings/GeneralSettingTableInfo {
-	public static final field INSTANCE Lorg/hisp/dhis/android/core/settings/GeneralSettingTableInfo;
-	public final fun getTABLE_INFO ()Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public final class org/hisp/dhis/android/core/settings/GeneralSettingTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field ALLOW_SCREEN_CAPTURE Ljava/lang/String;
-	public static final field BYPASS_DHIS2_VERSION_CHECK Ljava/lang/String;
-	public static final field Companion Lorg/hisp/dhis/android/core/settings/GeneralSettingTableInfo$Columns$Companion;
-	public static final field ENCRYPT_DB Ljava/lang/String;
-	public static final field EXPERIMENTAL_FEATURES Ljava/lang/String;
-	public static final field LAST_UPDATED Ljava/lang/String;
-	public static final field MATOMO_ID Ljava/lang/String;
-	public static final field MATOMO_URL Ljava/lang/String;
-	public static final field MESSAGE_OF_THE_DAY Ljava/lang/String;
-	public static final field RESERVED_VALUES Ljava/lang/String;
-	public static final field SMS_GATEWAY Ljava/lang/String;
-	public static final field SMS_RESULT_SENDER Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/settings/GeneralSettingTableInfo$Columns$Companion {
 }
 
 public abstract class org/hisp/dhis/android/core/settings/GeneralSettings : org/hisp/dhis/android/core/common/CoreObject {
@@ -12039,22 +10492,6 @@ public abstract class org/hisp/dhis/android/core/settings/LatestAppVersion$Build
 public final class org/hisp/dhis/android/core/settings/LatestAppVersionObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyAnyObjectWithDownloadRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository {
 }
 
-public final class org/hisp/dhis/android/core/settings/LatestAppVersionTableInfo {
-	public static final field INSTANCE Lorg/hisp/dhis/android/core/settings/LatestAppVersionTableInfo;
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public final class org/hisp/dhis/android/core/settings/LatestAppVersionTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field Companion Lorg/hisp/dhis/android/core/settings/LatestAppVersionTableInfo$Columns$Companion;
-	public static final field DOWNLOAD_URL Ljava/lang/String;
-	public static final field VERSION Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/settings/LatestAppVersionTableInfo$Columns$Companion {
-}
-
 public final class org/hisp/dhis/android/core/settings/LimitScope : java/lang/Enum {
 	public static final field ALL_ORG_UNITS Lorg/hisp/dhis/android/core/settings/LimitScope;
 	public static final field GLOBAL Lorg/hisp/dhis/android/core/settings/LimitScope;
@@ -12110,24 +10547,6 @@ public abstract class org/hisp/dhis/android/core/settings/ProgramConfigurationSe
 	public abstract fun optionalSearch (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
 	public abstract fun quickActions (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
 	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
-}
-
-public class org/hisp/dhis/android/core/settings/ProgramConfigurationSettingTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/settings/ProgramConfigurationSettingTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field COMPLETION_SPINNER Ljava/lang/String;
-	public static final field DISABLE_COLLAPSIBLE_SECTIONS Ljava/lang/String;
-	public static final field DISABLE_MANUAL_LOCATION Ljava/lang/String;
-	public static final field DISABLE_REFERRALS Ljava/lang/String;
-	public static final field ITEM_HEADER_PROGRAM_INDICATOR Ljava/lang/String;
-	public static final field MINIMUM_LOCATION_ACCURACY Ljava/lang/String;
-	public static final field OPTIONAL_SEARCH Ljava/lang/String;
-	public static final field QUICK_ACTIONS Ljava/lang/String;
-	public static final field UID Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/settings/ProgramConfigurationSettings {
@@ -12240,32 +10659,6 @@ public abstract class org/hisp/dhis/android/core/settings/ProgramSetting$Builder
 	public abstract fun updateDownload (Lorg/hisp/dhis/android/core/settings/DownloadPeriod;)Lorg/hisp/dhis/android/core/settings/ProgramSetting$Builder;
 }
 
-public final class org/hisp/dhis/android/core/settings/ProgramSettingTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/settings/ProgramSettingTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field ENROLLMENT_DATE_DB_TRIMMING Ljava/lang/String;
-	public static final field ENROLLMENT_DATE_DOWNLOAD Ljava/lang/String;
-	public static final field ENROLLMENT_DB_TRIMMING Ljava/lang/String;
-	public static final field ENROLLMENT_DOWNLOAD Ljava/lang/String;
-	public static final field EVENTS_DB_TRIMMING Ljava/lang/String;
-	public static final field EVENTS_DOWNLOAD Ljava/lang/String;
-	public static final field EVENT_DATE_DB_TRIMMING Ljava/lang/String;
-	public static final field EVENT_DATE_DOWNLOAD Ljava/lang/String;
-	public static final field LAST_UPDATED Ljava/lang/String;
-	public static final field NAME Ljava/lang/String;
-	public static final field SETTING_DB_TRIMMING Ljava/lang/String;
-	public static final field SETTING_DOWNLOAD Ljava/lang/String;
-	public static final field TEI_DB_TRIMMING Ljava/lang/String;
-	public static final field TEI_DOWNLOAD Ljava/lang/String;
-	public static final field UID Ljava/lang/String;
-	public static final field UPDATE_DB_TRIMMING Ljava/lang/String;
-	public static final field UPDATE_DOWNLOAD Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/settings/ProgramSettings {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/ProgramSettings$Builder;
@@ -12325,20 +10718,6 @@ public abstract class org/hisp/dhis/android/core/settings/SettingsAppInfo$Builde
 }
 
 public final class org/hisp/dhis/android/core/settings/SynchronizationSettingObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyAnyObjectWithDownloadRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository {
-}
-
-public final class org/hisp/dhis/android/core/settings/SynchronizationSettingTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/settings/SynchronizationSettingTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field DATA_SYNC Ljava/lang/String;
-	public static final field FILE_MAX_LENGTH_BYTES Ljava/lang/String;
-	public static final field METADATA_SYNC Ljava/lang/String;
-	public static final field TRACKER_EXPORTER_VERSION Ljava/lang/String;
-	public static final field TRACKER_IMPORTER_VERSION Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/settings/SynchronizationSettings : org/hisp/dhis/android/core/common/CoreObject {
@@ -12403,18 +10782,6 @@ public final class org/hisp/dhis/android/core/settings/SystemSettingCollectionRe
 	public final fun style ()Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyOneObjectRepositoryFinalImpl;
 }
 
-public final class org/hisp/dhis/android/core/settings/SystemSettingTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/settings/SystemSettingTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field KEY Ljava/lang/String;
-	public static final field VALUE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/settings/UserSettings : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/UserSettings$Builder;
@@ -12433,17 +10800,6 @@ public abstract class org/hisp/dhis/android/core/settings/UserSettings$Builder {
 }
 
 public final class org/hisp/dhis/android/core/settings/UserSettingsObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyAnyObjectWithDownloadRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository {
-}
-
-public final class org/hisp/dhis/android/core/settings/UserSettingsTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/settings/UserSettingsTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field KEY_DB_LOCALE Ljava/lang/String;
-	public static final field KEY_UI_LOCALE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/core/settings/WHONutritionChartType : java/lang/Enum {
@@ -12799,8 +11155,8 @@ public final class org/hisp/dhis/android/core/sms/domain/repository/internal/Sub
 }
 
 public final class org/hisp/dhis/android/core/sms/internal/SMSModuleWiper : org/hisp/dhis/android/core/wipe/internal/ModuleWiper {
-	public fun wipeData ()V
-	public fun wipeMetadata ()V
+	public fun wipeData (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun wipeMetadata (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/systeminfo/DHISPatchVersion : java/lang/Enum {
@@ -12946,21 +11302,6 @@ public abstract interface class org/hisp/dhis/android/core/systeminfo/SystemInfo
 public final class org/hisp/dhis/android/core/systeminfo/SystemInfoObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyFirstObjectWithDownloadRepositoryImpl {
 }
 
-public final class org/hisp/dhis/android/core/systeminfo/SystemInfoTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/systeminfo/SystemInfoTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field CONTEXT_PATH Ljava/lang/String;
-	public static final field DATE_FORMAT Ljava/lang/String;
-	public static final field SERVER_DATE Ljava/lang/String;
-	public static final field SYSTEM_NAME Ljava/lang/String;
-	public static final field VERSION Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
 public final class org/hisp/dhis/android/core/systeminfo/internal/PingImpl : org/hisp/dhis/android/core/systeminfo/Ping {
 	public fun blockingGet ()Ljava/lang/String;
 	public fun get ()Lio/reactivex/Single;
@@ -12989,19 +11330,6 @@ public abstract class org/hisp/dhis/android/core/trackedentity/AttributeValueFil
 	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/trackedentity/AttributeValueFilter$Builder;
 	public abstract fun sw (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/AttributeValueFilter$Builder;
 	public abstract fun trackedEntityInstanceFilter (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/AttributeValueFilter$Builder;
-}
-
-public final class org/hisp/dhis/android/core/trackedentity/AttributeValueFilterTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/trackedentity/AttributeValueFilterTableInfo$Columns : org/hisp/dhis/android/core/common/tableinfo/FilterOperatorsColumns {
-	public static final field ATTRIBUTE Ljava/lang/String;
-	public static final field EW Ljava/lang/String;
-	public static final field SW Ljava/lang/String;
-	public static final field TRACKED_ENTITY_INSTANCE_FILTER Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/trackedentity/EntityQueryCriteria : org/hisp/dhis/android/core/common/FilterQueryCriteria, org/hisp/dhis/android/core/common/CoreObject {
@@ -13046,17 +11374,6 @@ public abstract class org/hisp/dhis/android/core/trackedentity/ReservedValueSett
 	public abstract fun id (Ljava/lang/Long;)Lorg/hisp/dhis/android/core/trackedentity/ReservedValueSetting$Builder;
 	public abstract fun numberOfValuesToReserve (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/trackedentity/ReservedValueSetting$Builder;
 	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/ReservedValueSetting$Builder;
-}
-
-public final class org/hisp/dhis/android/core/trackedentity/ReservedValueSettingTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/trackedentity/ReservedValueSettingTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field NUMBER_OF_VALUES_TO_RESERVE Ljava/lang/String;
-	public static final field UID Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/trackedentity/ReservedValueSummary {
@@ -13176,29 +11493,6 @@ public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttr
 	public abstract fun trackedEntityAttribute (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink$Builder;
 }
 
-public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLinkTableInfo {
-	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLinkTableInfo$Companion;
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLinkTableInfo$Columns$Companion;
-	public static final field LEGEND_SET Ljava/lang/String;
-	public static final field SORT_ORDER Ljava/lang/String;
-	public static final field TRACKED_ENTITY_ATTRIBUTE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLinkTableInfo$Columns$Companion {
-}
-
-public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLinkTableInfo$Companion {
-	public final fun getCHILD_PROJECTION ()Lorg/hisp/dhis/android/core/arch/db/stores/projections/internal/LinkTableChildProjection;
-	public final fun getTABLE_INFO ()Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
 public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Builder;
@@ -13248,51 +11542,6 @@ public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttribu
 public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValueManager$Companion {
 }
 
-public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValueTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValueTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field CREATED Ljava/lang/String;
-	public static final field EXPIRY_DATE Ljava/lang/String;
-	public static final field KEY Ljava/lang/String;
-	public static final field ORGANISATION_UNIT Ljava/lang/String;
-	public static final field OWNER_OBJECT Ljava/lang/String;
-	public static final field OWNER_UID Ljava/lang/String;
-	public static final field PATTERN Ljava/lang/String;
-	public static final field TEMPORAL_VALIDITY_DATE Ljava/lang/String;
-	public static final field VALUE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeTableInfo$Columns : org/hisp/dhis/android/core/common/NameableWithStyleColumns {
-	public static final field AGGREGATION_TYPE Ljava/lang/String;
-	public static final field CONFIDENTIAL Ljava/lang/String;
-	public static final field DISPLAY_FORM_NAME Ljava/lang/String;
-	public static final field DISPLAY_IN_LIST_NO_PROGRAM Ljava/lang/String;
-	public static final field DISPLAY_ON_VISIT_SCHEDULE Ljava/lang/String;
-	public static final field EXPRESSION Ljava/lang/String;
-	public static final field FIELD_MASK Ljava/lang/String;
-	public static final field FORM_NAME Ljava/lang/String;
-	public static final field GENERATED Ljava/lang/String;
-	public static final field INHERIT Ljava/lang/String;
-	public static final field OPTION_SET Ljava/lang/String;
-	public static final field ORG_UNIT_SCOPE Ljava/lang/String;
-	public static final field PATTERN Ljava/lang/String;
-	public static final field PROGRAM_SCOPE Ljava/lang/String;
-	public static final field SORT_ORDER_IN_LIST_NO_PROGRAM Ljava/lang/String;
-	public static final field UNIQUE Ljava/lang/String;
-	public static final field VALUE_TYPE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue : org/hisp/dhis/android/core/common/BaseDataObject, org/hisp/dhis/android/core/common/ObjectWithDeleteInterface {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue$Builder;
@@ -13335,22 +11584,6 @@ public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttribu
 	public synthetic fun delete (Lorg/hisp/dhis/android/core/common/CoreObject;)V
 	public synthetic fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun set (Ljava/lang/String;)Lio/reactivex/Completable;
-}
-
-public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValueTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValueTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field CREATED Ljava/lang/String;
-	public static final field LAST_UPDATED Ljava/lang/String;
-	public static final field SYNC_STATE Ljava/lang/String;
-	public static final field TRACKED_ENTITY_ATTRIBUTE Ljava/lang/String;
-	public static final field TRACKED_ENTITY_INSTANCE Ljava/lang/String;
-	public static final field VALUE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue : org/hisp/dhis/android/core/common/BaseDataObject, org/hisp/dhis/android/core/common/ObjectWithDeleteInterface {
@@ -13401,24 +11634,6 @@ public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityDataVal
 	public synthetic fun delete (Lorg/hisp/dhis/android/core/common/CoreObject;)V
 	public synthetic fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun set (Ljava/lang/String;)Lio/reactivex/Completable;
-}
-
-public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityDataValueTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/trackedentity/TrackedEntityDataValueTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field CREATED Ljava/lang/String;
-	public static final field DATA_ELEMENT Ljava/lang/String;
-	public static final field EVENT Ljava/lang/String;
-	public static final field LAST_UPDATED Ljava/lang/String;
-	public static final field PROVIDED_ELSEWHERE Ljava/lang/String;
-	public static final field STORED_BY Ljava/lang/String;
-	public static final field SYNC_STATE Ljava/lang/String;
-	public static final field VALUE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstance : org/hisp/dhis/android/core/common/BaseDeletableDataObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
@@ -13527,21 +11742,6 @@ public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityInst
 	public abstract fun trackedEntityInstanceFilter (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceEventFilter$Builder;
 }
 
-public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceEventFilterTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceEventFilterTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field ASSIGNED_USER_MODE Ljava/lang/String;
-	public static final field EVENT_STATUS Ljava/lang/String;
-	public static final field PERIOD_FROM Ljava/lang/String;
-	public static final field PERIOD_TO Ljava/lang/String;
-	public static final field PROGRAM_STAGE Ljava/lang/String;
-	public static final field TRACKED_ENTITY_INSTANCE_FILTER Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceFilter : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyle {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceFilter$Builder;
@@ -13594,33 +11794,6 @@ public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanc
 	public final fun withTrackedEntityInstanceEventFilters ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceFilterCollectionRepository;
 }
 
-public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceFilterTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceFilterTableInfo$Columns : org/hisp/dhis/android/core/common/IdentifiableWithStyleColumns {
-	public static final field ASSIGNED_USER_MODE Ljava/lang/String;
-	public static final field DESCRIPTION Ljava/lang/String;
-	public static final field DISPLAY_COLUMN_ORDER Ljava/lang/String;
-	public static final field ENROLLMENT_CREATED_DATE Ljava/lang/String;
-	public static final field ENROLLMENT_INCIDENT_DATE Ljava/lang/String;
-	public static final field ENROLLMENT_STATUS Ljava/lang/String;
-	public static final field EVENT_DATE Ljava/lang/String;
-	public static final field EVENT_STATUS Ljava/lang/String;
-	public static final field FOLLOW_UP Ljava/lang/String;
-	public static final field LAST_UPDATED_DATE Ljava/lang/String;
-	public static final field ORDER Ljava/lang/String;
-	public static final field ORGANISATION_UNIT Ljava/lang/String;
-	public static final field OU_MODE Ljava/lang/String;
-	public static final field PROGRAM Ljava/lang/String;
-	public static final field PROGRAM_STAGE Ljava/lang/String;
-	public static final field SORT_ORDER Ljava/lang/String;
-	public static final field TRACKED_ENTITY_INSTANCES Ljava/lang/String;
-	public static final field TRACKED_ENTITY_TYPE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
 public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceInternalAccessor {
 	public static fun accessEnrollments (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance;)Ljava/util/List;
 	public static fun accessRelationships (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance;)Ljava/util/List;
@@ -13639,25 +11812,6 @@ public class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceServi
 	public fun <init> (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeCollectionRepository;Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValueCollectionRepository;Lorg/hisp/dhis/android/core/program/ProgramTrackedEntityAttributeCollectionRepository;Lorg/hisp/dhis/android/core/fileresource/FileResourceCollectionRepository;)V
 	public fun blockingInheritAttributes (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/Unit;
 	public fun inheritAttributes (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
-}
-
-public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceTableInfo$Columns : org/hisp/dhis/android/core/common/DeletableDataColumns {
-	public static final field CREATED Ljava/lang/String;
-	public static final field CREATED_AT_CLIENT Ljava/lang/String;
-	public static final field GEOMETRY_COORDINATES Ljava/lang/String;
-	public static final field GEOMETRY_TYPE Ljava/lang/String;
-	public static final field LAST_UPDATED Ljava/lang/String;
-	public static final field LAST_UPDATED_AT_CLIENT Ljava/lang/String;
-	public static final field ORGANISATION_UNIT Ljava/lang/String;
-	public static final field TRACKED_ENTITY_TYPE Ljava/lang/String;
-	public static final field UID Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
 }
 
 public abstract interface class org/hisp/dhis/android/core/trackedentity/TrackedEntityModule {
@@ -13731,37 +11885,11 @@ public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAtt
 	public final fun byTrackedEntityTypeUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 }
 
-public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttributeTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttributeTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field DISPLAY_IN_LIST Ljava/lang/String;
-	public static final field MANDATORY Ljava/lang/String;
-	public static final field SEARCHABLE Ljava/lang/String;
-	public static final field SORT_ORDER Ljava/lang/String;
-	public static final field TRACKED_ENTITY_ATTRIBUTE Ljava/lang/String;
-	public static final field TRACKED_ENTITY_TYPE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
 public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityTypeCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyNameableCollectionRepositoryImpl {
 	public final fun byColor ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byFeatureType ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
 	public final fun byIcon ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun withTrackedEntityTypeAttributes ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeCollectionRepository;
-}
-
-public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityTypeTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/trackedentity/TrackedEntityTypeTableInfo$Columns : org/hisp/dhis/android/core/common/NameableWithStyleColumns {
-	public static final field ACCESS_DATA_WRITE Ljava/lang/String;
-	public static final field FEATURE_TYPE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/trackedentity/internal/ObjectWithUidWebResponse : org/hisp/dhis/android/core/imports/internal/WebResponse {
@@ -14254,8 +12382,8 @@ public final class org/hisp/dhis/android/core/tracker/exporter/TrackerD2Progress
 }
 
 public final class org/hisp/dhis/android/core/tracker/importer/internal/TrackerJobModuleWiper : org/hisp/dhis/android/core/wipe/internal/ModuleWiper {
-	public fun wipeData ()V
-	public fun wipeMetadata ()V
+	public fun wipeData (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun wipeMetadata (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract class org/hisp/dhis/android/core/tracker/importer/internal/TrackerJobObject : org/hisp/dhis/android/core/common/BaseObject {
@@ -14279,27 +12407,13 @@ public abstract class org/hisp/dhis/android/core/tracker/importer/internal/Track
 	public abstract fun trackerType (Lorg/hisp/dhis/android/core/tracker/importer/internal/TrackerImporterObjectType;)Lorg/hisp/dhis/android/core/tracker/importer/internal/TrackerJobObject$Builder;
 }
 
-public final class org/hisp/dhis/android/core/tracker/importer/internal/TrackerJobObjectTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/tracker/importer/internal/TrackerJobObjectTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field FILE_RESOURCES Ljava/lang/String;
-	public static final field JOB_UID Ljava/lang/String;
-	public static final field OBJECT_UID Ljava/lang/String;
-	public static final field TRACKER_TYPE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
 public abstract interface class org/hisp/dhis/android/core/usecase/UseCaseModule {
 	public abstract fun stockUseCases ()Lorg/hisp/dhis/android/core/usecase/stock/StockUseCaseCollectionRepository;
 }
 
 public final class org/hisp/dhis/android/core/usecase/internal/UseCaseModuleWiper : org/hisp/dhis/android/core/wipe/internal/ModuleWiper {
-	public fun wipeData ()V
-	public fun wipeMetadata ()V
+	public fun wipeData (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun wipeMetadata (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract class org/hisp/dhis/android/core/usecase/stock/InternalStockUseCase : org/hisp/dhis/android/core/common/BaseObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
@@ -14397,26 +12511,6 @@ public final class org/hisp/dhis/android/core/usecase/stock/StockUseCaseCollecti
 	public final fun withTransactions ()Lorg/hisp/dhis/android/core/usecase/stock/StockUseCaseCollectionRepository;
 }
 
-public final class org/hisp/dhis/android/core/usecase/stock/StockUseCaseTableInfo {
-	public static final field INSTANCE Lorg/hisp/dhis/android/core/usecase/stock/StockUseCaseTableInfo;
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public final class org/hisp/dhis/android/core/usecase/stock/StockUseCaseTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field Companion Lorg/hisp/dhis/android/core/usecase/stock/StockUseCaseTableInfo$Columns$Companion;
-	public static final field DESCRIPTION Ljava/lang/String;
-	public static final field ITEM_CODE Ljava/lang/String;
-	public static final field ITEM_DESCRIPTION Ljava/lang/String;
-	public static final field PROGRAM_TYPE Ljava/lang/String;
-	public static final field STOCK_ON_HAND Ljava/lang/String;
-	public static final field UID Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/usecase/stock/StockUseCaseTableInfo$Columns$Companion {
-}
-
 public abstract class org/hisp/dhis/android/core/usecase/stock/StockUseCaseTransaction {
 	public static final field Companion Lorg/hisp/dhis/android/core/usecase/stock/StockUseCaseTransaction$Companion;
 	public abstract fun getSortOrder ()I
@@ -14482,27 +12576,6 @@ public final class org/hisp/dhis/android/core/usecase/stock/StockUseCaseTransact
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class org/hisp/dhis/android/core/usecase/stock/StockUseCaseTransactionTableInfo {
-	public static final field INSTANCE Lorg/hisp/dhis/android/core/usecase/stock/StockUseCaseTransactionTableInfo;
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public final class org/hisp/dhis/android/core/usecase/stock/StockUseCaseTransactionTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field Companion Lorg/hisp/dhis/android/core/usecase/stock/StockUseCaseTransactionTableInfo$Columns$Companion;
-	public static final field DISTRIBUTED_TO Ljava/lang/String;
-	public static final field PROGRAM_UID Ljava/lang/String;
-	public static final field SORT_ORDER Ljava/lang/String;
-	public static final field STOCK_COUNT Ljava/lang/String;
-	public static final field STOCK_DISCARDED Ljava/lang/String;
-	public static final field STOCK_DISTRIBUTED Ljava/lang/String;
-	public static final field TRANSACTION_TYPE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/usecase/stock/StockUseCaseTransactionTableInfo$Columns$Companion {
-}
-
 public final class org/hisp/dhis/android/core/user/AccountDeletionReason : java/lang/Enum {
 	public static final field ACCOUNT_DISABLED Lorg/hisp/dhis/android/core/user/AccountDeletionReason;
 	public static final field APPLICATION_REQUEST Lorg/hisp/dhis/android/core/user/AccountDeletionReason;
@@ -14514,8 +12587,8 @@ public final class org/hisp/dhis/android/core/user/AccountDeletionReason : java/
 public abstract interface class org/hisp/dhis/android/core/user/AccountManager {
 	public abstract fun accountDeletionObservable ()Lio/reactivex/Observable;
 	public abstract fun deleteCurrentAccount ()V
-	public abstract fun getAccounts ()Ljava/util/List;
-	public abstract fun getCurrentAccount ()Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;
+	public abstract fun getAccounts (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getCurrentAccount (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun getMaxAccounts ()Ljava/lang/Integer;
 	public abstract fun setMaxAccounts (Ljava/lang/Integer;)V
 }
@@ -14541,18 +12614,6 @@ public abstract class org/hisp/dhis/android/core/user/AuthenticatedUser$Builder 
 public final class org/hisp/dhis/android/core/user/AuthenticatedUserObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyOneObjectRepositoryImpl {
 }
 
-public final class org/hisp/dhis/android/core/user/AuthenticatedUserTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/user/AuthenticatedUserTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field HASH Ljava/lang/String;
-	public static final field USER Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/user/Authority : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/user/Authority$Builder;
@@ -14571,17 +12632,6 @@ public abstract class org/hisp/dhis/android/core/user/Authority$Builder : org/hi
 
 public final class org/hisp/dhis/android/core/user/AuthorityCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyCollectionRepositoryImpl {
 	public final fun byName ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
-}
-
-public final class org/hisp/dhis/android/core/user/AuthorityTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/user/AuthorityTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field NAME Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/user/User : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
@@ -14675,15 +12725,6 @@ public abstract class org/hisp/dhis/android/core/user/UserGroup$Builder : org/hi
 public final class org/hisp/dhis/android/core/user/UserGroupCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
 }
 
-public final class org/hisp/dhis/android/core/user/UserGroupTableInfo {
-	public static final field INSTANCE Lorg/hisp/dhis/android/core/user/UserGroupTableInfo;
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public final class org/hisp/dhis/android/core/user/UserGroupTableInfo$Columns : org/hisp/dhis/android/core/common/IdentifiableColumns {
-	public fun <init> ()V
-}
-
 public final class org/hisp/dhis/android/core/user/UserInternalAccessor {
 	public static fun accessOrganisationUnits (Lorg/hisp/dhis/android/core/user/User;)Ljava/util/List;
 	public static fun accessTeiSearchOrganisationUnits (Lorg/hisp/dhis/android/core/user/User;)Ljava/util/List;
@@ -14737,21 +12778,6 @@ public abstract class org/hisp/dhis/android/core/user/UserOrganisationUnitLink$B
 	public abstract fun userAssigned (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/user/UserOrganisationUnitLink$Builder;
 }
 
-public final class org/hisp/dhis/android/core/user/UserOrganisationUnitLinkTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/user/UserOrganisationUnitLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field ORGANISATION_UNIT Ljava/lang/String;
-	public static final field ORGANISATION_UNIT_SCOPE Ljava/lang/String;
-	public static final field ROOT Ljava/lang/String;
-	public static final field USER Ljava/lang/String;
-	public static final field USER_ASSIGNED Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/user/UserRole : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/user/UserRole$Builder;
@@ -14766,18 +12792,6 @@ public abstract class org/hisp/dhis/android/core/user/UserRole$Builder : org/his
 }
 
 public final class org/hisp/dhis/android/core/user/UserRoleCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
-}
-
-public final class org/hisp/dhis/android/core/user/UserRoleTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/user/UserRoleTableInfo$Columns : org/hisp/dhis/android/core/common/IdentifiableColumns {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/user/UserTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 }
 
 public final class org/hisp/dhis/android/core/user/internal/LogOutCall {
@@ -14942,18 +12956,6 @@ public abstract class org/hisp/dhis/android/core/validation/DataSetValidationRul
 	public abstract fun validationRule (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/DataSetValidationRuleLink$Builder;
 }
 
-public final class org/hisp/dhis/android/core/validation/DataSetValidationRuleLinkTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/validation/DataSetValidationRuleLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field DATA_SET Ljava/lang/String;
-	public static final field VALIDATION_RULE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
 public final class org/hisp/dhis/android/core/validation/MissingValueStrategy : java/lang/Enum {
 	public static final field NEVER_SKIP Lorg/hisp/dhis/android/core/validation/MissingValueStrategy;
 	public static final field SKIP_IF_ALL_VALUES_MISSING Lorg/hisp/dhis/android/core/validation/MissingValueStrategy;
@@ -15049,27 +13051,6 @@ public final class org/hisp/dhis/android/core/validation/ValidationRuleOperator 
 	public fun getMathematicalOperator ()Ljava/lang/String;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/ValidationRuleOperator;
 	public static fun values ()[Lorg/hisp/dhis/android/core/validation/ValidationRuleOperator;
-}
-
-public final class org/hisp/dhis/android/core/validation/ValidationRuleTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/validation/ValidationRuleTableInfo$Columns : org/hisp/dhis/android/core/common/NameableColumns {
-	public static final field IMPORTANCE Ljava/lang/String;
-	public static final field INSTRUCTION Ljava/lang/String;
-	public static final field LEFT_SIDE_DESCRIPTION Ljava/lang/String;
-	public static final field LEFT_SIDE_EXPRESSION Ljava/lang/String;
-	public static final field LEFT_SIDE_MISSING_VALUE_STRATEGY Ljava/lang/String;
-	public static final field OPERATOR Ljava/lang/String;
-	public static final field ORGANISATION_UNIT_LEVELS Ljava/lang/String;
-	public static final field PERIOD_TYPE Ljava/lang/String;
-	public static final field RIGHT_SIDE_DESCRIPTION Ljava/lang/String;
-	public static final field RIGHT_SIDE_EXPRESSION Ljava/lang/String;
-	public static final field RIGHT_SIDE_MISSING_VALUE_STRATEGY Ljava/lang/String;
-	public static final field SKIP_FORM_VALIDATION Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
 }
 
 public abstract interface class org/hisp/dhis/android/core/validation/engine/ValidationEngine {
@@ -15347,30 +13328,6 @@ public abstract class org/hisp/dhis/android/core/visualization/TrackerVisualizat
 	public abstract fun indexes (Ljava/util/List;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition$Builder;
 }
 
-public final class org/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionTableInfo {
-	public static final field INSTANCE Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionTableInfo;
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public final class org/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field Companion Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionTableInfo$Columns$Companion;
-	public static final field DIMENSION Ljava/lang/String;
-	public static final field DIMENSION_TYPE Ljava/lang/String;
-	public static final field FILTER Ljava/lang/String;
-	public static final field ITEMS Ljava/lang/String;
-	public static final field POSITION Ljava/lang/String;
-	public static final field PROGRAM Ljava/lang/String;
-	public static final field PROGRAM_STAGE Ljava/lang/String;
-	public static final field REPETITION Ljava/lang/String;
-	public static final field TRACKER_VISUALIZATION Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionTableInfo$Columns$Companion {
-}
-
 public final class org/hisp/dhis/android/core/visualization/TrackerVisualizationOutputType : java/lang/Enum {
 	public static final field ENROLLMENT Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationOutputType;
 	public static final field EVENT Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationOutputType;
@@ -15393,28 +13350,6 @@ public abstract class org/hisp/dhis/android/core/visualization/TrackerVisualizat
 	public abstract fun build ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationSorting;
 	public abstract fun dimension (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationSorting$Builder;
 	public abstract fun direction (Lorg/hisp/dhis/android/core/common/SortingDirection;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationSorting$Builder;
-}
-
-public final class org/hisp/dhis/android/core/visualization/TrackerVisualizationTableInfo {
-	public static final field INSTANCE Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationTableInfo;
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public final class org/hisp/dhis/android/core/visualization/TrackerVisualizationTableInfo$Columns : org/hisp/dhis/android/core/common/IdentifiableColumns {
-	public static final field Companion Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationTableInfo$Columns$Companion;
-	public static final field DESCRIPTION Ljava/lang/String;
-	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
-	public static final field OUTPUT_TYPE Ljava/lang/String;
-	public static final field PROGRAM Ljava/lang/String;
-	public static final field PROGRAM_STAGE Ljava/lang/String;
-	public static final field SORTING Ljava/lang/String;
-	public static final field TRACKED_ENTITY_TYPE Ljava/lang/String;
-	public static final field TYPE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/visualization/TrackerVisualizationTableInfo$Columns$Companion {
 }
 
 public final class org/hisp/dhis/android/core/visualization/TrackerVisualizationType : java/lang/Enum {
@@ -15604,26 +13539,6 @@ public abstract class org/hisp/dhis/android/core/visualization/VisualizationDime
 	public abstract fun visualization (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItem$Builder;
 }
 
-public final class org/hisp/dhis/android/core/visualization/VisualizationDimensionItemTableInfo {
-	public static final field INSTANCE Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItemTableInfo;
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public final class org/hisp/dhis/android/core/visualization/VisualizationDimensionItemTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field Companion Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItemTableInfo$Columns$Companion;
-	public static final field DIMENSION Ljava/lang/String;
-	public static final field DIMENSION_ITEM Ljava/lang/String;
-	public static final field DIMENSION_ITEM_TYPE Ljava/lang/String;
-	public static final field POSITION Ljava/lang/String;
-	public static final field VISUALIZATION Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/visualization/VisualizationDimensionItemTableInfo$Columns$Companion {
-}
-
 public abstract class org/hisp/dhis/android/core/visualization/VisualizationLegend {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/visualization/VisualizationLegend$Builder;
@@ -15649,50 +13564,6 @@ public abstract interface class org/hisp/dhis/android/core/visualization/Visuali
 	public abstract fun visualizations ()Lorg/hisp/dhis/android/core/visualization/VisualizationCollectionRepository;
 }
 
-public final class org/hisp/dhis/android/core/visualization/VisualizationTableInfo {
-	public static final field INSTANCE Lorg/hisp/dhis/android/core/visualization/VisualizationTableInfo;
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public final class org/hisp/dhis/android/core/visualization/VisualizationTableInfo$Columns : org/hisp/dhis/android/core/common/IdentifiableColumns {
-	public static final field AGGREGATION_TYPE Ljava/lang/String;
-	public static final field COL_SUB_TOTALS Ljava/lang/String;
-	public static final field COL_TOTALS Ljava/lang/String;
-	public static final field Companion Lorg/hisp/dhis/android/core/visualization/VisualizationTableInfo$Columns$Companion;
-	public static final field DESCRIPTION Ljava/lang/String;
-	public static final field DIGIT_GROUP_SEPARATOR Ljava/lang/String;
-	public static final field DISPLAY_DENSITY Ljava/lang/String;
-	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
-	public static final field DISPLAY_FORM_NAME Ljava/lang/String;
-	public static final field DISPLAY_SUBTITLE Ljava/lang/String;
-	public static final field DISPLAY_TITLE Ljava/lang/String;
-	public static final field HIDE_EMPTY_COLUMNS Ljava/lang/String;
-	public static final field HIDE_EMPTY_ROWS Ljava/lang/String;
-	public static final field HIDE_EMPTY_ROW_ITEMS Ljava/lang/String;
-	public static final field HIDE_LEGEND Ljava/lang/String;
-	public static final field HIDE_SUBTITLE Ljava/lang/String;
-	public static final field HIDE_TITLE Ljava/lang/String;
-	public static final field LEGEND_SET_ID Ljava/lang/String;
-	public static final field LEGEND_SHOW_KEY Ljava/lang/String;
-	public static final field LEGEND_STRATEGY Ljava/lang/String;
-	public static final field LEGEND_STYLE Ljava/lang/String;
-	public static final field NO_SPACE_BETWEEN_COLUMNS Ljava/lang/String;
-	public static final field PERCENT_STACKED_VALUES Ljava/lang/String;
-	public static final field ROW_SUB_TOTALS Ljava/lang/String;
-	public static final field ROW_TOTALS Ljava/lang/String;
-	public static final field SHOW_DIMENSION_LABELS Ljava/lang/String;
-	public static final field SHOW_HIERARCHY Ljava/lang/String;
-	public static final field SKIP_ROUNDING Ljava/lang/String;
-	public static final field SUBTITLE Ljava/lang/String;
-	public static final field TITLE Ljava/lang/String;
-	public static final field TYPE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/visualization/VisualizationTableInfo$Columns$Companion {
-}
-
 public final class org/hisp/dhis/android/core/visualization/VisualizationType : java/lang/Enum {
 	public static final field AREA Lorg/hisp/dhis/android/core/visualization/VisualizationType;
 	public static final field BAR Lorg/hisp/dhis/android/core/visualization/VisualizationType;
@@ -15716,20 +13587,20 @@ public final class org/hisp/dhis/android/core/visualization/VisualizationType : 
 }
 
 public final class org/hisp/dhis/android/core/visualization/internal/VisualizationModuleWiper : org/hisp/dhis/android/core/wipe/internal/ModuleWiper {
-	public fun wipeData ()V
-	public fun wipeMetadata ()V
+	public fun wipeData (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun wipeMetadata (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/wipe/internal/TableWiper {
 	public fun <init> (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;)V
-	public final fun wipeTable (Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;)V
-	public final fun wipeTables ([Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;)V
+	public final fun wipeTable (Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun wipeTables ([Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class org/hisp/dhis/android/core/wipe/internal/WipeModule {
-	public abstract fun wipeData ()V
-	public abstract fun wipeEverything ()V
-	public abstract fun wipeMetadata ()V
+	public abstract fun wipeData (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun wipeEverything (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun wipeMetadata (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/persistence/attribute/AttributeTableInfo {
@@ -16436,6 +14307,12 @@ public final class org/hisp/dhis/android/persistence/datavalue/DataValueTableInf
 }
 
 public final class org/hisp/dhis/android/persistence/datavalue/DataValueTableInfo$Columns$Companion {
+}
+
+public final class org/hisp/dhis/android/persistence/db/access/RoomTransaction : org/hisp/dhis/android/core/arch/db/access/Transaction {
+	public fun <init> (Landroidx/room/RoomDatabase;)V
+	public fun end ()V
+	public fun setSuccessful ()V
 }
 
 public final class org/hisp/dhis/android/persistence/domain/AggregatedDataSyncTableInfo {

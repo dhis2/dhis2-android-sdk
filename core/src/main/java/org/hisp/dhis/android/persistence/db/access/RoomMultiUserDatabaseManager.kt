@@ -44,11 +44,14 @@ import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPassw
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
 import org.hisp.dhis.android.core.util.CipherUtil
 import org.hisp.dhis.android.core.util.deleteIfExists
+import org.koin.core.annotation.Singleton
 import java.io.File
 
 /**
  * Room-based implementation of BaseMultiUserDatabaseManager
  */
+@Singleton
+@Suppress("TooManyFunctions")
 internal class RoomMultiUserDatabaseManager(
     private val context: Context,
     private val databaseAdapter: DatabaseAdapter,
@@ -56,23 +59,23 @@ internal class RoomMultiUserDatabaseManager(
     private val configurationHelper: DatabaseConfigurationHelper,
     private val databaseManager: RoomDatabaseManager,
     private val passwordManager: DatabaseEncryptionPasswordManager,
-    private val databaseExport: BaseDatabaseExport
+    private val databaseExport: BaseDatabaseExport,
 ) : BaseMultiUserDatabaseManager {
 
     companion object {
-        private const val TAG = "RoomMultiUserDBManager"
+//        private const val TAG = "RoomMultiUserDBManager"
     }
 
-    override fun loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(
+    override suspend fun loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(
         serverUrl: String,
         username: String,
-        encrypt: Boolean
+        encrypt: Boolean,
     ) {
         val existing = loadExistingChangingEncryptionIfRequired(
             serverUrl,
             username,
             { encrypt },
-            true
+            true,
         )
 
         if (!existing) {
@@ -80,16 +83,16 @@ internal class RoomMultiUserDatabaseManager(
         }
     }
 
-    override fun loadExistingKeepingEncryptionOtherwiseCreateNew(
+    override suspend fun loadExistingKeepingEncryptionOtherwiseCreateNew(
         serverUrl: String,
         username: String,
-        encrypt: Boolean
+        encrypt: Boolean,
     ) {
         val existing = loadExistingChangingEncryptionIfRequired(
             serverUrl,
             username,
             { obj: DatabaseAccount -> obj.encrypted() },
-            true
+            true,
         )
 
         if (!existing) {
@@ -109,25 +112,25 @@ internal class RoomMultiUserDatabaseManager(
             metadata.serverUrl,
             metadata.username,
             metadata.encrypted,
-            importStatus = DatabaseAccountImportStatus.PENDING_TO_IMPORT
+            importStatus = DatabaseAccountImportStatus.PENDING_TO_IMPORT,
         )
     }
 
-    override fun changeEncryptionIfRequired(credentials: Credentials, encrypt: Boolean) {
+    override suspend fun changeEncryptionIfRequired(credentials: Credentials, encrypt: Boolean) {
         loadExistingChangingEncryptionIfRequired(
             credentials.serverUrl,
             credentials.username,
             { encrypt },
-            false
+            false,
         )
     }
 
-    override fun loadExistingKeepingEncryption(serverUrl: String, username: String): Boolean {
+    override suspend fun loadExistingKeepingEncryption(serverUrl: String, username: String): Boolean {
         return loadExistingChangingEncryptionIfRequired(
             serverUrl,
             username,
             { obj: DatabaseAccount -> obj.encrypted() },
-            true
+            true,
         )
     }
 
@@ -144,7 +147,7 @@ internal class RoomMultiUserDatabaseManager(
     }
 
     @Suppress("TooGenericExceptionCaught")
-    override fun importAndLoadDb(account: DatabaseAccount, password: String) {
+    override suspend fun importAndLoadDb(account: DatabaseAccount, password: String) {
         val protectedDbPath = context.getDatabasePath(account.importDB()!!.protectedDbName())
         val dbPath = context.getDatabasePath(account.databaseName())
         val tempDbPath = context.filesDir.resolve("temp.db").also { it.deleteIfExists() }
@@ -165,7 +168,7 @@ internal class RoomMultiUserDatabaseManager(
                 .importDB(
                     account.importDB()!!.toBuilder()
                         .status(DatabaseAccountImportStatus.IMPORTED)
-                        .build()
+                        .build(),
                 )
                 .build()
             addOrUpdatedAccountInternal(importedAccount)
@@ -182,11 +185,11 @@ internal class RoomMultiUserDatabaseManager(
         return DatabaseConfigurationHelper.getAccount(configuration, serverUrl, username)
     }
 
-    private fun loadExistingChangingEncryptionIfRequired(
+    private suspend fun loadExistingChangingEncryptionIfRequired(
         serverUrl: String,
         username: String,
         encryptionExtractor: (config: DatabaseAccount) -> Boolean,
-        alsoOpenWhenEncryptionDoesntChange: Boolean
+        alsoOpenWhenEncryptionDoesntChange: Boolean,
     ): Boolean {
         val existingAccount = getAccount(serverUrl, username) ?: return false
         val encrypt = encryptionExtractor(existingAccount)
@@ -195,22 +198,22 @@ internal class RoomMultiUserDatabaseManager(
             val updatedAccount = addOrUpdateAccountInternal(
                 serverUrl,
                 username,
-                encrypt
+                encrypt,
             )
             openDatabase(updatedAccount)
         }
         return true
     }
 
-    private fun changeEncryptionIfRequired(
+    private suspend fun changeEncryptionIfRequired(
         serverUrl: String,
         existingAccount: DatabaseAccount,
-        encrypt: Boolean
+        encrypt: Boolean,
     ) {
         if (encrypt != existingAccount.encrypted()) {
             Log.w(
                 RoomMultiUserDatabaseManager::class.java.name,
-                "Encryption value changed for ${existingAccount.username()}: $encrypt"
+                "Encryption value changed for ${existingAccount.username()}: $encrypt",
             )
             if (encrypt && !existingAccount.encrypted()) {
                 databaseExport.encrypt(serverUrl, existingAccount)
@@ -228,14 +231,14 @@ internal class RoomMultiUserDatabaseManager(
         serverUrl: String,
         username: String,
         encrypt: Boolean,
-        importStatus: DatabaseAccountImportStatus? = null
+        importStatus: DatabaseAccountImportStatus? = null,
     ): DatabaseAccount {
         val updatedAccount = configurationHelper.addOrUpdateAccount(
             databaseConfigurationSecureStore.get(),
             serverUrl,
             username,
             encrypt,
-            importStatus
+            importStatus,
         )
         databaseConfigurationSecureStore.set(updatedAccount)
         return DatabaseConfigurationHelper.getLoggedAccount(updatedAccount, username, serverUrl)
@@ -244,7 +247,7 @@ internal class RoomMultiUserDatabaseManager(
     private fun addOrUpdatedAccountInternal(account: DatabaseAccount) {
         val updatedAccount = configurationHelper.addOrUpdateAccount(
             databaseConfigurationSecureStore.get(),
-            account
+            account,
         )
         databaseConfigurationSecureStore.set(updatedAccount)
     }
@@ -254,7 +257,7 @@ internal class RoomMultiUserDatabaseManager(
             val password = passwordManager.getPassword(account.databaseName())
             databaseManager.createOrOpenEncryptedDatabase(account.databaseName(), password)
         } else {
-            databaseManager.createOrOpenDatabase(account.databaseName())
+            databaseManager.createOrOpenUnencryptedDatabase(account.databaseName())
         }
 
         // Get a reference to the adapter that was opened
@@ -271,7 +274,7 @@ internal class RoomMultiUserDatabaseManager(
         configuration?.maxAccounts()?.let { maxAccounts ->
             val exceedingAccounts = DatabaseConfigurationHelper.getOldestAccounts(
                 configuration.accounts(),
-                maxAccounts - 1
+                maxAccounts - 1,
             )
 
             val updatedConfiguration =

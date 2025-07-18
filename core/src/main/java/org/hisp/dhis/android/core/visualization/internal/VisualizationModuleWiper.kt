@@ -27,17 +27,17 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
+import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
+import org.hisp.dhis.android.core.wipe.internal.TableWiper
 import org.hisp.dhis.android.persistence.visualization.TrackerVisualizationDimensionTableInfo
 import org.hisp.dhis.android.persistence.visualization.TrackerVisualizationTableInfo
 import org.hisp.dhis.android.persistence.visualization.VisualizationDimensionItemTableInfo
 import org.hisp.dhis.android.persistence.visualization.VisualizationTableInfo
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
-import org.hisp.dhis.android.core.wipe.internal.TableWiper
 import org.koin.core.annotation.Singleton
 
 @Singleton
 class VisualizationModuleWiper internal constructor(private val tableWiper: TableWiper) : ModuleWiper {
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         tableWiper.wipeTables(
             TrackerVisualizationTableInfo.TABLE_INFO,
             TrackerVisualizationDimensionTableInfo.TABLE_INFO,
@@ -46,7 +46,7 @@ class VisualizationModuleWiper internal constructor(private val tableWiper: Tabl
         )
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         // No data to wipe
     }
 }

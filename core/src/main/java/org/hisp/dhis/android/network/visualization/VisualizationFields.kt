@@ -29,9 +29,9 @@ package org.hisp.dhis.android.network.visualization
 
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationDimension
-import org.hisp.dhis.android.persistence.visualization.VisualizationTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.persistence.visualization.VisualizationTableInfo.Columns
 
 internal object VisualizationFields : BaseFields<Visualization>() {
     private const val LEGEND = "legend"

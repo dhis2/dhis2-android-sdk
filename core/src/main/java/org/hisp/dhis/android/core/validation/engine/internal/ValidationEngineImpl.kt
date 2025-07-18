@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.constant.ConstantCollectionRepository
 import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository
-import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitOrganisationUnitGroupLinkStore
 import org.hisp.dhis.android.core.parser.internal.service.ExpressionServiceContext
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DimensionalItemObject
@@ -47,6 +46,7 @@ import org.hisp.dhis.android.core.validation.ValidationRuleCollectionRepository
 import org.hisp.dhis.android.core.validation.engine.ValidationEngine
 import org.hisp.dhis.android.core.validation.engine.ValidationResult
 import org.hisp.dhis.android.core.validation.engine.ValidationResult.ValidationResultStatus
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

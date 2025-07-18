@@ -37,12 +37,12 @@ import org.hisp.dhis.android.core.arch.db.access.Transaction
 class RoomTransaction(private val database: RoomDatabase) : Transaction {
     private var successful = false
     private var ended = false
-    
+
     override fun setSuccessful() {
         checkNotEnded()
         successful = true
     }
-    
+
     override fun end() {
         checkNotEnded()
         if (successful) {
@@ -51,7 +51,7 @@ class RoomTransaction(private val database: RoomDatabase) : Transaction {
         database.endTransaction()
         ended = true
     }
-    
+
     private fun checkNotEnded() {
         if (ended) {
             throw IllegalStateException("Transaction already ended")

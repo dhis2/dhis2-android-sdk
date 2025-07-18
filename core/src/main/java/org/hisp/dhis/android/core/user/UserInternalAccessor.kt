@@ -25,33 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user
 
-package org.hisp.dhis.android.core.user;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-
-import java.util.List;
-
-public final class UserInternalAccessor {
-
-    private UserInternalAccessor() {
+object UserInternalAccessor {
+    @JvmStatic
+    fun accessOrganisationUnits(user: User): List<OrganisationUnit>? {
+        return user.organisationUnits()
     }
 
-    public static List<OrganisationUnit> accessOrganisationUnits(User user) {
-        return user.organisationUnits();
+    fun insertOrganisationUnits(
+        builder: User.Builder,
+        organisationUnits: List<OrganisationUnit?>?
+    ): User.Builder {
+        return builder.organisationUnits(organisationUnits)
     }
 
-    public static User.Builder insertOrganisationUnits(User.Builder builder,
-                                                       List<OrganisationUnit> organisationUnits) {
-        return builder.organisationUnits(organisationUnits);
+    @JvmStatic
+    fun accessTeiSearchOrganisationUnits(user: User): List<OrganisationUnit>? {
+        return user.teiSearchOrganisationUnits()
     }
 
-    public static List<OrganisationUnit> accessTeiSearchOrganisationUnits(User user) {
-        return user.teiSearchOrganisationUnits();
-    }
-
-    public static User.Builder insertTeiSearchOrganisationUnits(User.Builder builder,
-                                                                List<OrganisationUnit> teiSearchOrganisationUnits) {
-        return builder.teiSearchOrganisationUnits(teiSearchOrganisationUnits);
+    fun insertTeiSearchOrganisationUnits(
+        builder: User.Builder,
+        teiSearchOrganisationUnits: List<OrganisationUnit?>?
+    ): User.Builder {
+        return builder.teiSearchOrganisationUnits(teiSearchOrganisationUnits)
     }
 }

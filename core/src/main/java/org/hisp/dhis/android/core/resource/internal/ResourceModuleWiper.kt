@@ -36,11 +36,11 @@ import org.koin.core.annotation.Singleton
 internal class ResourceModuleWiper(
     private val tableWiper: TableWiper,
 ) : ModuleWiper {
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         tableWiper.wipeTables(ResourceTableInfo.TABLE_INFO)
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         // Nothing to wipe
     }
 }

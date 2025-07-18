@@ -27,20 +27,20 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal
 
+import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
+import org.hisp.dhis.android.core.wipe.internal.TableWiper
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitGroupTableInfo
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitLevelTableInfo
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitProgramLinkTableInfo
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitTableInfo
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
-import org.hisp.dhis.android.core.wipe.internal.TableWiper
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class OrganisationUnitModuleWiper(
     private val tableWiper: TableWiper,
 ) : ModuleWiper {
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         tableWiper.wipeTables(
             OrganisationUnitTableInfo.TABLE_INFO,
             OrganisationUnitProgramLinkTableInfo.TABLE_INFO,
@@ -50,7 +50,7 @@ internal class OrganisationUnitModuleWiper(
         )
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         // No data to wipe
     }
 }

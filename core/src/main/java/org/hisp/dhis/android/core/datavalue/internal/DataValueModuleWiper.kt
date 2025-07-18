@@ -36,11 +36,11 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 class DataValueModuleWiper internal constructor(private val tableWiper: TableWiper) : ModuleWiper {
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         // No metadata to wipe
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         tableWiper.wipeTables(
             DataValueTableInfo.TABLE_INFO,
             AggregatedDataSyncTableInfo.TABLE_INFO,

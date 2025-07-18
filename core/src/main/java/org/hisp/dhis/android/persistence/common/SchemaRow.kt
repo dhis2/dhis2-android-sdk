@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,19 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStoreImpl
-import org.hisp.dhis.android.core.dataset.DataSetInstanceSummary
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.persistence.common
 
-internal class DataSetInstanceSummaryStoreImpl constructor(
-    databaseAdapter: DatabaseAdapter,
-) : DataSetInstanceSummaryStore,
-    ReadableStoreImpl<DataSetInstanceSummary>(
-        databaseAdapter,
-        DataSetInstanceSummarySQLStatementBuilder(),
-        { cursor: Cursor -> DataSetInstanceSummary.create(cursor) },
-    )
+import androidx.room.ColumnInfo
+
+internal data class SchemaRow(
+    @ColumnInfo(name = "name") val name: String,
+    @ColumnInfo(name = "sql") val sql: String?
+)

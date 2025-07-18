@@ -31,46 +31,67 @@ package org.hisp.dhis.android.persistence.db.access
 import android.content.Context
 import android.util.Log
 import androidx.room.Room
+import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import kotlinx.coroutines.Dispatchers
 import net.zetetic.database.sqlcipher.SupportOpenHelperFactory
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
 import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
+import org.koin.core.annotation.Singleton
 import java.nio.charset.StandardCharsets
 
 /**
  * Room-based implementation of DatabaseManager with encryption capabilities.
  */
-class RoomDatabaseManager(
+@Singleton
+internal class RoomDatabaseManager(
     private val databaseAdapter: DatabaseAdapter,
     private val context: Context,
-    private val passwordManager: DatabaseEncryptionPasswordManager
+    private val passwordManager: DatabaseEncryptionPasswordManager,
 ) : DatabaseManager {
-
 
     companion object {
         private const val TAG = "RoomDatabaseManager"
-        private const val TEMP_DB_SUFFIX = "-temp"
     }
 
-    override fun createOrOpenDatabase(databaseName: String): DatabaseAdapter {
+    override fun createOrOpenUnencryptedDatabase(databaseName: String): DatabaseAdapter {
         val database = Room.databaseBuilder(context, AppDatabase::class.java, databaseName)
+            .setDriver(BundledSQLiteDriver())
+            .setQueryCoroutineContext(Dispatchers.IO)
+            // .setJournalMode(RoomDatabase.JournalMode.WRITE_AHEAD_LOGGING) by default,
+            // room uses Automatic, which depends on the API version
             // Add migration when ready
             .build()
-        databaseAdapter.activate(database)
+        databaseAdapter.activate(database, databaseName)
         return databaseAdapter
     }
 
     override fun createOrOpenEncryptedDatabase(databaseName: String, password: String): DatabaseAdapter {
         val factory = SupportOpenHelperFactory(password.toByteArray(StandardCharsets.UTF_8))
         val database = Room.databaseBuilder(context, AppDatabase::class.java, databaseName)
+            .setDriver(BundledSQLiteDriver())
+            .setQueryCoroutineContext(Dispatchers.IO)
+            // .setJournalMode(RoomDatabase.JournalMode.WRITE_AHEAD_LOGGING) by default,
+            // room uses Automatic, which depends on the API version
             // Add migration when ready
             .openHelperFactory(factory)
             .build()
-        databaseAdapter.activate(database)
+        databaseAdapter.activate(database, databaseName)
         return databaseAdapter
     }
 
+    override fun createOrOpenDatabase(account: DatabaseAccount): DatabaseAdapter {
+        if (account.encrypted()) {
+            val password = passwordManager.getPassword(account.databaseName())
+            return createOrOpenEncryptedDatabase(account.databaseName(), password)
+        } else {
+            return createOrOpenUnencryptedDatabase(account.databaseName())
+        }
+    }
+
+    @Suppress("TooGenericExceptionCaught")
     override fun deleteDatabase(databaseName: String, isEncrypted: Boolean): Boolean {
         return try {
             context.deleteDatabase(databaseName)
@@ -91,5 +112,9 @@ class RoomDatabaseManager(
 
     override fun disableDatabase() {
         databaseAdapter.deactivate()
+    }
+
+    override fun getAdapter(): DatabaseAdapter {
+        return databaseAdapter
     }
 }

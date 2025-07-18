@@ -29,11 +29,11 @@ package org.hisp.dhis.android.core.program.programindicatorengine.internal
 
 import org.hisp.dhis.android.core.common.AnalyticsType
 import org.hisp.dhis.android.core.common.ValueType
-import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
-import org.hisp.dhis.android.persistence.event.EventTableInfo
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemId
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemType
 import org.hisp.dhis.android.core.program.ProgramIndicator
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.persistence.event.EventTableInfo
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeValueTableInfo
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityDataValueTableInfo
 

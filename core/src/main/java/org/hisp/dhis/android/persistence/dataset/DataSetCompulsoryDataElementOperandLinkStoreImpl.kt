@@ -37,10 +37,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DataSetCompulsoryDataElementOperandLinkStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : DataSetCompulsoryDataElementOperandLinkStore,
     LinkStoreImpl<DataSetCompulsoryDataElementOperandLink, DataSetCompulsoryDataElementOperandsLinkDB>(
-        { databaseAdapter.getCurrentDatabase()?.dataSetCompulsoryDataElementOperandLinkDao()!! },
+        { databaseAdapter.getCurrentDatabase().dataSetCompulsoryDataElementOperandLinkDao() },
         DataSetCompulsoryDataElementOperandLink::toDB,
         LinkSQLStatementBuilderImpl(
             DataSetCompulsoryDataElementOperandsLinkTableInfo.TABLE_INFO,

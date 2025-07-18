@@ -25,41 +25,38 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.configuration.internal
 
-package org.hisp.dhis.android.core.configuration.internal;
+import org.hisp.dhis.android.core.arch.storage.internal.SecureStore
 
-import org.hisp.dhis.android.core.arch.storage.internal.SecureStore;
-
-public final class DatabaseEncryptionPasswordManager {
-
-    private final SecureStore secureStore;
-    private final DatabaseEncryptionPasswordGenerator passwordGenerator;
-
-    public DatabaseEncryptionPasswordManager(SecureStore secureStore,
-                                             DatabaseEncryptionPasswordGenerator passwordGenerator) {
-        this.secureStore = secureStore;
-        this.passwordGenerator = passwordGenerator;
+class DatabaseEncryptionPasswordManager(
+    private val secureStore: SecureStore,
+    private val passwordGenerator: DatabaseEncryptionPasswordGenerator
+) {
+    private fun getKey(databaseName: String): String {
+        return "DBPW_<>_$databaseName"
     }
 
-    private String getKey(String databaseName) {
-        return "DBPW_<>_" + databaseName;
-    }
-
-    public String getPassword(String databaseName) {
-        String key = getKey(databaseName);
-        String existingPassword = secureStore.getData(key);
+    fun getPassword(databaseName: String): String {
+        val key = getKey(databaseName)
+        val existingPassword = secureStore.getData(key)
         if (existingPassword == null) {
-            secureStore.setData(key, passwordGenerator.generate());
+            secureStore.setData(key, passwordGenerator.generate())
         }
 
-        return secureStore.getData(key);
+        return secureStore.getData(key)!!
     }
 
-    public void deletePassword(String databaseName) {
-        secureStore.removeData(getKey(databaseName));
+    fun deletePassword(databaseName: String) {
+        secureStore.removeData(getKey(databaseName))
     }
 
-    public static DatabaseEncryptionPasswordManager create(SecureStore secureStore) {
-        return new DatabaseEncryptionPasswordManager(secureStore, new DatabaseEncryptionPasswordGenerator());
+    companion object {
+        fun create(secureStore: SecureStore): DatabaseEncryptionPasswordManager {
+            return DatabaseEncryptionPasswordManager(
+                secureStore,
+                DatabaseEncryptionPasswordGenerator()
+            )
+        }
     }
 }

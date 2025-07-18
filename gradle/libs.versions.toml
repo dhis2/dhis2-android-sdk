@@ -31,7 +31,7 @@ ktor = "2.3.11"
 rxJava = "2.2.21"
 rxAndroid = "2.1.1"
 sqlCipher = "4.9.0"
-sqlLite = "2.2.0"
+sqLite = "2.5.2"
 zip4j = "2.11.5"
 smsCompression = "0.2.0"
 expressionParser = "1.0.36"
@@ -79,6 +79,8 @@ androidx-paging-testing = { group = "androidx.paging", name = "paging-testing", 
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidx-room" }
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidx-room" }
 androidx-room-paging = { group = "androidx.room", name = "room-paging", version.ref = "androidx-room" }
+androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqLite" }
+sqlcipher = { group = "net.zetetic", name = "sqlcipher-android", version.ref = "sqlCipher" }
 
 google-auto-value-annotation = { group = "com.google.auto.value", name = "auto-value-annotations", version.ref = "autoValue" }
 google-auto-value = { group = "com.google.auto.value", name = "auto-value", version.ref = "autoValue" }
@@ -110,8 +112,6 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 dhis2-compression = { group = "com.github.dhis2", name = "sms-compression", version.ref = "smsCompression" }
 dhis2-antlr-parser = { group = "org.hisp.dhis.parser", name = "dhis-antlr-expression-parser", version.ref = "expressionParser" }
 
-sqlcipher = { group = "net.zetetic", name = "sqlcipher-android", version.ref = "sqlCipher" }
-sqlite = { group = "androidx.sqlite", name = "sqlite", version.ref = "sqlLite" }
 
 zip4j = { group = "net.lingala.zip4j", name = "zip4j", version.ref = "zip4j" }
 

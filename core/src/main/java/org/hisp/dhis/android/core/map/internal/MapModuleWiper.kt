@@ -37,14 +37,14 @@ import org.koin.core.annotation.Singleton
 class MapModuleWiper internal constructor(
     private val tableWiper: TableWiper,
 ) : ModuleWiper {
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         tableWiper.wipeTables(
             MapLayerTableInfo.TABLE_INFO,
             MapLayerImageryProviderTableInfo.TABLE_INFO,
         )
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         // No metadata to wipe
     }
 }

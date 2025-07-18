@@ -56,7 +56,7 @@ internal class LogInDatabaseManager(
         }
     }
 
-    fun loadExistingKeepingEncryption(serverUrl: String, username: String): Boolean {
+    suspend fun loadExistingKeepingEncryption(serverUrl: String, username: String): Boolean {
         return multiUserDatabaseManager.loadExistingKeepingEncryption(
             serverUrl,
             username,
@@ -68,7 +68,7 @@ internal class LogInDatabaseManager(
         return existingAccount?.importDB()?.status() == DatabaseAccountImportStatus.PENDING_TO_IMPORT
     }
 
-    fun importDB(serverUrl: String, credentials: Credentials) {
+    suspend fun importDB(serverUrl: String, credentials: Credentials) {
         val existingAccount = multiUserDatabaseManager.getAccount(serverUrl, credentials.username)!!
         multiUserDatabaseManager.importAndLoadDb(existingAccount, credentials.password!!)
     }

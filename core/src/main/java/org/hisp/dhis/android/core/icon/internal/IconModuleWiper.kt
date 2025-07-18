@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.icon.internal
 
-import org.hisp.dhis.android.persistence.icon.CustomIconTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import org.hisp.dhis.android.persistence.icon.CustomIconTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -37,11 +37,11 @@ internal class IconModuleWiper(
     private val tableWiper: TableWiper,
 ) : ModuleWiper {
 
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         tableWiper.wipeTable(CustomIconTableInfo.TABLE_INFO)
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         // No data to wipe
     }
 }

@@ -28,10 +28,10 @@
 package org.hisp.dhis.android.network.indicatortype
 
 import org.hisp.dhis.android.core.indicator.IndicatorType
-import org.hisp.dhis.android.persistence.indicator.IndicatorTypeTableInfo
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Field
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.persistence.indicator.IndicatorTypeTableInfo
 
 internal object IndicatorTypeFields : BaseFields<IndicatorType>() {
     val uid: Field<IndicatorType> = fh.uid()

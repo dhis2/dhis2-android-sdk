@@ -28,12 +28,12 @@
 package org.hisp.dhis.android.core.program.programindicatorengine.internal.variable
 
 import org.hisp.dhis.android.core.common.AnalyticsType
-import org.hisp.dhis.android.persistence.event.EventTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramExpressionItem
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.EventAlias
+import org.hisp.dhis.android.persistence.event.EventTableInfo
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal class VEventDate : ProgramExpressionItem() {

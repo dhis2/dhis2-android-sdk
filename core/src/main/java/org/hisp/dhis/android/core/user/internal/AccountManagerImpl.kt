@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.user.internal
 import android.content.Context
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
-import org.hisp.dhis.android.core.arch.db.access.BaseDatabaseAdapterFactory
+import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
@@ -52,18 +52,18 @@ import org.koin.core.annotation.Singleton
 internal class AccountManagerImpl(
     private val databasesConfigurationStore: DatabaseConfigurationInsecureStore,
     private val multiUserDatabaseManager: BaseMultiUserDatabaseManager,
-    private val databaseAdapterFactory: BaseDatabaseAdapterFactory,
+    private val databaseManager: DatabaseManager,
     private val credentialsSecureStore: CredentialsSecureStore,
     private val logOutCall: LogOutCall,
     private val context: Context,
 ) : AccountManager {
     private val accountDeletionSubject = PublishSubject.create<AccountDeletionReason>()
 
-    override fun getAccounts(): List<DatabaseAccount> {
+    override suspend fun getAccounts(): List<DatabaseAccount> {
         return databasesConfigurationStore.get()?.accounts()?.map { updateSyncState(it) } ?: emptyList()
     }
 
-    override fun getCurrentAccount(): DatabaseAccount? {
+    override suspend fun getCurrentAccount(): DatabaseAccount? {
         return credentialsSecureStore.get()
             ?.let { multiUserDatabaseManager.getAccount(it.serverUrl, it.username) }
             ?.let { updateSyncState(it) }
@@ -132,13 +132,13 @@ internal class AccountManagerImpl(
             databasesConfigurationStore.set(updatedConfiguration)
 
             FileResourceDirectoryHelper.deleteFileResourceDirectories(context, loggedAccount)
-            databaseAdapterFactory.deleteDatabase(loggedAccount)
+            databaseManager.deleteDatabase(loggedAccount.databaseName(), loggedAccount.encrypted())
         }
     }
 
-    private fun updateSyncState(account: DatabaseAccount): DatabaseAccount {
+    private suspend fun updateSyncState(account: DatabaseAccount): DatabaseAccount {
         return if (account.importDB()?.status() != DatabaseAccountImportStatus.PENDING_TO_IMPORT) {
-            val databaseAdapter = databaseAdapterFactory.getDatabaseAdapter(account, false)
+            val databaseAdapter = databaseManager.createOrOpenDatabase(account)
             val syncState = AccountManagerHelper.getSyncState(databaseAdapter)
 
             account.toBuilder()

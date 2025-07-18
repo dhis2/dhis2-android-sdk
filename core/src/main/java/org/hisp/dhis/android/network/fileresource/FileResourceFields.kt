@@ -29,9 +29,9 @@
 package org.hisp.dhis.android.network.fileresource
 
 import org.hisp.dhis.android.core.fileresource.FileResource
-import org.hisp.dhis.android.persistence.fileresource.FileResourceTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.persistence.fileresource.FileResourceTableInfo.Columns
 
 internal object FileResourceFields : BaseFields<FileResource>() {
     private const val STORAGE_STATUS = "storageStatus"

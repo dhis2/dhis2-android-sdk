@@ -38,7 +38,7 @@ import org.koin.core.annotation.Singleton
 internal class ProgramStageWorkingListModuleWiper(
     private val tableWiper: TableWiper,
 ) : ModuleWiper {
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         tableWiper.wipeTables(
             ProgramStageWorkingListTableInfo.TABLE_INFO,
             ProgramStageWorkingListEventDataFilterTableInfo.TABLE_INFO,
@@ -46,7 +46,7 @@ internal class ProgramStageWorkingListModuleWiper(
         )
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         // No data to wipe
     }
 }

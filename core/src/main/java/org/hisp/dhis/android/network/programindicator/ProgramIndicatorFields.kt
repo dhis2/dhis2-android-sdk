@@ -31,10 +31,10 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.legendset.LegendSet
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
 import org.hisp.dhis.android.core.program.ProgramIndicator
-import org.hisp.dhis.android.persistence.program.ProgramIndicatorTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.legendset.LegendSetFields
+import org.hisp.dhis.android.persistence.program.ProgramIndicatorTableInfo.Columns
 
 internal object ProgramIndicatorFields : BaseFields<ProgramIndicator>() {
     const val ANALYTICS_PERIOD_BOUNDARIES = "analyticsPeriodBoundaries"

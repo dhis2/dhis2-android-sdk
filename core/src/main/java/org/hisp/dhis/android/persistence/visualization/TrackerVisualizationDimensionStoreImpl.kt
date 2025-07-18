@@ -38,10 +38,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackerVisualizationDimensionStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : TrackerVisualizationDimensionStore,
     LinkStoreImpl<TrackerVisualizationDimension, TrackerVisualizationDimensionDB>(
-        { databaseAdapter.getCurrentDatabase()?.trackerVisualizationDimensionDao()!! },
+        { databaseAdapter.getCurrentDatabase().trackerVisualizationDimensionDao() },
         TrackerVisualizationDimension::toDB,
         LinkSQLStatementBuilderImpl(
             TrackerVisualizationDimensionTableInfo.TABLE_INFO,

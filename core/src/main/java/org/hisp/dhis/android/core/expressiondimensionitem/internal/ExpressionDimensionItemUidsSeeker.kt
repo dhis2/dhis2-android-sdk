@@ -39,7 +39,7 @@ internal class ExpressionDimensionItemUidsSeeker(
     databaseAdapter: DatabaseAdapter,
 ) : BaseUidsSeeker(databaseAdapter) {
 
-    fun seekUids(): Set<String> {
+    suspend fun seekUids(): Set<String> {
         val query = "SELECT ${VisualizationDimensionItemTableInfo.Columns.DIMENSION_ITEM} " +
             "FROM ${VisualizationDimensionItemTableInfo.TABLE_INFO.name()} " +
             "WHERE ${VisualizationDimensionItemTableInfo.Columns.DIMENSION_ITEM_TYPE} = " +

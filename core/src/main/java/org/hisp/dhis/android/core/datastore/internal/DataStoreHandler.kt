@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.DataStoreEntry
-import org.hisp.dhis.android.persistence.datastore.DataStoreEntryTableInfo
+import org.hisp.dhis.android.persistence.datastore.DataStoreTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -67,7 +67,7 @@ internal class DataStoreHandler(
     ): List<DataStoreEntry>? {
         return slaves?.let {
             val whereClause = WhereClauseBuilder().run {
-                appendKeyStringValue(DataStoreEntryTableInfo.Columns.NAMESPACE, namespace)
+                appendKeyStringValue(DataStoreTableInfo.Columns.NAMESPACE, namespace)
                 appendNotInKeyStringValues(
                     DataColumns.SYNC_STATE,
                     listOf(State.SYNCED.name, State.SYNCED_VIA_SMS.name),
@@ -87,11 +87,11 @@ internal class DataStoreHandler(
         slaves: Collection<DataStoreEntry>?,
     ) {
         val notInSlaves = WhereClauseBuilder().run {
-            appendKeyStringValue(DataStoreEntryTableInfo.Columns.NAMESPACE, namespace)
+            appendKeyStringValue(DataStoreTableInfo.Columns.NAMESPACE, namespace)
             appendInKeyEnumValues(DataColumns.SYNC_STATE, listOf(State.SYNCED, State.SYNCED_VIA_SMS))
 
             if (!slaves.isNullOrEmpty()) {
-                appendNotInKeyStringValues(DataStoreEntryTableInfo.Columns.KEY, slaves.map { it.key() })
+                appendNotInKeyStringValues(DataStoreTableInfo.Columns.KEY, slaves.map { it.key() })
             }
             build()
         }

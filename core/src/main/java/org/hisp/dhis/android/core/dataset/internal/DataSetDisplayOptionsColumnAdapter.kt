@@ -33,20 +33,17 @@ import android.database.Cursor
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
 import org.hisp.dhis.android.core.dataset.CustomText
 import org.hisp.dhis.android.core.dataset.DataSetDisplayOptions
-import org.hisp.dhis.android.persistence.dataset.DataSetTableInfo.Columns.CUSTOM_TEXT_ALIGN
-import org.hisp.dhis.android.persistence.dataset.DataSetTableInfo.Columns.HEADER
-import org.hisp.dhis.android.persistence.dataset.DataSetTableInfo.Columns.SUB_HEADER
-import org.hisp.dhis.android.persistence.dataset.DataSetTableInfo.Columns.TABS_DIRECTION
 import org.hisp.dhis.android.core.dataset.TabsDirection
 import org.hisp.dhis.android.core.dataset.TextAlign
+import org.hisp.dhis.android.persistence.dataset.DataSetTableInfo.Columns
 
 internal class DataSetDisplayOptionsColumnAdapter : ColumnTypeAdapter<DataSetDisplayOptions> {
 
     override fun fromCursor(cursor: Cursor, columnName: String?): DataSetDisplayOptions {
-        val headerIndex = cursor.getColumnIndex(HEADER)
-        val subHeaderIndex = cursor.getColumnIndex(SUB_HEADER)
-        val customTextAlignIndex = cursor.getColumnIndex(CUSTOM_TEXT_ALIGN)
-        val tabsDirectionIndex = cursor.getColumnIndex(TABS_DIRECTION)
+        val headerIndex = cursor.getColumnIndex(Columns.HEADER)
+        val subHeaderIndex = cursor.getColumnIndex(Columns.SUB_HEADER)
+        val customTextAlignIndex = cursor.getColumnIndex(Columns.CUSTOM_TEXT_ALIGN)
+        val tabsDirectionIndex = cursor.getColumnIndex(Columns.TABS_DIRECTION)
 
         return DataSetDisplayOptions.builder().apply {
             customText(
@@ -62,10 +59,10 @@ internal class DataSetDisplayOptionsColumnAdapter : ColumnTypeAdapter<DataSetDis
 
     override fun toContentValues(values: ContentValues?, columnName: String?, value: DataSetDisplayOptions?) {
         value?.customText()?.let {
-            values?.put(HEADER, it.header())
-            values?.put(SUB_HEADER, it.subHeader())
-            values?.put(CUSTOM_TEXT_ALIGN, it.align()?.name)
+            values?.put(Columns.HEADER, it.header())
+            values?.put(Columns.SUB_HEADER, it.subHeader())
+            values?.put(Columns.CUSTOM_TEXT_ALIGN, it.align()?.name)
         }
-        value?.tabsDirection()?.let { values?.put(TABS_DIRECTION, it.name) }
+        value?.tabsDirection()?.let { values?.put(Columns.TABS_DIRECTION, it.name) }
     }
 }

@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackedEntityTypeStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : TrackedEntityTypeStore, IdentifiableObjectStoreImpl<TrackedEntityType, TrackedEntityTypeDB>(
-    { databaseAdapter.getCurrentDatabase()?.trackedEntityTypeDao()!! },
+    { databaseAdapter.getCurrentDatabase().trackedEntityTypeDao() },
     TrackedEntityType::toDB,
     SQLStatementBuilderImpl(TrackedEntityTypeTableInfo.TABLE_INFO),
 )

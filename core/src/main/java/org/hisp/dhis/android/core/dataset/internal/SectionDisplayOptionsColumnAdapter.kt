@@ -33,18 +33,15 @@ import android.database.Cursor
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
 import org.hisp.dhis.android.core.dataset.SectionDisplayOptions
 import org.hisp.dhis.android.core.dataset.SectionPivotMode
-import org.hisp.dhis.android.persistence.dataset.SectionTableInfo.Columns.AFTER_SECTION_TEXT
-import org.hisp.dhis.android.persistence.dataset.SectionTableInfo.Columns.BEFORE_SECTION_TEXT
-import org.hisp.dhis.android.persistence.dataset.SectionTableInfo.Columns.PIVOTED_CATEGORY
-import org.hisp.dhis.android.persistence.dataset.SectionTableInfo.Columns.PIVOT_MODE
+import org.hisp.dhis.android.persistence.dataset.SectionTableInfo.Columns
 
 internal class SectionDisplayOptionsColumnAdapter : ColumnTypeAdapter<SectionDisplayOptions> {
     override fun fromCursor(cursor: Cursor, columnName: String?): SectionDisplayOptions {
-        val beforeSectionTextIndx = cursor.getColumnIndex(BEFORE_SECTION_TEXT)
-        val afterSectionTextIndx = cursor.getColumnIndex(AFTER_SECTION_TEXT)
-        val pivotedCategoryIndx = cursor.getColumnIndex(PIVOTED_CATEGORY)
+        val beforeSectionTextIndx = cursor.getColumnIndex(Columns.BEFORE_SECTION_TEXT)
+        val afterSectionTextIndx = cursor.getColumnIndex(Columns.AFTER_SECTION_TEXT)
+        val pivotedCategoryIndx = cursor.getColumnIndex(Columns.PIVOTED_CATEGORY)
 
-        val pivotModeIndx = cursor.getColumnIndex(PIVOT_MODE)
+        val pivotModeIndx = cursor.getColumnIndex(Columns.PIVOT_MODE)
         val pivotMode = cursor.getString(pivotModeIndx)
 
         var sectionPivotMode: SectionPivotMode? = null
@@ -65,9 +62,9 @@ internal class SectionDisplayOptionsColumnAdapter : ColumnTypeAdapter<SectionDis
     }
 
     override fun toContentValues(values: ContentValues?, columnName: String?, value: SectionDisplayOptions?) {
-        value?.beforeSectionText()?.let { values?.put(BEFORE_SECTION_TEXT, it) }
-        value?.afterSectionText()?.let { values?.put(AFTER_SECTION_TEXT, it) }
-        value?.pivotMode()?.let { values?.put(PIVOT_MODE, it.name) }
-        value?.pivotedCategory()?.let { values?.put(PIVOTED_CATEGORY, it) }
+        value?.beforeSectionText()?.let { values?.put(Columns.BEFORE_SECTION_TEXT, it) }
+        value?.afterSectionText()?.let { values?.put(Columns.AFTER_SECTION_TEXT, it) }
+        value?.pivotMode()?.let { values?.put(Columns.PIVOT_MODE, it.name) }
+        value?.pivotedCategory()?.let { values?.put(Columns.PIVOTED_CATEGORY, it) }
     }
 }

@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.Credentials
  * including database creation, encryption, and import/export functionality.
  */
 internal interface BaseMultiUserDatabaseManager {
-    
+
     /**
      * Loads an existing database, changes encryption if required, or creates a new database.
      *
@@ -45,10 +45,10 @@ internal interface BaseMultiUserDatabaseManager {
      * @param username The username associated with the database
      * @param encrypt Whether the database should be encrypted
      */
-    fun loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(
+    suspend fun loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(
         serverUrl: String,
         username: String,
-        encrypt: Boolean
+        encrypt: Boolean,
     )
 
     /**
@@ -58,10 +58,10 @@ internal interface BaseMultiUserDatabaseManager {
      * @param username The username associated with the database
      * @param encrypt Whether the database should be encrypted if creating a new one
      */
-    fun loadExistingKeepingEncryptionOtherwiseCreateNew(
+    suspend fun loadExistingKeepingEncryptionOtherwiseCreateNew(
         serverUrl: String,
         username: String,
-        encrypt: Boolean
+        encrypt: Boolean,
     )
 
     /**
@@ -87,7 +87,7 @@ internal interface BaseMultiUserDatabaseManager {
      * @param credentials The user credentials
      * @param encrypt Whether encryption should be enabled
      */
-    fun changeEncryptionIfRequired(credentials: Credentials, encrypt: Boolean)
+    suspend fun changeEncryptionIfRequired(credentials: Credentials, encrypt: Boolean)
 
     /**
      * Loads an existing database keeping its current encryption status.
@@ -96,7 +96,7 @@ internal interface BaseMultiUserDatabaseManager {
      * @param username The username associated with the database
      * @return True if the database was loaded, false otherwise
      */
-    fun loadExistingKeepingEncryption(serverUrl: String, username: String): Boolean
+    suspend fun loadExistingKeepingEncryption(serverUrl: String, username: String): Boolean
 
     /**
      * Sets the maximum number of accounts that can be stored.
@@ -111,7 +111,7 @@ internal interface BaseMultiUserDatabaseManager {
      * @param account The database account to import
      * @param password The encryption password if applicable
      */
-    fun importAndLoadDb(account: DatabaseAccount, password: String)
+    suspend fun importAndLoadDb(account: DatabaseAccount, password: String)
 
     /**
      * Gets an account by server URL and username.

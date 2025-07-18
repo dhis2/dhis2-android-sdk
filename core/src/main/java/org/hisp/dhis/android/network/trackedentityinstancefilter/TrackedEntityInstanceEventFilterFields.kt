@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.network.trackedentityinstancefilter
 
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
-import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceEventFilterTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceEventFilterTableInfo.Columns
 
 internal object TrackedEntityInstanceEventFilterFields : BaseFields<TrackedEntityInstanceEventFilter>() {
     private const val EVENT_CREATED_PERIOD = "eventCreatedPeriod"

@@ -29,12 +29,7 @@
 package org.hisp.dhis.android.persistence.dataset
 
 import androidx.room.Dao
-import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.dataset.DataSetInstance
-import org.hisp.dhis.android.core.period.PeriodType
-import org.hisp.dhis.android.core.util.toJavaDate
-import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.daos.ReadableDao
 
 @Dao
-internal interface DataSetInstanceDao: ReadableDao<DataSetInstanceDB>
+internal interface DataSetInstanceDao : ReadableDao<DataSetInstanceDB>

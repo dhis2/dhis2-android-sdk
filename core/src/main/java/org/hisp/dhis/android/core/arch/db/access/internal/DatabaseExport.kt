@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.db.access.internal
 import android.content.Context
 import android.util.Log
 import io.reactivex.functions.Action
+import net.zetetic.database.sqlcipher.SQLiteConnection
 import net.zetetic.database.sqlcipher.SQLiteDatabase
 import net.zetetic.database.sqlcipher.SQLiteDatabaseHook
 import org.hisp.dhis.android.core.common.internal.NativeLibraryLoader.loadSQLCipher
@@ -45,7 +46,7 @@ internal class DatabaseExport(
     private val passwordManager: DatabaseEncryptionPasswordManager,
     private val configurationHelper: DatabaseConfigurationHelper,
 ) : BaseDatabaseExport {
-    override fun encrypt(serverUrl: String, oldConfiguration: DatabaseAccount) {
+    override suspend fun encrypt(serverUrl: String, oldConfiguration: DatabaseAccount) {
         val newConfiguration = configurationHelper.changeEncryption(serverUrl, oldConfiguration)
         export(
             oldDatabaseFile = context.getDatabasePath(oldConfiguration.databaseName()),
@@ -54,11 +55,11 @@ internal class DatabaseExport(
             newPassword = passwordManager.getPassword(newConfiguration.databaseName()),
             tag = "Encrypt",
             oldHook = null,
-            newHook = EncryptedDatabaseOpenHelper.hook,
+            newHook = hook,
         )
     }
 
-    override fun encryptAndCopyTo(newConfiguration: DatabaseAccount, sourceFile: File, targetFile: File) {
+    override suspend fun encryptAndCopyTo(newConfiguration: DatabaseAccount, sourceFile: File, targetFile: File) {
         export(
             oldDatabaseFile = sourceFile,
             newDatabaseFile = targetFile,
@@ -66,11 +67,11 @@ internal class DatabaseExport(
             newPassword = passwordManager.getPassword(newConfiguration.databaseName()),
             tag = "Encrypt",
             oldHook = null,
-            newHook = EncryptedDatabaseOpenHelper.hook,
+            newHook = hook,
         )
     }
 
-    override fun decrypt(serverUrl: String, oldConfiguration: DatabaseAccount) {
+    override suspend fun decrypt(serverUrl: String, oldConfiguration: DatabaseAccount) {
         val newConfiguration = configurationHelper.changeEncryption(serverUrl, oldConfiguration)
         export(
             oldDatabaseFile = context.getDatabasePath(oldConfiguration.databaseName()),
@@ -78,19 +79,19 @@ internal class DatabaseExport(
             oldPassword = passwordManager.getPassword(oldConfiguration.databaseName()),
             newPassword = "",
             tag = "Decrypt",
-            oldHook = EncryptedDatabaseOpenHelper.hook,
+            oldHook = hook,
             newHook = null,
         )
     }
 
-    override fun decryptAndCopyTo(account: DatabaseAccount, destinationFile: File) {
+    override suspend fun decryptAndCopyTo(account: DatabaseAccount, destinationFile: File) {
         export(
             oldDatabaseFile = context.getDatabasePath(account.databaseName()),
             newDatabaseFile = destinationFile,
             oldPassword = passwordManager.getPassword(account.databaseName()),
             newPassword = "",
             tag = "Decrypt",
-            oldHook = EncryptedDatabaseOpenHelper.hook,
+            oldHook = hook,
             newHook = null,
         )
     }
@@ -149,5 +150,19 @@ internal class DatabaseExport(
         }
         val endMillis = System.currentTimeMillis()
         Log.e("DatabaseExport", tag + ": " + (endMillis - startMillis) + "ms")
+    }
+
+    companion object {
+        val hook: SQLiteDatabaseHook = object : SQLiteDatabaseHook {
+            override fun preKey(connection: SQLiteConnection) {
+                // Nothing to do here
+            }
+
+            override fun postKey(connection: SQLiteConnection) {
+                // Should we add a Cancellation signal here?
+                connection.executeRaw("PRAGMA cipher_page_size = 16384;", null, null)
+                connection.execute("PRAGMA cipher_memory_security = OFF;", null, null)
+            }
+        }
     }
 }

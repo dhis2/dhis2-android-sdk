@@ -36,11 +36,11 @@ import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toKtxInstant
 import org.hisp.dhis.android.core.category.CategoryDataDimensionType
 import org.hisp.dhis.android.core.common.AggregationType
-import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
 import org.hisp.dhis.android.core.period.Period
-import org.hisp.dhis.android.persistence.period.PeriodTableInfo
 import org.hisp.dhis.android.core.period.PeriodType
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitTableInfo
+import org.hisp.dhis.android.persistence.period.PeriodTableInfo
 import java.util.Date
 import org.hisp.dhis.android.persistence.category.CategoryCategoryComboLinkTableInfo as cToCcInfo
 import org.hisp.dhis.android.persistence.category.CategoryOptionComboCategoryOptionLinkTableInfo as cocToCoInfo

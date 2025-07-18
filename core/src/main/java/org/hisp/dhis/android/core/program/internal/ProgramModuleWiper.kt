@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
+import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
+import org.hisp.dhis.android.core.wipe.internal.TableWiper
 import org.hisp.dhis.android.persistence.program.AnalyticsPeriodBoundaryTableInfo
 import org.hisp.dhis.android.persistence.program.ProgramIndicatorTableInfo
 import org.hisp.dhis.android.persistence.program.ProgramRuleActionTableInfo
@@ -41,15 +43,13 @@ import org.hisp.dhis.android.persistence.program.ProgramStageSectionTableInfo
 import org.hisp.dhis.android.persistence.program.ProgramStageTableInfo
 import org.hisp.dhis.android.persistence.program.ProgramTableInfo
 import org.hisp.dhis.android.persistence.program.ProgramTrackedEntityAttributeTableInfo
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
-import org.hisp.dhis.android.core.wipe.internal.TableWiper
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramModuleWiper(
     private val tableWiper: TableWiper,
 ) : ModuleWiper {
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         tableWiper.wipeTables(
             AnalyticsPeriodBoundaryTableInfo.TABLE_INFO,
             ProgramTableInfo.TABLE_INFO,
@@ -68,7 +68,7 @@ internal class ProgramModuleWiper(
         )
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         // No metadata to wipe
     }
 }

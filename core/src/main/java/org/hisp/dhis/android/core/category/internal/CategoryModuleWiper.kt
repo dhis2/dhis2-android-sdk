@@ -42,7 +42,7 @@ import org.koin.core.annotation.Singleton
 internal class CategoryModuleWiper(
     private val tableWiper: TableWiper,
 ) : ModuleWiper {
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         tableWiper.wipeTables(
             CategoryTableInfo.TABLE_INFO,
             CategoryOptionTableInfo.TABLE_INFO,
@@ -54,7 +54,7 @@ internal class CategoryModuleWiper(
         )
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         // No data to wipe
     }
 }

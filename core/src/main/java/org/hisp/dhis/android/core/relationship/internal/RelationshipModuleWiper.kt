@@ -27,26 +27,26 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
+import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
+import org.hisp.dhis.android.core.wipe.internal.TableWiper
 import org.hisp.dhis.android.persistence.relationship.RelationshipConstraintTableInfo
 import org.hisp.dhis.android.persistence.relationship.RelationshipItemTableInfo
 import org.hisp.dhis.android.persistence.relationship.RelationshipTableInfo
 import org.hisp.dhis.android.persistence.relationship.RelationshipTypeTableInfo
-import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
-import org.hisp.dhis.android.core.wipe.internal.TableWiper
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class RelationshipModuleWiper(
     private val tableWiper: TableWiper,
 ) : ModuleWiper {
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         tableWiper.wipeTables(
             RelationshipTypeTableInfo.TABLE_INFO,
             RelationshipConstraintTableInfo.TABLE_INFO,
         )
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         tableWiper.wipeTables(
             RelationshipTableInfo.TABLE_INFO,
             RelationshipItemTableInfo.TABLE_INFO,

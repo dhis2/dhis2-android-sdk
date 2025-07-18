@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.trackerlinelist.OrganisationUnitFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
-import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.TrackerLineListContext
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EnrollmentAlias
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.OrgUnitAlias
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.SubOrgUnitAlias
@@ -51,7 +50,6 @@ import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceTabl
 
 internal class OrganisationUnitEvaluator(
     private val item: TrackerLineListItem.OrganisationUnitItem,
-    context: TrackerLineListContext,
 ) : TrackerLineListEvaluator() {
 
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore = koin.get()

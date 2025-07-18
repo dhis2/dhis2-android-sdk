@@ -31,8 +31,8 @@ package org.hisp.dhis.android.core.legendset.internal
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQueryBuilder
 import org.hisp.dhis.android.core.arch.db.uidseeker.internal.BaseUidsSeeker
-import org.hisp.dhis.android.persistence.indicator.IndicatorLegendSetLinkTableInfo
 import org.hisp.dhis.android.persistence.legendset.DataElementLegendSetLinkTableInfo
+import org.hisp.dhis.android.persistence.legendset.IndicatorLegendSetLinkTableInfo
 import org.hisp.dhis.android.persistence.legendset.ProgramIndicatorLegendSetLinkTableInfo
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeLegendSetLinkTableInfo
 import org.hisp.dhis.android.persistence.visualization.VisualizationTableInfo
@@ -43,7 +43,7 @@ internal class LegendSetUidsSeeker(
     databaseAdapter: DatabaseAdapter,
 ) : BaseUidsSeeker(databaseAdapter) {
 
-    fun seekUids(): Set<String> {
+    suspend fun seekUids(): Set<String> {
         val tableNames = listOf(
             ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO.name(),
             IndicatorLegendSetLinkTableInfo.TABLE_INFO.name(),

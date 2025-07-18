@@ -37,11 +37,11 @@ import org.koin.core.annotation.Singleton
 internal class EventModuleWiper(
     private val tableWiper: TableWiper,
 ) : ModuleWiper {
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         // No metadata to wipe
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         tableWiper.wipeTable(EventTableInfo.TABLE_INFO)
         tableWiper.wipeTable(EventSyncTableInfo.TABLE_INFO)
     }

@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.network.organisationunitlevel
 
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
-import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitLevelTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitLevelTableInfo.Columns
 
 internal object OrganisationUnitLevelFields : BaseFields<OrganisationUnitLevel>() {
     val allFields = Fields.from(

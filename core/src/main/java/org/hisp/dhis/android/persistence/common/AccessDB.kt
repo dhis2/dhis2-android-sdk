@@ -31,8 +31,7 @@ package org.hisp.dhis.android.persistence.common
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.DataAccess
 
-@JvmInline
-internal value class AccessDB(
+internal data class AccessDB(
     val accessDataWrite: Boolean,
 ) {
     fun toDomain(): Access {

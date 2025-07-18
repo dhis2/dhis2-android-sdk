@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
+import androidx.sqlite.db.SimpleSQLiteQuery
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
@@ -36,10 +37,10 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsService
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.AggregationType
-import org.hisp.dhis.android.persistence.datavalue.DataValueTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
-import org.hisp.dhis.android.persistence.period.PeriodTableInfo
 import org.hisp.dhis.android.core.util.SqlAggregator
+import org.hisp.dhis.android.persistence.datavalue.DataValueTableInfo
+import org.hisp.dhis.android.persistence.period.PeriodTableInfo
 import org.koin.core.annotation.Singleton
 import org.hisp.dhis.android.persistence.datavalue.DataValueTableInfo.Columns as dvColumns
 import org.hisp.dhis.android.persistence.period.PeriodTableInfo.Columns as peColumns
@@ -50,17 +51,17 @@ internal class DataElementSQLEvaluator(
     private val databaseAdapter: DatabaseAdapter,
 ) : AnalyticsEvaluator {
 
+    val d2Dao = databaseAdapter.getCurrentDatabase().d2Dao()
+
     override suspend fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
         queryMods: QueryMods?,
     ): String? {
-        val sqlQuery = getSql(evaluationItem, metadata, queryMods)
+        val sqlQueryString = getSql(evaluationItem, metadata, queryMods)
+        val roomQuery = SimpleSQLiteQuery(sqlQueryString)
 
-        return databaseAdapter.rawQuery(sqlQuery)?.use { c ->
-            c.moveToFirst()
-            c.getString(0)
-        }
+        return d2Dao.queryStringValue(roomQuery)
     }
 
     @Suppress("ComplexMethod", "LongMethod")

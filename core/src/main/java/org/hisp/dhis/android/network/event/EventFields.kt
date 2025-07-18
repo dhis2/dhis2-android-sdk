@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.network.event
 
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.persistence.event.EventTableInfo.Columns
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
@@ -36,6 +35,7 @@ import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.note.NoteFields
 import org.hisp.dhis.android.network.relationship.RelationshipFields
+import org.hisp.dhis.android.persistence.event.EventTableInfo.Columns
 
 internal object EventFields : BaseFields<Event>() {
     const val UID = "event"
@@ -75,7 +75,7 @@ internal object EventFields : BaseFields<Event>() {
         fh.field(Columns.PROGRAM_STAGE),
         fh.field(ORGANISATION_UNIT),
         fh.field(Columns.EVENT_DATE),
-        fh.field(Columns.COMPLETE_DATE),
+        fh.field(Columns.COMPLETED_DATE),
         fh.field(Columns.DELETED),
         fh.field(Columns.DUE_DATE),
         fh.field(Columns.ATTRIBUTE_OPTION_COMBO),

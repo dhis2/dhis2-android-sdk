@@ -27,22 +27,22 @@
  */
 package org.hisp.dhis.android.core.datastore.internal
 
-import org.hisp.dhis.android.persistence.datastore.DataStoreEntryTableInfo
-import org.hisp.dhis.android.persistence.datastore.LocalDataStoreTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import org.hisp.dhis.android.persistence.datastore.DataStoreTableInfo
+import org.hisp.dhis.android.persistence.datastore.LocalDataStoreTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 class DataStoreModuleWiper internal constructor(private val tableWiper: TableWiper) : ModuleWiper {
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         // No metadata to wipe
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         tableWiper.wipeTables(
             LocalDataStoreTableInfo.TABLE_INFO,
-            DataStoreEntryTableInfo.TABLE_INFO,
+            DataStoreTableInfo.TABLE_INFO,
         )
     }
 }

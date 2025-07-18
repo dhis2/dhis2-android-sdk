@@ -28,18 +28,20 @@
 
 package org.hisp.dhis.android.core.arch.db.access
 
+import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
+
 /**
  * Interface for managing database lifecycle operations.
  * Designed to be platform-agnostic for future KMP support.
  */
-interface DatabaseManager {
+internal interface DatabaseManager {
     /**
      * Creates or opens a database with the specified name.
      *
      * @param databaseName The name of the database to create or open
      * @return A DatabaseAdapter for the created/opened database
      */
-    fun createOrOpenDatabase(databaseName: String): DatabaseAdapter
+    fun createOrOpenUnencryptedDatabase(databaseName: String): DatabaseAdapter
 
     /**
      * Creates or opens an encrypted database with the specified name and password.
@@ -49,6 +51,8 @@ interface DatabaseManager {
      * @return A DatabaseAdapter for the created/opened encrypted database
      */
     fun createOrOpenEncryptedDatabase(databaseName: String, password: String): DatabaseAdapter
+
+    fun createOrOpenDatabase(account: DatabaseAccount): DatabaseAdapter
 
     /**
      * Deletes the database with the specified name.
@@ -67,4 +71,6 @@ interface DatabaseManager {
     fun databaseExists(databaseName: String): Boolean
 
     fun disableDatabase()
+
+    fun getAdapter(): DatabaseAdapter
 }

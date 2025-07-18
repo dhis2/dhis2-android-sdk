@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.network.trackedentityinstance
 
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
-import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeValueTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeValueTableInfo.Columns
 
 internal object TrackedEntityAttributeValueFields : BaseFields<TrackedEntityAttributeValue>() {
     const val ATTRIBUTE = "attribute"

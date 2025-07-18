@@ -42,9 +42,9 @@ import java.util.Date
 
 @Singleton
 internal class PeriodStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : PeriodStore, ObjectWithoutUidStoreImpl<Period, PeriodDB>(
-    { databaseAdapter.getCurrentDatabase()?.periodDao()!! },
+    { databaseAdapter.getCurrentDatabase().periodDao() },
     Period::toDB,
     SQLStatementBuilderImpl(PeriodTableInfo.TABLE_INFO),
 ) {

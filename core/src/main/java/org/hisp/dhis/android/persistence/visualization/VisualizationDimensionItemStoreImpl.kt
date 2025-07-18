@@ -38,10 +38,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class VisualizationDimensionItemStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : VisualizationDimensionItemStore,
     LinkStoreImpl<VisualizationDimensionItem, VisualizationDimensionItemDB>(
-        { databaseAdapter.getCurrentDatabase()?.visualizationDimensionItemDao()!! },
+        { databaseAdapter.getCurrentDatabase().visualizationDimensionItemDao() },
         VisualizationDimensionItem::toDB,
         LinkSQLStatementBuilderImpl(
             VisualizationDimensionItemTableInfo.TABLE_INFO,

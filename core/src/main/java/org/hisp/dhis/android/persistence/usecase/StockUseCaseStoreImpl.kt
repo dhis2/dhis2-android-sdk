@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class StockUseCaseStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : StockUseCaseStore, IdentifiableObjectStoreImpl<InternalStockUseCase, StockUseCaseDB>(
-    { databaseAdapter.getCurrentDatabase()?.stockUseCaseDao()!! },
+    { databaseAdapter.getCurrentDatabase().stockUseCaseDao() },
     InternalStockUseCase::toDB,
     SQLStatementBuilderImpl(StockUseCaseTableInfo.TABLE_INFO),
 )

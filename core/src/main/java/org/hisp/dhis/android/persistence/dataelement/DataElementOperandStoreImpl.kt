@@ -40,9 +40,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DataElementOperandStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : DataElementOperandStore, IdentifiableObjectStoreImpl<DataElementOperand, DataElementOperandDB>(
-    { databaseAdapter.getCurrentDatabase()?.dataElementOperandDao()!! },
+    { databaseAdapter.getCurrentDatabase().dataElementOperandDao() },
     DataElementOperand::toDB,
     SQLStatementBuilderImpl(DataElementOperandTableInfo.TABLE_INFO),
 ) {

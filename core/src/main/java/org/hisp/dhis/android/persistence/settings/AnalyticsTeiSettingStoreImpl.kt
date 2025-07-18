@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class AnalyticsTeiSettingStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : AnalyticsTeiSettingStore, ObjectWithoutUidStoreImpl<AnalyticsTeiSetting, AnalyticsTeiSettingDB>(
-    { databaseAdapter.getCurrentDatabase()?.analyticsTeiSettingDao()!! },
+    { databaseAdapter.getCurrentDatabase().analyticsTeiSettingDao() },
     AnalyticsTeiSetting::toDB,
     SQLStatementBuilderImpl(AnalyticsTeiSettingTableInfo.TABLE_INFO),
 )

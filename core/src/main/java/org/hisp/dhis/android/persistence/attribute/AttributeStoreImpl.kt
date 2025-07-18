@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class AttributeStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : AttributeStore, IdentifiableObjectStoreImpl<Attribute, AttributeDB>(
-    { databaseAdapter.getCurrentDatabase()?.attributeDao()!! },
+    { databaseAdapter.getCurrentDatabase().attributeDao() },
     Attribute::toDB,
     SQLStatementBuilderImpl(
         AttributeTableInfo.TABLE_INFO,

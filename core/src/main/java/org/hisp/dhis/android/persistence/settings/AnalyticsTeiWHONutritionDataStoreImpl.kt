@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class AnalyticsTeiWHONutritionDataStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : AnalyticsTeiWHONutritionDataStore, LinkStoreImpl<AnalyticsTeiWHONutritionData, AnalyticsTeiWHONutritionDataDB>(
-    { databaseAdapter.getCurrentDatabase()?.analyticsTeiWHONutritionDataDao()!! },
+    { databaseAdapter.getCurrentDatabase().analyticsTeiWHONutritionDataDao() },
     AnalyticsTeiWHONutritionData::toDB,
     LinkSQLStatementBuilderImpl(
         AnalyticsTeiWHONutritionDataTableInfo.TABLE_INFO,

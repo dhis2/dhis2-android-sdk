@@ -38,10 +38,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramStageWorkingListEventDataFilterStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : ProgramStageWorkingListEventDataFilterStore,
     ObjectWithoutUidStoreImpl<ProgramStageWorkingListEventDataFilter, ProgramStageWorkingListEventDataFilterDB>(
-        { databaseAdapter.getCurrentDatabase()?.programStageWorkingListEventDataFilterDao()!! },
+        { databaseAdapter.getCurrentDatabase().programStageWorkingListEventDataFilterDao() },
         ProgramStageWorkingListEventDataFilter::toDB,
         SQLStatementBuilderImpl(ProgramStageWorkingListEventDataFilterTableInfo.TABLE_INFO),
     ) {

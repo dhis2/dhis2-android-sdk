@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class FileResourceStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : FileResourceStore, IdentifiableDataObjectStoreImpl<FileResource, FileResourceDB>(
-    { databaseAdapter.getCurrentDatabase()?.fileResourceDao()!! },
+    { databaseAdapter.getCurrentDatabase().fileResourceDao() },
     FileResource::toDB,
     IdentifiableDataObjectSQLStatementBuilderImpl(FileResourceTableInfo.TABLE_INFO),
 )

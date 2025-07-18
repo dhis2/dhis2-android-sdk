@@ -39,10 +39,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramIndicatorLegendSetLinkStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : ProgramIndicatorLegendSetLinkStore,
     LinkStoreImpl<ProgramIndicatorLegendSetLink, ProgramIndicatorLegendSetLinkDB>(
-        { databaseAdapter.getCurrentDatabase()?.programIndicatorLegendSetLinkDao()!! },
+        { databaseAdapter.getCurrentDatabase().programIndicatorLegendSetLinkDao() },
         ProgramIndicatorLegendSetLink::toDB,
         LinkSQLStatementBuilderImpl(
             ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO,

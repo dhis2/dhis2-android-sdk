@@ -38,10 +38,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class AttributeValueFilterStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : AttributeValueFilterStore,
     ObjectWithoutUidStoreImpl<AttributeValueFilter, AttributeValueFilterDB>(
-        { databaseAdapter.getCurrentDatabase()?.attributeValueFilterDao()!! },
+        { databaseAdapter.getCurrentDatabase().attributeValueFilterDao() },
         AttributeValueFilter::toDB,
         SQLStatementBuilderImpl(AttributeValueFilterTableInfo.TABLE_INFO),
     ) {

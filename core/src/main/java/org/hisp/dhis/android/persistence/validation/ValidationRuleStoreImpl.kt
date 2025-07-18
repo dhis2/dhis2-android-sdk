@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ValidationRuleStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : ValidationRuleStore, IdentifiableObjectStoreImpl<ValidationRule, ValidationRuleDB>(
-    { databaseAdapter.getCurrentDatabase()?.validationRuleDao()!! },
+    { databaseAdapter.getCurrentDatabase().validationRuleDao() },
     ValidationRule::toDB,
     SQLStatementBuilderImpl(ValidationRuleTableInfo.TABLE_INFO),
 )

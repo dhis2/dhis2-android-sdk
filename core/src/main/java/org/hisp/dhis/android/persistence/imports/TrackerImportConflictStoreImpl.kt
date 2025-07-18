@@ -41,9 +41,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackerImportConflictStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : TrackerImportConflictStore, ObjectStoreImpl<TrackerImportConflict, TrackerImportConflictDB>(
-    { databaseAdapter.getCurrentDatabase()?.trackerImportConflictDao()!! },
+    { databaseAdapter.getCurrentDatabase().trackerImportConflictDao() },
     TrackerImportConflict::toDB,
     SQLStatementBuilderImpl(TrackerImportConflictTableInfo.TABLE_INFO),
 ) {

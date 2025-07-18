@@ -37,10 +37,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackedEntityInstanceSyncStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : TrackedEntityInstanceSyncStore,
     ObjectWithoutUidStoreImpl<TrackedEntityInstanceSync, TrackedEntityInstanceSyncDB>(
-        { databaseAdapter.getCurrentDatabase()?.trackedEntityInstanceSyncDao()!! },
+        { databaseAdapter.getCurrentDatabase().trackedEntityInstanceSyncDao() },
         TrackedEntityInstanceSync::toDB,
         SQLStatementBuilderImpl(TrackedEntityInstanceSyncTableInfo.TABLE_INFO),
     )

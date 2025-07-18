@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class AnalyticsTeiIndicatorStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : AnalyticsTeiIndicatorStore, LinkStoreImpl<AnalyticsTeiIndicator, AnalyticsTeiIndicatorDB>(
-    { databaseAdapter.getCurrentDatabase()?.analyticsTeiIndicatorDao()!! },
+    { databaseAdapter.getCurrentDatabase().analyticsTeiIndicatorDao() },
     AnalyticsTeiIndicator::toDB,
     LinkSQLStatementBuilderImpl(
         AnalyticsTeiIndicatorTableInfo.TABLE_INFO,

@@ -39,7 +39,7 @@ import org.koin.core.annotation.Singleton
 internal class CategoryComboStoreImpl(
     private val databaseAdapter: DatabaseAdapter,
 ) : CategoryComboStore, IdentifiableObjectStoreImpl<CategoryCombo, CategoryComboDB>(
-    { databaseAdapter.getCurrentDatabase()?.categoryComboDao()!! },
+    { databaseAdapter.getCurrentDatabase().categoryComboDao() },
     CategoryCombo::toDB,
     SQLStatementBuilderImpl(CategoryComboTableInfo.TABLE_INFO),
 )

@@ -36,10 +36,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ValueTypeDeviceRenderingStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) :
     ObjectWithoutUidStoreImpl<ValueTypeDeviceRendering, ValueTypeDeviceRenderingDB>(
-        { databaseAdapter.getCurrentDatabase()?.valueTypeDeviceRenderingDao()!! },
+        { databaseAdapter.getCurrentDatabase().valueTypeDeviceRenderingDao() },
         ValueTypeDeviceRendering::toDB,
         SQLStatementBuilderImpl(ValueTypeDeviceRenderingTableInfo.TABLE_INFO),
     )

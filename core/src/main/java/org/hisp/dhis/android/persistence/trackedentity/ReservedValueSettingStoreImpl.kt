@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ReservedValueSettingStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : ReservedValueSettingStore, IdentifiableObjectStoreImpl<ReservedValueSetting, ReservedValueSettingDB>(
-    { databaseAdapter.getCurrentDatabase()?.reservedValueSettingDao()!! },
+    { databaseAdapter.getCurrentDatabase().reservedValueSettingDao() },
     ReservedValueSetting::toDB,
     SQLStatementBuilderImpl(ReservedValueSettingTableInfo.TABLE_INFO),
 )

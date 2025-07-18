@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackerVisualizationStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : TrackerVisualizationStore, IdentifiableObjectStoreImpl<TrackerVisualization, TrackerVisualizationDB>(
-    { databaseAdapter.getCurrentDatabase()?.trackerVisualizationDao()!! },
+    { databaseAdapter.getCurrentDatabase().trackerVisualizationDao() },
     TrackerVisualization::toDB,
     SQLStatementBuilderImpl(TrackerVisualizationTableInfo.TABLE_INFO),
 )

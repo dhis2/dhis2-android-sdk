@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramStageSectionStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : ProgramStageSectionStore, IdentifiableObjectStoreImpl<ProgramStageSection, ProgramStageSectionDB>(
-    { databaseAdapter.getCurrentDatabase()?.programStageSectionDao()!! },
+    { databaseAdapter.getCurrentDatabase().programStageSectionDao() },
     ProgramStageSection::toDB,
     SQLStatementBuilderImpl(ProgramStageSectionTableInfo.TABLE_INFO),
 )

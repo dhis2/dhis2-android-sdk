@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class UserGroupStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : UserGroupStore, IdentifiableObjectStoreImpl<UserGroup, UserGroupDB>(
-    { databaseAdapter.getCurrentDatabase()?.userGroupDao()!! },
+    { databaseAdapter.getCurrentDatabase().userGroupDao() },
     UserGroup::toDB,
     SQLStatementBuilderImpl(UserGroupTableInfo.TABLE_INFO),
 )

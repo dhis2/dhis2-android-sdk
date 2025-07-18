@@ -39,9 +39,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class IndicatorStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : IndicatorStore, IdentifiableObjectStoreImpl<Indicator, IndicatorDB>(
-    { databaseAdapter.getCurrentDatabase()?.indicatorDao()!! },
+    { databaseAdapter.getCurrentDatabase().indicatorDao() },
     Indicator::toDB,
     SQLStatementBuilderImpl(IndicatorTableInfo.TABLE_INFO),
 ) {

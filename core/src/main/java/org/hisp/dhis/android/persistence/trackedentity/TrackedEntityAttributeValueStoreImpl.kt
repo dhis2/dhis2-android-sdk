@@ -44,10 +44,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackedEntityAttributeValueStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : TrackedEntityAttributeValueStore,
     ObjectWithoutUidStoreImpl<TrackedEntityAttributeValue, TrackedEntityAttributeValueDB>(
-        { databaseAdapter.getCurrentDatabase()?.trackedEntityAttributeValueDao()!! },
+        { databaseAdapter.getCurrentDatabase().trackedEntityAttributeValueDao() },
         TrackedEntityAttributeValue::toDB,
         SQLStatementBuilderImpl(TrackedEntityAttributeValueTableInfo.TABLE_INFO),
     ) {

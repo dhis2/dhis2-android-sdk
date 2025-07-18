@@ -38,10 +38,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackedEntityInstanceEventFilterStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : TrackedEntityInstanceEventFilterStore,
     ObjectWithoutUidStoreImpl<TrackedEntityInstanceEventFilter, TrackedEntityInstanceEventFilterDB>(
-        { databaseAdapter.getCurrentDatabase()?.trackedEntityInstanceEventFilterDao()!! },
+        { databaseAdapter.getCurrentDatabase().trackedEntityInstanceEventFilterDao() },
         TrackedEntityInstanceEventFilter::toDB,
         SQLStatementBuilderImpl(TrackedEntityInstanceEventFilterTableInfo.TABLE_INFO),
     ) {

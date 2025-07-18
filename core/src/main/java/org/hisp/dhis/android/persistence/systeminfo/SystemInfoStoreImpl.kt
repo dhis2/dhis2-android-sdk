@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class SystemInfoStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : SystemInfoStore, ObjectWithoutUidStoreImpl<SystemInfo, SystemInfoDB>(
-    { databaseAdapter.getCurrentDatabase()?.systemInfoDao()!! },
+    { databaseAdapter.getCurrentDatabase().systemInfoDao() },
     SystemInfo::toDB,
     SQLStatementBuilderImpl(SystemInfoTableInfo.TABLE_INFO),
 )

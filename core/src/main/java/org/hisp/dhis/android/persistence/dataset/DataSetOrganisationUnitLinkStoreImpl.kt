@@ -39,9 +39,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DataSetOrganisationUnitLinkStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : DataSetOrganisationUnitLinkStore, LinkStoreImpl<DataSetOrganisationUnitLink, DataSetOrganisationUnitLinkDB>(
-    { databaseAdapter.getCurrentDatabase()?.dataSetOrganisationUnitLinkDao()!! },
+    { databaseAdapter.getCurrentDatabase().dataSetOrganisationUnitLinkDao() },
     DataSetOrganisationUnitLink::toDB,
     LinkSQLStatementBuilderImpl(
         DataSetOrganisationUnitLinkTableInfo.TABLE_INFO,

@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackerJobObjectStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : TrackerJobObjectStore, ObjectWithoutUidStoreImpl<TrackerJobObject, TrackerJobObjectDB>(
-    { databaseAdapter.getCurrentDatabase()?.trackerJobObjectDao()!! },
+    { databaseAdapter.getCurrentDatabase().trackerJobObjectDao() },
     TrackerJobObject::toDB,
     SQLStatementBuilderImpl(TrackerJobObjectTableInfo.TABLE_INFO),
 )

@@ -38,9 +38,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class OrganisationUnitGroupStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : OrganisationUnitGroupStore, IdentifiableObjectStoreImpl<OrganisationUnitGroup, OrganisationUnitGroupDB>(
-    { databaseAdapter.getCurrentDatabase()?.organisationUnitGroupDao()!! },
+    { databaseAdapter.getCurrentDatabase().organisationUnitGroupDao() },
     OrganisationUnitGroup::toDB,
     SQLStatementBuilderImpl(OrganisationUnitGroupTableInfo.TABLE_INFO),
 ) {

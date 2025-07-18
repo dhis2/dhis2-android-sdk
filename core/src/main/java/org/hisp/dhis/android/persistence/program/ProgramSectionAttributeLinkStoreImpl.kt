@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramSectionAttributeLinkStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : ProgramSectionAttributeLinkStore, LinkStoreImpl<ProgramSectionAttributeLink, ProgramSectionAttributeLinkDB>(
-    { databaseAdapter.getCurrentDatabase()?.programSectionAttributeLinkDao()!! },
+    { databaseAdapter.getCurrentDatabase().programSectionAttributeLinkDao() },
     ProgramSectionAttributeLink::toDB,
     LinkSQLStatementBuilderImpl(
         ProgramSectionAttributeLinkTableInfo.TABLE_INFO,

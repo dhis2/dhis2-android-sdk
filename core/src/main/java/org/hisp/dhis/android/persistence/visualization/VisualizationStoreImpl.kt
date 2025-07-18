@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class VisualizationStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : VisualizationStore, IdentifiableObjectStoreImpl<Visualization, VisualizationDB>(
-    { databaseAdapter.getCurrentDatabase()?.visualizationDao()!! },
+    { databaseAdapter.getCurrentDatabase().visualizationDao() },
     Visualization::toDB,
     SQLStatementBuilderImpl(VisualizationTableInfo.TABLE_INFO),
 )

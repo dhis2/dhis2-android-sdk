@@ -39,9 +39,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class OptionGroupOptionLinkStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : OptionGroupOptionLinkStore, LinkStoreImpl<OptionGroupOptionLink, OptionGroupOptionLinkDB>(
-    { databaseAdapter.getCurrentDatabase()?.optionGroupOptionLinkDao()!! },
+    { databaseAdapter.getCurrentDatabase().optionGroupOptionLinkDao() },
     OptionGroupOptionLink::toDB,
     LinkSQLStatementBuilderImpl(
         OptionGroupOptionLinkTableInfo.TABLE_INFO,

@@ -38,9 +38,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackedEntityTypeAttributeStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : TrackedEntityTypeAttributeStore, LinkStoreImpl<TrackedEntityTypeAttribute, TrackedEntityTypeAttributeDB>(
-    { databaseAdapter.getCurrentDatabase()?.trackedEntityTypeAttributeDao()!! },
+    { databaseAdapter.getCurrentDatabase().trackedEntityTypeAttributeDao() },
     TrackedEntityTypeAttribute::toDB,
     LinkSQLStatementBuilderImpl(
         TrackedEntityTypeAttributeTableInfo.TABLE_INFO,

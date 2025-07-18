@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class MapLayerImageryProviderStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : MapLayerImageryProviderStore, LinkStoreImpl<MapLayerImageryProvider, MapLayerImageryProviderDB>(
-    { databaseAdapter.getCurrentDatabase()?.mapLayerImageryProviderDao()!! },
+    { databaseAdapter.getCurrentDatabase().mapLayerImageryProviderDao() },
     MapLayerImageryProvider::toDB,
     LinkSQLStatementBuilderImpl(
         MapLayerImageryProviderTableInfo.TABLE_INFO,

@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramTempOwnerStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : ProgramTempOwnerStore, ObjectWithoutUidStoreImpl<ProgramTempOwner, ProgramTempOwnerDB>(
-    { databaseAdapter.getCurrentDatabase()?.programTempOwnerDao()!! },
+    { databaseAdapter.getCurrentDatabase().programTempOwnerDao() },
     ProgramTempOwner::toDB,
     SQLStatementBuilderImpl(ProgramTempOwnerTableInfo.TABLE_INFO),
 )

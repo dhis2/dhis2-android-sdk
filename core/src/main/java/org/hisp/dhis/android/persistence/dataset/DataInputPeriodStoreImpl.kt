@@ -38,9 +38,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DataInputPeriodStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : DataInputPeriodStore, LinkStoreImpl<DataInputPeriod, DataInputPeriodDB>(
-    { databaseAdapter.getCurrentDatabase()?.dataInputPeriodDao()!! },
+    { databaseAdapter.getCurrentDatabase().dataInputPeriodDao() },
     DataInputPeriod::toDB,
     LinkSQLStatementBuilderImpl(DataInputPeriodTableInfo.TABLE_INFO, DataInputPeriodTableInfo.Columns.DATA_SET),
 ) {

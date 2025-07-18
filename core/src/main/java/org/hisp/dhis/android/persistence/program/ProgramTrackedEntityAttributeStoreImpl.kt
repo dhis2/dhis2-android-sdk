@@ -37,10 +37,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramTrackedEntityAttributeStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : ProgramTrackedEntityAttributeStore,
     IdentifiableObjectStoreImpl<ProgramTrackedEntityAttribute, ProgramTrackedEntityAttributeDB>(
-        { databaseAdapter.getCurrentDatabase()?.programTrackedEntityAttributeDao()!! },
+        { databaseAdapter.getCurrentDatabase().programTrackedEntityAttributeDao() },
         ProgramTrackedEntityAttribute::toDB,
         SQLStatementBuilderImpl(ProgramTrackedEntityAttributeTableInfo.TABLE_INFO),
     )

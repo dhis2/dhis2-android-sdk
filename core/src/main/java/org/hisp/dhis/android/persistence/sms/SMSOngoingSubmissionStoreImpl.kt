@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class SMSOngoingSubmissionStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : SMSOngoingSubmissionStore, ObjectWithoutUidStoreImpl<SMSOngoingSubmission, SMSOngoingSubmissionDB>(
-    { databaseAdapter.getCurrentDatabase()?.SMSOngoingSubmissionDao()!! },
+    { databaseAdapter.getCurrentDatabase().SMSOngoingSubmissionDao() },
     SMSOngoingSubmission::toDB,
     SQLStatementBuilderImpl(SMSOngoingSubmissionTableInfo.TABLE_INFO),
 )

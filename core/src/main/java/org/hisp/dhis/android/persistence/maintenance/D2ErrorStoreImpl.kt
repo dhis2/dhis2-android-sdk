@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class D2ErrorStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : D2ErrorStore, ObjectStoreImpl<D2Error, D2ErrorDB>(
-    { databaseAdapter.getCurrentDatabase()?.d2ErrorDao()!! },
+    { databaseAdapter.getCurrentDatabase().d2ErrorDao() },
     D2Error::toDB,
     SQLStatementBuilderImpl(D2ErrorTableInfo.TABLE_INFO),
 )

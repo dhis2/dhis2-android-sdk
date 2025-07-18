@@ -46,9 +46,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class EventStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : EventStore, IdentifiableDeletableDataObjectStoreImpl<Event, EventDB>(
-    { databaseAdapter.getCurrentDatabase()?.eventDao()!! },
+    { databaseAdapter.getCurrentDatabase().eventDao() },
     Event::toDB,
     IdentifiableDeletableDataObjectSQLStatementBuilderImpl(EventTableInfo.TABLE_INFO),
 ) {

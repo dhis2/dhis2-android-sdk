@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class SynchronizationSettingStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : SynchronizationSettingStore, ObjectWithoutUidStoreImpl<SynchronizationSettings, SynchronizationSettingDB>(
-    { databaseAdapter.getCurrentDatabase()?.synchronizationSettingDao()!! },
+    { databaseAdapter.getCurrentDatabase().synchronizationSettingDao() },
     SynchronizationSettings::toDB,
     SQLStatementBuilderImpl(SynchronizationSettingTableInfo.TABLE_INFO),
 )

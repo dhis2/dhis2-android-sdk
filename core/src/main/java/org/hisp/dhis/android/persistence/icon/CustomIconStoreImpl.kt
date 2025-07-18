@@ -38,9 +38,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class CustomIconStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : CustomIconStore, ObjectWithoutUidStoreImpl<CustomIcon, CustomIconDB>(
-    { databaseAdapter.getCurrentDatabase()?.customIconDao()!! },
+    { databaseAdapter.getCurrentDatabase().customIconDao() },
     CustomIcon::toDB,
     SQLStatementBuilderImpl(CustomIconTableInfo.TABLE_INFO),
 ) {

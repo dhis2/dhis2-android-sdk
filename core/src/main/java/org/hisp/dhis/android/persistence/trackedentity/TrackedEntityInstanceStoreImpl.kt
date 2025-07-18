@@ -41,10 +41,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackedEntityInstanceStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : TrackedEntityInstanceStore,
     IdentifiableDeletableDataObjectStoreImpl<TrackedEntityInstance, TrackedEntityInstanceDB>(
-        { databaseAdapter.getCurrentDatabase()?.trackedEntityInstanceDao()!! },
+        { databaseAdapter.getCurrentDatabase().trackedEntityInstanceDao() },
         TrackedEntityInstance::toDB,
         IdentifiableDeletableDataObjectSQLStatementBuilderImpl(TrackedEntityInstanceTableInfo.TABLE_INFO),
     ) {

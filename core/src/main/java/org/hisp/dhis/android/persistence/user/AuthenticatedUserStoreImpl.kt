@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class AuthenticatedUserStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : AuthenticatedUserStore, ObjectWithoutUidStoreImpl<AuthenticatedUser, AuthenticatedUserDB>(
-    { databaseAdapter.getCurrentDatabase()?.authenticatedUserDao()!! },
+    { databaseAdapter.getCurrentDatabase().authenticatedUserDao() },
     AuthenticatedUser::toDB,
     SQLStatementBuilderImpl(AuthenticatedUserTableInfo.TABLE_INFO),
 )

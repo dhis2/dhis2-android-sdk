@@ -38,9 +38,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class NoteStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : NoteStore, IdentifiableObjectStoreImpl<Note, NoteDB>(
-    { databaseAdapter.getCurrentDatabase()?.noteDao()!! },
+    { databaseAdapter.getCurrentDatabase().noteDao() },
     Note::toDB,
     SQLStatementBuilderImpl(NoteTableInfo.TABLE_INFO),
 ) {

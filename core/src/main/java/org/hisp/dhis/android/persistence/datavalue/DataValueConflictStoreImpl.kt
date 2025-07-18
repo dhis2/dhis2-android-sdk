@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DataValueConflictStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : DataValueConflictStore, ObjectStoreImpl<DataValueConflict, DataValueConflictDB>(
-    { databaseAdapter.getCurrentDatabase()?.dataValueConflictDao()!! },
+    { databaseAdapter.getCurrentDatabase().dataValueConflictDao() },
     DataValueConflict::toDB,
     SQLStatementBuilderImpl(DataValueConflictTableInfo.TABLE_INFO),
 )

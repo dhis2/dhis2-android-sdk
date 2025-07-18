@@ -39,9 +39,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ResourceStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : ResourceStore, ObjectWithoutUidStoreImpl<Resource, ResourceDB>(
-    { databaseAdapter.getCurrentDatabase()?.resourceDao()!! },
+    { databaseAdapter.getCurrentDatabase().resourceDao() },
     Resource::toDB,
     SQLStatementBuilderImpl(ResourceTableInfo.TABLE_INFO),
 ) {

@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class SectionGreyedFieldsLinkStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : SectionGreyedFieldsLinkStore, LinkStoreImpl<SectionGreyedFieldsLink, SectionGreyedFieldsLinkDB>(
-    { databaseAdapter.getCurrentDatabase()?.sectionGreyedFieldsLinkDao()!! },
+    { databaseAdapter.getCurrentDatabase().sectionGreyedFieldsLinkDao() },
     SectionGreyedFieldsLink::toDB,
     LinkSQLStatementBuilderImpl(
         SectionGreyedFieldsLinkTableInfo.TABLE_INFO,

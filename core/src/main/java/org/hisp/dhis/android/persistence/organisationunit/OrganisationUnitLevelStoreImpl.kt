@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class OrganisationUnitLevelStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : OrganisationUnitLevelStore, IdentifiableObjectStoreImpl<OrganisationUnitLevel, OrganisationUnitLevelDB>(
-    { databaseAdapter.getCurrentDatabase()?.organisationUnitLevelDao()!! },
+    { databaseAdapter.getCurrentDatabase().organisationUnitLevelDao() },
     OrganisationUnitLevel::toDB,
     SQLStatementBuilderImpl(OrganisationUnitLevelTableInfo.TABLE_INFO),
 )

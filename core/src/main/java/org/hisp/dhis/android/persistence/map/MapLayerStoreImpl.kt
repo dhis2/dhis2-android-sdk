@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class MapLayerStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : MapLayerStore, IdentifiableObjectStoreImpl<MapLayer, MapLayerDB>(
-    { databaseAdapter.getCurrentDatabase()?.mapLayerDao()!! },
+    { databaseAdapter.getCurrentDatabase().mapLayerDao() },
     MapLayer::toDB,
     SQLStatementBuilderImpl(MapLayerTableInfo.TABLE_INFO),
 )

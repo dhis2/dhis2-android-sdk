@@ -39,10 +39,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackedEntityAttributeLegendSetLinkStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : TrackedEntityAttributeLegendSetLinkStore,
     LinkStoreImpl<TrackedEntityAttributeLegendSetLink, TrackedEntityAttributeLegendSetLinkDB>(
-        { databaseAdapter.getCurrentDatabase()?.trackedEntityAttributeLegendSetLinkDao()!! },
+        { databaseAdapter.getCurrentDatabase().trackedEntityAttributeLegendSetLinkDao() },
         TrackedEntityAttributeLegendSetLink::toDB,
         LinkSQLStatementBuilderImpl(
             TrackedEntityAttributeLegendSetLinkTableInfo.TABLE_INFO,

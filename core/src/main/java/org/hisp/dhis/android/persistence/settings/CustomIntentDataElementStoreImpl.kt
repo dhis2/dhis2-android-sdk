@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class CustomIntentDataElementStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : CustomIntentDataElementStore, LinkStoreImpl<CustomIntentDataElement, CustomIntentDataElementDB>(
-    { databaseAdapter.getCurrentDatabase()?.customIntentDataElementDao()!! },
+    { databaseAdapter.getCurrentDatabase().customIntentDataElementDao() },
     CustomIntentDataElement::toDB,
     LinkSQLStatementBuilderImpl(
         CustomIntentDataElementTableInfo.TABLE_INFO,

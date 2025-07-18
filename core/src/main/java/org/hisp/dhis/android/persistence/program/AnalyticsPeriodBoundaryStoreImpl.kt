@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class AnalyticsPeriodBoundaryStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : AnalyticsPeriodBoundaryStore, LinkStoreImpl<AnalyticsPeriodBoundary, AnalyticsPeriodBoundaryDB>(
-    { databaseAdapter.getCurrentDatabase()?.analyticsPeriodBoundaryDao()!! },
+    { databaseAdapter.getCurrentDatabase().analyticsPeriodBoundaryDao() },
     AnalyticsPeriodBoundary::toDB,
     LinkSQLStatementBuilderImpl(
         AnalyticsPeriodBoundaryTableInfo.TABLE_INFO,

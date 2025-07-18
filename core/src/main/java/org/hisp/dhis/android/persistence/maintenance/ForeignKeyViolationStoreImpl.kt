@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ForeignKeyViolationStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : ForeignKeyViolationStore, ObjectStoreImpl<ForeignKeyViolation, ForeignKeyViolationDB>(
-    { databaseAdapter.getCurrentDatabase()?.foreignKeyViolationDao()!! },
+    { databaseAdapter.getCurrentDatabase().foreignKeyViolationDao() },
     ForeignKeyViolation::toDB,
     SQLStatementBuilderImpl(ForeignKeyViolationTableInfo.TABLE_INFO),
 )

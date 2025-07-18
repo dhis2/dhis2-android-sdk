@@ -37,10 +37,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class AnalyticsDhisVisualizationStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : AnalyticsDhisVisualizationStore,
     ObjectWithoutUidStoreImpl<AnalyticsDhisVisualization, AnalyticsDhisVisualizationDB>(
-        { databaseAdapter.getCurrentDatabase()?.analyticsDhisVisualizationDao()!! },
+        { databaseAdapter.getCurrentDatabase().analyticsDhisVisualizationDao() },
         AnalyticsDhisVisualization::toDB,
         SQLStatementBuilderImpl(AnalyticsDhisVisualizationTableInfo.TABLE_INFO),
     )

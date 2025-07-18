@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class EventSyncStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : EventSyncStore, ObjectWithoutUidStoreImpl<EventSync, EventSyncDB>(
-    { databaseAdapter.getCurrentDatabase()?.eventSyncDao()!! },
+    { databaseAdapter.getCurrentDatabase().eventSyncDao() },
     EventSync::toDB,
     SQLStatementBuilderImpl(EventSyncTableInfo.TABLE_INFO),
 )

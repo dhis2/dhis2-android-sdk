@@ -40,9 +40,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : ProgramStore, IdentifiableObjectStoreImpl<Program, ProgramDB>(
-    { databaseAdapter.getCurrentDatabase()?.programDao()!! },
+    { databaseAdapter.getCurrentDatabase().programDao() },
     Program::toDB,
     SQLStatementBuilderImpl(ProgramTableInfo.TABLE_INFO),
 ) {

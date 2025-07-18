@@ -38,9 +38,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramRuleActionStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : ProgramRuleActionStore, IdentifiableObjectStoreImpl<ProgramRuleAction, ProgramRuleActionDB>(
-    { databaseAdapter.getCurrentDatabase()?.programRuleActionDao()!! },
+    { databaseAdapter.getCurrentDatabase().programRuleActionDao() },
     ProgramRuleAction::toDB,
     SQLStatementBuilderImpl(ProgramRuleActionTableInfo.TABLE_INFO),
 ) {

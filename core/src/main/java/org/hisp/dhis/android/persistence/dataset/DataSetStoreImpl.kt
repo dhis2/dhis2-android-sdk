@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DataSetStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : DataSetStore, IdentifiableObjectStoreImpl<DataSet, DataSetDB>(
-    { databaseAdapter.getCurrentDatabase()?.dataSetDao()!! },
+    { databaseAdapter.getCurrentDatabase().dataSetDao() },
     DataSet::toDB,
     SQLStatementBuilderImpl(DataSetTableInfo.TABLE_INFO),
 )

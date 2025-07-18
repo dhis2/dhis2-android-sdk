@@ -40,10 +40,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DataSetCompleteRegistrationStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : DataSetCompleteRegistrationStore,
     ObjectWithoutUidStoreImpl<DataSetCompleteRegistration, DataSetCompleteRegistrationDB>(
-        { databaseAdapter.getCurrentDatabase()?.dataSetCompleteRegistrationDao()!! },
+        { databaseAdapter.getCurrentDatabase().dataSetCompleteRegistrationDao() },
         DataSetCompleteRegistration::toDB,
         SQLStatementBuilderImpl(DataSetCompleteRegistrationTableInfo.TABLE_INFO),
     ) {

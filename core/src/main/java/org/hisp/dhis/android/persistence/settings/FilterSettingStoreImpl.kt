@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class FilterSettingStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : FilterSettingStore, ObjectWithoutUidStoreImpl<FilterSetting, FilterSettingDB>(
-    { databaseAdapter.getCurrentDatabase()?.filterSettingDao()!! },
+    { databaseAdapter.getCurrentDatabase().filterSettingDao() },
     FilterSetting::toDB,
     SQLStatementBuilderImpl(FilterSettingTableInfo.TABLE_INFO),
 )

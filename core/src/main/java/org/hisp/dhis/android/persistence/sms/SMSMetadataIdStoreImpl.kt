@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class SMSMetadataIdStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : SMSMetadataIdStore, ObjectWithoutUidStoreImpl<SMSMetadataId, SMSMetadataIdDB>(
-    { databaseAdapter.getCurrentDatabase()?.SMSMetadataIdDao()!! },
+    { databaseAdapter.getCurrentDatabase().SMSMetadataIdDao() },
     SMSMetadataId::toDB,
     SQLStatementBuilderImpl(SmsMetadataIdTableInfo.TABLE_INFO),
 )

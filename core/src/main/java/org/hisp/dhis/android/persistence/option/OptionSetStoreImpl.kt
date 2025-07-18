@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class OptionSetStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : OptionSetStore, IdentifiableObjectStoreImpl<OptionSet, OptionSetDB>(
-    { databaseAdapter.getCurrentDatabase()?.optionSetDao()!! },
+    { databaseAdapter.getCurrentDatabase().optionSetDao() },
     OptionSet::toDB,
     SQLStatementBuilderImpl(OptionSetTableInfo.TABLE_INFO),
 )

@@ -41,9 +41,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DataValueStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : DataValueStore, ObjectWithoutUidStoreImpl<DataValue, DataValueDB>(
-    { databaseAdapter.getCurrentDatabase()?.dataValueDao()!! },
+    { databaseAdapter.getCurrentDatabase().dataValueDao() },
     DataValue::toDB,
     SQLStatementBuilderImpl(DataValueTableInfo.TABLE_INFO),
 ) {

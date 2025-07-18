@@ -38,16 +38,16 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramStageWorkingListAttributeValueFilterStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : ProgramStageWorkingListAttributeValueFilterStore,
     ObjectWithoutUidStoreImpl<
         ProgramStageWorkingListAttributeValueFilter,
         ProgramStageWorkingListAttributeValueFilterDB,
         >(
-        { databaseAdapter.getCurrentDatabase()?.programStageWorkingListAttributeValueFilterDao()!! },
+        { databaseAdapter.getCurrentDatabase().programStageWorkingListAttrValueFilterDao() },
         ProgramStageWorkingListAttributeValueFilter::toDB,
         SQLStatementBuilderImpl(
-            ProgramStageWorkingListAttributeValueFilterTableInfo.TABLE_INFO
+            ProgramStageWorkingListAttributeValueFilterTableInfo.TABLE_INFO,
         ),
     ) {
     override suspend fun getForProgramStageWorkingList(

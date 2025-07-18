@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ConfigurationStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : ConfigurationStore, ObjectStoreImpl<Configuration, ConfigurationDB>(
-    { databaseAdapter.getCurrentDatabase()?.configurationDao()!! },
+    { databaseAdapter.getCurrentDatabase().configurationDao() },
     Configuration::toDB,
     SQLStatementBuilderImpl(ConfigurationTableInfo.TABLE_INFO),
 )

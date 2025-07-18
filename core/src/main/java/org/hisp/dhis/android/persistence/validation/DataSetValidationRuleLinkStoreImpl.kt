@@ -37,10 +37,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DataSetValidationRuleLinkStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : DataSetValidationRuleLinkStore,
     LinkStoreImpl<DataSetValidationRuleLink, DataSetValidationRuleLinkDB>(
-        { databaseAdapter.getCurrentDatabase()?.dataSetValidationRuleLinkDao()!! },
+        { databaseAdapter.getCurrentDatabase().dataSetValidationRuleLinkDao() },
         DataSetValidationRuleLink::toDB,
         LinkSQLStatementBuilderImpl(
             DataSetValidationRuleLinkTableInfo.TABLE_INFO,

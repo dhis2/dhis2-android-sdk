@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class AggregatedDataSyncStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : AggregatedDataSyncStore, ObjectWithoutUidStoreImpl<AggregatedDataSync, AggregatedDataSyncDB>(
-    { databaseAdapter.getCurrentDatabase()?.aggregatedDataSyncDao()!! },
+    { databaseAdapter.getCurrentDatabase().aggregatedDataSyncDao() },
     AggregatedDataSync::toDB,
     SQLStatementBuilderImpl(AggregatedDataSyncTableInfo.TABLE_INFO),
 )

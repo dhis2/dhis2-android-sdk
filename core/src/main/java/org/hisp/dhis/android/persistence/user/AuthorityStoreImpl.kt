@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class AuthorityStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : AuthorityStore, ObjectWithoutUidStoreImpl<Authority, AuthorityDB>(
-    { databaseAdapter.getCurrentDatabase()?.authorityDao()!! },
+    { databaseAdapter.getCurrentDatabase().authorityDao() },
     Authority::toDB,
     SQLStatementBuilderImpl(AuthorityTableInfo.TABLE_INFO),
 )

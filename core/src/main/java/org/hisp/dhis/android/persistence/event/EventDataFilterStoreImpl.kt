@@ -38,9 +38,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class EventDataFilterStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : EventDataFilterStore, ObjectWithoutUidStoreImpl<EventDataFilter, EventDataFilterDB>(
-    { databaseAdapter.getCurrentDatabase()?.eventDataFilterDao()!! },
+    { databaseAdapter.getCurrentDatabase().eventDataFilterDao() },
     EventDataFilter::toDB,
     SQLStatementBuilderImpl(EventDataFilterTableInfo.TABLE_INFO),
 ) {

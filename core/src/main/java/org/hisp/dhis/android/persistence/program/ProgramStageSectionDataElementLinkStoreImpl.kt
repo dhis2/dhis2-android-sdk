@@ -37,10 +37,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramStageSectionDataElementLinkStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : ProgramStageSectionDataElementLinkStore,
     LinkStoreImpl<ProgramStageSectionDataElementLink, ProgramStageSectionDataElementLinkDB>(
-        { databaseAdapter.getCurrentDatabase()?.programStageSectionDataElementLinkDao()!! },
+        { databaseAdapter.getCurrentDatabase().programStageSectionDataElementLinkDao() },
         ProgramStageSectionDataElementLink::toDB,
         LinkSQLStatementBuilderImpl(
             ProgramStageSectionDataElementLinkTableInfo.TABLE_INFO,

@@ -38,9 +38,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class LegendStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : LegendStore, IdentifiableObjectStoreImpl<Legend, LegendDB>(
-    { databaseAdapter.getCurrentDatabase()?.legendDao()!! },
+    { databaseAdapter.getCurrentDatabase().legendDao() },
     Legend::toDB,
     SQLStatementBuilderImpl(LegendTableInfo.TABLE_INFO),
 ) {

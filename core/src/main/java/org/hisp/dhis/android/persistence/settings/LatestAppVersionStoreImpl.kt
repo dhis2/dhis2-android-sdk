@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class LatestAppVersionStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : LatestAppVersionStore, ObjectWithoutUidStoreImpl<LatestAppVersion, LatestAppVersionDB>(
-    { databaseAdapter.getCurrentDatabase()?.latestAppVersionDao()!! },
+    { databaseAdapter.getCurrentDatabase().latestAppVersionDao() },
     LatestAppVersion::toDB,
     SQLStatementBuilderImpl(LatestAppVersionTableInfo.TABLE_INFO),
 )

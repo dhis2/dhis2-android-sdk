@@ -38,9 +38,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class CategoryOptionStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : CategoryOptionStore, IdentifiableObjectStoreImpl<CategoryOption, CategoryOptionDB>(
-    { databaseAdapter.getCurrentDatabase()?.categoryOptionDao()!! },
+    { databaseAdapter.getCurrentDatabase().categoryOptionDao() },
     CategoryOption::toDB,
     SQLStatementBuilderImpl(CategoryOptionTableInfo.TABLE_INFO),
 ) {

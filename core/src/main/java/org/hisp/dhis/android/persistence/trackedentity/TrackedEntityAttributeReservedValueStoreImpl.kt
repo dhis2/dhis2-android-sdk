@@ -41,10 +41,10 @@ import java.util.Date
 
 @Singleton
 internal class TrackedEntityAttributeReservedValueStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : TrackedEntityAttributeReservedValueStore,
     ObjectWithoutUidStoreImpl<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueDB>(
-        { databaseAdapter.getCurrentDatabase()?.trackedEntityAttributeReservedValueDao()!! },
+        { databaseAdapter.getCurrentDatabase().trackedEntityAttributeReservedValueDao() },
         TrackedEntityAttributeReservedValue::toDB,
         SQLStatementBuilderImpl(TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO),
     ) {

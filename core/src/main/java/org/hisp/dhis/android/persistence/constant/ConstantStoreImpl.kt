@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ConstantStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : ConstantStore, IdentifiableObjectStoreImpl<Constant, ConstantDB>(
-    { databaseAdapter.getCurrentDatabase()?.constantDao()!! },
+    { databaseAdapter.getCurrentDatabase().constantDao() },
     Constant::toDB,
     SQLStatementBuilderImpl(
         ConstantTableInfo.TABLE_INFO,

@@ -31,7 +31,6 @@ import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.JsonKeyValueStoreImpl
 import org.hisp.dhis.android.persistence.configuration.DatabasesConfigurationDB
 import org.hisp.dhis.android.persistence.configuration.toDB
-import org.koin.core.annotation.Singleton
 
 internal class DatabaseConfigurationInsecureStoreImpl(
     insecureStore: InsecureStore,

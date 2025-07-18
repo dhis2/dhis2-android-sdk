@@ -37,9 +37,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ExpressionDimensionItemStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : ExpressionDimensionItemStore, IdentifiableObjectStoreImpl<ExpressionDimensionItem, ExpressionDimensionItemDB>(
-    { databaseAdapter.getCurrentDatabase()?.expressionDimensionItemDao()!! },
+    { databaseAdapter.getCurrentDatabase().expressionDimensionItemDao() },
     ExpressionDimensionItem::toDB,
     SQLStatementBuilderImpl(ExpressionDimensionItemTableInfo.TABLE_INFO),
 )

@@ -40,9 +40,9 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class RelationshipStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : RelationshipStore, IdentifiableDeletableDataObjectStoreImpl<Relationship, RelationshipDB>(
-    { databaseAdapter.getCurrentDatabase()?.relationshipDao()!! },
+    { databaseAdapter.getCurrentDatabase().relationshipDao() },
     Relationship::toDB,
     IdentifiableDeletableDataObjectSQLStatementBuilderImpl(RelationshipTableInfo.TABLE_INFO),
 ) {

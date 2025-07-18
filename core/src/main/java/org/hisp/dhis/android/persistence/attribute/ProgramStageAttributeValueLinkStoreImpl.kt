@@ -38,10 +38,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramStageAttributeValueLinkStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : ProgramStageAttributeValueLinkStore,
     LinkStoreImpl<ProgramStageAttributeValueLink, ProgramStageAttributeValueLinkDB>(
-        { databaseAdapter.getCurrentDatabase()?.programStageAttributeValueLinkDao()!! },
+        { databaseAdapter.getCurrentDatabase().programStageAttributeValueLinkDao() },
         ProgramStageAttributeValueLink::toDB,
         LinkSQLStatementBuilderImpl(
             ProgramStageAttributeValueLinkTableInfo.TABLE_INFO,

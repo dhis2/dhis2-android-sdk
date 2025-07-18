@@ -37,10 +37,10 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class StockUseCaseTransactionLinkStoreImpl(
-    private val databaseAdapter: DatabaseAdapter
+    private val databaseAdapter: DatabaseAdapter,
 ) : StockUseCaseTransactionLinkStore,
     LinkStoreImpl<InternalStockUseCaseTransaction, StockUseCaseTransactionDB>(
-        { databaseAdapter.getCurrentDatabase()?.stockUseCaseTransactionLinkDao()!! },
+        { databaseAdapter.getCurrentDatabase().stockUseCaseTransactionLinkDao() },
         InternalStockUseCaseTransaction::toDB,
         LinkSQLStatementBuilderImpl(
             StockUseCaseTransactionTableInfo.TABLE_INFO,

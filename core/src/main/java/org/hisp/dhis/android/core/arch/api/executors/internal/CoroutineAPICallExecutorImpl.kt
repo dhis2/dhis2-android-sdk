@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.arch.api.executors.internal
 
+import androidx.room.immediateTransaction
+import androidx.room.useWriterConnection
 import io.ktor.client.plugins.ClientRequestException
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.coroutineScope
@@ -146,6 +148,29 @@ internal class CoroutineAPICallExecutorImpl(
             }
         }
     }
+
+    override suspend fun <P> wrapTransactionallyRoom(
+        cleanForeignKeyErrors: Boolean,
+        block: suspend () -> P,
+    ): P {
+        return try {
+//            databaseAdapter.getCurrentDatabase().withTransaction {
+//                block()
+//            }
+            databaseAdapter.getCurrentDatabase().useWriterConnection { transactor ->
+                transactor.immediateTransaction {
+                    block()
+                }
+            }
+
+        } catch (t: Throwable) {
+            throw when (t) {
+                is D2Error -> t
+                else -> errorMapper.mapHttpException(t, baseErrorBuilder())
+            }
+        }
+    }
+
 
     private suspend fun catchError(
         errorCatcher: APICallErrorCatcher,

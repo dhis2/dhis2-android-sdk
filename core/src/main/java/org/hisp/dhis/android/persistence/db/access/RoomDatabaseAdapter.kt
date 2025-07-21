@@ -287,9 +287,9 @@ internal class RoomDatabaseAdapter : DatabaseAdapter {
         if (db == null) {
             throw IllegalStateException("No database is currently activated.")
         }
-        if (!db.isOpen) {
-            throw IllegalStateException("The activated database is closed.")
-        }
+//        if (!db.isOpen) {
+//            throw IllegalStateException("The activated database is closed.")
+//        }
         return db
     }
 

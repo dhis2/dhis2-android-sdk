@@ -115,7 +115,7 @@ internal class MetadataCall(
 
         changeEncryptionIfRequiredCoroutines()
 
-        coroutineAPICallExecutor.wrapTransactionally(cleanForeignKeyErrors = true) {
+        coroutineAPICallExecutor.wrapTransactionallyRoom(cleanForeignKeyErrors = true) {
             try {
                 systemInfoDownloader.downloadWithProgressManager(progressManager).also { send(it) }
                 executeIndependentCalls(progressManager).collect { send(it) }

@@ -100,7 +100,7 @@ internal class AggregatedDataCall(
         bundle: AggregatedDataCallBundle,
     ) {
         return try {
-            coroutineCallExecutor.wrapTransactionally(cleanForeignKeyErrors = true) {
+            coroutineCallExecutor.wrapTransactionallyRoom(cleanForeignKeyErrors = true) {
                 downloadDataValues(bundle)
                 downloadCompleteRegistration(bundle)
                 downloadApproval(bundle)

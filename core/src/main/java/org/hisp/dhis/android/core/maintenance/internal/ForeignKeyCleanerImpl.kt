@@ -42,8 +42,6 @@ internal class ForeignKeyCleanerImpl(
     private val foreignKeyViolationStore: ForeignKeyViolationStore,
 ) : ForeignKeyCleaner {
 
-    private val foreignKeyViolationDao = databaseAdapter.getCurrentDatabase().foreignKeyViolationDao()
-
     override suspend fun cleanForeignKeyErrors(): Int {
         var totalRows = 0
         var rowsDeletedIteration: Int
@@ -117,7 +115,7 @@ internal class ForeignKeyCleanerImpl(
             error.toTable,
             error.rowId,
         )
-
+        val foreignKeyViolationDao = databaseAdapter.getCurrentDatabase().foreignKeyViolationDao()
         violation?.let {
             foreignKeyViolationStore.insert(it)
 

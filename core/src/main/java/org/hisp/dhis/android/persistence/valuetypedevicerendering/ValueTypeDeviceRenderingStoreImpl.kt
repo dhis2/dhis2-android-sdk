@@ -30,6 +30,7 @@ package org.hisp.dhis.android.persistence.valuetypedevicerendering
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering
+import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 import org.koin.core.annotation.Singleton
@@ -37,7 +38,7 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class ValueTypeDeviceRenderingStoreImpl(
     private val databaseAdapter: DatabaseAdapter,
-) :
+) : ValueTypeDeviceRenderingStore,
     ObjectWithoutUidStoreImpl<ValueTypeDeviceRendering, ValueTypeDeviceRenderingDB>(
         { databaseAdapter.getCurrentDatabase().valueTypeDeviceRenderingDao() },
         ValueTypeDeviceRendering::toDB,

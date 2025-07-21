@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.db.stores.internal
 
-import android.content.ContentValues
-
 internal interface ObjectStore<O> : ReadableStore<O> {
     @Throws(RuntimeException::class)
     suspend fun selectStringColumnsWhereClause(column: String, clause: String): List<String>
@@ -40,8 +38,6 @@ internal interface ObjectStore<O> : ReadableStore<O> {
     suspend fun insert(objects: Collection<O>)
     suspend fun delete(): Int
     suspend fun deleteWhere(clause: String): Boolean
-
-    suspend fun updateWhere(updates: ContentValues, whereClause: String): Int
 
     @Throws(RuntimeException::class)
     suspend fun deleteWhereIfExists(whereClause: String)

@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.persistence.common.stores
 
-import android.content.ContentValues
 import android.util.ArrayMap
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
 import org.hisp.dhis.android.core.common.CoreObject
@@ -77,10 +76,6 @@ internal open class ObjectStoreImpl<D : CoreObject, P : EntityDB<D>>(
         return objectDao.intRawQuery(query) > 0
     }
 
-    override suspend fun updateWhere(updates: ContentValues, whereClause: String): Int {
-        TODO("To be removed after Room migration")
-    }
-
     suspend fun updateWhere(updates: ArrayMap<String, Any>, whereClause: String): Int {
         val objectDao = daoProvider()
         val query = builder.updateWhere(updates, whereClause)
@@ -92,5 +87,5 @@ internal open class ObjectStoreImpl<D : CoreObject, P : EntityDB<D>>(
     }
 
     override val isReady: Boolean
-        get() = TODO("To be removed after Room migration")
+        get() = true // TODO("To be removed after Room migration")
 }

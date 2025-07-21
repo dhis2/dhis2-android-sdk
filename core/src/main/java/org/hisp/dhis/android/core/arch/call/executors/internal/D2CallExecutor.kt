@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.arch.call.executors.internal
 
 import android.util.Log
+import androidx.room.immediateTransaction
+import androidx.room.useWriterConnection
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -58,11 +60,12 @@ internal class D2CallExecutor(
     @Throws(D2Error::class)
     @Suppress("TooGenericExceptionCaught")
     private suspend fun <C> innerExecuteD2CallTransactionally(call: suspend () -> C): C {
-        val transaction = databaseAdapter.beginNewTransaction()
-        try {
-            val response = call()
-            transaction.setSuccessful()
-            return response
+        return try {
+            databaseAdapter.getCurrentDatabase().useWriterConnection { transactor ->
+                transactor.immediateTransaction {
+                    call()
+                }
+            }
         } catch (d2E: D2Error) {
             throw d2E
         } catch (e: Exception) {
@@ -70,8 +73,6 @@ internal class D2CallExecutor(
             throw exceptionBuilder
                 .errorCode(D2ErrorCode.UNEXPECTED)
                 .errorDescription("Unexpected error calling $call").build()
-        } finally {
-            transaction.end()
         }
     }
 

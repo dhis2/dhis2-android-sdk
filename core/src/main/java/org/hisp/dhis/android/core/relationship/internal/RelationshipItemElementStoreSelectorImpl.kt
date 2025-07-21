@@ -25,31 +25,40 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user.internal
+package org.hisp.dhis.android.core.relationship.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.core.arch.db.stores.internal.StoreWithState
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
+import org.hisp.dhis.android.core.event.internal.EventStore
+import org.hisp.dhis.android.core.relationship.RelationshipItem
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
+import org.hisp.dhis.android.persistence.relationship.RelationshipItemTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class UserCall(
-//    private val genericCallData: GenericCallData,
-    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
-    private val networkHandler: UserNetworkHandler,
-    private val userHandler: UserHandler,
-) {
+internal class RelationshipItemElementStoreSelectorImpl(
+    private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
+    private val enrollmentStore: EnrollmentStore,
+    private val eventStore: EventStore,
+) : RelationshipItemElementStoreSelector {
+    override fun getElementStore(item: RelationshipItem?): StoreWithState<*> {
+        return getElementStoreByElementType(item?.elementType())
+    }
 
-    @Throws(D2Error::class)
-    suspend fun call(): User {
-        val user =
-            coroutineAPICallExecutor.wrap {
-                networkHandler.getUser()
-            }.getOrThrow()
+    override fun getElementStore(item: RelationshipItemRelative): StoreWithState<*> {
+        return getElementStoreByElementType(item.itemType)
+    }
 
-        coroutineAPICallExecutor.wrapTransactionallyRoom {
-            userHandler.handle(user)
+    private fun getElementStoreByElementType(elementType: String?): StoreWithState<*> {
+        return when (elementType) {
+            RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE ->
+                trackedEntityInstanceStore
+
+            RelationshipItemTableInfo.Columns.ENROLLMENT ->
+                enrollmentStore
+
+            else ->
+                eventStore
         }
-        return user
     }
 }

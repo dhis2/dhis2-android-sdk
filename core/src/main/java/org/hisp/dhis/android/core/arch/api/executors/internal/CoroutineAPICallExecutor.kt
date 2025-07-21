@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 
 internal interface CoroutineAPICallExecutor {
     suspend fun <P> wrap(
-        storeError: Boolean = true,
+        storeError: Boolean = false,
         acceptedErrorCodes: List<Int>? = null,
         errorCatcher: APICallErrorCatcher? = null,
         errorClassParser: ((body: String) -> P)? = null,
@@ -40,6 +40,12 @@ internal interface CoroutineAPICallExecutor {
     ): Result<P, D2Error>
 
     suspend fun <P> wrapTransactionally(
+        cleanForeignKeyErrors: Boolean = true,
+        block: suspend () -> P,
+    ): P
+
+
+    suspend fun <P> wrapTransactionallyRoom(
         cleanForeignKeyErrors: Boolean = true,
         block: suspend () -> P,
     ): P

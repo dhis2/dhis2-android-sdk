@@ -28,10 +28,8 @@
 package org.hisp.dhis.android.core.arch.db.access.internal
 
 import android.content.res.AssetManager
-import android.util.Log
 import androidx.annotation.VisibleForTesting
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import java.io.IOException
 
 internal class DatabaseMigrationExecutor(private val databaseAdapter: DatabaseAdapter, assetManager: AssetManager) {
     private val parser = DatabaseMigrationParser(assetManager, databaseAdapter)
@@ -43,48 +41,48 @@ internal class DatabaseMigrationExecutor(private val databaseAdapter: DatabaseAd
         var USE_SNAPSHOT = true
     }
 
-    suspend fun upgradeFromTo(oldVersion: Int, newVersion: Int) {
-        val transaction = databaseAdapter.beginNewTransaction()
-        try {
-            val initialMigrationVersion = if (USE_SNAPSHOT) performSnapshotIfRequired(oldVersion) else 0
-            val migrations = parser.parseMigrations(initialMigrationVersion, newVersion)
-            migrations.forEach {
-                executeSQLMigration(it)
-                executeCodeMigration(it)
-            }
-            transaction.setSuccessful()
-        } catch (e: IOException) {
-            Log.e("Database Error:", e.message ?: "")
-        } finally {
-            transaction.end()
-        }
-    }
+//    suspend fun upgradeFromTo(oldVersion: Int, newVersion: Int) {
+//        val transaction = databaseAdapter.beginNewTransaction()
+//        try {
+//            val initialMigrationVersion = if (USE_SNAPSHOT) performSnapshotIfRequired(oldVersion) else 0
+//            val migrations = parser.parseMigrations(initialMigrationVersion, newVersion)
+//            migrations.forEach {
+//                executeSQLMigration(it)
+//                executeCodeMigration(it)
+//            }
+//            transaction.setSuccessful()
+//        } catch (e: IOException) {
+//            Log.e("Database Error:", e.message ?: "")
+//        } finally {
+//            transaction.end()
+//        }
+//    }
 
-    @Throws(IOException::class)
-    private suspend fun performSnapshotIfRequired(oldVersion: Int): Int {
-        return if (oldVersion == 0) {
-            executeFileSQL(parser.parseSnapshot())
-            AppDatabase.Companion.VERSION
-        } else {
-            oldVersion
-        }
-    }
+//    @Throws(IOException::class)
+//    private suspend fun performSnapshotIfRequired(oldVersion: Int): Int {
+//        return if (oldVersion == 0) {
+//            executeFileSQL(parser.parseSnapshot())
+//            AppDatabase.Companion.VERSION
+//        } else {
+//            oldVersion
+//        }
+//    }
 
-    private suspend fun executeSQLMigration(migration: DatabaseMigration) {
-        if (MIGRATIONS_ACCEPTING_ERRORS.contains(migration.version)) {
-            try {
-                executeFileSQL(migration.sql)
-            } catch (_: Throwable) {}
-        } else {
-            executeFileSQL(migration.sql)
-        }
-    }
+//    private suspend fun executeSQLMigration(migration: DatabaseMigration) {
+//        if (MIGRATIONS_ACCEPTING_ERRORS.contains(migration.version)) {
+//            try {
+//                executeFileSQL(migration.sql)
+//            } catch (_: Throwable) {}
+//        } else {
+//            executeFileSQL(migration.sql)
+//        }
+//    }
 
-    private suspend fun executeCodeMigration(migration: DatabaseMigration) {
-        migration.code?.migrate()
-    }
+//    private suspend fun executeCodeMigration(migration: DatabaseMigration) {
+//        migration.code?.migrate()
+//    }
 
-    private suspend fun executeFileSQL(script: List<String>?) {
-        script?.forEach { databaseAdapter.execSQL(it) }
-    }
+//    private suspend fun executeFileSQL(script: List<String>?) {
+//        script?.forEach { databaseAdapter.execSQL(it) }
+//    }
 }

@@ -51,13 +51,14 @@ internal class DataElementSQLEvaluator(
     private val databaseAdapter: DatabaseAdapter,
 ) : AnalyticsEvaluator {
 
-    val d2Dao = databaseAdapter.getCurrentDatabase().d2Dao()
+
 
     override suspend fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
         queryMods: QueryMods?,
     ): String? {
+        val d2Dao = databaseAdapter.getCurrentDatabase().d2Dao()
         val sqlQueryString = getSql(evaluationItem, metadata, queryMods)
         val roomQuery = SimpleSQLiteQuery(sqlQueryString)
 

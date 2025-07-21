@@ -393,7 +393,7 @@ CREATE TABLE TrackedEntityInstanceSync(program TEXT, organisationUnitIdsHash INT
 INSERT OR IGNORE INTO TrackedEntityInstanceSync(program, organisationUnitIdsHash, downloadLimit, lastUpdated) SELECT program, organisationUnitIdsHash, downloadLimit, lastUpdated FROM TrackedEntityInstanceSync_Old;
 
 ALTER TABLE EventSync RENAME TO EventSync_Old;
-CREATE TABLE EventSync(program TEXT NOT NULL, organisationUnitIdsHash INTEGER NOT NULL, downloadLimit INTEGER NOT NULL, lastUpdated TEXT NOT NULL, PRIMARY KEY(program, organisationUnitIdsHash), FOREIGN KEY(program) REFERENCES Program(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+CREATE TABLE EventSync(program TEXT, organisationUnitIdsHash INTEGER NOT NULL, downloadLimit INTEGER NOT NULL, lastUpdated TEXT NOT NULL, PRIMARY KEY(program, organisationUnitIdsHash), FOREIGN KEY(program) REFERENCES Program(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
 INSERT OR IGNORE INTO EventSync(program, organisationUnitIdsHash, downloadLimit, lastUpdated) SELECT program, organisationUnitIdsHash, downloadLimit, lastUpdated FROM EventSync_Old;
 
 ALTER TABLE CategoryOptionOrganisationUnitLink RENAME TO CategoryOptionOrganisationUnitLink_Old;
@@ -449,7 +449,7 @@ CREATE TABLE DataValueConflict(conflict TEXT, value TEXT, attributeOptionCombo T
 INSERT OR IGNORE INTO DataValueConflict(conflict, value, attributeOptionCombo, categoryOptionCombo, dataElement, period, orgUnit, errorCode, status, created, displayDescription) SELECT conflict, value, attributeOptionCombo, categoryOptionCombo, dataElement, period, orgUnit, errorCode, status, created, displayDescription FROM DataValueConflict_Old;
 
 ALTER TABLE AnalyticsDhisVisualization RENAME TO AnalyticsDhisVisualization_Old;
-CREATE TABLE AnalyticsDhisVisualization(uid TEXT NOT NULL, scopeUid TEXT, scope TEXT, groupUid TEXT, groupName TEXT, timestamp TEXT, name TEXT, type TEXT NOT NULL, PRIMARY KEY(uid, groupUid));
+CREATE TABLE AnalyticsDhisVisualization(uid TEXT NOT NULL, scopeUid TEXT, scope TEXT, groupUid TEXT, groupName TEXT, timestamp TEXT, name TEXT, type TEXT NOT NULL);
 INSERT OR IGNORE INTO AnalyticsDhisVisualization(uid, scopeUid, scope, groupUid, groupName, timestamp, name, type) SELECT uid, scopeUid, scope, groupUid, groupName, timestamp, name, type FROM AnalyticsDhisVisualization_Old;
 
 ALTER TABLE Visualization RENAME TO Visualization_Old;

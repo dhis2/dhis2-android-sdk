@@ -83,8 +83,8 @@ object CustomIntentSamples {
                                         .key("response path")
                                         .extraName("response argument")
                                         .extraType(CustomIntentResponseExtraType.BOOLEAN)
-                                        .build()
-                                )
+                                        .build(),
+                                ),
                             )
                             .build(),
                     )

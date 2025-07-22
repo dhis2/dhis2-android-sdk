@@ -39,11 +39,11 @@ import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.TrackerDataVi
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.RelationshipConstraintTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.RelationshipEntityTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 @AutoValue
-public abstract class RelationshipConstraint extends BaseObject {
+public abstract class RelationshipConstraint implements CoreObject {
 
     @Nullable
     @ColumnAdapter(ObjectWithUidColumnAdapter.class)
@@ -84,7 +84,7 @@ public abstract class RelationshipConstraint extends BaseObject {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder {
 
         public abstract Builder relationshipType(ObjectWithUid relationshipType);
 

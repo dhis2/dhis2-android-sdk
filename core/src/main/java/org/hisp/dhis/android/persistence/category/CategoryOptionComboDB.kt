@@ -44,7 +44,6 @@ internal data class CategoryOptionComboDB(
     override fun toDomain(): CategoryOptionCombo {
         return CategoryOptionCombo.builder().apply {
             applyBaseIdentifiableFields(this@CategoryOptionComboDB)
-            id(id?.toLong())
             categoryCombo?.let { ObjectWithUidDB(categoryCombo).toDomain() }
         }.build()
     }

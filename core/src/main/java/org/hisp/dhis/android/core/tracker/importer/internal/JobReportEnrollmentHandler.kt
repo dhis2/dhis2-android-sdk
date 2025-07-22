@@ -78,7 +78,7 @@ internal class JobReportEnrollmentHandler internal constructor(
             if (errorReport.errorCode == ImporterError.E1081.name && enrollment.deleted() == true) {
                 enrollmentStore.delete(enrollment.uid())
             } else {
-                conflictStore.insert(
+                conflictStore.updateOrInsertWhere(
                     conflictHelper.getConflictBuilder(errorReport)
                         .tableReference(EnrollmentTableInfo.TABLE_INFO.name())
                         .enrollment(errorReport.uid)

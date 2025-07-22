@@ -81,7 +81,6 @@ internal data class ProgramStageDB(
         return ProgramStage.builder().apply {
             applyBaseIdentifiableFields(this@ProgramStageDB)
             applyStyleFields(this@ProgramStageDB)
-            id(id?.toLong())
             description(description)
             displayDescription(displayDescription)
             displayExecutionDateLabel(displayExecutionDateLabel)

@@ -34,7 +34,6 @@ internal data class MapLayerImageryProviderDB(
 
     override fun toDomain(): MapLayerImageryProvider {
         return MapLayerImageryProvider.builder()
-            .id(id?.toLong())
             .mapLayer(mapLayer)
             .attribution(attribution)
             .coverageAreas(coverageAreas?.toDomain())

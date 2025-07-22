@@ -44,7 +44,6 @@ internal data class ProgramSectionAttributeLinkDB(
 
     override fun toDomain(): ProgramSectionAttributeLink {
         return ProgramSectionAttributeLink.builder()
-            .id(id?.toLong())
             .programSection(programSection)
             .attribute(attribute)
             .sortOrder(sortOrder ?: 0)

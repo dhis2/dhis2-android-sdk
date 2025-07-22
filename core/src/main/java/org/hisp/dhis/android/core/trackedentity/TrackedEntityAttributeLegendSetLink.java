@@ -34,7 +34,6 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.jetbrains.annotations.NotNull;
 
@@ -60,9 +59,7 @@ public abstract class TrackedEntityAttributeLegendSetLink implements CoreObject 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
+    public abstract static class Builder {
         public abstract Builder trackedEntityAttribute(String trackedEntityAttribute);
 
         public abstract Builder legendSet(String legendSet);

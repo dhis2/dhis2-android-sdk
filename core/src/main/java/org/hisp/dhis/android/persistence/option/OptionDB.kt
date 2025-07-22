@@ -51,7 +51,6 @@ internal data class OptionDB(
         return Option.builder()
             .applyBaseIdentifiableFields(this@OptionDB)
             .applyStyleFields(this@OptionDB)
-            .id(id?.toLong())
             .optionSet(ObjectWithUid.create(optionSet))
             .sortOrder(sortOrder)
             .build()

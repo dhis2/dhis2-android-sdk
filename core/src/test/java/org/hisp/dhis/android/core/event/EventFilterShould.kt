@@ -30,15 +30,14 @@ package org.hisp.dhis.android.core.event
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.AssignedUserMode
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.core.common.DatePeriodType
-import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.network.eventfilter.EventFilterDTO
 import org.junit.Test
 
-class EventFilterShould : BaseObjectKotlinxShould("event/event_filter.json"), ObjectShould {
+class EventFilterShould : CoreObjectShould("event/event_filter.json") {
 
     @Test
     @Suppress("LongMethod")

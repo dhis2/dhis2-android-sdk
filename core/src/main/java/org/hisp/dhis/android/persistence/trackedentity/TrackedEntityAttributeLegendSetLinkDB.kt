@@ -44,7 +44,6 @@ internal data class TrackedEntityAttributeLegendSetLinkDB(
 
     override fun toDomain(): TrackedEntityAttributeLegendSetLink {
         return TrackedEntityAttributeLegendSetLink.builder()
-            .id(id?.toLong())
             .trackedEntityAttribute(trackedEntityAttribute)
             .legendSet(legendSet)
             .sortOrder(sortOrder)

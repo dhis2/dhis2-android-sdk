@@ -53,7 +53,6 @@ internal data class SectionGreyedFieldsLinkDB(
 
     override fun toDomain(): SectionGreyedFieldsLink {
         return SectionGreyedFieldsLink.builder()
-            .id(id?.toLong())
             .section(section)
             .dataElementOperand(dataElementOperand)
             .categoryOptionCombo(categoryOptionCombo)

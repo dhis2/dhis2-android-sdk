@@ -40,7 +40,6 @@ object ProgramSectionSamples {
         get() {
             return ProgramSection.builder().apply {
                 fillIdentifiableProperties(this)
-                id(1L)
                 description("description")
                 program(ObjectWithUid.create("program_uid"))
                 sortOrder(3)

@@ -44,7 +44,6 @@ internal data class SectionDataElementLinkDB(
 
     override fun toDomain(): SectionDataElementLink {
         return SectionDataElementLink.builder()
-            .id(id?.toLong())
             .section(section)
             .dataElement(dataElement)
             .sortOrder(sortOrder)

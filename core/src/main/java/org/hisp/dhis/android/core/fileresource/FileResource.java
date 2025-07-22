@@ -90,7 +90,7 @@ public abstract class FileResource extends BaseDataObject implements ObjectWithU
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseDataObject.Builder<Builder> {
+    public abstract static class Builder implements BaseDataObject.Builder<Builder> {
 
         public abstract Builder uid(@NonNull String uid);
 

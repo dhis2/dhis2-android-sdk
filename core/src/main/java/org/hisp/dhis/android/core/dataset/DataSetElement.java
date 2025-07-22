@@ -37,7 +37,6 @@ import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
@@ -67,8 +66,8 @@ public abstract class DataSetElement implements CoreObject {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-        public abstract Builder id(Long id);
+    public abstract static class Builder {
+
 
         public abstract Builder dataSet(ObjectWithUid dataSet);
 

@@ -27,12 +27,12 @@
  */
 package org.hisp.dhis.android.core.imports.internal
 
-import android.database.Cursor
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStoreImpl
+import org.hisp.dhis.android.core.arch.db.stores.binders.internal.WhereStatementBinder
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStoreImpl
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.EventTableInfo
@@ -45,11 +45,13 @@ import org.koin.core.annotation.Singleton
 internal class TrackerImportConflictStoreImpl(
     databaseAdapter: DatabaseAdapter,
 ) : TrackerImportConflictStore,
-    ObjectStoreImpl<TrackerImportConflict>(
+    ObjectWithoutUidStoreImpl<TrackerImportConflict>(
         databaseAdapter,
         TrackerImportConflictTableInfo.TABLE_INFO,
         BINDER,
-        { cursor: Cursor -> TrackerImportConflict.create(cursor) },
+        WHERE_UPDATE_BINDER,
+        WHERE_DELETE_BINDER,
+        { TrackerImportConflict.create(it) },
     ) {
 
     override suspend fun deleteEventConflicts(eventUid: String) {
@@ -101,6 +103,28 @@ internal class TrackerImportConflictStoreImpl(
             w.bind(10, o.status())
             w.bind(11, o.created())
             w.bind(12, o.displayDescription())
+        }
+
+        private val WHERE_UPDATE_BINDER = WhereStatementBinder { o: TrackerImportConflict, w: StatementWrapper ->
+            w.bind(13, o.conflict())
+            w.bind(14, o.value())
+            w.bind(15, o.trackedEntityInstance())
+            w.bind(16, o.enrollment())
+            w.bind(17, o.event())
+            w.bind(18, o.trackedEntityAttribute())
+            w.bind(19, o.dataElement())
+            w.bind(20, o.tableReference())
+        }
+
+        private val WHERE_DELETE_BINDER = WhereStatementBinder { o: TrackerImportConflict, w: StatementWrapper ->
+            w.bind(1, o.conflict())
+            w.bind(2, o.value())
+            w.bind(3, o.trackedEntityInstance())
+            w.bind(4, o.enrollment())
+            w.bind(5, o.event())
+            w.bind(6, o.trackedEntityAttribute())
+            w.bind(7, o.dataElement())
+            w.bind(8, o.tableReference())
         }
     }
 }

@@ -30,11 +30,14 @@ package org.hisp.dhis.android.core.visualization.internal
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.TrackerVisualizationDimensionRepetitionColumnAdapter
 import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidListColumnAdapter
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementBinder
 import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStoreImpl
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionTableInfo
 import org.koin.core.annotation.Singleton
@@ -62,6 +65,7 @@ internal class TrackerVisualizationDimensionStoreImpl(
             w.bind(7, ObjectWithUidListColumnAdapter.serialize(o.items()))
             w.bind(8, o.filter())
             w.bind(9, TrackerVisualizationDimensionRepetitionColumnAdapter.serialize(o.repetition()))
+            w.bind(10, o.sortOrder())
         }
     }
 
@@ -73,7 +77,14 @@ internal class TrackerVisualizationDimensionStoreImpl(
                 TrackerVisualizationDimensionTableInfo.Columns.TRACKER_VISUALIZATION,
                 trackerVisualizationId,
             ).build()
-        val query = builder.selectWhere(whereClause)
+
+        val orderByClause = OrderByClauseBuilder.orderByFromItems(
+            listOf(
+                RepositoryScopeOrderByItem.builder().column(TrackerVisualizationDimensionTableInfo.Columns.SORT_ORDER)
+                    .direction(RepositoryScope.OrderByDirection.ASC).build(),
+            ),
+        )
+        val query = builder.selectWhere(whereClause, orderByClause)
         return selectRawQuery(query)
     }
 }

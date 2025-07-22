@@ -22,7 +22,6 @@ internal data class SMSConfigDB(
 ) : EntityDB<KeyValuePair> {
     override fun toDomain(): KeyValuePair {
         return KeyValuePair.builder()
-            .id(id?.toLong())
             .key(key)
             .value(value)
             .build()

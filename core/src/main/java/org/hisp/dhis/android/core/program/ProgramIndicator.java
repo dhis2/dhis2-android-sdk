@@ -99,8 +99,6 @@ public abstract class ProgramIndicator extends BaseNameableObject implements Cor
 
     @AutoValue.Builder
     public abstract static class Builder  extends BaseNameableObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
         public abstract Builder displayInForm(Boolean displayInForm);
 
         public abstract Builder expression(String expression);

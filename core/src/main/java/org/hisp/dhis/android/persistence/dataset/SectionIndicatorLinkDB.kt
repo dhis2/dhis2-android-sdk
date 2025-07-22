@@ -43,7 +43,6 @@ internal data class SectionIndicatorLinkDB(
 
     override fun toDomain(): SectionIndicatorLink {
         return SectionIndicatorLink.builder()
-            .id(id?.toLong())
             .section(section)
             .indicator(indicator)
             .build()

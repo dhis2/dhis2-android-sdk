@@ -44,7 +44,6 @@ internal data class CategoryOptionOrganisationUnitLinkDB(
 
     override fun toDomain(): CategoryOptionOrganisationUnitLink {
         return CategoryOptionOrganisationUnitLink.builder()
-            .id(id?.toLong())
             .categoryOption(categoryOption)
             .organisationUnit(organisationUnit)
             .restriction(restriction)

@@ -120,8 +120,6 @@ public abstract class ProgramSetting implements CoreObject {
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder id(Long id);
-
         public abstract Builder uid(String uid);
 
         public abstract Builder name(String name);

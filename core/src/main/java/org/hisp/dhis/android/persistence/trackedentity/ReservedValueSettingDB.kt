@@ -33,7 +33,6 @@ internal data class ReservedValueSettingDB(
 
     override fun toDomain(): ReservedValueSetting {
         return ReservedValueSetting.builder()
-            .id(id?.toLong())
             .uid(uid)
             .numberOfValuesToReserve(numberOfValuesToReserve)
             .build()

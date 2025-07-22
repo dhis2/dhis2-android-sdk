@@ -34,7 +34,6 @@ public class SectionDataElementLinkSamples {
 
     public static SectionDataElementLink getSectionDataElementLink() {
         return SectionDataElementLink.builder()
-                .id(1L)
                 .section("section")
                 .dataElement("data_element")
                 .sortOrder(3)

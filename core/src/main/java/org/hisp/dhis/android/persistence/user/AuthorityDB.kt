@@ -16,7 +16,6 @@ internal data class AuthorityDB(
 
     override fun toDomain(): Authority {
         return Authority.builder()
-            .id(id?.toLong())
             .name(name)
             .build()
     }

@@ -37,7 +37,6 @@ internal data class StockUseCaseDB(
 ) : EntityDB<InternalStockUseCase> {
     override fun toDomain(): InternalStockUseCase {
         return InternalStockUseCase.builder()
-            .id(id?.toLong())
             .uid(uid)
             .itemCode(itemCode)
             .itemDescription(itemDescription)

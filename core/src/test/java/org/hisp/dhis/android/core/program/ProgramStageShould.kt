@@ -29,16 +29,15 @@ package org.hisp.dhis.android.core.program
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.FormType
-import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.core.common.ValidationStrategy
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.network.programstage.ProgramStageDTO
 import org.junit.Test
 
-class ProgramStageShould : BaseObjectKotlinxShould("program/program_stage.json"), ObjectShould {
+class ProgramStageShould : CoreObjectShould("program/program_stage.json") {
     @Test
     override fun map_from_json_string() {
         val programStageDTO = deserialize(ProgramStageDTO.serializer())

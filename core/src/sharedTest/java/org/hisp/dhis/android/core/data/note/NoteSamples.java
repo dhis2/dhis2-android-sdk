@@ -36,7 +36,6 @@ public class NoteSamples {
     public static Note getNote() {
 
         return Note.builder()
-                .id(1L)
                 .noteType(Note.NoteType.ENROLLMENT_NOTE)
                 .event("eventUid")
                 .value("value")

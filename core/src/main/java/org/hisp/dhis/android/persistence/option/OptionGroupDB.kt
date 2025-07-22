@@ -44,7 +44,6 @@ internal data class OptionGroupDB(
     override fun toDomain(): OptionGroup {
         return OptionGroup.builder()
             .applyBaseIdentifiableFields(this@OptionGroupDB)
-            .id(id?.toLong())
             .optionSet(ObjectWithUid.create(optionSet))
             .build()
     }

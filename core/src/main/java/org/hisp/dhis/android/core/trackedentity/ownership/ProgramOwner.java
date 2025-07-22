@@ -54,9 +54,7 @@ public abstract class ProgramOwner extends BaseDataObject {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseDataObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
+    public abstract static class Builder implements BaseDataObject.Builder<Builder> {
         public abstract Builder program(String event);
 
         public abstract Builder trackedEntityInstance(String trackedEntityInstance);

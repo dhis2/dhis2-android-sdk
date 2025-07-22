@@ -25,7 +25,6 @@ internal data class AnalyticsDhisVisualizationDB(
 
     override fun toDomain(): AnalyticsDhisVisualization {
         return AnalyticsDhisVisualization.builder().apply {
-            id(id?.toLong())
             uid(uid)
             scopeUid(scopeUid)
             scope?.let { scope(AnalyticsDhisVisualizationScope.valueOf(it)) }

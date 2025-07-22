@@ -28,7 +28,9 @@
 
 package org.hisp.dhis.android.core.imports.internal;
 
-import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
+import androidx.annotation.NonNull;
+
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.imports.TrackerImportConflictSamples;
 import org.hisp.dhis.android.core.imports.TrackerImportConflict;
 import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo;
@@ -38,7 +40,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)
 public class TrackerImportConflictStoreIntegrationShould
-        extends ObjectStoreAbstractIntegrationShould<TrackerImportConflict> {
+        extends ObjectWithoutUidStoreAbstractIntegrationShould<TrackerImportConflict> {
 
     public TrackerImportConflictStoreIntegrationShould() {
         super(new TrackerImportConflictStoreImpl(TestDatabaseAdapterFactory.get()),
@@ -48,5 +50,13 @@ public class TrackerImportConflictStoreIntegrationShould
     @Override
     protected TrackerImportConflict buildObject() {
         return TrackerImportConflictSamples.get();
+    }
+
+    @NonNull
+    @Override
+    protected TrackerImportConflict buildObjectToUpdate() {
+        return TrackerImportConflictSamples.get().toBuilder()
+                .displayDescription("new_display_description")
+                .build();
     }
 }

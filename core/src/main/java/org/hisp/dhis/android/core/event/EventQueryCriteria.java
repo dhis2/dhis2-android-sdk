@@ -75,8 +75,6 @@ public abstract class EventQueryCriteria extends FilterQueryCriteria implements 
 
     @AutoValue.Builder
     public abstract static class Builder extends FilterQueryCriteria.Builder<Builder> {
-        public abstract Builder id(Long id);
-
         public abstract Builder dataFilters(List<EventDataFilter> dataFilters);
 
         public abstract Builder events(List<String> events);

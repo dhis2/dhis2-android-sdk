@@ -33,7 +33,6 @@ internal data class AuthenticatedUserDB(
 
     override fun toDomain(): AuthenticatedUser {
         return AuthenticatedUser.builder()
-            .id(id?.toLong())
             .hash(hash)
             .user(user)
             .build()

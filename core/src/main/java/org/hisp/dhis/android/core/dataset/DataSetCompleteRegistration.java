@@ -73,7 +73,8 @@ public abstract class DataSetCompleteRegistration extends BaseDeletableDataObjec
 
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseDeletableDataObject.Builder<DataSetCompleteRegistration.Builder> {
+    public abstract static class Builder
+            implements BaseDeletableDataObject.Builder<DataSetCompleteRegistration.Builder> {
 
         public Builder() {
             syncState(State.SYNCED);

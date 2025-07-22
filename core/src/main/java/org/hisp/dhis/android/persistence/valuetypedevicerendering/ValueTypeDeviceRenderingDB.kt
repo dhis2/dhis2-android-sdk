@@ -58,7 +58,6 @@ internal data class ValueTypeDeviceRenderingDB(
 
     override fun toDomain(): ValueTypeDeviceRendering {
         return ValueTypeDeviceRendering.builder().apply {
-            id(id?.toLong())
             uid(uid)
             objectTable(objectTable)
             deviceType(deviceType)

@@ -38,7 +38,6 @@ internal data class RelationshipTypeDB(
         return RelationshipType.builder()
             .apply {
                 applyBaseIdentifiableFields(this@RelationshipTypeDB)
-                id(id?.toLong())
                 fromToName(fromToName)
                 toFromName(toFromName)
                 bidirectional(bidirectional)

@@ -23,7 +23,6 @@ internal data class SystemSettingDB(
 
     override fun toDomain(): SystemSetting {
         return SystemSetting.builder().apply {
-            id(id?.toLong())
             key?.let { key(SystemSetting.SystemSettingKey.valueOf(it)) }
             value(value)
         }.build()

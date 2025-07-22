@@ -77,7 +77,6 @@ internal data class EnrollmentDB(
 
     override fun toDomain(): Enrollment {
         return Enrollment.builder().apply {
-            id(id?.toLong())
             uid(uid)
             created(created.toJavaDate())
             lastUpdated(lastUpdated.toJavaDate())

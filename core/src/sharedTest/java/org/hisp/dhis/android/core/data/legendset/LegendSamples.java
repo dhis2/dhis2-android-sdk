@@ -40,7 +40,6 @@ public class LegendSamples {
 
         fillIdentifiableProperties(legendBuilder);
         legendBuilder
-                .id(1L)
                 .startValue(30.5)
                 .endValue(40.0)
                 .color("#d9f0a3")
@@ -50,7 +49,6 @@ public class LegendSamples {
 
     public static Legend get45To60() {
         return Legend.builder()
-                .id(1L)
                 .uid("BzQkRWHS7lu")
                 .name("45 - 60")
                 .startValue(45.0)

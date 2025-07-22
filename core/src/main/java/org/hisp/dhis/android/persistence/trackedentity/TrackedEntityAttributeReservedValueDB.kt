@@ -26,7 +26,6 @@ internal data class TrackedEntityAttributeReservedValueDB(
 
     override fun toDomain(): TrackedEntityAttributeReservedValue {
         return TrackedEntityAttributeReservedValue.builder()
-            .id(id?.toLong())
             .ownerObject(ownerObject)
             .ownerUid(ownerUid)
             .key(key)

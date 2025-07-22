@@ -58,6 +58,7 @@ object TrackerVisualizationDimensionTableInfo {
                 ITEMS,
                 FILTER,
                 REPETITION,
+                SORT_ORDER,
             )
         }
 
@@ -68,6 +69,7 @@ object TrackerVisualizationDimensionTableInfo {
                 POSITION,
                 DIMENSION,
                 DIMENSION_TYPE,
+                SORT_ORDER,
             )
         }
 
@@ -81,6 +83,7 @@ object TrackerVisualizationDimensionTableInfo {
             const val ITEMS = "items"
             const val FILTER = "filter"
             const val REPETITION = "repetition"
+            const val SORT_ORDER = "sortOrder"
         }
     }
 }

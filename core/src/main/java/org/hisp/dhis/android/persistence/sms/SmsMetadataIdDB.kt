@@ -18,7 +18,6 @@ internal data class SmsMetadataIdDB(
 
     override fun toDomain(): SMSMetadataId {
         return SMSMetadataId.builder()
-            .id(id?.toLong())
             .type(type?.let { SMSConsts.MetadataType.valueOf(it) })
             .uid(uid)
             .build()

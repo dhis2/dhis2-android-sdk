@@ -34,7 +34,6 @@ public class DataElementAttributeValueLinkSamples {
 
     public static DataElementAttributeValueLink getDataElementAttribute() {
         return DataElementAttributeValueLink.builder()
-                .id(1L)
                 .dataElement("data_element")
                 .attribute("attribute")
                 .value("value")

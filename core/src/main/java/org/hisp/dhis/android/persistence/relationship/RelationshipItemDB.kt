@@ -68,7 +68,6 @@ internal data class RelationshipItemDB(
 
     override fun toDomain(): RelationshipItem {
         return RelationshipItem.builder()
-            .id(id?.toLong())
             .relationship(ObjectWithUidDB(relationship).toDomain())
             .relationshipItemType(RelationshipConstraintType.valueOf(relationshipItemType))
             .trackedEntityInstance(

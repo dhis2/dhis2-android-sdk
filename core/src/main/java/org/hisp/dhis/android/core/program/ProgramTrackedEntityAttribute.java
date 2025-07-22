@@ -85,8 +85,6 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject i
     @AutoValue.Builder
     public abstract static class Builder extends BaseNameableObject.Builder<Builder> {
 
-        public abstract Builder id(Long id);
-
         public abstract Builder mandatory(Boolean mandatory);
 
         public abstract Builder trackedEntityAttribute(ObjectWithUid trackedEntityAttribute);

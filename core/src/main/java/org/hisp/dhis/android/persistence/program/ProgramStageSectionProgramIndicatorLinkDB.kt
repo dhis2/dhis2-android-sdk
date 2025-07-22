@@ -42,7 +42,6 @@ internal data class ProgramStageSectionProgramIndicatorLinkDB(
 
     override fun toDomain(): ProgramStageSectionProgramIndicatorLink {
         return ProgramStageSectionProgramIndicatorLink.builder()
-            .id(id?.toLong())
             .programStageSection(programStageSection)
             .programIndicator(programIndicator)
             .build()

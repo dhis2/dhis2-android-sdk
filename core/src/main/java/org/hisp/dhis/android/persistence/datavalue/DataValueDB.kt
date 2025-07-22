@@ -90,7 +90,6 @@ internal data class DataValueDB(
 
     override fun toDomain(): DataValue {
         return DataValue.builder().apply {
-            id(id?.toLong())
             dataElement(dataElement)
             period(period)
             organisationUnit(organisationUnit)

@@ -38,13 +38,13 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ImportStatusColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.imports.ImportStatus;
 
 import java.util.Date;
 
 @AutoValue
-public abstract class DataValueConflict extends BaseObject {
+public abstract class DataValueConflict implements CoreObject {
 
     @Nullable
     public abstract String conflict();
@@ -93,7 +93,7 @@ public abstract class DataValueConflict extends BaseObject {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder {
         public abstract Builder conflict(String conflict);
 
         public abstract Builder value(String value);

@@ -38,7 +38,6 @@ internal data class AnalyticsPeriodBoundaryDB(
 
     override fun toDomain(): AnalyticsPeriodBoundary {
         return AnalyticsPeriodBoundary.builder().apply {
-            id(id?.toLong())
             programIndicator(programIndicator)
             boundaryTarget(boundaryTarget)
             analyticsPeriodBoundaryType?.let { analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.valueOf(it)) }

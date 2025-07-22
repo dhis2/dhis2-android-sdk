@@ -28,13 +28,12 @@
 package org.hisp.dhis.android.core.user
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.core.user.loginconfig.LoginPageLayout
 import org.hisp.dhis.android.network.loginconfig.LoginConfigDTO
 import org.junit.Test
 
-class LoginConfigShould : BaseObjectKotlinxShould("user/login_config.json"), ObjectShould {
+class LoginConfigShould : CoreObjectShould("user/login_config.json") {
 
     @Test
     override fun map_from_json_string() {

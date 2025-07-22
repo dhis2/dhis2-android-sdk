@@ -66,8 +66,6 @@ public abstract class CustomIcon implements CoreObject {
     @AutoValue.Builder
     public abstract static class Builder {
 
-        public abstract Builder id(Long id);
-
         public abstract Builder key(String key);
 
         public abstract Builder fileResource(ObjectWithUid fileResource);

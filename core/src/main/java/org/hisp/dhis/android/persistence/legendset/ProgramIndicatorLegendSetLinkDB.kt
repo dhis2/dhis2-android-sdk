@@ -44,7 +44,6 @@ internal data class ProgramIndicatorLegendSetLinkDB(
 
     override fun toDomain(): ProgramIndicatorLegendSetLink {
         return ProgramIndicatorLegendSetLink.builder()
-            .id(id?.toLong())
             .programIndicator(programIndicator)
             .legendSet(legendSet)
             .sortOrder(sortOrder)

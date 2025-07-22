@@ -48,7 +48,6 @@ public class ProgramStageSamples {
 
         fillIdentifiableProperties(builder);
         return builder
-                .id(1L)
                 .description("description")
                 .displayDescription("display_description")
                 .displayExecutionDateLabel("execution_date_label")

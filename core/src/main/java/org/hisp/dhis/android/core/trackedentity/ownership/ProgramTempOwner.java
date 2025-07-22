@@ -65,8 +65,6 @@ public abstract class ProgramTempOwner implements CoreObject {
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder id(Long id);
-
         public abstract Builder program(String event);
 
         public abstract Builder trackedEntityInstance(String trackedEntityInstance);

@@ -19,7 +19,6 @@ internal data class ResourceDB(
 
     override fun toDomain(): Resource {
         return Resource.builder()
-            .id(id?.toLong())
             .resourceType(resourceType.let { Resource.Type.valueOf(it) })
             .lastSynced(lastSynced.toJavaDate())
             .build()

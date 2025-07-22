@@ -95,8 +95,7 @@ public class MockObjects {
                 .incidentDate(incidentDate)
                 .completedDate(completedDate)
                 .status(enrollmentStatus)
-                .trackedEntityInstance(teiUid)
-                .id(341L);
+                .trackedEntityInstance(teiUid);
     }
 
     private static TrackedEntityInstance getTestTEIEnrollment(Enrollment enrollment) {

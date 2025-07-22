@@ -54,7 +54,6 @@ internal data class DataSetDataElementLinkDB(
 
     override fun toDomain(): DataSetElement {
         return DataSetElement.builder().apply {
-            id(id?.toLong())
             dataSet(ObjectWithUid.create(dataSet))
             dataElement(ObjectWithUid.create(dataElement))
             categoryCombo?.let { categoryCombo(ObjectWithUid.create(it)) }

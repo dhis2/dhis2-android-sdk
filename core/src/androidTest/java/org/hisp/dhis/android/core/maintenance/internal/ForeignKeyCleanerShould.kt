@@ -79,7 +79,6 @@ class ForeignKeyCleanerShould : BaseMockIntegrationTestEmptyDispatcher() {
             .fromObjectUid("option_uid")
             .build()
         val violationWithoutId = foreignKeyViolation.toBuilder()
-            .id(null)
             .created(null)
             .fromObjectRow(null)
             .build()

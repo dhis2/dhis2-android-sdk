@@ -45,7 +45,6 @@ internal data class UserDB(
     override fun toDomain(): User {
         return User.builder().apply {
             applyBaseIdentifiableFields(this@UserDB)
-            id(id?.toLong())
             birthday(birthday)
             education(education)
             gender(gender)

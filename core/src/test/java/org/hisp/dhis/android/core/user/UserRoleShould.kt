@@ -29,12 +29,11 @@ package org.hisp.dhis.android.core.user
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.user.UserRoleDTO
 import org.junit.Test
 
-class UserRoleShould : BaseObjectKotlinxShould("user/user_role.json"), ObjectShould {
+class UserRoleShould : CoreObjectShould("user/user_role.json") {
 
     @Test
     override fun map_from_json_string() {

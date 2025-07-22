@@ -30,7 +30,6 @@ internal data class GeneralSettingDB(
 
     override fun toDomain(): GeneralSettings {
         return GeneralSettings.builder()
-            .id(id?.toLong())
             .encryptDB(encryptDB)
             .lastUpdated(lastUpdated.toJavaDate())
             .reservedValues(reservedValues)

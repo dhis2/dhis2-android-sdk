@@ -42,7 +42,6 @@ public class CategoryOptionSamples {
 
         fillNameableProperties(builder);
         return builder
-                .id(1L)
                 .startDate(CREATED)
                 .endDate(LAST_UPDATED)
                 .access(AccessHelper.createForDataWrite(false))

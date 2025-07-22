@@ -39,7 +39,6 @@ internal data class EventSyncDB(
 
     override fun toDomain(): EventSync {
         return EventSync.builder()
-            .id(id?.toLong())
             .program(program)
             .organisationUnitIdsHash(organisationUnitIdsHash)
             .downloadLimit(downloadLimit)

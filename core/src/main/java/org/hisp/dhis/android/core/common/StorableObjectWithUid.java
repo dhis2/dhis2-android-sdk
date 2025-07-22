@@ -35,7 +35,7 @@ import androidx.annotation.NonNull;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class StorableObjectWithUid extends BaseObject implements ObjectWithUidInterface {
+public abstract class StorableObjectWithUid implements CoreObject, ObjectWithUidInterface {
 
     @Override
     @NonNull
@@ -47,6 +47,6 @@ public abstract class StorableObjectWithUid extends BaseObject implements Object
     }
 
     public static StorableObjectWithUid create(String uid) {
-        return new AutoValue_StorableObjectWithUid(null, uid);
+        return new AutoValue_StorableObjectWithUid(uid);
     }
 }

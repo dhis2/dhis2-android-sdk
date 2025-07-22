@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.core.common;
 
 public class CoreColumns {
-    public static final String ID = android.provider.BaseColumns._ID;
-
     public String[] all() {
         return new String[] {};
     }

@@ -29,7 +29,6 @@ internal data class DataValueConflictDB(
 
     override fun toDomain(): DataValueConflict {
         return DataValueConflict.builder().apply {
-            id(id?.toLong())
             conflict(conflict)
             value(value)
             attributeOptionCombo(attributeOptionCombo)

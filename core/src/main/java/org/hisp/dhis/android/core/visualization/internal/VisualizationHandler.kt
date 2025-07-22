@@ -65,20 +65,25 @@ internal class VisualizationHandler(
     private fun toItems(
         dimensions: List<VisualizationDimension>?,
         position: LayoutPosition,
+    ): List<VisualizationDimensionItem> = dimensions.orEmpty().flatMap { it.toDimensionItems(position) }
+
+    private fun VisualizationDimension.toDimensionItems(
+        position: LayoutPosition,
     ): List<VisualizationDimensionItem> {
-        return dimensions?.map { dimension ->
-            val nonNullItems = dimension.items()?.filterNotNull()
-            if (nonNullItems.isNullOrEmpty()) {
-                // Add auxiliary empty item to persist in the database
-                listOf(
-                    VisualizationDimensionItem.builder()
-                        .position(position)
-                        .dimension(dimension.id())
-                        .build(),
-                )
-            } else {
-                nonNullItems
-            }
-        }?.flatten() ?: emptyList()
+        val baseItems = items().orEmpty().filterNotNull()
+        val nonEmptyItems = baseItems.ifEmpty { listOf(createEmptyItem(position)) }
+
+        return nonEmptyItems.mapIndexed { index, item ->
+            item.toBuilder()
+                .sortOrder(index)
+                .build()
+        }
+    }
+
+    private fun VisualizationDimension.createEmptyItem(position: LayoutPosition): VisualizationDimensionItem {
+        return VisualizationDimensionItem.builder()
+            .position(position)
+            .dimension(id())
+            .build()
     }
 }

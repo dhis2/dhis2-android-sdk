@@ -41,13 +41,13 @@ import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ImageFormatCol
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.MapLayerPositionColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.MapServiceColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreMapLayerImageryProviderColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import java.util.List;
 
 @AutoValue
-public abstract class MapLayer extends BaseObject implements ObjectWithUidInterface {
+public abstract class MapLayer implements CoreObject, ObjectWithUidInterface {
 
     public static final String IMAGERY_PROVIDERS = "imageryProviders";
 
@@ -110,7 +110,7 @@ public abstract class MapLayer extends BaseObject implements ObjectWithUidInterf
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder {
 
         public abstract Builder uid(String uid);
 

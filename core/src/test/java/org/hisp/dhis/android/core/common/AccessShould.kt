@@ -31,7 +31,7 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.network.common.dto.AccessDTO
 import org.junit.Test
 
-class AccessShould : BaseObjectKotlinxShould("common/access.json"), ObjectShould {
+class AccessShould : CoreObjectShould("common/access.json") {
     @Test
     override fun map_from_json_string() {
         val accessDTO = deserialize(AccessDTO.serializer())

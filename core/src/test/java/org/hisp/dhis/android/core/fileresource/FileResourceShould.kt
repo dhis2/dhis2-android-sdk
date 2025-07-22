@@ -29,12 +29,11 @@ package org.hisp.dhis.android.core.fileresource
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.fileresource.FileResourceDTO
 import org.junit.Test
 
-class FileResourceShould : BaseObjectKotlinxShould("fileresource/file_resource.json"), ObjectShould {
+class FileResourceShould : CoreObjectShould("fileresource/file_resource.json") {
 
     @Test
     override fun map_from_json_string() {

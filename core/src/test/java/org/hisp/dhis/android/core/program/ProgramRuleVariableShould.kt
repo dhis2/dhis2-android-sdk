@@ -29,14 +29,11 @@ package org.hisp.dhis.android.core.program
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.program.ProgramRuleVariableDTO
 import org.junit.Test
 
-class ProgramRuleVariableShould :
-    BaseObjectKotlinxShould("program/program_rule_variable.json"),
-    ObjectShould {
+class ProgramRuleVariableShould : CoreObjectShould("program/program_rule_variable.json") {
     @Test
     override fun map_from_json_string() {
         val programRuleVariableDTO = deserialize(ProgramRuleVariableDTO.serializer())

@@ -33,7 +33,6 @@ internal data class CustomIntentAttributeDB(
 
     override fun toDomain(): CustomIntentAttribute {
         return CustomIntentAttribute.builder()
-            .id(id?.toLong())
             .uid(uid)
             .customIntentUid(customIntentUid)
             .build()

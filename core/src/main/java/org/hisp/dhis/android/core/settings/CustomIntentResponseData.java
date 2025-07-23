@@ -28,24 +28,18 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import android.database.Cursor;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 
 import com.google.auto.value.AutoValue;
+
+import java.util.List;
 
 @AutoValue
 public abstract class CustomIntentResponseData {
 
-    @Nullable
-    public abstract String argument();
-
-    @Nullable
-    public abstract String path();
-
-    public static CustomIntentResponseData create(Cursor cursor) {
-        return AutoValue_CustomIntentResponseData.createFromCursor(cursor);
-    }
+    @NonNull
+    public abstract List<CustomIntentResponseDataExtra> extras();
 
     public static Builder builder() {
         return new AutoValue_CustomIntentResponseData.Builder();
@@ -53,9 +47,8 @@ public abstract class CustomIntentResponseData {
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder argument(String argument);
+        public abstract Builder extras(List<CustomIntentResponseDataExtra> extras);
 
-        public abstract Builder path(String path);
 
         public abstract CustomIntentResponseData build();
     }

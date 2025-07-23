@@ -28,21 +28,17 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import android.database.Cursor;
 
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
+
 
 @AutoValue
 public abstract class CustomIntentResponse {
 
     @Nullable
     public abstract CustomIntentResponseData data();
-
-    public static CustomIntentResponse create(Cursor cursor) {
-        return AutoValue_CustomIntentResponse.createFromCursor(cursor);
-    }
 
     public static Builder builder() {
         return new AutoValue_CustomIntentResponse.Builder();

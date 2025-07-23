@@ -26,27 +26,54 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.settings
+package org.hisp.dhis.android.persistence.settings
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.settings.CustomIntentResponseData
+import kotlinx.serialization.builtins.ListSerializer
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.settings.CustomIntentResponseDataExtra
 import org.hisp.dhis.android.core.settings.CustomIntentResponseExtraType
 
-@Serializable
-internal data class CustomIntentResponseDataDTO(
-    val argument: String?,
-    val path: String?,
+@JvmInline
+internal value class ResponseDataExtrasDB(
+    val value: String,
 ) {
-    fun toDomain(): CustomIntentResponseData {
-        return CustomIntentResponseData.builder().extras(
-            listOf(
-                CustomIntentResponseDataExtra.builder()
-                    .key(path)
-                    .extraName(argument)
-                    .extraType(CustomIntentResponseExtraType.BOOLEAN) // Temporary hardcoding until ASWA is updated
-                    .build(),
-            ),
-        ).build()
+    fun toDomain(): List<CustomIntentResponseDataExtra> {
+        return KotlinxJsonParser.instance.decodeFromString<List<CustomIntentResponseDataExtraDBSerializable>>(value)
+            .map { it.toDomain() }
+    }
+}
+
+internal fun List<CustomIntentResponseDataExtra>.toDB(): ResponseDataExtrasDB {
+    return ResponseDataExtrasDB(
+        KotlinxJsonParser.instance.encodeToString(
+            ListSerializer(CustomIntentResponseDataExtraDBSerializable.serializer()),
+            this.toDBSerializable(),
+        ),
+    )
+}
+
+@Serializable
+private data class CustomIntentResponseDataExtraDBSerializable(
+    val extraName: String,
+    val extraType: String,
+    val key: String?,
+) {
+    fun toDomain(): CustomIntentResponseDataExtra {
+        return CustomIntentResponseDataExtra.builder()
+            .extraName(extraName)
+            .extraType(CustomIntentResponseExtraType.valueOf(extraType))
+            .key(key)
+            .build()
+    }
+}
+
+private fun List<CustomIntentResponseDataExtra>.toDBSerializable(): List<CustomIntentResponseDataExtraDBSerializable> {
+    return this.map {
+        CustomIntentResponseDataExtraDBSerializable(
+            extraName = it.extraName(),
+            extraType = it.extraType().name,
+            key = it.key(),
+        )
     }
 }

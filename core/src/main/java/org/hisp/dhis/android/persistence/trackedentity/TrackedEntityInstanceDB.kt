@@ -1,9 +1,7 @@
 package org.hisp.dhis.android.persistence.trackedentity
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.util.dateFormat
@@ -34,16 +32,9 @@ import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["uid"], unique = true),
-        Index(value = ["organisationUnit"]),
-        Index(value = ["trackedEntityType"]),
-    ],
 )
 internal data class TrackedEntityInstanceDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
+    @PrimaryKey
     val uid: String,
     val created: String?,
     val lastUpdated: String?,

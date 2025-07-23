@@ -1,10 +1,7 @@
 package org.hisp.dhis.android.persistence.trackedentity
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.core.util.toJavaDate
@@ -33,16 +30,9 @@ import org.hisp.dhis.android.persistence.event.EventDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["event"]),
-        Index(value = ["dataElement"]),
-        Index(value = ["event", "dataElement"], unique = true),
-    ],
+    primaryKeys = ["event", "dataElement"],
 )
 internal data class TrackedEntityDataValueDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val event: String,
     val dataElement: String,
     val storedBy: String?,

@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.imports.TrackerImportConflict
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectStoreImpl
+import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.persistence.event.EventTableInfo
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceTableInfo
@@ -42,7 +43,7 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class TrackerImportConflictStoreImpl(
     private val databaseAdapter: DatabaseAdapter,
-) : TrackerImportConflictStore, ObjectStoreImpl<TrackerImportConflict, TrackerImportConflictDB>(
+) : TrackerImportConflictStore, ObjectWithoutUidStoreImpl<TrackerImportConflict, TrackerImportConflictDB>(
     { databaseAdapter.getCurrentDatabase().trackerImportConflictDao() },
     TrackerImportConflict::toDB,
     SQLStatementBuilderImpl(TrackerImportConflictTableInfo.TABLE_INFO),

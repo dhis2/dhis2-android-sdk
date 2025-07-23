@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnA
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.D2ErrorCodeColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.D2ErrorComponentColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreExceptionAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
@@ -91,7 +90,7 @@ public abstract class D2Error extends Exception implements CoreObject {
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder {
 
         public abstract Builder url(String url);
 

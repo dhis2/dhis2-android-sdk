@@ -37,7 +37,6 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ResourceTypeColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
@@ -81,9 +80,7 @@ public abstract class Resource implements CoreObject {
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
+    public abstract static class Builder {
         public abstract Builder resourceType(Resource.Type resourceType);
 
         public abstract Builder lastSynced(Date lastSynced);

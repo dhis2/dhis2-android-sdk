@@ -51,7 +51,6 @@ class CustomIntentCollectionRepositoryMockIntegrationShould : BaseMockIntegratio
         assertThat(customIntentSettings[0].trigger()?.attributes()?.size).isEqualTo(1)
         assertThat(customIntentSettings[1].trigger()?.attributes()).isEmpty()
         assertThat(customIntentSettings[0].request()?.arguments()?.size).isEqualTo(3)
-        assertThat(customIntentSettings[1].response()?.data()?.argument()).isNotEmpty()
-        assertThat(customIntentSettings[1].response()?.data()?.path()).isNotEmpty()
+        assertThat(customIntentSettings[1].response()?.data()?.extras()).isNotEmpty()
     }
 }

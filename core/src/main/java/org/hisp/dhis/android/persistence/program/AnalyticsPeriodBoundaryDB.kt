@@ -1,10 +1,7 @@
 package org.hisp.dhis.android.persistence.program
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryType
@@ -21,14 +18,9 @@ import org.hisp.dhis.android.persistence.common.EntityDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["programIndicator"]),
-    ],
+    primaryKeys = ["programIndicator", "boundaryTarget", "analyticsPeriodBoundaryType"],
 )
 internal data class AnalyticsPeriodBoundaryDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val programIndicator: String,
     val boundaryTarget: String?,
     val analyticsPeriodBoundaryType: String?,
@@ -38,7 +30,6 @@ internal data class AnalyticsPeriodBoundaryDB(
 
     override fun toDomain(): AnalyticsPeriodBoundary {
         return AnalyticsPeriodBoundary.builder().apply {
-            id(id?.toLong())
             programIndicator(programIndicator)
             boundaryTarget(boundaryTarget)
             analyticsPeriodBoundaryType?.let { analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.valueOf(it)) }

@@ -37,14 +37,13 @@ import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
-import org.hisp.dhis.android.persistence.relationship.RelationshipConstraintTableInfo;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Collections;
 import java.util.List;
 
 @AutoValue
-public abstract class TrackerDataView extends BaseObject {
+public abstract class TrackerDataView implements CoreObject {
 
     @Nullable
     @ColumnName(RelationshipConstraintTableInfo.Columns.TRACKER_DATA_VIEW_ATTRIBUTES)
@@ -67,7 +66,7 @@ public abstract class TrackerDataView extends BaseObject {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder {
 
         public abstract Builder attributes(List<String> attributes);
 

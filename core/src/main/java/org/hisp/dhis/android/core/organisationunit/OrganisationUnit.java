@@ -111,8 +111,6 @@ public abstract class OrganisationUnit extends BaseNameableObject implements Cor
 
     @AutoValue.Builder
     public abstract static class Builder extends BaseNameableObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
         public abstract Builder parent(ObjectWithUid parent);
 
         public abstract Builder path(String path);

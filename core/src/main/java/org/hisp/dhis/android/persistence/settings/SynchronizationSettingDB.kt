@@ -1,6 +1,5 @@
 package org.hisp.dhis.android.persistence.settings
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.settings.DataSyncPeriod
@@ -12,9 +11,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 
 @Entity(tableName = "SynchronizationSetting")
 internal data class SynchronizationSettingDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
+    @PrimaryKey
     val dataSync: String?,
     val metadataSync: String?,
     val trackerImporterVersion: String?,
@@ -24,7 +21,6 @@ internal data class SynchronizationSettingDB(
 
     override fun toDomain(): SynchronizationSettings {
         return SynchronizationSettings.builder().apply {
-            id(id?.toLong())
             dataSync?.let { dataSync(DataSyncPeriod.valueOf(it)) }
             metadataSync?.let { metadataSync(MetadataSyncPeriod.valueOf(it)) }
             trackerImporterVersion?.let { trackerImporterVersion(TrackerImporterVersion.valueOf(it)) }

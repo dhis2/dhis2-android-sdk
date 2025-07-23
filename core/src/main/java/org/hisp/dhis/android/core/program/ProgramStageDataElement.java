@@ -87,8 +87,6 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject imp
     @AutoValue.Builder
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
 
-        public abstract Builder id(Long id);
-
         public abstract Builder displayInReports(Boolean displayInReports);
 
         public abstract Builder compulsory(Boolean compulsory);

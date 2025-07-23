@@ -69,7 +69,7 @@ class SystemInfoCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
 
     private fun isSystemInfoInDb(si: SystemInfo) {
         val siDb = systemInfoRepository.blockingGet()!!
-        assertThat(si.toBuilder().id(null).build()).isEqualTo(siDb.toBuilder().id(null).build())
+        assertThat(si).isEqualTo(siDb)
     }
 
     companion object {

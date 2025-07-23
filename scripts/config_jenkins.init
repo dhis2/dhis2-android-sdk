@@ -1,10 +1,11 @@
 build_time_average=120
 polling_interval=10
-browserstack_device_list="\"Google Pixel 4-10.0\""
+browserstack_device_list="\"Google Pixel 7-13.0\""
 browserstack_video=false
 browserstack_local=false
 browserstack_deviceLogs=true
 browserstack_mock_server=true
 browserstack_package="\"org.hisp.dhis.android\""
+browserstack_package_benchmark="\"org.hisp.dhis.android.instrumentedTestApp.performance\""
 browserstack_singleRunnerInvocation=true
 browserstack_coverage=true

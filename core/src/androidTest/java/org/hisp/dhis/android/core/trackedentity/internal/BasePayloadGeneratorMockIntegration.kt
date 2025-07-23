@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.data.relationship.RelationshipSamples
@@ -55,7 +54,6 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
 import org.junit.After
 import org.junit.BeforeClass
@@ -275,7 +273,7 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
         internal lateinit var teiAttributeValueStore: TrackedEntityAttributeValueStore
         internal lateinit var eventStore: EventStore
         internal lateinit var enrollmentStore: EnrollmentStore
-        internal lateinit var trackedEntityTypeStore: IdentifiableObjectStore<TrackedEntityType>
+        internal lateinit var trackedEntityTypeStore: TrackedEntityTypeStore
         internal lateinit var programStore: ProgramStore
 
         @BeforeClass

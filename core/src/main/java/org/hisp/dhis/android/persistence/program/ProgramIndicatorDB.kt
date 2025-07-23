@@ -1,9 +1,7 @@
 package org.hisp.dhis.android.persistence.program
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.AnalyticsType
@@ -25,15 +23,9 @@ import org.hisp.dhis.android.persistence.common.applyBaseNameableFields
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["uid"], unique = true),
-        Index(value = ["program"]),
-    ],
 )
 internal data class ProgramIndicatorDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
+    @PrimaryKey
     override val uid: String,
     override val code: String?,
     override val name: String?,
@@ -57,7 +49,6 @@ internal data class ProgramIndicatorDB(
     override fun toDomain(): ProgramIndicator {
         return ProgramIndicator.builder().apply {
             applyBaseNameableFields(this@ProgramIndicatorDB)
-            id(id?.toLong())
             displayInForm(displayInForm)
             expression(expression)
             dimensionItem(dimensionItem)

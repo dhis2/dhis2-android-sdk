@@ -1,9 +1,7 @@
 package org.hisp.dhis.android.persistence.program
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramRuleAction
@@ -77,22 +75,9 @@ import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["uid"], unique = true),
-        Index(value = ["programRule"]),
-        Index(value = ["trackedEntityAttribute"]),
-        Index(value = ["programIndicator"]),
-        Index(value = ["programStageSection"]),
-        Index(value = ["programStage"]),
-        Index(value = ["dataElement"]),
-        Index(value = ["option"]),
-        Index(value = ["optionGroup"]),
-    ],
 )
 internal data class ProgramRuleActionDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
+    @PrimaryKey
     override val uid: String,
     override val code: String?,
     override val name: String?,
@@ -117,7 +102,6 @@ internal data class ProgramRuleActionDB(
     override fun toDomain(): ProgramRuleAction {
         return ProgramRuleAction.builder().apply {
             applyBaseIdentifiableFields(this@ProgramRuleActionDB)
-            id(id?.toLong())
             data(data)
             content(content)
             location(location)

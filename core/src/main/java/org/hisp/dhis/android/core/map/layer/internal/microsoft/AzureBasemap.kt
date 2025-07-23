@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,11 +26,10 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.map.layer.internal.microsoft
 
-import java.io.IOException;
-import java.text.ParseException;
-
-public interface ObjectShould {
-    void map_from_json_string() throws IOException, ParseException;
-}
+internal data class AzureBasemap(
+    val id: String,
+    val name: String,
+    val style: String,
+)

@@ -1,10 +1,7 @@
 package org.hisp.dhis.android.persistence.map
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
 import org.hisp.dhis.android.persistence.common.EntityDB
 
@@ -19,14 +16,9 @@ import org.hisp.dhis.android.persistence.common.EntityDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["mapLayer"]),
-    ],
+    primaryKeys = ["mapLayer", "attribution"],
 )
 internal data class MapLayerImageryProviderDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val mapLayer: String,
     val attribution: String,
     val coverageAreas: MapLayerImageryProviderAreaDB?,
@@ -34,7 +26,6 @@ internal data class MapLayerImageryProviderDB(
 
     override fun toDomain(): MapLayerImageryProvider {
         return MapLayerImageryProvider.builder()
-            .id(id?.toLong())
             .mapLayer(mapLayer)
             .attribution(attribution)
             .coverageAreas(coverageAreas?.toDomain())

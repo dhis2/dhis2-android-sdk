@@ -48,7 +48,6 @@ public class TrackedEntityInstanceFilterSamples {
 
     public static TrackedEntityInstanceFilter get() {
         return TrackedEntityInstanceFilter.builder()
-                .id(1L)
                 .uid("klhzVgls081")
                 .code("assigned_none")
                 .name("Ongoing foci responses")

@@ -1,10 +1,7 @@
 package org.hisp.dhis.android.persistence.user
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink
 import org.hisp.dhis.android.persistence.common.EntityDB
 
@@ -19,15 +16,9 @@ import org.hisp.dhis.android.persistence.common.EntityDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["organisationUnitScope", "user", "organisationUnit"], unique = true),
-        Index(value = ["user"]),
-    ],
+    primaryKeys = ["organisationUnitScope", "user", "organisationUnit"],
 )
 internal data class UserOrganisationUnitDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val user: String,
     val organisationUnit: String,
     val organisationUnitScope: String,
@@ -37,7 +28,6 @@ internal data class UserOrganisationUnitDB(
 
     override fun toDomain(): UserOrganisationUnitLink {
         return UserOrganisationUnitLink.builder()
-            .id(id?.toLong())
             .user(user)
             .organisationUnit(organisationUnit)
             .organisationUnitScope(organisationUnitScope)

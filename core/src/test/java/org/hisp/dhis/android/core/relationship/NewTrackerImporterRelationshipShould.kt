@@ -29,14 +29,11 @@ package org.hisp.dhis.android.core.relationship
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.tracker.NewRelationshipDTO
 import org.junit.Test
 
-class NewTrackerImporterRelationshipShould :
-    BaseObjectKotlinxShould("relationship/new_relationship.json"),
-    ObjectShould {
+class NewTrackerImporterRelationshipShould : CoreObjectShould("relationship/new_relationship.json") {
 
     @Test
     override fun map_from_json_string() {

@@ -1,10 +1,7 @@
 package org.hisp.dhis.android.persistence.dataset
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.dataset.internal.SectionIndicatorLink
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.indicator.IndicatorDB
@@ -27,23 +24,15 @@ import org.hisp.dhis.android.persistence.indicator.IndicatorDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["section", "indicator"], unique = true),
-        Index(value = ["section"]),
-        Index(value = ["indicator"]),
-    ],
+    primaryKeys = ["section", "indicator"],
 )
 internal data class SectionIndicatorLinkDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val section: String,
     val indicator: String,
 ) : EntityDB<SectionIndicatorLink> {
 
     override fun toDomain(): SectionIndicatorLink {
         return SectionIndicatorLink.builder()
-            .id(id?.toLong())
             .section(section)
             .indicator(indicator)
             .build()

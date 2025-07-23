@@ -35,7 +35,6 @@ object TrackerJobObjectSamples {
 
     fun get1(): TrackerJobObject {
         return TrackerJobObject.builder()
-            .id(1L)
             .trackerType(TrackerImporterObjectType.EVENT)
             .objectUid("oUid")
             .jobUid("jUid")

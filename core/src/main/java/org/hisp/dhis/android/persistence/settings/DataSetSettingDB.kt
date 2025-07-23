@@ -1,9 +1,7 @@
 package org.hisp.dhis.android.persistence.settings
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.settings.DataSetSetting
 import org.hisp.dhis.android.core.util.dateFormat
@@ -22,14 +20,9 @@ import org.hisp.dhis.android.persistence.dataset.DataSetDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["uid"], unique = true),
-    ],
 )
 internal data class DataSetSettingDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
+    @PrimaryKey
     val uid: String?,
     val name: String?,
     val lastUpdated: String?,
@@ -39,7 +32,6 @@ internal data class DataSetSettingDB(
 
     override fun toDomain(): DataSetSetting {
         return DataSetSetting.builder()
-            .id(id?.toLong())
             .uid(uid)
             .name(name)
             .lastUpdated(lastUpdated.toJavaDate())

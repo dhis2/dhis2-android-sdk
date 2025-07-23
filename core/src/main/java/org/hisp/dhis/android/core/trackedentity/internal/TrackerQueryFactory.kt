@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
 
 @Suppress("UnnecessaryAbstractClass")
-internal abstract class TrackerQueryFactory<T, S : TrackerBaseSync> constructor(
+internal abstract class TrackerQueryFactory<T, S : TrackerBaseSync>(
     private val programStore: ProgramStore,
     private val programSettingsObjectRepository: ProgramSettingsObjectRepository,
     private val lastUpdatedManager: TrackerSyncLastUpdatedManager<S>,

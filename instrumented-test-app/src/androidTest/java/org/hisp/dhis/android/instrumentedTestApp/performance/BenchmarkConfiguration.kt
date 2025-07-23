@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,29 +26,13 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.map.layer.internal.bing
+package org.hisp.dhis.android.instrumentedTestApp.performance
 
-internal object BingBasemaps {
-    val list: List<BingBasemap> = listOf(
-        BingBasemap(
-            id = "bingLight",
-            name = "Bing Road",
-            style = "CanvasLight",
-        ),
-        BingBasemap(
-            id = "bingDark",
-            name = "Bing Dark",
-            style = "CanvasDark",
-        ),
-        BingBasemap(
-            id = "bingAerial",
-            name = "Bing Aerial",
-            style = "Aerial",
-        ),
-        BingBasemap(
-            id = "bingHybrid",
-            name = "Bing Aerial Labels",
-            style = "AerialWithLabelsOnDemand",
-        ),
-    )
-}
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class BenchmarkConfiguration(
+    val serverUrl: String,
+    val username: String,
+    val password: String,
+)

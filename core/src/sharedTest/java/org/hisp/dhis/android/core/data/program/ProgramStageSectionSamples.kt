@@ -40,7 +40,6 @@ object ProgramStageSectionSamples {
         get() {
             return ProgramStageSection.builder().apply {
                 fillIdentifiableProperties(this)
-                id(1L)
                 sortOrder(1)
                 renderType(
                     SectionRendering.create(

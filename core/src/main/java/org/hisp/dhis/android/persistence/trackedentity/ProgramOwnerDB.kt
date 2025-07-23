@@ -1,10 +1,7 @@
 package org.hisp.dhis.android.persistence.trackedentity
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
 import org.hisp.dhis.android.persistence.common.DataObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
@@ -38,17 +35,9 @@ import org.hisp.dhis.android.persistence.program.ProgramDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["program", "trackedEntityInstance"], unique = true),
-        Index(value = ["program"]),
-        Index(value = ["trackedEntityInstance"]),
-        Index(value = ["ownerOrgUnit"]),
-    ],
+    primaryKeys = ["program", "trackedEntityInstance"],
 )
 internal data class ProgramOwnerDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val program: String,
     val trackedEntityInstance: String,
     val ownerOrgUnit: String,
@@ -57,7 +46,6 @@ internal data class ProgramOwnerDB(
 
     override fun toDomain(): ProgramOwner {
         return ProgramOwner.builder().apply {
-            id(id?.toLong())
             program(program)
             trackedEntityInstance(trackedEntityInstance)
             ownerOrgUnit(ownerOrgUnit)

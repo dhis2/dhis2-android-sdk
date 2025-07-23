@@ -43,7 +43,6 @@ object ProgramStageWorkingListSamples {
         val builder = ProgramStageWorkingList.builder()
         fillIdentifiableProperties(builder)
         return builder
-            .id(1L)
             .description("description")
             .program(ObjectWithUid.create("program"))
             .programStage(ObjectWithUid.create("programStage"))

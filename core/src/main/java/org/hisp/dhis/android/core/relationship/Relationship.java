@@ -46,7 +46,7 @@ public abstract class Relationship extends BaseRelationship {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseRelationship.Builder<Builder> {
+    public abstract static class Builder implements BaseRelationship.Builder<Builder> {
 
         public abstract Relationship build();
     }

@@ -35,7 +35,7 @@ import androidx.annotation.NonNull;
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class TrackedEntityInstanceSync extends TrackerBaseSync {
+public abstract class TrackedEntityInstanceSync implements TrackerBaseSync {
 
     @NonNull
     public static TrackedEntityInstanceSync create(Cursor cursor) {
@@ -43,13 +43,13 @@ public abstract class TrackedEntityInstanceSync extends TrackerBaseSync {
     }
 
     public static Builder builder() {
-        return new AutoValue_TrackedEntityInstanceSync.Builder();
+        return new $$AutoValue_TrackedEntityInstanceSync.Builder();
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends TrackerBaseSync.Builder<Builder> {
+    public abstract static class Builder implements TrackerBaseSync.Builder<Builder> {
 
         public abstract TrackedEntityInstanceSync build();
     }

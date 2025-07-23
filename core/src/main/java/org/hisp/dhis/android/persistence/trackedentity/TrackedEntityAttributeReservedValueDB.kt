@@ -1,18 +1,16 @@
 package org.hisp.dhis.android.persistence.trackedentity
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue
 import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.persistence.common.EntityDB
 
-@Entity(tableName = "TrackedEntityAttributeReservedValue")
+@Entity(
+    tableName = "TrackedEntityAttributeReservedValue",
+    primaryKeys = ["ownerObject", "ownerUid", "value"],
+)
 internal data class TrackedEntityAttributeReservedValueDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val ownerObject: String?,
     val ownerUid: String?,
     val key: String?,
@@ -26,7 +24,6 @@ internal data class TrackedEntityAttributeReservedValueDB(
 
     override fun toDomain(): TrackedEntityAttributeReservedValue {
         return TrackedEntityAttributeReservedValue.builder()
-            .id(id?.toLong())
             .ownerObject(ownerObject)
             .ownerUid(ownerUid)
             .key(key)

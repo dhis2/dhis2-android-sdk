@@ -29,15 +29,14 @@ package org.hisp.dhis.android.core.payload
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.Access
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.core.common.DataAccess
-import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.network.program.ProgramDTO
 import org.hisp.dhis.android.network.program.ProgramPayload
 import org.junit.Test
 
-class ProgramPayloadShould : BaseObjectKotlinxShould("program/program_payload.json"), ObjectShould {
+class ProgramPayloadShould : CoreObjectShould("program/program_payload.json") {
     @Test
     override fun map_from_json_string() {
         val payloadDTO: ProgramPayload = deserialize(ProgramPayload.serializer())

@@ -89,8 +89,6 @@ public abstract class SynchronizationSettings implements CoreObject {
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder id(Long id);
-
         public abstract Builder dataSync(DataSyncPeriod dataSync);
 
         public abstract Builder metadataSync(MetadataSyncPeriod metadataSync);

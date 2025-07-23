@@ -1,9 +1,7 @@
 package org.hisp.dhis.android.persistence.program
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.FormType
@@ -31,15 +29,9 @@ import org.hisp.dhis.android.persistence.common.toDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["uid"], unique = true),
-        Index(value = ["program"]),
-    ],
 )
 internal data class ProgramStageDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
+    @PrimaryKey
     override val uid: String,
     override val code: String?,
     override val name: String?,
@@ -81,7 +73,6 @@ internal data class ProgramStageDB(
         return ProgramStage.builder().apply {
             applyBaseIdentifiableFields(this@ProgramStageDB)
             applyStyleFields(this@ProgramStageDB)
-            id(id?.toLong())
             description(description)
             displayDescription(displayDescription)
             displayExecutionDateLabel(displayExecutionDateLabel)

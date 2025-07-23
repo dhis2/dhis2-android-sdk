@@ -29,12 +29,11 @@
 package org.hisp.dhis.android.core.settings
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.settings.CustomIntentsDTO
 import org.junit.Test
 
-class CustomIntentsShould : BaseObjectKotlinxShould("settings/custom_intents.json"), ObjectShould {
+class CustomIntentsShould : CoreObjectShould("settings/custom_intents.json") {
     @Test
     override fun map_from_json_string() {
         val customIntentsDTO = deserialize(CustomIntentsDTO.serializer())
@@ -51,7 +50,7 @@ class CustomIntentsShould : BaseObjectKotlinxShould("settings/custom_intents.jso
         assertThat(firstCustomIntent.request()?.arguments()?.size).isEqualTo(3)
         assertThat(firstCustomIntent.request()?.arguments()?.get(0)?.key()).isEqualTo("projectID")
         assertThat(firstCustomIntent.request()?.arguments()?.get(0)?.value()).isEqualTo("project one")
-        assertThat(firstCustomIntent.response()?.data()?.argument()).isEqualTo("registration")
-        assertThat(firstCustomIntent.response()?.data()?.path()).isEqualTo("guid")
+        assertThat(firstCustomIntent.response()?.data()?.extras()?.get(0)?.extraName()).isEqualTo("registration")
+        assertThat(firstCustomIntent.response()?.data()?.extras()?.get(0)?.key()).isEqualTo("guid")
     }
 }

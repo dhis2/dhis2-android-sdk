@@ -28,13 +28,12 @@
 package org.hisp.dhis.android.core.visualization
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.visualization.Visualization36DTO
 import org.hisp.dhis.android.network.visualization.VisualizationDTO
 import org.junit.Test
 
-class Visualization36DTOShould : BaseObjectKotlinxShould("visualization/visualization_api_36.json"), ObjectShould {
+class Visualization36DTOShould : CoreObjectShould("visualization/visualization_api_36.json") {
 
     @Test
     override fun map_from_json_string() {

@@ -34,7 +34,6 @@ internal object DataSetValidationRuleLinkSamples {
     val dataSetValidationRuleLink: DataSetValidationRuleLink
         get() {
             return DataSetValidationRuleLink.builder()
-                .id(1L)
                 .dataSet("dataset_uid")
                 .validationRule("validation_rule_uid")
                 .build()

@@ -135,8 +135,6 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
     public abstract static class Builder extends BaseNameableObject.Builder<Builder>
             implements ObjectWithStyle.Builder<TrackedEntityAttribute, TrackedEntityAttribute.Builder> {
 
-        public abstract Builder id(Long id);
-
         public abstract Builder pattern(String pattern);
 
         public abstract Builder sortOrderInListNoProgram(Integer sortOrderInListNoProgram);

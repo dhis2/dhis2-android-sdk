@@ -28,11 +28,8 @@
 
 package org.hisp.dhis.android.persistence.event
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.event.EventDataFilter
 import org.hisp.dhis.android.persistence.common.DateFilterPeriodDB
 import org.hisp.dhis.android.persistence.common.EntityDB
@@ -60,15 +57,9 @@ import org.hisp.dhis.android.persistence.dataelement.DataElementDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["eventFilter"]),
-        Index(value = ["dataItem"]),
-    ],
+    primaryKeys = ["eventFilter", "dataItem"],
 )
 internal data class EventDataFilterDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val eventFilter: String?,
     val dataItem: String?,
     override val le: String?,
@@ -83,7 +74,6 @@ internal data class EventDataFilterDB(
     override fun toDomain(): EventDataFilter {
         return EventDataFilter.builder()
             .applyFilterOperatorsFields(this@EventDataFilterDB)
-            .id(id?.toLong())
             .eventFilter(eventFilter)
             .dataItem(dataItem)
             .build()

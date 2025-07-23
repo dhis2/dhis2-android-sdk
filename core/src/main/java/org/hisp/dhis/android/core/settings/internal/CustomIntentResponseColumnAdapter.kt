@@ -33,33 +33,27 @@ import android.database.Cursor
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
 import org.hisp.dhis.android.core.settings.CustomIntentResponse
 import org.hisp.dhis.android.core.settings.CustomIntentResponseData
-import org.hisp.dhis.android.persistence.settings.CustomIntentTableInfo.Columns
+import org.hisp.dhis.android.persistence.settings.ResponseDataExtrasDB
+import org.hisp.dhis.android.persistence.settings.toDB
 
 internal class CustomIntentResponseColumnAdapter : ColumnTypeAdapter<CustomIntentResponse> {
 
     override fun fromCursor(cursor: Cursor, columnName: String): CustomIntentResponse {
-        val responseDataArgumentIndex = cursor.getColumnIndex(Columns.RESPONSE_DATA_ARGUMENT)
-        val responseDataPathIndex = cursor.getColumnIndex(Columns.RESPONSE_DATA_PATH)
-
-        val responseDataArgument = cursor.getString(responseDataArgumentIndex)
-        val responseDataPath = cursor.getString(responseDataPathIndex)
+        val responseDataExtrasIndex = cursor.getColumnIndex(RESPONSE_DATA_EXTRAS)
+        val responseDataExtras = cursor.getString(responseDataExtrasIndex)
 
         return CustomIntentResponse.builder()
             .data(
                 CustomIntentResponseData.builder()
-                    .argument(responseDataArgument)
-                    .path(responseDataPath)
+                    .extras(ResponseDataExtrasDB(responseDataExtras).toDomain())
                     .build(),
             )
             .build()
     }
 
     override fun toContentValues(values: ContentValues, columnName: String, value: CustomIntentResponse?) {
-        value?.data()?.argument()?.let {
-            values.put(Columns.RESPONSE_DATA_ARGUMENT, it)
-        }
-        value?.data()?.path()?.let {
-            values.put(Columns.RESPONSE_DATA_PATH, it)
+        value?.data()?.extras()?.let {
+            values.put(RESPONSE_DATA_EXTRAS, it.toDB().value)
         }
     }
 }

@@ -1,19 +1,17 @@
 package org.hisp.dhis.android.persistence.datavalue
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.persistence.common.EntityDB
 
-@Entity(tableName = "DataValueConflict")
+@Entity(
+    tableName = "DataValueConflict",
+    primaryKeys = ["dataElement", "period", "orgUnit", "categoryOptionCombo", "attributeOptionCombo"],
+)
 internal data class DataValueConflictDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val conflict: String?,
     val value: String?,
     val attributeOptionCombo: String?,
@@ -29,7 +27,6 @@ internal data class DataValueConflictDB(
 
     override fun toDomain(): DataValueConflict {
         return DataValueConflict.builder().apply {
-            id(id?.toLong())
             conflict(conflict)
             value(value)
             attributeOptionCombo(attributeOptionCombo)

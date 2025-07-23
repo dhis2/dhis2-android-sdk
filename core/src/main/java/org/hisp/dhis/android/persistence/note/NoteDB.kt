@@ -1,10 +1,7 @@
 package org.hisp.dhis.android.persistence.note
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.persistence.common.DataObjectDB
 import org.hisp.dhis.android.persistence.common.DeletableObjectDB
@@ -32,16 +29,9 @@ import org.hisp.dhis.android.persistence.event.EventDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["noteType", "event", "enrollment", "value", "storedBy", "storedDate"], unique = true),
-        Index(value = ["event"]),
-        Index(value = ["enrollment"]),
-    ],
+    primaryKeys = ["noteType", "event", "enrollment", "value", "storedBy", "storedDate"],
 )
 internal data class NoteDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val noteType: String?,
     val event: String?,
     val enrollment: String?,
@@ -55,7 +45,6 @@ internal data class NoteDB(
 
     override fun toDomain(): Note {
         return Note.builder().apply {
-            id(id?.toLong())
             uid(uid)
             noteType?.let { noteType(Note.NoteType.valueOf(it)) }
             event(event)

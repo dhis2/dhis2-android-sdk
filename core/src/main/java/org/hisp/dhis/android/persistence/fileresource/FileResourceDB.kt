@@ -1,8 +1,6 @@
 package org.hisp.dhis.android.persistence.fileresource
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.FileResourceDomain
@@ -13,16 +11,9 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.SyncStateDB
 import org.hisp.dhis.android.persistence.common.toDB
 
-@Entity(
-    tableName = "FileResource",
-    indices = [
-        Index(value = ["uid"], unique = true),
-    ],
-)
+@Entity(tableName = "FileResource")
 internal data class FileResourceDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
+    @PrimaryKey
     val uid: String,
     val name: String?,
     val created: String?,
@@ -36,7 +27,6 @@ internal data class FileResourceDB(
 
     override fun toDomain(): FileResource {
         return FileResource.builder().apply {
-            id(id?.toLong())
             uid(uid)
             name?.let { name(it) }
             created?.let { created(it.toJavaDate()!!) }

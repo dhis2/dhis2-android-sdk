@@ -30,6 +30,8 @@ package org.hisp.dhis.android.network.settings
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.settings.CustomIntentResponseData
+import org.hisp.dhis.android.core.settings.CustomIntentResponseDataExtra
+import org.hisp.dhis.android.core.settings.CustomIntentResponseExtraType
 
 @Serializable
 internal data class CustomIntentResponseDataDTO(
@@ -37,9 +39,14 @@ internal data class CustomIntentResponseDataDTO(
     val path: String?,
 ) {
     fun toDomain(): CustomIntentResponseData {
-        return CustomIntentResponseData.builder()
-            .argument(argument)
-            .path(path)
-            .build()
+        return CustomIntentResponseData.builder().extras(
+            listOf(
+                CustomIntentResponseDataExtra.builder()
+                    .key(path)
+                    .extraName(argument)
+                    .extraType(CustomIntentResponseExtraType.BOOLEAN) // Temporary hardcoding until ASWA is updated
+                    .build(),
+            ),
+        ).build()
     }
 }

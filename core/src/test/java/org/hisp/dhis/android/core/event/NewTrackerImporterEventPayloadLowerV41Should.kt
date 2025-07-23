@@ -28,14 +28,13 @@
 package org.hisp.dhis.android.core.event
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.tracker.NewEventPayload
 import org.junit.Test
 
-class NewTrackerImporterEventPayloadLowerV41Should :
-    BaseObjectKotlinxShould("event/new_tracker_importer_events_lower_v41.json"),
-    ObjectShould {
+class NewTrackerImporterEventPayloadLowerV41Should : CoreObjectShould(
+    "event/new_tracker_importer_events_lower_v41.json",
+) {
 
     @Test
     override fun map_from_json_string() {

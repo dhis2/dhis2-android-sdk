@@ -34,7 +34,6 @@ public class CategoryOptionComboCategoryOptionLinkSamples {
 
     public static CategoryOptionComboCategoryOptionLink getCategoryOptionComboCategoryOptionLink() {
         return CategoryOptionComboCategoryOptionLink.builder()
-                .id(1L)
                 .categoryOptionCombo("category_option_combo")
                 .categoryOption("category_option")
                 .build();

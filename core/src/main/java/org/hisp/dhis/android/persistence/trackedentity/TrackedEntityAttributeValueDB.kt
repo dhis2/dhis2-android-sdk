@@ -1,10 +1,7 @@
 package org.hisp.dhis.android.persistence.trackedentity
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.core.util.toJavaDate
@@ -31,16 +28,9 @@ import org.hisp.dhis.android.persistence.common.toDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["trackedEntityAttribute"]),
-        Index(value = ["trackedEntityInstance"]),
-        Index(value = ["trackedEntityInstance", "trackedEntityAttribute"], unique = true),
-    ],
+    primaryKeys = ["trackedEntityInstance", "trackedEntityAttribute"],
 )
 internal data class TrackedEntityAttributeValueDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val created: String?,
     val lastUpdated: String?,
     val value: String?,
@@ -51,7 +41,6 @@ internal data class TrackedEntityAttributeValueDB(
 
     override fun toDomain(): TrackedEntityAttributeValue {
         return TrackedEntityAttributeValue.builder().apply {
-            id(id?.toLong())
             created(created.toJavaDate())
             lastUpdated(lastUpdated.toJavaDate())
             value(value)

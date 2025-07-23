@@ -1,10 +1,7 @@
 package org.hisp.dhis.android.persistence.organisationunit
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink
 import org.hisp.dhis.android.persistence.common.EntityDB
 
@@ -26,23 +23,15 @@ import org.hisp.dhis.android.persistence.common.EntityDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["organisationUnit", "organisationUnitGroup"], unique = true),
-        Index(value = ["organisationUnit"]),
-        Index(value = ["organisationUnitGroup"]),
-    ],
+    primaryKeys = ["organisationUnit", "organisationUnitGroup"],
 )
 internal data class OrganisationUnitOrganisationUnitGroupLinkDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val organisationUnit: String,
     val organisationUnitGroup: String,
 ) : EntityDB<OrganisationUnitOrganisationUnitGroupLink> {
 
     override fun toDomain(): OrganisationUnitOrganisationUnitGroupLink {
         return OrganisationUnitOrganisationUnitGroupLink.builder()
-            .id(id?.toLong())
             .organisationUnit(organisationUnit)
             .organisationUnitGroup(organisationUnitGroup)
             .build()

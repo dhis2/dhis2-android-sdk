@@ -26,12 +26,29 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.map.layer.internal.microsoft
 
-@SuppressWarnings("PMD.EmptyMethodInAbstractClassShouldBeAbstract")
-public abstract class BaseObject implements CoreObject {
-
-    public abstract static class Builder<T extends Builder> {
-        public abstract T id(Long id);
-    }
+internal object BingBasemaps {
+    val list: List<BingBasemap> = listOf(
+        BingBasemap(
+            id = "bingLight",
+            name = "Bing Road",
+            style = "CanvasLight",
+        ),
+        BingBasemap(
+            id = "bingDark",
+            name = "Bing Dark",
+            style = "CanvasDark",
+        ),
+        BingBasemap(
+            id = "bingAerial",
+            name = "Bing Aerial",
+            style = "Aerial",
+        ),
+        BingBasemap(
+            id = "bingHybrid",
+            name = "Bing Aerial Labels",
+            style = "AerialWithLabelsOnDemand",
+        ),
+    )
 }

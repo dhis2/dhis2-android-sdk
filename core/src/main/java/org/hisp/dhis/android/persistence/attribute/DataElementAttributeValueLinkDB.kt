@@ -1,10 +1,7 @@
 package org.hisp.dhis.android.persistence.attribute
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLink
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.dataelement.DataElementDB
@@ -27,16 +24,9 @@ import org.hisp.dhis.android.persistence.dataelement.DataElementDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["dataElement", "attribute"], unique = true),
-        Index(value = ["dataElement"]),
-        Index(value = ["attribute"]),
-    ],
+    primaryKeys = ["dataElement", "attribute"],
 )
 internal data class DataElementAttributeValueLinkDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val dataElement: String,
     val attribute: String,
     val value: String?,
@@ -44,7 +34,6 @@ internal data class DataElementAttributeValueLinkDB(
 
     override fun toDomain(): DataElementAttributeValueLink {
         return DataElementAttributeValueLink.builder()
-            .id(id?.toLong())
             .dataElement(dataElement)
             .attribute(attribute)
             .value(value)

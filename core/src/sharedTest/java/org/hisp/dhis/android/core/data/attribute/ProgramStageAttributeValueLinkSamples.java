@@ -34,7 +34,6 @@ public class ProgramStageAttributeValueLinkSamples {
 
     public static ProgramStageAttributeValueLink getProgramStageAttribute() {
         return ProgramStageAttributeValueLink.builder()
-                .id(1L)
                 .programStage("program_stage")
                 .attribute("attribute")
                 .value("value")

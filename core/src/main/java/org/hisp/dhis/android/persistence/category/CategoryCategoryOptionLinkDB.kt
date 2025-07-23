@@ -1,10 +1,7 @@
 package org.hisp.dhis.android.persistence.category
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink
 import org.hisp.dhis.android.persistence.common.EntityDB
 
@@ -26,16 +23,9 @@ import org.hisp.dhis.android.persistence.common.EntityDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["category", "categoryOption"], unique = true),
-        Index(value = ["category"]),
-        Index(value = ["categoryOption"]),
-    ],
+    primaryKeys = ["category", "categoryOption"],
 )
 internal data class CategoryCategoryOptionLinkDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val category: String,
     val categoryOption: String,
     val sortOrder: Int?,
@@ -43,7 +33,6 @@ internal data class CategoryCategoryOptionLinkDB(
 
     override fun toDomain(): CategoryCategoryOptionLink {
         return CategoryCategoryOptionLink.builder()
-            .id(id?.toLong())
             .category(category)
             .categoryOption(categoryOption)
             .sortOrder(sortOrder)

@@ -1,8 +1,6 @@
 package org.hisp.dhis.android.persistence.user
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.util.dateFormat
@@ -10,16 +8,9 @@ import org.hisp.dhis.android.persistence.common.BaseIdentifiableObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.applyBaseIdentifiableFields
 
-@Entity(
-    tableName = "User",
-    indices = [
-        Index(value = ["uid"], unique = true),
-    ],
-)
+@Entity(tableName = "User")
 internal data class UserDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
+    @PrimaryKey
     override val uid: String,
     override val code: String?,
     override val name: String?,
@@ -45,7 +36,6 @@ internal data class UserDB(
     override fun toDomain(): User {
         return User.builder().apply {
             applyBaseIdentifiableFields(this@UserDB)
-            id(id?.toLong())
             birthday(birthday)
             education(education)
             gender(gender)

@@ -36,12 +36,13 @@ import org.hisp.dhis.android.core.settings.CustomIntentRequest
 import org.hisp.dhis.android.core.settings.CustomIntentRequestArgument
 import org.hisp.dhis.android.core.settings.CustomIntentResponse
 import org.hisp.dhis.android.core.settings.CustomIntentResponseData
+import org.hisp.dhis.android.core.settings.CustomIntentResponseDataExtra
+import org.hisp.dhis.android.core.settings.CustomIntentResponseExtraType
 import org.hisp.dhis.android.core.settings.CustomIntentTrigger
 
 object CustomIntentSamples {
     fun getCustomIntent(): CustomIntent {
         return CustomIntent.builder()
-            .id(1L)
             .uid("uid")
             .name("Face Recognition")
             .action(listOf(CustomIntentActionType.SEARCH))
@@ -76,8 +77,15 @@ object CustomIntentSamples {
                 CustomIntentResponse.builder()
                     .data(
                         CustomIntentResponseData.builder()
-                            .argument("response argument")
-                            .path("response path")
+                            .extras(
+                                listOf(
+                                    CustomIntentResponseDataExtra.builder()
+                                        .key("response path")
+                                        .extraName("response argument")
+                                        .extraType(CustomIntentResponseExtraType.BOOLEAN)
+                                        .build(),
+                                ),
+                            )
                             .build(),
                     )
                     .build(),
@@ -87,7 +95,6 @@ object CustomIntentSamples {
 
     fun getCustomIntentDataElementTrigger(): CustomIntentDataElement {
         return CustomIntentDataElement.builder()
-            .id(1L)
             .uid("deUid")
             .customIntentUid("uid")
             .build()
@@ -95,7 +102,6 @@ object CustomIntentSamples {
 
     fun getCustomIntentAttributeTrigger(): CustomIntentAttribute {
         return CustomIntentAttribute.builder()
-            .id(1L)
             .uid("attUid")
             .customIntentUid("uid")
             .build()

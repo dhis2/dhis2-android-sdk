@@ -86,8 +86,6 @@ public abstract class ProgramSection extends BaseIdentifiableObject
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder>
             implements ObjectWithStyle.Builder<ProgramSection, Builder> {
 
-        public abstract Builder id(Long id);
-
         public abstract Builder description(String description);
 
         public abstract Builder program(ObjectWithUid program);

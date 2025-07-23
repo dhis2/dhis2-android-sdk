@@ -102,7 +102,6 @@ class EnrollmentObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestF
                 "nWrB0TfWlvh",
                 Date(),
             ).toBuilder()
-                .id(null)
                 .aggregatedSyncState(State.SYNCED)
                 .syncState(State.SYNCED)
                 .status(EnrollmentStatus.ACTIVE)

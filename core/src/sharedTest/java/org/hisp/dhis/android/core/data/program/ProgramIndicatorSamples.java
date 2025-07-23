@@ -44,7 +44,6 @@ public class ProgramIndicatorSamples {
 
         fillNameableProperties(builder);
         builder
-                .id(1L)
                 .uid("test_program_indicator")
                 .displayInForm(true)
                 .expression("test_expression")
@@ -58,7 +57,6 @@ public class ProgramIndicatorSamples {
 
     public static ProgramIndicator getAgeAtVisit() {
         return ProgramIndicator.builder()
-                .id(1L)
                 .uid("GSae40Fyppf")
                 .created(parseDate("2015-09-21T23:35:50.945"))
                 .lastUpdated(parseDate("2015-09-21T23:47:57.820"))

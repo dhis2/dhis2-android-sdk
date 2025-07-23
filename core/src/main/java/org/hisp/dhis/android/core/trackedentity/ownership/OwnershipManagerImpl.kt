@@ -75,7 +75,7 @@ internal class OwnershipManagerImpl(
             .fold(
                 onSuccess = { breakGlassResponse ->
                     if (breakGlassResponse.httpStatusCode() == HttpStatusCode.OK.value) {
-                        programTempOwnerStore.insert(
+                        programTempOwnerStore.updateOrInsertWhere(
                             ProgramTempOwner.builder()
                                 .program(program)
                                 .trackedEntityInstance(trackedEntityInstance)

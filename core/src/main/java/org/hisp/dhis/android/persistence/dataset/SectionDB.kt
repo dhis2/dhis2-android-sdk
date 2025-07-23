@@ -1,9 +1,7 @@
 package org.hisp.dhis.android.persistence.dataset
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataset.Section
@@ -25,15 +23,9 @@ import org.hisp.dhis.android.persistence.common.applyBaseIdentifiableFields
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["uid"], unique = true),
-        Index(value = ["dataSet"]),
-    ],
 )
 internal data class SectionDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
+    @PrimaryKey
     override val uid: String,
     override val code: String?,
     override val name: String?,
@@ -55,7 +47,6 @@ internal data class SectionDB(
     override fun toDomain(): Section {
         return Section.builder().apply {
             applyBaseIdentifiableFields(this@SectionDB)
-            id(id?.toLong())
             description(description)
             sortOrder(sortOrder)
             dataSet(ObjectWithUid.create(dataSet))

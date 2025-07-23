@@ -1,8 +1,6 @@
 package org.hisp.dhis.android.persistence.organisationunit
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
 import org.hisp.dhis.android.core.util.dateFormat
@@ -10,16 +8,9 @@ import org.hisp.dhis.android.persistence.common.BaseIdentifiableObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.applyBaseIdentifiableFields
 
-@Entity(
-    tableName = "OrganisationUnitLevel",
-    indices = [
-        Index(value = ["uid"], unique = true),
-    ],
-)
+@Entity(tableName = "OrganisationUnitLevel")
 internal data class OrganisationUnitLevelDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
+    @PrimaryKey
     override val uid: String,
     override val code: String?,
     override val name: String?,
@@ -32,7 +23,6 @@ internal data class OrganisationUnitLevelDB(
     override fun toDomain(): OrganisationUnitLevel {
         return OrganisationUnitLevel.builder()
             .applyBaseIdentifiableFields(this)
-            .id(id?.toLong())
             .level(level)
             .build()
     }

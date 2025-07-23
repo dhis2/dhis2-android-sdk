@@ -33,12 +33,13 @@ import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation
 import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyViolationStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectStoreImpl
+import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ForeignKeyViolationStoreImpl(
     private val databaseAdapter: DatabaseAdapter,
-) : ForeignKeyViolationStore, ObjectStoreImpl<ForeignKeyViolation, ForeignKeyViolationDB>(
+) : ForeignKeyViolationStore, ObjectWithoutUidStoreImpl<ForeignKeyViolation, ForeignKeyViolationDB>(
     { databaseAdapter.getCurrentDatabase().foreignKeyViolationDao() },
     ForeignKeyViolation::toDB,
     SQLStatementBuilderImpl(ForeignKeyViolationTableInfo.TABLE_INFO),

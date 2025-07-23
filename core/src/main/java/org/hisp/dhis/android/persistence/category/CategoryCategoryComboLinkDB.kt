@@ -1,10 +1,7 @@
 package org.hisp.dhis.android.persistence.category
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLink
 import org.hisp.dhis.android.persistence.common.EntityDB
 
@@ -26,16 +23,9 @@ import org.hisp.dhis.android.persistence.common.EntityDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["category", "categoryCombo"], unique = true),
-        Index(value = ["category"]),
-        Index(value = ["categoryCombo"]),
-    ],
+    primaryKeys = ["category", "categoryCombo"],
 )
 internal data class CategoryCategoryComboLinkDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val category: String,
     val categoryCombo: String,
     val sortOrder: Int?,
@@ -43,7 +33,6 @@ internal data class CategoryCategoryComboLinkDB(
 
     override fun toDomain(): CategoryCategoryComboLink {
         return CategoryCategoryComboLink.builder()
-            .id(id?.toLong())
             .category(category)
             .categoryCombo(categoryCombo)
             .sortOrder(sortOrder)

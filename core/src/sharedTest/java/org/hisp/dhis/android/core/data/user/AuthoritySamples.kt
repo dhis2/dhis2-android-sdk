@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.user.Authority
 internal object AuthoritySamples {
     val authority: Authority
         get() = Authority.builder()
-            .id(1L)
             .name("F_ENROLLMENT_CASCADE_DELETE")
             .build()
 }

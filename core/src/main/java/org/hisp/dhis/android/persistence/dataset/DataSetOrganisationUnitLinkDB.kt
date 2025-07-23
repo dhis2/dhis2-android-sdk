@@ -1,10 +1,7 @@
 package org.hisp.dhis.android.persistence.dataset
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitDB
@@ -27,23 +24,15 @@ import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["organisationUnit", "dataSet"], unique = true),
-        Index(value = ["dataSet"]),
-        Index(value = ["organisationUnit"]),
-    ],
+    primaryKeys = ["organisationUnit", "dataSet"],
 )
 internal data class DataSetOrganisationUnitLinkDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val dataSet: String,
     val organisationUnit: String,
 ) : EntityDB<DataSetOrganisationUnitLink> {
 
     override fun toDomain(): DataSetOrganisationUnitLink {
         return DataSetOrganisationUnitLink.builder()
-            .id(id?.toLong())
             .dataSet(dataSet)
             .organisationUnit(organisationUnit)
             .build()

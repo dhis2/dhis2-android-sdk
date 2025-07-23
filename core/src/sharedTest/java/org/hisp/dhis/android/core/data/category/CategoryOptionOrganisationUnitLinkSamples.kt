@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLink
 internal object CategoryOptionOrganisationUnitLinkSamples {
     fun getCategoryOptionOrganisationUnitLink(): CategoryOptionOrganisationUnitLink {
         return CategoryOptionOrganisationUnitLink.builder()
-            .id(1L)
             .categoryOption("categoryOption")
             .organisationUnit("organisationUnit")
             .restriction("restriction")

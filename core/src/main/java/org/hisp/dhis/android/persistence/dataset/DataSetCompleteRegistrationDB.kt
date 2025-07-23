@@ -1,10 +1,7 @@
 package org.hisp.dhis.android.persistence.dataset
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.core.util.toJavaDate
@@ -49,18 +46,9 @@ import org.hisp.dhis.android.persistence.period.PeriodDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["period", "dataSet", "organisationUnit", "attributeOptionCombo"], unique = true),
-        Index(value = ["dataSet"]),
-        Index(value = ["period"]),
-        Index(value = ["organisationUnit"]),
-        Index(value = ["attributeOptionCombo"]),
-    ],
+    primaryKeys = ["period", "dataSet", "organisationUnit", "attributeOptionCombo"],
 )
 internal data class DataSetCompleteRegistrationDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val period: String,
     val dataSet: String,
     val organisationUnit: String,
@@ -73,7 +61,6 @@ internal data class DataSetCompleteRegistrationDB(
 
     override fun toDomain(): DataSetCompleteRegistration {
         return DataSetCompleteRegistration.builder().apply {
-            id(id?.toLong())
             period(period)
             dataSet(dataSet)
             organisationUnit(organisationUnit)

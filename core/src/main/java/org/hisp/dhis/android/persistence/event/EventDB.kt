@@ -1,9 +1,7 @@
 package org.hisp.dhis.android.persistence.event
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventStatus
@@ -60,19 +58,9 @@ import org.hisp.dhis.android.persistence.program.ProgramStageDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["uid"], unique = true),
-        Index(value = ["program"]),
-        Index(value = ["programStage"]),
-        Index(value = ["enrollment"]),
-        Index(value = ["organisationUnit"]),
-        Index(value = ["attributeOptionCombo"]),
-    ],
 )
 internal data class EventDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
+    @PrimaryKey
     val uid: String,
     val enrollment: String?,
     val created: String?,
@@ -98,7 +86,6 @@ internal data class EventDB(
 
     override fun toDomain(): Event {
         return Event.builder().apply {
-            id(id?.toLong())
             uid(uid)
             enrollment(enrollment)
             created(created.toJavaDate())

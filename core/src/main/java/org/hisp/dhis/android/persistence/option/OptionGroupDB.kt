@@ -1,9 +1,7 @@
 package org.hisp.dhis.android.persistence.option
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.option.OptionGroup
@@ -23,15 +21,9 @@ import org.hisp.dhis.android.persistence.common.applyBaseIdentifiableFields
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["uid"], unique = true),
-        Index(value = ["optionSet"]),
-    ],
 )
 internal data class OptionGroupDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
+    @PrimaryKey
     override val uid: String,
     override val code: String?,
     override val name: String?,
@@ -44,7 +36,6 @@ internal data class OptionGroupDB(
     override fun toDomain(): OptionGroup {
         return OptionGroup.builder()
             .applyBaseIdentifiableFields(this@OptionGroupDB)
-            .id(id?.toLong())
             .optionSet(ObjectWithUid.create(optionSet))
             .build()
     }

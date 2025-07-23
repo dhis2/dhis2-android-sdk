@@ -30,7 +30,14 @@ plugins {
     id("com.android.application")
     id("jacoco-conventions")
     kotlin("android")
+    alias(libs.plugins.kotlin.serialization)
 }
+
+kotlin {
+    jvmToolchain(17)
+}
+
+val sdkVersion = project.findProperty("sdkVersion")
 
 android {
     compileSdk = libs.versions.targetSdkVersion.get().toInt()
@@ -39,6 +46,7 @@ android {
         applicationId = "org.hisp.dhis.android.instrumentedTestApp"
         minSdk = libs.versions.minSdkVersion.get().toInt()
         targetSdk = libs.versions.targetSdkVersion.get().toInt()
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         versionCode = 1
         versionName = "1.0"
     }
@@ -60,6 +68,12 @@ android {
 
 dependencies {
     coreLibraryDesugaring(libs.desugaring)
+    api(libs.kotlinx.serialization.json)
+    androidTestImplementation(libs.androidx.test.runner)
 
-    implementation(project(":core"))
+    if (sdkVersion != null && sdkVersion != "") {
+        implementation("org.hisp.dhis:android-core:$sdkVersion!!")
+    } else {
+        implementation(project(":core"))
+    }
 }

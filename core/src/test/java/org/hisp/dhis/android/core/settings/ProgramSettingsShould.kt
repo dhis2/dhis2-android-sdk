@@ -29,12 +29,11 @@ package org.hisp.dhis.android.core.settings
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.settings.ProgramSettingsDTO
 import org.junit.Test
 
-class ProgramSettingsShould : BaseObjectKotlinxShould("settings/program_settings.json"), ObjectShould {
+class ProgramSettingsShould : CoreObjectShould("settings/program_settings.json") {
     @Test
     override fun map_from_json_string() {
         val programSettingsDTO = deserialize(ProgramSettingsDTO.serializer())

@@ -39,7 +39,7 @@ public abstract class BaseDeletableDataObject extends BaseDataObject implements 
     @ColumnName(DeletableDataColumns.DELETED)
     public abstract Boolean deleted();
 
-    protected abstract static class Builder<T extends Builder> extends BaseDataObject.Builder<T> {
-        public abstract T deleted(@Nullable Boolean deleted);
+    protected interface Builder<T extends Builder<T>> extends BaseDataObject.Builder<T> {
+        T deleted(@Nullable Boolean deleted);
     }
 }

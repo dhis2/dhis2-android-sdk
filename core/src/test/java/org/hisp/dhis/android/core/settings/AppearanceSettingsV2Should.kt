@@ -28,12 +28,11 @@
 package org.hisp.dhis.android.core.settings
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.settings.AppearanceSettingsDTO
 import org.junit.Test
 
-class AppearanceSettingsV2Should : BaseObjectKotlinxShould("settings/appearance_settings_v2.json"), ObjectShould {
+class AppearanceSettingsV2Should : CoreObjectShould("settings/appearance_settings_v2.json") {
     @Test
     @Suppress("LongMethod")
     override fun map_from_json_string() {

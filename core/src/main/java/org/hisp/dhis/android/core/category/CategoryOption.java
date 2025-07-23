@@ -80,8 +80,6 @@ public abstract class CategoryOption extends BaseNameableObject implements CoreO
 
     @AutoValue.Builder
     public abstract static class Builder extends BaseNameableObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
         public abstract Builder startDate(@Nullable Date startDate);
 
         public abstract Builder endDate(@Nullable Date endDate);

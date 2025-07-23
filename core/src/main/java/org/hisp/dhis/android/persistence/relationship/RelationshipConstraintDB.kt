@@ -1,10 +1,7 @@
 package org.hisp.dhis.android.persistence.relationship
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.relationship.RelationshipConstraint
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipEntityType
@@ -42,17 +39,9 @@ import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityTypeDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["relationshipType", "constraintType"], unique = true),
-        Index(value = ["trackedEntityType"]),
-        Index(value = ["program"]),
-        Index(value = ["programStage"]),
-    ],
+    primaryKeys = ["relationshipType", "constraintType"],
 )
 internal data class RelationshipConstraintDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val relationshipType: String,
     val constraintType: String,
     val relationshipEntity: String?,
@@ -65,7 +54,6 @@ internal data class RelationshipConstraintDB(
 
     override fun toDomain(): RelationshipConstraint {
         return RelationshipConstraint.builder()
-            .id(id?.toLong())
             .relationshipType(ObjectWithUidDB(relationshipType).toDomain())
             .constraintType(RelationshipConstraintType.valueOf(constraintType))
             .relationshipEntity(relationshipEntity?.let { RelationshipEntityType.valueOf(it) })

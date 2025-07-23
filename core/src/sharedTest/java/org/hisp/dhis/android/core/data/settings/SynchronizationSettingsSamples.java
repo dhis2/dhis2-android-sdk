@@ -40,7 +40,6 @@ public class SynchronizationSettingsSamples {
 
     public static SynchronizationSettings getSynchronizationSettings() {
         return SynchronizationSettings.builder()
-                .id(1L)
                 .dataSync(DataSyncPeriod.EVERY_24_HOURS)
                 .metadataSync(MetadataSyncPeriod.EVERY_12_HOURS)
                 .trackerImporterVersion(TrackerImporterVersion.V2)

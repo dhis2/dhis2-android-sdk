@@ -1,9 +1,7 @@
 package org.hisp.dhis.android.persistence.trackedentity
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.trackedentity.ReservedValueSetting
 import org.hisp.dhis.android.persistence.common.EntityDB
@@ -19,21 +17,15 @@ import org.hisp.dhis.android.persistence.common.EntityDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["uid"], unique = true),
-    ],
 )
 internal data class ReservedValueSettingDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
+    @PrimaryKey
     val uid: String?,
     val numberOfValuesToReserve: Int?,
 ) : EntityDB<ReservedValueSetting> {
 
     override fun toDomain(): ReservedValueSetting {
         return ReservedValueSetting.builder()
-            .id(id?.toLong())
             .uid(uid)
             .numberOfValuesToReserve(numberOfValuesToReserve)
             .build()

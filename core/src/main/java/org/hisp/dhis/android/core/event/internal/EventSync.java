@@ -37,7 +37,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerBaseSync;
 
 @AutoValue
-public abstract class EventSync extends TrackerBaseSync {
+public abstract class EventSync implements TrackerBaseSync {
 
     @NonNull
     public static EventSync create(Cursor cursor) {
@@ -45,13 +45,13 @@ public abstract class EventSync extends TrackerBaseSync {
     }
 
     public static Builder builder() {
-        return new AutoValue_EventSync.Builder();
+        return new $$AutoValue_EventSync.Builder();
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends TrackerBaseSync.Builder<Builder> {
+    public abstract static class Builder implements TrackerBaseSync.Builder<Builder> {
         public abstract EventSync build();
     }
 }

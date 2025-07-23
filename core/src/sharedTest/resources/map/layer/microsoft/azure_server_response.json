@@ -1,0 +1,16 @@
+{
+  "tileJson": "2.2.0",
+  "name": "microsoft.core.raster.road",
+  "version": "1.0.0",
+  "attribution": "\u003Ca data-azure-maps-attribution-dynamic=\"true\" data-azure-maps-attribution-tileset=\"microsoft.core.raster.road\"\u003E\u003C/a\u003E",
+  "scheme": "xyz",
+  "tiles": [
+    "https://atlas.microsoft.com/map/tile?api-version=2.1&tilesetId=microsoft.core.raster.road&zoom={z}&x={x}&y={y}&tileSize=256&language=ngt"
+  ],
+  "grids": [],
+  "data": [],
+  "minzoom": 1,
+  "maxzoom": 21,
+  "bounds": [-180, -90, 180, 90],
+  "tileSize": "256"
+}

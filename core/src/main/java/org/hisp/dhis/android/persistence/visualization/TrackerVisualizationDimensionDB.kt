@@ -1,10 +1,7 @@
 package org.hisp.dhis.android.persistence.visualization
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.visualization.LayoutPosition
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension
@@ -39,16 +36,9 @@ import org.hisp.dhis.android.persistence.program.ProgramStageDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["trackerVisualization"]),
-        Index(value = ["program"]),
-        Index(value = ["programStage"]),
-    ],
+    primaryKeys = ["trackerVisualization", "dimension"],
 )
 internal data class TrackerVisualizationDimensionDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val trackerVisualization: String,
     val position: String,
     val dimension: String,
@@ -58,10 +48,10 @@ internal data class TrackerVisualizationDimensionDB(
     val items: ObjectWithUidListDB?,
     val filter: String?,
     val repetition: RepetitionDB?,
+    val sortOrder: Int?,
 ) : EntityDB<TrackerVisualizationDimension> {
     override fun toDomain(): TrackerVisualizationDimension {
         return TrackerVisualizationDimension.builder()
-            .id(id?.toLong())
             .trackerVisualization(trackerVisualization)
             .position(position.let { LayoutPosition.valueOf(it) })
             .dimension(dimension)
@@ -71,6 +61,7 @@ internal data class TrackerVisualizationDimensionDB(
             .items(items?.toDomain())
             .filter(filter)
             .repetition(repetition?.toDomain())
+            .sortOrder(sortOrder)
             .build()
     }
 }
@@ -86,5 +77,6 @@ internal fun TrackerVisualizationDimension.toDB(): TrackerVisualizationDimension
         items = items()?.toDB(),
         filter = filter(),
         repetition = repetition()?.toDB(),
+        sortOrder = sortOrder(),
     )
 }

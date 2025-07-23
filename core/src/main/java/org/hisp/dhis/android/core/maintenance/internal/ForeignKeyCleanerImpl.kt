@@ -117,7 +117,7 @@ internal class ForeignKeyCleanerImpl(
         )
         val foreignKeyViolationDao = databaseAdapter.getCurrentDatabase().foreignKeyViolationDao()
         violation?.let {
-            foreignKeyViolationStore.insert(it)
+            foreignKeyViolationStore.updateOrInsertWhere(it)
 
             // Perform the delete using the DAO method
             val rowsAffected = foreignKeyViolationDao.deleteRowFromTableByRowId(error.fromTable, error.rowId)

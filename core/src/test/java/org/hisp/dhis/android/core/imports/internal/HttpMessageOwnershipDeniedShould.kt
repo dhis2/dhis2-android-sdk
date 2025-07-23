@@ -28,14 +28,11 @@
 package org.hisp.dhis.android.core.imports.internal
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.common.dto.HttpMessageResponseDTO
 import org.junit.Test
 
-class HttpMessageOwnershipDeniedShould :
-    BaseObjectKotlinxShould("trackedentity/glass/glass_protected_tei_failure.json"),
-    ObjectShould {
+class HttpMessageOwnershipDeniedShould : CoreObjectShould("trackedentity/glass/glass_protected_tei_failure.json") {
 
     @Test
     override fun map_from_json_string() {

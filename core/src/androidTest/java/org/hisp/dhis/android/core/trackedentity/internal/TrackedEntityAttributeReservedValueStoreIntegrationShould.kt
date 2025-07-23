@@ -81,11 +81,11 @@ class TrackedEntityAttributeReservedValueStoreIntegrationShould : BaseIntegratio
             .created(Date())
 
         expiredValue = builder.expiryDate(expiredDate).temporalValidityDate(null).value("v1").build()
-        notExpiredValue = builder.id(1L).expiryDate(notExpiredDate).temporalValidityDate(null).value("v2").build()
+        notExpiredValue = builder.expiryDate(notExpiredDate).temporalValidityDate(null).value("v2").build()
         temporalValidityExpiredValue = builder.expiryDate(notExpiredDate).temporalValidityDate(expiredDate).value("v3")
             .build()
         notExpiredTemporalValidityExpiredValue =
-            builder.id(1L).expiryDate(notExpiredDate).temporalValidityDate(notExpiredDate)
+            builder.expiryDate(notExpiredDate).temporalValidityDate(notExpiredDate)
                 .value("v3").build()
     }
 

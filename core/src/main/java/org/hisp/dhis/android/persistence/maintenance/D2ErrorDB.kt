@@ -14,7 +14,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 internal data class D2ErrorDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int? = 0,
+    val id: Int = 0,
     val resourceType: String?,
     val uid: String?,
     val url: String?,
@@ -27,7 +27,6 @@ internal data class D2ErrorDB(
 
     override fun toDomain(): D2Error {
         return D2Error.builder().apply {
-            id(id?.toLong())
             url(url)
             errorComponent?.let { errorComponent(D2ErrorComponent.valueOf(it)) }
             errorCode?.let { errorCode(D2ErrorCode.valueOf(it)) }

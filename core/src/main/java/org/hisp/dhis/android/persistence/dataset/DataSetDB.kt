@@ -1,9 +1,7 @@
 package org.hisp.dhis.android.persistence.dataset
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataset.CustomText
@@ -33,15 +31,9 @@ import org.hisp.dhis.android.persistence.common.toDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["uid"], unique = true),
-        Index(value = ["categoryCombo"]),
-    ],
 )
 internal data class DataSetDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
+    @PrimaryKey
     override val uid: String,
     override val code: String?,
     override val name: String?,
@@ -81,7 +73,6 @@ internal data class DataSetDB(
         return DataSet.builder().apply {
             applyBaseNameableFields(this@DataSetDB)
             applyStyleFields(this@DataSetDB)
-            id(id?.toLong())
             periodType?.let { periodType(PeriodType.valueOf(it)) }
             categoryCombo(ObjectWithUid.create(categoryCombo))
             mobile(mobile)

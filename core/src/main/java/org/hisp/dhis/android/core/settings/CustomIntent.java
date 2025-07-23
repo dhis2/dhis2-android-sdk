@@ -87,8 +87,6 @@ public abstract class CustomIntent implements ObjectWithUidInterface, CoreObject
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder id(Long id);
-
         public abstract Builder uid(String intentUid);
 
         public abstract Builder name(String name);

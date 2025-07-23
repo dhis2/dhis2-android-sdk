@@ -1,8 +1,6 @@
 package org.hisp.dhis.android.persistence.category
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.util.dateFormat
@@ -13,16 +11,9 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.applyBaseNameableFields
 import org.hisp.dhis.android.persistence.common.toDB
 
-@Entity(
-    tableName = "CategoryOption",
-    indices = [
-        Index(value = ["uid"], unique = true),
-    ],
-)
+@Entity(tableName = "CategoryOption")
 internal data class CategoryOptionDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
+    @PrimaryKey
     override val uid: String,
     override val code: String?,
     override val name: String?,
@@ -41,7 +32,6 @@ internal data class CategoryOptionDB(
     override fun toDomain(): CategoryOption {
         return CategoryOption.builder().apply {
             applyBaseNameableFields(this@CategoryOptionDB)
-            id(id?.toLong())
             startDate(startDate.toJavaDate())
             endDate(endDate.toJavaDate())
             accessDataWrite?.let { access(it.toDomain()) }

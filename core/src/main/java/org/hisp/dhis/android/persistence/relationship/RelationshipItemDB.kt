@@ -1,10 +1,7 @@
 package org.hisp.dhis.android.persistence.relationship
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipItem
 import org.hisp.dhis.android.core.relationship.RelationshipItemEnrollment
@@ -48,17 +45,9 @@ import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["relationship"]),
-        Index(value = ["trackedEntityInstance"]),
-        Index(value = ["enrollment"]),
-        Index(value = ["event"]),
-    ],
+    primaryKeys = ["relationship", "relationshipItemType"],
 )
 internal data class RelationshipItemDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val relationship: String,
     val relationshipItemType: String,
     val trackedEntityInstance: String?,
@@ -68,7 +57,6 @@ internal data class RelationshipItemDB(
 
     override fun toDomain(): RelationshipItem {
         return RelationshipItem.builder()
-            .id(id?.toLong())
             .relationship(ObjectWithUidDB(relationship).toDomain())
             .relationshipItemType(RelationshipConstraintType.valueOf(relationshipItemType))
             .trackedEntityInstance(

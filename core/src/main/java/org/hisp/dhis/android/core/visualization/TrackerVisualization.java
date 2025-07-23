@@ -100,8 +100,6 @@ public abstract class TrackerVisualization extends BaseIdentifiableObject implem
     @AutoValue.Builder
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
 
-        public abstract Builder id(Long id);
-
         public abstract Builder description(String description);
 
         public abstract Builder displayDescription(String displayDescription);

@@ -1,8 +1,6 @@
 package org.hisp.dhis.android.persistence.map
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.map.layer.ImageFormat
 import org.hisp.dhis.android.core.map.layer.MapLayer
@@ -12,14 +10,9 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.StringListDB
 import org.hisp.dhis.android.persistence.common.toDB
 
-@Entity(
-    tableName = "MapLayer",
-    indices = [
-        Index(value = ["uid"], unique = true),
-    ],
-)
+@Entity(tableName = "MapLayer")
 internal data class MapLayerDB(
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "_id") val id: Int? = 0,
+    @PrimaryKey
     val uid: String,
     val name: String,
     val displayName: String,
@@ -37,7 +30,6 @@ internal data class MapLayerDB(
 
     override fun toDomain(): MapLayer {
         return MapLayer.builder().apply {
-            id(id?.toLong())
             uid(uid)
             name(name)
             displayName(displayName)

@@ -1,10 +1,7 @@
 package org.hisp.dhis.android.persistence.legendset
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.indicator.IndicatorDB
@@ -27,16 +24,9 @@ import org.hisp.dhis.android.persistence.indicator.IndicatorDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["indicator", "legendSet"], unique = true),
-        Index(value = ["indicator"]),
-        Index(value = ["legendSet"]),
-    ],
+    primaryKeys = ["indicator", "legendSet"],
 )
 internal data class IndicatorLegendSetLinkDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val indicator: String,
     val legendSet: String,
     val sortOrder: Int?,
@@ -44,7 +34,6 @@ internal data class IndicatorLegendSetLinkDB(
 
     override fun toDomain(): IndicatorLegendSetLink {
         return IndicatorLegendSetLink.builder()
-            .id(id?.toLong())
             .indicator(indicator)
             .legendSet(legendSet)
             .sortOrder(sortOrder)

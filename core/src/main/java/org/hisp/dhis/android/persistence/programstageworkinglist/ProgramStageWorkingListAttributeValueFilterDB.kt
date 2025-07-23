@@ -28,11 +28,8 @@
 
 package org.hisp.dhis.android.persistence.programstageworkinglist
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
 import org.hisp.dhis.android.persistence.attribute.AttributeDB
 import org.hisp.dhis.android.persistence.common.DateFilterPeriodDB
@@ -60,15 +57,9 @@ import org.hisp.dhis.android.persistence.common.toDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["programStageWorkingList"]),
-        Index(value = ["attribute"]),
-    ],
+    primaryKeys = ["programStageWorkingList", "attribute"],
 )
 internal data class ProgramStageWorkingListAttributeValueFilterDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val programStageWorkingList: String?,
     val attribute: String?,
     val sw: String?,
@@ -84,7 +75,6 @@ internal data class ProgramStageWorkingListAttributeValueFilterDB(
 ) : EntityDB<ProgramStageWorkingListAttributeValueFilter>, FilterOperatorsDB {
     override fun toDomain(): ProgramStageWorkingListAttributeValueFilter {
         return ProgramStageWorkingListAttributeValueFilter.builder()
-            .id(id?.toLong())
             .applyFilterOperatorsFields(this@ProgramStageWorkingListAttributeValueFilterDB)
             .programStageWorkingList(programStageWorkingList)
             .attribute(attribute)

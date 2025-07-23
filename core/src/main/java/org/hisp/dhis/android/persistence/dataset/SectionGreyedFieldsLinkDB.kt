@@ -1,10 +1,7 @@
 package org.hisp.dhis.android.persistence.dataset
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLink
 import org.hisp.dhis.android.persistence.category.CategoryOptionComboDB
 import org.hisp.dhis.android.persistence.common.EntityDB
@@ -35,17 +32,9 @@ import org.hisp.dhis.android.persistence.dataelement.DataElementOperandDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["section", "dataElementOperand", "categoryOptionCombo"], unique = true),
-        Index(value = ["section"]),
-        Index(value = ["dataElementOperand"]),
-        Index(value = ["categoryOptionCombo"]),
-    ],
+    primaryKeys = ["section", "dataElementOperand", "categoryOptionCombo"],
 )
 internal data class SectionGreyedFieldsLinkDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val section: String,
     val dataElementOperand: String,
     val categoryOptionCombo: String?,
@@ -53,7 +42,6 @@ internal data class SectionGreyedFieldsLinkDB(
 
     override fun toDomain(): SectionGreyedFieldsLink {
         return SectionGreyedFieldsLink.builder()
-            .id(id?.toLong())
             .section(section)
             .dataElementOperand(dataElementOperand)
             .categoryOptionCombo(categoryOptionCombo)

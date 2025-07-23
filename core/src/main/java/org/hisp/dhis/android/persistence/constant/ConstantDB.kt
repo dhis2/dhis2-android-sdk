@@ -28,9 +28,7 @@
 
 package org.hisp.dhis.android.persistence.constant
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.util.dateFormat
@@ -38,16 +36,9 @@ import org.hisp.dhis.android.persistence.common.BaseIdentifiableObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.applyBaseIdentifiableFields
 
-@Entity(
-    tableName = "Constant",
-    indices = [
-        Index(value = ["uid"], unique = true),
-    ],
-)
+@Entity(tableName = "Constant")
 internal data class ConstantDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
+    @PrimaryKey
     override val uid: String,
     override val code: String?,
     override val name: String?,
@@ -60,7 +51,6 @@ internal data class ConstantDB(
     override fun toDomain(): Constant {
         return Constant.builder()
             .applyBaseIdentifiableFields(this)
-            .id(id?.toLong())
             .value(value?.toDoubleOrNull())
             .build()
     }

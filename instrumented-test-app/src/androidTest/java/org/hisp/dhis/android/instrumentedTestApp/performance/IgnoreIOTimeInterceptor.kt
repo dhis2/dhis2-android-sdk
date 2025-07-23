@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,39 +26,32 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common
+package org.hisp.dhis.android.instrumentedTestApp.performance
 
-import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
-import java.io.InputStream
+import okhttp3.Interceptor
+import okhttp3.Response
 
-open class BaseObjectKotlinxShould(private val jsonPath: String) {
+class IgnoreIOTimeInterceptor : Interceptor {
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val startTime = System.nanoTime()
+        val response = chain.proceed(chain.request())
 
-    private val jsonParser = KotlinxJsonParser.instance
+        val responseBody = response.body ?: return response
 
-    protected fun <T> deserialize(serializer: kotlinx.serialization.KSerializer<T>): T {
-        return deserializePath(jsonPath, serializer)
+        val source = responseBody.source()
+        source.request(Long.MAX_VALUE)
+        val buffer = source.buffer.clone()
+
+        val networkTime = System.nanoTime() - startTime
+
+        synchronized(NetworkTimeTracker) {
+            NetworkTimeTracker.totalNetworkTime += networkTime
+        }
+
+        return response
     }
+}
 
-    protected fun <T> deserialize(jsonString: String, serializer: kotlinx.serialization.KSerializer<T>): T {
-        return jsonParser.decodeFromString(serializer, jsonString)
-    }
-
-    protected fun <T> deserializePath(path: String, serializer: kotlinx.serialization.KSerializer<T>): T {
-        val jsonString = getStringValueFromFile(path)
-        return jsonParser.decodeFromString(serializer, jsonString)
-    }
-
-    protected fun <T> serialize(value: T, serializer: kotlinx.serialization.KSerializer<T>): String {
-        return jsonParser.encodeToString(serializer, value)
-    }
-
-    protected fun getStringValueFromFile(): String {
-        return getStringValueFromFile(jsonPath)
-    }
-
-    protected fun getStringValueFromFile(path: String): String {
-        val jsonStream: InputStream = this::class.java.classLoader?.getResourceAsStream(path)
-            ?: throw IllegalArgumentException("File not found: $jsonPath")
-        return jsonStream.bufferedReader().use { it.readText() }
-    }
+object NetworkTimeTracker {
+    var totalNetworkTime = 0L
 }

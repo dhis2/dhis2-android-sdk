@@ -201,7 +201,7 @@ CREATE TABLE ForeignKeyViolation(fromTable TEXT, fromColumn TEXT, toTable TEXT, 
 INSERT OR IGNORE INTO ForeignKeyViolation(fromTable, fromColumn, toTable, toColumn, notFoundValue, fromObjectUid, fromObjectRow, created) SELECT fromTable, fromColumn, toTable, toColumn, notFoundValue, fromObjectUid, fromObjectRow, created FROM ForeignKeyViolation_Old;
 
 ALTER TABLE D2Error RENAME TO D2Error_Old;
-CREATE TABLE D2Error(url TEXT, errorComponent TEXT, errorCode TEXT, errorDescription TEXT, httpErrorCode INTEGER, created TEXT);
+CREATE TABLE D2Error(_id INTEGER PRIMARY KEY AUTOINCREMENT, url TEXT, errorComponent TEXT, errorCode TEXT, errorDescription TEXT, httpErrorCode INTEGER, created TEXT);
 INSERT OR IGNORE INTO D2Error(url, errorComponent, errorCode, errorDescription, httpErrorCode, created) SELECT url, errorComponent, errorCode, errorDescription, httpErrorCode, created FROM D2Error_Old;
 
 ALTER TABLE Authority RENAME TO Authority_Old;
@@ -449,7 +449,7 @@ CREATE TABLE DataValueConflict(conflict TEXT, value TEXT, attributeOptionCombo T
 INSERT OR IGNORE INTO DataValueConflict(conflict, value, attributeOptionCombo, categoryOptionCombo, dataElement, period, orgUnit, errorCode, status, created, displayDescription) SELECT conflict, value, attributeOptionCombo, categoryOptionCombo, dataElement, period, orgUnit, errorCode, status, created, displayDescription FROM DataValueConflict_Old;
 
 ALTER TABLE AnalyticsDhisVisualization RENAME TO AnalyticsDhisVisualization_Old;
-CREATE TABLE AnalyticsDhisVisualization(uid TEXT NOT NULL, scopeUid TEXT, scope TEXT, groupUid TEXT, groupName TEXT, timestamp TEXT, name TEXT, type TEXT NOT NULL);
+CREATE TABLE AnalyticsDhisVisualization(_id INTEGER PRIMARY KEY AUTOINCREMENT, uid TEXT NOT NULL, scopeUid TEXT, scope TEXT, groupUid TEXT, groupName TEXT, timestamp TEXT, name TEXT, type TEXT NOT NULL);
 INSERT OR IGNORE INTO AnalyticsDhisVisualization(uid, scopeUid, scope, groupUid, groupName, timestamp, name, type) SELECT uid, scopeUid, scope, groupUid, groupName, timestamp, name, type FROM AnalyticsDhisVisualization_Old;
 
 ALTER TABLE Visualization RENAME TO Visualization_Old;

@@ -1,10 +1,7 @@
 package org.hisp.dhis.android.persistence.dataapproval
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.dataapproval.DataApproval
 import org.hisp.dhis.android.core.dataapproval.DataApprovalState
 import org.hisp.dhis.android.persistence.category.CategoryOptionComboDB
@@ -37,21 +34,13 @@ import org.hisp.dhis.android.persistence.period.PeriodDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["attributeOptionCombo", "period", "organisationUnit", "workflow"], unique = true),
-        Index(value = ["attributeOptionCombo"]),
-        Index(value = ["period"]),
-        Index(value = ["organisationUnit"]),
-    ],
+    primaryKeys = ["workflow", "attributeOptionCombo", "period", "organisationUnit"],
 )
 internal data class DataApprovalDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val workflow: String,
-    val organisationUnit: String,
-    val period: String,
     val attributeOptionCombo: String,
+    val period: String,
+    val organisationUnit: String,
     val state: String?,
 ) : EntityDB<DataApproval> {
 

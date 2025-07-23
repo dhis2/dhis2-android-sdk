@@ -11,7 +11,7 @@ import org.hisp.dhis.android.persistence.common.toDB
 
 @Entity(
     tableName = "TrackerJobObject",
-    primaryKeys = ["jobUid", "objectUid"]
+    primaryKeys = ["jobUid", "objectUid"],
 )
 internal data class TrackerJobObjectDB(
     val trackerType: String,

@@ -24,7 +24,7 @@ import org.hisp.dhis.android.persistence.dataelement.DataElementDB
             deferred = true,
         ),
     ],
-    primaryKeys = ["dataElement", "attribute"]
+    primaryKeys = ["dataElement", "attribute"],
 )
 internal data class DataElementAttributeValueLinkDB(
     val dataElement: String,

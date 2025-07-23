@@ -8,7 +8,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 
 @Entity(
     tableName = "ForeignKeyViolation",
-    primaryKeys = ["fromTable", "fromColumn", "toTable", "toColumn", "notFoundValue", "fromObjectUid"]
+    primaryKeys = ["fromTable", "fromColumn", "toTable", "toColumn", "notFoundValue", "fromObjectUid"],
 )
 internal data class ForeignKeyViolationDB(
     val fromTable: String?,

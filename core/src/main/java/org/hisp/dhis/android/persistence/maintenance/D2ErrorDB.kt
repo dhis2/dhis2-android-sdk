@@ -1,5 +1,6 @@
 package org.hisp.dhis.android.persistence.maintenance
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -12,7 +13,8 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 @Entity(tableName = "D2Error")
 internal data class D2ErrorDB(
     @PrimaryKey(autoGenerate = true)
-    val _id: Int = 0,
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val resourceType: String?,
     val uid: String?,
     val url: String?,

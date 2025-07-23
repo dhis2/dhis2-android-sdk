@@ -7,7 +7,7 @@ import org.hisp.dhis.smscompression.SMSConsts
 
 @Entity(
     tableName = "SmsMetadataId",
-    primaryKeys = ["type", "uid"]
+    primaryKeys = ["type", "uid"],
 )
 internal data class SmsMetadataIdDB(
     val type: String?,

@@ -17,7 +17,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
             deferred = true,
         ),
     ],
-    primaryKeys = ["visualization", "dimensionItem"]
+    primaryKeys = ["visualization", "dimensionItem"],
 )
 internal data class VisualizationDimensionItemDB(
     val visualization: String,

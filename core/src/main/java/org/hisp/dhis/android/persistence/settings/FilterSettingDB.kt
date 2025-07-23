@@ -6,7 +6,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 
 @Entity(
     tableName = "FilterSetting",
-    primaryKeys = ["scope", "filterType", "uid"]
+    primaryKeys = ["scope", "filterType", "uid"],
 )
 internal data class FilterSettingDB(
     val scope: String?,

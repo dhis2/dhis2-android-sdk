@@ -8,7 +8,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 
 @Entity(
     tableName = "TrackedEntityAttributeReservedValue",
-    primaryKeys = ["ownerObject", "ownerUid", "value"]
+    primaryKeys = ["ownerObject", "ownerUid", "value"],
 )
 internal data class TrackedEntityAttributeReservedValueDB(
     val ownerObject: String?,

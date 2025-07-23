@@ -15614,7 +15614,6 @@ public final class org/hisp/dhis/android/persistence/attribute/AttributeTableInf
 	public static final field VALIDATION_RULE_ATTRIBUTE Ljava/lang/String;
 	public static final field VALIDATION_RULE_GROUP_ATTRIBUTE Ljava/lang/String;
 	public static final field VALUE_TYPE Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -15632,7 +15631,6 @@ public final class org/hisp/dhis/android/persistence/attribute/DataElementAttrib
 	public static final field Companion Lorg/hisp/dhis/android/persistence/attribute/DataElementAttributeValueLinkTableInfo$Columns$Companion;
 	public static final field DATA_ELEMENT Ljava/lang/String;
 	public static final field VALUE Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -15650,7 +15648,6 @@ public final class org/hisp/dhis/android/persistence/attribute/ProgramAttributeV
 	public static final field Companion Lorg/hisp/dhis/android/persistence/attribute/ProgramAttributeValueLinkTableInfo$Columns$Companion;
 	public static final field PROGRAM Ljava/lang/String;
 	public static final field VALUE Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -15668,7 +15665,6 @@ public final class org/hisp/dhis/android/persistence/attribute/ProgramStageAttri
 	public static final field Companion Lorg/hisp/dhis/android/persistence/attribute/ProgramStageAttributeValueLinkTableInfo$Columns$Companion;
 	public static final field PROGRAM_STAGE Ljava/lang/String;
 	public static final field VALUE Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -15686,7 +15682,6 @@ public final class org/hisp/dhis/android/persistence/category/CategoryCategoryCo
 	public static final field CATEGORY_COMBO Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/category/CategoryCategoryComboLinkTableInfo$Columns$Companion;
 	public static final field SORT_ORDER Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -15704,7 +15699,6 @@ public final class org/hisp/dhis/android/persistence/category/CategoryCategoryOp
 	public static final field CATEGORY_OPTION Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/category/CategoryCategoryOptionLinkTableInfo$Columns$Companion;
 	public static final field SORT_ORDER Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -15726,7 +15720,6 @@ public final class org/hisp/dhis/android/persistence/category/CategoryComboTable
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -15743,7 +15736,6 @@ public final class org/hisp/dhis/android/persistence/category/CategoryOptionComb
 	public static final field CATEGORY_OPTION Ljava/lang/String;
 	public static final field CATEGORY_OPTION_COMBO Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/category/CategoryOptionComboCategoryOptionLinkTableInfo$Columns$Companion;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -15765,7 +15757,6 @@ public final class org/hisp/dhis/android/persistence/category/CategoryOptionComb
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -15783,7 +15774,6 @@ public final class org/hisp/dhis/android/persistence/category/CategoryOptionOrga
 	public static final field Companion Lorg/hisp/dhis/android/persistence/category/CategoryOptionOrganisationUnitLinkTableInfo$Columns$Companion;
 	public static final field ORGANISATION_UNIT Ljava/lang/String;
 	public static final field RESTRICTION Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -15811,7 +15801,6 @@ public final class org/hisp/dhis/android/persistence/category/CategoryOptionTabl
 	public static final field SHORT_NAME Ljava/lang/String;
 	public static final field START_DATE Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -15833,7 +15822,6 @@ public final class org/hisp/dhis/android/persistence/category/CategoryTableInfo$
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -15849,7 +15837,6 @@ public final class org/hisp/dhis/android/persistence/configuration/Configuration
 public final class org/hisp/dhis/android/persistence/configuration/ConfigurationTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
 	public static final field Companion Lorg/hisp/dhis/android/persistence/configuration/ConfigurationTableInfo$Columns$Companion;
 	public static final field SERVER_URL Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -15871,7 +15858,6 @@ public final class org/hisp/dhis/android/persistence/constant/ConstantTableInfo$
 	public static final field NAME Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
 	public static final field VALUE Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -15891,7 +15877,6 @@ public final class org/hisp/dhis/android/persistence/dataapproval/DataApprovalTa
 	public static final field PERIOD Ljava/lang/String;
 	public static final field STATE Ljava/lang/String;
 	public static final field WORKFLOW Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -15909,7 +15894,6 @@ public final class org/hisp/dhis/android/persistence/dataelement/DataElementOper
 	public static final field Companion Lorg/hisp/dhis/android/persistence/dataelement/DataElementOperandTableInfo$Columns$Companion;
 	public static final field DATA_ELEMENT Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -15945,7 +15929,6 @@ public final class org/hisp/dhis/android/persistence/dataelement/DataElementTabl
 	public static final field UID Ljava/lang/String;
 	public static final field VALUE_TYPE Ljava/lang/String;
 	public static final field ZERO_IS_SIGNIFICANT Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -15964,7 +15947,6 @@ public final class org/hisp/dhis/android/persistence/dataset/DataInputPeriodTabl
 	public static final field DATA_SET Ljava/lang/String;
 	public static final field OPENING_DATE Ljava/lang/String;
 	public static final field PERIOD Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -15987,7 +15969,6 @@ public final class org/hisp/dhis/android/persistence/dataset/DataSetCompleteRegi
 	public static final field PERIOD Ljava/lang/String;
 	public static final field STORED_BY Ljava/lang/String;
 	public static final field SYNC_STATE Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16004,7 +15985,6 @@ public final class org/hisp/dhis/android/persistence/dataset/DataSetCompulsoryDa
 	public static final field Companion Lorg/hisp/dhis/android/persistence/dataset/DataSetCompulsoryDataElementOperandsLinkTableInfo$Columns$Companion;
 	public static final field DATA_ELEMENT_OPERAND Ljava/lang/String;
 	public static final field DATA_SET Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16022,7 +16002,6 @@ public final class org/hisp/dhis/android/persistence/dataset/DataSetDataElementL
 	public static final field Companion Lorg/hisp/dhis/android/persistence/dataset/DataSetDataElementLinkTableInfo$Columns$Companion;
 	public static final field DATA_ELEMENT Ljava/lang/String;
 	public static final field DATA_SET Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16039,7 +16018,6 @@ public final class org/hisp/dhis/android/persistence/dataset/DataSetOrganisation
 	public static final field Companion Lorg/hisp/dhis/android/persistence/dataset/DataSetOrganisationUnitLinkTableInfo$Columns$Companion;
 	public static final field DATA_SET Ljava/lang/String;
 	public static final field ORGANISATION_UNIT Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16087,7 +16065,6 @@ public final class org/hisp/dhis/android/persistence/dataset/DataSetTableInfo$Co
 	public static final field VALID_COMPLETE_ONLY Ljava/lang/String;
 	public static final field VERSION Ljava/lang/String;
 	public static final field WORKFLOW Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16105,7 +16082,6 @@ public final class org/hisp/dhis/android/persistence/dataset/SectionDataElementL
 	public static final field DATA_ELEMENT Ljava/lang/String;
 	public static final field SECTION Ljava/lang/String;
 	public static final field SORT_ORDER Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16123,7 +16099,6 @@ public final class org/hisp/dhis/android/persistence/dataset/SectionGreyedFields
 	public static final field Companion Lorg/hisp/dhis/android/persistence/dataset/SectionGreyedFieldsLinkTableInfo$Columns$Companion;
 	public static final field DATA_ELEMENT_OPERAND Ljava/lang/String;
 	public static final field SECTION Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16140,7 +16115,6 @@ public final class org/hisp/dhis/android/persistence/dataset/SectionIndicatorLin
 	public static final field Companion Lorg/hisp/dhis/android/persistence/dataset/SectionIndicatorLinkTableInfo$Columns$Companion;
 	public static final field INDICATOR Ljava/lang/String;
 	public static final field SECTION Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16171,7 +16145,6 @@ public final class org/hisp/dhis/android/persistence/dataset/SectionTableInfo$Co
 	public static final field SHOW_ROW_TOTALS Ljava/lang/String;
 	public static final field SORT_ORDER Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16191,7 +16164,6 @@ public final class org/hisp/dhis/android/persistence/datastore/DataStoreTableInf
 	public static final field NAMESPACE Ljava/lang/String;
 	public static final field SYNC_STATE Ljava/lang/String;
 	public static final field VALUE Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16208,7 +16180,6 @@ public final class org/hisp/dhis/android/persistence/datastore/LocalDataStoreTab
 	public static final field Companion Lorg/hisp/dhis/android/persistence/datastore/LocalDataStoreTableInfo$Columns$Companion;
 	public static final field KEY Ljava/lang/String;
 	public static final field VALUE Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16234,7 +16205,6 @@ public final class org/hisp/dhis/android/persistence/datavalue/DataValueConflict
 	public static final field PERIOD Ljava/lang/String;
 	public static final field STATUS Ljava/lang/String;
 	public static final field VALUE Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16262,7 +16232,6 @@ public final class org/hisp/dhis/android/persistence/datavalue/DataValueTableInf
 	public static final field STORED_BY Ljava/lang/String;
 	public static final field SYNC_STATE Ljava/lang/String;
 	public static final field VALUE Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16284,7 +16253,6 @@ public final class org/hisp/dhis/android/persistence/domain/AggregatedDataSyncTa
 	public static final field ORGANISATION_UNITS_HASH Ljava/lang/String;
 	public static final field PAST_PERIODS Ljava/lang/String;
 	public static final field PERIOD_TYPE Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16317,7 +16285,6 @@ public final class org/hisp/dhis/android/persistence/enrollment/EnrollmentTableI
 	public static final field SYNC_STATE Ljava/lang/String;
 	public static final field TRACKED_ENTITY_INSTANCE Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16342,7 +16309,6 @@ public final class org/hisp/dhis/android/persistence/event/EventDataFilterTableI
 	public static final field LE Ljava/lang/String;
 	public static final field LIKE Ljava/lang/String;
 	public static final field LT Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16378,7 +16344,6 @@ public final class org/hisp/dhis/android/persistence/event/EventFilterTableInfo$
 	public static final field PROGRAM Ljava/lang/String;
 	public static final field PROGRAM_STAGE Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16397,7 +16362,6 @@ public final class org/hisp/dhis/android/persistence/event/EventSyncTableInfo$Co
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field ORGANISATION_UNIT_IDS_HASH Ljava/lang/String;
 	public static final field PROGRAM Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16433,7 +16397,6 @@ public final class org/hisp/dhis/android/persistence/event/EventTableInfo$Column
 	public static final field STATUS Ljava/lang/String;
 	public static final field SYNC_STATE Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16455,7 +16418,6 @@ public final class org/hisp/dhis/android/persistence/expressiondimensionitem/Exp
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16479,7 +16441,6 @@ public final class org/hisp/dhis/android/persistence/fileresource/FileResourceTa
 	public static final field PATH Ljava/lang/String;
 	public static final field SYNC_STATE Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16497,7 +16458,6 @@ public final class org/hisp/dhis/android/persistence/icon/CustomIconTableInfo$Co
 	public static final field FILE_RESOURCE Ljava/lang/String;
 	public static final field HREF Ljava/lang/String;
 	public static final field KEY Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16524,7 +16484,6 @@ public final class org/hisp/dhis/android/persistence/imports/TrackerImportConfli
 	public static final field TRACKED_ENTITY_ATTRIBUTE Ljava/lang/String;
 	public static final field TRACKED_ENTITY_INSTANCE Ljava/lang/String;
 	public static final field VALUE Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16541,7 +16500,6 @@ public final class org/hisp/dhis/android/persistence/indicator/DataSetIndicatorL
 	public static final field Companion Lorg/hisp/dhis/android/persistence/indicator/DataSetIndicatorLinkTableInfo$Columns$Companion;
 	public static final field DATA_SET Ljava/lang/String;
 	public static final field INDICATOR Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16576,7 +16534,6 @@ public final class org/hisp/dhis/android/persistence/indicator/IndicatorTableInf
 	public static final field SHORT_NAME Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
 	public static final field URL Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16599,7 +16556,6 @@ public final class org/hisp/dhis/android/persistence/indicator/IndicatorTypeTabl
 	public static final field NAME Ljava/lang/String;
 	public static final field NUMBER Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16617,7 +16573,6 @@ public final class org/hisp/dhis/android/persistence/legendset/DataElementLegend
 	public static final field DATA_ELEMENT Ljava/lang/String;
 	public static final field LEGEND_SET Ljava/lang/String;
 	public static final field SORT_ORDER Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16635,7 +16590,6 @@ public final class org/hisp/dhis/android/persistence/legendset/IndicatorLegendSe
 	public static final field INDICATOR Ljava/lang/String;
 	public static final field LEGEND_SET Ljava/lang/String;
 	public static final field SORT_ORDER Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16657,7 +16611,6 @@ public final class org/hisp/dhis/android/persistence/legendset/LegendSetTableInf
 	public static final field NAME Ljava/lang/String;
 	public static final field SYMBOLIZER Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16682,7 +16635,6 @@ public final class org/hisp/dhis/android/persistence/legendset/LegendTableInfo$C
 	public static final field NAME Ljava/lang/String;
 	public static final field START_VALUE Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16700,7 +16652,6 @@ public final class org/hisp/dhis/android/persistence/legendset/ProgramIndicatorL
 	public static final field LEGEND_SET Ljava/lang/String;
 	public static final field PROGRAM_INDICATOR Ljava/lang/String;
 	public static final field SORT_ORDER Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16746,7 +16697,6 @@ public final class org/hisp/dhis/android/persistence/maintenance/ForeignKeyViola
 	public static final field NOT_FOUND_VALUE Ljava/lang/String;
 	public static final field TO_COLUMN Ljava/lang/String;
 	public static final field TO_TABLE Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16764,7 +16714,6 @@ public final class org/hisp/dhis/android/persistence/map/MapLayerImageryProvider
 	public static final field COVERAGE_AREAS Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/map/MapLayerImageryProviderTableInfo$Columns$Companion;
 	public static final field MAP_LAYER Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16792,7 +16741,6 @@ public final class org/hisp/dhis/android/persistence/map/MapLayerTableInfo$Colum
 	public static final field SUBDOMAINS Ljava/lang/String;
 	public static final field SUBDOMAIN_PLACEHOLDER Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16816,7 +16764,6 @@ public final class org/hisp/dhis/android/persistence/note/NoteTableInfo$Columns 
 	public static final field SYNC_STATE Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
 	public static final field VALUE Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16833,7 +16780,6 @@ public final class org/hisp/dhis/android/persistence/option/OptionGroupOptionLin
 	public static final field Companion Lorg/hisp/dhis/android/persistence/option/OptionGroupOptionLinkTableInfo$Columns$Companion;
 	public static final field OPTION Ljava/lang/String;
 	public static final field OPTION_GROUP Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16855,7 +16801,6 @@ public final class org/hisp/dhis/android/persistence/option/OptionGroupTableInfo
 	public static final field NAME Ljava/lang/String;
 	public static final field OPTION_SET Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16878,7 +16823,6 @@ public final class org/hisp/dhis/android/persistence/option/OptionSetTableInfo$C
 	public static final field UID Ljava/lang/String;
 	public static final field VALUE_TYPE Ljava/lang/String;
 	public static final field VERSION Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16903,7 +16847,6 @@ public final class org/hisp/dhis/android/persistence/option/OptionTableInfo$Colu
 	public static final field OPTION_SET Ljava/lang/String;
 	public static final field SORT_ORDER Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16926,7 +16869,6 @@ public final class org/hisp/dhis/android/persistence/organisationunit/Organisati
 	public static final field NAME Ljava/lang/String;
 	public static final field SHORT_NAME Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16948,7 +16890,6 @@ public final class org/hisp/dhis/android/persistence/organisationunit/Organisati
 	public static final field LEVEL Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16965,7 +16906,6 @@ public final class org/hisp/dhis/android/persistence/organisationunit/Organisati
 	public static final field Companion Lorg/hisp/dhis/android/persistence/organisationunit/OrganisationUnitOrganisationUnitGroupLinkTableInfo$Columns$Companion;
 	public static final field ORGANISATION_UNIT Ljava/lang/String;
 	public static final field ORGANISATION_UNIT_GROUP Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16982,7 +16922,6 @@ public final class org/hisp/dhis/android/persistence/organisationunit/Organisati
 	public static final field Companion Lorg/hisp/dhis/android/persistence/organisationunit/OrganisationUnitProgramLinkTableInfo$Columns$Companion;
 	public static final field ORGANISATION_UNIT Ljava/lang/String;
 	public static final field PROGRAM Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17015,7 +16954,6 @@ public final class org/hisp/dhis/android/persistence/organisationunit/Organisati
 	public static final field PATH Ljava/lang/String;
 	public static final field SHORT_NAME Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17034,7 +16972,6 @@ public final class org/hisp/dhis/android/persistence/period/PeriodTableInfo$Colu
 	public static final field PERIOD_ID Ljava/lang/String;
 	public static final field PERIOD_TYPE Ljava/lang/String;
 	public static final field START_DATE Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17054,7 +16991,6 @@ public final class org/hisp/dhis/android/persistence/program/AnalyticsPeriodBoun
 	public static final field OFFSET_PERIODS Ljava/lang/String;
 	public static final field OFFSET_PERIOD_TYPE Ljava/lang/String;
 	public static final field PROGRAM_INDICATOR Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17087,7 +17023,6 @@ public final class org/hisp/dhis/android/persistence/program/ProgramIndicatorTab
 	public static final field PROGRAM Ljava/lang/String;
 	public static final field SHORT_NAME Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17121,7 +17056,6 @@ public final class org/hisp/dhis/android/persistence/program/ProgramRuleActionTa
 	public static final field PROGRAM_STAGE_SECTION Ljava/lang/String;
 	public static final field TRACKED_ENTITY_ATTRIBUTE Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17146,7 +17080,6 @@ public final class org/hisp/dhis/android/persistence/program/ProgramRuleTableInf
 	public static final field PROGRAM Ljava/lang/String;
 	public static final field PROGRAM_STAGE Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17173,7 +17106,6 @@ public final class org/hisp/dhis/android/persistence/program/ProgramRuleVariable
 	public static final field TRACKED_ENTITY_ATTRIBUTE Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
 	public static final field USE_CODE_FOR_OPTION_SET Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17191,7 +17123,6 @@ public final class org/hisp/dhis/android/persistence/program/ProgramSectionAttri
 	public static final field Companion Lorg/hisp/dhis/android/persistence/program/ProgramSectionAttributeLinkTableInfo$Columns$Companion;
 	public static final field PROGRAM_SECTION Ljava/lang/String;
 	public static final field SORT_ORDER Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17220,7 +17151,6 @@ public final class org/hisp/dhis/android/persistence/program/ProgramSectionTable
 	public static final field PROGRAM Ljava/lang/String;
 	public static final field SORT_ORDER Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17248,7 +17178,6 @@ public final class org/hisp/dhis/android/persistence/program/ProgramStageDataEle
 	public static final field PROGRAM_STAGE Ljava/lang/String;
 	public static final field SORT_ORDER Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17266,7 +17195,6 @@ public final class org/hisp/dhis/android/persistence/program/ProgramStageSection
 	public static final field DATA_ELEMENT Ljava/lang/String;
 	public static final field PROGRAM_STAGE_SECTION Ljava/lang/String;
 	public static final field SORT_ORDER Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17283,7 +17211,6 @@ public final class org/hisp/dhis/android/persistence/program/ProgramStageSection
 	public static final field Companion Lorg/hisp/dhis/android/persistence/program/ProgramStageSectionProgramIndicatorLinkTableInfo$Columns$Companion;
 	public static final field PROGRAM_INDICATOR Ljava/lang/String;
 	public static final field PROGRAM_STAGE_SECTION Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17310,7 +17237,6 @@ public final class org/hisp/dhis/android/persistence/program/ProgramStageSection
 	public static final field PROGRAM_STAGE Ljava/lang/String;
 	public static final field SORT_ORDER Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17360,7 +17286,6 @@ public final class org/hisp/dhis/android/persistence/program/ProgramStageTableIn
 	public static final field UID Ljava/lang/String;
 	public static final field VALIDATION_STRATEGY Ljava/lang/String;
 	public static final field VALID_COMPLETE_ONLY Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17419,7 +17344,6 @@ public final class org/hisp/dhis/android/persistence/program/ProgramTableInfo$Co
 	public static final field UID Ljava/lang/String;
 	public static final field USE_FIRST_STAGE_DURING_REGISTRATION Ljava/lang/String;
 	public static final field VERSION Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17451,7 +17375,6 @@ public final class org/hisp/dhis/android/persistence/program/ProgramTrackedEntit
 	public static final field SORT_ORDER Ljava/lang/String;
 	public static final field TRACKED_ENTITY_ATTRIBUTE Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17478,7 +17401,6 @@ public final class org/hisp/dhis/android/persistence/programstageworkinglist/Pro
 	public static final field LT Ljava/lang/String;
 	public static final field PROGRAM_STAGE_WORKING_LIST Ljava/lang/String;
 	public static final field SW Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17503,7 +17425,6 @@ public final class org/hisp/dhis/android/persistence/programstageworkinglist/Pro
 	public static final field LIKE Ljava/lang/String;
 	public static final field LT Ljava/lang/String;
 	public static final field PROGRAM_STAGE_WORKING_LIST Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17539,7 +17460,6 @@ public final class org/hisp/dhis/android/persistence/programstageworkinglist/Pro
 	public static final field PROGRAM Ljava/lang/String;
 	public static final field PROGRAM_STAGE Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17562,7 +17482,6 @@ public final class org/hisp/dhis/android/persistence/relationship/RelationshipCo
 	public static final field TRACKED_ENTITY_TYPE Ljava/lang/String;
 	public static final field TRACKER_DATA_VIEW_ATTRIBUTES Ljava/lang/String;
 	public static final field TRACKER_DATA_VIEW_DATA_ELEMENTS Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17582,7 +17501,6 @@ public final class org/hisp/dhis/android/persistence/relationship/RelationshipIt
 	public static final field RELATIONSHIP Ljava/lang/String;
 	public static final field RELATIONSHIP_ITEM_TYPE Ljava/lang/String;
 	public static final field TRACKED_ENTITY_INSTANCE Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17604,7 +17522,6 @@ public final class org/hisp/dhis/android/persistence/relationship/RelationshipTa
 	public static final field RELATIONSHIP_TYPE Ljava/lang/String;
 	public static final field SYNC_STATE Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17629,7 +17546,6 @@ public final class org/hisp/dhis/android/persistence/relationship/RelationshipTy
 	public static final field NAME Ljava/lang/String;
 	public static final field TO_FROM_NAME Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17646,7 +17562,6 @@ public final class org/hisp/dhis/android/persistence/resource/ResourceTableInfo$
 	public static final field Companion Lorg/hisp/dhis/android/persistence/resource/ResourceTableInfo$Columns$Companion;
 	public static final field LAST_SYNCED Ljava/lang/String;
 	public static final field RESOURCE_TYPE Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17687,7 +17602,6 @@ public final class org/hisp/dhis/android/persistence/settings/AnalyticsTeiAttrib
 	public static final field Companion Lorg/hisp/dhis/android/persistence/settings/AnalyticsTeiAttributeTableInfo$Columns$Companion;
 	public static final field TEI_SETTING Ljava/lang/String;
 	public static final field WHO_COMPONENT Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17706,7 +17620,6 @@ public final class org/hisp/dhis/android/persistence/settings/AnalyticsTeiDataEl
 	public static final field PROGRAM_STAGE Ljava/lang/String;
 	public static final field TEI_SETTING Ljava/lang/String;
 	public static final field WHO_COMPONENT Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17725,7 +17638,6 @@ public final class org/hisp/dhis/android/persistence/settings/AnalyticsTeiIndica
 	public static final field PROGRAM_STAGE Ljava/lang/String;
 	public static final field TEI_SETTING Ljava/lang/String;
 	public static final field WHO_COMPONENT Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17747,7 +17659,6 @@ public final class org/hisp/dhis/android/persistence/settings/AnalyticsTeiSettin
 	public static final field SHORT_NAME Ljava/lang/String;
 	public static final field TYPE Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17767,7 +17678,6 @@ public final class org/hisp/dhis/android/persistence/settings/AnalyticsTeiWHONut
 	public static final field GENDER_FEMALE Ljava/lang/String;
 	public static final field GENDER_MALE Ljava/lang/String;
 	public static final field TEI_SETTING Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17784,7 +17694,6 @@ public final class org/hisp/dhis/android/persistence/settings/CustomIntentAttrib
 	public static final field CUSTOM_INTENT_UID Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/settings/CustomIntentAttributeTableInfo$Columns$Companion;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17801,7 +17710,6 @@ public final class org/hisp/dhis/android/persistence/settings/CustomIntentDataEl
 	public static final field CUSTOM_INTENT_UID Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/settings/CustomIntentDataElementTableInfo$Columns$Companion;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17822,7 +17730,6 @@ public final class org/hisp/dhis/android/persistence/settings/CustomIntentTableI
 	public static final field REQUEST_ARGUMENTS Ljava/lang/String;
 	public static final field RESPONSE_DATA_EXTRAS Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17840,7 +17747,6 @@ public final class org/hisp/dhis/android/persistence/settings/DataSetConfigurati
 	public static final field DISABLE_MANUAL_LOCATION Ljava/lang/String;
 	public static final field MINIMUM_LOCATION_ACCURACY Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17860,7 +17766,6 @@ public final class org/hisp/dhis/android/persistence/settings/DataSetSettingTabl
 	public static final field PERIOD_D_S_DOWNLOAD Ljava/lang/String;
 	public static final field PERIOD_D_S_D_B_TRIMMING Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17880,7 +17785,6 @@ public final class org/hisp/dhis/android/persistence/settings/FilterSettingTable
 	public static final field SCOPE Ljava/lang/String;
 	public static final field SORT Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17906,7 +17810,6 @@ public final class org/hisp/dhis/android/persistence/settings/GeneralSettingTabl
 	public static final field RESERVED_VALUES Ljava/lang/String;
 	public static final field SMS_GATEWAY Ljava/lang/String;
 	public static final field SMS_RESULT_SENDER Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17923,7 +17826,6 @@ public final class org/hisp/dhis/android/persistence/settings/LatestAppVersionTa
 	public static final field Companion Lorg/hisp/dhis/android/persistence/settings/LatestAppVersionTableInfo$Columns$Companion;
 	public static final field DOWNLOAD_U_R_L Ljava/lang/String;
 	public static final field VERSION Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17947,7 +17849,6 @@ public final class org/hisp/dhis/android/persistence/settings/ProgramConfigurati
 	public static final field OPTIONAL_SEARCH Ljava/lang/String;
 	public static final field QUICK_ACTIONS Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17979,7 +17880,6 @@ public final class org/hisp/dhis/android/persistence/settings/ProgramSettingTabl
 	public static final field UID Ljava/lang/String;
 	public static final field UPDATE_DOWNLOAD Ljava/lang/String;
 	public static final field UPDATE_D_B_TRIMMING Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -17999,7 +17899,6 @@ public final class org/hisp/dhis/android/persistence/settings/SynchronizationSet
 	public static final field METADATA_SYNC Ljava/lang/String;
 	public static final field TRACKER_EXPORTER_VERSION Ljava/lang/String;
 	public static final field TRACKER_IMPORTER_VERSION Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18016,7 +17915,6 @@ public final class org/hisp/dhis/android/persistence/settings/SystemSettingTable
 	public static final field Companion Lorg/hisp/dhis/android/persistence/settings/SystemSettingTableInfo$Columns$Companion;
 	public static final field KEY Ljava/lang/String;
 	public static final field VALUE Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18033,7 +17931,6 @@ public final class org/hisp/dhis/android/persistence/settings/UserSettingsTableI
 	public static final field Companion Lorg/hisp/dhis/android/persistence/settings/UserSettingsTableInfo$Columns$Companion;
 	public static final field KEY_DB_LOCALE Ljava/lang/String;
 	public static final field KEY_UI_LOCALE Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18050,7 +17947,6 @@ public final class org/hisp/dhis/android/persistence/sms/SMSConfigTableInfo$Colu
 	public static final field Companion Lorg/hisp/dhis/android/persistence/sms/SMSConfigTableInfo$Columns$Companion;
 	public static final field KEY Ljava/lang/String;
 	public static final field VALUE Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18067,7 +17963,6 @@ public final class org/hisp/dhis/android/persistence/sms/SMSOngoingSubmissionTab
 	public static final field Companion Lorg/hisp/dhis/android/persistence/sms/SMSOngoingSubmissionTableInfo$Columns$Companion;
 	public static final field SUBMISSION_ID Ljava/lang/String;
 	public static final field TYPE Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18084,7 +17979,6 @@ public final class org/hisp/dhis/android/persistence/sms/SmsMetadataIdTableInfo$
 	public static final field Companion Lorg/hisp/dhis/android/persistence/sms/SmsMetadataIdTableInfo$Columns$Companion;
 	public static final field TYPE Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18104,7 +17998,6 @@ public final class org/hisp/dhis/android/persistence/systeminfo/SystemInfoTableI
 	public static final field SERVER_DATE Ljava/lang/String;
 	public static final field SYSTEM_NAME Ljava/lang/String;
 	public static final field VERSION Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18131,7 +18024,6 @@ public final class org/hisp/dhis/android/persistence/trackedentity/AttributeValu
 	public static final field LT Ljava/lang/String;
 	public static final field SW Ljava/lang/String;
 	public static final field TRACKED_ENTITY_INSTANCE_FILTER Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18150,7 +18042,6 @@ public final class org/hisp/dhis/android/persistence/trackedentity/ProgramOwnerT
 	public static final field PROGRAM Ljava/lang/String;
 	public static final field SYNC_STATE Ljava/lang/String;
 	public static final field TRACKED_ENTITY_INSTANCE Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18170,7 +18061,6 @@ public final class org/hisp/dhis/android/persistence/trackedentity/ProgramTempOw
 	public static final field REASON Ljava/lang/String;
 	public static final field TRACKED_ENTITY_INSTANCE Ljava/lang/String;
 	public static final field VALID_UNTIL Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18187,7 +18077,6 @@ public final class org/hisp/dhis/android/persistence/trackedentity/ReservedValue
 	public static final field Companion Lorg/hisp/dhis/android/persistence/trackedentity/ReservedValueSettingTableInfo$Columns$Companion;
 	public static final field NUMBER_OF_VALUES_TO_RESERVE Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18205,7 +18094,6 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 	public static final field LEGEND_SET Ljava/lang/String;
 	public static final field SORT_ORDER Ljava/lang/String;
 	public static final field TRACKED_ENTITY_ATTRIBUTE Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18229,7 +18117,6 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 	public static final field PATTERN Ljava/lang/String;
 	public static final field TEMPORAL_VALIDITY_DATE Ljava/lang/String;
 	public static final field VALUE Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18273,7 +18160,6 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 	public static final field UID Ljava/lang/String;
 	public static final field UNIQUE_PROPERTY Ljava/lang/String;
 	public static final field VALUE_TYPE Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18294,7 +18180,6 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 	public static final field TRACKED_ENTITY_ATTRIBUTE Ljava/lang/String;
 	public static final field TRACKED_ENTITY_INSTANCE Ljava/lang/String;
 	public static final field VALUE Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18317,7 +18202,6 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 	public static final field STORED_BY Ljava/lang/String;
 	public static final field SYNC_STATE Ljava/lang/String;
 	public static final field VALUE Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18338,7 +18222,6 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 	public static final field PERIOD_TO Ljava/lang/String;
 	public static final field PROGRAM_STAGE Ljava/lang/String;
 	public static final field TRACKED_ENTITY_INSTANCE_FILTER Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18379,7 +18262,6 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 	public static final field TRACKED_ENTITY_INSTANCES Ljava/lang/String;
 	public static final field TRACKED_ENTITY_TYPE Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18398,7 +18280,6 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field ORGANISATION_UNIT_IDS_HASH Ljava/lang/String;
 	public static final field PROGRAM Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18425,7 +18306,6 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 	public static final field SYNC_STATE Ljava/lang/String;
 	public static final field TRACKED_ENTITY_TYPE Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18446,7 +18326,6 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 	public static final field SORT_ORDER Ljava/lang/String;
 	public static final field TRACKED_ENTITY_ATTRIBUTE Ljava/lang/String;
 	public static final field TRACKED_ENTITY_TYPE Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18475,7 +18354,6 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 	public static final field NAME Ljava/lang/String;
 	public static final field SHORT_NAME Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18495,7 +18373,6 @@ public final class org/hisp/dhis/android/persistence/tracker/TrackerJobObjectTab
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field OBJECT_UID Ljava/lang/String;
 	public static final field TRACKER_TYPE Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18516,7 +18393,6 @@ public final class org/hisp/dhis/android/persistence/usecase/StockUseCaseTableIn
 	public static final field PROGRAM_TYPE Ljava/lang/String;
 	public static final field STOCK_ON_HAND Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18538,7 +18414,6 @@ public final class org/hisp/dhis/android/persistence/usecase/StockUseCaseTransac
 	public static final field STOCK_DISCARDED Ljava/lang/String;
 	public static final field STOCK_DISTRIBUTED Ljava/lang/String;
 	public static final field TRANSACTION_TYPE Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18555,7 +18430,6 @@ public final class org/hisp/dhis/android/persistence/user/AuthenticatedUserTable
 	public static final field Companion Lorg/hisp/dhis/android/persistence/user/AuthenticatedUserTableInfo$Columns$Companion;
 	public static final field HASH Ljava/lang/String;
 	public static final field USER Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18571,7 +18445,6 @@ public final class org/hisp/dhis/android/persistence/user/AuthorityTableInfo {
 public final class org/hisp/dhis/android/persistence/user/AuthorityTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
 	public static final field Companion Lorg/hisp/dhis/android/persistence/user/AuthorityTableInfo$Columns$Companion;
 	public static final field NAME Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18592,7 +18465,6 @@ public final class org/hisp/dhis/android/persistence/user/UserGroupTableInfo$Col
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18612,7 +18484,6 @@ public final class org/hisp/dhis/android/persistence/user/UserOrganisationUnitTa
 	public static final field ROOT Ljava/lang/String;
 	public static final field USER Ljava/lang/String;
 	public static final field USER_ASSIGNED Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18633,7 +18504,6 @@ public final class org/hisp/dhis/android/persistence/user/UserRoleTableInfo$Colu
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18668,7 +18538,6 @@ public final class org/hisp/dhis/android/persistence/user/UserTableInfo$Columns 
 	public static final field SURNAME Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
 	public static final field USERNAME Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18685,7 +18554,6 @@ public final class org/hisp/dhis/android/persistence/validation/DataSetValidatio
 	public static final field Companion Lorg/hisp/dhis/android/persistence/validation/DataSetValidationRuleLinkTableInfo$Columns$Companion;
 	public static final field DATA_SET Ljava/lang/String;
 	public static final field VALIDATION_RULE Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18722,7 +18590,6 @@ public final class org/hisp/dhis/android/persistence/validation/ValidationRuleTa
 	public static final field SHORT_NAME Ljava/lang/String;
 	public static final field SKIP_FORM_VALIDATION Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18745,7 +18612,6 @@ public final class org/hisp/dhis/android/persistence/valuetypedevicerendering/Va
 	public static final field STEP Ljava/lang/String;
 	public static final field TYPE Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18770,7 +18636,6 @@ public final class org/hisp/dhis/android/persistence/visualization/TrackerVisual
 	public static final field REPETITION Ljava/lang/String;
 	public static final field SORT_ORDER Ljava/lang/String;
 	public static final field TRACKER_VISUALIZATION Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18799,7 +18664,6 @@ public final class org/hisp/dhis/android/persistence/visualization/TrackerVisual
 	public static final field TRACKED_ENTITY_TYPE Ljava/lang/String;
 	public static final field TYPE Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18820,7 +18684,6 @@ public final class org/hisp/dhis/android/persistence/visualization/Visualization
 	public static final field POSITION Ljava/lang/String;
 	public static final field SORT_ORDER Ljava/lang/String;
 	public static final field VISUALIZATION Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -18871,7 +18734,6 @@ public final class org/hisp/dhis/android/persistence/visualization/Visualization
 	public static final field TITLE Ljava/lang/String;
 	public static final field TYPE Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
-	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }

@@ -9,7 +9,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 
 @Entity(
     tableName = "DataValueConflict",
-    primaryKeys = ["dataElement", "period", "orgUnit", "categoryOptionCombo", "attributeOptionCombo"]
+    primaryKeys = ["dataElement", "period", "orgUnit", "categoryOptionCombo", "attributeOptionCombo"],
 )
 internal data class DataValueConflictDB(
     val conflict: String?,

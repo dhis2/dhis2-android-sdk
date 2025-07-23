@@ -44,8 +44,8 @@ import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceDB
         "event",
         "tableReference",
         "trackedEntityAttribute",
-        "dataElement"
-    ]
+        "dataElement",
+    ],
 )
 internal data class TrackerImportConflictDB(
     val conflict: String?,

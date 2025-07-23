@@ -1,8 +1,6 @@
 package org.hisp.dhis.android.persistence.tracker
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObject
 import org.hisp.dhis.android.core.util.dateFormat
@@ -11,11 +9,11 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.StringListDB
 import org.hisp.dhis.android.persistence.common.toDB
 
-@Entity(tableName = "TrackerJobObject")
+@Entity(
+    tableName = "TrackerJobObject",
+    primaryKeys = ["jobUid", "objectUid"],
+)
 internal data class TrackerJobObjectDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val trackerType: String,
     val objectUid: String,
     val jobUid: String,

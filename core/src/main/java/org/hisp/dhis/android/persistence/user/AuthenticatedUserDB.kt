@@ -1,9 +1,7 @@
 package org.hisp.dhis.android.persistence.user
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.persistence.common.EntityDB
@@ -19,14 +17,9 @@ import org.hisp.dhis.android.persistence.common.EntityDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["user"], unique = true),
-    ],
 )
 internal data class AuthenticatedUserDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
+    @PrimaryKey
     val user: String,
     val hash: String?,
 ) : EntityDB<AuthenticatedUser> {

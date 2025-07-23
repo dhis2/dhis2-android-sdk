@@ -14,7 +14,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 internal data class D2ErrorDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int? = 0,
+    val id: Int = 0,
     val resourceType: String?,
     val uid: String?,
     val url: String?,

@@ -1,6 +1,5 @@
 package org.hisp.dhis.android.persistence.sms
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoingSubmission
@@ -9,9 +8,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 
 @Entity(tableName = "SMSOngoingSubmission")
 internal data class SMSOngoingSubmissionDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
+    @PrimaryKey
     val submissionId: Int?,
     val type: String?,
 ) : EntityDB<SMSOngoingSubmission> {

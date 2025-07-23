@@ -1,10 +1,7 @@
 package org.hisp.dhis.android.persistence.organisationunit
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.program.ProgramDB
@@ -27,16 +24,9 @@ import org.hisp.dhis.android.persistence.program.ProgramDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["organisationUnit", "program"], unique = true),
-        Index(value = ["organisationUnit"]),
-        Index(value = ["program"]),
-    ],
+    primaryKeys = ["organisationUnit", "program"],
 )
 internal data class OrganisationUnitProgramLinkDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val organisationUnit: String,
     val program: String,
 ) : EntityDB<OrganisationUnitProgramLink> {

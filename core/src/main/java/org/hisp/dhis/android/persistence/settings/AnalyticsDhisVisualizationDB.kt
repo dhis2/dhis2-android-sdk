@@ -12,7 +12,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 internal data class AnalyticsDhisVisualizationDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
-    val id: Int? = 0,
+    val id: Int = 0,
     val uid: String,
     val scopeUid: String?,
     val scope: String?,

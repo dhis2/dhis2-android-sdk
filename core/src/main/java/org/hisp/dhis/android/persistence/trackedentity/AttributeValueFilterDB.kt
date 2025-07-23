@@ -28,11 +28,8 @@
 
 package org.hisp.dhis.android.persistence.trackedentity
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
 import org.hisp.dhis.android.persistence.attribute.AttributeDB
 import org.hisp.dhis.android.persistence.common.DateFilterPeriodDB
@@ -60,15 +57,9 @@ import org.hisp.dhis.android.persistence.common.toDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["trackedEntityInstanceFilter"]),
-        Index(value = ["attribute"]),
-    ],
+    primaryKeys = ["trackedEntityInstanceFilter", "attribute"],
 )
 internal data class AttributeValueFilterDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val trackedEntityInstanceFilter: String?,
     val attribute: String?,
     val sw: String?,

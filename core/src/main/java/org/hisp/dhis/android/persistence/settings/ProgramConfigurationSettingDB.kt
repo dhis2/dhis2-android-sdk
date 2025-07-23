@@ -1,6 +1,5 @@
 package org.hisp.dhis.android.persistence.settings
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.settings.ProgramConfigurationSetting
@@ -9,9 +8,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 
 @Entity(tableName = "ProgramConfigurationSetting")
 internal data class ProgramConfigurationSettingDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
+    @PrimaryKey
     val uid: String?,
     val completionSpinner: Boolean?,
     val optionalSearch: Boolean?,

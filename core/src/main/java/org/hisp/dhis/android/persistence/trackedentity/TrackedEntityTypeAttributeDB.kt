@@ -1,10 +1,7 @@
 package org.hisp.dhis.android.persistence.trackedentity
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute
 import org.hisp.dhis.android.persistence.common.EntityDB
@@ -27,15 +24,9 @@ import org.hisp.dhis.android.persistence.common.EntityDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["trackedEntityType"]),
-        Index(value = ["trackedEntityAttribute"]),
-    ],
+    primaryKeys = ["trackedEntityType", "trackedEntityAttribute"],
 )
 internal data class TrackedEntityTypeAttributeDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val trackedEntityType: String?,
     val trackedEntityAttribute: String?,
     val displayInList: Boolean?,

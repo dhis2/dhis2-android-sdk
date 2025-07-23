@@ -1,9 +1,7 @@
 package org.hisp.dhis.android.persistence.dataelement
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.persistence.category.CategoryOptionComboDB
@@ -28,16 +26,9 @@ import org.hisp.dhis.android.persistence.common.ObjectWithUidDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["uid"], unique = true),
-        Index(value = ["dataElement"]),
-        Index(value = ["categoryOptionCombo"]),
-    ],
 )
 internal data class DataElementOperandDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
+    @PrimaryKey
     val uid: String,
     val dataElement: String?,
     val categoryOptionCombo: String?,

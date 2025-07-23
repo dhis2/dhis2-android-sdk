@@ -1,10 +1,7 @@
 package org.hisp.dhis.android.persistence.option
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.option.OptionGroupOptionLink
 import org.hisp.dhis.android.persistence.common.EntityDB
 
@@ -26,16 +23,9 @@ import org.hisp.dhis.android.persistence.common.EntityDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["optionGroup", "option"], unique = true),
-        Index(value = ["optionGroup"]),
-        Index(value = ["option"]),
-    ],
+    primaryKeys = ["optionGroup", "option"],
 )
 internal data class OptionGroupOptionLinkDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val optionGroup: String,
     val option: String,
 ) : EntityDB<OptionGroupOptionLink> {

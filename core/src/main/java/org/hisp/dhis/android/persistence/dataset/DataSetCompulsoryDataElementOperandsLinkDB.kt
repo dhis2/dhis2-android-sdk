@@ -1,10 +1,7 @@
 package org.hisp.dhis.android.persistence.dataset
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLink
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.dataelement.DataElementOperandDB
@@ -27,16 +24,9 @@ import org.hisp.dhis.android.persistence.dataelement.DataElementOperandDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["dataSet", "dataElementOperand"], unique = true),
-        Index(value = ["dataSet"]),
-        Index(value = ["dataElementOperand"]),
-    ],
+    primaryKeys = ["dataSet", "dataElementOperand"],
 )
 internal data class DataSetCompulsoryDataElementOperandsLinkDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val dataSet: String,
     val dataElementOperand: String,
 ) : EntityDB<DataSetCompulsoryDataElementOperandLink> {

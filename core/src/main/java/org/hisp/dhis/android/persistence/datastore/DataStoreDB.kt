@@ -1,9 +1,6 @@
 package org.hisp.dhis.android.persistence.datastore
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.datastore.DataStoreEntry
 import org.hisp.dhis.android.persistence.common.DataObjectDB
 import org.hisp.dhis.android.persistence.common.DeletableObjectDB
@@ -13,14 +10,9 @@ import org.hisp.dhis.android.persistence.common.toDB
 
 @Entity(
     tableName = "DataStore",
-    indices = [
-        Index(value = ["namespace", "key"], unique = true),
-    ],
+    primaryKeys = ["namespace", "key"],
 )
 internal data class DataStoreDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val namespace: String,
     val key: String,
     val value: String?,

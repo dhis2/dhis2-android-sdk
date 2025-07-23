@@ -1,6 +1,5 @@
 package org.hisp.dhis.android.persistence.settings
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.settings.GeneralSettings
@@ -12,9 +11,7 @@ import org.hisp.dhis.android.persistence.common.toDB
 
 @Entity(tableName = "GeneralSetting")
 internal data class GeneralSettingDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
+    @PrimaryKey
     val encryptDB: Boolean?,
     val lastUpdated: String?,
     val reservedValues: Int?,

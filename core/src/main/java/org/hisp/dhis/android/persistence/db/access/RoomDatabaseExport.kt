@@ -41,12 +41,14 @@ import org.hisp.dhis.android.core.common.internal.NativeLibraryLoader.loadSQLCip
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
+import org.koin.core.annotation.Singleton
 import java.io.File
 
 /**
  * Room implementation of database export functionality for encryption/decryption operations.
  * Uses SQLCipher for database encryption with Room.
  */
+@Singleton
 internal class RoomDatabaseExport(
     private val context: Context,
     private val passwordManager: DatabaseEncryptionPasswordManager,

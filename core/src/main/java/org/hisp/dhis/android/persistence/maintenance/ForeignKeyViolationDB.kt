@@ -1,18 +1,16 @@
 package org.hisp.dhis.android.persistence.maintenance
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation
 import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.persistence.common.EntityDB
 
-@Entity(tableName = "ForeignKeyViolation")
+@Entity(
+    tableName = "ForeignKeyViolation",
+    primaryKeys = ["fromTable", "fromColumn", "toTable", "toColumn", "notFoundValue", "fromObjectUid"]
+)
 internal data class ForeignKeyViolationDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val fromTable: String?,
     val fromColumn: String?,
     val toTable: String?,

@@ -1,9 +1,7 @@
 package org.hisp.dhis.android.persistence.enrollment
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
@@ -44,17 +42,9 @@ import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["uid"], unique = true),
-        Index(value = ["organisationUnit"]),
-        Index(value = ["program"]),
-        Index(value = ["trackedEntityInstance"]),
-    ],
 )
 internal data class EnrollmentDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
+    @PrimaryKey
     val uid: String,
     val created: String?,
     val lastUpdated: String?,

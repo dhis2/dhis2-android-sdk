@@ -1,10 +1,7 @@
 package org.hisp.dhis.android.persistence.datavalue
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.core.util.toJavaDate
@@ -57,22 +54,9 @@ import org.hisp.dhis.android.persistence.period.PeriodDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(
-            value = ["dataElement", "period", "organisationUnit", "categoryOptionCombo", "attributeOptionCombo"],
-            unique = true,
-        ),
-        Index(value = ["dataElement"]),
-        Index(value = ["period"]),
-        Index(value = ["organisationUnit"]),
-        Index(value = ["categoryOptionCombo"]),
-        Index(value = ["attributeOptionCombo"]),
-    ],
+    primaryKeys = ["dataElement", "period", "orgUnit", "categoryOptionCombo", "attributeOptionCombo"],
 )
 internal data class DataValueDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val dataElement: String,
     val period: String,
     val organisationUnit: String,

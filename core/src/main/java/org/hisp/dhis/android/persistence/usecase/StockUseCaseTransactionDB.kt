@@ -1,10 +1,7 @@
 package org.hisp.dhis.android.persistence.usecase
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCaseTransaction
 import org.hisp.dhis.android.persistence.common.EntityDB
 
@@ -19,14 +16,9 @@ import org.hisp.dhis.android.persistence.common.EntityDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["programUid"]),
-    ],
+    primaryKeys = ["programUid", "transactionType"],
 )
 internal data class StockUseCaseTransactionDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val programUid: String,
     val sortOrder: Int?,
     val transactionType: String?,

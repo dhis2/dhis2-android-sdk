@@ -1,9 +1,7 @@
 package org.hisp.dhis.android.persistence.relationship
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.relationship.Relationship
@@ -22,15 +20,9 @@ import org.hisp.dhis.android.persistence.common.EntityDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["uid"], unique = true),
-        Index(value = ["relationshipType"]),
-    ],
 )
 internal data class RelationshipDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
+    @PrimaryKey
     val uid: String,
     val name: String?,
     val created: String?,

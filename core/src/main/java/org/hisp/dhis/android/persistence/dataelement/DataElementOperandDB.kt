@@ -26,7 +26,6 @@ import org.hisp.dhis.android.persistence.common.ObjectWithUidDB
             deferred = true,
         ),
     ],
-    primaryKeys = ["", ""],
 )
 internal data class DataElementOperandDB(
     @PrimaryKey

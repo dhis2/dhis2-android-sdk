@@ -1,8 +1,6 @@
 package org.hisp.dhis.android.persistence.settings
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.settings.CustomIntent
 import org.hisp.dhis.android.core.settings.CustomIntentRequest
@@ -10,16 +8,9 @@ import org.hisp.dhis.android.core.settings.CustomIntentResponse
 import org.hisp.dhis.android.core.settings.CustomIntentResponseData
 import org.hisp.dhis.android.persistence.common.EntityDB
 
-@Entity(
-    tableName = "CustomIntent",
-    indices = [
-        Index(value = ["uid"], unique = true),
-    ],
-)
+@Entity(tableName = "CustomIntent")
 internal data class CustomIntentDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
+    @PrimaryKey
     val uid: String,
     val name: String?,
     val action: CustomIntentActionTypeListDB?,

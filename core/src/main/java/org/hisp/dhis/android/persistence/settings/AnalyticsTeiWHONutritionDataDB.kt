@@ -1,10 +1,7 @@
 package org.hisp.dhis.android.persistence.settings
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionData
 import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionGender
 import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionGenderValues
@@ -30,15 +27,9 @@ import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeDB
             deferred = true,
         ),
     ],
-    indices = [
-        Index(value = ["genderAttribute"]),
-        Index(value = ["teiSetting"]),
-    ],
+    primaryKeys = ["teiSetting", "genderAttribute"],
 )
 internal data class AnalyticsTeiWHONutritionDataDB(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    val id: Int? = 0,
     val teiSetting: String,
     val chartType: String?,
     val genderAttribute: String,

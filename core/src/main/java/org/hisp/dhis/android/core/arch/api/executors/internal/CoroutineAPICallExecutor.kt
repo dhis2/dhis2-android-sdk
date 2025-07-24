@@ -44,7 +44,6 @@ internal interface CoroutineAPICallExecutor {
         block: suspend () -> P,
     ): P
 
-
     suspend fun <P> wrapTransactionallyRoom(
         cleanForeignKeyErrors: Boolean = true,
         block: suspend () -> P,

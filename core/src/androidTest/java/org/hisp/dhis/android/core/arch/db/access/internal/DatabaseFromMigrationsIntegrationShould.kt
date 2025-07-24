@@ -71,7 +71,6 @@ class DatabaseFromMigrationsIntegrationShould {
 
     @Test
     fun ensure_db_from_snapshots_and_from_migrations_have_the_same_schema() = runTest {
-
         createDb(DB_NAME_1)
         val schema1 = getSchema(Companion.databasAdapter)
 

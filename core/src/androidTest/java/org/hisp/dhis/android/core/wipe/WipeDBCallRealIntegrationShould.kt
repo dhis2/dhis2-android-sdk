@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceSt
 
 class WipeDBCallRealIntegrationShould : BaseRealIntegrationTest() {
     private val d2Dao = d2.databaseAdapter().getCurrentDatabase().d2Dao()
+
     // @Test
     fun have_empty_database_when_wipe_db_after_sync_metadata() = runTest {
         d2.userModule().logIn(username, password, url).blockingGet()

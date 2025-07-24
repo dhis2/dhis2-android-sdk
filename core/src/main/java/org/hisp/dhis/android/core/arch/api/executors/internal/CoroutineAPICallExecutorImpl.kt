@@ -162,7 +162,6 @@ internal class CoroutineAPICallExecutorImpl(
                     block()
                 }
             }
-
         } catch (t: Throwable) {
             throw when (t) {
                 is D2Error -> t
@@ -170,7 +169,6 @@ internal class CoroutineAPICallExecutorImpl(
             }
         }
     }
-
 
     private suspend fun catchError(
         errorCatcher: APICallErrorCatcher,

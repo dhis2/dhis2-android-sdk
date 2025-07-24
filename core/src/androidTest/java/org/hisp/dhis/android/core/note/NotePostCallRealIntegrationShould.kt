@@ -36,13 +36,13 @@ class NotePostCallRealIntegrationShould : BaseRealIntegrationTest() {
      * A quick integration test that is probably flaky, but will help with finding bugs related to the
      * metadataSyncCall. It works against the demo server.
      */
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun download_tei_add_one_note_and_sync_in_2_29() {
         downloadUpdateAndSyncTei(RealServerMother.url2_29)
     }
 
-    //@Test
+    // @Test
     @Throws(Exception::class)
     fun download_tei_add_one_note_and_sync_in_2_30_or_more() {
         downloadUpdateAndSyncTei(RealServerMother.url2_31)
@@ -72,8 +72,10 @@ class NotePostCallRealIntegrationShould : BaseRealIntegrationTest() {
         try {
             d2.noteModule().notes().blockingAdd(
                 NoteCreateProjection.create(
-                    Note.NoteType.ENROLLMENT_NOTE, enrollment!!.uid(), "New note"
-                )
+                    Note.NoteType.ENROLLMENT_NOTE,
+                    enrollment!!.uid(),
+                    "New note",
+                ),
             )
         } catch (ignored: Exception) {
         }

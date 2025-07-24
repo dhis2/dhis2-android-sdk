@@ -74,8 +74,8 @@ class DataBaseMigrationShould {
         Truth.assertThat(
             SqliteCheckerUtility.ifTableExist(
                 UserTableInfo.TABLE_INFO.name(),
-                databaseAdapter
-            )
+                databaseAdapter,
+            ),
         ).isTrue()
     }
 
@@ -85,8 +85,8 @@ class DataBaseMigrationShould {
         Truth.assertThat(
             SqliteCheckerUtility.ifTableExist(
                 TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO.name(),
-                databaseAdapter
-            )
+                databaseAdapter,
+            ),
         ).isFalse()
     }
 
@@ -96,8 +96,8 @@ class DataBaseMigrationShould {
         Truth.assertThat(
             SqliteCheckerUtility.ifTableExist(
                 TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO.name(),
-                databaseAdapter
-            )
+                databaseAdapter,
+            ),
         ).isTrue()
     }
 

@@ -33,9 +33,7 @@ import junit.framework.Assert.fail
 import org.hisp.dhis.android.persistence.common.daos.D2Dao
 import org.junit.Assert
 
-
 internal class DatabaseAssert private constructor(private val d2Dao: D2Dao) {
-
 
     // Properties might need to become suspend functions if they do DB work
     suspend fun isEmpty(): DatabaseAssert {
@@ -120,7 +118,9 @@ internal class DatabaseAssert private constructor(private val d2Dao: D2Dao) {
             // Basic sanitization or warning, ideally table names are simple
             // For true safety against SQL injection if tableName could be arbitrary,
             // this is complex. But here it's from sqlite_master.
-            println("Warning: Table name '$tableName' might be problematic for direct SQL concatenation if it contains special characters.")
+            println(
+                "Warning: Table name '$tableName' might be problematic for direct SQL concatenation if it contains special characters.",
+            )
         }
         val query = RoomRawQuery("SELECT COUNT(*) FROM `$tableName`") // Use backticks for safety
         return d2Dao.intRawQuery(query) ?: 0 // Assuming intRawQuery returns Int? or default to 0
@@ -135,6 +135,4 @@ internal class DatabaseAssert private constructor(private val d2Dao: D2Dao) {
     }
 
     data class TableCount(val tableName: String, val count: Int)
-
 }
-

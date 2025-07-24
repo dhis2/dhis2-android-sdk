@@ -39,9 +39,10 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 class SectionStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<Section>(
     SectionStoreImpl(
-        get()
-    ), SectionTableInfo.TABLE_INFO,
-    get()
+        get(),
+    ),
+    SectionTableInfo.TABLE_INFO,
+    get(),
 ) {
     override fun buildObject(): Section {
         return SectionSamples.getSection()

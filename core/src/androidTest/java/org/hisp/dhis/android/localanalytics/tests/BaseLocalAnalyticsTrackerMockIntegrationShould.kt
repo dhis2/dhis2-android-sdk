@@ -43,7 +43,6 @@ import org.junit.Test
 internal abstract class BaseLocalAnalyticsTrackerMockIntegrationShould : BaseLocalAnalyticsTest() {
     private val d2Dao = d2.databaseAdapter().getCurrentDatabase().d2Dao()
 
-
     @Test
     fun count_events() {
         val eventsCount = d2.eventModule().events().blockingCount()

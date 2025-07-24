@@ -32,5 +32,5 @@ import androidx.room.ColumnInfo
 
 internal data class SchemaRow(
     @ColumnInfo(name = "name") val name: String,
-    @ColumnInfo(name = "sql") val sql: String?
+    @ColumnInfo(name = "sql") val sql: String?,
 )

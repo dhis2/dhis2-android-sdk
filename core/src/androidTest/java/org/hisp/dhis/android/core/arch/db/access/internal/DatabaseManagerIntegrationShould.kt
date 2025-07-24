@@ -79,13 +79,11 @@ class DatabaseManagerIntegrationShould {
         val userDao2 = databaseAdapter.getCurrentDatabase().userDao()
         val users2 = userDao2.objectListRawQuery(RoomRawQuery("SELECT * FROM User"))
         databaseAdapter.close()
-
     }
 
     companion object {
         private const val DB_NAME = "database-adapter-factory-integration-should.db"
         private lateinit var databaseManager: DatabaseManager
-
 
         @BeforeClass
         fun setUpClass() {

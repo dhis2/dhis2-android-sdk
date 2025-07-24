@@ -43,7 +43,7 @@ object SqliteCheckerUtility {
         val query = SimpleSQLiteQuery(
             "SELECT name FROM sqlite_master WHERE type='table' AND " +
                 "name NOT LIKE 'android_%' AND name NOT LIKE 'sqlite_%' AND " +
-                "name NOT LIKE 'room_master_table'"
+                "name NOT LIKE 'room_master_table'",
         )
         val tableNames = d2Dao.stringListRawQuery(query)
 

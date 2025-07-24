@@ -105,7 +105,7 @@ class EnrollmentObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestF
                 .aggregatedSyncState(State.SYNCED)
                 .syncState(State.SYNCED)
                 .status(EnrollmentStatus.ACTIVE)
-                .build()
+                .build(),
         )
 
         val repository = d2.enrollmentModule().enrollments().uid(enrollmentUid)

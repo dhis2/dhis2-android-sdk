@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.SecureStore
 
 class DatabaseEncryptionPasswordManager(
     private val secureStore: SecureStore,
-    private val passwordGenerator: DatabaseEncryptionPasswordGenerator
+    private val passwordGenerator: DatabaseEncryptionPasswordGenerator,
 ) {
     private fun getKey(databaseName: String): String {
         return "DBPW_<>_$databaseName"
@@ -55,7 +55,7 @@ class DatabaseEncryptionPasswordManager(
         fun create(secureStore: SecureStore): DatabaseEncryptionPasswordManager {
             return DatabaseEncryptionPasswordManager(
                 secureStore,
-                DatabaseEncryptionPasswordGenerator()
+                DatabaseEncryptionPasswordGenerator(),
             )
         }
     }

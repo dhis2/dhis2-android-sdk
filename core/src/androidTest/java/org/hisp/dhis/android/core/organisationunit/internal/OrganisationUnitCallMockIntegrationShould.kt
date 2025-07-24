@@ -119,7 +119,7 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
 
         val dataSetStore = koin.get<DataSetStore>()
         dataSetStore.insert(
-            DataSet.builder().uid(dataSetUid).categoryCombo(ObjectWithUid.create(categoryComboUid)).build()
+            DataSet.builder().uid(dataSetUid).categoryCombo(ObjectWithUid.create(categoryComboUid)).build(),
         )
     }
 

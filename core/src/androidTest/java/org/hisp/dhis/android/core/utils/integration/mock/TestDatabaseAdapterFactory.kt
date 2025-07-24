@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPassw
 import org.hisp.dhis.android.persistence.db.access.RoomDatabaseAdapter
 import org.hisp.dhis.android.persistence.db.access.RoomDatabaseManager
 
-
 object TestDatabaseAdapterFactory {
     private val dbName: String = "testDB"
     private var databaseAdapter: DatabaseAdapter = RoomDatabaseAdapter()

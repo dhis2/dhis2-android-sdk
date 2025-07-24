@@ -37,7 +37,7 @@ object UserInternalAccessor {
 
     fun insertOrganisationUnits(
         builder: User.Builder,
-        organisationUnits: List<OrganisationUnit?>?
+        organisationUnits: List<OrganisationUnit?>?,
     ): User.Builder {
         return builder.organisationUnits(organisationUnits)
     }
@@ -49,7 +49,7 @@ object UserInternalAccessor {
 
     fun insertTeiSearchOrganisationUnits(
         builder: User.Builder,
-        teiSearchOrganisationUnits: List<OrganisationUnit?>?
+        teiSearchOrganisationUnits: List<OrganisationUnit?>?,
     ): User.Builder {
         return builder.teiSearchOrganisationUnits(teiSearchOrganisationUnits)
     }

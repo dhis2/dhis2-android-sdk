@@ -36,11 +36,15 @@ internal data class DataSetConfigurationSettingDTO(
     val minimumLocationAccuracy: Int?,
     val disableManualLocation: Boolean?,
 ) {
-    fun toDomain(uid: String? = null): DataSetConfigurationSetting {
+    fun toDomain(uid: String = DATASETCONFIGURATIONSETTING_GLOBAL_ID): DataSetConfigurationSetting {
         return DataSetConfigurationSetting.builder()
             .uid(uid)
             .minimumLocationAccuracy(minimumLocationAccuracy)
             .disableManualLocation(disableManualLocation)
             .build()
+    }
+
+    companion object {
+        const val DATASETCONFIGURATIONSETTING_GLOBAL_ID = "global_uid_"
     }
 }

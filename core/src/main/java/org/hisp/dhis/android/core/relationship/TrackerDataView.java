@@ -38,6 +38,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.persistence.relationship.RelationshipConstraintTableInfo.Columns;
 
 import java.util.Collections;
 import java.util.List;
@@ -46,12 +47,12 @@ import java.util.List;
 public abstract class TrackerDataView implements CoreObject {
 
     @Nullable
-    @ColumnName(RelationshipConstraintTableInfo.Columns.TRACKER_DATA_VIEW_ATTRIBUTES)
+    @ColumnName(Columns.TRACKER_DATA_VIEW_ATTRIBUTES)
     @ColumnAdapter(StringListColumnAdapter.class)
     public abstract List<String> attributes();
 
     @Nullable
-    @ColumnName(RelationshipConstraintTableInfo.Columns.TRACKER_DATA_VIEW_DATA_ELEMENTS)
+    @ColumnName(Columns.TRACKER_DATA_VIEW_DATA_ELEMENTS)
     @ColumnAdapter(StringListColumnAdapter.class)
     public abstract List<String> dataElements();
 

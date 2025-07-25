@@ -397,7 +397,7 @@ CREATE TABLE EventSync(program TEXT, organisationUnitIdsHash INTEGER NOT NULL, d
 INSERT OR IGNORE INTO EventSync(program, organisationUnitIdsHash, downloadLimit, lastUpdated) SELECT program, organisationUnitIdsHash, downloadLimit, lastUpdated FROM EventSync_Old;
 
 ALTER TABLE CategoryOptionOrganisationUnitLink RENAME TO CategoryOptionOrganisationUnitLink_Old;
-CREATE TABLE CategoryOptionOrganisationUnitLink(categoryOption TEXT NOT NULL, organisationUnit TEXT, restriction TEXT, FOREIGN KEY(categoryOption) REFERENCES CategoryOption(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(organisationUnit) REFERENCES OrganisationUnit(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, PRIMARY KEY(categoryOption, organisationUnit));
+CREATE TABLE CategoryOptionOrganisationUnitLink(_id INTEGER PRIMARY KEY AUTOINCREMENT, categoryOption TEXT NOT NULL, organisationUnit TEXT, restriction TEXT, FOREIGN KEY(categoryOption) REFERENCES CategoryOption(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(organisationUnit) REFERENCES OrganisationUnit(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
 INSERT OR IGNORE INTO CategoryOptionOrganisationUnitLink(categoryOption, organisationUnit, restriction) SELECT categoryOption, organisationUnit, restriction FROM CategoryOptionOrganisationUnitLink_Old;
 
 ALTER TABLE TrackedEntityInstanceFilter RENAME TO TrackedEntityInstanceFilter_Old;
@@ -405,7 +405,7 @@ CREATE TABLE TrackedEntityInstanceFilter(uid TEXT NOT NULL PRIMARY KEY, code TEX
 INSERT OR IGNORE INTO TrackedEntityInstanceFilter(uid, code, name, displayName, created, lastUpdated, color, icon, program, description, sortOrder, enrollmentStatus, followUp, organisationUnit, ouMode, assignedUserMode, orderProperty, displayColumnOrder, eventStatus, eventDate, lastUpdatedDate, programStage, trackedEntityInstances, enrollmentIncidentDate, enrollmentCreatedDate, trackedEntityType) SELECT uid, code, name, displayName, created, lastUpdated, color, icon, program, description, sortOrder, enrollmentStatus, followUp, organisationUnit, ouMode, assignedUserMode, orderProperty, displayColumnOrder, eventStatus, eventDate, lastUpdatedDate, programStage, trackedEntityInstances, enrollmentIncidentDate, enrollmentCreatedDate, trackedEntityType FROM TrackedEntityInstanceFilter_Old;
 
 ALTER TABLE TrackedEntityInstanceEventFilter RENAME TO TrackedEntityInstanceEventFilter_Old;
-CREATE TABLE TrackedEntityInstanceEventFilter(trackedEntityInstanceFilter TEXT NOT NULL, programStage TEXT, eventStatus TEXT, periodFrom INTEGER, periodTo INTEGER, assignedUserMode TEXT, PRIMARY KEY(trackedEntityInstanceFilter, programStage), FOREIGN KEY(trackedEntityInstanceFilter) REFERENCES TrackedEntityInstanceFilter(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+CREATE TABLE TrackedEntityInstanceEventFilter(_id INTEGER PRIMARY KEY AUTOINCREMENT, trackedEntityInstanceFilter TEXT NOT NULL, programStage TEXT, eventStatus TEXT, periodFrom INTEGER, periodTo INTEGER, assignedUserMode TEXT, FOREIGN KEY(trackedEntityInstanceFilter) REFERENCES TrackedEntityInstanceFilter(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
 INSERT OR IGNORE INTO TrackedEntityInstanceEventFilter(trackedEntityInstanceFilter, programStage, eventStatus, periodFrom, periodTo, assignedUserMode) SELECT trackedEntityInstanceFilter, programStage, eventStatus, periodFrom, periodTo, assignedUserMode FROM TrackedEntityInstanceEventFilter_Old;
 
 ALTER TABLE EventFilter RENAME TO EventFilter_Old;

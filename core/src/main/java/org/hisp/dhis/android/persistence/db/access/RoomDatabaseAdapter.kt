@@ -103,14 +103,6 @@ internal class RoomDatabaseAdapter : DatabaseAdapter {
         return delete(tableName, whereClause, null)
     }
 
-//    override suspend fun delete(tableName: String, whereClause: String, whereArgs: Array<Any>?): Int {
-//        if (whereArgs != null) {
-//            return delete(tableName, whereClause, whereArgs)
-//        } else {
-//            return delete(tableName, whereClause, null)
-//        }
-//    }
-
     @Suppress("ComplexMethod")
     override suspend fun delete(tableName: String, whereClause: String?, whereArgs: Array<Any>?): Int {
         checkReady()

@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.settings;
 
+import static org.hisp.dhis.android.network.settings.DataSetSettingDTO.DATASETSETTING_GLOBAL_ID;
+
 import com.google.auto.value.AutoValue;
 
 import java.util.Collections;
@@ -42,7 +44,7 @@ public abstract class DataSetSettings {
 
     public static Builder builder() {
         return new AutoValue_DataSetSettings.Builder()
-                .globalSettings(DataSetSetting.builder().build())
+                .globalSettings(DataSetSetting.builder().uid(DATASETSETTING_GLOBAL_ID).build())
                 .specificSettings(Collections.emptyMap());
     }
 

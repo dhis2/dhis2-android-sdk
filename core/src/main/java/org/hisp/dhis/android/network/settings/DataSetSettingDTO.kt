@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.settings.DataSetSetting
 
 @Serializable
 internal data class DataSetSettingDTO(
-    val id: String?,
+    val id: String = DATASETSETTING_GLOBAL_ID,
     val name: String?,
     val lastUpdated: String?,
     val periodDSDownload: Int?,
@@ -48,5 +48,9 @@ internal data class DataSetSettingDTO(
             .periodDSDownload(periodDSDownload)
             .periodDSDBTrimming(periodDSDBTrimming)
             .build()
+    }
+
+    companion object {
+        const val DATASETSETTING_GLOBAL_ID = "global_uid_"
     }
 }

@@ -31,6 +31,7 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownl
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl
 import org.hisp.dhis.android.core.settings.internal.ProgramSettingCall
 import org.hisp.dhis.android.core.settings.internal.ProgramSettingStore
+import org.hisp.dhis.android.network.settings.ProgramSettingDTO.Companion.PROGRAMSETTING_GLOBAL_ID
 import org.koin.core.annotation.Singleton
 
 @Singleton(binds = [ProgramSettingsObjectRepository::class])
@@ -45,11 +46,11 @@ class ProgramSettingsObjectRepository internal constructor(
             null
         } else {
             val specifics = settings
-                .filter { it.uid() != null }
-                .associateBy { it.uid()!! }
+                .filter { it.uid() != PROGRAMSETTING_GLOBAL_ID }
+                .associateBy { it.uid() }
 
             ProgramSettings.builder()
-                .globalSettings(settings.find { it.uid() == null })
+                .globalSettings(settings.find { it.uid() == PROGRAMSETTING_GLOBAL_ID })
                 .specificSettings(specifics)
                 .build()
         }

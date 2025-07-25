@@ -33,6 +33,7 @@ import android.database.Cursor
 import com.gabrielittner.auto.value.cursor.ColumnTypeAdapter
 import org.hisp.dhis.android.core.settings.CustomIntentResponse
 import org.hisp.dhis.android.core.settings.CustomIntentResponseData
+import org.hisp.dhis.android.persistence.settings.CustomIntentTableInfo.Columns.Companion.RESPONSE_DATA_EXTRAS
 import org.hisp.dhis.android.persistence.settings.ResponseDataExtrasDB
 import org.hisp.dhis.android.persistence.settings.toDB
 

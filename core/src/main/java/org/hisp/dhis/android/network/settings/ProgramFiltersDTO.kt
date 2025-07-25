@@ -32,6 +32,7 @@ import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.settings.FilterSetting
 import org.hisp.dhis.android.core.settings.ProgramFilter
 import org.hisp.dhis.android.core.settings.ProgramFilters
+import org.hisp.dhis.android.network.settings.FilterSettingDTO.Companion.FILTERSETTING_GLOBAL_ID
 
 @Serializable
 internal data class ProgramFiltersDTO(
@@ -45,7 +46,7 @@ internal data class ProgramFiltersDTO(
             .build()
     }
 
-    private fun Map<String, FilterSettingDTO>.toDomainMap(uidKey: String? = null): Map<ProgramFilter, FilterSetting> {
+    private fun Map<String, FilterSettingDTO>.toDomainMap(uidKey: String = FILTERSETTING_GLOBAL_ID): Map<ProgramFilter, FilterSetting> {
         return map { (key, value) -> ProgramFilter.Companion.from(key) to value.toDomain(uidKey) }.toMap()
     }
 }

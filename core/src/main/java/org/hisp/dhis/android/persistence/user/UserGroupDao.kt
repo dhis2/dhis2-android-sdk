@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.persistence.user
 
 import androidx.room.Dao
-import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
 
 @Dao
-internal interface UserGroupDao : ObjectDao<UserGroupDB>
+internal interface UserGroupDao : IdentifiableObjectDao<UserGroupDB>

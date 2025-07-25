@@ -29,7 +29,15 @@
 package org.hisp.dhis.android.persistence.option
 
 import androidx.room.Dao
-import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
 @Dao
-internal interface OptionSetDao : ObjectDao<OptionSetDB>
+@GenerateDaoQueries(tableName = OptionSetTableInfo.TABLE_NAME)
+internal interface OptionSetDao : IdentifiableObjectDao<OptionSetDB> {
+//    @Query("DELETE FROM ${OptionSetTableInfo.TABLE_NAME} WHERE uid = :uid")
+//    override suspend fun delete(uid: String): Int
+//
+//    @Query("DELETE FROM ${OptionSetTableInfo.TABLE_NAME}")
+//    override suspend fun deleteAllRows(): Int
+}

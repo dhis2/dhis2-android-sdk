@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.persistence.category
 
 import androidx.room.Dao
-import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.persistence.common.daos.LinkDao
 
 @Dao
-internal interface CategoryCategoryOptionLinkDao : ObjectDao<CategoryCategoryOptionLinkDB>
+internal interface CategoryCategoryOptionLinkDao : LinkDao<CategoryCategoryOptionLinkDB>

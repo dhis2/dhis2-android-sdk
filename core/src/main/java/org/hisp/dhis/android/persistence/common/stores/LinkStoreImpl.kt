@@ -35,11 +35,11 @@ import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.MapperToDB
-import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.persistence.common.daos.LinkDao
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilder
 
 internal open class LinkStoreImpl<D : CoreObject, P : EntityDB<D>>(
-    override val daoProvider: () -> ObjectDao<P>,
+    override val daoProvider: () -> LinkDao<P>,
     mapper: MapperToDB<D, P>,
     override val builder: LinkSQLStatementBuilder,
 ) : LinkStore<D>, ObjectStoreImpl<D, P>(daoProvider, mapper, builder) {

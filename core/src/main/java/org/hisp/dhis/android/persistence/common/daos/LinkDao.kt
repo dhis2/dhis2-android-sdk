@@ -26,10 +26,8 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.trackedentity
+package org.hisp.dhis.android.persistence.common.daos
 
-import androidx.room.Dao
-import org.hisp.dhis.android.persistence.common.daos.LinkDao
+import org.hisp.dhis.android.persistence.common.EntityDB
 
-@Dao
-internal interface TrackedEntityAttributeLegendSetLinkDao : LinkDao<TrackedEntityAttributeLegendSetLinkDB>
+internal interface LinkDao<P : EntityDB<*>> : ObjectDao<P>

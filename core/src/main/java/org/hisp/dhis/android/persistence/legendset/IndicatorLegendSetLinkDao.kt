@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.persistence.legendset
 
 import androidx.room.Dao
-import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.persistence.common.daos.LinkDao
 
 @Dao
-internal interface IndicatorLegendSetLinkDao : ObjectDao<IndicatorLegendSetLinkDB>
+internal interface IndicatorLegendSetLinkDao : LinkDao<IndicatorLegendSetLinkDB>

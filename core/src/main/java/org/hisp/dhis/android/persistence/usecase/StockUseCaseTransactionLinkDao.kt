@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.persistence.usecase
 
 import androidx.room.Dao
-import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.persistence.common.daos.LinkDao
 
 @Dao
-internal interface StockUseCaseTransactionLinkDao : ObjectDao<StockUseCaseTransactionDB>
+internal interface StockUseCaseTransactionLinkDao : LinkDao<StockUseCaseTransactionDB>

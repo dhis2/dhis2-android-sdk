@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.persistence.organisationunit
 
 import androidx.room.Dao
-import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.persistence.common.daos.LinkDao
 
 @Dao
-internal interface OrganisationUnitOrganisationUnitGroupLinkDao : ObjectDao<OrganisationUnitOrganisationUnitGroupLinkDB>
+internal interface OrganisationUnitOrganisationUnitGroupLinkDao : LinkDao<OrganisationUnitOrganisationUnitGroupLinkDB>

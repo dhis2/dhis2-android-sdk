@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.persistence.visualization
 
 import androidx.room.Dao
-import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
 
 @Dao
-internal interface TrackerVisualizationDao : ObjectDao<TrackerVisualizationDB>
+internal interface TrackerVisualizationDao : IdentifiableObjectDao<TrackerVisualizationDB>

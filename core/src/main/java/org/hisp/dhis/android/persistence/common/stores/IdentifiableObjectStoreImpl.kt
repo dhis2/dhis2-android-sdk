@@ -37,11 +37,11 @@ import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.MapperToDB
-import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilder
 
 internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
-    override val daoProvider: () -> ObjectDao<P>,
+    override val daoProvider: () -> IdentifiableObjectDao<P>,
     mapper: MapperToDB<D, P>,
     override val builder: SQLStatementBuilder,
 ) : IdentifiableObjectStore<D>,

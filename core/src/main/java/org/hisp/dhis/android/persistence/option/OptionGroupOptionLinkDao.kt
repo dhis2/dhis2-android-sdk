@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.persistence.option
 
 import androidx.room.Dao
-import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.persistence.common.daos.LinkDao
 
 @Dao
-internal interface OptionGroupOptionLinkDao : ObjectDao<OptionGroupOptionLinkDB>
+internal interface OptionGroupOptionLinkDao : LinkDao<OptionGroupOptionLinkDB>

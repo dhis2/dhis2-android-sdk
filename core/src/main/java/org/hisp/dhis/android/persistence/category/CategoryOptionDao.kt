@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.persistence.category
 
 import androidx.room.Dao
-import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
 
 @Dao
-internal interface CategoryOptionDao : ObjectDao<CategoryOptionDB>
+internal interface CategoryOptionDao : IdentifiableObjectDao<CategoryOptionDB>

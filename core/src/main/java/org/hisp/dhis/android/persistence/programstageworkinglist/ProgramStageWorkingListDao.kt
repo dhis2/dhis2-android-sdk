@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.persistence.programstageworkinglist
 
 import androidx.room.Dao
-import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
 
 @Dao
-internal interface ProgramStageWorkingListDao : ObjectDao<ProgramStageWorkingListDB>
+internal interface ProgramStageWorkingListDao : IdentifiableObjectDao<ProgramStageWorkingListDB>

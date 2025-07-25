@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.persistence.dataset
 
 import androidx.room.Dao
-import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
 
 @Dao
-internal interface DataSetDao : ObjectDao<DataSetDB>
+internal interface DataSetDao : IdentifiableObjectDao<DataSetDB>

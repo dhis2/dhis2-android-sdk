@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.persistence.program
 
 import androidx.room.Dao
-import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
 
 @Dao
-internal interface ProgramRuleActionDao : ObjectDao<ProgramRuleActionDB>
+internal interface ProgramRuleActionDao : IdentifiableObjectDao<ProgramRuleActionDB>

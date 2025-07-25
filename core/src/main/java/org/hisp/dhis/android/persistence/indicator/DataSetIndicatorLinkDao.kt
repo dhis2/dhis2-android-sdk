@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.persistence.indicator
 
 import androidx.room.Dao
-import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.persistence.common.daos.LinkDao
 
 @Dao
-internal interface DataSetIndicatorLinkDao : ObjectDao<DataSetIndicatorLinkDB>
+internal interface DataSetIndicatorLinkDao : LinkDao<DataSetIndicatorLinkDB>

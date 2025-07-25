@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.persistence.relationship
 
 import androidx.room.Dao
-import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
 
 @Dao
-internal interface RelationshipTypeDao : ObjectDao<RelationshipTypeDB>
+internal interface RelationshipTypeDao : IdentifiableObjectDao<RelationshipTypeDB>

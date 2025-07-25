@@ -37,6 +37,7 @@ internal data class ProgramRuleDB(
     override val displayName: String?,
     override val created: String?,
     override val lastUpdated: String?,
+    override val deleted: Boolean?,
     val priority: Int?,
     val condition: String?,
     val program: String,
@@ -66,5 +67,6 @@ internal fun ProgramRule.toDB(): ProgramRuleDB {
         condition = condition(),
         program = program()!!.uid(),
         programStage = programStage()?.uid(),
+        deleted = deleted(),
     )
 }

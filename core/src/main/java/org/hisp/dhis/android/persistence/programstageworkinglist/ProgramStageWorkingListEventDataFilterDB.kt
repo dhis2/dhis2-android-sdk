@@ -60,8 +60,8 @@ import org.hisp.dhis.android.persistence.dataelement.DataElementDB
     primaryKeys = ["programStageWorkingList", "dataItem"],
 )
 internal data class ProgramStageWorkingListEventDataFilterDB(
-    val programStageWorkingList: String?,
-    val dataItem: String?,
+    val programStageWorkingList: String,
+    val dataItem: String,
     override val le: String?,
     override val ge: String?,
     override val gt: String?,

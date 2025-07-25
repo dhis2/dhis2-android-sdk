@@ -52,6 +52,7 @@ internal data class ProgramDB(
     override val displayShortName: String?,
     override val description: String?,
     override val displayDescription: String?,
+    override val deleted: Boolean?,
     val version: Int?,
     val onlyEnrollOnce: Boolean?,
     val displayEnrollmentDateLabel: String?,
@@ -175,5 +176,6 @@ internal fun Program.toDB(): ProgramDB {
         displayTrackedEntityAttributeLabel = displayTrackedEntityAttributeLabel(),
         displayProgramStageLabel = displayProgramStageLabel(),
         displayEventLabel = displayEventLabel(),
+        deleted = deleted(),
     )
 }

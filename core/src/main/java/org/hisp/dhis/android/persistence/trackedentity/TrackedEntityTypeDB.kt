@@ -26,6 +26,7 @@ internal data class TrackedEntityTypeDB(
     override val displayShortName: String?,
     override val description: String?,
     override val displayDescription: String?,
+    override val deleted: Boolean?,
     val featureType: String?,
     override val color: String?,
     override val icon: String?,
@@ -58,5 +59,6 @@ internal fun TrackedEntityType.toDB(): TrackedEntityTypeDB {
         color = style()?.color(),
         icon = style()?.icon(),
         accessDataWrite = access().toDB(),
+        deleted = deleted(),
     )
 }

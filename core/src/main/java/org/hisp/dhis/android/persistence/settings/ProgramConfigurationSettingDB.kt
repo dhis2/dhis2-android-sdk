@@ -9,7 +9,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 @Entity(tableName = "ProgramConfigurationSetting")
 internal data class ProgramConfigurationSettingDB(
     @PrimaryKey
-    val uid: String?,
+    val uid: String,
     val completionSpinner: Boolean?,
     val optionalSearch: Boolean?,
     val disableReferrals: Boolean?,

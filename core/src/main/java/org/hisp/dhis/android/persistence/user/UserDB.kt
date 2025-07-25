@@ -17,6 +17,7 @@ internal data class UserDB(
     override val displayName: String?,
     override val created: String?,
     override val lastUpdated: String?,
+    override val deleted: Boolean?,
     val birthday: String?,
     val education: String?,
     val gender: String?,
@@ -76,5 +77,6 @@ internal fun User.toDB(): UserDB {
         phoneNumber = phoneNumber(),
         nationality = nationality(),
         username = username(),
+        deleted = deleted(),
     )
 }

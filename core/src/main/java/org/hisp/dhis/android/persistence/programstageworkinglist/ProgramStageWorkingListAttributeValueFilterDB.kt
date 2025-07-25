@@ -60,8 +60,8 @@ import org.hisp.dhis.android.persistence.common.toDB
     primaryKeys = ["programStageWorkingList", "attribute"],
 )
 internal data class ProgramStageWorkingListAttributeValueFilterDB(
-    val programStageWorkingList: String?,
-    val attribute: String?,
+    val programStageWorkingList: String,
+    val attribute: String,
     val sw: String?,
     val ew: String?,
     override val le: String?,

@@ -23,7 +23,7 @@ import org.hisp.dhis.android.persistence.dataset.DataSetDB
 )
 internal data class DataSetSettingDB(
     @PrimaryKey
-    val uid: String?,
+    val uid: String,
     val name: String?,
     val lastUpdated: String?,
     val periodDSDownload: Int?,

@@ -39,6 +39,7 @@ internal data class TrackedEntityAttributeDB(
     override val displayShortName: String?,
     override val description: String?,
     override val displayDescription: String?,
+    override val deleted: Boolean?,
     val pattern: String?,
     val sortOrderInListNoProgram: Int?,
     val optionSet: String?,
@@ -116,5 +117,6 @@ internal fun TrackedEntityAttribute.toDB(): TrackedEntityAttributeDB {
         displayFormName = displayFormName(),
         aggregationType = aggregationType()?.name,
         confidential = programScope(),
+        deleted = deleted(),
     )
 }

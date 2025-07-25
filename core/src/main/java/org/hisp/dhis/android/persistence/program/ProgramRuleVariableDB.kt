@@ -54,6 +54,7 @@ internal data class ProgramRuleVariableDB(
     override val displayName: String?,
     override val created: String?,
     override val lastUpdated: String?,
+    override val deleted: Boolean?,
     val useCodeForOptionSet: Boolean?,
     val program: String,
     val programStage: String?,
@@ -93,5 +94,6 @@ internal fun ProgramRuleVariable.toDB(): ProgramRuleVariableDB {
         dataElement = dataElement()?.uid(),
         trackedEntityAttribute = trackedEntityAttribute()?.uid(),
         programRuleVariableSourceType = programRuleVariableSourceType()?.name,
+        deleted = deleted(),
     )
 }

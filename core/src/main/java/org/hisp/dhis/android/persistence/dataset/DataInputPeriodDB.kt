@@ -24,8 +24,8 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 internal data class DataInputPeriodDB(
     val dataSet: String,
     val period: String,
-    val openingDate: String?,
-    val closingDate: String?,
+    val openingDate: String,
+    val closingDate: String,
 ) : EntityDB<DataInputPeriod> {
 
     override fun toDomain(): DataInputPeriod {
@@ -42,7 +42,7 @@ internal fun DataInputPeriod.toDB(): DataInputPeriodDB {
     return DataInputPeriodDB(
         dataSet = dataSet()!!.uid(),
         period = period().uid(),
-        openingDate = openingDate().dateFormat(),
-        closingDate = closingDate().dateFormat(),
+        openingDate = openingDate().dateFormat()!!,
+        closingDate = closingDate().dateFormat()!!,
     )
 }

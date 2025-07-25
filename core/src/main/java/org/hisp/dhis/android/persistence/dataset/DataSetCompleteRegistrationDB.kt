@@ -52,7 +52,7 @@ internal data class DataSetCompleteRegistrationDB(
     val period: String,
     val dataSet: String,
     val organisationUnit: String,
-    val attributeOptionCombo: String?,
+    val attributeOptionCombo: String,
     val date: String?,
     val storedBy: String?,
     override val syncState: SyncStateDB?,
@@ -64,7 +64,7 @@ internal data class DataSetCompleteRegistrationDB(
             period(period)
             dataSet(dataSet)
             organisationUnit(organisationUnit)
-            attributeOptionCombo?.let { attributeOptionCombo(it) }
+            attributeOptionCombo(attributeOptionCombo)
             date(date.toJavaDate())
             storedBy(storedBy)
             syncState(syncState?.toDomain())

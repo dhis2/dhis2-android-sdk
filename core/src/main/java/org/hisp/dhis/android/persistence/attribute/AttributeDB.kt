@@ -50,6 +50,7 @@ internal data class AttributeDB(
     override val displayShortName: String?,
     override val description: String?,
     override val displayDescription: String?,
+    override val deleted: Boolean?,
     val valueType: String?,
     val uniqueProperty: Boolean?,
     val mandatory: Boolean?,
@@ -170,5 +171,6 @@ internal fun Attribute.toDB(): AttributeDB {
         dataElementGroupSetAttribute = dataElementGroupSetAttribute(),
         organisationUnitGroupSetAttribute = organisationUnitGroupSetAttribute(),
         optionAttribute = optionAttribute(),
+        deleted = deleted(),
     )
 }

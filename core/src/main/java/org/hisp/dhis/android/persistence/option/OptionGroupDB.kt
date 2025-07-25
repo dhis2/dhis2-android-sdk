@@ -30,6 +30,7 @@ internal data class OptionGroupDB(
     override val displayName: String?,
     override val created: String?,
     override val lastUpdated: String?,
+    override val deleted: Boolean?,
     val optionSet: String,
 ) : EntityDB<OptionGroup>, BaseIdentifiableObjectDB {
 
@@ -50,5 +51,6 @@ internal fun OptionGroup.toDB(): OptionGroupDB {
         created = created().dateFormat(),
         lastUpdated = lastUpdated().dateFormat(),
         optionSet = optionSet()!!.uid(),
+        deleted = deleted(),
     )
 }

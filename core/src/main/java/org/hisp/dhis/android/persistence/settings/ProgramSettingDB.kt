@@ -26,7 +26,7 @@ import org.hisp.dhis.android.persistence.program.ProgramDB
 )
 internal data class ProgramSettingDB(
     @PrimaryKey
-    val uid: String?,
+    val uid: String,
     val name: String?,
     val lastUpdated: String?,
     val teiDownload: Int?,

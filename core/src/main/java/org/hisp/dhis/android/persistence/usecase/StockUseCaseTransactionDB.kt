@@ -21,7 +21,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 internal data class StockUseCaseTransactionDB(
     val programUid: String,
     val sortOrder: Int?,
-    val transactionType: String?,
+    val transactionType: String,
     val distributedTo: String?,
     val stockDistributed: String?,
     val stockDiscarded: String?,

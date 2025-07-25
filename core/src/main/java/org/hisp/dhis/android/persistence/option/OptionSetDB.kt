@@ -18,6 +18,7 @@ internal data class OptionSetDB(
     override val displayName: String?,
     override val created: String?,
     override val lastUpdated: String?,
+    override val deleted: Boolean?,
     val version: Int?,
     val valueType: String?,
 ) : EntityDB<OptionSet>, BaseIdentifiableObjectDB {
@@ -41,5 +42,6 @@ internal fun OptionSet.toDB(): OptionSetDB {
         lastUpdated = lastUpdated().dateFormat(),
         version = version(),
         valueType = valueType()?.name,
+        deleted = deleted()
     )
 }

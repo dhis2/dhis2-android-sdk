@@ -9,9 +9,9 @@ import org.hisp.dhis.android.persistence.common.EntityDB
     primaryKeys = ["scope", "filterType", "uid"],
 )
 internal data class FilterSettingDB(
-    val scope: String?,
-    val filterType: String?,
-    val uid: String?,
+    val scope: String,
+    val filterType: String,
+    val uid: String,
     val sort: Boolean?,
     val filter: Boolean?,
 ) : EntityDB<FilterSetting> {
@@ -29,8 +29,8 @@ internal data class FilterSettingDB(
 
 internal fun FilterSetting.toDB(): FilterSettingDB {
     return FilterSettingDB(
-        scope = scope(),
-        filterType = filterType(),
+        scope = scope()!!,
+        filterType = filterType()!!,
         uid = uid(),
         sort = sort(),
         filter = filter(),

@@ -10,7 +10,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 @Entity(tableName = "SystemInfo")
 internal data class SystemInfoDB(
     @PrimaryKey
-    val contextPath: String?,
+    val contextPath: String,
     val serverDate: String?,
     val dateFormat: String?,
     val version: String?,
@@ -33,7 +33,7 @@ internal fun SystemInfo.toDB(): SystemInfoDB {
         serverDate = serverDate().dateFormat(),
         dateFormat = dateFormat(),
         version = version(),
-        contextPath = contextPath(),
+        contextPath = contextPath()!!,
         systemName = systemName(),
     )
 }

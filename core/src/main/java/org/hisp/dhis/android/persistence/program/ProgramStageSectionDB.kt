@@ -33,6 +33,7 @@ internal data class ProgramStageSectionDB(
     override val displayName: String?,
     override val created: String?,
     override val lastUpdated: String?,
+    override val deleted: Boolean?,
     val sortOrder: Int?,
     val programStage: String,
     val desktopRenderType: String?,
@@ -72,5 +73,6 @@ internal fun ProgramStageSection.toDB(): ProgramStageSectionDB {
         mobileRenderType = renderType()?.mobile()?.type()?.name,
         description = description(),
         displayDescription = displayDescription(),
+        deleted = deleted(),
     )
 }

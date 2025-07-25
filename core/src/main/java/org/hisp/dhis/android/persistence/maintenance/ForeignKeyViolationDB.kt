@@ -11,12 +11,12 @@ import org.hisp.dhis.android.persistence.common.EntityDB
     primaryKeys = ["fromTable", "fromColumn", "toTable", "toColumn", "notFoundValue", "fromObjectUid"],
 )
 internal data class ForeignKeyViolationDB(
-    val fromTable: String?,
-    val fromColumn: String?,
-    val toTable: String?,
-    val toColumn: String?,
-    val notFoundValue: String?,
-    val fromObjectUid: String?,
+    val fromTable: String,
+    val fromColumn: String,
+    val toTable: String,
+    val toColumn: String,
+    val notFoundValue: String,
+    val fromObjectUid: String,
     val fromObjectRow: String?,
     val created: String?,
 ) : EntityDB<ForeignKeyViolation> {
@@ -37,12 +37,12 @@ internal data class ForeignKeyViolationDB(
 
 internal fun ForeignKeyViolation.toDB(): ForeignKeyViolationDB {
     return ForeignKeyViolationDB(
-        fromTable = fromTable(),
-        fromColumn = fromColumn(),
-        toTable = toTable(),
-        toColumn = toColumn(),
-        notFoundValue = notFoundValue(),
-        fromObjectUid = fromObjectUid(),
+        fromTable = fromTable()!!,
+        fromColumn = fromColumn()!!,
+        toTable = toTable()!!,
+        toColumn = toColumn()!!,
+        notFoundValue = notFoundValue()!!,
+        fromObjectUid = fromObjectUid()!!,
         fromObjectRow = fromObjectRow(),
         created = created().dateFormat(),
     )

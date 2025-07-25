@@ -17,6 +17,7 @@ internal data class OrganisationUnitGroupDB(
     override val displayName: String?,
     override val created: String?,
     override val lastUpdated: String?,
+    override val deleted: Boolean?,
     val shortName: String?,
     val displayShortName: String?,
 ) : EntityDB<OrganisationUnitGroup>, BaseIdentifiableObjectDB {
@@ -40,5 +41,6 @@ internal fun OrganisationUnitGroup.toDB(): OrganisationUnitGroupDB {
         lastUpdated = lastUpdated().dateFormat(),
         shortName = shortName(),
         displayShortName = displayShortName(),
+        deleted = deleted(),
     )
 }

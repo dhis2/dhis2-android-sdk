@@ -38,6 +38,7 @@ internal interface BaseIdentifiableObjectDB {
     val displayName: String?
     val created: String?
     val lastUpdated: String?
+    val deleted: Boolean?
 }
 
 internal fun <T> T.applyBaseIdentifiableFields(item: BaseIdentifiableObjectDB): T where
@@ -48,6 +49,6 @@ internal fun <T> T.applyBaseIdentifiableFields(item: BaseIdentifiableObjectDB): 
     displayName(item.displayName)
     created(item.created.toJavaDate())
     lastUpdated(item.lastUpdated.toJavaDate())
-    deleted(false)
+    deleted(item.deleted)
     return this
 }

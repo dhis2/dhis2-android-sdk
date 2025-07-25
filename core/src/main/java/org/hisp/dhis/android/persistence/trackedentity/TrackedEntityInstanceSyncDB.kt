@@ -22,8 +22,8 @@ import org.hisp.dhis.android.persistence.program.ProgramDB
     primaryKeys = ["program", "organisationUnitIdsHash"],
 )
 internal data class TrackedEntityInstanceSyncDB(
-    val program: String?,
-    val organisationUnitIdsHash: Int?,
+    val program: String,
+    val organisationUnitIdsHash: Int,
     val downloadLimit: Int,
     val lastUpdated: String,
 ) : EntityDB<TrackedEntityInstanceSync> {
@@ -39,8 +39,8 @@ internal data class TrackedEntityInstanceSyncDB(
 
 internal fun TrackedEntityInstanceSync.toDB(): TrackedEntityInstanceSyncDB {
     return TrackedEntityInstanceSyncDB(
-        program = program(),
-        organisationUnitIdsHash = organisationUnitIdsHash(),
+        program = program()!!,
+        organisationUnitIdsHash = organisationUnitIdsHash()!!,
         downloadLimit = downloadLimit(),
         lastUpdated = lastUpdated().dateFormat()!!,
     )

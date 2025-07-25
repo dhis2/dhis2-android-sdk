@@ -17,6 +17,7 @@ internal data class IndicatorTypeDB(
     override val displayName: String?,
     override val created: String?,
     override val lastUpdated: String?,
+    override val deleted: Boolean?,
     val number: Boolean?,
     val factor: Int?,
 ) : EntityDB<IndicatorType>, BaseIdentifiableObjectDB {
@@ -40,5 +41,6 @@ internal fun IndicatorType.toDB(): IndicatorTypeDB {
         lastUpdated = lastUpdated().dateFormat(),
         number = number(),
         factor = factor(),
+        deleted = deleted(),
     )
 }

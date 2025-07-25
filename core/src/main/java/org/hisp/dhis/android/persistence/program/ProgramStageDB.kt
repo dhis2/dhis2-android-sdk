@@ -38,6 +38,7 @@ internal data class ProgramStageDB(
     override val displayName: String?,
     override val created: String?,
     override val lastUpdated: String?,
+    override val deleted: Boolean?,
     val displayExecutionDateLabel: String?,
     val allowGenerateNextVisit: Boolean?,
     val validCompleteOnly: Boolean?,
@@ -141,5 +142,6 @@ internal fun ProgramStage.toDB(): ProgramStageDB {
         validationStrategy = validationStrategy()?.name,
         displayProgramStageLabel = displayProgramStageLabel(),
         displayEventLabel = displayEventLabel(),
+        deleted = deleted(),
     )
 }

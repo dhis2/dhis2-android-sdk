@@ -35,6 +35,7 @@ internal data class ProgramSectionDB(
     override val displayName: String?,
     override val created: String?,
     override val lastUpdated: String?,
+    override val deleted: Boolean?,
     val description: String?,
     val program: String?,
     val sortOrder: Int?,
@@ -79,5 +80,6 @@ internal fun ProgramSection.toDB(): ProgramSectionDB {
         icon = style()?.icon(),
         desktopRenderType = renderType()?.desktop()?.type()?.name,
         mobileRenderType = renderType()?.mobile()?.type()?.name,
+        deleted = deleted(),
     )
 }

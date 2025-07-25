@@ -23,7 +23,7 @@ internal data class VisualizationDimensionItemDB(
     val visualization: String,
     val position: String,
     val dimension: String,
-    val dimensionItem: String?,
+    val dimensionItem: String,
     val dimensionItemType: String?,
     val sortOrder: Int?,
 ) : EntityDB<VisualizationDimensionItem> {
@@ -44,7 +44,7 @@ internal fun VisualizationDimensionItem.toDB(): VisualizationDimensionItemDB {
         visualization = visualization()!!,
         position = position()!!.name,
         dimension = dimension()!!,
-        dimensionItem = dimensionItem(),
+        dimensionItem = dimensionItem()!!,
         dimensionItemType = dimensionItemType(),
         sortOrder = sortOrder(),
     )

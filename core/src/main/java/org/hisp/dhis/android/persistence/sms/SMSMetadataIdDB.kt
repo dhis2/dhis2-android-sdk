@@ -10,13 +10,13 @@ import org.hisp.dhis.smscompression.SMSConsts
     primaryKeys = ["type", "uid"],
 )
 internal data class SMSMetadataIdDB(
-    val type: String?,
-    val uid: String?,
+    val type: String,
+    val uid: String,
 ) : EntityDB<SMSMetadataId> {
 
     override fun toDomain(): SMSMetadataId {
         return SMSMetadataId.builder()
-            .type(type?.let { SMSConsts.MetadataType.valueOf(it) })
+            .type(type.let { SMSConsts.MetadataType.valueOf(it) })
             .uid(uid)
             .build()
     }

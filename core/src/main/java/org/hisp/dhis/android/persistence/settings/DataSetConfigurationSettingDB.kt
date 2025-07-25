@@ -8,7 +8,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 @Entity(tableName = "DataSetConfigurationSetting")
 internal data class DataSetConfigurationSettingDB(
     @PrimaryKey
-    val uid: String?,
+    val uid: String,
     val minimumLocationAccuracy: Int?,
     val disableManualLocation: Boolean?,
 ) : EntityDB<DataSetConfigurationSetting> {

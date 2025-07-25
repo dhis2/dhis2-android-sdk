@@ -60,8 +60,8 @@ import org.hisp.dhis.android.persistence.common.toDB
     primaryKeys = ["trackedEntityInstanceFilter", "attribute"],
 )
 internal data class AttributeValueFilterDB(
-    val trackedEntityInstanceFilter: String?,
-    val attribute: String?,
+    val trackedEntityInstanceFilter: String,
+    val attribute: String,
     val sw: String?,
     val ew: String?,
     override val le: String?,
@@ -86,7 +86,7 @@ internal data class AttributeValueFilterDB(
 
 internal fun AttributeValueFilter.toDB(): AttributeValueFilterDB {
     return AttributeValueFilterDB(
-        trackedEntityInstanceFilter = trackedEntityInstanceFilter(),
+        trackedEntityInstanceFilter = trackedEntityInstanceFilter()!!,
         attribute = attribute(),
         sw = sw(),
         ew = ew(),

@@ -44,6 +44,7 @@ internal data class DataSetDB(
     override val displayShortName: String?,
     override val description: String?,
     override val displayDescription: String?,
+    override val deleted: Boolean?,
     val periodType: String?,
     val categoryCombo: String,
     val mobile: Boolean?,
@@ -141,5 +142,6 @@ internal fun DataSet.toDB(): DataSetDB {
         subHeader = displayOptions()?.customText()?.subHeader(),
         customTextAlign = displayOptions()?.customText()?.align()?.name,
         tabsDirection = displayOptions()?.tabsDirection()?.name,
+        deleted = deleted(),
     )
 }

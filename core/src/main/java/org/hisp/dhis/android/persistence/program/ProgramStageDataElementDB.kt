@@ -39,6 +39,7 @@ internal data class ProgramStageDataElementDB(
     override val displayName: String?,
     override val created: String?,
     override val lastUpdated: String?,
+    override val deleted: Boolean?,
     val displayInReports: Boolean?,
     val compulsory: Boolean?,
     val allowProvidedElsewhere: Boolean?,
@@ -77,5 +78,6 @@ internal fun ProgramStageDataElement.toDB(): ProgramStageDataElementDB {
         allowFutureDate = allowFutureDate(),
         dataElement = dataElement()!!.uid()!!,
         programStage = programStage()!!.uid(),
+        deleted = deleted(),
     )
 }

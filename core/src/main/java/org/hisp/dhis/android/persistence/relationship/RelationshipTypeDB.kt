@@ -19,6 +19,7 @@ internal data class RelationshipTypeDB(
     override val displayName: String?,
     override val created: String?,
     override val lastUpdated: String?,
+    override val deleted: Boolean?,
     val fromToName: String?,
     val toFromName: String?,
     val bidirectional: Boolean?,
@@ -49,5 +50,6 @@ internal fun RelationshipType.toDB(): RelationshipTypeDB {
         toFromName = toFromName(),
         bidirectional = bidirectional(),
         accessDataWrite = access().toDB(),
+        deleted = deleted(),
     )
 }

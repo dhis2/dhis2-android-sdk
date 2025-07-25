@@ -11,10 +11,10 @@ import org.hisp.dhis.android.persistence.common.EntityDB
     primaryKeys = ["ownerObject", "ownerUid", "value"],
 )
 internal data class TrackedEntityAttributeReservedValueDB(
-    val ownerObject: String?,
-    val ownerUid: String?,
+    val ownerObject: String,
+    val ownerUid: String,
     val key: String?,
-    val value: String?,
+    val value: String,
     val created: String?,
     val expiryDate: String?,
     val organisationUnit: String?,
@@ -39,10 +39,10 @@ internal data class TrackedEntityAttributeReservedValueDB(
 
 internal fun TrackedEntityAttributeReservedValue.toDB(): TrackedEntityAttributeReservedValueDB {
     return TrackedEntityAttributeReservedValueDB(
-        ownerObject = ownerObject(),
-        ownerUid = ownerUid(),
+        ownerObject = ownerObject()!!,
+        ownerUid = ownerUid()!!,
         key = key(),
-        value = value(),
+        value = value()!!,
         created = created().dateFormat(),
         expiryDate = expiryDate().dateFormat(),
         organisationUnit = organisationUnit(),

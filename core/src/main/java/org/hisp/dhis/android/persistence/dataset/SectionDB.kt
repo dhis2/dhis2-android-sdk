@@ -32,6 +32,7 @@ internal data class SectionDB(
     override val displayName: String?,
     override val created: String?,
     override val lastUpdated: String?,
+    override val deleted: Boolean?,
     val description: String?,
     val sortOrder: Int?,
     val dataSet: String,
@@ -83,5 +84,6 @@ internal fun Section.toDB(): SectionDB {
         pivotedCategory = displayOptions()?.pivotedCategory(),
         afterSectionText = displayOptions()?.afterSectionText(),
         beforeSectionText = displayOptions()?.beforeSectionText(),
+        deleted = deleted(),
     )
 }

@@ -37,7 +37,7 @@ import org.hisp.dhis.android.persistence.dataelement.DataElementOperandDB
 internal data class SectionGreyedFieldsLinkDB(
     val section: String,
     val dataElementOperand: String,
-    val categoryOptionCombo: String?,
+    val categoryOptionCombo: String,
 ) : EntityDB<SectionGreyedFieldsLink> {
 
     override fun toDomain(): SectionGreyedFieldsLink {
@@ -53,6 +53,6 @@ internal fun SectionGreyedFieldsLink.toDB(): SectionGreyedFieldsLinkDB {
     return SectionGreyedFieldsLinkDB(
         section = section()!!,
         dataElementOperand = dataElementOperand()!!,
-        categoryOptionCombo = categoryOptionCombo(),
+        categoryOptionCombo = categoryOptionCombo()!!,
     )
 }

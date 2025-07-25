@@ -27,8 +27,8 @@ import org.hisp.dhis.android.persistence.common.EntityDB
     primaryKeys = ["trackedEntityType", "trackedEntityAttribute"],
 )
 internal data class TrackedEntityTypeAttributeDB(
-    val trackedEntityType: String?,
-    val trackedEntityAttribute: String?,
+    val trackedEntityType: String,
+    val trackedEntityAttribute: String,
     val displayInList: Boolean?,
     val mandatory: Boolean?,
     val searchable: Boolean?,
@@ -49,8 +49,8 @@ internal data class TrackedEntityTypeAttributeDB(
 internal fun TrackedEntityTypeAttribute.toDB(): TrackedEntityTypeAttributeDB {
     return TrackedEntityTypeAttributeDB(
         trackedEntityType = trackedEntityType().uid(),
-        trackedEntityAttribute = trackedEntityAttribute()?.uid(),
-        displayInList = displayInList(),
+        trackedEntityAttribute = trackedEntityAttribute()?.uid()!!,
+        displayInList = displayInList()!!,
         mandatory = mandatory(),
         searchable = searchable(),
         sortOrder = sortOrder(),

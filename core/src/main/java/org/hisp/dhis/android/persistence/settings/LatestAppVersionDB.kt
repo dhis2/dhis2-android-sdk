@@ -8,7 +8,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 @Entity(tableName = "LatestAppVersion")
 internal data class LatestAppVersionDB(
     @PrimaryKey
-    val version: String?,
+    val version: String,
     val downloadURL: String?,
 ) : EntityDB<LatestAppVersion> {
 
@@ -23,6 +23,6 @@ internal data class LatestAppVersionDB(
 internal fun LatestAppVersion.toDB(): LatestAppVersionDB {
     return LatestAppVersionDB(
         downloadURL = downloadURL(),
-        version = version(),
+        version = version()!!,
     )
 }

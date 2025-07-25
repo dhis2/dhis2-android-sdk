@@ -11,7 +11,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 @Entity(tableName = "Period")
 internal data class PeriodDB(
     @PrimaryKey
-    val periodId: String?,
+    val periodId: String,
     val periodType: String?,
     val startDate: String?,
     val endDate: String?,
@@ -29,7 +29,7 @@ internal data class PeriodDB(
 
 internal fun Period.toDB(): PeriodDB {
     return PeriodDB(
-        periodId = periodId(),
+        periodId = periodId()!!,
         periodType = periodType()?.name,
         startDate = startDate().dateFormat(),
         endDate = endDate().dateFormat(),

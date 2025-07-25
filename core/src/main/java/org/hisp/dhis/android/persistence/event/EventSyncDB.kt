@@ -22,8 +22,8 @@ import org.hisp.dhis.android.persistence.program.ProgramDB
     primaryKeys = ["program", "organisationUnitIdsHash"],
 )
 internal data class EventSyncDB(
-    val program: String?,
-    val organisationUnitIdsHash: Int?,
+    val program: String,
+    val organisationUnitIdsHash: Int,
     val downloadLimit: Int,
     val lastUpdated: String,
 ) : EntityDB<EventSync> {
@@ -40,7 +40,7 @@ internal data class EventSyncDB(
 
 internal fun EventSync.toDB(): EventSyncDB {
     return EventSyncDB(
-        program = program(),
+        program = program()!!,
         organisationUnitIdsHash = organisationUnitIdsHash(),
         downloadLimit = downloadLimit(),
         lastUpdated = lastUpdated().dateFormat()!!,

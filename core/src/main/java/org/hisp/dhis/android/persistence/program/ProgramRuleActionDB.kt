@@ -84,6 +84,7 @@ internal data class ProgramRuleActionDB(
     override val displayName: String?,
     override val created: String?,
     override val lastUpdated: String?,
+    override val deleted: Boolean?,
     val data: String?,
     val content: String?,
     val location: String?,
@@ -140,5 +141,6 @@ internal fun ProgramRuleAction.toDB(): ProgramRuleActionDB {
         option = option()?.uid(),
         optionGroup = optionGroup()?.uid(),
         displayContent = displayContent(),
+        deleted = deleted(),
     )
 }

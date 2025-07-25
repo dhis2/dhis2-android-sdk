@@ -17,6 +17,7 @@ internal data class CategoryDB(
     override val displayName: String?,
     override val created: String?,
     override val lastUpdated: String?,
+    override val deleted: Boolean?,
     val dataDimensionType: String?,
 ) : EntityDB<Category>, BaseIdentifiableObjectDB {
 
@@ -37,5 +38,6 @@ internal fun Category.toDB(): CategoryDB {
         created = created().dateFormat(),
         lastUpdated = lastUpdated().dateFormat(),
         dataDimensionType = dataDimensionType(),
+        deleted = deleted(),
     )
 }

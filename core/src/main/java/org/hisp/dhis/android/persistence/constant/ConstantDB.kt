@@ -45,6 +45,7 @@ internal data class ConstantDB(
     override val displayName: String?,
     override val created: String?,
     override val lastUpdated: String?,
+    override val deleted: Boolean?,
     val value: String?,
 ) : EntityDB<Constant>, BaseIdentifiableObjectDB {
 
@@ -65,5 +66,6 @@ internal fun Constant.toDB(): ConstantDB {
         created = created().dateFormat(),
         lastUpdated = lastUpdated().dateFormat(),
         value = value().toString(),
+        deleted = deleted()
     )
 }

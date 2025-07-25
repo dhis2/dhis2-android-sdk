@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.persistence.common.stores
 
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
@@ -44,6 +46,8 @@ internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
     override val builder: SQLStatementBuilder,
 ) : IdentifiableObjectStore<D>,
     ObjectStoreImpl<D, P>(daoProvider, mapper, builder) where D : CoreObject, D : ObjectWithUidInterface {
+
+    private val upsertMutex = Mutex()
 
     @Throws(RuntimeException::class)
     override suspend fun insert(o: D): Long {
@@ -105,7 +109,7 @@ internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
 
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionCaught")
-    override suspend fun updateOrInsert(o: D): HandleAction {
+    override suspend fun updateOrInsert(o: D): HandleAction = upsertMutex.withLock {
         return try {
             update(o)
             HandleAction.Update
@@ -120,8 +124,7 @@ internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
     override suspend fun delete(uid: String) {
         val identifiableObjectDao = daoProvider()
         CollectionsHelper.isNull(uid)
-        val query = builder.deleteByUid(uid)
-        val deleted = identifiableObjectDao.intRawQuery(query)
+        val deleted = identifiableObjectDao.delete(uid)
         if (deleted == 0) {
             throw RuntimeException("No rows affected")
         }

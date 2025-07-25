@@ -94,6 +94,8 @@ class EntityProcessor(
                     }
                 }
                 
+                const val TABLE_NAME = "$tableName"
+                
                 class Columns : CoreColumns() {
                     override fun all(): Array<String> {
                         return arrayOf(

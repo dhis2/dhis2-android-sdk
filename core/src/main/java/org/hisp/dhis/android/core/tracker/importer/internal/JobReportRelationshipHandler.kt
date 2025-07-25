@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.koin.core.annotation.Singleton
 
@@ -50,14 +51,15 @@ internal class JobReportRelationshipHandler internal constructor(
 
     @Suppress("EmptyFunctionBlock")
     override suspend fun storeConflict(errorReport: JobValidationError) {
+        val relationship = relationshipStore.selectByUid(errorReport.uid)
         if (errorReport.errorCode == ImporterError.E4005.name &&
-            relationshipStore.selectByUid(errorReport.uid)?.deleted() == true
+            relationship?.deleted() == true
         ) {
-            relationshipStore.delete(errorReport.uid)
+            relationshipStore.deleteByEntity(relationship)
         }
     }
 
-    override suspend fun getRelatedRelationships(uid: String): List<String> {
+    override suspend fun getRelatedRelationships(uid: String): List<Relationship> {
         return emptyList()
     }
 }

@@ -78,6 +78,13 @@ class IdentifiableObjectStoreIntegrationShould : BaseIntegrationTestWithDatabase
         StoreMocks.assertIsEmpty(store)
     }
 
+    @Test
+    fun delete_existing_option_set_by_entity() = runTest {
+        store.insert(optionSet)
+        store.deleteByEntity(optionSet)
+        StoreMocks.assertIsEmpty(store)
+    }
+
     @Test(expected = RuntimeException::class)
     fun throw_exception_deleting_non_existing_option_set() = runTest {
         store.delete("new-id")

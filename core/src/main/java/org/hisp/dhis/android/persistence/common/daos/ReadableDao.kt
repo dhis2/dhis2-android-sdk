@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.common.daos
 
+import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.persistence.common.EntityDB
@@ -39,6 +40,9 @@ internal interface ReadableDao<P : EntityDB<*>> {
 
     @RawQuery
     suspend fun intRawQuery(sqlRawQuery: RoomRawQuery): Int
+
+    @Query("DELETE FROM Constant") // Annotaion to be deleted once all specific daos have this implemented
+    suspend fun deleteAllRows(): Int
 
     @RawQuery
     suspend fun groupCountListRawQuery(sqlRawQuery: RoomRawQuery): List<GroupCount>

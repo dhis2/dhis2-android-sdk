@@ -52,6 +52,7 @@ abstract class BaseIntegrationTestWithDatabase {
 
     @After
     open fun tearDown() {
+        databaseAdapter.getCurrentDatabase().clearAllTables()
         databaseAdapter.deactivate()
     }
 

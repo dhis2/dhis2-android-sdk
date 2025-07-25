@@ -103,16 +103,19 @@ internal class CoroutineAPICallExecutorImpl(
                         catchError(userAccountDisabledErrorCatcher, errorBuilder, d2ExceptionResponse, storeError),
                     )
                 }
+
                 errorClassParser != null && acceptedErrorCodes?.contains(d2ExceptionResponse.statusCode) == true -> {
                     Result.Success(
                         errorClassParser.invoke(d2ExceptionResponse.errorBody),
                     )
                 }
+
                 errorCatcher != null -> {
                     Result.Failure(
                         catchError(errorCatcher, errorBuilder, d2ExceptionResponse, storeError),
                     )
                 }
+
                 else -> {
                     Result.Failure(
                         storeAndReturn(
@@ -154,12 +157,10 @@ internal class CoroutineAPICallExecutorImpl(
         block: suspend () -> P,
     ): P {
         return try {
-//            databaseAdapter.getCurrentDatabase().withTransaction {
-//                block()
-//            }
             databaseAdapter.getCurrentDatabase().useWriterConnection { transactor ->
                 transactor.immediateTransaction {
-                    block()
+                    block().also { successfulTransactionRoom(cleanForeignKeyErrors) }
+
                 }
             }
         } catch (t: Throwable) {
@@ -201,6 +202,12 @@ internal class CoroutineAPICallExecutorImpl(
 
     private fun baseErrorBuilder(): D2Error.Builder {
         return errorMapper.getBaseErrorBuilder()
+    }
+
+    private suspend fun successfulTransactionRoom(cleanForeignKeys: Boolean) {
+        if (cleanForeignKeys) {
+            foreignKeyCleaner.cleanForeignKeyErrors()
+        }
     }
 
     private suspend fun successfulTransaction(t: Transaction, cleanForeignKeys: Boolean) {

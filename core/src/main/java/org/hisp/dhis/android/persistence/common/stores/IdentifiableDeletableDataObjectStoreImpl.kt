@@ -78,10 +78,9 @@ internal open class IdentifiableDeletableDataObjectStoreImpl<D, P : EntityDB<D>>
     @Throws(RuntimeException::class)
     override suspend fun setDeleted(uid: String): Int {
         val identifiableDeletableDataObjectDao = daoProvider()
-        // FIX THIS WHEN MIGRATION TO ROOM IS DONE, RAWQUERY CANNOT PERFORM CHANGES
         CollectionsHelper.isNull(uid)
         val query = builder.setDeleted(uid)
-        return identifiableDeletableDataObjectDao.intRawQuery(query)
+        return identifiableDeletableDataObjectDao.intRawQuery(query) // Corregir esto, no se puede usar raw query para editar
     }
 
     override suspend fun selectSyncStateWhere(where: String): List<State> {

@@ -91,18 +91,20 @@ class ForeignKeyCleanerShould : BaseMockIntegrationTestEmptyDispatcher() {
         val executor = D2CallExecutor.create(d2.databaseAdapter())
         val PROGRAM_RULE_UID = "program_rule_uid"
         val program = ObjectWithUid.create("nonexisent-program")
+        val programRuleStore = koin.get<ProgramRuleStore>()
+        val programRuleActionStore = koin.get<ProgramRuleActionStore>()
+        val programRule = ProgramRule.builder().uid(PROGRAM_RULE_UID).name("Rule").program(program).build()
+        val programRuleAction = ProgramRuleAction.builder()
+            .uid("action_uid")
+            .name("name")
+            .programRuleActionType(ProgramRuleActionType.ASSIGN)
+            .programRule(ObjectWithUid.create(PROGRAM_RULE_UID))
+            .build()
         executor.executeD2CallTransactionally {
-            koin.get<ProgramRuleStore>().insert(
-                ProgramRule.builder()
-                    .uid(PROGRAM_RULE_UID).name("Rule").program(program).build(),
-            )
-            val programRuleAction = ProgramRuleAction.builder()
-                .uid("action_uid")
-                .name("name")
-                .programRuleActionType(ProgramRuleActionType.ASSIGN)
-                .programRule(ObjectWithUid.create(PROGRAM_RULE_UID))
-                .build()
-            koin.get<ProgramRuleActionStore>().insert(programRuleAction)
+            programRuleStore.insert(programRule)
+            programRuleActionStore.insert(programRuleAction)
+            val programRules = d2.programModule().programRules().blockingGet()
+            assertThat(programRules).hasSize(1)
             assertThat(d2.programModule().programRules().blockingCount()).isEqualTo(1)
             assertThat(d2.programModule().programRuleActions().blockingCount()).isEqualTo(1)
             val foreignKeyCleaner = ForeignKeyCleanerImpl(

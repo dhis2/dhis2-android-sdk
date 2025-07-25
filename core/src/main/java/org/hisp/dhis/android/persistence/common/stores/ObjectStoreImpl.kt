@@ -50,8 +50,7 @@ internal open class ObjectStoreImpl<D : CoreObject, P : EntityDB<D>>(
 
     override suspend fun delete(): Int {
         val objectDao = daoProvider()
-        val query = builder.deleteTable()
-        return objectDao.intRawQuery(query)
+        return objectDao.deleteAllRows()
     }
 
     open override suspend fun insert(o: D): Long {
@@ -64,22 +63,22 @@ internal open class ObjectStoreImpl<D : CoreObject, P : EntityDB<D>>(
         objectDao.insert(objects.map { it.toDB() })
     }
 
-    suspend fun deleteByEntity(domainObj: D): Boolean {
+    override suspend fun deleteByEntity(o: D): Boolean {
         val objectDao = daoProvider()
-        val entityDB = domainObj.toDB()
+        val entityDB = o.toDB()
         return objectDao.delete(entityDB) > 0
     }
 
     override suspend fun deleteWhere(clause: String): Boolean {
         val objectDao = daoProvider()
         val query = builder.deleteWhere(clause)
-        return objectDao.intRawQuery(query) > 0
+        return objectDao.intRawQuery(query) > 0 // Corregir esto, no se puede usar raw query para editar
     }
 
     suspend fun updateWhere(updates: ArrayMap<String, Any>, whereClause: String): Int {
         val objectDao = daoProvider()
         val query = builder.updateWhere(updates, whereClause)
-        return objectDao.intRawQuery(query)
+        return objectDao.intRawQuery(query) // Corregir esto, no se puede usar raw query para editar
     }
 
     override suspend fun deleteWhereIfExists(whereClause: String) {

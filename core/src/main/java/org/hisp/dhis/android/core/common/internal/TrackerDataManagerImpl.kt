@@ -105,7 +105,7 @@ internal class TrackerDataManagerImpl(
         propagateState: suspend (O) -> Any,
     ) where O : ObjectWithUidInterface, O : DeletableDataObject {
         if (obj.syncState() === State.TO_POST) {
-            store.delete(obj.uid())
+            store.deleteByEntity(obj)
         } else {
             store.setDeleted(obj.uid())
             store.setSyncState(obj.uid(), State.TO_UPDATE)

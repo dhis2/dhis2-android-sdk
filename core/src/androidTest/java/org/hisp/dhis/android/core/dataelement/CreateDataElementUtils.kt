@@ -31,7 +31,6 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.ValueType
 
 object CreateDataElementUtils {
-    private const val ID = 2L
     private const val CODE = "test_code"
     private const val NAME = "test_name"
     private const val DISPLAY_NAME = "test_display_name"
@@ -51,7 +50,6 @@ object CreateDataElementUtils {
 
     fun create(uid: String, categoryComboId: String, optionSetId: String?): DataElement {
         return DataElement.builder()
-            .id(ID)
             .uid(uid)
             .code(CODE)
             .name(NAME)

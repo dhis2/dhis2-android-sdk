@@ -207,7 +207,7 @@ internal class FileResourcePostCall(
         downloadedFileResource: FileResource,
         file: File,
     ) {
-        fileResourceStore.delete(fileResource.uid()!!)
+        fileResourceStore.deleteByEntity(fileResource)
         fileResourceHandler.handle(
             downloadedFileResource.toBuilder()
                 .syncState(State.UPLOADING)

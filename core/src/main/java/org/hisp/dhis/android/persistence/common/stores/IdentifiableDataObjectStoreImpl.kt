@@ -51,7 +51,7 @@ internal open class IdentifiableDataObjectStoreImpl<D, P : EntityDB<D>>(
         val identifiableDataObjectDao = daoProvider()
         CollectionsHelper.isNull(uid)
         val query: RoomRawQuery = builder.setSyncState(uid, state.toString())
-        return identifiableDataObjectDao.intRawQuery(query)
+        return identifiableDataObjectDao.intRawQuery(query) // Corregir esto, no se puede usar raw query para editar
     }
 
     @Throws(RuntimeException::class)
@@ -59,7 +59,7 @@ internal open class IdentifiableDataObjectStoreImpl<D, P : EntityDB<D>>(
         val identifiableDataObjectDao = daoProvider()
         val nonNullUids = uids.filterNotNull()
         val query: RoomRawQuery = builder.setSyncState(nonNullUids, state.toString())
-        return identifiableDataObjectDao.intRawQuery(query)
+        return identifiableDataObjectDao.intRawQuery(query) // Corregir esto, no se puede usar raw query para editar
     }
 
     @Throws(RuntimeException::class)
@@ -67,7 +67,7 @@ internal open class IdentifiableDataObjectStoreImpl<D, P : EntityDB<D>>(
         val identifiableDataObjectDao = daoProvider()
         CollectionsHelper.isNull(uid)
         val query: RoomRawQuery = builder.setSyncStateIfUploading(uid, state.toString())
-        return identifiableDataObjectDao.intRawQuery(query)
+        return identifiableDataObjectDao.intRawQuery(query) // Corregir esto, no se puede usar raw query para editar
     }
 
     @Throws(RuntimeException::class)

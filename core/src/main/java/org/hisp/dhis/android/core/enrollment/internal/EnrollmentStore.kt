@@ -42,4 +42,6 @@ internal interface EnrollmentStore : IdentifiableDeletableDataObjectStore<Enroll
     suspend fun selectAggregatedSyncStateWhere(whereClause: String): List<State>
 
     suspend fun selectByTrackedEntityInstanceAndAttribute(teiUid: String, attributeUid: String): List<Enrollment>
+
+    suspend fun deleteByUid(enrollments: List<Enrollment>)
 }

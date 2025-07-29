@@ -29,7 +29,27 @@
 package org.hisp.dhis.android.persistence.event
 
 import androidx.room.Dao
+import androidx.room.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceSyncTableInfo.Columns
 
 @Dao
-internal interface EventSyncDao : ObjectDao<EventSyncDB>
+internal interface EventSyncDao : ObjectDao<EventSyncDB> {
+    @Query(
+        """
+        DELETE FROM ${EventSyncTableInfo.TABLE_NAME} 
+        WHERE ${Columns.ORGANISATION_UNIT_IDS_HASH} = :organisationUnitIdsHash 
+        AND ${Columns.PROGRAM} = :programUid
+    """
+    )
+    suspend fun deleteByProgram(programUid: String, organisationUnitIdsHash: Int): Int
+
+    @Query(
+        """
+        DELETE FROM ${EventSyncTableInfo.TABLE_NAME} 
+        WHERE ${Columns.ORGANISATION_UNIT_IDS_HASH} = :organisationUnitIdsHash 
+        AND ${Columns.PROGRAM} IS NULL
+    """
+    )
+    suspend fun deleteByNullProgram(organisationUnitIdsHash: Int): Int
+}

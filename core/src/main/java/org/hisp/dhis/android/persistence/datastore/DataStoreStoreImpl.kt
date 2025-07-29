@@ -53,4 +53,16 @@ internal class DataStoreStoreImpl(
         val dao = daoProvider() as DataStoreDao
         dao.setStateIfUploading(state.name, entry.namespace(), entry.key())
     }
+
+    override suspend fun cleanOrphan(namespace: String, slaves: Collection<DataStoreEntry>?) {
+        val dao = databaseAdapter.getCurrentDatabase().dataStoreDao()
+        val syncStatesToDelete = listOf(State.SYNCED.name, State.SYNCED_VIA_SMS.name)
+
+        if (slaves.isNullOrEmpty()) {
+            dao.deleteByNamespaceAndSyncStates(namespace, syncStatesToDelete)
+        } else {
+            val keysToKeep = slaves.map { it.key() }
+            dao.deleteByNamespaceSyncStatesAndNotInKeys(namespace, syncStatesToDelete, keysToKeep)
+        }
+    }
 }

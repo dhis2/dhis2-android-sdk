@@ -29,7 +29,29 @@
 package org.hisp.dhis.android.persistence.trackedentity
 
 import androidx.room.Dao
+import androidx.room.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
 @Dao
-internal interface TrackedEntityAttributeReservedValueDao : ObjectDao<TrackedEntityAttributeReservedValueDB>
+internal interface TrackedEntityAttributeReservedValueDao : ObjectDao<TrackedEntityAttributeReservedValueDB> {
+
+    @Query(
+        """
+        DELETE FROM ${TrackedEntityAttributeReservedValueTableInfo.TABLE_NAME}
+        WHERE (date(${TrackedEntityAttributeReservedValueTableInfo.Columns.EXPIRY_DATE}) < date(:serverDateAsString) 
+            AND ${TrackedEntityAttributeReservedValueTableInfo.Columns.EXPIRY_DATE} IS NOT NULL)
+        OR (date(${TrackedEntityAttributeReservedValueTableInfo.Columns.TEMPORAL_VALIDITY_DATE}) < date(:serverDateAsString) 
+            AND ${TrackedEntityAttributeReservedValueTableInfo.Columns.TEMPORAL_VALIDITY_DATE} IS NOT NULL)
+        """
+    )
+    suspend fun deleteExpired(serverDateAsString: String): Int
+
+    @Query(
+        """
+        DELETE FROM ${TrackedEntityAttributeReservedValueTableInfo.TABLE_NAME}
+        WHERE ${TrackedEntityAttributeReservedValueTableInfo.Columns.OWNER_UID} = :ownerUid
+        AND ${TrackedEntityAttributeReservedValueTableInfo.Columns.PATTERN} != :pattern
+        """
+    )
+    suspend fun deleteIfOutdatedPattern(ownerUid: String, pattern: String)
+}

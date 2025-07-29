@@ -42,4 +42,9 @@ internal class SMSOngoingSubmissionStoreImpl(
     { databaseAdapter.getCurrentDatabase().SMSOngoingSubmissionDao() },
     SMSOngoingSubmission::toDB,
     SQLStatementBuilderImpl(SMSOngoingSubmissionTableInfo.TABLE_INFO),
-)
+) {
+    override suspend fun deleteSubmissionIfExists(submissionId: Int) {
+        val dao = databaseAdapter.getCurrentDatabase().SMSOngoingSubmissionDao()
+        dao.deleteSubmissionIfExists(submissionId)
+    }
+}

@@ -45,4 +45,9 @@ internal class SectionGreyedFieldsLinkStoreImpl(
         SectionGreyedFieldsLinkTableInfo.TABLE_INFO,
         SectionGreyedFieldsLinkTableInfo.Columns.SECTION,
     ),
-)
+) {
+    override suspend fun deleteBySection(sectionUid: String) {
+        val dao = databaseAdapter.getCurrentDatabase().sectionGreyedFieldsLinkDao()
+        dao.deleteBySectionUid(sectionUid)
+    }
+}

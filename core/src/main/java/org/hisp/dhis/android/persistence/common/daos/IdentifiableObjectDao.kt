@@ -28,6 +28,13 @@
 
 package org.hisp.dhis.android.persistence.common.daos
 
+import androidx.room.Query
 import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.persistence.option.OptionSetTableInfo
 
-internal interface IdentifiableObjectDao<P : EntityDB<*>> : ObjectDao<P>
+internal interface IdentifiableObjectDao<P : EntityDB<*>> : ObjectDao<P> {
+
+    @Query("DELETE FROM ${OptionSetTableInfo.TABLE_NAME} WHERE uid = :uid")
+    suspend fun delete(uid: String): Int // To be overriden in specific daos with @Query and const table name
+
+}

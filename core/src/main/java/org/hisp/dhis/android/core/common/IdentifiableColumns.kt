@@ -25,21 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.appendInNewArray
 
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+open class IdentifiableColumns : CoreColumns() {
+    override fun all(): Array<String> {
+        return appendInNewArray(super.all(), UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED)
+    }
 
-public class IdentifiableColumns extends CoreColumns {
-    public static final String UID = "uid";
-    public static final String CODE = "code";
-    public static final String NAME = "name";
-    public static final String DISPLAY_NAME = "displayName";
-    public static final String CREATED = "created";
-    public static final String LAST_UPDATED = "lastUpdated";
-
-    @Override
-    public String[] all() {
-        return CollectionsHelper.appendInNewArray(super.all(), UID, CODE, NAME, DISPLAY_NAME, CREATED, LAST_UPDATED);
+    companion object {
+        const val UID: String = "uid"
+        const val CODE: String = "code"
+        const val NAME: String = "name"
+        const val DISPLAY_NAME: String = "displayName"
+        const val CREATED: String = "created"
+        const val LAST_UPDATED: String = "lastUpdated"
     }
 }

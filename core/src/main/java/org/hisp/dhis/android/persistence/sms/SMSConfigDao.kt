@@ -29,7 +29,16 @@
 package org.hisp.dhis.android.persistence.sms
 
 import androidx.room.Dao
+import androidx.room.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
 @Dao
-internal interface SMSConfigDao : ObjectDao<SMSConfigDB>
+internal interface SMSConfigDao : ObjectDao<SMSConfigDB> {
+    @Query(
+        """
+        DELETE FROM ${SMSConfigTableInfo.TABLE_NAME}
+        WHERE `${SMSConfigTableInfo.Columns.KEY}` = :keyName 
+        """
+    )
+    suspend fun deleteByKeyName(keyName: String): Int
+}

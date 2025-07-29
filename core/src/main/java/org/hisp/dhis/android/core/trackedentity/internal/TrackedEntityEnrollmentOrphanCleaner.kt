@@ -66,11 +66,7 @@ internal class TrackedEntityEnrollmentOrphanCleaner(
             val deletedEnrollments = orphanEnrollments.filter { e -> isAccessibleByGlass(e, program) }
 
             if (deletedEnrollments.isNotEmpty()) {
-                val deleteWhereClause = WhereClauseBuilder()
-                    .appendInKeyStringValues(EnrollmentTableInfo.Columns.UID, deletedEnrollments.map { it.uid() })
-                    .build()
-
-                enrollmentStore.deleteWhere(deleteWhereClause)
+                enrollmentStore.deleteByUid(deletedEnrollments)
             }
 
             deletedEnrollments.isNotEmpty()

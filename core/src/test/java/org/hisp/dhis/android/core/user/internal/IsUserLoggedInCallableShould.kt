@@ -62,14 +62,12 @@ class IsUserLoggedInCallableShould {
     @Test
     fun return_false_if_database_is_not_ready() {
         whenever(credentialsSecureStore.get()).doReturn(credentials)
-        whenever(authenticatedUserStore.isReady).doReturn(false)
         assertThat(isUserLoggedInSingle.blockingGet()).isFalse()
     }
 
     @Test
     fun return_true_if_credentials_stored() {
         whenever(credentialsSecureStore.get()).doReturn(credentials)
-        whenever(authenticatedUserStore.isReady).doReturn(true)
         assertThat(isUserLoggedInSingle.blockingGet()).isTrue()
     }
 }

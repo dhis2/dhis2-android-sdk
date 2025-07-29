@@ -43,4 +43,14 @@ internal class TrackedEntityInstanceSyncStoreImpl(
         { databaseAdapter.getCurrentDatabase().trackedEntityInstanceSyncDao() },
         TrackedEntityInstanceSync::toDB,
         SQLStatementBuilderImpl(TrackedEntityInstanceSyncTableInfo.TABLE_INFO),
-    )
+    ) {
+    override suspend fun deleteByProgram(programUid: String, organisationUnitIdsHash: Int): Boolean {
+        val dao = databaseAdapter.getCurrentDatabase().trackedEntityInstanceSyncDao()
+        return dao.deleteByProgram(programUid, organisationUnitIdsHash) > 0
+    }
+
+    override suspend fun deleteByNullProgram(organisationUnitIdsHash: Int): Boolean {
+        val dao = databaseAdapter.getCurrentDatabase().trackedEntityInstanceSyncDao()
+        return dao.deleteByNullProgram(organisationUnitIdsHash) > 0
+    }
+}

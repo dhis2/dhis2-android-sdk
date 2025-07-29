@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.persistence.datavalue
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
 import org.hisp.dhis.android.core.datavalue.internal.DataValueConflictStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
@@ -42,4 +43,15 @@ internal class DataValueConflictStoreImpl(
     { databaseAdapter.getCurrentDatabase().dataValueConflictDao() },
     DataValueConflict::toDB,
     SQLStatementBuilderImpl(DataValueConflictTableInfo.TABLE_INFO),
-)
+) {
+    override suspend fun deleteDataValueWhereIfExists(dataValue: DataValue) {
+        val dao = databaseAdapter.getCurrentDatabase().dataValueConflictDao()
+        dao.deleteDataValueConflict(
+            dataValue.attributeOptionCombo()!!,
+            dataValue.categoryOptionCombo()!!,
+            dataValue.dataElement()!!,
+            dataValue.period()!!,
+            dataValue.organisationUnit()!!,
+        )
+    }
+}

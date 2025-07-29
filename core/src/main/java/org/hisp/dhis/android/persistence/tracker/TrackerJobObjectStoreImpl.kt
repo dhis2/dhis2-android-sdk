@@ -42,4 +42,9 @@ internal class TrackerJobObjectStoreImpl(
     { databaseAdapter.getCurrentDatabase().trackerJobObjectDao() },
     TrackerJobObject::toDB,
     SQLStatementBuilderImpl(TrackerJobObjectTableInfo.TABLE_INFO),
-)
+) {
+    override suspend fun deleteByJobUid(jobUid: String): Boolean {
+        val dao = databaseAdapter.getCurrentDatabase().trackerJobObjectDao()
+        return dao.deleteByJobUid(jobUid) > 0
+    }
+}

@@ -29,7 +29,18 @@
 package org.hisp.dhis.android.persistence.dataset
 
 import androidx.room.Dao
+import androidx.room.Query
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
 
 @Dao
-internal interface SectionGreyedFieldsLinkDao : LinkDao<SectionGreyedFieldsLinkDB>
+internal interface SectionGreyedFieldsLinkDao : LinkDao<SectionGreyedFieldsLinkDB> {
+
+    @Query(
+        """
+        DELETE FROM ${SectionGreyedFieldsLinkTableInfo.TABLE_NAME}
+        WHERE ${SectionGreyedFieldsLinkTableInfo.Columns.SECTION} = :sectionUid
+    """
+    )
+    suspend fun deleteBySectionUid(sectionUid: String): Int
+
+}

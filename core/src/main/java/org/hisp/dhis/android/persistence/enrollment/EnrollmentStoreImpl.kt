@@ -99,4 +99,10 @@ internal class EnrollmentStoreImpl(
 
         return selectWhere(whereClause)
     }
+
+    override suspend fun deleteByUid(enrollments: List<Enrollment>) {
+        val dao = databaseAdapter.getCurrentDatabase().enrollmentDao()
+        val enrollmentUids = enrollments.map { it.uid() }
+        dao.deleteByUids(enrollmentUids)
+    }
 }

@@ -29,7 +29,26 @@
 package org.hisp.dhis.android.persistence.datavalue
 
 import androidx.room.Dao
+import androidx.room.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
 @Dao
-internal interface DataValueConflictDao : ObjectDao<DataValueConflictDB>
+internal interface DataValueConflictDao : ObjectDao<DataValueConflictDB> {
+    @Query(
+        """
+        DELETE FROM ${DataValueConflictTableInfo.TABLE_NAME}
+        WHERE ${DataValueConflictTableInfo.Columns.ATTRIBUTE_OPTION_COMBO} = :attributeOptionCombo
+          AND ${DataValueConflictTableInfo.Columns.CATEGORY_OPTION_COMBO} = :categoryOptionCombo
+          AND ${DataValueConflictTableInfo.Columns.DATA_ELEMENT} = :dataElement
+          AND ${DataValueConflictTableInfo.Columns.PERIOD} = :period
+          AND ${DataValueConflictTableInfo.Columns.ORG_UNIT} = :organisationUnit
+    """
+    )
+    suspend fun deleteDataValueConflict(
+        attributeOptionCombo: String,
+        categoryOptionCombo: String,
+        dataElement: String,
+        period: String,
+        organisationUnit: String
+    ): Int
+}

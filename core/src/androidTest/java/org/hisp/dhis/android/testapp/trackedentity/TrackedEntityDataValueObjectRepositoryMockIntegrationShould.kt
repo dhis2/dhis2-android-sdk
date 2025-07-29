@@ -30,13 +30,11 @@ package org.hisp.dhis.android.testapp.trackedentity
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueObjectRepository
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
-import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityDataValueTableInfo
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -144,13 +142,7 @@ class TrackedEntityDataValueObjectRepositoryMockIntegrationShould : BaseMockInte
 
     private suspend fun hardDeleteDataValue() {
         val store: TrackedEntityDataValueStore = koin.get()
-
-        store.deleteWhereIfExists(
-            WhereClauseBuilder()
-                .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, sampleEvent)
-                .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT, sampleDataElement)
-                .build(),
-        )
+        store.deleteByEventAndDataElement(sampleEvent, sampleDataElement)
     }
 
     private suspend fun setDataValueStateToError(value: TrackedEntityDataValue) {

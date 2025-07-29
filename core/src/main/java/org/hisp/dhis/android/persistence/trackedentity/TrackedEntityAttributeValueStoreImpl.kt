@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
-import org.hisp.dhis.android.persistence.program.ProgramTrackedEntityAttributeTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -88,17 +87,8 @@ internal class TrackedEntityAttributeValueStoreImpl(
         trackedEntityInstanceUid: String,
         trackedEntityAttributeUids: List<String>,
     ) {
-        val deleteWhereQuery = WhereClauseBuilder()
-            .appendKeyStringValue(
-                TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
-                trackedEntityInstanceUid,
-            )
-            .appendNotInKeyStringValues(
-                TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
-                trackedEntityAttributeUids,
-            )
-            .build()
-        deleteWhere(deleteWhereQuery)
+        val dao = databaseAdapter.getCurrentDatabase().trackedEntityAttributeValueDao()
+        dao.deleteByInstanceAndNotInAttributes(trackedEntityInstanceUid, trackedEntityAttributeUids)
     }
 
     override suspend fun deleteByInstanceAndNotInProgramAttributes(
@@ -106,23 +96,8 @@ internal class TrackedEntityAttributeValueStoreImpl(
         trackedEntityAttributeUids: List<String>,
         program: String,
     ) {
-        val deleteWhereQuery = WhereClauseBuilder()
-            .appendKeyStringValue(
-                TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
-                trackedEntityInstanceUid,
-            )
-            .appendNotInKeyStringValues(
-                TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
-                trackedEntityAttributeUids,
-            )
-            .appendInSubQuery(
-                TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
-                "SELECT ${ProgramTrackedEntityAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} " +
-                    "FROM ${ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name()} " +
-                    "WHERE ${ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM} = '$program'",
-            )
-            .build()
-        deleteWhere(deleteWhereQuery)
+        val dao = databaseAdapter.getCurrentDatabase().trackedEntityAttributeValueDao()
+        dao.deleteByInstanceAndNotInProgramAttributes(trackedEntityInstanceUid, trackedEntityAttributeUids, program)
     }
 
     override suspend fun deleteByInstanceAndNotInAccessibleAttributes(
@@ -131,39 +106,18 @@ internal class TrackedEntityAttributeValueStoreImpl(
         teiType: String,
         programs: List<String>,
     ) {
-        val programsStr = programs.joinToString(separator = ",", prefix = "'", postfix = "'")
-        val deleteWhereQuery = WhereClauseBuilder()
-            .appendKeyStringValue(
-                TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
-                trackedEntityInstanceUid,
-            )
-            .appendNotInKeyStringValues(
-                TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
-                trackedEntityAttributeUids,
-            )
-            .appendInSubQuery(
-                TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
-                "SELECT ${ProgramTrackedEntityAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} " +
-                    "FROM ${ProgramTrackedEntityAttributeTableInfo.TABLE_INFO.name()} " +
-                    "WHERE ${ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM} IN ($programsStr) " +
-                    "UNION ALL " +
-                    "SELECT ${TrackedEntityTypeAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} " +
-                    "FROM ${TrackedEntityTypeAttributeTableInfo.TABLE_INFO.name()} " +
-                    "WHERE ${TrackedEntityTypeAttributeTableInfo.Columns.TRACKED_ENTITY_TYPE} = '$teiType'",
-            )
-            .build()
-        deleteWhere(deleteWhereQuery)
+        val dao = databaseAdapter.getCurrentDatabase().trackedEntityAttributeValueDao()
+        dao.deleteByInstanceAndNotInAccessibleAttributes(
+            trackedEntityInstanceUid,
+            trackedEntityAttributeUids,
+            programs,
+            teiType,
+        )
     }
 
     override suspend fun removeDeletedAttributeValuesByInstance(trackedEntityInstanceUid: String) {
-        val deleteWhereQuery = WhereClauseBuilder()
-            .appendKeyStringValue(
-                TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
-                trackedEntityInstanceUid,
-            )
-            .appendIsNullValue(TrackedEntityAttributeValueTableInfo.Columns.VALUE)
-            .build()
-        deleteWhere(deleteWhereQuery)
+        val dao = databaseAdapter.getCurrentDatabase().trackedEntityAttributeValueDao()
+        dao.removeDeletedAttributeValuesByInstance(trackedEntityInstanceUid)
     }
 
     override suspend fun setSyncStateByInstance(trackedEntityInstanceUid: String, syncState: State) {

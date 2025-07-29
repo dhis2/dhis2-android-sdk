@@ -55,19 +55,21 @@ internal class TrackedEntityDataValueStoreImpl(
         eventUid: String,
         dataElementUids: List<String>,
     ): Boolean {
-        val whereClause =
-            WhereClauseBuilder().appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid)
-                .appendNotInKeyStringValues(TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT, dataElementUids)
-                .build()
-        return deleteWhere(whereClause)
+        val dao = databaseAdapter.getCurrentDatabase().trackedEntityDataValueDao()
+        return dao.deleteByEventAndNotInDataElements(eventUid, dataElementUids) > 0
+    }
+
+    override suspend fun deleteByEventAndDataElement(
+        eventUid: String,
+        dataElementUid: String,
+    ): Boolean {
+        val dao = databaseAdapter.getCurrentDatabase().trackedEntityDataValueDao()
+        return dao.deleteByEventAndDataElement(eventUid, dataElementUid) > 0
     }
 
     override suspend fun deleteByEvent(eventUid: String): Boolean {
-        val whereClause =
-            WhereClauseBuilder()
-                .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid)
-                .build()
-        return deleteWhere(whereClause)
+        val dao = databaseAdapter.getCurrentDatabase().trackedEntityDataValueDao()
+        return dao.deleteByEvent(eventUid) > 0
     }
 
     override suspend fun queryTrackedEntityDataValuesByEventUid(eventUid: String): List<TrackedEntityDataValue> {
@@ -85,21 +87,13 @@ internal class TrackedEntityDataValueStoreImpl(
     }
 
     override suspend fun removeDeletedDataValuesByEvent(eventUid: String) {
-        val deleteWhereQuery =
-            WhereClauseBuilder().appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid)
-                .appendIsNullValue(TrackedEntityAttributeValueTableInfo.Columns.VALUE).build()
-        deleteWhere(deleteWhereQuery)
+        val dao = databaseAdapter.getCurrentDatabase().trackedEntityDataValueDao()
+        dao.removeDeletedDataValuesByEvent(eventUid)
     }
 
     override suspend fun removeUnassignedDataValuesByEvent(eventUid: String) {
-        val queryStatement =
-            WhereClauseBuilder().appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid)
-                .appendNotInSubQuery(
-                    TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT,
-                    getInProgramStageDataElementsSubQuery(eventUid),
-                ).build()
-
-        deleteWhere(queryStatement)
+        val dao = databaseAdapter.getCurrentDatabase().trackedEntityDataValueDao()
+        dao.removeUnassignedDataValuesByEvent(eventUid)
     }
 
     private fun eventInUploadableState(): String {

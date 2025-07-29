@@ -80,7 +80,7 @@ internal open class IdentifiableDeletableDataObjectStoreImpl<D, P : EntityDB<D>>
         val identifiableDeletableDataObjectDao = daoProvider()
         CollectionsHelper.isNull(uid)
         val query = builder.setDeleted(uid)
-        return identifiableDeletableDataObjectDao.intRawQuery(query) // Corregir esto, no se puede usar raw query para editar
+        return identifiableDeletableDataObjectDao.setDeleted(uid) // Corregir esto, no se puede usar raw query para editar
     }
 
     override suspend fun selectSyncStateWhere(where: String): List<State> {

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.persistence.settings
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualization
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationType
 import org.hisp.dhis.android.core.settings.internal.AnalyticsDhisVisualizationStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
@@ -43,4 +44,9 @@ internal class AnalyticsDhisVisualizationStoreImpl(
         { databaseAdapter.getCurrentDatabase().analyticsDhisVisualizationDao() },
         AnalyticsDhisVisualization::toDB,
         SQLStatementBuilderImpl(AnalyticsDhisVisualizationTableInfo.TABLE_INFO),
-    )
+    ) {
+    override suspend fun deleteNotPresent(uids: List<String>, type: AnalyticsDhisVisualizationType) {
+        val dao = databaseAdapter.getCurrentDatabase().analyticsDhisVisualizationDao()
+        dao.deleteByTypeAndUidNotIn(type.name, uids)
+    }
+}

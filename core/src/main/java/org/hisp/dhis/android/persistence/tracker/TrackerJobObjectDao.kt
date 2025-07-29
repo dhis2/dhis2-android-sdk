@@ -29,7 +29,16 @@
 package org.hisp.dhis.android.persistence.tracker
 
 import androidx.room.Dao
+import androidx.room.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
 @Dao
-internal interface TrackerJobObjectDao : ObjectDao<TrackerJobObjectDB>
+internal interface TrackerJobObjectDao : ObjectDao<TrackerJobObjectDB> {
+    @Query(
+        """
+        DELETE FROM ${TrackerJobObjectTableInfo.TABLE_NAME} 
+        WHERE ${TrackerJobObjectTableInfo.Columns.JOB_UID} = :jobUid
+    """
+    )
+    suspend fun deleteByJobUid(jobUid: String): Int
+}

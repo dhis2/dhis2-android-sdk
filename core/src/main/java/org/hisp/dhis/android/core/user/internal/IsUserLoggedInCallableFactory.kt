@@ -38,6 +38,6 @@ internal class IsUserLoggedInCallableFactory constructor(
 ) {
     val isLogged: Single<Boolean>
         get() = Single.fromCallable {
-            credentialsSecureStore.get() != null && authenticatedUserStore.isReady
+            credentialsSecureStore.get() != null
         }
 }

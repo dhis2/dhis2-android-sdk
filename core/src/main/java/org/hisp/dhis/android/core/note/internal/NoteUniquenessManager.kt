@@ -50,10 +50,7 @@ internal class NoteUniquenessManager(private val noteStore: NoteStore) {
 
         val toPostNotes = noteStore.selectWhere(toPostWhere)
 
-        val deleteWhere = WhereClauseBuilder()
-            .appendKeyStringValue(ownerColumn, ownerUid)
-            .build()
-        noteStore.deleteWhere(deleteWhere)
+        noteStore.deleteByOwner(ownerColumn, ownerUid)
 
         val newNotes = notes
             .map { it.toBuilder().syncState(State.SYNCED).build() }

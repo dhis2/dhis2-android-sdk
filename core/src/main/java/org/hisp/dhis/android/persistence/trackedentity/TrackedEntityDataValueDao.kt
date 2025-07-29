@@ -31,6 +31,8 @@ package org.hisp.dhis.android.persistence.trackedentity
 import androidx.room.Dao
 import androidx.room.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.persistence.event.EventTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramStageDataElementTableInfo
 
 @Dao
 internal interface TrackedEntityDataValueDao : ObjectDao<TrackedEntityDataValueDB> {
@@ -41,4 +43,63 @@ internal interface TrackedEntityDataValueDao : ObjectDao<TrackedEntityDataValueD
         WHERE ${TrackedEntityDataValueTableInfo.Columns.EVENT} = :uid;""",
     )
     suspend fun setSyncStateByEvent(uid: String, state: String)
+
+    @Query(
+        """
+        DELETE FROM ${TrackedEntityDataValueTableInfo.TABLE_NAME}
+        WHERE ${TrackedEntityDataValueTableInfo.Columns.EVENT} = :eventUid
+          AND ${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT} NOT IN (:dataElementUids)
+    """
+    )
+    suspend fun deleteByEventAndNotInDataElements(
+        eventUid: String,
+        dataElementUids: List<String>
+    ): Int
+
+    @Query(
+        """
+        DELETE FROM ${TrackedEntityDataValueTableInfo.TABLE_NAME}
+        WHERE ${TrackedEntityDataValueTableInfo.Columns.EVENT} = :eventUid
+          AND ${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT} = :dataElementUid
+    """
+    )
+    suspend fun deleteByEventAndDataElement(
+        eventUid: String,
+        dataElementUid: String,
+    ): Int
+
+    @Query(
+        """
+        DELETE FROM ${TrackedEntityDataValueTableInfo.TABLE_NAME}
+        WHERE ${TrackedEntityDataValueTableInfo.Columns.EVENT} = :eventUid
+    """
+    )
+    suspend fun deleteByEvent(eventUid: String): Int
+
+    @Query(
+        """
+        DELETE FROM ${TrackedEntityDataValueTableInfo.TABLE_NAME}
+        WHERE ${TrackedEntityDataValueTableInfo.Columns.EVENT} = :eventUid
+          AND ${TrackedEntityDataValueTableInfo.Columns.VALUE} IS NULL 
+    """
+    )
+    suspend fun removeDeletedDataValuesByEvent(
+        eventUid: String
+    ): Int
+
+    @Query(
+        """
+        DELETE FROM ${TrackedEntityDataValueTableInfo.TABLE_NAME}
+        WHERE ${TrackedEntityDataValueTableInfo.Columns.EVENT} = :eventUid
+          AND ${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT} NOT IN (
+              SELECT psde.${ProgramStageDataElementTableInfo.Columns.DATA_ELEMENT}
+              FROM ${ProgramStageDataElementTableInfo.TABLE_NAME} AS psde
+              INNER JOIN ${EventTableInfo.TABLE_NAME} AS e
+                ON psde.${ProgramStageDataElementTableInfo.Columns.PROGRAM_STAGE} = e.${EventTableInfo.Columns.PROGRAM_STAGE}
+              WHERE e.${EventTableInfo.Columns.UID} = :eventUid
+          )
+    """
+    )
+    suspend fun removeUnassignedDataValuesByEvent(eventUid: String): Int
+
 }

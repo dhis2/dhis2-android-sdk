@@ -41,4 +41,12 @@ internal interface EnrollmentDao : IdentifiableDeletableDataObjectStoreDao<Enrol
         WHERE ${IdentifiableColumns.UID} = :uid;""",
     )
     fun setAggregatedSyncState(state: String, uid: String): Int
+
+    @Query(
+        """
+        DELETE FROM ${EnrollmentTableInfo.TABLE_NAME}
+        WHERE ${EnrollmentTableInfo.Columns.UID} IN (:enrollmentUids)
+    """
+    )
+    suspend fun deleteByUids(enrollmentUids: List<String>): Int
 }

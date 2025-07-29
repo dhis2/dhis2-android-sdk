@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.persistence.common.stores
 
-import android.util.ArrayMap
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.persistence.common.EntityDB
@@ -69,22 +68,4 @@ internal open class ObjectStoreImpl<D : CoreObject, P : EntityDB<D>>(
         return objectDao.delete(entityDB) > 0
     }
 
-    override suspend fun deleteWhere(clause: String): Boolean {
-        val objectDao = daoProvider()
-        val query = builder.deleteWhere(clause)
-        return objectDao.intRawQuery(query) > 0 // Corregir esto, no se puede usar raw query para editar
-    }
-
-    suspend fun updateWhere(updates: ArrayMap<String, Any>, whereClause: String): Int {
-        val objectDao = daoProvider()
-        val query = builder.updateWhere(updates, whereClause)
-        return objectDao.intRawQuery(query) // Corregir esto, no se puede usar raw query para editar
-    }
-
-    override suspend fun deleteWhereIfExists(whereClause: String) {
-        deleteWhere(whereClause)
-    }
-
-    override val isReady: Boolean
-        get() = true // TODO("To be removed after Room migration")
 }

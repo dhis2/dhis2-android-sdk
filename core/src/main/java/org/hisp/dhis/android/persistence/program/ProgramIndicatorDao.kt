@@ -29,7 +29,17 @@
 package org.hisp.dhis.android.persistence.program
 
 import androidx.room.Dao
+import androidx.room.Query
+import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
 
 @Dao
-internal interface ProgramIndicatorDao : IdentifiableObjectDao<ProgramIndicatorDB>
+internal interface ProgramIndicatorDao : IdentifiableObjectDao<ProgramIndicatorDB> {
+    @Query(
+        """
+        DELETE FROM ${ProgramIndicatorTableInfo.TABLE_NAME}
+        WHERE ${IdentifiableColumns.UID} IN (:uids)
+    """
+    )
+    suspend fun deleteByUids(uids: List<String>)
+}

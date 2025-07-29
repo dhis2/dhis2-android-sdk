@@ -29,7 +29,20 @@
 package org.hisp.dhis.android.persistence.settings
 
 import androidx.room.Dao
+import androidx.room.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
 @Dao
-internal interface AnalyticsDhisVisualizationDao : ObjectDao<AnalyticsDhisVisualizationDB>
+internal interface AnalyticsDhisVisualizationDao : ObjectDao<AnalyticsDhisVisualizationDB> {
+    @Query(
+        """
+        DELETE FROM ${AnalyticsDhisVisualizationTableInfo.TABLE_NAME}
+        WHERE ${AnalyticsDhisVisualizationTableInfo.Columns.TYPE} = :typeName
+          AND ${AnalyticsDhisVisualizationTableInfo.Columns.UID} NOT IN (:uidsToKeep)
+    """
+    )
+    suspend fun deleteByTypeAndUidNotIn(
+        typeName: String,
+        uidsToKeep: List<String>
+    ): Int
+}

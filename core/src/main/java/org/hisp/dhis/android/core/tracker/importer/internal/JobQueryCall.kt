@@ -143,12 +143,12 @@ internal class JobQueryCall internal constructor(
             networkHandler.getJobReport(jobId)
         }.getOrThrow()
 
-        trackerJobObjectStore.deleteWhere(byJobIdClause(jobId))
+        trackerJobObjectStore.deleteByJobUid(jobId)
         handler.handle(jobReport, jobObjects)
     }
 
     private suspend fun handlerError(jobId: String, jobObjects: List<TrackerJobObject>) {
-        trackerJobObjectStore.deleteWhere(byJobIdClause(jobId))
+        trackerJobObjectStore.deleteByJobUid(jobId)
         stateManager.restoreStates(jobObjects)
     }
 

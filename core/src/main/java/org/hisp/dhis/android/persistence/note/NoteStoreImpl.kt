@@ -59,4 +59,12 @@ internal class NoteStoreImpl(
         val selectStatement = builder.selectWhere(whereClause)
         return selectRawQuery(selectStatement)
     }
+
+    override suspend fun deleteByOwner(ownerColumn: String, ownerUid: String) {
+        val dao = databaseAdapter.getCurrentDatabase().noteDao()
+        when (ownerColumn) {
+            NoteTableInfo.Columns.EVENT -> dao.deleteNotesByEvent(ownerUid)
+            NoteTableInfo.Columns.ENROLLMENT -> dao.deleteNotesByEnrollment(ownerUid)
+        }
+    }
 }

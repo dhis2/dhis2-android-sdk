@@ -86,16 +86,6 @@ internal class DataStoreHandler(
         namespace: String,
         slaves: Collection<DataStoreEntry>?,
     ) {
-        val notInSlaves = WhereClauseBuilder().run {
-            appendKeyStringValue(DataStoreTableInfo.Columns.NAMESPACE, namespace)
-            appendInKeyEnumValues(DataColumns.SYNC_STATE, listOf(State.SYNCED, State.SYNCED_VIA_SMS))
-
-            if (!slaves.isNullOrEmpty()) {
-                appendNotInKeyStringValues(DataStoreTableInfo.Columns.KEY, slaves.map { it.key() })
-            }
-            build()
-        }
-
-        store.deleteWhere(notInSlaves)
+        store.cleanOrphan(namespace, slaves)
     }
 }

@@ -31,6 +31,7 @@ package org.hisp.dhis.android.persistence.trackedentity
 import androidx.room.Dao
 import androidx.room.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.persistence.program.ProgramTrackedEntityAttributeTableInfo
 
 @Dao
 internal interface TrackedEntityAttributeValueDao : ObjectDao<TrackedEntityAttributeValueDB> {
@@ -41,4 +42,69 @@ internal interface TrackedEntityAttributeValueDao : ObjectDao<TrackedEntityAttri
         WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = :uid""",
     )
     suspend fun setSyncStateByInstance(state: String, uid: String)
+
+    @Query(
+        """
+        DELETE FROM ${TrackedEntityAttributeValueTableInfo.TABLE_NAME}
+        WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = :trackedEntityInstanceUid
+          AND ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} NOT IN (:trackedEntityAttributeUids)
+    """
+    )
+    suspend fun deleteByInstanceAndNotInAttributes(
+        trackedEntityInstanceUid: String,
+        trackedEntityAttributeUids: List<String>
+    ): Int
+
+
+    @Query(
+        """
+        DELETE FROM ${TrackedEntityAttributeValueTableInfo.TABLE_NAME}
+        WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = :trackedEntityInstanceUid
+          AND ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} NOT IN (:trackedEntityAttributeUids)
+          AND ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} IN (
+              SELECT ${ProgramTrackedEntityAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE}
+              FROM ${ProgramTrackedEntityAttributeTableInfo.TABLE_NAME}
+              WHERE ${ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM} = :programUid 
+          )
+    """
+    )
+    suspend fun deleteByInstanceAndNotInProgramAttributes(
+        trackedEntityInstanceUid: String,
+        trackedEntityAttributeUids: List<String>,
+        programUid: String
+    ): Int
+
+    @Query(
+        """
+        DELETE FROM ${TrackedEntityAttributeValueTableInfo.TABLE_NAME}
+        WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = :trackedEntityInstanceUid
+          AND ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} NOT IN (:trackedEntityAttributeUids)
+          AND ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} IN (
+              SELECT ${ProgramTrackedEntityAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE}
+              FROM ${ProgramTrackedEntityAttributeTableInfo.TABLE_NAME}
+              WHERE ${ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM} IN (:programUids)
+              UNION ALL
+              SELECT ${TrackedEntityTypeAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE}
+              FROM ${TrackedEntityTypeAttributeTableInfo.TABLE_NAME}
+              WHERE ${TrackedEntityTypeAttributeTableInfo.Columns.TRACKED_ENTITY_TYPE} = :teiTypeUid
+          )
+    """
+    )
+    suspend fun deleteByInstanceAndNotInAccessibleAttributes(
+        trackedEntityInstanceUid: String,
+        trackedEntityAttributeUids: List<String>,
+        programUids: List<String>,
+        teiTypeUid: String
+    ): Int
+
+    @Query(
+        """
+        DELETE FROM ${TrackedEntityAttributeValueTableInfo.TABLE_NAME}
+        WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = :trackedEntityInstanceUid
+          AND ${TrackedEntityAttributeValueTableInfo.Columns.VALUE} IS NULL
+    """
+    )
+    suspend fun removeDeletedAttributeValuesByInstance(
+        trackedEntityInstanceUid: String
+    ): Int
 }

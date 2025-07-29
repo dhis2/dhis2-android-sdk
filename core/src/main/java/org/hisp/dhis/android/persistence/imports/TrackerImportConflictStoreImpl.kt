@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.persistence.imports
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
@@ -48,37 +47,17 @@ internal class TrackerImportConflictStoreImpl(
     SQLStatementBuilderImpl(TrackerImportConflictTableInfo.TABLE_INFO),
 ) {
     override suspend fun deleteEventConflicts(eventUid: String) {
-        deleteTypeConflicts(
-            TrackerImportConflictTableInfo.Columns.EVENT,
-            EventTableInfo.TABLE_INFO.name(),
-            eventUid,
-        )
+        val dao = databaseAdapter.getCurrentDatabase().trackerImportConflictDao()
+        dao.deleteEventConflict(eventUid, EventTableInfo.TABLE_NAME)
     }
 
     override suspend fun deleteEnrollmentConflicts(enrollmentUid: String) {
-        deleteTypeConflicts(
-            TrackerImportConflictTableInfo.Columns.ENROLLMENT,
-            EnrollmentTableInfo.TABLE_INFO.name(),
-            enrollmentUid,
-        )
+        val dao = databaseAdapter.getCurrentDatabase().trackerImportConflictDao()
+        dao.deleteEnrollmentConflict(enrollmentUid, EnrollmentTableInfo.TABLE_NAME)
     }
 
     override suspend fun deleteTrackedEntityConflicts(tackedEntityUid: String) {
-        deleteTypeConflicts(
-            TrackerImportConflictTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
-            TrackedEntityInstanceTableInfo.TABLE_INFO.name(),
-            tackedEntityUid,
-        )
-    }
-
-    private suspend fun deleteTypeConflicts(column: String, tableName: String, uid: String) {
-        val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(column, uid)
-            .appendKeyStringValue(
-                TrackerImportConflictTableInfo.Columns.TABLE_REFERENCE,
-                tableName,
-            )
-            .build()
-        deleteWhereIfExists(whereClause)
+        val dao = databaseAdapter.getCurrentDatabase().trackerImportConflictDao()
+        dao.deleteTrackedEntityConflict(tackedEntityUid, TrackedEntityInstanceTableInfo.TABLE_NAME)
     }
 }

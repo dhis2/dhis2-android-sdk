@@ -29,7 +29,30 @@
 package org.hisp.dhis.android.persistence.dataset
 
 import androidx.room.Dao
+import androidx.room.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitTableInfo
 
 @Dao
-internal interface DataSetCompleteRegistrationDao : ObjectDao<DataSetCompleteRegistrationDB>
+internal interface DataSetCompleteRegistrationDao : ObjectDao<DataSetCompleteRegistrationDB> {
+    @Query(
+        """
+        DELETE FROM DataSetCompleteRegistration 
+        WHERE ${DataSetCompleteRegistrationTableInfo.Columns.DATA_SET} IN (:dataSetUids)
+          AND ${DataSetCompleteRegistrationTableInfo.Columns.PERIOD} IN (:periodIds)
+          AND ${DataSetCompleteRegistrationTableInfo.Columns.ORGANISATION_UNIT} IN (
+              SELECT ${OrganisationUnitTableInfo.Columns.UID} 
+              FROM ${OrganisationUnitTableInfo.TABLE_NAME} 
+              WHERE ${OrganisationUnitTableInfo.Columns.PATH} 
+              LIKE :orgUnitPathQuery
+          )
+          AND ${DataSetCompleteRegistrationTableInfo.Columns.SYNC_STATE} = :syncedStateValue
+    """
+    )
+    suspend fun removeNotPresentAndSynced(
+        dataSetUids: Collection<String>,
+        periodIds: Collection<String>,
+        orgUnitPathQuery: String, // Deberás construir esto como "%$rootOrgunitUid%" antes de llamar
+        syncedStateValue: String  // El valor de State.SYNCED (ej. "SYNCED")
+    ): Int
+}

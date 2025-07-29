@@ -29,7 +29,38 @@
 package org.hisp.dhis.android.persistence.imports
 
 import androidx.room.Dao
+import androidx.room.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
 @Dao
-internal interface TrackerImportConflictDao : ObjectDao<TrackerImportConflictDB>
+internal interface TrackerImportConflictDao : ObjectDao<TrackerImportConflictDB> {
+
+
+    @Query(
+        """
+        DELETE FROM ${TrackerImportConflictTableInfo.TABLE_NAME}
+        WHERE ${TrackerImportConflictTableInfo.Columns.EVENT} = :uid
+          AND ${TrackerImportConflictTableInfo.Columns.TABLE_REFERENCE} = :tableName
+    """
+    )
+    suspend fun deleteEventConflict(uid: String, tableName: String): Int
+
+    @Query(
+        """
+        DELETE FROM ${TrackerImportConflictTableInfo.TABLE_NAME}
+        WHERE ${TrackerImportConflictTableInfo.Columns.ENROLLMENT} = :uid
+          AND ${TrackerImportConflictTableInfo.Columns.TABLE_REFERENCE} = :tableName
+    """
+    )
+    suspend fun deleteEnrollmentConflict(uid: String, tableName: String): Int
+
+    @Query(
+        """
+        DELETE FROM ${TrackerImportConflictTableInfo.TABLE_NAME}
+        WHERE ${TrackerImportConflictTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = :uid
+          AND ${TrackerImportConflictTableInfo.Columns.TABLE_REFERENCE} = :tableName
+    """
+    )
+    suspend fun deleteTrackedEntityConflict(uid: String, tableName: String): Int
+
+}

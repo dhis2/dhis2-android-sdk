@@ -29,7 +29,18 @@
 package org.hisp.dhis.android.persistence.resource
 
 import androidx.room.Dao
+import androidx.room.Query
+import org.hisp.dhis.android.core.resource.internal.Resource
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 
 @Dao
-internal interface ResourceDao : ObjectDao<ResourceDB>
+internal interface ResourceDao : ObjectDao<ResourceDB> {
+
+    @Query(
+        """
+        DELETE FROM ${ResourceTableInfo.TABLE_NAME} 
+        WHERE ${ResourceTableInfo.Columns.RESOURCE_TYPE} = :type
+        """
+    )
+    suspend fun deleteResource(type: Resource.Type): Int
+}

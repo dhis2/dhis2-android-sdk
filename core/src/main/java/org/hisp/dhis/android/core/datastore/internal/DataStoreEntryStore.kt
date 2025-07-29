@@ -33,6 +33,6 @@ import org.hisp.dhis.android.core.datastore.DataStoreEntry
 
 internal interface DataStoreEntryStore : ObjectWithoutUidStore<DataStoreEntry> {
     suspend fun setState(entry: DataStoreEntry, state: State)
-
     suspend fun setStateIfUploading(entry: DataStoreEntry, state: State)
+    suspend fun cleanOrphan(namespace: String, slaves: Collection<DataStoreEntry>?)
 }

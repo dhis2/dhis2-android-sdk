@@ -59,7 +59,7 @@ internal open class LinkStoreImpl<D : CoreObject, P : EntityDB<D>>(
         val linkStoreDao = daoProvider()
         CollectionsHelper.isNull(parentUid)
         val query = builder.deleteLinksForParentUid(parentUid)
-        linkStoreDao.intRawQuery(query)
+        linkStoreDao.intRawQuery(query) // Corregir esto, no se puede usar raw query para editar
     }
 
     @Throws(RuntimeException::class)

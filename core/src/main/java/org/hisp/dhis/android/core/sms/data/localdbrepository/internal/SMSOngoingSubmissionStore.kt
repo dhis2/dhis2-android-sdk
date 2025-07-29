@@ -30,4 +30,6 @@ package org.hisp.dhis.android.core.sms.data.localdbrepository.internal
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 
-internal interface SMSOngoingSubmissionStore : ObjectWithoutUidStore<SMSOngoingSubmission>
+internal interface SMSOngoingSubmissionStore : ObjectWithoutUidStore<SMSOngoingSubmission> {
+    suspend fun deleteSubmissionIfExists(submissionId: Int)
+}

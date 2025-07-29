@@ -27,8 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.TrackerBaseSyncStore
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toKtxInstant
@@ -37,10 +36,9 @@ import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.settings.DownloadPeriod
 import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.ProgramSettings
-import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceSyncTableInfo.Columns
 import java.util.Date
 
-internal open class TrackerSyncLastUpdatedManager<S : TrackerBaseSync>(private val store: ObjectWithoutUidStore<S>) {
+internal open class TrackerSyncLastUpdatedManager<S : TrackerBaseSync>(private val store: TrackerBaseSyncStore<S>) {
     private lateinit var syncMap: Map<Pair<String?, Int>, S>
     private var programSettings: ProgramSettings? = null
     private lateinit var params: ProgramDataDownloadParams
@@ -104,16 +102,11 @@ internal open class TrackerSyncLastUpdatedManager<S : TrackerBaseSync>(private v
     }
 
     suspend fun update(sync: S) {
-        val builder = WhereClauseBuilder().appendKeyNumberValue(
-            Columns.ORGANISATION_UNIT_IDS_HASH,
-            sync.organisationUnitIdsHash(),
-        )
-        val finalBuilder = sync.program()?.let {
-            builder.appendKeyStringValue(Columns.PROGRAM, it)
+        sync.program()?.let {
+            store.deleteByProgram(it, sync.organisationUnitIdsHash())
         } ?: run {
-            builder.appendIsNullValue(Columns.PROGRAM)
+            store.deleteByNullProgram(sync.organisationUnitIdsHash())
         }
-        store.deleteWhere(finalBuilder.build())
         store.insert(sync)
     }
 }

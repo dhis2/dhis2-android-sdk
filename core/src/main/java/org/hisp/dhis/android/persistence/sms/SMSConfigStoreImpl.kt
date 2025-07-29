@@ -68,13 +68,7 @@ internal class SMSConfigStoreImpl(
     }
 
     override suspend fun delete(key: SMSConfigKey) {
-        val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(
-                SMSConfigTableInfo.Columns.KEY,
-                key.name,
-            )
-            .build()
-
-        return deleteWhereIfExists(whereClause)
+        val dao = databaseAdapter.getCurrentDatabase().SMSConfigDao()
+        dao.deleteByKeyName(key.name)
     }
 }

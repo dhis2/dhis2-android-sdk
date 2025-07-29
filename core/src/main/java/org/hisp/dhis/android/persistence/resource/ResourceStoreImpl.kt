@@ -58,10 +58,7 @@ internal class ResourceStoreImpl(
     }
 
     override suspend fun deleteResource(type: Resource.Type): Boolean {
-        val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(ResourceTableInfo.Columns.RESOURCE_TYPE, type.name)
-            .build()
-
-        return deleteWhere(whereClause)
+        val dao = databaseAdapter.getCurrentDatabase().resourceDao()
+        return dao.deleteResource(type) > 0
     }
 }

@@ -25,10 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
-
-public class DataColumns extends CoreColumns {
-    public static final String AGGREGATED_SYNC_STATE = "aggregatedSyncState";
-    public static final String SYNC_STATE = "syncState";
+open class DataColumns : CoreColumns() {
+    companion object {
+        const val AGGREGATED_SYNC_STATE: String = "aggregatedSyncState"
+        const val SYNC_STATE: String = "syncState"
+    }
 }

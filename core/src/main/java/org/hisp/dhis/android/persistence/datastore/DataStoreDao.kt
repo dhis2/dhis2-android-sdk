@@ -50,4 +50,31 @@ internal interface DataStoreDao : ObjectDao<DataStoreDB> {
         AND ${DataStoreTableInfo.Columns.SYNC_STATE} = 'UPLOADING';""",
     )
     fun setStateIfUploading(state: String, namespace: String, key: String)
+
+
+    @Query(
+        """
+        DELETE FROM ${DataStoreTableInfo.TABLE_NAME}
+        WHERE ${DataStoreTableInfo.Columns.NAMESPACE} = :namespace
+          AND ${DataStoreTableInfo.Columns.SYNC_STATE} IN (:syncStates) 
+    """
+    )
+    suspend fun deleteByNamespaceAndSyncStates(
+        namespace: String,
+        syncStates: List<String>
+    ): Int
+
+    @Query(
+        """
+        DELETE FROM ${DataStoreTableInfo.TABLE_NAME}
+        WHERE ${DataStoreTableInfo.Columns.NAMESPACE} = :namespace
+          AND ${DataStoreTableInfo.Columns.SYNC_STATE} IN (:syncStates)
+          AND `${DataStoreTableInfo.Columns.KEY}` NOT IN (:keysToKeep) 
+    """
+    )
+    suspend fun deleteByNamespaceSyncStatesAndNotInKeys(
+        namespace: String,
+        syncStates: List<String>,
+        keysToKeep: List<String>
+    ): Int
 }

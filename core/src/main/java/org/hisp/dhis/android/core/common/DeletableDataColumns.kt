@@ -25,9 +25,8 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
-
-public class DeletableDataColumns extends DataColumns {
-    public static final String DELETED = "deleted";
+object DeletableDataColumns : DataColumns() {
+    const val DELETED: String = "deleted"
 }

@@ -60,4 +60,9 @@ internal class ProgramIndicatorStoreImpl(
         )
         return selectRawQuery(query)
     }
+
+    override suspend fun deleteByUids(uids: List<String>) {
+        val dao = databaseAdapter.getCurrentDatabase().programIndicatorDao()
+        dao.deleteByUids(uids)
+    }
 }

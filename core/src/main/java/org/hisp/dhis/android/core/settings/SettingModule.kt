@@ -42,4 +42,6 @@ interface SettingModule {
     fun appearanceSettings(): AppearanceSettingsObjectRepository
     fun latestAppVersion(): LatestAppVersionObjectRepository
     fun customIntents(): CustomIntentCollectionRepository
+
+    fun customIntentService(): CustomIntentService
 }

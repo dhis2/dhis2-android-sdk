@@ -28,6 +28,12 @@
 
 package org.hisp.dhis.android.persistence.common.daos
 
-import org.hisp.dhis.android.persistence.common.EntityDB
+import androidx.room.Query
 
-internal interface IdentifiableObjectDao<P : EntityDB<*>> : ObjectDao<P>, IdentifiableObjectDaoQueryFallbacks
+internal interface LinkDaoQueryFallbacks {
+    @Query("DELETE FROM Constant WHERE :parentColumn = :parentUid")
+    suspend fun deleteLinksForMasterUid(parentColumn: String, parentUid: String): Int
+
+    @Query("DELETE FROM Constant")
+    suspend fun deleteLinksForMasterUid(): Int
+}

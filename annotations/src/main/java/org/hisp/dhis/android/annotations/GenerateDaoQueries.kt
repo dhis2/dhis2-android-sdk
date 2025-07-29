@@ -26,8 +26,8 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.common.daos
+package org.hisp.dhis.android.processor
 
-import org.hisp.dhis.android.persistence.common.EntityDB
-
-internal interface IdentifiableObjectDao<P : EntityDB<*>> : ObjectDao<P>, IdentifiableObjectDaoQueryFallbacks
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.SOURCE)
+annotation class GenerateDaoQueries(val tableName: String)

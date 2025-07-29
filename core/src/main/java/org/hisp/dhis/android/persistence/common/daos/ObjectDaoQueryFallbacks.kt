@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.persistence.common.daos
 
-@Target(AnnotationTarget.CLASS)
-@Retention(AnnotationRetention.SOURCE)
-annotation class GenerateDaoQueries(val tableName: String)
+import androidx.room.Query
+
+internal interface ObjectDaoQueryFallbacks {
+    @Query("DELETE FROM Constant")
+    suspend fun deleteAllRows(): Int // To be overriden in specific daos with @Query and const table name
+}

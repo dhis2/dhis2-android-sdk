@@ -41,11 +41,11 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.MapperToDB
-import org.hisp.dhis.android.persistence.common.daos.IdentifiableDeletableDataObjectStoreDao
+import org.hisp.dhis.android.persistence.common.daos.IdentifiableDeletableDataObjectDao
 import org.hisp.dhis.android.persistence.common.querybuilders.IdentifiableDeletableDataObjectSQLStatementBuilder
 
 internal open class IdentifiableDeletableDataObjectStoreImpl<D, P : EntityDB<D>>(
-    override val daoProvider: () -> IdentifiableDeletableDataObjectStoreDao<P>,
+    override val daoProvider: () -> IdentifiableDeletableDataObjectDao<P>,
     mapper: MapperToDB<D, P>,
     override val builder: IdentifiableDeletableDataObjectSQLStatementBuilder,
 ) : DeletableStoreWithState<D>, IdentifiableDataObjectStoreImpl<D, P>(

@@ -31,7 +31,6 @@ package org.hisp.dhis.android.persistence.common.daos
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
-import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.room.RoomRawQuery
 import androidx.room.Update
@@ -39,7 +38,7 @@ import androidx.room.Upsert
 import org.hisp.dhis.android.persistence.common.EntityDB
 
 @Suppress("TooManyFunctions")
-internal interface ObjectDao<P : EntityDB<*>> : ReadableDao<P> {
+internal interface ObjectDao<P : EntityDB<*>> : ReadableDao<P>, ObjectDaoQueryFallbacks {
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(entity: P): Long
@@ -64,9 +63,6 @@ internal interface ObjectDao<P : EntityDB<*>> : ReadableDao<P> {
 
     @Delete
     suspend fun delete(entities: Collection<P>): Int
-
-    @Query("DELETE FROM Constant WHERE uid = :uid")
-    suspend fun delete(uid: String): Int // To be overriden in specific daos with @Query and const table name
 
     @RawQuery
     suspend fun objectRawQuery(query: RoomRawQuery): P?

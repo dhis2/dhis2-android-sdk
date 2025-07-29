@@ -28,20 +28,14 @@
 
 package org.hisp.dhis.android.persistence.common.daos
 
-import androidx.room.Query
 import androidx.room.RawQuery
 import androidx.room.RoomRawQuery
-import org.hisp.dhis.android.core.common.DeletableDataColumns
-import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.persistence.common.EntityDB
 
-internal interface IdentifiableDeletableDataObjectStoreDao<P : EntityDB<*>> : IdentifiableDataObjectDao<P> {
+internal interface IdentifiableDeletableDataObjectDao<P : EntityDB<*>> : IdentifiableDataObjectDao<P>,
+    IdentifiableDeletableDataObjectDaoQueryFallbacks {
 
     @RawQuery
     suspend fun stateListRawQuery(query: RoomRawQuery): List<State>
-
-    //Placeholder for generated daos to override
-    @Query("UPDATE Constant SET ${DeletableDataColumns.DELETED} = 1 WHERE ${IdentifiableColumns.UID} = :uid")
-    suspend fun setDeleted(uid: String): Int
 }

@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.persistence.relationship
 
 import androidx.room.Dao
-import org.hisp.dhis.android.persistence.common.daos.IdentifiableDeletableDataObjectStoreDao
+import org.hisp.dhis.android.persistence.common.daos.IdentifiableDeletableDataObjectDao
 
 @Dao
-internal interface RelationshipDao : IdentifiableDeletableDataObjectStoreDao<RelationshipDB>
+internal interface RelationshipDao : IdentifiableDeletableDataObjectDao<RelationshipDB>

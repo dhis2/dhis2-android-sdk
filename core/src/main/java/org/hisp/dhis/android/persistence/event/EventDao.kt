@@ -31,10 +31,10 @@ package org.hisp.dhis.android.persistence.event
 import androidx.room.Dao
 import androidx.room.Query
 import org.hisp.dhis.android.core.common.IdentifiableColumns
-import org.hisp.dhis.android.persistence.common.daos.IdentifiableDeletableDataObjectStoreDao
+import org.hisp.dhis.android.persistence.common.daos.IdentifiableDeletableDataObjectDao
 
 @Dao
-internal interface EventDao : IdentifiableDeletableDataObjectStoreDao<EventDB> {
+internal interface EventDao : IdentifiableDeletableDataObjectDao<EventDB> {
     @Query(
         """UPDATE Event
         SET ${EventTableInfo.Columns.AGGREGATED_SYNC_STATE} = :state

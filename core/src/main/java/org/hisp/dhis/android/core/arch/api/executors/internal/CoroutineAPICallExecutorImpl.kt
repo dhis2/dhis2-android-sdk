@@ -190,7 +190,7 @@ internal class CoroutineAPICallExecutorImpl(
     }
 
     private suspend fun storeAndReturn(d2Error: D2Error, storeError: Boolean): D2Error {
-        if (errorStore.isReady && storeError) {
+        if (storeError) {
             errorStore.insert(d2Error)
         }
         return d2Error

@@ -11441,6 +11441,19 @@ public final class org/hisp/dhis/android/core/settings/CustomIntentCollectionRep
 	public final fun byUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 }
 
+public final class org/hisp/dhis/android/core/settings/CustomIntentContext {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntentContext;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/settings/CustomIntentContext;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/settings/CustomIntentContext;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getProgramStageUid ()Ljava/lang/String;
+	public final fun getProgramUid ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public abstract class org/hisp/dhis/android/core/settings/CustomIntentDataElement : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/CustomIntentDataElement$Builder;
@@ -11545,6 +11558,10 @@ public final class org/hisp/dhis/android/core/settings/CustomIntentResponseExtra
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntentResponseExtraType;
 	public static fun values ()[Lorg/hisp/dhis/android/core/settings/CustomIntentResponseExtraType;
+}
+
+public abstract interface class org/hisp/dhis/android/core/settings/CustomIntentService {
+	public abstract fun evaluateRequestParams (Lorg/hisp/dhis/android/core/settings/CustomIntent;Lorg/hisp/dhis/android/core/settings/CustomIntentContext;)Ljava/util/Map;
 }
 
 public final class org/hisp/dhis/android/core/settings/CustomIntentTableInfo {

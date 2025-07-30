@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.settings.UserSettingsObjectRepository
 import org.koin.core.annotation.Singleton
 
 @Singleton
-@Suppress("LongParameterList")
+@Suppress("LongParameterList", "TooManyFunctions")
 internal class SettingModuleImpl(
     private val systemSetting: SystemSettingCollectionRepository,
     private val generalSetting: GeneralSettingObjectRepository,

@@ -58,8 +58,11 @@ internal class CustomIntentServiceImpl : CustomIntentService {
 
             val argumentValue = when (expressionValue) {
                 is Double ->
-                    if (expressionValue.rem(1).equals(0.0)) expressionValue.toInt()
-                    else expressionValue
+                    if (expressionValue.rem(1).equals(0.0)) {
+                        expressionValue.toInt()
+                    } else {
+                        expressionValue
+                    }
 
                 else -> expressionValue
             }

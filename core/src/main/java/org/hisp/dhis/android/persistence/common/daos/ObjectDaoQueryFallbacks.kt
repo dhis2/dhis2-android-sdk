@@ -28,9 +28,6 @@
 
 package org.hisp.dhis.android.persistence.common.daos
 
-import androidx.room.Query
-
 internal interface ObjectDaoQueryFallbacks {
-    @Query("DELETE FROM Constant")
-    suspend fun deleteAllRows(): Int // To be overriden in specific daos with @Query and const table name
+    suspend fun deleteAllRows(): Int
 }

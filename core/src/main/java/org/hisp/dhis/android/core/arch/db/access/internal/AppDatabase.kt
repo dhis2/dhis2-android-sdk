@@ -71,8 +71,8 @@ import org.hisp.dhis.android.persistence.dataset.DataInputPeriodDB
 import org.hisp.dhis.android.persistence.dataset.DataInputPeriodDao
 import org.hisp.dhis.android.persistence.dataset.DataSetCompleteRegistrationDB
 import org.hisp.dhis.android.persistence.dataset.DataSetCompleteRegistrationDao
-import org.hisp.dhis.android.persistence.dataset.DataSetCompulsoryDataElementOperandLinkDao
 import org.hisp.dhis.android.persistence.dataset.DataSetCompulsoryDataElementOperandsLinkDB
+import org.hisp.dhis.android.persistence.dataset.DataSetCompulsoryDataElementOperandsLinkDao
 import org.hisp.dhis.android.persistence.dataset.DataSetDB
 import org.hisp.dhis.android.persistence.dataset.DataSetDao
 import org.hisp.dhis.android.persistence.dataset.DataSetDataElementLinkDB
@@ -484,7 +484,7 @@ abstract class AppDatabase : RoomDatabase() {
     internal abstract fun dataElementOperandDao(): DataElementOperandDao
     internal abstract fun dataInputPeriodDao(): DataInputPeriodDao
     internal abstract fun dataSetCompleteRegistrationDao(): DataSetCompleteRegistrationDao
-    internal abstract fun dataSetCompulsoryDataElementOperandLinkDao(): DataSetCompulsoryDataElementOperandLinkDao
+    internal abstract fun dataSetCompulsoryDataElementOperandLinkDao(): DataSetCompulsoryDataElementOperandsLinkDao
     internal abstract fun dataSetDao(): DataSetDao
     internal abstract fun dataSetDataElementLinkDao(): DataSetDataElementLinkDao
     internal abstract fun dataSetInstanceDao(): DataSetInstanceDao

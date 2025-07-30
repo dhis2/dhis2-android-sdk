@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
  * Designed to be platform-agnostic for future KMP support.
  */
 internal interface DatabaseManager {
+    fun createInMemoryDatabase(): DatabaseAdapter
     /**
      * Creates or opens a database with the specified name.
      *

@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.persistence.common.stores
 
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.persistence.common.EntityDB
@@ -41,6 +43,8 @@ internal open class ObjectStoreImpl<D : CoreObject, P : EntityDB<D>>(
     override val builder: ReadOnlySQLStatementBuilder,
 ) : ObjectStore<D>, ReadableStoreImpl<D, P>(daoProvider, builder), MapperToDB<D, P> by mapper {
 
+    private val insertMutex = Mutex()
+
     override suspend fun selectStringColumnsWhereClause(column: String, clause: String): List<String> {
         val objectDao = daoProvider()
         val query = builder.selectStringColumn(column, clause)
@@ -52,7 +56,7 @@ internal open class ObjectStoreImpl<D : CoreObject, P : EntityDB<D>>(
         return objectDao.deleteAllRows()
     }
 
-    open override suspend fun insert(o: D): Long {
+    open override suspend fun insert(o: D): Long = insertMutex.withLock {
         val objectDao = daoProvider()
         return objectDao.insert(o.toDB())
     }

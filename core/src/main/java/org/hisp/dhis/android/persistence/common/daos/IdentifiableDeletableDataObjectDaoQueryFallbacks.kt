@@ -28,12 +28,6 @@
 
 package org.hisp.dhis.android.persistence.common.daos
 
-import androidx.room.Query
-import org.hisp.dhis.android.core.common.DeletableDataColumns
-import org.hisp.dhis.android.core.common.IdentifiableColumns
-
 internal interface IdentifiableDeletableDataObjectDaoQueryFallbacks {
-    //Placeholder for generated daos to override
-    @Query("UPDATE Constant SET ${DeletableDataColumns.DELETED} = 1 WHERE ${IdentifiableColumns.UID} = :uid")
     suspend fun setDeleted(uid: String): Int
 }

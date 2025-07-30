@@ -36,7 +36,6 @@ import org.hisp.dhis.android.persistence.db.access.RoomDatabaseAdapter
 import org.hisp.dhis.android.persistence.db.access.RoomDatabaseManager
 
 object TestDatabaseAdapterFactory {
-    private val dbName: String = "testDB"
     private var databaseAdapter: DatabaseAdapter = RoomDatabaseAdapter()
 
     @JvmStatic
@@ -57,7 +56,7 @@ object TestDatabaseAdapterFactory {
         val passwordManager = DatabaseEncryptionPasswordManager.create(SecureStore)
         val databaseManager = RoomDatabaseManager(databaseAdapter, context, passwordManager)
 
-        databaseManager.createOrOpenUnencryptedDatabase(dbName)
+        databaseManager.createInMemoryDatabase()
         databaseAdapter.setForeignKeyConstraintsEnabled(false)
     }
 }

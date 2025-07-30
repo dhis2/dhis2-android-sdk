@@ -28,20 +28,11 @@
 
 package org.hisp.dhis.android.persistence.common.daos
 
-import androidx.room.Query
-import org.hisp.dhis.android.core.common.DataColumns
-import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.State
 
 internal interface IdentifiableDataObjectDaoQueryFallbacks {
-
-    @Query("UPDATE Enrollment SET ${DataColumns.SYNC_STATE} = :state WHERE ${IdentifiableColumns.UID} = :uid")
     suspend fun setSyncState(uid: String, state: State)
-
-    @Query("UPDATE Enrollment SET ${DataColumns.SYNC_STATE} = :state WHERE ${IdentifiableColumns.UID} IN (:uids)")
     suspend fun setSyncState(uids: List<String>, state: State)
-
-    @Query("UPDATE Enrollment SET ${DataColumns.SYNC_STATE} = :newstate WHERE ${IdentifiableColumns.UID} = :uid AND ${DataColumns.SYNC_STATE} = :updateState")
     suspend fun setSyncStateIfUploading(uid: String, newstate: State, updateState: State)
 
 }

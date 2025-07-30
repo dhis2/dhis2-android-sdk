@@ -257,13 +257,7 @@ internal class RoomDatabaseAdapter : DatabaseAdapter {
         checkReady()
         val sql = if (enabled) "PRAGMA foreign_keys = ON;" else "PRAGMA foreign_keys = OFF;"
 
-        // This PRAGMA affects the current connection session.
-        // For tests, where connections might be short-lived or reused within a test method,
-        // this is usually effective.
         database!!.useWriterConnection { transactor: Transactor ->
-            // PRAGMAs that don't return results can often be run outside an explicit
-            // transactor.transaction {} block if they are simple configuration settings
-            // for the connection. However, running within a transaction is also safe.
             transactor.withTransaction(Transactor.SQLiteTransactionType.IMMEDIATE) {
                 this.execSQL(sql)
             }

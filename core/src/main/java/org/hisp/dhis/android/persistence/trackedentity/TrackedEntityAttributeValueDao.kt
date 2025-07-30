@@ -28,14 +28,13 @@
 
 package org.hisp.dhis.android.persistence.trackedentity
 
-import androidx.room.Dao
 import androidx.room.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.persistence.program.ProgramTrackedEntityAttributeTableInfo
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface TrackedEntityAttributeValueDao : ObjectDao<TrackedEntityAttributeValueDB> {
-
+@GenerateDaoQueries(tableName = "TrackedEntityAttributeValueTableInfo.TABLE_NAME")
+internal interface TrackedEntityAttributeValueDaoTemp : ObjectDao<TrackedEntityAttributeValueDB> {
     @Query(
         """UPDATE TrackedEntityAttributeValue 
         SET ${TrackedEntityAttributeValueTableInfo.Columns.SYNC_STATE} = :state 
@@ -51,8 +50,7 @@ internal interface TrackedEntityAttributeValueDao : ObjectDao<TrackedEntityAttri
     """
     )
     suspend fun deleteByInstanceAndNotInAttributes(
-        trackedEntityInstanceUid: String,
-        trackedEntityAttributeUids: List<String>
+        trackedEntityInstanceUid: String, trackedEntityAttributeUids: List<String>
     ): Int
 
 
@@ -69,9 +67,7 @@ internal interface TrackedEntityAttributeValueDao : ObjectDao<TrackedEntityAttri
     """
     )
     suspend fun deleteByInstanceAndNotInProgramAttributes(
-        trackedEntityInstanceUid: String,
-        trackedEntityAttributeUids: List<String>,
-        programUid: String
+        trackedEntityInstanceUid: String, trackedEntityAttributeUids: List<String>, programUid: String
     ): Int
 
     @Query(

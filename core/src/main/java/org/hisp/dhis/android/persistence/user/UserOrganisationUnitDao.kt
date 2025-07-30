@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.user
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface UserOrganisationUnitDao : LinkDao<UserOrganisationUnitDB>
+@GenerateDaoQueries(tableName = "UserOrganisationUnitTableInfo.TABLE_NAME")
+internal interface UserOrganisationUnitDaoTemp : LinkDao<UserOrganisationUnitDB>

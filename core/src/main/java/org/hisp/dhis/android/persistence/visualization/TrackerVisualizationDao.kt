@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.visualization
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface TrackerVisualizationDao : IdentifiableObjectDao<TrackerVisualizationDB>
+@GenerateDaoQueries(tableName = "TrackerVisualizationTableInfo.TABLE_NAME")
+internal interface TrackerVisualizationDaoTemp : IdentifiableObjectDao<TrackerVisualizationDB>

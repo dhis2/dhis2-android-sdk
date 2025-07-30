@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.dataset
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface DataInputPeriodDao : LinkDao<DataInputPeriodDB>
+@GenerateDaoQueries(tableName = "DataInputPeriodTableInfo.TABLE_NAME")
+internal interface DataInputPeriodDaoTemp : LinkDao<DataInputPeriodDB>

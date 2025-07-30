@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.settings
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface CustomIntentAttributeDao : LinkDao<CustomIntentAttributeDB>
+@GenerateDaoQueries(tableName = "CustomIntentAttributeTableInfo.TABLE_NAME")
+internal interface CustomIntentAttributeDaoTemp : LinkDao<CustomIntentAttributeDB>

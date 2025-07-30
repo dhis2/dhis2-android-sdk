@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.organisationunit
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface OrganisationUnitLevelDao : IdentifiableObjectDao<OrganisationUnitLevelDB>
+@GenerateDaoQueries(tableName = "OrganisationUnitLevelTableInfo.TABLE_NAME")
+internal interface OrganisationUnitLevelDaoTemp : IdentifiableObjectDao<OrganisationUnitLevelDB>

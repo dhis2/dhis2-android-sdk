@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.legendset
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface LegendSetDao : IdentifiableObjectDao<LegendSetDB>
+@GenerateDaoQueries(tableName = "LegendSetTableInfo.TABLE_NAME")
+internal interface LegendSetDaoTemp : IdentifiableObjectDao<LegendSetDB>

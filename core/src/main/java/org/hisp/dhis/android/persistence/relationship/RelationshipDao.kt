@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.relationship
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableDeletableDataObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface RelationshipDao : IdentifiableDeletableDataObjectDao<RelationshipDB>
+@GenerateDaoQueries(tableName = "RelationshipTableInfo.TABLE_NAME")
+internal interface RelationshipDaoTemp : IdentifiableDeletableDataObjectDao<RelationshipDB>

@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.persistence.trackedentity
 
-import androidx.room.Dao
 import androidx.room.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceSyncTableInfo.Columns
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface TrackedEntityInstanceSyncDao : ObjectDao<TrackedEntityInstanceSyncDB> {
+@GenerateDaoQueries(tableName = "TrackedEntityInstanceSyncTableInfo.TABLE_NAME")
+internal interface TrackedEntityInstanceSyncDaoTemp : ObjectDao<TrackedEntityInstanceSyncDB> {
     @Query(
         """
         DELETE FROM ${TrackedEntityInstanceSyncTableInfo.TABLE_NAME} 

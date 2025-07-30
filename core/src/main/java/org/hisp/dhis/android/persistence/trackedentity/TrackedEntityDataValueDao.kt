@@ -28,14 +28,14 @@
 
 package org.hisp.dhis.android.persistence.trackedentity
 
-import androidx.room.Dao
 import androidx.room.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.persistence.event.EventTableInfo
 import org.hisp.dhis.android.persistence.program.ProgramStageDataElementTableInfo
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface TrackedEntityDataValueDao : ObjectDao<TrackedEntityDataValueDB> {
+@GenerateDaoQueries(tableName = "TrackedEntityDataValueTableInfo.TABLE_NAME")
+internal interface TrackedEntityDataValueDaoTemp : ObjectDao<TrackedEntityDataValueDB> {
 
     @Query(
         """UPDATE TrackedEntityDataValue
@@ -52,8 +52,7 @@ internal interface TrackedEntityDataValueDao : ObjectDao<TrackedEntityDataValueD
     """
     )
     suspend fun deleteByEventAndNotInDataElements(
-        eventUid: String,
-        dataElementUids: List<String>
+        eventUid: String, dataElementUids: List<String>
     ): Int
 
     @Query(

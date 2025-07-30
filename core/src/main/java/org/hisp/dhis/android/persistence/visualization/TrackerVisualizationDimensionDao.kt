@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.visualization
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface TrackerVisualizationDimensionDao : LinkDao<TrackerVisualizationDimensionDB>
+@GenerateDaoQueries(tableName = "TrackerVisualizationDimensionTableInfo.TABLE_NAME")
+internal interface TrackerVisualizationDimensionDaoTemp : LinkDao<TrackerVisualizationDimensionDB>

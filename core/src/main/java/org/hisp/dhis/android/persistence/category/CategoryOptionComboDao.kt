@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.category
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface CategoryOptionComboDao : IdentifiableObjectDao<CategoryOptionComboDB>
+@GenerateDaoQueries(tableName = "CategoryOptionComboTableInfo.TABLE_NAME")
+internal interface CategoryOptionComboDaoTemp : IdentifiableObjectDao<CategoryOptionComboDB>

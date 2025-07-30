@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.settings
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface CustomIntentDao : IdentifiableObjectDao<CustomIntentDB>
+@GenerateDaoQueries(tableName = "CustomIntentTableInfo.TABLE_NAME")
+internal interface CustomIntentDaoTemp : IdentifiableObjectDao<CustomIntentDB>

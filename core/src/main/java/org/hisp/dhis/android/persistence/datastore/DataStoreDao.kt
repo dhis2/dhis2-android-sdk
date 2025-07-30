@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.persistence.datastore
 
-import androidx.room.Dao
 import androidx.room.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface DataStoreDao : ObjectDao<DataStoreDB> {
+@GenerateDaoQueries(tableName = "DataStoreTableInfo.TABLE_NAME")
+internal interface DataStoreDaoTemp : ObjectDao<DataStoreDB> {
     @Query(
         """UPDATE DataStore 
         SET ${DataStoreTableInfo.Columns.SYNC_STATE} = :state 

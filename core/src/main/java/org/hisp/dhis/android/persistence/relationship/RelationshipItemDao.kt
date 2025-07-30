@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.persistence.relationship
 
-import androidx.room.Dao
 import androidx.room.RawQuery
 import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface RelationshipItemDao : ObjectDao<RelationshipItemDB> {
+@GenerateDaoQueries(tableName = "RelationshipItemTableInfo.TABLE_NAME")
+internal interface RelationshipItemDaoTemp : ObjectDao<RelationshipItemDB> {
     @RawQuery
     suspend fun getRelationshipRow(query: RoomRawQuery): List<RelationshipRow>
 }

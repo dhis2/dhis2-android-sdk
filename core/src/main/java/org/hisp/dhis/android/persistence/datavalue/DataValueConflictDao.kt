@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.persistence.datavalue
 
-import androidx.room.Dao
 import androidx.room.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface DataValueConflictDao : ObjectDao<DataValueConflictDB> {
+@GenerateDaoQueries(tableName = "DataValueConflictTableInfo.TABLE_NAME")
+internal interface DataValueConflictDaoTemp : ObjectDao<DataValueConflictDB> {
     @Query(
         """
         DELETE FROM ${DataValueConflictTableInfo.TABLE_NAME}

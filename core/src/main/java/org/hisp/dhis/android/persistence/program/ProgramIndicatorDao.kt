@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.persistence.program
 
-import androidx.room.Dao
 import androidx.room.Query
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface ProgramIndicatorDao : IdentifiableObjectDao<ProgramIndicatorDB> {
+@GenerateDaoQueries(tableName = "ProgramIndicatorTableInfo.TABLE_NAME")
+internal interface ProgramIndicatorDaoTemp : IdentifiableObjectDao<ProgramIndicatorDB> {
     @Query(
         """
         DELETE FROM ${ProgramIndicatorTableInfo.TABLE_NAME}

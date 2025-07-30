@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.settings
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface AnalyticsTeiDataElementDao : LinkDao<AnalyticsTeiDataElementDB>
+@GenerateDaoQueries(tableName = "AnalyticsTeiDataElementTableInfo.TABLE_NAME")
+internal interface AnalyticsTeiDataElementDaoTemp : LinkDao<AnalyticsTeiDataElementDB>

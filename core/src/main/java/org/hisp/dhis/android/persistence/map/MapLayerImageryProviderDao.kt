@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.map
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface MapLayerImageryProviderDao : LinkDao<MapLayerImageryProviderDB>
+@GenerateDaoQueries(tableName = "MapLayerImageryProviderTableInfo.TABLE_NAME")
+internal interface MapLayerImageryProviderDaoTemp : LinkDao<MapLayerImageryProviderDB>

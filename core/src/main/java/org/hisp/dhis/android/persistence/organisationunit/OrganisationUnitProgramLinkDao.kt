@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.organisationunit
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface OrganisationUnitProgramLinkDao : LinkDao<OrganisationUnitProgramLinkDB>
+@GenerateDaoQueries(tableName = "OrganisationUnitProgramLinkTableInfo.TABLE_NAME")
+internal interface OrganisationUnitProgramLinkDaoTemp : LinkDao<OrganisationUnitProgramLinkDB>

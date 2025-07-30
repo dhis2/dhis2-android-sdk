@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.program
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface AnalyticsPeriodBoundaryDao : LinkDao<AnalyticsPeriodBoundaryDB>
+@GenerateDaoQueries(tableName = "AnalyticsPeriodBoundaryTableInfo.TABLE_NAME")
+internal interface AnalyticsPeriodBoundaryDaoTemp : LinkDao<AnalyticsPeriodBoundaryDB>

@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.fileresource
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableDataObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface FileResourceDao : IdentifiableDataObjectDao<FileResourceDB>
+@GenerateDaoQueries(tableName = "FileResourceTableInfo.TABLE_NAME")
+internal interface FileResourceDaoTemp : IdentifiableDataObjectDao<FileResourceDB>

@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.usecase
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface StockUseCaseDao : IdentifiableObjectDao<StockUseCaseDB>
+@GenerateDaoQueries(tableName = "StockUseCaseTableInfo.TABLE_NAME")
+internal interface StockUseCaseDaoTemp : IdentifiableObjectDao<StockUseCaseDB>

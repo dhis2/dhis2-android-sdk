@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.trackedentity
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface AttributeValueFilterDao : ObjectDao<AttributeValueFilterDB>
+@GenerateDaoQueries(tableName = "AttributeValueFilterTableInfo.TABLE_NAME")
+internal interface AttributeValueFilterDaoTemp : ObjectDao<AttributeValueFilterDB>

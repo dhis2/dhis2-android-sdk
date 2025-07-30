@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.attribute
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface DataElementAttributeValueLinkDao : LinkDao<DataElementAttributeValueLinkDB>
+@GenerateDaoQueries(tableName = "DataElementAttributeValueLinkTableInfo.TABLE_NAME")
+internal interface DataElementAttributeValueLinkDaoTemp : LinkDao<DataElementAttributeValueLinkDB>

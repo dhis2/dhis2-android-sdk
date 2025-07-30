@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.persistence.dataset
 
-import androidx.room.Dao
 import androidx.room.Query
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface SectionGreyedFieldsLinkDao : LinkDao<SectionGreyedFieldsLinkDB> {
+@GenerateDaoQueries(tableName = "SectionGreyedFieldsLinkTableInfo.TABLE_NAME")
+internal interface SectionGreyedFieldsLinkDaoTemp : LinkDao<SectionGreyedFieldsLinkDB> {
 
     @Query(
         """

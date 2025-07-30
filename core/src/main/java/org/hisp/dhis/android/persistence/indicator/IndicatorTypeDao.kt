@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.indicator
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface IndicatorTypeDao : IdentifiableObjectDao<IndicatorTypeDB>
+@GenerateDaoQueries(tableName = "IndicatorTypeTableInfo.TABLE_NAME")
+internal interface IndicatorTypeDaoTemp : IdentifiableObjectDao<IndicatorTypeDB>

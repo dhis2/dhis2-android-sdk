@@ -28,15 +28,8 @@
 
 package org.hisp.dhis.android.persistence.constant
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface ConstantDao : IdentifiableObjectDao<ConstantDB> {
-
-//    @Query("DELETE FROM ${ConstantTableInfo.TABLE_NAME}")
-//    suspend fun deleteAll(): Int
-//
-//    @Query("DELETE FROM ${ConstantTableInfo.TABLE_NAME} WHERE id = :id")
-//    suspend fun deleteById(id: String): Int
-}
+@GenerateDaoQueries(tableName = "ConstantTableInfo.TABLE_NAME")
+internal interface ConstantDaoTemp : IdentifiableObjectDao<ConstantDB>

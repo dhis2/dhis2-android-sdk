@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.indicator
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface DataSetIndicatorLinkDao : LinkDao<DataSetIndicatorLinkDB>
+@GenerateDaoQueries(tableName = "DataSetIndicatorLinkTableInfo.TABLE_NAME")
+internal interface DataSetIndicatorLinkDaoTemp : LinkDao<DataSetIndicatorLinkDB>

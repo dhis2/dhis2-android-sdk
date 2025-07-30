@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.legendset
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface DataElementLegendSetLinkDao : LinkDao<DataElementLegendSetLinkDB>
+@GenerateDaoQueries(tableName = "DataElementLegendSetLinkTableInfo.TABLE_NAME")
+internal interface DataElementLegendSetLinkDaoTemp : LinkDao<DataElementLegendSetLinkDB>

@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.persistence.enrollment
 
-import androidx.room.Dao
 import androidx.room.Query
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableDeletableDataObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface EnrollmentDao : IdentifiableDeletableDataObjectDao<EnrollmentDB> {
+@GenerateDaoQueries(tableName = "EnrollmentTableInfo.TABLE_NAME")
+internal interface EnrollmentDaoTemp : IdentifiableDeletableDataObjectDao<EnrollmentDB> {
     @Query(
         """UPDATE Enrollment
         SET ${EnrollmentTableInfo.Columns.AGGREGATED_SYNC_STATE} = :state

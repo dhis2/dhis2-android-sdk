@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.settings
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface UserSettingsDao : ObjectDao<UserSettingsDB>
+@GenerateDaoQueries(tableName = "UserSettingsTableInfo.TABLE_NAME")
+internal interface UserSettingsDaoTemp : ObjectDao<UserSettingsDB>

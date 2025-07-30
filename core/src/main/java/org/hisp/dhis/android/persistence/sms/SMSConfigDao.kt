@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.persistence.sms
 
-import androidx.room.Dao
 import androidx.room.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface SMSConfigDao : ObjectDao<SMSConfigDB> {
+@GenerateDaoQueries(tableName = "SMSConfigTableInfo.TABLE_NAME")
+internal interface SMSConfigDaoTemp : ObjectDao<SMSConfigDB> {
     @Query(
         """
         DELETE FROM ${SMSConfigTableInfo.TABLE_NAME}

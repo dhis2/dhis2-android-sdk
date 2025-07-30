@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.attribute
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface AttributeDao : IdentifiableObjectDao<AttributeDB>
+@GenerateDaoQueries(tableName = "AttributeTableInfo.TABLE_NAME")
+internal interface AttributeDaoTemp : IdentifiableObjectDao<AttributeDB>

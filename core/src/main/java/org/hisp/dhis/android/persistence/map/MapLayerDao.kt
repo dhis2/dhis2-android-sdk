@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.map
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface MapLayerDao : IdentifiableObjectDao<MapLayerDB>
+@GenerateDaoQueries(tableName = "MapLayerTableInfo.TABLE_NAME")
+internal interface MapLayerDaoTemp : IdentifiableObjectDao<MapLayerDB>

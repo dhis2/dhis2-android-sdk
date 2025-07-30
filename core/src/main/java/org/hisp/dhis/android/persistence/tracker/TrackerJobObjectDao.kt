@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.persistence.tracker
 
-import androidx.room.Dao
 import androidx.room.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface TrackerJobObjectDao : ObjectDao<TrackerJobObjectDB> {
+@GenerateDaoQueries(tableName = "TrackerJobObjectTableInfo.TABLE_NAME")
+internal interface TrackerJobObjectDaoTemp : ObjectDao<TrackerJobObjectDB> {
     @Query(
         """
         DELETE FROM ${TrackerJobObjectTableInfo.TABLE_NAME} 

@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.trackedentity
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface TrackedEntityInstanceEventFilterDao : ObjectDao<TrackedEntityInstanceEventFilterDB>
+@GenerateDaoQueries(tableName = "TrackedEntityInstanceEventFilterTableInfo.TABLE_NAME")
+internal interface TrackedEntityInstanceEventFilterDaoTemp : ObjectDao<TrackedEntityInstanceEventFilterDB>

@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.datavalue
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface DataValueDao : ObjectDao<DataValueDB>
+@GenerateDaoQueries(tableName = "DataValueTableInfo.TABLE_NAME")
+internal interface DataValueDaoTemp : ObjectDao<DataValueDB>

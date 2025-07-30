@@ -28,37 +28,8 @@
 
 package org.hisp.dhis.android.persistence.maintenance
 
-import androidx.room.Dao
-import androidx.room.RoomDatabase
-import androidx.room.Transaction
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal abstract class ForeignKeyViolationDao(
-
-    // Inject RoomDatabase (your AppDatabase instance) into the DAO
-    private val db: RoomDatabase,
-) : ObjectDao<ForeignKeyViolationDB> {
-
-//    @RawQuery
-//    abstract suspend fun getRawQueryData(query: SupportSQLiteQuery): List<Map<String, Any?>>
-
-//    @RawQuery
-//    abstract suspend fun getRowFromTable(query: SupportSQLiteQuery): Map<String, Any?>?
-
-    /**
-     * Deletes a row from a dynamically specified table by its ROWID.
-     * This operation is performed within a transaction.
-     *
-     * @param tableName The name of the table from which to delete.
-     * @param rowId The ROWID of the row to delete.
-     * @return The number of rows affected by the delete operation.
-     */
-    @Transaction // Ensures atomicity if there were other DB operations here
-    open suspend fun deleteRowFromTableByRowId(tableName: String, rowId: String): Int {
-        val supportDb = db.openHelper.writableDatabase
-        val deleteClause = "ROWID = ?"
-        // Use backticks for table name for safety, though it's already a parameter
-        return supportDb.delete("`$tableName`", deleteClause, arrayOf(rowId))
-    }
-}
+@GenerateDaoQueries(tableName = "ForeignKeyViolationTableInfo.TABLE_NAME")
+internal interface ForeignKeyViolationDaoTemp : ObjectDao<ForeignKeyViolationDB>

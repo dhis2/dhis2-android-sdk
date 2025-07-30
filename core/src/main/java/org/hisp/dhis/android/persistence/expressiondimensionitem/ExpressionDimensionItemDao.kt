@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.expressiondimensionitem
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface ExpressionDimensionItemDao : IdentifiableObjectDao<ExpressionDimensionItemDB>
+@GenerateDaoQueries(tableName = "ExpressionDimensionItemTableInfo.TABLE_NAME")
+internal interface ExpressionDimensionItemDaoTemp : IdentifiableObjectDao<ExpressionDimensionItemDB>

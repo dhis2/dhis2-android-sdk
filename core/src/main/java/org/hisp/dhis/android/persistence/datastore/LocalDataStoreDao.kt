@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.datastore
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface LocalDataStoreDao : ObjectDao<LocalDataStoreDB>
+@GenerateDaoQueries(tableName = "LocalDataStoreTableInfo.TABLE_NAME")
+internal interface LocalDataStoreDaoTemp : ObjectDao<LocalDataStoreDB>

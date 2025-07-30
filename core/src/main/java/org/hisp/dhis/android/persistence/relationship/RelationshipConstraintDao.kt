@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.relationship
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface RelationshipConstraintDao : ObjectDao<RelationshipConstraintDB>
+@GenerateDaoQueries(tableName = "RelationshipConstraintTableInfo.TABLE_NAME")
+internal interface RelationshipConstraintDaoTemp : ObjectDao<RelationshipConstraintDB>

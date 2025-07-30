@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.persistence.trackedentity
 
-import androidx.room.Dao
 import androidx.room.Query
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableDeletableDataObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface TrackedEntityInstanceDao : IdentifiableDeletableDataObjectDao<TrackedEntityInstanceDB> {
+@GenerateDaoQueries(tableName = "TrackedEntityInstanceTableInfo.TABLE_NAME")
+internal interface TrackedEntityInstanceDaoTemp : IdentifiableDeletableDataObjectDao<TrackedEntityInstanceDB> {
     @Query(
         """UPDATE TrackedEntityInstance
         SET ${TrackedEntityInstanceTableInfo.Columns.AGGREGATED_SYNC_STATE} = :state

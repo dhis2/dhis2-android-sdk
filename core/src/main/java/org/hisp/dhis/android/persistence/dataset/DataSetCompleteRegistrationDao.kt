@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.persistence.dataset
 
-import androidx.room.Dao
 import androidx.room.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitTableInfo
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface DataSetCompleteRegistrationDao : ObjectDao<DataSetCompleteRegistrationDB> {
+@GenerateDaoQueries(tableName = "DataSetCompleteRegistrationTableInfo.TABLE_NAME")
+internal interface DataSetCompleteRegistrationDaoTemp : ObjectDao<DataSetCompleteRegistrationDB> {
     @Query(
         """
         DELETE FROM DataSetCompleteRegistration 
@@ -52,7 +52,7 @@ internal interface DataSetCompleteRegistrationDao : ObjectDao<DataSetCompleteReg
     suspend fun removeNotPresentAndSynced(
         dataSetUids: Collection<String>,
         periodIds: Collection<String>,
-        orgUnitPathQuery: String, // Deberás construir esto como "%$rootOrgunitUid%" antes de llamar
-        syncedStateValue: String  // El valor de State.SYNCED (ej. "SYNCED")
+        orgUnitPathQuery: String, // pass this as  "%$rootOrgunitUid%"
+        syncedStateValue: String  // State.SYNCED (ie. "SYNCED")
     ): Int
 }

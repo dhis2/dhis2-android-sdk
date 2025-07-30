@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.persistence.resource
 
-import androidx.room.Dao
 import androidx.room.Query
 import org.hisp.dhis.android.core.resource.internal.Resource
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface ResourceDao : ObjectDao<ResourceDB> {
+@GenerateDaoQueries(tableName = "ResourceTableInfo.TABLE_NAME")
+internal interface ResourceDaoTemp : ObjectDao<ResourceDB> {
 
     @Query(
         """

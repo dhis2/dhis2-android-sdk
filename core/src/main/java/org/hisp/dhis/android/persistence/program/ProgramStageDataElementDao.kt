@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.program
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface ProgramStageDataElementDao : IdentifiableObjectDao<ProgramStageDataElementDB>
+@GenerateDaoQueries(tableName = "ProgramStageDataElementTableInfo.TABLE_NAME")
+internal interface ProgramStageDataElementDaoTemp : IdentifiableObjectDao<ProgramStageDataElementDB>

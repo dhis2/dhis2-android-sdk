@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.maintenance
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface D2ErrorDao : ObjectDao<D2ErrorDB>
+@GenerateDaoQueries(tableName = "D2ErrorTableInfo.TABLE_NAME")
+internal interface D2ErrorDaoTemp : ObjectDao<D2ErrorDB>

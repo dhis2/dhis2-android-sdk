@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.domain
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface AggregatedDataSyncDao : ObjectDao<AggregatedDataSyncDB>
+@GenerateDaoQueries(tableName = "AggregatedDataSyncTableInfo.TABLE_NAME")
+internal interface AggregatedDataSyncDaoTemp : ObjectDao<AggregatedDataSyncDB>

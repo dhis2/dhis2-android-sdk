@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.trackedentity
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface TrackedEntityAttributeLegendSetLinkDao : LinkDao<TrackedEntityAttributeLegendSetLinkDB>
+@GenerateDaoQueries(tableName = "TrackedEntityAttributeLegendSetLinkTableInfo.TABLE_NAME")
+internal interface TrackedEntityAttributeLegendSetLinkDaoTemp : LinkDao<TrackedEntityAttributeLegendSetLinkDB>

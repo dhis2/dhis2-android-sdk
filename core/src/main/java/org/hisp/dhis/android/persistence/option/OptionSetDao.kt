@@ -28,10 +28,8 @@
 
 package org.hisp.dhis.android.persistence.option
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
 @GenerateDaoQueries(tableName = "OptionSetTableInfo.TABLE_NAME")
-internal interface OptionSetDao : IdentifiableObjectDao<OptionSetDB>
+internal interface OptionSetDaoTemp : IdentifiableObjectDao<OptionSetDB>

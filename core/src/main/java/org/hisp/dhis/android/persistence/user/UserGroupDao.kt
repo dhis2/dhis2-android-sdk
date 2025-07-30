@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.user
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface UserGroupDao : IdentifiableObjectDao<UserGroupDB>
+@GenerateDaoQueries(tableName = "UserGroupTableInfo.TABLE_NAME")
+internal interface UserGroupDaoTemp : IdentifiableObjectDao<UserGroupDB>

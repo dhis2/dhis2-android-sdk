@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.option
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface OptionGroupOptionLinkDao : LinkDao<OptionGroupOptionLinkDB>
+@GenerateDaoQueries(tableName = "OptionGroupOptionLinkTableInfo.TABLE_NAME")
+internal interface OptionGroupOptionLinkDaoTemp : LinkDao<OptionGroupOptionLinkDB>

@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.persistence.event
 
-import androidx.room.Dao
 import androidx.room.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceSyncTableInfo.Columns
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface EventSyncDao : ObjectDao<EventSyncDB> {
+@GenerateDaoQueries(tableName = "EventSyncTableInfo.TABLE_NAME")
+internal interface EventSyncDaoTemp : ObjectDao<EventSyncDB> {
     @Query(
         """
         DELETE FROM ${EventSyncTableInfo.TABLE_NAME} 

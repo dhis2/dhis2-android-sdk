@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.category
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface CategoryCategoryComboLinkDao : LinkDao<CategoryCategoryComboLinkDB>
+@GenerateDaoQueries(tableName = "CategoryCategoryComboLinkTableInfo.TABLE_NAME")
+internal interface CategoryCategoryComboLinkDaoTemp : LinkDao<CategoryCategoryComboLinkDB>

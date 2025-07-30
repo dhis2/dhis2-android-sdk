@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.event
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface EventDataFilterDao : ObjectDao<EventDataFilterDB>
+@GenerateDaoQueries(tableName = "EventDataFilterTableInfo.TABLE_NAME")
+internal interface EventDataFilterDaoTemp : ObjectDao<EventDataFilterDB>

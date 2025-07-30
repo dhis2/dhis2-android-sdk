@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.dataapproval
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface DataApprovalDao : ObjectDao<DataApprovalDB>
+@GenerateDaoQueries(tableName = "DataApprovalTableInfo.TABLE_NAME")
+internal interface DataApprovalDaoTemp : ObjectDao<DataApprovalDB>

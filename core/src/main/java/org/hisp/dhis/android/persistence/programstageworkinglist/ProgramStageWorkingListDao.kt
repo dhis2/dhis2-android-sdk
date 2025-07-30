@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.programstageworkinglist
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface ProgramStageWorkingListDao : IdentifiableObjectDao<ProgramStageWorkingListDB>
+@GenerateDaoQueries(tableName = "ProgramStageWorkingListTableInfo.TABLE_NAME")
+internal interface ProgramStageWorkingListDaoTemp : IdentifiableObjectDao<ProgramStageWorkingListDB>

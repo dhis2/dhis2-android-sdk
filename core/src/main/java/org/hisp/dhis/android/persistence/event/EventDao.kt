@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.persistence.event
 
-import androidx.room.Dao
 import androidx.room.Query
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableDeletableDataObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface EventDao : IdentifiableDeletableDataObjectDao<EventDB> {
+@GenerateDaoQueries(tableName = "EventTableInfo.TABLE_NAME")
+internal interface EventDaoTemp : IdentifiableDeletableDataObjectDao<EventDB> {
     @Query(
         """UPDATE Event
         SET ${EventTableInfo.Columns.AGGREGATED_SYNC_STATE} = :state

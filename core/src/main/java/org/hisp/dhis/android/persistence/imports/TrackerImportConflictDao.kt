@@ -28,14 +28,12 @@
 
 package org.hisp.dhis.android.persistence.imports
 
-import androidx.room.Dao
 import androidx.room.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface TrackerImportConflictDao : ObjectDao<TrackerImportConflictDB> {
-
-
+@GenerateDaoQueries(tableName = "TrackerImportConflictTableInfo.TABLE_NAME")
+internal interface TrackerImportConflictDaoTemp : ObjectDao<TrackerImportConflictDB> {
     @Query(
         """
         DELETE FROM ${TrackerImportConflictTableInfo.TABLE_NAME}

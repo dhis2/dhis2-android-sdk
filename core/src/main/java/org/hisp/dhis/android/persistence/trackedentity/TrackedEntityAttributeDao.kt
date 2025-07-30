@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.trackedentity
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface TrackedEntityAttributeDao : IdentifiableObjectDao<TrackedEntityAttributeDB>
+@GenerateDaoQueries(tableName = "TrackedEntityAttributeTableInfo.TABLE_NAME")
+internal interface TrackedEntityAttributeDaoTemp : IdentifiableObjectDao<TrackedEntityAttributeDB>

@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.settings
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface DataSetSettingDao : ObjectDao<DataSetSettingDB>
+@GenerateDaoQueries(tableName = "DataSetSettingTableInfo.TABLE_NAME")
+internal interface DataSetSettingDaoTemp : ObjectDao<DataSetSettingDB>

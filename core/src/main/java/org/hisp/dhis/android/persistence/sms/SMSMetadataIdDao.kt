@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.sms
 
-import androidx.room.Dao
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@Dao
-internal interface SMSMetadataIdDao : ObjectDao<SMSMetadataIdDB>
+@GenerateDaoQueries(tableName = "SmsMetadataIdTableInfo.TABLE_NAME")
+internal interface SMSMetadataIdDaoTemp : ObjectDao<SMSMetadataIdDB>

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,15 +25,15 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user
+
+package org.hisp.dhis.android.core.server
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.CoreObjectShould
-import org.hisp.dhis.android.core.user.loginconfig.LoginPageLayout
 import org.hisp.dhis.android.network.loginconfig.LoginConfigDTO
 import org.junit.Test
 
-class LoginConfigShould : CoreObjectShould("user/login_config.json") {
+class LoginConfigShould : CoreObjectShould("server/login_config.json") {
 
     @Test
     override fun map_from_json_string() {
@@ -83,5 +83,34 @@ class LoginConfigShould : CoreObjectShould("user/login_config.json") {
         assertThat(oidcProviders[1].iconPadding).isEqualTo("15px 15px")
         assertThat(oidcProviders[1].loginText).isEqualTo("Login with Provider 2")
         assertThat(oidcProviders[1].url).isEqualTo("oauth2/authorization/provider2")
+    }
+
+    @Test
+    fun evaluate_if_oauth_is_enabled() {
+        listOf(
+            Pair(
+                LoginConfig(
+                    apiVersion = "2.42.3",
+                    oidcProviders = listOf(LoginOidcProvider(id = "google")),
+                ),
+                false,
+            ),
+            Pair(
+                LoginConfig(
+                    apiVersion = "2.42.3",
+                    oidcProviders = listOf(LoginOidcProvider(id = "google"), LoginOidcProvider(id = "dhis2-client")),
+                ),
+                true,
+            ),
+            Pair(
+                LoginConfig(
+                    apiVersion = "2.42.1",
+                    oidcProviders = listOf(LoginOidcProvider(id = "dhis2-client")),
+                ),
+                false,
+            ),
+        ).forEach { (config, oauthEnabled) ->
+            assertThat(config.isOauthEnabled()).isEqualTo(oauthEnabled)
+        }
     }
 }

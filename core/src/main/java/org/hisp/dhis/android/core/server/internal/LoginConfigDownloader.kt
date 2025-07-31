@@ -25,35 +25,48 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.ping
 
-import io.ktor.client.statement.HttpResponse
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+package org.hisp.dhis.android.core.server.internal
+
+import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
+import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationInsecureStore
+import org.hisp.dhis.android.core.server.LoginConfig
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.koin.core.annotation.Singleton
 
-internal class PingService(
-    private val client: HttpServiceClient,
+@Singleton
+internal class LoginConfigDownloader(
     private val dhisVersionManager: DHISVersionManager,
-) {
-    suspend fun getPing(): HttpResponse {
-        return if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_40)) {
-            client.get {
-                url("ping")
-                excludeCredentials()
-            }
-        } else {
-            client.get {
-                url("system/ping")
-            }
-        }
-    }
+    private val networkHandler: LoginConfigNetworkHandler,
+    private val credentialsSecureStore: CredentialsSecureStore,
+    private val databaseConfigurationSecureStore: DatabaseConfigurationInsecureStore,
+) : UntypedModuleDownloaderCoroutines {
+    override suspend fun downloadMetadata() {
+        val serverUrl =
+            credentialsSecureStore.getServerUrl() ?: throw IllegalArgumentException("Credentials are not set")
 
-    suspend fun getPingFor(serverUrl: String): HttpResponse {
-        return client.get {
-            val pingUrl = serverUrl.dropLastWhile { it == '/' } + "/api/ping"
-            absoluteUrl(pingUrl)
-            excludeCredentials()
+        val loginConfig =
+            if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_41)) {
+                networkHandler.loginConfig()
+            } else {
+                LoginConfig.createDefault(serverUrl)
+            }
+
+        val databasesConfiguration = databaseConfigurationSecureStore.get()
+        val updatedAccounts = databasesConfiguration?.accounts()?.map { account ->
+            if (account.serverUrl() == serverUrl) {
+                account.toBuilder().loginConfig(loginConfig).build()
+            } else {
+                account
+            }
         }
+        databasesConfiguration?.toBuilder()
+            ?.accounts(updatedAccounts)
+            ?.build()
+            ?.let {
+                databaseConfigurationSecureStore.set(it)
+            }
     }
 }

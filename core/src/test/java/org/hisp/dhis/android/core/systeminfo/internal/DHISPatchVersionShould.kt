@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,12 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user.loginconfig
 
-data class LoginOidcProvider(
-    val id: String,
-    val icon: String? = null,
-    val iconPadding: String? = null,
-    val loginText: String? = null,
-    val url: String? = null,
-)
+package org.hisp.dhis.android.core.systeminfo.internal
+
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.systeminfo.DHISPatchVersion
+import org.hisp.dhis.android.core.systeminfo.DHISPatchVersion.Companion.isGreaterThanPatch
+import org.junit.Test
+
+class DHISPatchVersionShould {
+    @Test
+    fun compare_if_greater_than_patch() {
+        assertThat(isGreaterThanPatch("2.42.0", DHISPatchVersion.V2_42_1)).isFalse()
+        assertThat(isGreaterThanPatch("2.42.1", DHISPatchVersion.V2_42_1)).isFalse()
+        assertThat(isGreaterThanPatch("2.42.2", DHISPatchVersion.V2_42_1)).isTrue()
+        assertThat(isGreaterThanPatch("2.42.10", DHISPatchVersion.V2_42_1)).isTrue()
+        assertThat(isGreaterThanPatch("2.41.5", DHISPatchVersion.V2_42_1)).isFalse()
+
+        assertThat(isGreaterThanPatch("2.42.3-SNAPSHOT", DHISPatchVersion.V2_42_1)).isTrue()
+        assertThat(isGreaterThanPatch("2.42-SNAPSHOT", DHISPatchVersion.V2_41_0)).isTrue()
+    }
+}

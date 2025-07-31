@@ -25,34 +25,38 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.loginconfig
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.server.LoginConfig
-import org.hisp.dhis.android.core.server.internal.LoginConfigNetworkHandler
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.persistence.server
 
-@Singleton
-internal class LoginConfigNetworkHandlerImpl(
-    httpClient: HttpServiceClient,
-    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
-) : LoginConfigNetworkHandler {
-    private val service: LoginConfigService = LoginConfigService(httpClient)
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.server.LoginOidcProvider
+import org.hisp.dhis.android.persistence.common.EntityDB
 
-    override suspend fun loginConfigFor(serverUrl: String): LoginConfig {
-        val loginConfigDTO = coroutineAPICallExecutor.wrap {
-            service.getLoginConfigFor(serverUrl)
-        }.getOrThrow()
-
-        return loginConfigDTO.toDomain()
+@Serializable
+internal data class LoginOidcProviderDB(
+    val id: String,
+    val icon: String? = null,
+    val iconPadding: String? = null,
+    val loginText: String? = null,
+    val url: String? = null,
+) : EntityDB<LoginOidcProvider> {
+    override fun toDomain(): LoginOidcProvider {
+        return LoginOidcProvider(
+            id = id,
+            icon = icon,
+            iconPadding = iconPadding,
+            loginText = loginText,
+            url = url,
+        )
     }
+}
 
-    override suspend fun loginConfig(): LoginConfig {
-        val loginConfigDTO = coroutineAPICallExecutor.wrap {
-            service.getLoginConfig()
-        }.getOrThrow()
-
-        return loginConfigDTO.toDomain()
-    }
+internal fun LoginOidcProvider.toDB(): LoginOidcProviderDB {
+    return LoginOidcProviderDB(
+        id = id,
+        icon = icon,
+        iconPadding = iconPadding,
+        loginText = loginText,
+        url = url,
+    )
 }

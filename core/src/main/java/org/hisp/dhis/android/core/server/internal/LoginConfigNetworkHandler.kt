@@ -26,8 +26,11 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user.loginconfig
+package org.hisp.dhis.android.core.server.internal
 
-internal fun interface LoginConfigNetworkHandler {
+import org.hisp.dhis.android.core.server.LoginConfig
+
+internal interface LoginConfigNetworkHandler {
+    suspend fun loginConfigFor(serverUrl: String): LoginConfig
     suspend fun loginConfig(): LoginConfig
 }

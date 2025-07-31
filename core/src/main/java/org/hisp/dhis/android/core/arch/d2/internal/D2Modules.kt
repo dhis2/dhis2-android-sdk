@@ -51,6 +51,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModule
 import org.hisp.dhis.android.core.period.PeriodModule
 import org.hisp.dhis.android.core.program.ProgramModule
 import org.hisp.dhis.android.core.relationship.RelationshipModule
+import org.hisp.dhis.android.core.server.ServerModule
 import org.hisp.dhis.android.core.settings.SettingModule
 import org.hisp.dhis.android.core.sms.SmsModule
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule
@@ -85,6 +86,7 @@ internal class D2Modules(
     val maps: MapModule,
     val note: NoteModule,
     val program: ProgramModule,
+    val server: ServerModule,
     val useCase: UseCaseModule,
     val organisationUnit: OrganisationUnitModule,
     val systemInfo: SystemInfoModule,

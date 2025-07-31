@@ -48,6 +48,10 @@ internal class CredentialsSecureStoreImpl(private val secureStore: ChunkedSecure
         secureStore.setData(SERVER_URL_KEY, serverUrl)
     }
 
+    override fun getServerUrl(): String? {
+        return secureStore.getData(SERVER_URL_KEY)
+    }
+
     override fun get(): Credentials? {
         if (credentials == null) {
             credentials = tryGet()

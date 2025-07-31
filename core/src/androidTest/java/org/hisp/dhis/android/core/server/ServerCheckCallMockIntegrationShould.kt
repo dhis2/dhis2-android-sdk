@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,11 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user.internal
+
+package org.hisp.dhis.android.core.server
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.user.loginconfig.LoginConfig
-import org.hisp.dhis.android.core.user.loginconfig.LoginPageLayout
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTest
 import org.hisp.dhis.android.core.utils.integration.mock.MockIntegrationTestDatabaseContent
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
@@ -38,7 +37,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-class LoginConfigCallMockIntegrationShould : BaseMockIntegrationTest() {
+class ServerCheckCallMockIntegrationShould : BaseMockIntegrationTest() {
     @Before
     fun setUp() {
         setUpClass(MockIntegrationTestDatabaseContent.EmptyEnqueable)
@@ -89,7 +88,7 @@ class LoginConfigCallMockIntegrationShould : BaseMockIntegrationTest() {
     }
 
     private fun getDownload(): LoginConfig {
-        return d2.userModule().loginConfig(dhis2MockServer.baseEndpoint).blockingGet()
+        return d2.serverModule().blockingCheckServerUrl(dhis2MockServer.baseEndpoint).getOrThrow()
     }
 
     companion object {

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.systeminfo.internal
 
 import io.ktor.client.statement.HttpResponse
 
-internal fun interface PingNetworkHandler {
+internal interface PingNetworkHandler {
     suspend fun getPing(): HttpResponse
+    suspend fun getPingFor(serverUrl: String): HttpResponse
 }

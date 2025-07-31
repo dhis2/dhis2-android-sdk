@@ -59,7 +59,7 @@ class CustomIntentServiceShould {
             programStageUid = "yRqcmmdO6cJ",
         )
 
-        val params = service.evaluateRequestParams(customIntent, context)
+        val params = service.blockingEvaluateRequestParams(customIntent, context)
 
         assertThat(params).isEqualTo(
             mapOf(

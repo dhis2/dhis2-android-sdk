@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
+import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.settings.CustomIntent
 import org.hisp.dhis.android.core.settings.CustomIntentContext
 import org.hisp.dhis.android.core.settings.CustomIntentService
@@ -38,7 +41,24 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class CustomIntentServiceImpl : CustomIntentService {
-    override fun evaluateRequestParams(customIntent: CustomIntent, context: CustomIntentContext): Map<String, Any?> {
+    override fun evaluateRequestParams(
+        customIntent: CustomIntent,
+        context: CustomIntentContext,
+    ): Single<Map<String, Any?>> {
+        return rxSingle { evaluateRequestParamsInternal(customIntent, context) }
+    }
+
+    override fun blockingEvaluateRequestParams(
+        customIntent: CustomIntent,
+        context: CustomIntentContext,
+    ): Map<String, Any?> {
+        return runBlocking { evaluateRequestParamsInternal(customIntent, context) }
+    }
+
+    private suspend fun evaluateRequestParamsInternal(
+        customIntent: CustomIntent,
+        context: CustomIntentContext,
+    ): Map<String, Any?> {
         val programVariables = mutableMapOf<String, Any>().apply {
             context.programUid?.let { put("program_id", it) }
             context.programStageUid?.let { put("program_stage_id", it) }
@@ -58,7 +78,7 @@ internal class CustomIntentServiceImpl : CustomIntentService {
 
             val argumentValue = when (expressionValue) {
                 is Double ->
-                    if (expressionValue.rem(1).equals(0.0)) {
+                    if (expressionValue.rem(1) == 0.0) {
                         expressionValue.toInt()
                     } else {
                         expressionValue

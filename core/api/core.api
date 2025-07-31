@@ -11561,7 +11561,8 @@ public final class org/hisp/dhis/android/core/settings/CustomIntentResponseExtra
 }
 
 public abstract interface class org/hisp/dhis/android/core/settings/CustomIntentService {
-	public abstract fun evaluateRequestParams (Lorg/hisp/dhis/android/core/settings/CustomIntent;Lorg/hisp/dhis/android/core/settings/CustomIntentContext;)Ljava/util/Map;
+	public abstract fun blockingEvaluateRequestParams (Lorg/hisp/dhis/android/core/settings/CustomIntent;Lorg/hisp/dhis/android/core/settings/CustomIntentContext;)Ljava/util/Map;
+	public abstract fun evaluateRequestParams (Lorg/hisp/dhis/android/core/settings/CustomIntent;Lorg/hisp/dhis/android/core/settings/CustomIntentContext;)Lio/reactivex/Single;
 }
 
 public final class org/hisp/dhis/android/core/settings/CustomIntentTableInfo {

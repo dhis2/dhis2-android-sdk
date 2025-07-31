@@ -81,7 +81,10 @@
           },
           "greyedFields": [
             {
-              "id": "ca8lfO062zg.Prlt0C1RF0s"
+              "id": "ca8lfO062zg.Prlt0C1RF0s",
+              "categoryOptionCombo": {
+                "id": "Prlt0C1RF0s"
+              }
             }
           ],
           "indicators": [

@@ -70,7 +70,7 @@ internal class SectionHandler(
                 .build()
         }
 
-        greyedFieldsHandler.handleMany(o.greyedFields())
+        greyedFieldsHandler.handleMany(o.greyedFields()?.filterNot { it.categoryOptionCombo() == null })
 
         sectionGreyedFieldsStore.deleteBySection(o.uid())
 

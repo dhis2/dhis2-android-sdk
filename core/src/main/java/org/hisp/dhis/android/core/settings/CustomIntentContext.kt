@@ -26,27 +26,9 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.settings
+package org.hisp.dhis.android.core.settings
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.settings.CustomIntentResponseData
-import org.hisp.dhis.android.core.settings.CustomIntentResponseDataExtra
-import org.hisp.dhis.android.core.settings.CustomIntentResponseExtraType
-
-@Serializable
-internal data class CustomIntentResponseDataDTO(
-    val argument: String?,
-    val path: String?,
-) {
-    fun toDomain(): CustomIntentResponseData {
-        return CustomIntentResponseData.builder().extras(
-            listOf(
-                CustomIntentResponseDataExtra.builder()
-                    .key(path)
-                    .extraName(argument)
-                    .extraType(CustomIntentResponseExtraType.OBJECT) // Temporary hardcoding until ASWA is updated
-                    .build(),
-            ),
-        ).build()
-    }
-}
+data class CustomIntentContext(
+    val programUid: String?,
+    val programStageUid: String?,
+)

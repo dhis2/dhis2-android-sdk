@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.settings
 
+@Suppress("TooManyFunctions")
 interface SettingModule {
     fun systemSetting(): SystemSettingCollectionRepository
     fun generalSetting(): GeneralSettingObjectRepository
@@ -41,5 +42,7 @@ interface SettingModule {
     fun userSettings(): UserSettingsObjectRepository
     fun appearanceSettings(): AppearanceSettingsObjectRepository
     fun latestAppVersion(): LatestAppVersionObjectRepository
+
     fun customIntents(): CustomIntentCollectionRepository
+    fun customIntentService(): CustomIntentService
 }

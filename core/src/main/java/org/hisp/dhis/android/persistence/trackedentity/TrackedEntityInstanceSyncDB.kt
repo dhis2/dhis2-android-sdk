@@ -1,7 +1,9 @@
 package org.hisp.dhis.android.persistence.trackedentity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceSync
 import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.core.util.toJavaDate
@@ -19,10 +21,12 @@ import org.hisp.dhis.android.persistence.program.ProgramDB
             deferred = true,
         ),
     ],
-    primaryKeys = ["program", "organisationUnitIdsHash"],
 )
 internal data class TrackedEntityInstanceSyncDB(
-    val program: String,
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
+    val program: String?,
     val organisationUnitIdsHash: Int,
     val downloadLimit: Int,
     val lastUpdated: String,
@@ -39,8 +43,8 @@ internal data class TrackedEntityInstanceSyncDB(
 
 internal fun TrackedEntityInstanceSync.toDB(): TrackedEntityInstanceSyncDB {
     return TrackedEntityInstanceSyncDB(
-        program = program()!!,
-        organisationUnitIdsHash = organisationUnitIdsHash()!!,
+        program = program(),
+        organisationUnitIdsHash = organisationUnitIdsHash(),
         downloadLimit = downloadLimit(),
         lastUpdated = lastUpdated().dateFormat()!!,
     )

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.common.stores
 
-import android.database.sqlite.SQLiteConstraintException
+import android.database.SQLException
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
@@ -49,7 +49,7 @@ internal open class LinkStoreImpl<D : CoreObject, P : EntityDB<D>>(
         return try {
             insert(o)
             HandleAction.Insert
-        } catch (e: SQLiteConstraintException) {
+        } catch (e: SQLException) {
             HandleAction.NoAction
         }
     }

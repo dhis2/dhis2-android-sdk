@@ -29,16 +29,16 @@ import org.hisp.dhis.android.persistence.event.EventDB
             deferred = true,
         ),
     ],
-    primaryKeys = ["noteType", "event", "enrollment", "value", "storedBy", "storedDate"],
+    primaryKeys = ["uid"],
 )
 internal data class NoteDB(
     val noteType: String,
-    val event: String,
-    val enrollment: String,
+    val event: String?,
+    val enrollment: String?,
     val value: String,
     val storedBy: String,
     val storedDate: String,
-    val uid: String?,
+    val uid: String,
     override val syncState: SyncStateDB?,
     override val deleted: Boolean?,
 ) : EntityDB<Note>, DeletableObjectDB, DataObjectDB {
@@ -46,7 +46,7 @@ internal data class NoteDB(
     override fun toDomain(): Note {
         return Note.builder().apply {
             uid(uid)
-            noteType?.let { noteType(Note.NoteType.valueOf(it)) }
+            noteType.let { noteType(Note.NoteType.valueOf(it)) }
             event(event)
             enrollment(enrollment)
             value(value)
@@ -62,8 +62,8 @@ internal fun Note.toDB(): NoteDB {
     return NoteDB(
         uid = uid(),
         noteType = noteType()?.name!!,
-        event = event()!!,
-        enrollment = enrollment()!!,
+        event = event(),
+        enrollment = enrollment(),
         value = value()!!,
         storedBy = storedBy()!!,
         storedDate = storedDate()!!,

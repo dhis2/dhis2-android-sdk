@@ -465,8 +465,8 @@ CREATE TABLE LocalDataStore(key TEXT NOT NULL PRIMARY KEY, value TEXT);
 INSERT OR IGNORE INTO LocalDataStore(key, value) SELECT key, value FROM LocalDataStore_Old;
 
 ALTER TABLE AnalyticsPeriodBoundary RENAME TO AnalyticsPeriodBoundary_Old;
-CREATE TABLE AnalyticsPeriodBoundary(programIndicator TEXT NOT NULL, boundaryTarget TEXT, analyticsPeriodBoundaryType TEXT, offsetPeriods INTEGER, offsetPeriodType TEXT, PRIMARY KEY(programIndicator, boundaryTarget, analyticsPeriodBoundaryType), FOREIGN KEY(programIndicator) REFERENCES ProgramIndicator(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
-INSERT OR IGNORE INTO AnalyticsPeriodBoundary(programIndicator, boundaryTarget, analyticsPeriodBoundaryType, offsetPeriods, offsetPeriodType) SELECT programIndicator, boundaryTarget, analyticsPeriodBoundaryType, offsetPeriods, offsetPeriodType FROM AnalyticsPeriodBoundary_Old;
+CREATE TABLE AnalyticsPeriodBoundary(programIndicator TEXT NOT NULL, boundaryTarget TEXT NOT NULL, analyticsPeriodBoundaryType TEXT, offsetPeriods INTEGER, offsetPeriodType TEXT, PRIMARY KEY(programIndicator, boundaryTarget, analyticsPeriodBoundaryType), FOREIGN KEY(programIndicator) REFERENCES ProgramIndicator(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+INSERT OR IGNORE INTO AnalyticsPeriodBoundary(programIndicator, boundaryTarget, analyticsPeriodBoundaryType, offsetPeriods, offsetPeriodType) SELECT programIndicator, boundaryTarget, analyticsPeriodBoundaryType, offsetPeriods, offsetPeriodType FROM AnalyticsPeriodBoundary_Old WHERE boundaryTarget IS NOT NULL;
 
 ALTER TABLE IndicatorLegendSetLink RENAME TO IndicatorLegendSetLink_Old;
 CREATE TABLE IndicatorLegendSetLink(indicator TEXT NOT NULL, legendSet TEXT NOT NULL, sortOrder INTEGER, PRIMARY KEY(indicator, legendSet), FOREIGN KEY(indicator) REFERENCES Indicator(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(legendSet) REFERENCES LegendSet(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);

@@ -35,4 +35,13 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class AnalyticsPeriodBoundaryHandler(
     store: AnalyticsPeriodBoundaryStore,
-) : LinkHandlerImpl<AnalyticsPeriodBoundary, AnalyticsPeriodBoundary>(store)
+) : LinkHandlerImpl<AnalyticsPeriodBoundary, AnalyticsPeriodBoundary>(store) {
+    override suspend fun handleMany(
+        masterUid: String,
+        slaves: Collection<AnalyticsPeriodBoundary>?,
+        transformer: (AnalyticsPeriodBoundary) -> AnalyticsPeriodBoundary
+    ) {
+        val filteredSlaves = slaves?.filter { it.boundaryTarget() != null }
+        super.handleMany(masterUid, filteredSlaves, transformer)
+    }
+}

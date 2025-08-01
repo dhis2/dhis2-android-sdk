@@ -59,7 +59,7 @@ internal class CustomIntentServiceImpl : CustomIntentService {
         customIntent: CustomIntent,
         context: CustomIntentContext,
     ): Map<String, Any?> {
-        val programVariables = mutableMapOf<String, Any>().apply {
+        val programVariables = buildMap {
             context.programUid?.let { put("program_id", it) }
             context.programStageUid?.let { put("program_stage_id", it) }
         }

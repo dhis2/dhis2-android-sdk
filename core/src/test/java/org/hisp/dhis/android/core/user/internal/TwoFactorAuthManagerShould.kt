@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.network.twofactorauth.TwoFactorAuthNetworkHandlerImpl
 import org.junit.Before
 import org.junit.Test
@@ -47,11 +48,12 @@ import org.mockito.kotlin.whenever
 @RunWith(JUnit4::class)
 class TwoFactorAuthManagerShould {
     private val networkHandler: TwoFactorAuthNetworkHandlerImpl = mock()
+    private val userStore: UserStoreImpl = mock()
     private lateinit var authManager: TwoFactorAuthManagerImpl
 
     @Before
     fun setUp() {
-        authManager = TwoFactorAuthManagerImpl(networkHandler)
+        authManager = TwoFactorAuthManagerImpl(networkHandler, userStore)
     }
 
     @Test
@@ -64,22 +66,37 @@ class TwoFactorAuthManagerShould {
     }
 
     @Test
-    fun is2faEnabled_returns_true_when_enabled() = runTest {
+    fun is2faEnabled_returns_true_and_persists_when_enabled() = runTest {
         whenever(networkHandler.is2faEnabled()).thenReturn(Result.Success(true))
 
         val enabled = authManager.is2faEnabled()
 
         assertThat(enabled).isTrue()
+        verify(userStore, times(1)).updateIs2faEnabled(true)
     }
 
     @Test
-    fun is2faEnabled_returns_false_when_network_fails() = runTest {
-        val error: D2Error = mock()
-        whenever(networkHandler.is2faEnabled()).thenReturn(Result.Failure(error))
+    fun is2faEnabled_returns_false_and_persists_when_disabled() = runTest {
+        whenever(networkHandler.is2faEnabled()).thenReturn(Result.Success(false))
 
         val enabled = authManager.is2faEnabled()
 
         assertThat(enabled).isFalse()
+        verify(userStore, times(1)).updateIs2faEnabled(false)
+    }
+
+    @Test
+    fun is2faEnabled_returns_stored_value_on_network_failure() = runTest {
+        val error: D2Error = mock()
+        val user: User = mock()
+        whenever(networkHandler.is2faEnabled()).thenReturn(Result.Failure(error))
+        whenever(user.twoFactorAuthEnabled()).thenReturn(true)
+        whenever(userStore.selectFirst()).thenReturn(user)
+
+        val enabled = authManager.is2faEnabled()
+
+        assertThat(enabled).isTrue()
+        verify(userStore, times(0)).updateIs2faEnabled(true)
     }
 
     @Test
@@ -130,7 +147,7 @@ class TwoFactorAuthManagerShould {
     }
 
     @Test
-    fun enable2fa_delegates_to_network_handler() = runTest {
+    fun enable2fa_delegates_to_network_handler_and_persists_on_success() = runTest {
         val code = "123456"
         val response: HttpMessageResponse = mock()
         whenever(networkHandler.enable2fa(code)).thenReturn(Result.Success(response))
@@ -138,11 +155,12 @@ class TwoFactorAuthManagerShould {
         val result = authManager.enable2fa(code)
 
         verify(networkHandler, times(1)).enable2fa(code)
+        verify(userStore, times(1)).updateIs2faEnabled(true)
         assertThat(result.getOrNull()).isEqualTo(response)
     }
 
     @Test
-    fun disable2fa_delegates_to_network_handler() = runTest {
+    fun disable2fa_delegates_to_network_handler_and_persists_on_success() = runTest {
         val code = "098765"
         val response: HttpMessageResponse = mock()
         whenever(networkHandler.disable2fa(code)).thenReturn(Result.Success(response))
@@ -150,6 +168,7 @@ class TwoFactorAuthManagerShould {
         val result = authManager.disable2fa(code)
 
         verify(networkHandler, times(1)).disable2fa(code)
+        verify(userStore, times(1)).updateIs2faEnabled(false)
         assertThat(result.getOrNull()).isEqualTo(response)
     }
 }

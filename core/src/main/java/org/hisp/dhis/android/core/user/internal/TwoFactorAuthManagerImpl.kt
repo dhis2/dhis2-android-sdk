@@ -39,13 +39,27 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class TwoFactorAuthManagerImpl(
     private val twoFactorAuthNetworkHandler: TwoFactorAuthNetworkHandlerImpl,
+    private val userStore: UserStoreImpl
 ) : TwoFactorAuthManager {
     override suspend fun canTotp2faBeEnabled(): Result<Boolean, D2Error> {
         return twoFactorAuthNetworkHandler.canTotp2faBeEnabled()
     }
 
     override suspend fun is2faEnabled(): Boolean {
-        return twoFactorAuthNetworkHandler.is2faEnabled().getOrNull() ?: false
+        var is2faEnabled = false
+        twoFactorAuthNetworkHandler.is2faEnabled().fold(
+            {
+                is2faEnabled = it
+                updateIs2faEnabled(it)
+            },
+            {
+                userStore.selectFirst()?.twoFactorAuthEnabled()?.let { storedValue ->
+                    is2faEnabled = storedValue
+                }
+            }
+        )
+
+        return is2faEnabled
     }
 
     override suspend fun getTotpSecret(): String {
@@ -62,10 +76,22 @@ internal class TwoFactorAuthManagerImpl(
     }
 
     override suspend fun enable2fa(code: String): Result<HttpMessageResponse, D2Error> {
-        return twoFactorAuthNetworkHandler.enable2fa(code)
+        val result = twoFactorAuthNetworkHandler.enable2fa(code)
+        if (result is Result.Success) {
+            updateIs2faEnabled(true)
+        }
+        return result
     }
 
     override suspend fun disable2fa(code: String): Result<HttpMessageResponse, D2Error> {
-        return twoFactorAuthNetworkHandler.disable2fa(code)
+        val result = twoFactorAuthNetworkHandler.disable2fa(code)
+        if (result is Result.Success) {
+            updateIs2faEnabled(false)
+        }
+        return result
+    }
+
+    private suspend fun updateIs2faEnabled(twoFactorAuthEnabled: Boolean) {
+        userStore.updateIs2faEnabled(twoFactorAuthEnabled)
     }
 }

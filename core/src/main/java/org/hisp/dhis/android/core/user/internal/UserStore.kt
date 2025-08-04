@@ -31,4 +31,8 @@ package org.hisp.dhis.android.core.user.internal
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.user.User
 
-internal interface UserStore : IdentifiableObjectStore<User>
+internal interface UserStore : IdentifiableObjectStore<User> {
+    @Throws(RuntimeException::class)
+    suspend fun updateIs2faEnabled(twoFactorAuthEnabled: Boolean)
+}
+

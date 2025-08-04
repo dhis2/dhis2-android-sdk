@@ -39,4 +39,8 @@ internal class UserStoreImpl(
     dao,
     User::toDB,
     SQLStatementBuilderImpl(UserTableInfo.TABLE_INFO),
-)
+) {
+    override suspend fun updateIs2faEnabled(twoFactorAuthEnabled: Boolean) {
+        selectFirst()?.let { dao.update(it.toDB().copy(twoFactorAuthEnabled = twoFactorAuthEnabled)) }
+    }
+}

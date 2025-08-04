@@ -49,7 +49,7 @@ class MultiUserMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
         dhis2MockServer.enqueueLoginResponses()
         d2.userModule().blockingLogIn("u1", "p1", dhis2MockServer.baseEndpoint)
         val store = CategoryOptionStoreImpl(d2.databaseAdapter())
-        store.insert(CategoryOptionSamples.getCategoryOption())
+        store.updateOrInsert(CategoryOptionSamples.getCategoryOption())
         assertThat(d2.categoryModule().categoryOptions().blockingCount()).isEqualTo(1)
         d2.userModule().blockingLogOut()
 
@@ -71,7 +71,7 @@ class MultiUserMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
         dhis2MockServer.enqueueLoginResponses()
         d2.userModule().blockingLogIn("u1", "p1", dhis2MockServer.baseEndpoint)
         val store = CategoryOptionStoreImpl(d2.databaseAdapter())
-        store.insert(CategoryOptionSamples.getCategoryOption())
+        store.updateOrInsert(CategoryOptionSamples.getCategoryOption())
         assertThat(d2.categoryModule().categoryOptions().blockingCount()).isEqualTo(1)
         d2.userModule().blockingLogOut()
 

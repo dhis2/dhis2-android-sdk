@@ -37,6 +37,6 @@ internal interface TwoFactorAuthNetworkHandler {
     suspend fun enrollTOTP2FA(): Result<HttpMessageResponse, D2Error>
     suspend fun getTotpSecret(): Result<String, D2Error>
     suspend fun is2faEnabled(): Result<Boolean, D2Error>
-    suspend fun enable2fa(code: Int): Result<HttpMessageResponse, D2Error>
-    suspend fun disable2fa(code: Int): Result<HttpMessageResponse, D2Error>
+    suspend fun enable2fa(code: String): Result<HttpMessageResponse, D2Error>
+    suspend fun disable2fa(code: String): Result<HttpMessageResponse, D2Error>
 }

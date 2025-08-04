@@ -36,6 +36,6 @@ interface TwoFactorAuthManager {
     suspend fun canTotp2faBeEnabled(): Result<Boolean, D2Error>
     suspend fun is2faEnabled(): Boolean
     suspend fun getTotpSecret(): String
-    suspend fun enable2fa(code: Int): Result<HttpMessageResponse, D2Error>
-    suspend fun disable2fa(code: Int): Result<HttpMessageResponse, D2Error>
+    suspend fun enable2fa(code: String): Result<HttpMessageResponse, D2Error>
+    suspend fun disable2fa(code: String): Result<HttpMessageResponse, D2Error>
 }

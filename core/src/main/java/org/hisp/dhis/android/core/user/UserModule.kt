@@ -31,7 +31,6 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.user.loginconfig.LoginConfigObjectRepository
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectHandler
-import org.hisp.dhis.android.network.twofactorauth.TwoFactorAuthService
 
 @Suppress("TooManyFunctions")
 interface UserModule {

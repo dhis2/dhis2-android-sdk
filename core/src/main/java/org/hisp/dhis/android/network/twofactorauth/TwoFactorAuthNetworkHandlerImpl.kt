@@ -47,8 +47,8 @@ internal class TwoFactorAuthNetworkHandlerImpl(
         return coroutineAPICallExecutor.wrap(
             storeError = false,
         ) {
-            val apiResponse = service.getTwoFactorMethods()
-            apiResponse.toDomain()
+            val twoFactorMethodsDTO = service.getTwoFactorMethods()
+            twoFactorMethodsDTO.toDomain()
         }
     }
 
@@ -66,7 +66,7 @@ internal class TwoFactorAuthNetworkHandlerImpl(
     override suspend fun getTotpSecret(): Result<String, D2Error> {
         return coroutineAPICallExecutor.wrap(
             storeError = false,
-            errorCatcher = TotpSecretErrorCatcher()
+            errorCatcher = TotpSecretErrorCatcher(),
         ) {
             val qrCodeJsonDTO = service.getQrCodeJson()
             qrCodeJsonDTO.toDomain()
@@ -81,24 +81,24 @@ internal class TwoFactorAuthNetworkHandlerImpl(
         }
     }
 
-    override suspend fun enable2fa(code: Int): Result<HttpMessageResponse, D2Error> {
+    override suspend fun enable2fa(code: String): Result<HttpMessageResponse, D2Error> {
         return coroutineAPICallExecutor.wrap(
             storeError = false,
             acceptedErrorCodes = emptyList(),
             errorClassParser = HttpMessageResponseDTO::toErrorClass,
         ) {
-            val apiResponse = service.enable2fa(code.toString())
+            val apiResponse = service.enable2fa(code)
             apiResponse.toDomain()
         }
     }
 
-    override suspend fun disable2fa(code: Int): Result<HttpMessageResponse, D2Error> {
+    override suspend fun disable2fa(code: String): Result<HttpMessageResponse, D2Error> {
         return coroutineAPICallExecutor.wrap(
             storeError = false,
             acceptedErrorCodes = emptyList(),
             errorClassParser = HttpMessageResponseDTO::toErrorClass,
         ) {
-            val apiResponse = service.disable2fa(code.toString())
+            val apiResponse = service.disable2fa(code)
             apiResponse.toDomain()
         }
     }

@@ -42,6 +42,6 @@ internal class TotpSecretErrorCatcher : APICallErrorCatcher {
     override fun catchError(response: D2HttpResponse): D2ErrorCode? =
         HttpMessageResponseDTO.toErrorClass(response.errorBody).takeIf { error ->
             error.httpStatusCode() == HttpsURLConnection.HTTP_CONFLICT &&
-                    error.message() == "User is not in TOTP 2FA enrollment mode"
+                error.message() == "User is not in TOTP 2FA enrollment mode"
         }?.let { D2ErrorCode.NOT_IN_TOTP_2FA_ENROLLMENT_MODE }
 }

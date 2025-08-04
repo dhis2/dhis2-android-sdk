@@ -45,7 +45,7 @@ internal class TwoFactorAuthManagerImpl(
     }
 
     override suspend fun is2faEnabled(): Boolean {
-        return twoFactorAuthNetworkHandler.is2faEnabled().getOrNull()?: false
+        return twoFactorAuthNetworkHandler.is2faEnabled().getOrNull() ?: false
     }
 
     override suspend fun getTotpSecret(): String {
@@ -61,11 +61,11 @@ internal class TwoFactorAuthManagerImpl(
         }
     }
 
-    override suspend fun enable2fa(code: Int): Result<HttpMessageResponse, D2Error> {
+    override suspend fun enable2fa(code: String): Result<HttpMessageResponse, D2Error> {
         return twoFactorAuthNetworkHandler.enable2fa(code)
     }
 
-    override suspend fun disable2fa(code: Int): Result<HttpMessageResponse, D2Error> {
+    override suspend fun disable2fa(code: String): Result<HttpMessageResponse, D2Error> {
         return twoFactorAuthNetworkHandler.disable2fa(code)
     }
 }

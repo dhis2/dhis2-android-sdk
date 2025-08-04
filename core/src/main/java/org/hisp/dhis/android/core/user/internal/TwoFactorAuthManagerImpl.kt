@@ -31,24 +31,34 @@ package org.hisp.dhis.android.core.user.internal
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.user.TwoFactorAuthManager
+import org.hisp.dhis.android.network.twofactorauth.TwoFactorAuthNetworkHandlerImpl
 import org.koin.core.annotation.Singleton
 
 @Singleton
-@Suppress("TooManyFunctions")
 internal class TwoFactorAuthManagerImpl(
-    private val twoFactorAuthNetworkHandler: TwoFactorAuthNetworkHandler,
+    private val twoFactorAuthNetworkHandler: TwoFactorAuthNetworkHandlerImpl,
 ) : TwoFactorAuthManager {
-    override suspend fun canTotp2faBeEnabled(): Boolean {
+    override suspend fun canTotp2faBeEnabled(): Result<Boolean, D2Error> {
         return twoFactorAuthNetworkHandler.canTotp2faBeEnabled()
     }
 
     override suspend fun is2faEnabled(): Boolean {
-        return twoFactorAuthNetworkHandler.is2faEnabled()
+        return twoFactorAuthNetworkHandler.is2faEnabled().getOrNull()?: false
     }
 
     override suspend fun getTotpSecret(): String {
-        return twoFactorAuthNetworkHandler.getTotpSecret()
+        return try {
+            twoFactorAuthNetworkHandler.getTotpSecret().getOrThrow()
+        } catch (error: D2Error) {
+            if (error.errorCode() == D2ErrorCode.NOT_IN_TOTP_2FA_ENROLLMENT_MODE) {
+                twoFactorAuthNetworkHandler.enrollTOTP2FA().getOrThrow()
+                twoFactorAuthNetworkHandler.getTotpSecret().getOrThrow()
+            } else {
+                throw error
+            }
+        }
     }
 
     override suspend fun enable2fa(code: Int): Result<HttpMessageResponse, D2Error> {

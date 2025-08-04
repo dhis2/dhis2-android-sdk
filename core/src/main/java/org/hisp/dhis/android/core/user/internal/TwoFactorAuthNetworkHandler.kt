@@ -33,10 +33,10 @@ import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
 
 internal interface TwoFactorAuthNetworkHandler {
-    suspend fun canTotp2faBeEnabled(): Boolean
+    suspend fun canTotp2faBeEnabled(): Result<Boolean, D2Error>
     suspend fun enrollTOTP2FA(): Result<HttpMessageResponse, D2Error>
-    suspend fun getTotpSecret(): String
-    suspend fun is2faEnabled(): Boolean
+    suspend fun getTotpSecret(): Result<String, D2Error>
+    suspend fun is2faEnabled(): Result<Boolean, D2Error>
     suspend fun enable2fa(code: Int): Result<HttpMessageResponse, D2Error>
     suspend fun disable2fa(code: Int): Result<HttpMessageResponse, D2Error>
 }

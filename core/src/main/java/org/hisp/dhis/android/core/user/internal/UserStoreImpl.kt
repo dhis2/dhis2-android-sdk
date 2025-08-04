@@ -66,6 +66,7 @@ internal class UserStoreImpl(
                 w.bind(18, o.phoneNumber())
                 w.bind(19, o.nationality())
                 w.bind(20, o.username())
+                w.bind(21, o.twoFactorAuthEnabled())
             }
         }
     }

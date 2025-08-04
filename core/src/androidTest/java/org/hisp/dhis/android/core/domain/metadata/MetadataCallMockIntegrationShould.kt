@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.legendset.LegendSet
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramIndicator
+import org.hisp.dhis.android.core.server.LoginConfig
 import org.hisp.dhis.android.core.settings.SystemSetting
 import org.hisp.dhis.android.core.sms.SmsModule
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
@@ -66,7 +67,7 @@ class MetadataCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher
 
         testObserver.awaitTerminalEvent()
 
-        testObserver.assertValueCount(18)
+        testObserver.assertValueCount(19)
 
         val values = testObserver.values()
 
@@ -79,6 +80,7 @@ class MetadataCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher
         assertThat(lastValue.doneCalls()).containsExactlyElementsIn(
             listOf(
                 SystemInfo::class,
+                LoginConfig::class,
                 SystemSetting::class,
                 StockUseCase::class,
                 Constant::class,

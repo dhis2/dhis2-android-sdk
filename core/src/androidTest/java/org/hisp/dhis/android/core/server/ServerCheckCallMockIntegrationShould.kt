@@ -92,6 +92,6 @@ class ServerCheckCallMockIntegrationShould : BaseMockIntegrationTest() {
     }
 
     companion object {
-        private const val LOGIN_CONFIG_JSON = "user/login_config.json"
+        private const val LOGIN_CONFIG_JSON = "server/login_config.json"
     }
 }

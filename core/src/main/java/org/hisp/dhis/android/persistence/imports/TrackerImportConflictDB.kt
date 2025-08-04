@@ -1,7 +1,9 @@
 package org.hisp.dhis.android.persistence.imports
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
 import org.hisp.dhis.android.core.util.dateFormat
@@ -36,23 +38,16 @@ import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceDB
             deferred = true,
         ),
     ],
-    primaryKeys = [
-        "conflict",
-        "value",
-        "trackedEntityInstance",
-        "enrollment",
-        "event",
-        "tableReference",
-        "trackedEntityAttribute",
-        "dataElement",
-    ],
 )
 internal data class TrackerImportConflictDB(
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val conflict: String,
     val value: String,
-    val trackedEntityInstance: String,
-    val enrollment: String,
-    val event: String,
+    val trackedEntityInstance: String?,
+    val enrollment: String?,
+    val event: String?,
     val tableReference: String,
     val errorCode: String?,
     val status: String?,
@@ -84,9 +79,9 @@ internal fun TrackerImportConflict.toDB(): TrackerImportConflictDB {
     return TrackerImportConflictDB(
         conflict = conflict()!!,
         value = value()!!,
-        trackedEntityInstance = trackedEntityInstance()!!,
-        enrollment = enrollment()!!,
-        event = event()!!,
+        trackedEntityInstance = trackedEntityInstance(),
+        enrollment = enrollment(),
+        event = event(),
         tableReference = tableReference()!!,
         errorCode = errorCode(),
         status = status()?.name,

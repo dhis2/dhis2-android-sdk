@@ -59,7 +59,7 @@ internal class RelationshipStoreImpl(
             "ON Relationship.uid = RelationshipItem.relationship) " +
             "WHERE " + whereClause + ";"
 
-        return selectWhere(queryStatement)
+        return selectRawQuery(queryStatement)
     }
 
     override suspend fun getRelationshipsByItem(

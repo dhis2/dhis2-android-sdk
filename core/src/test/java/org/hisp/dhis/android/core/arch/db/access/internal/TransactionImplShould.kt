@@ -25,41 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.access.internal
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+import androidx.room.RoomDatabase
+import org.hisp.dhis.android.persistence.db.access.RoomTransaction
+import org.junit.Before
+import org.junit.Test
+import org.mockito.Mockito
+import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.mock
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+class TransactionImplShould {
+    var roomDatabase: RoomDatabase = mock()
 
-import static org.mockito.Mockito.verify;
-
-public class TransactionImplShould {
-
-    @Mock
-    DatabaseAdapter databaseAdapter;
-
-    private TransactionImpl transaction; // The class we are testing
+    private var transaction: RoomTransaction = mock()
 
     @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
+    fun setUp() {
+        MockitoAnnotations.initMocks(this)
 
-        transaction = new TransactionImpl(databaseAdapter);
+        transaction = RoomTransaction(roomDatabase)
     }
 
     @Test
-    public void verify_transaction_is_successful_when_transaction_is_set_as_successful() {
-        transaction.setSuccessful();
-        verify(databaseAdapter).setTransactionSuccessful();
+    fun verify_transaction_is_successful_when_transaction_is_set_as_successful() {
+        transaction.setSuccessful()
+        Mockito.verify(roomDatabase).setTransactionSuccessful()
     }
 
     @Test
-    public void verify_transaction_is_end_when_transaction_is_set_as_end() {
-        transaction.end();
-        verify(databaseAdapter).endTransaction();
+    fun verify_transaction_is_end_when_transaction_is_set_as_end() {
+        transaction.end()
+        Mockito.verify(roomDatabase).endTransaction()
     }
-
 }

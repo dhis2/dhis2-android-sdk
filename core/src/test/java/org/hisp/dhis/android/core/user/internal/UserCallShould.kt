@@ -70,7 +70,6 @@ class UserCallShould : BaseCallShould() {
 
         userSyncCall = {
             UserCall(
-                genericCallData,
                 coroutineAPICallExecutor,
                 userNetworkHandler,
                 userHandler,

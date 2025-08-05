@@ -268,7 +268,7 @@ class MetadataCallShould : BaseCallShould() {
     }
 
     @Test
-    fun delete_foreign_key_violations_before_calls() {
+    fun delete_foreign_key_violations_before_calls() = runTest {
         metadataCall.blockingDownload()
         verify(databaseAdapter).delete(ForeignKeyViolationTableInfo.TABLE_INFO.name())
     }

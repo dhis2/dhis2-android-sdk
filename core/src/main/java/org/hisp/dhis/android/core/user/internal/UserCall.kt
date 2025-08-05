@@ -34,7 +34,6 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class UserCall(
-//    private val genericCallData: GenericCallData,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val networkHandler: UserNetworkHandler,
     private val userHandler: UserHandler,

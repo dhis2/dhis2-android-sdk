@@ -25,83 +25,75 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.wipe.internal
 
-package org.hisp.dhis.android.core.wipe.internal;
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor.Companion.create
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.access.Transaction
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import org.mockito.Mockito
+import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.mock
 
-import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor;
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.access.Transaction;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-@RunWith(JUnit4.class)
-public class WipeModuleShould {
-
-    @Mock
-    private Transaction transaction;
-
-    @Mock
-    private DatabaseAdapter databaseAdapter;
-
-    @Mock
-    private ModuleWiper moduleWiperA;
-    @Mock
-    private ModuleWiper moduleWiperB;
-
-    private WipeModule wipeModule;
+@RunWith(JUnit4::class)
+class WipeModuleShould {
+    private val transaction: Transaction = mock()
+    private val databaseAdapter: DatabaseAdapter = mock()
+    private val moduleWiperA: ModuleWiper = mock()
+    private val moduleWiperB: ModuleWiper = mock()
+    private var wipeModule: WipeModule = mock()
 
     @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
+    @Throws(Exception::class)
+    fun setUp() {
+        MockitoAnnotations.initMocks(this)
 
-        when(databaseAdapter.beginNewTransaction()).thenReturn(transaction);
+        Mockito.`when`(
+            databaseAdapter!!.beginNewTransaction()
+        ).thenReturn(transaction)
 
-        List<ModuleWiper> wipers = Arrays.asList(moduleWiperA, moduleWiperB);
+        val wipers = listOf(moduleWiperA, moduleWiperB)
 
-        wipeModule = new WipeModuleImpl(D2CallExecutor.create(databaseAdapter), wipers);
+        wipeModule = WipeModuleImpl(create(databaseAdapter), wipers)
     }
 
     @Test
-    public void wipe_all_modules() throws Exception {
-        wipeModule.wipeEverything();
+    @Throws(Exception::class)
+    fun wipe_all_modules() = runTest {
+        wipeModule.wipeEverything()
 
-        verify(moduleWiperA).wipeMetadata();
-        verify(moduleWiperB).wipeMetadata();
+        Mockito.verify(moduleWiperA).wipeMetadata()
+        Mockito.verify(moduleWiperB).wipeMetadata()
 
-        verify(moduleWiperA).wipeData();
-        verify(moduleWiperB).wipeData();
+        Mockito.verify(moduleWiperA).wipeData()
+        Mockito.verify(moduleWiperB).wipeData()
     }
 
     @Test
-    public void wipe_metadata_in_modules() throws Exception {
-        wipeModule.wipeMetadata();
+    @Throws(Exception::class)
+    fun wipe_metadata_in_modules() = runTest {
+        wipeModule.wipeMetadata()
 
-        verify(moduleWiperA).wipeMetadata();
-        verify(moduleWiperB).wipeMetadata();
+        Mockito.verify(moduleWiperA).wipeMetadata()
+        Mockito.verify(moduleWiperB).wipeMetadata()
 
-        verify(moduleWiperA, never()).wipeData();
-        verify(moduleWiperB, never()).wipeData();
+        Mockito.verify(moduleWiperA, Mockito.never()).wipeData()
+        Mockito.verify(moduleWiperB, Mockito.never()).wipeData()
     }
 
     @Test
-    public void wipe_data_in_modules() throws Exception {
-        wipeModule.wipeData();
+    @Throws(Exception::class)
+    fun wipe_data_in_modules() = runTest {
+        wipeModule.wipeData()
 
-        verify(moduleWiperA, never()).wipeMetadata();
-        verify(moduleWiperB, never()).wipeMetadata();
+        Mockito.verify(moduleWiperA, Mockito.never()).wipeMetadata()
+        Mockito.verify(moduleWiperB, Mockito.never()).wipeMetadata()
 
-        verify(moduleWiperA).wipeData();
-        verify(moduleWiperB).wipeData();
+        Mockito.verify(moduleWiperA).wipeData()
+        Mockito.verify(moduleWiperB).wipeData()
     }
 }

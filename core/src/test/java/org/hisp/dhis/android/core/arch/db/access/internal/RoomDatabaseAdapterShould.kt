@@ -25,73 +25,44 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.access.internal
 
-package org.hisp.dhis.android.core.arch.db.access.internal;
+import android.database.sqlite.SQLiteDatabase
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.persistence.db.access.RoomDatabaseAdapter
+import org.junit.Before
+import org.junit.Test
+import org.mockito.Mockito
+import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.mock
 
-import android.database.sqlite.SQLiteDatabase;
-
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter;
-import org.hisp.dhis.android.core.arch.db.stores.binders.internal.StatementWrapper;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-import static org.mockito.Mockito.verify;
-
-public class UnencryptedDatabaseAdapterShould {
-
-    @Mock
-    SQLiteDatabase database;
-    
-    @Mock
-    StatementWrapper sqLiteStatement;
-
-    private DatabaseAdapter sqLiteDatabaseAdapter; // the class we are testing
+class RoomDatabaseAdapterShould {
+    private val appDatabase: AppDatabase = mock()
+    var database: SQLiteDatabase = mock()
+    private val roomDatabaseAdapter = RoomDatabaseAdapter() // the class we are testing
 
     @Before
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
-        sqLiteDatabaseAdapter = new UnencryptedDatabaseAdapter(database, "dbName");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void throw_illegal_argument_exception_when_provide_null_db_open_helper() {
-        new UnencryptedDatabaseAdapter(null, "dbName");
+    fun setup() {
+        MockitoAnnotations.initMocks(this)
+        roomDatabaseAdapter.activate(appDatabase, "dbName")
     }
 
     @Test
-    public void verify_statement_is_compiled_when_set_a_query_to_be_compiled_in_database_adapter() {
-        String sql = "INSERT VALUE INTO TABLE";
-        sqLiteDatabaseAdapter.compileStatement(sql);
-        verify(database).compileStatement(sql);
+    fun verify_query_on_readable_data_base_when_set_query_in_data_base_adapter() = runTest {
+        val sql: String = "SELECT * FROM TABLE_NAME"
+        roomDatabaseAdapter.rawQuery(sql, null)
+        Mockito.verify(database).rawQuery(sql, null)
     }
 
     @Test
-    public void verify_query_on_readable_data_base_when_set_query_in_data_base_adapter() {
-        String sql = "SELECT * FROM TABLE";
-        sqLiteDatabaseAdapter.rawQuery(sql, (String[]) null);
-        verify(database).rawQuery(sql, null);
+    fun delete_in_data_base_when_delete_in_data_base_adapter() = runTest {
+        roomDatabaseAdapter.delete("tableName", null, null)
+        Mockito.verify(database).delete("tableName", null, null)
     }
 
     @Test
-    public void delete_in_data_base_when_delete_in_data_base_adapter() {
-        sqLiteDatabaseAdapter.delete(null, null, null);
-        verify(database).delete(null, null, null);
-    }
-
-    @Test
-    public void verify_the_statements_are_executed_in_data_base_when_execute_insert_in_data_base_adapter() {
-        sqLiteDatabaseAdapter.executeInsert(sqLiteStatement);
-        verify(sqLiteStatement).executeInsert();
-
-        sqLiteDatabaseAdapter.executeUpdateDelete(sqLiteStatement);
-        verify(sqLiteStatement).executeUpdateDelete();
-    }
-
-    @Test
-    public void verify_the_transaction_begin_in_data_base_when_execute_begin_new_transaction_on_data_base_adapter() {
-        sqLiteDatabaseAdapter.beginNewTransaction();
-        verify(database).beginTransaction();
+    fun verify_the_transaction_begin_in_data_base_when_execute_begin_new_transaction_on_data_base_adapter() {
+        roomDatabaseAdapter.beginNewTransaction()
+        Mockito.verify(database).beginTransaction()
     }
 }

@@ -87,7 +87,8 @@ internal class TwoFactorAuthNetworkHandlerImpl(
             acceptedErrorCodes = emptyList(),
             errorClassParser = HttpMessageResponseDTO::toErrorClass,
         ) {
-            val apiResponse = service.enable2fa(code)
+            val payload = TwoFactorAuthEnablerCodeDTO(code)
+            val apiResponse = service.enable2fa(payload)
             apiResponse.toDomain()
         }
     }
@@ -98,7 +99,8 @@ internal class TwoFactorAuthNetworkHandlerImpl(
             acceptedErrorCodes = emptyList(),
             errorClassParser = HttpMessageResponseDTO::toErrorClass,
         ) {
-            val apiResponse = service.disable2fa(code)
+            val payload = TwoFactorAuthEnablerCodeDTO(code)
+            val apiResponse = service.disable2fa(payload)
             apiResponse.toDomain()
         }
     }

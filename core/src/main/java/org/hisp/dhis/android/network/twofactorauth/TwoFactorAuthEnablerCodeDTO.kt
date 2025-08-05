@@ -25,48 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.network.twofactorauth
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.network.common.dto.HttpMessageResponseDTO
+import kotlinx.serialization.Serializable
 
-internal class TwoFactorAuthService(private val client: HttpServiceClient) {
-
-    suspend fun is2faEnabled(): Boolean {
-        return client.get {
-            url("2fa/enabled")
-        }
-    }
-
-    suspend fun enable2fa(payload: TwoFactorAuthEnablerCodeDTO): HttpMessageResponseDTO {
-        return client.post {
-            url("2fa/enabled")
-            body(payload)
-        }
-    }
-
-    suspend fun disable2fa(payload: TwoFactorAuthEnablerCodeDTO): HttpMessageResponseDTO {
-        return client.post {
-            url("2fa/disabled")
-            body(payload)
-        }
-    }
-
-    suspend fun enrollTOTP2FA(): HttpMessageResponseDTO {
-        return client.post {
-            url("2fa/enrollTOTP2FA")
-        }
-    }
-
-    suspend fun getQrCodeJson(): QrCodeJsonDTO {
-        return client.get {
-            url("2fa/qrCodeJson")
-        }
-    }
-
-    suspend fun getTwoFactorMethods(): TwoFactorMethodsDTO {
-        return client.get {
-            url("configuration/twoFactorMethods")
-        }
-    }
-}
+@Serializable
+internal data class TwoFactorAuthEnablerCodeDTO(val code: String)

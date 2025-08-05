@@ -50,7 +50,10 @@ internal class CategoryOptionStoreImpl(
             CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION_COMBO,
             CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION,
         )
-        val query = builder.selectChildrenWithLinkTable(
+        val sectionSqlBuilder = org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl(
+            CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO
+        )
+        val query = sectionSqlBuilder.selectChildrenWithLinkTable(
             projection,
             categoryOptionComboUid,
             null,
@@ -64,7 +67,10 @@ internal class CategoryOptionStoreImpl(
             CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY,
             CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION,
         )
-        val query = builder.selectChildrenWithLinkTable(
+        val sectionSqlBuilder = org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl(
+            CategoryCategoryOptionLinkTableInfo.TABLE_INFO
+        )
+        val query = sectionSqlBuilder.selectChildrenWithLinkTable(
             projection,
             categoryUid,
             null,

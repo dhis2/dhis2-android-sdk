@@ -43,7 +43,7 @@ class AppearanceSettingsV1Should : CoreObjectShould("settings/appearance_setting
         val homeDateFilter = homeFilters[HomeFilter.DATE]!!
         assertThat(homeDateFilter.scope()).isNull()
         assertThat(homeDateFilter.filterType()).isNull()
-        assertThat(homeDateFilter.uid()).isNull()
+        assertThat(homeDateFilter.uid()).isEqualTo("global_uid_")
         assertThat(homeDateFilter.sort()).isEqualTo(true)
         assertThat(homeDateFilter.filter()).isEqualTo(true)
 

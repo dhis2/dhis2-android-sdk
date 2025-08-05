@@ -53,7 +53,7 @@ internal class UserModuleImpl(
     private val accountManager: AccountManagerImpl,
     private val openIDConnectHandler: OpenIDConnectHandlerImpl,
     private val loginConfigCall: LoginConfigCall,
-    private val twoFactorAuthManager: TwoFactorAuthManagerImpl
+    private val twoFactorAuthManager: TwoFactorAuthManagerImpl,
 ) : UserModule {
 
     override fun authenticatedUser(): AuthenticatedUserObjectRepository {

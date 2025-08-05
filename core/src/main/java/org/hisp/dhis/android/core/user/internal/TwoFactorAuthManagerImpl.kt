@@ -39,7 +39,7 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class TwoFactorAuthManagerImpl(
     private val twoFactorAuthNetworkHandler: TwoFactorAuthNetworkHandlerImpl,
-    private val userStore: UserStoreImpl
+    private val userStore: UserStoreImpl,
 ) : TwoFactorAuthManager {
     override suspend fun canTotp2faBeEnabled(): Result<Boolean, D2Error> {
         return twoFactorAuthNetworkHandler.canTotp2faBeEnabled()
@@ -56,7 +56,7 @@ internal class TwoFactorAuthManagerImpl(
                 userStore.selectFirst()?.twoFactorAuthEnabled()?.let { storedValue ->
                     is2faEnabled = storedValue
                 }
-            }
+            },
         )
 
         return is2faEnabled

@@ -35,4 +35,3 @@ internal interface UserStore : IdentifiableObjectStore<User> {
     @Throws(RuntimeException::class)
     suspend fun updateIs2faEnabled(twoFactorAuthEnabled: Boolean)
 }
-

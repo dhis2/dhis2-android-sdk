@@ -183,7 +183,7 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
         try {
             d2.userModule().blockingLogIn(username, "other-password", serverUrl, null)
             fail("It should throw an error")
-        } catch (e: RuntimeException) {
+        } catch (e: Exception) {
             assertThat((e.cause as D2Error).errorCode()).isEqualTo(D2ErrorCode.BAD_CREDENTIALS)
         }
 

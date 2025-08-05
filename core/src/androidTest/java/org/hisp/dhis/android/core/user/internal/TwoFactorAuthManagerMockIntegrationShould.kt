@@ -31,18 +31,26 @@ package org.hisp.dhis.android.core.user.internal
 import com.google.common.truth.Truth.assertThat
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.user.TwoFactorAuthManager
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class TwoFactorAuthManagerMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueable() {
 
-    private val authManager = d2.userModule().twoFactorAuthManager()
+    private lateinit var authManager: TwoFactorAuthManager
+
+    @Before
+    fun setUp() = runTest {
+        authManager = d2.userModule().twoFactorAuthManager()
+    }
 
     @After
     @Throws(D2Error::class)
@@ -60,21 +68,27 @@ class TwoFactorAuthManagerMockIntegrationShould : BaseMockIntegrationTestMetadat
     }
 
     @Test
-    fun is2faEnabled_returns_true() {
-        dhis2MockServer.enqueueMockResponse("user/two-factor-enabled.json")
+    fun is2faEnabled_stores_and_fallback_to_stored_on_failure() = runTest {
+        dhis2MockServer.enqueueMockResponse("user/two-factor-enabled-true.json")
 
         val enabled = runBlocking { authManager.is2faEnabled() }
-
         assertThat(enabled).isTrue()
+
+        dhis2MockServer.enqueueMockResponse(HttpStatusCode.InternalServerError.value, "user/server-error.json")
+        val fallback = runBlocking { authManager.is2faEnabled() }
+        assertThat(fallback).isTrue()
     }
 
     @Test
-    fun is2faEnabled_returns_false() {
+    fun is2faEnabled_stores_and_fallback_false_to_stored_on_failure() = runTest {
         dhis2MockServer.enqueueMockResponse("user/two-factor-enabled-false.json")
 
         val enabled = runBlocking { authManager.is2faEnabled() }
-
         assertThat(enabled).isFalse()
+
+        dhis2MockServer.enqueueMockResponse(HttpStatusCode.InternalServerError.value, "user/server-error.json")
+        val fallback = runBlocking { authManager.is2faEnabled() }
+        assertThat(fallback).isFalse()
     }
 
     @Test
@@ -98,20 +112,28 @@ class TwoFactorAuthManagerMockIntegrationShould : BaseMockIntegrationTestMetadat
     }
 
     @Test
-    fun enable2fa_succeeds() {
+    fun enable2fa_succeeds_and_updates_store_fallback() {
         dhis2MockServer.enqueueMockResponse("user/enable2fa-response.json")
 
         val response: HttpMessageResponse = runBlocking { authManager.enable2fa("123456").getOrThrow() }
 
         assertThat(response.message()).isEqualTo("2FA was enabled successfully")
+
+        dhis2MockServer.enqueueMockResponse(HttpStatusCode.InternalServerError.value, "user/server-error.json")
+        val postEnable = runBlocking { authManager.is2faEnabled() }
+        assertThat(postEnable).isTrue()
     }
 
     @Test
-    fun disable2fa_succeeds() {
+    fun disable2fa_succeeds_and_updates_store_fallback() {
         dhis2MockServer.enqueueMockResponse("user/disable2fa-response.json")
 
         val response: HttpMessageResponse = runBlocking { authManager.disable2fa("098765").getOrThrow() }
 
         assertThat(response.message()).isEqualTo("2FA was disabled successfully")
+
+        dhis2MockServer.enqueueMockResponse(HttpStatusCode.InternalServerError.value, "user/server-error.json")
+        val postDisable = runBlocking { authManager.is2faEnabled() }
+        assertThat(postDisable).isFalse()
     }
 }

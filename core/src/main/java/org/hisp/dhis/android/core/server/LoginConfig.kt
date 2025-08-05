@@ -25,7 +25,9 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user.loginconfig
+package org.hisp.dhis.android.core.server
+
+import org.hisp.dhis.android.core.systeminfo.DHISPatchVersion
 
 data class LoginConfig(
     val apiVersion: String? = null,
@@ -49,4 +51,24 @@ data class LoginConfig(
     val allowAccountRecovery: Boolean = false,
     val useCustomLogoFront: Boolean = false,
     val oidcProviders: List<LoginOidcProvider> = emptyList(),
-)
+) {
+    fun isOauthEnabled(): Boolean {
+        return isAtLeast42dot2() && oidcProviders.any { it.id == DHIS2_OAUTH_CLIENT_ID }
+    }
+
+    private fun isAtLeast42dot2(): Boolean {
+        return apiVersion?.let {
+            DHISPatchVersion.isGreaterThanPatch(apiVersion, DHISPatchVersion.V2_42_1)
+        } ?: false
+    }
+
+    internal companion object {
+        const val DHIS2_OAUTH_CLIENT_ID = "dhis2-client"
+
+        fun createDefault(serverUrl: String): LoginConfig {
+            return LoginConfig(
+                applicationTitle = serverUrl,
+            )
+        }
+    }
+}

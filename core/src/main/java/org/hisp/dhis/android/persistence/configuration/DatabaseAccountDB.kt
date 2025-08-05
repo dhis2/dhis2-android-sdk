@@ -32,6 +32,8 @@ import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.persistence.server.LoginConfigDB
+import org.hisp.dhis.android.persistence.server.toDB
 
 @Serializable
 internal data class DatabaseAccountDB(
@@ -42,6 +44,7 @@ internal data class DatabaseAccountDB(
     val encrypted: Boolean,
     val syncState: String?,
     val importDB: DatabaseAccountImportDB?,
+    val loginConfig: LoginConfigDB?,
 ) : EntityDB<DatabaseAccount> {
 
     override fun toDomain(): DatabaseAccount {
@@ -53,6 +56,7 @@ internal data class DatabaseAccountDB(
             .encrypted(encrypted)
             .syncState(syncState?.let { State.valueOf(it) })
             .importDB(importDB?.toDomain())
+            .loginConfig(loginConfig?.toDomain())
             .build()
     }
 }
@@ -66,5 +70,6 @@ internal fun DatabaseAccount.toDB(): DatabaseAccountDB {
         encrypted = encrypted(),
         syncState = syncState()?.name,
         importDB = importDB()?.toDB(),
+        loginConfig = loginConfig()?.toDB(),
     )
 }

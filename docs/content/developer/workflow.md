@@ -4,12 +4,25 @@ Currently, the SDK is primarily oriented to build apps that work in an offline m
 
 A typical workflow would be like this:
 
-1. **Login**
+1. **Validate server url**
+2. **Login**
 2. **Sync metadata:** the SDK downloads a subset of the server metadata so it is available to be used at any time. Metadata sync is totally user-dependent (see [Synchronization](#android_sdk_metadata_synchronization) for more details)
 3. **Download data:** if you want to have existing data available in the device even when offline, you can download and save existing tracker and aggregated data in the device.
 4. **Do the work:** at this point the app is able to create the data entry forms and show some existing data. Then the user can edit/delete/update data.
 5. **Upload data:** from time to time, the work done in the local database instance is sent to the server.
 6. **Sync metadata:** it is recommended to sync metadata quite often to detect changes in metadata configuration.
+
+## Validate server url
+
+The first step is to validate the server url in order to know if it is a valid DHIS2 instance. The SDK exposes a method to know if the url is valid or not; if so, it returns some information for the login when available (it depends on the DHIS2 version).
+
+This method is not bullet-proof and might return false positives: it is difficult to tell if the url is valid or not in old DHIS2 versions. In such cases, the SDK returns it as valid to continue with the login.
+
+````java
+d2.serverModule().checkServerUrl(serverUrl)
+````
+
+If successful, this method will return a `LoginConfig` object, which includes useful information about the login, such as the application title, the country flag, the list of OidcProviders,... .
 
 ## Login/Logout { #android_sdk_login_logout }
 

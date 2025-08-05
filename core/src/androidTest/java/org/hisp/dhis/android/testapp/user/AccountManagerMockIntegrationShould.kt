@@ -191,6 +191,22 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
         loginAndDeleteAccount(user2, pass2, server2)
     }
 
+    @Test
+    fun return_login_config() {
+        if (d2.userModule().blockingIsLogged()) {
+            d2.userModule().blockingLogOut()
+        }
+        dhis2MockServer.enqueueLoginResponses()
+        d2.userModule().blockingLogIn(user1, pass1, dhis2MockServer.baseEndpoint)
+
+        dhis2MockServer.enqueueMetadataResponses()
+        d2.metadataModule().blockingDownload()
+
+        val loginConfig = d2.userModule().accountManager().getCurrentAccount()?.loginConfig()
+        assertThat(loginConfig).isNotNull()
+        assertThat(loginConfig?.apiVersion).isEqualTo("2.41.3")
+    }
+
     private fun addDataValue() {
         val period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodTypeAndDate(PeriodType.Yearly, Date())
         val orgunit = d2.organisationUnitModule().organisationUnits().one().blockingGet()!!

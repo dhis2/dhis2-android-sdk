@@ -31,7 +31,6 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownl
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl
 import org.hisp.dhis.android.core.settings.internal.DataSetSettingCall
 import org.hisp.dhis.android.core.settings.internal.DataSetSettingStore
-import org.hisp.dhis.android.network.settings.DataSetSettingDTO.Companion.DATASETSETTING_GLOBAL_ID
 import org.koin.core.annotation.Singleton
 
 @Singleton(binds = [DataSetSettingsObjectRepository::class])
@@ -46,11 +45,11 @@ class DataSetSettingsObjectRepository internal constructor(
             null
         } else {
             val specifics = settings
-                .filter { it.uid() != DATASETSETTING_GLOBAL_ID }
+                .filter { it.uid() != null }
                 .associateBy { it.uid() }
 
             DataSetSettings.builder()
-                .globalSettings(settings.find { it.uid() == DATASETSETTING_GLOBAL_ID })
+                .globalSettings(settings.find { it.uid() == null })
                 .specificSettings(specifics)
                 .build()
         }

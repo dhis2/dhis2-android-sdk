@@ -29,19 +29,18 @@
 package org.hisp.dhis.android.core.settings
 
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
-import org.hisp.dhis.android.network.settings.ProgramConfigurationSettingDTO.Companion.PROGRAMCONFIGURATIONSETTING_GLOBAL_ID
 
 internal object AppearanceSettingsHelper {
 
     @JvmStatic
     fun <O : ObjectWithUidInterface> getGlobal(list: List<O>): O? {
-        return list.find { it.uid() == PROGRAMCONFIGURATIONSETTING_GLOBAL_ID }
+        return list.find { it.uid() == null }
     }
 
     @JvmStatic
     fun <O : ObjectWithUidInterface> getSpecifics(list: List<O>): Map<String, O> {
         return list
-            .filter { it.uid() != PROGRAMCONFIGURATIONSETTING_GLOBAL_ID }
+            .filter { it.uid() != null }
             .associateBy { it.uid()!! }
     }
 
@@ -83,7 +82,7 @@ internal object AppearanceSettingsHelper {
     fun toProgramConfiguration(completionSpinner: CompletionSpinner?): ProgramConfigurationSetting? {
         return completionSpinner?.let {
             ProgramConfigurationSetting.builder()
-                .uid(it.uid() ?: PROGRAMCONFIGURATIONSETTING_GLOBAL_ID)
+                .uid(it.uid())
                 .completionSpinner(it.visible())
                 .build()
         }

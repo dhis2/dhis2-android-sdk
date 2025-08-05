@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.settings;
 
 import android.database.Cursor;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.gabrielittner.auto.value.cursor.ColumnAdapter;
@@ -46,7 +45,7 @@ import java.util.List;
 @AutoValue
 public abstract class ProgramConfigurationSetting implements CoreObject, ObjectWithUidInterface {
 
-    @NonNull
+    @Nullable
     public abstract String uid();
 
     @Nullable
@@ -88,7 +87,7 @@ public abstract class ProgramConfigurationSetting implements CoreObject, ObjectW
     @AutoValue.Builder
     public abstract static class Builder {
 
-        public abstract Builder uid(@NonNull String uid);
+        public abstract Builder uid(String uid);
 
         public abstract Builder completionSpinner(Boolean completionSpinner);
 

@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.settings.ProgramSetting
 
 @Serializable
 internal data class ProgramSettingDTO(
-    val id: String = PROGRAMSETTING_GLOBAL_ID,
+    val id: String?,
     val name: String?,
     val lastUpdated: String?,
     val teiDownload: Int?,
@@ -75,9 +75,5 @@ internal data class ProgramSettingDTO(
             .enrollmentDateDownload(enrollmentDateDownload?.let { DownloadPeriod.valueOf(it) })
             .enrollmentDateDBTrimming(enrollmentDateDBTrimming?.let { DownloadPeriod.valueOf(it) })
             .build()
-    }
-
-    companion object {
-        const val PROGRAMSETTING_GLOBAL_ID = "global_uid_"
     }
 }

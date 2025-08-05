@@ -42,9 +42,7 @@ internal data class ProgramConfigurationSettingDTO(
     val disableManualLocation: Boolean?,
     val quickActions: List<QuickActionDTO>?,
 ) {
-    fun toDomain(
-        uid: String = PROGRAMCONFIGURATIONSETTING_GLOBAL_ID
-    ): ProgramConfigurationSetting {
+    fun toDomain(uid: String? = null): ProgramConfigurationSetting {
         return ProgramConfigurationSetting.builder()
             .uid(uid)
             .completionSpinner(completionSpinner)
@@ -56,9 +54,5 @@ internal data class ProgramConfigurationSettingDTO(
             .disableManualLocation(disableManualLocation)
             .quickActions(quickActions?.map { it.toDomain() })
             .build()
-    }
-
-    companion object {
-        const val PROGRAMCONFIGURATIONSETTING_GLOBAL_ID = "global_uid_"
     }
 }

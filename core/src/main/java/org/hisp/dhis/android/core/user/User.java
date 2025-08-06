@@ -91,6 +91,9 @@ public abstract class User extends BaseIdentifiableObject implements CoreObject 
     public abstract String nationality();
 
     @Nullable
+    public abstract Boolean twoFactorAuthEnabled();
+
+    @Nullable
     @ColumnAdapter(IgnoreOrganisationUnitListAdapter.class)
     abstract List<OrganisationUnit> organisationUnits();
 
@@ -147,6 +150,8 @@ public abstract class User extends BaseIdentifiableObject implements CoreObject 
         public abstract Builder phoneNumber(String phoneNumber);
 
         public abstract Builder nationality(String nationality);
+
+        public abstract Builder twoFactorAuthEnabled(Boolean twoFactorAuthEnabled);
 
         public abstract Builder organisationUnits(List<OrganisationUnit> organisationUnits);
 

@@ -1,0 +1,6 @@
+{
+  "httpStatus": "OK",
+  "httpStatusCode": 200,
+  "status": "OK",
+  "message": "The user has enrolled in TOTP 2FA, call the QR code endpoint to continue the process"
+}

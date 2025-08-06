@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,10 +28,15 @@
 
 package org.hisp.dhis.android.core.user.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
+import org.hisp.dhis.android.core.maintenance.D2Error
 
-internal interface UserStore : IdentifiableObjectStore<User> {
-    @Throws(RuntimeException::class)
-    suspend fun updateIs2faEnabled(twoFactorAuthEnabled: Boolean)
+internal interface TwoFactorAuthNetworkHandler {
+    suspend fun canTotp2faBeEnabled(): Result<Boolean, D2Error>
+    suspend fun enrollTOTP2FA(): Result<HttpMessageResponse, D2Error>
+    suspend fun getTotpSecret(): Result<String, D2Error>
+    suspend fun is2faEnabled(): Result<Boolean, D2Error>
+    suspend fun enable2fa(code: String): Result<HttpMessageResponse, D2Error>
+    suspend fun disable2fa(code: String): Result<HttpMessageResponse, D2Error>
 }

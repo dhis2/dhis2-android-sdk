@@ -1,0 +1,7 @@
+{
+  "httpStatus": "Internal Server Error",
+  "httpStatusCode": 500,
+  "status": "ERROR",
+  "message": "A wild internal server error appeared!"
+}
+

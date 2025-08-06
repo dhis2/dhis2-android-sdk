@@ -26,12 +26,16 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user.internal
+package org.hisp.dhis.android.core.user
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
+import org.hisp.dhis.android.core.maintenance.D2Error
 
-internal interface UserStore : IdentifiableObjectStore<User> {
-    @Throws(RuntimeException::class)
-    suspend fun updateIs2faEnabled(twoFactorAuthEnabled: Boolean)
+interface TwoFactorAuthManager {
+    suspend fun canTotp2faBeEnabled(): Result<Boolean, D2Error>
+    suspend fun is2faEnabled(): Boolean
+    suspend fun getTotpSecret(): String
+    suspend fun enable2fa(code: String): Result<HttpMessageResponse, D2Error>
+    suspend fun disable2fa(code: String): Result<HttpMessageResponse, D2Error>
 }

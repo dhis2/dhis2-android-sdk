@@ -48,6 +48,11 @@ internal class UserStoreImpl(
         BINDER,
         { cursor: Cursor -> User.create(cursor) },
     ) {
+
+    override suspend fun updateIs2faEnabled(twoFactorAuthEnabled: Boolean) {
+        selectFirst()?.let { update(it.toBuilder().twoFactorAuthEnabled(twoFactorAuthEnabled).build()) }
+    }
+
     companion object {
         private val BINDER: StatementBinder<User> = object : IdentifiableStatementBinder<User>() {
             override fun bindToStatement(o: User, w: StatementWrapper) {
@@ -66,6 +71,7 @@ internal class UserStoreImpl(
                 w.bind(18, o.phoneNumber())
                 w.bind(19, o.nationality())
                 w.bind(20, o.username())
+                w.bind(21, o.twoFactorAuthEnabled())
             }
         }
     }

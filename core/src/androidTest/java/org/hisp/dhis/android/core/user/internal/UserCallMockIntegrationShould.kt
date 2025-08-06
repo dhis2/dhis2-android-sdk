@@ -58,6 +58,7 @@ class UserCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
         userCall.invoke()
 
         assertThat(userStore.count()).isEqualTo(1)
-        assertThat(userStore.selectFirst()).isEqualTo(UserSamples.getUser())
+        assertThat(userStore.selectFirst())
+            .isEqualTo(UserSamples.getUser().toBuilder().twoFactorAuthEnabled(null).build())
     }
 }

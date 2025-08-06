@@ -34,6 +34,7 @@ import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.user.AccountManager
 import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository
 import org.hisp.dhis.android.core.user.AuthorityCollectionRepository
+import org.hisp.dhis.android.core.user.TwoFactorAuthManager
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserCredentialsObjectRepository
 import org.hisp.dhis.android.core.user.UserGroupCollectionRepository
@@ -58,6 +59,7 @@ internal class UserModuleImpl(
     private val user: UserObjectRepository,
     private val accountManager: AccountManagerImpl,
     private val openIDConnectHandler: OpenIDConnectHandlerImpl,
+    private val twoFactorAuthManager: TwoFactorAuthManagerImpl,
 ) : UserModule {
 
     override fun authenticatedUser(): AuthenticatedUserObjectRepository {
@@ -115,5 +117,9 @@ internal class UserModuleImpl(
 
     override fun openIdHandler(): OpenIDConnectHandler {
         return openIDConnectHandler
+    }
+
+    override fun twoFactorAuthManager(): TwoFactorAuthManager {
+        return twoFactorAuthManager
     }
 }

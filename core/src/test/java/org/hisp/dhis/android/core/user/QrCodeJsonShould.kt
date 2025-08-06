@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2022, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,13 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user
 
-package org.hisp.dhis.android.core.user.internal
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.CoreObjectShould
+import org.hisp.dhis.android.network.twofactorauth.QrCodeJsonDTO
+import org.junit.Test
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.user.User
+class QrCodeJsonShould : CoreObjectShould("user/qr-code.json") {
 
-internal interface UserStore : IdentifiableObjectStore<User> {
-    @Throws(RuntimeException::class)
-    suspend fun updateIs2faEnabled(twoFactorAuthEnabled: Boolean)
+    @Test
+    override fun map_from_json_string() {
+        val qrCodeJsonDTO = deserialize(QrCodeJsonDTO.serializer())
+        val secret = qrCodeJsonDTO.toDomain()
+
+        assertThat(secret).isEqualTo("HMFQS5AAEFRHQ5D6UNIQCGJUKB3ITNPD")
+    }
 }

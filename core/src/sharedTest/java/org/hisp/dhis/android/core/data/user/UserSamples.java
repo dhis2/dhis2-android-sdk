@@ -46,6 +46,7 @@ public class UserSamples {
                 .surname("Barnes")
                 .email("john@hmail.com")
                 .username("android")
+                .twoFactorAuthEnabled(true)
                 .build();
     }
 }

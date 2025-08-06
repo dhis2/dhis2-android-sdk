@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,12 +26,9 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user.internal
+package org.hisp.dhis.android.network.twofactorauth
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.user.User
+import kotlinx.serialization.Serializable
 
-internal interface UserStore : IdentifiableObjectStore<User> {
-    @Throws(RuntimeException::class)
-    suspend fun updateIs2faEnabled(twoFactorAuthEnabled: Boolean)
-}
+@Serializable
+internal data class TwoFactorAuthEnablerCodeDTO(val code: String)

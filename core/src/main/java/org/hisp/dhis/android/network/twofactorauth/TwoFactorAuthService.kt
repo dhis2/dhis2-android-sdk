@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,13 +25,48 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.twofactorauth
 
-package org.hisp.dhis.android.core.user.internal
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.network.common.dto.HttpMessageResponseDTO
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.user.User
+internal class TwoFactorAuthService(private val client: HttpServiceClient) {
 
-internal interface UserStore : IdentifiableObjectStore<User> {
-    @Throws(RuntimeException::class)
-    suspend fun updateIs2faEnabled(twoFactorAuthEnabled: Boolean)
+    suspend fun is2faEnabled(): Boolean {
+        return client.get {
+            url("2fa/enabled")
+        }
+    }
+
+    suspend fun enable2fa(payload: TwoFactorAuthEnablerCodeDTO): HttpMessageResponseDTO {
+        return client.post {
+            url("2fa/enabled")
+            body(payload)
+        }
+    }
+
+    suspend fun disable2fa(payload: TwoFactorAuthEnablerCodeDTO): HttpMessageResponseDTO {
+        return client.post {
+            url("2fa/disabled")
+            body(payload)
+        }
+    }
+
+    suspend fun enrollTOTP2FA(): HttpMessageResponseDTO {
+        return client.post {
+            url("2fa/enrollTOTP2FA")
+        }
+    }
+
+    suspend fun getQrCodeJson(): QrCodeJsonDTO {
+        return client.get {
+            url("2fa/qrCodeJson")
+        }
+    }
+
+    suspend fun getTwoFactorMethods(): TwoFactorMethodsDTO {
+        return client.get {
+            url("configuration/twoFactorMethods")
+        }
+    }
 }

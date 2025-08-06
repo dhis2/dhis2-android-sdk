@@ -65,6 +65,7 @@ public final class UserTableInfo {
         private static final String EMAIL = "email";
         private static final String PHONE_NUMBER = "phoneNumber";
         private static final String NATIONALITY = "nationality";
+        private static final String TWO_FACTOR_AUTH_ENABLED = "twoFactorAuthEnabled";
 
         @Override
         public String[] all() {
@@ -82,7 +83,8 @@ public final class UserTableInfo {
                     EMAIL,
                     PHONE_NUMBER,
                     NATIONALITY,
-                    USERNAME
+                    USERNAME,
+                    TWO_FACTOR_AUTH_ENABLED
             );
         }
     }

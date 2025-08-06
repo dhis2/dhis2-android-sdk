@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,40 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user.internal
+
+package org.hisp.dhis.android.core.server
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.user.loginconfig.LoginConfig
-import org.hisp.dhis.android.core.user.loginconfig.LoginPageLayout
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTest
-import org.hisp.dhis.android.core.utils.integration.mock.MockIntegrationTestDatabaseContent
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.junit.Before
+import org.hisp.dhis.android.core.common.CoreObjectShould
+import org.hisp.dhis.android.network.loginconfig.LoginConfigDTO
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner::class)
-class LoginConfigCallMockIntegrationShould : BaseMockIntegrationTest() {
-    @Before
-    fun setUp() {
-        setUpClass(MockIntegrationTestDatabaseContent.EmptyEnqueable)
-        dhis2MockServer.enqueueMockResponse(LOGIN_CONFIG_JSON)
-    }
+class LoginConfigShould : CoreObjectShould("server/login_config.json") {
 
     @Test
-    fun return_correct_login_config_when_call() {
-        val loginConfig = getDownload()
+    override fun map_from_json_string() {
+        val loginConfigDTO = deserialize(LoginConfigDTO.serializer())
+        val loginConfig = loginConfigDTO.toDomain()
 
         assertThat(loginConfig.apiVersion).isEqualTo("2.41.3")
         assertThat(loginConfig.applicationTitle).isEqualTo("DHIS 2 Demo - Sierra Leone")
         assertThat(loginConfig.applicationDescription).isEqualTo("Welcome to the DHIS 2 demo application")
         assertThat(loginConfig.applicationNotification).isEqualTo(
             "Log in with admin / district and feel free to do changes as system is reset every night." +
-                "<br><br><i>Note: In order to maintain access for everyone, changes to the admin user " +
-                "password are blocked in the DHIS2 play environment.</i>",
+                "\u003Cbr\u003E\u003Cbr\u003E\u003Ci\u003ENote: In order to maintain access for everyone, " +
+                "changes to the admin user password are blocked in the DHIS2 play environment.\u003C/i\u003E",
         )
-        assertThat(loginConfig.applicationLeftSideFooter)
-            .isEqualTo("Learn more at <a href=\"http://www.dhis2.org\">dhis2.org</a>")
+        assertThat(loginConfig.applicationLeftSideFooter).isEqualTo(
+            "Learn more at \u003Ca href=" +
+                "\"http://www.dhis2.org\"\u003Edhis2.org\u003C/a\u003E",
+        )
+        assertThat(loginConfig.applicationRightSideFooter).isEqualTo(
+            "Learn more at \u003Ca href=" +
+                "\"http://www.dhis2.org\"\u003Edhis2.org\u003C/a\u003E",
+        )
         assertThat(loginConfig.countryFlag).isEqualTo("sierra_leone")
         assertThat(loginConfig.uiLocale).isEqualTo("en")
         assertThat(loginConfig.loginPageLogo).isEqualTo("/api/staticContent/logo_front.png")
@@ -88,11 +85,32 @@ class LoginConfigCallMockIntegrationShould : BaseMockIntegrationTest() {
         assertThat(oidcProviders[1].url).isEqualTo("oauth2/authorization/provider2")
     }
 
-    private fun getDownload(): LoginConfig {
-        return d2.userModule().loginConfig(dhis2MockServer.baseEndpoint).blockingGet()
-    }
-
-    companion object {
-        private const val LOGIN_CONFIG_JSON = "user/login_config.json"
+    @Test
+    fun evaluate_if_oauth_is_enabled() {
+        listOf(
+            Pair(
+                LoginConfig(
+                    apiVersion = "2.42.3",
+                    oidcProviders = listOf(LoginOidcProvider(id = "google")),
+                ),
+                false,
+            ),
+            Pair(
+                LoginConfig(
+                    apiVersion = "2.42.3",
+                    oidcProviders = listOf(LoginOidcProvider(id = "google"), LoginOidcProvider(id = "dhis2-client")),
+                ),
+                true,
+            ),
+            Pair(
+                LoginConfig(
+                    apiVersion = "2.42.1",
+                    oidcProviders = listOf(LoginOidcProvider(id = "dhis2-client")),
+                ),
+                false,
+            ),
+        ).forEach { (config, oauthEnabled) ->
+            assertThat(config.isOauthEnabled()).isEqualTo(oauthEnabled)
+        }
     }
 }

@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.network.loginconfig
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.user.loginconfig.LoginConfig
-import org.hisp.dhis.android.core.user.loginconfig.LoginPageLayout
+import org.hisp.dhis.android.core.server.LoginConfig
+import org.hisp.dhis.android.core.server.LoginPageLayout
 
 @Serializable
 internal data class LoginConfigDTO(

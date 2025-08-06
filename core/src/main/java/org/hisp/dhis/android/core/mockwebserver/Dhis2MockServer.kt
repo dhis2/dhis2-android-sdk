@@ -119,6 +119,9 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
                     path.startsWith("/api/me?") ->
                         createMockResponse(USER_JSON)
 
+                    path.startsWith("/api/loginConfig") ->
+                        createMockResponse(LOGIN_CONFIG_JSON)
+
                     path.startsWith("/api/system/info?") ->
                         createMockResponse(SYSTEM_INFO_JSON)
 
@@ -334,6 +337,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
         enqueueMockResponse(ANDROID_SETTINGS_INFO_JSON)
         enqueueMockResponse(GENERAL_SETTINGS_V2_JSON)
         enqueueMockResponse(SYSTEM_INFO_JSON)
+        enqueueMockResponse(LOGIN_CONFIG_JSON)
         enqueueMockResponse(GENERAL_SETTINGS_V2_JSON)
         enqueueMockResponse(SYNCHRONIZATION_SETTTINGS_JSON)
         enqueueMockResponse(APPEARANCE_SETTINGS_JSON)
@@ -435,6 +439,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
 
     companion object {
         private const val AUTHORITIES_JSON = "authority/authorities.json"
+        private const val LOGIN_CONFIG_JSON = "server/login_config.json"
         private const val SYSTEM_INFO_JSON = "systeminfo/system_info.json"
         private const val SYSTEM_SETTINGS_JSON = "settings/system_settings.json"
         private const val STOCK_USE_CASES_JSON = "usecase.stock/stock_use_cases.json"

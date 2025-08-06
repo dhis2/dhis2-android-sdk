@@ -52,6 +52,7 @@ import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorModuleDownloader
 import org.hisp.dhis.android.core.program.internal.ProgramModuleDownloader
+import org.hisp.dhis.android.core.server.internal.LoginConfigDownloader
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
 import org.hisp.dhis.android.core.settings.internal.SettingModuleDownloader
 import org.hisp.dhis.android.core.sms.SmsModule
@@ -74,6 +75,7 @@ import org.mockito.kotlin.*
 class MetadataCallShould : BaseCallShould() {
     private val user: User = mock()
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor = CoroutineAPICallExecutorMock()
+    private val loginConfigDownloader: LoginConfigDownloader = mock()
     private val systemInfoDownloader: SystemInfoModuleDownloader = mock()
     private val systemSettingDownloader: SettingModuleDownloader = mock()
     private val useCaseModuleDownloader: UseCaseModuleDownloader = mock()
@@ -111,6 +113,9 @@ class MetadataCallShould : BaseCallShould() {
     override fun setUp() {
         super.setUp()
         // Calls
+        loginConfigDownloader.stub {
+            onBlocking { downloadMetadata() }.doReturn(Unit)
+        }
         systemInfoDownloader.stub {
             onBlocking { downloadWithProgressManager(any()) }.doReturn(BaseD2Progress.empty(10))
         }
@@ -174,6 +179,7 @@ class MetadataCallShould : BaseCallShould() {
         // Metadata call
         metadataCall = MetadataCall(
             coroutineAPICallExecutor,
+            loginConfigDownloader,
             systemInfoDownloader,
             systemSettingDownloader,
             useCaseModuleDownloader,

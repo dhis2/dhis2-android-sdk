@@ -60,6 +60,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModule
 import org.hisp.dhis.android.core.period.PeriodModule
 import org.hisp.dhis.android.core.program.ProgramModule
 import org.hisp.dhis.android.core.relationship.RelationshipModule
+import org.hisp.dhis.android.core.server.ServerModule
 import org.hisp.dhis.android.core.settings.SettingModule
 import org.hisp.dhis.android.core.sms.SmsModule
 import org.hisp.dhis.android.core.systeminfo.SystemInfoModule
@@ -203,6 +204,10 @@ class D2 internal constructor(internal val d2DIComponent: D2DIComponent) {
 
     fun programModule(): ProgramModule {
         return modules.program
+    }
+
+    fun serverModule(): ServerModule {
+        return modules.server
     }
 
     fun useCaseModule(): UseCaseModule {

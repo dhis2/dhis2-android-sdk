@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.network.loginconfig
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.user.loginconfig.LoginOidcProvider
+import org.hisp.dhis.android.core.server.LoginOidcProvider
 
 @Serializable
 internal data class LoginOidcProviderDTO(

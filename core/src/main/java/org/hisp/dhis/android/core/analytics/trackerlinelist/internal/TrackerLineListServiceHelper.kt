@@ -40,7 +40,6 @@ internal object TrackerLineListServiceHelper {
         evaluatedParams: TrackerLineListParams,
         databaseAdapter: DatabaseAdapter,
     ): List<List<TrackerLineListValue>> {
-//        val sqliteQuery = SimpleSQLiteQuery(sqlClause)
         val rows: MutableList<List<TrackerLineListValue>> = mutableListOf()
 
         try {
@@ -65,10 +64,10 @@ internal object TrackerLineListServiceHelper {
         val rowValues: MutableList<TrackerLineListValue> = mutableListOf()
         columns.forEach { item ->
             val valueFromMap = rowMap[item.id]
-            val stringValue: String? = when (valueFromMap) {
-                is String -> valueFromMap
-                null -> null
-                else -> valueFromMap.toString()
+            val stringValue: String? = if (valueFromMap?.isEmpty() == true) {
+                null
+            } else {
+                valueFromMap
             }
             rowValues.add(TrackerLineListValue(item.id, stringValue))
         }

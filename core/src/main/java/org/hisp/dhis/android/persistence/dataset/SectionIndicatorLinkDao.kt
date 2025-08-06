@@ -31,5 +31,8 @@ package org.hisp.dhis.android.persistence.dataset
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "SectionIndicatorLinkTableInfo.TABLE_NAME")
+@GenerateDaoQueries(
+    tableName = "SectionIndicatorLinkTableInfo.TABLE_NAME",
+    parentColumnName = "SectionIndicatorLinkTableInfo.Columns.SECTION"
+)
 internal interface SectionIndicatorLinkDaoTemp : LinkDao<SectionIndicatorLinkDB>

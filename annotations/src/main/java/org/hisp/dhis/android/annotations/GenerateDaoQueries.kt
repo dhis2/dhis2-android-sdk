@@ -30,4 +30,4 @@ package org.hisp.dhis.android.processor
 
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
-annotation class GenerateDaoQueries(val tableName: String)
+annotation class GenerateDaoQueries(val tableName: String, val parentColumnName: String = "")

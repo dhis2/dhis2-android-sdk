@@ -29,7 +29,11 @@
 package org.hisp.dhis.android.persistence.visualization
 
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
+import org.hisp.dhis.android.persistence.map.MapLayerImageryProviderTableInfo
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "VisualizationDimensionItemTableInfo.TABLE_NAME")
+@GenerateDaoQueries(
+    tableName = "VisualizationDimensionItemTableInfo.TABLE_NAME",
+    parentColumnName = "VisualizationDimensionItemTableInfo.Columns.VISUALIZATION"
+)
 internal interface VisualizationDimensionItemDaoTemp : LinkDao<VisualizationDimensionItemDB>

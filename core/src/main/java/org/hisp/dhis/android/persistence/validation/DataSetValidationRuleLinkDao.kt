@@ -31,5 +31,8 @@ package org.hisp.dhis.android.persistence.validation
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "DataSetValidationRuleLinkTableInfo.TABLE_NAME")
+@GenerateDaoQueries(
+    tableName = "DataSetValidationRuleLinkTableInfo.TABLE_NAME",
+    parentColumnName = "DataSetValidationRuleLinkTableInfo.Columns.DATA_SET"
+)
 internal interface DataSetValidationRuleLinkDaoTemp : LinkDao<DataSetValidationRuleLinkDB>

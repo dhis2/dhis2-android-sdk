@@ -44,7 +44,17 @@ class DaoQueriesProcessor(
                 } else {
                     null
                 }
-            }?.takeIf { it.isNotBlank() } // Asegura que no sea solo un String vacío
+            }?.takeIf { it.isNotBlank() }
+
+            val parentColumnName = symbol.annotations.firstNotNullOfOrNull { annotation ->
+                if (annotation.shortName.asString() == GenerateDaoQueries::class.simpleName &&
+                    annotation.annotationType.resolve().declaration.qualifiedName?.asString() == GenerateDaoQueries::class.qualifiedName
+                ) {
+                    annotation.arguments.find { arg -> arg.name?.asString() == "parentColumnName" }?.value as? String
+                } else {
+                    null
+                }
+            }?.takeIf { it.isNotBlank() }
 
             if (tableName == null) {
                 logger.error(
@@ -116,7 +126,7 @@ class DaoQueriesProcessor(
                         file += "\n"
                         file += "@Dao\n"
                         file += getSignature(generatedInterfaceName, originalDaoName)
-                        file += buildLinkDaoQueries(tableName)
+                        file += buildLinkDaoQueries(tableName, parentColumnName!!)
                     }
 
                     "IdentifiableDataObjectDao" -> {
@@ -168,24 +178,25 @@ class DaoQueriesProcessor(
             "    override suspend fun delete(uid: String): Int\n\n"
     }
 
-    private fun buildLinkDaoQueries(tableName: String): String {
+    private fun buildLinkDaoQueries(tableName: String, parentColumnName: String): String {
         return buildObjectDaoQueries(tableName) +
-            "    @Query(\"DELETE FROM ${'$'}{${tableName}} WHERE :parentColumn = :parentUid\")\n" +
-            "    override suspend fun deleteLinksForMasterUid(parentColumn: String, parentUid: String): Int\n\n" +
+            "    @Query(\"DELETE FROM ${'$'}{${tableName}} WHERE ${'$'}{${parentColumnName}} = :parentUid\")\n" +
+            "    override suspend fun deleteLinksForMasterUid(parentUid: String): Int\n\n" +
             "    @Query(\"DELETE FROM ${'$'}{${tableName}}\")" +
             "    override suspend fun deleteLinksForMasterUid(): Int"
     }
+
     private fun buildIdentifiableDataObjectDaoQueries(tableName: String): String {
         return buildIdentifiableObjectDaoQueries(tableName) +
             "    @Query(\"UPDATE ${'$'}{${tableName}} SET ${'$'}{DataColumns.SYNC_STATE} = :state WHERE " +
             "${'$'}{IdentifiableColumns.UID} = :uid\")\n" +
-            "    override suspend fun setSyncState(uid: String, state: State)\n\n" +
+            "    override suspend fun setSyncState(uid: String, state: State): Int\n\n" +
             "    @Query(\"UPDATE ${'$'}{${tableName}} SET ${'$'}{DataColumns.SYNC_STATE} = :state WHERE " +
             "${'$'}{IdentifiableColumns.UID} IN (:uids)\")\n" +
-            "    override suspend fun setSyncState(uids: List<String>, state: State)\n\n" +
+            "    override suspend fun setSyncState(uids: List<String>, state: State): Int\n\n" +
             "    @Query(\"UPDATE ${'$'}{${tableName}} SET ${'$'}{DataColumns.SYNC_STATE} = :newstate WHERE " +
             "${'$'}{IdentifiableColumns.UID} = :uid AND ${'$'}{DataColumns.SYNC_STATE} = :updateState\")\n" +
-            "    override suspend fun setSyncStateIfUploading(uid: String, newstate: State, updateState: State)\n\n"
+            "    override suspend fun setSyncStateIfUploading(uid: String, newstate: State, updateState: State): Int\n\n"
     }
 
     private fun buildIdentifiableDeletableDataObjectDaoQueries(tableName: String): String {

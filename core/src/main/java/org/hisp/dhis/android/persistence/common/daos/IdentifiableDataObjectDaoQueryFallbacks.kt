@@ -31,8 +31,8 @@ package org.hisp.dhis.android.persistence.common.daos
 import org.hisp.dhis.android.core.common.State
 
 internal interface IdentifiableDataObjectDaoQueryFallbacks {
-    suspend fun setSyncState(uid: String, state: State)
-    suspend fun setSyncState(uids: List<String>, state: State)
-    suspend fun setSyncStateIfUploading(uid: String, newstate: State, updateState: State)
+    suspend fun setSyncState(uid: String, state: State): Int
+    suspend fun setSyncState(uids: List<String>, state: State): Int
+    suspend fun setSyncStateIfUploading(uid: String, newstate: State, updateState: State): Int
 
 }

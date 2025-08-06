@@ -31,5 +31,8 @@ package org.hisp.dhis.android.persistence.user
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "UserOrganisationUnitTableInfo.TABLE_NAME")
+@GenerateDaoQueries(
+    tableName = "UserOrganisationUnitTableInfo.TABLE_NAME",
+    parentColumnName = "UserOrganisationUnitTableInfo.Columns.ORGANISATION_UNIT_SCOPE"
+)
 internal interface UserOrganisationUnitDaoTemp : LinkDao<UserOrganisationUnitDB>

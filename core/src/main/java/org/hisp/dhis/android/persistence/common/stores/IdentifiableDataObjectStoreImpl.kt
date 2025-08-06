@@ -50,24 +50,21 @@ internal open class IdentifiableDataObjectStoreImpl<D, P : EntityDB<D>>(
     override suspend fun setSyncState(uid: String, state: State): Int {
         val identifiableDataObjectDao = daoProvider()
         CollectionsHelper.isNull(uid)
-        val query: RoomRawQuery = builder.setSyncState(uid, state.toString())
-        return identifiableDataObjectDao.intRawQuery(query) // Corregir esto, no se puede usar raw query para editar
+        return identifiableDataObjectDao.setSyncState(uid, state)
     }
 
     @Throws(RuntimeException::class)
     override suspend fun setSyncState(uids: List<String>, state: State): Int {
         val identifiableDataObjectDao = daoProvider()
         val nonNullUids = uids.filterNotNull()
-        val query: RoomRawQuery = builder.setSyncState(nonNullUids, state.toString())
-        return identifiableDataObjectDao.intRawQuery(query) // Corregir esto, no se puede usar raw query para editar
+        return identifiableDataObjectDao.setSyncState(nonNullUids, state)
     }
 
     @Throws(RuntimeException::class)
     override suspend fun setSyncStateIfUploading(uid: String, state: State): Int {
         val identifiableDataObjectDao = daoProvider()
         CollectionsHelper.isNull(uid)
-        val query: RoomRawQuery = builder.setSyncStateIfUploading(uid, state.toString())
-        return identifiableDataObjectDao.intRawQuery(query) // Corregir esto, no se puede usar raw query para editar
+        return identifiableDataObjectDao.setSyncStateIfUploading(uid, state, State.UPLOADING)
     }
 
     @Throws(RuntimeException::class)

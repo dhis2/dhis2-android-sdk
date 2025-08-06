@@ -31,5 +31,8 @@ package org.hisp.dhis.android.persistence.settings
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "AnalyticsTeiIndicatorTableInfo.TABLE_NAME")
+@GenerateDaoQueries(
+    tableName = "AnalyticsTeiIndicatorTableInfo.TABLE_NAME",
+    parentColumnName = "AnalyticsTeiIndicatorTableInfo.Columns.TEI_SETTING"
+)
 internal interface AnalyticsTeiIndicatorDaoTemp : LinkDao<AnalyticsTeiIndicatorDB>

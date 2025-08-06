@@ -58,15 +58,13 @@ internal open class LinkStoreImpl<D : CoreObject, P : EntityDB<D>>(
     override suspend fun deleteLinksForMasterUid(parentUid: String) {
         val linkStoreDao = daoProvider()
         CollectionsHelper.isNull(parentUid)
-        val query = builder.deleteLinksForParentUid(parentUid)
-        linkStoreDao.intRawQuery(query) // Corregir esto, no se puede usar raw query para editar
+        linkStoreDao.deleteLinksForMasterUid(parentUid)
     }
 
     @Throws(RuntimeException::class)
     override suspend fun deleteAllLinks(): Int {
         val linkStoreDao = daoProvider()
-        val query = builder.deleteTable()
-        return linkStoreDao.intRawQuery(query) // Corregir esto, no se puede usar raw query para editar
+        return linkStoreDao.deleteLinksForMasterUid()
     }
 
     @Throws(RuntimeException::class)

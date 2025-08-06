@@ -31,5 +31,8 @@ package org.hisp.dhis.android.persistence.legendset
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "ProgramIndicatorLegendSetLinkTableInfo.TABLE_NAME")
+@GenerateDaoQueries(
+    tableName = "ProgramIndicatorLegendSetLinkTableInfo.TABLE_NAME",
+    parentColumnName = "ProgramIndicatorLegendSetLinkTableInfo.Columns.PROGRAM_INDICATOR"
+)
 internal interface ProgramIndicatorLegendSetLinkDaoTemp : LinkDao<ProgramIndicatorLegendSetLinkDB>

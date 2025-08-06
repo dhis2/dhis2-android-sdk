@@ -136,7 +136,7 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
 
         assertThat(
             evaluateEventDataElement(deAggregation = AggregationType.FIRST_AVERAGE_ORG_UNIT),
-        ).isEqualTo("15")
+        ).isEqualTo("15.0")
 
         assertThat(
             evaluateEventDataElement(deAggregation = AggregationType.LAST, pe = period2019Q4),
@@ -148,11 +148,11 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
 
         assertThat(
             evaluateEventDataElement(deAggregation = AggregationType.LAST_AVERAGE_ORG_UNIT, pe = period2019Q4),
-        ).isEqualTo("15")
+        ).isEqualTo("15.0")
 
         assertThat(
             evaluateEventDataElement(deAggregation = AggregationType.LAST_AVERAGE_ORG_UNIT, pe = period202001),
-        ).isEqualTo("15")
+        ).isEqualTo("15.0")
 
         assertThat(
             evaluateEventDataElement(deAggregation = AggregationType.LAST_IN_PERIOD, pe = period2019Q4),
@@ -167,7 +167,7 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
                 deAggregation = AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT,
                 pe = period2019Q4,
             ),
-        ).isEqualTo("15")
+        ).isEqualTo("15.0")
 
         assertThat(
             evaluateEventDataElement(
@@ -208,7 +208,7 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
 
         assertThat(
             evaluateEventAttribute(atAggregation = AggregationType.FIRST_AVERAGE_ORG_UNIT),
-        ).isEqualTo("4")
+        ).isEqualTo("4.0")
 
         assertThat(
             evaluateEventAttribute(atAggregation = AggregationType.FIRST_FIRST_ORG_UNIT),
@@ -224,11 +224,11 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
 
         assertThat(
             evaluateEventAttribute(atAggregation = AggregationType.LAST_AVERAGE_ORG_UNIT, pe = period2019Q4),
-        ).isEqualTo("4")
+        ).isEqualTo("4.0")
 
         assertThat(
             evaluateEventAttribute(atAggregation = AggregationType.LAST_AVERAGE_ORG_UNIT, pe = period202001),
-        ).isEqualTo("4")
+        ).isEqualTo("4.0")
 
         assertThat(
             evaluateEventAttribute(atAggregation = AggregationType.LAST_IN_PERIOD, pe = period2019Q4),
@@ -240,7 +240,7 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
 
         assertThat(
             evaluateEventAttribute(atAggregation = AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT, pe = period2019Q4),
-        ).isEqualTo("4")
+        ).isEqualTo("4.0")
 
         assertThat(
             evaluateEventAttribute(atAggregation = AggregationType.LAST_IN_PERIOD_AVERAGE_ORG_UNIT, pe = period202001),
@@ -303,11 +303,11 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
 
         assertThat(
             evaluateEventDataElementOption(deAggregation = AggregationType.SUM),
-        ).isEqualTo("0")
+        ).isEqualTo("0.0")
 
         assertThat(
             evaluateEventDataElementOption(deAggregation = AggregationType.AVERAGE),
-        ).isEqualTo("0")
+        ).isEqualTo("0.0")
 
         assertThat(
             evaluateEventDataElementOption(deAggregation = AggregationType.MIN),
@@ -319,11 +319,11 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
 
         assertThat(
             evaluateEventDataElementOption(deAggregation = AggregationType.FIRST),
-        ).isEqualTo("0")
+        ).isEqualTo("0.0")
 
         assertThat(
             evaluateEventDataElementOption(deAggregation = AggregationType.LAST),
-        ).isEqualTo("0")
+        ).isEqualTo("0.0")
     }
 
     @Test
@@ -336,11 +336,11 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
 
         assertThat(
             evaluateEventAttributeOption(atAggregation = AggregationType.SUM),
-        ).isEqualTo("0")
+        ).isEqualTo("0.0")
 
         assertThat(
             evaluateEventAttributeOption(atAggregation = AggregationType.AVERAGE),
-        ).isEqualTo("0")
+        ).isEqualTo("0.0")
 
         assertThat(
             evaluateEventAttributeOption(atAggregation = AggregationType.MIN),
@@ -352,11 +352,11 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
 
         assertThat(
             evaluateEventAttributeOption(atAggregation = AggregationType.FIRST),
-        ).isEqualTo("0")
+        ).isEqualTo("0.0")
 
         assertThat(
             evaluateEventAttributeOption(atAggregation = AggregationType.LAST),
-        ).isEqualTo("0")
+        ).isEqualTo("0.0")
     }
 
     @Test
@@ -377,14 +377,14 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
 
         assertThat(evaluateEventDataElement(program, dataElement1)).isEqualTo("30")
         assertThat(evaluateEventDataElement(program, dataElement1, overrideAggregationType = AggregationType.AVERAGE))
-            .isEqualTo("15")
+            .isEqualTo("15.0")
 
         helper.insertTrackedEntityAttributeValue(trackedEntity1.uid(), attribute1.uid(), "5")
         helper.insertTrackedEntityAttributeValue(trackedEntity2.uid(), attribute1.uid(), "3")
 
         assertThat(evaluateEventAttribute(program, attribute1)).isEqualTo("8")
         assertThat(evaluateEventAttribute(program, attribute1, overrideAggregationType = AggregationType.AVERAGE))
-            .isEqualTo("4")
+            .isEqualTo("4.0")
     }
 
     private suspend fun evaluateEventDataElement(

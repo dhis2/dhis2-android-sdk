@@ -133,6 +133,39 @@ In order to configure all parameters check the following OpenID providers guidel
 |[Azure AD](https://docs.microsoft.com/es-es/azure/active-directory-b2c/signin-appauth-android?tabs=app-reg-ga)        |
 |[WS02](https://medium.com/@maduranga.siriwardena/configuring-appauth-android-with-wso2-identity-server-8d378835c10a)            |
 
+## Two-Factor Authentication {#android_sdk_two_factor_authentication}
+
+The SDK now lets your app enable, disable, enter 2FA enrollment mode and query TOTP-based 2FA via `TwoFactorAuthManager`:
+
+```kotlin
+// Get the manager
+val twoFactorAuthManager = d2.userModule().twoFactorAuthManager()
+
+// Can we enroll?
+twoFactorAuthManager.canTotp2faBeEnabled()
+  .onSuccess { allowed -> /* true = proceed */ }
+  .onFailure { error -> /* handle D2Error */ }
+
+// Fetch (or auto-enroll + fetch) the secret
+val secret: String = twoFactorAuthManager.getTotpSecret()
+
+// Enable 2FA with a code from the authenticator app
+twoFactorAuthManager.enable2fa("123456")
+  .onSuccess { resp -> /* OK */ }
+  .onFailure { error -> /* handle */ }
+
+// Disable 2FA
+twoFactorAuthManager.disable2fa("654321")
+  .onSuccess { resp -> /* OK */ }
+  .onFailure { error -> /* handle */ }
+
+// Check current status (falls back to last-known value on failure)
+val enabled: Boolean = twoFactorAuthManager.is2faEnabled()
+```
+Behavior notes:
+- `getTotpSecret()` will `POST` to `/2fa/enrollTOTP2FA` if you’re not already in enrollment mode, then retry the QR-secret fetch.
+- The SDK persists the 2FA status in the local `User` table so that `user.twoFactorAuthEnabled()` can still be used even when offline.
+
 ## Metadata synchronization { #android_sdk_metadata_synchronization }
 
 Metadata synchronization is usually the first step after login. It fetches and persists the metadata needed by the current user. To launch metadata synchronization we must execute:

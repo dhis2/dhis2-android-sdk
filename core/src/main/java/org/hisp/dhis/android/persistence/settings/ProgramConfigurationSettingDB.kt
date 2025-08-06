@@ -35,7 +35,7 @@ internal data class ProgramConfigurationSettingDB(
             }
             minimumLocationAccuracy(minimumLocationAccuracy)
             disableManualLocation(disableManualLocation)
-            quickActions(quickActions?.toDomain())
+            quickActions(quickActions?.toDomain() ?: emptyList())
         }.build()
     }
 }

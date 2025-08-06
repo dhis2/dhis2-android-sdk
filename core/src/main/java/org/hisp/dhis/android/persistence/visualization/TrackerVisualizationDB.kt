@@ -69,7 +69,7 @@ internal data class TrackerVisualizationDB(
             program(ObjectWithUid.create(program))
             programStage(ObjectWithUid.create(programStage))
             trackedEntityType(ObjectWithUid.create(trackedEntityType))
-            sorting(sorting?.toDomain())
+            sorting(sorting?.toDomain() ?: emptyList())
         }.build()
     }
 }

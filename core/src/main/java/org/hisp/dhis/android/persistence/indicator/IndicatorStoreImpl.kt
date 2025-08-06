@@ -51,7 +51,8 @@ internal class IndicatorStoreImpl(
             DataSetIndicatorLinkTableInfo.Columns.DATA_SET,
             DataSetIndicatorLinkTableInfo.Columns.INDICATOR,
         )
-        val query = builder.selectChildrenWithLinkTable(
+        val sectionSqlBuilder = SQLStatementBuilderImpl(DataSetIndicatorLinkTableInfo.TABLE_INFO)
+        val query = sectionSqlBuilder.selectChildrenWithLinkTable(
             projection,
             dataSetUid,
             null,
@@ -65,7 +66,8 @@ internal class IndicatorStoreImpl(
             SectionIndicatorLinkTableInfo.Columns.SECTION,
             SectionIndicatorLinkTableInfo.Columns.INDICATOR,
         )
-        val query = builder.selectChildrenWithLinkTable(
+        val sectionSqlBuilder = SQLStatementBuilderImpl(SectionIndicatorLinkTableInfo.TABLE_INFO)
+        val query = sectionSqlBuilder.selectChildrenWithLinkTable(
             projection,
             sectionUid,
             null,

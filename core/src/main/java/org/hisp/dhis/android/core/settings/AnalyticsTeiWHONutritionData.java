@@ -52,9 +52,11 @@ public abstract class AnalyticsTeiWHONutritionData implements CoreObject {
     @ColumnAdapter(AnalyticsTeiWHONutritionGenderColumnAdapter.class)
     public abstract AnalyticsTeiWHONutritionGender gender();
 
+    @Nullable
     @ColumnAdapter(IgnoreAnalyticsTeiWHODataItemColumnAdapter.class)
     public abstract AnalyticsTeiWHONutritionItem x();
 
+    @Nullable
     @ColumnAdapter(IgnoreAnalyticsTeiWHODataItemColumnAdapter.class)
     public abstract AnalyticsTeiWHONutritionItem y();
 

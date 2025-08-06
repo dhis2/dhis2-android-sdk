@@ -67,14 +67,18 @@ internal class DatabaseConfigurationHelper(
             equalsIgnoreProtocol(it.serverUrl(), serverUrl) && it.username() == username
         }
 
-        val newAccount = existedAccount ?: DatabaseAccount.builder()
-            .username(username)
-            .serverUrl(serverUrl)
-            .databaseName(dbName)
-            .encrypted(encrypt)
-            .databaseCreationDate(dateProvider.dateStr)
-            .importDB(importDb)
-            .build()
+        val newAccount = if (existedAccount != null && existedAccount.encrypted() == encrypt) {
+            existedAccount
+        } else {
+            DatabaseAccount.builder()
+                .username(username)
+                .serverUrl(serverUrl)
+                .databaseName(dbName)
+                .encrypted(encrypt)
+                .databaseCreationDate(dateProvider.dateStr)
+                .importDB(importDb)
+                .build()
+        }
 
         return addOrUpdateAccount(configuration, newAccount)
     }

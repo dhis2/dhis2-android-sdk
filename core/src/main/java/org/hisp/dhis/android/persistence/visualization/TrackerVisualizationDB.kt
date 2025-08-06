@@ -66,9 +66,9 @@ internal data class TrackerVisualizationDB(
             displayDescription(displayDescription)
             type(type?.let { TrackerVisualizationType.valueOf(it) })
             outputType(outputType?.let { TrackerVisualizationOutputType.valueOf(it) })
-            program(ObjectWithUid.create(program))
-            programStage(ObjectWithUid.create(programStage))
-            trackedEntityType(ObjectWithUid.create(trackedEntityType))
+            program?.let { program(ObjectWithUid.create(it)) }
+            programStage?.let { programStage(ObjectWithUid.create(it)) }
+            trackedEntityType?.let { trackedEntityType(ObjectWithUid.create(it)) }
             sorting(sorting?.toDomain() ?: emptyList())
         }.build()
     }

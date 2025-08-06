@@ -37,7 +37,7 @@ internal data class TrackedEntityTypeAttributeDB(
     override fun toDomain(): TrackedEntityTypeAttribute {
         return TrackedEntityTypeAttribute.builder()
             .trackedEntityType(ObjectWithUid.create(trackedEntityType))
-            .trackedEntityAttribute(trackedEntityAttribute?.let { ObjectWithUid.create(it) })
+            .trackedEntityAttribute(ObjectWithUid.create(trackedEntityAttribute))
             .displayInList(displayInList)
             .mandatory(mandatory?.let { it })
             .searchable(searchable)

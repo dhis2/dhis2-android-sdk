@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.analytics.eventlinelist
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
 import org.hisp.dhis.android.core.analytics.LegendEvaluator
@@ -148,60 +149,64 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
     )
 
     @Before
-    fun setUp() = runTest {
-        setUpClass()
+    fun setUp() {
+        runBlocking {
+            setUpClass()
 
-        trackedEntityTypeStore.insert(trackedEntityType)
+            trackedEntityTypeStore.insert(trackedEntityType)
 
-        categoryComboStore.insert(categoryCombo)
-        categoryOptionComboStore.insert(categoryOptionCombo)
+            categoryComboStore.insert(categoryCombo)
+            categoryOptionComboStore.insert(categoryOptionCombo)
 
-        programStore.insert(program1)
-        programStageStore.insert(program1Stage1)
-        programStageStore.insert(program1Stage2)
+            programStore.insert(program1)
+            programStageStore.insert(program1Stage1)
+            programStageStore.insert(program1Stage2)
 
-        legendSetStore.insert(legendSet1)
-        legendSetStore.insert(legendSet2)
+            legendSetStore.insert(legendSet1)
+            legendSetStore.insert(legendSet2)
 
-        val legends1 =
-            legendSet1.legends()!!.map { it.toBuilder().legendSet(ObjectWithUid.create(legendSet1.uid())).build() }
-        legendStore.insert(legends1)
+            val legends1 =
+                legendSet1.legends()!!.map { it.toBuilder().legendSet(ObjectWithUid.create(legendSet1.uid())).build() }
+            legendStore.insert(legends1)
 
-        val legends2 =
-            legendSet2.legends()!!.map { it.toBuilder().legendSet(ObjectWithUid.create(legendSet2.uid())).build() }
-        legendStore.insert(legends2)
+            val legends2 =
+                legendSet2.legends()!!.map { it.toBuilder().legendSet(ObjectWithUid.create(legendSet2.uid())).build() }
+            legendStore.insert(legends2)
 
-        dataElementStore.insert(dataElement1)
-        createDataElementLegendSetLinks(dataElement1.uid(), dataElement1.legendSets()!!)
-        dataElementStore.insert(dataElement2)
-        createDataElementLegendSetLinks(dataElement2.uid(), dataElement2.legendSets()!!)
+            dataElementStore.insert(dataElement1)
+            createDataElementLegendSetLinks(dataElement1.uid(), dataElement1.legendSets()!!)
+            dataElementStore.insert(dataElement2)
+            createDataElementLegendSetLinks(dataElement2.uid(), dataElement2.legendSets()!!)
 
-        organisationUnitStore.insert(organisationUnit1)
-        userOrganisationUnitStore.insert(userOrganisationUnit)
+            organisationUnitStore.insert(organisationUnit1)
+            userOrganisationUnitStore.insert(userOrganisationUnit)
 
-        createTei()
-        createEnrollment()
+            createTei()
+            createEnrollment()
+        }
     }
 
     @After
-    fun tearDown() = runTest {
-        trackedEntityTypeStore.delete()
-        categoryComboStore.delete()
-        categoryOptionComboStore.delete()
-        programStore.delete()
-        programStageStore.delete()
-        dataElementStore.delete()
-        dataElementLegendSetLinkStore.delete()
-        organisationUnitStore.delete()
-        userOrganisationUnitStore.delete()
-        trackedEntityInstanceStore.delete()
-        eventStore.delete()
-        trackedEntityDataValueStore.delete()
-        programIndicatorStore.delete()
-        programIndicatorLegendSetLinkStore.delete()
-        enrollmentStore.delete()
-        legendSetStore.delete()
-        legendStore.delete()
+    fun tearDown() {
+        runBlocking {
+            trackedEntityTypeStore.delete()
+            categoryComboStore.delete()
+            categoryOptionComboStore.delete()
+            programStore.delete()
+            programStageStore.delete()
+            dataElementStore.delete()
+            dataElementLegendSetLinkStore.delete()
+            organisationUnitStore.delete()
+            userOrganisationUnitStore.delete()
+            trackedEntityInstanceStore.delete()
+            eventStore.delete()
+            trackedEntityDataValueStore.delete()
+            programIndicatorStore.delete()
+            programIndicatorLegendSetLinkStore.delete()
+            enrollmentStore.delete()
+            legendSetStore.delete()
+            legendStore.delete()
+        }
     }
 
     @Test

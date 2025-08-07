@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.After
@@ -40,8 +40,8 @@ import org.junit.runner.RunWith
 class TrackedEntityInstanceDownloadCallEnqueableMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueable() {
 
     @Before
-    fun setUp() = runTest {
-        d2.wipeModule().wipeData()
+    fun setUp() {
+        runBlocking { d2.wipeModule().wipeData() }
     }
 
     @Test
@@ -60,7 +60,7 @@ class TrackedEntityInstanceDownloadCallEnqueableMockIntegrationShould : BaseMock
     }
 
     @After
-    suspend fun tearDown() {
-        d2.wipeModule().wipeData()
+    fun tearDown() {
+        runBlocking { d2.wipeModule().wipeData() }
     }
 }

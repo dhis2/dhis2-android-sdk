@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.organisationunit.internal
 
 import android.content.ContentValues
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
@@ -66,48 +67,50 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
     private val expectedAdonkiaCHP = OrganisationUnitSamples.getAdonkiaCHP()
 
     @Before
-    fun setUp() = runTest {
-        dhis2MockServer.enqueueMockResponse("organisationunit/admin_organisation_units.json")
-        val orgUnit = OrganisationUnit.builder().uid("O6uvpzGd5pu").path("/ImspTQPwCqd/O6uvpzGd5pu").build()
-        val organisationUnits = listOf(orgUnit)
+    fun setUp() {
+        runBlocking {
+            dhis2MockServer.enqueueMockResponse("organisationunit/admin_organisation_units.json")
+            val orgUnit = OrganisationUnit.builder().uid("O6uvpzGd5pu").path("/ImspTQPwCqd/O6uvpzGd5pu").build()
+            val organisationUnits = listOf(orgUnit)
 
-        // dependencies for the OrganisationUnitCall:
-        val organisationUnitNetworkHandler: OrganisationUnitNetworkHandler = DhisAndroidSdkKoinContext.koin.get()
+            // dependencies for the OrganisationUnitCall:
+            val organisationUnitNetworkHandler: OrganisationUnitNetworkHandler = DhisAndroidSdkKoinContext.koin.get()
 
-        // Create a user with the root as assigned organisation unit (for the test):
-        val userStore = koin.get<UserStore>()
-        val user = UserInternalAccessor.insertOrganisationUnits(User.builder(), organisationUnits)
-            .uid(userId).build()
-        val userContentValues = ContentValues()
-        userContentValues.put(IdentifiableColumns.UID, userId)
+            // Create a user with the root as assigned organisation unit (for the test):
+            val userStore = koin.get<UserStore>()
+            val user = UserInternalAccessor.insertOrganisationUnits(User.builder(), organisationUnits)
+                .uid(userId).build()
+            val userContentValues = ContentValues()
+            userContentValues.put(IdentifiableColumns.UID, userId)
 
-        userStore.insert(user)
-        userStore.insert(User.builder().uid(userId).build())
+            userStore.insert(user)
+            userStore.insert(User.builder().uid(userId).build())
 
-        // inserting programs for creating OrgUnitProgramLinks
-        val programUid = "lxAQ7Zs9VYR"
-        val programStore = koin.get<ProgramStore>()
-        programStore.insert(Program.builder().uid(programUid).build())
+            // inserting programs for creating OrgUnitProgramLinks
+            val programUid = "lxAQ7Zs9VYR"
+            val programStore = koin.get<ProgramStore>()
+            programStore.insert(Program.builder().uid(programUid).build())
 
-        // inserting dataSets for creating OrgUnitDataSetLinks
-        insertDataSet()
-        val organisationUnitHandler = OrganisationUnitHandler(
-            koin.get(),
-            UserOrganisationUnitLinkHandler(koin.get()),
-            OrganisationUnitProgramLinkHandler(koin.get()),
-            DataSetOrganisationUnitLinkHandler(koin.get()),
-            OrganisationUnitGroupHandler(koin.get()),
-            OrganisationUnitOrganisationUnitGroupLinkHandler(koin.get()),
-        )
-        val organisationUnitCollectionCleaner = OrganisationUnitCollectionCleaner(databaseAdapter)
-        organisationUnitCall = {
-            OrganisationUnitCall(
-                organisationUnitNetworkHandler,
-                organisationUnitHandler,
+            // inserting dataSets for creating OrgUnitDataSetLinks
+            insertDataSet()
+            val organisationUnitHandler = OrganisationUnitHandler(
                 koin.get(),
-                koin.get(),
-                organisationUnitCollectionCleaner,
-            ).download(user)
+                UserOrganisationUnitLinkHandler(koin.get()),
+                OrganisationUnitProgramLinkHandler(koin.get()),
+                DataSetOrganisationUnitLinkHandler(koin.get()),
+                OrganisationUnitGroupHandler(koin.get()),
+                OrganisationUnitOrganisationUnitGroupLinkHandler(koin.get()),
+            )
+            val organisationUnitCollectionCleaner = OrganisationUnitCollectionCleaner(databaseAdapter)
+            organisationUnitCall = {
+                OrganisationUnitCall(
+                    organisationUnitNetworkHandler,
+                    organisationUnitHandler,
+                    koin.get(),
+                    koin.get(),
+                    organisationUnitCollectionCleaner,
+                ).download(user)
+            }
         }
     }
 
@@ -154,11 +157,13 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
 
         @AfterClass
         @JvmStatic
-        fun tearDownClass() = runTest {
-            d2.databaseAdapter().delete(ProgramTableInfo.TABLE_INFO.name())
-            d2.databaseAdapter().delete(DataSetTableInfo.TABLE_INFO.name())
-            d2.databaseAdapter().delete(CategoryComboTableInfo.TABLE_INFO.name())
-            koin.get<UserStore>().delete(userId)
+        fun tearDownClass() {
+            runBlocking {
+                d2.databaseAdapter().delete(ProgramTableInfo.TABLE_INFO.name())
+                d2.databaseAdapter().delete(DataSetTableInfo.TABLE_INFO.name())
+                d2.databaseAdapter().delete(CategoryComboTableInfo.TABLE_INFO.name())
+                koin.get<UserStore>().delete(userId)
+            }
         }
     }
 }

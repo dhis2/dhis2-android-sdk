@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.testapp.trackedentity
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.common.State
@@ -44,13 +45,13 @@ class TrackedEntityDataValueObjectRepositoryMockIntegrationShould : BaseMockInte
     private val sampleDataElement = "bx6fsa0t90x"
 
     @Before
-    fun setup() = runTest {
-        hardDeleteDataValue()
+    fun setup() {
+        runBlocking { hardDeleteDataValue() }
     }
 
     @After
-    fun tearDown() = runTest {
-        hardDeleteDataValue()
+    fun tearDown() {
+        runBlocking { hardDeleteDataValue() }
     }
 
     @Test

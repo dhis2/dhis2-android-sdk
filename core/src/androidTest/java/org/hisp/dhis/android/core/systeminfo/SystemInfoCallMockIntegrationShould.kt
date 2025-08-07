@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.systeminfo
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples
@@ -47,9 +48,11 @@ class SystemInfoCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
     private val tableInfo = SystemInfoTableInfo.TABLE_INFO
 
     @Before
-    fun setUp() = runTest {
-        dhis2MockServer.enqueueSystemInfoResponse()
-        databaseAdapter.delete(tableInfo.name(), "1", arrayOf())
+    fun setUp() {
+        runBlocking {
+            dhis2MockServer.enqueueSystemInfoResponse()
+            databaseAdapter.delete(tableInfo.name(), "1", arrayOf())
+        }
     }
 
     @Test

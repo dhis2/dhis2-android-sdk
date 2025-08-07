@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.data.database
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
@@ -51,13 +52,13 @@ abstract class ObjectStoreAbstractIntegrationShould<M : CoreObject> internal con
 
     @Before
     @Throws(IOException::class)
-    open fun setUp() = runTest {
-        store.delete()
+    open fun setUp() {
+        runBlocking { store.delete() }
     }
 
     @After
-    open fun tearDown() = runTest {
-        store.delete()
+    open fun tearDown() {
+        runBlocking { store.delete() }
     }
 
     @Test

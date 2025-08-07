@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.period
 
 import com.google.common.collect.Lists
 import com.google.common.truth.Truth
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
 import org.hisp.dhis.android.persistence.period.PeriodTableInfo
 import org.junit.AfterClass
@@ -55,8 +55,11 @@ class PeriodParserMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher
 
     companion object {
         @AfterClass
-        fun tearDown() = runTest {
-            d2.databaseAdapter().delete(PeriodTableInfo.TABLE_INFO.name())
+        @JvmStatic
+        fun tearDown() {
+            runBlocking {
+                d2.databaseAdapter().delete(PeriodTableInfo.TABLE_INFO.name())
+            }
         }
     }
 }

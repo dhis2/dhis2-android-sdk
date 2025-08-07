@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import com.google.common.collect.Lists
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.common.ObjectWithUid
@@ -72,13 +73,15 @@ class TrackedEntityDataValueStoreIntegrationShould :
     }
 
     @After
-    override fun tearDown() = runTest {
-        super.tearDown()
-        TrackedEntityInstanceStoreImpl(TestDatabaseAdapterFactory.get()).delete()
-        EnrollmentStoreImpl(TestDatabaseAdapterFactory.get()).delete()
-        EventStoreImpl(TestDatabaseAdapterFactory.get()).delete()
-        ProgramStageStoreImpl(TestDatabaseAdapterFactory.get()).delete()
-        ProgramStageDataElementStoreImpl(TestDatabaseAdapterFactory.get()).delete()
+    override fun tearDown() {
+        runBlocking {
+            super.tearDown()
+            TrackedEntityInstanceStoreImpl(TestDatabaseAdapterFactory.get()).delete()
+            EnrollmentStoreImpl(TestDatabaseAdapterFactory.get()).delete()
+            EventStoreImpl(TestDatabaseAdapterFactory.get()).delete()
+            ProgramStageStoreImpl(TestDatabaseAdapterFactory.get()).delete()
+            ProgramStageDataElementStoreImpl(TestDatabaseAdapterFactory.get()).delete()
+        }
     }
 
     override fun buildObjectToUpdate(): TrackedEntityDataValue {

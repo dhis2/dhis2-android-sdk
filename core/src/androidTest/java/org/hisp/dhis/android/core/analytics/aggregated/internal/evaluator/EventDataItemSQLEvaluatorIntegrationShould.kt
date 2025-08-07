@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
@@ -76,17 +77,19 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
     private val enrollment2 = generator.generate()
 
     @Before
-    fun setUp() = runTest {
-        helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
-        helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
-        helper.createTrackerEvent(
-            event1,
-            enrollment1,
-            program.uid(),
-            programStage1.uid(),
-            orgunitChild1.uid(),
-            eventDate = day20191101,
-        )
+    fun setUp() {
+        runBlocking {
+            helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
+            helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
+            helper.createTrackerEvent(
+                event1,
+                enrollment1,
+                program.uid(),
+                programStage1.uid(),
+                orgunitChild1.uid(),
+                eventDate = day20191101,
+            )
+        }
     }
 
     @Test

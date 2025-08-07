@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.domain.metadata
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.attribute.Attribute
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.constant.Constant
@@ -56,8 +57,8 @@ import org.junit.runner.RunWith
 class MetadataCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() {
 
     @After
-    suspend fun tearDown() {
-        d2.wipeModule().wipeEverything()
+    fun tearDown() {
+        runBlocking { d2.wipeModule().wipeEverything() }
     }
 
     @Test

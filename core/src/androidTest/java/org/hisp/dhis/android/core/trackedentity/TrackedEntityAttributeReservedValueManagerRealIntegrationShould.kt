@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.trackedentity
 
 import com.google.common.truth.Truth
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCallFactory
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
@@ -55,7 +54,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeS
 import org.hisp.dhis.android.persistence.category.CategoryComboStoreImpl
 import org.junit.Before
 import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.Mockito
@@ -72,9 +71,9 @@ internal class TrackedEntityAttributeReservedValueManagerRealIntegrationShould :
 
     @Mock
     val trackedEntityAttributeReservedValueQueryCallFactory: QueryCallFactory<
-        TrackedEntityAttributeReservedValue,
-        TrackedEntityAttributeReservedValueQuery,
-        >? =
+            TrackedEntityAttributeReservedValue,
+            TrackedEntityAttributeReservedValueQuery,
+            >? =
         null
 
     @Mock
@@ -83,74 +82,70 @@ internal class TrackedEntityAttributeReservedValueManagerRealIntegrationShould :
 
     @Captor
     private val trackedEntityAttributeReservedValueQueryCaptor:
-        ArgumentCaptor<TrackedEntityAttributeReservedValueQuery>? = null
+            ArgumentCaptor<TrackedEntityAttributeReservedValueQuery>? = null
     private var manager: TrackedEntityAttributeReservedValueManager? = null
 
     @Before
-    override fun setUp() = runTest {
-        super.setUp()
-        login()
-        store = koin.get()
-        val organisationUnitStore: OrganisationUnitStore = koin.get()
-        val trackedEntityAttributeStore: TrackedEntityAttributeStore = koin.get()
-        manager = d2.trackedEntityModule().reservedValueManager()
-        val handler = TrackedEntityAttributeReservedValueHandler(store)
-        val trackedEntityAttributeReservedValues: MutableList<TrackedEntityAttributeReservedValue> =
-            ArrayList()
-        val reservedValueBuilder = TrackedEntityAttributeReservedValue.builder()
-            .ownerObject("owner_obj")
-            .ownerUid(ownerUid)
-            .key("key")
-            .created(CREATED)
-            .expiryDate(FUTURE_DATE)
-            .organisationUnit(organisationUnitUid)
-        val reservedValue1 = reservedValueBuilder.value("value1").build()
-        val reservedValue2 = reservedValueBuilder.value("value2").build()
-        val reservedValue3 = reservedValueBuilder.value("value3").build()
-        trackedEntityAttributeReservedValues.add(reservedValue1)
-        trackedEntityAttributeReservedValues.add(reservedValue2)
-        trackedEntityAttributeReservedValues.add(reservedValue3)
-
-        organisationUnit =
-            OrganisationUnit.builder().uid(organisationUnitUid).code("org_unit_code").build()
-        organisationUnitStore.insert(organisationUnit)
-
-        pattern = "CURRENT_DATE(YYYYMM) + \"-\" + CURRENT_DATE(ww) + ORG_UNIT_CODE(...)"
-        trackedEntityAttributeStore.updateOrInsert(
-            TrackedEntityAttribute.builder().uid(ownerUid).pattern(pattern).build(),
-        )
-        val categoryCombo = CategoryCombo.builder().uid(categoryComboUid).build()
-        val store = CategoryComboStoreImpl(d2.databaseAdapter())
-        store.insert(categoryCombo)
-        val program = Program.builder().uid(programUid)
-            .categoryCombo(ObjectWithUid.create(categoryCombo.uid()))
-            .access(Access.create(null, null, DataAccess.create(true, true))).build()
-        koin.get<ProgramStore>().insert(program)
-        val programTrackedEntityAttribute = ProgramTrackedEntityAttribute.builder()
-            .uid("ptea_uid")
-            .trackedEntityAttribute(ObjectWithUid.create(ownerUid))
-            .program(ObjectWithUid.create(programUid))
-            .build()
-        koin.get<ProgramTrackedEntityAttributeStore>().insert(
-            programTrackedEntityAttribute,
-        )
-        val organisationUnitProgramLink =
-            OrganisationUnitProgramLink.builder().organisationUnit(organisationUnitUid)
-                .program(programUid).build()
-        koin.get<OrganisationUnitProgramLinkStore>().insert(
-            organisationUnitProgramLink,
-        )
+    override fun setUp() {
         runBlocking {
+            super.setUp()
+            login()
+            store = koin.get()
+            val organisationUnitStore: OrganisationUnitStore = koin.get()
+            val trackedEntityAttributeStore: TrackedEntityAttributeStore = koin.get()
+            manager = d2.trackedEntityModule().reservedValueManager()
+            val handler = TrackedEntityAttributeReservedValueHandler(store)
+            val trackedEntityAttributeReservedValues: MutableList<TrackedEntityAttributeReservedValue> =
+                ArrayList()
+            val reservedValueBuilder = TrackedEntityAttributeReservedValue.builder()
+                .ownerObject("owner_obj")
+                .ownerUid(ownerUid)
+                .key("key")
+                .created(CREATED)
+                .expiryDate(FUTURE_DATE)
+                .organisationUnit(organisationUnitUid)
+            val reservedValue1 = reservedValueBuilder.value("value1").build()
+            val reservedValue2 = reservedValueBuilder.value("value2").build()
+            val reservedValue3 = reservedValueBuilder.value("value3").build()
+            trackedEntityAttributeReservedValues.add(reservedValue1)
+            trackedEntityAttributeReservedValues.add(reservedValue2)
+            trackedEntityAttributeReservedValues.add(reservedValue3)
+
+            organisationUnit =
+                OrganisationUnit.builder().uid(organisationUnitUid).code("org_unit_code").build()
+            organisationUnitStore.insert(organisationUnit)
+
+            pattern = "CURRENT_DATE(YYYYMM) + \"-\" + CURRENT_DATE(ww) + ORG_UNIT_CODE(...)"
+            trackedEntityAttributeStore.updateOrInsert(
+                TrackedEntityAttribute.builder().uid(ownerUid).pattern(pattern).build(),
+            )
+            val categoryCombo = CategoryCombo.builder().uid(categoryComboUid).build()
+            val store = CategoryComboStoreImpl(d2.databaseAdapter())
+            store.insert(categoryCombo)
+            val program = Program.builder().uid(programUid)
+                .categoryCombo(ObjectWithUid.create(categoryCombo.uid()))
+                .access(Access.create(null, null, DataAccess.create(true, true))).build()
+            koin.get<ProgramStore>().insert(program)
+            val programTrackedEntityAttribute = ProgramTrackedEntityAttribute.builder()
+                .uid("ptea_uid")
+                .trackedEntityAttribute(ObjectWithUid.create(ownerUid))
+                .program(ObjectWithUid.create(programUid))
+                .build()
+            koin.get<ProgramTrackedEntityAttributeStore>().insert(
+                programTrackedEntityAttribute,
+            )
+            val organisationUnitProgramLink =
+                OrganisationUnitProgramLink.builder().organisationUnit(organisationUnitUid)
+                    .program(programUid).build()
+            koin.get<OrganisationUnitProgramLinkStore>().insert(
+                organisationUnitProgramLink,
+            )
             Mockito.`when`(
-                trackedEntityAttributeReservedValueQueryCallFactory!!.create(
-                    ArgumentMatchers.any(
-                        TrackedEntityAttributeReservedValueQuery::class.java,
-                    ),
-                ),
+                trackedEntityAttributeReservedValueQueryCallFactory!!.create(any()),
             )
                 .thenReturn(trackedEntityAttributeReservedValueCall)
+            handler.handleMany(trackedEntityAttributeReservedValues)
         }
-        handler.handleMany(trackedEntityAttributeReservedValues)
     }
 
     //    @Test

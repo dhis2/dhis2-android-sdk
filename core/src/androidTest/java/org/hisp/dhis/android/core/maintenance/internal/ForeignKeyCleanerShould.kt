@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.maintenance.internal
 
 import androidx.test.runner.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
@@ -54,8 +55,10 @@ import org.junit.runner.RunWith
 class ForeignKeyCleanerShould : BaseMockIntegrationTestEmptyDispatcher() {
 
     @Before
-    fun setUp() = runTest {
-        d2.databaseAdapter().delete(ForeignKeyViolationTableInfo.TABLE_INFO.name())
+    fun setUp() {
+        runBlocking {
+            d2.databaseAdapter().delete(ForeignKeyViolationTableInfo.TABLE_INFO.name())
+        }
     }
 
     @Test

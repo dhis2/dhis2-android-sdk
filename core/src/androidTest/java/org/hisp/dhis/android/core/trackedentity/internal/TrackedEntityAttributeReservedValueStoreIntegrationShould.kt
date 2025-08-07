@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import com.google.common.truth.Truth.*
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseIntegrationTestWithDatabase
 import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate
@@ -61,39 +62,43 @@ class TrackedEntityAttributeReservedValueStoreIntegrationShould : BaseIntegratio
 
     @Before
     @Throws(IOException::class)
-    override fun setUp() = runTest {
-        super.setUp()
-        store = TrackedEntityAttributeReservedValueStoreImpl(databaseAdapter())
+    override fun setUp() {
+        runBlocking {
+            super.setUp()
+            store = TrackedEntityAttributeReservedValueStoreImpl(databaseAdapter())
 
-        serverDate = parseDate("2018-05-13T12:35:36.743")
-        val expiredDate = parseDate("2018-05-12T12:35:36.743")
-        val notExpiredDate = parseDate("2018-05-17T12:35:36.743")
+            serverDate = parseDate("2018-05-13T12:35:36.743")
+            val expiredDate = parseDate("2018-05-12T12:35:36.743")
+            val notExpiredDate = parseDate("2018-05-17T12:35:36.743")
 
-        val organisationUnit = OrganisationUnit.builder().uid(orgUnitUid).build()
-        organisationUnitStore = OrganisationUnitStoreImpl(databaseAdapter())
-        organisationUnitStore.insert(organisationUnit)
+            val organisationUnit = OrganisationUnit.builder().uid(orgUnitUid).build()
+            organisationUnitStore = OrganisationUnitStoreImpl(databaseAdapter())
+            organisationUnitStore.insert(organisationUnit)
 
-        val builder = TrackedEntityAttributeReservedValue.builder()
-            .ownerObject("owObj")
-            .ownerUid(ownerUid)
-            .key("key")
-            .organisationUnit(orgUnitUid)
-            .created(Date())
+            val builder = TrackedEntityAttributeReservedValue.builder()
+                .ownerObject("owObj")
+                .ownerUid(ownerUid)
+                .key("key")
+                .organisationUnit(orgUnitUid)
+                .created(Date())
 
-        expiredValue = builder.expiryDate(expiredDate).temporalValidityDate(null).value("v1").build()
-        notExpiredValue = builder.expiryDate(notExpiredDate).temporalValidityDate(null).value("v2").build()
-        temporalValidityExpiredValue = builder.expiryDate(notExpiredDate).temporalValidityDate(expiredDate).value("v3")
-            .build()
-        notExpiredTemporalValidityExpiredValue =
-            builder.expiryDate(notExpiredDate).temporalValidityDate(notExpiredDate)
-                .value("v3").build()
+            expiredValue = builder.expiryDate(expiredDate).temporalValidityDate(null).value("v1").build()
+            notExpiredValue = builder.expiryDate(notExpiredDate).temporalValidityDate(null).value("v2").build()
+            temporalValidityExpiredValue = builder.expiryDate(notExpiredDate).temporalValidityDate(expiredDate).value("v3")
+                .build()
+            notExpiredTemporalValidityExpiredValue =
+                builder.expiryDate(notExpiredDate).temporalValidityDate(notExpiredDate)
+                    .value("v3").build()
+        }
     }
 
     @After
-    override fun tearDown() = runTest {
-        store.delete()
-        organisationUnitStore.delete()
-        super.tearDown()
+    override fun tearDown() {
+        runBlocking {
+            store.delete()
+            organisationUnitStore.delete()
+            super.tearDown()
+        }
     }
 
     @Test

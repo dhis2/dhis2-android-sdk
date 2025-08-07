@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.datavalue.internal
 
 import com.google.common.truth.Truth.assertThat
 import io.ktor.http.HttpStatusCode
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.After
@@ -42,9 +42,8 @@ import org.junit.runner.RunWith
 class DataValuePostCallMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueable() {
 
     @After
-    @Throws(D2Error::class)
-    suspend fun tearDown() {
-        d2.wipeModule().wipeData()
+    fun tearDown() {
+        runBlocking { d2.wipeModule().wipeData() }
     }
 
     @Test

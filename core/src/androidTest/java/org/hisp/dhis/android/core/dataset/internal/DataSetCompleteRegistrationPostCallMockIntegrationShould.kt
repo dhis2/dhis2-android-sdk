@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.dataset.internal
 
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.SIMPLE_DATE_FORMAT
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
@@ -44,8 +45,8 @@ class DataSetCompleteRegistrationPostCallMockIntegrationShould : BaseMockIntegra
 
     @After
     @Throws(D2Error::class)
-    suspend fun tearDown() {
-        d2.wipeModule().wipeData()
+    fun tearDown() {
+        runBlocking { d2.wipeModule().wipeData() }
     }
 
     @Test

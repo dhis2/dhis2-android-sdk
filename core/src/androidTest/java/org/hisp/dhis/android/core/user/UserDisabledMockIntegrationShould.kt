@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.user
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
@@ -45,8 +46,8 @@ class UserDisabledMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueab
 
     @After
     @Throws(D2Error::class)
-    suspend fun tearDown() {
-        d2.wipeModule().wipeData()
+    fun tearDown() {
+        runBlocking { d2.wipeModule().wipeData() }
     }
 
     @Test

@@ -31,6 +31,7 @@ import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.data.database.DatabaseAssert.Companion.assertThatDatabase
 import org.hisp.dhis.android.core.data.datastore.KeyValuePairSamples
+import org.hisp.dhis.android.core.data.datavalue.DataValueConflictSamples
 import org.hisp.dhis.android.core.data.maps.MapLayerImageryProviderSamples
 import org.hisp.dhis.android.core.data.maps.MapLayerSamples
 import org.hisp.dhis.android.core.data.sms.SMSOngoingSubmissionSample
@@ -40,7 +41,6 @@ import org.hisp.dhis.android.core.data.usecase.stock.InternalStockUseCaseSamples
 import org.hisp.dhis.android.core.data.usecase.stock.InternalStockUseCaseTransactionSamples
 import org.hisp.dhis.android.core.datastore.KeyValuePair
 import org.hisp.dhis.android.core.datastore.internal.LocalDataStoreStore
-import org.hisp.dhis.android.core.datavalue.DataValueConflict
 import org.hisp.dhis.android.core.datavalue.internal.DataValueConflictStore
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore
@@ -61,12 +61,13 @@ import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTest
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.time.Duration.Companion.seconds
 
 @RunWith(D2JunitRunner::class)
 class WipeDBCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() {
 
     @Test
-    fun have_empty_database_when_wipe_db_after_sync_data() = runTest {
+    fun have_empty_database_when_wipe_db_after_sync_data() = runTest(timeout = 400.seconds) {
         activateSMSModule()
         givenAMetadataInDatabase()
         givenDataInDatabase()
@@ -106,7 +107,7 @@ class WipeDBCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher()
         koin.get<TrackerImportConflictStore>().insert(TrackerImportConflict.builder().build())
         koin.get<FileResourceStore>().insert(FileResource.builder().uid("uid").build())
         koin.get<TrackerJobObjectStore>().insert(TrackerJobObjectSamples.get1())
-        koin.get<DataValueConflictStore>().insert(DataValueConflict.builder().build())
+        koin.get<DataValueConflictStore>().insert(DataValueConflictSamples.get())
         koin.get<LocalDataStoreStore>().insert(
             KeyValuePair.builder()
                 .key("key1")

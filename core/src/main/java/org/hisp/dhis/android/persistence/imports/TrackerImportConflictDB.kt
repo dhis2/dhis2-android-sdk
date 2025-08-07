@@ -43,18 +43,18 @@ internal data class TrackerImportConflictDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
     val id: Int = 0,
-    val conflict: String,
-    val value: String,
+    val conflict: String?,
+    val value: String?,
     val trackedEntityInstance: String?,
     val enrollment: String?,
     val event: String?,
-    val tableReference: String,
+    val tableReference: String?,
     val errorCode: String?,
     val status: String?,
     val created: String?,
     val displayDescription: String?,
-    val trackedEntityAttribute: String,
-    val dataElement: String,
+    val trackedEntityAttribute: String?,
+    val dataElement: String?,
 ) : EntityDB<TrackerImportConflict> {
 
     override fun toDomain(): TrackerImportConflict {
@@ -77,17 +77,17 @@ internal data class TrackerImportConflictDB(
 
 internal fun TrackerImportConflict.toDB(): TrackerImportConflictDB {
     return TrackerImportConflictDB(
-        conflict = conflict()!!,
-        value = value()!!,
+        conflict = conflict(),
+        value = value(),
         trackedEntityInstance = trackedEntityInstance(),
         enrollment = enrollment(),
         event = event(),
-        tableReference = tableReference()!!,
+        tableReference = tableReference(),
         errorCode = errorCode(),
         status = status()?.name,
         created = created().dateFormat(),
         displayDescription = displayDescription(),
-        trackedEntityAttribute = trackedEntityAttribute()!!,
-        dataElement = dataElement()!!,
+        trackedEntityAttribute = trackedEntityAttribute(),
+        dataElement = dataElement(),
     )
 }

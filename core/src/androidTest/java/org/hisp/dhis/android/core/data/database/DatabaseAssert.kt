@@ -109,27 +109,13 @@ internal class DatabaseAssert private constructor(private val d2Dao: D2Dao) {
     }
 
     private suspend fun tableCount(tableName: String): Int {
-        // Important: Table names with special characters might need quoting, but typically
-        // table names from sqlite_master are safe. If not, this part is tricky with SimpleSQLiteQuery.
-        // Room DAOs with @Query("SELECT COUNT(*) FROM ${tableName}") are safer if you could generate DAOs per table,
-        // but that's overkill for a generic assert.
-        // For SimpleSQLiteQuery, ensure `tableName` is sanitized or comes from a trusted source (like sqlite_master).
-        if (!tableName.matches(Regex("^[a-zA-Z_][a-zA-Z0-9_]*$"))) {
-            // Basic sanitization or warning, ideally table names are simple
-            // For true safety against SQL injection if tableName could be arbitrary,
-            // this is complex. But here it's from sqlite_master.
-            println(
-                "Warning: Table name '$tableName' might be problematic for direct SQL concatenation if it contains special characters.",
-            )
-        }
-        val query = RoomRawQuery("SELECT COUNT(*) FROM `$tableName`") // Use backticks for safety
-        return d2Dao.intRawQuery(query) ?: 0 // Assuming intRawQuery returns Int? or default to 0
+        val query = RoomRawQuery("SELECT COUNT(*) FROM $tableName")
+        return d2Dao.intRawQuery(query)
     }
 
     companion object {
-        // The factory method doesn't change much, but the methods it returns are now suspend
         @JvmStatic
-        fun assertThatDatabase(d2Dao: D2Dao): DatabaseAssert { // Or your KMP DatabaseAdapter
+        fun assertThatDatabase(d2Dao: D2Dao): DatabaseAssert {
             return DatabaseAssert(d2Dao)
         }
     }

@@ -59,11 +59,13 @@ internal data class RelationshipItemDB(
         return RelationshipItem.builder().apply {
             relationship(ObjectWithUidDB(relationship).toDomain())
             relationshipItemType(RelationshipConstraintType.valueOf(relationshipItemType))
-            trackedEntityInstance(
-                RelationshipItemTrackedEntityInstance.builder()
-                    .trackedEntityInstance(trackedEntityInstance)
-                    .build(),
-            )
+            trackedEntityInstance?.let {
+                trackedEntityInstance(
+                    RelationshipItemTrackedEntityInstance.builder()
+                        .trackedEntityInstance(it)
+                        .build()
+                )
+            }
             enrollment?.let { enrollment(RelationshipItemEnrollment.builder().enrollment(it).build()) }
             event?.let { event(RelationshipItemEvent.builder().event(it).build()) }
         }

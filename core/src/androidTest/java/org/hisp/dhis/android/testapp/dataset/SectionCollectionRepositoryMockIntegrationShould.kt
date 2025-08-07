@@ -137,7 +137,7 @@ class SectionCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
             .withGreyedFields().one().blockingGet()
 
         assertThat(section!!.greyedFields()!!.size).isEqualTo(1)
-        assertThat(section.greyedFields()!![0].uid()).isEqualTo("ca8lfO062zg.Prlt0C1RF0s")
+        assertThat(section.greyedFields()!![0].uid()).isEqualTo("ca8lfO062zg.Gmbgme7z9BF")
     }
 
     @Test

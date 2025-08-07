@@ -56,16 +56,18 @@ internal data class RelationshipItemDB(
 ) : EntityDB<RelationshipItem> {
 
     override fun toDomain(): RelationshipItem {
-        return RelationshipItem.builder()
-            .relationship(ObjectWithUidDB(relationship).toDomain())
-            .relationshipItemType(RelationshipConstraintType.valueOf(relationshipItemType))
-            .trackedEntityInstance(
+        return RelationshipItem.builder().apply {
+            relationship(ObjectWithUidDB(relationship).toDomain())
+            relationshipItemType(RelationshipConstraintType.valueOf(relationshipItemType))
+            trackedEntityInstance(
                 RelationshipItemTrackedEntityInstance.builder()
                     .trackedEntityInstance(trackedEntityInstance)
                     .build(),
             )
-            .enrollment(RelationshipItemEnrollment.builder().enrollment(enrollment).build())
-            .event(RelationshipItemEvent.builder().event(event).build())
+            enrollment?.let { enrollment(RelationshipItemEnrollment.builder().enrollment(it).build()) }
+            event?.let { event(RelationshipItemEvent.builder().event(it).build()) }
+        }
+
             .build()
     }
 }

@@ -47,14 +47,14 @@ class TablesWithStyleShould {
     @Test
     fun check_content_of_styled_tables() = runTest {
         val tableList = d2Dao.stringListRawQuery(
-            SimpleSQLiteQuery("SELECT name FROM sqlite_master WHERE type='table"),
+            SimpleSQLiteQuery("SELECT name FROM sqlite_master WHERE type='table'"),
         )
 
         val tablesWithStyle = tableList
             .filterNot { excludedTables.contains(it) }
             .filter { table ->
                 val columns = d2Dao.stringListRawQuery(
-                    SimpleSQLiteQuery("PRAGMA table_info($table);"),
+                    SimpleSQLiteQuery("SELECT name FROM pragma_table_info('$table');"),
                 )
                 columns.contains(NameableWithStyleColumns.ICON)
             }

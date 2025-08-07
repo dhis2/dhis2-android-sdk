@@ -98,7 +98,7 @@ internal class FileResourcePostCall(
                     key = "file",
                     value = file.readBytes(),
                     headers = Headers.build {
-                        append(HttpHeaders.ContentDisposition, "form-data; name=\"file\"; filename=\"$fileName\"")
+                        append(HttpHeaders.ContentDisposition, "filename=\"$fileName\"")
                         append(HttpHeaders.ContentType, type)
                     },
                 )

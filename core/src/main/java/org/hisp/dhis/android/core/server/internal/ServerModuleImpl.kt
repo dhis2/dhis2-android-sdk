@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,12 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user.loginconfig
+package org.hisp.dhis.android.core.server.internal
 
-data class LoginOidcProvider(
-    val id: String,
-    val icon: String? = null,
-    val iconPadding: String? = null,
-    val loginText: String? = null,
-    val url: String? = null,
-)
+import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
+import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.server.LoginConfig
+import org.hisp.dhis.android.core.server.ServerModule
+import org.koin.core.annotation.Singleton
+
+@Singleton
+internal class ServerModuleImpl(
+    private val loginConfigCall: LoginConfigCall,
+) : ServerModule {
+    override fun checkServerUrl(serverUrl: String): Single<Result<LoginConfig, D2Error>> {
+        return rxSingle { loginConfigCall.checkServerUrl(serverUrl) }
+    }
+
+    override fun blockingCheckServerUrl(serverUrl: String): Result<LoginConfig, D2Error> {
+        return runBlocking { loginConfigCall.checkServerUrl(serverUrl) }
+    }
+}

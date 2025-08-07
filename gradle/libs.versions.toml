@@ -34,7 +34,8 @@ sqlCipher = "4.9.0"
 sqLite = "2.5.2"
 zip4j = "2.11.5"
 smsCompression = "0.2.0"
-expressionParser = "1.0.36"
+antlrExpressionParser = "1.0.37"
+pegExpressionParser = "1.1.11"
 
 # Kotlin
 kotlinxDatetime = "0.6.0"
@@ -110,7 +111,8 @@ kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 
 dhis2-compression = { group = "com.github.dhis2", name = "sms-compression", version.ref = "smsCompression" }
-dhis2-antlr-parser = { group = "org.hisp.dhis.parser", name = "dhis-antlr-expression-parser", version.ref = "expressionParser" }
+dhis2-antlr-parser = { group = "org.hisp.dhis.parser", name = "dhis-antlr-expression-parser", version.ref = "antlrExpressionParser" }
+dhis2-peg-parser = { group = "org.hisp.dhis.lib.expression", name = "expression-parser", version.ref = "pegExpressionParser" }
 
 
 zip4j = { group = "net.lingala.zip4j", name = "zip4j", version.ref = "zip4j" }

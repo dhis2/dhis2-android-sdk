@@ -25,32 +25,15 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user.loginconfig
 
-import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.rx2.rxSingle
-import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
+package org.hisp.dhis.android.network.twofactorauth
 
-class LoginConfigObjectRepository internal constructor(
-    private val loginConfigCall: LoginConfigCall,
-    private val serverUrl: String,
-) : ReadOnlyObjectRepository<LoginConfig> {
-    override fun get(): Single<LoginConfig?> {
-        return rxSingle { loginConfigCall.download(serverUrl) }.map { it }
-    }
+import kotlinx.serialization.Serializable
 
-    override fun blockingGet(): LoginConfig {
-        return runBlocking { loginConfigCall.download(serverUrl) }
-    }
-
-    override fun exists(): Single<Boolean> {
-        return get()
-            .map { true }
-            .onErrorReturn { false }
-    }
-
-    override fun blockingExists(): Boolean {
-        return exists().blockingGet()
-    }
+@Serializable
+internal data class TwoFactorMethodsDTO(
+    val totp2faEnabled: Boolean,
+    val email2faEnabled: Boolean,
+) {
+    fun toDomain(): Boolean = totp2faEnabled
 }

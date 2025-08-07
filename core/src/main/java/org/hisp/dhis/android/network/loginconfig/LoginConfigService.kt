@@ -33,7 +33,19 @@ import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 internal class LoginConfigService(private val client: HttpServiceClient) {
     suspend fun getLoginConfig(): LoginConfigDTO {
         return client.get {
-            url("loginConfig")
+            url(LOGIN_CONFIG)
         }
+    }
+
+    suspend fun getLoginConfigFor(serverUrl: String): LoginConfigDTO {
+        return client.get {
+            val loginConfigUrl = serverUrl.dropLastWhile { it == '/' } + "/api/$LOGIN_CONFIG"
+            absoluteUrl(loginConfigUrl)
+            excludeCredentials()
+        }
+    }
+
+    companion object {
+        const val LOGIN_CONFIG = "loginConfig"
     }
 }

@@ -61,6 +61,8 @@ import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorModuleDownloader
 import org.hisp.dhis.android.core.program.internal.ProgramModuleDownloader
+import org.hisp.dhis.android.core.server.LoginConfig
+import org.hisp.dhis.android.core.server.internal.LoginConfigDownloader
 import org.hisp.dhis.android.core.settings.SystemSetting
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
 import org.hisp.dhis.android.core.settings.internal.SettingModuleDownloader
@@ -81,6 +83,7 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class MetadataCall(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
+    private val loginConfigDownloader: LoginConfigDownloader,
     private val systemInfoDownloader: SystemInfoModuleDownloader,
     private val systemSettingDownloader: SettingModuleDownloader,
     private val useCaseDownloader: UseCaseModuleDownloader,
@@ -106,7 +109,7 @@ internal class MetadataCall(
 ) {
 
     companion object {
-        const val CALLS_COUNT = 17
+        const val CALLS_COUNT = 18
     }
 
     @Suppress("TooGenericExceptionCaught")
@@ -132,6 +135,9 @@ internal class MetadataCall(
 
     private fun executeIndependentCalls(progressManager: D2ProgressManager): Flow<D2Progress> = flow {
         databaseAdapter.delete(ForeignKeyViolationTableInfo.TABLE_INFO.name())
+
+        loginConfigDownloader.downloadMetadata()
+        emit(progressManager.increaseProgress(LoginConfig::class.java, false))
 
         systemSettingDownloader.downloadMetadata()
         emit(progressManager.increaseProgress(SystemSetting::class.java, false))

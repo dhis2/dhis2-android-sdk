@@ -25,24 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user.loginconfig
 
-import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
-import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser
-import org.hisp.dhis.android.core.maintenance.D2Error
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.core.settings
 
-@Singleton
-internal class LoginConfigCall internal constructor(
-    private val networkHandler: LoginConfigNetworkHandler,
-) {
+import io.reactivex.Single
 
-    @Throws(D2Error::class)
-    suspend fun download(serverUrl: String?): LoginConfig {
-        val trimmedServerUrl = ServerUrlParser.trimAndRemoveTrailingSlash(serverUrl)
-        val parsedServerUrl = ServerUrlParser.parse(trimmedServerUrl)
-        ServerURLWrapper.setServerUrl(parsedServerUrl.toString())
-
-        return networkHandler.loginConfig()
-    }
+interface CustomIntentService {
+    fun evaluateRequestParams(customIntent: CustomIntent, context: CustomIntentContext): Single<Map<String, Any?>>
+    fun blockingEvaluateRequestParams(customIntent: CustomIntent, context: CustomIntentContext): Map<String, Any?>
 }

@@ -172,6 +172,7 @@ dependencies {
     // DHIS2 libraries
     api(libs.dhis2.compression)
     api(libs.dhis2.antlr.parser)
+    implementation(libs.dhis2.peg.parser)
 
     // Extension which generates mappers for work with cursor and content values
     api(libs.auto.value.cursor.annotations)

@@ -25,10 +25,15 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user.loginconfig
 
-enum class LoginPageLayout {
-    DEFAULT,
-    SIDEBAR,
-    CUSTOM,
+package org.hisp.dhis.android.network.twofactorauth
+
+import kotlinx.serialization.Serializable
+
+@Serializable
+internal data class QrCodeJsonDTO(
+    val base32Secret: String,
+    val base64QRImage: String,
+) {
+    fun toDomain(): String = base32Secret
 }

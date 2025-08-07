@@ -36,6 +36,7 @@ public final class org/hisp/dhis/android/core/D2 {
 	public final fun periodModule ()Lorg/hisp/dhis/android/core/period/PeriodModule;
 	public final fun programModule ()Lorg/hisp/dhis/android/core/program/ProgramModule;
 	public final fun relationshipModule ()Lorg/hisp/dhis/android/core/relationship/RelationshipModule;
+	public final fun serverModule ()Lorg/hisp/dhis/android/core/server/ServerModule;
 	public final fun settingModule ()Lorg/hisp/dhis/android/core/settings/SettingModule;
 	public final fun smsModule ()Lorg/hisp/dhis/android/core/sms/SmsModule;
 	public final fun systemInfoModule ()Lorg/hisp/dhis/android/core/systeminfo/SystemInfoModule;
@@ -1669,7 +1670,7 @@ public abstract interface class org/hisp/dhis/android/core/arch/db/access/BaseDa
 }
 
 public abstract interface class org/hisp/dhis/android/core/arch/db/access/DatabaseAdapter {
-	public abstract fun activate (Lorg/hisp/dhis/android/core/arch/db/access/internal/AppDatabase;)V
+	public abstract fun activate (Lorg/hisp/dhis/android/core/arch/db/access/internal/AppDatabase;Ljava/lang/String;)V
 	public abstract fun beginNewTransaction ()Lorg/hisp/dhis/android/core/arch/db/access/Transaction;
 	public abstract fun close ()V
 	public abstract fun deactivate ()V
@@ -2752,6 +2753,7 @@ public abstract class org/hisp/dhis/android/core/arch/helpers/Result {
 	public final fun getOrThrow ()Ljava/lang/Object;
 	public final fun getSucceeded ()Z
 	public final fun map (Lkotlin/jvm/functions/Function1;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
+	public final fun mapFailure (Lkotlin/jvm/functions/Function1;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -3999,8 +4001,12 @@ public abstract class org/hisp/dhis/android/core/common/DataAccess$Builder {
 
 public class org/hisp/dhis/android/core/common/DataColumns : org/hisp/dhis/android/core/common/CoreColumns {
 	public static final field AGGREGATED_SYNC_STATE Ljava/lang/String;
+	public static final field Companion Lorg/hisp/dhis/android/core/common/DataColumns$Companion;
 	public static final field SYNC_STATE Ljava/lang/String;
 	public fun <init> ()V
+}
+
+public final class org/hisp/dhis/android/core/common/DataColumns$Companion {
 }
 
 public abstract interface class org/hisp/dhis/android/core/common/DataObject : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithSyncStateInterface {
@@ -4043,9 +4049,9 @@ public class org/hisp/dhis/android/core/common/DeletableColumns : org/hisp/dhis/
 	public fun <init> ()V
 }
 
-public class org/hisp/dhis/android/core/common/DeletableDataColumns : org/hisp/dhis/android/core/common/DataColumns {
+public final class org/hisp/dhis/android/core/common/DeletableDataColumns : org/hisp/dhis/android/core/common/DataColumns {
 	public static final field DELETED Ljava/lang/String;
-	public fun <init> ()V
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/common/DeletableDataColumns;
 }
 
 public abstract interface class org/hisp/dhis/android/core/common/DeletableDataObject : org/hisp/dhis/android/core/common/DataObject, org/hisp/dhis/android/core/common/ObjectWithDeleteInterface {
@@ -4173,12 +4179,16 @@ public abstract class org/hisp/dhis/android/core/common/Geometry$Builder {
 public class org/hisp/dhis/android/core/common/IdentifiableColumns : org/hisp/dhis/android/core/common/CoreColumns {
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
+	public static final field Companion Lorg/hisp/dhis/android/core/common/IdentifiableColumns$Companion;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/common/IdentifiableColumns$Companion {
 }
 
 public abstract interface class org/hisp/dhis/android/core/common/IdentifiableObject : org/hisp/dhis/android/core/common/ObjectWithUidInterface {
@@ -4923,6 +4933,7 @@ public abstract class org/hisp/dhis/android/core/configuration/internal/Database
 	public abstract fun databaseName ()Ljava/lang/String;
 	public abstract fun encrypted ()Z
 	public abstract fun importDB ()Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccountImport;
+	public abstract fun loginConfig ()Lorg/hisp/dhis/android/core/server/LoginConfig;
 	public abstract fun serverUrl ()Ljava/lang/String;
 	public abstract fun syncState ()Lorg/hisp/dhis/android/core/common/State;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount$Builder;
@@ -4936,6 +4947,7 @@ public abstract class org/hisp/dhis/android/core/configuration/internal/Database
 	public abstract fun databaseName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount$Builder;
 	public abstract fun encrypted (Z)Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount$Builder;
 	public abstract fun importDB (Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccountImport;)Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount$Builder;
+	public abstract fun loginConfig (Lorg/hisp/dhis/android/core/server/LoginConfig;)Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount$Builder;
 	public abstract fun serverUrl (Ljava/lang/String;)Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount$Builder;
 	public abstract fun syncState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount$Builder;
 	public abstract fun username (Ljava/lang/String;)Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount$Builder;
@@ -4970,10 +4982,14 @@ public class org/hisp/dhis/android/core/configuration/internal/DatabaseEncryptio
 }
 
 public final class org/hisp/dhis/android/core/configuration/internal/DatabaseEncryptionPasswordManager {
+	public static final field Companion Lorg/hisp/dhis/android/core/configuration/internal/DatabaseEncryptionPasswordManager$Companion;
 	public fun <init> (Lorg/hisp/dhis/android/core/arch/storage/internal/SecureStore;Lorg/hisp/dhis/android/core/configuration/internal/DatabaseEncryptionPasswordGenerator;)V
-	public static fun create (Lorg/hisp/dhis/android/core/arch/storage/internal/SecureStore;)Lorg/hisp/dhis/android/core/configuration/internal/DatabaseEncryptionPasswordManager;
-	public fun deletePassword (Ljava/lang/String;)V
-	public fun getPassword (Ljava/lang/String;)Ljava/lang/String;
+	public final fun deletePassword (Ljava/lang/String;)V
+	public final fun getPassword (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/configuration/internal/DatabaseEncryptionPasswordManager$Companion {
+	public final fun create (Lorg/hisp/dhis/android/core/arch/storage/internal/SecureStore;)Lorg/hisp/dhis/android/core/configuration/internal/DatabaseEncryptionPasswordManager;
 }
 
 public abstract class org/hisp/dhis/android/core/configuration/internal/DatabasesConfiguration {
@@ -5015,17 +5031,7 @@ public abstract interface class org/hisp/dhis/android/core/constant/ConstantModu
 	public abstract fun constants ()Lorg/hisp/dhis/android/core/constant/ConstantCollectionRepository;
 }
 
-public final class org/hisp/dhis/android/core/constant/ConstantTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/constant/ConstantTableInfo$Columns : org/hisp/dhis/android/core/common/IdentifiableColumns {
-	public static final field VALUE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
-public abstract class org/hisp/dhis/android/core/dataapproval/DataApproval : org/hisp/dhis/android/core/common/BaseObject {
+public abstract class org/hisp/dhis/android/core/dataapproval/DataApproval : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public abstract fun attributeOptionCombo ()Ljava/lang/String;
 	public static fun builder ()Lorg/hisp/dhis/android/core/dataapproval/DataApproval$Builder;
@@ -6834,22 +6840,6 @@ public final class org/hisp/dhis/android/core/imports/TrackerImportConflictColle
 	public final fun byValue ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 }
 
-public final class org/hisp/dhis/android/core/imports/TrackerImportConflictTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/imports/TrackerImportConflictTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field DATA_ELEMENT Ljava/lang/String;
-	public static final field ENROLLMENT Ljava/lang/String;
-	public static final field ERROR_CODE Ljava/lang/String;
-	public static final field EVENT Ljava/lang/String;
-	public static final field TABLE_REFERENCE Ljava/lang/String;
-	public static final field TRACKED_ENTITY_ATTRIBUTE Ljava/lang/String;
-	public static final field TRACKED_ENTITY_INSTANCE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
 public final class org/hisp/dhis/android/core/imports/TrackerJobManager {
 	public final fun blockingResumePendingJobs ()V
 	public final fun resumePendingJobs ()Lio/reactivex/Observable;
@@ -7406,6 +7396,7 @@ public final class org/hisp/dhis/android/core/maintenance/D2ErrorCode : java/lan
 	public static final field MIGHT_BE_RUNNING_LOW_ON_AVAILABLE_VALUES Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field MIN_SEARCH_ATTRIBUTES_REQUIRED Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field NOT_ENOUGH_VALUES_LEFT_TO_RESERVE_ON_SERVER Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
+	public static final field NOT_IN_TOTP_2FA_ENROLLMENT_MODE Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field NO_AUTHENTICATED_USER Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field NO_AUTHENTICATED_USER_OFFLINE Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field NO_DHIS2_SERVER Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
@@ -7456,22 +7447,7 @@ public final class org/hisp/dhis/android/core/maintenance/D2ErrorComponent : jav
 	public static fun values ()[Lorg/hisp/dhis/android/core/maintenance/D2ErrorComponent;
 }
 
-public final class org/hisp/dhis/android/core/maintenance/D2ErrorTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/maintenance/D2ErrorTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field CREATED Ljava/lang/String;
-	public static final field ERROR_CODE Ljava/lang/String;
-	public static final field ERROR_COMPONENT Ljava/lang/String;
-	public static final field ERROR_DESCRIPTION Ljava/lang/String;
-	public static final field HTTP_ERROR_CODE Ljava/lang/String;
-	public static final field URL Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
-public abstract class org/hisp/dhis/android/core/maintenance/ForeignKeyViolation : org/hisp/dhis/android/core/common/BaseObject {
+public abstract class org/hisp/dhis/android/core/maintenance/ForeignKeyViolation : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Builder;
 	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation;
@@ -7508,23 +7484,6 @@ public final class org/hisp/dhis/android/core/maintenance/ForeignKeyViolationCol
 	public final fun byNotFoundValue ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byToColumn ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byToTable ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
-}
-
-public final class org/hisp/dhis/android/core/maintenance/ForeignKeyViolationTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/maintenance/ForeignKeyViolationTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field CREATED Ljava/lang/String;
-	public static final field FROM_COLUMN Ljava/lang/String;
-	public static final field FROM_OBJECT_ROW Ljava/lang/String;
-	public static final field FROM_OBJECT_UID Ljava/lang/String;
-	public static final field FROM_TABLE Ljava/lang/String;
-	public static final field NOT_FOUND_VALUE Ljava/lang/String;
-	public static final field TO_COLUMN Ljava/lang/String;
-	public static final field TO_TABLE Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
 }
 
 public abstract interface class org/hisp/dhis/android/core/maintenance/MaintenanceModule {
@@ -9622,6 +9581,95 @@ public final class org/hisp/dhis/android/core/resource/internal/Resource$Type : 
 	public static fun values ()[Lorg/hisp/dhis/android/core/resource/internal/Resource$Type;
 }
 
+public final class org/hisp/dhis/android/core/server/LoginConfig {
+	public static final field DHIS2_OAUTH_CLIENT_ID Ljava/lang/String;
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/server/LoginPageLayout;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;ZZZZZLjava/util/List;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/server/LoginPageLayout;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;ZZZZZLjava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Ljava/lang/String;
+	public final fun component11 ()Lorg/hisp/dhis/android/core/server/LoginPageLayout;
+	public final fun component12 ()Ljava/lang/String;
+	public final fun component13 ()Ljava/lang/String;
+	public final fun component14 ()Ljava/lang/Integer;
+	public final fun component15 ()Ljava/lang/Integer;
+	public final fun component16 ()Z
+	public final fun component17 ()Z
+	public final fun component18 ()Z
+	public final fun component19 ()Z
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component20 ()Z
+	public final fun component21 ()Ljava/util/List;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Ljava/lang/String;
+	public final fun component7 ()Ljava/lang/String;
+	public final fun component8 ()Ljava/lang/String;
+	public final fun component9 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/server/LoginPageLayout;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;ZZZZZLjava/util/List;)Lorg/hisp/dhis/android/core/server/LoginConfig;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/server/LoginConfig;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/server/LoginPageLayout;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;ZZZZZLjava/util/List;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/server/LoginConfig;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAllowAccountRecovery ()Z
+	public final fun getApiVersion ()Ljava/lang/String;
+	public final fun getApplicationDescription ()Ljava/lang/String;
+	public final fun getApplicationLeftSideFooter ()Ljava/lang/String;
+	public final fun getApplicationNotification ()Ljava/lang/String;
+	public final fun getApplicationRightSideFooter ()Ljava/lang/String;
+	public final fun getApplicationTitle ()Ljava/lang/String;
+	public final fun getCountryFlag ()Ljava/lang/String;
+	public final fun getEmailConfigured ()Z
+	public final fun getLoginPageLayout ()Lorg/hisp/dhis/android/core/server/LoginPageLayout;
+	public final fun getLoginPageLogo ()Ljava/lang/String;
+	public final fun getLoginPageTemplate ()Ljava/lang/String;
+	public final fun getLoginPopup ()Ljava/lang/String;
+	public final fun getMaxPasswordLength ()Ljava/lang/Integer;
+	public final fun getMinPasswordLength ()Ljava/lang/Integer;
+	public final fun getOidcProviders ()Ljava/util/List;
+	public final fun getRecaptchaSite ()Ljava/lang/String;
+	public final fun getSelfRegistrationEnabled ()Z
+	public final fun getSelfRegistrationNoRecaptcha ()Z
+	public final fun getUiLocale ()Ljava/lang/String;
+	public final fun getUseCustomLogoFront ()Z
+	public fun hashCode ()I
+	public final fun isOauthEnabled ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/server/LoginOidcProvider {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/server/LoginOidcProvider;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/server/LoginOidcProvider;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/server/LoginOidcProvider;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getIcon ()Ljava/lang/String;
+	public final fun getIconPadding ()Ljava/lang/String;
+	public final fun getId ()Ljava/lang/String;
+	public final fun getLoginText ()Ljava/lang/String;
+	public final fun getUrl ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/server/LoginPageLayout : java/lang/Enum {
+	public static final field CUSTOM Lorg/hisp/dhis/android/core/server/LoginPageLayout;
+	public static final field DEFAULT Lorg/hisp/dhis/android/core/server/LoginPageLayout;
+	public static final field SIDEBAR Lorg/hisp/dhis/android/core/server/LoginPageLayout;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/server/LoginPageLayout;
+	public static fun values ()[Lorg/hisp/dhis/android/core/server/LoginPageLayout;
+}
+
+public abstract interface class org/hisp/dhis/android/core/server/ServerModule {
+	public abstract fun blockingCheckServerUrl (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
+	public abstract fun checkServerUrl (Ljava/lang/String;)Lio/reactivex/Single;
+}
+
 public abstract class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualization : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Builder;
@@ -10042,6 +10090,19 @@ public final class org/hisp/dhis/android/core/settings/CustomIntentCollectionRep
 	public final fun byUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 }
 
+public final class org/hisp/dhis/android/core/settings/CustomIntentContext {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntentContext;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/settings/CustomIntentContext;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/settings/CustomIntentContext;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getProgramStageUid ()Ljava/lang/String;
+	public final fun getProgramUid ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public abstract class org/hisp/dhis/android/core/settings/CustomIntentDataElement : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/CustomIntentDataElement$Builder;
@@ -10137,20 +10198,9 @@ public final class org/hisp/dhis/android/core/settings/CustomIntentResponseExtra
 	public static fun values ()[Lorg/hisp/dhis/android/core/settings/CustomIntentResponseExtraType;
 }
 
-public final class org/hisp/dhis/android/core/settings/CustomIntentTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/settings/CustomIntentTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field ACTION Ljava/lang/String;
-	public static final field NAME Ljava/lang/String;
-	public static final field PACKAGE_NAME Ljava/lang/String;
-	public static final field REQUEST_ARGUMENTS Ljava/lang/String;
-	public static final field RESPONSE_DATA_ARGUMENT Ljava/lang/String;
-	public static final field RESPONSE_DATA_PATH Ljava/lang/String;
-	public static final field UID Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
+public abstract interface class org/hisp/dhis/android/core/settings/CustomIntentService {
+	public abstract fun blockingEvaluateRequestParams (Lorg/hisp/dhis/android/core/settings/CustomIntent;Lorg/hisp/dhis/android/core/settings/CustomIntentContext;)Ljava/util/Map;
+	public abstract fun evaluateRequestParams (Lorg/hisp/dhis/android/core/settings/CustomIntent;Lorg/hisp/dhis/android/core/settings/CustomIntentContext;)Lio/reactivex/Single;
 }
 
 public abstract class org/hisp/dhis/android/core/settings/CustomIntentTrigger {
@@ -10643,6 +10693,7 @@ public abstract class org/hisp/dhis/android/core/settings/QuickAction$Builder {
 public abstract interface class org/hisp/dhis/android/core/settings/SettingModule {
 	public abstract fun analyticsSetting ()Lorg/hisp/dhis/android/core/settings/AnalyticsSettingObjectRepository;
 	public abstract fun appearanceSettings ()Lorg/hisp/dhis/android/core/settings/AppearanceSettingsObjectRepository;
+	public abstract fun customIntentService ()Lorg/hisp/dhis/android/core/settings/CustomIntentService;
 	public abstract fun customIntents ()Lorg/hisp/dhis/android/core/settings/CustomIntentCollectionRepository;
 	public abstract fun dataSetSetting ()Lorg/hisp/dhis/android/core/settings/DataSetSettingsObjectRepository;
 	public abstract fun generalSetting ()Lorg/hisp/dhis/android/core/settings/GeneralSettingObjectRepository;
@@ -11137,6 +11188,7 @@ public final class org/hisp/dhis/android/core/systeminfo/DHISPatchVersion : java
 	public static final field V2_40_0 Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion;
 	public static final field V2_41_0 Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion;
 	public static final field V2_42_0 Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion;
+	public static final field V2_42_1 Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public final fun getMajorVersion ()Lorg/hisp/dhis/android/core/systeminfo/DHISVersion;
 	public final fun getSmsVersion ()Lorg/hisp/dhis/android/core/systeminfo/SMSVersion;
@@ -11149,6 +11201,7 @@ public final class org/hisp/dhis/android/core/systeminfo/DHISPatchVersion : java
 public final class org/hisp/dhis/android/core/systeminfo/DHISPatchVersion$Companion {
 	public final fun getValue (Ljava/lang/String;Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion;
 	public static synthetic fun getValue$default (Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion$Companion;Ljava/lang/String;Ljava/lang/Boolean;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion;
+	public final fun isGreaterThanPatch (Ljava/lang/String;Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion;)Z
 }
 
 public final class org/hisp/dhis/android/core/systeminfo/DHISVersion : java/lang/Enum {
@@ -12547,6 +12600,14 @@ public final class org/hisp/dhis/android/core/user/AuthorityCollectionRepository
 	public final fun byName ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 }
 
+public abstract interface class org/hisp/dhis/android/core/user/TwoFactorAuthManager {
+	public abstract fun canTotp2faBeEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun disable2fa (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun enable2fa (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getTotpSecret (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun is2faEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
 public abstract class org/hisp/dhis/android/core/user/User : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public abstract fun birthday ()Ljava/lang/String;
@@ -12565,6 +12626,7 @@ public abstract class org/hisp/dhis/android/core/user/User : org/hisp/dhis/andro
 	public abstract fun phoneNumber ()Ljava/lang/String;
 	public abstract fun surname ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/user/User$Builder;
+	public abstract fun twoFactorAuthEnabled ()Ljava/lang/Boolean;
 	public abstract fun userGroups ()Ljava/util/List;
 	public abstract fun userRoles ()Ljava/util/List;
 	public abstract fun username ()Ljava/lang/String;
@@ -12588,6 +12650,7 @@ public abstract class org/hisp/dhis/android/core/user/User$Builder : org/hisp/dh
 	public abstract fun phoneNumber (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
 	public abstract fun surname (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
 	public abstract fun teiSearchOrganisationUnits (Ljava/util/List;)Lorg/hisp/dhis/android/core/user/User$Builder;
+	public abstract fun twoFactorAuthEnabled (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/user/User$Builder;
 	public abstract fun userGroups (Ljava/util/List;)Lorg/hisp/dhis/android/core/user/User$Builder;
 	public abstract fun userRoles (Ljava/util/List;)Lorg/hisp/dhis/android/core/user/User$Builder;
 	public abstract fun username (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
@@ -12637,10 +12700,11 @@ public final class org/hisp/dhis/android/core/user/UserGroupCollectionRepository
 }
 
 public final class org/hisp/dhis/android/core/user/UserInternalAccessor {
-	public static fun accessOrganisationUnits (Lorg/hisp/dhis/android/core/user/User;)Ljava/util/List;
-	public static fun accessTeiSearchOrganisationUnits (Lorg/hisp/dhis/android/core/user/User;)Ljava/util/List;
-	public static fun insertOrganisationUnits (Lorg/hisp/dhis/android/core/user/User$Builder;Ljava/util/List;)Lorg/hisp/dhis/android/core/user/User$Builder;
-	public static fun insertTeiSearchOrganisationUnits (Lorg/hisp/dhis/android/core/user/User$Builder;Ljava/util/List;)Lorg/hisp/dhis/android/core/user/User$Builder;
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/user/UserInternalAccessor;
+	public static final fun accessOrganisationUnits (Lorg/hisp/dhis/android/core/user/User;)Ljava/util/List;
+	public static final fun accessTeiSearchOrganisationUnits (Lorg/hisp/dhis/android/core/user/User;)Ljava/util/List;
+	public final fun insertOrganisationUnits (Lorg/hisp/dhis/android/core/user/User$Builder;Ljava/util/List;)Lorg/hisp/dhis/android/core/user/User$Builder;
+	public final fun insertTeiSearchOrganisationUnits (Lorg/hisp/dhis/android/core/user/User$Builder;Ljava/util/List;)Lorg/hisp/dhis/android/core/user/User$Builder;
 }
 
 public abstract interface class org/hisp/dhis/android/core/user/UserModule {
@@ -12653,8 +12717,8 @@ public abstract interface class org/hisp/dhis/android/core/user/UserModule {
 	public abstract fun isLogged ()Lio/reactivex/Single;
 	public abstract fun logIn (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
 	public abstract fun logOut ()Lio/reactivex/Completable;
-	public abstract fun loginConfig (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/loginconfig/LoginConfigObjectRepository;
 	public abstract fun openIdHandler ()Lorg/hisp/dhis/android/core/user/openid/OpenIDConnectHandler;
+	public abstract fun twoFactorAuthManager ()Lorg/hisp/dhis/android/core/user/TwoFactorAuthManager;
 	public abstract fun user ()Lorg/hisp/dhis/android/core/user/UserObjectRepository;
 	public abstract fun userCredentials ()Lorg/hisp/dhis/android/core/user/UserCredentialsObjectRepository;
 	public abstract fun userGroups ()Lorg/hisp/dhis/android/core/user/UserGroupCollectionRepository;
@@ -12709,96 +12773,6 @@ public final class org/hisp/dhis/android/core/user/internal/LogOutCall {
 public final class org/hisp/dhis/android/core/user/internal/UserOrganisationUnitLinkHelper {
 	public static fun isRoot (Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit$Scope;Lorg/hisp/dhis/android/core/user/User;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit;)Z
 	public static fun userIsAssigned (Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit$Scope;Lorg/hisp/dhis/android/core/user/User;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit;)Z
-}
-
-public final class org/hisp/dhis/android/core/user/loginconfig/LoginConfig {
-	public fun <init> ()V
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/user/loginconfig/LoginPageLayout;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;ZZZZZLjava/util/List;)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/user/loginconfig/LoginPageLayout;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;ZZZZZLjava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun component1 ()Ljava/lang/String;
-	public final fun component10 ()Ljava/lang/String;
-	public final fun component11 ()Lorg/hisp/dhis/android/core/user/loginconfig/LoginPageLayout;
-	public final fun component12 ()Ljava/lang/String;
-	public final fun component13 ()Ljava/lang/String;
-	public final fun component14 ()Ljava/lang/Integer;
-	public final fun component15 ()Ljava/lang/Integer;
-	public final fun component16 ()Z
-	public final fun component17 ()Z
-	public final fun component18 ()Z
-	public final fun component19 ()Z
-	public final fun component2 ()Ljava/lang/String;
-	public final fun component20 ()Z
-	public final fun component21 ()Ljava/util/List;
-	public final fun component3 ()Ljava/lang/String;
-	public final fun component4 ()Ljava/lang/String;
-	public final fun component5 ()Ljava/lang/String;
-	public final fun component6 ()Ljava/lang/String;
-	public final fun component7 ()Ljava/lang/String;
-	public final fun component8 ()Ljava/lang/String;
-	public final fun component9 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/user/loginconfig/LoginPageLayout;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;ZZZZZLjava/util/List;)Lorg/hisp/dhis/android/core/user/loginconfig/LoginConfig;
-	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/user/loginconfig/LoginConfig;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/user/loginconfig/LoginPageLayout;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;ZZZZZLjava/util/List;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/user/loginconfig/LoginConfig;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getAllowAccountRecovery ()Z
-	public final fun getApiVersion ()Ljava/lang/String;
-	public final fun getApplicationDescription ()Ljava/lang/String;
-	public final fun getApplicationLeftSideFooter ()Ljava/lang/String;
-	public final fun getApplicationNotification ()Ljava/lang/String;
-	public final fun getApplicationRightSideFooter ()Ljava/lang/String;
-	public final fun getApplicationTitle ()Ljava/lang/String;
-	public final fun getCountryFlag ()Ljava/lang/String;
-	public final fun getEmailConfigured ()Z
-	public final fun getLoginPageLayout ()Lorg/hisp/dhis/android/core/user/loginconfig/LoginPageLayout;
-	public final fun getLoginPageLogo ()Ljava/lang/String;
-	public final fun getLoginPageTemplate ()Ljava/lang/String;
-	public final fun getLoginPopup ()Ljava/lang/String;
-	public final fun getMaxPasswordLength ()Ljava/lang/Integer;
-	public final fun getMinPasswordLength ()Ljava/lang/Integer;
-	public final fun getOidcProviders ()Ljava/util/List;
-	public final fun getRecaptchaSite ()Ljava/lang/String;
-	public final fun getSelfRegistrationEnabled ()Z
-	public final fun getSelfRegistrationNoRecaptcha ()Z
-	public final fun getUiLocale ()Ljava/lang/String;
-	public final fun getUseCustomLogoFront ()Z
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/user/loginconfig/LoginConfigObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository {
-	public fun blockingExists ()Z
-	public synthetic fun blockingGet ()Ljava/lang/Object;
-	public fun blockingGet ()Lorg/hisp/dhis/android/core/user/loginconfig/LoginConfig;
-	public fun exists ()Lio/reactivex/Single;
-	public fun get ()Lio/reactivex/Single;
-}
-
-public final class org/hisp/dhis/android/core/user/loginconfig/LoginOidcProvider {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun component1 ()Ljava/lang/String;
-	public final fun component2 ()Ljava/lang/String;
-	public final fun component3 ()Ljava/lang/String;
-	public final fun component4 ()Ljava/lang/String;
-	public final fun component5 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/loginconfig/LoginOidcProvider;
-	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/user/loginconfig/LoginOidcProvider;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/user/loginconfig/LoginOidcProvider;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getIcon ()Ljava/lang/String;
-	public final fun getIconPadding ()Ljava/lang/String;
-	public final fun getId ()Ljava/lang/String;
-	public final fun getLoginText ()Ljava/lang/String;
-	public final fun getUrl ()Ljava/lang/String;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/user/loginconfig/LoginPageLayout : java/lang/Enum {
-	public static final field CUSTOM Lorg/hisp/dhis/android/core/user/loginconfig/LoginPageLayout;
-	public static final field DEFAULT Lorg/hisp/dhis/android/core/user/loginconfig/LoginPageLayout;
-	public static final field SIDEBAR Lorg/hisp/dhis/android/core/user/loginconfig/LoginPageLayout;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/loginconfig/LoginPageLayout;
-	public static fun values ()[Lorg/hisp/dhis/android/core/user/loginconfig/LoginPageLayout;
 }
 
 public final class org/hisp/dhis/android/core/user/openid/IntentWithRequestCode {
@@ -13233,30 +13207,6 @@ public abstract class org/hisp/dhis/android/core/visualization/TrackerVisualizat
 	public abstract fun indexes (Ljava/util/List;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition$Builder;
 }
 
-public final class org/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionTableInfo {
-	public static final field INSTANCE Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionTableInfo;
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public final class org/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field Companion Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionTableInfo$Columns$Companion;
-	public static final field DIMENSION Ljava/lang/String;
-	public static final field DIMENSION_TYPE Ljava/lang/String;
-	public static final field FILTER Ljava/lang/String;
-	public static final field ITEMS Ljava/lang/String;
-	public static final field POSITION Ljava/lang/String;
-	public static final field PROGRAM Ljava/lang/String;
-	public static final field PROGRAM_STAGE Ljava/lang/String;
-	public static final field REPETITION Ljava/lang/String;
-	public static final field TRACKER_VISUALIZATION Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionTableInfo$Columns$Companion {
-}
-
 public final class org/hisp/dhis/android/core/visualization/TrackerVisualizationOutputType : java/lang/Enum {
 	public static final field ENROLLMENT Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationOutputType;
 	public static final field EVENT Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationOutputType;
@@ -13466,26 +13416,6 @@ public abstract class org/hisp/dhis/android/core/visualization/VisualizationDime
 	public abstract fun visualization (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItem$Builder;
 }
 
-public final class org/hisp/dhis/android/core/visualization/VisualizationDimensionItemTableInfo {
-	public static final field INSTANCE Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItemTableInfo;
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public final class org/hisp/dhis/android/core/visualization/VisualizationDimensionItemTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field Companion Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItemTableInfo$Columns$Companion;
-	public static final field DIMENSION Ljava/lang/String;
-	public static final field DIMENSION_ITEM Ljava/lang/String;
-	public static final field DIMENSION_ITEM_TYPE Ljava/lang/String;
-	public static final field POSITION Ljava/lang/String;
-	public static final field VISUALIZATION Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/visualization/VisualizationDimensionItemTableInfo$Columns$Companion {
-}
-
 public abstract class org/hisp/dhis/android/core/visualization/VisualizationLegend {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/visualization/VisualizationLegend$Builder;
@@ -13553,6 +13483,7 @@ public abstract interface class org/hisp/dhis/android/core/wipe/internal/WipeMod
 public final class org/hisp/dhis/android/persistence/attribute/AttributeTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/attribute/AttributeTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/attribute/AttributeTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -13569,6 +13500,7 @@ public final class org/hisp/dhis/android/persistence/attribute/AttributeTableInf
 	public static final field DATA_ELEMENT_GROUP_ATTRIBUTE Ljava/lang/String;
 	public static final field DATA_ELEMENT_GROUP_SET_ATTRIBUTE Ljava/lang/String;
 	public static final field DATA_SET_ATTRIBUTE Ljava/lang/String;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
@@ -13610,6 +13542,7 @@ public final class org/hisp/dhis/android/persistence/attribute/AttributeTableInf
 public final class org/hisp/dhis/android/persistence/attribute/DataElementAttributeValueLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/attribute/DataElementAttributeValueLinkTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/attribute/DataElementAttributeValueLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -13627,6 +13560,7 @@ public final class org/hisp/dhis/android/persistence/attribute/DataElementAttrib
 public final class org/hisp/dhis/android/persistence/attribute/ProgramAttributeValueLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/attribute/ProgramAttributeValueLinkTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/attribute/ProgramAttributeValueLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -13644,6 +13578,7 @@ public final class org/hisp/dhis/android/persistence/attribute/ProgramAttributeV
 public final class org/hisp/dhis/android/persistence/attribute/ProgramStageAttributeValueLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/attribute/ProgramStageAttributeValueLinkTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/attribute/ProgramStageAttributeValueLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -13661,6 +13596,7 @@ public final class org/hisp/dhis/android/persistence/attribute/ProgramStageAttri
 public final class org/hisp/dhis/android/persistence/category/CategoryCategoryComboLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/category/CategoryCategoryComboLinkTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/category/CategoryCategoryComboLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -13678,6 +13614,7 @@ public final class org/hisp/dhis/android/persistence/category/CategoryCategoryCo
 public final class org/hisp/dhis/android/persistence/category/CategoryCategoryOptionLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/category/CategoryCategoryOptionLinkTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/category/CategoryCategoryOptionLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -13695,12 +13632,14 @@ public final class org/hisp/dhis/android/persistence/category/CategoryCategoryOp
 public final class org/hisp/dhis/android/persistence/category/CategoryComboTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/category/CategoryComboTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/category/CategoryComboTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/category/CategoryComboTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field IS_DEFAULT Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
@@ -13716,6 +13655,7 @@ public final class org/hisp/dhis/android/persistence/category/CategoryComboTable
 public final class org/hisp/dhis/android/persistence/category/CategoryOptionComboCategoryOptionLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/category/CategoryOptionComboCategoryOptionLinkTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/category/CategoryOptionComboCategoryOptionLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -13732,6 +13672,7 @@ public final class org/hisp/dhis/android/persistence/category/CategoryOptionComb
 public final class org/hisp/dhis/android/persistence/category/CategoryOptionComboTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/category/CategoryOptionComboTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/category/CategoryOptionComboTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -13739,6 +13680,7 @@ public final class org/hisp/dhis/android/persistence/category/CategoryOptionComb
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/category/CategoryOptionComboTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
@@ -13753,6 +13695,7 @@ public final class org/hisp/dhis/android/persistence/category/CategoryOptionComb
 public final class org/hisp/dhis/android/persistence/category/CategoryOptionOrganisationUnitLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/category/CategoryOptionOrganisationUnitLinkTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/category/CategoryOptionOrganisationUnitLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -13760,6 +13703,7 @@ public final class org/hisp/dhis/android/persistence/category/CategoryOptionOrga
 	public static final field Companion Lorg/hisp/dhis/android/persistence/category/CategoryOptionOrganisationUnitLinkTableInfo$Columns$Companion;
 	public static final field ORGANISATION_UNIT Ljava/lang/String;
 	public static final field RESTRICTION Ljava/lang/String;
+	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -13770,6 +13714,7 @@ public final class org/hisp/dhis/android/persistence/category/CategoryOptionOrga
 public final class org/hisp/dhis/android/persistence/category/CategoryOptionTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/category/CategoryOptionTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/category/CategoryOptionTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -13777,6 +13722,7 @@ public final class org/hisp/dhis/android/persistence/category/CategoryOptionTabl
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/category/CategoryOptionTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
@@ -13797,6 +13743,7 @@ public final class org/hisp/dhis/android/persistence/category/CategoryOptionTabl
 public final class org/hisp/dhis/android/persistence/category/CategoryTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/category/CategoryTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/category/CategoryTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -13804,6 +13751,7 @@ public final class org/hisp/dhis/android/persistence/category/CategoryTableInfo$
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/category/CategoryTableInfo$Columns$Companion;
 	public static final field DATA_DIMENSION_TYPE Ljava/lang/String;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
@@ -13818,6 +13766,7 @@ public final class org/hisp/dhis/android/persistence/category/CategoryTableInfo$
 public final class org/hisp/dhis/android/persistence/configuration/ConfigurationTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/configuration/ConfigurationTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/configuration/ConfigurationTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -13833,12 +13782,14 @@ public final class org/hisp/dhis/android/persistence/configuration/Configuration
 public final class org/hisp/dhis/android/persistence/constant/ConstantTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/constant/ConstantTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/constant/ConstantTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/constant/ConstantTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
@@ -13854,6 +13805,7 @@ public final class org/hisp/dhis/android/persistence/constant/ConstantTableInfo$
 public final class org/hisp/dhis/android/persistence/dataapproval/DataApprovalTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/dataapproval/DataApprovalTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/dataapproval/DataApprovalTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -13873,6 +13825,7 @@ public final class org/hisp/dhis/android/persistence/dataapproval/DataApprovalTa
 public final class org/hisp/dhis/android/persistence/dataelement/DataElementOperandTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/dataelement/DataElementOperandTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/dataelement/DataElementOperandTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -13890,6 +13843,7 @@ public final class org/hisp/dhis/android/persistence/dataelement/DataElementOper
 public final class org/hisp/dhis/android/persistence/dataelement/DataElementTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/dataelement/DataElementTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/dataelement/DataElementTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -13899,6 +13853,7 @@ public final class org/hisp/dhis/android/persistence/dataelement/DataElementTabl
 	public static final field COLOR Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/dataelement/DataElementTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_FORM_NAME Ljava/lang/String;
@@ -13925,6 +13880,7 @@ public final class org/hisp/dhis/android/persistence/dataelement/DataElementTabl
 public final class org/hisp/dhis/android/persistence/dataset/DataInputPeriodTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/dataset/DataInputPeriodTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/dataset/DataInputPeriodTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -13943,6 +13899,7 @@ public final class org/hisp/dhis/android/persistence/dataset/DataInputPeriodTabl
 public final class org/hisp/dhis/android/persistence/dataset/DataSetCompleteRegistrationTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/dataset/DataSetCompleteRegistrationTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/dataset/DataSetCompleteRegistrationTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -13965,6 +13922,7 @@ public final class org/hisp/dhis/android/persistence/dataset/DataSetCompleteRegi
 public final class org/hisp/dhis/android/persistence/dataset/DataSetCompulsoryDataElementOperandsLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/dataset/DataSetCompulsoryDataElementOperandsLinkTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/dataset/DataSetCompulsoryDataElementOperandsLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -13981,6 +13939,7 @@ public final class org/hisp/dhis/android/persistence/dataset/DataSetCompulsoryDa
 public final class org/hisp/dhis/android/persistence/dataset/DataSetDataElementLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/dataset/DataSetDataElementLinkTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/dataset/DataSetDataElementLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -13998,6 +13957,7 @@ public final class org/hisp/dhis/android/persistence/dataset/DataSetDataElementL
 public final class org/hisp/dhis/android/persistence/dataset/DataSetOrganisationUnitLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/dataset/DataSetOrganisationUnitLinkTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/dataset/DataSetOrganisationUnitLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14014,6 +13974,7 @@ public final class org/hisp/dhis/android/persistence/dataset/DataSetOrganisation
 public final class org/hisp/dhis/android/persistence/dataset/DataSetTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/dataset/DataSetTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/dataset/DataSetTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14025,6 +13986,7 @@ public final class org/hisp/dhis/android/persistence/dataset/DataSetTableInfo$Co
 	public static final field CUSTOM_TEXT_ALIGN Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/dataset/DataSetTableInfo$Columns$Companion;
 	public static final field DATA_ELEMENT_DECORATION Ljava/lang/String;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
@@ -14061,6 +14023,7 @@ public final class org/hisp/dhis/android/persistence/dataset/DataSetTableInfo$Co
 public final class org/hisp/dhis/android/persistence/dataset/SectionDataElementLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/dataset/SectionDataElementLinkTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/dataset/SectionDataElementLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14078,6 +14041,7 @@ public final class org/hisp/dhis/android/persistence/dataset/SectionDataElementL
 public final class org/hisp/dhis/android/persistence/dataset/SectionGreyedFieldsLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/dataset/SectionGreyedFieldsLinkTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/dataset/SectionGreyedFieldsLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14095,6 +14059,7 @@ public final class org/hisp/dhis/android/persistence/dataset/SectionGreyedFields
 public final class org/hisp/dhis/android/persistence/dataset/SectionIndicatorLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/dataset/SectionIndicatorLinkTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/dataset/SectionIndicatorLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14111,6 +14076,7 @@ public final class org/hisp/dhis/android/persistence/dataset/SectionIndicatorLin
 public final class org/hisp/dhis/android/persistence/dataset/SectionTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/dataset/SectionTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/dataset/SectionTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14120,6 +14086,7 @@ public final class org/hisp/dhis/android/persistence/dataset/SectionTableInfo$Co
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/dataset/SectionTableInfo$Columns$Companion;
 	public static final field DATA_SET Ljava/lang/String;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISABLE_DATA_ELEMENT_AUTO_GROUP Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
@@ -14141,6 +14108,7 @@ public final class org/hisp/dhis/android/persistence/dataset/SectionTableInfo$Co
 public final class org/hisp/dhis/android/persistence/datastore/DataStoreTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/datastore/DataStoreTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/datastore/DataStoreTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14160,6 +14128,7 @@ public final class org/hisp/dhis/android/persistence/datastore/DataStoreTableInf
 public final class org/hisp/dhis/android/persistence/datastore/LocalDataStoreTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/datastore/LocalDataStoreTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/datastore/LocalDataStoreTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14176,6 +14145,7 @@ public final class org/hisp/dhis/android/persistence/datastore/LocalDataStoreTab
 public final class org/hisp/dhis/android/persistence/datavalue/DataValueConflictTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/datavalue/DataValueConflictTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/datavalue/DataValueConflictTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14201,6 +14171,7 @@ public final class org/hisp/dhis/android/persistence/datavalue/DataValueConflict
 public final class org/hisp/dhis/android/persistence/datavalue/DataValueTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/datavalue/DataValueTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/datavalue/DataValueTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14234,6 +14205,7 @@ public final class org/hisp/dhis/android/persistence/db/access/RoomTransaction :
 public final class org/hisp/dhis/android/persistence/domain/AggregatedDataSyncTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/domain/AggregatedDataSyncTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/domain/AggregatedDataSyncTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14255,6 +14227,7 @@ public final class org/hisp/dhis/android/persistence/domain/AggregatedDataSyncTa
 public final class org/hisp/dhis/android/persistence/enrollment/EnrollmentTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/enrollment/EnrollmentTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/enrollment/EnrollmentTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14287,6 +14260,7 @@ public final class org/hisp/dhis/android/persistence/enrollment/EnrollmentTableI
 public final class org/hisp/dhis/android/persistence/event/EventDataFilterTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/event/EventDataFilterTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/event/EventDataFilterTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14311,6 +14285,7 @@ public final class org/hisp/dhis/android/persistence/event/EventDataFilterTableI
 public final class org/hisp/dhis/android/persistence/event/EventFilterTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/event/EventFilterTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/event/EventFilterTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14319,6 +14294,7 @@ public final class org/hisp/dhis/android/persistence/event/EventFilterTableInfo$
 	public static final field COMPLETED_DATE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/event/EventFilterTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_COLUMN_ORDER Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
@@ -14346,6 +14322,7 @@ public final class org/hisp/dhis/android/persistence/event/EventFilterTableInfo$
 public final class org/hisp/dhis/android/persistence/event/EventSyncTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/event/EventSyncTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/event/EventSyncTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14354,6 +14331,7 @@ public final class org/hisp/dhis/android/persistence/event/EventSyncTableInfo$Co
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field ORGANISATION_UNIT_IDS_HASH Ljava/lang/String;
 	public static final field PROGRAM Ljava/lang/String;
+	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -14364,6 +14342,7 @@ public final class org/hisp/dhis/android/persistence/event/EventSyncTableInfo$Co
 public final class org/hisp/dhis/android/persistence/event/EventTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/event/EventTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/event/EventTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14399,12 +14378,14 @@ public final class org/hisp/dhis/android/persistence/event/EventTableInfo$Column
 public final class org/hisp/dhis/android/persistence/expressiondimensionitem/ExpressionDimensionItemTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/expressiondimensionitem/ExpressionDimensionItemTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/expressiondimensionitem/ExpressionDimensionItemTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/expressiondimensionitem/ExpressionDimensionItemTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field EXPRESSION Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
@@ -14420,6 +14401,7 @@ public final class org/hisp/dhis/android/persistence/expressiondimensionitem/Exp
 public final class org/hisp/dhis/android/persistence/fileresource/FileResourceTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/fileresource/FileResourceTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/fileresource/FileResourceTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14443,6 +14425,7 @@ public final class org/hisp/dhis/android/persistence/fileresource/FileResourceTa
 public final class org/hisp/dhis/android/persistence/icon/CustomIconTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/icon/CustomIconTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/icon/CustomIconTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14460,6 +14443,7 @@ public final class org/hisp/dhis/android/persistence/icon/CustomIconTableInfo$Co
 public final class org/hisp/dhis/android/persistence/imports/TrackerImportConflictTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/imports/TrackerImportConflictTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/imports/TrackerImportConflictTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14476,6 +14460,7 @@ public final class org/hisp/dhis/android/persistence/imports/TrackerImportConfli
 	public static final field TRACKED_ENTITY_ATTRIBUTE Ljava/lang/String;
 	public static final field TRACKED_ENTITY_INSTANCE Ljava/lang/String;
 	public static final field VALUE Ljava/lang/String;
+	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -14486,6 +14471,7 @@ public final class org/hisp/dhis/android/persistence/imports/TrackerImportConfli
 public final class org/hisp/dhis/android/persistence/indicator/DataSetIndicatorLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/indicator/DataSetIndicatorLinkTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/indicator/DataSetIndicatorLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14502,6 +14488,7 @@ public final class org/hisp/dhis/android/persistence/indicator/DataSetIndicatorL
 public final class org/hisp/dhis/android/persistence/indicator/IndicatorTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/indicator/IndicatorTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/indicator/IndicatorTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14511,6 +14498,7 @@ public final class org/hisp/dhis/android/persistence/indicator/IndicatorTableInf
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/indicator/IndicatorTableInfo$Columns$Companion;
 	public static final field DECIMALS Ljava/lang/String;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DENOMINATOR Ljava/lang/String;
 	public static final field DENOMINATOR_DESCRIPTION Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
@@ -14536,12 +14524,14 @@ public final class org/hisp/dhis/android/persistence/indicator/IndicatorTableInf
 public final class org/hisp/dhis/android/persistence/indicator/IndicatorTypeTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/indicator/IndicatorTypeTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/indicator/IndicatorTypeTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/indicator/IndicatorTypeTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field FACTOR Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
@@ -14558,6 +14548,7 @@ public final class org/hisp/dhis/android/persistence/indicator/IndicatorTypeTabl
 public final class org/hisp/dhis/android/persistence/legendset/DataElementLegendSetLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/legendset/DataElementLegendSetLinkTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/legendset/DataElementLegendSetLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14575,6 +14566,7 @@ public final class org/hisp/dhis/android/persistence/legendset/DataElementLegend
 public final class org/hisp/dhis/android/persistence/legendset/IndicatorLegendSetLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/legendset/IndicatorLegendSetLinkTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/legendset/IndicatorLegendSetLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14592,12 +14584,14 @@ public final class org/hisp/dhis/android/persistence/legendset/IndicatorLegendSe
 public final class org/hisp/dhis/android/persistence/legendset/LegendSetTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/legendset/LegendSetTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/legendset/LegendSetTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/legendset/LegendSetTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
@@ -14613,6 +14607,7 @@ public final class org/hisp/dhis/android/persistence/legendset/LegendSetTableInf
 public final class org/hisp/dhis/android/persistence/legendset/LegendTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/legendset/LegendTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/legendset/LegendTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14620,6 +14615,7 @@ public final class org/hisp/dhis/android/persistence/legendset/LegendTableInfo$C
 	public static final field COLOR Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/legendset/LegendTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field END_VALUE Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
@@ -14637,6 +14633,7 @@ public final class org/hisp/dhis/android/persistence/legendset/LegendTableInfo$C
 public final class org/hisp/dhis/android/persistence/legendset/ProgramIndicatorLegendSetLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/legendset/ProgramIndicatorLegendSetLinkTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/legendset/ProgramIndicatorLegendSetLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14654,6 +14651,7 @@ public final class org/hisp/dhis/android/persistence/legendset/ProgramIndicatorL
 public final class org/hisp/dhis/android/persistence/maintenance/D2ErrorTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/maintenance/D2ErrorTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/maintenance/D2ErrorTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14677,6 +14675,7 @@ public final class org/hisp/dhis/android/persistence/maintenance/D2ErrorTableInf
 public final class org/hisp/dhis/android/persistence/maintenance/ForeignKeyViolationTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/maintenance/ForeignKeyViolationTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/maintenance/ForeignKeyViolationTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14689,6 +14688,7 @@ public final class org/hisp/dhis/android/persistence/maintenance/ForeignKeyViola
 	public static final field NOT_FOUND_VALUE Ljava/lang/String;
 	public static final field TO_COLUMN Ljava/lang/String;
 	public static final field TO_TABLE Ljava/lang/String;
+	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -14699,6 +14699,7 @@ public final class org/hisp/dhis/android/persistence/maintenance/ForeignKeyViola
 public final class org/hisp/dhis/android/persistence/map/MapLayerImageryProviderTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/map/MapLayerImageryProviderTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/map/MapLayerImageryProviderTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14716,6 +14717,7 @@ public final class org/hisp/dhis/android/persistence/map/MapLayerImageryProvider
 public final class org/hisp/dhis/android/persistence/map/MapLayerTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/map/MapLayerTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/map/MapLayerTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14743,6 +14745,7 @@ public final class org/hisp/dhis/android/persistence/map/MapLayerTableInfo$Colum
 public final class org/hisp/dhis/android/persistence/note/NoteTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/note/NoteTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/note/NoteTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14766,6 +14769,7 @@ public final class org/hisp/dhis/android/persistence/note/NoteTableInfo$Columns$
 public final class org/hisp/dhis/android/persistence/option/OptionGroupOptionLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/option/OptionGroupOptionLinkTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/option/OptionGroupOptionLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14782,12 +14786,14 @@ public final class org/hisp/dhis/android/persistence/option/OptionGroupOptionLin
 public final class org/hisp/dhis/android/persistence/option/OptionGroupTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/option/OptionGroupTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/option/OptionGroupTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/option/OptionGroupTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
@@ -14803,12 +14809,14 @@ public final class org/hisp/dhis/android/persistence/option/OptionGroupTableInfo
 public final class org/hisp/dhis/android/persistence/option/OptionSetTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/option/OptionSetTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/option/OptionSetTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/option/OptionSetTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
@@ -14825,6 +14833,7 @@ public final class org/hisp/dhis/android/persistence/option/OptionSetTableInfo$C
 public final class org/hisp/dhis/android/persistence/option/OptionTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/option/OptionTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/option/OptionTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14832,6 +14841,7 @@ public final class org/hisp/dhis/android/persistence/option/OptionTableInfo$Colu
 	public static final field COLOR Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/option/OptionTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field ICON Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
@@ -14849,12 +14859,14 @@ public final class org/hisp/dhis/android/persistence/option/OptionTableInfo$Colu
 public final class org/hisp/dhis/android/persistence/organisationunit/OrganisationUnitGroupTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/organisationunit/OrganisationUnitGroupTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/organisationunit/OrganisationUnitGroupTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/organisationunit/OrganisationUnitGroupTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field DISPLAY_SHORT_NAME Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
@@ -14871,12 +14883,14 @@ public final class org/hisp/dhis/android/persistence/organisationunit/Organisati
 public final class org/hisp/dhis/android/persistence/organisationunit/OrganisationUnitLevelTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/organisationunit/OrganisationUnitLevelTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/organisationunit/OrganisationUnitLevelTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/organisationunit/OrganisationUnitLevelTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field LEVEL Ljava/lang/String;
@@ -14892,6 +14906,7 @@ public final class org/hisp/dhis/android/persistence/organisationunit/Organisati
 public final class org/hisp/dhis/android/persistence/organisationunit/OrganisationUnitOrganisationUnitGroupLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/organisationunit/OrganisationUnitOrganisationUnitGroupLinkTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/organisationunit/OrganisationUnitOrganisationUnitGroupLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14908,6 +14923,7 @@ public final class org/hisp/dhis/android/persistence/organisationunit/Organisati
 public final class org/hisp/dhis/android/persistence/organisationunit/OrganisationUnitProgramLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/organisationunit/OrganisationUnitProgramLinkTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/organisationunit/OrganisationUnitProgramLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14924,6 +14940,7 @@ public final class org/hisp/dhis/android/persistence/organisationunit/Organisati
 public final class org/hisp/dhis/android/persistence/organisationunit/OrganisationUnitTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/organisationunit/OrganisationUnitTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/organisationunit/OrganisationUnitTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14931,6 +14948,7 @@ public final class org/hisp/dhis/android/persistence/organisationunit/Organisati
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/organisationunit/OrganisationUnitTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
@@ -14956,6 +14974,7 @@ public final class org/hisp/dhis/android/persistence/organisationunit/Organisati
 public final class org/hisp/dhis/android/persistence/period/PeriodTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/period/PeriodTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/period/PeriodTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14974,6 +14993,7 @@ public final class org/hisp/dhis/android/persistence/period/PeriodTableInfo$Colu
 public final class org/hisp/dhis/android/persistence/program/AnalyticsPeriodBoundaryTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/program/AnalyticsPeriodBoundaryTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/program/AnalyticsPeriodBoundaryTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -14993,6 +15013,7 @@ public final class org/hisp/dhis/android/persistence/program/AnalyticsPeriodBoun
 public final class org/hisp/dhis/android/persistence/program/ProgramIndicatorTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/program/ProgramIndicatorTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/program/ProgramIndicatorTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15002,6 +15023,7 @@ public final class org/hisp/dhis/android/persistence/program/ProgramIndicatorTab
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/program/ProgramIndicatorTableInfo$Columns$Companion;
 	public static final field DECIMALS Ljava/lang/String;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DIMENSION_ITEM Ljava/lang/String;
 	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
@@ -15025,6 +15047,7 @@ public final class org/hisp/dhis/android/persistence/program/ProgramIndicatorTab
 public final class org/hisp/dhis/android/persistence/program/ProgramRuleActionTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/program/ProgramRuleActionTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/program/ProgramRuleActionTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15034,6 +15057,7 @@ public final class org/hisp/dhis/android/persistence/program/ProgramRuleActionTa
 	public static final field Companion Lorg/hisp/dhis/android/persistence/program/ProgramRuleActionTableInfo$Columns$Companion;
 	public static final field DATA Ljava/lang/String;
 	public static final field DATA_ELEMENT Ljava/lang/String;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_CONTENT Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
@@ -15058,6 +15082,7 @@ public final class org/hisp/dhis/android/persistence/program/ProgramRuleActionTa
 public final class org/hisp/dhis/android/persistence/program/ProgramRuleTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/program/ProgramRuleTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/program/ProgramRuleTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15065,6 +15090,7 @@ public final class org/hisp/dhis/android/persistence/program/ProgramRuleTableInf
 	public static final field CONDITION Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/program/ProgramRuleTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
@@ -15082,6 +15108,7 @@ public final class org/hisp/dhis/android/persistence/program/ProgramRuleTableInf
 public final class org/hisp/dhis/android/persistence/program/ProgramRuleVariableTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/program/ProgramRuleVariableTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/program/ProgramRuleVariableTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15089,6 +15116,7 @@ public final class org/hisp/dhis/android/persistence/program/ProgramRuleVariable
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/program/ProgramRuleVariableTableInfo$Columns$Companion;
 	public static final field DATA_ELEMENT Ljava/lang/String;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
@@ -15108,6 +15136,7 @@ public final class org/hisp/dhis/android/persistence/program/ProgramRuleVariable
 public final class org/hisp/dhis/android/persistence/program/ProgramSectionAttributeLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/program/ProgramSectionAttributeLinkTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/program/ProgramSectionAttributeLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15125,6 +15154,7 @@ public final class org/hisp/dhis/android/persistence/program/ProgramSectionAttri
 public final class org/hisp/dhis/android/persistence/program/ProgramSectionTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/program/ProgramSectionTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/program/ProgramSectionTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15132,6 +15162,7 @@ public final class org/hisp/dhis/android/persistence/program/ProgramSectionTable
 	public static final field COLOR Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/program/ProgramSectionTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DESKTOP_RENDER_TYPE Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
@@ -15153,6 +15184,7 @@ public final class org/hisp/dhis/android/persistence/program/ProgramSectionTable
 public final class org/hisp/dhis/android/persistence/program/ProgramStageDataElementTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/program/ProgramStageDataElementTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/program/ProgramStageDataElementTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15163,6 +15195,7 @@ public final class org/hisp/dhis/android/persistence/program/ProgramStageDataEle
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/program/ProgramStageDataElementTableInfo$Columns$Companion;
 	public static final field DATA_ELEMENT Ljava/lang/String;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_IN_REPORTS Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
@@ -15180,6 +15213,7 @@ public final class org/hisp/dhis/android/persistence/program/ProgramStageDataEle
 public final class org/hisp/dhis/android/persistence/program/ProgramStageSectionDataElementLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/program/ProgramStageSectionDataElementLinkTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/program/ProgramStageSectionDataElementLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15197,6 +15231,7 @@ public final class org/hisp/dhis/android/persistence/program/ProgramStageSection
 public final class org/hisp/dhis/android/persistence/program/ProgramStageSectionProgramIndicatorLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/program/ProgramStageSectionProgramIndicatorLinkTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/program/ProgramStageSectionProgramIndicatorLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15213,12 +15248,14 @@ public final class org/hisp/dhis/android/persistence/program/ProgramStageSection
 public final class org/hisp/dhis/android/persistence/program/ProgramStageSectionTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/program/ProgramStageSectionTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/program/ProgramStageSectionTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/program/ProgramStageSectionTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DESKTOP_RENDER_TYPE Ljava/lang/String;
 	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
@@ -15239,6 +15276,7 @@ public final class org/hisp/dhis/android/persistence/program/ProgramStageSection
 public final class org/hisp/dhis/android/persistence/program/ProgramStageTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/program/ProgramStageTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/program/ProgramStageTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15250,6 +15288,7 @@ public final class org/hisp/dhis/android/persistence/program/ProgramStageTableIn
 	public static final field COLOR Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/program/ProgramStageTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_DUE_DATE_LABEL Ljava/lang/String;
@@ -15288,6 +15327,7 @@ public final class org/hisp/dhis/android/persistence/program/ProgramStageTableIn
 public final class org/hisp/dhis/android/persistence/program/ProgramTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/program/ProgramTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/program/ProgramTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15300,6 +15340,7 @@ public final class org/hisp/dhis/android/persistence/program/ProgramTableInfo$Co
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/program/ProgramTableInfo$Columns$Companion;
 	public static final field DATA_ENTRY_METHOD Ljava/lang/String;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_ENROLLMENT_DATE_LABEL Ljava/lang/String;
@@ -15346,6 +15387,7 @@ public final class org/hisp/dhis/android/persistence/program/ProgramTableInfo$Co
 public final class org/hisp/dhis/android/persistence/program/ProgramTrackedEntityAttributeTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/program/ProgramTrackedEntityAttributeTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/program/ProgramTrackedEntityAttributeTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15353,6 +15395,7 @@ public final class org/hisp/dhis/android/persistence/program/ProgramTrackedEntit
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/program/ProgramTrackedEntityAttributeTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_IN_LIST Ljava/lang/String;
@@ -15377,6 +15420,7 @@ public final class org/hisp/dhis/android/persistence/program/ProgramTrackedEntit
 public final class org/hisp/dhis/android/persistence/programstageworkinglist/ProgramStageWorkingListAttributeValueFilterTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/programstageworkinglist/ProgramStageWorkingListAttributeValueFilterTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/programstageworkinglist/ProgramStageWorkingListAttributeValueFilterTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15403,6 +15447,7 @@ public final class org/hisp/dhis/android/persistence/programstageworkinglist/Pro
 public final class org/hisp/dhis/android/persistence/programstageworkinglist/ProgramStageWorkingListEventDataFilterTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/programstageworkinglist/ProgramStageWorkingListEventDataFilterTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/programstageworkinglist/ProgramStageWorkingListEventDataFilterTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15427,6 +15472,7 @@ public final class org/hisp/dhis/android/persistence/programstageworkinglist/Pro
 public final class org/hisp/dhis/android/persistence/programstageworkinglist/ProgramStageWorkingListTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/programstageworkinglist/ProgramStageWorkingListTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/programstageworkinglist/ProgramStageWorkingListTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15434,6 +15480,7 @@ public final class org/hisp/dhis/android/persistence/programstageworkinglist/Pro
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/programstageworkinglist/ProgramStageWorkingListTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_COLUMN_ORDER Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
@@ -15462,6 +15509,7 @@ public final class org/hisp/dhis/android/persistence/programstageworkinglist/Pro
 public final class org/hisp/dhis/android/persistence/relationship/RelationshipConstraintTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/relationship/RelationshipConstraintTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/relationship/RelationshipConstraintTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15484,6 +15532,7 @@ public final class org/hisp/dhis/android/persistence/relationship/RelationshipCo
 public final class org/hisp/dhis/android/persistence/relationship/RelationshipItemTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/relationship/RelationshipItemTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/relationship/RelationshipItemTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15503,6 +15552,7 @@ public final class org/hisp/dhis/android/persistence/relationship/RelationshipIt
 public final class org/hisp/dhis/android/persistence/relationship/RelationshipTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/relationship/RelationshipTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/relationship/RelationshipTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15524,6 +15574,7 @@ public final class org/hisp/dhis/android/persistence/relationship/RelationshipTa
 public final class org/hisp/dhis/android/persistence/relationship/RelationshipTypeTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/relationship/RelationshipTypeTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/relationship/RelationshipTypeTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15532,6 +15583,7 @@ public final class org/hisp/dhis/android/persistence/relationship/RelationshipTy
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/relationship/RelationshipTypeTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field FROM_TO_NAME Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
@@ -15548,6 +15600,7 @@ public final class org/hisp/dhis/android/persistence/relationship/RelationshipTy
 public final class org/hisp/dhis/android/persistence/resource/ResourceTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/resource/ResourceTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/resource/ResourceTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15564,6 +15617,7 @@ public final class org/hisp/dhis/android/persistence/resource/ResourceTableInfo$
 public final class org/hisp/dhis/android/persistence/settings/AnalyticsDhisVisualizationTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/settings/AnalyticsDhisVisualizationTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/settings/AnalyticsDhisVisualizationTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15587,6 +15641,7 @@ public final class org/hisp/dhis/android/persistence/settings/AnalyticsDhisVisua
 public final class org/hisp/dhis/android/persistence/settings/AnalyticsTeiAttributeTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/settings/AnalyticsTeiAttributeTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/settings/AnalyticsTeiAttributeTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15604,6 +15659,7 @@ public final class org/hisp/dhis/android/persistence/settings/AnalyticsTeiAttrib
 public final class org/hisp/dhis/android/persistence/settings/AnalyticsTeiDataElementTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/settings/AnalyticsTeiDataElementTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/settings/AnalyticsTeiDataElementTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15622,6 +15678,7 @@ public final class org/hisp/dhis/android/persistence/settings/AnalyticsTeiDataEl
 public final class org/hisp/dhis/android/persistence/settings/AnalyticsTeiIndicatorTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/settings/AnalyticsTeiIndicatorTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/settings/AnalyticsTeiIndicatorTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15640,6 +15697,7 @@ public final class org/hisp/dhis/android/persistence/settings/AnalyticsTeiIndica
 public final class org/hisp/dhis/android/persistence/settings/AnalyticsTeiSettingTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/settings/AnalyticsTeiSettingTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/settings/AnalyticsTeiSettingTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15661,6 +15719,7 @@ public final class org/hisp/dhis/android/persistence/settings/AnalyticsTeiSettin
 public final class org/hisp/dhis/android/persistence/settings/AnalyticsTeiWHONutritionDataTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/settings/AnalyticsTeiWHONutritionDataTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/settings/AnalyticsTeiWHONutritionDataTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15680,6 +15739,7 @@ public final class org/hisp/dhis/android/persistence/settings/AnalyticsTeiWHONut
 public final class org/hisp/dhis/android/persistence/settings/CustomIntentAttributeTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/settings/CustomIntentAttributeTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/settings/CustomIntentAttributeTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15696,6 +15756,7 @@ public final class org/hisp/dhis/android/persistence/settings/CustomIntentAttrib
 public final class org/hisp/dhis/android/persistence/settings/CustomIntentDataElementTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/settings/CustomIntentDataElementTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/settings/CustomIntentDataElementTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15712,6 +15773,7 @@ public final class org/hisp/dhis/android/persistence/settings/CustomIntentDataEl
 public final class org/hisp/dhis/android/persistence/settings/CustomIntentTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/settings/CustomIntentTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/settings/CustomIntentTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15732,6 +15794,7 @@ public final class org/hisp/dhis/android/persistence/settings/CustomIntentTableI
 public final class org/hisp/dhis/android/persistence/settings/DataSetConfigurationSettingTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/settings/DataSetConfigurationSettingTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/settings/DataSetConfigurationSettingTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15739,6 +15802,7 @@ public final class org/hisp/dhis/android/persistence/settings/DataSetConfigurati
 	public static final field DISABLE_MANUAL_LOCATION Ljava/lang/String;
 	public static final field MINIMUM_LOCATION_ACCURACY Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
+	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -15749,6 +15813,7 @@ public final class org/hisp/dhis/android/persistence/settings/DataSetConfigurati
 public final class org/hisp/dhis/android/persistence/settings/DataSetSettingTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/settings/DataSetSettingTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/settings/DataSetSettingTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15758,6 +15823,7 @@ public final class org/hisp/dhis/android/persistence/settings/DataSetSettingTabl
 	public static final field PERIOD_D_S_DOWNLOAD Ljava/lang/String;
 	public static final field PERIOD_D_S_D_B_TRIMMING Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
+	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -15768,6 +15834,7 @@ public final class org/hisp/dhis/android/persistence/settings/DataSetSettingTabl
 public final class org/hisp/dhis/android/persistence/settings/FilterSettingTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/settings/FilterSettingTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/settings/FilterSettingTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15787,6 +15854,7 @@ public final class org/hisp/dhis/android/persistence/settings/FilterSettingTable
 public final class org/hisp/dhis/android/persistence/settings/GeneralSettingTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/settings/GeneralSettingTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/settings/GeneralSettingTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15812,6 +15880,7 @@ public final class org/hisp/dhis/android/persistence/settings/GeneralSettingTabl
 public final class org/hisp/dhis/android/persistence/settings/LatestAppVersionTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/settings/LatestAppVersionTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/settings/LatestAppVersionTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15828,6 +15897,7 @@ public final class org/hisp/dhis/android/persistence/settings/LatestAppVersionTa
 public final class org/hisp/dhis/android/persistence/settings/ProgramConfigurationSettingTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/settings/ProgramConfigurationSettingTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/settings/ProgramConfigurationSettingTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15841,6 +15911,7 @@ public final class org/hisp/dhis/android/persistence/settings/ProgramConfigurati
 	public static final field OPTIONAL_SEARCH Ljava/lang/String;
 	public static final field QUICK_ACTIONS Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
+	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -15851,6 +15922,7 @@ public final class org/hisp/dhis/android/persistence/settings/ProgramConfigurati
 public final class org/hisp/dhis/android/persistence/settings/ProgramSettingTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/settings/ProgramSettingTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/settings/ProgramSettingTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15872,6 +15944,7 @@ public final class org/hisp/dhis/android/persistence/settings/ProgramSettingTabl
 	public static final field UID Ljava/lang/String;
 	public static final field UPDATE_DOWNLOAD Ljava/lang/String;
 	public static final field UPDATE_D_B_TRIMMING Ljava/lang/String;
+	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -15882,6 +15955,7 @@ public final class org/hisp/dhis/android/persistence/settings/ProgramSettingTabl
 public final class org/hisp/dhis/android/persistence/settings/SynchronizationSettingTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/settings/SynchronizationSettingTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/settings/SynchronizationSettingTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15901,6 +15975,7 @@ public final class org/hisp/dhis/android/persistence/settings/SynchronizationSet
 public final class org/hisp/dhis/android/persistence/settings/SystemSettingTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/settings/SystemSettingTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/settings/SystemSettingTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15917,6 +15992,7 @@ public final class org/hisp/dhis/android/persistence/settings/SystemSettingTable
 public final class org/hisp/dhis/android/persistence/settings/UserSettingsTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/settings/UserSettingsTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/settings/UserSettingsTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15933,6 +16009,7 @@ public final class org/hisp/dhis/android/persistence/settings/UserSettingsTableI
 public final class org/hisp/dhis/android/persistence/sms/SMSConfigTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/sms/SMSConfigTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/sms/SMSConfigTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15949,6 +16026,7 @@ public final class org/hisp/dhis/android/persistence/sms/SMSConfigTableInfo$Colu
 public final class org/hisp/dhis/android/persistence/sms/SMSOngoingSubmissionTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/sms/SMSOngoingSubmissionTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/sms/SMSOngoingSubmissionTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15965,6 +16043,7 @@ public final class org/hisp/dhis/android/persistence/sms/SMSOngoingSubmissionTab
 public final class org/hisp/dhis/android/persistence/sms/SmsMetadataIdTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/sms/SmsMetadataIdTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/sms/SmsMetadataIdTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -15981,6 +16060,7 @@ public final class org/hisp/dhis/android/persistence/sms/SmsMetadataIdTableInfo$
 public final class org/hisp/dhis/android/persistence/systeminfo/SystemInfoTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/systeminfo/SystemInfoTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/systeminfo/SystemInfoTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -16000,6 +16080,7 @@ public final class org/hisp/dhis/android/persistence/systeminfo/SystemInfoTableI
 public final class org/hisp/dhis/android/persistence/trackedentity/AttributeValueFilterTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/trackedentity/AttributeValueFilterTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/trackedentity/AttributeValueFilterTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -16026,6 +16107,7 @@ public final class org/hisp/dhis/android/persistence/trackedentity/AttributeValu
 public final class org/hisp/dhis/android/persistence/trackedentity/ProgramOwnerTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/trackedentity/ProgramOwnerTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/trackedentity/ProgramOwnerTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -16044,6 +16126,7 @@ public final class org/hisp/dhis/android/persistence/trackedentity/ProgramOwnerT
 public final class org/hisp/dhis/android/persistence/trackedentity/ProgramTempOwnerTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/trackedentity/ProgramTempOwnerTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/trackedentity/ProgramTempOwnerTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -16063,6 +16146,7 @@ public final class org/hisp/dhis/android/persistence/trackedentity/ProgramTempOw
 public final class org/hisp/dhis/android/persistence/trackedentity/ReservedValueSettingTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/trackedentity/ReservedValueSettingTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/trackedentity/ReservedValueSettingTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -16079,6 +16163,7 @@ public final class org/hisp/dhis/android/persistence/trackedentity/ReservedValue
 public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntityAttributeLegendSetLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/trackedentity/TrackedEntityAttributeLegendSetLinkTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntityAttributeLegendSetLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -16096,6 +16181,7 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntityAttributeReservedValueTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/trackedentity/TrackedEntityAttributeReservedValueTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntityAttributeReservedValueTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -16119,6 +16205,7 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntityAttributeTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/trackedentity/TrackedEntityAttributeTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntityAttributeTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -16128,6 +16215,7 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 	public static final field CONFIDENTIAL Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/trackedentity/TrackedEntityAttributeTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_FORM_NAME Ljava/lang/String;
@@ -16162,6 +16250,7 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntityAttributeValueTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/trackedentity/TrackedEntityAttributeValueTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntityAttributeValueTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -16182,6 +16271,7 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntityDataValueTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/trackedentity/TrackedEntityDataValueTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntityDataValueTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -16204,6 +16294,7 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntityInstanceEventFilterTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/trackedentity/TrackedEntityInstanceEventFilterTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntityInstanceEventFilterTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -16214,6 +16305,7 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 	public static final field PERIOD_TO Ljava/lang/String;
 	public static final field PROGRAM_STAGE Ljava/lang/String;
 	public static final field TRACKED_ENTITY_INSTANCE_FILTER Ljava/lang/String;
+	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16224,6 +16316,7 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntityInstanceFilterTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/trackedentity/TrackedEntityInstanceFilterTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntityInstanceFilterTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -16232,6 +16325,7 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 	public static final field COLOR Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/trackedentity/TrackedEntityInstanceFilterTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_COLUMN_ORDER Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
@@ -16264,6 +16358,7 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntityInstanceSyncTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/trackedentity/TrackedEntityInstanceSyncTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntityInstanceSyncTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -16272,6 +16367,7 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field ORGANISATION_UNIT_IDS_HASH Ljava/lang/String;
 	public static final field PROGRAM Ljava/lang/String;
+	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }
@@ -16282,6 +16378,7 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntityInstanceTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/trackedentity/TrackedEntityInstanceTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntityInstanceTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -16308,6 +16405,7 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntityTypeAttributeTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/trackedentity/TrackedEntityTypeAttributeTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntityTypeAttributeTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -16328,6 +16426,7 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntityTypeTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/trackedentity/TrackedEntityTypeTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntityTypeTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -16336,6 +16435,7 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 	public static final field COLOR Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/trackedentity/TrackedEntityTypeTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
@@ -16356,6 +16456,7 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 public final class org/hisp/dhis/android/persistence/tracker/TrackerJobObjectTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/tracker/TrackerJobObjectTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/tracker/TrackerJobObjectTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -16375,6 +16476,7 @@ public final class org/hisp/dhis/android/persistence/tracker/TrackerJobObjectTab
 public final class org/hisp/dhis/android/persistence/usecase/StockUseCaseTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/usecase/StockUseCaseTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/usecase/StockUseCaseTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -16395,6 +16497,7 @@ public final class org/hisp/dhis/android/persistence/usecase/StockUseCaseTableIn
 public final class org/hisp/dhis/android/persistence/usecase/StockUseCaseTransactionTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/usecase/StockUseCaseTransactionTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/usecase/StockUseCaseTransactionTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -16416,6 +16519,7 @@ public final class org/hisp/dhis/android/persistence/usecase/StockUseCaseTransac
 public final class org/hisp/dhis/android/persistence/user/AuthenticatedUserTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/user/AuthenticatedUserTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/user/AuthenticatedUserTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -16432,6 +16536,7 @@ public final class org/hisp/dhis/android/persistence/user/AuthenticatedUserTable
 public final class org/hisp/dhis/android/persistence/user/AuthorityTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/user/AuthorityTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/user/AuthorityTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -16447,12 +16552,14 @@ public final class org/hisp/dhis/android/persistence/user/AuthorityTableInfo$Col
 public final class org/hisp/dhis/android/persistence/user/UserGroupTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/user/UserGroupTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/user/UserGroupTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/user/UserGroupTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
@@ -16467,6 +16574,7 @@ public final class org/hisp/dhis/android/persistence/user/UserGroupTableInfo$Col
 public final class org/hisp/dhis/android/persistence/user/UserOrganisationUnitTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/user/UserOrganisationUnitTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/user/UserOrganisationUnitTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -16486,12 +16594,14 @@ public final class org/hisp/dhis/android/persistence/user/UserOrganisationUnitTa
 public final class org/hisp/dhis/android/persistence/user/UserRoleTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/user/UserRoleTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/user/UserRoleTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/user/UserRoleTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
@@ -16506,6 +16616,7 @@ public final class org/hisp/dhis/android/persistence/user/UserRoleTableInfo$Colu
 public final class org/hisp/dhis/android/persistence/user/UserTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/user/UserTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/user/UserTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -16513,6 +16624,7 @@ public final class org/hisp/dhis/android/persistence/user/UserTableInfo$Columns 
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/user/UserTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field EDUCATION Ljava/lang/String;
 	public static final field EMAIL Ljava/lang/String;
@@ -16528,6 +16640,7 @@ public final class org/hisp/dhis/android/persistence/user/UserTableInfo$Columns 
 	public static final field NATIONALITY Ljava/lang/String;
 	public static final field PHONE_NUMBER Ljava/lang/String;
 	public static final field SURNAME Ljava/lang/String;
+	public static final field TWO_FACTOR_AUTH_ENABLED Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
 	public static final field USERNAME Ljava/lang/String;
 	public fun <init> ()V
@@ -16540,6 +16653,7 @@ public final class org/hisp/dhis/android/persistence/user/UserTableInfo$Columns$
 public final class org/hisp/dhis/android/persistence/validation/DataSetValidationRuleLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/validation/DataSetValidationRuleLinkTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/validation/DataSetValidationRuleLinkTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -16556,12 +16670,14 @@ public final class org/hisp/dhis/android/persistence/validation/DataSetValidatio
 public final class org/hisp/dhis/android/persistence/validation/ValidationRuleTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/validation/ValidationRuleTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/validation/ValidationRuleTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/validation/ValidationRuleTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
@@ -16592,6 +16708,7 @@ public final class org/hisp/dhis/android/persistence/validation/ValidationRuleTa
 public final class org/hisp/dhis/android/persistence/valuetypedevicerendering/ValueTypeDeviceRenderingTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/valuetypedevicerendering/ValueTypeDeviceRenderingTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/valuetypedevicerendering/ValueTypeDeviceRenderingTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -16614,6 +16731,7 @@ public final class org/hisp/dhis/android/persistence/valuetypedevicerendering/Va
 public final class org/hisp/dhis/android/persistence/visualization/TrackerVisualizationDimensionTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/visualization/TrackerVisualizationDimensionTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/visualization/TrackerVisualizationDimensionTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -16638,12 +16756,14 @@ public final class org/hisp/dhis/android/persistence/visualization/TrackerVisual
 public final class org/hisp/dhis/android/persistence/visualization/TrackerVisualizationTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/visualization/TrackerVisualizationTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/visualization/TrackerVisualizationTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/visualization/TrackerVisualizationTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
@@ -16666,6 +16786,7 @@ public final class org/hisp/dhis/android/persistence/visualization/TrackerVisual
 public final class org/hisp/dhis/android/persistence/visualization/VisualizationDimensionItemTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/visualization/VisualizationDimensionItemTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/visualization/VisualizationDimensionItemTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -16686,6 +16807,7 @@ public final class org/hisp/dhis/android/persistence/visualization/Visualization
 public final class org/hisp/dhis/android/persistence/visualization/VisualizationTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/visualization/VisualizationTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/persistence/visualization/VisualizationTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -16695,6 +16817,7 @@ public final class org/hisp/dhis/android/persistence/visualization/Visualization
 	public static final field COL_TOTALS Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/visualization/VisualizationTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DIGIT_GROUP_SEPARATOR Ljava/lang/String;
 	public static final field DISPLAY_DENSITY Ljava/lang/String;

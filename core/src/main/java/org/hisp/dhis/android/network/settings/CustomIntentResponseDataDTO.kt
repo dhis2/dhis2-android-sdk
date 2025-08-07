@@ -44,7 +44,7 @@ internal data class CustomIntentResponseDataDTO(
                 CustomIntentResponseDataExtra.builder()
                     .key(path)
                     .extraName(argument)
-                    .extraType(CustomIntentResponseExtraType.BOOLEAN) // Temporary hardcoding until ASWA is updated
+                    .extraType(CustomIntentResponseExtraType.OBJECT) // Temporary hardcoding until ASWA is updated
                     .build(),
             ),
         ).build()

@@ -32,6 +32,7 @@ internal data class UserDB(
     val phoneNumber: String?,
     val nationality: String?,
     val username: String?,
+    val twoFactorAuthEnabled: Boolean?,
 ) : EntityDB<User>, BaseIdentifiableObjectDB {
 
     override fun toDomain(): User {
@@ -51,6 +52,7 @@ internal data class UserDB(
             phoneNumber(phoneNumber)
             nationality(nationality)
             username(username)
+            twoFactorAuthEnabled(twoFactorAuthEnabled)
         }.build()
     }
 }
@@ -78,5 +80,6 @@ internal fun User.toDB(): UserDB {
         nationality = nationality(),
         username = username(),
         deleted = deleted(),
+        twoFactorAuthEnabled = twoFactorAuthEnabled(),
     )
 }

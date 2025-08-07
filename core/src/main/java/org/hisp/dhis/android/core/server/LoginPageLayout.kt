@@ -25,28 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user.loginconfig
+package org.hisp.dhis.android.core.server
 
-data class LoginConfig(
-    val apiVersion: String? = null,
-    val applicationTitle: String? = null,
-    val applicationDescription: String? = null,
-    val applicationNotification: String? = null,
-    val applicationLeftSideFooter: String? = null,
-    val applicationRightSideFooter: String? = null,
-    val countryFlag: String? = null,
-    val uiLocale: String? = null,
-    val loginPageLogo: String? = null,
-    val loginPopup: String? = null,
-    val loginPageLayout: LoginPageLayout? = LoginPageLayout.DEFAULT,
-    val loginPageTemplate: String? = null,
-    val recaptchaSite: String? = null,
-    val minPasswordLength: Int? = null,
-    val maxPasswordLength: Int? = null,
-    val emailConfigured: Boolean = false,
-    val selfRegistrationEnabled: Boolean = false,
-    val selfRegistrationNoRecaptcha: Boolean = false,
-    val allowAccountRecovery: Boolean = false,
-    val useCustomLogoFront: Boolean = false,
-    val oidcProviders: List<LoginOidcProvider> = emptyList(),
-)
+enum class LoginPageLayout {
+    DEFAULT,
+    SIDEBAR,
+    CUSTOM,
+}

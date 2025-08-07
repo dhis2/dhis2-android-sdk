@@ -29,8 +29,8 @@ package org.hisp.dhis.android.network.loginconfig
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.user.loginconfig.LoginConfig
-import org.hisp.dhis.android.core.user.loginconfig.LoginConfigNetworkHandler
+import org.hisp.dhis.android.core.server.LoginConfig
+import org.hisp.dhis.android.core.server.internal.LoginConfigNetworkHandler
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -39,6 +39,14 @@ internal class LoginConfigNetworkHandlerImpl(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : LoginConfigNetworkHandler {
     private val service: LoginConfigService = LoginConfigService(httpClient)
+
+    override suspend fun loginConfigFor(serverUrl: String): LoginConfig {
+        val loginConfigDTO = coroutineAPICallExecutor.wrap {
+            service.getLoginConfigFor(serverUrl)
+        }.getOrThrow()
+
+        return loginConfigDTO.toDomain()
+    }
 
     override suspend fun loginConfig(): LoginConfig {
         val loginConfigDTO = coroutineAPICallExecutor.wrap {

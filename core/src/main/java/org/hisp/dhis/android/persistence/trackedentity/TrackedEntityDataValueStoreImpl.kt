@@ -152,7 +152,7 @@ internal class TrackedEntityDataValueStoreImpl(
     private suspend fun queryTrackedEntityDataValues(
         queryStatement: String,
     ): Map<String, List<TrackedEntityDataValue>> {
-        val dataValueList = selectWhere(queryStatement)
+        val dataValueList = selectRawQuery(queryStatement)
 
         return dataValueList.filter { it.event() != null }.groupBy { it.event()!! }
     }

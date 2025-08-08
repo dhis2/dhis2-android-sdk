@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPassw
 import org.hisp.dhis.android.persistence.db.access.RoomDatabaseAdapter
 import org.hisp.dhis.android.persistence.db.access.RoomDatabaseManager
 import org.junit.AfterClass
-import org.junit.BeforeClass
 import org.junit.Test
 
 class DatabaseManagerIntegrationShould {
@@ -84,16 +83,17 @@ class DatabaseManagerIntegrationShould {
     companion object {
         private const val DB_NAME = "database-adapter-factory-integration-should.db"
         private lateinit var databaseManager: DatabaseManager
+            private set
 
-        @BeforeClass
-        fun setUpClass() {
-            val databaseAdapter = RoomDatabaseAdapter()
+        init {
             val context = InstrumentationRegistry.getInstrumentation().context
+            val databaseAdapter = RoomDatabaseAdapter()
             val passwordManager = DatabaseEncryptionPasswordManager.create(InMemorySecureStore())
             databaseManager = RoomDatabaseManager(databaseAdapter, context, passwordManager)
         }
 
         @AfterClass
+        @JvmStatic
         fun tearDownClass() {
             val context = InstrumentationRegistry.getInstrumentation().context
             context.deleteDatabase(DB_NAME)

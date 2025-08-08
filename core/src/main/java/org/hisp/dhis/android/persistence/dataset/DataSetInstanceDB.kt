@@ -44,7 +44,6 @@ internal data class DataSetInstanceDB(
     val attributeOptionComboUid: String,
     val attributeOptionComboDisplayName: String,
     val valueCount: Int,
-    val completed: Boolean,
     val completionDate: String?,
     val completedBy: String?,
     val lastUpdated: String?,
@@ -64,7 +63,7 @@ internal data class DataSetInstanceDB(
             .attributeOptionComboUid(attributeOptionComboUid)
             .attributeOptionComboDisplayName(attributeOptionComboDisplayName)
             .valueCount(valueCount)
-            .completed(completed)
+            .completed(completionDate != null)
             .completionDate(completionDate.toJavaDate())
             .completedBy(completedBy)
             .lastUpdated(lastUpdated.toJavaDate())

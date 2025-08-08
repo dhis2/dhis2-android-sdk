@@ -149,12 +149,12 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
     }
 
     @Test
-    fun export_and_reimport() {
+    fun export_and_reimport() = runTest {
         test_export_and_reimport(beforeExport = {})
     }
 
     @Test
-    fun export_and_reimport_encrypted() {
+    fun export_and_reimport_encrypted() = runTest {
         test_export_and_reimport(beforeExport = {
             // Change encryption
             d2.d2DIComponent.multiUserDatabaseManager.changeEncryptionIfRequired(
@@ -164,7 +164,7 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
         })
     }
 
-    private fun test_export_and_reimport(beforeExport: suspend () -> Unit) = runTest {
+    private suspend fun test_export_and_reimport(beforeExport: suspend () -> Unit) {
         d2.userModule().blockingLogIn(username, password, serverUrl)
         d2.metadataModule().blockingDownload()
 

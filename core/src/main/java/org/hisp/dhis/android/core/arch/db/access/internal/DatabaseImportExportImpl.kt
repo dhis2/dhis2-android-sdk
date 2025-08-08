@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.arch.db.access.internal
 
 import android.content.Context
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.DatabaseExportMetadata
 import org.hisp.dhis.android.core.arch.db.access.DatabaseImportExport
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.getCurrentTimeAndDate
@@ -43,6 +44,7 @@ import org.hisp.dhis.android.core.util.CipherUtil
 import org.hisp.dhis.android.core.util.FileUtils
 import org.hisp.dhis.android.core.util.deleteIfExists
 import org.hisp.dhis.android.core.util.simpleDateFormat
+import org.hisp.dhis.android.persistence.db.access.RoomDatabaseManager
 import org.koin.core.annotation.Singleton
 import java.io.File
 import java.util.Date
@@ -51,9 +53,11 @@ import java.util.Date
 internal class DatabaseImportExportImpl(
     private val context: Context,
     private val multiUserDatabaseManager: BaseMultiUserDatabaseManager,
+    private val databaseManager: RoomDatabaseManager,
     private val userModule: UserModule,
     private val credentialsStore: CredentialsSecureStore,
     private val databaseExport: BaseDatabaseExport,
+    private val databaseAdapter: DatabaseAdapter,
 ) : DatabaseImportExport {
 
     companion object {
@@ -150,12 +154,15 @@ internal class DatabaseImportExportImpl(
 
         val databaseName = userConfiguration.databaseName()
         val databaseFile = getDatabaseFile(databaseName)
+        databaseAdapter.close() // The database needs to be closed so the file consolidates all operations
 
         if (userConfiguration.encrypted()) {
             databaseExport.decryptAndCopyTo(userConfiguration, copiedDatabase)
         } else {
             databaseFile.copyTo(copiedDatabase)
         }
+
+        databaseManager.createOrOpenDatabase(userConfiguration)
 
         CipherUtil.createEncryptedZipFile(
             input = copiedDatabase,

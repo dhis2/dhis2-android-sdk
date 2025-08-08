@@ -133,7 +133,7 @@ dependencies {
     coreLibraryDesugaring(libs.desugaring)
 
     ksp(project(":processor"))
-    implementation(project(":annotations"))
+    compileOnly(project(":annotations"))
 
     // RxJava
     api(libs.rx.java)

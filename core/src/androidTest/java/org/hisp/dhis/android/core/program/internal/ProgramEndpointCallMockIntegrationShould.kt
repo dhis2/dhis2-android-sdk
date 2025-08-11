@@ -93,7 +93,7 @@ class ProgramEndpointCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnq
             setUpClass()
 
             val executor = objects.d2DIComponent.coroutineApiCallExecutor
-            executor.wrapTransactionally {
+            executor.wrapTransactionallyRoom {
                 val categoryComboStore = koin.get<CategoryComboStore>()
                 val categoryComboUid = "m2jTvAj5kkm"
                 val categoryCombo = CreateCategoryComboUtils.create(categoryComboUid)

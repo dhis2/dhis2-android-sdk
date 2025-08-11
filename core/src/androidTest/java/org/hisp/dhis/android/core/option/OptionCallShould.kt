@@ -28,13 +28,11 @@
 package org.hisp.dhis.android.core.option
 
 import androidx.test.runner.AndroidJUnit4
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleanerImpl
-import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyViolationStore
+import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
 import org.junit.Before
 import org.junit.Test
@@ -60,7 +58,7 @@ class OptionCallShould : BaseMockIntegrationTestEmptyEnqueable() {
         optionCall = { objects.d2DIComponent.optionCall.download(uids) }
 
         coroutineAPICallExecutor = objects.d2DIComponent.coroutineApiCallExecutor
-        executeOptionSetCall()
+        runBlocking { executeOptionSetCall() }
     }
 
     @Test
@@ -68,62 +66,49 @@ class OptionCallShould : BaseMockIntegrationTestEmptyEnqueable() {
     fun persist_options_in_data_base_when_call() = runTest {
         executeOptionCall()
         val options = d2.optionModule().options()
-        Truth.assertThat(options.blockingCount()).isEqualTo(3)
-        Truth.assertThat(options.uid("Y1ILwhy5VDY").blockingExists()).isTrue()
-        Truth.assertThat(options.uid("egT1YqFWsVk").blockingExists()).isTrue()
-        Truth.assertThat(options.uid("non_existent_option_uid").blockingExists()).isFalse()
-        Truth.assertThat(options.uid("Z1ILwhy5VDY").blockingExists()).isTrue()
+        assertThat(options.blockingCount()).isEqualTo(3)
+        assertThat(options.uid("Y1ILwhy5VDY").blockingExists()).isTrue()
+        assertThat(options.uid("egT1YqFWsVk").blockingExists()).isTrue()
+        assertThat(options.uid("non_existent_option_uid").blockingExists()).isFalse()
+        assertThat(options.uid("Z1ILwhy5VDY").blockingExists()).isTrue()
     }
 
     @Test
     @Throws(Exception::class)
     fun return_options_after_call() = runTest {
         val optionList = executeOptionCall()
-        Truth.assertThat(optionList!!.size).isEqualTo(4)
+        assertThat(optionList!!.size).isEqualTo(4)
         val option = optionList[0]
-        Truth.assertThat(option.uid()).isEqualTo("Y1ILwhy5VDY")
-        Truth.assertThat(option.code()).isEqualTo("0-14 years")
-        Truth.assertThat(option.name()).isEqualTo("0-14 years")
-        Truth.assertThat(option.displayName()).isEqualTo("0-14 years")
-        Truth.assertThat(option.created()).isEqualTo(
-            BaseIdentifiableObject.DATE_FORMAT.parse("2014-08-18T12:39:16.000"),
-        )
-        Truth.assertThat(option.lastUpdated()).isEqualTo(
-            BaseIdentifiableObject.DATE_FORMAT.parse("2014-08-18T12:39:16.000"),
-        )
-        Truth.assertThat(option.optionSet()!!.uid()).isEqualTo("VQ2lai3OfVG")
-        Truth.assertThat(option.sortOrder()).isEqualTo(1)
+        assertThat(option.uid()).isEqualTo("Y1ILwhy5VDY")
+        assertThat(option.code()).isEqualTo("0-14 years")
+        assertThat(option.name()).isEqualTo("0-14 years")
+        assertThat(option.displayName()).isEqualTo("0-14 years")
+        assertThat(option.created()).isEqualTo("2014-08-18T12:39:16.000".toJavaDate())
+        assertThat(option.lastUpdated()).isEqualTo("2014-08-18T12:39:16.000".toJavaDate())
+        assertThat(option.optionSet()!!.uid()).isEqualTo("VQ2lai3OfVG")
+        assertThat(option.sortOrder()).isEqualTo(1)
     }
 
     @Throws(Exception::class)
-    private fun executeOptionSetCall() = runTest {
-        coroutineAPICallExecutor.wrapTransactionally {
-            var optionSets: List<OptionSet>? = null
+    private suspend fun executeOptionSetCall() {
+        return coroutineAPICallExecutor.wrapTransactionallyRoom {
             try {
-                val uids: MutableSet<String> = HashSet()
-                uids.add("POc7DkGU3QU")
+                val uids = setOf("POc7DkGU3QU")
 
-                optionSets = objects.d2DIComponent.optionSetCall.download(uids)
+                objects.d2DIComponent.optionSetCall.download(uids)
             } catch (ignored: Exception) {
             }
-            ForeignKeyCleanerImpl(
-                databaseAdapter,
-                koin.get<ForeignKeyViolationStore>(),
-            ).cleanForeignKeyErrors()
-            optionSets!!
         }
     }
 
     @Throws(Exception::class)
     private suspend fun executeOptionCall(): List<Option>? {
-        return coroutineAPICallExecutor.wrapTransactionally {
+        return coroutineAPICallExecutor.wrapTransactionallyRoom {
             var options: List<Option>? = null
             try {
                 options = optionCall.invoke()
             } catch (ignored: Exception) {
             }
-            ForeignKeyCleanerImpl(databaseAdapter, koin.get<ForeignKeyViolationStore>())
-                .cleanForeignKeyErrors()
             options
         }
     }

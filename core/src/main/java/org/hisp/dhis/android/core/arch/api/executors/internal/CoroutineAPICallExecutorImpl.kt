@@ -31,9 +31,7 @@ import androidx.room.immediateTransaction
 import androidx.room.useWriterConnection
 import io.ktor.client.plugins.ClientRequestException
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.withContext
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpException
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
 import org.hisp.dhis.android.core.arch.api.internal.ktorToD2Response
@@ -124,30 +122,6 @@ internal class CoroutineAPICallExecutorImpl(
                         ),
                     )
                 }
-            }
-        }
-    }
-
-    @Suppress("TooGenericExceptionCaught")
-    override suspend fun <P> wrapTransactionally(
-        cleanForeignKeyErrors: Boolean,
-        block: suspend () -> P,
-    ): P {
-        return withContext(dbDispatcher) {
-            val transaction = databaseAdapter.beginNewTransaction()
-            try {
-                val result = coroutineScope {
-                    block.invoke()
-                }
-                successfulTransaction(transaction, cleanForeignKeyErrors)
-                return@withContext result
-            } catch (t: Throwable) {
-                throw when (t) {
-                    is D2Error -> t
-                    else -> errorMapper.mapHttpException(t, baseErrorBuilder())
-                }
-            } finally {
-                transaction.end()
             }
         }
     }

@@ -201,9 +201,12 @@ class DaoQueriesProcessor(
 
     private fun buildIdentifiableDeletableDataObjectDaoQueries(tableName: String): String {
         return buildIdentifiableDataObjectDaoQueries(tableName) +
-            "    @Query(\"UPDATE Constant SET ${'$'}{DeletableDataColumns.DELETED} = 1 " +
+            "    @Query(\"UPDATE ${'$'}{${tableName}} SET ${'$'}{DeletableDataColumns.DELETED} = 1 " +
             "WHERE ${'$'}{IdentifiableColumns.UID} = :uid\")\n" +
-            "    override suspend fun setDeleted(uid: String): Int\n\n"
+            "    override suspend fun setDeleted(uid: String): Int\n\n" +
+            "    @Query(\"DELETE FROM ${'$'}{${tableName}} WHERE ${'$'}{DataColumns.SYNC_STATE} = :state AND " +
+            "${'$'}{IdentifiableColumns.UID} = :uid AND ${'$'}{DeletableDataColumns.DELETED} = :deleted\")\n" +
+            "    override suspend fun deleteWhere(uid: String, deleted: Boolean, state: State): Int\n\n"
     }
 
     // Operador de extensión para escribir Strings fácilmente en OutputStream

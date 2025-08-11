@@ -57,8 +57,8 @@ internal data class TrackerVisualizationDimensionDB(
             .dimension(dimension)
             .dimensionType(dimensionType)
             .apply {
-                program?.let { ObjectWithUid.create(it) }
-                programStage?.let { ObjectWithUid.create(it) }
+                program?.let { program(ObjectWithUid.create(it)) }
+                programStage?.let { programStage(ObjectWithUid.create(it)) }
             }
             .items(items?.toDomain())
             .filter(filter)

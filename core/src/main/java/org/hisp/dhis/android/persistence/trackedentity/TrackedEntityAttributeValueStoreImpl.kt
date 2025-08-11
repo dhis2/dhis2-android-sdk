@@ -56,7 +56,7 @@ internal class TrackedEntityAttributeValueStoreImpl(
             "FROM (TrackedEntityAttributeValue INNER JOIN TrackedEntityInstance " +
             "ON TrackedEntityAttributeValue.trackedEntityInstance = TrackedEntityInstance.uid) " +
             "WHERE " + teiInUploadableState() + ";"
-        val valueList = selectWhere(toPostQuery)
+        val valueList = selectRawQuery(toPostQuery)
 
         return valueList.filter { it.trackedEntityInstance() != null }.groupBy { it.trackedEntityInstance()!! }
     }

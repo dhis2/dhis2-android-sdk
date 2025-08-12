@@ -59,7 +59,7 @@ internal class SettingsAppInfoManagerImpl(
 
     override suspend fun updateAppVersion(): SettingsAppVersion {
         return try {
-            settingsAppInfoCall.fetch(false).also { settingsAppVersion = it }
+            settingsAppInfoCall.fetch().also { settingsAppVersion = it }
         } catch (exception: D2Error) {
             SettingsAppVersion.DataStoreEmpty
         }

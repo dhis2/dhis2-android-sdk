@@ -44,6 +44,9 @@ internal interface IdentifiableObjectStore<O : ObjectWithUidInterface> : ObjectS
     suspend fun updateOrInsert(o: O): HandleAction
 
     @Throws(RuntimeException::class)
+    suspend fun updateOrInsert(oCollection: Collection<O>): List<HandleAction>
+
+    @Throws(RuntimeException::class)
     suspend fun selectUids(): List<String>
 
     @Throws(RuntimeException::class)

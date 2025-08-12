@@ -55,6 +55,19 @@ internal open class LinkStoreImpl<D : CoreObject, P : EntityDB<D>>(
         }
     }
 
+    override suspend fun insertIfNotExists(oCollection: Collection<D>): List<HandleAction> {
+        val identifiableObjectDao = daoProvider()
+        val entities = oCollection.map { it.toDB() }
+        val rowIds = identifiableObjectDao.upsert(entities)
+        return rowIds.map { rowId ->
+            if (rowId >= 0) {
+                HandleAction.Insert
+            } else {
+                HandleAction.Update
+            }
+        }
+    }
+
     @Throws(RuntimeException::class)
     override suspend fun deleteLinksForMasterUid(parentUid: String) {
         val linkStoreDao = daoProvider()

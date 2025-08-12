@@ -108,7 +108,6 @@ internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
     }
 
     @Throws(RuntimeException::class)
-    @Suppress("TooGenericExceptionCaught")
     override suspend fun updateOrInsert(o: D): HandleAction {
         val identifiableObjectDao = daoProvider()
         val entity = o.toDB()
@@ -117,6 +116,16 @@ internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
             HandleAction.Insert
         } else {
             HandleAction.Update
+        }
+    }
+
+    override suspend fun updateOrInsert(oCollection: Collection<D>): List<HandleAction> {
+        val identifiableObjectDao = daoProvider()
+        val entities = oCollection.map { it.toDB() }
+        val rowIds = identifiableObjectDao.upsert(entities)
+        return rowIds.map { rowId ->
+            if (rowId >= 0) HandleAction.Insert
+            else HandleAction.Update
         }
     }
 

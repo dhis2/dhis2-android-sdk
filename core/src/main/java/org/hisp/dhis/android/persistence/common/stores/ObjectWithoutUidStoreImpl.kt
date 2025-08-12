@@ -88,12 +88,11 @@ internal open class ObjectWithoutUidStoreImpl<D : CoreObject, P : EntityDB<D>>(
 
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionCaught")
-    override suspend fun updateOrInsertWhere(o: D): HandleAction = upsertMutex.withLock {
-        val objectWithoutUidDao = daoProvider()
-        val entityDB = o.toDB()
-        val updated = objectWithoutUidDao.update(entityDB)
-        return if (updated == 0) {
-            insert(o)
+    override suspend fun updateOrInsertWhere(o: D): HandleAction {
+        val identifiableObjectDao = daoProvider()
+        val entity = o.toDB()
+        val rowId = identifiableObjectDao.upsert(entity)
+        return if (rowId >= 0) {
             HandleAction.Insert
         } else {
             HandleAction.Update

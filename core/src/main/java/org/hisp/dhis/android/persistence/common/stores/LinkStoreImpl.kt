@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.persistence.common.stores
 
-import android.database.SQLException
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
@@ -46,11 +45,13 @@ internal open class LinkStoreImpl<D : CoreObject, P : EntityDB<D>>(
 
     @Throws(RuntimeException::class)
     override suspend fun insertIfNotExists(o: D): HandleAction {
-        return try {
-            insert(o)
+        val identifiableObjectDao = daoProvider()
+        val entity = o.toDB()
+        val rowId = identifiableObjectDao.upsert(entity)
+        return if (rowId >= 0) {
             HandleAction.Insert
-        } catch (e: SQLException) {
-            HandleAction.NoAction
+        } else {
+            HandleAction.Update
         }
     }
 

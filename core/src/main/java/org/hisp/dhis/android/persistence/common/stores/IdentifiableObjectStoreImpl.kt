@@ -109,13 +109,14 @@ internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
 
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionCaught")
-    override suspend fun updateOrInsert(o: D): HandleAction = upsertMutex.withLock {
-        return try {
-            update(o)
-            HandleAction.Update
-        } catch (e: Exception) {
-            insert(o)
+    override suspend fun updateOrInsert(o: D): HandleAction {
+        val identifiableObjectDao = daoProvider()
+        val entity = o.toDB()
+        val rowId = identifiableObjectDao.upsert(entity)
+        return if (rowId >= 0) {
             HandleAction.Insert
+        } else {
+            HandleAction.Update
         }
     }
 

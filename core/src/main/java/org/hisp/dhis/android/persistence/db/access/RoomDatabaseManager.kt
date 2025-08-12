@@ -29,12 +29,15 @@
 package org.hisp.dhis.android.persistence.db.access
 
 import android.content.Context
+import android.database.sqlite.SQLiteException
 import android.util.Log
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import kotlinx.coroutines.Dispatchers
+import net.zetetic.database.DatabaseErrorHandler
+import net.zetetic.database.sqlcipher.SQLiteDatabaseHook
 import net.zetetic.database.sqlcipher.SupportOpenHelperFactory
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
@@ -42,6 +45,7 @@ import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
 import org.koin.core.annotation.Singleton
+import java.io.File
 import java.nio.charset.StandardCharsets
 
 /**
@@ -86,12 +90,10 @@ internal class RoomDatabaseManager(
     }
 
     override fun createOrOpenEncryptedDatabase(databaseName: String, password: String): DatabaseAdapter {
-        val factory = SupportOpenHelperFactory(password.toByteArray(StandardCharsets.UTF_8))
+        val hook = RoomDatabaseExport.Companion.EncryptionHook
+        val factory = SupportOpenHelperFactory(password.toByteArray(StandardCharsets.UTF_8), hook, true)
         val database = Room.databaseBuilder(context, AppDatabase::class.java, databaseName)
-            .setDriver(BundledSQLiteDriver())
             .setQueryCoroutineContext(Dispatchers.IO)
-            // .setJournalMode(RoomDatabase.JournalMode.WRITE_AHEAD_LOGGING) by default,
-            // room uses Automatic, which depends on the API version
             // Add migration when ready
             .openHelperFactory(factory)
             .build()
@@ -106,6 +108,21 @@ internal class RoomDatabaseManager(
         } else {
             return createOrOpenUnencryptedDatabase(account.databaseName())
         }
+    }
+
+    override fun openSQLCipherDatabaseDirectly(
+        databaseFile: File,
+        password: String?,
+        hook: SQLiteDatabaseHook?
+    ): net.zetetic.database.sqlcipher.SQLiteDatabase {
+
+        return net.zetetic.database.sqlcipher.SQLiteDatabase.openOrCreateDatabase(
+            databaseFile,
+            (password ?: "").toByteArray(StandardCharsets.UTF_8),
+            null,
+            LoggingErrorHandler(TAG),
+            hook,
+        )
     }
 
     @Suppress("TooGenericExceptionCaught")
@@ -133,5 +150,11 @@ internal class RoomDatabaseManager(
 
     override fun getAdapter(): DatabaseAdapter {
         return databaseAdapter
+    }
+}
+
+internal class LoggingErrorHandler(private val tag: String) : DatabaseErrorHandler {
+    override fun onCorruption(dbObj: net.zetetic.database.sqlcipher.SQLiteDatabase?, exception: SQLiteException?) {
+        Log.e(tag, "¡CORRUPCIÓN DETECTADA! DB Path: ${dbObj?.path}")
     }
 }

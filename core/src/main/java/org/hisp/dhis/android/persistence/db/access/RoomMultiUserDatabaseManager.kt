@@ -45,7 +45,6 @@ import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
 import org.hisp.dhis.android.core.util.CipherUtil
 import org.hisp.dhis.android.core.util.deleteIfExists
 import org.koin.core.annotation.Singleton
-import java.io.File
 
 /**
  * Room-based implementation of BaseMultiUserDatabaseManager
@@ -156,10 +155,7 @@ internal class RoomMultiUserDatabaseManager(
             protectedDbPath.deleteIfExists()
 
             if (account.encrypted()) {
-                // Use Room encryption capabilities to encrypt the database
                 databaseExport.encryptAndCopyTo(account, sourceFile = tempDbPath, targetFile = dbPath)
-                // Copy data from temp to encrypted DB
-                File(tempDbPath.path).copyTo(File(dbPath.path), overwrite = true)
             } else {
                 tempDbPath.copyTo(dbPath, overwrite = true)
             }

@@ -41,6 +41,7 @@ import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.time.Duration.Companion.seconds
 
 @RunWith(D2JunitRunner::class)
 class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockIntegrationTest() {
@@ -162,6 +163,28 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
                 encrypt = true,
             )
         })
+    }
+
+    @Test
+    fun encrypt_and_decrypt() = runTest(timeout = 400.seconds) {
+        // Load unencrypted db
+        d2.userModule().blockingLogIn(username, password, serverUrl)
+        d2.metadataModule().blockingDownload()
+        assertThat(d2.programModule().programs().blockingCount()).isEqualTo(3)
+
+        // Encrypted db
+        d2.d2DIComponent.multiUserDatabaseManager.changeEncryptionIfRequired(
+            d2.d2DIComponent.credentialsSecureStore.get()!!,
+            encrypt = true,
+        )
+        assertThat(d2.programModule().programs().blockingCount()).isEqualTo(3)
+
+        // Decrypt db
+        d2.d2DIComponent.multiUserDatabaseManager.changeEncryptionIfRequired(
+            d2.d2DIComponent.credentialsSecureStore.get()!!,
+            encrypt = false,
+        )
+        assertThat(d2.programModule().programs().blockingCount()).isEqualTo(3)
     }
 
     private suspend fun test_export_and_reimport(beforeExport: suspend () -> Unit) {

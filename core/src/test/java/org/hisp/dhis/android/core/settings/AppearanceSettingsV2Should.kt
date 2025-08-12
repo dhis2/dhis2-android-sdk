@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.settings
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.settings.AppearanceSettingsDTO
+import org.hisp.dhis.android.network.settings.FilterSettingDTO.Companion.FILTERSETTING_GLOBAL_ID
 import org.junit.Test
 
 class AppearanceSettingsV2Should : CoreObjectShould("settings/appearance_settings_v2.json") {
@@ -53,7 +54,7 @@ class AppearanceSettingsV2Should : CoreObjectShould("settings/appearance_setting
         val dataSetPeriodFilter = dataSetGlobalFilters[DataSetFilter.PERIOD]!!
         assertThat(dataSetPeriodFilter.scope()).isNull()
         assertThat(dataSetPeriodFilter.filterType()).isNull()
-        assertThat(dataSetPeriodFilter.uid()).isNull()
+        assertThat(dataSetPeriodFilter.uid()).isEqualTo(FILTERSETTING_GLOBAL_ID)
         assertThat(dataSetPeriodFilter.sort()).isEqualTo(true)
         assertThat(dataSetPeriodFilter.filter()).isEqualTo(true)
 

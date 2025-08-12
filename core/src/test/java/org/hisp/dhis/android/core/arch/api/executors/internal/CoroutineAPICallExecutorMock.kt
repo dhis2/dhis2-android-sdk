@@ -58,10 +58,6 @@ internal class CoroutineAPICallExecutorMock : CoroutineAPICallExecutor {
         }
     }
 
-    override suspend fun <P> wrapTransactionally(cleanForeignKeyErrors: Boolean, block: suspend () -> P): P {
-        return block.invoke()
-    }
-
     override suspend fun <P> wrapTransactionallyRoom(cleanForeignKeyErrors: Boolean, block: suspend () -> P): P {
         return block.invoke()
     }

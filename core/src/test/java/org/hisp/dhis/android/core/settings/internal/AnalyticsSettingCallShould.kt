@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
 import org.hisp.dhis.android.core.maintenance.D2ErrorSamples
@@ -46,12 +45,11 @@ import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
 import org.mockito.stubbing.Answer
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 class AnalyticsSettingCallShould {
     private val handler: AnalyticsTeiSettingHandler = mock()
     private val analyticsDhisVisualizationsSettingHandler: AnalyticsDhisVisualizationSettingHandler = mock()
-    private val service: SettingAppService = mock()
+    private val networkHandler: SettingsNetworkHandler = mock()
     private val analyticsSettings: AnalyticsSettings = mock()
     private val coroutineAPICallExecutor: CoroutineAPICallExecutorMock = CoroutineAPICallExecutorMock()
     private val appVersionManager: SettingsAppInfoManager = mock()
@@ -67,15 +65,15 @@ class AnalyticsSettingCallShould {
         analyticsSettingCall = AnalyticsSettingCall(
             handler,
             analyticsDhisVisualizationsSettingHandler,
-            service,
+            networkHandler,
             coroutineAPICallExecutor,
             appVersionManager,
         )
     }
 
     private fun whenAPICall(answer: Answer<AnalyticsSettings>) {
-        service.stub {
-            onBlocking { analyticsSettings(any()) }.doAnswer(answer)
+        networkHandler.stub {
+            onBlocking { analyticsSettings(any(), any()) }.doAnswer(answer)
         }
     }
 
@@ -93,7 +91,7 @@ class AnalyticsSettingCallShould {
             onBlocking { getDataStoreVersion() } doReturn SettingsAppDataStoreVersion.V2_0
         }
 
-        whenever(service.analyticsSettings(any())) doAnswer { throw D2ErrorSamples.notFound() }
+        whenever(networkHandler.analyticsSettings(any(), any())) doAnswer { throw D2ErrorSamples.notFound() }
 
         analyticsSettingCall.download(false)
 

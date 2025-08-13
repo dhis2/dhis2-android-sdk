@@ -39,7 +39,7 @@ import java.net.HttpURLConnection
 @Singleton
 internal class CustomIntentsCall(
     private val customIntentHandler: CustomIntentHandler,
-    private val settingAppService: SettingAppService,
+    private val networkHandler: SettingsNetworkHandler,
     private val appVersionManager: SettingsAppInfoManager,
     coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : BaseSettingCall<CustomIntents>(coroutineAPICallExecutor) {
@@ -56,9 +56,7 @@ internal class CustomIntentsCall(
             }
 
             else -> {
-                coroutineAPICallExecutor.wrap(storeError = storeError) {
-                    settingAppService.customIntents(version)
-                }
+                networkHandler.customIntents(version, storeError)
             }
         }
     }

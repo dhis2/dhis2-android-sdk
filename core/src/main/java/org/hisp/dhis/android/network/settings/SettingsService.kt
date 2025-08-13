@@ -28,55 +28,72 @@
 package org.hisp.dhis.android.network.settings
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.settings.internal.SettingsAppDataStoreVersion
 
 @Suppress("TooManyFunctions")
 internal class SettingsService(private val client: HttpServiceClient) {
 
-    suspend fun settingsAppInfo(url: String): SettingsAppInfoDTO {
+    suspend fun settingsAppInfo(): SettingsAppInfoDTO {
         return client.get {
-            url(url)
+            url("${ANDROID_APP_NAMESPACE_V2}/info")
         }
     }
 
-    suspend fun generalSettings(url: String): GeneralSettingsDTO {
+    suspend fun generalSettings(version: SettingsAppDataStoreVersion): GeneralSettingsDTO {
+        val key = when (version) {
+            SettingsAppDataStoreVersion.V1_1 -> "general_settings"
+            else -> "generalSettings"
+        }
         return client.get {
-            url(url)
+            url("${getNamespace(version)}/$key")
         }
     }
 
-    suspend fun dataSetSettings(url: String): DataSetSettingsDTO {
+    suspend fun dataSetSettings(version: SettingsAppDataStoreVersion): DataSetSettingsDTO {
         return client.get {
-            url(url)
+            url("${getNamespace(version)}/dataSet_settings")
         }
     }
 
-    suspend fun programSettings(url: String): ProgramSettingsDTO {
+    suspend fun programSettings(version: SettingsAppDataStoreVersion): ProgramSettingsDTO {
         return client.get {
-            url(url)
+            url("${getNamespace(version)}/program_settings")
         }
     }
 
-    suspend fun synchronizationSettings(url: String): SynchronizationSettingsDTO {
+    suspend fun synchronizationSettings(version: SettingsAppDataStoreVersion): SynchronizationSettingsDTO {
         return client.get {
-            url(url)
+            url("${getNamespace(version)}/synchronization")
         }
     }
 
-    suspend fun appearanceSettings(url: String): AppearanceSettingsDTO {
+    suspend fun appearanceSettings(version: SettingsAppDataStoreVersion): AppearanceSettingsDTO {
         return client.get {
-            url(url)
+            url("${getNamespace(version)}/appearance")
         }
     }
 
-    suspend fun analyticsSettings(url: String): AnalyticsSettingsDTO {
+    suspend fun analyticsSettings(version: SettingsAppDataStoreVersion): AnalyticsSettingsDTO {
         return client.get {
-            url(url)
+            url("${getNamespace(version)}/analytics")
         }
     }
 
-    suspend fun customIntents(url: String): CustomIntentsDTO {
+    suspend fun customIntents(version: SettingsAppDataStoreVersion): CustomIntentsDTO {
         return client.get {
-            url(url)
+            url("${getNamespace(version)}/customIntents")
+        }
+    }
+
+    private companion object {
+        const val ANDROID_APP_NAMESPACE_V1 = "dataStore/ANDROID_SETTING_APP"
+        const val ANDROID_APP_NAMESPACE_V2 = "dataStore/ANDROID_SETTINGS_APP"
+
+        private fun getNamespace(version: SettingsAppDataStoreVersion): String {
+            return when (version) {
+                SettingsAppDataStoreVersion.V1_1 -> ANDROID_APP_NAMESPACE_V1
+                else -> ANDROID_APP_NAMESPACE_V2
+            }
         }
     }
 }

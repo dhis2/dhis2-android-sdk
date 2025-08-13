@@ -28,9 +28,10 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
+import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.settings.CustomIntents
 import org.junit.Before
@@ -38,7 +39,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.kotlin.any
-import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
@@ -46,15 +46,12 @@ import org.mockito.kotlin.stub
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
-import org.mockito.stubbing.Answer
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 class CustomIntentsCallShould {
-
     private val customIntentHandler: CustomIntentHandler = mock()
     private val customIntents: CustomIntents = mock()
-    private val service: SettingAppService = mock()
+    private val networkHandler: SettingsNetworkHandler = mock()
     private val appVersionManager: SettingsAppInfoManager = mock()
     private val coroutineAPICallExecutor: CoroutineAPICallExecutorMock = CoroutineAPICallExecutorMock()
 
@@ -62,23 +59,27 @@ class CustomIntentsCallShould {
 
     @Before
     fun setUp() {
-        whenAPICall { customIntents }
-        customIntentCall = CustomIntentsCall(customIntentHandler, service, appVersionManager, coroutineAPICallExecutor)
+        whenAPICall(Result.Success(customIntents))
+        customIntentCall = CustomIntentsCall(
+            customIntentHandler, networkHandler, appVersionManager, coroutineAPICallExecutor,
+        )
     }
 
-    private fun whenAPICall(answer: Answer<CustomIntents>) {
-        service.stub {
-            onBlocking { customIntents(any()) }.doAnswer(answer)
+    private fun whenAPICall(
+        result: Result<CustomIntents, D2Error> = Result.Success(customIntents),
+    ) {
+        networkHandler.stub {
+            onBlocking { customIntents(any(), any()) } doReturn result
         }
     }
 
     @Test
-    fun call_custom_intents_endpoint_if_version_1() = runTest {
+    fun not_call_custom_intents_endpoint_if_version_1() = runTest {
         whenever(appVersionManager.getDataStoreVersion()) doReturn SettingsAppDataStoreVersion.V1_1
 
         customIntentCall.download(false)
 
-        verify(service, never()).customIntents(any())
+        verify(networkHandler, never()).customIntents(any(), any())
     }
 
     @Test
@@ -87,13 +88,12 @@ class CustomIntentsCallShould {
 
         customIntentCall.download(false)
 
-        verify(service).customIntents(any())
+        verify(networkHandler).customIntents(any(), any())
     }
 
     @Test
     fun default_to_empty_collection_if_not_found() = runTest {
-        whenever(service.customIntents(any())) doAnswer { throw D2ErrorSamples.notFound() }
-
+        whenAPICall(Result.Failure(D2ErrorSamples.notFound()))
         whenever(appVersionManager.getDataStoreVersion()) doReturn SettingsAppDataStoreVersion.V2_0
 
         customIntentCall.download(false)

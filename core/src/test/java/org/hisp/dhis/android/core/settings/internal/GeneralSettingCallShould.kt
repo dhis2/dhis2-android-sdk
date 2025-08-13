@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.settings.internal
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.settings.GeneralSettings
 import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
@@ -37,14 +38,21 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.kotlin.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doAnswer
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.stub
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
+import org.mockito.kotlin.whenever
 import org.mockito.stubbing.Answer
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 class GeneralSettingCallShould {
     private val handler: GeneralSettingHandler = mock()
-    private val service: SettingAppService = mock()
+    private val networkHandler: SettingsNetworkHandler = mock()
     private val generalSetting: GeneralSettings = mock()
     private val coroutineAPICallExecutor: CoroutineAPICallExecutorMock = CoroutineAPICallExecutorMock()
     private val appVersionManager: SettingsAppInfoManager = mock()
@@ -60,19 +68,19 @@ class GeneralSettingCallShould {
         whenAPICall { generalSetting }
         whenever(generalSetting.bypassDHIS2VersionCheck()).thenReturn(true)
         generalSettingCall = GeneralSettingCall(
-            handler, service, appVersionManager, coroutineAPICallExecutor, versionManager,
+            handler, networkHandler, appVersionManager, coroutineAPICallExecutor, versionManager,
         )
     }
 
     private fun whenAPICall(answer: Answer<GeneralSettings>) {
-        service.stub {
+        networkHandler.stub {
             onBlocking { generalSettings(any()) }.doAnswer(answer)
         }
     }
 
     @Test
     fun default_to_empty_collection_if_not_found() = runTest {
-        whenever(service.generalSettings(any())) doAnswer { throw D2ErrorSamples.notFound() }
+        whenever(networkHandler.generalSettings(any())) doAnswer { throw D2ErrorSamples.notFound() }
 
         generalSettingCall.download(false)
         verify(handler).handleMany(emptyList())
@@ -81,7 +89,7 @@ class GeneralSettingCallShould {
 
     @Test
     fun handle_general_setting_and_set_bypass_DHIS2_version() = runTest {
-        whenever(service.generalSettings(any())) doAnswer { generalSetting }
+        whenever(networkHandler.generalSettings(any())) doAnswer { Result.Success(generalSetting) }
 
         generalSettingCall.download(false)
         verify(handler).handleMany(listOfNotNull(generalSetting))

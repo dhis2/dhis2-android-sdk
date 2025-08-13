@@ -28,60 +28,44 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import kotlinx.serialization.SerializationException
-import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.koin.core.annotation.Singleton
 import java.net.HttpURLConnection
 
 @Singleton
 internal class SettingsAppInfoCall(
-    private val settingAppService: SettingAppService,
-    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
+    private val networkHandler: SettingsNetworkHandler,
 ) {
     companion object {
-        const val unknown = "unknown"
+        const val UNKNOWN = "unknown"
     }
 
-    suspend fun fetch(storeError: Boolean): SettingsAppVersion {
-        return fetchAppVersion(storeError)
+    suspend fun fetch(): SettingsAppVersion {
+        return fetchAppVersion()
     }
 
-    private suspend fun fetchAppVersion(storeError: Boolean): SettingsAppVersion {
+    private suspend fun fetchAppVersion(): SettingsAppVersion {
         return try {
-            val info = coroutineAPICallExecutor.wrap(storeError = storeError) { settingAppService.info() }
-                .getOrThrow()
-
-            SettingsAppVersion.Valid(info.dataStoreVersion(), info.androidSettingsVersion() ?: unknown)
+            val info = networkHandler.settingsAppInfo()
+            SettingsAppVersion.Valid(info.dataStoreVersion(), info.androidSettingsVersion() ?: UNKNOWN)
         } catch (exception: D2Error) {
             when {
-                exception.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND ->
-                    fetchV1GeneralSettings(storeError)
-
-                exception.originalException() is SerializationException ->
-                    SettingsAppVersion.DataStoreEmpty
-
-                else ->
-                    throw exception
+                exception.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND -> fetchV1GeneralSettings()
+                exception.originalException() is SerializationException -> SettingsAppVersion.DataStoreEmpty
+                else -> throw exception
             }
         }
     }
 
-    private suspend fun fetchV1GeneralSettings(storeError: Boolean): SettingsAppVersion {
+    private suspend fun fetchV1GeneralSettings(): SettingsAppVersion {
         return try {
-            coroutineAPICallExecutor.wrap(storeError = storeError) {
-                settingAppService.generalSettings(SettingsAppDataStoreVersion.V1_1)
-            }.getOrThrow()
-            SettingsAppVersion.Valid(SettingsAppDataStoreVersion.V1_1, unknown)
+            networkHandler.generalSettings(SettingsAppDataStoreVersion.V1_1).getOrThrow()
+            SettingsAppVersion.Valid(SettingsAppDataStoreVersion.V1_1, UNKNOWN)
         } catch (exception: D2Error) {
             when {
-                exception.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND ->
-                    SettingsAppVersion.DataStoreEmpty
-
-                exception.originalException() is SerializationException ->
-                    SettingsAppVersion.DataStoreEmpty
-
-                else ->
-                    throw exception
+                exception.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND -> SettingsAppVersion.DataStoreEmpty
+                exception.originalException() is SerializationException -> SettingsAppVersion.DataStoreEmpty
+                else -> throw exception
             }
         }
     }

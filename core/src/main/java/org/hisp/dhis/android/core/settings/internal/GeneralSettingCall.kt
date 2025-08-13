@@ -37,7 +37,7 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class GeneralSettingCall(
     private val generalSettingHandler: GeneralSettingHandler,
-    private val settingAppService: SettingAppService,
+    private val networkHandler: SettingsNetworkHandler,
     private val appVersionManager: SettingsAppInfoManager,
     coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val versionManager: DHISVersionManagerImpl,
@@ -46,9 +46,7 @@ internal class GeneralSettingCall(
     private var cachedValue: GeneralSettings? = null
 
     override suspend fun tryFetch(storeError: Boolean): Result<GeneralSettings, D2Error> {
-        return coroutineAPICallExecutor.wrap(storeError = storeError) {
-            settingAppService.generalSettings(appVersionManager.getDataStoreVersion())
-        }
+        return networkHandler.generalSettings(appVersionManager.getDataStoreVersion())
     }
 
     suspend fun fetch(storeError: Boolean, acceptCache: Boolean = false): Result<GeneralSettings, D2Error> {
@@ -68,8 +66,7 @@ internal class GeneralSettingCall(
     suspend fun isDatabaseEncrypted(): Boolean {
         // TODO Should we decrypt the database if the settings app is uninstalled?
         appVersionManager.updateAppVersion()
-        return coroutineAPICallExecutor.wrap(storeError = false) {
-            settingAppService.generalSettings(appVersionManager.getDataStoreVersion())
-        }.getOrThrow().also { versionManager.setBypassVersion(it.bypassDHIS2VersionCheck()) }.encryptDB()
+        return networkHandler.generalSettings(appVersionManager.getDataStoreVersion()).getOrThrow()
+            .also { versionManager.setBypassVersion(it.bypassDHIS2VersionCheck()) }.encryptDB()
     }
 }

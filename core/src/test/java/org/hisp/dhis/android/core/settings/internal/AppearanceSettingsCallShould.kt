@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.settings.AppearanceSettings
 import org.junit.Before
@@ -48,14 +48,13 @@ import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
 import org.mockito.stubbing.Answer
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 class AppearanceSettingsCallShould {
 
     private val filterSettingHandler: FilterSettingHandler = mock()
     private val programConfigurationHandler: ProgramConfigurationSettingHandler = mock()
     private val dataSetConfigurationHandler: DataSetConfigurationSettingHandler = mock()
-    private val service: SettingAppService = mock()
+    private val networkHandler: SettingsNetworkHandler = mock()
     private val appVersionManager: SettingsAppInfoManager = mock()
 
     private val appearanceSettings: AppearanceSettings = mock()
@@ -71,15 +70,15 @@ class AppearanceSettingsCallShould {
             filterSettingHandler,
             programConfigurationHandler,
             dataSetConfigurationHandler,
-            service,
+            networkHandler,
             coroutineAPICallExecutor,
             appVersionManager,
         )
     }
 
     private fun whenAPICall(answer: Answer<AppearanceSettings>) {
-        service.stub {
-            onBlocking { appearanceSettings(any()) }.doAnswer(answer)
+        networkHandler.stub {
+            onBlocking { appearanceSettings(any(), any()) }.doAnswer(answer)
         }
     }
 
@@ -89,23 +88,23 @@ class AppearanceSettingsCallShould {
 
         appearanceSettingsCall.download(false)
 
-        verify(service, never()).appearanceSettings(any())
+        verify(networkHandler, never()).appearanceSettings(any(), any())
     }
 
     @Test
     fun call_appearances_endpoint_if_version_2() = runTest {
-        whenever(service.appearanceSettings(any())) doAnswer { appearanceSettings }
+        whenever(networkHandler.appearanceSettings(any(), any())) doAnswer { Result.Success(appearanceSettings) }
 
         whenever(appVersionManager.getDataStoreVersion()) doReturn SettingsAppDataStoreVersion.V2_0
 
         appearanceSettingsCall.download(false)
 
-        verify(service).appearanceSettings(any())
+        verify(networkHandler).appearanceSettings(any(), any())
     }
 
     @Test
     fun default_to_empty_collection_if_not_found() = runTest {
-        whenever(service.appearanceSettings(any())) doAnswer { throw D2ErrorSamples.notFound() }
+        whenever(networkHandler.appearanceSettings(any(), any())) doAnswer { throw D2ErrorSamples.notFound() }
 
         whenever(appVersionManager.getDataStoreVersion()) doReturn SettingsAppDataStoreVersion.V2_0
 

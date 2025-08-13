@@ -38,7 +38,7 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class LatestAppVersionCall(
     private val latestAppVersionHandler: LatestAppVersionHandler,
-    private val settingAppService: SettingAppService,
+    private val networkHandler: ApkDistributionNetworkHandler,
     private val userModule: UserModule,
     private val versionComparator: LatestAppVersionComparator,
     coroutineAPICallExecutor: CoroutineAPICallExecutor,
@@ -49,14 +49,14 @@ internal class LatestAppVersionCall(
             val version = resolveApkDistributionVersion()
 
             version?.let { LatestAppVersion.builder().version(it.version).downloadURL(it.downloadURL).build() }
-                ?: settingAppService.latestAppVersion()
+                ?: networkHandler.latestAppVersion()
         }
     }
 
     internal suspend fun resolveApkDistributionVersion(): ApkDistributionVersion? {
         val userGroupUids = userModule.userGroups().blockingGetUids()
 
-        val versions = settingAppService.versions().items
+        val versions = networkHandler.versions().items
 
         val filteredVersions = versions.filter { version ->
             version.userGroups?.any { userGroupUid ->

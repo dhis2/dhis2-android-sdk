@@ -31,15 +31,19 @@ package org.hisp.dhis.android.network.apkdistribution
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 
 internal class ApkDistributionService(private val client: HttpServiceClient) {
-    suspend fun latestAppVersion(url: String): LatestAppVersionDTO {
+    suspend fun latestAppVersion(): LatestAppVersionDTO {
         return client.get {
-            url(url)
+            url("$APK_DISTRIBUTION_NAMESPACE/latestVersion")
         }
     }
 
-    suspend fun versions(url: String): ApkDistributionVersionPayload {
+    suspend fun versions(): ApkDistributionVersionPayload {
         return client.get {
-            url(url)
+            url("$APK_DISTRIBUTION_NAMESPACE/versions")
         }
+    }
+
+    companion object {
+        const val APK_DISTRIBUTION_NAMESPACE = "dataStore/APK_DISTRIBUTION"
     }
 }

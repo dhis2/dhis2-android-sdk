@@ -62,4 +62,12 @@ internal interface D2Dao {
 
     @Query("SELECT name, sql FROM sqlite_master ORDER BY name")
     suspend fun getSchemaRows(): List<SchemaRow>
+
+    @RawQuery
+    suspend fun getTableInfo(query: SupportSQLiteQuery): List<PragmaTableInfoRow>
 }
+
+
+internal data class PragmaTableInfoRow(
+    val name: String,
+)

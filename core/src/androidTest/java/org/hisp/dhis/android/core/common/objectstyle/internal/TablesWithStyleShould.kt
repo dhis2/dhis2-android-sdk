@@ -53,9 +53,8 @@ class TablesWithStyleShould {
         val tablesWithStyle = tableList
             .filterNot { excludedTables.contains(it) }
             .filter { table ->
-                val columns = d2Dao.stringListRawQuery(
-                    SimpleSQLiteQuery("SELECT name FROM pragma_table_info('$table');"),
-                )
+                val tableInfoRows = d2Dao.getTableInfo(SimpleSQLiteQuery("PRAGMA table_info('$table')"))
+                val columns = tableInfoRows.map { it.name }
                 columns.contains(NameableWithStyleColumns.ICON)
             }
 

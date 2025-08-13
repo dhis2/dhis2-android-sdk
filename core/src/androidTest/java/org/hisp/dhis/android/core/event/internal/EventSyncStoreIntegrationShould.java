@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
-import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.hisp.dhis.android.persistence.event.EventSyncStoreImpl;
@@ -36,7 +36,7 @@ import org.hisp.dhis.android.persistence.event.EventSyncTableInfo;
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)
-public class EventSyncStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<EventSync> {
+public class EventSyncStoreIntegrationShould extends ObjectStoreAbstractIntegrationShould<EventSync> {
 
     public EventSyncStoreIntegrationShould() {
         super(new EventSyncStoreImpl(TestDatabaseAdapterFactory.get()), EventSyncTableInfo.TABLE_INFO,
@@ -46,13 +46,5 @@ public class EventSyncStoreIntegrationShould extends ObjectWithoutUidStoreAbstra
     @Override
     protected EventSync buildObject() {
         return EventSyncSamples.get1();
-    }
-
-    @Override
-    protected EventSync buildObjectToUpdate() {
-        return EventSyncSamples.get1()
-                .toBuilder()
-                .downloadLimit(1000)
-                .build();
     }
 }

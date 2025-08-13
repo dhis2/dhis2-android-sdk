@@ -108,9 +108,14 @@ public abstract class D2Error extends Exception implements CoreObject {
 
         abstract D2Error autoBuild();
         abstract D2ErrorCode errorCode();
+        abstract Date created();
 
         public D2Error build() {
-            this.created(new Date());
+            try {
+                created();
+            } catch (IllegalStateException e) {
+                created(new Date());
+            }
             try {
                 errorCode();
             } catch (IllegalStateException e) {

@@ -48,7 +48,7 @@ class TrackerJobObjectStoreIntegrationShould : ObjectWithoutUidStoreAbstractInte
     override fun buildObjectToUpdate(): TrackerJobObject {
         return TrackerJobObjectSamples.get1()
             .toBuilder()
-            .jobUid("anotherJobId")
+            .fileResources(listOf("file_resource_uid"))
             .build()
     }
 }

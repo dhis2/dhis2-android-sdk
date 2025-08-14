@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.utils.integration.mock
 
-import android.util.Log
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.data.datavalue.DataValueConflictSamples
@@ -36,15 +35,12 @@ import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.datastore.KeyValuePair
 import org.hisp.dhis.android.core.datastore.internal.LocalDataStoreStore
 import org.hisp.dhis.android.core.datavalue.internal.DataValueConflictStore
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
-import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.AfterClass
 import org.junit.BeforeClass
@@ -126,15 +122,6 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
                     .event(null)
                     .build(),
             )
-            val teiStore: TrackedEntityInstanceStore = koin.get()
-            val tei = teiStore.selectByUid("nWrB0TfWlvD")
-            val enrollmentStore: EnrollmentStore = koin.get()
-            val enrollment = enrollmentStore.selectByUid("enroll2")
-            val eventStore: EventStore = koin.get()
-            val event = eventStore.selectByUid("event2")
-            Log.i("tei", tei.toString())
-            Log.i("tei", enrollment.toString())
-            Log.i("tei", event.toString())
             trackerImportConflictStore.insert(
                 TrackerImportConflictSamples.get().toBuilder()
                     .conflict("conflict_2")

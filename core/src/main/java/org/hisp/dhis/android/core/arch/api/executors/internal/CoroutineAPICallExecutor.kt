@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 
 internal interface CoroutineAPICallExecutor {
     suspend fun <P> wrap(
-        storeError: Boolean = false,
+        storeError: Boolean = true,
         acceptedErrorCodes: List<Int>? = null,
         errorCatcher: APICallErrorCatcher? = null,
         errorClassParser: ((body: String) -> P)? = null,

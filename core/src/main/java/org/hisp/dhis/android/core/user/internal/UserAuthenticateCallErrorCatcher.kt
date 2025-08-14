@@ -39,7 +39,7 @@ import java.net.HttpURLConnection
 @Singleton
 internal class UserAuthenticateCallErrorCatcher : APICallErrorCatcher {
     override fun mustBeStored(): Boolean {
-        return false
+        return true
     }
 
     @Suppress("TooGenericExceptionCaught")

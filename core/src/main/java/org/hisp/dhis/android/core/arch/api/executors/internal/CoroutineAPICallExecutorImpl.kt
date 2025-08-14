@@ -164,7 +164,7 @@ internal class CoroutineAPICallExecutorImpl(
     }
 
     private suspend fun storeAndReturn(d2Error: D2Error, storeError: Boolean): D2Error {
-        if (storeError) {
+        if (databaseAdapter.isReady && storeError) {
             errorStore.insert(d2Error)
         }
         return d2Error

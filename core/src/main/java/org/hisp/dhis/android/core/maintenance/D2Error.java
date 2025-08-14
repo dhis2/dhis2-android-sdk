@@ -111,9 +111,7 @@ public abstract class D2Error extends Exception implements CoreObject {
         abstract Date created();
 
         public D2Error build() {
-            try {
-                created();
-            } catch (IllegalStateException e) {
+            if (created() == null) {
                 created(new Date());
             }
             try {

@@ -40,6 +40,14 @@ import org.junit.Test
 
 class D2ErrorCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
+    fun filter_d2_errors() {
+        val d2Errors = d2.maintenanceModule().d2Errors()
+            .blockingGet()
+
+        assertThat(d2Errors.size).isEqualTo(5)
+    }
+
+    @Test
     fun filter_d2_error_by_url() {
         val d2Errors = d2.maintenanceModule().d2Errors()
             .byUrl().like("http://dhis2.org/api/programs/uid").blockingGet()

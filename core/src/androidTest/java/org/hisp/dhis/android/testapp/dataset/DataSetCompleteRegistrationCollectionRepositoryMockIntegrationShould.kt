@@ -39,7 +39,7 @@ class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShould : Bas
     fun find_all() {
         val dataSetCompleteRegistrations = d2.dataSetModule().dataSetCompleteRegistrations().blockingGet()
 
-        assertThat(dataSetCompleteRegistrations.size).isEqualTo(4)
+        assertThat(dataSetCompleteRegistrations.size).isEqualTo(3)
     }
 
     @Test
@@ -59,7 +59,7 @@ class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShould : Bas
             .eq("lyLU2wR22tC")
             .blockingGet()
 
-        assertThat(dataSetCompleteRegistrations.size).isEqualTo(4)
+        assertThat(dataSetCompleteRegistrations.size).isEqualTo(3)
     }
 
     @Test
@@ -69,7 +69,7 @@ class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShould : Bas
             .eq("DiszpKrYNg8")
             .blockingGet()
 
-        assertThat(dataSetCompleteRegistrations.size).isEqualTo(3)
+        assertThat(dataSetCompleteRegistrations.size).isEqualTo(2)
     }
 
     @Test
@@ -78,7 +78,7 @@ class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShould : Bas
             .byAttributeOptionComboUid()
             .eq("bRowv6yZOF2").blockingGet()
 
-        assertThat(dataSetCompleteRegistrations.size).isEqualTo(4)
+        assertThat(dataSetCompleteRegistrations.size).isEqualTo(3)
     }
 
     @Test
@@ -89,7 +89,7 @@ class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShould : Bas
             .after("2010-08-03".toJavaSimpleDate()!!)
             .blockingGet()
 
-        assertThat(dataSetCompleteRegistrations.size).isEqualTo(2)
+        assertThat(dataSetCompleteRegistrations.size).isEqualTo(1)
     }
 
     @Test
@@ -110,7 +110,7 @@ class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShould : Bas
             .eq("imported")
             .blockingGet()
 
-        assertThat(dataSetCompleteRegistrations.size).isEqualTo(3)
+        assertThat(dataSetCompleteRegistrations.size).isEqualTo(2)
     }
 
     @Test
@@ -119,6 +119,6 @@ class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShould : Bas
             .byDeleted().isFalse
             .blockingGet()
 
-        assertThat(dataSetCompleteRegistrations.size).isEqualTo(4)
+        assertThat(dataSetCompleteRegistrations.size).isEqualTo(3)
     }
 }

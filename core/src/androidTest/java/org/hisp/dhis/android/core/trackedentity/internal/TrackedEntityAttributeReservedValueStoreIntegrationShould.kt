@@ -134,17 +134,22 @@ class TrackedEntityAttributeReservedValueStoreIntegrationShould : BaseIntegratio
         store.insert(notExpiredValue)
         val returnedValue = store.popOne(ownerUid, orgUnitUid)
         assertThat(returnedValue?.value()).isEqualTo(notExpiredValue.value())
+        assertThat(store.count()).isEqualTo(0)
     }
 
     @Test
-    fun leave_store_empty_after_pop_only_value() = runTest {
+    fun keep_other_values_after_pop() = runTest {
         store.insert(notExpiredValue)
+        store.insert(notExpiredTemporalValidityExpiredValue)
+        assertThat(store.count()).isEqualTo(2)
+
         val value = store.popOne(ownerUid, orgUnitUid)
         storeContains(value!!, false)
+        assertThat(store.count()).isEqualTo(1)
     }
 
     private suspend fun storeContains(value: TrackedEntityAttributeReservedValue, contains: Boolean) {
-        val values: List<TrackedEntityAttributeReservedValue> = store.selectAll()
+        val values = store.selectAll()
         assertThat(values.contains(value)).isEqualTo(contains)
     }
 }

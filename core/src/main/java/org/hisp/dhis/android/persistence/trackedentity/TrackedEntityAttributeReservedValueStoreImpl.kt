@@ -30,9 +30,9 @@ package org.hisp.dhis.android.persistence.trackedentity
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStore
+import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeReservedValueTableInfo.Columns
@@ -51,7 +51,7 @@ internal class TrackedEntityAttributeReservedValueStoreImpl(
 
     override suspend fun deleteExpired(serverDate: Date) {
         val dao = databaseAdapter.getCurrentDatabase().trackedEntityAttributeReservedValueDao()
-        val serverDateStr = "date('${DateUtils.DATE_FORMAT.format(serverDate)}')"
+        val serverDateStr = serverDate.dateFormat()!!
         dao.deleteExpired(serverDateStr)
     }
 

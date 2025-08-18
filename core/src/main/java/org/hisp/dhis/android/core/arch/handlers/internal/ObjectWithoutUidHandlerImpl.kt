@@ -33,7 +33,10 @@ import org.hisp.dhis.android.core.common.CoreObject
 internal open class ObjectWithoutUidHandlerImpl<O : CoreObject>(protected val store: ObjectWithoutUidStore<O>) :
     HandlerBaseImpl<O>() {
 
-    override suspend fun deleteOrPersist(oCollection: Collection<O>): List<HandleAction> {
-        return store.updateOrInsert(oCollection)
+    override suspend fun deleteOrPersist(oCollection: Collection<O>) {
+        val handleActions = store.updateOrInsert(oCollection)
+        oCollection.forEachIndexed { index, o ->
+            afterObjectHandled(o, handleActions[index])
+        }
     }
 }

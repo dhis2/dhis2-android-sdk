@@ -40,27 +40,20 @@ import org.koin.core.annotation.Singleton
 internal class DataValueHandler(
     store: DataValueStore,
 ) : ObjectWithoutUidHandlerImpl<DataValue>(store) {
-    override suspend fun deleteOrPersist(oCollection: Collection<DataValue>): List<HandleAction> {
-        val indexedToDelete = mutableListOf<Pair<Int, DataValue>>()
-        val indexedToUpsert = mutableListOf<Pair<Int, DataValue>>()
-        oCollection.forEachIndexed { idx, o ->
-            if (CollectionsHelper.isDeleted(o)) {
-                indexedToDelete.add(Pair(idx, o))
-            } else {
-                indexedToUpsert.add(Pair(idx, o))
-            }
+    override suspend fun deleteOrPersist(oCollection: Collection<DataValue>) {
+        val (toDelete, toUpsert) = oCollection.partition { o ->
+            CollectionsHelper.isDeleted(o)
         }
-        val handleActions = ArrayList<HandleAction>(oCollection.size)
-        indexedToDelete.map {
-            store.deleteWhereIfExists(it.second)
-            handleActions.add(it.first, HandleAction.Delete)
+
+        toDelete.forEach { o ->
+            store.deleteWhereIfExists(o)
+            afterObjectHandled(o, HandleAction.Delete)
         }
-        val upsertActions = store.updateOrInsert(indexedToUpsert.map { it.second })
-        upsertActions.forEachIndexed { upsertIdx, handleAction ->
-            val oCollectionIdx = indexedToUpsert[upsertIdx].first
-            handleActions.add(oCollectionIdx, handleAction)
+
+        val upsertActions = store.updateOrInsert(toUpsert)
+        toUpsert.forEachIndexed { index, o ->
+            afterObjectHandled(o, upsertActions[index])
         }
-        return handleActions
     }
 
     override suspend fun beforeCollectionHandled(oCollection: Collection<DataValue>): Collection<DataValue> {

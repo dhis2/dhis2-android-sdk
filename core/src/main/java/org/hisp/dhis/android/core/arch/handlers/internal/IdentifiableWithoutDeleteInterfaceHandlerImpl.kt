@@ -34,7 +34,10 @@ internal open class IdentifiableWithoutDeleteInterfaceHandlerImpl<O : ObjectWith
     val store: IdentifiableObjectStore<O>,
 ) : HandlerBaseImpl<O>() {
 
-    override suspend fun deleteOrPersist(oCollection: Collection<O>): List<HandleAction> {
-        return store.updateOrInsert(oCollection)
+    override suspend fun deleteOrPersist(oCollection: Collection<O>) {
+        val handleActions = store.updateOrInsert(oCollection)
+        oCollection.forEachIndexed { index, o ->
+            afterObjectHandled(o, handleActions[index])
+        }
     }
 }

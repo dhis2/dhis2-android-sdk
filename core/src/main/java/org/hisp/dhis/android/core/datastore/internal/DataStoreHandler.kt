@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.datastore.internal
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerBaseImpl
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.common.DataColumns
@@ -57,8 +56,11 @@ internal class DataStoreHandler(
         store.delete()
     }
 
-    override suspend fun deleteOrPersist(oCollection: Collection<DataStoreEntry>): List<HandleAction> {
-        return store.updateOrInsert(oCollection)
+    override suspend fun deleteOrPersist(oCollection: Collection<DataStoreEntry>) {
+        val handleActions = store.updateOrInsert(oCollection)
+        oCollection.forEachIndexed { index, o ->
+            afterObjectHandled(o, handleActions[index])
+        }
     }
 
     private suspend fun filterNotSyncedEntries(

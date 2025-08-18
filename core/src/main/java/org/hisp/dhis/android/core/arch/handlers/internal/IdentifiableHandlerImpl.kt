@@ -35,17 +35,32 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 internal open class IdentifiableHandlerImpl<O>(protected val store: IdentifiableObjectStore<O>) :
     HandlerBaseImpl<O>() where O : ObjectWithUidInterface, O : ObjectWithDeleteInterface {
 
-    override suspend fun deleteOrPersist(o: O): HandleAction {
-        val modelUid = o.uid()
-        return if ((CollectionsHelper.isDeleted(o) || deleteIfCondition(o)) && modelUid != null) {
-            store.deleteIfExists(modelUid)
-            HandleAction.Delete
-        } else {
-            store.updateOrInsert(o)
+    override suspend fun deleteOrPersist(oCollection: Collection<O>): List<HandleAction> {
+        val indexedToDelete = mutableListOf<Pair<Int, O>>()
+        val indexedToUpsert = mutableListOf<Pair<Int, O>>()
+        oCollection.forEachIndexed { idx, o ->
+            if ((CollectionsHelper.isDeleted(o) || deleteIfCondition(o)) && o.uid() != null) {
+                indexedToDelete.add(Pair(idx, o))
+            } else {
+                indexedToUpsert.add(Pair(idx, o))
+            }
         }
+        val handleActions = ArrayList<HandleAction>(oCollection.size)
+        indexedToDelete.map {
+            store.deleteIfExists(it.second.uid())
+            handleActions.add(it.first, HandleAction.Delete)
+        }
+        val upsertActions = store.updateOrInsert(indexedToUpsert.map { it.second })
+        upsertActions.forEachIndexed { upsertIdx, handleAction ->
+            val oCollectionIdx = indexedToUpsert[upsertIdx].first
+            handleActions.add(oCollectionIdx, handleAction)
+        }
+        return handleActions
     }
 
     protected open suspend fun deleteIfCondition(o: O): Boolean {
         return false
     }
 }
+
+

@@ -64,7 +64,7 @@ internal class SMSConfigStoreImpl(
             .value(value)
             .build()
 
-        return updateOrInsertWhere(keyValuePair)
+        return updateOrInsert(keyValuePair)
     }
 
     override suspend fun delete(key: SMSConfigKey) {

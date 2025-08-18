@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.arch.db.stores.internal
 
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+
 internal interface ObjectStore<O> : ReadableStore<O> {
     @Throws(RuntimeException::class)
     suspend fun selectStringColumnsWhereClause(column: String, clause: String): List<String>
@@ -36,6 +38,19 @@ internal interface ObjectStore<O> : ReadableStore<O> {
 
     @Throws(RuntimeException::class)
     suspend fun insert(objects: Collection<O>)
+
+    @Throws(RuntimeException::class)
+    suspend fun update(o: O)
+
+    @Throws(RuntimeException::class)
+    suspend fun update(objects: Collection<O>)
+
+    @Throws(RuntimeException::class)
+    suspend fun updateOrInsert(o: O): HandleAction
+
+    @Throws(RuntimeException::class)
+    suspend fun updateOrInsert(objects: Collection<O>): List<HandleAction>
+
     suspend fun delete(): Int
     suspend fun deleteByEntity(o: O): Boolean
 }

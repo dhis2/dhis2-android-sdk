@@ -28,9 +28,8 @@
 
 package org.hisp.dhis.android.persistence.common.stores
 
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.MapperToDB
@@ -43,8 +42,6 @@ internal open class ObjectStoreImpl<D : CoreObject, P : EntityDB<D>>(
     override val builder: ReadOnlySQLStatementBuilder,
 ) : ObjectStore<D>, ReadableStoreImpl<D, P>(daoProvider, builder), MapperToDB<D, P> by mapper {
 
-    private val insertMutex = Mutex()
-
     override suspend fun selectStringColumnsWhereClause(column: String, clause: String): List<String> {
         val objectDao = daoProvider()
         val query = builder.selectStringColumn(column, clause)
@@ -56,7 +53,7 @@ internal open class ObjectStoreImpl<D : CoreObject, P : EntityDB<D>>(
         return objectDao.deleteAllRows()
     }
 
-    open override suspend fun insert(o: D): Long = insertMutex.withLock {
+    override suspend fun insert(o: D): Long {
         val objectDao = daoProvider()
         return objectDao.insert(o.toDB())
     }
@@ -64,6 +61,41 @@ internal open class ObjectStoreImpl<D : CoreObject, P : EntityDB<D>>(
     override suspend fun insert(objects: Collection<D>) {
         val objectDao = daoProvider()
         objectDao.insert(objects.map { it.toDB() })
+    }
+
+    override suspend fun update(o: D) {
+        val objectDao = daoProvider()
+        val updated = objectDao.update(o.toDB())
+        if (updated == 0) {
+            throw RuntimeException("No rows affected")
+        }
+    }
+
+    override suspend fun update(objects: Collection<D>) {
+        val objectDao = daoProvider()
+        objectDao.update(objects.map { it.toDB() })
+    }
+
+    override suspend fun updateOrInsert(o: D): HandleAction {
+        val objectDao = daoProvider()
+        val rowId = objectDao.upsert(o.toDB())
+        return if (rowId > -1) {
+            HandleAction.Insert
+        } else {
+            HandleAction.Update
+        }
+    }
+
+    override suspend fun updateOrInsert(objects: Collection<D>): List<HandleAction> {
+        val objectDao = daoProvider()
+        val rowIds = objectDao.upsert(objects.map { it.toDB() })
+        return rowIds.map { rowId ->
+            if (rowId > -1) {
+                HandleAction.Insert
+            } else {
+                HandleAction.Update
+            }
+        }
     }
 
     override suspend fun deleteByEntity(o: D): Boolean {

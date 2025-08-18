@@ -28,10 +28,7 @@
 
 package org.hisp.dhis.android.persistence.common.stores
 
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
@@ -46,15 +43,6 @@ internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
     override val builder: SQLStatementBuilder,
 ) : IdentifiableObjectStore<D>,
     ObjectStoreImpl<D, P>(daoProvider, mapper, builder) where D : CoreObject, D : ObjectWithUidInterface {
-
-    private val upsertMutex = Mutex()
-
-    @Throws(RuntimeException::class)
-    override suspend fun insert(o: D): Long {
-        CollectionsHelper.isNull(o)
-        CollectionsHelper.isNull(o.uid())
-        return super.insert(o)
-    }
 
     @Throws(RuntimeException::class)
     override suspend fun selectUids(): List<String> {
@@ -93,30 +81,6 @@ internal open class IdentifiableObjectStoreImpl<D, P : EntityDB<D>>(
         val query = builder.selectWhere(whereClause)
         val dbEntities = identifiableObjectDao.objectListRawQuery(query)
         return dbEntities.map { it.toDomain() }
-    }
-
-    @Throws(RuntimeException::class)
-    @Suppress("TooGenericExceptionThrown")
-    override suspend fun update(o: D) {
-        val identifiableObjectDao = daoProvider()
-        CollectionsHelper.isNull(o)
-        val entity = o.toDB()
-        val updated = identifiableObjectDao.update(entity)
-        if (updated == 0) {
-            throw RuntimeException("No rows affected")
-        }
-    }
-
-    @Throws(RuntimeException::class)
-    @Suppress("TooGenericExceptionCaught")
-    override suspend fun updateOrInsert(o: D): HandleAction = upsertMutex.withLock {
-        return try {
-            update(o)
-            HandleAction.Update
-        } catch (e: Exception) {
-            insert(o)
-            HandleAction.Insert
-        }
     }
 
     @Throws(RuntimeException::class)

@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.db.stores.internal
 
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
 internal interface IdentifiableObjectStore<O : ObjectWithUidInterface> : ObjectStore<O> {
@@ -36,12 +35,6 @@ internal interface IdentifiableObjectStore<O : ObjectWithUidInterface> : ObjectS
 
     @Throws(RuntimeException::class)
     suspend fun deleteIfExists(uid: String)
-
-    @Throws(RuntimeException::class)
-    suspend fun update(o: O)
-
-    @Throws(RuntimeException::class)
-    suspend fun updateOrInsert(o: O): HandleAction
 
     @Throws(RuntimeException::class)
     suspend fun selectUids(): List<String>

@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.persistence.common.stores
 
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
@@ -48,19 +46,9 @@ internal open class ObjectWithoutUidStoreImpl<D : CoreObject, P : EntityDB<D>>(
     mapper,
     builder,
 ) {
-    private val updateWhereMutex = Mutex()
-    private val upsertMutex = Mutex()
-
     @Throws(RuntimeException::class)
-    @Suppress("TooGenericExceptionThrown")
-    override suspend fun updateWhere(o: D) = updateWhereMutex.withLock {
-        val objectWithoutUidDao = daoProvider()
-        CollectionsHelper.isNull(o)
-        val entityDB = o.toDB()
-        val updated = objectWithoutUidDao.update(entityDB)
-        if (updated == 0) {
-            throw RuntimeException("No rows affected")
-        }
+    override suspend fun updateWhere(o: D) {
+        update(o)
     }
 
     @Throws(RuntimeException::class)
@@ -87,16 +75,7 @@ internal open class ObjectWithoutUidStoreImpl<D : CoreObject, P : EntityDB<D>>(
     }
 
     @Throws(RuntimeException::class)
-    @Suppress("TooGenericExceptionCaught")
-    override suspend fun updateOrInsertWhere(o: D): HandleAction = upsertMutex.withLock {
-        val objectWithoutUidDao = daoProvider()
-        val entityDB = o.toDB()
-        val updated = objectWithoutUidDao.update(entityDB)
-        return if (updated == 0) {
-            insert(o)
-            HandleAction.Insert
-        } else {
-            HandleAction.Update
-        }
+    override suspend fun updateOrInsertWhere(o: D): HandleAction {
+        return updateOrInsert(o)
     }
 }

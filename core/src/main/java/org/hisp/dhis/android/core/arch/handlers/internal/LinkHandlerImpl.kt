@@ -35,17 +35,15 @@ internal open class LinkHandlerImpl<S, O : CoreObject>(private val store: LinkSt
     override suspend fun handleMany(masterUid: String, slaves: Collection<S>?, transformer: Function1<S, O>) {
         store.deleteLinksForMasterUid(masterUid)
         if (slaves != null) {
-            for (slave in slaves) {
-                handleInternal(slave, transformer)
-            }
-        }
-    }
+            val preHandledCollection = slaves
+                .map { beforeObjectHandled(it) }
+                .map { transformer.invoke(it) }
 
-    private suspend fun handleInternal(s: S, transformer: Function1<S, O>) {
-        val s2 = beforeObjectHandled(s)
-        val s3 = transformer.invoke(s2)
-        store.insertIfNotExists(s3)
-        afterObjectHandled(s3)
+            //TODO Previously it was store.insertIfNotExists(). Check if we should change anything
+            store.updateOrInsert(preHandledCollection)
+
+            preHandledCollection.forEach { afterObjectHandled(it) }
+        }
     }
 
     protected open suspend fun beforeObjectHandled(s: S): S {

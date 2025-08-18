@@ -57,8 +57,8 @@ internal class DataStoreHandler(
         store.delete()
     }
 
-    override suspend fun deleteOrPersist(o: DataStoreEntry): HandleAction {
-        return store.updateOrInsertWhere(o)
+    override suspend fun deleteOrPersist(oCollection: Collection<DataStoreEntry>): List<HandleAction> {
+        return store.updateOrInsert(oCollection)
     }
 
     private suspend fun filterNotSyncedEntries(

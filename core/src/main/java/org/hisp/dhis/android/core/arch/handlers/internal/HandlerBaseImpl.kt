@@ -48,11 +48,7 @@ internal abstract class HandlerBaseImpl<O> : HandlerWithTransformer<O> {
             val preHandledCollection = beforeCollectionHandled(oCollection)
                 .map { beforeObjectHandled(it) }
 
-            val actions = deleteOrPersist(preHandledCollection)
-
-            preHandledCollection.forEachIndexed { index, o ->
-                afterObjectHandled(o, actions[index])
-            }
+            deleteOrPersist(preHandledCollection)
 
             afterCollectionHandled(preHandledCollection)
         }
@@ -64,17 +60,13 @@ internal abstract class HandlerBaseImpl<O> : HandlerWithTransformer<O> {
                 .map { beforeObjectHandled(it) }
                 .map { transformer.invoke(it) }
 
-            val actions = deleteOrPersist(preHandledCollection)
-
-            preHandledCollection.forEachIndexed { index, o ->
-                afterObjectHandled(o, actions[index])
-            }
+            deleteOrPersist(preHandledCollection)
 
             afterCollectionHandled(preHandledCollection)
         }
     }
 
-    protected abstract suspend fun deleteOrPersist(oCollection: Collection<O>): List<HandleAction>
+    protected abstract suspend fun deleteOrPersist(oCollection: Collection<O>)
 
     protected open suspend fun beforeObjectHandled(o: O): O {
         return o

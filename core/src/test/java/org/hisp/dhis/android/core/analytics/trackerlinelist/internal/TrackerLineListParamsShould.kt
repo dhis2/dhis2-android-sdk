@@ -51,7 +51,8 @@ class TrackerLineListParamsShould {
                 TrackerLineListItem.ProgramIndicator("indicator"),
                 TrackerLineListItem.EventDate(),
             ),
-            filters = listOf(),
+            filters = emptyList(),
+            sorting = emptyList(),
         )
 
         val params2 = TrackerLineListParams(
@@ -66,6 +67,7 @@ class TrackerLineListParamsShould {
             filters = listOf(
                 TrackerLineListItem.EventDate(listOf(DateFilter.Absolute("202405"))),
             ),
+            sorting = emptyList(),
         )
 
         val params = params1 + params2
@@ -100,6 +102,7 @@ class TrackerLineListParamsShould {
                 ),
             ),
             filters = emptyList(),
+            sorting = emptyList(),
         )
 
         val flattenedParams = params.flattenRepeatedDataElements()

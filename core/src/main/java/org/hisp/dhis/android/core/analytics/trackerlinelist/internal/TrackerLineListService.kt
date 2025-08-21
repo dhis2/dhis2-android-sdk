@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.analytics.trackerlinelist.internal
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListResponse
+import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListSortingItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.TrackerLineListServiceHelper.mapCursorToColumns
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListEvaluatorMapper
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EnrollmentAlias
@@ -136,6 +137,7 @@ internal class TrackerLineListService(
             "WHERE " +
             "$EventAlias.${EventTableInfo.Columns.PROGRAM_STAGE} = '${params.programStageId!!}' AND " +
             "${getEventWhereClause(params, context)} " +
+            appendOrderBy(params.sorting) +
             appendPaging(params.pageConfig)
     }
 
@@ -153,6 +155,7 @@ internal class TrackerLineListService(
             "WHERE " +
             "$EnrollmentAlias.${EnrollmentTableInfo.Columns.PROGRAM} = '${params.programId!!}' " +
             "AND ${getEnrollmentWhereClause(params, context)} " +
+            appendOrderBy(params.sorting) +
             appendPaging(params.pageConfig)
     }
 
@@ -174,6 +177,7 @@ internal class TrackerLineListService(
             "$TrackedEntityInstanceAlias.${TrackedEntityInstanceTableInfo.Columns.TRACKED_ENTITY_TYPE} = " +
             "'${params.trackedEntityTypeId!!}' AND " +
             "${getTrackedEntityInstanceWhereClause(params, context)} " +
+            appendOrderBy(params.sorting) +
             appendPaging(params.pageConfig)
     }
 
@@ -246,6 +250,14 @@ internal class TrackerLineListService(
         return when (pageConfig) {
             is PageConfig.NoPaging -> ""
             is PageConfig.Paging -> "LIMIT ${pageConfig.pageSize} OFFSET ${pageConfig.pageSize * (pageConfig.page - 1)}"
+        }
+    }
+
+    private fun appendOrderBy(sorting: List<TrackerLineListSortingItem>): String {
+        return if (sorting.isNotEmpty()) {
+            " ORDER BY ${sorting.joinToString(", ") { item -> "\"${item.dimension.id}\" ${item.direction.name}" }} "
+        } else {
+            ""
         }
     }
 }

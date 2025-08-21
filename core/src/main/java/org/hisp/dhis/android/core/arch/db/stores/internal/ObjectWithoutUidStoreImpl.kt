@@ -73,6 +73,7 @@ internal open class ObjectWithoutUidStoreImpl<O : CoreObject>(
     private var adapterHashCode: Int? = null
 
     @Throws(RuntimeException::class)
+    @Synchronized
     override fun updateWhere(o: O) {
         CollectionsHelper.isNull(o)
         compileStatements()

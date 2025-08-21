@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.map.layer.MapLayer
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderArea
 import org.hisp.dhis.android.core.map.layer.MapLayerPosition
-import org.hisp.dhis.android.core.map.layer.internal.bing.BingBasemap
+import org.hisp.dhis.android.core.map.layer.internal.microsoft.BingBasemap
 
 @Serializable
 internal data class BingServerResponseDTO(

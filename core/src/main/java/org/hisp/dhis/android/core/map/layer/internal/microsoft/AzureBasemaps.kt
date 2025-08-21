@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,10 +26,29 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.map.layer.internal.bing
+package org.hisp.dhis.android.core.map.layer.internal.microsoft
 
-internal data class BingBasemap(
-    val id: String,
-    val name: String,
-    val style: String,
-)
+internal object AzureBasemaps {
+    val list: List<AzureBasemap> = listOf(
+        AzureBasemap(
+            id = "azureLight",
+            name = "Azure Road",
+            style = "microsoft.base.road",
+        ),
+        AzureBasemap(
+            id = "azureDark",
+            name = "Azure Dark",
+            style = "microsoft.base.darkgrey",
+        ),
+        AzureBasemap(
+            id = "azureAerial",
+            name = "Azure Aerial",
+            style = "microsoft.imagery",
+        ),
+        AzureBasemap(
+            id = "azureHybrid",
+            name = "Azure Aerial Labels",
+            style = "microsoft.base.hybrid.road",
+        ),
+    )
+}

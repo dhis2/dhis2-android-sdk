@@ -298,6 +298,22 @@ class ExpressionServiceShould {
     }
 
     @Test
+    fun evaluate_missing_nested_operands() {
+        val expression = "firstNonNull(${de(dataElementId1)}, ${de(dataElementId2)})"
+        val valueMap: Map<DimensionalItemObject, Double> = mapOf(
+            DataElementOperandObject(dataElementId2, null) to 5.0,
+        )
+
+        val result = service.getExpressionValue(
+            expression,
+            ExpressionServiceContext(valueMap, constantMap, emptyMap()),
+            MissingValueStrategy.NEVER_SKIP,
+        ) as Double?
+
+        assertThat(result).isEqualTo(5.0)
+    }
+
+    @Test
     fun get_dataelement_ids() {
         val expression = de(dataElementId1) + " + " + de(dataElementId2)
         val dataElementOperands = service.getDataElementOperands(expression)

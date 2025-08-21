@@ -64,6 +64,7 @@ internal open class ObjectStoreImpl<O : CoreObject> internal constructor(
 
     @Throws(RuntimeException::class)
     @Suppress("TooGenericExceptionThrown")
+    @Synchronized
     override fun insert(o: O): Long {
         CollectionsHelper.isNull(o)
         compileStatements()

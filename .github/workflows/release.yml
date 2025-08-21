@@ -23,7 +23,7 @@ jobs:
       - name: Publish Maven
         run: ./.github/workflows/scripts/publish-maven.sh
         env:
-          NEXUS_USERNAME: ${{ secrets.SONATYPE_OSSRH_USERNAME }}
-          NEXUS_PASSWORD: ${{ secrets.SONATYPE_OSSRH_PASSWORD }}
+          NEXUS_USERNAME: ${{ secrets.SONATYPE_PORTAL_USERNAME }}
+          NEXUS_PASSWORD: ${{ secrets.SONATYPE_PORTAL_PASSWORD }}
           SIGNING_PRIVATE_KEY: ${{ secrets.PGP_PRIVATE_KEY }}
           SIGNING_PASSWORD: ${{ secrets.PGP_PASSPHRASE }}

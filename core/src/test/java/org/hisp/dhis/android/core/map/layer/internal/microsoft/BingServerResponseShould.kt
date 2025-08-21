@@ -25,7 +25,7 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.map.layer.internal.bing
+package org.hisp.dhis.android.core.map.layer.internal.microsoft
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
@@ -34,7 +34,11 @@ import org.hisp.dhis.android.core.map.layer.MapLayerPosition
 import org.hisp.dhis.android.network.bing.BingServerResponseDTO
 import org.junit.Test
 
-class BingServerResponseShould : BaseObjectKotlinxShould("map/layer/bing/bing_server_response.json"), ObjectShould {
+class BingServerResponseShould :
+    BaseObjectKotlinxShould(
+        "map/layer/microsoft/bing_server_response.json",
+    ),
+    ObjectShould {
     @Test
     override fun map_from_json_string() {
         val bingServerResponseDTO = deserialize(BingServerResponseDTO.serializer())

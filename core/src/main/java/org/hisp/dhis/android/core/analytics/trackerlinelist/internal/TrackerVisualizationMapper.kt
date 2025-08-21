@@ -32,12 +32,13 @@ import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.dateRangeRegex
 import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.orgunitGroupRegex
 import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.orgunitLevelRegex
-import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.uidRegex
+import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.singleUidRegex
 import org.hisp.dhis.android.core.analytics.trackerlinelist.DataFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.DateFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.EnumFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.OrganisationUnitFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
+import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.TrackerLineListSortingMapper.mapSorting
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod
@@ -56,14 +57,19 @@ internal class TrackerVisualizationMapper(
     private val organisationUnitLevelStore: OrganisationUnitLevelStore,
 ) {
     fun toTrackerLineListParams(trackerVisualization: TrackerVisualization): TrackerLineListParams {
+        val columns = mapDimensions(trackerVisualization.columns(), trackerVisualization)
+        val filters = mapDimensions(trackerVisualization.filters(), trackerVisualization)
+        val sorting = mapSorting(trackerVisualization.sorting(), columns + filters)
+
         return TrackerLineListParams(
             trackerVisualization = trackerVisualization.uid(),
             programId = trackerVisualization.program()?.uid(),
             programStageId = trackerVisualization.programStage()?.uid(),
             trackedEntityTypeId = trackerVisualization.trackedEntityType()?.uid(),
             outputType = mapOutputType(trackerVisualization.outputType()),
-            columns = mapDimensions(trackerVisualization.columns(), trackerVisualization),
-            filters = mapDimensions(trackerVisualization.filters(), trackerVisualization),
+            columns = columns,
+            filters = filters,
+            sorting = sorting,
         )
     }
 
@@ -123,7 +129,7 @@ internal class TrackerVisualizationMapper(
                         OrganisationUnitFilter.Group(groupUid)
                     }
 
-                    uidRegex.matches(uid) -> {
+                    singleUidRegex.matches(uid) -> {
                         OrganisationUnitFilter.Absolute(uid)
                     }
 
@@ -205,36 +211,33 @@ internal class TrackerVisualizationMapper(
 
     @Suppress("ComplexMethod")
     internal fun mapDataFilters(item: TrackerVisualizationDimension): List<DataFilter> {
-        return if (item.filter().isNullOrEmpty()) {
+        val filter = item.filter().orEmpty()
+        return if (filter.isEmpty()) {
             emptyList()
         } else {
-            val filterPairs = item.filter()!!.split(":").chunked(2)
+            filter.split(":")
+                .chunked(2)
+                .mapNotNull { (op, value) -> buildFilter(op, value) }
+        }
+    }
 
-            filterPairs.mapNotNull { filterPair ->
-                val operator = filterPair.getOrNull(0)
-                val value = filterPair.getOrNull(1)
-                if (operator != null && value != null) {
-                    when (operator) {
-                        "EQ" -> DataFilter.EqualTo(value, ignoreCase = false)
-                        "!EQ" -> DataFilter.NotEqualTo(value, ignoreCase = false)
-                        "IEQ" -> DataFilter.EqualTo(value, ignoreCase = true)
-                        "!IEQ" -> DataFilter.NotEqualTo(value, ignoreCase = true)
-                        "GT" -> DataFilter.GreaterThan(value)
-                        "GE" -> DataFilter.GreaterThanOrEqualTo(value)
-                        "LT" -> DataFilter.LowerThan(value)
-                        "LE" -> DataFilter.LowerThanOrEqualTo(value)
-                        "NE" -> DataFilter.NotEqualTo(value)
-                        "LIKE" -> DataFilter.Like(value, ignoreCase = false)
-                        "!LIKE" -> DataFilter.NotLike(value, ignoreCase = false)
-                        "ILIKE" -> DataFilter.Like(value, ignoreCase = true)
-                        "!ILIKE" -> DataFilter.NotLike(value, ignoreCase = true)
-                        "IN" -> DataFilter.In(value.split(";"))
-                        else -> null
-                    }
-                } else {
-                    null
-                }
-            }
+    private fun buildFilter(operator: String, value: String): DataFilter? {
+        return when (operator) {
+            "EQ" -> if (value == "NV") DataFilter.IsNullOrEmpty else DataFilter.EqualTo(value)
+            "!EQ" -> DataFilter.NotEqualTo(value)
+            "IEQ" -> DataFilter.EqualTo(value, ignoreCase = true)
+            "!IEQ" -> DataFilter.NotEqualTo(value, ignoreCase = true)
+            "GT" -> DataFilter.GreaterThan(value)
+            "GE" -> DataFilter.GreaterThanOrEqualTo(value)
+            "LT" -> DataFilter.LowerThan(value)
+            "LE" -> DataFilter.LowerThanOrEqualTo(value)
+            "NE" -> if (value == "NV") DataFilter.IsNotNullOrEmpty else DataFilter.NotEqualTo(value)
+            "LIKE" -> DataFilter.Like(value)
+            "!LIKE" -> DataFilter.NotLike(value)
+            "ILIKE" -> DataFilter.Like(value, ignoreCase = true)
+            "!ILIKE" -> DataFilter.NotLike(value, ignoreCase = true)
+            "IN" -> DataFilter.In(value.split(";"))
+            else -> null
         }
     }
 

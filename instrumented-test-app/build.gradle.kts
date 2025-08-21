@@ -32,6 +32,12 @@ plugins {
     kotlin("android")
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
+val sdkVersion = project.findProperty("sdkVersion")
+
 android {
     compileSdk = libs.versions.targetSdkVersion.get().toInt()
 
@@ -61,5 +67,9 @@ android {
 dependencies {
     coreLibraryDesugaring(libs.desugaring)
 
-    implementation(project(":core"))
+    if (sdkVersion != null && sdkVersion != "") {
+        implementation("org.hisp.dhis:android-core:$sdkVersion")
+    } else {
+        implementation(project(":core"))
+    }
 }

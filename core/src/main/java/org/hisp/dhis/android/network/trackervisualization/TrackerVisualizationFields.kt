@@ -51,5 +51,6 @@ internal object TrackerVisualizationFields : BaseFields<TrackerVisualization>() 
         fh.nestedFieldWithUid(Columns.TRACKED_ENTITY_TYPE),
         fh.nestedField<TrackerVisualizationDimension>(COLUMNS).with(TrackerVisualizationDimensionFields.allFields),
         fh.nestedField<TrackerVisualizationDimension>(FILTERS).with(TrackerVisualizationDimensionFields.allFields),
+        fh.field(Columns.SORTING),
     )
 }

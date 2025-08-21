@@ -30,10 +30,9 @@ package org.hisp.dhis.android.testapp.map.layer
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.map.layer.ImageFormat
-import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderArea
 import org.hisp.dhis.android.core.map.layer.MapLayerPosition
 import org.hisp.dhis.android.core.map.layer.MapService
-import org.hisp.dhis.android.core.map.layer.internal.bing.BingBasemaps
+import org.hisp.dhis.android.core.map.layer.internal.microsoft.BingBasemaps
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.BeforeClass
@@ -121,9 +120,7 @@ class MapLayerCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTes
             .blockingGet()
 
         assertThat(mapLayers.first().imageryProviders()).isNotEmpty()
-        assertThat(mapLayers.first().imageryProviders()?.first()?.coverageAreas()?.first()).isInstanceOf(
-            MapLayerImageryProviderArea::class.java,
-        )
+        assertThat(mapLayers.first().imageryProviders()?.first()?.coverageAreas()?.first()?.zoomMax()).isEqualTo(21)
     }
 
     @Test
@@ -160,10 +157,11 @@ class MapLayerCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTes
             setUpClass()
 
             dhis2MockServer.enqueueMockResponse("settings/system_settings.json")
-            dhis2MockServer.enqueueMockResponse("map/layer/bing/bing_server_response.json")
-            dhis2MockServer.enqueueMockResponse("map/layer/bing/bing_server_response.json")
             dhis2MockServer.enqueueMockResponse(401)
-            dhis2MockServer.enqueueMockResponse("map/layer/bing/bing_server_response.json")
+            dhis2MockServer.enqueueMockResponse("map/layer/microsoft/bing_server_response.json")
+            dhis2MockServer.enqueueMockResponse("map/layer/microsoft/bing_server_response.json")
+            dhis2MockServer.enqueueMockResponse(401)
+            dhis2MockServer.enqueueMockResponse("map/layer/microsoft/bing_server_response.json")
             dhis2MockServer.enqueueMockResponse("map/layer/externalmap/external_map_layers.json")
 
             d2.mapsModule().mapLayersDownloader().downloadMetadata().blockingAwait()

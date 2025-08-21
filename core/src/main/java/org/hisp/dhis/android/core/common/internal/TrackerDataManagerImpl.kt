@@ -109,8 +109,8 @@ internal class TrackerDataManagerImpl(
         } else {
             store.setDeleted(obj.uid())
             store.setSyncState(obj.uid(), State.TO_UPDATE)
-            propagateState(obj)
         }
+        propagateState(obj)
     }
 
     override fun propagateTrackedEntityUpdate(tei: TrackedEntityInstance?, action: HandleAction) {

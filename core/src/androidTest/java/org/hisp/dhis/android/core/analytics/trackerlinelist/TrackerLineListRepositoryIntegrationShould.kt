@@ -45,5 +45,7 @@ internal class TrackerLineListRepositoryIntegrationShould : BaseMockIntegrationT
 
         val rows = result.getOrThrow().rows
         assertThat(rows.size).isEqualTo(2)
+        assertThat(rows[0].find { it.id == "cejWyOfXge6" }!!.value).isEqualTo("654321")
+        assertThat(rows[1].find { it.id == "cejWyOfXge6" }!!.value).isEqualTo("4081507")
     }
 }

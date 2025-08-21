@@ -57,6 +57,7 @@ object TrackerVisualizationTableInfo {
                 PROGRAM,
                 PROGRAM_STAGE,
                 TRACKED_ENTITY_TYPE,
+                SORTING,
             )
         }
 
@@ -68,6 +69,7 @@ object TrackerVisualizationTableInfo {
             const val PROGRAM = "program"
             const val PROGRAM_STAGE = "programStage"
             const val TRACKED_ENTITY_TYPE = "trackedEntityType"
+            const val SORTING = "sorting"
         }
     }
 }

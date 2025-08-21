@@ -26,10 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.map.layer.internal.bing
+package org.hisp.dhis.android.network.azure
 
-import org.hisp.dhis.android.core.map.layer.MapLayer
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 
-internal fun interface BingNetworkHandler {
-    suspend fun getBaseMap(url: String, basemap: BingBasemap): List<MapLayer>
+internal class AzureService(private val client: HttpServiceClient) {
+
+    suspend fun getBaseMap(
+        url: String,
+    ): AzureServerResponseDTO {
+        return client.get {
+            absoluteUrl(url)
+        }
+    }
 }

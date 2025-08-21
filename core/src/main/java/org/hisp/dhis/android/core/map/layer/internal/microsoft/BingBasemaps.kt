@@ -26,7 +26,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.map.layer.internal.bing
+package org.hisp.dhis.android.core.map.layer.internal.microsoft
 
 internal object BingBasemaps {
     val list: List<BingBasemap> = listOf(

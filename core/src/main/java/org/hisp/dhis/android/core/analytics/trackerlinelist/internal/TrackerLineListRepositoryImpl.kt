@@ -33,11 +33,13 @@ import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListRepository
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListResponse
+import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListSortingItem
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.repositories.paging.PageConfig
 import org.koin.core.annotation.Singleton
 
 @Singleton
+@Suppress("TooManyFunctions")
 internal class TrackerLineListRepositoryImpl(
     private val params: TrackerLineListParams,
     private val service: TrackerLineListService,
@@ -84,6 +86,10 @@ internal class TrackerLineListRepositoryImpl(
 
     override fun withPageConfig(pageConfig: PageConfig): TrackerLineListRepository {
         return updateParams { params.copy(pageConfig = pageConfig) }
+    }
+
+    override fun withSorting(sorting: TrackerLineListSortingItem): TrackerLineListRepository {
+        return updateParams { params.copy(sorting = listOf(sorting)) }
     }
 
     override fun evaluate(): Single<Result<TrackerLineListResponse, AnalyticsException>> {

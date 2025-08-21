@@ -56,6 +56,6 @@ internal class AnalyticsDIModule {
 
     @Singleton
     fun emptyTrackerLineListParams(): TrackerLineListParams {
-        return TrackerLineListParams(null, null, null, null, null, emptyList(), emptyList())
+        return TrackerLineListParams(null, null, null, null, null, emptyList(), emptyList(), emptyList())
     }
 }

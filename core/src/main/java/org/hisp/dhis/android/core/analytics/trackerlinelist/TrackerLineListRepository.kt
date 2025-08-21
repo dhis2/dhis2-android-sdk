@@ -49,6 +49,8 @@ interface TrackerLineListRepository {
 
     fun withPageConfig(pageConfig: PageConfig): TrackerLineListRepository
 
+    fun withSorting(sorting: TrackerLineListSortingItem): TrackerLineListRepository
+
     fun evaluate(): Single<Result<TrackerLineListResponse, AnalyticsException>>
 
     fun blockingEvaluate(): Result<TrackerLineListResponse, AnalyticsException>

@@ -29,10 +29,10 @@ package org.hisp.dhis.android.core
 
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
-import okhttp3.Interceptor
 import okhttp3.logging.HttpLoggingInterceptor
 import org.hisp.dhis.android.core.arch.storage.internal.*
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.realservertests.performance.IgnoreIOTimeInterceptor
 
 internal object D2Factory {
 
@@ -58,7 +58,7 @@ internal object D2Factory {
         isRealIntegration: Boolean,
     ): D2 {
         val context = InstrumentationRegistry.getInstrumentation().context
-        val d2Configuration = d2Configuration(context)
+        val d2Configuration = d2Configuration(context, isRealIntegration)
 
         D2Manager.isTestMode = true
         D2Manager.isRealIntegration = isRealIntegration
@@ -68,16 +68,23 @@ internal object D2Factory {
         return D2Manager.blockingInstantiateD2(d2Configuration)!!
     }
 
-    private fun d2Configuration(context: Context): D2Configuration {
+    private fun d2Configuration(context: Context, isRealIntegration: Boolean): D2Configuration {
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BASIC
+
+        val interceptors = if (isRealIntegration) {
+            listOf(IgnoreIOTimeInterceptor())
+        } else {
+            listOf()
+        }
 
         return D2Configuration.builder()
             .appVersion("1.0.0")
             .readTimeoutInSeconds(30)
             .connectTimeoutInSeconds(30)
             .writeTimeoutInSeconds(30)
-            .interceptors(listOf<Interceptor>(loggingInterceptor))
+            .interceptors(listOf(loggingInterceptor))
+            .networkInterceptors(interceptors)
             .context(context)
             .build()
     }

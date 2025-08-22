@@ -31,7 +31,7 @@ import org.jetbrains.dokka.gradle.DokkaTask
 
 plugins {
     id("com.android.library")
-    id("com.google.devtools.ksp") version "${libs.versions.kotlin.get()}-1.0.24"
+    id("com.google.devtools.ksp") version "${libs.versions.kotlin.get()}-1.0.25"
     id("kotlin-android")
     id("kotlin-kapt")
 

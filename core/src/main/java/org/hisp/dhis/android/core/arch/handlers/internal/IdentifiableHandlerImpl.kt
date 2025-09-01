@@ -45,7 +45,9 @@ internal open class IdentifiableHandlerImpl<O>(protected val store: Identifiable
             afterObjectHandled(o, HandleAction.Delete)
         }
 
-        val upsertActions = store.updateOrInsert(toUpsert)
+        val upsertActions = toUpsert.takeIf { it.isNotEmpty() }
+            ?.let { nonEmptyToUpsert -> store.updateOrInsert(nonEmptyToUpsert) }
+            ?: emptyList()
         toUpsert.forEachIndexed { index, o ->
             afterObjectHandled(o, upsertActions[index])
         }

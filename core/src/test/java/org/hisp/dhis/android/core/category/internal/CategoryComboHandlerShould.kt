@@ -66,7 +66,7 @@ class CategoryComboHandlerShould {
         whenever(combo.uid()).doReturn(comboUid)
         whenever(accessCategoryOptionCombos(combo)).doReturn(optionCombos)
         whenever(combo.categories()).thenReturn(categories)
-        whenever(categoryComboStore.updateOrInsert(any())).doReturn(HandleAction.Insert)
+        whenever(categoryComboStore.updateOrInsert(any<List<CategoryCombo>>())).doReturn(listOf(HandleAction.Insert))
 
         categoryComboHandler = CategoryComboHandler(
             categoryComboStore,
@@ -90,7 +90,7 @@ class CategoryComboHandlerShould {
 
     @Test
     fun clean_option_combo_orphans_for_update() = runTest {
-        whenever(categoryComboStore.updateOrInsert(combo)).doReturn(HandleAction.Update)
+        whenever(categoryComboStore.updateOrInsert(listOf(combo))).doReturn(listOf(HandleAction.Update))
         categoryComboHandler.handle(combo)
         verify(categoryOptionCleaner).deleteOrphan(combo, optionCombos)
     }

@@ -83,7 +83,7 @@ class OrganisationUnitHandlerShould {
             .organisationUnitGroups(organisationUnitGroups)
             .build()
 
-        whenever(organisationUnitStore.updateOrInsert(any())).doReturn(HandleAction.Insert)
+        whenever(organisationUnitStore.updateOrInsert(any<List<OrganisationUnit>>())).doReturn(listOf(HandleAction.Insert))
 
         organisationUnits = listOf(organisationUnitWithGroups)
     }

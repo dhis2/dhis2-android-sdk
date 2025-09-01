@@ -49,7 +49,7 @@ class GeneralSettingsHandlerShould {
     @Throws(Exception::class)
     fun setUp() = runTest {
         generalSettingList = listOf(generalSettings)
-        whenever(generalSettingStore.updateOrInsertWhere(any())) doReturn HandleAction.Insert
+        whenever(generalSettingStore.updateOrInsert(any<List<GeneralSettings>>())).doReturn(listOf(HandleAction.Insert))
         generalSettingHandler = GeneralSettingHandler(generalSettingStore)
     }
 
@@ -57,13 +57,13 @@ class GeneralSettingsHandlerShould {
     fun clean_database_before_insert_collection() = runTest {
         generalSettingHandler.handleMany(generalSettingList)
         verify(generalSettingStore).delete()
-        verify(generalSettingStore).updateOrInsertWhere(generalSettings)
+        verify(generalSettingStore).updateOrInsert(listOf(generalSettings))
     }
 
     @Test
     fun clean_database_if_empty_collection() = runTest {
         generalSettingHandler.handleMany(emptyList())
         verify(generalSettingStore).delete()
-        verify(generalSettingStore, never()).updateOrInsertWhere(generalSettings)
+        verify(generalSettingStore, never()).updateOrInsert(listOf(generalSettings))
     }
 }

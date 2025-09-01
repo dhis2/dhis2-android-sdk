@@ -139,7 +139,7 @@ class ProgramHandlerShould {
         attributeValues.add(attValue)
 
         whenever(program.attributeValues()).thenReturn(attributeValues)
-        whenever(programStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
+        whenever(programStore.updateOrInsert(any<List<Program>>())).thenReturn(listOf(HandleAction.Insert))
     }
 
     @Test
@@ -162,14 +162,14 @@ class ProgramHandlerShould {
 
     @Test
     fun clean_orphan_options_after_update() = runTest {
-        whenever(programStore.updateOrInsert(any())).thenReturn(HandleAction.Update)
+        whenever(programStore.updateOrInsert(any<List<Program>>())).thenReturn(listOf(HandleAction.Update))
         programHandler.handle(program)
         verify(orphanCleaner).deleteOrphan(program)
     }
 
     @Test
     fun not_clean_orphan_options_after_insert() = runTest {
-        whenever(programStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
+        whenever(programStore.updateOrInsert(any<Program>())).thenReturn(HandleAction.Insert)
         programHandler.handle(program)
         verify(orphanCleaner, never()).deleteOrphan(program)
     }

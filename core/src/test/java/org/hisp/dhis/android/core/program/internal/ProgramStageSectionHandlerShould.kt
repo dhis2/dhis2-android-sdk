@@ -69,7 +69,11 @@ class ProgramStageSectionHandlerShould {
         whenever(programStageSection.programIndicators()).thenReturn(programIndicators)
         whenever(dataElement.uid()).thenReturn("data_element_uid")
         whenever(programIndicator.uid()).thenReturn("program_indicator_uid")
-        whenever(programStageSectionStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
+        whenever(programStageSectionStore.updateOrInsert(any<List<ProgramStageSection>>())).thenReturn(
+            listOf(
+                HandleAction.Insert
+            )
+        )
     }
 
     @Test

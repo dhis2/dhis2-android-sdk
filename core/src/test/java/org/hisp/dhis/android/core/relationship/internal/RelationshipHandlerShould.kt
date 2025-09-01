@@ -39,7 +39,11 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.kotlin.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
 class RelationshipHandlerShould {
@@ -83,7 +87,7 @@ class RelationshipHandlerShould {
         ).thenReturn(listOf(RelationshipSamples.UID))
         whenever(relationshipItemStore.getRelationshipUidsForItems(tei3Item, tei4Item)).thenReturn(emptyList())
         whenever(relationshipStore.selectByUid(RelationshipSamples.UID)).thenReturn(RelationshipSamples.get230())
-        whenever(relationshipStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
+        whenever(relationshipStore.updateOrInsert(any<List<Relationship>>())).thenReturn(listOf(HandleAction.Insert))
     }
 
     @Test
@@ -101,19 +105,19 @@ class RelationshipHandlerShould {
     @Test
     fun update_relationship_store_for_existing_relationship() = runTest {
         relationshipHandler.handle(existingRelationship)
-        verify(relationshipStore).updateOrInsert(existingRelationship)
+        verify(relationshipStore).updateOrInsert(listOf(existingRelationship))
     }
 
     @Test
     fun update_relationship_store_for_existing_relationship_with_new_uid() = runTest {
         relationshipHandler.handle(existingRelationshipWithNewUid)
-        verify(relationshipStore).updateOrInsert(existingRelationshipWithNewUid)
+        verify(relationshipStore).updateOrInsert(listOf(existingRelationshipWithNewUid))
     }
 
     @Test
     fun update_relationship_store_for_new_relationship() = runTest {
         relationshipHandler.handle(newRelationship)
-        verify(relationshipStore).updateOrInsert(newRelationship)
+        verify(relationshipStore).updateOrInsert(listOf(newRelationship))
     }
 
     @Test

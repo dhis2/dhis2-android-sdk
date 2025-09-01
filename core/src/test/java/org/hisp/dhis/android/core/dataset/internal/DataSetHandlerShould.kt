@@ -106,7 +106,7 @@ class DataSetHandlerShould {
 
         dataInputPeriods = mutableListOf(dataInputPeriod)
         whenever(dataSet.dataInputPeriods()).thenReturn(dataInputPeriods)
-        whenever(dataSetStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
+        whenever(dataSetStore.updateOrInsert(any<List<DataSet>>())).thenReturn(listOf(HandleAction.Insert))
     }
 
     @Test
@@ -114,7 +114,7 @@ class DataSetHandlerShould {
         dataSetHandler.handle(null)
 
         verify(dataSetStore, never()).delete(any())
-        verify(dataSetStore, never()).update(any())
+        verify(dataSetStore, never()).update(any<DataSet>())
         verify(dataSetStore, never()).insert(any<DataSet>())
         verify(sectionHandler, never()).handleMany(ArgumentMatchers.anyList())
         verify(compulsoryDataElementOperandHandler, never()).handleMany(any())
@@ -130,7 +130,7 @@ class DataSetHandlerShould {
 
     @Test
     fun delete_orphan_sections() = runTest {
-        whenever(dataSetStore.updateOrInsert(any())).thenReturn(HandleAction.Update)
+        whenever(dataSetStore.updateOrInsert(any<List<DataSet>>())).thenReturn(listOf(HandleAction.Update))
         dataSetHandler.handle(dataSet)
 
         verify(sectionOrphanCleaner).deleteOrphan(dataSet, sections)
@@ -138,7 +138,7 @@ class DataSetHandlerShould {
 
     @Test
     fun not_delete_orphan_sections_inserting() = runTest {
-        whenever(dataSetStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
+        whenever(dataSetStore.updateOrInsert(any<List<DataSet>>())).thenReturn(listOf(HandleAction.Insert))
         dataSetHandler.handle(dataSet)
 
         verify(sectionOrphanCleaner, never()).deleteOrphan(dataSet, sections)

@@ -45,7 +45,7 @@ class AppearanceSettingsV2Should : CoreObjectShould("settings/appearance_setting
         val homeDateFilter = homeFilters[HomeFilter.DATE]!!
         assertThat(homeDateFilter.scope()).isNull()
         assertThat(homeDateFilter.filterType()).isNull()
-        assertThat(homeDateFilter.uid()).isEqualTo("global_uid_")
+        assertThat(homeDateFilter.uid()).isEqualTo(FILTERSETTING_GLOBAL_ID)
         assertThat(homeDateFilter.sort()).isEqualTo(true)
         assertThat(homeDateFilter.filter()).isEqualTo(true)
 
@@ -63,7 +63,7 @@ class AppearanceSettingsV2Should : CoreObjectShould("settings/appearance_setting
         val programEventDateFilter = programGlobalFilters[ProgramFilter.EVENT_DATE]!!
         assertThat(programEventDateFilter.scope()).isNull()
         assertThat(programEventDateFilter.filterType()).isNull()
-        assertThat(programEventDateFilter.uid()).isNull()
+        assertThat(programEventDateFilter.uid()).isEqualTo(FILTERSETTING_GLOBAL_ID)
         assertThat(programEventDateFilter.sort()).isEqualTo(true)
         assertThat(programEventDateFilter.filter()).isEqualTo(true)
 

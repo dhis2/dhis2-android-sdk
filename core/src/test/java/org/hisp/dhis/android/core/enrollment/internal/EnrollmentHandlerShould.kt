@@ -48,7 +48,13 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.ArgumentMatchers
-import org.mockito.kotlin.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
 class EnrollmentHandlerShould {
@@ -96,7 +102,7 @@ class EnrollmentHandlerShould {
 
         // verify that store or event handler is never called
         verify(enrollmentStore, never()).deleteIfExists(any())
-        verify(enrollmentStore, never()).updateOrInsert(any())
+        verify(enrollmentStore, never()).updateOrInsert(any<Enrollment>())
         verify(eventHandler, never()).handleMany(any(), any(), any())
         verify(eventCleaner, never()).deleteOrphan(any(), any())
         verify(noteHandler, never()).handleMany(any())
@@ -111,7 +117,7 @@ class EnrollmentHandlerShould {
 
         // verify that enrollment store is only invoked with delete
         verify(enrollmentStore, times(1)).deleteIfExists(any())
-        verify(enrollmentStore, never()).updateOrInsert(any())
+        verify(enrollmentStore, never()).updateOrInsert(any<Enrollment>())
         verify(relationshipHandler, times(1)).deleteLinkedRelationships(any())
 
         // event handler should not be invoked
@@ -123,14 +129,14 @@ class EnrollmentHandlerShould {
     @Test
     fun invoke_only_update_or_insert_when_handle_enrollment_is_valid() = runTest {
         whenever(enrollment.deleted()).doReturn(false)
-        whenever(enrollmentStore.updateOrInsert(any())).doReturn(HandleAction.Update)
+        whenever(enrollmentStore.updateOrInsert(any<Enrollment>())).doReturn(HandleAction.Update)
         whenever(noteUniquenessManager.buildUniqueCollection(any(), any(), any())).doReturn(setOf(note))
 
         val params = IdentifiableDataHandlerParams(hasAllAttributes = false, overwrite = false, asRelationship = false)
         enrollmentHandler.handleMany(listOf(enrollment), params, relationshipItemRelatives)
 
         // verify that enrollment store is only invoked with update
-        verify(enrollmentStore, times(1)).updateOrInsert(any())
+        verify(enrollmentStore, times(1)).updateOrInsert(any<Enrollment>())
         verify(enrollmentStore, never()).deleteIfExists(any())
         verify(relationshipHandler, never()).deleteLinkedRelationships(any())
 

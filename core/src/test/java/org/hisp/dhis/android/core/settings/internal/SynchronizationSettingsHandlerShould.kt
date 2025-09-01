@@ -51,7 +51,11 @@ class SynchronizationSettingsHandlerShould {
     @Throws(Exception::class)
     fun setUp() = runTest {
         synchronizationSettingsList = listOf(synchronizationSettings)
-        whenever(synchronizationSettingStore.updateOrInsertWhere(any())) doReturn HandleAction.Insert
+        whenever(synchronizationSettingStore.updateOrInsert(any<List<SynchronizationSettings>>())).doReturn(
+            listOf(
+                HandleAction.Insert
+            )
+        )
         synchronizationSettingsHandler = SynchronizationSettingHandler(
             synchronizationSettingStore,
             dataSetSettingHandler,
@@ -63,7 +67,7 @@ class SynchronizationSettingsHandlerShould {
     fun clean_database_before_insert_collection() = runTest {
         synchronizationSettingsHandler.handleMany(synchronizationSettingsList)
         verify(synchronizationSettingStore).delete()
-        verify(synchronizationSettingStore).updateOrInsertWhere(synchronizationSettings)
+        verify(synchronizationSettingStore).updateOrInsert(listOf(synchronizationSettings))
     }
 
     @Test
@@ -79,6 +83,6 @@ class SynchronizationSettingsHandlerShould {
     fun clean_database_if_empty_collection() = runTest {
         synchronizationSettingsHandler.handleMany(emptyList())
         verify(synchronizationSettingStore).delete()
-        verify(synchronizationSettingStore, never()).updateOrInsertWhere(synchronizationSettings)
+        verify(synchronizationSettingStore, never()).updateOrInsert(listOf(synchronizationSettings))
     }
 }

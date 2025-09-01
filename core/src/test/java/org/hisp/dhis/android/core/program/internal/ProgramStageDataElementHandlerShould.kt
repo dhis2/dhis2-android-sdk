@@ -65,7 +65,11 @@ class ProgramStageDataElementHandlerShould {
         whenever(programStageDataElement.dataElement()).thenReturn(dataElement)
         whenever(dataElement.uid()).thenReturn("test_data_element_uid")
         whenever(programStageDataElement.renderType()).thenReturn(valueTypeRendering)
-        whenever(programStageDataElementStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
+        whenever(programStageDataElementStore.updateOrInsert(any<List<ProgramStageDataElement>>())).thenReturn(
+            listOf(
+                HandleAction.Insert
+            )
+        )
     }
 
     @Test

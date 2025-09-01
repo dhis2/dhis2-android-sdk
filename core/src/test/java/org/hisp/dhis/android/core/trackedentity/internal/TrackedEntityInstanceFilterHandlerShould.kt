@@ -78,7 +78,9 @@ class TrackedEntityInstanceFilterHandlerShould {
             .entityQueryCriteria(EntityQueryCriteria.builder().build())
             .build()
 
-        whenever(trackedEntityInstanceFilterStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
+        whenever(trackedEntityInstanceFilterStore.updateOrInsert(any<List<TrackedEntityInstanceFilter>>())).thenReturn(
+            listOf(HandleAction.Insert)
+        )
 
         trackedEntityInstanceFilters = mutableListOf(trackedEntityInstanceFilter)
     }

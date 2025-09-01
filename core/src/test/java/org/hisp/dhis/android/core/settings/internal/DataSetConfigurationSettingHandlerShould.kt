@@ -52,7 +52,11 @@ class DataSetConfigurationSettingHandlerShould {
     @Throws(Exception::class)
     fun setUp() = runTest {
         dataSetConfigurationSettingList = listOf(dataSetConfigurationSetting)
-        whenever(dataSetConfigurationSettingStore.updateOrInsertWhere(any())) doReturn HandleAction.Insert
+        whenever(dataSetConfigurationSettingStore.updateOrInsert(any<List<DataSetConfigurationSetting>>())).doReturn(
+            listOf(
+                HandleAction.Insert
+            )
+        )
         dataSetConfigurationSettingHandler = DataSetConfigurationSettingHandler(dataSetConfigurationSettingStore)
     }
 
@@ -60,13 +64,13 @@ class DataSetConfigurationSettingHandlerShould {
     fun clean_database_before_insert_collection() = runTest {
         dataSetConfigurationSettingHandler.handleMany(dataSetConfigurationSettingList)
         verify(dataSetConfigurationSettingStore).delete()
-        verify(dataSetConfigurationSettingStore).updateOrInsertWhere(dataSetConfigurationSetting)
+        verify(dataSetConfigurationSettingStore).updateOrInsert(listOf(dataSetConfigurationSetting))
     }
 
     @Test
     fun clean_database_if_empty_collection() = runTest {
         dataSetConfigurationSettingHandler.handleMany(emptyList())
         verify(dataSetConfigurationSettingStore).delete()
-        verify(dataSetConfigurationSettingStore, never()).updateOrInsertWhere(dataSetConfigurationSetting)
+        verify(dataSetConfigurationSettingStore, never()).updateOrInsert(listOf(dataSetConfigurationSetting))
     }
 }

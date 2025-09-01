@@ -53,7 +53,7 @@ class FilterSettingHandlerShould {
     @Throws(Exception::class)
     fun setUp() = runTest {
         filterSettingsList = listOf(filterSetting)
-        whenever(filterSettingStore.updateOrInsertWhere(any())) doReturn HandleAction.Insert
+        whenever(filterSettingStore.updateOrInsert(any<List<FilterSetting>>())) doReturn listOf(HandleAction.Insert)
         filterSettingsHandler = FilterSettingHandler(filterSettingStore)
     }
 
@@ -61,13 +61,13 @@ class FilterSettingHandlerShould {
     fun clean_database_before_insert_collection() = runTest {
         filterSettingsHandler.handleMany(filterSettingsList)
         verify(filterSettingStore).delete()
-        verify(filterSettingStore).updateOrInsertWhere(filterSetting)
+        verify(filterSettingStore).updateOrInsert(listOf(filterSetting))
     }
 
     @Test
     fun clean_database_if_empty_collection() = runTest {
         filterSettingsHandler.handleMany(emptyList())
         verify(filterSettingStore).delete()
-        verify(filterSettingStore, never()).updateOrInsertWhere(filterSetting)
+        verify(filterSettingStore, never()).updateOrInsert(listOf(filterSetting))
     }
 }

@@ -52,7 +52,9 @@ class ProgramConfigurationSettingHandlerShould {
     @Throws(Exception::class)
     fun setUp() = runTest {
         programConfigurationSettingList = listOf(programConfigurationSetting)
-        whenever(programConfigurationSettingStore.updateOrInsertWhere(any())) doReturn HandleAction.Insert
+        whenever(programConfigurationSettingStore.updateOrInsert(any<List<ProgramConfigurationSetting>>())).doReturn(
+            listOf(HandleAction.Insert)
+        )
         programConfigurationSettingHandler = ProgramConfigurationSettingHandler(programConfigurationSettingStore)
     }
 
@@ -60,13 +62,13 @@ class ProgramConfigurationSettingHandlerShould {
     fun clean_database_before_insert_collection() = runTest {
         programConfigurationSettingHandler.handleMany(programConfigurationSettingList)
         verify(programConfigurationSettingStore).delete()
-        verify(programConfigurationSettingStore).updateOrInsertWhere(programConfigurationSetting)
+        verify(programConfigurationSettingStore).updateOrInsert(listOf(programConfigurationSetting))
     }
 
     @Test
     fun clean_database_if_empty_collection() = runTest {
         programConfigurationSettingHandler.handleMany(emptyList())
         verify(programConfigurationSettingStore).delete()
-        verify(programConfigurationSettingStore, never()).updateOrInsertWhere(programConfigurationSetting)
+        verify(programConfigurationSettingStore, never()).updateOrInsert(listOf(programConfigurationSetting))
     }
 }

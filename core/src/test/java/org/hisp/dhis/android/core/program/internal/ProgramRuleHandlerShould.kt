@@ -66,7 +66,7 @@ class ProgramRuleHandlerShould {
         whenever(programRule.program()).thenReturn(ObjectWithUid.create("program"))
         whenever(programRule.programRuleActions()).thenReturn(programRuleActions)
 
-        whenever(programRuleStore.updateOrInsert(programRule)).thenReturn(HandleAction.Insert)
+        whenever(programRuleStore.updateOrInsert(listOf(programRule))).thenReturn(listOf(HandleAction.Insert))
     }
 
     @Test
@@ -77,7 +77,7 @@ class ProgramRuleHandlerShould {
 
     @Test
     fun call_program_rule_action_orphan_cleaner_on_update() = runTest {
-        whenever(programRuleStore.updateOrInsert(programRule)).thenReturn(HandleAction.Update)
+        whenever(programRuleStore.updateOrInsert(listOf(programRule))).thenReturn(listOf(HandleAction.Update))
 
         programRuleHandler.handle(programRule)
         verify(programRuleActionCleaner).deleteOrphan(programRule, programRuleActions)

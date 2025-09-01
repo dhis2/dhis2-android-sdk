@@ -36,12 +36,16 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.kotlin.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
 class TrackerVisualizationHandlerShould {
 
-    private val store: TrackerVisualizationStore = mock()
+    private val trackerVisualizationStore: TrackerVisualizationStore = mock()
     private val collectionCleaner: TrackerVisualizationCollectionCleaner = mock()
     private val dimensionHandler: TrackerVisualizationDimensionHandler = mock()
     private val analyticsDhisVisualizationCleaner: AnalyticsDhisVisualizationCleaner = mock()
@@ -54,7 +58,7 @@ class TrackerVisualizationHandlerShould {
     @Before
     fun setUp() = runTest {
         trackerVisualizationHandler = TrackerVisualizationHandler(
-            store,
+            trackerVisualizationStore,
             collectionCleaner,
             analyticsDhisVisualizationCleaner,
             dimensionHandler,
@@ -62,7 +66,11 @@ class TrackerVisualizationHandlerShould {
 
         whenever(trackerVisualization.columns()).doReturn(listOf(dimension))
         whenever(trackerVisualization.filters()).doReturn(listOf(dimension))
-        whenever(store.updateOrInsert(any())).doReturn(HandleAction.Insert)
+        whenever(trackerVisualizationStore.updateOrInsert(any<List<TrackerVisualization>>())).doReturn(
+            listOf(
+                HandleAction.Insert
+            )
+        )
         whenever(trackerVisualization.uid()).doReturn("tracker_visualization_uid")
     }
 

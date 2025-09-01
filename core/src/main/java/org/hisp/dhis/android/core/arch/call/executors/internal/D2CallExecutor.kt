@@ -42,13 +42,13 @@ import org.koin.core.annotation.Singleton
 internal class D2CallExecutor(
     private val databaseAdapter: DatabaseAdapter,
     private val errorStore: D2ErrorStore,
-) {
+) : D2CallExecutorInterface {
     private val exceptionBuilder: D2Error.Builder = D2Error
         .builder()
         .errorComponent(D2ErrorComponent.SDK)
 
     @Throws(D2Error::class)
-    suspend fun <C> executeD2CallTransactionally(call: suspend () -> C): C {
+    override suspend fun <C> executeD2CallTransactionally(call: suspend () -> C): C {
         try {
             return innerExecuteD2CallTransactionally(call)
         } catch (d2E: D2Error) {

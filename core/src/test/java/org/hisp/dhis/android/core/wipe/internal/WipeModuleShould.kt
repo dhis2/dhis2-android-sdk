@@ -28,9 +28,7 @@
 package org.hisp.dhis.android.core.wipe.internal
 
 import kotlinx.coroutines.test.runTest
-import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor.Companion.create
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.access.Transaction
+import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutorInterface
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -41,24 +39,17 @@ import org.mockito.kotlin.mock
 
 @RunWith(JUnit4::class)
 class WipeModuleShould {
-    private val transaction: Transaction = mock()
-    private val databaseAdapter: DatabaseAdapter = mock()
     private val moduleWiperA: ModuleWiper = mock()
     private val moduleWiperB: ModuleWiper = mock()
     private var wipeModule: WipeModule = mock()
+    private val d2CallExecutor = FakeD2CallExecutor()
 
     @Before
     @Throws(Exception::class)
-    fun setUp() {
-        MockitoAnnotations.initMocks(this)
-
-        Mockito.`when`(
-            databaseAdapter!!.beginNewTransaction()
-        ).thenReturn(transaction)
-
+    fun setUp() = runTest {
+        MockitoAnnotations.openMocks(this)
         val wipers = listOf(moduleWiperA, moduleWiperB)
-
-        wipeModule = WipeModuleImpl(create(databaseAdapter), wipers)
+        wipeModule = WipeModuleImpl(FakeD2CallExecutor(), wipers)
     }
 
     @Test
@@ -95,5 +86,11 @@ class WipeModuleShould {
 
         Mockito.verify(moduleWiperA).wipeData()
         Mockito.verify(moduleWiperB).wipeData()
+    }
+}
+
+internal class FakeD2CallExecutor : D2CallExecutorInterface {
+    override suspend fun <C> executeD2CallTransactionally(call: suspend () -> C): C {
+        return call()
     }
 }

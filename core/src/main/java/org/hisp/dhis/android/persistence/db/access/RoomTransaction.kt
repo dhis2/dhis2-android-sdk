@@ -40,6 +40,7 @@ class RoomTransaction(private val database: RoomDatabase) : Transaction {
 
     override fun setSuccessful() {
         checkNotEnded()
+        database.setTransactionSuccessful()
         successful = true
     }
 

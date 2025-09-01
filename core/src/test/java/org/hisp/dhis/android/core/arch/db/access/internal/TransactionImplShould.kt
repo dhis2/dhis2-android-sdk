@@ -42,7 +42,7 @@ class TransactionImplShould {
 
     @Before
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
+        MockitoAnnotations.openMocks(this)
 
         transaction = RoomTransaction(roomDatabase)
     }

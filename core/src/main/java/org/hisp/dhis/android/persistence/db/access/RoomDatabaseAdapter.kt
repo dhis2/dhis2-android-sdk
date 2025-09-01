@@ -58,7 +58,6 @@ internal class RoomDatabaseAdapter : DatabaseAdapter {
         if (database != null) {
             database!!.close()
             database = null
-            database = null
         }
     }
 
@@ -89,7 +88,7 @@ internal class RoomDatabaseAdapter : DatabaseAdapter {
         database!!.endTransaction()
     }
 
-    override suspend fun execSQL(sql: String) { // Renamed from override for clarity if it's a new method
+    override suspend fun execSQL(sql: String) {
         checkReady()
 
         database!!.useWriterConnection { transactor ->
@@ -163,19 +162,14 @@ internal class RoomDatabaseAdapter : DatabaseAdapter {
         checkReady()
         val results = mutableListOf<Map<String, String?>>()
         database!!.useWriterConnection { transactor ->
-            // For SELECT queries, a transaction might not be strictly needed,
-            // but your existing `useWriterConnection` wraps in `withTransaction`.
-            // If you have a `useReaderConnection` or a way to execute without an explicit
-            // transaction for reads, that might be slightly more optimal.
-            // However, this will work.
             transactor.withTransaction(
                 Transactor.SQLiteTransactionType.IMMEDIATE,
-            ) { // Or IMMEDIATE, DEFERRED is often better for reads
+            ) {
                 this.usePrepared(sqlQuery) { statement: SQLiteStatement ->
                     // Bind arguments if any
                     queryArgs?.forEachIndexed { index, arg ->
-                        val argIndex = index + 1 // SQLiteStatement binding is 1-based
-                        bindArgument(statement, argIndex, arg) // Use a helper for binding
+                        val argIndex = index + 1
+                        bindArgument(statement, argIndex, arg)
                     }
 
                     var columnNamesCache: List<String>? = null
@@ -189,9 +183,6 @@ internal class RoomDatabaseAdapter : DatabaseAdapter {
 
                         val rowMap = mutableMapOf<String, String?>()
                         columnNamesCache.forEachIndexed { idx, name ->
-                            // For SQLiteStatement from androidx.sqlite.driver:
-                            // getText(columnIndex) will return null if the column's value is SQL NULL.
-                            // No explicit isNull() check is needed before calling getText() for this purpose.
                             rowMap[name] = statement.getText(idx)
                         }
                         results.add(rowMap)
@@ -209,7 +200,7 @@ internal class RoomDatabaseAdapter : DatabaseAdapter {
         checkReady()
         val results = mutableListOf<Map<String, Any?>>()
 
-        database!!.useWriterConnection { transactor -> // Or useReaderConnection if appropriate for PRAGMAs
+        database!!.useWriterConnection { transactor ->
             transactor.withTransaction(Transactor.SQLiteTransactionType.DEFERRED) {
                 this.usePrepared(sqlQuery) { statement: SQLiteStatement ->
                     queryArgs?.forEachIndexed { index, arg ->
@@ -228,7 +219,7 @@ internal class RoomDatabaseAdapter : DatabaseAdapter {
 
                         val rowMap = mutableMapOf<String, Any?>()
                         columnNamesCache.forEachIndexed { idx, name ->
-                            val value = statement.getText(idx) // Read as text, which can be null
+                            val value = statement.getText(idx)
                             rowMap[name] = value
                         }
                         results.add(rowMap)
@@ -273,9 +264,6 @@ internal class RoomDatabaseAdapter : DatabaseAdapter {
         if (db == null) {
             throw IllegalStateException("No database is currently activated.")
         }
-//        if (!db.isOpen) {
-//            throw IllegalStateException("The activated database is closed.")
-//        }
         return db
     }
 

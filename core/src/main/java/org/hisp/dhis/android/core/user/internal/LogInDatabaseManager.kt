@@ -57,10 +57,7 @@ internal class LogInDatabaseManager(
     }
 
     suspend fun loadExistingKeepingEncryption(serverUrl: String, username: String): Boolean {
-        return multiUserDatabaseManager.loadExistingKeepingEncryption(
-            serverUrl,
-            username,
-        )
+        return multiUserDatabaseManager.loadExistingKeepingEncryption(serverUrl, username)
     }
 
     fun isPendingToImportDB(serverUrl: String, username: String): Boolean {

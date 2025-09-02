@@ -17,7 +17,6 @@ internal data class OrganisationUnitLevelDB(
     override val displayName: String?,
     override val created: String?,
     override val lastUpdated: String?,
-    override val deleted: Boolean?,
     val level: Int?,
 ) : EntityDB<OrganisationUnitLevel>, BaseIdentifiableObjectDB {
 
@@ -38,6 +37,5 @@ internal fun OrganisationUnitLevel.toDB(): OrganisationUnitLevelDB {
         created = created().dateFormat(),
         lastUpdated = lastUpdated().dateFormat(),
         level = level(),
-        deleted = deleted(),
     )
 }

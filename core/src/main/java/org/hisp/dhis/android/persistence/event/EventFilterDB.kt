@@ -48,7 +48,6 @@ internal data class EventFilterDB(
     override val displayName: String?,
     override val created: String?,
     override val lastUpdated: String?,
-    override val deleted: Boolean?,
     val program: String,
     val programStage: String?,
     val description: String?,
@@ -116,6 +115,5 @@ internal fun EventFilter.toDB(): EventFilterDB {
         dueDate = eventQueryCriteria?.dueDate,
         lastUpdatedDate = eventQueryCriteria?.lastUpdatedDate,
         completedDate = eventQueryCriteria?.completedDate,
-        deleted = deleted(),
     )
 }

@@ -36,7 +36,6 @@ internal data class IndicatorDB(
     override val displayShortName: String?,
     override val description: String?,
     override val displayDescription: String?,
-    override val deleted: Boolean?,
     val annualized: Boolean?,
     val indicatorType: String?,
     val numerator: String?,
@@ -87,6 +86,5 @@ internal fun Indicator.toDB(): IndicatorDB {
         decimals = decimals(),
         color = style()?.color(),
         icon = style()?.icon(),
-        deleted = deleted(),
     )
 }

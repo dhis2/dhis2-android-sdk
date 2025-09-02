@@ -30,7 +30,6 @@ internal data class LegendDB(
     override val displayName: String?,
     override val created: String?,
     override val lastUpdated: String?,
-    override val deleted: Boolean?,
     val startValue: Double?,
     val endValue: Double?,
     val color: String?,
@@ -60,6 +59,5 @@ internal fun Legend.toDB(): LegendDB {
         endValue = endValue(),
         color = color(),
         legendSet = legendSet()?.uid(),
-        deleted = deleted(),
     )
 }

@@ -32,7 +32,6 @@ internal data class OptionDB(
     override val displayName: String?,
     override val created: String?,
     override val lastUpdated: String?,
-    override val deleted: Boolean?,
     val optionSet: String,
     val sortOrder: Int?,
     override val color: String?,
@@ -61,6 +60,5 @@ internal fun Option.toDB(): OptionDB {
         sortOrder = sortOrder(),
         color = style().color(),
         icon = style().icon(),
-        deleted = deleted(),
     )
 }

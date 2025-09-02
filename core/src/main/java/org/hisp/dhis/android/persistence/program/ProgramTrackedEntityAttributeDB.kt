@@ -42,7 +42,6 @@ internal data class ProgramTrackedEntityAttributeDB(
     override val displayShortName: String?,
     override val description: String?,
     override val displayDescription: String?,
-    override val deleted: Boolean?,
     val mandatory: Boolean?,
     val trackedEntityAttribute: String,
     val allowFutureDate: Boolean?,
@@ -85,6 +84,5 @@ internal fun ProgramTrackedEntityAttribute.toDB(): ProgramTrackedEntityAttribute
         program = program()!!.uid(),
         sortOrder = sortOrder(),
         searchable = searchable(),
-        deleted = deleted(),
     )
 }

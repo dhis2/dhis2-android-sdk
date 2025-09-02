@@ -17,7 +17,6 @@ internal data class UserRoleDB(
     override val displayName: String?,
     override val created: String?,
     override val lastUpdated: String?,
-    override val deleted: Boolean?,
 ) : EntityDB<UserRole>, BaseIdentifiableObjectDB {
 
     override fun toDomain(): UserRole {
@@ -35,6 +34,5 @@ internal fun UserRole.toDB(): UserRoleDB {
         displayName = displayName(),
         created = created().dateFormat(),
         lastUpdated = lastUpdated().dateFormat(),
-        deleted = deleted(),
     )
 }

@@ -55,7 +55,6 @@ internal data class ProgramStageWorkingListDB(
     override val displayName: String?,
     override val created: String?,
     override val lastUpdated: String?,
-    override val deleted: Boolean?,
     val description: String?,
     val program: String,
     val programStage: String,
@@ -122,6 +121,5 @@ internal fun ProgramStageWorkingList.toDB(): ProgramStageWorkingListDB {
         orgUnit = programStageQueryCriteria()?.orgUnit(),
         ouMode = programStageQueryCriteria()?.ouMode()?.name,
         assignedUserMode = programStageQueryCriteria()?.assignedUserMode()?.name,
-        deleted = deleted(),
     )
 }

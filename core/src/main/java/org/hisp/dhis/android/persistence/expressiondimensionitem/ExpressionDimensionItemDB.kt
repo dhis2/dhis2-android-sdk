@@ -17,7 +17,6 @@ internal data class ExpressionDimensionItemDB(
     override val displayName: String?,
     override val created: String?,
     override val lastUpdated: String?,
-    override val deleted: Boolean?,
     val expression: String?,
 ) : EntityDB<ExpressionDimensionItem>, BaseIdentifiableObjectDB {
 
@@ -38,6 +37,5 @@ internal fun ExpressionDimensionItem.toDB(): ExpressionDimensionItemDB {
         created = created().dateFormat(),
         lastUpdated = lastUpdated().dateFormat(),
         expression = expression(),
-        deleted = deleted(),
     )
 }

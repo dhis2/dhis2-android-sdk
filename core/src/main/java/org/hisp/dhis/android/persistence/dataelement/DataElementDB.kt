@@ -46,7 +46,6 @@ internal data class DataElementDB(
     override val displayShortName: String?,
     override val description: String?,
     override val displayDescription: String?,
-    override val deleted: Boolean?,
     val valueType: String?,
     val zeroIsSignificant: Boolean?,
     val aggregationType: String?,
@@ -100,6 +99,5 @@ internal fun DataElement.toDB(): DataElementDB {
         fieldMask = fieldMask(),
         color = style().color(),
         icon = style().icon(),
-        deleted = deleted(),
     )
 }

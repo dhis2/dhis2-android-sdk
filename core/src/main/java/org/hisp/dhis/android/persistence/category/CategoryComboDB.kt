@@ -17,7 +17,6 @@ internal data class CategoryComboDB(
     override val displayName: String?,
     override val created: String?,
     override val lastUpdated: String?,
-    override val deleted: Boolean?,
     val isDefault: Boolean?,
 ) : EntityDB<CategoryCombo>, BaseIdentifiableObjectDB {
 
@@ -42,6 +41,5 @@ internal fun CategoryCombo.toDB(): CategoryComboDB {
         created = created().dateFormat(),
         lastUpdated = lastUpdated().dateFormat(),
         isDefault = isDefault(),
-        deleted = deleted(),
     )
 }

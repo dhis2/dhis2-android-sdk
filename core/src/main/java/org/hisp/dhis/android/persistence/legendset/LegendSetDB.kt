@@ -17,7 +17,6 @@ internal data class LegendSetDB(
     override val displayName: String?,
     override val created: String?,
     override val lastUpdated: String?,
-    override val deleted: Boolean?,
     val symbolizer: String?,
 ) : EntityDB<LegendSet>, BaseIdentifiableObjectDB {
 
@@ -38,6 +37,5 @@ internal fun LegendSet.toDB(): LegendSetDB {
         created = created().dateFormat(),
         lastUpdated = lastUpdated().dateFormat(),
         symbolizer = symbolizer(),
-        deleted = deleted(),
     )
 }

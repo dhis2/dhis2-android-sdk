@@ -28,7 +28,6 @@ internal data class ValidationRuleDB(
     override val displayShortName: String?,
     override val description: String?,
     override val displayDescription: String?,
-    override val deleted: Boolean?,
     val instruction: String?,
     val importance: String?,
     val operator: String?,
@@ -94,6 +93,5 @@ internal fun ValidationRule.toDB(): ValidationRuleDB {
         rightSideDescription = rightSide().description(),
         rightSideMissingValueStrategy = rightSide().missingValueStrategy()?.name,
         organisationUnitLevels = organisationUnitLevels()?.toDB(),
-        deleted = deleted(),
     )
 }

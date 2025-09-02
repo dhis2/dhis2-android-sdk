@@ -37,7 +37,6 @@ internal data class TrackedEntityInstanceFilterDB(
     override val lastUpdated: String?,
     override val color: String?,
     override val icon: String?,
-    override val deleted: Boolean?,
     val program: String,
     val description: String?,
     val sortOrder: Int?,
@@ -117,6 +116,5 @@ internal fun TrackedEntityInstanceFilter.toDB(): TrackedEntityInstanceFilterDB {
         enrollmentIncidentDate = entityQueryCriteriaDB.enrollmentIncidentDate,
         enrollmentCreatedDate = entityQueryCriteriaDB.enrollmentCreatedDate,
         trackedEntityType = entityQueryCriteriaDB.trackedEntityType,
-        deleted = deleted(),
     )
 }

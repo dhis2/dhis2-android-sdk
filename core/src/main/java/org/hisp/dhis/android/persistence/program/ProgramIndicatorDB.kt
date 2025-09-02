@@ -36,7 +36,6 @@ internal data class ProgramIndicatorDB(
     override val displayShortName: String?,
     override val description: String?,
     override val displayDescription: String?,
-    override val deleted: Boolean?,
     val displayInForm: Boolean?,
     val expression: String?,
     val dimensionItem: String?,
@@ -82,6 +81,5 @@ internal fun ProgramIndicator.toDB(): ProgramIndicatorDB {
         program = program()!!.uid(),
         aggregationType = aggregationType()?.name,
         analyticsType = analyticsType()?.name,
-        deleted = deleted(),
     )
 }

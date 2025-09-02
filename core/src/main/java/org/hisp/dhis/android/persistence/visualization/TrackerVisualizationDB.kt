@@ -49,7 +49,6 @@ internal data class TrackerVisualizationDB(
     override val displayName: String?,
     override val created: String?,
     override val lastUpdated: String?,
-    override val deleted: Boolean?,
     val description: String?,
     val displayDescription: String?,
     val type: String?,
@@ -90,7 +89,5 @@ internal fun TrackerVisualization.toDB(): TrackerVisualizationDB {
         programStage = this.programStage()?.uid(),
         trackedEntityType = this.trackedEntityType()?.uid(),
         sorting = this.sorting()?.toDB(),
-        deleted = deleted()
-
     )
 }

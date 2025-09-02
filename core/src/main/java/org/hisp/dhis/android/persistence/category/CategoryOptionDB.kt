@@ -24,7 +24,6 @@ internal data class CategoryOptionDB(
     override val displayShortName: String?,
     override val description: String?,
     override val displayDescription: String?,
-    override val deleted: Boolean?,
     val startDate: String?,
     val endDate: String?,
     val accessDataWrite: AccessDB?,
@@ -55,6 +54,5 @@ internal fun CategoryOption.toDB(): CategoryOptionDB {
         startDate = startDate().dateFormat(),
         endDate = endDate().dateFormat(),
         accessDataWrite = access().toDB(),
-        deleted = deleted(),
     )
 }

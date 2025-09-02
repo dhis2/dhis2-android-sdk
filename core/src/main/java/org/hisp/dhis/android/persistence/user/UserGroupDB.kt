@@ -17,7 +17,6 @@ internal data class UserGroupDB(
     override val displayName: String?,
     override val created: String?,
     override val lastUpdated: String?,
-    override val deleted: Boolean?,
 ) : EntityDB<UserGroup>, BaseIdentifiableObjectDB {
 
     override fun toDomain(): UserGroup {
@@ -35,6 +34,5 @@ internal fun UserGroup.toDB(): UserGroupDB {
         displayName = displayName(),
         created = created().dateFormat(),
         lastUpdated = lastUpdated().dateFormat(),
-        deleted = deleted(),
     )
 }

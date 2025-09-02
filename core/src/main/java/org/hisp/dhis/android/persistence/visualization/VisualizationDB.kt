@@ -26,7 +26,6 @@ internal data class VisualizationDB(
     override val displayName: String?,
     override val created: String?,
     override val lastUpdated: String?,
-    override val deleted: Boolean?,
     val description: String?,
     val displayDescription: String?,
     val displayFormName: String?,
@@ -141,7 +140,5 @@ internal fun Visualization.toDB(): VisualizationDB {
         legendSetId = legend()?.set()?.uid(),
         legendStrategy = legend()?.strategy()?.name,
         aggregationType = aggregationType()?.name,
-        deleted = deleted()
-
     )
 }

@@ -26,7 +26,6 @@ internal data class OrganisationUnitDB(
     override val displayShortName: String?,
     override val description: String?,
     override val displayDescription: String?,
-    override val deleted: Boolean?,
     val path: String?,
     val openingDate: String?,
     val closedDate: String?,
@@ -73,6 +72,5 @@ internal fun OrganisationUnit.toDB(): OrganisationUnitDB {
         displayNamePath = displayNamePath()?.toDB(),
         geometryType = geometryDB.geometryType,
         geometryCoordinates = geometryDB.geometryCoordinates,
-        deleted = deleted(),
     )
 }

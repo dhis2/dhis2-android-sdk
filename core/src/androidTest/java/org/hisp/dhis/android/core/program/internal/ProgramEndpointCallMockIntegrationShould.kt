@@ -48,7 +48,6 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.internal.util.collections.Sets
 
 @RunWith(D2JunitRunner::class)
 class ProgramEndpointCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
@@ -106,23 +105,27 @@ class ProgramEndpointCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnq
 
                 // inserting tracked entity attributes
                 val trackedEntityAttributeStore = koin.get<TrackedEntityAttributeStore>()
-                val trackedEntityAttribute1 = CreateTrackedEntityAttributeUtils.create("aejWyOfXge6", null)
+                val trackedEntityAttribute1 = CreateTrackedEntityAttributeUtils.create("aejWyOfXge6", "VQ2lai3OfVG")
                 trackedEntityAttributeStore.insert(trackedEntityAttribute1)
-                val trackedEntityAttribute2 = CreateTrackedEntityAttributeUtils.create("cejWyOfXge6", null)
+                val trackedEntityAttribute2 = CreateTrackedEntityAttributeUtils.create("cejWyOfXge6", "VQ2lai3OfVG")
                 trackedEntityAttributeStore.insert(trackedEntityAttribute2)
 
                 val dataElementStore = koin.get<DataElementStore>()
-                val dataElement1 = CreateDataElementUtils.create("vANAXwtLwcT", categoryComboUid, null)
+                val dataElement1 = CreateDataElementUtils.create("vANAXwtLwcT", categoryComboUid, "VQ2lai3OfVG")
                 dataElementStore.insert(dataElement1)
-                val dataElement2 = CreateDataElementUtils.create("sWoqcoByYmD", categoryComboUid, null)
+                val dataElement2 = CreateDataElementUtils.create("sWoqcoByYmD", categoryComboUid, "VQ2lai3OfVG")
                 dataElementStore.insert(dataElement2)
 
                 val programStageStore = koin.get<ProgramStageStore>()
                 val programStage = CreateProgramStageUtils.create("dBwrot7S420", PROGRAM_UID)
                 programStageStore.insert(programStage)
-                dhis2MockServer.enqueueMockResponse("program/programs.json")
 
-                objects.d2DIComponent.programCall.download(Sets.newSet(PROGRAM_UID))
+                dhis2MockServer.enqueueMockResponse("program/programs.json")
+                objects.d2DIComponent.programCall.download(setOf(PROGRAM_UID))
+
+                dhis2MockServer.enqueueMockResponse("option/option_sets.json")
+                objects.d2DIComponent.optionSetCall.download(setOf("POc7DkGU3QU"))
+
             }
         }
     }

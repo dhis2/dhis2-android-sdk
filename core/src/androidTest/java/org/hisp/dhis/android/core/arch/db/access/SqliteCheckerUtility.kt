@@ -59,9 +59,4 @@ object SqliteCheckerUtility {
         }
         return true
     }
-
-    suspend fun ifTableExist(table: String, databaseAdapter: DatabaseAdapter): Boolean {
-        val result = databaseAdapter.rawQuery("PRAGMA table_info($table)")
-        return result.isNotEmpty()
-    }
 }

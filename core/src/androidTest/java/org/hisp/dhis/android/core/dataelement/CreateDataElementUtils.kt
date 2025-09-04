@@ -48,7 +48,7 @@ object CreateDataElementUtils {
     // timestamp
     private const val DATE = "2014-03-20T13:37:00.007"
 
-    fun create(uid: String, categoryComboId: String, optionSetId: String?): DataElement {
+    fun create(uid: String, categoryComboId: String, optionSetId: String): DataElement {
         return DataElement.builder()
             .uid(uid)
             .code(CODE)

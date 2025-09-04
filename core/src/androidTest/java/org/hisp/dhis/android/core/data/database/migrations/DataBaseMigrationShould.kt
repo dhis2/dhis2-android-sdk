@@ -27,16 +27,16 @@
  */
 package org.hisp.dhis.android.core.data.database.migrations
 
+import android.content.Context
+import androidx.sqlite.db.SupportSQLiteDatabase
+import androidx.sqlite.db.SupportSQLiteOpenHelper
+import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.access.SqliteCheckerUtility
-import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore
-import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
-import org.hisp.dhis.android.persistence.db.access.RoomDatabaseAdapter
-import org.hisp.dhis.android.persistence.db.access.RoomDatabaseManager
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.persistence.db.migrations.RoomGeneratedMigrations.ALL_MIGRATIONS
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeReservedValueTableInfo
 import org.hisp.dhis.android.persistence.user.UserTableInfo
 import org.junit.After
@@ -46,68 +46,119 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class DataBaseMigrationShould {
-    private var databaseAdapter: DatabaseAdapter = RoomDatabaseAdapter()
-    private val dbName: String = "test.db"
+
+    private var supportSqliteDb: SupportSQLiteDatabase? = null
+    private var dbName: String = "versioned_migration_test.db"
+    private lateinit var context: Context
+
+    private val FINAL_DB_VERSION = AppDatabase.VERSION
 
     @Before
-    fun deleteDB() {
-        this.closeAndDeleteDatabase()
+    fun setUp() {
+        context = InstrumentationRegistry.getInstrumentation().targetContext
+        deleteDatabase()
     }
 
     @After
     fun tearDown() {
-        this.closeAndDeleteDatabase()
+        closeDatabase()
+        deleteDatabase()
     }
 
-    private fun closeAndDeleteDatabase() {
-        if (databaseAdapter.isReady) {
-            databaseAdapter.close()
+    private fun closeDatabase() {
+        supportSqliteDb?.close()
+        supportSqliteDb = null
+    }
+
+    private fun deleteDatabase() {
+        if (::context.isInitialized) {
+            context.deleteDatabase(dbName)
         }
-        if (dbName != null) {
-            InstrumentationRegistry.getInstrumentation().context.deleteDatabase(dbName)
+    }
+
+    private fun initDatabaseToVersion(targetVersion: Int): SupportSQLiteDatabase {
+        closeDatabase()
+        deleteDatabase()
+
+        val openHelperFactory = FrameworkSQLiteOpenHelperFactory()
+        val configuration = SupportSQLiteOpenHelper.Configuration.builder(context)
+            .name(dbName)
+            .callback(object : SupportSQLiteOpenHelper.Callback(FINAL_DB_VERSION) {
+                override fun onCreate(db: SupportSQLiteDatabase) {}
+
+                override fun onUpgrade(
+                    db: SupportSQLiteDatabase,
+                    oldV: Int,
+                    newV: Int
+                ) {
+                }
+
+                override fun onDowngrade(db: SupportSQLiteDatabase, oldV: Int, newV: Int) {}
+            })
+            .build()
+
+        val helper = openHelperFactory.create(configuration)
+        val db = helper.writableDatabase
+        supportSqliteDb = db
+
+        var currentDbVersion = 0
+        if (ALL_MIGRATIONS.isNotEmpty()) {
+            currentDbVersion = ALL_MIGRATIONS.first().startVersion
         }
+        db.execSQL("PRAGMA user_version = $currentDbVersion;")
+
+
+        for (migration in ALL_MIGRATIONS) {
+            if (migration.startVersion == currentDbVersion && migration.endVersion <= targetVersion) {
+                db.beginTransaction()
+                try {
+                    migration.migrate(db)
+                    db.execSQL("PRAGMA user_version = ${migration.endVersion};")
+                    db.setTransactionSuccessful()
+                    currentDbVersion = migration.endVersion
+                } finally {
+                    db.endTransaction()
+                }
+            }
+            if (currentDbVersion >= targetVersion) {
+                break
+            }
+        }
+
+        val pragmacursor = db.query("PRAGMA user_version;")
+        var finalPragmaVersion = -1
+        if (pragmacursor.moveToFirst()) {
+            finalPragmaVersion = pragmacursor.getInt(0)
+        }
+        pragmacursor.close()
+
+        assertThat(finalPragmaVersion).isEqualTo(targetVersion)
+
+        return db
+    }
+
+    fun ifTableExists(tableName: String, db: SupportSQLiteDatabase): Boolean {
+        val cursor = db.query("SELECT 1 FROM sqlite_master WHERE type='table' AND name='$tableName'")
+        val tableExists = cursor.moveToFirst()
+        cursor.close()
+        return tableExists
     }
 
     @Test
     fun have_user_table_after_migration_1() = runTest {
-        initCoreDataBase(1)
-        Truth.assertThat(
-            SqliteCheckerUtility.ifTableExist(
-                UserTableInfo.TABLE_INFO.name(),
-                databaseAdapter,
-            ),
-        ).isTrue()
+        val db = initDatabaseToVersion(1)
+        assertThat(ifTableExists(UserTableInfo.TABLE_INFO.name(), db)).isTrue()
     }
 
     @Test
     fun not_have_tracked_entity_attribute_reserved_value_table_after_migration_1() = runTest {
-        initCoreDataBase(1)
-        Truth.assertThat(
-            SqliteCheckerUtility.ifTableExist(
-                TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO.name(),
-                databaseAdapter,
-            ),
-        ).isFalse()
+        val db = initDatabaseToVersion(1)
+        assertThat(ifTableExists(TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO.name(), db)).isFalse()
     }
 
     @Test
     fun have_tracked_entity_attribute_reserved_value_table_after_first_migration_2() = runTest {
-        initCoreDataBase(2)
-        Truth.assertThat(
-            SqliteCheckerUtility.ifTableExist(
-                TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO.name(),
-                databaseAdapter,
-            ),
-        ).isTrue()
-    }
-
-    fun initCoreDataBase(databaseVersion: Int): DatabaseAdapter? {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val secureStore = InMemorySecureStore()
-        val passwordManager = DatabaseEncryptionPasswordManager.create(secureStore)
-        val databaseManager = RoomDatabaseManager(databaseAdapter, context, passwordManager)
-        databaseManager.createOrOpenUnencryptedDatabase(dbName)
-
-        return databaseAdapter
+        val db = initDatabaseToVersion(2)
+        assertThat(ifTableExists(TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO.name(), db)).isTrue()
     }
 }

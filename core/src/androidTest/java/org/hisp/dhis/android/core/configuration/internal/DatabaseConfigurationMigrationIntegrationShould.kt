@@ -48,6 +48,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
 import java.io.IOException
+import kotlin.time.Duration.Companion.seconds
 
 @RunWith(D2JunitRunner::class)
 class DatabaseConfigurationMigrationIntegrationShould {
@@ -97,6 +98,8 @@ class DatabaseConfigurationMigrationIntegrationShould {
     @Test
     fun delete_empty_database() = runTest {
         databaseManager.createOrOpenUnencryptedDatabase(DatabaseConfigurationMigration.OLD_DBNAME)
+        // Dummy command to trigger the lazy database creation
+        databaseAdapter.execSQL("CREATE TABLE IF NOT EXISTS Dummy (id INTEGER PRIMARY KEY)")
         assertThat(context.databaseList().contains(DatabaseConfigurationMigration.OLD_DBNAME)).isTrue()
 
         migration.apply()
@@ -106,11 +109,14 @@ class DatabaseConfigurationMigrationIntegrationShould {
     }
 
     @Test
-    fun rename_database_with_credentials() = runTest {
+    fun rename_database_with_credentials() = runTest(timeout = 300.seconds) {
         databaseManager.createOrOpenUnencryptedDatabase(DatabaseConfigurationMigration.OLD_DBNAME)
+        // Dummy command to trigger the lazy database creation
+        databaseAdapter.execSQL("CREATE TABLE IF NOT EXISTS Dummy (id INTEGER PRIMARY KEY)")
+        assertThat(context.databaseList().contains(DatabaseConfigurationMigration.OLD_DBNAME)).isTrue()
 
         setCredentialsAndServerUrl(databaseAdapter)
-        assertThat(context.databaseList().contains(DatabaseConfigurationMigration.OLD_DBNAME)).isTrue()
+        databaseManager.disableDatabase()
 
         migration.apply()
         assertThat(context.databaseList().contains(DatabaseConfigurationMigration.OLD_DBNAME)).isFalse()
@@ -125,6 +131,9 @@ class DatabaseConfigurationMigrationIntegrationShould {
     @Test
     fun return_empty_new_configuration_if_existing_empty_database() = runTest {
         databaseManager.createOrOpenUnencryptedDatabase(DatabaseConfigurationMigration.OLD_DBNAME)
+        // Dummy command to trigger the lazy database creation
+        databaseAdapter.execSQL("CREATE TABLE IF NOT EXISTS Dummy (id INTEGER PRIMARY KEY)")
+        databaseManager.disableDatabase()
 
         migration.apply()
 

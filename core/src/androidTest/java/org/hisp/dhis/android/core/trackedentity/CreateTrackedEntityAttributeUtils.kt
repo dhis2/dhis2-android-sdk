@@ -63,7 +63,7 @@ object CreateTrackedEntityAttributeUtils {
     private const val INHERIT = false
     private const val CONFIDENTIAL = false
 
-    fun create(uid: String?, optionSetUid: String?): TrackedEntityAttribute {
+    fun create(uid: String, optionSetUid: String): TrackedEntityAttribute {
         return TrackedEntityAttribute.builder()
             .uid(uid)
             .code(CODE)

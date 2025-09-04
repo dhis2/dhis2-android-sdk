@@ -47,6 +47,13 @@ internal interface DatabaseManager {
     fun createOrOpenUnencryptedDatabase(databaseName: String): DatabaseAdapter
 
     /**
+     * Creates or opens an unecrypted database withouth forcing past migrations to be applied.
+     *
+     * Only for testing purposes
+     */
+    fun createOrOpenUnencryptedDatabaseWithoutMigration(databaseName: String): DatabaseAdapter
+
+    /**
      * Creates or opens an encrypted database with the specified name and password.
      *
      * @param databaseName The name of the database to create or open

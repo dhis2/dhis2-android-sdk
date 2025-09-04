@@ -35,6 +35,16 @@ import java.io.File
 internal class DatabaseRenamer(private val context: Context) {
 
     fun renameDatabase(from: String, to: String): Boolean {
+        val suffixes = listOf("-shm", "-wal", "-lck", "-journal")
+        for (suffix in suffixes) {
+            val fromFile = context.getDatabasePath(from + suffix)
+            val toFile = File(fromFile.parentFile, to + suffix)
+
+            if (fromFile.exists()) {
+                fromFile.renameTo(toFile)
+            }
+        }
+
         val fromFile = context.getDatabasePath(from)
         val toFile = File(fromFile.parentFile, to)
         return fromFile.renameTo(toFile)

@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.configuration.internal
 
 import android.content.Context
-import android.database.sqlite.SQLiteException
+import android.database.SQLException
 import androidx.sqlite.db.SimpleSQLiteQuery
 import org.hisp.dhis.android.BuildConfig
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
 import org.hisp.dhis.android.core.configuration.internal.migration.DatabaseConfigurationInsecureStoreOld
+import org.hisp.dhis.android.core.configuration.internal.migration.Migration260
 import org.hisp.dhis.android.persistence.configuration.ConfigurationStoreImpl
 import org.koin.core.annotation.Singleton
 
@@ -56,7 +57,7 @@ internal class DatabaseConfigurationMigration(
 
         if (oldDatabaseExist) {
             // This is the initial database in the SDK, named like OLD_DBNAME.
-            val databaseAdapter = databaseManager.createOrOpenUnencryptedDatabase(OLD_DBNAME)
+            val databaseAdapter = databaseManager.createOrOpenUnencryptedDatabaseWithoutMigration(OLD_DBNAME)
             val username = getUsernameForOldDatabase(databaseAdapter)
             val serverUrl = getServerUrl(databaseAdapter)
             databaseAdapter.close()
@@ -91,9 +92,9 @@ internal class DatabaseConfigurationMigration(
             databaseConfigurationStore.set(DatabasesConfiguration.builder().build())
         }
 
-//        if (existingVersionCode == null) {
-//            Migration260(context, databaseConfigurationStore, databaseAdapterFactory).apply()
-//        }
+        if (existingVersionCode == null) {
+            Migration260(context, databaseConfigurationStore, databaseManager).apply()
+        }
     }
 
     private fun migrateVersionCodeIfNeeded(configuration: DatabasesConfiguration) {
@@ -126,14 +127,18 @@ internal class DatabaseConfigurationMigration(
             val d2Dao = databaseAdapter.getCurrentDatabase().d2Dao()
             val roomQuery = SimpleSQLiteQuery("SELECT username FROM UserCredentials")
             d2Dao.queryStringValue(roomQuery)
-        } catch (e: SQLiteException) {
+        } catch (e: SQLException) {
             return null
         }
     }
 
     private suspend fun getServerUrl(databaseAdapter: DatabaseAdapter): String? {
         val store = ConfigurationStoreImpl(databaseAdapter)
-        return store.selectFirst()?.serverUrl()
+        return try {
+            store.selectFirst()?.serverUrl()
+        } catch (e: SQLException) {
+            null
+        }
     }
 
     companion object {

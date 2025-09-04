@@ -44,6 +44,7 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
 import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
+import org.hisp.dhis.android.persistence.db.migrations.RoomGeneratedMigrations.ALL_MIGRATIONS
 import org.koin.core.annotation.Singleton
 import java.io.File
 import java.nio.charset.StandardCharsets
@@ -81,20 +82,28 @@ internal class RoomDatabaseManager(
         val database = Room.databaseBuilder(context, AppDatabase::class.java, databaseName)
             .setDriver(BundledSQLiteDriver())
             .setQueryCoroutineContext(Dispatchers.IO)
-            // .setJournalMode(RoomDatabase.JournalMode.WRITE_AHEAD_LOGGING) by default,
-            // room uses Automatic, which depends on the API version
-            // Add migration when ready
+            .addMigrations(*ALL_MIGRATIONS.toTypedArray())
             .build()
         databaseAdapter.activate(database, databaseName)
         return databaseAdapter
     }
+
+    override fun createOrOpenUnencryptedDatabaseWithoutMigration(databaseName: String): DatabaseAdapter {
+        val database = Room.databaseBuilder(context, AppDatabase::class.java, databaseName)
+            .setDriver(BundledSQLiteDriver())
+            .setQueryCoroutineContext(Dispatchers.IO)
+            .build()
+        databaseAdapter.activate(database, databaseName)
+        return databaseAdapter
+    }
+
 
     override fun createOrOpenEncryptedDatabase(databaseName: String, password: String): DatabaseAdapter {
         val hook = RoomDatabaseExport.Companion.EncryptionHook
         val factory = SupportOpenHelperFactory(password.toByteArray(StandardCharsets.UTF_8), hook, true)
         val database = Room.databaseBuilder(context, AppDatabase::class.java, databaseName)
             .setQueryCoroutineContext(Dispatchers.IO)
-            // Add migration when ready
+            .addMigrations(*ALL_MIGRATIONS.toTypedArray())
             .openHelperFactory(factory)
             .build()
         databaseAdapter.activate(database, databaseName)

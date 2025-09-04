@@ -50,6 +50,9 @@ internal class RoomDatabaseAdapter : DatabaseAdapter {
         get() = database != null
 
     override fun activate(database: AppDatabase, databaseName: String) {
+        if (this.database != null) {
+            deactivate()
+        }
         this.database = database
         this.databaseName = databaseName
     }

@@ -7,6 +7,7 @@ import org.hisp.dhis.android.core.dataset.DataInputPeriod
 import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.persistence.period.PeriodDB
 
 @Entity(
     tableName = "DataInputPeriod",
@@ -15,6 +16,13 @@ import org.hisp.dhis.android.persistence.common.EntityDB
             entity = DataSetDB::class,
             parentColumns = ["uid"],
             childColumns = ["dataSet"],
+            onDelete = ForeignKey.CASCADE,
+            deferred = true,
+        ),
+        ForeignKey(
+            entity = PeriodDB::class,
+            parentColumns = ["periodId"],
+            childColumns = ["period"],
             onDelete = ForeignKey.CASCADE,
             deferred = true,
         ),

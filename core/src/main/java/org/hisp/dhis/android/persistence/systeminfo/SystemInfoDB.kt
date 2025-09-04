@@ -9,11 +9,11 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 
 @Entity(tableName = "SystemInfo")
 internal data class SystemInfoDB(
-    @PrimaryKey
-    val contextPath: String,
     val serverDate: String?,
     val dateFormat: String?,
     val version: String?,
+    @PrimaryKey
+    val contextPath: String,
     val systemName: String?,
 ) : EntityDB<SystemInfo> {
 

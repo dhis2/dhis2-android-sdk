@@ -3,6 +3,7 @@ package org.hisp.dhis.android.persistence.settings
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.settings.DownloadPeriod
 import org.hisp.dhis.android.core.settings.EnrollmentScope
@@ -22,6 +23,13 @@ import org.hisp.dhis.android.persistence.program.ProgramDB
             childColumns = ["uid"],
             onDelete = ForeignKey.CASCADE,
             deferred = true,
+        ),
+    ],
+    indices = [
+        Index(
+            name = "programsettinguid",
+            value = ["uid"],
+            unique = true
         ),
     ],
 )

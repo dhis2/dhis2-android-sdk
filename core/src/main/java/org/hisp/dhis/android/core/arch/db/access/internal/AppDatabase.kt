@@ -460,6 +460,7 @@ import org.hisp.dhis.android.persistence.visualization.VisualizationDimensionIte
         VisualizationDimensionItemDB::class,
     ],
     version = AppDatabase.VERSION,
+    exportSchema = true
 )
 @TypeConverters(AccessDBTypeConverter::class)
 @Suppress("TooManyFunctions")
@@ -546,7 +547,6 @@ abstract class AppDatabase : RoomDatabase() {
     internal abstract fun programStageSectionProgramIndicatorLinkDao(): ProgramStageSectionProgramIndicatorLinkDao
     internal abstract fun programTrackedEntityAttributeDao(): ProgramTrackedEntityAttributeDao
     internal abstract fun programStageWorkingListAttrValueFilterDao(): ProgramStageWorkingListAttributeValueFilterDao
-
     internal abstract fun programStageWorkingListDao(): ProgramStageWorkingListDao
     internal abstract fun programStageWorkingListEventDataFilterDao(): ProgramStageWorkingListEventDataFilterDao
     internal abstract fun relationshipConstraintDao(): RelationshipConstraintDao

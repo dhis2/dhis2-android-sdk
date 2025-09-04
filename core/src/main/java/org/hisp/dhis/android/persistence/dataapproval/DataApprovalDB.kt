@@ -38,9 +38,9 @@ import org.hisp.dhis.android.persistence.period.PeriodDB
 )
 internal data class DataApprovalDB(
     val workflow: String,
-    val attributeOptionCombo: String,
-    val period: String,
     val organisationUnit: String,
+    val period: String,
+    val attributeOptionCombo: String,
     val state: String?,
 ) : EntityDB<DataApproval> {
 

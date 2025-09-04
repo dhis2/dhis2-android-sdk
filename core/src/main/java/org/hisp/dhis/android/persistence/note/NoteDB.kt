@@ -2,6 +2,7 @@ package org.hisp.dhis.android.persistence.note
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.persistence.common.DataObjectDB
 import org.hisp.dhis.android.persistence.common.DeletableObjectDB
@@ -29,15 +30,15 @@ import org.hisp.dhis.android.persistence.event.EventDB
             deferred = true,
         ),
     ],
-    primaryKeys = ["uid"],
 )
 internal data class NoteDB(
-    val noteType: String,
+    val noteType: String?,
     val event: String?,
     val enrollment: String?,
-    val value: String,
-    val storedBy: String,
-    val storedDate: String,
+    val value: String?,
+    val storedBy: String?,
+    val storedDate: String?,
+    @PrimaryKey
     val uid: String,
     override val syncState: SyncStateDB?,
     override val deleted: Boolean?,
@@ -46,7 +47,7 @@ internal data class NoteDB(
     override fun toDomain(): Note {
         return Note.builder().apply {
             uid(uid)
-            noteType.let { noteType(Note.NoteType.valueOf(it)) }
+            noteType?.let { noteType(Note.NoteType.valueOf(it)) }
             event(event)
             enrollment(enrollment)
             value(value)

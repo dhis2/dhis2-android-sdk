@@ -3,6 +3,7 @@ package org.hisp.dhis.android.persistence.settings
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.settings.DataSetSetting
 import org.hisp.dhis.android.core.util.dateFormat
@@ -20,6 +21,13 @@ import org.hisp.dhis.android.persistence.dataset.DataSetDB
             onDelete = ForeignKey.CASCADE,
             deferred = true,
         ),
+    ],
+    indices = [
+        Index(
+            name = "datasetsettinguid",
+            value = ["uid"],
+            unique = true
+        )
     ],
 )
 internal data class DataSetSettingDB(

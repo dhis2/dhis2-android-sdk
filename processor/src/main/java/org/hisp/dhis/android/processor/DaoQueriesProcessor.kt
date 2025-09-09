@@ -93,7 +93,7 @@ class DaoQueriesProcessor(
 
             val originalPackageName = symbol.packageName.asString()
             val originalDaoName = symbol.simpleName.asString()
-            val generatedInterfaceName = "${originalDaoName.removeSuffix("Temp")}"
+            val generatedInterfaceName = "${originalDaoName.removeSuffix("Aux")}"
 
             val fileOutputStream = codeGenerator.createNewFile(
                 dependencies = Dependencies(aggregating = false, symbol.containingFile!!),

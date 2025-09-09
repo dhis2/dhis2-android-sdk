@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -48,12 +46,8 @@ public abstract class TrackedEntityAttributeLegendSetLink implements CoreObject 
     @Nullable
     public abstract Integer sortOrder();
 
-    public static TrackedEntityAttributeLegendSetLink create(Cursor cursor) {
-        return AutoValue_TrackedEntityAttributeLegendSetLink.createFromCursor(cursor);
-    }
-
     public static Builder builder() {
-        return new $$AutoValue_TrackedEntityAttributeLegendSetLink.Builder();
+        return new AutoValue_TrackedEntityAttributeLegendSetLink.Builder();
     }
 
     public abstract Builder toBuilder();

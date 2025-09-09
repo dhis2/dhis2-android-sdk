@@ -89,7 +89,7 @@ class DataBaseMigrationShould {
                 override fun onUpgrade(
                     db: SupportSQLiteDatabase,
                     oldV: Int,
-                    newV: Int
+                    newV: Int,
                 ) {
                 }
 
@@ -106,7 +106,6 @@ class DataBaseMigrationShould {
             currentDbVersion = ALL_MIGRATIONS.first().startVersion
         }
         db.execSQL("PRAGMA user_version = $currentDbVersion;")
-
 
         for (migration in ALL_MIGRATIONS) {
             if (migration.startVersion == currentDbVersion && migration.endVersion <= targetVersion) {

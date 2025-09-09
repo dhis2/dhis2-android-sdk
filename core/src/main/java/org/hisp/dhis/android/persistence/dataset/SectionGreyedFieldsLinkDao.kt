@@ -34,7 +34,7 @@ import org.hisp.dhis.android.processor.GenerateDaoQueries
 
 @GenerateDaoQueries(
     tableName = "SectionGreyedFieldsLinkTableInfo.TABLE_NAME",
-    parentColumnName = "SectionGreyedFieldsLinkTableInfo.Columns.SECTION"
+    parentColumnName = "SectionGreyedFieldsLinkTableInfo.Columns.SECTION",
 )
 internal interface SectionGreyedFieldsLinkDaoTemp : LinkDao<SectionGreyedFieldsLinkDB> {
 
@@ -42,8 +42,7 @@ internal interface SectionGreyedFieldsLinkDaoTemp : LinkDao<SectionGreyedFieldsL
         """
         DELETE FROM ${SectionGreyedFieldsLinkTableInfo.TABLE_NAME}
         WHERE ${SectionGreyedFieldsLinkTableInfo.Columns.SECTION} = :sectionUid
-    """
+    """,
     )
     suspend fun deleteBySectionUid(sectionUid: String): Int
-
 }

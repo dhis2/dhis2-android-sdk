@@ -33,6 +33,6 @@ import org.hisp.dhis.android.processor.GenerateDaoQueries
 
 @GenerateDaoQueries(
     tableName = "IndicatorLegendSetLinkTableInfo.TABLE_NAME",
-    parentColumnName = "IndicatorLegendSetLinkTableInfo.Columns.INDICATOR"
+    parentColumnName = "IndicatorLegendSetLinkTableInfo.Columns.INDICATOR",
 )
 internal interface IndicatorLegendSetLinkDaoTemp : LinkDao<IndicatorLegendSetLinkDB>

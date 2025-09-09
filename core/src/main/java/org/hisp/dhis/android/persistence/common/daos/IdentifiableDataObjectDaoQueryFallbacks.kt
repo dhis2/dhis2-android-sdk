@@ -34,5 +34,4 @@ internal interface IdentifiableDataObjectDaoQueryFallbacks {
     suspend fun setSyncState(uid: String, state: State): Int
     suspend fun setSyncState(uids: List<String>, state: State): Int
     suspend fun setSyncStateIfUploading(uid: String, newstate: State, updateState: State): Int
-
 }

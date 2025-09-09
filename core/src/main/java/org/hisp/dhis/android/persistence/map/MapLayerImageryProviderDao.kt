@@ -33,6 +33,6 @@ import org.hisp.dhis.android.processor.GenerateDaoQueries
 
 @GenerateDaoQueries(
     tableName = "MapLayerImageryProviderTableInfo.TABLE_NAME",
-    parentColumnName = "MapLayerImageryProviderTableInfo.Columns.MAP_LAYER"
+    parentColumnName = "MapLayerImageryProviderTableInfo.Columns.MAP_LAYER",
 )
 internal interface MapLayerImageryProviderDaoTemp : LinkDao<MapLayerImageryProviderDB>

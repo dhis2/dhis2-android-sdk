@@ -28,8 +28,5 @@
 
 package org.hisp.dhis.android.core.common;
 
-import android.content.ContentValues;
-
 public interface CoreObject {
-    ContentValues toContentValues();
 }

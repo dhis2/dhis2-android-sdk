@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -41,10 +39,6 @@ public abstract class CustomIntentRequest {
 
     @Nullable
     public abstract List<CustomIntentRequestArgument> arguments();
-
-    public static CustomIntentRequest create(Cursor cursor) {
-        return AutoValue_CustomIntentRequest.createFromCursor(cursor);
-    }
 
     public static Builder builder() {
         return new AutoValue_CustomIntentRequest.Builder();

@@ -106,7 +106,9 @@ class TrackedEntityInstanceHandlerShould {
         whenever(relationship.from()).thenReturn(RelationshipHelper.teiItem(TEI_UID))
         whenever(relationship.to()).thenReturn(RelationshipHelper.teiItem(RELATIVE_UID))
         whenever(relative.uid()).thenReturn(RELATIVE_UID)
-        whenever(trackedEntityInstanceStore.updateOrInsert(any<TrackedEntityInstance>())).thenReturn(HandleAction.Insert)
+        whenever(
+            trackedEntityInstanceStore.updateOrInsert(any<TrackedEntityInstance>()),
+        ).thenReturn(HandleAction.Insert)
         whenever(trackedEntityInstanceStore.selectUidsWhere(any())).thenReturn(listOf(TEI_UID))
 
         trackedEntityInstanceHandler = TrackedEntityInstanceHandler(
@@ -182,7 +184,9 @@ class TrackedEntityInstanceHandlerShould {
 
     @Test
     fun invoke_cleaners_if_full_update() = runTest {
-        whenever(trackedEntityInstanceStore.updateOrInsert(any<TrackedEntityInstance>())).thenReturn(HandleAction.Update)
+        whenever(
+            trackedEntityInstanceStore.updateOrInsert(any<TrackedEntityInstance>()),
+        ).thenReturn(HandleAction.Update)
 
         trackedEntityInstanceHandler.handleMany(listOf(trackedEntityInstance), params, relatives)
 

@@ -83,7 +83,9 @@ class ProgramIndicatorHandlerShould {
         whenever(analyticsPeriodBoundary.toBuilder()).thenReturn(analyticsPeriodBoundaryBuilder)
         whenever(analyticsPeriodBoundaryBuilder.programIndicator(any())).thenReturn(analyticsPeriodBoundaryBuilder)
         whenever(analyticsPeriodBoundaryBuilder.build()).thenReturn(analyticsPeriodBoundary)
-        whenever(programIndicatorStore.updateOrInsert(any<List<ProgramIndicator>>())).thenReturn(listOf(HandleAction.Insert))
+        whenever(
+            programIndicatorStore.updateOrInsert(any<List<ProgramIndicator>>()),
+        ).thenReturn(listOf(HandleAction.Insert))
         whenever(programIndicatorStore.selectUids()).thenReturn(listOf("test_program_indicator_uid"))
     }
 

@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.relationship.internal
 
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples
-import org.hisp.dhis.android.core.data.relationship.RelationshipTypeSamples.TO_CONSTRAINT_2
 import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
@@ -45,13 +44,13 @@ class RelationshipTypeStoreIntegrationShould : IdentifiableObjectStoreAbstractIn
     TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): RelationshipType {
-        return RelationshipTypeSamples.RELATIONSHIP_TYPE_1
+        return RelationshipTypeSamples.RELATIONSHIP_TYPE_4
     }
 
     override fun buildObjectToUpdate(): RelationshipType {
-        return RelationshipTypeSamples.RELATIONSHIP_TYPE_1
+        return RelationshipTypeSamples.RELATIONSHIP_TYPE_4
             .toBuilder()
-            .toConstraint(TO_CONSTRAINT_2)
+            .fromToName("updatedFromToName")
             .build()
     }
 }

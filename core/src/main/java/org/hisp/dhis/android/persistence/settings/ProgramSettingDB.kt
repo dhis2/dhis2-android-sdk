@@ -29,7 +29,7 @@ import org.hisp.dhis.android.persistence.program.ProgramDB
         Index(
             name = "programsettinguid",
             value = ["uid"],
-            unique = true
+            unique = true,
         ),
     ],
 )

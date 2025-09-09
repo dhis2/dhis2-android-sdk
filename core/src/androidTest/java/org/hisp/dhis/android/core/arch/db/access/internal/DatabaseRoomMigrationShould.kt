@@ -44,7 +44,6 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 
-
 class DatabaseRoomMigrationShould {
 
     private lateinit var context: Context
@@ -95,7 +94,8 @@ class DatabaseRoomMigrationShould {
     private fun getRawSchemaFromSupportDB(supportDb: SupportSQLiteDatabase): List<SchemaRow> {
         val schemaRows = mutableListOf<SchemaRow>()
         val query =
-            "SELECT name, sql FROM sqlite_master WHERE name NOT LIKE 'android_%' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE 'room_%' AND sql IS NOT NULL ORDER BY name"
+            "SELECT name, sql FROM sqlite_master WHERE name NOT LIKE 'android_%' AND name NOT LIKE 'sqlite_%' " +
+                "AND name NOT LIKE 'room_%' AND sql IS NOT NULL ORDER BY name"
         val cursor = supportDb.query(query)
         cursor.use {
             while (it.moveToNext()) {
@@ -122,7 +122,8 @@ class DatabaseRoomMigrationShould {
             if (migration.startVersion != currentDbVersion) {
                 throw IllegalStateException(
                     "Migration order mismatch. Expected to migrate from version $currentDbVersion, " +
-                        "but migration ${migration.javaClass.simpleName} (or object) starts at ${migration.startVersion}."
+                        "but migration ${migration.javaClass.simpleName} (or object) " +
+                        "starts at ${migration.startVersion}.",
                 )
             }
             db.beginTransaction()
@@ -169,10 +170,9 @@ class DatabaseRoomMigrationShould {
             Assert.assertEquals(
                 "Migrated Room DB version after Room opens it",
                 FINAL_DB_VERSION,
-                migratedRoomDb.openHelper.readableDatabase.version
+                migratedRoomDb.openHelper.readableDatabase.version,
             )
             println("Room abrió y validó con éxito MIGRATED_DB_NAME.")
-
         } catch (e: IllegalStateException) {
             println("Error al validar el esquema de la base de datos migrada por Room: ${e.message}")
             throw e
@@ -196,7 +196,7 @@ class DatabaseRoomMigrationShould {
         Assert.assertEquals(
             "Schema lists should have the same size. Migrated: ${migratedSchema.size}, New: ${newSchema.size}",
             migratedSchema.size,
-            newSchema.size
+            newSchema.size,
         )
 
         for (i in migratedSchema.indices) {
@@ -205,12 +205,12 @@ class DatabaseRoomMigrationShould {
             Assert.assertEquals(
                 "SchemaRow name mismatch at index $i: Migrated='${migratedRow.name}', New='${newRow.name}'",
                 migratedRow.name,
-                newRow.name
+                newRow.name,
             )
             Assert.assertEquals(
                 "SchemaRow SQL mismatch for '${migratedRow.name}': Migrated='${migratedRow.sql}', New='${newRow.sql}'",
                 migratedRow.sql,
-                newRow.sql
+                newRow.sql,
             )
         }
     }

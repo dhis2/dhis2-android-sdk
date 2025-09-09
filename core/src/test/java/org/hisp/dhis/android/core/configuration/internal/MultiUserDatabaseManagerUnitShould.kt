@@ -96,29 +96,29 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
     @Test
     fun create_new_db_when_no_previous_configuration_on_loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew() =
         runTest {
-        val encrypt = false
-        whenever(configurationHelper.addOrUpdateAccount(null, serverUrl, username, encrypt))
-            .doReturn(unencryptedConfiguration)
+            val encrypt = false
+            whenever(configurationHelper.addOrUpdateAccount(null, serverUrl, username, encrypt))
+                .doReturn(unencryptedConfiguration)
 
-        manager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(serverUrl, username, encrypt)
+            manager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(serverUrl, username, encrypt)
 
             verify(databaseManager).createOrOpenDatabase(userConfigurationUnencrypted)
-    }
+        }
 
     @Test
     fun copy_database_when_changing_encryption_on_loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew() =
         runTest {
-        val encrypt = true
-        whenever(databaseConfigurationSecureStore.get()).doReturn(unencryptedConfiguration)
-        whenever(configurationHelper.addOrUpdateAccount(unencryptedConfiguration, serverUrl, username, encrypt))
-            .doReturn(encryptedConfiguration)
+            val encrypt = true
+            whenever(databaseConfigurationSecureStore.get()).doReturn(unencryptedConfiguration)
+            whenever(configurationHelper.addOrUpdateAccount(unencryptedConfiguration, serverUrl, username, encrypt))
+                .doReturn(encryptedConfiguration)
 
-        manager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(serverUrl, username, encrypt)
+            manager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(serverUrl, username, encrypt)
 
             verify(databaseManager).createOrOpenDatabase(userConfigurationEncrypted)
-        verify(databaseExport).encrypt(serverUrl, userConfigurationUnencrypted)
+            verify(databaseExport).encrypt(serverUrl, userConfigurationUnencrypted)
             verify(databaseManager).deleteDatabase(userConfigurationUnencrypted.databaseName(), false)
-    }
+        }
 
     @Test
     fun not_create_database_when_non_existing_when_calling_loadExistingKeepingEncryption() = runTest {

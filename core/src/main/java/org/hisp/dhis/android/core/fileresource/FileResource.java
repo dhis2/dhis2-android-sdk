@@ -28,17 +28,11 @@
 
 package org.hisp.dhis.android.core.fileresource;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.FileResourceDomainColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreFileResourceStorageStatusAdapter;
 import org.hisp.dhis.android.core.common.BaseDataObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
@@ -54,11 +48,9 @@ public abstract class FileResource extends BaseDataObject implements ObjectWithU
     public abstract String name();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
     @Nullable
@@ -71,22 +63,15 @@ public abstract class FileResource extends BaseDataObject implements ObjectWithU
     public abstract String path();
 
     @Nullable
-    @ColumnAdapter(FileResourceDomainColumnAdapter.class)
     public abstract FileResourceDomain domain();
 
     @Nullable
-    @ColumnAdapter(IgnoreFileResourceStorageStatusAdapter.class)
     abstract FileResourceStorageStatus storageStatus();
-
-    @NonNull
-    public static FileResource create(Cursor cursor) {
-        return AutoValue_FileResource.createFromCursor(cursor);
-    }
 
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new $$AutoValue_FileResource.Builder();
+        return new AutoValue_FileResource.Builder();
     }
 
     @AutoValue.Builder

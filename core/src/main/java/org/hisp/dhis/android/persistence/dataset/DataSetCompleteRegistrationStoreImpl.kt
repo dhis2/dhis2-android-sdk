@@ -71,7 +71,7 @@ internal class DataSetCompleteRegistrationStoreImpl(
             dataSetUids,
             periodIds,
             "%$rootOrgunitUid%",
-            DataSetCompleteRegistrationTableInfo.Columns.SYNC_STATE
+            DataSetCompleteRegistrationTableInfo.Columns.SYNC_STATE,
         ) > 0
     }
 

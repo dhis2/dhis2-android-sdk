@@ -39,7 +39,7 @@ internal interface SMSOngoingSubmissionDaoTemp : ObjectDao<SMSOngoingSubmissionD
         """
         DELETE FROM ${SMSOngoingSubmissionTableInfo.TABLE_NAME}
         WHERE ${SMSOngoingSubmissionTableInfo.Columns.SUBMISSION_ID} = :submissionId
-    """
+    """,
     )
     suspend fun deleteSubmissionIfExists(submissionId: Int)
 }

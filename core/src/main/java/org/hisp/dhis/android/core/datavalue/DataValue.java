@@ -28,15 +28,11 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.State;
 
@@ -67,11 +63,9 @@ public abstract class DataValue extends BaseDeletableDataObject {
     public abstract String storedBy();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
     @Nullable
@@ -80,15 +74,10 @@ public abstract class DataValue extends BaseDeletableDataObject {
     @Nullable
     public abstract Boolean followUp();
 
-    @NonNull
-    public static DataValue create(Cursor cursor) {
-        return AutoValue_DataValue.createFromCursor(cursor);
-    }
-
     public abstract DataValue.Builder toBuilder();
 
     public static DataValue.Builder builder() {
-        return new $$AutoValue_DataValue.Builder();
+        return new AutoValue_DataValue.Builder();
     }
 
 

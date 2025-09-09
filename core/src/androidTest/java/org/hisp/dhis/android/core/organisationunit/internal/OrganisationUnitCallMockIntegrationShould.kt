@@ -83,7 +83,7 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
             val programUid = "lxAQ7Zs9VYR"
             val programStore = koin.get<ProgramStore>()
             programStore.insert(
-                Program.builder().uid(programUid).categoryCombo(ObjectWithUid.create(categoryComboUid)).build()
+                Program.builder().uid(programUid).categoryCombo(ObjectWithUid.create(categoryComboUid)).build(),
             )
 
             // inserting dataSets for creating OrgUnitDataSetLinks

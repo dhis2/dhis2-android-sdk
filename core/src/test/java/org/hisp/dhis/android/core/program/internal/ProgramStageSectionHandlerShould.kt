@@ -71,8 +71,8 @@ class ProgramStageSectionHandlerShould {
         whenever(programIndicator.uid()).thenReturn("program_indicator_uid")
         whenever(programStageSectionStore.updateOrInsert(any<List<ProgramStageSection>>())).thenReturn(
             listOf(
-                HandleAction.Insert
-            )
+                HandleAction.Insert,
+            ),
         )
     }
 

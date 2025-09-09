@@ -33,4 +33,3 @@ import org.hisp.dhis.android.processor.GenerateDaoQueries
 
 @GenerateDaoQueries(tableName = "DataSetConfigurationSettingTableInfo.TABLE_NAME")
 internal interface DataSetConfigurationSettingDaoTemp : ObjectDao<DataSetConfigurationSettingDB>
-

@@ -47,12 +47,12 @@ internal interface DataSetCompleteRegistrationDaoTemp : ObjectDao<DataSetComplet
               LIKE :orgUnitPathQuery
           )
           AND ${DataSetCompleteRegistrationTableInfo.Columns.SYNC_STATE} = :syncedStateValue
-    """
+    """,
     )
     suspend fun removeNotPresentAndSynced(
         dataSetUids: Collection<String>,
         periodIds: Collection<String>,
         orgUnitPathQuery: String, // pass this as  "%$rootOrgunitUid%"
-        syncedStateValue: String  // State.SYNCED (ie. "SYNCED")
+        syncedStateValue: String, // State.SYNCED (ie. "SYNCED")
     ): Int
 }

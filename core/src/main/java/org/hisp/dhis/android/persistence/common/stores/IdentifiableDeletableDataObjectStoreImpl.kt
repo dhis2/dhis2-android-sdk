@@ -56,7 +56,9 @@ internal open class IdentifiableDeletableDataObjectStoreImpl<D, P : EntityDB<D>>
         CollectionsHelper.isNull(uid)
         val deleted =
             if (state == State.SYNCED) {
-                identifiableDeletableDataObjectDao.deleteWhere(uid = uid, deleted = true, state = State.UPLOADING).also { println("Deleted $it") } > 0
+                identifiableDeletableDataObjectDao.deleteWhere(uid = uid, deleted = true, state = State.UPLOADING).also {
+                    println("Deleted $it")
+                } > 0
             } else {
                 false
             }

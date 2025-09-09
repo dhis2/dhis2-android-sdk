@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.visualization;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -46,10 +44,6 @@ public abstract class CategoryDimension {
 
     @Nullable
     public abstract List<ObjectWithUid> categoryOptions();
-
-    public static CategoryDimension create(Cursor cursor) {
-        return AutoValue_CategoryDimension.createFromCursor(cursor);
-    }
 
     public static Builder builder() {
         return new AutoValue_CategoryDimension.Builder();

@@ -33,6 +33,6 @@ import org.hisp.dhis.android.processor.GenerateDaoQueries
 
 @GenerateDaoQueries(
     tableName = "StockUseCaseTransactionTableInfo.TABLE_NAME",
-    parentColumnName = "StockUseCaseTransactionTableInfo.Columns.PROGRAM_UID"
+    parentColumnName = "StockUseCaseTransactionTableInfo.Columns.PROGRAM_UID",
 )
 internal interface StockUseCaseTransactionLinkDaoTemp : LinkDao<StockUseCaseTransactionDB>

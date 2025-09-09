@@ -28,14 +28,10 @@
 
 package org.hisp.dhis.android.core.icon;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
@@ -46,16 +42,10 @@ public abstract class CustomIcon implements CoreObject {
     public abstract String key();
 
     @NonNull
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid fileResource();
 
     @NonNull
     public abstract String href();
-
-    @NonNull
-    public static CustomIcon create(Cursor cursor) {
-        return $AutoValue_CustomIcon.createFromCursor(cursor);
-    }
 
     public abstract Builder toBuilder();
 

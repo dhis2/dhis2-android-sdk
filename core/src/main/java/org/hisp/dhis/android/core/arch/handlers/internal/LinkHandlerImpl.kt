@@ -39,7 +39,7 @@ internal open class LinkHandlerImpl<S, O : CoreObject>(private val store: LinkSt
                 .map { beforeObjectHandled(it) }
                 .map { transformer.invoke(it) }
 
-            //TODO Previously it was store.insertIfNotExists(). Check if we should change anything
+            // TODO Previously it was store.insertIfNotExists(). Check if we should change anything
             store.updateOrInsert(preHandledCollection)
 
             preHandledCollection.forEach { afterObjectHandled(it) }

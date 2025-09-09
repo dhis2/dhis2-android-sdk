@@ -26,9 +26,9 @@ import org.hisp.dhis.android.persistence.program.ProgramDB
         Index(
             name = "teisyncprogram_organisationunithash",
             value = ["program", "organisationUnitIdsHash"],
-            unique = true
-        )
-    ]
+            unique = true,
+        ),
+    ],
 )
 internal data class TrackedEntityInstanceSyncDB(
     @PrimaryKey(autoGenerate = true)

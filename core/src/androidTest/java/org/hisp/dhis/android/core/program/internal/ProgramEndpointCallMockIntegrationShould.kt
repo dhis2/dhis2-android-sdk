@@ -125,7 +125,6 @@ class ProgramEndpointCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnq
 
                 dhis2MockServer.enqueueMockResponse("option/option_sets.json")
                 objects.d2DIComponent.optionSetCall.download(setOf("POc7DkGU3QU"))
-
             }
         }
     }

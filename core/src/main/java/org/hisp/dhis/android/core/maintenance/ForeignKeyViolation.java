@@ -28,15 +28,10 @@
 
 package org.hisp.dhis.android.core.maintenance;
 
-import android.database.Cursor;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
@@ -66,13 +61,7 @@ public abstract class ForeignKeyViolation implements CoreObject {
     public abstract String fromObjectRow();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
-
-    @NonNull
-    public static ForeignKeyViolation create(Cursor cursor) {
-        return AutoValue_ForeignKeyViolation.createFromCursor(cursor);
-    }
 
     public static Builder builder() {
         return new AutoValue_ForeignKeyViolation.Builder();

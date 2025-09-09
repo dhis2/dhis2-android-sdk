@@ -33,6 +33,6 @@ import org.hisp.dhis.android.processor.GenerateDaoQueries
 
 @GenerateDaoQueries(
     tableName = "CategoryCategoryComboLinkTableInfo.TABLE_NAME",
-    parentColumnName = "CategoryCategoryComboLinkTableInfo.Columns.CATEGORY_COMBO"
+    parentColumnName = "CategoryCategoryComboLinkTableInfo.Columns.CATEGORY_COMBO",
 )
 internal interface CategoryCategoryComboLinkDaoTemp : LinkDao<CategoryCategoryComboLinkDB>

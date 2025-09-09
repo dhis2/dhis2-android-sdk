@@ -42,13 +42,13 @@ internal interface DataValueConflictDaoTemp : ObjectDao<DataValueConflictDB> {
           AND ${DataValueConflictTableInfo.Columns.DATA_ELEMENT} = :dataElement
           AND ${DataValueConflictTableInfo.Columns.PERIOD} = :period
           AND ${DataValueConflictTableInfo.Columns.ORG_UNIT} = :organisationUnit
-    """
+    """,
     )
     suspend fun deleteDataValueConflict(
         attributeOptionCombo: String,
         categoryOptionCombo: String,
         dataElement: String,
         period: String,
-        organisationUnit: String
+        organisationUnit: String,
     ): Int
 }

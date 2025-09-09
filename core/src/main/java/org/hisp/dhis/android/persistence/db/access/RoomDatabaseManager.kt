@@ -97,7 +97,6 @@ internal class RoomDatabaseManager(
         return databaseAdapter
     }
 
-
     override fun createOrOpenEncryptedDatabase(databaseName: String, password: String): DatabaseAdapter {
         val hook = RoomDatabaseExport.Companion.EncryptionHook
         val factory = SupportOpenHelperFactory(password.toByteArray(StandardCharsets.UTF_8), hook, true)
@@ -122,9 +121,8 @@ internal class RoomDatabaseManager(
     override fun openSQLCipherDatabaseDirectly(
         databaseFile: File,
         password: String?,
-        hook: SQLiteDatabaseHook?
+        hook: SQLiteDatabaseHook?,
     ): net.zetetic.database.sqlcipher.SQLiteDatabase {
-
         return net.zetetic.database.sqlcipher.SQLiteDatabase.openOrCreateDatabase(
             databaseFile,
             (password ?: "").toByteArray(StandardCharsets.UTF_8),

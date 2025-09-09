@@ -28,14 +28,10 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
@@ -56,29 +52,22 @@ public abstract class TrackedEntityAttributeReservedValue implements CoreObject 
     public abstract String value();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date expiryDate();
 
     @Nullable
     public abstract String organisationUnit();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date temporalValidityDate();
 
     @Nullable
     public abstract String pattern();
 
     public static Builder builder() {
-        return new $$AutoValue_TrackedEntityAttributeReservedValue.Builder();
-    }
-
-    public static TrackedEntityAttributeReservedValue create(Cursor cursor) {
-        return $AutoValue_TrackedEntityAttributeReservedValue.createFromCursor(cursor);
+        return new AutoValue_TrackedEntityAttributeReservedValue.Builder();
     }
 
     public abstract Builder toBuilder();

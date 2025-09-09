@@ -124,7 +124,6 @@ internal class Migration260(
             smsPrefs.getBoolean(keyWaitForResult, false).let {
                 smsConfigStore.set(SMSConfigKey.WAIT_FOR_RESULT, it.toString())
             }
-
         } catch (e: SQLException) {
             Log.e("MIGRATION", "Couldn't migrate sms settings")
         } finally {

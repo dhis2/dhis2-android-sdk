@@ -180,21 +180,20 @@ internal class RoomDatabaseExport(
                 // Detach target database
                 sourceDbDirect.execSQL("DETACH DATABASE roomExport;")
 
-                //Add version to target database
+                // Add version to target database
                 val version = sourceDbDirect.version
                 sourceDbDirect.close()
                 val targetEncryptionHook = if (encrypt) Companion.EncryptionHook else null
                 val targetDbDirect = databaseManager.openSQLCipherDatabaseDirectly(
                     targetFile,
                     newPassword,
-                    targetEncryptionHook
+                    targetEncryptionHook,
                 )
                 try {
                     targetDbDirect.version = version
                 } finally {
                     targetDbDirect.close()
                 }
-
             } catch (e: Exception) {
                 if (sourceDbDirect.isOpen) {
                     try {
@@ -206,7 +205,6 @@ internal class RoomDatabaseExport(
                 targetFile.delete()
                 throw e
             }
-
         }
     }
 

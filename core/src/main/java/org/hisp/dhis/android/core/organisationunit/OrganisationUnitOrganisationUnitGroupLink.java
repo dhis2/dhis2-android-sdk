@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -47,10 +45,6 @@ public abstract class OrganisationUnitOrganisationUnitGroupLink implements CoreO
 
     public static Builder builder() {
         return new AutoValue_OrganisationUnitOrganisationUnitGroupLink.Builder();
-    }
-
-    public static OrganisationUnitOrganisationUnitGroupLink create(Cursor cursor) {
-        return $AutoValue_OrganisationUnitOrganisationUnitGroupLink.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();

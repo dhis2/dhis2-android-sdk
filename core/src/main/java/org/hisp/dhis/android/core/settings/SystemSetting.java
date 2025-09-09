@@ -28,14 +28,10 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.SystemSettingKeyColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
@@ -49,15 +45,10 @@ public abstract class SystemSetting implements CoreObject {
     }
 
     @Nullable
-    @ColumnAdapter(SystemSettingKeyColumnAdapter.class)
     public abstract SystemSettingKey key();
 
     @Nullable
     public abstract String value();
-
-    public static SystemSetting create(Cursor cursor) {
-        return $AutoValue_SystemSetting.createFromCursor(cursor);
-    }
 
     public abstract Builder toBuilder();
 

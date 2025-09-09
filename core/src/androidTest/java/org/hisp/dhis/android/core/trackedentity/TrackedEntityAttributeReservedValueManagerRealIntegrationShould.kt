@@ -71,9 +71,9 @@ internal class TrackedEntityAttributeReservedValueManagerRealIntegrationShould :
 
     @Mock
     val trackedEntityAttributeReservedValueQueryCallFactory: QueryCallFactory<
-            TrackedEntityAttributeReservedValue,
-            TrackedEntityAttributeReservedValueQuery,
-            >? =
+        TrackedEntityAttributeReservedValue,
+        TrackedEntityAttributeReservedValueQuery,
+        >? =
         null
 
     @Mock
@@ -82,7 +82,7 @@ internal class TrackedEntityAttributeReservedValueManagerRealIntegrationShould :
 
     @Captor
     private val trackedEntityAttributeReservedValueQueryCaptor:
-            ArgumentCaptor<TrackedEntityAttributeReservedValueQuery>? = null
+        ArgumentCaptor<TrackedEntityAttributeReservedValueQuery>? = null
     private var manager: TrackedEntityAttributeReservedValueManager? = null
 
     @Before

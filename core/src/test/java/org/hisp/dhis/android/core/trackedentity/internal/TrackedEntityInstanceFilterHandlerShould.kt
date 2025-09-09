@@ -79,7 +79,7 @@ class TrackedEntityInstanceFilterHandlerShould {
             .build()
 
         whenever(trackedEntityInstanceFilterStore.updateOrInsert(any<List<TrackedEntityInstanceFilter>>())).thenReturn(
-            listOf(HandleAction.Insert)
+            listOf(HandleAction.Insert),
         )
 
         trackedEntityInstanceFilters = mutableListOf(trackedEntityInstanceFilter)

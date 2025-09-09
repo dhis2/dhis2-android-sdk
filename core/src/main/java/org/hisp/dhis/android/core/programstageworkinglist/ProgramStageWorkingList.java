@@ -28,15 +28,10 @@
 
 package org.hisp.dhis.android.core.programstageworkinglist;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.ProgramStageQueryCriteriaColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -47,22 +42,15 @@ public abstract class ProgramStageWorkingList extends BaseIdentifiableObject imp
     @Nullable
     public abstract String description();
 
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid program();
 
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid programStage();
 
     @Nullable
-    @ColumnAdapter(ProgramStageQueryCriteriaColumnAdapter.class)
     public abstract ProgramStageQueryCriteria programStageQueryCriteria();
 
     public static Builder builder() {
-        return new $$AutoValue_ProgramStageWorkingList.Builder();
-    }
-
-    public static ProgramStageWorkingList create(Cursor cursor) {
-        return AutoValue_ProgramStageWorkingList.createFromCursor(cursor);
+        return new AutoValue_ProgramStageWorkingList.Builder();
     }
 
     public abstract Builder toBuilder();

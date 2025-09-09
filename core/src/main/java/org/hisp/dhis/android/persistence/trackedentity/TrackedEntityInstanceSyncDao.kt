@@ -40,7 +40,7 @@ internal interface TrackedEntityInstanceSyncDaoTemp : ObjectDao<TrackedEntityIns
         DELETE FROM ${TrackedEntityInstanceSyncTableInfo.TABLE_NAME} 
         WHERE ${Columns.ORGANISATION_UNIT_IDS_HASH} = :organisationUnitIdsHash 
         AND ${Columns.PROGRAM} = :programUid
-    """
+    """,
     )
     suspend fun deleteByProgram(programUid: String, organisationUnitIdsHash: Int): Int
 
@@ -49,7 +49,7 @@ internal interface TrackedEntityInstanceSyncDaoTemp : ObjectDao<TrackedEntityIns
         DELETE FROM ${TrackedEntityInstanceSyncTableInfo.TABLE_NAME} 
         WHERE ${Columns.ORGANISATION_UNIT_IDS_HASH} = :organisationUnitIdsHash 
         AND ${Columns.PROGRAM} IS NULL
-    """
+    """,
     )
     suspend fun deleteByNullProgram(organisationUnitIdsHash: Int): Int
 }

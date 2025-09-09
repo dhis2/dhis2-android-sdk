@@ -33,7 +33,8 @@ import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.persistence.common.EntityDB
 
-internal interface IdentifiableDeletableDataObjectDao<P : EntityDB<*>> : IdentifiableDataObjectDao<P>,
+internal interface IdentifiableDeletableDataObjectDao<P : EntityDB<*>> :
+    IdentifiableDataObjectDao<P>,
     IdentifiableDeletableDataObjectDaoQueryFallbacks {
 
     @RawQuery

@@ -174,10 +174,6 @@ dependencies {
     api(libs.dhis2.antlr.parser)
     implementation(libs.dhis2.peg.parser)
 
-    // Extension which generates mappers for work with cursor and content values
-    api(libs.auto.value.cursor.annotations)
-    kapt(libs.auto.value.cursor)
-
     implementation(libs.zip4j)
 
     implementation(libs.openid.appauth)

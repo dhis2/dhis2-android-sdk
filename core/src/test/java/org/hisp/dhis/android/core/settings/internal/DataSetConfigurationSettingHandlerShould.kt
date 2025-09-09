@@ -54,8 +54,8 @@ class DataSetConfigurationSettingHandlerShould {
         dataSetConfigurationSettingList = listOf(dataSetConfigurationSetting)
         whenever(dataSetConfigurationSettingStore.updateOrInsert(any<List<DataSetConfigurationSetting>>())).doReturn(
             listOf(
-                HandleAction.Insert
-            )
+                HandleAction.Insert,
+            ),
         )
         dataSetConfigurationSettingHandler = DataSetConfigurationSettingHandler(dataSetConfigurationSettingStore)
     }

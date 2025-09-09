@@ -53,7 +53,7 @@ internal class CategoryStoreImpl(
             CategoryCategoryComboLinkTableInfo.Columns.CATEGORY,
         )
         val sectionSqlBuilder = org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl(
-            CategoryCategoryComboLinkTableInfo.TABLE_INFO
+            CategoryCategoryComboLinkTableInfo.TABLE_INFO,
         )
         val query = sectionSqlBuilder.selectChildrenWithLinkTable(
             projection,

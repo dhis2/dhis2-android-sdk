@@ -41,7 +41,7 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 
 @RunWith(MockitoJUnitRunner::class)
-class RoomDatabaseAdapterTest {
+class RoomDatabaseAdapterShould {
 
     @Mock
     private lateinit var database: AppDatabase
@@ -163,7 +163,6 @@ class RoomDatabaseAdapterTest {
     fun `endTransaction should throw IllegalStateException if not ready`() {
         roomDatabaseAdapter.endTransaction()
     }
-
 
     @Test
     fun `getDatabaseName should return correct name`() {

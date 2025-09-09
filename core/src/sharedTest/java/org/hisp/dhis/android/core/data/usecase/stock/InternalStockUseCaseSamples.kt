@@ -38,7 +38,6 @@ internal object InternalStockUseCaseSamples {
             .programType("program_type")
             .itemCode("item_code")
             .itemDescription("item_description")
-            .transactions(listOf(InternalStockUseCaseTransactionSamples.get()))
             .build()
     }
 }

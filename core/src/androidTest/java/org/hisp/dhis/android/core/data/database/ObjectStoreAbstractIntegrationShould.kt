@@ -87,11 +87,7 @@ abstract class ObjectStoreAbstractIntegrationShould<M : CoreObject> internal con
     }
 
     fun assertEqualsIgnoreId(m1: M?, m2: M) {
-        val cv1 = m1!!.toContentValues()
-        cv1.remove("_id")
-        val cv2 = m2.toContentValues()
-        cv2.remove("_id")
-        assertThat(cv1).isEqualTo(cv2)
+        assertThat(m1).isEqualTo(m2)
     }
 
     init {

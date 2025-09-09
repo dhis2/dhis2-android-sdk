@@ -53,7 +53,7 @@ class ProgramConfigurationSettingHandlerShould {
     fun setUp() = runTest {
         programConfigurationSettingList = listOf(programConfigurationSetting)
         whenever(programConfigurationSettingStore.updateOrInsert(any<List<ProgramConfigurationSetting>>())).doReturn(
-            listOf(HandleAction.Insert)
+            listOf(HandleAction.Insert),
         )
         programConfigurationSettingHandler = ProgramConfigurationSettingHandler(programConfigurationSettingStore)
     }

@@ -28,19 +28,10 @@
 
 package org.hisp.dhis.android.core.validation;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.IntegerArrayColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.LeftValidationRuleExpressionColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.RightValidationRuleExpressionColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ValidationRuleImportanceColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ValidationRuleOperatorColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.period.PeriodType;
@@ -53,32 +44,22 @@ public abstract class ValidationRule extends BaseNameableObject implements CoreO
     @Nullable
     public abstract String instruction();
 
-    @ColumnAdapter(ValidationRuleImportanceColumnAdapter.class)
     public abstract ValidationRuleImportance importance();
 
-    @ColumnAdapter(ValidationRuleOperatorColumnAdapter.class)
     public abstract ValidationRuleOperator operator();
 
-    @ColumnAdapter(PeriodTypeColumnAdapter.class)
     public abstract PeriodType periodType();
 
     public abstract Boolean skipFormValidation();
 
-    @ColumnAdapter(LeftValidationRuleExpressionColumnAdapter.class)
     public abstract ValidationRuleExpression leftSide();
 
-    @ColumnAdapter(RightValidationRuleExpressionColumnAdapter.class)
     public abstract ValidationRuleExpression rightSide();
 
-    @ColumnAdapter(IntegerArrayColumnAdapter.class)
     public abstract List<Integer> organisationUnitLevels();
 
     public static Builder builder() {
-        return new $$AutoValue_ValidationRule.Builder();
-    }
-
-    public static ValidationRule create(Cursor cursor) {
-        return $AutoValue_ValidationRule.createFromCursor(cursor);
+        return new AutoValue_ValidationRule.Builder();
     }
 
     public abstract Builder toBuilder();

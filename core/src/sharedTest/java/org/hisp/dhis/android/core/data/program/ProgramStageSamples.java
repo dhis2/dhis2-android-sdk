@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.data.program;
 
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
+
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.DataAccess;
@@ -38,8 +40,6 @@ import org.hisp.dhis.android.core.common.ValidationStrategy;
 import org.hisp.dhis.android.core.period.PeriodType;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramStage;
-
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
 
 public class ProgramStageSamples {
 
@@ -69,7 +69,7 @@ public class ProgramStageSamples {
                 .standardInterval(1)
                 .periodType(PeriodType.BiMonthly)
                 .program(ObjectWithUid.create("program_uid"))
-                .access(Access.create(false, false, DataAccess.create(true, true)))
+                .access(Access.create(true, true, DataAccess.create(true, true)))
                 .remindCompleted(Boolean.FALSE)
                 .validationStrategy(ValidationStrategy.ON_UPDATE_AND_INSERT)
                 .displayProgramStageLabel("programStageLabel")

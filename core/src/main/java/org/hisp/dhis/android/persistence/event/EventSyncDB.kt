@@ -26,9 +26,9 @@ import org.hisp.dhis.android.persistence.program.ProgramDB
         Index(
             name = "eventsyncprogram_organisationunithash",
             value = ["program", "organisationUnitIdsHash"],
-            unique = true
+            unique = true,
         ),
-    ]
+    ],
 )
 internal data class EventSyncDB(
     @PrimaryKey(autoGenerate = true)

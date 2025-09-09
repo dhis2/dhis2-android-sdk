@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.database.Cursor;
-
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -39,11 +37,7 @@ import org.hisp.dhis.android.core.common.CoreObject;
 public abstract class UserGroup extends BaseIdentifiableObject implements CoreObject {
 
     public static Builder builder() {
-        return new $$AutoValue_UserGroup.Builder();
-    }
-
-    public static UserGroup create(Cursor cursor) {
-        return $AutoValue_UserGroup.createFromCursor(cursor);
+        return new AutoValue_UserGroup.Builder();
     }
 
     public abstract Builder toBuilder();

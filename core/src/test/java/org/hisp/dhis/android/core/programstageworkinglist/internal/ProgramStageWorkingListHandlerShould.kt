@@ -87,8 +87,8 @@ class ProgramStageWorkingListHandlerShould {
 
         whenever(programStageWorkingListStore.updateOrInsert(any<List<ProgramStageWorkingList>>())).doReturn(
             listOf(
-                HandleAction.Insert
-            )
+                HandleAction.Insert,
+            ),
         )
         workingLists = listOf(workingList)
     }

@@ -28,30 +28,22 @@
 
 package org.hisp.dhis.android.core.attribute;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbValueTypeColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.persistence.attribute.AttributeTableInfo;
 
 @AutoValue
 @SuppressWarnings({"PMD.ExcessivePublicCount"})
 public abstract class Attribute extends BaseNameableObject implements CoreObject {
 
     @Nullable
-    @ColumnAdapter(DbValueTypeColumnAdapter.class)
     public abstract ValueType valueType();
 
     @Nullable
-    @ColumnName(AttributeTableInfo.Columns.UNIQUE_PROPERTY)
     public abstract Boolean unique();
 
     @Nullable
@@ -149,11 +141,7 @@ public abstract class Attribute extends BaseNameableObject implements CoreObject
 
 
     public static Builder builder() {
-        return new $$AutoValue_Attribute.Builder();
-    }
-
-    public static Attribute create(Cursor cursor) {
-        return AutoValue_Attribute.createFromCursor(cursor);
+        return new AutoValue_Attribute.Builder();
     }
 
     public abstract Builder toBuilder();

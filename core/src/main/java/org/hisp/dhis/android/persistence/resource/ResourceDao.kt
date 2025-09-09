@@ -40,7 +40,7 @@ internal interface ResourceDaoTemp : ObjectDao<ResourceDB> {
         """
         DELETE FROM ${ResourceTableInfo.TABLE_NAME} 
         WHERE ${ResourceTableInfo.Columns.RESOURCE_TYPE} = :type
-        """
+        """,
     )
     suspend fun deleteResource(type: Resource.Type): Int
 }

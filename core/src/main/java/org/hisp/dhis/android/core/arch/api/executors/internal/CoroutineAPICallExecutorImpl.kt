@@ -134,7 +134,6 @@ internal class CoroutineAPICallExecutorImpl(
             databaseAdapter.getCurrentDatabase().useWriterConnection { transactor ->
                 transactor.immediateTransaction {
                     block().also { successfulTransactionRoom(cleanForeignKeyErrors) }
-
                 }
             }
         } catch (t: Throwable) {

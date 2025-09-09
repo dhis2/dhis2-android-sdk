@@ -38,6 +38,7 @@ import java.io.File
  */
 internal interface DatabaseManager {
     fun createInMemoryDatabase(): DatabaseAdapter
+
     /**
      * Creates or opens a database with the specified name.
      *
@@ -67,7 +68,7 @@ internal interface DatabaseManager {
     fun openSQLCipherDatabaseDirectly(
         databaseFile: File,
         password: String?,
-        hook: SQLiteDatabaseHook?
+        hook: SQLiteDatabaseHook?,
     ): net.zetetic.database.sqlcipher.SQLiteDatabase
 
     /**

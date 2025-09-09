@@ -28,15 +28,10 @@
 
 package org.hisp.dhis.android.core.option;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreObjectWithUidListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -47,19 +42,13 @@ import java.util.List;
 public abstract class OptionGroup extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid optionSet();
 
     @Nullable
-    @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)
     public abstract List<ObjectWithUid> options();
 
     public static Builder builder() {
-        return new $$AutoValue_OptionGroup.Builder();
-    }
-
-    public static OptionGroup create(Cursor cursor) {
-        return $AutoValue_OptionGroup.createFromCursor(cursor);
+        return new AutoValue_OptionGroup.Builder();
     }
 
     public abstract Builder toBuilder();

@@ -84,7 +84,7 @@ internal class VisualizationHandler(
 
     private fun VisualizationDimension.createEmptyItem(
         position: LayoutPosition,
-        visualization: String
+        visualization: String,
     ): VisualizationDimensionItem {
         return VisualizationDimensionItem.builder()
             .position(position)

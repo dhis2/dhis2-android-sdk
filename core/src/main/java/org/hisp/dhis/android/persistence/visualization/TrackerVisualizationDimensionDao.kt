@@ -33,6 +33,6 @@ import org.hisp.dhis.android.processor.GenerateDaoQueries
 
 @GenerateDaoQueries(
     tableName = "TrackerVisualizationDimensionTableInfo.TABLE_NAME",
-    parentColumnName = "TrackerVisualizationDimensionTableInfo.Columns.TRACKER_VISUALIZATION"
+    parentColumnName = "TrackerVisualizationDimensionTableInfo.Columns.TRACKER_VISUALIZATION",
 )
 internal interface TrackerVisualizationDimensionDaoTemp : LinkDao<TrackerVisualizationDimensionDB>

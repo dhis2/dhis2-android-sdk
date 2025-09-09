@@ -67,8 +67,8 @@ class ProgramStageDataElementHandlerShould {
         whenever(programStageDataElement.renderType()).thenReturn(valueTypeRendering)
         whenever(programStageDataElementStore.updateOrInsert(any<List<ProgramStageDataElement>>())).thenReturn(
             listOf(
-                HandleAction.Insert
-            )
+                HandleAction.Insert,
+            ),
         )
     }
 

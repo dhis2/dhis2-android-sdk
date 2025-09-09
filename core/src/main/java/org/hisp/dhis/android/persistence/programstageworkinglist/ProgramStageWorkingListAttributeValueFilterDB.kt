@@ -50,7 +50,7 @@ import org.hisp.dhis.android.persistence.common.toDB
             deferred = true,
         ),
         ForeignKey(
-            entity = AttributeDB::class, //TODO CHECK IF THIS IS CORRECT OR SHOULD BE TrackedEntityAttributeDB
+            entity = AttributeDB::class, // TODO CHECK IF THIS IS CORRECT OR SHOULD BE TrackedEntityAttributeDB
             parentColumns = ["uid"],
             childColumns = ["attribute"],
             onDelete = ForeignKey.CASCADE,

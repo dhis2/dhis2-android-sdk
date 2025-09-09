@@ -67,7 +67,6 @@ internal interface D2Dao {
     suspend fun getTableInfo(query: SupportSQLiteQuery): List<PragmaTableInfoRow>
 }
 
-
 internal data class PragmaTableInfoRow(
     val name: String,
 )

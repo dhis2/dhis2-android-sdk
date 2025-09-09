@@ -46,7 +46,7 @@ internal interface EnrollmentDaoTemp : IdentifiableDeletableDataObjectDao<Enroll
         """
         DELETE FROM ${EnrollmentTableInfo.TABLE_NAME}
         WHERE ${EnrollmentTableInfo.Columns.UID} IN (:enrollmentUids)
-    """
+    """,
     )
     suspend fun deleteByUids(enrollmentUids: List<String>): Int
 }

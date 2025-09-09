@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 
 import com.google.auto.value.AutoValue;
@@ -47,10 +45,6 @@ public abstract class CustomIntentDataElement implements CoreObject {
 
     public static Builder builder() {
         return new AutoValue_CustomIntentDataElement.Builder();
-    }
-
-    public static CustomIntentDataElement create(Cursor cursor) {
-        return $AutoValue_CustomIntentDataElement.createFromCursor(cursor);
     }
 
     @AutoValue.Builder

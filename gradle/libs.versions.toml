@@ -87,9 +87,6 @@ google-auto-value-annotation = { group = "com.google.auto.value", name = "auto-v
 google-auto-value = { group = "com.google.auto.value", name = "auto-value", version.ref = "autoValue" }
 google-truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 
-auto-value-cursor = { group = "com.gabrielittner.auto.value", name = "auto-value-cursor", version.ref = "autoValueCursor" }
-auto-value-cursor-annotations = { group = "com.gabrielittner.auto.value", name = "auto-value-cursor-annotations", version.ref = "autoValueCursor" }
-
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
 koin-annotations = { group = "io.insert-koin", name = "koin-annotations", version.ref = "koinKsp" }
 koin-compiler = { group = "io.insert-koin", name = "koin-ksp-compiler", version.ref = "koinKsp" }

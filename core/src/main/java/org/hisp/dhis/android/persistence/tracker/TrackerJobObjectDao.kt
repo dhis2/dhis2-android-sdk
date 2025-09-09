@@ -38,7 +38,7 @@ internal interface TrackerJobObjectDaoTemp : ObjectDao<TrackerJobObjectDB> {
         """
         DELETE FROM ${TrackerJobObjectTableInfo.TABLE_NAME} 
         WHERE ${TrackerJobObjectTableInfo.Columns.JOB_UID} = :jobUid
-    """
+    """,
     )
     suspend fun deleteByJobUid(jobUid: String): Int
 }

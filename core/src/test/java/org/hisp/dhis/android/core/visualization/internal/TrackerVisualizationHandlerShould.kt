@@ -68,8 +68,8 @@ class TrackerVisualizationHandlerShould {
         whenever(trackerVisualization.filters()).doReturn(listOf(dimension))
         whenever(trackerVisualizationStore.updateOrInsert(any<List<TrackerVisualization>>())).doReturn(
             listOf(
-                HandleAction.Insert
-            )
+                HandleAction.Insert,
+            ),
         )
         whenever(trackerVisualization.uid()).doReturn("tracker_visualization_uid")
     }

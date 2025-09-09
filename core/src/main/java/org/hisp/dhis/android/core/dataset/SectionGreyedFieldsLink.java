@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -50,10 +48,6 @@ public abstract class SectionGreyedFieldsLink implements CoreObject {
 
     public static Builder builder() {
         return new AutoValue_SectionGreyedFieldsLink.Builder();
-    }
-
-    public static SectionGreyedFieldsLink create(Cursor cursor) {
-        return $AutoValue_SectionGreyedFieldsLink.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();

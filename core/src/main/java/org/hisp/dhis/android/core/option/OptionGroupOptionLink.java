@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.option;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -45,12 +43,8 @@ public abstract class OptionGroupOptionLink implements CoreObject {
     @Nullable
     public abstract String option();
 
-    public static OptionGroupOptionLink create(Cursor cursor) {
-        return AutoValue_OptionGroupOptionLink.createFromCursor(cursor);
-    }
-
     public static Builder builder() {
-        return new $$AutoValue_OptionGroupOptionLink.Builder();
+        return new AutoValue_OptionGroupOptionLink.Builder();
     }
 
     public abstract Builder toBuilder();

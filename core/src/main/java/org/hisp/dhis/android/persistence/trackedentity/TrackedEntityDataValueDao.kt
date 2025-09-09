@@ -49,10 +49,11 @@ internal interface TrackedEntityDataValueDaoTemp : ObjectDao<TrackedEntityDataVa
         DELETE FROM ${TrackedEntityDataValueTableInfo.TABLE_NAME}
         WHERE ${TrackedEntityDataValueTableInfo.Columns.EVENT} = :eventUid
           AND ${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT} NOT IN (:dataElementUids)
-    """
+    """,
     )
     suspend fun deleteByEventAndNotInDataElements(
-        eventUid: String, dataElementUids: List<String>
+        eventUid: String,
+        dataElementUids: List<String>,
     ): Int
 
     @Query(
@@ -60,7 +61,7 @@ internal interface TrackedEntityDataValueDaoTemp : ObjectDao<TrackedEntityDataVa
         DELETE FROM ${TrackedEntityDataValueTableInfo.TABLE_NAME}
         WHERE ${TrackedEntityDataValueTableInfo.Columns.EVENT} = :eventUid
           AND ${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT} = :dataElementUid
-    """
+    """,
     )
     suspend fun deleteByEventAndDataElement(
         eventUid: String,
@@ -71,7 +72,7 @@ internal interface TrackedEntityDataValueDaoTemp : ObjectDao<TrackedEntityDataVa
         """
         DELETE FROM ${TrackedEntityDataValueTableInfo.TABLE_NAME}
         WHERE ${TrackedEntityDataValueTableInfo.Columns.EVENT} = :eventUid
-    """
+    """,
     )
     suspend fun deleteByEvent(eventUid: String): Int
 
@@ -80,10 +81,10 @@ internal interface TrackedEntityDataValueDaoTemp : ObjectDao<TrackedEntityDataVa
         DELETE FROM ${TrackedEntityDataValueTableInfo.TABLE_NAME}
         WHERE ${TrackedEntityDataValueTableInfo.Columns.EVENT} = :eventUid
           AND ${TrackedEntityDataValueTableInfo.Columns.VALUE} IS NULL 
-    """
+    """,
     )
     suspend fun removeDeletedDataValuesByEvent(
-        eventUid: String
+        eventUid: String,
     ): Int
 
     @Query(
@@ -97,8 +98,7 @@ internal interface TrackedEntityDataValueDaoTemp : ObjectDao<TrackedEntityDataVa
                 ON psde.${ProgramStageDataElementTableInfo.Columns.PROGRAM_STAGE} = e.${EventTableInfo.Columns.PROGRAM_STAGE}
               WHERE e.${EventTableInfo.Columns.UID} = :eventUid
           )
-    """
+    """,
     )
     suspend fun removeUnassignedDataValuesByEvent(eventUid: String): Int
-
 }

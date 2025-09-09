@@ -39,7 +39,7 @@ internal interface ProgramIndicatorDaoTemp : IdentifiableObjectDao<ProgramIndica
         """
         DELETE FROM ${ProgramIndicatorTableInfo.TABLE_NAME}
         WHERE ${IdentifiableColumns.UID} IN (:uids)
-    """
+    """,
     )
     suspend fun deleteByUids(uids: List<String>)
 }

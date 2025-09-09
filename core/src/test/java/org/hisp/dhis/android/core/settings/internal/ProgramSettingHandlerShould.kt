@@ -52,7 +52,9 @@ class ProgramSettingHandlerShould {
     @Throws(Exception::class)
     fun setUp() = runTest {
         programSettings = mutableListOf(programSetting)
-        whenever(programSettingStore.updateOrInsert(any<List<ProgramSetting>>())).thenReturn(listOf(HandleAction.Insert))
+        whenever(
+            programSettingStore.updateOrInsert(any<List<ProgramSetting>>()),
+        ).thenReturn(listOf(HandleAction.Insert))
         programSettingHandler = ProgramSettingHandler(programSettingStore)
     }
 

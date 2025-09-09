@@ -33,6 +33,6 @@ import org.hisp.dhis.android.processor.GenerateDaoQueries
 
 @GenerateDaoQueries(
     tableName = "DataSetOrganisationUnitLinkTableInfo.TABLE_NAME",
-    parentColumnName = "DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT"
+    parentColumnName = "DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT",
 )
 internal interface DataSetOrganisationUnitLinkDaoTemp : LinkDao<DataSetOrganisationUnitLinkDB>

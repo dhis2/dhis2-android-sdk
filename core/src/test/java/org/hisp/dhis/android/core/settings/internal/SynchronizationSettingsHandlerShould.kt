@@ -53,8 +53,8 @@ class SynchronizationSettingsHandlerShould {
         synchronizationSettingsList = listOf(synchronizationSettings)
         whenever(synchronizationSettingStore.updateOrInsert(any<List<SynchronizationSettings>>())).doReturn(
             listOf(
-                HandleAction.Insert
-            )
+                HandleAction.Insert,
+            ),
         )
         synchronizationSettingsHandler = SynchronizationSettingHandler(
             synchronizationSettingStore,

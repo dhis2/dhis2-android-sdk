@@ -28,19 +28,10 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbValueTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DefaultAccessColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AggregationTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreObjectWithUidListColumnAdapter;
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.AggregationType;
@@ -50,7 +41,6 @@ import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeTableInfo;
 
 import java.util.List;
 
@@ -65,18 +55,15 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
     public abstract Integer sortOrderInListNoProgram();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid optionSet();
 
     @Nullable
-    @ColumnAdapter(DbValueTypeColumnAdapter.class)
     public abstract ValueType valueType();
 
     @Nullable
     public abstract String expression();
 
     @Nullable
-    @ColumnAdapter(AggregationTypeColumnAdapter.class)
     public abstract AggregationType aggregationType();
 
     @Nullable
@@ -95,11 +82,9 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
     public abstract Boolean confidential();
 
     @Nullable
-    @ColumnName(TrackedEntityAttributeTableInfo.Columns.ORGUNIT_SCOPE)
     public abstract Boolean orgUnitScope();
 
     @Nullable
-    @ColumnName(TrackedEntityAttributeTableInfo.Columns.UNIQUE_PROPERTY)
     public abstract Boolean unique();
 
     @Nullable
@@ -109,10 +94,8 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
     public abstract String fieldMask();
 
     @Nullable
-    @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)
     public abstract List<ObjectWithUid> legendSets();
 
-    @ColumnAdapter(DefaultAccessColumnAdapter.class)
     public abstract Access access();
 
     @Nullable
@@ -122,11 +105,7 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
     public abstract String displayFormName();
 
     public static Builder builder() {
-        return new $$AutoValue_TrackedEntityAttribute.Builder();
-    }
-
-    public static TrackedEntityAttribute create(Cursor cursor) {
-        return $AutoValue_TrackedEntityAttribute.createFromCursor(cursor);
+        return new AutoValue_TrackedEntityAttribute.Builder();
     }
 
     public abstract Builder toBuilder();

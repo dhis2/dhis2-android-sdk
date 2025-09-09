@@ -33,6 +33,6 @@ import org.hisp.dhis.android.processor.GenerateDaoQueries
 
 @GenerateDaoQueries(
     tableName = "SectionIndicatorLinkTableInfo.TABLE_NAME",
-    parentColumnName = "SectionIndicatorLinkTableInfo.Columns.SECTION"
+    parentColumnName = "SectionIndicatorLinkTableInfo.Columns.SECTION",
 )
 internal interface SectionIndicatorLinkDaoTemp : LinkDao<SectionIndicatorLinkDB>

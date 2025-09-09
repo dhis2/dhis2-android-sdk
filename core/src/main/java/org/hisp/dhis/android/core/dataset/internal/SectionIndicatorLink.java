@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.dataset.internal;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -47,10 +45,6 @@ public abstract class SectionIndicatorLink implements CoreObject {
 
     public static Builder builder() {
         return new AutoValue_SectionIndicatorLink.Builder();
-    }
-
-    public static SectionIndicatorLink create(Cursor cursor) {
-        return $AutoValue_SectionIndicatorLink.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();

@@ -33,6 +33,6 @@ import org.hisp.dhis.android.processor.GenerateDaoQueries
 
 @GenerateDaoQueries(
     tableName = "AnalyticsTeiWHONutritionDataTableInfo.TABLE_NAME",
-    parentColumnName = "AnalyticsTeiWHONutritionDataTableInfo.Columns.TEI_SETTING"
+    parentColumnName = "AnalyticsTeiWHONutritionDataTableInfo.Columns.TEI_SETTING",
 )
 internal interface AnalyticsTeiWHONutritionDataDaoTemp : LinkDao<AnalyticsTeiWHONutritionDataDB>

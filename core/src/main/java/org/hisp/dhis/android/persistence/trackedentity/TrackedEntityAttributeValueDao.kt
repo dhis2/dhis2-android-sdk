@@ -47,12 +47,12 @@ internal interface TrackedEntityAttributeValueDaoTemp : ObjectDao<TrackedEntityA
         DELETE FROM ${TrackedEntityAttributeValueTableInfo.TABLE_NAME}
         WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = :trackedEntityInstanceUid
           AND ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} NOT IN (:trackedEntityAttributeUids)
-    """
+    """,
     )
     suspend fun deleteByInstanceAndNotInAttributes(
-        trackedEntityInstanceUid: String, trackedEntityAttributeUids: List<String>
+        trackedEntityInstanceUid: String,
+        trackedEntityAttributeUids: List<String>,
     ): Int
-
 
     @Query(
         """
@@ -64,10 +64,12 @@ internal interface TrackedEntityAttributeValueDaoTemp : ObjectDao<TrackedEntityA
               FROM ${ProgramTrackedEntityAttributeTableInfo.TABLE_NAME}
               WHERE ${ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM} = :programUid 
           )
-    """
+    """,
     )
     suspend fun deleteByInstanceAndNotInProgramAttributes(
-        trackedEntityInstanceUid: String, trackedEntityAttributeUids: List<String>, programUid: String
+        trackedEntityInstanceUid: String,
+        trackedEntityAttributeUids: List<String>,
+        programUid: String,
     ): Int
 
     @Query(
@@ -84,13 +86,13 @@ internal interface TrackedEntityAttributeValueDaoTemp : ObjectDao<TrackedEntityA
               FROM ${TrackedEntityTypeAttributeTableInfo.TABLE_NAME}
               WHERE ${TrackedEntityTypeAttributeTableInfo.Columns.TRACKED_ENTITY_TYPE} = :teiTypeUid
           )
-    """
+    """,
     )
     suspend fun deleteByInstanceAndNotInAccessibleAttributes(
         trackedEntityInstanceUid: String,
         trackedEntityAttributeUids: List<String>,
         programUids: List<String>,
-        teiTypeUid: String
+        teiTypeUid: String,
     ): Int
 
     @Query(
@@ -98,9 +100,9 @@ internal interface TrackedEntityAttributeValueDaoTemp : ObjectDao<TrackedEntityA
         DELETE FROM ${TrackedEntityAttributeValueTableInfo.TABLE_NAME}
         WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = :trackedEntityInstanceUid
           AND ${TrackedEntityAttributeValueTableInfo.Columns.VALUE} IS NULL
-    """
+    """,
     )
     suspend fun removeDeletedAttributeValuesByInstance(
-        trackedEntityInstanceUid: String
+        trackedEntityInstanceUid: String,
     ): Int
 }

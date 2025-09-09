@@ -57,5 +57,3 @@ internal open class IdentifiableHandlerImpl<O>(protected val store: Identifiable
         return false
     }
 }
-
-

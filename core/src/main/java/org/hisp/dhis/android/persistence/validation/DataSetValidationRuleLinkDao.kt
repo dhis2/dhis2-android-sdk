@@ -33,6 +33,6 @@ import org.hisp.dhis.android.processor.GenerateDaoQueries
 
 @GenerateDaoQueries(
     tableName = "DataSetValidationRuleLinkTableInfo.TABLE_NAME",
-    parentColumnName = "DataSetValidationRuleLinkTableInfo.Columns.DATA_SET"
+    parentColumnName = "DataSetValidationRuleLinkTableInfo.Columns.DATA_SET",
 )
 internal interface DataSetValidationRuleLinkDaoTemp : LinkDao<DataSetValidationRuleLinkDB>

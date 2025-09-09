@@ -39,7 +39,7 @@ internal interface TrackerImportConflictDaoTemp : ObjectDao<TrackerImportConflic
         DELETE FROM ${TrackerImportConflictTableInfo.TABLE_NAME}
         WHERE ${TrackerImportConflictTableInfo.Columns.EVENT} = :uid
           AND ${TrackerImportConflictTableInfo.Columns.TABLE_REFERENCE} = :tableName
-    """
+    """,
     )
     suspend fun deleteEventConflict(uid: String, tableName: String): Int
 
@@ -48,7 +48,7 @@ internal interface TrackerImportConflictDaoTemp : ObjectDao<TrackerImportConflic
         DELETE FROM ${TrackerImportConflictTableInfo.TABLE_NAME}
         WHERE ${TrackerImportConflictTableInfo.Columns.ENROLLMENT} = :uid
           AND ${TrackerImportConflictTableInfo.Columns.TABLE_REFERENCE} = :tableName
-    """
+    """,
     )
     suspend fun deleteEnrollmentConflict(uid: String, tableName: String): Int
 
@@ -57,8 +57,7 @@ internal interface TrackerImportConflictDaoTemp : ObjectDao<TrackerImportConflic
         DELETE FROM ${TrackerImportConflictTableInfo.TABLE_NAME}
         WHERE ${TrackerImportConflictTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = :uid
           AND ${TrackerImportConflictTableInfo.Columns.TABLE_REFERENCE} = :tableName
-    """
+    """,
     )
     suspend fun deleteTrackedEntityConflict(uid: String, tableName: String): Int
-
 }

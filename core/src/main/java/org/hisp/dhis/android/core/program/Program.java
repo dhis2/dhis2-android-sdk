@@ -28,25 +28,10 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.AccessColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DBCaptureCoordinatesFromFeatureTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbProgramTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AccessLevelColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.FeatureTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.TrackedEntityTypeWithUidColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreAttributeValuesListAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramRuleVariableListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramSectionListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramTrackedEntityAttributeListColumnAdapter;
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.attribute.AttributeValue;
 import org.hisp.dhis.android.core.category.CategoryCombo;
@@ -120,7 +105,6 @@ public abstract class Program extends BaseNameableObject
      */
     @Deprecated
     @Nullable
-    @ColumnAdapter(DBCaptureCoordinatesFromFeatureTypeColumnAdapter.class)
     abstract Boolean captureCoordinates();
 
     @Nullable
@@ -130,23 +114,18 @@ public abstract class Program extends BaseNameableObject
     public abstract Boolean displayFrontPageList();
 
     @Nullable
-    @ColumnAdapter(DbProgramTypeColumnAdapter.class)
     public abstract ProgramType programType();
 
     @Nullable
-    @ColumnAdapter(IgnoreProgramTrackedEntityAttributeListColumnAdapter.class)
     abstract List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid relatedProgram();
 
     @Nullable
-    @ColumnAdapter(TrackedEntityTypeWithUidColumnAdapter.class)
     public abstract TrackedEntityType trackedEntityType();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid categoryCombo();
 
     public String categoryComboUid() {
@@ -154,11 +133,9 @@ public abstract class Program extends BaseNameableObject
         return combo == null ? CategoryCombo.DEFAULT_UID : combo.uid();
     }
 
-    @ColumnAdapter(AccessColumnAdapter.class)
     public abstract Access access();
 
     @Nullable
-    @ColumnAdapter(IgnoreProgramRuleVariableListColumnAdapter.class)
     abstract List<ProgramRuleVariable> programRuleVariables();
 
     @Nullable
@@ -168,7 +145,6 @@ public abstract class Program extends BaseNameableObject
     public abstract Integer completeEventsExpiryDays();
 
     @Nullable
-    @ColumnAdapter(PeriodTypeColumnAdapter.class)
     public abstract PeriodType expiryPeriodType();
 
     @Nullable
@@ -178,15 +154,12 @@ public abstract class Program extends BaseNameableObject
     public abstract Integer maxTeiCountToReturn();
 
     @Nullable
-    @ColumnAdapter(IgnoreProgramSectionListColumnAdapter.class)
     public abstract List<ProgramSection> programSections();
 
     @Nullable
-    @ColumnAdapter(FeatureTypeColumnAdapter.class)
     public abstract FeatureType featureType();
 
     @Nullable
-    @ColumnAdapter(AccessLevelColumnAdapter.class)
     public abstract AccessLevel accessLevel();
 
     /**
@@ -286,15 +259,10 @@ public abstract class Program extends BaseNameableObject
     public abstract String displayEventLabel();
 
     @Nullable
-    @ColumnAdapter(IgnoreAttributeValuesListAdapter.class)
     public abstract List<AttributeValue> attributeValues();
 
     public static Builder builder() {
-        return new $$AutoValue_Program.Builder();
-    }
-
-    public static Program create(Cursor cursor) {
-        return $AutoValue_Program.createFromCursor(cursor);
+        return new AutoValue_Program.Builder();
     }
 
     public abstract Builder toBuilder();

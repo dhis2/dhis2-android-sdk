@@ -33,6 +33,6 @@ import org.hisp.dhis.android.processor.GenerateDaoQueries
 
 @GenerateDaoQueries(
     tableName = "CustomIntentDataElementTableInfo.TABLE_NAME",
-    parentColumnName = "CustomIntentDataElementTableInfo.Columns.CUSTOM_INTENT_UID"
+    parentColumnName = "CustomIntentDataElementTableInfo.Columns.CUSTOM_INTENT_UID",
 )
 internal interface CustomIntentDataElementDaoTemp : LinkDao<CustomIntentDataElementDB>

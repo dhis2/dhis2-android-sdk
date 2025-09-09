@@ -63,13 +63,12 @@ internal data class RelationshipItemDB(
                 trackedEntityInstance(
                     RelationshipItemTrackedEntityInstance.builder()
                         .trackedEntityInstance(it)
-                        .build()
+                        .build(),
                 )
             }
             enrollment?.let { enrollment(RelationshipItemEnrollment.builder().enrollment(it).build()) }
             event?.let { event(RelationshipItemEvent.builder().event(it).build()) }
         }
-
             .build()
     }
 }

@@ -33,6 +33,6 @@ import org.hisp.dhis.android.processor.GenerateDaoQueries
 
 @GenerateDaoQueries(
     tableName = "OptionGroupOptionLinkTableInfo.TABLE_NAME",
-    parentColumnName = "OptionGroupOptionLinkTableInfo.Columns.OPTION_GROUP"
+    parentColumnName = "OptionGroupOptionLinkTableInfo.Columns.OPTION_GROUP",
 )
 internal interface OptionGroupOptionLinkDaoTemp : LinkDao<OptionGroupOptionLinkDB>

@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.programstageworkinglist;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -66,11 +64,7 @@ public abstract class ProgramStageWorkingListAttributeValueFilter extends Filter
     public abstract String sw();
 
     public static Builder builder() {
-        return new $$AutoValue_ProgramStageWorkingListAttributeValueFilter.Builder();
-    }
-
-    public static ProgramStageWorkingListAttributeValueFilter create(Cursor cursor) {
-        return $AutoValue_ProgramStageWorkingListAttributeValueFilter.createFromCursor(cursor);
+        return new AutoValue_ProgramStageWorkingListAttributeValueFilter.Builder();
     }
 
     public abstract Builder toBuilder();

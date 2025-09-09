@@ -71,8 +71,10 @@ class ProgramTrackedEntityAttributeHandlerShould {
         whenever(trackedEntityAttribute.uid()).thenReturn("tracked_entity_attribute_uid")
         whenever(programTrackedEntityAttribute.program()).thenReturn(program)
         whenever(program.uid()).thenReturn("program_uid")
-        whenever(programTrackedEntityAttributeStore.updateOrInsert(any<List<ProgramTrackedEntityAttribute>>())).thenReturn(
-            listOf(HandleAction.Insert)
+        whenever(
+            programTrackedEntityAttributeStore.updateOrInsert(any<List<ProgramTrackedEntityAttribute>>()),
+        ).thenReturn(
+            listOf(HandleAction.Insert),
         )
     }
 

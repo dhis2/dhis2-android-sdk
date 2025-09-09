@@ -39,7 +39,7 @@ internal interface NoteDaoTemp : IdentifiableObjectDao<NoteDB> {
         """
         DELETE FROM ${NoteTableInfo.TABLE_NAME}
         WHERE ${NoteTableInfo.Columns.ENROLLMENT} = :enrollmentUid
-    """
+    """,
     )
     suspend fun deleteNotesByEnrollment(enrollmentUid: String): Int
 
@@ -47,8 +47,7 @@ internal interface NoteDaoTemp : IdentifiableObjectDao<NoteDB> {
         """
         DELETE FROM ${NoteTableInfo.TABLE_NAME}
         WHERE ${NoteTableInfo.Columns.EVENT} = :eventUid
-    """
+    """,
     )
     suspend fun deleteNotesByEvent(eventUid: String): Int
-
 }

@@ -30,17 +30,8 @@ package org.hisp.dhis.android.core.common;
 
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.gabrielittner.auto.value.cursor.ColumnName;
-
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DateFilterPeriodColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AssignedUserModeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EventStatusColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.OrganisationUnitModeColumnAdapter;
 import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
-import org.hisp.dhis.android.persistence.event.EventFilterTableInfo;
 
 import java.util.List;
 
@@ -53,31 +44,24 @@ public abstract class FilterQueryCriteria {
     public abstract String organisationUnit();
 
     @Nullable
-    @ColumnAdapter(OrganisationUnitModeColumnAdapter.class)
     public abstract OrganisationUnitMode ouMode();
 
     @Nullable
-    @ColumnAdapter(AssignedUserModeColumnAdapter.class)
     public abstract AssignedUserMode assignedUserMode();
 
     @Nullable
-    @ColumnName(EventFilterTableInfo.Columns.ORDER_PROPERTY)
     public abstract String order();
 
     @Nullable
-    @ColumnAdapter(StringListColumnAdapter.class)
     public abstract List<String> displayColumnOrder();
 
     @Nullable
-    @ColumnAdapter(EventStatusColumnAdapter.class)
     public abstract EventStatus eventStatus();
 
     @Nullable
-    @ColumnAdapter(DateFilterPeriodColumnAdapter.class)
     public abstract DateFilterPeriod eventDate();
 
     @Nullable
-    @ColumnAdapter(DateFilterPeriodColumnAdapter.class)
     public abstract DateFilterPeriod lastUpdatedDate();
 
     public abstract static class Builder<T extends Builder> {

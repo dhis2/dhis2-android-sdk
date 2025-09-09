@@ -29,7 +29,6 @@ package org.hisp.dhis.android.testapp.trackedentity.search
 
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
 import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore

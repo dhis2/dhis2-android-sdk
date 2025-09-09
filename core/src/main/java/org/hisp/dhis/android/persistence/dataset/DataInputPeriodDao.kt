@@ -33,6 +33,6 @@ import org.hisp.dhis.android.processor.GenerateDaoQueries
 
 @GenerateDaoQueries(
     tableName = "DataInputPeriodTableInfo.TABLE_NAME",
-    parentColumnName = "DataInputPeriodTableInfo.Columns.DATA_SET"
+    parentColumnName = "DataInputPeriodTableInfo.Columns.DATA_SET",
 )
 internal interface DataInputPeriodDaoTemp : LinkDao<DataInputPeriodDB>

@@ -29,7 +29,7 @@ import org.hisp.dhis.android.persistence.common.applyStyleFields
             name = "optionset_optioncode",
             value = ["optionSet", "code"],
         ),
-    ]
+    ],
 )
 internal data class OptionDB(
     @PrimaryKey

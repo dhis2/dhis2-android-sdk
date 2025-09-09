@@ -460,7 +460,7 @@ import org.hisp.dhis.android.persistence.visualization.VisualizationDimensionIte
         VisualizationDimensionItemDB::class,
     ],
     version = AppDatabase.VERSION,
-    exportSchema = true
+    exportSchema = true,
 )
 @TypeConverters(AccessDBTypeConverter::class)
 @Suppress("TooManyFunctions")

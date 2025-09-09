@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.settings.CustomIntentResponse
 import org.hisp.dhis.android.core.settings.CustomIntentResponseData
 import org.hisp.dhis.android.core.settings.CustomIntentResponseDataExtra
 import org.hisp.dhis.android.core.settings.CustomIntentResponseExtraType
-import org.hisp.dhis.android.core.settings.CustomIntentTrigger
 
 object CustomIntentSamples {
     fun getCustomIntent(): CustomIntent {
@@ -46,20 +45,6 @@ object CustomIntentSamples {
             .uid("uid")
             .name("Face Recognition")
             .action(listOf(CustomIntentActionType.SEARCH))
-            .trigger(
-                CustomIntentTrigger.builder()
-                    .dataElements(
-                        listOf(
-                            getCustomIntentDataElementTrigger(),
-                        ),
-                    )
-                    .attributes(
-                        listOf(
-                            getCustomIntentAttributeTrigger(),
-                        ),
-                    )
-                    .build(),
-            )
             .packageName("package.name")
             .request(
                 CustomIntentRequest.builder()

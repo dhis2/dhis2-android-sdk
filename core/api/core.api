@@ -1764,762 +1764,6 @@ public abstract interface class org/hisp/dhis/android/core/arch/db/access/intern
 	public abstract fun encryptAndCopyTo (Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;Ljava/io/File;Ljava/io/File;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/AccessColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
-	public fun <init> ()V
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
-	public fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/Access;
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
-	public fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/Access;)V
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/DBCaptureCoordinatesFromFeatureTypeColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
-	public fun <init> ()V
-	public fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Boolean;
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
-	public fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Boolean;)V
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/DbDateColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
-	public fun <init> ()V
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
-	public fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/util/Date;
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
-	public fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/util/Date;)V
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/DbFormTypeColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
-	public fun <init> ()V
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
-	public fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/FormType;
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
-	public fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/FormType;)V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/DbGeometryColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
-	public static final field Companion Lorg/hisp/dhis/android/core/arch/db/adapters/custom/internal/DbGeometryColumnAdapter$Companion;
-	public fun <init> ()V
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
-	public fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/Geometry;
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
-	public fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/Geometry;)V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/DbGeometryColumnAdapter$Companion {
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/DbGeometryTypeColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
-	public fun <init> ()V
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
-	public fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/FeatureType;
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
-	public fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/FeatureType;)V
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/DbProgramRuleVariableSourceTypeColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
-	public fun <init> ()V
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
-	public fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramRuleVariableSourceType;
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
-	public fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Lorg/hisp/dhis/android/core/program/ProgramRuleVariableSourceType;)V
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/DbProgramTypeColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
-	public fun <init> ()V
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
-	public fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramType;
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
-	public fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Lorg/hisp/dhis/android/core/program/ProgramType;)V
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/DbValueTypeColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
-	public fun <init> ()V
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
-	public fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/ValueType;
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
-	public fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/ValueType;)V
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/DefaultAccessColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
-	public fun <init> ()V
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
-	public fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/Access;
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
-	public fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/Access;)V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/EntityQueryCriteriaColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
-	public fun <init> ()V
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
-	public fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/EntityQueryCriteria;
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
-	public fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Lorg/hisp/dhis/android/core/trackedentity/EntityQueryCriteria;)V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/EventQueryCriteriaColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
-	public fun <init> ()V
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
-	public fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/EventQueryCriteria;
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
-	public fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Lorg/hisp/dhis/android/core/event/EventQueryCriteria;)V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/FilterPeriodColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
-	public static final field Companion Lorg/hisp/dhis/android/core/arch/db/adapters/custom/internal/FilterPeriodColumnAdapter$Companion;
-	public fun <init> ()V
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
-	public fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/FilterPeriod;
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
-	public fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/FilterPeriod;)V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/FilterPeriodColumnAdapter$Companion {
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/IntegerArrayColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
-	public static final field Companion Lorg/hisp/dhis/android/core/arch/db/adapters/custom/internal/IntegerArrayColumnAdapter$Companion;
-	public fun <init> ()V
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
-	public fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/util/List;
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
-	public fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/util/List;)V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/IntegerArrayColumnAdapter$Companion {
-	public final fun serialize (Ljava/util/List;)Ljava/lang/String;
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/IsColumnNotNullColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
-	public fun <init> ()V
-	public fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Boolean;
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
-	public fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Boolean;)V
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/LeftValidationRuleExpressionColumnAdapter {
-	public fun <init> ()V
-	protected fun descriptionColumnName ()Ljava/lang/String;
-	protected fun expressionColumnName ()Ljava/lang/String;
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/ValidationRuleExpression;
-	protected fun missingValueStrategyColumnName ()Ljava/lang/String;
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Lorg/hisp/dhis/android/core/validation/ValidationRuleExpression;)V
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/ObjectStyleColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
-	public static final field COLOR Ljava/lang/String;
-	public static final field ICON Ljava/lang/String;
-	public fun <init> ()V
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
-	public fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/ObjectStyle;
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
-	public fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/ObjectStyle;)V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/ProgramItemHeaderColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
-	public static final field Companion Lorg/hisp/dhis/android/core/arch/db/adapters/custom/internal/ProgramItemHeaderColumnAdapter$Companion;
-	public static final field PROGRAM_INDICATOR Ljava/lang/String;
-	public fun <init> ()V
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
-	public fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/ProgramItemHeader;
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
-	public fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Lorg/hisp/dhis/android/core/settings/ProgramItemHeader;)V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/ProgramItemHeaderColumnAdapter$Companion {
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/ProgramStageQueryCriteriaColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
-	public fun <init> ()V
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
-	public fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria;
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
-	public fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria;)V
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/RelationshipItemEnrollmentColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
-	public fun <init> ()V
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
-	public fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipItemEnrollment;
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
-	public fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Lorg/hisp/dhis/android/core/relationship/RelationshipItemEnrollment;)V
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/RelationshipItemEventColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
-	public fun <init> ()V
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
-	public fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipItemEvent;
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
-	public fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Lorg/hisp/dhis/android/core/relationship/RelationshipItemEvent;)V
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/RelationshipItemTrackedEntityInstanceColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
-	public fun <init> ()V
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
-	public fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance;
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
-	public fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Lorg/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance;)V
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/RightValidationRuleExpressionColumnAdapter {
-	public fun <init> ()V
-	protected fun descriptionColumnName ()Ljava/lang/String;
-	protected fun expressionColumnName ()Ljava/lang/String;
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/ValidationRuleExpression;
-	protected fun missingValueStrategyColumnName ()Ljava/lang/String;
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Lorg/hisp/dhis/android/core/validation/ValidationRuleExpression;)V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/StringArrayColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
-	public static final field Companion Lorg/hisp/dhis/android/core/arch/db/adapters/custom/internal/StringArrayColumnAdapter$Companion;
-	public fun <init> ()V
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
-	public fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/util/List;
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
-	public fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/util/List;)V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/StringArrayColumnAdapter$Companion {
-	public final fun serialize (Ljava/util/List;)Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/custom/internal/TrackerDataViewColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
-	public fun <init> ()V
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
-	public fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/TrackerDataView;
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
-	public fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Lorg/hisp/dhis/android/core/relationship/TrackerDataView;)V
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/AccessLevelColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-	protected fun getEnumClass ()Ljava/lang/Class;
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/AggregationTypeColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-	protected fun getEnumClass ()Ljava/lang/Class;
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/AnalyticsPeriodBoundaryTypeColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/AnalyticsTypeColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/AssignedUserModeColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-	protected fun getEnumClass ()Ljava/lang/Class;
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/ChartTypeColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-	protected fun getEnumClass ()Ljava/lang/Class;
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/D2ErrorCodeColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Enum;
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
-	public fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
-	protected fun getEnumClass ()Ljava/lang/Class;
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Enum;)V
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
-	public fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;)V
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/D2ErrorComponentColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-	protected fun getEnumClass ()Ljava/lang/Class;
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/DataApprovalStateColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-	protected fun getEnumClass ()Ljava/lang/Class;
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/DataSyncPeriodColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-	protected fun getEnumClass ()Ljava/lang/Class;
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/DigitGroupSeparatorColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/DisplayDensityColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/DownloadPeriodColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-	protected fun getEnumClass ()Ljava/lang/Class;
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnrollmentScopeColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-	protected fun getEnumClass ()Ljava/lang/Class;
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnrollmentStatusColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-	protected fun getEnumClass ()Ljava/lang/Class;
-}
-
-public abstract class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
-	public fun <init> ()V
-	public fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Enum;
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
-	protected abstract fun getEnumClass ()Ljava/lang/Class;
-	public fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Enum;)V
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EventStatusColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-	protected fun getEnumClass ()Ljava/lang/Class;
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/FeatureTypeColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-	protected fun getEnumClass ()Ljava/lang/Class;
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/FileResourceDomainColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/HideEmptyItemStrategyColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/ImportStatusColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-	protected fun getEnumClass ()Ljava/lang/Class;
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/LayoutPositionColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/LimitScopeColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-	protected fun getEnumClass ()Ljava/lang/Class;
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/MetadataSyncPeriodColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-	protected fun getEnumClass ()Ljava/lang/Class;
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/NoteTypeColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-	protected fun getEnumClass ()Ljava/lang/Class;
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/OrganisationUnitModeColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/PeriodTypeColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-	protected fun getEnumClass ()Ljava/lang/Class;
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/ProgramRuleActionTypeColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-	protected fun getEnumClass ()Ljava/lang/Class;
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/RelationshipConstraintTypeColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-	protected fun getEnumClass ()Ljava/lang/Class;
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/RelationshipEntityTypeColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-	protected fun getEnumClass ()Ljava/lang/Class;
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/ResourceTypeColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-	protected fun getEnumClass ()Ljava/lang/Class;
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/StateColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-	protected fun getEnumClass ()Ljava/lang/Class;
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/SystemSettingKeyColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-	protected fun getEnumClass ()Ljava/lang/Class;
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/TrackerVisualizationOutputTypeColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/TrackerVisualizationTypeColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/ValidationRuleImportanceColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-	protected fun getEnumClass ()Ljava/lang/Class;
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/ValidationRuleOperatorColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-	protected fun getEnumClass ()Ljava/lang/Class;
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/ValidationStrategyColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/ValueTypeRenderingTypeColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-	protected fun getEnumClass ()Ljava/lang/Class;
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/VisualizationTypeColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/WHONutritionChartTypeColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-	protected fun getEnumClass ()Ljava/lang/Class;
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/enums/internal/WHONutritionComponentColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/enums/internal/EnumColumnAdapter {
-	public fun <init> ()V
-	protected fun getEnumClass ()Ljava/lang/Class;
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/identifiable/internal/DataElementWithUidColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/identifiable/internal/IdentifiableObjectColumnAdapter {
-	public fun <init> ()V
-	protected synthetic fun build (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/ObjectWithUidInterface;
-	protected fun build (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataelement/DataElement;
-}
-
-public abstract class org/hisp/dhis/android/core/arch/db/adapters/identifiable/internal/IdentifiableObjectColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
-	public fun <init> ()V
-	protected abstract fun build (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/ObjectWithUidInterface;
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
-	public final fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/ObjectWithUidInterface;
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
-	public final fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/ObjectWithUidInterface;)V
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/identifiable/internal/ObjectWithUidColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/identifiable/internal/IdentifiableObjectColumnAdapter {
-	public fun <init> ()V
-	protected fun build (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	protected synthetic fun build (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/ObjectWithUidInterface;
-}
-
-public class org/hisp/dhis/android/core/arch/db/adapters/identifiable/internal/TrackedEntityTypeWithUidColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/identifiable/internal/IdentifiableObjectColumnAdapter {
-	public fun <init> ()V
-	protected synthetic fun build (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/ObjectWithUidInterface;
-	protected fun build (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityType;
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/DataSetSyncSettingsColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
-	public fun <init> ()V
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
-	public fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/DataSetSettings;
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
-	public fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Lorg/hisp/dhis/android/core/settings/DataSetSettings;)V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreAnalyticsPeriodBoundaryListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreAnalyticsTeiDataColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreAnalyticsTeiWHODataItemColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
-	public fun <init> ()V
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
-	public fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
-	public fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;)V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreAnalyticsTeiWHONutritionDataColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreAttributeValueFilterListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreAttributeValuesListAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreBooleanColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreCategoryListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreCategoryOptionComboListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreCategoryOptionListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public abstract class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
-	public fun <init> ()V
-	public final fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
-	public final fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreCoordinatesColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreDataElementListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreDataElementOperandListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreDataInputPeriodListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreDataSetElementListAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreDataSyncPeriodColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreEnrollmentListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreEventDataFilterListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreEventListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreExceptionAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreIndicatorListAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreInternalStockUseCaseTransactionListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreLegendListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreMapLayerImageryProviderColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreMetadataSyncPeriodColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreNewRelationshipListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreNewTackerImporterTrackedEntityDataValueListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreNewTrackerImporterEnrollmentListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreNewTrackerImporterEventListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreNewTrackerImporterNoteListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreNewTrackerImporterProgramOwnerListAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreNewTrackerImporterRelationshipItemAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreNewTrackerImporterTrackedEntityAttributeValueListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreNoteListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreObjectWithUidColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreObjectWithUidListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreOrganisationUnitGroupListAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreOrganisationUnitListAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreProgramIndicatorListAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreProgramIndicatorListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreProgramOwnerListAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreProgramRuleActionListAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreProgramRuleListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreProgramRuleVariableListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreProgramSectionListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreProgramStageDataElementListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreProgramStageListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreProgramStageSectionListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreProgramStageWorkingListAttributeValueFilterListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreProgramStageWorkingListEventDataFilterListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreProgramTrackedEntityAttributeListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreRelationshipConstraintAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreRelationshipItemAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreRelationshipListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreSectionListAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreStateColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreStringColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreTrackedEntityAttributeListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreTrackedEntityAttributeValueListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreTrackedEntityDataValueListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreTrackedEntityInstanceEventFilterListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreTrackedEntityTypeAttributeListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreTrackerVisualizationDimensionListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreUserGroupListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreUserRoleListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreValueTypeRenderingAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreVisualizationDimensionListColumnAdapter : org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/IgnoreColumnAdapter {
-	public fun <init> ()V
-}
-
-public final class org/hisp/dhis/android/core/arch/db/adapters/ignore/internal/ProgramSyncSettingsColumnAdapter : com/gabrielittner/auto/value/cursor/ColumnTypeAdapter {
-	public fun <init> ()V
-	public synthetic fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Ljava/lang/Object;
-	public fun fromCursor (Landroid/database/Cursor;Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/ProgramSettings;
-	public synthetic fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Ljava/lang/Object;)V
-	public fun toContentValues (Landroid/content/ContentValues;Ljava/lang/String;Lorg/hisp/dhis/android/core/settings/ProgramSettings;)V
-}
-
 public abstract interface class org/hisp/dhis/android/core/arch/db/cursors/internal/CursorExecutor {
 	public abstract fun addObjectsToCollection (Landroid/database/Cursor;Ljava/util/Collection;)V
 	public abstract fun getObjects (Landroid/database/Cursor;)Ljava/util/List;
@@ -3480,7 +2724,6 @@ public abstract class org/hisp/dhis/android/core/attribute/Attribute : org/hisp/
 	public abstract fun categoryOptionGroupAttribute ()Ljava/lang/Boolean;
 	public abstract fun categoryOptionGroupSetAttribute ()Ljava/lang/Boolean;
 	public abstract fun constantAttribute ()Ljava/lang/Boolean;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/attribute/Attribute;
 	public abstract fun dataElementAttribute ()Ljava/lang/Boolean;
 	public abstract fun dataElementGroupAttribute ()Ljava/lang/Boolean;
 	public abstract fun dataElementGroupSetAttribute ()Ljava/lang/Boolean;
@@ -3580,7 +2823,6 @@ public abstract class org/hisp/dhis/android/core/attribute/DataElementAttributeV
 	public fun <init> ()V
 	public abstract fun attribute ()Ljava/lang/String;
 	public static fun builder ()Lorg/hisp/dhis/android/core/attribute/DataElementAttributeValueLink$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/attribute/DataElementAttributeValueLink;
 	public abstract fun dataElement ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/attribute/DataElementAttributeValueLink$Builder;
 	public abstract fun value ()Ljava/lang/String;
@@ -3598,7 +2840,6 @@ public abstract class org/hisp/dhis/android/core/attribute/ProgramAttributeValue
 	public fun <init> ()V
 	public abstract fun attribute ()Ljava/lang/String;
 	public static fun builder ()Lorg/hisp/dhis/android/core/attribute/ProgramAttributeValueLink$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/attribute/ProgramAttributeValueLink;
 	public abstract fun program ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/attribute/ProgramAttributeValueLink$Builder;
 	public abstract fun value ()Ljava/lang/String;
@@ -3616,7 +2857,6 @@ public abstract class org/hisp/dhis/android/core/attribute/ProgramStageAttribute
 	public fun <init> ()V
 	public abstract fun attribute ()Ljava/lang/String;
 	public static fun builder ()Lorg/hisp/dhis/android/core/attribute/ProgramStageAttributeValueLink$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/attribute/ProgramStageAttributeValueLink;
 	public abstract fun programStage ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/attribute/ProgramStageAttributeValueLink$Builder;
 	public abstract fun value ()Ljava/lang/String;
@@ -3634,7 +2874,6 @@ public abstract class org/hisp/dhis/android/core/category/Category : org/hisp/dh
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/category/Category$Builder;
 	public abstract fun categoryOptions ()Ljava/util/List;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/category/Category;
 	public abstract fun dataDimensionType ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/category/Category$Builder;
 }
@@ -3651,7 +2890,6 @@ public abstract class org/hisp/dhis/android/core/category/CategoryCategoryComboL
 	public static fun builder ()Lorg/hisp/dhis/android/core/category/CategoryCategoryComboLink$Builder;
 	public abstract fun category ()Ljava/lang/String;
 	public abstract fun categoryCombo ()Ljava/lang/String;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/category/CategoryCategoryComboLink;
 	public abstract fun sortOrder ()Ljava/lang/Integer;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/category/CategoryCategoryComboLink$Builder;
 }
@@ -3669,7 +2907,6 @@ public abstract class org/hisp/dhis/android/core/category/CategoryCategoryOption
 	public static fun builder ()Lorg/hisp/dhis/android/core/category/CategoryCategoryOptionLink$Builder;
 	public abstract fun category ()Ljava/lang/String;
 	public abstract fun categoryOption ()Ljava/lang/String;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/category/CategoryCategoryOptionLink;
 	public abstract fun sortOrder ()Ljava/lang/Integer;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/category/CategoryCategoryOptionLink$Builder;
 }
@@ -3692,7 +2929,6 @@ public abstract class org/hisp/dhis/android/core/category/CategoryCombo : org/hi
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/category/CategoryCombo$Builder;
 	public abstract fun categories ()Ljava/util/List;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/category/CategoryCombo;
 	public abstract fun isDefault ()Ljava/lang/Boolean;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/category/CategoryCombo$Builder;
 }
@@ -3731,7 +2967,6 @@ public abstract class org/hisp/dhis/android/core/category/CategoryOption : org/h
 	public fun <init> ()V
 	public abstract fun access ()Lorg/hisp/dhis/android/core/common/Access;
 	public static fun builder ()Lorg/hisp/dhis/android/core/category/CategoryOption$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/category/CategoryOption;
 	public abstract fun endDate ()Ljava/util/Date;
 	public abstract fun organisationUnits ()Ljava/util/List;
 	public abstract fun startDate ()Ljava/util/Date;
@@ -3761,7 +2996,6 @@ public abstract class org/hisp/dhis/android/core/category/CategoryOptionCombo : 
 	public static fun builder ()Lorg/hisp/dhis/android/core/category/CategoryOptionCombo$Builder;
 	public abstract fun categoryCombo ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun categoryOptions ()Ljava/util/List;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/category/CategoryOptionCombo;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/category/CategoryOptionCombo$Builder;
 }
 
@@ -3777,7 +3011,6 @@ public abstract class org/hisp/dhis/android/core/category/CategoryOptionComboCat
 	public static fun builder ()Lorg/hisp/dhis/android/core/category/CategoryOptionComboCategoryOptionLink$Builder;
 	public abstract fun categoryOption ()Ljava/lang/String;
 	public abstract fun categoryOptionCombo ()Ljava/lang/String;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/category/CategoryOptionComboCategoryOptionLink;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/category/CategoryOptionComboCategoryOptionLink$Builder;
 }
 
@@ -3808,7 +3041,6 @@ public abstract class org/hisp/dhis/android/core/category/CategoryOptionOrganisa
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/category/CategoryOptionOrganisationUnitLink$Builder;
 	public abstract fun categoryOption ()Ljava/lang/String;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/category/CategoryOptionOrganisationUnitLink;
 	public abstract fun organisationUnit ()Ljava/lang/String;
 	public abstract fun restriction ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/category/CategoryOptionOrganisationUnitLink$Builder;
@@ -3980,7 +3212,6 @@ public class org/hisp/dhis/android/core/common/CoreColumns {
 }
 
 public abstract interface class org/hisp/dhis/android/core/common/CoreObject {
-	public abstract fun toContentValues ()Landroid/content/ContentValues;
 }
 
 public abstract class org/hisp/dhis/android/core/common/DataAccess {
@@ -4164,7 +3395,6 @@ public abstract class org/hisp/dhis/android/core/common/Geometry {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/common/Geometry$Builder;
 	public abstract fun coordinates ()Ljava/lang/String;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/common/Geometry;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/common/Geometry$Builder;
 	public abstract fun type ()Lorg/hisp/dhis/android/core/common/FeatureType;
 }
@@ -4367,7 +3597,6 @@ public final class org/hisp/dhis/android/core/common/State$Companion {
 
 public abstract class org/hisp/dhis/android/core/common/StorableObjectWithUid : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
 	public fun <init> ()V
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/common/StorableObjectWithUid;
 	public static fun create (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/StorableObjectWithUid;
 	public abstract fun uid ()Ljava/lang/String;
 }
@@ -4436,7 +3665,6 @@ public final class org/hisp/dhis/android/core/common/ValueType$Companion {
 public abstract class org/hisp/dhis/android/core/common/ValueTypeDeviceRendering : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/common/ValueTypeDeviceRendering$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/common/ValueTypeDeviceRendering;
 	public abstract fun decimalPoints ()Ljava/lang/Integer;
 	public abstract fun deviceType ()Ljava/lang/String;
 	public abstract fun max ()Ljava/lang/Integer;
@@ -4915,7 +4143,6 @@ public abstract interface class org/hisp/dhis/android/core/common/valuetype/vali
 public abstract class org/hisp/dhis/android/core/configuration/internal/Configuration : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/configuration/internal/Configuration$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/configuration/internal/Configuration;
 	public abstract fun serverUrl ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/configuration/internal/Configuration$Builder;
 }
@@ -5012,7 +4239,6 @@ public abstract class org/hisp/dhis/android/core/configuration/internal/Database
 public abstract class org/hisp/dhis/android/core/constant/Constant : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/constant/Constant$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/constant/Constant;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/constant/Constant$Builder;
 	public abstract fun value ()Ljava/lang/Double;
 }
@@ -5035,7 +4261,6 @@ public abstract class org/hisp/dhis/android/core/dataapproval/DataApproval : org
 	public fun <init> ()V
 	public abstract fun attributeOptionCombo ()Ljava/lang/String;
 	public static fun builder ()Lorg/hisp/dhis/android/core/dataapproval/DataApproval$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/dataapproval/DataApproval;
 	public abstract fun organisationUnit ()Ljava/lang/String;
 	public abstract fun period ()Ljava/lang/String;
 	public abstract fun state ()Lorg/hisp/dhis/android/core/dataapproval/DataApprovalState;
@@ -5083,7 +4308,6 @@ public abstract class org/hisp/dhis/android/core/dataelement/DataElement : org/h
 	public static fun builder ()Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
 	public abstract fun categoryCombo ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public fun categoryComboUid ()Ljava/lang/String;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/dataelement/DataElement;
 	public abstract fun displayFormName ()Ljava/lang/String;
 	public abstract fun domainType ()Ljava/lang/String;
 	public abstract fun fieldMask ()Ljava/lang/String;
@@ -5138,7 +4362,6 @@ public abstract class org/hisp/dhis/android/core/dataelement/DataElementOperand 
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/dataelement/DataElementOperand$Builder;
 	public abstract fun categoryOptionCombo ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/dataelement/DataElementOperand;
 	public abstract fun dataElement ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun deleted ()Ljava/lang/Boolean;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/dataelement/DataElementOperand$Builder;
@@ -5174,7 +4397,6 @@ public abstract class org/hisp/dhis/android/core/dataset/DataInputPeriod : org/h
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/dataset/DataInputPeriod$Builder;
 	public abstract fun closingDate ()Ljava/util/Date;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/dataset/DataInputPeriod;
 	public abstract fun dataSet ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun openingDate ()Ljava/util/Date;
 	public abstract fun period ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
@@ -5196,7 +4418,6 @@ public abstract class org/hisp/dhis/android/core/dataset/DataSet : org/hisp/dhis
 	public static fun builder ()Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
 	public abstract fun categoryCombo ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun compulsoryDataElementOperands ()Ljava/util/List;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/dataset/DataSet;
 	public abstract fun dataElementDecoration ()Ljava/lang/Boolean;
 	public abstract fun dataInputPeriods ()Ljava/util/List;
 	public abstract fun dataSetElements ()Ljava/util/List;
@@ -5284,7 +4505,6 @@ public abstract class org/hisp/dhis/android/core/dataset/DataSetCompleteRegistra
 	public fun <init> ()V
 	public abstract fun attributeOptionCombo ()Ljava/lang/String;
 	public static fun builder ()Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration;
 	public abstract fun dataSet ()Ljava/lang/String;
 	public abstract fun date ()Ljava/util/Date;
 	public abstract fun organisationUnit ()Ljava/lang/String;
@@ -5331,7 +4551,6 @@ public final class org/hisp/dhis/android/core/dataset/DataSetCompleteRegistratio
 public abstract class org/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink;
 	public abstract fun dataElementOperand ()Ljava/lang/String;
 	public abstract fun dataSet ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink$Builder;
@@ -5374,7 +4593,6 @@ public abstract class org/hisp/dhis/android/core/dataset/DataSetElement : org/hi
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/dataset/DataSetElement$Builder;
 	public abstract fun categoryCombo ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/dataset/DataSetElement;
 	public abstract fun dataElement ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun dataSet ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/DataSetElement$Builder;
@@ -5397,7 +4615,6 @@ public abstract class org/hisp/dhis/android/core/dataset/DataSetInstance : org/h
 	public abstract fun completedBy ()Ljava/lang/String;
 	public abstract fun completionDate ()Ljava/util/Date;
 	public abstract fun completionState ()Lorg/hisp/dhis/android/core/common/State;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance;
 	public abstract fun dataSetDisplayName ()Ljava/lang/String;
 	public abstract fun dataSetUid ()Ljava/lang/String;
 	public abstract fun dataValueState ()Lorg/hisp/dhis/android/core/common/State;
@@ -5458,7 +4675,6 @@ public abstract interface class org/hisp/dhis/android/core/dataset/DataSetInstan
 public abstract class org/hisp/dhis/android/core/dataset/DataSetInstanceSummary : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/dataset/DataSetInstanceSummary$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/dataset/DataSetInstanceSummary;
 	public abstract fun dataSetDisplayName ()Ljava/lang/String;
 	public abstract fun dataSetInstanceCount ()Ljava/lang/Integer;
 	public abstract fun dataSetUid ()Ljava/lang/String;
@@ -5517,7 +4733,6 @@ public final class org/hisp/dhis/android/core/dataset/DataSetNonEditableReason :
 public abstract class org/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLink : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLink$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLink;
 	public abstract fun dataSet ()Ljava/lang/String;
 	public abstract fun organisationUnit ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLink$Builder;
@@ -5533,7 +4748,6 @@ public abstract class org/hisp/dhis/android/core/dataset/DataSetOrganisationUnit
 public abstract class org/hisp/dhis/android/core/dataset/Section : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/dataset/Section$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/dataset/Section;
 	public abstract fun dataElements ()Ljava/util/List;
 	public abstract fun dataSet ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun description ()Ljava/lang/String;
@@ -5581,7 +4795,6 @@ public final class org/hisp/dhis/android/core/dataset/SectionCollectionRepositor
 public abstract class org/hisp/dhis/android/core/dataset/SectionDataElementLink : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/dataset/SectionDataElementLink$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/dataset/SectionDataElementLink;
 	public abstract fun dataElement ()Ljava/lang/String;
 	public abstract fun section ()Ljava/lang/String;
 	public abstract fun sortOrder ()Ljava/lang/Integer;
@@ -5618,7 +4831,6 @@ public abstract class org/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink$Builder;
 	public abstract fun categoryOptionCombo ()Ljava/lang/String;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink;
 	public abstract fun dataElementOperand ()Ljava/lang/String;
 	public abstract fun section ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink$Builder;
@@ -5729,7 +4941,6 @@ public final class org/hisp/dhis/android/core/dataset/internal/DataSetModuleImpl
 public abstract class org/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink;
 	public abstract fun indicator ()Ljava/lang/String;
 	public abstract fun section ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink$Builder;
@@ -5762,7 +4973,6 @@ public final class org/hisp/dhis/android/core/datastore/DataStoreDownloader : or
 public abstract class org/hisp/dhis/android/core/datastore/DataStoreEntry : org/hisp/dhis/android/core/common/BaseDeletableDataObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/datastore/DataStoreEntry$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/datastore/DataStoreEntry;
 	public abstract fun key ()Ljava/lang/String;
 	public abstract fun namespace ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/datastore/DataStoreEntry$Builder;
@@ -5793,7 +5003,6 @@ public final class org/hisp/dhis/android/core/datastore/DataStoreObjectRepositor
 public abstract class org/hisp/dhis/android/core/datastore/KeyValuePair : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/datastore/KeyValuePair$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/datastore/KeyValuePair;
 	public abstract fun key ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/datastore/KeyValuePair$Builder;
 	public abstract fun value ()Ljava/lang/String;
@@ -5828,7 +5037,6 @@ public abstract class org/hisp/dhis/android/core/datavalue/DataValue : org/hisp/
 	public static fun builder ()Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
 	public abstract fun categoryOptionCombo ()Ljava/lang/String;
 	public abstract fun comment ()Ljava/lang/String;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/datavalue/DataValue;
 	public abstract fun created ()Ljava/util/Date;
 	public abstract fun dataElement ()Ljava/lang/String;
 	public abstract fun followUp ()Ljava/lang/Boolean;
@@ -5883,7 +5091,6 @@ public abstract class org/hisp/dhis/android/core/datavalue/DataValueConflict : o
 	public static fun builder ()Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Builder;
 	public abstract fun categoryOptionCombo ()Ljava/lang/String;
 	public abstract fun conflict ()Ljava/lang/String;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/datavalue/DataValueConflict;
 	public abstract fun created ()Ljava/util/Date;
 	public abstract fun dataElement ()Ljava/lang/String;
 	public abstract fun displayDescription ()Ljava/lang/String;
@@ -6038,7 +5245,6 @@ public final class org/hisp/dhis/android/core/domain/aggregated/data/internal/Ag
 public abstract class org/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync;
 	public abstract fun dataElementsHash ()Ljava/lang/Integer;
 	public abstract fun dataSet ()Ljava/lang/String;
 	public abstract fun futurePeriods ()Ljava/lang/Integer;
@@ -6066,7 +5272,6 @@ public abstract class org/hisp/dhis/android/core/enrollment/Enrollment : org/his
 	public abstract fun aggregatedSyncState ()Lorg/hisp/dhis/android/core/common/State;
 	public static fun builder ()Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
 	public abstract fun completedDate ()Ljava/util/Date;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/enrollment/Enrollment;
 	public abstract fun created ()Ljava/util/Date;
 	public abstract fun createdAtClient ()Ljava/util/Date;
 	public abstract fun enrollmentDate ()Ljava/util/Date;
@@ -6218,7 +5423,6 @@ public abstract class org/hisp/dhis/android/core/event/Event : org/hisp/dhis/and
 	public static fun builder ()Lorg/hisp/dhis/android/core/event/Event$Builder;
 	public abstract fun completedBy ()Ljava/lang/String;
 	public abstract fun completedDate ()Ljava/util/Date;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/event/Event;
 	public abstract fun created ()Ljava/util/Date;
 	public abstract fun createdAtClient ()Ljava/util/Date;
 	public abstract fun dueDate ()Ljava/util/Date;
@@ -6337,7 +5541,6 @@ public abstract class org/hisp/dhis/android/core/event/EventCreateProjection$Bui
 public abstract class org/hisp/dhis/android/core/event/EventDataFilter : org/hisp/dhis/android/core/common/FilterOperators, org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/event/EventDataFilter$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/event/EventDataFilter;
 	public abstract fun dataItem ()Ljava/lang/String;
 	public abstract fun eventFilter ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/event/EventDataFilter$Builder;
@@ -6375,7 +5578,6 @@ public final class org/hisp/dhis/android/core/event/EventEditableStatus$NonEdita
 public abstract class org/hisp/dhis/android/core/event/EventFilter : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/event/EventFilter$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/event/EventFilter;
 	public abstract fun description ()Ljava/lang/String;
 	public abstract fun eventQueryCriteria ()Lorg/hisp/dhis/android/core/event/EventQueryCriteria;
 	public abstract fun program ()Ljava/lang/String;
@@ -6450,7 +5652,6 @@ public abstract class org/hisp/dhis/android/core/event/EventQueryCriteria : org/
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/event/EventQueryCriteria$Builder;
 	public abstract fun completedDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/event/EventQueryCriteria;
 	public abstract fun dataFilters ()Ljava/util/List;
 	public abstract fun dueDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
 	public abstract fun events ()Ljava/util/List;
@@ -6495,7 +5696,6 @@ public final class org/hisp/dhis/android/core/event/EventStatus : java/lang/Enum
 public abstract class org/hisp/dhis/android/core/event/internal/EventSync : org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/event/internal/EventSync$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/event/internal/EventSync;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/event/internal/EventSync$Builder;
 }
 
@@ -6581,7 +5781,6 @@ public abstract class org/hisp/dhis/android/core/event/search/EventQueryScopeOrd
 public abstract class org/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem;
 	public abstract fun expression ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem$Builder;
 }
@@ -6605,7 +5804,6 @@ public abstract class org/hisp/dhis/android/core/fileresource/FileResource : org
 	public static fun builder ()Lorg/hisp/dhis/android/core/fileresource/FileResource$Builder;
 	public abstract fun contentLength ()Ljava/lang/Long;
 	public abstract fun contentType ()Ljava/lang/String;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/fileresource/FileResource;
 	public abstract fun created ()Ljava/util/Date;
 	public abstract fun domain ()Lorg/hisp/dhis/android/core/fileresource/FileResourceDomain;
 	public abstract fun lastUpdated ()Ljava/util/Date;
@@ -6722,7 +5920,6 @@ public final class org/hisp/dhis/android/core/fileresource/FileResourceValueType
 public abstract class org/hisp/dhis/android/core/icon/CustomIcon : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/icon/CustomIcon$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/icon/CustomIcon;
 	public abstract fun fileResource ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun href ()Ljava/lang/String;
 	public abstract fun key ()Ljava/lang/String;
@@ -6796,7 +5993,6 @@ public abstract class org/hisp/dhis/android/core/imports/TrackerImportConflict :
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
 	public abstract fun conflict ()Ljava/lang/String;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/imports/TrackerImportConflict;
 	public abstract fun created ()Ljava/util/Date;
 	public abstract fun dataElement ()Ljava/lang/String;
 	public abstract fun displayDescription ()Ljava/lang/String;
@@ -7131,7 +6327,6 @@ public abstract class org/hisp/dhis/android/core/imports/internal/WebResponse$Bu
 public abstract class org/hisp/dhis/android/core/indicator/DataSetIndicatorLink : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/indicator/DataSetIndicatorLink$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/indicator/DataSetIndicatorLink;
 	public abstract fun dataSet ()Ljava/lang/String;
 	public abstract fun indicator ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/indicator/DataSetIndicatorLink$Builder;
@@ -7148,7 +6343,6 @@ public abstract class org/hisp/dhis/android/core/indicator/Indicator : org/hisp/
 	public fun <init> ()V
 	public abstract fun annualized ()Ljava/lang/Boolean;
 	public static fun builder ()Lorg/hisp/dhis/android/core/indicator/Indicator$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/indicator/Indicator;
 	public abstract fun decimals ()Ljava/lang/Integer;
 	public abstract fun denominator ()Ljava/lang/String;
 	public abstract fun denominatorDescription ()Ljava/lang/String;
@@ -7200,7 +6394,6 @@ public abstract interface class org/hisp/dhis/android/core/indicator/IndicatorMo
 public abstract class org/hisp/dhis/android/core/indicator/IndicatorType : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/indicator/IndicatorType$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/indicator/IndicatorType;
 	public abstract fun factor ()Ljava/lang/Integer;
 	public abstract fun number ()Ljava/lang/Boolean;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/indicator/IndicatorType$Builder;
@@ -7230,7 +6423,6 @@ public final class org/hisp/dhis/android/core/indicator/internal/IndicatorModule
 public abstract class org/hisp/dhis/android/core/legendset/DataElementLegendSetLink : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/legendset/DataElementLegendSetLink$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/legendset/DataElementLegendSetLink;
 	public abstract fun dataElement ()Ljava/lang/String;
 	public abstract fun legendSet ()Ljava/lang/String;
 	public abstract fun sortOrder ()Ljava/lang/Integer;
@@ -7248,7 +6440,6 @@ public abstract class org/hisp/dhis/android/core/legendset/DataElementLegendSetL
 public abstract class org/hisp/dhis/android/core/legendset/IndicatorLegendSetLink : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/legendset/IndicatorLegendSetLink$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/legendset/IndicatorLegendSetLink;
 	public abstract fun indicator ()Ljava/lang/String;
 	public abstract fun legendSet ()Ljava/lang/String;
 	public abstract fun sortOrder ()Ljava/lang/Integer;
@@ -7267,7 +6458,6 @@ public abstract class org/hisp/dhis/android/core/legendset/Legend : org/hisp/dhi
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/legendset/Legend$Builder;
 	public abstract fun color ()Ljava/lang/String;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/legendset/Legend;
 	public abstract fun endValue ()Ljava/lang/Double;
 	public abstract fun legendSet ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun startValue ()Ljava/lang/Double;
@@ -7293,7 +6483,6 @@ public final class org/hisp/dhis/android/core/legendset/LegendCollectionReposito
 public abstract class org/hisp/dhis/android/core/legendset/LegendSet : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/legendset/LegendSet$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/legendset/LegendSet;
 	public abstract fun legends ()Ljava/util/List;
 	public abstract fun symbolizer ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/legendset/LegendSet$Builder;
@@ -7319,7 +6508,6 @@ public abstract interface class org/hisp/dhis/android/core/legendset/LegendSetMo
 public abstract class org/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink;
 	public abstract fun legendSet ()Ljava/lang/String;
 	public abstract fun programIndicator ()Ljava/lang/String;
 	public abstract fun sortOrder ()Ljava/lang/Integer;
@@ -7337,7 +6525,6 @@ public abstract class org/hisp/dhis/android/core/legendset/ProgramIndicatorLegen
 public abstract class org/hisp/dhis/android/core/maintenance/D2Error : java/lang/Exception, org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/maintenance/D2Error$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/maintenance/D2Error;
 	public abstract fun created ()Ljava/util/Date;
 	public abstract fun errorCode ()Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public abstract fun errorComponent ()Lorg/hisp/dhis/android/core/maintenance/D2ErrorComponent;
@@ -7450,7 +6637,6 @@ public final class org/hisp/dhis/android/core/maintenance/D2ErrorComponent : jav
 public abstract class org/hisp/dhis/android/core/maintenance/ForeignKeyViolation : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation;
 	public abstract fun created ()Ljava/util/Date;
 	public abstract fun fromColumn ()Ljava/lang/String;
 	public abstract fun fromObjectRow ()Ljava/lang/String;
@@ -7523,7 +6709,6 @@ public abstract class org/hisp/dhis/android/core/map/layer/MapLayer : org/hisp/d
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
 	public abstract fun code ()Ljava/lang/String;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/map/layer/MapLayer;
 	public abstract fun displayName ()Ljava/lang/String;
 	public abstract fun external ()Ljava/lang/Boolean;
 	public abstract fun imageFormat ()Lorg/hisp/dhis/android/core/map/layer/ImageFormat;
@@ -7583,7 +6768,6 @@ public abstract class org/hisp/dhis/android/core/map/layer/MapLayerImageryProvid
 	public abstract fun attribution ()Ljava/lang/String;
 	public static fun builder ()Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProvider$Builder;
 	public abstract fun coverageAreas ()Ljava/util/List;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProvider;
 	public abstract fun mapLayer ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProvider$Builder;
 }
@@ -7718,7 +6902,6 @@ public final class org/hisp/dhis/android/core/mockwebserver/ResponseController$C
 public abstract class org/hisp/dhis/android/core/note/Note : org/hisp/dhis/android/core/common/BaseDeletableDataObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/note/Note$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/note/Note;
 	public abstract fun enrollment ()Ljava/lang/String;
 	public abstract fun event ()Ljava/lang/String;
 	public abstract fun noteType ()Lorg/hisp/dhis/android/core/note/Note$NoteType;
@@ -7789,7 +6972,6 @@ public abstract interface class org/hisp/dhis/android/core/note/NoteModule {
 public abstract class org/hisp/dhis/android/core/option/Option : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyle {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/option/Option$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/option/Option;
 	public abstract fun optionSet ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun sortOrder ()Ljava/lang/Integer;
 	public synthetic fun toBuilder ()Lorg/hisp/dhis/android/core/common/ObjectWithStyle$Builder;
@@ -7815,7 +6997,6 @@ public final class org/hisp/dhis/android/core/option/OptionCollectionRepository 
 public abstract class org/hisp/dhis/android/core/option/OptionGroup : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/option/OptionGroup$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/option/OptionGroup;
 	public abstract fun optionSet ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun options ()Ljava/util/List;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/option/OptionGroup$Builder;
@@ -7836,7 +7017,6 @@ public final class org/hisp/dhis/android/core/option/OptionGroupCollectionReposi
 public abstract class org/hisp/dhis/android/core/option/OptionGroupOptionLink : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/option/OptionGroupOptionLink$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/option/OptionGroupOptionLink;
 	public abstract fun option ()Ljava/lang/String;
 	public abstract fun optionGroup ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/option/OptionGroupOptionLink$Builder;
@@ -7875,7 +7055,6 @@ public final class org/hisp/dhis/android/core/option/OptionServiceImpl : org/his
 public abstract class org/hisp/dhis/android/core/option/OptionSet : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/option/OptionSet$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/option/OptionSet;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/option/OptionSet$Builder;
 	public abstract fun valueType ()Lorg/hisp/dhis/android/core/common/ValueType;
 	public abstract fun version ()Ljava/lang/Integer;
@@ -7913,7 +7092,6 @@ public abstract class org/hisp/dhis/android/core/organisationunit/OrganisationUn
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit$Builder;
 	public abstract fun closedDate ()Ljava/util/Date;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit;
 	public abstract fun dataSets ()Ljava/util/List;
 	public abstract fun displayNamePath ()Ljava/util/List;
 	public abstract fun geometry ()Lorg/hisp/dhis/android/core/common/Geometry;
@@ -7970,7 +7148,6 @@ public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitC
 public abstract class org/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup;
 	public abstract fun displayShortName ()Ljava/lang/String;
 	public abstract fun shortName ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup$Builder;
@@ -7991,7 +7168,6 @@ public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitG
 public abstract class org/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel;
 	public abstract fun level ()Ljava/lang/Integer;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel$Builder;
 }
@@ -8027,7 +7203,6 @@ public abstract interface class org/hisp/dhis/android/core/organisationunit/Orga
 public abstract class org/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLink : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLink$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLink;
 	public abstract fun organisationUnit ()Ljava/lang/String;
 	public abstract fun organisationUnitGroup ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLink$Builder;
@@ -8043,7 +7218,6 @@ public abstract class org/hisp/dhis/android/core/organisationunit/OrganisationUn
 public abstract class org/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink;
 	public abstract fun organisationUnit ()Ljava/lang/String;
 	public abstract fun program ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink$Builder;
@@ -8196,7 +7370,6 @@ public abstract class org/hisp/dhis/android/core/period/DatePeriod$Builder {
 public abstract class org/hisp/dhis/android/core/period/Period : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/period/Period$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/period/Period;
 	public abstract fun endDate ()Ljava/util/Date;
 	public abstract fun periodId ()Ljava/lang/String;
 	public abstract fun periodType ()Lorg/hisp/dhis/android/core/period/PeriodType;
@@ -8295,7 +7468,6 @@ public abstract class org/hisp/dhis/android/core/program/AnalyticsPeriodBoundary
 	public abstract fun boundaryTarget ()Ljava/lang/String;
 	public fun boundaryTargetType ()Lorg/hisp/dhis/android/core/program/BoundaryTargetType;
 	public static fun builder ()Lorg/hisp/dhis/android/core/program/AnalyticsPeriodBoundary$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/program/AnalyticsPeriodBoundary;
 	public abstract fun offsetPeriodType ()Lorg/hisp/dhis/android/core/period/PeriodType;
 	public abstract fun offsetPeriods ()Ljava/lang/Integer;
 	public abstract fun programIndicator ()Ljava/lang/String;
@@ -8367,7 +7539,6 @@ public abstract class org/hisp/dhis/android/core/program/Program : org/hisp/dhis
 	public abstract fun categoryCombo ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public fun categoryComboUid ()Ljava/lang/String;
 	public abstract fun completeEventsExpiryDays ()Ljava/lang/Integer;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/program/Program;
 	public abstract fun dataEntryMethod ()Ljava/lang/Boolean;
 	public abstract fun displayEnrollmentDateLabel ()Ljava/lang/String;
 	public abstract fun displayEnrollmentLabel ()Ljava/lang/String;
@@ -8508,7 +7679,6 @@ public abstract class org/hisp/dhis/android/core/program/ProgramIndicator : org/
 	public abstract fun analyticsPeriodBoundaries ()Ljava/util/List;
 	public abstract fun analyticsType ()Lorg/hisp/dhis/android/core/common/AnalyticsType;
 	public static fun builder ()Lorg/hisp/dhis/android/core/program/ProgramIndicator$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/program/ProgramIndicator;
 	public abstract fun decimals ()Ljava/lang/Integer;
 	public abstract fun dimensionItem ()Ljava/lang/String;
 	public abstract fun displayInForm ()Ljava/lang/Boolean;
@@ -8566,7 +7736,6 @@ public abstract class org/hisp/dhis/android/core/program/ProgramRule : org/hisp/
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/program/ProgramRule$Builder;
 	public abstract fun condition ()Ljava/lang/String;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/program/ProgramRule;
 	public abstract fun priority ()Ljava/lang/Integer;
 	public abstract fun program ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun programRuleActions ()Ljava/util/List;
@@ -8588,7 +7757,6 @@ public abstract class org/hisp/dhis/android/core/program/ProgramRuleAction : org
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/program/ProgramRuleAction$Builder;
 	public abstract fun content ()Ljava/lang/String;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/program/ProgramRuleAction;
 	public abstract fun data ()Ljava/lang/String;
 	public abstract fun dataElement ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun displayContent ()Ljava/lang/String;
@@ -8671,7 +7839,6 @@ public final class org/hisp/dhis/android/core/program/ProgramRuleCollectionRepos
 public abstract class org/hisp/dhis/android/core/program/ProgramRuleVariable : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/program/ProgramRuleVariable$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/program/ProgramRuleVariable;
 	public abstract fun dataElement ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun program ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun programRuleVariableSourceType ()Lorg/hisp/dhis/android/core/program/ProgramRuleVariableSourceType;
@@ -8716,7 +7883,6 @@ public abstract class org/hisp/dhis/android/core/program/ProgramSection : org/hi
 	public fun <init> ()V
 	public abstract fun attributes ()Ljava/util/List;
 	public static fun builder ()Lorg/hisp/dhis/android/core/program/ProgramSection$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/program/ProgramSection;
 	public abstract fun description ()Ljava/lang/String;
 	public abstract fun formName ()Ljava/lang/String;
 	public abstract fun program ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
@@ -8742,7 +7908,6 @@ public abstract class org/hisp/dhis/android/core/program/ProgramSectionAttribute
 	public fun <init> ()V
 	public abstract fun attribute ()Ljava/lang/String;
 	public static fun builder ()Lorg/hisp/dhis/android/core/program/ProgramSectionAttributeLink$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/program/ProgramSectionAttributeLink;
 	public abstract fun programSection ()Ljava/lang/String;
 	public abstract fun sortOrder ()Ljava/lang/Integer;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/program/ProgramSectionAttributeLink$Builder;
@@ -8776,7 +7941,6 @@ public abstract class org/hisp/dhis/android/core/program/ProgramStage : org/hisp
 	public abstract fun autoGenerateEvent ()Ljava/lang/Boolean;
 	public abstract fun blockEntryForm ()Ljava/lang/Boolean;
 	public static fun builder ()Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/program/ProgramStage;
 	public abstract fun description ()Ljava/lang/String;
 	public abstract fun displayDescription ()Ljava/lang/String;
 	public abstract fun displayDueDateLabel ()Ljava/lang/String;
@@ -8886,7 +8050,6 @@ public abstract class org/hisp/dhis/android/core/program/ProgramStageDataElement
 	public abstract fun allowProvidedElsewhere ()Ljava/lang/Boolean;
 	public static fun builder ()Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
 	public abstract fun compulsory ()Ljava/lang/Boolean;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement;
 	public abstract fun dataElement ()Lorg/hisp/dhis/android/core/dataelement/DataElement;
 	public abstract fun displayInReports ()Ljava/lang/Boolean;
 	public abstract fun programStage ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
@@ -8923,7 +8086,6 @@ public final class org/hisp/dhis/android/core/program/ProgramStageDataElementCol
 public abstract class org/hisp/dhis/android/core/program/ProgramStageSection : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/program/ProgramStageSection$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/program/ProgramStageSection;
 	public abstract fun dataElements ()Ljava/util/List;
 	public abstract fun description ()Ljava/lang/String;
 	public abstract fun displayDescription ()Ljava/lang/String;
@@ -8949,7 +8111,6 @@ public abstract class org/hisp/dhis/android/core/program/ProgramStageSection$Bui
 public abstract class org/hisp/dhis/android/core/program/ProgramStageSectionDataElementLink : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/program/ProgramStageSectionDataElementLink$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/program/ProgramStageSectionDataElementLink;
 	public abstract fun dataElement ()Ljava/lang/String;
 	public abstract fun programStageSection ()Ljava/lang/String;
 	public abstract fun sortOrder ()Ljava/lang/Integer;
@@ -8967,7 +8128,6 @@ public abstract class org/hisp/dhis/android/core/program/ProgramStageSectionData
 public abstract class org/hisp/dhis/android/core/program/ProgramStageSectionProgramIndicatorLink : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/program/ProgramStageSectionProgramIndicatorLink$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/program/ProgramStageSectionProgramIndicatorLink;
 	public abstract fun programIndicator ()Ljava/lang/String;
 	public abstract fun programStageSection ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/program/ProgramStageSectionProgramIndicatorLink$Builder;
@@ -8995,7 +8155,6 @@ public abstract class org/hisp/dhis/android/core/program/ProgramTrackedEntityAtt
 	public fun <init> ()V
 	public abstract fun allowFutureDate ()Ljava/lang/Boolean;
 	public static fun builder ()Lorg/hisp/dhis/android/core/program/ProgramTrackedEntityAttribute$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/program/ProgramTrackedEntityAttribute;
 	public abstract fun displayInList ()Ljava/lang/Boolean;
 	public abstract fun mandatory ()Ljava/lang/Boolean;
 	public abstract fun program ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
@@ -9169,7 +8328,6 @@ public abstract class org/hisp/dhis/android/core/programstageworkinglist/Program
 	public abstract fun assignedUserMode ()Lorg/hisp/dhis/android/core/common/AssignedUserMode;
 	public abstract fun attributeValueFilters ()Ljava/util/List;
 	public static fun builder ()Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria;
 	public abstract fun dataFilters ()Ljava/util/List;
 	public abstract fun displayColumnOrder ()Ljava/util/List;
 	public abstract fun enrolledAt ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
@@ -9207,7 +8365,6 @@ public abstract class org/hisp/dhis/android/core/programstageworkinglist/Program
 public abstract class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList;
 	public abstract fun description ()Ljava/lang/String;
 	public abstract fun program ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun programStage ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
@@ -9228,7 +8385,6 @@ public abstract class org/hisp/dhis/android/core/programstageworkinglist/Program
 	public fun <init> ()V
 	public abstract fun attribute ()Ljava/lang/String;
 	public static fun builder ()Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListAttributeValueFilter$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListAttributeValueFilter;
 	public abstract fun ew ()Ljava/lang/String;
 	public abstract fun programStageWorkingList ()Ljava/lang/String;
 	public abstract fun sw ()Ljava/lang/String;
@@ -9262,7 +8418,6 @@ public final class org/hisp/dhis/android/core/programstageworkinglist/ProgramSta
 public abstract class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListEventDataFilter : org/hisp/dhis/android/core/common/FilterOperators, org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListEventDataFilter$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListEventDataFilter;
 	public abstract fun dataItem ()Ljava/lang/String;
 	public abstract fun programStageWorkingList ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListEventDataFilter$Builder;
@@ -9304,7 +8459,6 @@ public abstract interface class org/hisp/dhis/android/core/relationship/BaseRela
 public abstract class org/hisp/dhis/android/core/relationship/Relationship : org/hisp/dhis/android/core/relationship/BaseRelationship {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/relationship/Relationship$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/relationship/Relationship;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/relationship/Relationship$Builder;
 }
 
@@ -9338,7 +8492,6 @@ public abstract class org/hisp/dhis/android/core/relationship/RelationshipConstr
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint$Builder;
 	public abstract fun constraintType ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;
 	public abstract fun program ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun programStage ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun relationshipEntity ()Lorg/hisp/dhis/android/core/relationship/RelationshipEntityType;
@@ -9397,7 +8550,6 @@ public final class org/hisp/dhis/android/core/relationship/RelationshipHelper {
 public abstract class org/hisp/dhis/android/core/relationship/RelationshipItem : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/relationship/RelationshipItem$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/relationship/RelationshipItem;
 	public fun elementType ()Ljava/lang/String;
 	public fun elementUid ()Ljava/lang/String;
 	public abstract fun enrollment ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemEnrollment;
@@ -9480,7 +8632,6 @@ public abstract class org/hisp/dhis/android/core/relationship/RelationshipType :
 	public abstract fun access ()Lorg/hisp/dhis/android/core/common/Access;
 	public abstract fun bidirectional ()Ljava/lang/Boolean;
 	public static fun builder ()Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/relationship/RelationshipType;
 	public abstract fun fromConstraint ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;
 	public abstract fun fromToName ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
@@ -9527,7 +8678,6 @@ public abstract class org/hisp/dhis/android/core/relationship/TrackerDataView : 
 	public fun <init> ()V
 	public abstract fun attributes ()Ljava/util/List;
 	public static fun builder ()Lorg/hisp/dhis/android/core/relationship/TrackerDataView$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/relationship/TrackerDataView;
 	public abstract fun dataElements ()Ljava/util/List;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/relationship/TrackerDataView$Builder;
 }
@@ -9549,7 +8699,6 @@ public final class org/hisp/dhis/android/core/relationship/internal/Relationship
 public abstract class org/hisp/dhis/android/core/resource/internal/Resource : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/resource/internal/Resource$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/resource/internal/Resource;
 	public abstract fun lastSynced ()Ljava/util/Date;
 	public abstract fun resourceType ()Lorg/hisp/dhis/android/core/resource/internal/Resource$Type;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/resource/internal/Resource$Builder;
@@ -9673,7 +8822,6 @@ public abstract interface class org/hisp/dhis/android/core/server/ServerModule {
 public abstract class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualization : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization;
 	public abstract fun groupName ()Ljava/lang/String;
 	public abstract fun groupUid ()Ljava/lang/String;
 	public abstract fun name ()Ljava/lang/String;
@@ -9784,7 +8932,6 @@ public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiAttribute 
 	public fun <init> ()V
 	public abstract fun attribute ()Ljava/lang/String;
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiAttribute$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiAttribute;
 	public abstract fun teiSetting ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiAttribute$Builder;
 	public abstract fun whoComponent ()Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;
@@ -9818,7 +8965,6 @@ public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiData$Build
 public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiDataElement : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiDataElement$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiDataElement;
 	public abstract fun dataElement ()Ljava/lang/String;
 	public abstract fun programStage ()Ljava/lang/String;
 	public abstract fun teiSetting ()Ljava/lang/String;
@@ -9838,7 +8984,6 @@ public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiDataElemen
 public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiIndicator : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiIndicator$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiIndicator;
 	public abstract fun indicator ()Ljava/lang/String;
 	public abstract fun programStage ()Ljava/lang/String;
 	public abstract fun teiSetting ()Ljava/lang/String;
@@ -9858,7 +9003,6 @@ public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiIndicator$
 public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiSetting : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting;
 	public abstract fun data ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData;
 	public abstract fun name ()Ljava/lang/String;
 	public abstract fun period ()Lorg/hisp/dhis/android/core/period/PeriodType;
@@ -9899,7 +9043,6 @@ public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutriti
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData$Builder;
 	public abstract fun chartType ()Lorg/hisp/dhis/android/core/settings/WHONutritionChartType;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData;
 	public abstract fun gender ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender;
 	public abstract fun teiSetting ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData$Builder;
@@ -10007,7 +9150,6 @@ public final class org/hisp/dhis/android/core/settings/ChartType : java/lang/Enu
 public abstract class org/hisp/dhis/android/core/settings/CompletionSpinner : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/CompletionSpinner$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/CompletionSpinner;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/CompletionSpinner$Builder;
 	public abstract fun uid ()Ljava/lang/String;
 	public abstract fun visible ()Ljava/lang/Boolean;
@@ -10039,7 +9181,6 @@ public abstract class org/hisp/dhis/android/core/settings/CustomIntent : org/his
 	public fun <init> ()V
 	public abstract fun action ()Ljava/util/List;
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/CustomIntent$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/CustomIntent;
 	public abstract fun name ()Ljava/lang/String;
 	public abstract fun packageName ()Ljava/lang/String;
 	public abstract fun request ()Lorg/hisp/dhis/android/core/settings/CustomIntentRequest;
@@ -10071,7 +9212,6 @@ public final class org/hisp/dhis/android/core/settings/CustomIntentActionType : 
 public abstract class org/hisp/dhis/android/core/settings/CustomIntentAttribute : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/CustomIntentAttribute$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/CustomIntentAttribute;
 	public abstract fun customIntentUid ()Ljava/lang/String;
 	public abstract fun uid ()Ljava/lang/String;
 }
@@ -10106,7 +9246,6 @@ public final class org/hisp/dhis/android/core/settings/CustomIntentContext {
 public abstract class org/hisp/dhis/android/core/settings/CustomIntentDataElement : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/CustomIntentDataElement$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/CustomIntentDataElement;
 	public abstract fun customIntentUid ()Ljava/lang/String;
 	public abstract fun uid ()Ljava/lang/String;
 }
@@ -10122,7 +9261,6 @@ public abstract class org/hisp/dhis/android/core/settings/CustomIntentRequest {
 	public fun <init> ()V
 	public abstract fun arguments ()Ljava/util/List;
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/CustomIntentRequest$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/CustomIntentRequest;
 }
 
 public abstract class org/hisp/dhis/android/core/settings/CustomIntentRequest$Builder {
@@ -10134,7 +9272,6 @@ public abstract class org/hisp/dhis/android/core/settings/CustomIntentRequest$Bu
 public abstract class org/hisp/dhis/android/core/settings/CustomIntentRequestArgument {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/CustomIntentRequestArgument$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/CustomIntentRequestArgument;
 	public abstract fun key ()Ljava/lang/String;
 	public abstract fun value ()Ljava/lang/String;
 }
@@ -10232,7 +9369,6 @@ public abstract class org/hisp/dhis/android/core/settings/CustomIntents$Builder 
 public abstract class org/hisp/dhis/android/core/settings/DataSetConfigurationSetting : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting;
 	public abstract fun disableManualLocation ()Ljava/lang/Boolean;
 	public abstract fun minimumLocationAccuracy ()Ljava/lang/Integer;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting$Builder;
@@ -10296,7 +9432,6 @@ public abstract class org/hisp/dhis/android/core/settings/DataSetFilters$Builder
 public abstract class org/hisp/dhis/android/core/settings/DataSetSetting : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/DataSetSetting$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/DataSetSetting;
 	public abstract fun lastUpdated ()Ljava/util/Date;
 	public abstract fun name ()Ljava/lang/String;
 	public abstract fun periodDSDBTrimming ()Ljava/lang/Integer;
@@ -10378,7 +9513,6 @@ public final class org/hisp/dhis/android/core/settings/ExperimentalFeature : jav
 public abstract class org/hisp/dhis/android/core/settings/FilterSetting : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/FilterSetting$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/FilterSetting;
 	public abstract fun filter ()Ljava/lang/Boolean;
 	public abstract fun filterType ()Ljava/lang/String;
 	public abstract fun scope ()Ljava/lang/String;
@@ -10426,7 +9560,6 @@ public abstract class org/hisp/dhis/android/core/settings/GeneralSettings : org/
 	public abstract fun allowScreenCapture ()Ljava/lang/Boolean;
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/GeneralSettings$Builder;
 	public abstract fun bypassDHIS2VersionCheck ()Ljava/lang/Boolean;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/GeneralSettings;
 	public abstract fun dataSync ()Lorg/hisp/dhis/android/core/settings/DataSyncPeriod;
 	public abstract fun encryptDB ()Ljava/lang/Boolean;
 	public abstract fun experimentalFeatures ()Ljava/util/List;
@@ -10479,7 +9612,6 @@ public final class org/hisp/dhis/android/core/settings/HomeFilter$Companion {
 public abstract class org/hisp/dhis/android/core/settings/LatestAppVersion : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/LatestAppVersion$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/LatestAppVersion;
 	public abstract fun downloadURL ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/LatestAppVersion$Builder;
 	public abstract fun version ()Ljava/lang/String;
@@ -10525,7 +9657,6 @@ public abstract class org/hisp/dhis/android/core/settings/ProgramConfigurationSe
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
 	public abstract fun completionSpinner ()Ljava/lang/Boolean;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting;
 	public abstract fun disableCollapsibleSections ()Ljava/lang/Boolean;
 	public abstract fun disableManualLocation ()Ljava/lang/Boolean;
 	public abstract fun disableReferrals ()Ljava/lang/Boolean;
@@ -10617,7 +9748,6 @@ public abstract class org/hisp/dhis/android/core/settings/ProgramItemHeader$Buil
 public abstract class org/hisp/dhis/android/core/settings/ProgramSetting : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/ProgramSetting$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/ProgramSetting;
 	public abstract fun enrollmentDBTrimming ()Lorg/hisp/dhis/android/core/settings/EnrollmentScope;
 	public abstract fun enrollmentDateDBTrimming ()Lorg/hisp/dhis/android/core/settings/DownloadPeriod;
 	public abstract fun enrollmentDateDownload ()Lorg/hisp/dhis/android/core/settings/DownloadPeriod;
@@ -10725,7 +9855,6 @@ public final class org/hisp/dhis/android/core/settings/SynchronizationSettingObj
 public abstract class org/hisp/dhis/android/core/settings/SynchronizationSettings : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/SynchronizationSettings$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/SynchronizationSettings;
 	public abstract fun dataSetSettings ()Lorg/hisp/dhis/android/core/settings/DataSetSettings;
 	public abstract fun dataSync ()Lorg/hisp/dhis/android/core/settings/DataSyncPeriod;
 	public abstract fun fileMaxLengthBytes ()Ljava/lang/Integer;
@@ -10751,7 +9880,6 @@ public abstract class org/hisp/dhis/android/core/settings/SynchronizationSetting
 public abstract class org/hisp/dhis/android/core/settings/SystemSetting : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/SystemSetting$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/SystemSetting;
 	public abstract fun key ()Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/SystemSetting$Builder;
 	public abstract fun value ()Ljava/lang/String;
@@ -10784,7 +9912,6 @@ public final class org/hisp/dhis/android/core/settings/SystemSettingCollectionRe
 public abstract class org/hisp/dhis/android/core/settings/UserSettings : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/settings/UserSettings$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/settings/UserSettings;
 	public abstract fun keyDbLocale ()Ljava/lang/String;
 	public abstract fun keyUiLocale ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/UserSettings$Builder;
@@ -10838,7 +9965,6 @@ public class org/hisp/dhis/android/core/sms/data/localdbrepository/internal/File
 public abstract class org/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSMetadataId : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSMetadataId$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSMetadataId;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSMetadataId$Builder;
 	public abstract fun type ()Lorg/hisp/dhis/smscompression/SMSConsts$MetadataType;
 	public abstract fun uid ()Ljava/lang/String;
@@ -10854,7 +9980,6 @@ public abstract class org/hisp/dhis/android/core/sms/data/localdbrepository/inte
 public abstract class org/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmission : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmission$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmission;
 	public abstract fun submissionId ()Ljava/lang/Integer;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmission$Builder;
 	public abstract fun type ()Lorg/hisp/dhis/android/core/sms/domain/repository/internal/SubmissionType;
@@ -11273,7 +10398,6 @@ public abstract class org/hisp/dhis/android/core/systeminfo/SystemInfo : org/his
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/systeminfo/SystemInfo$Builder;
 	public abstract fun contextPath ()Ljava/lang/String;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/systeminfo/SystemInfo;
 	public abstract fun dateFormat ()Ljava/lang/String;
 	public abstract fun serverDate ()Ljava/util/Date;
 	public abstract fun systemName ()Ljava/lang/String;
@@ -11313,7 +10437,6 @@ public abstract class org/hisp/dhis/android/core/trackedentity/AttributeValueFil
 	public fun <init> ()V
 	public abstract fun attribute ()Ljava/lang/String;
 	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/AttributeValueFilter$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/trackedentity/AttributeValueFilter;
 	public abstract fun ew ()Ljava/lang/String;
 	public abstract fun sw ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/AttributeValueFilter$Builder;
@@ -11333,7 +10456,6 @@ public abstract class org/hisp/dhis/android/core/trackedentity/EntityQueryCriter
 	public fun <init> ()V
 	public abstract fun attributeValueFilters ()Ljava/util/List;
 	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/EntityQueryCriteria$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/trackedentity/EntityQueryCriteria;
 	public abstract fun enrollmentCreatedDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
 	public abstract fun enrollmentIncidentDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
 	public abstract fun enrollmentStatus ()Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;
@@ -11358,7 +10480,6 @@ public abstract class org/hisp/dhis/android/core/trackedentity/EntityQueryCriter
 public abstract class org/hisp/dhis/android/core/trackedentity/ReservedValueSetting : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/ReservedValueSetting$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/trackedentity/ReservedValueSetting;
 	public abstract fun numberOfValuesToReserve ()Ljava/lang/Integer;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/ReservedValueSetting$Builder;
 	public abstract fun uid ()Ljava/lang/String;
@@ -11397,7 +10518,6 @@ public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttr
 	public abstract fun aggregationType ()Lorg/hisp/dhis/android/core/common/AggregationType;
 	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttribute$Builder;
 	public abstract fun confidential ()Ljava/lang/Boolean;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttribute;
 	public abstract fun displayFormName ()Ljava/lang/String;
 	public abstract fun displayInListNoProgram ()Ljava/lang/Boolean;
 	public abstract fun displayOnVisitSchedule ()Ljava/lang/Boolean;
@@ -11470,7 +10590,6 @@ public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttribu
 public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink;
 	public abstract fun legendSet ()Ljava/lang/String;
 	public abstract fun sortOrder ()Ljava/lang/Integer;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink$Builder;
@@ -11488,7 +10607,6 @@ public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttr
 public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue;
 	public abstract fun created ()Ljava/util/Date;
 	public abstract fun expiryDate ()Ljava/util/Date;
 	public abstract fun key ()Ljava/lang/String;
@@ -11535,7 +10653,6 @@ public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttribu
 public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue : org/hisp/dhis/android/core/common/BaseDataObject, org/hisp/dhis/android/core/common/ObjectWithDeleteInterface {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue;
 	public abstract fun created ()Ljava/util/Date;
 	public fun deleted ()Ljava/lang/Boolean;
 	public abstract fun lastUpdated ()Ljava/util/Date;
@@ -11576,7 +10693,6 @@ public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttribu
 public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue : org/hisp/dhis/android/core/common/BaseDataObject, org/hisp/dhis/android/core/common/ObjectWithDeleteInterface {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue;
 	public abstract fun created ()Ljava/util/Date;
 	public abstract fun dataElement ()Ljava/lang/String;
 	public fun deleted ()Ljava/lang/Boolean;
@@ -11624,7 +10740,6 @@ public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityInst
 	public fun <init> ()V
 	public abstract fun aggregatedSyncState ()Lorg/hisp/dhis/android/core/common/State;
 	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance;
 	public abstract fun created ()Ljava/util/Date;
 	public abstract fun createdAtClient ()Ljava/util/Date;
 	public abstract fun geometry ()Lorg/hisp/dhis/android/core/common/Geometry;
@@ -11705,7 +10820,6 @@ public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityInst
 	public fun <init> ()V
 	public abstract fun assignedUserMode ()Lorg/hisp/dhis/android/core/common/AssignedUserMode;
 	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceEventFilter$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceEventFilter;
 	public abstract fun eventCreatedPeriod ()Lorg/hisp/dhis/android/core/common/FilterPeriod;
 	public abstract fun eventStatus ()Lorg/hisp/dhis/android/core/event/EventStatus;
 	public abstract fun programStage ()Ljava/lang/String;
@@ -11726,7 +10840,6 @@ public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityInst
 public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceFilter : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyle {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceFilter$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceFilter;
 	public abstract fun description ()Ljava/lang/String;
 	public fun enrollmentCreatedPeriod ()Lorg/hisp/dhis/android/core/common/FilterPeriod;
 	public fun enrollmentStatus ()Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;
@@ -11814,7 +10927,6 @@ public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityType
 	public fun <init> ()V
 	public abstract fun access ()Lorg/hisp/dhis/android/core/common/Access;
 	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityType$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityType;
 	public abstract fun featureType ()Lorg/hisp/dhis/android/core/common/FeatureType;
 	public synthetic fun toBuilder ()Lorg/hisp/dhis/android/core/common/ObjectWithStyle$Builder;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityType$Builder;
@@ -11833,7 +10945,6 @@ public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityType
 public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute;
 	public abstract fun displayInList ()Ljava/lang/Boolean;
 	public abstract fun mandatory ()Ljava/lang/Boolean;
 	public abstract fun searchable ()Ljava/lang/Boolean;
@@ -11905,7 +11016,6 @@ public final class org/hisp/dhis/android/core/trackedentity/internal/TrackedEnti
 public abstract class org/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync : org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync$Builder;
 }
 
@@ -11959,7 +11069,6 @@ public abstract interface class org/hisp/dhis/android/core/trackedentity/ownersh
 public abstract class org/hisp/dhis/android/core/trackedentity/ownership/ProgramOwner : org/hisp/dhis/android/core/common/BaseDataObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/ownership/ProgramOwner$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/trackedentity/ownership/ProgramOwner;
 	public abstract fun ownerOrgUnit ()Ljava/lang/String;
 	public abstract fun program ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/ownership/ProgramOwner$Builder;
@@ -11977,7 +11086,6 @@ public abstract class org/hisp/dhis/android/core/trackedentity/ownership/Program
 public abstract class org/hisp/dhis/android/core/trackedentity/ownership/ProgramTempOwner : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/ownership/ProgramTempOwner$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/trackedentity/ownership/ProgramTempOwner;
 	public abstract fun created ()Ljava/util/Date;
 	public abstract fun program ()Ljava/lang/String;
 	public abstract fun reason ()Ljava/lang/String;
@@ -12361,7 +11469,6 @@ public final class org/hisp/dhis/android/core/tracker/importer/internal/TrackerJ
 public abstract class org/hisp/dhis/android/core/tracker/importer/internal/TrackerJobObject : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/tracker/importer/internal/TrackerJobObject$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/tracker/importer/internal/TrackerJobObject;
 	public abstract fun fileResources ()Ljava/util/List;
 	public abstract fun jobUid ()Ljava/lang/String;
 	public abstract fun lastUpdated ()Ljava/util/Date;
@@ -12392,7 +11499,6 @@ public abstract class org/hisp/dhis/android/core/usecase/stock/InternalStockUseC
 	public static final field TRANSACTIONS Ljava/lang/String;
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/usecase/stock/InternalStockUseCase$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/usecase/stock/InternalStockUseCase;
 	public abstract fun description ()Ljava/lang/String;
 	public abstract fun itemCode ()Ljava/lang/String;
 	public abstract fun itemDescription ()Ljava/lang/String;
@@ -12418,7 +11524,6 @@ public abstract class org/hisp/dhis/android/core/usecase/stock/InternalStockUseC
 public abstract class org/hisp/dhis/android/core/usecase/stock/InternalStockUseCaseTransaction : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/usecase/stock/InternalStockUseCaseTransaction$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/usecase/stock/InternalStockUseCaseTransaction;
 	public abstract fun distributedTo ()Ljava/lang/String;
 	public abstract fun programUid ()Ljava/lang/String;
 	public abstract fun sortOrder ()Ljava/lang/Integer;
@@ -12566,7 +11671,6 @@ public abstract interface class org/hisp/dhis/android/core/user/AccountManager {
 public abstract class org/hisp/dhis/android/core/user/AuthenticatedUser : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/user/AuthenticatedUser$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/user/AuthenticatedUser;
 	public abstract fun hash ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/user/AuthenticatedUser$Builder;
 	public abstract fun user ()Ljava/lang/String;
@@ -12585,7 +11689,6 @@ public final class org/hisp/dhis/android/core/user/AuthenticatedUserObjectReposi
 public abstract class org/hisp/dhis/android/core/user/Authority : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/user/Authority$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/user/Authority;
 	public abstract fun name ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/user/Authority$Builder;
 }
@@ -12612,7 +11715,6 @@ public abstract class org/hisp/dhis/android/core/user/User : org/hisp/dhis/andro
 	public fun <init> ()V
 	public abstract fun birthday ()Ljava/lang/String;
 	public static fun builder ()Lorg/hisp/dhis/android/core/user/User$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/user/User;
 	public abstract fun education ()Ljava/lang/String;
 	public abstract fun email ()Ljava/lang/String;
 	public abstract fun employer ()Ljava/lang/String;
@@ -12687,7 +11789,6 @@ public final class org/hisp/dhis/android/core/user/UserCredentialsObjectReposito
 public abstract class org/hisp/dhis/android/core/user/UserGroup : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/user/UserGroup$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/user/UserGroup;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/user/UserGroup$Builder;
 }
 
@@ -12732,7 +11833,6 @@ public final class org/hisp/dhis/android/core/user/UserObjectRepository : org/hi
 public abstract class org/hisp/dhis/android/core/user/UserOrganisationUnitLink : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/user/UserOrganisationUnitLink$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/user/UserOrganisationUnitLink;
 	public abstract fun organisationUnit ()Ljava/lang/String;
 	public abstract fun organisationUnitScope ()Ljava/lang/String;
 	public abstract fun root ()Ljava/lang/Boolean;
@@ -12754,7 +11854,6 @@ public abstract class org/hisp/dhis/android/core/user/UserOrganisationUnitLink$B
 public abstract class org/hisp/dhis/android/core/user/UserRole : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/user/UserRole$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/user/UserRole;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/user/UserRole$Builder;
 }
 
@@ -12823,7 +11922,6 @@ public final class org/hisp/dhis/android/core/util/StringUtils {
 public abstract class org/hisp/dhis/android/core/validation/DataSetValidationRuleLink : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/validation/DataSetValidationRuleLink$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/validation/DataSetValidationRuleLink;
 	public abstract fun dataSet ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/validation/DataSetValidationRuleLink$Builder;
 	public abstract fun validationRule ()Ljava/lang/String;
@@ -12852,7 +11950,6 @@ public abstract interface class org/hisp/dhis/android/core/validation/Validation
 public abstract class org/hisp/dhis/android/core/validation/ValidationRule : org/hisp/dhis/android/core/common/BaseNameableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/validation/ValidationRule$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/validation/ValidationRule;
 	public abstract fun importance ()Lorg/hisp/dhis/android/core/validation/ValidationRuleImportance;
 	public abstract fun instruction ()Ljava/lang/String;
 	public abstract fun leftSide ()Lorg/hisp/dhis/android/core/validation/ValidationRuleExpression;
@@ -13015,7 +12112,6 @@ public abstract class org/hisp/dhis/android/core/visualization/CategoryDimension
 	public static fun builder ()Lorg/hisp/dhis/android/core/visualization/CategoryDimension$Builder;
 	public abstract fun category ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun categoryOptions ()Ljava/util/List;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/visualization/CategoryDimension;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/visualization/CategoryDimension$Builder;
 }
 
@@ -13123,7 +12219,6 @@ public abstract class org/hisp/dhis/android/core/visualization/TrackerVisualizat
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
 	public abstract fun columns ()Ljava/util/List;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization;
 	public abstract fun description ()Ljava/lang/String;
 	public abstract fun displayDescription ()Ljava/lang/String;
 	public abstract fun filters ()Ljava/util/List;
@@ -13165,7 +12260,6 @@ public final class org/hisp/dhis/android/core/visualization/TrackerVisualization
 public abstract class org/hisp/dhis/android/core/visualization/TrackerVisualizationDimension : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension;
 	public abstract fun dimension ()Ljava/lang/String;
 	public abstract fun dimensionType ()Ljava/lang/String;
 	public abstract fun filter ()Ljava/lang/String;
@@ -13261,7 +12355,6 @@ public abstract class org/hisp/dhis/android/core/visualization/Visualization : o
 	public abstract fun colSubTotals ()Ljava/lang/Boolean;
 	public abstract fun colTotals ()Ljava/lang/Boolean;
 	public abstract fun columns ()Ljava/util/List;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/visualization/Visualization;
 	public abstract fun description ()Ljava/lang/String;
 	public abstract fun digitGroupSeparator ()Lorg/hisp/dhis/android/core/visualization/DigitGroupSeparator;
 	public abstract fun displayDensity ()Lorg/hisp/dhis/android/core/visualization/DisplayDensity;
@@ -13331,7 +12424,6 @@ public abstract class org/hisp/dhis/android/core/visualization/VisualizationCate
 	public static fun builder ()Lorg/hisp/dhis/android/core/visualization/VisualizationCategoryDimensionLink$Builder;
 	public abstract fun category ()Ljava/lang/String;
 	public abstract fun categoryOption ()Ljava/lang/String;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/visualization/VisualizationCategoryDimensionLink;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/visualization/VisualizationCategoryDimensionLink$Builder;
 	public abstract fun visualization ()Ljava/lang/String;
 }
@@ -13395,7 +12487,6 @@ public abstract class org/hisp/dhis/android/core/visualization/VisualizationDime
 public abstract class org/hisp/dhis/android/core/visualization/VisualizationDimensionItem : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItem$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItem;
 	public abstract fun dimension ()Ljava/lang/String;
 	public abstract fun dimensionItem ()Ljava/lang/String;
 	public abstract fun dimensionItemType ()Ljava/lang/String;
@@ -13419,7 +12510,6 @@ public abstract class org/hisp/dhis/android/core/visualization/VisualizationDime
 public abstract class org/hisp/dhis/android/core/visualization/VisualizationLegend {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/visualization/VisualizationLegend$Builder;
-	public static fun create (Landroid/database/Cursor;)Lorg/hisp/dhis/android/core/visualization/VisualizationLegend;
 	public abstract fun set ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun showKey ()Ljava/lang/Boolean;
 	public abstract fun strategy ()Lorg/hisp/dhis/android/core/visualization/LegendStrategy;
@@ -13500,7 +12590,6 @@ public final class org/hisp/dhis/android/persistence/attribute/AttributeTableInf
 	public static final field DATA_ELEMENT_GROUP_ATTRIBUTE Ljava/lang/String;
 	public static final field DATA_ELEMENT_GROUP_SET_ATTRIBUTE Ljava/lang/String;
 	public static final field DATA_SET_ATTRIBUTE Ljava/lang/String;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
@@ -13639,7 +12728,6 @@ public final class org/hisp/dhis/android/persistence/category/CategoryComboTable
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/category/CategoryComboTableInfo$Columns$Companion;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field IS_DEFAULT Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
@@ -13680,7 +12768,6 @@ public final class org/hisp/dhis/android/persistence/category/CategoryOptionComb
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/category/CategoryOptionComboTableInfo$Columns$Companion;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
@@ -13722,7 +12809,6 @@ public final class org/hisp/dhis/android/persistence/category/CategoryOptionTabl
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/category/CategoryOptionTableInfo$Columns$Companion;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
@@ -13751,7 +12837,6 @@ public final class org/hisp/dhis/android/persistence/category/CategoryTableInfo$
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/category/CategoryTableInfo$Columns$Companion;
 	public static final field DATA_DIMENSION_TYPE Ljava/lang/String;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
@@ -13789,7 +12874,6 @@ public final class org/hisp/dhis/android/persistence/constant/ConstantTableInfo$
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/constant/ConstantTableInfo$Columns$Companion;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
@@ -13853,7 +12937,6 @@ public final class org/hisp/dhis/android/persistence/dataelement/DataElementTabl
 	public static final field COLOR Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/dataelement/DataElementTableInfo$Columns$Companion;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_FORM_NAME Ljava/lang/String;
@@ -13986,7 +13069,6 @@ public final class org/hisp/dhis/android/persistence/dataset/DataSetTableInfo$Co
 	public static final field CUSTOM_TEXT_ALIGN Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/dataset/DataSetTableInfo$Columns$Companion;
 	public static final field DATA_ELEMENT_DECORATION Ljava/lang/String;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
@@ -14086,7 +13168,6 @@ public final class org/hisp/dhis/android/persistence/dataset/SectionTableInfo$Co
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/dataset/SectionTableInfo$Columns$Companion;
 	public static final field DATA_SET Ljava/lang/String;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISABLE_DATA_ELEMENT_AUTO_GROUP Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
@@ -14294,7 +13375,6 @@ public final class org/hisp/dhis/android/persistence/event/EventFilterTableInfo$
 	public static final field COMPLETED_DATE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/event/EventFilterTableInfo$Columns$Companion;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_COLUMN_ORDER Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
@@ -14385,7 +13465,6 @@ public final class org/hisp/dhis/android/persistence/expressiondimensionitem/Exp
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/expressiondimensionitem/ExpressionDimensionItemTableInfo$Columns$Companion;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field EXPRESSION Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
@@ -14498,7 +13577,6 @@ public final class org/hisp/dhis/android/persistence/indicator/IndicatorTableInf
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/indicator/IndicatorTableInfo$Columns$Companion;
 	public static final field DECIMALS Ljava/lang/String;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DENOMINATOR Ljava/lang/String;
 	public static final field DENOMINATOR_DESCRIPTION Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
@@ -14531,7 +13609,6 @@ public final class org/hisp/dhis/android/persistence/indicator/IndicatorTypeTabl
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/indicator/IndicatorTypeTableInfo$Columns$Companion;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field FACTOR Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
@@ -14591,7 +13668,6 @@ public final class org/hisp/dhis/android/persistence/legendset/LegendSetTableInf
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/legendset/LegendSetTableInfo$Columns$Companion;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
@@ -14615,7 +13691,6 @@ public final class org/hisp/dhis/android/persistence/legendset/LegendTableInfo$C
 	public static final field COLOR Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/legendset/LegendTableInfo$Columns$Companion;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field END_VALUE Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
@@ -14793,7 +13868,6 @@ public final class org/hisp/dhis/android/persistence/option/OptionGroupTableInfo
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/option/OptionGroupTableInfo$Columns$Companion;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
@@ -14816,7 +13890,6 @@ public final class org/hisp/dhis/android/persistence/option/OptionSetTableInfo$C
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/option/OptionSetTableInfo$Columns$Companion;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
@@ -14841,7 +13914,6 @@ public final class org/hisp/dhis/android/persistence/option/OptionTableInfo$Colu
 	public static final field COLOR Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/option/OptionTableInfo$Columns$Companion;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field ICON Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
@@ -14866,7 +13938,6 @@ public final class org/hisp/dhis/android/persistence/organisationunit/Organisati
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/organisationunit/OrganisationUnitGroupTableInfo$Columns$Companion;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field DISPLAY_SHORT_NAME Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
@@ -14890,7 +13961,6 @@ public final class org/hisp/dhis/android/persistence/organisationunit/Organisati
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/organisationunit/OrganisationUnitLevelTableInfo$Columns$Companion;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field LEVEL Ljava/lang/String;
@@ -14948,7 +14018,6 @@ public final class org/hisp/dhis/android/persistence/organisationunit/Organisati
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/organisationunit/OrganisationUnitTableInfo$Columns$Companion;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
@@ -15023,7 +14092,6 @@ public final class org/hisp/dhis/android/persistence/program/ProgramIndicatorTab
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/program/ProgramIndicatorTableInfo$Columns$Companion;
 	public static final field DECIMALS Ljava/lang/String;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DIMENSION_ITEM Ljava/lang/String;
 	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
@@ -15057,7 +14125,6 @@ public final class org/hisp/dhis/android/persistence/program/ProgramRuleActionTa
 	public static final field Companion Lorg/hisp/dhis/android/persistence/program/ProgramRuleActionTableInfo$Columns$Companion;
 	public static final field DATA Ljava/lang/String;
 	public static final field DATA_ELEMENT Ljava/lang/String;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_CONTENT Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
@@ -15090,7 +14157,6 @@ public final class org/hisp/dhis/android/persistence/program/ProgramRuleTableInf
 	public static final field CONDITION Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/program/ProgramRuleTableInfo$Columns$Companion;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
@@ -15116,7 +14182,6 @@ public final class org/hisp/dhis/android/persistence/program/ProgramRuleVariable
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/program/ProgramRuleVariableTableInfo$Columns$Companion;
 	public static final field DATA_ELEMENT Ljava/lang/String;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
@@ -15162,7 +14227,6 @@ public final class org/hisp/dhis/android/persistence/program/ProgramSectionTable
 	public static final field COLOR Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/program/ProgramSectionTableInfo$Columns$Companion;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DESKTOP_RENDER_TYPE Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
@@ -15195,7 +14259,6 @@ public final class org/hisp/dhis/android/persistence/program/ProgramStageDataEle
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/program/ProgramStageDataElementTableInfo$Columns$Companion;
 	public static final field DATA_ELEMENT Ljava/lang/String;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_IN_REPORTS Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
@@ -15255,7 +14318,6 @@ public final class org/hisp/dhis/android/persistence/program/ProgramStageSection
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/program/ProgramStageSectionTableInfo$Columns$Companion;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DESKTOP_RENDER_TYPE Ljava/lang/String;
 	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
@@ -15288,7 +14350,6 @@ public final class org/hisp/dhis/android/persistence/program/ProgramStageTableIn
 	public static final field COLOR Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/program/ProgramStageTableInfo$Columns$Companion;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_DUE_DATE_LABEL Ljava/lang/String;
@@ -15340,7 +14401,6 @@ public final class org/hisp/dhis/android/persistence/program/ProgramTableInfo$Co
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/program/ProgramTableInfo$Columns$Companion;
 	public static final field DATA_ENTRY_METHOD Ljava/lang/String;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_ENROLLMENT_DATE_LABEL Ljava/lang/String;
@@ -15395,7 +14455,6 @@ public final class org/hisp/dhis/android/persistence/program/ProgramTrackedEntit
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/program/ProgramTrackedEntityAttributeTableInfo$Columns$Companion;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_IN_LIST Ljava/lang/String;
@@ -15480,7 +14539,6 @@ public final class org/hisp/dhis/android/persistence/programstageworkinglist/Pro
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/programstageworkinglist/ProgramStageWorkingListTableInfo$Columns$Companion;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_COLUMN_ORDER Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
@@ -15583,7 +14641,6 @@ public final class org/hisp/dhis/android/persistence/relationship/RelationshipTy
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/relationship/RelationshipTypeTableInfo$Columns$Companion;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field FROM_TO_NAME Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
@@ -16215,7 +15272,6 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 	public static final field CONFIDENTIAL Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/trackedentity/TrackedEntityAttributeTableInfo$Columns$Companion;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_FORM_NAME Ljava/lang/String;
@@ -16325,7 +15381,6 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 	public static final field COLOR Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/trackedentity/TrackedEntityInstanceFilterTableInfo$Columns$Companion;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_COLUMN_ORDER Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
@@ -16435,7 +15490,6 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 	public static final field COLOR Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/trackedentity/TrackedEntityTypeTableInfo$Columns$Companion;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
@@ -16559,7 +15613,6 @@ public final class org/hisp/dhis/android/persistence/user/UserGroupTableInfo$Col
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/user/UserGroupTableInfo$Columns$Companion;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
@@ -16601,7 +15654,6 @@ public final class org/hisp/dhis/android/persistence/user/UserRoleTableInfo$Colu
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/user/UserRoleTableInfo$Columns$Companion;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
@@ -16624,7 +15676,6 @@ public final class org/hisp/dhis/android/persistence/user/UserTableInfo$Columns 
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/user/UserTableInfo$Columns$Companion;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field EDUCATION Ljava/lang/String;
 	public static final field EMAIL Ljava/lang/String;
@@ -16677,7 +15728,6 @@ public final class org/hisp/dhis/android/persistence/validation/ValidationRuleTa
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/validation/ValidationRuleTableInfo$Columns$Companion;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
@@ -16763,7 +15813,6 @@ public final class org/hisp/dhis/android/persistence/visualization/TrackerVisual
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/visualization/TrackerVisualizationTableInfo$Columns$Companion;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
@@ -16817,7 +15866,6 @@ public final class org/hisp/dhis/android/persistence/visualization/Visualization
 	public static final field COL_TOTALS Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/visualization/VisualizationTableInfo$Columns$Companion;
-	public static final field DELETED Ljava/lang/String;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DIGIT_GROUP_SEPARATOR Ljava/lang/String;
 	public static final field DISPLAY_DENSITY Ljava/lang/String;

@@ -28,19 +28,10 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.DataSyncPeriodColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.MetadataSyncPeriodColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.TrackerExporterVersionColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.TrackerImporterVersionColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.DataSetSyncSettingsColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.ProgramSyncSettingsColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.tracker.TrackerExporterVersion;
 import org.hisp.dhis.android.core.tracker.TrackerImporterVersion;
@@ -49,40 +40,30 @@ import org.hisp.dhis.android.core.tracker.TrackerImporterVersion;
 public abstract class SynchronizationSettings implements CoreObject {
 
     @Nullable
-    @ColumnAdapter(DataSyncPeriodColumnAdapter.class)
     public abstract DataSyncPeriod dataSync();
 
     @Nullable
-    @ColumnAdapter(MetadataSyncPeriodColumnAdapter.class)
     public abstract MetadataSyncPeriod metadataSync();
 
     @Nullable
-    @ColumnAdapter(TrackerImporterVersionColumnAdapter.class)
     public abstract TrackerImporterVersion trackerImporterVersion();
 
     @Nullable
-    @ColumnAdapter(TrackerExporterVersionColumnAdapter.class)
     public abstract TrackerExporterVersion trackerExporterVersion();
 
     @Nullable
-    @ColumnAdapter(DataSetSyncSettingsColumnAdapter.class)
     public abstract DataSetSettings dataSetSettings();
 
     @Nullable
-    @ColumnAdapter(ProgramSyncSettingsColumnAdapter.class)
     public abstract ProgramSettings programSettings();
 
     @Nullable
     public abstract Integer fileMaxLengthBytes();
 
-    public static SynchronizationSettings create(Cursor cursor) {
-        return $AutoValue_SynchronizationSettings.createFromCursor(cursor);
-    }
-
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new $AutoValue_SynchronizationSettings.Builder()
+        return new AutoValue_SynchronizationSettings.Builder()
                 .dataSetSettings(DataSetSettings.builder().build())
                 .programSettings(ProgramSettings.builder().build());
     }

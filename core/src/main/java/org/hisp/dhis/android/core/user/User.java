@@ -28,17 +28,10 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.database.Cursor;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreOrganisationUnitListAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreUserGroupListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreUserRoleListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
@@ -94,30 +87,21 @@ public abstract class User extends BaseIdentifiableObject implements CoreObject 
     public abstract Boolean twoFactorAuthEnabled();
 
     @Nullable
-    @ColumnAdapter(IgnoreOrganisationUnitListAdapter.class)
     abstract List<OrganisationUnit> organisationUnits();
 
     @Nullable
-    @ColumnAdapter(IgnoreOrganisationUnitListAdapter.class)
     abstract List<OrganisationUnit> teiSearchOrganisationUnits();
 
     @Nullable
-    @ColumnAdapter(IgnoreUserRoleListColumnAdapter.class)
     public abstract List<UserRole> userRoles();
 
     @Nullable
-    @ColumnAdapter(IgnoreUserGroupListColumnAdapter.class)
     public abstract List<UserGroup> userGroups();
 
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new $$AutoValue_User.Builder();
-    }
-
-    @NonNull
-    public static User create(Cursor cursor) {
-        return AutoValue_User.createFromCursor(cursor);
+        return new AutoValue_User.Builder();
     }
 
     @AutoValue.Builder

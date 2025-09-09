@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.database.Cursor;
-
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.CoreObject;
@@ -49,10 +47,6 @@ public abstract class UserOrganisationUnitLink implements CoreObject {
 
     public static Builder builder() {
         return new AutoValue_UserOrganisationUnitLink.Builder();
-    }
-
-    public static UserOrganisationUnitLink create(Cursor cursor) {
-        return $AutoValue_UserOrganisationUnitLink.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();

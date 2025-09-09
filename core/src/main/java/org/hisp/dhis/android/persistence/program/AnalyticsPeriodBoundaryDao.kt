@@ -33,6 +33,6 @@ import org.hisp.dhis.android.processor.GenerateDaoQueries
 
 @GenerateDaoQueries(
     tableName = "AnalyticsPeriodBoundaryTableInfo.TABLE_NAME",
-    parentColumnName = "AnalyticsPeriodBoundaryTableInfo.Columns.PROGRAM_INDICATOR"
+    parentColumnName = "AnalyticsPeriodBoundaryTableInfo.Columns.PROGRAM_INDICATOR",
 )
 internal interface AnalyticsPeriodBoundaryDaoTemp : LinkDao<AnalyticsPeriodBoundaryDB>

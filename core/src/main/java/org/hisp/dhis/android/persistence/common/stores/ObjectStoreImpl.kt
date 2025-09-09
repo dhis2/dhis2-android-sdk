@@ -103,5 +103,4 @@ internal open class ObjectStoreImpl<D : CoreObject, P : EntityDB<D>>(
         val entityDB = o.toDB()
         return objectDao.delete(entityDB) > 0
     }
-
 }

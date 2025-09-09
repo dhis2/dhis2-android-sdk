@@ -33,6 +33,6 @@ import org.hisp.dhis.android.processor.GenerateDaoQueries
 
 @GenerateDaoQueries(
     tableName = "DataSetDataElementLinkTableInfo.TABLE_NAME",
-    parentColumnName = "DataSetDataElementLinkTableInfo.Columns.DATA_SET"
+    parentColumnName = "DataSetDataElementLinkTableInfo.Columns.DATA_SET",
 )
 internal interface DataSetDataElementLinkDaoTemp : LinkDao<DataSetDataElementLinkDB>

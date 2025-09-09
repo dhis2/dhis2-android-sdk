@@ -33,6 +33,6 @@ import org.hisp.dhis.android.processor.GenerateDaoQueries
 
 @GenerateDaoQueries(
     tableName = "DataElementAttributeValueLinkTableInfo.TABLE_NAME",
-    parentColumnName = "DataElementAttributeValueLinkTableInfo.Columns.DATA_ELEMENT"
+    parentColumnName = "DataElementAttributeValueLinkTableInfo.Columns.DATA_ELEMENT",
 )
 internal interface DataElementAttributeValueLinkDaoTemp : LinkDao<DataElementAttributeValueLinkDB>

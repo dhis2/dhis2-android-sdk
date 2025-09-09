@@ -28,34 +28,19 @@
 
 package org.hisp.dhis.android.core.enrollment;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EnrollmentStatusColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCoordinatesColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreEventListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreNoteListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationshipListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStateColumnAdapter;
 import org.hisp.dhis.android.core.arch.helpers.CoordinateHelper;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.Coordinates;
-import org.hisp.dhis.android.core.common.DataColumns;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.note.Note;
 import org.hisp.dhis.android.core.relationship.Relationship;
-import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo;
 
 import java.util.Date;
 import java.util.List;
@@ -68,19 +53,15 @@ public abstract class Enrollment extends BaseDeletableDataObject implements Obje
     public abstract String uid();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date createdAtClient();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdatedAtClient();
 
     @Nullable
@@ -90,23 +71,18 @@ public abstract class Enrollment extends BaseDeletableDataObject implements Obje
     public abstract String program();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date enrollmentDate();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date incidentDate();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date completedDate();
 
     @Nullable
-    @ColumnName(EnrollmentTableInfo.Columns.FOLLOWUP)
     public abstract Boolean followUp();
 
     @Nullable
-    @ColumnAdapter(EnrollmentStatusColumnAdapter.class)
     public abstract EnrollmentStatus status();
 
     @Nullable
@@ -117,28 +93,21 @@ public abstract class Enrollment extends BaseDeletableDataObject implements Obje
      */
     @Nullable
     @Deprecated
-    @ColumnAdapter(IgnoreCoordinatesColumnAdapter.class)
     abstract Coordinates coordinate();
 
     @Nullable
-    @ColumnAdapter(DbGeometryColumnAdapter.class)
     public abstract Geometry geometry();
 
     @Nullable
-    @ColumnAdapter(IgnoreEventListColumnAdapter.class)
     abstract List<Event> events();
 
     @Nullable
-    @ColumnAdapter(IgnoreNoteListColumnAdapter.class)
     public abstract List<Note> notes();
 
     @Nullable
-    @ColumnAdapter(IgnoreRelationshipListColumnAdapter.class)
     abstract List<Relationship> relationships();
 
     @Nullable
-    @ColumnName(DataColumns.AGGREGATED_SYNC_STATE)
-    @ColumnAdapter(StateColumnAdapter.class)
     public abstract State aggregatedSyncState();
 
     /**
@@ -146,17 +115,12 @@ public abstract class Enrollment extends BaseDeletableDataObject implements Obje
      */
     @Deprecated
     @Nullable
-    @ColumnAdapter(IgnoreStateColumnAdapter.class)
     public State state() {
         return aggregatedSyncState();
     }
 
     public static Builder builder() {
-        return new $$AutoValue_Enrollment.Builder();
-    }
-
-    public static Enrollment create(Cursor cursor) {
-        return $AutoValue_Enrollment.createFromCursor(cursor);
+        return new AutoValue_Enrollment.Builder();
     }
 
     public abstract Builder toBuilder();

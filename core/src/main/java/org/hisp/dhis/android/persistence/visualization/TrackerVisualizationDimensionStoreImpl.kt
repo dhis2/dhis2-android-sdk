@@ -58,7 +58,7 @@ internal class TrackerVisualizationDimensionStoreImpl(
             ).build()
         val query = builder.selectWhere(
             whereClause = whereClause,
-            orderByClause = "${TrackerVisualizationDimensionTableInfo.Columns.SORT_ORDER} ASC"
+            orderByClause = "${TrackerVisualizationDimensionTableInfo.Columns.SORT_ORDER} ASC",
         )
         return selectRawQuery(query)
     }

@@ -33,6 +33,6 @@ import org.hisp.dhis.android.processor.GenerateDaoQueries
 
 @GenerateDaoQueries(
     tableName = "TrackedEntityTypeAttributeTableInfo.TABLE_NAME",
-    parentColumnName = "TrackedEntityTypeAttributeTableInfo.Columns.TRACKED_ENTITY_TYPE"
+    parentColumnName = "TrackedEntityTypeAttributeTableInfo.Columns.TRACKED_ENTITY_TYPE",
 )
 internal interface TrackedEntityTypeAttributeDaoTemp : LinkDao<TrackedEntityTypeAttributeDB>

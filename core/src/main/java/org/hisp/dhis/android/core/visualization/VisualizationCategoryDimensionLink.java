@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.visualization;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -50,14 +48,11 @@ public abstract class VisualizationCategoryDimensionLink implements CoreObject {
     public abstract String categoryOption();
 
     public static Builder builder() {
-        return new $$AutoValue_VisualizationCategoryDimensionLink.Builder();
+        return new AutoValue_VisualizationCategoryDimensionLink.Builder();
     }
 
     public abstract Builder toBuilder();
 
-    public static VisualizationCategoryDimensionLink create(Cursor cursor) {
-        return $AutoValue_VisualizationCategoryDimensionLink.createFromCursor(cursor);
-    }
 
     @AutoValue.Builder
     public abstract static class Builder {

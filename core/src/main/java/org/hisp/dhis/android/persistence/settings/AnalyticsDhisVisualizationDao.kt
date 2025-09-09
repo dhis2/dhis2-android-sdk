@@ -32,7 +32,6 @@ import androidx.room.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-
 @GenerateDaoQueries(tableName = "AnalyticsDhisVisualizationTableInfo.TABLE_NAME")
 internal interface AnalyticsDhisVisualizationDaoTemp : ObjectDao<AnalyticsDhisVisualizationDB> {
     @Query(
@@ -40,7 +39,7 @@ internal interface AnalyticsDhisVisualizationDaoTemp : ObjectDao<AnalyticsDhisVi
         DELETE FROM ${AnalyticsDhisVisualizationTableInfo.TABLE_NAME}
         WHERE ${AnalyticsDhisVisualizationTableInfo.Columns.TYPE} = :typeName
           AND ${AnalyticsDhisVisualizationTableInfo.Columns.UID} NOT IN (:uidsToKeep)
-    """
+    """,
     )
     suspend fun deleteByTypeAndUidNotIn(typeName: String, uidsToKeep: List<String>): Int
 }

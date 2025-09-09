@@ -28,19 +28,13 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import android.database.Cursor;
-
 import com.google.auto.value.AutoValue;
 
 @AutoValue
 public abstract class Relationship extends BaseRelationship {
 
     public static Builder builder() {
-        return new $$AutoValue_Relationship.Builder();
-    }
-
-    public static Relationship create(Cursor cursor) {
-        return AutoValue_Relationship.createFromCursor(cursor);
+        return new AutoValue_Relationship.Builder();
     }
 
     public abstract Builder toBuilder();

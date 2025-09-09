@@ -58,7 +58,7 @@ internal class VisualizationDimensionItemStoreImpl(
             ).build()
         val query = builder.selectWhere(
             whereClause = whereClause,
-            orderByClause = "${VisualizationDimensionItemTableInfo.Columns.SORT_ORDER} ASC"
+            orderByClause = "${VisualizationDimensionItemTableInfo.Columns.SORT_ORDER} ASC",
         )
         return selectRawQuery(query)
     }

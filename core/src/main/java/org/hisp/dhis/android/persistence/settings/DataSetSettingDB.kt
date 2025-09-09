@@ -26,8 +26,8 @@ import org.hisp.dhis.android.persistence.dataset.DataSetDB
         Index(
             name = "datasetsettinguid",
             value = ["uid"],
-            unique = true
-        )
+            unique = true,
+        ),
     ],
 )
 internal data class DataSetSettingDB(

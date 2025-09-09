@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -55,14 +53,10 @@ public abstract class FilterSetting implements CoreObject {
     @Nullable
     public abstract Boolean filter();
 
-    public static FilterSetting create(Cursor cursor) {
-        return $AutoValue_FilterSetting.createFromCursor(cursor);
-    }
-
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new $AutoValue_FilterSetting.Builder();
+        return new AutoValue_FilterSetting.Builder();
     }
 
     @AutoValue.Builder

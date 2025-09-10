@@ -1764,17 +1764,6 @@ public abstract interface class org/hisp/dhis/android/core/arch/db/access/intern
 	public abstract fun encryptAndCopyTo (Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;Ljava/io/File;Ljava/io/File;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public abstract interface class org/hisp/dhis/android/core/arch/db/cursors/internal/CursorExecutor {
-	public abstract fun addObjectsToCollection (Landroid/database/Cursor;Ljava/util/Collection;)V
-	public abstract fun getObjects (Landroid/database/Cursor;)Ljava/util/List;
-}
-
-public final class org/hisp/dhis/android/core/arch/db/cursors/internal/CursorExecutorImpl : org/hisp/dhis/android/core/arch/db/cursors/internal/CursorExecutor {
-	public fun <init> (Lkotlin/jvm/functions/Function1;)V
-	public fun addObjectsToCollection (Landroid/database/Cursor;Ljava/util/Collection;)V
-	public fun getObjects (Landroid/database/Cursor;)Ljava/util/List;
-}
-
 public class org/hisp/dhis/android/core/arch/db/querybuilders/internal/MultipleTableQueryBuilder {
 	public fun <init> ()V
 	public fun build ()Ljava/lang/String;

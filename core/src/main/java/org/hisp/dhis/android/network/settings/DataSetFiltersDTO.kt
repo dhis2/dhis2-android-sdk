@@ -46,7 +46,8 @@ internal data class DataSetFiltersDTO(
             .build()
     }
 
-    private fun Map<String, FilterSettingDTO>.toDomainMap(uidKey: String = FILTERSETTING_GLOBAL_ID): Map<DataSetFilter, FilterSetting> {
+    private fun Map<String, FilterSettingDTO>.toDomainMap(uidKey: String = FILTERSETTING_GLOBAL_ID):
+        Map<DataSetFilter, FilterSetting> {
         return map { (key, value) -> DataSetFilter.Companion.from(key) to value.toDomain(uidKey) }.toMap()
     }
 }

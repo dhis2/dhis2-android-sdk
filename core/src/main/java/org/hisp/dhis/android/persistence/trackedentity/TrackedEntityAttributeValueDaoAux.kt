@@ -46,7 +46,8 @@ internal interface TrackedEntityAttributeValueDaoAux : ObjectDao<TrackedEntityAt
         """
         DELETE FROM ${TrackedEntityAttributeValueTableInfo.TABLE_NAME}
         WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = :trackedEntityInstanceUid
-          AND ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} NOT IN (:trackedEntityAttributeUids)
+          AND ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} 
+            NOT IN (:trackedEntityAttributeUids)
     """,
     )
     suspend fun deleteByInstanceAndNotInAttributes(
@@ -58,7 +59,8 @@ internal interface TrackedEntityAttributeValueDaoAux : ObjectDao<TrackedEntityAt
         """
         DELETE FROM ${TrackedEntityAttributeValueTableInfo.TABLE_NAME}
         WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = :trackedEntityInstanceUid
-          AND ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} NOT IN (:trackedEntityAttributeUids)
+          AND ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} 
+            NOT IN (:trackedEntityAttributeUids)
           AND ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} IN (
               SELECT ${ProgramTrackedEntityAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE}
               FROM ${ProgramTrackedEntityAttributeTableInfo.TABLE_NAME}
@@ -76,7 +78,8 @@ internal interface TrackedEntityAttributeValueDaoAux : ObjectDao<TrackedEntityAt
         """
         DELETE FROM ${TrackedEntityAttributeValueTableInfo.TABLE_NAME}
         WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = :trackedEntityInstanceUid
-          AND ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} NOT IN (:trackedEntityAttributeUids)
+          AND ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} 
+            NOT IN (:trackedEntityAttributeUids)
           AND ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} IN (
               SELECT ${ProgramTrackedEntityAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE}
               FROM ${ProgramTrackedEntityAttributeTableInfo.TABLE_NAME}

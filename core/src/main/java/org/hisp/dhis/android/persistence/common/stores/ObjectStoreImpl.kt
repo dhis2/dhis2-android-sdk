@@ -63,6 +63,7 @@ internal open class ObjectStoreImpl<D : CoreObject, P : EntityDB<D>>(
         objectDao.insert(objects.map { it.toDB() })
     }
 
+    @Suppress("TooGenericExceptionThrown")
     override suspend fun update(o: D) {
         val objectDao = daoProvider()
         val updated = objectDao.update(o.toDB())

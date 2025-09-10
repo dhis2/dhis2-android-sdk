@@ -140,7 +140,7 @@ internal class RoomDatabaseExport(
      * @param newPassword Password for the target database (empty string if unencrypted)
      * @param encrypt Whether to encrypt (true) or decrypt (false)
      */
-    @Suppress("LongParameterList")
+    @Suppress("LongParameterList", "TooGenericExceptionCaught")
     private suspend fun exportDatabase(
         sourceFile: File,
         targetFile: File,
@@ -199,6 +199,7 @@ internal class RoomDatabaseExport(
                     try {
                         sourceDbDirect.execSQL("DETACH DATABASE roomExport;")
                     } catch (detachEx: Exception) {
+                        Log.e(TAG, "Error detaching database: ${detachEx.message}")
                     }
                     sourceDbDirect.close()
                 }

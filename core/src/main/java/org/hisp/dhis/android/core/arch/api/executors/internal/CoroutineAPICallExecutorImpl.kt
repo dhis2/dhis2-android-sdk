@@ -30,13 +30,10 @@ package org.hisp.dhis.android.core.arch.api.executors.internal
 import androidx.room.immediateTransaction
 import androidx.room.useWriterConnection
 import io.ktor.client.plugins.ClientRequestException
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.newSingleThreadContext
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpException
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
 import org.hisp.dhis.android.core.arch.api.internal.ktorToD2Response
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.access.Transaction
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore
@@ -52,9 +49,6 @@ internal class CoroutineAPICallExecutorImpl(
     private val databaseAdapter: DatabaseAdapter,
     private val foreignKeyCleaner: ForeignKeyCleaner,
 ) : CoroutineAPICallExecutor {
-
-    @OptIn(DelicateCoroutinesApi::class)
-    private val dbDispatcher = newSingleThreadContext("DB")
 
     @Suppress("TooGenericExceptionCaught")
     override suspend fun <P> wrap(
@@ -126,6 +120,7 @@ internal class CoroutineAPICallExecutorImpl(
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     override suspend fun <P> wrapTransactionallyRoom(
         cleanForeignKeyErrors: Boolean,
         block: suspend () -> P,
@@ -181,12 +176,5 @@ internal class CoroutineAPICallExecutorImpl(
         if (cleanForeignKeys) {
             foreignKeyCleaner.cleanForeignKeyErrors()
         }
-    }
-
-    private suspend fun successfulTransaction(t: Transaction, cleanForeignKeys: Boolean) {
-        if (cleanForeignKeys) {
-            foreignKeyCleaner.cleanForeignKeyErrors()
-        }
-        t.setSuccessful()
     }
 }

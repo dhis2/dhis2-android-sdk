@@ -38,9 +38,11 @@ internal interface TrackedEntityAttributeReservedValueDaoAux : ObjectDao<Tracked
     @Query(
         """
         DELETE FROM ${TrackedEntityAttributeReservedValueTableInfo.TABLE_NAME}
-        WHERE (date(${TrackedEntityAttributeReservedValueTableInfo.Columns.EXPIRY_DATE}) < date(:serverDateAsString) 
+        WHERE (date(${TrackedEntityAttributeReservedValueTableInfo.Columns.EXPIRY_DATE}) 
+        < date(:serverDateAsString) 
             AND ${TrackedEntityAttributeReservedValueTableInfo.Columns.EXPIRY_DATE} IS NOT NULL)
-        OR (date(${TrackedEntityAttributeReservedValueTableInfo.Columns.TEMPORAL_VALIDITY_DATE}) < date(:serverDateAsString) 
+        OR (date(${TrackedEntityAttributeReservedValueTableInfo.Columns.TEMPORAL_VALIDITY_DATE}) 
+        < date(:serverDateAsString) 
             AND ${TrackedEntityAttributeReservedValueTableInfo.Columns.TEMPORAL_VALIDITY_DATE} IS NOT NULL)
         """,
     )

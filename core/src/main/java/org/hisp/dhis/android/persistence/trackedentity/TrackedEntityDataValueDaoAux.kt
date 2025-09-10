@@ -95,7 +95,8 @@ internal interface TrackedEntityDataValueDaoAux : ObjectDao<TrackedEntityDataVal
               SELECT psde.${ProgramStageDataElementTableInfo.Columns.DATA_ELEMENT}
               FROM ${ProgramStageDataElementTableInfo.TABLE_NAME} AS psde
               INNER JOIN ${EventTableInfo.TABLE_NAME} AS e
-                ON psde.${ProgramStageDataElementTableInfo.Columns.PROGRAM_STAGE} = e.${EventTableInfo.Columns.PROGRAM_STAGE}
+                ON psde.${ProgramStageDataElementTableInfo.Columns.PROGRAM_STAGE} = 
+                e.${EventTableInfo.Columns.PROGRAM_STAGE}
               WHERE e.${EventTableInfo.Columns.UID} = :eventUid
           )
     """,

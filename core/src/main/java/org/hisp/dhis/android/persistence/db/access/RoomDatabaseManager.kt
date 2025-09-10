@@ -78,6 +78,7 @@ internal class RoomDatabaseManager(
         return databaseAdapter
     }
 
+    @Suppress("SpreadOperator")
     override fun createOrOpenUnencryptedDatabase(databaseName: String): DatabaseAdapter {
         val database = Room.databaseBuilder(context, AppDatabase::class.java, databaseName)
             .setDriver(BundledSQLiteDriver())
@@ -97,6 +98,7 @@ internal class RoomDatabaseManager(
         return databaseAdapter
     }
 
+    @Suppress("SpreadOperator")
     override fun createOrOpenEncryptedDatabase(databaseName: String, password: String): DatabaseAdapter {
         val hook = RoomDatabaseExport.Companion.EncryptionHook
         val factory = SupportOpenHelperFactory(password.toByteArray(StandardCharsets.UTF_8), hook, true)

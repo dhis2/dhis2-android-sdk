@@ -40,13 +40,14 @@ internal data class ProgramFiltersDTO(
     val specificSettings: Map<String, Map<String, FilterSettingDTO>> = emptyMap(),
 ) {
     fun toDomain(): ProgramFilters {
-        return ProgramFilters.builder()
-            .globalSettings(globalSettings.toDomainMap())
+        return ProgramFilters.builder().globalSettings(globalSettings.toDomainMap())
             .specificSettings(specificSettings.map { (uidKey, value) -> uidKey to value.toDomainMap(uidKey) }.toMap())
             .build()
     }
 
-    private fun Map<String, FilterSettingDTO>.toDomainMap(uidKey: String = FILTERSETTING_GLOBAL_ID): Map<ProgramFilter, FilterSetting> {
+    private fun Map<String, FilterSettingDTO>.toDomainMap(
+        uidKey: String = FILTERSETTING_GLOBAL_ID,
+    ): Map<ProgramFilter, FilterSetting> {
         return map { (key, value) -> ProgramFilter.Companion.from(key) to value.toDomain(uidKey) }.toMap()
     }
 }

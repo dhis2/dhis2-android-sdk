@@ -42,7 +42,6 @@ class WipeModuleShould {
     private val moduleWiperA: ModuleWiper = mock()
     private val moduleWiperB: ModuleWiper = mock()
     private var wipeModule: WipeModule = mock()
-    private val d2CallExecutor = FakeD2CallExecutor()
 
     @Before
     @Throws(Exception::class)

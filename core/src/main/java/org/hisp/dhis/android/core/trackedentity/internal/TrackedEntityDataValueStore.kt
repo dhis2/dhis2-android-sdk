@@ -31,6 +31,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 
+@Suppress("TooManyFunctions")
 internal interface TrackedEntityDataValueStore : ObjectWithoutUidStore<TrackedEntityDataValue> {
     suspend fun deleteByEventAndNotInDataElements(eventUid: String, dataElementUids: List<String>): Boolean
     suspend fun deleteByEventAndDataElement(eventUid: String, dataElementUid: String): Boolean

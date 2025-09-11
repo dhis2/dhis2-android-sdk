@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.testapp.user
 
 import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.configuration.internal.BaseMultiUserDatabaseManager
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -52,7 +51,7 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
     private val pass2 = "password2"
 
     @Test
-    fun find_accounts_after_login() = runTest {
+    fun find_accounts_after_login() {
         val initialAccountSize = d2.userModule().accountManager().getAccounts().size
 
         if (d2.userModule().blockingIsLogged()) {
@@ -71,7 +70,7 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
     }
 
     @Test
-    fun find_current_account_after_login() = runTest {
+    fun find_current_account_after_login() {
         if (d2.userModule().blockingIsLogged()) {
             d2.userModule().blockingLogOut()
         }
@@ -86,7 +85,7 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
     }
 
     @Test
-    fun cannot_find_current_account_after_logout() = runTest {
+    fun cannot_find_current_account_after_logout() {
         if (d2.userModule().blockingIsLogged()) {
             d2.userModule().blockingLogOut()
         }
@@ -114,7 +113,7 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
     }
 
     @Test
-    fun can_delete_current_logged_account() = runTest {
+    fun can_delete_current_logged_account() {
         if (d2.userModule().blockingIsLogged()) {
             d2.userModule().blockingLogOut()
         }
@@ -133,7 +132,7 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
     }
 
     @Test
-    fun cannot_delete_not_logged_account() = runTest {
+    fun cannot_delete_not_logged_account() {
         if (d2.userModule().blockingIsLogged()) {
             d2.userModule().blockingLogOut()
         }
@@ -156,7 +155,7 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
     }
 
     @Test
-    fun evaluate_sync_status() = runTest {
+    fun evaluate_sync_status() {
         val initialAccountSize = d2.userModule().accountManager().getAccounts().size
 
         if (d2.userModule().blockingIsLogged()) {
@@ -193,7 +192,7 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
     }
 
     @Test
-    fun return_login_config() = runTest {
+    fun return_login_config() {
         if (d2.userModule().blockingIsLogged()) {
             d2.userModule().blockingLogOut()
         }

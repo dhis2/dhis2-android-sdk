@@ -33,9 +33,9 @@ import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.maintenance.D2Error
 
 interface AccountManager {
-    suspend fun getAccounts(): List<DatabaseAccount>
+    fun getAccounts(): List<DatabaseAccount>
 
-    suspend fun getCurrentAccount(): DatabaseAccount?
+    fun getCurrentAccount(): DatabaseAccount?
 
     fun setMaxAccounts(maxAccounts: Int?)
 

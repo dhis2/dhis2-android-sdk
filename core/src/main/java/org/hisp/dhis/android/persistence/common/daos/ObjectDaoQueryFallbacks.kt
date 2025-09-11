@@ -28,6 +28,6 @@
 
 package org.hisp.dhis.android.persistence.common.daos
 
-internal interface ObjectDaoQueryFallbacks {
+internal fun interface ObjectDaoQueryFallbacks {
     suspend fun deleteAllRows(): Int
 }

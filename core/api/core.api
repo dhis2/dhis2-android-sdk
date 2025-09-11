@@ -3726,19 +3726,6 @@ public final class org/hisp/dhis/android/core/common/internal/DataStateUidHolder
 	public fun toString ()Ljava/lang/String;
 }
 
-public class org/hisp/dhis/android/core/common/tableinfo/FilterOperatorsColumns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field DATE_FILTER Ljava/lang/String;
-	public static final field EQ Ljava/lang/String;
-	public static final field GE Ljava/lang/String;
-	public static final field GT Ljava/lang/String;
-	public static final field IN Ljava/lang/String;
-	public static final field LE Ljava/lang/String;
-	public static final field LIKE Ljava/lang/String;
-	public static final field LT Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
 public abstract class org/hisp/dhis/android/core/common/valuetype/validation/failures/BooleanFailure : java/lang/Throwable {
 }
 
@@ -11651,8 +11638,8 @@ public final class org/hisp/dhis/android/core/user/AccountDeletionReason : java/
 public abstract interface class org/hisp/dhis/android/core/user/AccountManager {
 	public abstract fun accountDeletionObservable ()Lio/reactivex/Observable;
 	public abstract fun deleteCurrentAccount ()V
-	public abstract fun getAccounts (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun getCurrentAccount (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getAccounts ()Ljava/util/List;
+	public abstract fun getCurrentAccount ()Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;
 	public abstract fun getMaxAccounts ()Ljava/lang/Integer;
 	public abstract fun setMaxAccounts (Ljava/lang/Integer;)V
 }

@@ -112,11 +112,11 @@ internal class RoomDatabaseManager(
     }
 
     override fun createOrOpenDatabase(account: DatabaseAccount): DatabaseAdapter {
-        if (account.encrypted()) {
+        return if (account.encrypted()) {
             val password = passwordManager.getPassword(account.databaseName())
-            return createOrOpenEncryptedDatabase(account.databaseName(), password)
+            createOrOpenEncryptedDatabase(account.databaseName(), password)
         } else {
-            return createOrOpenUnencryptedDatabase(account.databaseName())
+            createOrOpenUnencryptedDatabase(account.databaseName())
         }
     }
 

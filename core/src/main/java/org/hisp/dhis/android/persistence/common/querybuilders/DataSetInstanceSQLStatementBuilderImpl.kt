@@ -62,7 +62,7 @@ internal open class DataSetInstanceSQLStatementBuilderImpl : ReadOnlySQLStatemen
     }
 
     override fun selectStringColumn(column: String, clause: String): RoomRawQuery {
-        TODO("Not to be implemented")
+        throw UnsupportedOperationException("Not to be implemented")
     }
 
     override fun count(): RoomRawQuery {
@@ -78,15 +78,15 @@ internal open class DataSetInstanceSQLStatementBuilderImpl : ReadOnlySQLStatemen
     }
 
     override fun deleteTable(): RoomRawQuery {
-        TODO("Not to be implemented")
+        return RoomRawQuery("DELETE FROM $SELECT_CLAUSE")
     }
 
     override fun deleteWhere(whereClause: String): RoomRawQuery {
-        TODO("Not to be implemented")
+        throw UnsupportedOperationException("Not to be implemented")
     }
 
     override fun updateWhere(updates: Map<String, Any>, whereClause: String): RoomRawQuery {
-        TODO("Not to be implemented")
+        throw UnsupportedOperationException("Not to be implemented")
     }
 
     override fun selectWhere(whereClause: String, orderByClause: String?): RoomRawQuery {

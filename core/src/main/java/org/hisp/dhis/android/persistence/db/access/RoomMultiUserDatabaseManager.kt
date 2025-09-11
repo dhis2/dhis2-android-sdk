@@ -61,10 +61,6 @@ internal class RoomMultiUserDatabaseManager(
     private val databaseExport: BaseDatabaseExport,
 ) : BaseMultiUserDatabaseManager {
 
-    companion object {
-//        private const val TAG = "RoomMultiUserDBManager"
-    }
-
     override suspend fun loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(
         serverUrl: String,
         username: String,
@@ -134,15 +130,12 @@ internal class RoomMultiUserDatabaseManager(
     }
 
     override fun setMaxAccounts(maxAccounts: Int?) {
-        if (maxAccounts != null && maxAccounts <= 0) {
-            throw IllegalArgumentException("MaxAccounts must be greater than 0")
-        } else {
-            val configuration = databaseConfigurationSecureStore.get()
-            val updatedConfiguration = (configuration?.toBuilder() ?: DatabasesConfiguration.builder())
-                .maxAccounts(maxAccounts)
-                .build()
-            databaseConfigurationSecureStore.set(updatedConfiguration)
-        }
+        require(!(maxAccounts != null && maxAccounts <= 0)) { "MaxAccounts must be greater than 0" }
+        val configuration = databaseConfigurationSecureStore.get()
+        val updatedConfiguration = (configuration?.toBuilder() ?: DatabasesConfiguration.builder())
+            .maxAccounts(maxAccounts)
+            .build()
+        databaseConfigurationSecureStore.set(updatedConfiguration)
     }
 
     @Suppress("TooGenericExceptionCaught")
@@ -260,7 +253,7 @@ internal class RoomMultiUserDatabaseManager(
         if (databaseAdapter is RoomDatabaseAdapter) {
             // The adapter is already activated by the DatabaseManager
         } else {
-            throw IllegalStateException("Expected a RoomDatabaseAdapter, but got ${databaseAdapter::class.java}")
+            error("Expected a RoomDatabaseAdapter, but got ${databaseAdapter::class.java}")
         }
     }
 

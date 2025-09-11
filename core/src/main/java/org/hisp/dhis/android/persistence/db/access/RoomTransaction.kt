@@ -54,8 +54,6 @@ class RoomTransaction(private val database: RoomDatabase) : Transaction {
     }
 
     private fun checkNotEnded() {
-        if (ended) {
-            throw IllegalStateException("Transaction already ended")
-        }
+        check(!ended) { "Transaction already ended" }
     }
 }

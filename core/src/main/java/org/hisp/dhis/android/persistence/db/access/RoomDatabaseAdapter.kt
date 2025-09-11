@@ -108,9 +108,7 @@ internal class RoomDatabaseAdapter : DatabaseAdapter {
     @Suppress("ComplexMethod")
     override suspend fun delete(tableName: String, whereClause: String?, whereArgs: Array<Any>?): Int {
         checkReady()
-        if (!tableName.matches(Regex("^[a-zA-Z_][a-zA-Z0-9_]*$"))) {
-            throw IllegalArgumentException("Invalid table name: $tableName")
-        }
+        require(tableName.matches(Regex("^[a-zA-Z_][a-zA-Z0-9_]*$"))) { "Invalid table name: $tableName" }
 
         val deleteSql = buildString {
             append("DELETE FROM `")
@@ -264,16 +262,12 @@ internal class RoomDatabaseAdapter : DatabaseAdapter {
 
     override fun getCurrentDatabase(): AppDatabase {
         val db = database
-        if (db == null) {
-            throw IllegalStateException("No database is currently activated.")
-        }
+        checkNotNull(db) { "No database is currently activated." }
         return db
     }
 
     private fun checkReady() {
-        if (!isReady) {
-            throw IllegalStateException("Database adapter not activated")
-        }
+        check(isReady) { "Database adapter not activated" }
     }
 
     override fun getVersion(): Int {

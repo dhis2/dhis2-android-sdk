@@ -176,7 +176,6 @@ internal class RoomDatabaseExport(
                 } finally {
                     exportCursor.close()
                 }
-//                Thread.sleep(200)
                 // Detach target database
                 sourceDbDirect.execSQL("DETACH DATABASE roomExport;")
 

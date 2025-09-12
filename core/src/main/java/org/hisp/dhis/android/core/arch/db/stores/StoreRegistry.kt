@@ -26,53 +26,12 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access
+package org.hisp.dhis.android.core.arch.db.stores
 
-import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
 import org.hisp.dhis.android.core.common.CoreObject
 import kotlin.reflect.KClass
 
-@Suppress("TooManyFunctions")
-interface DatabaseAdapter {
-    val isReady: Boolean
-
-    fun activate(database: AppDatabase, databaseName: String)
-
-    fun deactivate()
-
-    fun beginNewTransaction(): Transaction
-
-    fun setTransactionSuccessful()
-
-    fun runInTransaction(block: Runnable)
-
-    fun endTransaction()
-
-    suspend fun execSQL(sql: String)
-
-    suspend fun delete(tableName: String, whereClause: String?, whereArgs: Array<Any>?): Int
-
-    suspend fun delete(tableName: String, whereClause: String): Int
-
-    suspend fun delete(tableName: String): Int
-
-    suspend fun rawQuery(sqlQuery: String, queryArgs: Array<Any>? = null): List<Map<String, String?>>
-
-    suspend fun rawQueryWithTypedValues(
-        sqlQuery: String,
-        queryArgs: Array<Any>? = null,
-    ): List<Map<String, Any?>>
-
-    suspend fun setForeignKeyConstraintsEnabled(enabled: Boolean)
-
-    fun close()
-
-    fun getDatabaseName(): String
-
-    suspend fun <O : CoreObject> upsertObject(o: O, kclass: KClass<O>): HandleAction?
-
-    fun getCurrentDatabase(): AppDatabase
-
-    fun getVersion(): Int
+internal interface StoreRegistry {
+    fun <T : CoreObject> getStoreFor(type: KClass<T>): ObjectStore<T>?
 }

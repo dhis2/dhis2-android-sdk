@@ -35,14 +35,20 @@ import androidx.sqlite.SQLiteStatement
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.Transaction
 import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.db.stores.StoreRegistry
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.common.CoreObject
 import org.koin.core.annotation.Singleton
+import kotlin.reflect.KClass
 
 /**
  * Room-based implementation of DatabaseAdapter.
  */
 @Singleton
 @Suppress("TooManyFunctions")
-internal class RoomDatabaseAdapter : DatabaseAdapter {
+internal class RoomDatabaseAdapter(
+    private val storeRegistry: StoreRegistry,
+) : DatabaseAdapter {
     private var database: AppDatabase? = null
     private var databaseName: String = ""
 
@@ -264,6 +270,15 @@ internal class RoomDatabaseAdapter : DatabaseAdapter {
         val db = database
         checkNotNull(db) { "No database is currently activated." }
         return db
+    }
+
+    /**
+     * Upserts a data object or a tracker import conflict into the database.
+     * This method is not recomended to be used directly, instead use the repositories in d2 to
+     */
+    override suspend fun <O : CoreObject> upsertObject(o: O, kclass: KClass<O>): HandleAction? {
+        val store = storeRegistry.getStoreFor(kclass)
+        return store?.updateOrInsert(o)
     }
 
     private fun checkReady() {

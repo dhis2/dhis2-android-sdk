@@ -12501,9 +12501,9 @@ public final class org/hisp/dhis/android/core/wipe/internal/TableWiper {
 }
 
 public abstract interface class org/hisp/dhis/android/core/wipe/internal/WipeModule {
-	public abstract fun wipeData (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun wipeEverything (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun wipeMetadata (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun wipeData ()V
+	public abstract fun wipeEverything ()V
+	public abstract fun wipeMetadata ()V
 }
 
 public final class org/hisp/dhis/android/persistence/attribute/AttributeTableInfo {

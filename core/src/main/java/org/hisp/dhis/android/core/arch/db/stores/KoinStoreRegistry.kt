@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.db.stores
 
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
@@ -58,9 +59,7 @@ import org.koin.core.annotation.Singleton
 import kotlin.reflect.KClass
 
 @Singleton
-internal class KoinStoreRegistry(
-    private val koin: org.koin.core.Koin,
-) : StoreRegistry {
+internal class KoinStoreRegistry : StoreRegistry {
 
     private val mappings: Map<KClass<out CoreObject>, KClass<out ObjectStore<*>>> = mapOf(
         DataValue::class to DataValueStore::class,
@@ -82,13 +81,13 @@ internal class KoinStoreRegistry(
         val storeInterfaceKClass = mappings[type]
             ?: throw IllegalArgumentException(
                 "No store interface mapping found for ${type.simpleName}. " +
-                    "Ensure it's registered in storeMappings."
+                    "Ensure it's registered in storeMappings.",
             )
 
         return koin.get(storeInterfaceKClass) as? ObjectStore<T>
             ?: throw IllegalStateException(
                 "Failed to retrieve or cast store for ${storeInterfaceKClass.simpleName} " +
-                    "to ObjectStore<${type.simpleName}>"
+                    "to ObjectStore<${type.simpleName}>",
             )
     }
 }

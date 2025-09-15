@@ -31,6 +31,7 @@ import androidx.room.RoomRawQuery
 import androidx.test.platform.app.InstrumentationRegistry
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
+import org.hisp.dhis.android.core.arch.db.stores.KoinStoreRegistry
 import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
 import org.hisp.dhis.android.persistence.db.access.RoomDatabaseAdapter
@@ -87,7 +88,8 @@ class DatabaseManagerIntegrationShould {
 
         init {
             val context = InstrumentationRegistry.getInstrumentation().context
-            val databaseAdapter = RoomDatabaseAdapter()
+            val storeRegistry = KoinStoreRegistry()
+            val databaseAdapter = RoomDatabaseAdapter(storeRegistry)
             val passwordManager = DatabaseEncryptionPasswordManager.create(InMemorySecureStore())
             databaseManager = RoomDatabaseManager(databaseAdapter, context, passwordManager)
         }

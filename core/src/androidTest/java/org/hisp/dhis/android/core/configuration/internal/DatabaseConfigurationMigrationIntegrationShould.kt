@@ -32,6 +32,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.KoinStoreRegistry
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.*
 import org.hisp.dhis.android.core.configuration.internal.migration.DatabaseConfigurationInsecureStoreOld
@@ -59,7 +60,8 @@ class DatabaseConfigurationMigrationIntegrationShould {
 
     private val nameGenerator = DatabaseNameGenerator()
     private val renamer = DatabaseRenamer(context)
-    private val databaseAdapter: DatabaseAdapter = RoomDatabaseAdapter()
+    private val storeRegistry = KoinStoreRegistry()
+    private val databaseAdapter: DatabaseAdapter = RoomDatabaseAdapter(storeRegistry)
     private val passwordManager = DatabaseEncryptionPasswordManager.create(secureStore)
     private val databaseManager = RoomDatabaseManager(databaseAdapter, context, passwordManager)
 

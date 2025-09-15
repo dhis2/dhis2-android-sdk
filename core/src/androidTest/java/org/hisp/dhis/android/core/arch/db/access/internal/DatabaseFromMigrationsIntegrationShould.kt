@@ -31,6 +31,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.KoinStoreRegistry
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
 import org.hisp.dhis.android.persistence.common.SchemaRow
@@ -45,7 +46,8 @@ class DatabaseFromMigrationsIntegrationShould {
     companion object {
         private const val DB_NAME_1 = "database-from-migrations-integration-should-1.db"
         private const val DB_NAME_2 = "database-from-migrations-integration-should-2.db"
-        private val databasAdapter = RoomDatabaseAdapter()
+        private val storeRegistry = KoinStoreRegistry()
+        private val databasAdapter = RoomDatabaseAdapter(storeRegistry)
         private val context = InstrumentationRegistry.getInstrumentation().context
         private val secureStore = AndroidSecureStore(context)
         private val passwordManager = DatabaseEncryptionPasswordManager.Companion.create(secureStore)

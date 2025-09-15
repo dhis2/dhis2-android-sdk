@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core
 
 import androidx.test.platform.app.InstrumentationRegistry
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.KoinStoreRegistry
 import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
 import org.hisp.dhis.android.persistence.db.access.RoomDatabaseAdapter
@@ -38,7 +39,8 @@ import org.junit.Before
 import java.io.IOException
 
 abstract class BaseIntegrationTestWithDatabase {
-    private var databaseAdapter = RoomDatabaseAdapter()
+    private val storeRegistry = KoinStoreRegistry()
+    private var databaseAdapter = RoomDatabaseAdapter(storeRegistry)
 
     @Before
     @Throws(IOException::class)

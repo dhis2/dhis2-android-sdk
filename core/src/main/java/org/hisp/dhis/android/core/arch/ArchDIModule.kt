@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch
 
 import org.hisp.dhis.android.core.arch.api.internal.APIClientDIModule
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseDIModule
+import org.hisp.dhis.android.core.arch.db.stores.StoreDIModule
 import org.hisp.dhis.android.core.arch.json.internal.JSONSerializationDIModule
 import org.hisp.dhis.android.core.arch.repositories.di.internal.RepositoriesDIModule
 import org.koin.core.annotation.ComponentScan
@@ -41,6 +42,7 @@ import org.koin.core.annotation.Module
         DatabaseDIModule::class,
         JSONSerializationDIModule::class,
         RepositoriesDIModule::class,
+        StoreDIModule::class,
     ],
 )
 @ComponentScan

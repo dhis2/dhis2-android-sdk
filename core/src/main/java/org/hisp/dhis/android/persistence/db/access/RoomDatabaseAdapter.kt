@@ -274,7 +274,7 @@ internal class RoomDatabaseAdapter(
 
     /**
      * Upserts a data object or a tracker import conflict into the database.
-     * This method is not recomended to be used directly, instead use the repositories in d2 to
+     * This method is not recomended to be used directly, instead use the repositories in d2
      */
     override suspend fun <O : CoreObject> upsertObject(o: O, kclass: KClass<O>): HandleAction? {
         val store = storeRegistry.getStoreFor(kclass)

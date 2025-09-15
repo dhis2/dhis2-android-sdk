@@ -27,6 +27,11 @@
  */
 package org.hisp.dhis.android.core.arch.db.access.internal
 
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.db.stores.StoreRegistry
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.persistence.db.access.RoomDatabaseAdapter
 import org.hisp.dhis.android.persistence.db.access.RoomTransaction
 import org.junit.Assert
@@ -39,18 +44,20 @@ import org.mockito.kotlin.doNothing
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @RunWith(MockitoJUnitRunner::class)
 class RoomDatabaseAdapterShould {
 
     @Mock
     private lateinit var database: AppDatabase
-
     private lateinit var roomDatabaseAdapter: RoomDatabaseAdapter
+    private val storeRegistry: StoreRegistry = mock()
+    private val objectStore: ObjectStore<DataValue> = mock()
 
     @Before
     fun setUp() {
-        roomDatabaseAdapter = RoomDatabaseAdapter()
+        roomDatabaseAdapter = RoomDatabaseAdapter(storeRegistry)
     }
 
     @Test
@@ -185,5 +192,22 @@ class RoomDatabaseAdapterShould {
     @Test(expected = IllegalStateException::class)
     fun `getVersion should throw IllegalStateException if not ready`() {
         roomDatabaseAdapter.getVersion()
+    }
+
+    @Test
+    fun `upsertObject calls updateOrInsert on correct store`() = runTest {
+        val dataValue = DataValue.builder().build()
+        val expectedAction = HandleAction.Update
+
+        // Stub
+        whenever(storeRegistry.getStoreFor(DataValue::class)).thenReturn(objectStore)
+        whenever(objectStore.updateOrInsert(dataValue)).thenReturn(expectedAction)
+
+        // Act
+        val result = roomDatabaseAdapter.upsertObject(dataValue, DataValue::class)
+
+        // Assert
+        verify(objectStore, times(1)).updateOrInsert(dataValue)
+        Assert.assertEquals(expectedAction, result)
     }
 }

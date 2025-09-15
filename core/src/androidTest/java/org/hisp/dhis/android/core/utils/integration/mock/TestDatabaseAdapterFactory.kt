@@ -30,13 +30,15 @@ package org.hisp.dhis.android.core.utils.integration.mock
 import androidx.test.platform.app.InstrumentationRegistry
 import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.stores.KoinStoreRegistry
 import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
 import org.hisp.dhis.android.persistence.db.access.RoomDatabaseAdapter
 import org.hisp.dhis.android.persistence.db.access.RoomDatabaseManager
 
 object TestDatabaseAdapterFactory {
-    private var databaseAdapter: DatabaseAdapter = RoomDatabaseAdapter()
+    private val storeRegistry = KoinStoreRegistry()
+    private var databaseAdapter: DatabaseAdapter = RoomDatabaseAdapter(storeRegistry)
 
     @JvmStatic
     fun get(): DatabaseAdapter = runBlocking {

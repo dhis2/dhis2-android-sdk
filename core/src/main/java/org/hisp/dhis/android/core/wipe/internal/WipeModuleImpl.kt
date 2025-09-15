@@ -38,7 +38,7 @@ internal class WipeModuleImpl(
     private val moduleWipers: List<ModuleWiper>,
 ) : WipeModule {
     @Throws(D2Error::class)
-    override suspend fun wipeEverything() {
+    override fun wipeEverything() {
         return runBlocking {
             d2CallExecutor.executeD2CallTransactionally {
                 wipeMetadataInternal()
@@ -48,7 +48,7 @@ internal class WipeModuleImpl(
     }
 
     @Throws(D2Error::class)
-    override suspend fun wipeMetadata() {
+    override fun wipeMetadata() {
         return runBlocking {
             d2CallExecutor.executeD2CallTransactionally {
                 wipeMetadataInternal()
@@ -57,7 +57,7 @@ internal class WipeModuleImpl(
     }
 
     @Throws(D2Error::class)
-    override suspend fun wipeData() {
+    override fun wipeData() {
         return runBlocking {
             d2CallExecutor.executeD2CallTransactionally {
                 wipeDataInternal()

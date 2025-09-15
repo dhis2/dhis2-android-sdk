@@ -31,11 +31,11 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 
 interface WipeModule {
     @Throws(D2Error::class)
-    suspend fun wipeEverything()
+    fun wipeEverything()
 
     @Throws(D2Error::class)
-    suspend fun wipeMetadata()
+    fun wipeMetadata()
 
     @Throws(D2Error::class)
-    suspend fun wipeData()
+    fun wipeData()
 }

@@ -42,11 +42,13 @@ class EventDownloaderShould {
 
     private val paramsCapture: KArgumentCaptor<ProgramDataDownloadParams> = argumentCaptor()
 
+    private lateinit var params: ProgramDataDownloadParams
     private lateinit var downloader: EventDownloader
 
     @Before
     fun setUp() {
-        downloader = EventDownloader(RepositoryScope.empty(), call)
+        params = ProgramDataDownloadParams.builder().build()
+        downloader = EventDownloader(call, params)
     }
 
     @Test

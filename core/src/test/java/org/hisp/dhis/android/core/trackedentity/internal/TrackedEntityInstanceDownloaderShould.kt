@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.settings.EnrollmentScope
 import org.junit.Before
@@ -42,15 +41,17 @@ import org.mockito.kotlin.verify
 
 @RunWith(JUnit4::class)
 class TrackedEntityInstanceDownloaderShould {
-    private val callFactory: TrackedEntityInstanceDownloadCall = mock()
+    private val call: TrackedEntityInstanceDownloadCall = mock()
 
     private val paramsCapture: KArgumentCaptor<ProgramDataDownloadParams> = argumentCaptor()
 
+    private lateinit var params: ProgramDataDownloadParams
     private lateinit var downloader: TrackedEntityInstanceDownloader
 
     @Before
     fun setUp() {
-        downloader = TrackedEntityInstanceDownloader(RepositoryScope.empty(), callFactory)
+        params = ProgramDataDownloadParams.builder().build()
+        downloader = TrackedEntityInstanceDownloader(call, params)
     }
 
     @Test
@@ -64,7 +65,7 @@ class TrackedEntityInstanceDownloaderShould {
             .overwrite(true)
             .download()
 
-        verify(callFactory).download(paramsCapture.capture())
+        verify(call).download(paramsCapture.capture())
 
         val params = paramsCapture.firstValue
         assertThat(params.program()).isEqualTo("program-uid")
@@ -79,7 +80,7 @@ class TrackedEntityInstanceDownloaderShould {
     fun should_parse_uid_eq_params() {
         downloader.byUid().eq("uid").download()
 
-        verify(callFactory).download(paramsCapture.capture())
+        verify(call).download(paramsCapture.capture())
 
         val params = paramsCapture.firstValue
         assertThat(params.uids().size).isEqualTo(1)
@@ -90,7 +91,7 @@ class TrackedEntityInstanceDownloaderShould {
     fun should_parse_uid_in_params() {
         downloader.byUid().`in`("uid0", "uid1", "uid2").download()
 
-        verify(callFactory).download(paramsCapture.capture())
+        verify(call).download(paramsCapture.capture())
 
         val params = paramsCapture.firstValue
         assertThat(params.uids().size).isEqualTo(3)

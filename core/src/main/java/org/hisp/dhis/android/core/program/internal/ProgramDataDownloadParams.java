@@ -33,9 +33,7 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.UnwrappedEqInFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.settings.EnrollmentScope;
 
@@ -44,7 +42,7 @@ import java.util.Date;
 import java.util.List;
 
 @AutoValue
-public abstract class ProgramDataDownloadParams {
+public abstract class ProgramDataDownloadParams implements BaseScope {
 
     public static final Integer DEFAULT_LIMIT = 500;
 
@@ -83,37 +81,6 @@ public abstract class ProgramDataDownloadParams {
 
     @NonNull
     public abstract Boolean overwrite();
-
-    public static ProgramDataDownloadParams fromRepositoryScope(RepositoryScope scope) {
-        Builder builder = builder();
-        for (RepositoryScopeFilterItem item : scope.filters()) {
-            switch (item.key()) {
-                case QueryParams.UID:
-                    builder.uids(UnwrappedEqInFilterConnector.getValueList(item.value()));
-                    break;
-                case QueryParams.PROGRAM:
-                    builder.program(item.value());
-                    break;
-                case QueryParams.LIMIT_BY_ORGUNIT:
-                    builder.limitByOrgunit(item.value().equals("1"));
-                    break;
-                case QueryParams.LIMIT_BY_PROGRAM:
-                    builder.limitByProgram(item.value().equals("1"));
-                    break;
-                case QueryParams.LIMIT:
-                    builder.limit(Integer.parseInt(item.value()));
-                    break;
-                case QueryParams.PROGRAM_STATUS:
-                    builder.programStatus(EnrollmentScope.valueOf(item.value()));
-                    break;
-                case QueryParams.OVERWRITE:
-                    builder.overwrite(item.value().equals("1"));
-                    break;
-                default:
-            }
-        }
-        return builder.build();
-    }
 
     public static Builder builder() {
         return new AutoValue_ProgramDataDownloadParams.Builder()

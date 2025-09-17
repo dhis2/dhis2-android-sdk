@@ -78,6 +78,8 @@ internal class TrackedEntityAttributeReservedValueStoreImpl(
         val builder = WhereClauseBuilder().appendKeyStringValue(Columns.OWNER_UID, ownerUid)
         if (organisationUnit != null) {
             builder.appendKeyStringValue(Columns.ORGANISATION_UNIT, organisationUnit)
+        } else {
+            builder.appendIsNullValue(Columns.ORGANISATION_UNIT)
         }
         if (pattern != null) {
             builder.appendKeyStringValue(Columns.PATTERN, pattern)

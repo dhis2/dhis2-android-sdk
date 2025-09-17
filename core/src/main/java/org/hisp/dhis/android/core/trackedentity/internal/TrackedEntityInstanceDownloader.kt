@@ -43,8 +43,8 @@ class TrackedEntityInstanceDownloader internal constructor(
     private val params: ProgramDataDownloadParams,
 ) : BaseRepository {
 
-    private val connectorFactory
-            : ScopedFilterConnectorFactory<TrackedEntityInstanceDownloader, ProgramDataDownloadParams> =
+    private val connectorFactory:
+        ScopedFilterConnectorFactory<TrackedEntityInstanceDownloader, ProgramDataDownloadParams> =
         ScopedFilterConnectorFactory { params ->
             TrackedEntityInstanceDownloader(call, params)
         }
@@ -71,7 +71,6 @@ class TrackedEntityInstanceDownloader internal constructor(
 
     fun byProgramUid(programUid: String): TrackedEntityInstanceDownloader =
         TrackedEntityInstanceDownloader(call, params.toBuilder().program(programUid).build())
-
 
     fun limitByOrgunit(limitByOrgunit: Boolean): TrackedEntityInstanceDownloader =
         TrackedEntityInstanceDownloader(call, params.toBuilder().limitByOrgunit(limitByOrgunit).build())

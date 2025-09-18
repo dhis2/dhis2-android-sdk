@@ -70,19 +70,29 @@ class TrackedEntityInstanceDownloader internal constructor(
         connectorFactory.listConnector { uids -> params.toBuilder().uids(uids).build() }
 
     fun byProgramUid(programUid: String): TrackedEntityInstanceDownloader =
-        TrackedEntityInstanceDownloader(call, params.toBuilder().program(programUid).build())
+        connectorFactory.eqConnector<String> { programUid ->
+            params.toBuilder().program(programUid).build()
+        }.eq(programUid)
 
     fun limitByOrgunit(limitByOrgunit: Boolean): TrackedEntityInstanceDownloader =
-        TrackedEntityInstanceDownloader(call, params.toBuilder().limitByOrgunit(limitByOrgunit).build())
+        connectorFactory.eqConnector<Boolean> { limitByOrgunit ->
+            params.toBuilder().limitByOrgunit(limitByOrgunit).build()
+        }.eq(limitByOrgunit)
 
     fun limitByProgram(limitByProgram: Boolean): TrackedEntityInstanceDownloader =
-        TrackedEntityInstanceDownloader(call, params.toBuilder().limitByProgram(limitByProgram).build())
+        connectorFactory.eqConnector<Boolean> { limitByProgram ->
+            params.toBuilder().limitByProgram(limitByProgram).build()
+        }.eq(limitByProgram)
 
     fun limit(limit: Int): TrackedEntityInstanceDownloader =
-        TrackedEntityInstanceDownloader(call, params.toBuilder().limit(limit).build())
+        connectorFactory.eqConnector<Int> { limit ->
+            params.toBuilder().limit(limit).build()
+        }.eq(limit)
 
     fun byProgramStatus(status: EnrollmentScope): TrackedEntityInstanceDownloader =
-        TrackedEntityInstanceDownloader(call, params.toBuilder().programStatus(status).build())
+        connectorFactory.eqConnector<EnrollmentScope> { status ->
+            params.toBuilder().programStatus(status).build()
+        }.eq(status)
 
     /**
      * If true, it overwrites existing TEIs in the device with the TEIs returned from the server. It does not modify
@@ -92,5 +102,7 @@ class TrackedEntityInstanceDownloader internal constructor(
      * @return the new repository
      */
     fun overwrite(overwrite: Boolean): TrackedEntityInstanceDownloader =
-        TrackedEntityInstanceDownloader(call, params.toBuilder().overwrite(overwrite).build())
+        connectorFactory.eqConnector<Boolean> { overwrite ->
+            params.toBuilder().overwrite(overwrite).build()
+        }.eq(overwrite)
 }

@@ -69,14 +69,22 @@ class EventDownloader internal constructor(
         connectorFactory.listConnector { uids -> params.toBuilder().uids(uids).build() }
 
     fun byProgramUid(programUid: String): EventDownloader =
-        EventDownloader(call, params.toBuilder().program(programUid).build())
+        connectorFactory.eqConnector<String> { programUid ->
+            params.toBuilder().program(programUid).build()
+        }.eq(programUid)
 
     fun limitByOrgunit(limitByOrgunit: Boolean): EventDownloader =
-        EventDownloader(call, params.toBuilder().limitByOrgunit(limitByOrgunit).build())
+        connectorFactory.eqConnector<Boolean> { limitByOrgunit ->
+            params.toBuilder().limitByOrgunit(limitByOrgunit).build()
+        }.eq(limitByOrgunit)
 
     fun limitByProgram(limitByProgram: Boolean): EventDownloader =
-        EventDownloader(call, params.toBuilder().limitByProgram(limitByProgram).build())
+        connectorFactory.eqConnector<Boolean> { limitByProgram ->
+            params.toBuilder().limitByProgram(limitByProgram).build()
+        }.eq(limitByProgram)
 
     fun limit(limit: Int): EventDownloader =
-        EventDownloader(call, params.toBuilder().limit(limit).build())
+        connectorFactory.eqConnector<Int> { limit ->
+            params.toBuilder().limit(limit).build()
+        }.eq(limit)
 }

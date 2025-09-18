@@ -39,5 +39,4 @@ internal class ProgramDIModule {
 
     @Factory
     fun programDataDownloadParams(): ProgramDataDownloadParams = ProgramDataDownloadParams.builder().build()
-
 }

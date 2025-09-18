@@ -3093,7 +3093,7 @@ public final class org/hisp/dhis/android/core/arch/repositories/filters/internal
 
 public final class org/hisp/dhis/android/core/arch/repositories/filters/internal/ListFilterConnector {
 	public final fun eq (Ljava/lang/Object;)Lorg/hisp/dhis/android/core/arch/repositories/collection/BaseRepository;
-	public final fun in (Ljava/util/List;)Lorg/hisp/dhis/android/core/arch/repositories/collection/BaseRepository;
+	public final fun in (Ljava/util/Collection;)Lorg/hisp/dhis/android/core/arch/repositories/collection/BaseRepository;
 	public final fun in ([Ljava/lang/Object;)Lorg/hisp/dhis/android/core/arch/repositories/collection/BaseRepository;
 }
 

@@ -119,19 +119,4 @@ public abstract class ProgramDataDownloadParams implements BaseScope {
 
         public abstract ProgramDataDownloadParams build();
     }
-
-    public static class QueryParams {
-        public static final String UID = "uid";
-        public static final String PROGRAM = "program";
-        public static final String PROGRAM_STATUS = "programStatus";
-        public static final String PROGRAM_START_DATE = "programStartDate";
-        public static final String PROGRAM_END_DATE = "programEndDate";
-        public static final String ORG_UNITS = "ou";
-        public static final String ORG_UNIT_MODE = "ouMode";
-        public static final String TRACKED_ENTITY_TYPE = "trackedEntityType";
-        public static final String LIMIT_BY_ORGUNIT = "limitByOrgunit";
-        public static final String LIMIT_BY_PROGRAM = "limitByProgram";
-        public static final String LIMIT = "limit";
-        public static final String OVERWRITE = "overwrite";
-    }
 }

@@ -48,7 +48,7 @@ class SettingsAppInfoManagerShould {
     @Before
     fun setUp() {
         settingsAppInfoCall.stub {
-            onBlocking { fetch(any()) } doAnswer {
+            onBlocking { fetch() } doAnswer {
                 settingsAppInfo
             }
             manager = SettingsAppInfoManagerImpl(settingsAppInfoCall)
@@ -58,7 +58,7 @@ class SettingsAppInfoManagerShould {
     @Test
     fun call_setting_info_only_if_version_is_null() = runTest {
         val version = manager.getDataStoreVersion()
-        verify(settingsAppInfoCall).fetch(any())
+        verify(settingsAppInfoCall).fetch()
         assertThat(version).isEquivalentAccordingToCompareTo(settingsAppInfo.dataStore)
 
         val cached = manager.getDataStoreVersion()

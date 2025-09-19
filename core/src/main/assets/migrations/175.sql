@@ -446,7 +446,7 @@ INSERT OR IGNORE INTO TrackerJobObject(trackerType, objectUid, jobUid, lastUpdat
 
 ALTER TABLE DataValueConflict RENAME TO DataValueConflict_Old;
 CREATE TABLE DataValueConflict(conflict TEXT, value TEXT, attributeOptionCombo TEXT NOT NULL, categoryOptionCombo TEXT NOT NULL, dataElement TEXT NOT NULL, period TEXT NOT NULL, orgUnit TEXT NOT NULL, errorCode TEXT, status TEXT, created TEXT, displayDescription TEXT, PRIMARY KEY(dataElement, period, orgUnit, categoryOptionCombo, attributeOptionCombo));
-INSERT OR IGNORE INTO DataValueConflict(conflict, value, attributeOptionCombo, categoryOptionCombo, dataElement, period, orgUnit, errorCode, status, created, displayDescription) SELECT conflict, value, attributeOptionCombo, categoryOptionCombo, dataElement, period, orgUnit, errorCode, status, created, displayDescription FROM DataValueConflict_Old;
+INSERT OR IGNORE INTO DataValueConflict(conflict, value, attributeOptionCombo, categoryOptionCombo, dataElement, period, orgUnit, errorCode, status, created, displayDescription) SELECT conflict, value, attributeOptionCombo, categoryOptionCombo, dataElement, period, orgUnit, errorCode, status, created, displayDescription FROM DataValueConflict_Old WHERE attributeOptionCombo IS NOT NULL AND categoryOptionCombo IS NOT NULL AND dataElement IS NOT NULL AND period IS NOT NULL AND orgUnit IS NOT NULL;
 
 ALTER TABLE AnalyticsDhisVisualization RENAME TO AnalyticsDhisVisualization_Old;
 CREATE TABLE AnalyticsDhisVisualization (_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, uid TEXT NOT NULL, scopeUid TEXT, scope TEXT, groupUid TEXT, groupName TEXT, timestamp TEXT, name TEXT, type TEXT NOT NULL);
@@ -466,7 +466,7 @@ INSERT OR IGNORE INTO LocalDataStore(key, value) SELECT key, value FROM LocalDat
 
 ALTER TABLE AnalyticsPeriodBoundary RENAME TO AnalyticsPeriodBoundary_Old;
 CREATE TABLE AnalyticsPeriodBoundary(programIndicator TEXT NOT NULL, boundaryTarget TEXT NOT NULL, analyticsPeriodBoundaryType TEXT NOT NULL, offsetPeriods INTEGER, offsetPeriodType TEXT, PRIMARY KEY(programIndicator, boundaryTarget, analyticsPeriodBoundaryType), FOREIGN KEY(programIndicator) REFERENCES ProgramIndicator(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
-INSERT OR IGNORE INTO AnalyticsPeriodBoundary(programIndicator, boundaryTarget, analyticsPeriodBoundaryType, offsetPeriods, offsetPeriodType) SELECT programIndicator, boundaryTarget, analyticsPeriodBoundaryType, offsetPeriods, offsetPeriodType FROM AnalyticsPeriodBoundary_Old WHERE boundaryTarget IS NOT NULL;
+INSERT OR IGNORE INTO AnalyticsPeriodBoundary(programIndicator, boundaryTarget, analyticsPeriodBoundaryType, offsetPeriods, offsetPeriodType) SELECT programIndicator, boundaryTarget, analyticsPeriodBoundaryType, offsetPeriods, offsetPeriodType FROM AnalyticsPeriodBoundary_Old WHERE boundaryTarget IS NOT NULL AND analyticsPeriodBoundaryType IS NOT NULL;
 
 ALTER TABLE IndicatorLegendSetLink RENAME TO IndicatorLegendSetLink_Old;
 CREATE TABLE IndicatorLegendSetLink(indicator TEXT NOT NULL, legendSet TEXT NOT NULL, sortOrder INTEGER, PRIMARY KEY(indicator, legendSet), FOREIGN KEY(indicator) REFERENCES Indicator(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(legendSet) REFERENCES LegendSet(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
@@ -502,7 +502,7 @@ INSERT OR IGNORE INTO StockUseCase(uid, itemCode, itemDescription, programType, 
 
 ALTER TABLE StockUseCaseTransaction RENAME TO StockUseCaseTransaction_Old;
 CREATE TABLE StockUseCaseTransaction(programUid TEXT NOT NULL, sortOrder INTEGER, transactionType TEXT NOT NULL, distributedTo TEXT, stockDistributed TEXT, stockDiscarded TEXT, stockCount TEXT, PRIMARY KEY(programUid, transactionType), FOREIGN KEY(programUid) REFERENCES StockUseCase(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
-INSERT OR IGNORE INTO StockUseCaseTransaction(programUid, sortOrder, transactionType, distributedTo, stockDistributed, stockDiscarded, stockCount) SELECT programUid, sortOrder, transactionType, distributedTo, stockDistributed, stockDiscarded, stockCount FROM StockUseCaseTransaction_Old;
+INSERT OR IGNORE INTO StockUseCaseTransaction(programUid, sortOrder, transactionType, distributedTo, stockDistributed, stockDiscarded, stockCount) SELECT programUid, sortOrder, transactionType, distributedTo, stockDistributed, stockDiscarded, stockCount FROM StockUseCaseTransaction_Old WHERE transactionType IS NOT NULL;
 
 ALTER TABLE MapLayer RENAME TO MapLayer_Old;
 CREATE TABLE MapLayer(uid TEXT NOT NULL, name TEXT NOT NULL, displayName TEXT NOT NULL, external INTEGER, mapLayerPosition TEXT NOT NULL, style TEXT, imageUrl TEXT NOT NULL, subdomains TEXT, subdomainPlaceholder TEXT, code TEXT, mapService TEXT, imageFormat TEXT, layers TEXT, PRIMARY KEY(uid));
@@ -549,7 +549,7 @@ CREATE TABLE EventDataFilter(eventFilter TEXT NOT NULL, dataItem TEXT NOT NULL, 
 INSERT OR IGNORE INTO EventDataFilter(eventFilter, dataItem, le, ge, gt, lt, eq, inProperty, like, dateFilter) SELECT eventFilter, dataItem, le, ge, gt, lt, eq, inProperty, like, dateFilter FROM EventDataFilter_Old;
 
 ALTER TABLE AttributeValueFilter RENAME TO AttributeValueFilter_Old;
-CREATE TABLE AttributeValueFilter(trackedEntityInstanceFilter TEXT NOT NULL, attribute TEXT NOT NULL, sw TEXT, ew TEXT, le TEXT, ge TEXT, gt TEXT, lt TEXT, eq TEXT, inProperty TEXT, like TEXT, dateFilter TEXT, PRIMARY KEY(trackedEntityInstanceFilter, attribute), FOREIGN KEY(trackedEntityInstanceFilter) REFERENCES TrackedEntityInstanceFilter(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(attribute) REFERENCES Attribute(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+CREATE TABLE AttributeValueFilter(trackedEntityInstanceFilter TEXT NOT NULL, attribute TEXT NOT NULL, sw TEXT, ew TEXT, le TEXT, ge TEXT, gt TEXT, lt TEXT, eq TEXT, inProperty TEXT, like TEXT, dateFilter TEXT, PRIMARY KEY(trackedEntityInstanceFilter, attribute), FOREIGN KEY(trackedEntityInstanceFilter) REFERENCES TrackedEntityInstanceFilter(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(attribute) REFERENCES TrackedEntityAttribute(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
 INSERT OR IGNORE INTO AttributeValueFilter(trackedEntityInstanceFilter, attribute, sw, ew, le, ge, gt, lt, eq, inProperty, like, dateFilter) SELECT trackedEntityInstanceFilter, attribute, sw, ew, le, ge, gt, lt, eq, inProperty, like, dateFilter FROM AttributeValueFilter_Old;
 
 ALTER TABLE ProgramStageWorkingListEventDataFilter RENAME TO ProgramStageWorkingListEventDataFilter_Old;
@@ -557,7 +557,7 @@ CREATE TABLE ProgramStageWorkingListEventDataFilter(programStageWorkingList TEXT
 INSERT OR IGNORE INTO ProgramStageWorkingListEventDataFilter(programStageWorkingList, dataItem, le, ge, gt, lt, eq, inProperty, like, dateFilter) SELECT programStageWorkingList, dataItem, le, ge, gt, lt, eq, inProperty, like, dateFilter FROM ProgramStageWorkingListEventDataFilter_Old;
 
 ALTER TABLE ProgramStageWorkingListAttributeValueFilter RENAME TO ProgramStageWorkingListAttributeValueFilter_Old;
-CREATE TABLE ProgramStageWorkingListAttributeValueFilter(programStageWorkingList TEXT NOT NULL, attribute TEXT NOT NULL, sw TEXT, ew TEXT, le TEXT, ge TEXT, gt TEXT, lt TEXT, eq TEXT, inProperty TEXT, like TEXT, dateFilter TEXT, PRIMARY KEY(programStageWorkingList, attribute), FOREIGN KEY(programStageWorkingList) REFERENCES ProgramStageWorkingList(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(attribute) REFERENCES Attribute(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+CREATE TABLE ProgramStageWorkingListAttributeValueFilter(programStageWorkingList TEXT NOT NULL, attribute TEXT NOT NULL, sw TEXT, ew TEXT, le TEXT, ge TEXT, gt TEXT, lt TEXT, eq TEXT, inProperty TEXT, like TEXT, dateFilter TEXT, PRIMARY KEY(programStageWorkingList, attribute), FOREIGN KEY(programStageWorkingList) REFERENCES ProgramStageWorkingList(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(attribute) REFERENCES TrackedEntityAttribute(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
 INSERT OR IGNORE INTO ProgramStageWorkingListAttributeValueFilter(programStageWorkingList, attribute, sw, ew, le, ge, gt, lt, eq, inProperty, like, dateFilter) SELECT programStageWorkingList, attribute, sw, ew, le, ge, gt, lt, eq, inProperty, like, dateFilter FROM ProgramStageWorkingListAttributeValueFilter_Old;
 
 DROP TABLE Configuration_Old;

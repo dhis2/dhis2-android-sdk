@@ -31,13 +31,13 @@ package org.hisp.dhis.android.persistence.programstageworkinglist
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
-import org.hisp.dhis.android.persistence.attribute.AttributeDB
 import org.hisp.dhis.android.persistence.common.DateFilterPeriodDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.FilterOperatorsDB
 import org.hisp.dhis.android.persistence.common.StringSetDB
 import org.hisp.dhis.android.persistence.common.applyFilterOperatorsFields
 import org.hisp.dhis.android.persistence.common.toDB
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeDB
 
 @Entity(
     tableName = "ProgramStageWorkingListAttributeValueFilter",
@@ -50,7 +50,7 @@ import org.hisp.dhis.android.persistence.common.toDB
             deferred = true,
         ),
         ForeignKey(
-            entity = AttributeDB::class, // TODO CHECK IF THIS IS CORRECT OR SHOULD BE TrackedEntityAttributeDB
+            entity = TrackedEntityAttributeDB::class,
             parentColumns = ["uid"],
             childColumns = ["attribute"],
             onDelete = ForeignKey.CASCADE,

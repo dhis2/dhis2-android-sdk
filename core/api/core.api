@@ -6871,6 +6871,8 @@ public class org/hisp/dhis/android/core/event/EventDataFilterTableInfo$Columns :
 
 public final class org/hisp/dhis/android/core/event/EventDownloader : org/hisp/dhis/android/core/arch/repositories/collection/BaseRepository {
 	public final fun blockingDownload ()V
+	public final fun byEventFilter (Lorg/hisp/dhis/android/core/event/EventFilter;)Lorg/hisp/dhis/android/core/event/EventDownloader;
+	public final fun byFilterUids ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/ListFilterConnector;
 	public final fun byProgramUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/EventDownloader;
 	public final fun byUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/ListFilterConnector;
 	public final fun download ()Lio/reactivex/Observable;
@@ -10311,6 +10313,8 @@ public abstract class org/hisp/dhis/android/core/program/internal/ProgramDataDow
 	public static final field DEFAULT_LIMIT Ljava/lang/Integer;
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
+	public abstract fun eventFilter ()Lorg/hisp/dhis/android/core/event/EventFilter;
+	public abstract fun filterUids ()Ljava/util/List;
 	public abstract fun limit ()Ljava/lang/Integer;
 	public abstract fun limitByOrgunit ()Ljava/lang/Boolean;
 	public abstract fun limitByProgram ()Ljava/lang/Boolean;
@@ -10319,9 +10323,11 @@ public abstract class org/hisp/dhis/android/core/program/internal/ProgramDataDow
 	public abstract fun overwrite ()Ljava/lang/Boolean;
 	public abstract fun program ()Ljava/lang/String;
 	public abstract fun programEndDate ()Ljava/util/Date;
+	public abstract fun programStageWorkingList ()Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList;
 	public abstract fun programStartDate ()Ljava/util/Date;
 	public abstract fun programStatus ()Lorg/hisp/dhis/android/core/settings/EnrollmentScope;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
+	public abstract fun trackedEntityInstanceFilter ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceFilter;
 	public abstract fun trackedEntityType ()Ljava/lang/String;
 	public abstract fun uids ()Ljava/util/List;
 }
@@ -10329,6 +10335,8 @@ public abstract class org/hisp/dhis/android/core/program/internal/ProgramDataDow
 public abstract class org/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams;
+	public abstract fun eventFilter (Lorg/hisp/dhis/android/core/event/EventFilter;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
+	public abstract fun filterUids (Ljava/util/List;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
 	public abstract fun limit (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
 	public abstract fun limitByOrgunit (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
 	public abstract fun limitByProgram (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
@@ -10337,8 +10345,10 @@ public abstract class org/hisp/dhis/android/core/program/internal/ProgramDataDow
 	public abstract fun overwrite (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
 	public abstract fun program (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
 	public abstract fun programEndDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
+	public abstract fun programStageWorkingList (Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
 	public abstract fun programStartDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
 	public abstract fun programStatus (Lorg/hisp/dhis/android/core/settings/EnrollmentScope;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
+	public abstract fun trackedEntityInstanceFilter (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceFilter;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
 	public abstract fun trackedEntityType (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
 	public abstract fun uids (Ljava/util/List;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
 }
@@ -13728,8 +13738,11 @@ public abstract class org/hisp/dhis/android/core/trackedentity/internal/ObjectWi
 
 public final class org/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceDownloader : org/hisp/dhis/android/core/arch/repositories/collection/BaseRepository {
 	public final fun blockingDownload ()V
+	public final fun byFilterUids ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/ListFilterConnector;
+	public final fun byProgramStageWorkingList (Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList;)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceDownloader;
 	public final fun byProgramStatus (Lorg/hisp/dhis/android/core/settings/EnrollmentScope;)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceDownloader;
 	public final fun byProgramUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceDownloader;
+	public final fun byTrackedEntityInstanceFilter (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceFilter;)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceDownloader;
 	public final fun byUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/ListFilterConnector;
 	public final fun download ()Lio/reactivex/Observable;
 	public final fun limit (I)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceDownloader;

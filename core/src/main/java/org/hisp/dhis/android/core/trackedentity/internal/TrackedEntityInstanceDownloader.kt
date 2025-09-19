@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.tracker.exporter.TrackerD2Progress
 import org.koin.core.annotation.Singleton
 
 @Singleton
+@Suppress("TooManyFunctions")
 class TrackedEntityInstanceDownloader internal constructor(
     private val call: TrackedEntityInstanceDownloadCall,
     private val params: ProgramDataDownloadParams,

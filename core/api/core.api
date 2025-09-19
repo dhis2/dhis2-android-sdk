@@ -10343,22 +10343,6 @@ public abstract class org/hisp/dhis/android/core/program/internal/ProgramDataDow
 	public abstract fun uids (Ljava/util/List;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
 }
 
-public class org/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$QueryParams {
-	public static final field LIMIT Ljava/lang/String;
-	public static final field LIMIT_BY_ORGUNIT Ljava/lang/String;
-	public static final field LIMIT_BY_PROGRAM Ljava/lang/String;
-	public static final field ORG_UNITS Ljava/lang/String;
-	public static final field ORG_UNIT_MODE Ljava/lang/String;
-	public static final field OVERWRITE Ljava/lang/String;
-	public static final field PROGRAM Ljava/lang/String;
-	public static final field PROGRAM_END_DATE Ljava/lang/String;
-	public static final field PROGRAM_START_DATE Ljava/lang/String;
-	public static final field PROGRAM_STATUS Ljava/lang/String;
-	public static final field TRACKED_ENTITY_TYPE Ljava/lang/String;
-	public static final field UID Ljava/lang/String;
-	public fun <init> ()V
-}
-
 public abstract interface class org/hisp/dhis/android/core/program/programindicatorengine/ProgramIndicatorEngine {
 	public abstract fun getEnrollmentProgramIndicatorValue (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
 	public abstract fun getEventProgramIndicatorValue (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;

@@ -49,11 +49,13 @@ import java.util.Date
 class TrackedEntityAttributeReservedValueStoreIntegrationShould : BaseIntegrationTestWithDatabase() {
     private lateinit var expiredValue: TrackedEntityAttributeReservedValue
     private lateinit var notExpiredValue: TrackedEntityAttributeReservedValue
+    private lateinit var nullOrgUnitValue: TrackedEntityAttributeReservedValue
     private lateinit var temporalValidityExpiredValue: TrackedEntityAttributeReservedValue
     private lateinit var notExpiredTemporalValidityExpiredValue: TrackedEntityAttributeReservedValue
 
     private lateinit var serverDate: Date
     private val orgUnitUid = "orgu1"
+    private val nullOrgUnitUid: String? = null
     private val ownerUid = "owUid"
 
     // object to test
@@ -79,19 +81,42 @@ class TrackedEntityAttributeReservedValueStoreIntegrationShould : BaseIntegratio
                 .ownerObject("owObj")
                 .ownerUid(ownerUid)
                 .key("key")
-                .organisationUnit(orgUnitUid)
                 .created(Date())
 
-            expiredValue = builder.expiryDate(expiredDate).temporalValidityDate(null).value("v1").build()
-            notExpiredValue = builder.expiryDate(notExpiredDate).temporalValidityDate(null).value("v2").build()
+            expiredValue = builder
+                .organisationUnit(orgUnitUid)
+                .expiryDate(expiredDate)
+                .temporalValidityDate(null)
+                .value("v1")
+                .build()
+
+            notExpiredValue = builder
+                .organisationUnit(orgUnitUid)
+                .expiryDate(notExpiredDate)
+                .temporalValidityDate(null)
+                .value("v2")
+                .build()
+
+            nullOrgUnitValue = builder
+                .organisationUnit(nullOrgUnitUid)
+                .expiryDate(notExpiredDate)
+                .temporalValidityDate(null)
+                .value("v4")
+                .build()
+
             temporalValidityExpiredValue = builder
+                .organisationUnit(orgUnitUid)
                 .expiryDate(notExpiredDate)
                 .temporalValidityDate(expiredDate)
                 .value("v3")
                 .build()
-            notExpiredTemporalValidityExpiredValue =
-                builder.expiryDate(notExpiredDate).temporalValidityDate(notExpiredDate)
-                    .value("v3").build()
+
+            notExpiredTemporalValidityExpiredValue = builder
+                .organisationUnit(orgUnitUid)
+                .expiryDate(notExpiredDate)
+                .temporalValidityDate(notExpiredDate)
+                .value("v3")
+                .build()
         }
     }
 
@@ -148,6 +173,18 @@ class TrackedEntityAttributeReservedValueStoreIntegrationShould : BaseIntegratio
 
         val value = store.popOne(ownerUid, orgUnitUid)
         storeContains(value!!, false)
+        assertThat(store.count()).isEqualTo(1)
+    }
+
+    @Test
+    fun keep_other_values_after_null_orgid_pop() = runTest {
+        store.insert(notExpiredValue)
+        store.insert(nullOrgUnitValue)
+        assertThat(store.count()).isEqualTo(2)
+
+        val value = store.popOne(ownerUid, null)
+        storeContains(value!!, false)
+        assertThat(value.value()).isEqualTo("v4")
         assertThat(store.count()).isEqualTo(1)
     }
 

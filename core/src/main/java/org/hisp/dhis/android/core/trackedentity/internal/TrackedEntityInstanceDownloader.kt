@@ -33,7 +33,9 @@ import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
 import org.hisp.dhis.android.core.settings.EnrollmentScope
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 import org.hisp.dhis.android.core.tracker.exporter.TrackerD2Progress
 import org.koin.core.annotation.Singleton
 
@@ -105,4 +107,18 @@ class TrackedEntityInstanceDownloader internal constructor(
         connectorFactory.eqConnector<Boolean> { overwrite ->
             params.toBuilder().overwrite(overwrite).build()
         }.eq(overwrite)
+
+    fun byFilterUids(): ListFilterConnector<TrackedEntityInstanceDownloader, String> =
+        connectorFactory.listConnector { filterUids -> params.toBuilder().filterUids(filterUids).build() }
+
+    fun byTrackedEntityInstanceFilter(filter: TrackedEntityInstanceFilter): TrackedEntityInstanceDownloader =
+        connectorFactory.eqConnector<TrackedEntityInstanceFilter> { trackedEntityInstanceFilter ->
+            params.toBuilder().trackedEntityInstanceFilter(trackedEntityInstanceFilter).build()
+        }.eq(filter)
+
+    fun byProgramStageWorkingList(workingList: ProgramStageWorkingList): TrackedEntityInstanceDownloader =
+        connectorFactory.eqConnector<ProgramStageWorkingList> { programStageWorkingList ->
+            params.toBuilder().programStageWorkingList(programStageWorkingList).build()
+        }.eq(workingList)
+
 }

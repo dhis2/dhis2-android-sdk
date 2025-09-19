@@ -35,7 +35,9 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList;
 import org.hisp.dhis.android.core.settings.EnrollmentScope;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
 
 import java.util.Collections;
 import java.util.Date;
@@ -82,6 +84,15 @@ public abstract class ProgramDataDownloadParams implements BaseScope {
     @NonNull
     public abstract Boolean overwrite();
 
+    @Nullable
+    public abstract List<String> filterUids();
+
+    @Nullable
+    public abstract TrackedEntityInstanceFilter trackedEntityInstanceFilter();
+
+    @Nullable
+    public abstract ProgramStageWorkingList programStageWorkingList();
+
     public static Builder builder() {
         return new AutoValue_ProgramDataDownloadParams.Builder()
                 .overwrite(false)
@@ -116,6 +127,12 @@ public abstract class ProgramDataDownloadParams implements BaseScope {
         public abstract Builder limit(Integer limit);
 
         public abstract Builder overwrite(Boolean overwrite);
+
+        public abstract Builder filterUids(List<String> filterUids);
+
+        public abstract Builder trackedEntityInstanceFilter(TrackedEntityInstanceFilter trackedEntityInstanceFilter);
+
+        public abstract Builder programStageWorkingList(ProgramStageWorkingList programStageWorkingList);
 
         public abstract ProgramDataDownloadParams build();
     }

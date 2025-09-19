@@ -120,5 +120,4 @@ class TrackedEntityInstanceDownloader internal constructor(
         connectorFactory.eqConnector<ProgramStageWorkingList> { programStageWorkingList ->
             params.toBuilder().programStageWorkingList(programStageWorkingList).build()
         }.eq(workingList)
-
 }

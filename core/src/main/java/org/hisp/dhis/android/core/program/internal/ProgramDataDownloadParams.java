@@ -34,6 +34,7 @@ import androidx.annotation.Nullable;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope;
+import org.hisp.dhis.android.core.event.EventFilter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList;
 import org.hisp.dhis.android.core.settings.EnrollmentScope;
@@ -93,6 +94,9 @@ public abstract class ProgramDataDownloadParams implements BaseScope {
     @Nullable
     public abstract ProgramStageWorkingList programStageWorkingList();
 
+    @Nullable
+    public abstract EventFilter eventFilter();
+
     public static Builder builder() {
         return new AutoValue_ProgramDataDownloadParams.Builder()
                 .overwrite(false)
@@ -133,6 +137,8 @@ public abstract class ProgramDataDownloadParams implements BaseScope {
         public abstract Builder trackedEntityInstanceFilter(TrackedEntityInstanceFilter trackedEntityInstanceFilter);
 
         public abstract Builder programStageWorkingList(ProgramStageWorkingList programStageWorkingList);
+
+        public abstract Builder eventFilter(EventFilter eventFilter);
 
         public abstract ProgramDataDownloadParams build();
     }

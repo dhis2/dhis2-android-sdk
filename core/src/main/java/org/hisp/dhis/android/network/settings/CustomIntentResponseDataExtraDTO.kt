@@ -29,15 +29,20 @@
 package org.hisp.dhis.android.network.settings
 
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.settings.CustomIntentResponseData
+import org.hisp.dhis.android.core.settings.CustomIntentResponseDataExtra
+import org.hisp.dhis.android.core.settings.CustomIntentResponseExtraType
 
 @Serializable
-internal data class CustomIntentResponseDataDTO(
-    val extras: List<CustomIntentResponseDataExtraDTO>,
+internal data class CustomIntentResponseDataExtraDTO(
+    val extraName: String,
+    val extraType: String,
+    val key: String?,
 ) {
-    fun toDomain(): CustomIntentResponseData {
-        return CustomIntentResponseData.builder()
-            .extras(extras.map { it.toDomain() })
+    fun toDomain(): CustomIntentResponseDataExtra {
+        return CustomIntentResponseDataExtra.builder()
+            .extraName(extraName)
+            .extraType(CustomIntentResponseExtraType.valueOf(extraType))
+            .key(key)
             .build()
     }
 }

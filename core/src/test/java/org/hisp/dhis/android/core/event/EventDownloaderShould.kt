@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.event
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.event.internal.EventDownloadCall
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.junit.Before
@@ -42,11 +41,13 @@ class EventDownloaderShould {
 
     private val paramsCapture: KArgumentCaptor<ProgramDataDownloadParams> = argumentCaptor()
 
+    private lateinit var params: ProgramDataDownloadParams
     private lateinit var downloader: EventDownloader
 
     @Before
     fun setUp() {
-        downloader = EventDownloader(RepositoryScope.empty(), call)
+        params = ProgramDataDownloadParams.builder().build()
+        downloader = EventDownloader(call, params)
     }
 
     @Test

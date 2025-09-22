@@ -28,9 +28,15 @@
 
 package org.hisp.dhis.android.core.program
 
+import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Factory
 import org.koin.core.annotation.Module
 
 @Module
 @ComponentScan
-internal class ProgramDIModule
+internal class ProgramDIModule {
+
+    @Factory
+    fun programDataDownloadParams(): ProgramDataDownloadParams = ProgramDataDownloadParams.builder().build()
+}

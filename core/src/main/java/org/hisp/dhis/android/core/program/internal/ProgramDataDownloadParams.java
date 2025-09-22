@@ -33,9 +33,7 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.UnwrappedEqInFilterConnector;
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
+import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 import org.hisp.dhis.android.core.settings.EnrollmentScope;
 
@@ -44,7 +42,7 @@ import java.util.Date;
 import java.util.List;
 
 @AutoValue
-public abstract class ProgramDataDownloadParams {
+public abstract class ProgramDataDownloadParams implements BaseScope {
 
     public static final Integer DEFAULT_LIMIT = 500;
 
@@ -84,37 +82,6 @@ public abstract class ProgramDataDownloadParams {
     @NonNull
     public abstract Boolean overwrite();
 
-    public static ProgramDataDownloadParams fromRepositoryScope(RepositoryScope scope) {
-        Builder builder = builder();
-        for (RepositoryScopeFilterItem item : scope.filters()) {
-            switch (item.key()) {
-                case QueryParams.UID:
-                    builder.uids(UnwrappedEqInFilterConnector.getValueList(item.value()));
-                    break;
-                case QueryParams.PROGRAM:
-                    builder.program(item.value());
-                    break;
-                case QueryParams.LIMIT_BY_ORGUNIT:
-                    builder.limitByOrgunit(item.value().equals("1"));
-                    break;
-                case QueryParams.LIMIT_BY_PROGRAM:
-                    builder.limitByProgram(item.value().equals("1"));
-                    break;
-                case QueryParams.LIMIT:
-                    builder.limit(Integer.parseInt(item.value()));
-                    break;
-                case QueryParams.PROGRAM_STATUS:
-                    builder.programStatus(EnrollmentScope.valueOf(item.value()));
-                    break;
-                case QueryParams.OVERWRITE:
-                    builder.overwrite(item.value().equals("1"));
-                    break;
-                default:
-            }
-        }
-        return builder.build();
-    }
-
     public static Builder builder() {
         return new AutoValue_ProgramDataDownloadParams.Builder()
                 .overwrite(false)
@@ -151,20 +118,5 @@ public abstract class ProgramDataDownloadParams {
         public abstract Builder overwrite(Boolean overwrite);
 
         public abstract ProgramDataDownloadParams build();
-    }
-
-    public static class QueryParams {
-        public static final String UID = "uid";
-        public static final String PROGRAM = "program";
-        public static final String PROGRAM_STATUS = "programStatus";
-        public static final String PROGRAM_START_DATE = "programStartDate";
-        public static final String PROGRAM_END_DATE = "programEndDate";
-        public static final String ORG_UNITS = "ou";
-        public static final String ORG_UNIT_MODE = "ouMode";
-        public static final String TRACKED_ENTITY_TYPE = "trackedEntityType";
-        public static final String LIMIT_BY_ORGUNIT = "limitByOrgunit";
-        public static final String LIMIT_BY_PROGRAM = "limitByProgram";
-        public static final String LIMIT = "limit";
-        public static final String OVERWRITE = "overwrite";
     }
 }

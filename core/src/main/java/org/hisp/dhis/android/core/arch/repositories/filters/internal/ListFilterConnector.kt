@@ -35,8 +35,8 @@ internal constructor(private val repositoryFactory: ScopedRepositoryFilterFactor
         return repositoryFactory.updated(value?.let { listOf(it) } ?: emptyList())
     }
 
-    fun `in`(values: List<T>): R {
-        return repositoryFactory.updated(values)
+    fun `in`(values: Collection<T>): R {
+        return repositoryFactory.updated(values.toList())
     }
 
     @SafeVarargs

@@ -9692,6 +9692,7 @@ public abstract class org/hisp/dhis/android/core/settings/ProgramSetting : org/h
 	public abstract fun eventDateDownload ()Lorg/hisp/dhis/android/core/settings/DownloadPeriod;
 	public abstract fun eventsDBTrimming ()Ljava/lang/Integer;
 	public abstract fun eventsDownload ()Ljava/lang/Integer;
+	public abstract fun filters ()Ljava/util/List;
 	public abstract fun lastUpdated ()Ljava/util/Date;
 	public abstract fun name ()Ljava/lang/String;
 	public abstract fun settingDBTrimming ()Lorg/hisp/dhis/android/core/settings/LimitScope;
@@ -9715,6 +9716,7 @@ public abstract class org/hisp/dhis/android/core/settings/ProgramSetting$Builder
 	public abstract fun eventDateDownload (Lorg/hisp/dhis/android/core/settings/DownloadPeriod;)Lorg/hisp/dhis/android/core/settings/ProgramSetting$Builder;
 	public abstract fun eventsDBTrimming (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/settings/ProgramSetting$Builder;
 	public abstract fun eventsDownload (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/settings/ProgramSetting$Builder;
+	public abstract fun filters (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/ProgramSetting$Builder;
 	public abstract fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/settings/ProgramSetting$Builder;
 	public abstract fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/ProgramSetting$Builder;
 	public abstract fun settingDBTrimming (Lorg/hisp/dhis/android/core/settings/LimitScope;)Lorg/hisp/dhis/android/core/settings/ProgramSetting$Builder;
@@ -14928,6 +14930,7 @@ public final class org/hisp/dhis/android/persistence/settings/ProgramSettingTabl
 	public static final field EVENTS_D_B_TRIMMING Ljava/lang/String;
 	public static final field EVENT_DATE_DOWNLOAD Ljava/lang/String;
 	public static final field EVENT_DATE_D_B_TRIMMING Ljava/lang/String;
+	public static final field FILTERS Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
 	public static final field SETTING_DOWNLOAD Ljava/lang/String;

@@ -25,36 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.settings
 
-package org.hisp.dhis.android.core.data.settings;
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils
+import org.hisp.dhis.android.core.settings.DownloadPeriod
+import org.hisp.dhis.android.core.settings.EnrollmentScope
+import org.hisp.dhis.android.core.settings.LimitScope
+import org.hisp.dhis.android.core.settings.ProgramSetting
 
-import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
-import org.hisp.dhis.android.core.settings.DownloadPeriod;
-import org.hisp.dhis.android.core.settings.EnrollmentScope;
-import org.hisp.dhis.android.core.settings.LimitScope;
-import org.hisp.dhis.android.core.settings.ProgramSetting;
-
-public class ProgramSettingSamples {
-
-    public static ProgramSetting getProgramSetting() {
-        return ProgramSetting.builder()
-                .uid("IpHINAT79UW")
-                .name("Child Programme")
-                .lastUpdated(FillPropertiesTestUtils.LAST_UPDATED)
-                .teiDownload(40)
-                .teiDBTrimming(20)
-                .eventsDownload(30)
-                .eventsDBTrimming(20)
-                .updateDownload(DownloadPeriod.ANY)
-                .updateDBTrimming(DownloadPeriod.LAST_3_MONTHS)
-                .settingDownload(LimitScope.PER_ORG_UNIT)
-                .settingDBTrimming(LimitScope.GLOBAL)
-                .enrollmentDownload(EnrollmentScope.ONLY_ACTIVE)
-                .enrollmentDBTrimming(EnrollmentScope.ALL)
-                .eventDateDownload(DownloadPeriod.ANY)
-                .eventDateDBTrimming(DownloadPeriod.LAST_12_MONTHS)
-                .enrollmentDateDownload(DownloadPeriod.LAST_3_MONTHS)
-                .enrollmentDateDBTrimming(DownloadPeriod.LAST_12_MONTHS)
-                .build();
-    }
+object ProgramSettingSamples {
+    @JvmStatic
+    val programSetting: ProgramSetting
+        get() = ProgramSetting.builder()
+            .uid("IpHINAT79UW")
+            .name("Child Programme")
+            .filters(listOf(ObjectWithUid.create("uidFilter1")))
+            .lastUpdated(FillPropertiesTestUtils.LAST_UPDATED)
+            .teiDownload(40)
+            .teiDBTrimming(20)
+            .eventsDownload(30)
+            .eventsDBTrimming(20)
+            .updateDownload(DownloadPeriod.ANY)
+            .updateDBTrimming(DownloadPeriod.LAST_3_MONTHS)
+            .settingDownload(LimitScope.PER_ORG_UNIT)
+            .settingDBTrimming(LimitScope.GLOBAL)
+            .enrollmentDownload(EnrollmentScope.ONLY_ACTIVE)
+            .enrollmentDBTrimming(EnrollmentScope.ALL)
+            .eventDateDownload(DownloadPeriod.ANY)
+            .eventDateDBTrimming(DownloadPeriod.LAST_12_MONTHS)
+            .enrollmentDateDownload(DownloadPeriod.LAST_3_MONTHS)
+            .enrollmentDateDBTrimming(DownloadPeriod.LAST_12_MONTHS)
+            .build()
 }

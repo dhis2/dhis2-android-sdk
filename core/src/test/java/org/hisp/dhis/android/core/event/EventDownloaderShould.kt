@@ -101,7 +101,7 @@ class EventDownloaderShould {
     @Test
     fun should_parse_event_filter_params() {
         val eventFilter: EventFilter = mock()
-        downloader.byEventFilters(listOf(eventFilter)).download()
+        downloader.byEventFilter().eq(eventFilter).download()
 
         verify(call).download(paramsCapture.capture())
         val params = paramsCapture.firstValue

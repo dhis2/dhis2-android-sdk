@@ -129,7 +129,7 @@ class TrackedEntityInstanceDownloaderShould {
     @Test
     fun should_parse_tracked_entity_instance_filter_params() {
         val trackedEntityInstanceFilter: TrackedEntityInstanceFilter = mock()
-        downloader.byTrackedEntityInstanceFilters(listOf(trackedEntityInstanceFilter)).download()
+        downloader.byTrackedEntityInstanceFilter().eq(trackedEntityInstanceFilter).download()
 
         verify(call).download(paramsCapture.capture())
 
@@ -141,7 +141,8 @@ class TrackedEntityInstanceDownloaderShould {
     fun should_parse_program_stage_working_list_params() {
         val programStageWorkingList1: ProgramStageWorkingList = mock()
         val programStageWorkingList2: ProgramStageWorkingList = mock()
-        downloader.byProgramStageWorkingLists(listOf(programStageWorkingList1, programStageWorkingList2)).download()
+        downloader.byProgramStageWorkingList().`in`(listOf(programStageWorkingList1, programStageWorkingList2))
+            .download()
 
         verify(call).download(paramsCapture.capture())
 

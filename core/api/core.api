@@ -5489,7 +5489,7 @@ public abstract class org/hisp/dhis/android/core/event/EventDataFilter$Builder :
 	public abstract fun eventFilter (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/EventDataFilter$Builder;
 }
 
-public final class org/hisp/dhis/android/core/event/EventDownloader : org/hisp/dhis/android/core/arch/repositories/collection/internal/BaseRepositoryImpl {
+public final class org/hisp/dhis/android/core/event/EventDownloader : org/hisp/dhis/android/core/arch/repositories/collection/BaseRepository {
 	public final fun blockingDownload ()V
 	public final fun byProgramUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/EventDownloader;
 	public final fun byUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/ListFilterConnector;

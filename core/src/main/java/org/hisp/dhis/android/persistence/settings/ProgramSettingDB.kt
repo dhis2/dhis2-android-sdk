@@ -12,6 +12,8 @@ import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.persistence.common.ObjectWithUidListDB
+import org.hisp.dhis.android.persistence.common.toDB
 import org.hisp.dhis.android.persistence.program.ProgramDB
 
 @Entity(
@@ -39,6 +41,7 @@ internal data class ProgramSettingDB(
     val id: Int = 0,
     val uid: String?,
     val name: String?,
+    val filters: ObjectWithUidListDB?,
     val lastUpdated: String?,
     val teiDownload: Int?,
     val teiDBTrimming: Int?,
@@ -60,6 +63,7 @@ internal data class ProgramSettingDB(
         return ProgramSetting.builder().apply {
             uid(uid)
             name(name)
+            filters(filters?.toDomain())
             lastUpdated(lastUpdated.toJavaDate())
             teiDownload(teiDownload)
             teiDBTrimming(teiDBTrimming)
@@ -83,6 +87,7 @@ internal fun ProgramSetting.toDB(): ProgramSettingDB {
     return ProgramSettingDB(
         uid = uid(),
         name = name(),
+        filters = filters()?.toDB(),
         lastUpdated = lastUpdated().dateFormat(),
         teiDownload = teiDownload(),
         teiDBTrimming = teiDBTrimming(),

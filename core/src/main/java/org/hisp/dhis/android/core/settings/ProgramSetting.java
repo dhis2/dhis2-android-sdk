@@ -33,8 +33,10 @@ import androidx.annotation.Nullable;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 import java.util.Date;
+import java.util.List;
 
 @AutoValue
 public abstract class ProgramSetting implements CoreObject {
@@ -44,6 +46,9 @@ public abstract class ProgramSetting implements CoreObject {
 
     @Nullable
     public abstract String name();
+
+    @Nullable
+    public abstract List<ObjectWithUid> filters();
 
     @Nullable
     public abstract Date lastUpdated();
@@ -101,6 +106,8 @@ public abstract class ProgramSetting implements CoreObject {
         public abstract Builder uid(String uid);
 
         public abstract Builder name(String name);
+
+        public abstract Builder filters(List<ObjectWithUid> filters);
 
         public abstract Builder lastUpdated(Date lastUpdated);
 

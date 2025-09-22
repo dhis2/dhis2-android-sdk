@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.option.internal.OptionGroupOptionChildrenAppender
 import org.hisp.dhis.android.core.option.internal.OptionGroupStore
+import org.hisp.dhis.android.persistence.option.OptionGroupTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

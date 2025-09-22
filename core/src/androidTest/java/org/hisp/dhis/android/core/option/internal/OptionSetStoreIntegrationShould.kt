@@ -32,9 +32,10 @@ import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.option.OptionSetSamples
 import org.hisp.dhis.android.core.option.OptionSet
-import org.hisp.dhis.android.core.option.OptionSetTableInfo
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.option.OptionSetStoreImpl
+import org.hisp.dhis.android.persistence.option.OptionSetTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

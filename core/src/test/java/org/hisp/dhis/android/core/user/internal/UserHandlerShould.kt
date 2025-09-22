@@ -74,7 +74,7 @@ class UserHandlerShould {
             .userGroups(userGroups)
             .build()
 
-        whenever(userStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
+        whenever(userStore.updateOrInsert(any<List<User>>())).thenReturn(listOf(HandleAction.Insert))
     }
 
     @Test

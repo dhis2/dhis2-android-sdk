@@ -27,19 +27,19 @@
  */
 package org.hisp.dhis.android.core.option.internal
 
-import org.hisp.dhis.android.core.option.OptionGroupOptionLinkTableInfo
-import org.hisp.dhis.android.core.option.OptionGroupTableInfo
-import org.hisp.dhis.android.core.option.OptionSetTableInfo
-import org.hisp.dhis.android.core.option.OptionTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import org.hisp.dhis.android.persistence.option.OptionGroupOptionLinkTableInfo
+import org.hisp.dhis.android.persistence.option.OptionGroupTableInfo
+import org.hisp.dhis.android.persistence.option.OptionSetTableInfo
+import org.hisp.dhis.android.persistence.option.OptionTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class OptionModuleWiper(
     private val tableWiper: TableWiper,
 ) : ModuleWiper {
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         tableWiper.wipeTables(
             OptionTableInfo.TABLE_INFO,
             OptionGroupTableInfo.TABLE_INFO,
@@ -48,7 +48,7 @@ internal class OptionModuleWiper(
         )
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         // No metadata to wipe
     }
 }

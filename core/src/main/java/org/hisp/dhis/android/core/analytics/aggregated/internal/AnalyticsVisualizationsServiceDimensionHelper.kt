@@ -41,12 +41,12 @@ import org.hisp.dhis.android.core.category.internal.CategoryCategoryOptionLinkSt
 import org.hisp.dhis.android.core.category.internal.CategoryStore
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevelTableInfo
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
 import org.hisp.dhis.android.core.visualization.DataDimensionItemType
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationDimension
 import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitLevelTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

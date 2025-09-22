@@ -33,59 +33,40 @@ internal abstract class HandlerBaseImpl<O> : HandlerWithTransformer<O> {
         if (o == null) {
             return
         }
-        val o2 = beforeObjectHandled(o)
-        val action = deleteOrPersist(o2)
-        afterObjectHandled(o2, action)
+        handleMany(listOf(o))
     }
 
     override suspend fun handle(o: O?, transformer: (O) -> O) {
         if (o == null) {
             return
         }
-        handleInternal(o, transformer)
+        handleMany(listOf(o), transformer)
     }
 
-    @JvmSuppressWildcards
-    protected suspend fun handle(o: O?, transformer: (O) -> O, oTransformedCollection: MutableList<O>) {
-        if (o == null) {
-            return
-        }
-        val oTransformed = handleInternal(o, transformer)
-        oTransformedCollection.add(oTransformed)
-    }
-
-    private suspend fun handleInternal(o: O, transformer: (O) -> O): O {
-        val o2 = beforeObjectHandled(o)
-        val o3 = transformer(o2)
-        val action = deleteOrPersist(o3)
-        afterObjectHandled(o3, action)
-        return o3
-    }
-
-    @JvmSuppressWildcards
     override suspend fun handleMany(oCollection: Collection<O>?) {
         if (oCollection != null) {
             val preHandledCollection = beforeCollectionHandled(oCollection)
-            for (o in preHandledCollection) {
-                handle(o)
-            }
+                .map { beforeObjectHandled(it) }
+
+            deleteOrPersist(preHandledCollection)
+
             afterCollectionHandled(preHandledCollection)
         }
     }
 
-    @JvmSuppressWildcards
     override suspend fun handleMany(oCollection: Collection<O>?, transformer: (O) -> O) {
         if (oCollection != null) {
             val preHandledCollection = beforeCollectionHandled(oCollection)
-            val oTransformedCollection: MutableList<O> = ArrayList(oCollection.size)
-            for (o in preHandledCollection) {
-                handle(o, transformer, oTransformedCollection)
-            }
-            afterCollectionHandled(oTransformedCollection)
+                .map { beforeObjectHandled(it) }
+                .map { transformer.invoke(it) }
+
+            deleteOrPersist(preHandledCollection)
+
+            afterCollectionHandled(preHandledCollection)
         }
     }
 
-    protected abstract suspend fun deleteOrPersist(o: O): HandleAction
+    protected abstract suspend fun deleteOrPersist(oCollection: Collection<O>)
 
     protected open suspend fun beforeObjectHandled(o: O): O {
         return o

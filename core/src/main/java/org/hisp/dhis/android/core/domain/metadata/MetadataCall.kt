@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.attribute.Attribute
 import org.hisp.dhis.android.core.attribute.internal.AttributeModuleDownloader
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader
-import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
+import org.hisp.dhis.android.core.configuration.internal.BaseMultiUserDatabaseManager
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleDownloader
 import org.hisp.dhis.android.core.dataset.DataSet
@@ -55,7 +55,6 @@ import org.hisp.dhis.android.core.indicator.internal.IndicatorModuleDownloader
 import org.hisp.dhis.android.core.legendset.LegendSet
 import org.hisp.dhis.android.core.legendset.internal.LegendSetModuleDownloader
 import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader
 import org.hisp.dhis.android.core.program.Program
@@ -77,6 +76,7 @@ import org.hisp.dhis.android.core.visualization.TrackerVisualization
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.internal.TrackerVisualizationModuleDownloader
 import org.hisp.dhis.android.core.visualization.internal.VisualizationModuleDownloader
+import org.hisp.dhis.android.persistence.maintenance.ForeignKeyViolationTableInfo
 import org.koin.core.annotation.Singleton
 
 @Suppress("LongParameterList")
@@ -100,7 +100,7 @@ internal class MetadataCall(
     private val smsModule: SmsModule,
     private val databaseAdapter: DatabaseAdapter,
     private val generalSettingCall: GeneralSettingCall,
-    private val multiUserDatabaseManager: MultiUserDatabaseManager,
+    private val multiUserDatabaseManager: BaseMultiUserDatabaseManager,
     private val credentialsSecureStore: CredentialsSecureStore,
     private val legendSetModuleDownloader: LegendSetModuleDownloader,
     private val attributeModuleDownloader: AttributeModuleDownloader,
@@ -118,7 +118,7 @@ internal class MetadataCall(
 
         changeEncryptionIfRequiredCoroutines()
 
-        coroutineAPICallExecutor.wrapTransactionally(cleanForeignKeyErrors = true) {
+        coroutineAPICallExecutor.wrapTransactionallyRoom(cleanForeignKeyErrors = true) {
             try {
                 systemInfoDownloader.downloadWithProgressManager(progressManager).also { send(it) }
                 executeIndependentCalls(progressManager).collect { send(it) }

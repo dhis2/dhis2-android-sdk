@@ -32,7 +32,8 @@ import org.hisp.dhis.android.core.data.visualization.TrackerVisualizationDimensi
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension
-import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionTableInfo
+import org.hisp.dhis.android.persistence.visualization.TrackerVisualizationDimensionStoreImpl
+import org.hisp.dhis.android.persistence.visualization.TrackerVisualizationDimensionTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

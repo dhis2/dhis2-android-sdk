@@ -28,15 +28,10 @@
 
 package org.hisp.dhis.android.core.domain.aggregated.data.internal;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.period.PeriodType;
 
@@ -45,20 +40,14 @@ import java.util.Date;
 @AutoValue
 public abstract class AggregatedDataSync implements CoreObject {
 
-    @NonNull
-    public static AggregatedDataSync create(Cursor cursor) {
-        return AutoValue_AggregatedDataSync.createFromCursor(cursor);
-    }
-
     public static Builder builder() {
-        return new $$AutoValue_AggregatedDataSync.Builder();
+        return new AutoValue_AggregatedDataSync.Builder();
     }
 
     @NonNull
     public abstract String dataSet();
 
     @NonNull
-    @ColumnAdapter(PeriodTypeColumnAdapter.class)
     public abstract PeriodType periodType();
 
     @NonNull
@@ -74,7 +63,6 @@ public abstract class AggregatedDataSync implements CoreObject {
     public abstract Integer organisationUnitsHash();
 
     @NonNull
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
     public abstract Builder toBuilder();

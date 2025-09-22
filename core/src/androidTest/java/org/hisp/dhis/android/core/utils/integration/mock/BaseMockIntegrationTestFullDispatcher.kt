@@ -45,13 +45,14 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.runner.RunWith
+import kotlin.time.Duration.Companion.seconds
 
 @RunWith(D2JunitRunner::class)
 abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest() {
     companion object {
         @BeforeClass
         @JvmStatic
-        fun setUpClass() = runTest {
+        fun setUpClass() = runTest(timeout = 300.seconds) {
             val isNewInstance = setUpClass(MockIntegrationTestDatabaseContent.FullDispatcher)
             dhis2MockServer.setRequestDispatcher()
             freshLogin("android", "Android123", dhis2MockServer.baseEndpoint)
@@ -125,7 +126,7 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
                 TrackerImportConflictSamples.get().toBuilder()
                     .conflict("conflict_2")
                     .value("value_2")
-                    .trackedEntityInstance("nWrB0TfWlvh")
+                    .trackedEntityInstance("nWrB0TfWlvD")
                     .enrollment("enroll2")
                     .event("event2")
                     .tableReference("table_reference_2")

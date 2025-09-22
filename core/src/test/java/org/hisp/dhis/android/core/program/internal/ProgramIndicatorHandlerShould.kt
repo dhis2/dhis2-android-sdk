@@ -83,7 +83,9 @@ class ProgramIndicatorHandlerShould {
         whenever(analyticsPeriodBoundary.toBuilder()).thenReturn(analyticsPeriodBoundaryBuilder)
         whenever(analyticsPeriodBoundaryBuilder.programIndicator(any())).thenReturn(analyticsPeriodBoundaryBuilder)
         whenever(analyticsPeriodBoundaryBuilder.build()).thenReturn(analyticsPeriodBoundary)
-        whenever(programIndicatorStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
+        whenever(
+            programIndicatorStore.updateOrInsert(any<List<ProgramIndicator>>()),
+        ).thenReturn(listOf(HandleAction.Insert))
         whenever(programIndicatorStore.selectUids()).thenReturn(listOf("test_program_indicator_uid"))
     }
 
@@ -93,7 +95,7 @@ class ProgramIndicatorHandlerShould {
 
         // verify that program indicator store is never called
         verify(programIndicatorStore, never()).delete(any())
-        verify(programIndicatorStore, never()).update(any())
+        verify(programIndicatorStore, never()).update(any<ProgramIndicator>())
         verify(programIndicatorStore, never()).insert(any<ProgramIndicator>())
     }
 
@@ -111,7 +113,7 @@ class ProgramIndicatorHandlerShould {
         programIndicatorHandler.handleMany(programIndicators)
 
         // verify that update is called once
-        verify(programIndicatorStore, times(1)).updateOrInsert(any<ProgramIndicator>())
+        verify(programIndicatorStore, times(1)).updateOrInsert(any<List<ProgramIndicator>>())
         verify(programIndicatorStore, never()).delete(any())
     }
 

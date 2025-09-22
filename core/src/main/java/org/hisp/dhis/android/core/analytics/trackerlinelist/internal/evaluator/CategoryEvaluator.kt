@@ -31,10 +31,10 @@ package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EventAlias
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkTableInfo
-import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkTableInfo
-import org.hisp.dhis.android.core.category.CategoryOptionTableInfo
-import org.hisp.dhis.android.core.event.EventTableInfo
+import org.hisp.dhis.android.persistence.category.CategoryCategoryOptionLinkTableInfo
+import org.hisp.dhis.android.persistence.category.CategoryOptionComboCategoryOptionLinkTableInfo
+import org.hisp.dhis.android.persistence.category.CategoryOptionTableInfo
+import org.hisp.dhis.android.persistence.event.EventTableInfo
 
 internal class CategoryEvaluator(
     private val item: TrackerLineListItem.Category,

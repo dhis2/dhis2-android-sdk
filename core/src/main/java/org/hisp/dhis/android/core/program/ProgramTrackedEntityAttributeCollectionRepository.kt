@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope.OrderByDirection
 import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeStore
 import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeValueTypeRenderingChildrenAppender
+import org.hisp.dhis.android.persistence.program.ProgramTrackedEntityAttributeTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

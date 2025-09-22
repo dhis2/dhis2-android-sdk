@@ -28,17 +28,11 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.EntityQueryCriteriaColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackedEntityInstanceEventFilterListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.DateFilterPeriod;
@@ -55,7 +49,6 @@ public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObject
         ObjectWithStyle<TrackedEntityInstanceFilter, TrackedEntityInstanceFilter.Builder> {
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid program();
 
     @Nullable
@@ -97,19 +90,13 @@ public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObject
     }
 
     @NonNull
-    @ColumnAdapter(EntityQueryCriteriaColumnAdapter.class)
     public abstract EntityQueryCriteria entityQueryCriteria();
 
     @Nullable
-    @ColumnAdapter(IgnoreTrackedEntityInstanceEventFilterListColumnAdapter.class)
     public abstract List<TrackedEntityInstanceEventFilter> eventFilters();
 
     public static Builder builder() {
-        return new $$AutoValue_TrackedEntityInstanceFilter.Builder();
-    }
-
-    public static TrackedEntityInstanceFilter create(Cursor cursor) {
-        return $AutoValue_TrackedEntityInstanceFilter.createFromCursor(cursor);
+        return new AutoValue_TrackedEntityInstanceFilter.Builder();
     }
 
     public abstract Builder toBuilder();

@@ -32,7 +32,8 @@ import org.hisp.dhis.android.core.data.visualization.VisualizationDimensionItemS
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
-import org.hisp.dhis.android.core.visualization.VisualizationDimensionItemTableInfo
+import org.hisp.dhis.android.persistence.visualization.VisualizationDimensionItemStoreImpl
+import org.hisp.dhis.android.persistence.visualization.VisualizationDimensionItemTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

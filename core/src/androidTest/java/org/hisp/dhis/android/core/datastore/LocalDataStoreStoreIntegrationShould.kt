@@ -29,9 +29,10 @@ package org.hisp.dhis.android.core.datastore
 
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.datastore.KeyValuePairSamples.keyValuePairSample
-import org.hisp.dhis.android.core.datastore.internal.LocalDataStoreStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.datastore.LocalDataStoreStoreImpl
+import org.hisp.dhis.android.persistence.datastore.LocalDataStoreTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

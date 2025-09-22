@@ -31,11 +31,7 @@ package org.hisp.dhis.android.core.common;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-
 import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreBooleanColumnAdapter;
 import org.hisp.dhis.android.core.arch.helpers.DateUtils;
 
 import java.text.ParseException;
@@ -73,17 +69,14 @@ public abstract class BaseIdentifiableObject implements IdentifiableObject, Obje
 
     @Override
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
     @Override
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
     @Override
     @Nullable
-    @ColumnAdapter(IgnoreBooleanColumnAdapter.class)
     public abstract Boolean deleted();
 
     public static Date parseDate(String dateStr) throws ParseException {

@@ -30,10 +30,10 @@ package org.hisp.dhis.android.core.programstageworkinglist
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.programstageworkinglist.ProgramStageWorkingListSamples
-import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListStoreImpl
-import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListTableInfo
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.programstageworkinglist.ProgramStageWorkingListStoreImpl
+import org.hisp.dhis.android.persistence.programstageworkinglist.ProgramStageWorkingListTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

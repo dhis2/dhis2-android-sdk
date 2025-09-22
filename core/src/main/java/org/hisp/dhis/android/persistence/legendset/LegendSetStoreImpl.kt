@@ -28,15 +28,18 @@
 
 package org.hisp.dhis.android.persistence.legendset
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.legendset.LegendSet
 import org.hisp.dhis.android.core.legendset.internal.LegendSetStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class LegendSetStoreImpl(
-    val dao: LegendSetDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : LegendSetStore, IdentifiableObjectStoreImpl<LegendSet, LegendSetDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().legendSetDao() },
     LegendSet::toDB,
     SQLStatementBuilderImpl(LegendSetTableInfo.TABLE_INFO),
 )

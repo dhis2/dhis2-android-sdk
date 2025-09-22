@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationTableInfo
 import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationType
 import org.koin.core.annotation.Singleton
 
@@ -39,11 +37,6 @@ internal class AnalyticsDhisVisualizationCleaner(
 ) {
 
     suspend fun deleteNotPresent(uids: List<String>, type: AnalyticsDhisVisualizationType) {
-        val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(AnalyticsDhisVisualizationTableInfo.Columns.TYPE, type.name)
-            .appendNotInKeyStringValues(AnalyticsDhisVisualizationTableInfo.Columns.UID, uids)
-            .build()
-
-        store.deleteWhere(whereClause)
+        store.deleteNotPresent(uids, type)
     }
 }

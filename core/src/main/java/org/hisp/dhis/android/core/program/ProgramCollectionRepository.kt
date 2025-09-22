@@ -38,12 +38,13 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.program.internal.ProgramAttributeChildrenAppender
 import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityTypeChildrenAppender
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitProgramLinkTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramTableInfo
+import org.hisp.dhis.android.persistence.user.UserOrganisationUnitTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -218,9 +219,9 @@ class ProgramCollectionRepository internal constructor(
             OrganisationUnitProgramLinkTableInfo.TABLE_INFO.name(),
             OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM,
             OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT,
-            UserOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
-            UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
-            UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT_SCOPE,
+            UserOrganisationUnitTableInfo.TABLE_INFO.name(),
+            UserOrganisationUnitTableInfo.Columns.ORGANISATION_UNIT,
+            UserOrganisationUnitTableInfo.Columns.ORGANISATION_UNIT_SCOPE,
             listOf(scope.name),
         )
     }

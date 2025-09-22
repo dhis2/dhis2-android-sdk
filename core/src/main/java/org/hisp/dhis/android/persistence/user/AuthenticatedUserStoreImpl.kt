@@ -28,15 +28,18 @@
 
 package org.hisp.dhis.android.persistence.user
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.internal.AuthenticatedUserStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class AuthenticatedUserStoreImpl(
-    private val dao: AuthenticatedUserDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : AuthenticatedUserStore, ObjectWithoutUidStoreImpl<AuthenticatedUser, AuthenticatedUserDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().authenticatedUserDao() },
     AuthenticatedUser::toDB,
     SQLStatementBuilderImpl(AuthenticatedUserTableInfo.TABLE_INFO),
 )

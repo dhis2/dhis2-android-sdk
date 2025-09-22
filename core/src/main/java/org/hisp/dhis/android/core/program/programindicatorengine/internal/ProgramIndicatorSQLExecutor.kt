@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine.internal
 
+import androidx.sqlite.db.SimpleSQLiteQuery
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
@@ -38,8 +39,6 @@ import org.hisp.dhis.android.core.common.AnalyticsType
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.constant.internal.ConstantStore
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
-import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitorScope
 import org.hisp.dhis.android.core.parser.internal.expression.CommonParser
@@ -50,6 +49,8 @@ import org.hisp.dhis.android.core.program.programindicatorengine.internal.Progra
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.EventAlias
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.literal.ProgramIndicatorSQLLiteral
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.persistence.event.EventTableInfo
 import org.hisp.dhis.antlr.Parser
 import org.koin.core.annotation.Singleton
 
@@ -67,11 +68,9 @@ internal class ProgramIndicatorSQLExecutor(
         queryMods: QueryMods?,
     ): String? {
         val sqlQuery = getProgramIndicatorSQL(evaluationItem, metadata, queryMods)
+        val d2Dao = databaseAdapter.getCurrentDatabase().d2Dao()
 
-        return databaseAdapter.rawQuery(sqlQuery)?.use { c ->
-            c.moveToFirst()
-            c.getString(0)
-        }
+        return d2Dao.queryStringValue(SimpleSQLiteQuery(sqlQuery))
     }
 
     suspend fun getProgramIndicatorSQL(

@@ -118,10 +118,10 @@ class TrackerDataManagerShould {
 
         trackerDataManager.deleteTrackedEntity(trackedEntity)
 
-        verify(trackedEntityStore, times(1)).delete(any())
-        verify(enrollmentStore, times(1)).delete(any())
-        verify(eventStore, times(1)).delete(any())
-        verify(relationshipStore, times(3)).delete(any())
+        verify(trackedEntityStore, times(1)).deleteByEntity(any())
+        verify(enrollmentStore, times(1)).deleteByEntity(any())
+        verify(eventStore, times(1)).deleteByEntity(any())
+        verify(relationshipStore, times(3)).deleteByEntity(any())
     }
 
     @Test

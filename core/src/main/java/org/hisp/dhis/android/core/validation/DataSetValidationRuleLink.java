@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.validation;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -44,12 +42,8 @@ public abstract class DataSetValidationRuleLink implements CoreObject {
     @Nullable
     public abstract String validationRule();
 
-    public static DataSetValidationRuleLink create(Cursor cursor) {
-        return AutoValue_DataSetValidationRuleLink.createFromCursor(cursor);
-    }
-
     public static Builder builder() {
-        return new $$AutoValue_DataSetValidationRuleLink.Builder();
+        return new AutoValue_DataSetValidationRuleLink.Builder();
     }
 
     public abstract Builder toBuilder();

@@ -28,20 +28,11 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringArrayColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreObjectWithUidListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreOrganisationUnitGroupListAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
@@ -61,52 +52,39 @@ public abstract class OrganisationUnit extends BaseNameableObject implements Cor
     }
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid parent();
 
     @Nullable
     public abstract String path();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date openingDate();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date closedDate();
 
     @Nullable
     public abstract Integer level();
 
     @Nullable
-    @ColumnAdapter(DbGeometryColumnAdapter.class)
     public abstract Geometry geometry();
 
     @Nullable
-    @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)
     public abstract List<ObjectWithUid> programs();
 
     @Nullable
-    @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)
     public abstract List<ObjectWithUid> dataSets();
 
     @Nullable
-    @ColumnAdapter(IgnoreOrganisationUnitGroupListAdapter.class)
     public abstract List<OrganisationUnitGroup> organisationUnitGroups();
 
     @Nullable
-    @ColumnAdapter(StringArrayColumnAdapter.class)
     public abstract List<String> displayNamePath();
-
-    @NonNull
-    public static OrganisationUnit create(Cursor cursor) {
-        return AutoValue_OrganisationUnit.createFromCursor(cursor);
-    }
 
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new $$AutoValue_OrganisationUnit.Builder();
+        return new AutoValue_OrganisationUnit.Builder();
     }
 
     @AutoValue.Builder

@@ -60,7 +60,7 @@ internal class RelationshipPostCall(
                     val status = webResponse.response()?.status()
 
                     if ((httpCode == HTTP_OK && status == ImportStatus.SUCCESS) || httpCode == HTTP_NOT_FOUND) {
-                        relationshipStore.delete(relationship.uid()!!)
+                        relationshipStore.deleteByEntity(relationship)
                     } else {
                         handleDeleteRelationshipError(relationship.uid()!!)
                     }

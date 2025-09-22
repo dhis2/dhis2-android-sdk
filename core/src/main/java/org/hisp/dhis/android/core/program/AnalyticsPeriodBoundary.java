@@ -28,15 +28,10 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AnalyticsPeriodBoundaryTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.period.PeriodType;
 
@@ -50,14 +45,12 @@ public abstract class AnalyticsPeriodBoundary implements CoreObject {
     public abstract String boundaryTarget();
 
     @Nullable
-    @ColumnAdapter(AnalyticsPeriodBoundaryTypeColumnAdapter.class)
     public abstract AnalyticsPeriodBoundaryType analyticsPeriodBoundaryType();
 
     @Nullable
     public abstract Integer offsetPeriods();
 
     @Nullable
-    @ColumnAdapter(PeriodTypeColumnAdapter.class)
     public abstract PeriodType offsetPeriodType();
 
     @Nullable
@@ -65,14 +58,10 @@ public abstract class AnalyticsPeriodBoundary implements CoreObject {
         return BoundaryTargetType.getType(boundaryTarget());
     }
 
-    public static AnalyticsPeriodBoundary create(Cursor cursor) {
-        return $AutoValue_AnalyticsPeriodBoundary.createFromCursor(cursor);
-    }
-
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new $$AutoValue_AnalyticsPeriodBoundary.Builder();
+        return new AutoValue_AnalyticsPeriodBoundary.Builder();
     }
 
     @AutoValue.Builder

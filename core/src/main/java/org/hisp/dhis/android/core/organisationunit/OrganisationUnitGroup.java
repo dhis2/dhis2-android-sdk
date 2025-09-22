@@ -28,9 +28,6 @@
 
 package org.hisp.dhis.android.core.organisationunit;
 
-import android.database.Cursor;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -49,11 +46,6 @@ public abstract class OrganisationUnitGroup extends BaseIdentifiableObject imple
 
     public static Builder builder() {
         return new AutoValue_OrganisationUnitGroup.Builder();
-    }
-
-    @NonNull
-    public static OrganisationUnitGroup create(Cursor cursor) {
-        return AutoValue_OrganisationUnitGroup.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();

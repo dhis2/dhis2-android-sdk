@@ -28,15 +28,18 @@
 
 package org.hisp.dhis.android.persistence.attribute
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.attribute.Attribute
 import org.hisp.dhis.android.core.attribute.internal.AttributeStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class AttributeStoreImpl(
-    val dao: AttributeDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : AttributeStore, IdentifiableObjectStoreImpl<Attribute, AttributeDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().attributeDao() },
     Attribute::toDB,
     SQLStatementBuilderImpl(
         AttributeTableInfo.TABLE_INFO,

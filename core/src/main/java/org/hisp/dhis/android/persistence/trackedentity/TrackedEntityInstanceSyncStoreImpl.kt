@@ -28,16 +28,29 @@
 
 package org.hisp.dhis.android.persistence.trackedentity
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceSync
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceSyncStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class TrackedEntityInstanceSyncStoreImpl(
-    private val dao: TrackedEntityInstanceSyncDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : TrackedEntityInstanceSyncStore,
     ObjectWithoutUidStoreImpl<TrackedEntityInstanceSync, TrackedEntityInstanceSyncDB>(
-        dao,
+        { databaseAdapter.getCurrentDatabase().trackedEntityInstanceSyncDao() },
         TrackedEntityInstanceSync::toDB,
         SQLStatementBuilderImpl(TrackedEntityInstanceSyncTableInfo.TABLE_INFO),
-    )
+    ) {
+    override suspend fun deleteByProgram(programUid: String, organisationUnitIdsHash: Int): Boolean {
+        val dao = databaseAdapter.getCurrentDatabase().trackedEntityInstanceSyncDao()
+        return dao.deleteByProgram(programUid, organisationUnitIdsHash) > 0
+    }
+
+    override suspend fun deleteByNullProgram(organisationUnitIdsHash: Int): Boolean {
+        val dao = databaseAdapter.getCurrentDatabase().trackedEntityInstanceSyncDao()
+        return dao.deleteByNullProgram(organisationUnitIdsHash) > 0
+    }
+}

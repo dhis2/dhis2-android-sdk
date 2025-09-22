@@ -41,7 +41,7 @@ internal open class SubCollectionCleanerImpl<P : ObjectWithUidInterface>(
     private val keyExtractor: Transformer<P, String>,
 ) : SubCollectionCleaner<P> {
 
-    override fun deleteNotPresent(objects: Collection<P>?): Boolean {
+    override suspend fun deleteNotPresent(objects: Collection<P>?): Boolean {
         if (objects == null) {
             return false
         }

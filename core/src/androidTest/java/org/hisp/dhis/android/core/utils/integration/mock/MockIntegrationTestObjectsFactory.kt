@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.utils.integration.mock
 import org.hisp.dhis.android.core.D2
 import org.hisp.dhis.android.core.D2Factory
 import org.hisp.dhis.android.core.MockIntegrationTestObjects
-import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
+import org.hisp.dhis.android.core.configuration.internal.BaseMultiUserDatabaseManager
 import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 import org.hisp.dhis.android.core.period.clock.internal.setFixed
 
@@ -42,7 +42,7 @@ internal object MockIntegrationTestObjectsFactory {
     init {
         ClockProviderFactory.setFixed()
         d2 = D2Factory.forNewDatabase()
-        d2.userModule().accountManager().setMaxAccounts(MultiUserDatabaseManager.DefaultTestMaxAccounts)
+        d2.userModule().accountManager().setMaxAccounts(BaseMultiUserDatabaseManager.DefaultTestMaxAccounts)
     }
 
     fun getObjects(content: MockIntegrationTestDatabaseContent, port: Int): IntegrationTestObjectsWithIsNewInstance {

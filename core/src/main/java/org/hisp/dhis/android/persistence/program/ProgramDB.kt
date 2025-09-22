@@ -156,7 +156,7 @@ internal fun Program.toDB(): ProgramDB {
         programType = programType()?.name,
         relatedProgram = relatedProgram()?.uid(),
         trackedEntityType = trackedEntityType()?.uid(),
-        categoryCombo = categoryCombo()?.uid(),
+        categoryCombo = categoryCombo()?.uid() ?: CategoryComboDB.Companion.DEFAULT_UID,
         accessDataWrite = access().toDB(),
         expiryDays = expiryDays(),
         completeEventsExpiryDays = completeEventsExpiryDays(),

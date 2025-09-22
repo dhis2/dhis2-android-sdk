@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.fileresource.internal
 
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.category.internal.CategoryComboStore
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
@@ -79,49 +79,53 @@ internal open class BaseFileResourceRoutineIntegrationShould : BaseMockIntegrati
     protected val dataSetElementStore: DataSetElementStore = koin.get()
 
     @Before
-    fun setUp() = runTest {
-        organisationUnitStore.insert(FileResourceRoutineSamples.orgUnit1)
-        fileResourceStore.insert(FileResourceRoutineSamples.fileResource1)
-        fileResourceStore.insert(FileResourceRoutineSamples.fileResource2)
-        fileResourceStore.insert(FileResourceRoutineSamples.fileResource3)
-        categoryComboStore.insert(FileResourceRoutineSamples.categoryCombo)
-        dataElementStore.insert(FileResourceRoutineSamples.dataElement1)
-        trackedEntityTypeStore.insert(FileResourceRoutineSamples.trackedEntityType)
-        programStore.insert(FileResourceRoutineSamples.program)
-        programStageStore.insert(FileResourceRoutineSamples.programStage1)
-        optionSetStore.insert(FileResourceRoutineSamples.optionSet)
-        trackedEntityAttributeStore.insert(FileResourceRoutineSamples.trackedEntityAttribute)
-        trackedEntityInstanceStore.insert(FileResourceRoutineSamples.trackedEntityInstance)
-        trackedEntityAttributeValueStore.insert(FileResourceRoutineSamples.trackedEntityAttributeValue)
-        enrollmentStore.insert(FileResourceRoutineSamples.enrollment)
-        eventStore.insert(FileResourceRoutineSamples.event1)
-        trackedEntityDataValueStore.insert(FileResourceRoutineSamples.trackedEntityDataValue)
-        dataElementStore.insert(FileResourceRoutineSamples.dataElement2)
-        dataSetStore.insert(FileResourceRoutineSamples.dataset)
-        dataSetElementStore.insert(FileResourceRoutineSamples.dataSetElement)
-        dataValueStore.insert(FileResourceRoutineSamples.dataValue1)
+    fun setUp() {
+        runBlocking {
+            organisationUnitStore.insert(FileResourceRoutineSamples.orgUnit1)
+            fileResourceStore.insert(FileResourceRoutineSamples.fileResource1)
+            fileResourceStore.insert(FileResourceRoutineSamples.fileResource2)
+            fileResourceStore.insert(FileResourceRoutineSamples.fileResource3)
+            categoryComboStore.insert(FileResourceRoutineSamples.categoryCombo)
+            dataElementStore.insert(FileResourceRoutineSamples.dataElement1)
+            trackedEntityTypeStore.insert(FileResourceRoutineSamples.trackedEntityType)
+            programStore.insert(FileResourceRoutineSamples.program)
+            programStageStore.insert(FileResourceRoutineSamples.programStage1)
+            optionSetStore.insert(FileResourceRoutineSamples.optionSet)
+            trackedEntityAttributeStore.insert(FileResourceRoutineSamples.trackedEntityAttribute)
+            trackedEntityInstanceStore.insert(FileResourceRoutineSamples.trackedEntityInstance)
+            trackedEntityAttributeValueStore.insert(FileResourceRoutineSamples.trackedEntityAttributeValue)
+            enrollmentStore.insert(FileResourceRoutineSamples.enrollment)
+            eventStore.insert(FileResourceRoutineSamples.event1)
+            trackedEntityDataValueStore.insert(FileResourceRoutineSamples.trackedEntityDataValue)
+            dataElementStore.insert(FileResourceRoutineSamples.dataElement2)
+            dataSetStore.insert(FileResourceRoutineSamples.dataset)
+            dataSetElementStore.insert(FileResourceRoutineSamples.dataSetElement)
+            dataValueStore.insert(FileResourceRoutineSamples.dataValue1)
+        }
     }
 
     @After
-    fun tearDown() = runTest {
-        dataValueStore.deleteWhere(FileResourceRoutineSamples.dataValue1)
-        dataSetStore.delete(FileResourceRoutineSamples.dataset.uid())
-        dataElementStore.delete(FileResourceRoutineSamples.dataElement2.uid())
-        trackedEntityDataValueStore.deleteWhereIfExists(FileResourceRoutineSamples.trackedEntityDataValue)
-        eventStore.delete(FileResourceRoutineSamples.event1.uid())
-        enrollmentStore.delete(FileResourceRoutineSamples.enrollment.uid())
-        trackedEntityAttributeValueStore.deleteWhereIfExists(FileResourceRoutineSamples.trackedEntityAttributeValue)
-        trackedEntityInstanceStore.delete(FileResourceRoutineSamples.trackedEntityInstance.uid())
-        trackedEntityAttributeStore.delete(FileResourceRoutineSamples.trackedEntityAttribute.uid())
-        optionSetStore.delete(FileResourceRoutineSamples.optionSet.uid())
-        programStageStore.delete(FileResourceRoutineSamples.programStage1.uid())
-        programStore.delete(FileResourceRoutineSamples.program.uid())
-        trackedEntityTypeStore.delete(FileResourceRoutineSamples.trackedEntityType.uid())
-        dataElementStore.delete(FileResourceRoutineSamples.dataElement1.uid())
-        categoryComboStore.delete(FileResourceRoutineSamples.categoryCombo.uid())
-        fileResourceStore.deleteIfExists(FileResourceRoutineSamples.fileResource3.uid()!!)
-        fileResourceStore.deleteIfExists(FileResourceRoutineSamples.fileResource2.uid()!!)
-        fileResourceStore.deleteIfExists(FileResourceRoutineSamples.fileResource1.uid()!!)
-        organisationUnitStore.delete(FileResourceRoutineSamples.orgUnit1.uid())
+    fun tearDown() {
+        runBlocking {
+            dataValueStore.deleteWhere(FileResourceRoutineSamples.dataValue1)
+            dataSetStore.delete(FileResourceRoutineSamples.dataset.uid())
+            dataElementStore.delete(FileResourceRoutineSamples.dataElement2.uid())
+            trackedEntityDataValueStore.deleteWhereIfExists(FileResourceRoutineSamples.trackedEntityDataValue)
+            eventStore.delete(FileResourceRoutineSamples.event1.uid())
+            enrollmentStore.delete(FileResourceRoutineSamples.enrollment.uid())
+            trackedEntityAttributeValueStore.deleteWhereIfExists(FileResourceRoutineSamples.trackedEntityAttributeValue)
+            trackedEntityInstanceStore.delete(FileResourceRoutineSamples.trackedEntityInstance.uid())
+            trackedEntityAttributeStore.delete(FileResourceRoutineSamples.trackedEntityAttribute.uid())
+            optionSetStore.delete(FileResourceRoutineSamples.optionSet.uid())
+            programStageStore.delete(FileResourceRoutineSamples.programStage1.uid())
+            programStore.delete(FileResourceRoutineSamples.program.uid())
+            trackedEntityTypeStore.delete(FileResourceRoutineSamples.trackedEntityType.uid())
+            dataElementStore.delete(FileResourceRoutineSamples.dataElement1.uid())
+            categoryComboStore.delete(FileResourceRoutineSamples.categoryCombo.uid())
+            fileResourceStore.deleteIfExists(FileResourceRoutineSamples.fileResource3.uid()!!)
+            fileResourceStore.deleteIfExists(FileResourceRoutineSamples.fileResource2.uid()!!)
+            fileResourceStore.deleteIfExists(FileResourceRoutineSamples.fileResource1.uid()!!)
+            organisationUnitStore.delete(FileResourceRoutineSamples.orgUnit1.uid())
+        }
     }
 }

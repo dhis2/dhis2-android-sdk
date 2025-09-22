@@ -28,19 +28,22 @@
 
 package org.hisp.dhis.android.persistence.user
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.UserStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class UserStoreImpl(
-    private val dao: UserDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : UserStore, IdentifiableObjectStoreImpl<User, UserDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().userDao() },
     User::toDB,
     SQLStatementBuilderImpl(UserTableInfo.TABLE_INFO),
 ) {
     override suspend fun updateIs2faEnabled(twoFactorAuthEnabled: Boolean) {
-        selectFirst()?.let { dao.update(it.toDB().copy(twoFactorAuthEnabled = twoFactorAuthEnabled)) }
+        selectFirst()?.let { daoProvider().update(it.toDB().copy(twoFactorAuthEnabled = twoFactorAuthEnabled)) }
     }
 }

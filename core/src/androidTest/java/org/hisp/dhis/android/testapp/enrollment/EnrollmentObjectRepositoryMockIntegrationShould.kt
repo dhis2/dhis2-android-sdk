@@ -38,12 +38,13 @@ import org.hisp.dhis.android.core.data.enrollment.EnrollmentSamples
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection
 import org.hisp.dhis.android.core.enrollment.EnrollmentObjectRepository
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentStoreImpl
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
 import org.junit.Assert
 import org.junit.Test
 import java.util.Date
@@ -90,12 +91,10 @@ class EnrollmentObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestF
     }
 
     @Test
-    fun not_update_status_when_passing_same_value() {
+    fun not_update_status_when_passing_same_value() = runTest {
         val enrollmentUid = "enrollment_uid"
-
-        d2.databaseAdapter().insert(
-            EnrollmentTableInfo.TABLE_INFO.name(),
-            null,
+        val store = EnrollmentStoreImpl(d2.databaseAdapter())
+        store.insert(
             EnrollmentSamples.get(
                 enrollmentUid,
                 "DiszpKrYNg8",
@@ -106,8 +105,7 @@ class EnrollmentObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestF
                 .aggregatedSyncState(State.SYNCED)
                 .syncState(State.SYNCED)
                 .status(EnrollmentStatus.ACTIVE)
-                .build()
-                .toContentValues(),
+                .build(),
         )
 
         val repository = d2.enrollmentModule().enrollments().uid(enrollmentUid)

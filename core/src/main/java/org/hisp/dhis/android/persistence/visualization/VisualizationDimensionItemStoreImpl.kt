@@ -28,17 +28,20 @@
 
 package org.hisp.dhis.android.persistence.visualization
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
 import org.hisp.dhis.android.core.visualization.internal.VisualizationDimensionItemStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class VisualizationDimensionItemStoreImpl(
-    private val dao: VisualizationDimensionItemDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : VisualizationDimensionItemStore,
     LinkStoreImpl<VisualizationDimensionItem, VisualizationDimensionItemDB>(
-        dao,
+        { databaseAdapter.getCurrentDatabase().visualizationDimensionItemDao() },
         VisualizationDimensionItem::toDB,
         LinkSQLStatementBuilderImpl(
             VisualizationDimensionItemTableInfo.TABLE_INFO,
@@ -53,7 +56,10 @@ internal class VisualizationDimensionItemStoreImpl(
                 VisualizationDimensionItemTableInfo.Columns.VISUALIZATION,
                 visualizationId,
             ).build()
-        val query = builder.selectWhere(whereClause)
+        val query = builder.selectWhere(
+            whereClause = whereClause,
+            orderByClause = "${VisualizationDimensionItemTableInfo.Columns.SORT_ORDER} ASC",
+        )
         return selectRawQuery(query)
     }
 }

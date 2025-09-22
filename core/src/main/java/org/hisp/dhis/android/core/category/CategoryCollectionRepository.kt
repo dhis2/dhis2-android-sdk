@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.category.internal.CategoryCategoryOptionChildrenAppender
 import org.hisp.dhis.android.core.category.internal.CategoryStore
+import org.hisp.dhis.android.persistence.category.CategoryTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

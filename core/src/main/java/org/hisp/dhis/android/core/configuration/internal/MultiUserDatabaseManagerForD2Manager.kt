@@ -28,8 +28,7 @@
 package org.hisp.dhis.android.core.configuration.internal
 
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
+import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.koin.core.annotation.Singleton
@@ -37,9 +36,8 @@ import java.util.Date
 
 @Singleton
 internal class MultiUserDatabaseManagerForD2Manager(
-    private val databaseAdapter: DatabaseAdapter,
     private val migration: DatabaseConfigurationMigration,
-    private val databaseAdapterFactory: DatabaseAdapterFactory,
+    private val databaseManager: DatabaseManager,
     private val databaseConfigurationStore: DatabaseConfigurationInsecureStore,
 ) {
     fun loadIfLogged(credentials: Credentials?) {
@@ -51,7 +49,7 @@ internal class MultiUserDatabaseManagerForD2Manager(
                 credentials.username,
                 credentials.serverUrl,
             )
-            databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, account)
+            databaseManager.createOrOpenDatabase(account)
         }
     }
 
@@ -64,7 +62,7 @@ internal class MultiUserDatabaseManagerForD2Manager(
             .databaseCreationDate(DateUtils.DATE_FORMAT.format(Date()))
             .build()
         ServerURLWrapper.setServerUrl(serverUrl)
-        databaseAdapterFactory.createOrRecreateDatabase(databaseAdapter, config)
+        databaseManager.createOrOpenDatabase(config)
     }
 
     suspend fun applyMigration() {

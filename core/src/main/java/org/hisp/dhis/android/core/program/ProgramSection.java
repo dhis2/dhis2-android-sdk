@@ -28,16 +28,10 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.SectionRenderingColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackedEntityAttributeListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectStyle;
@@ -55,11 +49,9 @@ public abstract class ProgramSection extends BaseIdentifiableObject
     public abstract String description();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid program();
 
     @Nullable
-    @ColumnAdapter(IgnoreTrackedEntityAttributeListColumnAdapter.class)
     public abstract List<TrackedEntityAttribute> attributes();
 
     @Nullable
@@ -69,15 +61,10 @@ public abstract class ProgramSection extends BaseIdentifiableObject
     public abstract String formName();
 
     @Nullable
-    @ColumnAdapter(SectionRenderingColumnAdapter.class)
     public abstract SectionRendering renderType();
 
     public static Builder builder() {
         return new AutoValue_ProgramSection.Builder();
-    }
-
-    public static ProgramSection create(Cursor cursor) {
-        return $AutoValue_ProgramSection.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();

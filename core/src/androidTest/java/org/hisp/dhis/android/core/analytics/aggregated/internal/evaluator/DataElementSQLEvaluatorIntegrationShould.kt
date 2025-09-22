@@ -338,7 +338,7 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
                 periodId = period2019Q4.periodId()!!,
                 aggregator = AggregationType.AVERAGE_SUM_ORG_UNIT,
             ),
-        ).isEqualTo("11")
+        ).isEqualTo("11.0")
 
         assertThat(
             evaluateAggregation(

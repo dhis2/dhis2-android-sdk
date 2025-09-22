@@ -28,16 +28,19 @@
 
 package org.hisp.dhis.android.persistence.category
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.internal.CategoryOptionStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class CategoryOptionStoreImpl(
-    val dao: CategoryOptionDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : CategoryOptionStore, IdentifiableObjectStoreImpl<CategoryOption, CategoryOptionDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().categoryOptionDao() },
     CategoryOption::toDB,
     SQLStatementBuilderImpl(CategoryOptionTableInfo.TABLE_INFO),
 ) {
@@ -47,7 +50,10 @@ internal class CategoryOptionStoreImpl(
             CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION_COMBO,
             CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION,
         )
-        val query = builder.selectChildrenWithLinkTable(
+        val sectionSqlBuilder = org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl(
+            CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO,
+        )
+        val query = sectionSqlBuilder.selectChildrenWithLinkTable(
             projection,
             categoryOptionComboUid,
             null,
@@ -61,7 +67,10 @@ internal class CategoryOptionStoreImpl(
             CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY,
             CategoryCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION,
         )
-        val query = builder.selectChildrenWithLinkTable(
+        val sectionSqlBuilder = org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl(
+            CategoryCategoryOptionLinkTableInfo.TABLE_INFO,
+        )
+        val query = sectionSqlBuilder.selectChildrenWithLinkTable(
             projection,
             categoryUid,
             null,

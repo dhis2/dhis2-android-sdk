@@ -28,15 +28,18 @@
 
 package org.hisp.dhis.android.persistence.maintenance
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation
 import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyViolationStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ForeignKeyViolationStoreImpl(
-    val dao: ForeignKeyViolationDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : ForeignKeyViolationStore, ObjectWithoutUidStoreImpl<ForeignKeyViolation, ForeignKeyViolationDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().foreignKeyViolationDao() },
     ForeignKeyViolation::toDB,
     SQLStatementBuilderImpl(ForeignKeyViolationTableInfo.TABLE_INFO),
 )

@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.arch.d2.internal
 
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordGenerator
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.FileResourceCleaner
@@ -40,5 +39,4 @@ internal val javaDIClasses = module {
     single { DatabaseEncryptionPasswordManager(get(), get()) }
     single { DatabaseEncryptionPasswordGenerator() }
     single { TrackedEntityInstanceService(get(), get(), get(), get()) }
-    single { DatabaseAdapterFactory(get(), get()) }
 }

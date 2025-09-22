@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.network.note
 
 import org.hisp.dhis.android.core.note.Note
-import org.hisp.dhis.android.core.note.NoteTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.persistence.note.NoteTableInfo.Columns
 
 internal object NoteFields : BaseFields<Note>() {
     const val UID = "note"

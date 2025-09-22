@@ -28,30 +28,18 @@
 
 package org.hisp.dhis.android.core.common;
 
-import android.database.Cursor;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryTypeColumnAdapter;
 
 @AutoValue
 public abstract class Geometry {
 
     @Nullable
-    @ColumnAdapter(DbGeometryTypeColumnAdapter.class)
     public abstract FeatureType type();
 
     @Nullable
     public abstract String coordinates();
-
-    @NonNull
-    public static Geometry create(Cursor cursor) {
-        return AutoValue_Geometry.createFromCursor(cursor);
-    }
 
     public abstract Builder toBuilder();
 

@@ -28,17 +28,20 @@
 
 package org.hisp.dhis.android.persistence.indicator
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.internal.IndicatorStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
 import org.hisp.dhis.android.persistence.dataset.SectionIndicatorLinkTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class IndicatorStoreImpl(
-    val dao: IndicatorDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : IndicatorStore, IdentifiableObjectStoreImpl<Indicator, IndicatorDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().indicatorDao() },
     Indicator::toDB,
     SQLStatementBuilderImpl(IndicatorTableInfo.TABLE_INFO),
 ) {
@@ -48,7 +51,8 @@ internal class IndicatorStoreImpl(
             DataSetIndicatorLinkTableInfo.Columns.DATA_SET,
             DataSetIndicatorLinkTableInfo.Columns.INDICATOR,
         )
-        val query = builder.selectChildrenWithLinkTable(
+        val sectionSqlBuilder = SQLStatementBuilderImpl(DataSetIndicatorLinkTableInfo.TABLE_INFO)
+        val query = sectionSqlBuilder.selectChildrenWithLinkTable(
             projection,
             dataSetUid,
             null,
@@ -62,7 +66,8 @@ internal class IndicatorStoreImpl(
             SectionIndicatorLinkTableInfo.Columns.SECTION,
             SectionIndicatorLinkTableInfo.Columns.INDICATOR,
         )
-        val query = builder.selectChildrenWithLinkTable(
+        val sectionSqlBuilder = SQLStatementBuilderImpl(SectionIndicatorLinkTableInfo.TABLE_INFO)
+        val query = sectionSqlBuilder.selectChildrenWithLinkTable(
             projection,
             sectionUid,
             null,

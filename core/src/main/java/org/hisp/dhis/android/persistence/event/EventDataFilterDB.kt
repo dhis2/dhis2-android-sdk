@@ -60,8 +60,8 @@ import org.hisp.dhis.android.persistence.dataelement.DataElementDB
     primaryKeys = ["eventFilter", "dataItem"],
 )
 internal data class EventDataFilterDB(
-    val eventFilter: String?,
-    val dataItem: String?,
+    val eventFilter: String,
+    val dataItem: String,
     override val le: String?,
     override val ge: String?,
     override val gt: String?,
@@ -82,7 +82,7 @@ internal data class EventDataFilterDB(
 
 internal fun EventDataFilter.toDB(): EventDataFilterDB {
     return EventDataFilterDB(
-        eventFilter = eventFilter(),
+        eventFilter = eventFilter()!!,
         dataItem = dataItem(),
         le = le(),
         ge = ge(),

@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -66,11 +64,7 @@ public abstract class AttributeValueFilter extends FilterOperators implements Co
     public abstract String sw();
 
     public static Builder builder() {
-        return new $$AutoValue_AttributeValueFilter.Builder();
-    }
-
-    public static AttributeValueFilter create(Cursor cursor) {
-        return $AutoValue_AttributeValueFilter.createFromCursor(cursor);
+        return new AutoValue_AttributeValueFilter.Builder();
     }
 
     public abstract Builder toBuilder();

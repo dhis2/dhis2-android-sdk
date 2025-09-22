@@ -28,16 +28,19 @@
 
 package org.hisp.dhis.android.persistence.note
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.internal.NoteStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class NoteStoreImpl(
-    val dao: NoteDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : NoteStore, IdentifiableObjectStoreImpl<Note, NoteDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().noteDao() },
     Note::toDB,
     SQLStatementBuilderImpl(NoteTableInfo.TABLE_INFO),
 ) {
@@ -55,5 +58,13 @@ internal class NoteStoreImpl(
             .build()
         val selectStatement = builder.selectWhere(whereClause)
         return selectRawQuery(selectStatement)
+    }
+
+    override suspend fun deleteByOwner(ownerColumn: String, ownerUid: String) {
+        val dao = databaseAdapter.getCurrentDatabase().noteDao()
+        when (ownerColumn) {
+            NoteTableInfo.Columns.EVENT -> dao.deleteNotesByEvent(ownerUid)
+            NoteTableInfo.Columns.ENROLLMENT -> dao.deleteNotesByEnrollment(ownerUid)
+        }
     }
 }

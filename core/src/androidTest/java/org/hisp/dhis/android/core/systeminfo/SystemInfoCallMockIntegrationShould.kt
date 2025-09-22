@@ -28,10 +28,14 @@
 package org.hisp.dhis.android.core.systeminfo
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.systeminfo.SystemInfoStoreImpl
+import org.hisp.dhis.android.persistence.systeminfo.SystemInfoTableInfo
 import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
@@ -45,8 +49,10 @@ class SystemInfoCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
 
     @Before
     fun setUp() {
-        dhis2MockServer.enqueueSystemInfoResponse()
-        databaseAdapter.delete(tableInfo.name(), "1", arrayOf())
+        runBlocking {
+            dhis2MockServer.enqueueSystemInfoResponse()
+            databaseAdapter.delete(tableInfo.name(), "1", arrayOf())
+        }
     }
 
     @Test
@@ -56,8 +62,9 @@ class SystemInfoCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
     }
 
     @Test
-    fun update_system_info_when_call() {
-        databaseAdapter.insert(tableInfo.name(), null, systemInfoFromDB.toContentValues())
+    fun update_system_info_when_call() = runTest {
+        val store = SystemInfoStoreImpl(d2.databaseAdapter())
+        store.insert(systemInfoFromDB)
         isSystemInfoInDb(systemInfoFromDB)
         systemInfoRepository.blockingDownload()
         isSystemInfoInDb(systemInfoFromAPI)

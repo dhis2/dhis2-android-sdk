@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.common.ObjectWithUid
@@ -71,9 +72,8 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
     protected val unassignedDataElementId = "bx6fsa0t90x"
 
     @After
-    @Throws(D2Error::class)
     fun tearDown() {
-        d2.wipeModule().wipeData()
+        runBlocking { d2.wipeModule().wipeData() }
     }
 
     protected suspend fun storeTrackerData() {

@@ -62,7 +62,7 @@ class TrackerImportConflictCollectionRepositoryMockIntegrationShould : BaseMockI
     @Test
     fun filter_by_tracked_entity_instance() {
         val trackerImportConflicts = d2.importModule().trackerImportConflicts()
-            .byTrackedEntityInstanceUid().eq("nWrB0TfWlvh")
+            .byTrackedEntityInstanceUid().eq("nWrB0TfWlvD")
             .blockingGet()
 
         assertThat(trackerImportConflicts.size).isEqualTo(1)

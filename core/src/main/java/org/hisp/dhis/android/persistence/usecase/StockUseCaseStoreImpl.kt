@@ -28,15 +28,18 @@
 
 package org.hisp.dhis.android.persistence.usecase
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
 import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class StockUseCaseStoreImpl(
-    private val dao: StockUseCaseDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : StockUseCaseStore, IdentifiableObjectStoreImpl<InternalStockUseCase, StockUseCaseDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().stockUseCaseDao() },
     InternalStockUseCase::toDB,
     SQLStatementBuilderImpl(StockUseCaseTableInfo.TABLE_INFO),
 )

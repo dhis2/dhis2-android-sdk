@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.trackedentity
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.State
@@ -38,12 +39,14 @@ import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilde
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 import org.hisp.dhis.android.persistence.event.EventTableInfo
 import org.hisp.dhis.android.persistence.program.ProgramStageDataElementTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 @Suppress("TooManyFunctions")
 internal class TrackedEntityDataValueStoreImpl(
-    private val dao: TrackedEntityDataValueDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : TrackedEntityDataValueStore, ObjectWithoutUidStoreImpl<TrackedEntityDataValue, TrackedEntityDataValueDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().trackedEntityDataValueDao() },
     TrackedEntityDataValue::toDB,
     SQLStatementBuilderImpl(TrackedEntityDataValueTableInfo.TABLE_INFO),
 ) {
@@ -52,19 +55,21 @@ internal class TrackedEntityDataValueStoreImpl(
         eventUid: String,
         dataElementUids: List<String>,
     ): Boolean {
-        val whereClause =
-            WhereClauseBuilder().appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid)
-                .appendNotInKeyStringValues(TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT, dataElementUids)
-                .build()
-        return deleteWhere(whereClause)
+        val dao = databaseAdapter.getCurrentDatabase().trackedEntityDataValueDao()
+        return dao.deleteByEventAndNotInDataElements(eventUid, dataElementUids) > 0
+    }
+
+    override suspend fun deleteByEventAndDataElement(
+        eventUid: String,
+        dataElementUid: String,
+    ): Boolean {
+        val dao = databaseAdapter.getCurrentDatabase().trackedEntityDataValueDao()
+        return dao.deleteByEventAndDataElement(eventUid, dataElementUid) > 0
     }
 
     override suspend fun deleteByEvent(eventUid: String): Boolean {
-        val whereClause =
-            WhereClauseBuilder()
-                .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid)
-                .build()
-        return deleteWhere(whereClause)
+        val dao = databaseAdapter.getCurrentDatabase().trackedEntityDataValueDao()
+        return dao.deleteByEvent(eventUid) > 0
     }
 
     override suspend fun queryTrackedEntityDataValuesByEventUid(eventUid: String): List<TrackedEntityDataValue> {
@@ -82,21 +87,13 @@ internal class TrackedEntityDataValueStoreImpl(
     }
 
     override suspend fun removeDeletedDataValuesByEvent(eventUid: String) {
-        val deleteWhereQuery =
-            WhereClauseBuilder().appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid)
-                .appendIsNullValue(TrackedEntityAttributeValueTableInfo.Columns.VALUE).build()
-        deleteWhere(deleteWhereQuery)
+        val dao = databaseAdapter.getCurrentDatabase().trackedEntityDataValueDao()
+        dao.removeDeletedDataValuesByEvent(eventUid)
     }
 
     override suspend fun removeUnassignedDataValuesByEvent(eventUid: String) {
-        val queryStatement =
-            WhereClauseBuilder().appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, eventUid)
-                .appendNotInSubQuery(
-                    TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT,
-                    getInProgramStageDataElementsSubQuery(eventUid),
-                ).build()
-
-        deleteWhere(queryStatement)
+        val dao = databaseAdapter.getCurrentDatabase().trackedEntityDataValueDao()
+        dao.removeUnassignedDataValuesByEvent(eventUid)
     }
 
     private fun eventInUploadableState(): String {
@@ -128,6 +125,7 @@ internal class TrackedEntityDataValueStoreImpl(
     }
 
     override suspend fun setSyncStateByEvent(eventUid: String, syncState: State) {
+        val dao = daoProvider() as TrackedEntityDataValueDao
         dao.setSyncStateByEvent(eventUid, syncState.name)
     }
 
@@ -154,7 +152,7 @@ internal class TrackedEntityDataValueStoreImpl(
     private suspend fun queryTrackedEntityDataValues(
         queryStatement: String,
     ): Map<String, List<TrackedEntityDataValue>> {
-        val dataValueList = selectWhere(queryStatement)
+        val dataValueList = selectRawQuery(queryStatement)
 
         return dataValueList.filter { it.event() != null }.groupBy { it.event()!! }
     }

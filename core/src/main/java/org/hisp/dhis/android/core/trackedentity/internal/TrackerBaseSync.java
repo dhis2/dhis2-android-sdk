@@ -31,9 +31,6 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
@@ -50,7 +47,6 @@ public interface TrackerBaseSync extends CoreObject {
     Integer downloadLimit();
 
     @NonNull
-    @ColumnAdapter(DbDateColumnAdapter.class)
     Date lastUpdated();
 
     interface Builder<T> {

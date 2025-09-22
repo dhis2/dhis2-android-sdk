@@ -46,7 +46,7 @@ import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerStore
-import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.ProgramTempOwnerTableInfo
 import org.koin.core.annotation.Singleton
 import java.util.Date
 

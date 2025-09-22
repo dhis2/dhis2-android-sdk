@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper.operat
 import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper.whereClause
 import org.hisp.dhis.android.core.datavalue.internal.DataValueConflictStore
 import org.hisp.dhis.android.core.imports.ImportStatus
+import org.hisp.dhis.android.persistence.datavalue.DataValueConflictTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

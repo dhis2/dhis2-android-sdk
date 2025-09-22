@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute1
@@ -80,7 +80,6 @@ import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koi
 import org.hisp.dhis.android.core.category.internal.CategoryCategoryComboLinkStore
 import org.hisp.dhis.android.core.category.internal.CategoryCategoryOptionLinkStore
 import org.hisp.dhis.android.core.category.internal.CategoryComboStore
-import org.hisp.dhis.android.core.category.internal.CategoryOptionComboCategoryOptionLinkStoreImpl
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
 import org.hisp.dhis.android.core.category.internal.CategoryOptionStore
 import org.hisp.dhis.android.core.category.internal.CategoryStore
@@ -117,6 +116,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueS
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
+import org.hisp.dhis.android.persistence.category.CategoryOptionComboCategoryOptionLinkStoreImpl
 import org.junit.After
 import org.junit.Before
 
@@ -220,91 +220,95 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
     )
 
     @Before
-    fun setUpBase() = runTest {
-        organisationUnitLevelStore.insert(level1)
-        organisationUnitLevelStore.insert(level2)
+    fun setUpBase() {
+        runBlocking {
+            organisationUnitLevelStore.insert(level1)
+            organisationUnitLevelStore.insert(level2)
 
-        organisationUnitStore.insert(orgunitParent)
-        organisationUnitStore.insert(orgunitChild1)
-        organisationUnitStore.insert(orgunitChild2)
+            organisationUnitStore.insert(orgunitParent)
+            organisationUnitStore.insert(orgunitChild1)
+            organisationUnitStore.insert(orgunitChild2)
 
-        organisationUnitGroupStore.insert(organisationUnitGroup)
+            organisationUnitGroupStore.insert(organisationUnitGroup)
 
-        categoryStore.insert(category)
-        categoryOptionStore.insert(categoryOption)
-        categoryCategoryOptionStore.insert(categoryCategoryOptionLink)
-        categoryComboStore.insert(categoryCombo)
-        categoryOptionComboStore.insert(categoryOptionCombo)
-        categoryCategoryComboLinkStore.insert(categoryCategoryComboLink)
-        categoryOptionComboCategoryOptionLinkStore.insert(categoryOptionComboCategoryOptionLink)
+            categoryStore.insert(category)
+            categoryOptionStore.insert(categoryOption)
+            categoryCategoryOptionStore.insert(categoryCategoryOptionLink)
+            categoryComboStore.insert(categoryCombo)
+            categoryOptionComboStore.insert(categoryOptionCombo)
+            categoryCategoryComboLinkStore.insert(categoryCategoryComboLink)
+            categoryOptionComboCategoryOptionLinkStore.insert(categoryOptionComboCategoryOptionLink)
 
-        categoryStore.insert(attribute)
-        categoryOptionStore.insert(attributeOption)
-        categoryCategoryOptionStore.insert(attributeAttributeOptionLink)
-        categoryComboStore.insert(attributeCombo)
-        categoryOptionComboStore.insert(attributeOptionCombo)
-        categoryCategoryComboLinkStore.insert(attributeAttributeComboLink)
-        categoryOptionComboCategoryOptionLinkStore.insert(attributeOptionComboAttributeOptionLink)
+            categoryStore.insert(attribute)
+            categoryOptionStore.insert(attributeOption)
+            categoryCategoryOptionStore.insert(attributeAttributeOptionLink)
+            categoryComboStore.insert(attributeCombo)
+            categoryOptionComboStore.insert(attributeOptionCombo)
+            categoryCategoryComboLinkStore.insert(attributeAttributeComboLink)
+            categoryOptionComboCategoryOptionLinkStore.insert(attributeOptionComboAttributeOptionLink)
 
-        optionSetStore.insert(optionSet)
-        optionStore.insert(option1)
-        optionStore.insert(option2)
+            optionSetStore.insert(optionSet)
+            optionStore.insert(option1)
+            optionStore.insert(option2)
 
-        dataElementStore.insert(dataElement1)
-        dataElementStore.insert(dataElement2)
-        dataElementStore.insert(dataElement3)
-        dataElementStore.insert(dataElement4)
-        dataElementStore.insert(dataElement5)
+            dataElementStore.insert(dataElement1)
+            dataElementStore.insert(dataElement2)
+            dataElementStore.insert(dataElement3)
+            dataElementStore.insert(dataElement4)
+            dataElementStore.insert(dataElement5)
 
-        periodStore.insert(period2019SunW25)
-        periodStore.insert(period201910)
-        periodStore.insert(period201911)
-        periodStore.insert(period201912)
-        periodStore.insert(period202001)
-        periodStore.insert(period2019Q4)
+            periodStore.insert(period2019SunW25)
+            periodStore.insert(period201910)
+            periodStore.insert(period201911)
+            periodStore.insert(period201912)
+            periodStore.insert(period202001)
+            periodStore.insert(period2019Q4)
 
-        trackedEntityTypeStore.insert(trackedEntityType)
-        trackedEntityAttributeStore.insert(attribute1)
-        trackedEntityAttributeStore.insert(attribute2)
-        trackedEntityAttributeStore.insert(attribute3)
+            trackedEntityTypeStore.insert(trackedEntityType)
+            trackedEntityAttributeStore.insert(attribute1)
+            trackedEntityAttributeStore.insert(attribute2)
+            trackedEntityAttributeStore.insert(attribute3)
 
-        programStore.insert(program)
-        programStageStore.insert(programStage1)
-        programStageStore.insert(programStage2)
+            programStore.insert(program)
+            programStageStore.insert(programStage1)
+            programStageStore.insert(programStage2)
 
-        relationshipTypeStore.insert(relationshipType)
-        relationshipConstraintStore.insert(relationshipTypeFrom)
-        relationshipConstraintStore.insert(relationshipTypeTo)
+            relationshipTypeStore.insert(relationshipType)
+            relationshipConstraintStore.insert(relationshipTypeFrom)
+            relationshipConstraintStore.insert(relationshipTypeTo)
 
-        constantStore.insert(constant1)
+            constantStore.insert(constant1)
+        }
     }
 
     @After
-    fun tearDown() = runTest {
-        organisationUnitLevelStore.delete()
-        organisationUnitStore.delete()
-        organisationUnitGroupStore.delete()
-        categoryStore.delete()
-        categoryOptionStore.delete()
-        categoryCategoryOptionStore.delete()
-        categoryComboStore.delete()
-        categoryOptionComboStore.delete()
-        categoryCategoryComboLinkStore.delete()
-        categoryOptionComboCategoryOptionLinkStore.delete()
-        optionSetStore.delete()
-        optionStore.delete()
-        dataElementStore.delete()
-        periodStore.delete()
-        dataValueStore.delete()
-        trackedEntityTypeStore.delete()
-        trackedEntityAttributeStore.delete()
-        programStageStore.delete()
-        programStore.delete()
-        indicatorTypeStore.delete()
-        indicatorStore.delete()
-        relationshipTypeStore.delete()
-        relationshipConstraintStore.delete()
-        constantStore.delete()
+    fun tearDown() {
+        runBlocking {
+            organisationUnitLevelStore.delete()
+            organisationUnitStore.delete()
+            organisationUnitGroupStore.delete()
+            categoryStore.delete()
+            categoryOptionStore.delete()
+            categoryCategoryOptionStore.delete()
+            categoryComboStore.delete()
+            categoryOptionComboStore.delete()
+            categoryCategoryComboLinkStore.delete()
+            categoryOptionComboCategoryOptionLinkStore.delete()
+            optionSetStore.delete()
+            optionStore.delete()
+            dataElementStore.delete()
+            periodStore.delete()
+            dataValueStore.delete()
+            trackedEntityTypeStore.delete()
+            trackedEntityAttributeStore.delete()
+            programStageStore.delete()
+            programStore.delete()
+            indicatorTypeStore.delete()
+            indicatorStore.delete()
+            relationshipTypeStore.delete()
+            relationshipConstraintStore.delete()
+            constantStore.delete()
+        }
     }
 
     protected suspend fun createDataValue(

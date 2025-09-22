@@ -28,16 +28,19 @@
 
 package org.hisp.dhis.android.persistence.dataset
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.dataset.DataInputPeriod
 import org.hisp.dhis.android.core.dataset.internal.DataInputPeriodStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataInputPeriodStoreImpl(
-    val dao: DataInputPeriodDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : DataInputPeriodStore, LinkStoreImpl<DataInputPeriod, DataInputPeriodDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().dataInputPeriodDao() },
     DataInputPeriod::toDB,
     LinkSQLStatementBuilderImpl(DataInputPeriodTableInfo.TABLE_INFO, DataInputPeriodTableInfo.Columns.DATA_SET),
 ) {

@@ -28,16 +28,10 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.AnalyticsTeiWHONutritionGenderColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.WHONutritionChartTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreAnalyticsTeiWHODataItemColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
@@ -46,21 +40,15 @@ public abstract class AnalyticsTeiWHONutritionData implements CoreObject {
     @Nullable
     public abstract String teiSetting();
 
-    @ColumnAdapter(WHONutritionChartTypeColumnAdapter.class)
     public abstract WHONutritionChartType chartType();
 
-    @ColumnAdapter(AnalyticsTeiWHONutritionGenderColumnAdapter.class)
     public abstract AnalyticsTeiWHONutritionGender gender();
 
-    @ColumnAdapter(IgnoreAnalyticsTeiWHODataItemColumnAdapter.class)
+    @Nullable
     public abstract AnalyticsTeiWHONutritionItem x();
 
-    @ColumnAdapter(IgnoreAnalyticsTeiWHODataItemColumnAdapter.class)
+    @Nullable
     public abstract AnalyticsTeiWHONutritionItem y();
-
-    public static AnalyticsTeiWHONutritionData create(Cursor cursor) {
-        return AutoValue_AnalyticsTeiWHONutritionData.createFromCursor(cursor);
-    }
 
     public abstract Builder toBuilder();
 

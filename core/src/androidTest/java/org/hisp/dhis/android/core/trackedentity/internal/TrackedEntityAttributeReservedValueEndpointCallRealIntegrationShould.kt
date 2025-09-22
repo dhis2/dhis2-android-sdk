@@ -31,6 +31,7 @@ import com.google.common.truth.Truth
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.trackedentity.ReservedValueSummary
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeReservedValueStoreImpl
 
 class TrackedEntityAttributeReservedValueEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
     /**

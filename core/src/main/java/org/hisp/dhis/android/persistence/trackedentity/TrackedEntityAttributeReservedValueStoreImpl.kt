@@ -28,39 +28,36 @@
 
 package org.hisp.dhis.android.persistence.trackedentity
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStore
+import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeReservedValueTableInfo.Columns
+import org.koin.core.annotation.Singleton
 import java.util.Date
 
+@Singleton
 internal class TrackedEntityAttributeReservedValueStoreImpl(
-    val dao: TrackedEntityAttributeReservedValueDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : TrackedEntityAttributeReservedValueStore,
     ObjectWithoutUidStoreImpl<TrackedEntityAttributeReservedValue, TrackedEntityAttributeReservedValueDB>(
-        dao,
+        { databaseAdapter.getCurrentDatabase().trackedEntityAttributeReservedValueDao() },
         TrackedEntityAttributeReservedValue::toDB,
         SQLStatementBuilderImpl(TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO),
     ) {
 
     override suspend fun deleteExpired(serverDate: Date) {
-        val serverDateStr = "date('${DateUtils.DATE_FORMAT.format(serverDate)}')"
-        super.deleteWhere(
-            "${Columns.EXPIRY_DATE} < $serverDateStr OR " +
-                "( ${Columns.TEMPORAL_VALIDITY_DATE} < $serverDateStr AND " +
-                "${Columns.TEMPORAL_VALIDITY_DATE} IS NOT NULL );",
-        )
+        val dao = databaseAdapter.getCurrentDatabase().trackedEntityAttributeReservedValueDao()
+        val serverDateStr = serverDate.dateFormat()!!
+        dao.deleteExpired(serverDateStr)
     }
 
     override suspend fun deleteIfOutdatedPattern(ownerUid: String, pattern: String) {
-        val deleteWhereClause = WhereClauseBuilder()
-            .appendKeyStringValue(Columns.OWNER_UID, ownerUid)
-            .appendNotKeyStringValue(Columns.PATTERN, pattern)
-            .build()
-        super.deleteWhere(deleteWhereClause)
+        val dao = databaseAdapter.getCurrentDatabase().trackedEntityAttributeReservedValueDao()
+        dao.deleteIfOutdatedPattern(ownerUid, pattern)
     }
 
     override suspend fun popOne(ownerUid: String, organisationUnitUid: String?): TrackedEntityAttributeReservedValue? {
@@ -81,6 +78,8 @@ internal class TrackedEntityAttributeReservedValueStoreImpl(
         val builder = WhereClauseBuilder().appendKeyStringValue(Columns.OWNER_UID, ownerUid)
         if (organisationUnit != null) {
             builder.appendKeyStringValue(Columns.ORGANISATION_UNIT, organisationUnit)
+        } else {
+            builder.appendIsNullValue(Columns.ORGANISATION_UNIT)
         }
         if (pattern != null) {
             builder.appendKeyStringValue(Columns.PATTERN, pattern)

@@ -28,16 +28,19 @@
 
 package org.hisp.dhis.android.persistence.validation
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.validation.DataSetValidationRuleLink
 import org.hisp.dhis.android.core.validation.internal.DataSetValidationRuleLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataSetValidationRuleLinkStoreImpl(
-    private val dao: DataSetValidationRuleLinkDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : DataSetValidationRuleLinkStore,
     LinkStoreImpl<DataSetValidationRuleLink, DataSetValidationRuleLinkDB>(
-        dao,
+        { databaseAdapter.getCurrentDatabase().dataSetValidationRuleLinkDao() },
         DataSetValidationRuleLink::toDB,
         LinkSQLStatementBuilderImpl(
             DataSetValidationRuleLinkTableInfo.TABLE_INFO,

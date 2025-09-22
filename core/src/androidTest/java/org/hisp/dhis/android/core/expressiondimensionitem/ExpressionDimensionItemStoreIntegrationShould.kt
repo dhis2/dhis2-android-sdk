@@ -29,9 +29,10 @@ package org.hisp.dhis.android.core.expressiondimensionitem
 
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.expressiondimensionitem.ExpressionDimensionItemSamples
-import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.expressiondimensionitem.ExpressionDimensionItemStoreImpl
+import org.hisp.dhis.android.persistence.expressiondimensionitem.ExpressionDimensionItemTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

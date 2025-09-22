@@ -34,4 +34,5 @@ import org.hisp.dhis.android.core.note.Note
 internal interface NoteStore : IdentifiableObjectStore<Note> {
     suspend fun getForEvent(eventUid: String): List<Note>
     suspend fun getForEnrollment(enrollmentUid: String): List<Note>
+    suspend fun deleteByOwner(ownerColumn: String, ownerUid: String)
 }

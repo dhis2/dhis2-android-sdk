@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilt
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore
+import org.hisp.dhis.android.persistence.maintenance.D2ErrorTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

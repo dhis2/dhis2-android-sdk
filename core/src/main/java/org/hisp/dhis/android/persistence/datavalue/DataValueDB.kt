@@ -54,7 +54,7 @@ import org.hisp.dhis.android.persistence.period.PeriodDB
             deferred = true,
         ),
     ],
-    primaryKeys = ["dataElement", "period", "orgUnit", "categoryOptionCombo", "attributeOptionCombo"],
+    primaryKeys = ["dataElement", "period", "organisationUnit", "categoryOptionCombo", "attributeOptionCombo"],
 )
 internal data class DataValueDB(
     val dataElement: String,

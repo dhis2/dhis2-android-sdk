@@ -59,7 +59,7 @@ class SectionShould : CoreObjectShould("dataset/section.json") {
         assertThat(section.dataElements()!!.size).isEqualTo(15)
         assertThat(section.dataElements()!![0].uid()).isEqualTo("s46m5MS0hxu")
         assertThat(section.greyedFields()!!.size).isEqualTo(1)
-        assertThat(section.greyedFields()!![0].uid()).isEqualTo("ca8lfO062zg.Prlt0C1RF0s")
+        assertThat(section.greyedFields()!![0].uid()).isEqualTo("ca8lfO062zg.Gmbgme7z9BF")
 
         assertThat(section.displayOptions()!!.afterSectionText()).isEqualTo(null)
         assertThat(section.displayOptions()!!.beforeSectionText()).isEqualTo("Text before section")

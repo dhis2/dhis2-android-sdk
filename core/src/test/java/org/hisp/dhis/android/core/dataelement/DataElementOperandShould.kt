@@ -38,9 +38,9 @@ class DataElementOperandShould : CoreObjectShould("dataelement/data_element_oper
         val dataElementOperandDTO = deserialize(DataElementOperandDTO.serializer())
         val dataElementOperand = dataElementOperandDTO.toDomain()
 
-        assertThat(dataElementOperand.uid()).isEqualTo("ca8lfO062zg.Prlt0C1RF0s")
+        assertThat(dataElementOperand.uid()).isEqualTo("ca8lfO062zg.Gmbgme7z9BF")
         assertThat(dataElementOperand.deleted()).isFalse()
         assertThat(dataElementOperand.dataElement()!!.uid()).isEqualTo("ca8lfO062zg")
-        assertThat(dataElementOperand.categoryOptionCombo()!!.uid()).isEqualTo("Prlt0C1RF0s")
+        assertThat(dataElementOperand.categoryOptionCombo()!!.uid()).isEqualTo("Gmbgme7z9BF")
     }
 }

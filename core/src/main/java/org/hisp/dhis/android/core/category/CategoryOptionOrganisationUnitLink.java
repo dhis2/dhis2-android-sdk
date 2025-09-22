@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.category;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -49,14 +47,10 @@ public abstract class CategoryOptionOrganisationUnitLink implements CoreObject {
     public abstract String restriction();
 
     public static Builder builder() {
-        return new $$AutoValue_CategoryOptionOrganisationUnitLink.Builder();
+        return new AutoValue_CategoryOptionOrganisationUnitLink.Builder();
     }
 
     public abstract Builder toBuilder();
-
-    public static CategoryOptionOrganisationUnitLink create(Cursor cursor) {
-        return $AutoValue_CategoryOptionOrganisationUnitLink.createFromCursor(cursor);
-    }
 
     @AutoValue.Builder
     public abstract static class Builder {

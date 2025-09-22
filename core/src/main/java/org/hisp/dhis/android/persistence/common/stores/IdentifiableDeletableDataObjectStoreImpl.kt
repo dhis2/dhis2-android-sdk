@@ -28,45 +28,42 @@
 
 package org.hisp.dhis.android.persistence.common.stores
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.DeletableStoreWithState
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.CoreObject
-import org.hisp.dhis.android.core.common.DataColumns
-import org.hisp.dhis.android.core.common.DeletableDataColumns
 import org.hisp.dhis.android.core.common.DeletableDataObject
-import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.MapperToDB
-import org.hisp.dhis.android.persistence.common.daos.IdentifiableDeletableDataObjectStoreDao
+import org.hisp.dhis.android.persistence.common.daos.IdentifiableDeletableDataObjectDao
 import org.hisp.dhis.android.persistence.common.querybuilders.IdentifiableDeletableDataObjectSQLStatementBuilder
 
 internal open class IdentifiableDeletableDataObjectStoreImpl<D, P : EntityDB<D>>(
-    protected val identifiableDeletableDataObjectDao: IdentifiableDeletableDataObjectStoreDao<P>,
+    override val daoProvider: () -> IdentifiableDeletableDataObjectDao<P>,
     mapper: MapperToDB<D, P>,
     override val builder: IdentifiableDeletableDataObjectSQLStatementBuilder,
 ) : DeletableStoreWithState<D>, IdentifiableDataObjectStoreImpl<D, P>(
-    identifiableDeletableDataObjectDao,
+    daoProvider,
     mapper,
     builder,
 ) where D : CoreObject, D : DeletableDataObject, D : ObjectWithUidInterface {
 
     @Throws(RuntimeException::class)
     override suspend fun setSyncStateOrDelete(uid: String, state: State): HandleAction {
+        val identifiableDeletableDataObjectDao = daoProvider()
         CollectionsHelper.isNull(uid)
-        var deleted = false
-        if (state == State.SYNCED) {
-            val whereClause = WhereClauseBuilder()
-                .appendKeyStringValue(IdentifiableColumns.UID, uid)
-                .appendKeyNumberValue(DeletableDataColumns.DELETED, 1)
-                .appendKeyStringValue(DataColumns.SYNC_STATE, State.UPLOADING)
-                .build()
-            val query = builder.deleteWhere(whereClause)
-            deleted = identifiableDeletableDataObjectDao.intRawQuery(query) > 0
-        }
+        val deleted =
+            if (state == State.SYNCED) {
+                identifiableDeletableDataObjectDao
+                    .deleteWhere(uid = uid, deleted = true, state = State.UPLOADING)
+                    .also {
+                        println("Deleted $it")
+                    } > 0
+            } else {
+                false
+            }
         return if (deleted) {
             HandleAction.Delete
         } else {
@@ -76,13 +73,13 @@ internal open class IdentifiableDeletableDataObjectStoreImpl<D, P : EntityDB<D>>
 
     @Throws(RuntimeException::class)
     override suspend fun setDeleted(uid: String): Int {
-        // FIX THIS WHEN MIGRATION TO ROOM IS DONE, RAWQUERY CANNOT PERFORM CHANGES
+        val identifiableDeletableDataObjectDao = daoProvider()
         CollectionsHelper.isNull(uid)
-        val query = builder.setDeleted(uid)
-        return identifiableDeletableDataObjectDao.intRawQuery(query)
+        return identifiableDeletableDataObjectDao.setDeleted(uid)
     }
 
     override suspend fun selectSyncStateWhere(where: String): List<State> {
+        val identifiableDeletableDataObjectDao = daoProvider()
         val query = builder.selectSyncStateWhere(where)
         return identifiableDeletableDataObjectDao.stateListRawQuery(query)
     }

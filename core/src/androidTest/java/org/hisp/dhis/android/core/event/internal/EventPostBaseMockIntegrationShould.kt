@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.event.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.common.State
@@ -39,6 +40,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueS
 import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
+import org.hisp.dhis.android.persistence.event.EventStoreImpl
 import org.junit.After
 import org.junit.Before
 import org.junit.BeforeClass
@@ -59,24 +61,31 @@ abstract class EventPostBaseMockIntegrationShould : BaseMockIntegrationTestMetad
     private val syncStore: SynchronizationSettingStore = koin.get()
 
     @Before
-    fun setUp() = runTest {
-        initSyncParams = syncStore.selectFirst()!!
-        val testParams = initSyncParams.toBuilder().trackerImporterVersion(importerVersion)
-            .trackerExporterVersion(exporterVersion).build()
-        syncStore.delete()
-        syncStore.insert(testParams)
+    fun setUp() {
+        runBlocking {
+            initSyncParams = syncStore.selectFirst()!!
+            val testParams = initSyncParams.toBuilder().trackerImporterVersion(importerVersion)
+                .trackerExporterVersion(exporterVersion).build()
+            syncStore.delete()
+            syncStore.insert(testParams)
+        }
     }
 
     @After
-    fun tearDown() = runTest {
-        d2.wipeModule().wipeData()
-        syncStore.delete()
-        syncStore.insert(initSyncParams)
+    fun tearDown() {
+        runBlocking {
+            d2.wipeModule().wipeData()
+            syncStore.delete()
+            syncStore.insert(initSyncParams)
+        }
     }
 
     @Test
     fun handle_import_conflicts_correctly() = runTest {
         storeEvents()
+
+        setSyncState(State.TO_POST, event1Id, event2Id, event3Id)
+
         importConflictsFile1.forEach { dhis2MockServer.enqueueMockResponse(it) }
         d2.eventModule().events().blockingUpload()
         assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(3)
@@ -85,16 +94,14 @@ abstract class EventPostBaseMockIntegrationShould : BaseMockIntegrationTestMetad
     @Test
     fun delete_old_import_conflicts() = runTest {
         storeEvents()
+
+        setSyncState(State.TO_POST, event1Id, event2Id, event3Id)
+
         importConflictsFile1.forEach { dhis2MockServer.enqueueMockResponse(it) }
         d2.eventModule().events().blockingUpload()
         assertThat(d2.importModule().trackerImportConflicts().blockingCount()).isEqualTo(3)
 
-        eventStore.setSyncState(event1Id, State.TO_POST)
-        eventStore.setSyncState(event2Id, State.TO_POST)
-        eventStore.setSyncState(event3Id, State.TO_POST)
-        eventStore.setAggregatedSyncState(event1Id, State.TO_POST)
-        eventStore.setAggregatedSyncState(event2Id, State.TO_POST)
-        eventStore.setAggregatedSyncState(event3Id, State.TO_POST)
+        setSyncState(State.TO_POST, event1Id, event2Id, event3Id)
 
         importConflictsFile2.forEach { dhis2MockServer.enqueueMockResponse(it) }
         d2.eventModule().events().blockingUpload()
@@ -105,7 +112,8 @@ abstract class EventPostBaseMockIntegrationShould : BaseMockIntegrationTestMetad
     fun handle_event_deletions() = runTest {
         storeEvents()
         assertThat(d2.eventModule().events().blockingCount()).isEqualTo(4)
-        d2.eventModule().events().uid("event1Id").blockingDelete()
+        d2.eventModule().events().uid(event1Id).blockingDelete()
+        assertThat(d2.eventModule().events().blockingCount()).isEqualTo(4)
 
         importConflictsFile2.forEach { dhis2MockServer.enqueueMockResponse(it) }
         d2.eventModule().events().blockingUpload()
@@ -124,9 +132,10 @@ abstract class EventPostBaseMockIntegrationShould : BaseMockIntegrationTestMetad
             .organisationUnit(orgUnit.uid())
             .program(program.uid())
             .programStage(programStage.uid())
-            .syncState(State.TO_POST)
-            .aggregatedSyncState(State.TO_POST)
+            .syncState(State.SYNCED)
+            .aggregatedSyncState(State.SYNCED)
             .trackedEntityDataValues(listOf(dataValue1))
+            .deleted(false)
             .build()
 
         val dataValue2 = TrackedEntityDataValueSamples.get().toBuilder().event(event2Id).build()
@@ -136,9 +145,10 @@ abstract class EventPostBaseMockIntegrationShould : BaseMockIntegrationTestMetad
             .organisationUnit(orgUnit.uid())
             .program(program.uid())
             .programStage(programStage.uid())
-            .syncState(State.TO_POST)
-            .aggregatedSyncState(State.TO_POST)
+            .syncState(State.SYNCED)
+            .aggregatedSyncState(State.SYNCED)
             .trackedEntityDataValues(listOf(dataValue2))
+            .deleted(false)
             .build()
 
         val dataValue3 = TrackedEntityDataValueSamples.get().toBuilder().event(event3Id).build()
@@ -148,9 +158,10 @@ abstract class EventPostBaseMockIntegrationShould : BaseMockIntegrationTestMetad
             .organisationUnit(orgUnit.uid())
             .program(program.uid())
             .programStage(programStage.uid())
-            .syncState(State.TO_POST)
-            .aggregatedSyncState(State.TO_POST)
+            .syncState(State.SYNCED)
+            .aggregatedSyncState(State.SYNCED)
             .trackedEntityDataValues(listOf(dataValue3))
+            .deleted(false)
             .build()
 
         val dataValue4 = TrackedEntityDataValueSamples.get().toBuilder().event(event4Id).build()
@@ -160,9 +171,10 @@ abstract class EventPostBaseMockIntegrationShould : BaseMockIntegrationTestMetad
             .organisationUnit(orgUnit.uid())
             .program(program.uid())
             .programStage(programStage.uid())
-            .syncState(State.ERROR)
-            .aggregatedSyncState(State.ERROR)
+            .syncState(State.SYNCED)
+            .aggregatedSyncState(State.SYNCED)
             .trackedEntityDataValues(listOf(dataValue4))
+            .deleted(false)
             .build()
 
         eventStore.insert(event1)
@@ -177,6 +189,13 @@ abstract class EventPostBaseMockIntegrationShould : BaseMockIntegrationTestMetad
         tedvStore.insert(dataValue4)
 
         assertThat(d2.eventModule().events().blockingCount()).isEqualTo(4)
+    }
+
+    private suspend fun setSyncState(state: State, vararg uids: String) {
+        uids.forEach {
+            eventStore.setSyncState(it, state)
+            eventStore.setAggregatedSyncState(it, state)
+        }
     }
 
     companion object {

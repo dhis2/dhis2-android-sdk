@@ -31,9 +31,10 @@ package org.hisp.dhis.android.core.program.internal;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.program.ProgramStageSamples;
 import org.hisp.dhis.android.core.program.ProgramStage;
-import org.hisp.dhis.android.core.program.ProgramStageTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.hisp.dhis.android.persistence.program.ProgramStageStoreImpl;
+import org.hisp.dhis.android.persistence.program.ProgramStageTableInfo;
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)

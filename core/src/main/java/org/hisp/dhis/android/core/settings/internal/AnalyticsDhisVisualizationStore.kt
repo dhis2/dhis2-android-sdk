@@ -30,5 +30,8 @@ package org.hisp.dhis.android.core.settings.internal
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualization
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationType
 
-internal interface AnalyticsDhisVisualizationStore : ObjectWithoutUidStore<AnalyticsDhisVisualization>
+internal interface AnalyticsDhisVisualizationStore : ObjectWithoutUidStore<AnalyticsDhisVisualization> {
+    suspend fun deleteNotPresent(uids: List<String>, type: AnalyticsDhisVisualizationType)
+}

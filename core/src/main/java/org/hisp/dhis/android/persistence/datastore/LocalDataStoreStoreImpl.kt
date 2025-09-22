@@ -28,15 +28,18 @@
 
 package org.hisp.dhis.android.persistence.datastore
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.datastore.KeyValuePair
 import org.hisp.dhis.android.core.datastore.internal.LocalDataStoreStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class LocalDataStoreStoreImpl(
-    val dao: LocalDataStoreDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : LocalDataStoreStore, ObjectWithoutUidStoreImpl<KeyValuePair, LocalDataStoreDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().localDataStoreDao() },
     KeyValuePair::toDB,
     SQLStatementBuilderImpl(LocalDataStoreTableInfo.TABLE_INFO),
 )

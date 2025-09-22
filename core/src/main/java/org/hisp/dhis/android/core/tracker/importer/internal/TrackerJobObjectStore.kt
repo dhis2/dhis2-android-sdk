@@ -30,4 +30,6 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 
-internal interface TrackerJobObjectStore : ObjectWithoutUidStore<TrackerJobObject>
+internal interface TrackerJobObjectStore : ObjectWithoutUidStore<TrackerJobObject> {
+    suspend fun deleteByJobUid(jobUid: String): Boolean
+}

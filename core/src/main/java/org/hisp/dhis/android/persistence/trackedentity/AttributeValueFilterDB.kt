@@ -31,7 +31,6 @@ package org.hisp.dhis.android.persistence.trackedentity
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
-import org.hisp.dhis.android.persistence.attribute.AttributeDB
 import org.hisp.dhis.android.persistence.common.DateFilterPeriodDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.FilterOperatorsDB
@@ -50,7 +49,7 @@ import org.hisp.dhis.android.persistence.common.toDB
             deferred = true,
         ),
         ForeignKey(
-            entity = AttributeDB::class,
+            entity = TrackedEntityAttributeDB::class,
             parentColumns = ["uid"],
             childColumns = ["attribute"],
             onDelete = ForeignKey.CASCADE,
@@ -60,8 +59,8 @@ import org.hisp.dhis.android.persistence.common.toDB
     primaryKeys = ["trackedEntityInstanceFilter", "attribute"],
 )
 internal data class AttributeValueFilterDB(
-    val trackedEntityInstanceFilter: String?,
-    val attribute: String?,
+    val trackedEntityInstanceFilter: String,
+    val attribute: String,
     val sw: String?,
     val ew: String?,
     override val le: String?,
@@ -86,7 +85,7 @@ internal data class AttributeValueFilterDB(
 
 internal fun AttributeValueFilter.toDB(): AttributeValueFilterDB {
     return AttributeValueFilterDB(
-        trackedEntityInstanceFilter = trackedEntityInstanceFilter(),
+        trackedEntityInstanceFilter = trackedEntityInstanceFilter()!!,
         attribute = attribute(),
         sw = sw(),
         ew = ew(),

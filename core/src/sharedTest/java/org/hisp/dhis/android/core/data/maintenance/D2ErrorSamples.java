@@ -32,6 +32,8 @@ import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
 
+import java.util.Date;
+
 public class D2ErrorSamples {
 
     public static D2Error get() {
@@ -40,6 +42,7 @@ public class D2ErrorSamples {
                 .errorComponent(D2ErrorComponent.Server)
                 .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
                 .errorDescription("Error processing response")
+                .created(new Date())
                 .build();
     }
 }

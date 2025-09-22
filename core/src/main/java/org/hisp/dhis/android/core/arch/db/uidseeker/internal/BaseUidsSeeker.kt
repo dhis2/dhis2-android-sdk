@@ -28,22 +28,21 @@
 
 package org.hisp.dhis.android.core.arch.db.uidseeker.internal
 
+import androidx.sqlite.db.SimpleSQLiteQuery
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 
 internal open class BaseUidsSeeker(private val databaseAdapter: DatabaseAdapter) {
 
-    fun readSingleColumnResults(query: String): Set<String> {
-        val cursor = databaseAdapter.rawQuery(query)
-
-        val results: MutableSet<String> = HashSet()
-        cursor.use { c ->
-            if (c.count > 0) {
-                c.moveToFirst()
-                do {
-                    results.add(c.getString(0))
-                } while (c.moveToNext())
-            }
+    @Suppress("TooGenericExceptionCaught")
+    suspend fun readSingleColumnResults(query: String): Set<String> {
+        return try {
+            val dao = databaseAdapter.getCurrentDatabase().d2Dao()
+            val sqliteQuery = SimpleSQLiteQuery(query)
+            val resultsList: List<String> = dao.stringListRawQuery(sqliteQuery)
+            resultsList.toSet()
+        } catch (e: Exception) {
+            System.err.println("Error executing query '$query': ${e.message}")
+            emptySet()
         }
-        return results
     }
 }

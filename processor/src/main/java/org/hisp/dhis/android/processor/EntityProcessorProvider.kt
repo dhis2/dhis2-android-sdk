@@ -31,7 +31,7 @@ package org.hisp.dhis.android.processor
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.processing.SymbolProcessorProvider
-import org.hisp.dhis2.processors.EntityProcessor
+import org.hisp.dhis.processors.EntityProcessor
 
 class EntityProcessorProvider : SymbolProcessorProvider {
 

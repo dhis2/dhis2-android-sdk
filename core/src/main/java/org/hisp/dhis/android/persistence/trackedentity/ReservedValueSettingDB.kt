@@ -20,7 +20,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 )
 internal data class ReservedValueSettingDB(
     @PrimaryKey
-    val uid: String?,
+    val uid: String,
     val numberOfValuesToReserve: Int?,
 ) : EntityDB<ReservedValueSetting> {
 
@@ -34,7 +34,7 @@ internal data class ReservedValueSettingDB(
 
 internal fun ReservedValueSetting.toDB(): ReservedValueSettingDB {
     return ReservedValueSettingDB(
-        uid = uid(),
+        uid = uid()!!,
         numberOfValuesToReserve = numberOfValuesToReserve(),
     )
 }

@@ -28,16 +28,19 @@
 
 package org.hisp.dhis.android.persistence.dataset
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLink
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompulsoryDataElementOperandLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataSetCompulsoryDataElementOperandLinkStoreImpl(
-    val dao: DataSetCompulsoryDataElementOperandLinkDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : DataSetCompulsoryDataElementOperandLinkStore,
     LinkStoreImpl<DataSetCompulsoryDataElementOperandLink, DataSetCompulsoryDataElementOperandsLinkDB>(
-        dao,
+        { databaseAdapter.getCurrentDatabase().dataSetCompulsoryDataElementOperandLinkDao() },
         DataSetCompulsoryDataElementOperandLink::toDB,
         LinkSQLStatementBuilderImpl(
             DataSetCompulsoryDataElementOperandsLinkTableInfo.TABLE_INFO,

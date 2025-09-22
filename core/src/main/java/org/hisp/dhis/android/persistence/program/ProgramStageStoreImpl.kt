@@ -28,15 +28,18 @@
 
 package org.hisp.dhis.android.persistence.program
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.internal.ProgramStageStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ProgramStageStoreImpl(
-    val dao: ProgramStageDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : ProgramStageStore, IdentifiableObjectStoreImpl<ProgramStage, ProgramStageDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().programStageDao() },
     ProgramStage::toDB,
     SQLStatementBuilderImpl(ProgramStageTableInfo.TABLE_INFO),
 )

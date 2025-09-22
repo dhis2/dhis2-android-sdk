@@ -30,9 +30,10 @@ package org.hisp.dhis.android.core.program.internal
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.program.ProgramRuleActionSamples.programRuleAction
 import org.hisp.dhis.android.core.program.ProgramRuleAction
-import org.hisp.dhis.android.core.program.ProgramRuleActionTableInfo
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.program.ProgramRuleActionStoreImpl
+import org.hisp.dhis.android.persistence.program.ProgramRuleActionTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

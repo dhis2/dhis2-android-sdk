@@ -28,9 +28,7 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.database.Cursor;
-
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 
 import com.google.auto.value.AutoValue;
 
@@ -39,12 +37,8 @@ import org.hisp.dhis.android.core.common.CoreObject;
 @AutoValue
 public abstract class Authority implements CoreObject {
 
-    @Nullable
+    @NonNull
     public abstract String name();
-
-    public static Authority create(Cursor cursor) {
-        return $AutoValue_Authority.createFromCursor(cursor);
-    }
 
     public abstract Builder toBuilder();
 
@@ -56,7 +50,7 @@ public abstract class Authority implements CoreObject {
     @AutoValue.Builder
     public abstract static class Builder {
 
-        public abstract Builder name(String name);
+        public abstract Builder name(@NonNull String name);
 
         public abstract Authority build();
     }

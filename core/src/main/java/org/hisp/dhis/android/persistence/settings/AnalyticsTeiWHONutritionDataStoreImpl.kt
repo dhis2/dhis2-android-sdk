@@ -28,15 +28,18 @@
 
 package org.hisp.dhis.android.persistence.settings
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionData
 import org.hisp.dhis.android.core.settings.internal.AnalyticsTeiWHONutritionDataStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class AnalyticsTeiWHONutritionDataStoreImpl(
-    val dao: AnalyticsTeiWHONutritionDataDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : AnalyticsTeiWHONutritionDataStore, LinkStoreImpl<AnalyticsTeiWHONutritionData, AnalyticsTeiWHONutritionDataDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().analyticsTeiWHONutritionDataDao() },
     AnalyticsTeiWHONutritionData::toDB,
     LinkSQLStatementBuilderImpl(
         AnalyticsTeiWHONutritionDataTableInfo.TABLE_INFO,

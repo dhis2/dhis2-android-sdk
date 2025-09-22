@@ -28,16 +28,19 @@
 
 package org.hisp.dhis.android.persistence.program
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ProgramIndicatorStoreImpl(
-    val dao: ProgramIndicatorDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : ProgramIndicatorStore, IdentifiableObjectStoreImpl<ProgramIndicator, ProgramIndicatorDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().programIndicatorDao() },
     ProgramIndicator::toDB,
     SQLStatementBuilderImpl(ProgramIndicatorTableInfo.TABLE_INFO),
 ) {
@@ -56,5 +59,10 @@ internal class ProgramIndicatorStoreImpl(
             null,
         )
         return selectRawQuery(query)
+    }
+
+    override suspend fun deleteByUids(uids: List<String>) {
+        val dao = databaseAdapter.getCurrentDatabase().programIndicatorDao()
+        dao.deleteByUids(uids)
     }
 }

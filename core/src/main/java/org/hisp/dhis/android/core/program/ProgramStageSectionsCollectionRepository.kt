@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.program.internal.ProgramStageSectionDataElementChildrenAppender
 import org.hisp.dhis.android.core.program.internal.ProgramStageSectionProgramIndicatorChildrenAppender
 import org.hisp.dhis.android.core.program.internal.ProgramStageSectionStore
+import org.hisp.dhis.android.persistence.program.ProgramStageSectionTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

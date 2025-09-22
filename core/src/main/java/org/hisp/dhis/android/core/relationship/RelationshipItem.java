@@ -28,43 +28,30 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.RelationshipItemEnrollmentColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.RelationshipItemEventColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.RelationshipItemTrackedEntityInstanceColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.RelationshipConstraintTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo.Columns;
+import org.hisp.dhis.android.persistence.relationship.RelationshipItemTableInfo.Columns;
 
 @AutoValue
 public abstract class RelationshipItem implements CoreObject {
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid relationship();
 
     @Nullable
-    @ColumnAdapter(RelationshipConstraintTypeColumnAdapter.class)
     public abstract RelationshipConstraintType relationshipItemType();
 
     @Nullable
-    @ColumnAdapter(RelationshipItemTrackedEntityInstanceColumnAdapter.class)
     public abstract RelationshipItemTrackedEntityInstance trackedEntityInstance();
 
     @Nullable
-    @ColumnAdapter(RelationshipItemEnrollmentColumnAdapter.class)
     public abstract RelationshipItemEnrollment enrollment();
 
     @Nullable
-    @ColumnAdapter(RelationshipItemEventColumnAdapter.class)
     public abstract RelationshipItemEvent event();
 
     public boolean hasTrackedEntityInstance() {
@@ -103,10 +90,6 @@ public abstract class RelationshipItem implements CoreObject {
 
     public static Builder builder() {
         return new AutoValue_RelationshipItem.Builder();
-    }
-
-    public static RelationshipItem create(Cursor cursor) {
-        return $AutoValue_RelationshipItem.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();

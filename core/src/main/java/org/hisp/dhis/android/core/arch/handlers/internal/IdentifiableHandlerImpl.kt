@@ -35,13 +35,21 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 internal open class IdentifiableHandlerImpl<O>(protected val store: IdentifiableObjectStore<O>) :
     HandlerBaseImpl<O>() where O : ObjectWithUidInterface, O : ObjectWithDeleteInterface {
 
-    override suspend fun deleteOrPersist(o: O): HandleAction {
-        val modelUid = o.uid()
-        return if ((CollectionsHelper.isDeleted(o) || deleteIfCondition(o)) && modelUid != null) {
-            store.deleteIfExists(modelUid)
-            HandleAction.Delete
-        } else {
-            store.updateOrInsert(o)
+    override suspend fun deleteOrPersist(oCollection: Collection<O>) {
+        val (toDelete, toUpsert) = oCollection.partition { o ->
+            (CollectionsHelper.isDeleted(o) || deleteIfCondition(o)) && o.uid() != null
+        }
+
+        toDelete.forEach { o ->
+            store.deleteIfExists(o.uid())
+            afterObjectHandled(o, HandleAction.Delete)
+        }
+
+        val upsertActions = toUpsert.takeIf { it.isNotEmpty() }
+            ?.let { nonEmptyToUpsert -> store.updateOrInsert(nonEmptyToUpsert) }
+            ?: emptyList()
+        toUpsert.forEachIndexed { index, o ->
+            afterObjectHandled(o, upsertActions[index])
         }
     }
 

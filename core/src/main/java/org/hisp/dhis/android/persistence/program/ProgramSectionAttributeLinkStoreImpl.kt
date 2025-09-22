@@ -28,15 +28,18 @@
 
 package org.hisp.dhis.android.persistence.program
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.program.ProgramSectionAttributeLink
 import org.hisp.dhis.android.core.program.internal.ProgramSectionAttributeLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ProgramSectionAttributeLinkStoreImpl(
-    val dao: ProgramSectionAttributeLinkDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : ProgramSectionAttributeLinkStore, LinkStoreImpl<ProgramSectionAttributeLink, ProgramSectionAttributeLinkDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().programSectionAttributeLinkDao() },
     ProgramSectionAttributeLink::toDB,
     LinkSQLStatementBuilderImpl(
         ProgramSectionAttributeLinkTableInfo.TABLE_INFO,

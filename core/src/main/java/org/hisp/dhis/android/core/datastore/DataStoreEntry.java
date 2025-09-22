@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.datastore;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -49,14 +47,10 @@ public abstract class DataStoreEntry extends BaseDeletableDataObject {
     @Nullable
     public abstract String value();
 
-    public static DataStoreEntry create(Cursor cursor) {
-        return $AutoValue_DataStoreEntry.createFromCursor(cursor);
-    }
-
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new $$AutoValue_DataStoreEntry.Builder();
+        return new AutoValue_DataStoreEntry.Builder();
     }
 
     @AutoValue.Builder

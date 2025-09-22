@@ -28,23 +28,27 @@
 
 package org.hisp.dhis.android.persistence.programstageworkinglist
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
-import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilterTableInfo
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListAttributeValueFilterStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ProgramStageWorkingListAttributeValueFilterStoreImpl(
-    private val dao: ProgramStageWorkingListAttributeValueFilterDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : ProgramStageWorkingListAttributeValueFilterStore,
     ObjectWithoutUidStoreImpl<
         ProgramStageWorkingListAttributeValueFilter,
         ProgramStageWorkingListAttributeValueFilterDB,
         >(
-        dao,
+        { databaseAdapter.getCurrentDatabase().programStageWorkingListAttrValueFilterDao() },
         ProgramStageWorkingListAttributeValueFilter::toDB,
-        SQLStatementBuilderImpl(ProgramStageWorkingListAttributeValueFilterTableInfo.TABLE_INFO),
+        SQLStatementBuilderImpl(
+            ProgramStageWorkingListAttributeValueFilterTableInfo.TABLE_INFO,
+        ),
     ) {
     override suspend fun getForProgramStageWorkingList(
         programStageWorkingList: String,

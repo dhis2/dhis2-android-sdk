@@ -23,7 +23,7 @@ internal data class CustomIntentDB(
         return CustomIntent.builder().apply {
             uid(uid)
             name(name)
-            action(action?.toDomain())
+            action(action?.toDomain() ?: emptyList())
             packageName(packageName)
             requestArguments?.let {
                 request(

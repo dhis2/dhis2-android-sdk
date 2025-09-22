@@ -60,7 +60,9 @@ class ProgramSectionHandlerShould {
         val attributes = listOf(TrackedEntityAttribute.builder().uid("attribute_uid").build())
         whenever(programSection.attributes()).thenReturn(attributes)
         whenever(programSection.uid()).thenReturn(sectionUid)
-        whenever(programSectionStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
+        whenever(
+            programSectionStore.updateOrInsert(any<List<ProgramSection>>()),
+        ).thenReturn(listOf(HandleAction.Insert))
     }
 
     @Test

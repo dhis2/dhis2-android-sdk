@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.sms
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.datastore.KeyValuePair
@@ -35,11 +36,13 @@ import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigK
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class SMSConfigStoreImpl(
-    val dao: SMSConfigDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : SMSConfigStore, ObjectWithoutUidStoreImpl<KeyValuePair, SMSConfigDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().SMSConfigDao() },
     KeyValuePair::toDB,
     SQLStatementBuilderImpl(SMSConfigTableInfo.TABLE_INFO),
 ) {
@@ -61,17 +64,11 @@ internal class SMSConfigStoreImpl(
             .value(value)
             .build()
 
-        return updateOrInsertWhere(keyValuePair)
+        return updateOrInsert(keyValuePair)
     }
 
     override suspend fun delete(key: SMSConfigKey) {
-        val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(
-                SMSConfigTableInfo.Columns.KEY,
-                key.name,
-            )
-            .build()
-
-        return deleteWhereIfExists(whereClause)
+        val dao = databaseAdapter.getCurrentDatabase().SMSConfigDao()
+        dao.deleteByKeyName(key.name)
     }
 }

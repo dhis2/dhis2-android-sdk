@@ -28,18 +28,21 @@
 
 package org.hisp.dhis.android.persistence.trackedentity
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetLink
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeLegendSetLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class TrackedEntityAttributeLegendSetLinkStoreImpl(
-    private val dao: TrackedEntityAttributeLegendSetLinkDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : TrackedEntityAttributeLegendSetLinkStore,
     LinkStoreImpl<TrackedEntityAttributeLegendSetLink, TrackedEntityAttributeLegendSetLinkDB>(
-        dao,
+        { databaseAdapter.getCurrentDatabase().trackedEntityAttributeLegendSetLinkDao() },
         TrackedEntityAttributeLegendSetLink::toDB,
         LinkSQLStatementBuilderImpl(
             TrackedEntityAttributeLegendSetLinkTableInfo.TABLE_INFO,

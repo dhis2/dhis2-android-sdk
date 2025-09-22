@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import android.database.Cursor;
-
 import com.google.auto.value.AutoValue;
 
 @AutoValue
@@ -38,10 +36,6 @@ public abstract class CustomIntentRequestArgument {
     public abstract String key();
 
     public abstract String value();
-
-    public static CustomIntentRequestArgument create(Cursor cursor) {
-        return AutoValue_CustomIntentRequestArgument.createFromCursor(cursor);
-    }
 
     public static Builder builder() {
         return new AutoValue_CustomIntentRequestArgument.Builder();

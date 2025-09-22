@@ -31,13 +31,14 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
-import org.hisp.dhis.android.core.note.NoteTableInfo
 import org.hisp.dhis.android.core.note.internal.NoteStore
+import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.persistence.note.NoteTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -76,7 +77,7 @@ internal class JobReportEnrollmentHandler internal constructor(
     override suspend fun storeConflict(errorReport: JobValidationError) {
         enrollmentStore.selectByUid(errorReport.uid)?.let { enrollment ->
             if (errorReport.errorCode == ImporterError.E1081.name && enrollment.deleted() == true) {
-                enrollmentStore.delete(enrollment.uid())
+                enrollmentStore.deleteByEntity(enrollment)
             } else {
                 conflictStore.updateOrInsertWhere(
                     conflictHelper.getConflictBuilder(errorReport)
@@ -89,7 +90,7 @@ internal class JobReportEnrollmentHandler internal constructor(
         }
     }
 
-    override suspend fun getRelatedRelationships(uid: String): List<String> {
-        return relationshipStore.getRelationshipsByItem(RelationshipHelper.enrollmentItem(uid)).mapNotNull { it.uid() }
+    override suspend fun getRelatedRelationships(uid: String): List<Relationship> {
+        return relationshipStore.getRelationshipsByItem(RelationshipHelper.enrollmentItem(uid)).mapNotNull { it }
     }
 }

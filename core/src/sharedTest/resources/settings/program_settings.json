@@ -20,6 +20,14 @@
     "IpHINAT79UW": {
       "id": "IpHINAT79UW",
       "name": "Child Programme",
+      "filters": [
+        {
+          "id": "uidFilter1"
+        },
+        {
+          "id": "uidFilter2"
+        }
+      ],
       "lastUpdated": "2020-02-01T19:55:32.002Z",
       "teiDownload": "40",
       "teiDBTrimming": "20",

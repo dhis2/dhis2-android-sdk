@@ -29,11 +29,12 @@
 package org.hisp.dhis.android.core.attribute.internal;
 
 import org.hisp.dhis.android.core.attribute.ProgramStageAttributeValueLink;
-import org.hisp.dhis.android.core.attribute.ProgramStageAttributeValueLinkTableInfo;
 import org.hisp.dhis.android.core.data.attribute.ProgramStageAttributeValueLinkSamples;
 import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.hisp.dhis.android.persistence.attribute.ProgramStageAttributeValueLinkStoreImpl;
+import org.hisp.dhis.android.persistence.attribute.ProgramStageAttributeValueLinkTableInfo;
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)

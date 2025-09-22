@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
@@ -37,7 +36,6 @@ import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandHandler
 import org.hisp.dhis.android.core.dataset.Section
 import org.hisp.dhis.android.core.dataset.SectionDataElementLink
 import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLink
-import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLinkTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -72,14 +70,9 @@ internal class SectionHandler(
                 .build()
         }
 
-        greyedFieldsHandler.handleMany(o.greyedFields())
+        greyedFieldsHandler.handleMany(o.greyedFields()?.filterNot { it.categoryOptionCombo() == null })
 
-        sectionGreyedFieldsStore.deleteWhere(
-            WhereClauseBuilder().appendKeyStringValue(
-                SectionGreyedFieldsLinkTableInfo.Columns.SECTION,
-                o.uid(),
-            ).build(),
-        )
+        sectionGreyedFieldsStore.deleteBySection(o.uid())
 
         sectionGreyedFieldsLinkHandler.handleMany(
             o.uid(),

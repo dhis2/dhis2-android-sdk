@@ -48,6 +48,5 @@ internal fun <T> T.applyBaseIdentifiableFields(item: BaseIdentifiableObjectDB): 
     displayName(item.displayName)
     created(item.created.toJavaDate())
     lastUpdated(item.lastUpdated.toJavaDate())
-    deleted(false)
     return this
 }

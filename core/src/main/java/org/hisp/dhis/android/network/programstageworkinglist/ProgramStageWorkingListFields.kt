@@ -30,9 +30,9 @@ package org.hisp.dhis.android.network.programstageworkinglist
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageQueryCriteria
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
-import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.persistence.programstageworkinglist.ProgramStageWorkingListTableInfo.Columns
 
 internal object ProgramStageWorkingListFields : BaseFields<ProgramStageWorkingList>() {
     private const val PROGRAM_STAGE_QUERY_CRITERIA = "programStageQueryCriteria"

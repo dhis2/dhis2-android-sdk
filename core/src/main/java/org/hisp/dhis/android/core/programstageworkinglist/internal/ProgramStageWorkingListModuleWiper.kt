@@ -27,17 +27,18 @@
  */
 package org.hisp.dhis.android.core.programstageworkinglist.internal
 
-import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilterTableInfo
-import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListEventDataFilterTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import org.hisp.dhis.android.persistence.programstageworkinglist.ProgramStageWorkingListAttributeValueFilterTableInfo
+import org.hisp.dhis.android.persistence.programstageworkinglist.ProgramStageWorkingListEventDataFilterTableInfo
+import org.hisp.dhis.android.persistence.programstageworkinglist.ProgramStageWorkingListTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramStageWorkingListModuleWiper(
     private val tableWiper: TableWiper,
 ) : ModuleWiper {
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         tableWiper.wipeTables(
             ProgramStageWorkingListTableInfo.TABLE_INFO,
             ProgramStageWorkingListEventDataFilterTableInfo.TABLE_INFO,
@@ -45,7 +46,7 @@ internal class ProgramStageWorkingListModuleWiper(
         )
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         // No data to wipe
     }
 }

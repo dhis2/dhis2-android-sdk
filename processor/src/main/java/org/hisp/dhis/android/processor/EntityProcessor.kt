@@ -26,7 +26,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis2.processors
+package org.hisp.dhis.processors
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -93,6 +93,8 @@ class EntityProcessor(
                         return Columns()
                     }
                 }
+                
+                const val TABLE_NAME = "$tableName"
                 
                 class Columns : CoreColumns() {
                     override fun all(): Array<String> {

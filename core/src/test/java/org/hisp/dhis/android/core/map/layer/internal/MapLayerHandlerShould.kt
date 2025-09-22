@@ -35,7 +35,13 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.kotlin.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
 class MapLayerHandlerShould {
@@ -55,7 +61,7 @@ class MapLayerHandlerShould {
         whenever(mapLayer.uid()).doReturn("mapLayerId")
         whenever(mapLayer.imageryProviders()).doReturn(emptyList())
 
-        whenever(store.updateOrInsert(mapLayer)).doReturn(HandleAction.Insert)
+        whenever(store.updateOrInsert(listOf(mapLayer))).doReturn(listOf(HandleAction.Insert))
     }
 
     @Test
@@ -63,7 +69,7 @@ class MapLayerHandlerShould {
         mapLayerHandler.handleMany(mapLayers)
 
         // verify that update is called once
-        verify(store, times(1)).updateOrInsert(mapLayer)
+        verify(store, times(1)).updateOrInsert(listOf(mapLayer))
         verify(store, never()).delete(any())
     }
 

@@ -43,6 +43,7 @@ import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.note.Note.NoteType
 import org.hisp.dhis.android.core.note.internal.NoteProjectionTransformer
 import org.hisp.dhis.android.core.note.internal.NoteStore
+import org.hisp.dhis.android.persistence.note.NoteTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

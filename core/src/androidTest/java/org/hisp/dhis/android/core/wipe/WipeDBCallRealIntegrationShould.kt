@@ -36,13 +36,15 @@ import org.hisp.dhis.android.core.event.internal.EventCallFactory.create
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 
 class WipeDBCallRealIntegrationShould : BaseRealIntegrationTest() {
+    private val d2Dao = d2.databaseAdapter().getCurrentDatabase().d2Dao()
+
     // @Test
-    fun have_empty_database_when_wipe_db_after_sync_metadata() {
+    fun have_empty_database_when_wipe_db_after_sync_metadata() = runTest {
         d2.userModule().logIn(username, password, url).blockingGet()
         d2.metadataModule().blockingDownload()
-        assertThatDatabase(d2.databaseAdapter()).isNotEmpty
+        assertThatDatabase(d2Dao).isNotEmpty()
         d2.wipeModule().wipeEverything()
-        assertThatDatabase(d2.databaseAdapter()).isEmpty
+        assertThatDatabase(d2Dao).isEmpty()
     }
 
     // @Test
@@ -53,21 +55,21 @@ class WipeDBCallRealIntegrationShould : BaseRealIntegrationTest() {
 
         create(d2.httpServiceClient(), d2.coroutineAPICallExecutor(), "DiszpKrYNg8", 0, emptyList())
 
-        assertThatDatabase(d2.databaseAdapter()).isNotEmpty
+        assertThatDatabase(d2Dao).isNotEmpty()
 
         d2.wipeModule().wipeEverything()
 
-        assertThatDatabase(d2.databaseAdapter()).isEmpty
+        assertThatDatabase(d2Dao).isEmpty()
     }
 
     // @Test
     @Throws(Exception::class)
-    fun do_not_have_metadata_when_wipe_metadata_after_sync_metadata() {
+    fun do_not_have_metadata_when_wipe_metadata_after_sync_metadata() = runTest {
         d2.userModule().logIn(username, password, url).blockingGet()
         d2.metadataModule().blockingDownload()
-        assertThatDatabase(d2.databaseAdapter()).isNotEmpty
+        assertThatDatabase(d2Dao).isNotEmpty()
         d2.wipeModule().wipeMetadata()
-        assertThatDatabase(d2.databaseAdapter()).isEmpty
+        assertThatDatabase(d2Dao).isEmpty()
     }
 
     // @Test

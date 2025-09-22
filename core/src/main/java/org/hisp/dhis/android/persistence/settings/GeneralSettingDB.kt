@@ -12,7 +12,7 @@ import org.hisp.dhis.android.persistence.common.toDB
 @Entity(tableName = "GeneralSetting")
 internal data class GeneralSettingDB(
     @PrimaryKey
-    val encryptDB: Boolean?,
+    val encryptDB: Boolean,
     val lastUpdated: String?,
     val reservedValues: Int?,
     val smsGateway: String?,

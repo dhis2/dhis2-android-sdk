@@ -28,9 +28,6 @@
 
 package org.hisp.dhis.android.core.visualization;
 
-import android.database.Cursor;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -52,11 +49,6 @@ public abstract class VisualizationLegend {
 
     @Nullable
     public abstract LegendStyle style();
-
-    @NonNull
-    public static VisualizationLegend create(Cursor cursor) {
-        return AutoValue_VisualizationLegend.createFromCursor(cursor);
-    }
 
     public abstract VisualizationLegend.Builder toBuilder();
 

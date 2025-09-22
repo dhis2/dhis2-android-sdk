@@ -35,6 +35,8 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboCategoryOptionChildrenAppender
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
 import org.hisp.dhis.android.core.common.IdentifiableColumns
+import org.hisp.dhis.android.persistence.category.CategoryOptionComboCategoryOptionLinkTableInfo
+import org.hisp.dhis.android.persistence.category.CategoryOptionComboTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

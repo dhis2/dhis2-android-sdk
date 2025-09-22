@@ -29,13 +29,13 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import com.google.common.truth.Truth.assertThat
 import junit.framework.Assert.fail
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventStore
@@ -50,6 +50,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAcc
 import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -70,19 +71,23 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
     private val syncStore: SynchronizationSettingStore = koin.get()
 
     @Before
-    fun setUp() = runTest {
-        initSyncParams = syncStore.selectFirst()!!
-        val testParams = initSyncParams.toBuilder().trackerImporterVersion(importerVersion)
-            .trackerExporterVersion(exporterVersion).build()
-        syncStore.delete()
-        syncStore.insert(testParams)
+    fun setUp() {
+        runBlocking {
+            initSyncParams = syncStore.selectFirst()!!
+            val testParams = initSyncParams.toBuilder().trackerImporterVersion(importerVersion)
+                .trackerExporterVersion(exporterVersion).build()
+            syncStore.delete()
+            syncStore.insert(testParams)
+        }
     }
 
     @After
-    fun tearDown() = runTest {
-        d2.wipeModule().wipeData()
-        syncStore.delete()
-        syncStore.insert(initSyncParams)
+    fun tearDown() {
+        runBlocking {
+            d2.wipeModule().wipeData()
+            syncStore.delete()
+            syncStore.insert(initSyncParams)
+        }
     }
 
     @Test

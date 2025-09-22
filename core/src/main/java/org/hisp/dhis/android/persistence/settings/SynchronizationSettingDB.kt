@@ -12,7 +12,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 @Entity(tableName = "SynchronizationSetting")
 internal data class SynchronizationSettingDB(
     @PrimaryKey
-    val dataSync: String?,
+    val dataSync: String,
     val metadataSync: String?,
     val trackerImporterVersion: String?,
     val trackerExporterVersion: String?,
@@ -21,7 +21,7 @@ internal data class SynchronizationSettingDB(
 
     override fun toDomain(): SynchronizationSettings {
         return SynchronizationSettings.builder().apply {
-            dataSync?.let { dataSync(DataSyncPeriod.valueOf(it)) }
+            dataSync.let { dataSync(DataSyncPeriod.valueOf(it)) }
             metadataSync?.let { metadataSync(MetadataSyncPeriod.valueOf(it)) }
             trackerImporterVersion?.let { trackerImporterVersion(TrackerImporterVersion.valueOf(it)) }
             trackerExporterVersion?.let { trackerExporterVersion(TrackerExporterVersion.valueOf(it)) }
@@ -32,7 +32,7 @@ internal data class SynchronizationSettingDB(
 
 internal fun SynchronizationSettings.toDB(): SynchronizationSettingDB {
     return SynchronizationSettingDB(
-        dataSync = dataSync()?.name,
+        dataSync = dataSync()?.name!!,
         metadataSync = metadataSync()?.name,
         trackerImporterVersion = trackerImporterVersion()?.name,
         trackerExporterVersion = trackerExporterVersion()?.name,

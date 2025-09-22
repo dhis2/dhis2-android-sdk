@@ -98,7 +98,7 @@ class DataElementHandlerShould {
         whenever(dataElement.attributeValues()).doReturn(attributeValues)
         whenever(dataElement.legendSets()).doReturn(legendSets)
 
-        whenever(dataElementStore.updateOrInsert(any())).doReturn(HandleAction.Insert)
+        whenever(dataElementStore.updateOrInsert(any<List<DataElement>>())).doReturn(listOf(HandleAction.Insert))
     }
 
     @Test
@@ -107,7 +107,7 @@ class DataElementHandlerShould {
 
         // verify that program indicator store is never called
         verify(dataElementStore, never()).delete(any())
-        verify(dataElementStore, never()).update(any())
+        verify(dataElementStore, never()).update(any<DataElement>())
         verify(dataElementStore, never()).insert(any<DataElement>())
     }
 
@@ -125,7 +125,7 @@ class DataElementHandlerShould {
         dataElementHandler.handleMany(dataElements)
 
         // verify that update is called once
-        verify(dataElementStore, times(1)).updateOrInsert(any())
+        verify(dataElementStore, times(1)).updateOrInsert(any<List<DataElement>>())
         verify(dataElementStore, never()).delete(any())
     }
 

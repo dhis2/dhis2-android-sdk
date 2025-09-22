@@ -84,7 +84,7 @@ class DataSetInstanceServiceMockIntegrationShould :
                 "Gmbgme7z9BF",
             )
 
-        assertThat(dataElementOperands.size).isEqualTo(1)
+        assertThat(dataElementOperands.size).isEqualTo(2)
         assertThat(dataElementOperands[0].dataElement()?.uid()).isEqualTo("bx6fsa0t90x")
         assertThat(dataElementOperands[0].categoryOptionCombo()).isNull()
     }

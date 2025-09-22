@@ -8,13 +8,13 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 @Entity(tableName = "SystemSetting")
 internal data class SystemSettingDB(
     @PrimaryKey
-    val key: String?,
+    val key: String,
     val value: String?,
 ) : EntityDB<SystemSetting> {
 
     override fun toDomain(): SystemSetting {
         return SystemSetting.builder().apply {
-            key?.let { key(SystemSetting.SystemSettingKey.valueOf(it)) }
+            key.let { key(SystemSetting.SystemSettingKey.valueOf(it)) }
             value(value)
         }.build()
     }
@@ -22,7 +22,7 @@ internal data class SystemSettingDB(
 
 internal fun SystemSetting.toDB(): SystemSettingDB {
     return SystemSettingDB(
-        key = key()?.name,
+        key = key()?.name!!,
         value = value(),
     )
 }

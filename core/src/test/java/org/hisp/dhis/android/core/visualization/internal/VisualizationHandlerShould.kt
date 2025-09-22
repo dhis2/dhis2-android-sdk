@@ -36,7 +36,11 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.kotlin.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
 class VisualizationHandlerShould {
@@ -63,7 +67,7 @@ class VisualizationHandlerShould {
         whenever(visualization.columns()).doReturn(listOf(visualizationDimension))
         whenever(visualization.rows()).doReturn(listOf(visualizationDimension))
         whenever(visualization.filters()).doReturn(listOf(visualizationDimension))
-        whenever(visualizationStore.updateOrInsert(any())).doReturn(HandleAction.Insert)
+        whenever(visualizationStore.updateOrInsert(any<List<Visualization>>())).doReturn(listOf(HandleAction.Insert))
         whenever(visualization.uid()).doReturn("visualization_uid")
     }
 

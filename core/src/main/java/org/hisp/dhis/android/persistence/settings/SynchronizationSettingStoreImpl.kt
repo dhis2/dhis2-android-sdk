@@ -28,15 +28,18 @@
 
 package org.hisp.dhis.android.persistence.settings
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
 import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class SynchronizationSettingStoreImpl(
-    val dao: SynchronizationSettingDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : SynchronizationSettingStore, ObjectWithoutUidStoreImpl<SynchronizationSettings, SynchronizationSettingDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().synchronizationSettingDao() },
     SynchronizationSettings::toDB,
     SQLStatementBuilderImpl(SynchronizationSettingTableInfo.TABLE_INFO),
 )

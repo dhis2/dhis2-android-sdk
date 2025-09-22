@@ -28,16 +28,19 @@
 
 package org.hisp.dhis.android.persistence.program
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.program.ProgramRuleAction
 import org.hisp.dhis.android.core.program.internal.ProgramRuleActionStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ProgramRuleActionStoreImpl(
-    val dao: ProgramRuleActionDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : ProgramRuleActionStore, IdentifiableObjectStoreImpl<ProgramRuleAction, ProgramRuleActionDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().programRuleActionDao() },
     ProgramRuleAction::toDB,
     SQLStatementBuilderImpl(ProgramRuleActionTableInfo.TABLE_INFO),
 ) {

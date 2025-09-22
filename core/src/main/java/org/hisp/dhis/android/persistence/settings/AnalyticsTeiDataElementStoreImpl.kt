@@ -28,15 +28,18 @@
 
 package org.hisp.dhis.android.persistence.settings
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
 import org.hisp.dhis.android.core.settings.internal.AnalyticsTeiDataElementStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class AnalyticsTeiDataElementStoreImpl(
-    val dao: AnalyticsTeiDataElementDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : AnalyticsTeiDataElementStore, LinkStoreImpl<AnalyticsTeiDataElement, AnalyticsTeiDataElementDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().analyticsTeiDataElementDao() },
     AnalyticsTeiDataElement::toDB,
     LinkSQLStatementBuilderImpl(
         AnalyticsTeiDataElementTableInfo.TABLE_INFO,

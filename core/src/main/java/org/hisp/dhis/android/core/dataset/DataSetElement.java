@@ -28,15 +28,11 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
@@ -44,23 +40,16 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 public abstract class DataSetElement implements CoreObject {
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid dataSet();
 
     @NonNull
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid dataElement();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid categoryCombo();
 
     public static Builder builder() {
-        return new $$AutoValue_DataSetElement.Builder();
-    }
-
-    public static DataSetElement create(Cursor cursor) {
-        return $AutoValue_DataSetElement.createFromCursor(cursor);
+        return new AutoValue_DataSetElement.Builder();
     }
 
     public abstract Builder toBuilder();

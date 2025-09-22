@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.settings.internal
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.settings.FilterSetting
+import org.hisp.dhis.android.network.settings.FilterSettingDTO.Companion.FILTERSETTING_GLOBAL_ID
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
@@ -44,7 +45,7 @@ class FilterSettingHandlerShould {
 
     private val filterSettingStore: FilterSettingStore = mock()
 
-    private val filterSetting: FilterSetting = FilterSetting.builder().build()
+    private val filterSetting: FilterSetting = FilterSetting.builder().uid(FILTERSETTING_GLOBAL_ID).build()
     private lateinit var filterSettingsHandler: FilterSettingHandler
     private lateinit var filterSettingsList: List<FilterSetting>
 
@@ -52,7 +53,7 @@ class FilterSettingHandlerShould {
     @Throws(Exception::class)
     fun setUp() = runTest {
         filterSettingsList = listOf(filterSetting)
-        whenever(filterSettingStore.updateOrInsertWhere(any())) doReturn HandleAction.Insert
+        whenever(filterSettingStore.updateOrInsert(any<List<FilterSetting>>())) doReturn listOf(HandleAction.Insert)
         filterSettingsHandler = FilterSettingHandler(filterSettingStore)
     }
 
@@ -60,13 +61,13 @@ class FilterSettingHandlerShould {
     fun clean_database_before_insert_collection() = runTest {
         filterSettingsHandler.handleMany(filterSettingsList)
         verify(filterSettingStore).delete()
-        verify(filterSettingStore).updateOrInsertWhere(filterSetting)
+        verify(filterSettingStore).updateOrInsert(listOf(filterSetting))
     }
 
     @Test
     fun clean_database_if_empty_collection() = runTest {
         filterSettingsHandler.handleMany(emptyList())
         verify(filterSettingStore).delete()
-        verify(filterSettingStore, never()).updateOrInsertWhere(filterSetting)
+        verify(filterSettingStore, never()).updateOrInsert(listOf(filterSetting))
     }
 }

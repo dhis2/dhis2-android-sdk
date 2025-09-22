@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.db.stores.internal
 
-import android.content.ContentValues
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 
 internal interface ObjectStore<O> : ReadableStore<O> {
     @Throws(RuntimeException::class)
@@ -38,12 +38,19 @@ internal interface ObjectStore<O> : ReadableStore<O> {
 
     @Throws(RuntimeException::class)
     suspend fun insert(objects: Collection<O>)
-    suspend fun delete(): Int
-    suspend fun deleteWhere(clause: String): Boolean
-
-    suspend fun updateWhere(updates: ContentValues, whereClause: String): Int
 
     @Throws(RuntimeException::class)
-    suspend fun deleteWhereIfExists(whereClause: String)
-    val isReady: Boolean
+    suspend fun update(o: O)
+
+    @Throws(RuntimeException::class)
+    suspend fun update(objects: Collection<O>)
+
+    @Throws(RuntimeException::class)
+    suspend fun updateOrInsert(o: O): HandleAction
+
+    @Throws(RuntimeException::class)
+    suspend fun updateOrInsert(objects: Collection<O>): List<HandleAction>
+
+    suspend fun delete(): Int
+    suspend fun deleteByEntity(o: O): Boolean
 }

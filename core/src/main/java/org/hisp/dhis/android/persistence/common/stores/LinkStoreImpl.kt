@@ -28,47 +28,48 @@
 
 package org.hisp.dhis.android.persistence.common.stores
 
-import android.database.sqlite.SQLiteConstraintException
+import android.database.SQLException
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.MapperToDB
-import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.persistence.common.daos.LinkDao
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilder
 
 internal open class LinkStoreImpl<D : CoreObject, P : EntityDB<D>>(
-    protected val linkStoreDao: ObjectDao<P>,
+    override val daoProvider: () -> LinkDao<P>,
     mapper: MapperToDB<D, P>,
     override val builder: LinkSQLStatementBuilder,
-) : LinkStore<D>, ObjectStoreImpl<D, P>(linkStoreDao, mapper, builder) {
+) : LinkStore<D>, ObjectStoreImpl<D, P>(daoProvider, mapper, builder) {
 
     @Throws(RuntimeException::class)
     override suspend fun insertIfNotExists(o: D): HandleAction {
         return try {
             insert(o)
             HandleAction.Insert
-        } catch (e: SQLiteConstraintException) {
+        } catch (e: SQLException) {
             HandleAction.NoAction
         }
     }
 
     @Throws(RuntimeException::class)
     override suspend fun deleteLinksForMasterUid(parentUid: String) {
+        val linkStoreDao = daoProvider()
         CollectionsHelper.isNull(parentUid)
-        val query = builder.deleteLinksForParentUid(parentUid)
-        linkStoreDao.intRawQuery(query)
+        linkStoreDao.deleteLinksForMasterUid(parentUid)
     }
 
     @Throws(RuntimeException::class)
     override suspend fun deleteAllLinks(): Int {
-        val query = builder.deleteTable()
-        return linkStoreDao.intRawQuery(query)
+        val linkStoreDao = daoProvider()
+        return linkStoreDao.deleteLinksForMasterUid()
     }
 
     @Throws(RuntimeException::class)
     override suspend fun selectDistinctSlaves(childColumn: String): Set<String> {
+        val linkStoreDao = daoProvider()
         CollectionsHelper.isNull(childColumn)
         val query = builder.selectDistinctChildren(childColumn)
         return linkStoreDao.stringListRawQuery(query).toSet()
@@ -76,6 +77,7 @@ internal open class LinkStoreImpl<D : CoreObject, P : EntityDB<D>>(
 
     @Throws(RuntimeException::class)
     override suspend fun selectLinksForMasterUid(parentUid: String): List<D> {
+        val linkStoreDao = daoProvider()
         CollectionsHelper.isNull(parentUid)
         val query = builder.selectLinksForParentUid(parentUid)
         val entitiesDB = linkStoreDao.objectListRawQuery(query)

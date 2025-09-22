@@ -316,7 +316,7 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
             .withCompulsoryDataElementOperands()
             .one().blockingGet()
 
-        assertThat(dataSet!!.compulsoryDataElementOperands()!!.size).isEqualTo(2)
+        assertThat(dataSet!!.compulsoryDataElementOperands()!!.size).isEqualTo(3)
     }
 
     @Test

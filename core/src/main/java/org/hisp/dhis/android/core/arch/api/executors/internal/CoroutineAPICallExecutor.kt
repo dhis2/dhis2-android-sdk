@@ -39,7 +39,7 @@ internal interface CoroutineAPICallExecutor {
         block: suspend () -> P,
     ): Result<P, D2Error>
 
-    suspend fun <P> wrapTransactionally(
+    suspend fun <P> wrapTransactionallyRoom(
         cleanForeignKeyErrors: Boolean = true,
         block: suspend () -> P,
     ): P

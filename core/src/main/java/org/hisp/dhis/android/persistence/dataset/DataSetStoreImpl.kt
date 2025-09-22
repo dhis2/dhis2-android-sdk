@@ -28,15 +28,18 @@
 
 package org.hisp.dhis.android.persistence.dataset
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.internal.DataSetStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataSetStoreImpl(
-    val dao: DataSetDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : DataSetStore, IdentifiableObjectStoreImpl<DataSet, DataSetDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().dataSetDao() },
     DataSet::toDB,
     SQLStatementBuilderImpl(DataSetTableInfo.TABLE_INFO),
 )

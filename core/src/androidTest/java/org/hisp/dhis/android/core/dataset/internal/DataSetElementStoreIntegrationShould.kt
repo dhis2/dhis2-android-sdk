@@ -32,15 +32,16 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.dataset.DataSetElementSamples
 import org.hisp.dhis.android.core.dataset.DataSetElement
-import org.hisp.dhis.android.core.dataset.DataSetElementLinkTableInfo
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.dataset.DataSetDataElementLinkStoreImpl
+import org.hisp.dhis.android.persistence.dataset.DataSetDataElementLinkTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class DataSetElementStoreIntegrationShould : LinkStoreAbstractIntegrationShould<DataSetElement> (
-    DataSetElementStoreImpl(TestDatabaseAdapterFactory.get()),
-    DataSetElementLinkTableInfo.TABLE_INFO,
+    DataSetDataElementLinkStoreImpl(TestDatabaseAdapterFactory.get()),
+    DataSetDataElementLinkTableInfo.TABLE_INFO,
     TestDatabaseAdapterFactory.get(),
 ) {
     override fun addMasterUid(): String {

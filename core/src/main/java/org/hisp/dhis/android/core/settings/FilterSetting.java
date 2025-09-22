@@ -28,8 +28,7 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import android.database.Cursor;
-
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -45,7 +44,7 @@ public abstract class FilterSetting implements CoreObject {
     @Nullable
     public abstract String filterType();
 
-    @Nullable
+    @NonNull
     public abstract String uid();
 
     @Nullable
@@ -54,14 +53,10 @@ public abstract class FilterSetting implements CoreObject {
     @Nullable
     public abstract Boolean filter();
 
-    public static FilterSetting create(Cursor cursor) {
-        return $AutoValue_FilterSetting.createFromCursor(cursor);
-    }
-
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new $AutoValue_FilterSetting.Builder();
+        return new AutoValue_FilterSetting.Builder();
     }
 
     @AutoValue.Builder
@@ -71,7 +66,7 @@ public abstract class FilterSetting implements CoreObject {
 
         public abstract Builder filterType(String filterType);
 
-        public abstract Builder uid(String uid);
+        public abstract Builder uid(@NonNull String uid);
 
         public abstract Builder sort(Boolean sort);
 

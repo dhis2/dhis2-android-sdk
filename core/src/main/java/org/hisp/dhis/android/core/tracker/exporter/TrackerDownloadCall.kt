@@ -65,7 +65,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         } else {
             val relatives = RelationshipItemRelatives()
             systemInfoModuleDownloader.downloadWithProgressManager(progressManager)
-            coroutineAPICallExecutor.wrapTransactionally(cleanForeignKeyErrors = true) {
+            coroutineAPICallExecutor.wrapTransactionallyRoom(cleanForeignKeyErrors = true) {
                 downloadInternal(params, progressManager, relatives).collect { v -> send(v) }
                 downloadRelationships(progressManager, relatives).collect { v -> send(v) }
                 send(progressManager.complete())

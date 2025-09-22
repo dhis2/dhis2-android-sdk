@@ -28,12 +28,12 @@
 package org.hisp.dhis.android.network.categoryoption
 
 import org.hisp.dhis.android.core.category.CategoryOption
-import org.hisp.dhis.android.core.category.CategoryOptionTableInfo
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.network.common.fields.AccessFields
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.DataAccessFields
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.persistence.category.CategoryOptionTableInfo
 
 internal object CategoryOptionFields : BaseFields<CategoryOption>() {
     private const val ACCESS = "access"

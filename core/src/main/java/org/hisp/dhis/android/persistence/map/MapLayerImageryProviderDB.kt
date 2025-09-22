@@ -28,7 +28,7 @@ internal data class MapLayerImageryProviderDB(
         return MapLayerImageryProvider.builder()
             .mapLayer(mapLayer)
             .attribution(attribution)
-            .coverageAreas(coverageAreas?.toDomain())
+            .coverageAreas(coverageAreas?.toDomain() ?: emptyList())
             .build()
     }
 }

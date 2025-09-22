@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.dataset.internal.SectionDataElementChildrenApp
 import org.hisp.dhis.android.core.dataset.internal.SectionGreyedFieldsChildrenAppender
 import org.hisp.dhis.android.core.dataset.internal.SectionIndicatorsChildrenAppender
 import org.hisp.dhis.android.core.dataset.internal.SectionStore
+import org.hisp.dhis.android.persistence.dataset.SectionTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

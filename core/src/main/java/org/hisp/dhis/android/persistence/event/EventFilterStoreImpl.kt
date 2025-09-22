@@ -28,15 +28,18 @@
 
 package org.hisp.dhis.android.persistence.event
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.event.EventFilter
 import org.hisp.dhis.android.core.event.internal.EventFilterStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class EventFilterStoreImpl(
-    val dao: EventFilterDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : EventFilterStore, IdentifiableObjectStoreImpl<EventFilter, EventFilterDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().eventFilterDao() },
     EventFilter::toDB,
     SQLStatementBuilderImpl(EventFilterTableInfo.TABLE_INFO),
 )

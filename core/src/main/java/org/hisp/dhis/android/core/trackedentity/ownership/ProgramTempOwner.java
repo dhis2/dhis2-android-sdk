@@ -28,12 +28,8 @@
 
 package org.hisp.dhis.android.core.trackedentity.ownership;
 
-import android.database.Cursor;
-
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
@@ -45,20 +41,14 @@ public abstract class ProgramTempOwner implements CoreObject {
 
     public abstract String trackedEntityInstance();
 
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date validUntil();
 
     public abstract String reason();
 
     public static Builder builder() {
-        return new $$AutoValue_ProgramTempOwner.Builder();
-    }
-
-    public static ProgramTempOwner create(Cursor cursor) {
-        return $AutoValue_ProgramTempOwner.createFromCursor(cursor);
+        return new AutoValue_ProgramTempOwner.Builder();
     }
 
     public abstract Builder toBuilder();

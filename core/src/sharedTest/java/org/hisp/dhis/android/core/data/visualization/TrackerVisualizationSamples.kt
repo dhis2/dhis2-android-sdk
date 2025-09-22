@@ -30,7 +30,10 @@ package org.hisp.dhis.android.core.data.visualization
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.SortingDirection
 import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils
-import org.hisp.dhis.android.core.visualization.*
+import org.hisp.dhis.android.core.visualization.TrackerVisualization
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationOutputType
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationSorting
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationType
 
 internal object TrackerVisualizationSamples {
 
@@ -51,24 +54,6 @@ internal object TrackerVisualizationSamples {
         .program(ObjectWithUid.create(""))
         .programStage(ObjectWithUid.create(""))
         .trackedEntityType(ObjectWithUid.create(""))
-        .columns(
-            listOf(
-                TrackerVisualizationDimension.builder()
-                    .dimension("ou")
-                    .dimensionType("ORGANISATION_UNIT")
-                    .items(listOf(ObjectWithUid.create("USER_ORGUNIT")))
-                    .build(),
-            ),
-        )
-        .filters(
-            listOf(
-                TrackerVisualizationDimension.builder()
-                    .dimension("enrollmentDate")
-                    .dimensionType("PERIOD")
-                    .items(listOf(ObjectWithUid.create("LAST_5_YEARS")))
-                    .build(),
-            ),
-        )
         .sorting(
             listOf(
                 TrackerVisualizationSorting.builder()

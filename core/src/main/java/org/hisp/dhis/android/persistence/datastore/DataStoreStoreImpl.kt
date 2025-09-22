@@ -28,24 +28,41 @@
 
 package org.hisp.dhis.android.persistence.datastore
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.DataStoreEntry
 import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataStoreStoreImpl(
-    val dao: DataStoreDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : DataStoreEntryStore, ObjectWithoutUidStoreImpl<DataStoreEntry, DataStoreDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().dataStoreDao() },
     DataStoreEntry::toDB,
     SQLStatementBuilderImpl(DataStoreTableInfo.TABLE_INFO),
 ) {
     override suspend fun setState(entry: DataStoreEntry, state: State) {
+        val dao = daoProvider() as DataStoreDao
         dao.setSyncState(state.name, entry.namespace(), entry.key())
     }
 
     override suspend fun setStateIfUploading(entry: DataStoreEntry, state: State) {
+        val dao = daoProvider() as DataStoreDao
         dao.setStateIfUploading(state.name, entry.namespace(), entry.key())
+    }
+
+    override suspend fun cleanOrphan(namespace: String, slaves: Collection<DataStoreEntry>?) {
+        val dao = databaseAdapter.getCurrentDatabase().dataStoreDao()
+        val syncStatesToDelete = listOf(State.SYNCED.name, State.SYNCED_VIA_SMS.name)
+
+        if (slaves.isNullOrEmpty()) {
+            dao.deleteByNamespaceAndSyncStates(namespace, syncStatesToDelete)
+        } else {
+            val keysToKeep = slaves.map { it.key() }
+            dao.deleteByNamespaceSyncStatesAndNotInKeys(namespace, syncStatesToDelete, keysToKeep)
+        }
     }
 }

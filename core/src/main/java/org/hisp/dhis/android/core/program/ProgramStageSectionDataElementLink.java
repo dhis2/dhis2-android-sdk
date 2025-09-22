@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.program;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 
 import com.google.auto.value.AutoValue;
@@ -49,10 +47,6 @@ public abstract class ProgramStageSectionDataElementLink implements CoreObject {
 
     public static Builder builder() {
         return new AutoValue_ProgramStageSectionDataElementLink.Builder();
-    }
-
-    public static ProgramStageSectionDataElementLink create(Cursor cursor) {
-        return $AutoValue_ProgramStageSectionDataElementLink.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();

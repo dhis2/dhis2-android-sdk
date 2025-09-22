@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.persistence.valuetypedevicerendering
 
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering
 import org.hisp.dhis.android.core.common.ValueTypeRenderingType
 import org.hisp.dhis.android.persistence.common.EntityDB
@@ -39,10 +38,9 @@ import org.hisp.dhis.android.persistence.common.EntityDB
     primaryKeys = ["uid", "deviceType"],
 )
 internal data class ValueTypeDeviceRenderingDB(
-    @PrimaryKey
-    val uid: String?,
+    val uid: String,
     val objectTable: String?,
-    val deviceType: String?,
+    val deviceType: String,
     val type: String?,
     val min: Int?,
     val max: Int?,
@@ -66,9 +64,9 @@ internal data class ValueTypeDeviceRenderingDB(
 
 internal fun ValueTypeDeviceRendering.toDB(): ValueTypeDeviceRenderingDB {
     return ValueTypeDeviceRenderingDB(
-        uid = uid(),
+        uid = uid()!!,
         objectTable = objectTable(),
-        deviceType = deviceType(),
+        deviceType = deviceType()!!,
         type = type()?.name,
         min = min(),
         max = max(),

@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.category;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -47,10 +45,6 @@ public abstract class CategoryOptionComboCategoryOptionLink implements CoreObjec
 
     public static Builder builder() {
         return new AutoValue_CategoryOptionComboCategoryOptionLink.Builder();
-    }
-
-    public static CategoryOptionComboCategoryOptionLink create(Cursor cursor) {
-        return AutoValue_CategoryOptionComboCategoryOptionLink.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();

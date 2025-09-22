@@ -46,7 +46,7 @@ class ProgramSettingsObjectRepository internal constructor(
         } else {
             val specifics = settings
                 .filter { it.uid() != null }
-                .associateBy { it.uid()!! }
+                .associateBy { it.uid() }
 
             ProgramSettings.builder()
                 .globalSettings(settings.find { it.uid() == null })

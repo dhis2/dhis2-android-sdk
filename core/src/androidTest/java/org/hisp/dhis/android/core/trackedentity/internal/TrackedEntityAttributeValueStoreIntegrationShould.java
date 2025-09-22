@@ -31,9 +31,10 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityAttributeValueSamples;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeValueStoreImpl;
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeValueTableInfo;
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)

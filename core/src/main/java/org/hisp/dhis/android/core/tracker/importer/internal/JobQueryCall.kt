@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPostStateManager
+import org.hisp.dhis.android.persistence.tracker.TrackerJobObjectTableInfo
 import org.koin.core.annotation.Singleton
 import kotlin.time.Duration.Companion.seconds
 
@@ -142,12 +143,12 @@ internal class JobQueryCall internal constructor(
             networkHandler.getJobReport(jobId)
         }.getOrThrow()
 
-        trackerJobObjectStore.deleteWhere(byJobIdClause(jobId))
+        trackerJobObjectStore.deleteByJobUid(jobId)
         handler.handle(jobReport, jobObjects)
     }
 
     private suspend fun handlerError(jobId: String, jobObjects: List<TrackerJobObject>) {
-        trackerJobObjectStore.deleteWhere(byJobIdClause(jobId))
+        trackerJobObjectStore.deleteByJobUid(jobId)
         stateManager.restoreStates(jobObjects)
     }
 

@@ -33,7 +33,6 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import kotlinx.coroutines.rx2.rxCompletable
 import kotlinx.coroutines.rx2.rxSingle
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository.TooManySubmissionsException
 import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType
 import org.koin.core.annotation.Singleton
@@ -85,10 +84,7 @@ internal class OngoingSubmissionsStore(
             Completable.error(IllegalArgumentException("Wrong submission id"))
         } else {
             rxCompletable {
-                val whereClause = WhereClauseBuilder()
-                    .appendKeyStringValue(SMSOngoingSubmissionTableInfo.Columns.SUBMISSION_ID, id)
-                    .build()
-                smsOngoingSubmissionStore.deleteWhereIfExists(whereClause)
+                smsOngoingSubmissionStore.deleteSubmissionIfExists(id)
                 updateOngoingSubmissions()
             }
         }

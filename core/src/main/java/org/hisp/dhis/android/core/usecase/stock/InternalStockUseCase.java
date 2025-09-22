@@ -28,15 +28,11 @@
 
 package org.hisp.dhis.android.core.usecase.stock;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreInternalStockUseCaseTransactionListColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
@@ -67,17 +63,12 @@ public abstract class InternalStockUseCase implements CoreObject, ObjectWithUidI
     public abstract String stockOnHand();
 
     @Nullable
-    @ColumnAdapter(IgnoreInternalStockUseCaseTransactionListColumnAdapter.class)
     public abstract List<InternalStockUseCaseTransaction> transactions();
-
-    public static InternalStockUseCase create(Cursor cursor) {
-        return AutoValue_InternalStockUseCase.createFromCursor(cursor);
-    }
 
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new $$AutoValue_InternalStockUseCase.Builder();
+        return new AutoValue_InternalStockUseCase.Builder();
     }
 
     @AutoValue.Builder

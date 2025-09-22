@@ -43,7 +43,9 @@ import org.hisp.dhis.android.core.dataset.internal.DataSetStore
 import org.hisp.dhis.android.core.indicator.internal.DataSetIndicatorChildrenAppender
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.period.PeriodType
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
+import org.hisp.dhis.android.persistence.dataset.DataSetOrganisationUnitLinkTableInfo
+import org.hisp.dhis.android.persistence.dataset.DataSetTableInfo
+import org.hisp.dhis.android.persistence.user.UserOrganisationUnitTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -170,9 +172,9 @@ class DataSetCollectionRepository internal constructor(
             DataSetOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
             DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET,
             DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
-            UserOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
-            UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
-            UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT_SCOPE,
+            UserOrganisationUnitTableInfo.TABLE_INFO.name(),
+            UserOrganisationUnitTableInfo.Columns.ORGANISATION_UNIT,
+            UserOrganisationUnitTableInfo.Columns.ORGANISATION_UNIT_SCOPE,
             listOf(scope.name),
         )
     }

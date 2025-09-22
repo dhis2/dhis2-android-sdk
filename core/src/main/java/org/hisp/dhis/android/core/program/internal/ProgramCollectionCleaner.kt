@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.program.internal
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.program.Program
-import org.hisp.dhis.android.core.program.ProgramTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

@@ -80,6 +80,7 @@ class MigrationProcessor(
             migrationNames += name
 
             val lines = f.readLines()
+                .map { it.trim() }
                 .filter { !it.startsWith("#") }
                 .filter { it.isNotBlank() }
 

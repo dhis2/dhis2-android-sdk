@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.trackedentity
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
@@ -36,12 +37,14 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.persistence.common.querybuilders.IdentifiableDeletableDataObjectSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableDeletableDataObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class TrackedEntityInstanceStoreImpl(
-    private val dao: TrackedEntityInstanceDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : TrackedEntityInstanceStore,
     IdentifiableDeletableDataObjectStoreImpl<TrackedEntityInstance, TrackedEntityInstanceDB>(
-        dao,
+        { databaseAdapter.getCurrentDatabase().trackedEntityInstanceDao() },
         TrackedEntityInstance::toDB,
         IdentifiableDeletableDataObjectSQLStatementBuilderImpl(TrackedEntityInstanceTableInfo.TABLE_INFO),
     ) {
@@ -76,6 +79,7 @@ internal class TrackedEntityInstanceStoreImpl(
     }
 
     override suspend fun setAggregatedSyncState(uid: String, state: State): Int {
+        val dao = daoProvider() as TrackedEntityInstanceDao
         return dao.setAggregatedSyncState(state.name, uid)
     }
 }

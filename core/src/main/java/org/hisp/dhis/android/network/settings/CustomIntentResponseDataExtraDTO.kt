@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,17 +26,23 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program
+package org.hisp.dhis.android.network.settings
 
-import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
-import org.koin.core.annotation.ComponentScan
-import org.koin.core.annotation.Factory
-import org.koin.core.annotation.Module
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.settings.CustomIntentResponseDataExtra
+import org.hisp.dhis.android.core.settings.CustomIntentResponseExtraType
 
-@Module
-@ComponentScan
-internal class ProgramDIModule {
-
-    @Factory
-    fun programDataDownloadParams(): ProgramDataDownloadParams = ProgramDataDownloadParams.builder().build()
+@Serializable
+internal data class CustomIntentResponseDataExtraDTO(
+    val extraName: String,
+    val extraType: String,
+    val key: String?,
+) {
+    fun toDomain(): CustomIntentResponseDataExtra {
+        return CustomIntentResponseDataExtra.builder()
+            .extraName(extraName)
+            .extraType(CustomIntentResponseExtraType.valueOf(extraType))
+            .key(key)
+            .build()
+    }
 }

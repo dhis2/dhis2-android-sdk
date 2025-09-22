@@ -41,8 +41,18 @@
       },
       "response": {
         "data": {
-          "argument": "registration",
-          "path": "guid"
+          "extras": [
+            {
+              "extraName": "registration",
+              "extraType": "OBJECT",
+              "key": "guid"
+            },
+            {
+              "extraName": "otherExtra",
+              "extraType": "STRING",
+              "key": "otherKey"
+            }
+          ]
         }
       }
     },
@@ -82,8 +92,13 @@
       },
       "response": {
         "data": {
-          "argument": "registration",
-          "path": "guid"
+          "extras": [
+            {
+              "extraName": "registration",
+              "extraType": "BOOLEAN",
+              "key": "guid"
+            }
+          ]
         }
       }
     }

@@ -36,17 +36,13 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class ProgramSettingCall(
     private val programSettingHandler: ProgramSettingHandler,
-    private val settingAppService: SettingAppService,
+    private val networkHandler: SettingsNetworkHandler,
     coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val appVersionManager: SettingsAppInfoManager,
 ) : BaseSettingCall<ProgramSettings>(coroutineAPICallExecutor) {
 
     override suspend fun tryFetch(storeError: Boolean): Result<ProgramSettings, D2Error> {
-        return coroutineAPICallExecutor.wrap(storeError = storeError) {
-            settingAppService.programSettings(
-                appVersionManager.getDataStoreVersion(),
-            )
-        }
+        return networkHandler.programSettings(appVersionManager.getDataStoreVersion(), storeError)
     }
 
     override suspend fun process(item: ProgramSettings?) {

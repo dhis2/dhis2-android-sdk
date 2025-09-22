@@ -112,13 +112,13 @@ class TrackedEntityInstanceDownloader internal constructor(
     fun byFilterUids(): ListFilterConnector<TrackedEntityInstanceDownloader, String> =
         connectorFactory.listConnector { filterUids -> params.toBuilder().filterUids(filterUids).build() }
 
-    fun byTrackedEntityInstanceFilter(filter: TrackedEntityInstanceFilter): TrackedEntityInstanceDownloader =
-        connectorFactory.eqConnector<TrackedEntityInstanceFilter> { trackedEntityInstanceFilter ->
-            params.toBuilder().trackedEntityInstanceFilter(trackedEntityInstanceFilter).build()
-        }.eq(filter)
+    fun byTrackedEntityInstanceFilters(filters: List<TrackedEntityInstanceFilter>): TrackedEntityInstanceDownloader =
+        connectorFactory.listConnector { teiFilters ->
+            params.toBuilder().trackedEntityInstanceFilters(teiFilters).build()
+        }.`in`(filters)
 
-    fun byProgramStageWorkingList(workingList: ProgramStageWorkingList): TrackedEntityInstanceDownloader =
-        connectorFactory.eqConnector<ProgramStageWorkingList> { programStageWorkingList ->
-            params.toBuilder().programStageWorkingList(programStageWorkingList).build()
-        }.eq(workingList)
+    fun byProgramStageWorkingLists(workingLists: List<ProgramStageWorkingList>): TrackedEntityInstanceDownloader =
+        connectorFactory.listConnector { programStageWorkingLists ->
+            params.toBuilder().programStageWorkingLists(programStageWorkingLists).build()
+        }.`in`(workingLists)
 }

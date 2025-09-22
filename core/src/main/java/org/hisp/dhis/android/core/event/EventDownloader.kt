@@ -91,8 +91,8 @@ class EventDownloader internal constructor(
     fun byFilterUids(): ListFilterConnector<EventDownloader, String> =
         connectorFactory.listConnector { filterUids -> params.toBuilder().filterUids(filterUids).build() }
 
-    fun byEventFilter(filter: EventFilter): EventDownloader =
-        connectorFactory.eqConnector<EventFilter> { eventFilter ->
-            params.toBuilder().eventFilter(eventFilter).build()
-        }.eq(filter)
+    fun byEventFilters(filters: List<EventFilter>): EventDownloader =
+        connectorFactory.listConnector { eventFilters ->
+            params.toBuilder().eventFilters(eventFilters).build()
+        }.`in`(filters)
 }

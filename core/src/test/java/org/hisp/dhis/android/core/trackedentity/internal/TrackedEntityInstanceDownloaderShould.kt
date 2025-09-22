@@ -129,22 +129,24 @@ class TrackedEntityInstanceDownloaderShould {
     @Test
     fun should_parse_tracked_entity_instance_filter_params() {
         val trackedEntityInstanceFilter: TrackedEntityInstanceFilter = mock()
-        downloader.byTrackedEntityInstanceFilter(trackedEntityInstanceFilter).download()
+        downloader.byTrackedEntityInstanceFilters(listOf(trackedEntityInstanceFilter)).download()
 
         verify(call).download(paramsCapture.capture())
 
         val params = paramsCapture.firstValue
-        assertThat(params.trackedEntityInstanceFilter()).isEqualTo(trackedEntityInstanceFilter)
+        assertThat(params.trackedEntityInstanceFilters()).isEqualTo(listOf(trackedEntityInstanceFilter))
     }
 
     @Test
     fun should_parse_program_stage_working_list_params() {
-        val programStageWorkingList: ProgramStageWorkingList = mock()
-        downloader.byProgramStageWorkingList(programStageWorkingList).download()
+        val programStageWorkingList1: ProgramStageWorkingList = mock()
+        val programStageWorkingList2: ProgramStageWorkingList = mock()
+        downloader.byProgramStageWorkingLists(listOf(programStageWorkingList1, programStageWorkingList2)).download()
 
         verify(call).download(paramsCapture.capture())
 
         val params = paramsCapture.firstValue
-        assertThat(params.programStageWorkingList()).isEqualTo(programStageWorkingList)
+        assertThat(params.programStageWorkingLists())
+            .isEqualTo(listOf(programStageWorkingList1, programStageWorkingList2))
     }
 }

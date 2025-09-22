@@ -89,13 +89,13 @@ public abstract class ProgramDataDownloadParams implements BaseScope {
     public abstract List<String> filterUids();
 
     @Nullable
-    public abstract TrackedEntityInstanceFilter trackedEntityInstanceFilter();
+    public abstract List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters();
 
     @Nullable
-    public abstract ProgramStageWorkingList programStageWorkingList();
+    public abstract List<ProgramStageWorkingList> programStageWorkingLists();
 
     @Nullable
-    public abstract EventFilter eventFilter();
+    public abstract List<EventFilter> eventFilters();
 
     public static Builder builder() {
         return new AutoValue_ProgramDataDownloadParams.Builder()
@@ -134,11 +134,11 @@ public abstract class ProgramDataDownloadParams implements BaseScope {
 
         public abstract Builder filterUids(List<String> filterUids);
 
-        public abstract Builder trackedEntityInstanceFilter(TrackedEntityInstanceFilter trackedEntityInstanceFilter);
+        public abstract Builder trackedEntityInstanceFilters(List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters);
 
-        public abstract Builder programStageWorkingList(ProgramStageWorkingList programStageWorkingList);
+        public abstract Builder programStageWorkingLists(List<ProgramStageWorkingList> programStageWorkingLists);
 
-        public abstract Builder eventFilter(EventFilter eventFilter);
+        public abstract Builder eventFilters(List<EventFilter> eventFilters);
 
         public abstract ProgramDataDownloadParams build();
     }

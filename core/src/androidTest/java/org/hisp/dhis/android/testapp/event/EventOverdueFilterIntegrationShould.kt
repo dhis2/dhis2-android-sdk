@@ -139,7 +139,7 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             .blockingGet()
 
         val scheduleUids = filterOutExistingEvents(scheduleEvents.map { it.uid() })
-        assertThat(scheduleEvents.size).isEqualTo(2)
+        assertThat(scheduleUids.size).isEqualTo(2)
         assertThat(scheduleUids).containsExactly(overdueTestUid1, scheduleTestUid)
     }
 

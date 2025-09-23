@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory
@@ -148,18 +149,41 @@ class EventStatusFilterConnector internal constructor(
     }
 
     private fun buildOverdueCondition(negated: Boolean): String {
-        val condition = "(" +
-            "${EventTableInfo.Columns.EVENT_DATE} IS NULL " +
-            "AND ${EventTableInfo.Columns.STATUS} IN ('${EventStatus.SCHEDULE.name}', '${EventStatus.OVERDUE.name}') " +
-            "AND date(${EventTableInfo.Columns.DUE_DATE}) < '$currentDateString'" +
-            ")"
-        return if (negated) {
-            "(" +
-            "${EventTableInfo.Columns.EVENT_DATE} IS NOT NULL " +
-            "OR ${EventTableInfo.Columns.STATUS} NOT IN ('${EventStatus.SCHEDULE.name}', '${EventStatus.OVERDUE.name}') " +
-            "OR date(${EventTableInfo.Columns.DUE_DATE}) >= '$currentDateString'" +
-            ")"
-        } else condition
+        if (negated) {
+            // NOT OVERDUE: has event_date OR not schedule/overdue status OR due_date >= current_date
+            val innerClause1 = WhereClauseBuilder()
+                .appendIsNotNullValue(EventTableInfo.Columns.EVENT_DATE)
+                .build()
+
+            val innerClause2 = WhereClauseBuilder()
+                .appendNotInKeyStringValues(
+                    EventTableInfo.Columns.STATUS,
+                    listOf(EventStatus.SCHEDULE.name, EventStatus.OVERDUE.name)
+                )
+                .build()
+
+            val innerClause3 = WhereClauseBuilder()
+                .appendKeyGreaterOrEqStringValue(
+                    "date(${EventTableInfo.Columns.DUE_DATE})",
+                    currentDateString
+                )
+                .build()
+
+            return "($innerClause1 OR $innerClause2 OR $innerClause3)"
+        } else {
+            // OVERDUE: no event_date AND status in (schedule, overdue) AND due_date < current_date
+            return WhereClauseBuilder()
+                .appendIsNullValue(EventTableInfo.Columns.EVENT_DATE)
+                .appendInKeyEnumValues(
+                    EventTableInfo.Columns.STATUS,
+                    listOf(EventStatus.SCHEDULE, EventStatus.OVERDUE)
+                )
+                .appendKeyLessThanStringValue(
+                    "date(${EventTableInfo.Columns.DUE_DATE})",
+                    currentDateString
+                )
+                .build()
+        }
     }
 
     private fun getCommaSeparatedValues(values: Collection<EventStatus>): String {

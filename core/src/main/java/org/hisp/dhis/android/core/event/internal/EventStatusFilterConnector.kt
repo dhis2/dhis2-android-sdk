@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.event.internal
 
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
@@ -36,7 +37,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositorySco
 import org.hisp.dhis.android.core.event.EventCollectionRepository
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.event.EventTableInfo
-import java.util.*
+import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 
 class EventStatusFilterConnector internal constructor(
     private val repositoryFactory: BaseRepositoryFactory<EventCollectionRepository>,
@@ -136,7 +137,7 @@ class EventStatusFilterConnector internal constructor(
     }
 
     private val currentDateString: String
-        get() = DateUtils.SIMPLE_DATE_FORMAT.format(Date())
+        get() = DateUtils.SIMPLE_DATE_FORMAT.format(ClockProviderFactory.clockProvider.clock.now().toJavaDate())
 
     private fun buildOverdueWhereClause(): String {
         return buildOverdueCondition(negated = false)
@@ -152,7 +153,13 @@ class EventStatusFilterConnector internal constructor(
             "AND ${EventTableInfo.Columns.STATUS} IN ('${EventStatus.SCHEDULE.name}', '${EventStatus.OVERDUE.name}') " +
             "AND date(${EventTableInfo.Columns.DUE_DATE}) < '$currentDateString'" +
             ")"
-        return if (negated) "NOT $condition" else condition
+        return if (negated) {
+            "(" +
+            "${EventTableInfo.Columns.EVENT_DATE} IS NOT NULL " +
+            "OR ${EventTableInfo.Columns.STATUS} NOT IN ('${EventStatus.SCHEDULE.name}', '${EventStatus.OVERDUE.name}') " +
+            "OR date(${EventTableInfo.Columns.DUE_DATE}) >= '$currentDateString'" +
+            ")"
+        } else condition
     }
 
     private fun getCommaSeparatedValues(values: Collection<EventStatus>): String {

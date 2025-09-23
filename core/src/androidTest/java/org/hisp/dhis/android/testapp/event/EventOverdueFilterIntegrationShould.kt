@@ -79,7 +79,6 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
 
         @JvmStatic
         private fun createTestEvents() {
-
             overdueTestUid1 = d2.eventModule().events().add(eventCreateProjection).blockingGet()
             d2.eventModule().events().uid(overdueTestUid1).setStatus(EventStatus.SCHEDULE)
             d2.eventModule().events().uid(overdueTestUid1).setDueDate(yesterday)

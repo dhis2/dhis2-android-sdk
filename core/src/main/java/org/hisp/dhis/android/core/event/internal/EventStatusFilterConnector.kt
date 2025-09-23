@@ -99,7 +99,10 @@ class EventStatusFilterConnector internal constructor(
         return createComplexFilterRepository(buildNotOverdueWhereClause())
     }
 
-    private fun handleStatusCollection(values: Collection<EventStatus>?, inclusion: Boolean): EventCollectionRepository {
+    private fun handleStatusCollection(
+        values: Collection<EventStatus>?,
+        inclusion: Boolean,
+    ): EventCollectionRepository {
         if (values.isNullOrEmpty()) {
             return if (inclusion) standardConnector.`in`(values) else standardConnector.notIn(values)
         }
@@ -111,21 +114,34 @@ class EventStatusFilterConnector internal constructor(
             containsOverdue && nonOverdueStatuses.isNotEmpty() -> {
                 handleMixedStatusCollection(nonOverdueStatuses, inclusion)
             }
+
             containsOverdue -> {
                 if (inclusion) createOverdueFilterRepository() else createNotOverdueFilterRepository()
             }
+
             else -> {
-                if (inclusion) standardConnector.`in`(nonOverdueStatuses) else standardConnector.notIn(nonOverdueStatuses)
+                if (inclusion) {
+                    standardConnector.`in`(nonOverdueStatuses)
+                } else {
+                    standardConnector.notIn(nonOverdueStatuses)
+                }
             }
         }
     }
 
-    private fun handleMixedStatusCollection(nonOverdueStatuses: List<EventStatus>, inclusion: Boolean): EventCollectionRepository {
+    private fun handleMixedStatusCollection(
+        nonOverdueStatuses: List<EventStatus>,
+        inclusion: Boolean,
+    ): EventCollectionRepository {
         val operator = if (inclusion) "IN" else "NOT IN"
         val logicalOperator = if (inclusion) "OR" else "AND"
         val overdueClause = if (inclusion) buildOverdueWhereClause() else buildNotOverdueWhereClause()
 
-        val nonOverdueClause = "${EventTableInfo.Columns.STATUS} $operator (${getCommaSeparatedValues(nonOverdueStatuses)})"
+        val nonOverdueClause = "${EventTableInfo.Columns.STATUS} $operator (${
+            getCommaSeparatedValues(
+                nonOverdueStatuses,
+            )
+        })"
         return createComplexFilterRepository("($nonOverdueClause $logicalOperator $overdueClause)")
     }
 
@@ -158,14 +174,14 @@ class EventStatusFilterConnector internal constructor(
             val innerClause2 = WhereClauseBuilder()
                 .appendNotInKeyStringValues(
                     EventTableInfo.Columns.STATUS,
-                    listOf(EventStatus.SCHEDULE.name, EventStatus.OVERDUE.name)
+                    listOf(EventStatus.SCHEDULE.name, EventStatus.OVERDUE.name),
                 )
                 .build()
 
             val innerClause3 = WhereClauseBuilder()
                 .appendKeyGreaterOrEqStringValue(
                     "date(${EventTableInfo.Columns.DUE_DATE})",
-                    currentDateString
+                    currentDateString,
                 )
                 .build()
 
@@ -176,11 +192,11 @@ class EventStatusFilterConnector internal constructor(
                 .appendIsNullValue(EventTableInfo.Columns.EVENT_DATE)
                 .appendInKeyEnumValues(
                     EventTableInfo.Columns.STATUS,
-                    listOf(EventStatus.SCHEDULE, EventStatus.OVERDUE)
+                    listOf(EventStatus.SCHEDULE, EventStatus.OVERDUE),
                 )
                 .appendKeyLessThanStringValue(
                     "date(${EventTableInfo.Columns.DUE_DATE})",
-                    currentDateString
+                    currentDateString,
                 )
                 .build()
         }

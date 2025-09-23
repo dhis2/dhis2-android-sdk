@@ -109,7 +109,7 @@ class TrackedEntityInstanceDownloader internal constructor(
             params.toBuilder().overwrite(overwrite).build()
         }.eq(overwrite)
 
-    fun byFilterUids(): ListFilterConnector<TrackedEntityInstanceDownloader, String> =
+    fun byFilterUid(): ListFilterConnector<TrackedEntityInstanceDownloader, String> =
         connectorFactory.listConnector { filterUids -> params.toBuilder().filterUids(filterUids).build() }
 
     fun byTrackedEntityInstanceFilter(): ListFilterConnector<

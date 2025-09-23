@@ -104,7 +104,7 @@ class TrackedEntityInstanceDownloaderShould {
 
     @Test
     fun should_parse_filter_uid_eq_params() {
-        downloader.byFilterUids().eq("filterUid").download()
+        downloader.byFilterUid().eq("filterUid").download()
 
         verify(call).download(paramsCapture.capture())
 
@@ -115,7 +115,7 @@ class TrackedEntityInstanceDownloaderShould {
 
     @Test
     fun should_parse_filter_uid_in_params() {
-        downloader.byFilterUids().`in`("filterUid0", "filterUid1", "filterUid2").download()
+        downloader.byFilterUid().`in`("filterUid0", "filterUid1", "filterUid2").download()
 
         verify(call).download(paramsCapture.capture())
 

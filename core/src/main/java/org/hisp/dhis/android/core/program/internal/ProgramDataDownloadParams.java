@@ -134,7 +134,8 @@ public abstract class ProgramDataDownloadParams implements BaseScope {
 
         public abstract Builder filterUids(List<String> filterUids);
 
-        public abstract Builder trackedEntityInstanceFilters(List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters);
+        public abstract Builder trackedEntityInstanceFilters(
+                List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters);
 
         public abstract Builder programStageWorkingLists(List<ProgramStageWorkingList> programStageWorkingLists);
 

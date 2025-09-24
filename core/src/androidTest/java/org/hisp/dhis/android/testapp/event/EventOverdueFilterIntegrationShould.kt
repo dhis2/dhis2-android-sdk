@@ -146,12 +146,13 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
 
         @JvmStatic
         private fun getFilteredEventUids(
-            queryBuilder: (org.hisp.dhis.android.core.event.EventCollectionRepository) -> org.hisp.dhis.android.core.event.EventCollectionRepository
+            queryBuilder: (
+                org.hisp.dhis.android.core.event.EventCollectionRepository,
+            ) -> org.hisp.dhis.android.core.event.EventCollectionRepository,
         ): List<String> {
             val events = queryBuilder(d2.eventModule().events()).blockingGet()
             return filterOutExistingEvents(events.map { it.uid() })
         }
-
     }
 
     // Common UID sets for reuse in assertions
@@ -159,20 +160,20 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
         get() = listOf(
             overdueScheduleStatusUid,
             overdueOverdueStatusUid,
-            overdueScheduleStatusUid2
+            overdueScheduleStatusUid2,
         )
 
     private val scheduleEventUids
         get() = listOf(
             scheduleScheduleStatusUid,
-            scheduleOverdueStatusUid
+            scheduleOverdueStatusUid,
         )
 
     private val regularStatusEventUids
         get() = listOf(
             activeTestUid,
             completedTestUid,
-            skippedTestUid
+            skippedTestUid,
         )
 
     private val nonOverdueEventUids
@@ -181,7 +182,7 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             scheduleOverdueStatusUid,
             activeTestUid,
             completedTestUid,
-            skippedTestUid
+            skippedTestUid,
         )
 
     private val nonScheduleEventUids
@@ -191,7 +192,7 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             overdueScheduleStatusUid2,
             activeTestUid,
             completedTestUid,
-            skippedTestUid
+            skippedTestUid,
         )
 
     private val allTestEventUids
@@ -203,7 +204,7 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             overdueScheduleStatusUid2,
             activeTestUid,
             completedTestUid,
-            skippedTestUid
+            skippedTestUid,
         )
 
     @Test
@@ -219,7 +220,7 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             activeTestUid,
             overdueScheduleStatusUid,
             overdueOverdueStatusUid,
-            overdueScheduleStatusUid2
+            overdueScheduleStatusUid2,
         )
     }
 
@@ -254,7 +255,7 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             scheduleScheduleStatusUid,
             scheduleOverdueStatusUid,
             completedTestUid,
-            skippedTestUid
+            skippedTestUid,
         )
     }
 
@@ -278,7 +279,7 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             scheduleOverdueStatusUid,
             overdueOverdueStatusUid,
             scheduleScheduleStatusUid,
-            overdueScheduleStatusUid2
+            overdueScheduleStatusUid2,
         )
     }
 
@@ -295,7 +296,7 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             scheduleScheduleStatusUid,
             overdueScheduleStatusUid2,
             activeTestUid,
-            completedTestUid
+            completedTestUid,
         )
     }
 
@@ -312,7 +313,7 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
         }
         assertThat(eventUids).containsExactly(
             completedTestUid,
-            skippedTestUid
+            skippedTestUid,
         )
     }
 
@@ -350,7 +351,7 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             overdueOverdueStatusUid,
             scheduleScheduleStatusUid,
             overdueScheduleStatusUid2,
-            activeTestUid
+            activeTestUid,
         )
     }
 

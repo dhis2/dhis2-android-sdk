@@ -152,8 +152,11 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             .blockingGet()
 
         val overdueUids = filterOutExistingEvents(overdueEvents.map { it.uid() })
-        assertThat(overdueUids).containsExactly(overdueScheduleStatusUid, overdueOverdueStatusUid, overdueScheduleStatusUid2)
-        // scheduleOverdueStatusUid has OVERDUE status but future due date, so it's logically SCHEDULE
+        assertThat(overdueUids).containsExactly(
+            overdueScheduleStatusUid,
+            overdueOverdueStatusUid,
+            overdueScheduleStatusUid2,
+        )
     }
 
     @Test
@@ -163,14 +166,12 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             .blockingGet()
 
         val eventUids = filterOutExistingEvents(events.map { it.uid() })
-        assertThat(eventUids.size).isEqualTo(4)
         assertThat(eventUids).containsExactly(
             activeTestUid,
             overdueScheduleStatusUid,
             overdueOverdueStatusUid,
-            overdueScheduleStatusUid2
+            overdueScheduleStatusUid2,
         )
-        // scheduleOverdueStatusUid is logically SCHEDULE due to future due date
     }
 
     @Test
@@ -180,12 +181,7 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             .blockingGet()
 
         val scheduleUids = filterOutExistingEvents(scheduleEvents.map { it.uid() })
-        assertThat(scheduleUids.size).isEqualTo(2)
         assertThat(scheduleUids).containsExactly(scheduleScheduleStatusUid, scheduleOverdueStatusUid)
-        // Should not include events with past due dates (considered overdue)
-        assertThat(scheduleUids).doesNotContain(overdueScheduleStatusUid2) // logically OVERDUE (past due date)
-        assertThat(scheduleUids).doesNotContain(overdueScheduleStatusUid) // logically OVERDUE (past due date)
-        // scheduleOverdueStatusUid has OVERDUE status but future due date, so it's logically SCHEDULE
     }
 
     @Test
@@ -205,13 +201,13 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             .blockingGet()
 
         val nonOverdueUids = filterOutExistingEvents(nonOverdueEvents.map { it.uid() })
-        assertThat(nonOverdueUids).doesNotContain(overdueScheduleStatusUid2) // now logically OVERDUE (past due date)
-        assertThat(nonOverdueUids).contains(scheduleScheduleStatusUid)
-        assertThat(nonOverdueUids).contains(activeTestUid)
-        assertThat(nonOverdueUids).contains(completedTestUid)
-        assertThat(nonOverdueUids).contains(skippedTestUid)
-        assertThat(nonOverdueUids).doesNotContain(overdueScheduleStatusUid)
-        assertThat(nonOverdueUids).doesNotContain(overdueOverdueStatusUid)
+        assertThat(nonOverdueUids).containsExactly(
+            scheduleScheduleStatusUid,
+            scheduleOverdueStatusUid,
+            activeTestUid,
+            completedTestUid,
+            skippedTestUid,
+        )
     }
 
     @Test
@@ -221,13 +217,13 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             .blockingGet()
 
         val nonOverdueUids = filterOutExistingEvents(nonOverdueEvents.map { it.uid() })
-        assertThat(nonOverdueUids).doesNotContain(overdueScheduleStatusUid2) // now logically OVERDUE (past due date)
-        assertThat(nonOverdueUids).contains(scheduleScheduleStatusUid)
-        assertThat(nonOverdueUids).contains(activeTestUid)
-        assertThat(nonOverdueUids).contains(completedTestUid)
-        assertThat(nonOverdueUids).contains(skippedTestUid)
-        assertThat(nonOverdueUids).doesNotContain(overdueScheduleStatusUid)
-        assertThat(nonOverdueUids).doesNotContain(overdueOverdueStatusUid)
+        assertThat(nonOverdueUids).containsExactly(
+            scheduleScheduleStatusUid,
+            scheduleOverdueStatusUid,
+            activeTestUid,
+            completedTestUid,
+            skippedTestUid,
+        )
     }
 
     @Test
@@ -237,13 +233,12 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             .blockingGet()
 
         val filteredUids = filterOutExistingEvents(filteredEvents.map { it.uid() })
-        assertThat(filteredUids).doesNotContain(overdueScheduleStatusUid2)
-        assertThat(filteredUids).contains(scheduleScheduleStatusUid)
-        assertThat(filteredUids).contains(completedTestUid)
-        assertThat(filteredUids).contains(skippedTestUid)
-        assertThat(filteredUids).doesNotContain(overdueScheduleStatusUid)
-        assertThat(filteredUids).contains(scheduleOverdueStatusUid)
-        assertThat(filteredUids).doesNotContain(activeTestUid)
+        assertThat(filteredUids).containsExactly(
+            scheduleScheduleStatusUid,
+            scheduleOverdueStatusUid,
+            completedTestUid,
+            skippedTestUid,
+        )
     }
 
     @Test
@@ -253,14 +248,14 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             .blockingGet()
 
         val nonScheduleUids = filterOutExistingEvents(nonScheduleEvents.map { it.uid() })
-        assertThat(nonScheduleUids).contains(overdueScheduleStatusUid)
-        assertThat(nonScheduleUids).doesNotContain(scheduleOverdueStatusUid)
-        assertThat(nonScheduleUids).contains(overdueOverdueStatusUid)
-        assertThat(nonScheduleUids).contains(activeTestUid)
-        assertThat(nonScheduleUids).contains(completedTestUid)
-        assertThat(nonScheduleUids).contains(skippedTestUid)
-        assertThat(nonScheduleUids).contains(overdueScheduleStatusUid2)
-        assertThat(nonScheduleUids).doesNotContain(scheduleScheduleStatusUid)
+        assertThat(nonScheduleUids).containsExactly(
+            overdueScheduleStatusUid,
+            overdueOverdueStatusUid,
+            overdueScheduleStatusUid2,
+            activeTestUid,
+            completedTestUid,
+            skippedTestUid,
+        )
     }
 
     @Test
@@ -270,14 +265,14 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             .blockingGet()
 
         val nonScheduleUids = filterOutExistingEvents(nonScheduleEvents.map { it.uid() })
-        assertThat(nonScheduleUids).contains(overdueScheduleStatusUid)
-        assertThat(nonScheduleUids).doesNotContain(scheduleOverdueStatusUid)
-        assertThat(nonScheduleUids).contains(overdueOverdueStatusUid)
-        assertThat(nonScheduleUids).contains(activeTestUid)
-        assertThat(nonScheduleUids).contains(completedTestUid)
-        assertThat(nonScheduleUids).contains(skippedTestUid)
-        assertThat(nonScheduleUids).contains(overdueScheduleStatusUid2)
-        assertThat(nonScheduleUids).doesNotContain(scheduleScheduleStatusUid)
+        assertThat(nonScheduleUids).containsExactly(
+            overdueScheduleStatusUid,
+            overdueOverdueStatusUid,
+            overdueScheduleStatusUid2,
+            activeTestUid,
+            completedTestUid,
+            skippedTestUid,
+        )
     }
 
     @Test
@@ -287,14 +282,13 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             .blockingGet()
 
         val eventUids = filterOutExistingEvents(events.map { it.uid() })
-        assertThat(eventUids).contains(overdueScheduleStatusUid)
-        assertThat(eventUids).contains(scheduleOverdueStatusUid) // logically SCHEDULE, included in mixed collections
-        assertThat(eventUids).contains(overdueOverdueStatusUid)
-        assertThat(eventUids).contains(scheduleScheduleStatusUid)
-        assertThat(eventUids).contains(overdueScheduleStatusUid2) // included because it matches OVERDUE logic despite SCHEDULE status
-        assertThat(eventUids).doesNotContain(activeTestUid)
-        assertThat(eventUids).doesNotContain(completedTestUid)
-        assertThat(eventUids).doesNotContain(skippedTestUid)
+        assertThat(eventUids).containsExactly(
+            overdueScheduleStatusUid,
+            scheduleOverdueStatusUid,
+            overdueOverdueStatusUid,
+            scheduleScheduleStatusUid,
+            overdueScheduleStatusUid2,
+        )
     }
 
     @Test
@@ -305,14 +299,15 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             .blockingGet()
 
         val eventUids = filterOutExistingEvents(events.map { it.uid() })
-        assertThat(eventUids).contains(overdueScheduleStatusUid)
-        assertThat(eventUids).contains(scheduleOverdueStatusUid) // logically SCHEDULE, included in mixed collections
-        assertThat(eventUids).contains(overdueOverdueStatusUid)
-        assertThat(eventUids).contains(scheduleScheduleStatusUid)
-        assertThat(eventUids).contains(overdueScheduleStatusUid2) // included because it matches OVERDUE logic despite SCHEDULE status
-        assertThat(eventUids).contains(activeTestUid)
-        assertThat(eventUids).contains(completedTestUid)
-        assertThat(eventUids).doesNotContain(skippedTestUid)
+        assertThat(eventUids).containsExactly(
+            overdueScheduleStatusUid,
+            scheduleOverdueStatusUid,
+            overdueOverdueStatusUid,
+            scheduleScheduleStatusUid,
+            overdueScheduleStatusUid2,
+            activeTestUid,
+            completedTestUid,
+        )
     }
 
     @Test
@@ -322,14 +317,11 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             .blockingGet()
 
         val eventUids = filterOutExistingEvents(events.map { it.uid() })
-        assertThat(eventUids).contains(activeTestUid)
-        assertThat(eventUids).contains(completedTestUid)
-        assertThat(eventUids).contains(skippedTestUid)
-        assertThat(eventUids).doesNotContain(overdueScheduleStatusUid)
-        assertThat(eventUids).doesNotContain(scheduleOverdueStatusUid) // logically SCHEDULE
-        assertThat(eventUids).doesNotContain(overdueOverdueStatusUid)
-        assertThat(eventUids).doesNotContain(overdueScheduleStatusUid2)
-        assertThat(eventUids).doesNotContain(scheduleScheduleStatusUid)
+        assertThat(eventUids).containsExactly(
+            activeTestUid,
+            completedTestUid,
+            skippedTestUid,
+        )
     }
 
     @Test
@@ -339,14 +331,10 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             .blockingGet()
 
         val eventUids = filterOutExistingEvents(events.map { it.uid() })
-        assertThat(eventUids).contains(completedTestUid)
-        assertThat(eventUids).contains(skippedTestUid)
-        assertThat(eventUids).doesNotContain(overdueScheduleStatusUid)
-        assertThat(eventUids).doesNotContain(scheduleOverdueStatusUid) // logically SCHEDULE
-        assertThat(eventUids).doesNotContain(overdueOverdueStatusUid)
-        assertThat(eventUids).doesNotContain(overdueScheduleStatusUid2)
-        assertThat(eventUids).doesNotContain(scheduleScheduleStatusUid)
-        assertThat(eventUids).doesNotContain(activeTestUid)
+        assertThat(eventUids).containsExactly(
+            completedTestUid,
+            skippedTestUid,
+        )
     }
 
     @Test
@@ -366,15 +354,16 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             .blockingGet()
 
         val eventUids = filterOutExistingEvents(events.map { it.uid() })
-        assertThat(eventUids.size).isAtLeast(8) // Should include all our test events
-        assertThat(eventUids).contains(overdueScheduleStatusUid)
-        assertThat(eventUids).contains(scheduleOverdueStatusUid) // logically SCHEDULE, included in mixed collections
-        assertThat(eventUids).contains(overdueOverdueStatusUid)
-        assertThat(eventUids).contains(scheduleScheduleStatusUid)
-        assertThat(eventUids).contains(overdueScheduleStatusUid2) // included because it matches OVERDUE logic despite SCHEDULE status
-        assertThat(eventUids).contains(activeTestUid)
-        assertThat(eventUids).contains(completedTestUid)
-        assertThat(eventUids).contains(skippedTestUid)
+        assertThat(eventUids).containsExactly(
+            overdueScheduleStatusUid,
+            scheduleOverdueStatusUid,
+            overdueOverdueStatusUid,
+            scheduleScheduleStatusUid,
+            overdueScheduleStatusUid2,
+            activeTestUid,
+            completedTestUid,
+            skippedTestUid,
+        )
     }
 
     @Test
@@ -384,7 +373,11 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             .blockingGet()
 
         val eventUids = filterOutExistingEvents(events.map { it.uid() })
-        assertThat(eventUids).containsExactly(overdueScheduleStatusUid, overdueOverdueStatusUid, overdueScheduleStatusUid2)
+        assertThat(eventUids).containsExactly(
+            overdueScheduleStatusUid,
+            overdueOverdueStatusUid,
+            overdueScheduleStatusUid2,
+        )
     }
 
     @Test
@@ -404,14 +397,14 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             .blockingGet()
 
         val eventUids = filterOutExistingEvents(events.map { it.uid() })
-        assertThat(eventUids).contains(overdueScheduleStatusUid)
-        assertThat(eventUids).contains(scheduleOverdueStatusUid)
-        assertThat(eventUids).contains(overdueOverdueStatusUid)
-        assertThat(eventUids).contains(scheduleScheduleStatusUid)
-        assertThat(eventUids).contains(overdueScheduleStatusUid2)
-        assertThat(eventUids).contains(activeTestUid)
-        assertThat(eventUids).doesNotContain(completedTestUid)
-        assertThat(eventUids).doesNotContain(skippedTestUid)
+        assertThat(eventUids).containsExactly(
+            overdueScheduleStatusUid,
+            scheduleOverdueStatusUid,
+            overdueOverdueStatusUid,
+            scheduleScheduleStatusUid,
+            overdueScheduleStatusUid2,
+            activeTestUid,
+        )
     }
 
     @Test
@@ -421,14 +414,11 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             .blockingGet()
 
         val eventUids = filterOutExistingEvents(events.map { it.uid() })
-        assertThat(eventUids).contains(activeTestUid)
-        assertThat(eventUids).contains(completedTestUid)
-        assertThat(eventUids).contains(skippedTestUid)
-        assertThat(eventUids).doesNotContain(scheduleOverdueStatusUid)
-        assertThat(eventUids).doesNotContain(overdueScheduleStatusUid)
-        assertThat(eventUids).doesNotContain(overdueOverdueStatusUid)
-        assertThat(eventUids).doesNotContain(overdueScheduleStatusUid2)
-        assertThat(eventUids).doesNotContain(scheduleScheduleStatusUid)
+        assertThat(eventUids).containsExactly(
+            activeTestUid,
+            completedTestUid,
+            skippedTestUid,
+        )
     }
 
     @Test
@@ -438,13 +428,10 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             .blockingGet()
 
         val eventUids = filterOutExistingEvents(events.map { it.uid() })
-        assertThat(eventUids).contains(activeTestUid)
-        assertThat(eventUids).contains(completedTestUid)
-        assertThat(eventUids).contains(skippedTestUid)
-        assertThat(eventUids).doesNotContain(overdueScheduleStatusUid)
-        assertThat(eventUids).doesNotContain(scheduleOverdueStatusUid)
-        assertThat(eventUids).doesNotContain(overdueOverdueStatusUid)
-        assertThat(eventUids).doesNotContain(overdueScheduleStatusUid2)
-        assertThat(eventUids).doesNotContain(scheduleScheduleStatusUid)
+        assertThat(eventUids).containsExactly(
+            activeTestUid,
+            completedTestUid,
+            skippedTestUid,
+        )
     }
 }

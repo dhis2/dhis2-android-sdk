@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.testapp.event
 
-import android.util.Log
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
@@ -47,8 +46,11 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
         private var existingEventUids = setOf<String>()
 
         private val now = ClockProviderFactory.clockProvider.clock.now()
+        private val threeDaysAgo = DateUtils.dateWithOffset(now, -3, PeriodType.Daily).toJavaDate()
         private val yesterday = DateUtils.dateWithOffset(now, -1, PeriodType.Daily).toJavaDate()
         private val tomorrow = DateUtils.dateWithOffset(now, 1, PeriodType.Daily).toJavaDate()
+        private val threeDaysFromNow = DateUtils.dateWithOffset(now, 3, PeriodType.Daily).toJavaDate()
+        private val oneWeekFromNow = DateUtils.dateWithOffset(now, 7, PeriodType.Daily).toJavaDate()
 
         private val eventCreateProjection = EventCreateProjection.create(
             null,
@@ -58,16 +60,19 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             "bRowv6yZOF2",
         )
 
-        private lateinit var overdueTestUid1: String
-        private lateinit var overdueTestUid2: String
-        private lateinit var scheduleTestUid: String
+        private lateinit var overdueScheduleStatusUid: String
+        private lateinit var scheduleOverdueStatusUid: String
+        private lateinit var overdueOverdueStatusUid: String
+        private lateinit var overdueScheduleStatusUid2: String
+        private lateinit var scheduleScheduleStatusUid: String
         private lateinit var activeTestUid: String
+        private lateinit var completedTestUid: String
+        private lateinit var skippedTestUid: String
 
         @BeforeClass
         @JvmStatic
         fun setUp() {
             existingEventUids = d2.eventModule().events().get().blockingGet().map { it.uid() }.toSet()
-            Log.d("EventOverdueFilterIntegrationShould", "Existing events in DB: $existingEventUids")
             createTestEvents()
         }
 
@@ -79,29 +84,59 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
 
         @JvmStatic
         private fun createTestEvents() {
-            overdueTestUid1 = d2.eventModule().events().add(eventCreateProjection).blockingGet()
-            d2.eventModule().events().uid(overdueTestUid1).setStatus(EventStatus.SCHEDULE)
-            d2.eventModule().events().uid(overdueTestUid1).setDueDate(yesterday)
+            // OVERDUE (logical): SCHEDULE status with past due date (3 days ago)
+            overdueScheduleStatusUid = d2.eventModule().events().add(eventCreateProjection).blockingGet()
+            d2.eventModule().events().uid(overdueScheduleStatusUid).setStatus(EventStatus.SCHEDULE)
+            d2.eventModule().events().uid(overdueScheduleStatusUid).setDueDate(threeDaysAgo)
 
-            scheduleTestUid = d2.eventModule().events().add(eventCreateProjection).blockingGet()
-            d2.eventModule().events().uid(scheduleTestUid).setStatus(EventStatus.SCHEDULE)
-            d2.eventModule().events().uid(scheduleTestUid).setDueDate(tomorrow)
+            // SCHEDULE (logical): OVERDUE status with future due date (tomorrow)
+            scheduleOverdueStatusUid = d2.eventModule().events().add(eventCreateProjection).blockingGet()
+            d2.eventModule().events().uid(scheduleOverdueStatusUid).setStatus(EventStatus.OVERDUE)
+            d2.eventModule().events().uid(scheduleOverdueStatusUid).setDueDate(tomorrow)
 
-            overdueTestUid2 = d2.eventModule().events().add(eventCreateProjection).blockingGet()
-            d2.eventModule().events().uid(overdueTestUid2).setStatus(EventStatus.OVERDUE)
-            d2.eventModule().events().uid(overdueTestUid2).setDueDate(yesterday)
+            // OVERDUE (logical): OVERDUE status with past due date (3 days ago)
+            overdueOverdueStatusUid = d2.eventModule().events().add(eventCreateProjection).blockingGet()
+            d2.eventModule().events().uid(overdueOverdueStatusUid).setStatus(EventStatus.OVERDUE)
+            d2.eventModule().events().uid(overdueOverdueStatusUid).setDueDate(threeDaysAgo)
 
+            // OVERDUE (logical): SCHEDULE status with past due date (yesterday)
+            overdueScheduleStatusUid2 = d2.eventModule().events().add(eventCreateProjection).blockingGet()
+            d2.eventModule().events().uid(overdueScheduleStatusUid2).setStatus(EventStatus.SCHEDULE)
+            d2.eventModule().events().uid(overdueScheduleStatusUid2).setDueDate(yesterday)
+
+            // SCHEDULE (logical): SCHEDULE status with future due date (1 week from now)
+            scheduleScheduleStatusUid = d2.eventModule().events().add(eventCreateProjection).blockingGet()
+            d2.eventModule().events().uid(scheduleScheduleStatusUid).setStatus(EventStatus.SCHEDULE)
+            d2.eventModule().events().uid(scheduleScheduleStatusUid).setDueDate(oneWeekFromNow)
+
+            // ACTIVE event: Has event_date, with meaningful due date in future
             activeTestUid = d2.eventModule().events().add(eventCreateProjection).blockingGet()
             d2.eventModule().events().uid(activeTestUid).setStatus(EventStatus.ACTIVE)
             d2.eventModule().events().uid(activeTestUid).setEventDate(now.toJavaDate())
+            d2.eventModule().events().uid(activeTestUid).setDueDate(threeDaysFromNow)
+
+            // COMPLETED event: Has event_date, with meaningful due date that was met
+            completedTestUid = d2.eventModule().events().add(eventCreateProjection).blockingGet()
+            d2.eventModule().events().uid(completedTestUid).setStatus(EventStatus.COMPLETED)
+            d2.eventModule().events().uid(completedTestUid).setEventDate(yesterday)
+            d2.eventModule().events().uid(completedTestUid).setDueDate(tomorrow)
+
+            // SKIPPED event: Regular status event with past due date (but not overdue because it's skipped)
+            skippedTestUid = d2.eventModule().events().add(eventCreateProjection).blockingGet()
+            d2.eventModule().events().uid(skippedTestUid).setStatus(EventStatus.SKIPPED)
+            d2.eventModule().events().uid(skippedTestUid).setDueDate(yesterday)
         }
 
         @JvmStatic
         private fun cleanUpTestEvents() {
-            d2.eventModule().events().uid(overdueTestUid1).blockingDelete()
-            d2.eventModule().events().uid(overdueTestUid2).blockingDelete()
-            d2.eventModule().events().uid(scheduleTestUid).blockingDelete()
+            d2.eventModule().events().uid(overdueScheduleStatusUid).blockingDelete()
+            d2.eventModule().events().uid(scheduleOverdueStatusUid).blockingDelete()
+            d2.eventModule().events().uid(overdueOverdueStatusUid).blockingDelete()
+            d2.eventModule().events().uid(overdueScheduleStatusUid2).blockingDelete()
+            d2.eventModule().events().uid(scheduleScheduleStatusUid).blockingDelete()
             d2.eventModule().events().uid(activeTestUid).blockingDelete()
+            d2.eventModule().events().uid(completedTestUid).blockingDelete()
+            d2.eventModule().events().uid(skippedTestUid).blockingDelete()
         }
 
         @JvmStatic
@@ -117,7 +152,8 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             .blockingGet()
 
         val overdueUids = filterOutExistingEvents(overdueEvents.map { it.uid() })
-        assertThat(overdueUids).containsExactly(overdueTestUid1, overdueTestUid2)
+        assertThat(overdueUids).containsExactly(overdueScheduleStatusUid, overdueOverdueStatusUid, overdueScheduleStatusUid2)
+        // scheduleOverdueStatusUid has OVERDUE status but future due date, so it's logically SCHEDULE
     }
 
     @Test
@@ -127,19 +163,29 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             .blockingGet()
 
         val eventUids = filterOutExistingEvents(events.map { it.uid() })
-        assertThat(eventUids.size).isEqualTo(3)
-        assertThat(eventUids).containsExactly(activeTestUid, overdueTestUid1, overdueTestUid2)
+        assertThat(eventUids.size).isEqualTo(4)
+        assertThat(eventUids).containsExactly(
+            activeTestUid,
+            overdueScheduleStatusUid,
+            overdueOverdueStatusUid,
+            overdueScheduleStatusUid2
+        )
+        // scheduleOverdueStatusUid is logically SCHEDULE due to future due date
     }
 
     @Test
-    fun should_not_include_schedule_events_with_future_due_date() {
+    fun should_filter_schedule_events_correctly() {
         val scheduleEvents = d2.eventModule().events()
             .byStatus().eq(EventStatus.SCHEDULE)
             .blockingGet()
 
         val scheduleUids = filterOutExistingEvents(scheduleEvents.map { it.uid() })
         assertThat(scheduleUids.size).isEqualTo(2)
-        assertThat(scheduleUids).containsExactly(overdueTestUid1, scheduleTestUid)
+        assertThat(scheduleUids).containsExactly(scheduleScheduleStatusUid, scheduleOverdueStatusUid)
+        // Should not include events with past due dates (considered overdue)
+        assertThat(scheduleUids).doesNotContain(overdueScheduleStatusUid2) // logically OVERDUE (past due date)
+        assertThat(scheduleUids).doesNotContain(overdueScheduleStatusUid) // logically OVERDUE (past due date)
+        // scheduleOverdueStatusUid has OVERDUE status but future due date, so it's logically SCHEDULE
     }
 
     @Test
@@ -159,9 +205,13 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             .blockingGet()
 
         val nonOverdueUids = filterOutExistingEvents(nonOverdueEvents.map { it.uid() })
-        assertThat(nonOverdueUids).containsExactly(scheduleTestUid, activeTestUid)
-        assertThat(nonOverdueUids).doesNotContain(overdueTestUid1)
-        assertThat(nonOverdueUids).doesNotContain(overdueTestUid2)
+        assertThat(nonOverdueUids).doesNotContain(overdueScheduleStatusUid2) // now logically OVERDUE (past due date)
+        assertThat(nonOverdueUids).contains(scheduleScheduleStatusUid)
+        assertThat(nonOverdueUids).contains(activeTestUid)
+        assertThat(nonOverdueUids).contains(completedTestUid)
+        assertThat(nonOverdueUids).contains(skippedTestUid)
+        assertThat(nonOverdueUids).doesNotContain(overdueScheduleStatusUid)
+        assertThat(nonOverdueUids).doesNotContain(overdueOverdueStatusUid)
     }
 
     @Test
@@ -171,9 +221,13 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             .blockingGet()
 
         val nonOverdueUids = filterOutExistingEvents(nonOverdueEvents.map { it.uid() })
-        assertThat(nonOverdueUids).containsExactly(scheduleTestUid, activeTestUid)
-        assertThat(nonOverdueUids).doesNotContain(overdueTestUid1)
-        assertThat(nonOverdueUids).doesNotContain(overdueTestUid2)
+        assertThat(nonOverdueUids).doesNotContain(overdueScheduleStatusUid2) // now logically OVERDUE (past due date)
+        assertThat(nonOverdueUids).contains(scheduleScheduleStatusUid)
+        assertThat(nonOverdueUids).contains(activeTestUid)
+        assertThat(nonOverdueUids).contains(completedTestUid)
+        assertThat(nonOverdueUids).contains(skippedTestUid)
+        assertThat(nonOverdueUids).doesNotContain(overdueScheduleStatusUid)
+        assertThat(nonOverdueUids).doesNotContain(overdueOverdueStatusUid)
     }
 
     @Test
@@ -183,9 +237,214 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             .blockingGet()
 
         val filteredUids = filterOutExistingEvents(filteredEvents.map { it.uid() })
-        assertThat(filteredUids).containsExactly(scheduleTestUid)
-        assertThat(filteredUids).doesNotContain(overdueTestUid1)
-        assertThat(filteredUids).doesNotContain(overdueTestUid2)
+        assertThat(filteredUids).doesNotContain(overdueScheduleStatusUid2)
+        assertThat(filteredUids).contains(scheduleScheduleStatusUid)
+        assertThat(filteredUids).contains(completedTestUid)
+        assertThat(filteredUids).contains(skippedTestUid)
+        assertThat(filteredUids).doesNotContain(overdueScheduleStatusUid)
+        assertThat(filteredUids).contains(scheduleOverdueStatusUid)
         assertThat(filteredUids).doesNotContain(activeTestUid)
+    }
+
+    @Test
+    fun should_exclude_schedule_events_with_neq() {
+        val nonScheduleEvents = d2.eventModule().events()
+            .byStatus().neq(EventStatus.SCHEDULE)
+            .blockingGet()
+
+        val nonScheduleUids = filterOutExistingEvents(nonScheduleEvents.map { it.uid() })
+        assertThat(nonScheduleUids).contains(overdueScheduleStatusUid)
+        assertThat(nonScheduleUids).doesNotContain(scheduleOverdueStatusUid)
+        assertThat(nonScheduleUids).contains(overdueOverdueStatusUid)
+        assertThat(nonScheduleUids).contains(activeTestUid)
+        assertThat(nonScheduleUids).contains(completedTestUid)
+        assertThat(nonScheduleUids).contains(skippedTestUid)
+        assertThat(nonScheduleUids).contains(overdueScheduleStatusUid2)
+        assertThat(nonScheduleUids).doesNotContain(scheduleScheduleStatusUid)
+    }
+
+    @Test
+    fun should_exclude_schedule_events_with_notIn() {
+        val nonScheduleEvents = d2.eventModule().events()
+            .byStatus().notIn(listOf(EventStatus.SCHEDULE))
+            .blockingGet()
+
+        val nonScheduleUids = filterOutExistingEvents(nonScheduleEvents.map { it.uid() })
+        assertThat(nonScheduleUids).contains(overdueScheduleStatusUid)
+        assertThat(nonScheduleUids).doesNotContain(scheduleOverdueStatusUid)
+        assertThat(nonScheduleUids).contains(overdueOverdueStatusUid)
+        assertThat(nonScheduleUids).contains(activeTestUid)
+        assertThat(nonScheduleUids).contains(completedTestUid)
+        assertThat(nonScheduleUids).contains(skippedTestUid)
+        assertThat(nonScheduleUids).contains(overdueScheduleStatusUid2)
+        assertThat(nonScheduleUids).doesNotContain(scheduleScheduleStatusUid)
+    }
+
+    @Test
+    fun should_handle_overdue_and_schedule_in_collection() {
+        val events = d2.eventModule().events()
+            .byStatus().`in`(listOf(EventStatus.OVERDUE, EventStatus.SCHEDULE))
+            .blockingGet()
+
+        val eventUids = filterOutExistingEvents(events.map { it.uid() })
+        assertThat(eventUids).contains(overdueScheduleStatusUid)
+        assertThat(eventUids).contains(scheduleOverdueStatusUid) // logically SCHEDULE, included in mixed collections
+        assertThat(eventUids).contains(overdueOverdueStatusUid)
+        assertThat(eventUids).contains(scheduleScheduleStatusUid)
+        assertThat(eventUids).contains(overdueScheduleStatusUid2) // included because it matches OVERDUE logic despite SCHEDULE status
+        assertThat(eventUids).doesNotContain(activeTestUid)
+        assertThat(eventUids).doesNotContain(completedTestUid)
+        assertThat(eventUids).doesNotContain(skippedTestUid)
+    }
+
+    @Test
+    fun should_handle_complex_mixed_status_with_overdue_schedule_and_regular() {
+        val events = d2.eventModule().events()
+            .byStatus()
+            .`in`(listOf(EventStatus.OVERDUE, EventStatus.SCHEDULE, EventStatus.ACTIVE, EventStatus.COMPLETED))
+            .blockingGet()
+
+        val eventUids = filterOutExistingEvents(events.map { it.uid() })
+        assertThat(eventUids).contains(overdueScheduleStatusUid)
+        assertThat(eventUids).contains(scheduleOverdueStatusUid) // logically SCHEDULE, included in mixed collections
+        assertThat(eventUids).contains(overdueOverdueStatusUid)
+        assertThat(eventUids).contains(scheduleScheduleStatusUid)
+        assertThat(eventUids).contains(overdueScheduleStatusUid2) // included because it matches OVERDUE logic despite SCHEDULE status
+        assertThat(eventUids).contains(activeTestUid)
+        assertThat(eventUids).contains(completedTestUid)
+        assertThat(eventUids).doesNotContain(skippedTestUid)
+    }
+
+    @Test
+    fun should_exclude_overdue_and_schedule_with_notIn() {
+        val events = d2.eventModule().events()
+            .byStatus().notIn(listOf(EventStatus.OVERDUE, EventStatus.SCHEDULE))
+            .blockingGet()
+
+        val eventUids = filterOutExistingEvents(events.map { it.uid() })
+        assertThat(eventUids).contains(activeTestUid)
+        assertThat(eventUids).contains(completedTestUid)
+        assertThat(eventUids).contains(skippedTestUid)
+        assertThat(eventUids).doesNotContain(overdueScheduleStatusUid)
+        assertThat(eventUids).doesNotContain(scheduleOverdueStatusUid) // logically SCHEDULE
+        assertThat(eventUids).doesNotContain(overdueOverdueStatusUid)
+        assertThat(eventUids).doesNotContain(overdueScheduleStatusUid2)
+        assertThat(eventUids).doesNotContain(scheduleScheduleStatusUid)
+    }
+
+    @Test
+    fun should_handle_mixed_complex_exclusion_with_notIn() {
+        val events = d2.eventModule().events()
+            .byStatus().notIn(listOf(EventStatus.OVERDUE, EventStatus.SCHEDULE, EventStatus.ACTIVE))
+            .blockingGet()
+
+        val eventUids = filterOutExistingEvents(events.map { it.uid() })
+        assertThat(eventUids).contains(completedTestUid)
+        assertThat(eventUids).contains(skippedTestUid)
+        assertThat(eventUids).doesNotContain(overdueScheduleStatusUid)
+        assertThat(eventUids).doesNotContain(scheduleOverdueStatusUid) // logically SCHEDULE
+        assertThat(eventUids).doesNotContain(overdueOverdueStatusUid)
+        assertThat(eventUids).doesNotContain(overdueScheduleStatusUid2)
+        assertThat(eventUids).doesNotContain(scheduleScheduleStatusUid)
+        assertThat(eventUids).doesNotContain(activeTestUid)
+    }
+
+    @Test
+    fun should_handle_empty_list_with_in() {
+        val events = d2.eventModule().events()
+            .byStatus().`in`(emptyList())
+            .blockingGet()
+
+        val eventUids = filterOutExistingEvents(events.map { it.uid() })
+        assertThat(eventUids).isEmpty()
+    }
+
+    @Test
+    fun should_handle_empty_list_with_notIn() {
+        val events = d2.eventModule().events()
+            .byStatus().notIn(emptyList())
+            .blockingGet()
+
+        val eventUids = filterOutExistingEvents(events.map { it.uid() })
+        assertThat(eventUids.size).isAtLeast(8) // Should include all our test events
+        assertThat(eventUids).contains(overdueScheduleStatusUid)
+        assertThat(eventUids).contains(scheduleOverdueStatusUid) // logically SCHEDULE, included in mixed collections
+        assertThat(eventUids).contains(overdueOverdueStatusUid)
+        assertThat(eventUids).contains(scheduleScheduleStatusUid)
+        assertThat(eventUids).contains(overdueScheduleStatusUid2) // included because it matches OVERDUE logic despite SCHEDULE status
+        assertThat(eventUids).contains(activeTestUid)
+        assertThat(eventUids).contains(completedTestUid)
+        assertThat(eventUids).contains(skippedTestUid)
+    }
+
+    @Test
+    fun should_handle_single_overdue_in_list() {
+        val events = d2.eventModule().events()
+            .byStatus().`in`(listOf(EventStatus.OVERDUE))
+            .blockingGet()
+
+        val eventUids = filterOutExistingEvents(events.map { it.uid() })
+        assertThat(eventUids).containsExactly(overdueScheduleStatusUid, overdueOverdueStatusUid, overdueScheduleStatusUid2)
+    }
+
+    @Test
+    fun should_handle_single_schedule_in_list() {
+        val events = d2.eventModule().events()
+            .byStatus().`in`(listOf(EventStatus.SCHEDULE))
+            .blockingGet()
+
+        val eventUids = filterOutExistingEvents(events.map { it.uid() })
+        assertThat(eventUids).containsExactly(scheduleScheduleStatusUid, scheduleOverdueStatusUid)
+    }
+
+    @Test
+    fun should_handle_varargs_overload_with_mixed_statuses() {
+        val events = d2.eventModule().events()
+            .byStatus().`in`(EventStatus.OVERDUE, EventStatus.SCHEDULE, EventStatus.ACTIVE)
+            .blockingGet()
+
+        val eventUids = filterOutExistingEvents(events.map { it.uid() })
+        assertThat(eventUids).contains(overdueScheduleStatusUid)
+        assertThat(eventUids).contains(scheduleOverdueStatusUid)
+        assertThat(eventUids).contains(overdueOverdueStatusUid)
+        assertThat(eventUids).contains(scheduleScheduleStatusUid)
+        assertThat(eventUids).contains(overdueScheduleStatusUid2)
+        assertThat(eventUids).contains(activeTestUid)
+        assertThat(eventUids).doesNotContain(completedTestUid)
+        assertThat(eventUids).doesNotContain(skippedTestUid)
+    }
+
+    @Test
+    fun should_handle_varargs_overload_with_notIn() {
+        val events = d2.eventModule().events()
+            .byStatus().notIn(EventStatus.OVERDUE, EventStatus.SCHEDULE)
+            .blockingGet()
+
+        val eventUids = filterOutExistingEvents(events.map { it.uid() })
+        assertThat(eventUids).contains(activeTestUid)
+        assertThat(eventUids).contains(completedTestUid)
+        assertThat(eventUids).contains(skippedTestUid)
+        assertThat(eventUids).doesNotContain(scheduleOverdueStatusUid)
+        assertThat(eventUids).doesNotContain(overdueScheduleStatusUid)
+        assertThat(eventUids).doesNotContain(overdueOverdueStatusUid)
+        assertThat(eventUids).doesNotContain(overdueScheduleStatusUid2)
+        assertThat(eventUids).doesNotContain(scheduleScheduleStatusUid)
+    }
+
+    @Test
+    fun should_handle_only_regular_statuses_in_mixed_collection() {
+        val events = d2.eventModule().events()
+            .byStatus().`in`(listOf(EventStatus.ACTIVE, EventStatus.COMPLETED, EventStatus.SKIPPED))
+            .blockingGet()
+
+        val eventUids = filterOutExistingEvents(events.map { it.uid() })
+        assertThat(eventUids).contains(activeTestUid)
+        assertThat(eventUids).contains(completedTestUid)
+        assertThat(eventUids).contains(skippedTestUid)
+        assertThat(eventUids).doesNotContain(overdueScheduleStatusUid)
+        assertThat(eventUids).doesNotContain(scheduleOverdueStatusUid)
+        assertThat(eventUids).doesNotContain(overdueOverdueStatusUid)
+        assertThat(eventUids).doesNotContain(overdueScheduleStatusUid2)
+        assertThat(eventUids).doesNotContain(scheduleScheduleStatusUid)
     }
 }

@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 
+@Suppress("TooManyFunctions")
 class EventStatusFilterConnector internal constructor(
     private val repositoryFactory: BaseRepositoryFactory<EventCollectionRepository>,
     private val scope: RepositoryScope,

@@ -53,18 +53,18 @@ class EventStatusFilterConnector internal constructor(
     )
 
     fun eq(value: EventStatus?): EventCollectionRepository {
-        return if (value == EventStatus.OVERDUE) {
-            createOverdueFilterRepository()
-        } else {
-            standardConnector.eq(value)
+        return when (value) {
+            EventStatus.OVERDUE -> createOverdueFilterRepository()
+            EventStatus.SCHEDULE -> createScheduleFilterRepository()
+            else -> standardConnector.eq(value)
         }
     }
 
     fun neq(value: EventStatus?): EventCollectionRepository {
-        return if (value == EventStatus.OVERDUE) {
-            createNotOverdueFilterRepository()
-        } else {
-            standardConnector.neq(value)
+        return when (value) {
+            EventStatus.OVERDUE -> createNotOverdueFilterRepository()
+            EventStatus.SCHEDULE -> createNotScheduleFilterRepository()
+            else -> standardConnector.neq(value)
         }
     }
 
@@ -100,6 +100,14 @@ class EventStatusFilterConnector internal constructor(
         return createComplexFilterRepository(buildNotOverdueWhereClause())
     }
 
+    private fun createScheduleFilterRepository(): EventCollectionRepository {
+        return createComplexFilterRepository(buildScheduleWhereClause())
+    }
+
+    private fun createNotScheduleFilterRepository(): EventCollectionRepository {
+        return createComplexFilterRepository(buildNotScheduleWhereClause())
+    }
+
     private fun handleStatusCollection(
         values: Collection<EventStatus>?,
         inclusion: Boolean,
@@ -109,41 +117,72 @@ class EventStatusFilterConnector internal constructor(
         }
 
         val containsOverdue = values.contains(EventStatus.OVERDUE)
-        val nonOverdueStatuses = values.filter { it != EventStatus.OVERDUE }
+        val containsSchedule = values.contains(EventStatus.SCHEDULE)
+        val regularStatuses = values.filter { it != EventStatus.OVERDUE && it != EventStatus.SCHEDULE }
 
         return when {
-            containsOverdue && nonOverdueStatuses.isNotEmpty() -> {
-                handleMixedStatusCollection(nonOverdueStatuses, inclusion)
+            (containsOverdue || containsSchedule) && regularStatuses.isNotEmpty() -> {
+                handleComplexMixedStatusCollection(containsOverdue, containsSchedule, regularStatuses, inclusion)
+            }
+
+            containsOverdue && containsSchedule -> {
+                handleOverdueAndScheduleCollection(inclusion)
             }
 
             containsOverdue -> {
                 if (inclusion) createOverdueFilterRepository() else createNotOverdueFilterRepository()
             }
 
+            containsSchedule -> {
+                if (inclusion) createScheduleFilterRepository() else createNotScheduleFilterRepository()
+            }
+
             else -> {
                 if (inclusion) {
-                    standardConnector.`in`(nonOverdueStatuses)
+                    standardConnector.`in`(regularStatuses)
                 } else {
-                    standardConnector.notIn(nonOverdueStatuses)
+                    standardConnector.notIn(regularStatuses)
                 }
             }
         }
     }
 
-    private fun handleMixedStatusCollection(
-        nonOverdueStatuses: List<EventStatus>,
+
+    private fun handleComplexMixedStatusCollection(
+        containsOverdue: Boolean,
+        containsSchedule: Boolean,
+        regularStatuses: List<EventStatus>,
         inclusion: Boolean,
     ): EventCollectionRepository {
         val operator = if (inclusion) "IN" else "NOT IN"
         val logicalOperator = if (inclusion) "OR" else "AND"
-        val overdueClause = if (inclusion) buildOverdueWhereClause() else buildNotOverdueWhereClause()
 
-        val nonOverdueClause = "${EventTableInfo.Columns.STATUS} $operator (${
-            getCommaSeparatedValues(
-                nonOverdueStatuses,
-            )
-        })"
-        return createComplexFilterRepository("($nonOverdueClause $logicalOperator $overdueClause)")
+        val clauses = mutableListOf<String>()
+
+        if (regularStatuses.isNotEmpty()) {
+            val regularClause = "${EventTableInfo.Columns.STATUS} $operator (${getCommaSeparatedValues(regularStatuses)})"
+            clauses.add(regularClause)
+        }
+
+        if (containsOverdue) {
+            val overdueClause = if (inclusion) buildOverdueWhereClause() else buildNotOverdueWhereClause()
+            clauses.add(overdueClause)
+        }
+
+        if (containsSchedule) {
+            val scheduleClause = if (inclusion) buildScheduleWhereClause() else buildNotScheduleWhereClause()
+            clauses.add(scheduleClause)
+        }
+
+        return createComplexFilterRepository("(${clauses.joinToString(" $logicalOperator ")})")
+    }
+
+    private fun handleOverdueAndScheduleCollection(inclusion: Boolean): EventCollectionRepository {
+        val logicalOperator = if (inclusion) "OR" else "AND"
+        val overdueClause = if (inclusion) buildOverdueWhereClause() else buildNotOverdueWhereClause()
+        val scheduleClause = if (inclusion) buildScheduleWhereClause() else buildNotScheduleWhereClause()
+
+        return createComplexFilterRepository("($overdueClause $logicalOperator $scheduleClause)")
     }
 
     private fun createComplexFilterRepository(whereClause: String): EventCollectionRepository {
@@ -165,8 +204,16 @@ class EventStatusFilterConnector internal constructor(
         return buildOverdueCondition(negated = true)
     }
 
+    private fun buildScheduleWhereClause(): String {
+        return buildScheduleCondition(negated = false)
+    }
+
+    private fun buildNotScheduleWhereClause(): String {
+        return buildScheduleCondition(negated = true)
+    }
+
     private fun buildOverdueCondition(negated: Boolean): String {
-        if (negated) {
+        return if (negated) {
             // NOT OVERDUE: has event_date OR not schedule/overdue status OR due_date >= current_date
             val innerClause1 = WhereClauseBuilder()
                 .appendIsNotNullValue(EventTableInfo.Columns.EVENT_DATE)
@@ -186,10 +233,11 @@ class EventStatusFilterConnector internal constructor(
                 )
                 .build()
 
-            return "($innerClause1 OR $innerClause2 OR $innerClause3)"
+            "($innerClause1 OR $innerClause2 OR $innerClause3)"
         } else {
             // OVERDUE: no event_date AND status in (schedule, overdue) AND due_date < current_date
-            return WhereClauseBuilder()
+            // Simplified logic: any SCHEDULE/OVERDUE event without event_date is overdue if due_date is past
+            WhereClauseBuilder()
                 .appendIsNullValue(EventTableInfo.Columns.EVENT_DATE)
                 .appendInKeyEnumValues(
                     EventTableInfo.Columns.STATUS,
@@ -201,6 +249,47 @@ class EventStatusFilterConnector internal constructor(
                 )
                 .build()
         }
+    }
+
+    private fun buildScheduleCondition(negated: Boolean): String {
+        val result = if (negated) {
+            // NOT SCHEDULE: has event_date OR not schedule/overdue status OR due_date <= current_date
+            val innerClause1 = WhereClauseBuilder()
+                .appendIsNotNullValue(EventTableInfo.Columns.EVENT_DATE)
+                .build()
+
+            val innerClause2 = WhereClauseBuilder()
+                .appendNotInKeyStringValues(
+                    EventTableInfo.Columns.STATUS,
+                    listOf(EventStatus.SCHEDULE.name, EventStatus.OVERDUE.name),
+                )
+                .build()
+
+            val innerClause3 = WhereClauseBuilder()
+                .appendKeyLessThanOrEqStringValue(
+                    "date(${EventTableInfo.Columns.DUE_DATE})",
+                    currentDateString,
+                )
+                .build()
+
+            "($innerClause1 OR $innerClause2 OR $innerClause3)"
+        } else {
+            // SCHEDULE: no event_date AND status in (schedule, overdue) AND due_date >= current_date
+            // Simplified logic: any SCHEDULE/OVERDUE event without event_date is schedule if due_date is future/today
+            WhereClauseBuilder()
+                .appendIsNullValue(EventTableInfo.Columns.EVENT_DATE)
+                .appendInKeyEnumValues(
+                    EventTableInfo.Columns.STATUS,
+                    listOf(EventStatus.SCHEDULE, EventStatus.OVERDUE),
+                )
+                .appendKeyGreaterOrEqStringValue(
+                    "date(${EventTableInfo.Columns.DUE_DATE})",
+                    currentDateString,
+                )
+                .build()
+        }
+
+        return result
     }
 
     private fun getCommaSeparatedValues(values: Collection<EventStatus>): String {

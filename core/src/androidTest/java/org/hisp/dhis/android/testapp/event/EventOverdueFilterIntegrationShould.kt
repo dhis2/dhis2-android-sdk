@@ -143,162 +143,151 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
         private fun filterOutExistingEvents(eventUids: List<String>): List<String> {
             return eventUids.filterNot { it in existingEventUids }
         }
+
+        @JvmStatic
+        private fun getFilteredEventUids(
+            queryBuilder: (org.hisp.dhis.android.core.event.EventCollectionRepository) -> org.hisp.dhis.android.core.event.EventCollectionRepository
+        ): List<String> {
+            val events = queryBuilder(d2.eventModule().events()).blockingGet()
+            return filterOutExistingEvents(events.map { it.uid() })
+        }
+
     }
 
-    @Test
-    fun should_filter_overdue_events_correctly() {
-        val overdueEvents = d2.eventModule().events()
-            .byStatus().eq(EventStatus.OVERDUE)
-            .blockingGet()
+    // Common UID sets for reuse in assertions
+    private val overdueEventUids
+        get() = listOf(
+            overdueScheduleStatusUid,
+            overdueOverdueStatusUid,
+            overdueScheduleStatusUid2
+        )
 
-        val overdueUids = filterOutExistingEvents(overdueEvents.map { it.uid() })
-        assertThat(overdueUids).containsExactly(
+    private val scheduleEventUids
+        get() = listOf(
+            scheduleScheduleStatusUid,
+            scheduleOverdueStatusUid
+        )
+
+    private val regularStatusEventUids
+        get() = listOf(
+            activeTestUid,
+            completedTestUid,
+            skippedTestUid
+        )
+
+    private val nonOverdueEventUids
+        get() = listOf(
+            scheduleScheduleStatusUid,
+            scheduleOverdueStatusUid,
+            activeTestUid,
+            completedTestUid,
+            skippedTestUid
+        )
+
+    private val nonScheduleEventUids
+        get() = listOf(
             overdueScheduleStatusUid,
             overdueOverdueStatusUid,
             overdueScheduleStatusUid2,
+            activeTestUid,
+            completedTestUid,
+            skippedTestUid
         )
+
+    private val allTestEventUids
+        get() = listOf(
+            overdueScheduleStatusUid,
+            scheduleOverdueStatusUid,
+            overdueOverdueStatusUid,
+            scheduleScheduleStatusUid,
+            overdueScheduleStatusUid2,
+            activeTestUid,
+            completedTestUid,
+            skippedTestUid
+        )
+
+    @Test
+    fun should_filter_overdue_events_correctly() {
+        val overdueUids = getFilteredEventUids { it.byStatus().eq(EventStatus.OVERDUE) }
+        assertThat(overdueUids).containsExactly(*overdueEventUids.toTypedArray())
     }
 
     @Test
     fun should_filter_overdue_events_with_mixed_statuses() {
-        val events = d2.eventModule().events()
-            .byStatus().`in`(listOf(EventStatus.ACTIVE, EventStatus.OVERDUE))
-            .blockingGet()
-
-        val eventUids = filterOutExistingEvents(events.map { it.uid() })
+        val eventUids = getFilteredEventUids { it.byStatus().`in`(listOf(EventStatus.ACTIVE, EventStatus.OVERDUE)) }
         assertThat(eventUids).containsExactly(
             activeTestUid,
             overdueScheduleStatusUid,
             overdueOverdueStatusUid,
-            overdueScheduleStatusUid2,
+            overdueScheduleStatusUid2
         )
     }
 
     @Test
     fun should_filter_schedule_events_correctly() {
-        val scheduleEvents = d2.eventModule().events()
-            .byStatus().eq(EventStatus.SCHEDULE)
-            .blockingGet()
-
-        val scheduleUids = filterOutExistingEvents(scheduleEvents.map { it.uid() })
-        assertThat(scheduleUids).containsExactly(scheduleScheduleStatusUid, scheduleOverdueStatusUid)
+        val scheduleUids = getFilteredEventUids { it.byStatus().eq(EventStatus.SCHEDULE) }
+        assertThat(scheduleUids).containsExactly(*scheduleEventUids.toTypedArray())
     }
 
     @Test
     fun should_handle_normal_status_filtering() {
-        val activeEvents = d2.eventModule().events()
-            .byStatus().eq(EventStatus.ACTIVE)
-            .blockingGet()
-
-        val activeEventUids = filterOutExistingEvents(activeEvents.map { it.uid() })
+        val activeEventUids = getFilteredEventUids { it.byStatus().eq(EventStatus.ACTIVE) }
         assertThat(activeEventUids).contains(activeTestUid)
     }
 
     @Test
     fun should_exclude_overdue_events_with_neq() {
-        val nonOverdueEvents = d2.eventModule().events()
-            .byStatus().neq(EventStatus.OVERDUE)
-            .blockingGet()
-
-        val nonOverdueUids = filterOutExistingEvents(nonOverdueEvents.map { it.uid() })
-        assertThat(nonOverdueUids).containsExactly(
-            scheduleScheduleStatusUid,
-            scheduleOverdueStatusUid,
-            activeTestUid,
-            completedTestUid,
-            skippedTestUid,
-        )
+        val nonOverdueUids = getFilteredEventUids { it.byStatus().neq(EventStatus.OVERDUE) }
+        assertThat(nonOverdueUids).containsExactly(*nonOverdueEventUids.toTypedArray())
     }
 
     @Test
     fun should_exclude_overdue_events_with_notIn() {
-        val nonOverdueEvents = d2.eventModule().events()
-            .byStatus().notIn(listOf(EventStatus.OVERDUE))
-            .blockingGet()
-
-        val nonOverdueUids = filterOutExistingEvents(nonOverdueEvents.map { it.uid() })
-        assertThat(nonOverdueUids).containsExactly(
-            scheduleScheduleStatusUid,
-            scheduleOverdueStatusUid,
-            activeTestUid,
-            completedTestUid,
-            skippedTestUid,
-        )
+        val nonOverdueUids = getFilteredEventUids { it.byStatus().notIn(listOf(EventStatus.OVERDUE)) }
+        assertThat(nonOverdueUids).containsExactly(*nonOverdueEventUids.toTypedArray())
     }
 
     @Test
     fun should_exclude_mixed_statuses_including_overdue_with_notIn() {
-        val filteredEvents = d2.eventModule().events()
-            .byStatus().notIn(listOf(EventStatus.OVERDUE, EventStatus.ACTIVE))
-            .blockingGet()
-
-        val filteredUids = filterOutExistingEvents(filteredEvents.map { it.uid() })
+        val filteredUids = getFilteredEventUids { it.byStatus().notIn(listOf(EventStatus.OVERDUE, EventStatus.ACTIVE)) }
         assertThat(filteredUids).containsExactly(
             scheduleScheduleStatusUid,
             scheduleOverdueStatusUid,
             completedTestUid,
-            skippedTestUid,
+            skippedTestUid
         )
     }
 
     @Test
     fun should_exclude_schedule_events_with_neq() {
-        val nonScheduleEvents = d2.eventModule().events()
-            .byStatus().neq(EventStatus.SCHEDULE)
-            .blockingGet()
-
-        val nonScheduleUids = filterOutExistingEvents(nonScheduleEvents.map { it.uid() })
-        assertThat(nonScheduleUids).containsExactly(
-            overdueScheduleStatusUid,
-            overdueOverdueStatusUid,
-            overdueScheduleStatusUid2,
-            activeTestUid,
-            completedTestUid,
-            skippedTestUid,
-        )
+        val nonScheduleUids = getFilteredEventUids { it.byStatus().neq(EventStatus.SCHEDULE) }
+        assertThat(nonScheduleUids).containsExactly(*nonScheduleEventUids.toTypedArray())
     }
 
     @Test
     fun should_exclude_schedule_events_with_notIn() {
-        val nonScheduleEvents = d2.eventModule().events()
-            .byStatus().notIn(listOf(EventStatus.SCHEDULE))
-            .blockingGet()
-
-        val nonScheduleUids = filterOutExistingEvents(nonScheduleEvents.map { it.uid() })
-        assertThat(nonScheduleUids).containsExactly(
-            overdueScheduleStatusUid,
-            overdueOverdueStatusUid,
-            overdueScheduleStatusUid2,
-            activeTestUid,
-            completedTestUid,
-            skippedTestUid,
-        )
+        val nonScheduleUids = getFilteredEventUids { it.byStatus().notIn(listOf(EventStatus.SCHEDULE)) }
+        assertThat(nonScheduleUids).containsExactly(*nonScheduleEventUids.toTypedArray())
     }
 
     @Test
     fun should_handle_overdue_and_schedule_in_collection() {
-        val events = d2.eventModule().events()
-            .byStatus().`in`(listOf(EventStatus.OVERDUE, EventStatus.SCHEDULE))
-            .blockingGet()
-
-        val eventUids = filterOutExistingEvents(events.map { it.uid() })
+        val eventUids = getFilteredEventUids { it.byStatus().`in`(listOf(EventStatus.OVERDUE, EventStatus.SCHEDULE)) }
         assertThat(eventUids).containsExactly(
             overdueScheduleStatusUid,
             scheduleOverdueStatusUid,
             overdueOverdueStatusUid,
             scheduleScheduleStatusUid,
-            overdueScheduleStatusUid2,
+            overdueScheduleStatusUid2
         )
     }
 
     @Test
     fun should_handle_complex_mixed_status_with_overdue_schedule_and_regular() {
-        val events = d2.eventModule().events()
-            .byStatus()
-            .`in`(listOf(EventStatus.OVERDUE, EventStatus.SCHEDULE, EventStatus.ACTIVE, EventStatus.COMPLETED))
-            .blockingGet()
-
-        val eventUids = filterOutExistingEvents(events.map { it.uid() })
+        val eventUids = getFilteredEventUids {
+            it.byStatus()
+                .`in`(listOf(EventStatus.OVERDUE, EventStatus.SCHEDULE, EventStatus.ACTIVE, EventStatus.COMPLETED))
+        }
         assertThat(eventUids).containsExactly(
             overdueScheduleStatusUid,
             scheduleOverdueStatusUid,
@@ -306,132 +295,76 @@ class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatche
             scheduleScheduleStatusUid,
             overdueScheduleStatusUid2,
             activeTestUid,
-            completedTestUid,
+            completedTestUid
         )
     }
 
     @Test
     fun should_exclude_overdue_and_schedule_with_notIn() {
-        val events = d2.eventModule().events()
-            .byStatus().notIn(listOf(EventStatus.OVERDUE, EventStatus.SCHEDULE))
-            .blockingGet()
-
-        val eventUids = filterOutExistingEvents(events.map { it.uid() })
-        assertThat(eventUids).containsExactly(
-            activeTestUid,
-            completedTestUid,
-            skippedTestUid,
-        )
+        val eventUids = getFilteredEventUids { it.byStatus().notIn(listOf(EventStatus.OVERDUE, EventStatus.SCHEDULE)) }
+        assertThat(eventUids).containsExactly(*regularStatusEventUids.toTypedArray())
     }
 
     @Test
     fun should_handle_mixed_complex_exclusion_with_notIn() {
-        val events = d2.eventModule().events()
-            .byStatus().notIn(listOf(EventStatus.OVERDUE, EventStatus.SCHEDULE, EventStatus.ACTIVE))
-            .blockingGet()
-
-        val eventUids = filterOutExistingEvents(events.map { it.uid() })
+        val eventUids = getFilteredEventUids {
+            it.byStatus().notIn(listOf(EventStatus.OVERDUE, EventStatus.SCHEDULE, EventStatus.ACTIVE))
+        }
         assertThat(eventUids).containsExactly(
             completedTestUid,
-            skippedTestUid,
+            skippedTestUid
         )
     }
 
     @Test
     fun should_handle_empty_list_with_in() {
-        val events = d2.eventModule().events()
-            .byStatus().`in`(emptyList())
-            .blockingGet()
-
-        val eventUids = filterOutExistingEvents(events.map { it.uid() })
+        val eventUids = getFilteredEventUids { it.byStatus().`in`(emptyList()) }
         assertThat(eventUids).isEmpty()
     }
 
     @Test
     fun should_handle_empty_list_with_notIn() {
-        val events = d2.eventModule().events()
-            .byStatus().notIn(emptyList())
-            .blockingGet()
-
-        val eventUids = filterOutExistingEvents(events.map { it.uid() })
-        assertThat(eventUids).containsExactly(
-            overdueScheduleStatusUid,
-            scheduleOverdueStatusUid,
-            overdueOverdueStatusUid,
-            scheduleScheduleStatusUid,
-            overdueScheduleStatusUid2,
-            activeTestUid,
-            completedTestUid,
-            skippedTestUid,
-        )
+        val eventUids = getFilteredEventUids { it.byStatus().notIn(emptyList()) }
+        assertThat(eventUids).containsExactly(*allTestEventUids.toTypedArray())
     }
 
     @Test
     fun should_handle_single_overdue_in_list() {
-        val events = d2.eventModule().events()
-            .byStatus().`in`(listOf(EventStatus.OVERDUE))
-            .blockingGet()
-
-        val eventUids = filterOutExistingEvents(events.map { it.uid() })
-        assertThat(eventUids).containsExactly(
-            overdueScheduleStatusUid,
-            overdueOverdueStatusUid,
-            overdueScheduleStatusUid2,
-        )
+        val eventUids = getFilteredEventUids { it.byStatus().`in`(listOf(EventStatus.OVERDUE)) }
+        assertThat(eventUids).containsExactly(*overdueEventUids.toTypedArray())
     }
 
     @Test
     fun should_handle_single_schedule_in_list() {
-        val events = d2.eventModule().events()
-            .byStatus().`in`(listOf(EventStatus.SCHEDULE))
-            .blockingGet()
-
-        val eventUids = filterOutExistingEvents(events.map { it.uid() })
-        assertThat(eventUids).containsExactly(scheduleScheduleStatusUid, scheduleOverdueStatusUid)
+        val eventUids = getFilteredEventUids { it.byStatus().`in`(listOf(EventStatus.SCHEDULE)) }
+        assertThat(eventUids).containsExactly(*scheduleEventUids.toTypedArray())
     }
 
     @Test
     fun should_handle_varargs_overload_with_mixed_statuses() {
-        val events = d2.eventModule().events()
-            .byStatus().`in`(EventStatus.OVERDUE, EventStatus.SCHEDULE, EventStatus.ACTIVE)
-            .blockingGet()
-
-        val eventUids = filterOutExistingEvents(events.map { it.uid() })
+        val eventUids =
+            getFilteredEventUids { it.byStatus().`in`(EventStatus.OVERDUE, EventStatus.SCHEDULE, EventStatus.ACTIVE) }
         assertThat(eventUids).containsExactly(
             overdueScheduleStatusUid,
             scheduleOverdueStatusUid,
             overdueOverdueStatusUid,
             scheduleScheduleStatusUid,
             overdueScheduleStatusUid2,
-            activeTestUid,
+            activeTestUid
         )
     }
 
     @Test
     fun should_handle_varargs_overload_with_notIn() {
-        val events = d2.eventModule().events()
-            .byStatus().notIn(EventStatus.OVERDUE, EventStatus.SCHEDULE)
-            .blockingGet()
-
-        val eventUids = filterOutExistingEvents(events.map { it.uid() })
-        assertThat(eventUids).containsExactly(
-            activeTestUid,
-            completedTestUid,
-            skippedTestUid,
-        )
+        val eventUids = getFilteredEventUids { it.byStatus().notIn(EventStatus.OVERDUE, EventStatus.SCHEDULE) }
+        assertThat(eventUids).containsExactly(*regularStatusEventUids.toTypedArray())
     }
 
     @Test
     fun should_handle_only_regular_statuses_in_mixed_collection() {
-        val events = d2.eventModule().events()
-            .byStatus().`in`(listOf(EventStatus.ACTIVE, EventStatus.COMPLETED, EventStatus.SKIPPED))
-            .blockingGet()
-
-        val eventUids = filterOutExistingEvents(events.map { it.uid() })
-        assertThat(eventUids).containsExactly(
-            activeTestUid,
-            completedTestUid,
-            skippedTestUid,
-        )
+        val eventUids = getFilteredEventUids {
+            it.byStatus().`in`(listOf(EventStatus.ACTIVE, EventStatus.COMPLETED, EventStatus.SKIPPED))
+        }
+        assertThat(eventUids).containsExactly(*regularStatusEventUids.toTypedArray())
     }
 }

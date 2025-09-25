@@ -88,11 +88,15 @@ class MigrationProcessor(
 
             file += "    val $name = object : Migration($version, $next) {\n"
             file += "        override fun migrate(db: SupportSQLiteDatabase) {\n"
+            file += "            db.execSQL(\"PRAGMA foreign_keys = OFF;\")\n"
+            file += "            db.execSQL(\"PRAGMA legacy_alter_table = ON;\")\n"
             lines.forEach { line ->
                 file += "            db.execSQL(\"${escapeSqlLine(line)}\")\n"
             }
             file += "        }\n"
             file += "        override fun migrate(connection: SQLiteConnection) {\n"
+            file += "            connection.execSQL(\"PRAGMA foreign_keys = OFF;\")\n"
+            file += "            connection.execSQL(\"PRAGMA legacy_alter_table = ON;\")\n"
             lines.forEach { line ->
                 file += "            connection.execSQL(\"${escapeSqlLine(line)}\")\n"
             }

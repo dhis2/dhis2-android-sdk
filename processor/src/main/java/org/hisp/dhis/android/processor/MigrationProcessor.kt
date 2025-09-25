@@ -69,7 +69,8 @@ class MigrationProcessor(
         file += "package $outputPackage\n\n"
         file += "import androidx.room.migration.Migration\n"
         file += "import androidx.sqlite.SQLiteConnection\n"
-        file += "import androidx.sqlite.db.SupportSQLiteDatabase\n\n"
+        file += "import androidx.sqlite.db.SupportSQLiteDatabase\n"
+        file += "import androidx.sqlite.execSQL\n\n"
         file += "internal object RoomGeneratedMigrations {\n"
 
         val migrationNames = mutableListOf<String>()
@@ -93,7 +94,7 @@ class MigrationProcessor(
             file += "        }\n"
             file += "        override fun migrate(connection: SQLiteConnection) {\n"
             lines.forEach { line ->
-                file += "            connection.prepare(\"${escapeSqlLine(line)}\").step()\n"
+                file += "            connection.execSQL(\"${escapeSqlLine(line)}\")\n"
             }
             file += "        }\n"
             file += "    }\n\n"

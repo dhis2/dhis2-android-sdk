@@ -188,6 +188,10 @@ ALTER TABLE ProgramStageSectionDataElementLink RENAME TO ProgramStageSectionData
 CREATE TABLE ProgramStageSectionDataElementLink(programStageSection TEXT NOT NULL, dataElement TEXT NOT NULL, sortOrder INTEGER NOT NULL, PRIMARY KEY(programStageSection, dataElement), FOREIGN KEY(programStageSection) REFERENCES ProgramStageSection(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(dataElement) REFERENCES DataElement(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
 INSERT OR IGNORE INTO ProgramStageSectionDataElementLink(programStageSection, dataElement, sortOrder) SELECT programStageSection, dataElement, sortOrder FROM ProgramStageSectionDataElementLink_Old;
 
+ALTER TABLE DataElement RENAME TO DataElement_Old;
+CREATE TABLE DataElement(uid TEXT NOT NULL, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, shortName TEXT, displayShortName TEXT, description TEXT, displayDescription TEXT, valueType TEXT, zeroIsSignificant INTEGER, aggregationType TEXT, formName TEXT, domainType TEXT, displayFormName TEXT, optionSet TEXT, categoryCombo TEXT NOT NULL, fieldMask TEXT, color TEXT, icon TEXT, PRIMARY KEY(uid), FOREIGN KEY(optionSet) REFERENCES OptionSet(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(categoryCombo) REFERENCES CategoryCombo(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+INSERT OR IGNORE INTO DataElement(uid, code, name, displayName, created, lastUpdated, shortName, displayShortName, description, displayDescription, valueType, zeroIsSignificant, aggregationType, formName, domainType, displayFormName, optionSet, categoryCombo, fieldMask, color, icon) SELECT uid, code, name, displayName, created, lastUpdated, shortName, displayShortName, description, displayDescription, valueType, zeroIsSignificant, aggregationType, formName, domainType, displayFormName, optionSet, categoryCombo, fieldMask, color, icon FROM DataElement_Old;
+
 ALTER TABLE DataElementOperand RENAME TO DataElementOperand_Old;
 CREATE TABLE DataElementOperand(uid TEXT NOT NULL, dataElement TEXT, categoryOptionCombo TEXT, PRIMARY KEY(uid), FOREIGN KEY(dataElement) REFERENCES DataElement(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(categoryOptionCombo) REFERENCES CategoryOptionCombo(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
 INSERT OR IGNORE INTO DataElementOperand(uid, dataElement, categoryOptionCombo) SELECT uid, dataElement, categoryOptionCombo FROM DataElementOperand_Old;
@@ -215,10 +219,6 @@ INSERT OR IGNORE INTO TrackedEntityTypeAttribute(trackedEntityType, trackedEntit
 ALTER TABLE Relationship RENAME TO Relationship_Old;
 CREATE TABLE Relationship(uid TEXT NOT NULL, name TEXT, created TEXT, lastUpdated TEXT, relationshipType TEXT NOT NULL, syncState TEXT, deleted INTEGER, PRIMARY KEY(uid), FOREIGN KEY(relationshipType) REFERENCES RelationshipType(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
 INSERT OR IGNORE INTO Relationship(uid, name, created, lastUpdated, relationshipType, syncState, deleted) SELECT uid, name, created, lastUpdated, relationshipType, syncState, deleted FROM Relationship_Old;
-
-ALTER TABLE DataElement RENAME TO DataElement_Old;
-CREATE TABLE DataElement(uid TEXT NOT NULL, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, shortName TEXT, displayShortName TEXT, description TEXT, displayDescription TEXT, valueType TEXT, zeroIsSignificant INTEGER, aggregationType TEXT, formName TEXT, domainType TEXT, displayFormName TEXT, optionSet TEXT, categoryCombo TEXT NOT NULL, fieldMask TEXT, color TEXT, icon TEXT, PRIMARY KEY(uid), FOREIGN KEY(optionSet) REFERENCES OptionSet(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(categoryCombo) REFERENCES CategoryCombo(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
-INSERT OR IGNORE INTO DataElement(uid, code, name, displayName, created, lastUpdated, shortName, displayShortName, description, displayDescription, valueType, zeroIsSignificant, aggregationType, formName, domainType, displayFormName, optionSet, categoryCombo, fieldMask, color, icon) SELECT uid, code, name, displayName, created, lastUpdated, shortName, displayShortName, description, displayDescription, valueType, zeroIsSignificant, aggregationType, formName, domainType, displayFormName, optionSet, categoryCombo, fieldMask, color, icon FROM DataElement_Old;
 
 ALTER TABLE OptionGroup RENAME TO OptionGroup_Old;
 CREATE TABLE OptionGroup(uid TEXT NOT NULL, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, optionSet TEXT NOT NULL, PRIMARY KEY(uid), FOREIGN KEY(optionSet) REFERENCES OptionSet(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
@@ -607,6 +607,7 @@ DROP TABLE OrganisationUnitGroup_Old;
 DROP TABLE OrganisationUnitOrganisationUnitGroupLink_Old;
 DROP TABLE ProgramStageDataElement_Old;
 DROP TABLE ProgramStageSectionDataElementLink_Old;
+DROP TABLE DataElement_Old;
 DROP TABLE DataElementOperand_Old;
 DROP TABLE IndicatorType_Old;
 DROP TABLE ForeignKeyViolation_Old;
@@ -614,7 +615,6 @@ DROP TABLE D2Error_Old;
 DROP TABLE Authority_Old;
 DROP TABLE TrackedEntityTypeAttribute_Old;
 DROP TABLE Relationship_Old;
-DROP TABLE DataElement_Old;
 DROP TABLE OptionGroup_Old;
 DROP TABLE OptionGroupOptionLink_Old;
 DROP TABLE ProgramRuleAction_Old;

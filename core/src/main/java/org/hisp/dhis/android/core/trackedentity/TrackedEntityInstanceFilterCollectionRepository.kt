@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterAttributeValueFilterChildrenAppender
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterEvenFilterChildrenAppender
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterStore
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceFilterTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -98,7 +99,7 @@ class TrackedEntityInstanceFilterCollectionRepository internal constructor(
     }
 
     fun byOrderProperty(): StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> {
-        return cf.string(TrackedEntityInstanceFilterTableInfo.Columns.ORDER)
+        return cf.string(TrackedEntityInstanceFilterTableInfo.Columns.ORDER_PROPERTY)
     }
 
     fun byDisplayColumnOrder(): StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> {

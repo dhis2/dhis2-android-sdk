@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.indicator;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -44,12 +42,8 @@ public abstract class DataSetIndicatorLink implements CoreObject {
     @Nullable
     public abstract String indicator();
 
-    public static DataSetIndicatorLink create(Cursor cursor) {
-        return AutoValue_DataSetIndicatorLink.createFromCursor(cursor);
-    }
-
     public static Builder builder() {
-        return new $$AutoValue_DataSetIndicatorLink.Builder();
+        return new AutoValue_DataSetIndicatorLink.Builder();
     }
 
     public abstract Builder toBuilder();

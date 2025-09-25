@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.enrollment
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper
 import org.hisp.dhis.android.core.common.DataColumns
@@ -38,11 +39,13 @@ import org.hisp.dhis.android.persistence.common.querybuilders.IdentifiableDeleta
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableDeletableDataObjectStoreImpl
 import org.hisp.dhis.android.persistence.event.EventTableInfo
 import org.hisp.dhis.android.persistence.program.ProgramTrackedEntityAttributeTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class EnrollmentStoreImpl(
-    val dao: EnrollmentDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : EnrollmentStore, IdentifiableDeletableDataObjectStoreImpl<Enrollment, EnrollmentDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().enrollmentDao() },
     Enrollment::toDB,
     IdentifiableDeletableDataObjectSQLStatementBuilderImpl(EnrollmentTableInfo.TABLE_INFO),
 ) {
@@ -67,6 +70,7 @@ internal class EnrollmentStoreImpl(
     }
 
     override suspend fun setAggregatedSyncState(uid: String, state: State): Int {
+        val dao = daoProvider() as EnrollmentDao
         return dao.setAggregatedSyncState(state.name, uid)
     }
 
@@ -94,5 +98,11 @@ internal class EnrollmentStoreImpl(
             ).build()
 
         return selectWhere(whereClause)
+    }
+
+    override suspend fun deleteByUid(enrollments: List<Enrollment>) {
+        val dao = databaseAdapter.getCurrentDatabase().enrollmentDao()
+        val enrollmentUids = enrollments.map { it.uid() }
+        dao.deleteByUids(enrollmentUids)
     }
 }

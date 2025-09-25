@@ -28,15 +28,10 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.AccessColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationshipConstraintAdapter;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
@@ -51,25 +46,18 @@ public abstract class RelationshipType extends BaseIdentifiableObject implements
     public abstract String toFromName();
 
     @Nullable
-    @ColumnAdapter(IgnoreRelationshipConstraintAdapter.class)
     public abstract RelationshipConstraint fromConstraint();
 
     @Nullable
-    @ColumnAdapter(IgnoreRelationshipConstraintAdapter.class)
     public abstract RelationshipConstraint toConstraint();
 
     @Nullable
     public abstract Boolean bidirectional();
 
-    @ColumnAdapter(AccessColumnAdapter.class)
     public abstract Access access();
 
     public static Builder builder() {
-        return new $$AutoValue_RelationshipType.Builder();
-    }
-
-    public static RelationshipType create(Cursor cursor) {
-        return AutoValue_RelationshipType.createFromCursor(cursor);
+        return new AutoValue_RelationshipType.Builder();
     }
 
     public abstract Builder toBuilder();

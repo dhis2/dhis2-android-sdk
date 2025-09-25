@@ -30,9 +30,10 @@ package org.hisp.dhis.android.core.usecase.stock.internal
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.usecase.stock.InternalStockUseCaseSamples.get
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
-import org.hisp.dhis.android.core.usecase.stock.StockUseCaseTableInfo
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.usecase.StockUseCaseStoreImpl
+import org.hisp.dhis.android.persistence.usecase.StockUseCaseTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

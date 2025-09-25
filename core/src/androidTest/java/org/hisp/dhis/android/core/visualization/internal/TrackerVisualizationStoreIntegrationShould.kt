@@ -32,8 +32,9 @@ import org.hisp.dhis.android.core.data.visualization.TrackerVisualizationSamples
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.hisp.dhis.android.core.visualization.TrackerVisualization
-import org.hisp.dhis.android.core.visualization.TrackerVisualizationTableInfo
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationType
+import org.hisp.dhis.android.persistence.visualization.TrackerVisualizationStoreImpl
+import org.hisp.dhis.android.persistence.visualization.TrackerVisualizationTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

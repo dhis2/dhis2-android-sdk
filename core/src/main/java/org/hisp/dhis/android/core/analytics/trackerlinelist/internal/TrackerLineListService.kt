@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListResponse
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListSortingItem
-import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.TrackerLineListServiceHelper.mapCursorToColumns
+import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.TrackerLineListServiceHelper.fetchDataWithD2Dao
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListEvaluatorMapper
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EnrollmentAlias
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EventAlias
@@ -41,14 +41,13 @@ import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.T
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.repositories.paging.PageConfig
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
-import org.hisp.dhis.android.core.event.EventTableInfo
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
 import org.hisp.dhis.android.core.visualization.TrackerVisualization
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationCollectionRepository
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.persistence.event.EventTableInfo
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceTableInfo
 import org.koin.core.annotation.Singleton
-import java.lang.RuntimeException
 
 @Singleton
 @Suppress("TooManyFunctions")
@@ -62,7 +61,6 @@ internal class TrackerLineListService(
     suspend fun evaluate(params: TrackerLineListParams): Result<TrackerLineListResponse, AnalyticsException> {
         return try {
             val evaluatedParams = evaluateParams(params)
-
             if (evaluatedParams.outputType == null) {
                 throw AnalyticsException.InvalidArguments("Output type cannot be empty.")
             }
@@ -71,16 +69,17 @@ internal class TrackerLineListService(
             val context = TrackerLineListContext(metadata, databaseAdapter)
 
             val sqlClause = when (evaluatedParams.outputType) {
-                TrackerLineListOutputType.EVENT -> getEventSqlClause(evaluatedParams, context)
-                TrackerLineListOutputType.ENROLLMENT -> getEnrollmentSqlClause(evaluatedParams, context)
-                TrackerLineListOutputType.TRACKED_ENTITY_INSTANCE -> getTrackedEntityInstanceSqlClause(
-                    evaluatedParams,
-                    context,
-                )
+                TrackerLineListOutputType.EVENT ->
+                    getEventSqlClause(evaluatedParams, context)
+
+                TrackerLineListOutputType.ENROLLMENT ->
+                    getEnrollmentSqlClause(evaluatedParams, context)
+
+                TrackerLineListOutputType.TRACKED_ENTITY_INSTANCE ->
+                    getTrackedEntityInstanceSqlClause(evaluatedParams, context)
             }
 
-            val cursor = databaseAdapter.rawQuery(sqlClause)
-            val values = mapCursorToColumns(evaluatedParams, cursor)
+            val values = fetchDataWithD2Dao(sqlClause, evaluatedParams, databaseAdapter)
 
             Result.Success(
                 TrackerLineListResponse(
@@ -226,10 +225,12 @@ internal class TrackerLineListService(
         context: TrackerLineListContext,
     ): String {
         return params.allItems.map {
-            "(${TrackerLineListEvaluatorMapper.getEvaluator(
-                it,
-                context,
-            ).getSelectSQLForTrackedEntityInstance()}) '${it.id}'"
+            "(${
+                TrackerLineListEvaluatorMapper.getEvaluator(
+                    it,
+                    context,
+                ).getSelectSQLForTrackedEntityInstance()
+            }) '${it.id}'"
         }.joinToString(", ")
     }
 

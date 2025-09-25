@@ -28,20 +28,15 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.DownloadPeriodColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EnrollmentScopeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.LimitScopeColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 import java.util.Date;
+import java.util.List;
 
 @AutoValue
 public abstract class ProgramSetting implements CoreObject {
@@ -53,7 +48,9 @@ public abstract class ProgramSetting implements CoreObject {
     public abstract String name();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
+    public abstract List<ObjectWithUid> filters();
+
+    @Nullable
     public abstract Date lastUpdated();
 
     @Nullable
@@ -69,53 +66,39 @@ public abstract class ProgramSetting implements CoreObject {
     public abstract Integer eventsDBTrimming();
 
     @Nullable
-    @ColumnAdapter(DownloadPeriodColumnAdapter.class)
     public abstract DownloadPeriod updateDownload();
 
     @Nullable
-    @ColumnAdapter(DownloadPeriodColumnAdapter.class)
     public abstract DownloadPeriod updateDBTrimming();
 
     @Nullable
-    @ColumnAdapter(LimitScopeColumnAdapter.class)
     public abstract LimitScope settingDownload();
 
     @Nullable
-    @ColumnAdapter(LimitScopeColumnAdapter.class)
     public abstract LimitScope settingDBTrimming();
 
     @Nullable
-    @ColumnAdapter(EnrollmentScopeColumnAdapter.class)
     public abstract EnrollmentScope enrollmentDownload();
 
     @Nullable
-    @ColumnAdapter(EnrollmentScopeColumnAdapter.class)
     public abstract EnrollmentScope enrollmentDBTrimming();
 
     @Nullable
-    @ColumnAdapter(DownloadPeriodColumnAdapter.class)
     public abstract DownloadPeriod eventDateDownload();
 
     @Nullable
-    @ColumnAdapter(DownloadPeriodColumnAdapter.class)
     public abstract DownloadPeriod eventDateDBTrimming();
 
     @Nullable
-    @ColumnAdapter(DownloadPeriodColumnAdapter.class)
     public abstract DownloadPeriod enrollmentDateDownload();
 
     @Nullable
-    @ColumnAdapter(DownloadPeriodColumnAdapter.class)
     public abstract DownloadPeriod enrollmentDateDBTrimming();
-
-    public static ProgramSetting create(Cursor cursor) {
-        return $AutoValue_ProgramSetting.createFromCursor(cursor);
-    }
 
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new $AutoValue_ProgramSetting.Builder();
+        return new AutoValue_ProgramSetting.Builder();
     }
 
     @AutoValue.Builder
@@ -123,6 +106,8 @@ public abstract class ProgramSetting implements CoreObject {
         public abstract Builder uid(String uid);
 
         public abstract Builder name(String name);
+
+        public abstract Builder filters(List<ObjectWithUid> filters);
 
         public abstract Builder lastUpdated(Date lastUpdated);
 

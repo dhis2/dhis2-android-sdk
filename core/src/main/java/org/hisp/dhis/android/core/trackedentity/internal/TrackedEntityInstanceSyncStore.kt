@@ -28,6 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.TrackerBaseSyncStore
 
-internal interface TrackedEntityInstanceSyncStore : ObjectWithoutUidStore<TrackedEntityInstanceSync>
+internal interface TrackedEntityInstanceSyncStore : TrackerBaseSyncStore<TrackedEntityInstanceSync>

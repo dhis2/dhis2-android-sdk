@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.arch.domain
 
-import android.database.Cursor
 import com.google.common.truth.Truth.assertThat
 import org.junit.Assert.fail
 import org.junit.Test
@@ -36,13 +35,10 @@ import java.lang.reflect.Method
 
 class DomainClassesShould {
     @Test
-    fun `have builder, create and toBuilder methods`() {
+    fun `have builder and toBuilder methods`() {
         domainClasses.forEach { clazz ->
             val builderMethod = getMethodOrFail(clazz, "builder")
             assertThat(builderMethod).isNotNull()
-
-            val createMethod = getMethodOrFail(clazz, "create", Cursor::class.java)
-            assertThat(createMethod).isNotNull()
 
             val toBuilderMethod = getMethodOrFail(clazz, "toBuilder")
             assertThat(toBuilderMethod).isNotNull()

@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.program.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.uidseeker.internal.BaseUidsSeeker
-import org.hisp.dhis.android.core.settings.ProgramConfigurationSettingTableInfo
 import org.hisp.dhis.android.core.visualization.DimensionItemType
-import org.hisp.dhis.android.core.visualization.VisualizationDimensionItemTableInfo
+import org.hisp.dhis.android.persistence.settings.ProgramConfigurationSettingTableInfo
+import org.hisp.dhis.android.persistence.visualization.VisualizationDimensionItemTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -40,7 +40,7 @@ internal class ProgramIndicatorUidsSeeker(
     databaseAdapter: DatabaseAdapter,
 ) : BaseUidsSeeker(databaseAdapter) {
 
-    fun seekUids(): Set<String> {
+    suspend fun seekUids(): Set<String> {
         val visualizationQuery = "SELECT ${VisualizationDimensionItemTableInfo.Columns.DIMENSION_ITEM} " +
             "FROM ${VisualizationDimensionItemTableInfo.TABLE_INFO.name()} " +
             "WHERE ${VisualizationDimensionItemTableInfo.Columns.DIMENSION_ITEM_TYPE} = " +

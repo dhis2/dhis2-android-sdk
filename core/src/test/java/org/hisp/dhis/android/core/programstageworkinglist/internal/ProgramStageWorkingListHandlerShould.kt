@@ -38,7 +38,12 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.kotlin.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
 class ProgramStageWorkingListHandlerShould {
@@ -80,7 +85,11 @@ class ProgramStageWorkingListHandlerShould {
             .programStageQueryCriteria(queryCriteria)
             .build()
 
-        whenever(programStageWorkingListStore.updateOrInsert(any())).doReturn(HandleAction.Insert)
+        whenever(programStageWorkingListStore.updateOrInsert(any<List<ProgramStageWorkingList>>())).doReturn(
+            listOf(
+                HandleAction.Insert,
+            ),
+        )
         workingLists = listOf(workingList)
     }
 

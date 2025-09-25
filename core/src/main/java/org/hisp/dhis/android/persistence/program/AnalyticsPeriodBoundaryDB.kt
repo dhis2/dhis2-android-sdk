@@ -22,8 +22,8 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 )
 internal data class AnalyticsPeriodBoundaryDB(
     val programIndicator: String,
-    val boundaryTarget: String?,
-    val analyticsPeriodBoundaryType: String?,
+    val boundaryTarget: String,
+    val analyticsPeriodBoundaryType: String,
     val offsetPeriods: Int?,
     val offsetPeriodType: String?,
 ) : EntityDB<AnalyticsPeriodBoundary> {
@@ -32,7 +32,7 @@ internal data class AnalyticsPeriodBoundaryDB(
         return AnalyticsPeriodBoundary.builder().apply {
             programIndicator(programIndicator)
             boundaryTarget(boundaryTarget)
-            analyticsPeriodBoundaryType?.let { analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.valueOf(it)) }
+            analyticsPeriodBoundaryType.let { analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.valueOf(it)) }
             offsetPeriods(offsetPeriods)
             offsetPeriodType?.let { offsetPeriodType(PeriodType.valueOf(it)) }
         }.build()
@@ -42,8 +42,8 @@ internal data class AnalyticsPeriodBoundaryDB(
 internal fun AnalyticsPeriodBoundary.toDB(): AnalyticsPeriodBoundaryDB {
     return AnalyticsPeriodBoundaryDB(
         programIndicator = programIndicator()!!,
-        boundaryTarget = boundaryTarget(),
-        analyticsPeriodBoundaryType = analyticsPeriodBoundaryType()?.name,
+        boundaryTarget = boundaryTarget()!!,
+        analyticsPeriodBoundaryType = analyticsPeriodBoundaryType()?.name!!,
         offsetPeriods = offsetPeriods(),
         offsetPeriodType = offsetPeriodType()?.name,
     )

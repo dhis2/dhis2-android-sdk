@@ -28,8 +28,7 @@
 package org.hisp.dhis.android.core.user.internal
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
+import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
@@ -49,8 +48,7 @@ class LogOutCallShould {
     private val credentialsSecureStore: CredentialsSecureStore = mock()
     private val userIdStore: UserIdInMemoryStore = mock()
     private val credentials: Credentials = mock()
-    private val databaseAdapter: DatabaseAdapter = mock()
-    private val databaseAdapterFactory: DatabaseAdapterFactory = mock()
+    private val databaseManager: DatabaseManager = mock()
 
     private lateinit var logOutCall: LogOutCall
 
@@ -58,7 +56,7 @@ class LogOutCallShould {
     fun setUp() {
         whenever(credentials.username).thenReturn("user")
         whenever(credentials.password).thenReturn("password")
-        logOutCall = LogOutCall(databaseAdapter, databaseAdapterFactory, credentialsSecureStore, userIdStore)
+        logOutCall = LogOutCall(databaseManager, credentialsSecureStore, userIdStore)
     }
 
     @Test

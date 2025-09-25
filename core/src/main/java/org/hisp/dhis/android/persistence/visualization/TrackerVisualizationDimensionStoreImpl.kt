@@ -28,17 +28,20 @@
 
 package org.hisp.dhis.android.persistence.visualization
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension
 import org.hisp.dhis.android.core.visualization.internal.TrackerVisualizationDimensionStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class TrackerVisualizationDimensionStoreImpl(
-    private val dao: TrackerVisualizationDimensionDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : TrackerVisualizationDimensionStore,
     LinkStoreImpl<TrackerVisualizationDimension, TrackerVisualizationDimensionDB>(
-        dao,
+        { databaseAdapter.getCurrentDatabase().trackerVisualizationDimensionDao() },
         TrackerVisualizationDimension::toDB,
         LinkSQLStatementBuilderImpl(
             TrackerVisualizationDimensionTableInfo.TABLE_INFO,
@@ -53,7 +56,10 @@ internal class TrackerVisualizationDimensionStoreImpl(
                 TrackerVisualizationDimensionTableInfo.Columns.TRACKER_VISUALIZATION,
                 trackerVisualizationId,
             ).build()
-        val query = builder.selectWhere(whereClause)
+        val query = builder.selectWhere(
+            whereClause = whereClause,
+            orderByClause = "${TrackerVisualizationDimensionTableInfo.Columns.SORT_ORDER} ASC",
+        )
         return selectRawQuery(query)
     }
 }

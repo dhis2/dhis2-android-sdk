@@ -28,16 +28,19 @@
 
 package org.hisp.dhis.android.persistence.organisationunit
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitGroupStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class OrganisationUnitGroupStoreImpl(
-    val dao: OrganisationUnitGroupDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : OrganisationUnitGroupStore, IdentifiableObjectStoreImpl<OrganisationUnitGroup, OrganisationUnitGroupDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().organisationUnitGroupDao() },
     OrganisationUnitGroup::toDB,
     SQLStatementBuilderImpl(OrganisationUnitGroupTableInfo.TABLE_INFO),
 ) {

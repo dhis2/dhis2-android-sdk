@@ -27,7 +27,9 @@
  */
 package org.hisp.dhis.android.localanalytics.tests
 
+import androidx.room.RoomRawQuery
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository
 import org.junit.Test
@@ -41,12 +43,10 @@ internal abstract class BaseLocalAnalyticsAggregatedMockIntegrationShould : Base
     }
 
     @Test
-    fun raw_count_data_values() {
-        val cursor = d2.databaseAdapter().rawQuery("SELECT Count(*) FROM DataValue")
-        cursor.moveToFirst()
-        val v = cursor.getInt(0)
-        cursor.close()
-        assertThat(v).isEqualTo(3000 * SizeFactor)
+    fun raw_count_data_values() = runTest {
+        val dao = d2.databaseAdapter().getCurrentDatabase().d2Dao()
+        val count = dao.intRawQuery(RoomRawQuery("SELECT Count(*) FROM DataValue"))
+        assertThat(count).isEqualTo(3000 * SizeFactor)
     }
 
     @Test

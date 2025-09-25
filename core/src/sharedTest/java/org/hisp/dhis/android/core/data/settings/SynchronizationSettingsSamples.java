@@ -45,12 +45,8 @@ public class SynchronizationSettingsSamples {
                 .trackerImporterVersion(TrackerImporterVersion.V2)
                 .trackerExporterVersion(TrackerExporterVersion.V2)
                 .fileMaxLengthBytes(10240000)
-                .programSettings(ProgramSettings.builder()
-                        .globalSettings(ProgramSettingSamples.getProgramSetting())
-                        .build())
-                .dataSetSettings(DataSetSettings.builder()
-                        .globalSettings(DataSetSettingSamples.getDataSetSetting())
-                        .build())
+                .programSettings(ProgramSettings.builder().build())
+                .dataSetSettings(DataSetSettings.builder().build())
                 .build();
     }
 }

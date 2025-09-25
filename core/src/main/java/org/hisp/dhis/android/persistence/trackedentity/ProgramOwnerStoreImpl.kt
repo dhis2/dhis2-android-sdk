@@ -28,15 +28,18 @@
 
 package org.hisp.dhis.android.persistence.trackedentity
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ProgramOwnerStoreImpl(
-    val dao: ProgramOwnerDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : ProgramOwnerStore, ObjectWithoutUidStoreImpl<ProgramOwner, ProgramOwnerDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().programOwnerDao() },
     ProgramOwner::toDB,
     SQLStatementBuilderImpl(ProgramOwnerTableInfo.TABLE_INFO),
 )

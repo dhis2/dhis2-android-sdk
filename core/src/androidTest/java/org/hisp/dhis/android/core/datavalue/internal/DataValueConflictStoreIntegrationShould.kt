@@ -31,9 +31,10 @@ package org.hisp.dhis.android.core.datavalue.internal
 import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.datavalue.DataValueConflictSamples
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
-import org.hisp.dhis.android.core.datavalue.DataValueConflictTableInfo
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.datavalue.DataValueConflictStoreImpl
+import org.hisp.dhis.android.persistence.datavalue.DataValueConflictTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

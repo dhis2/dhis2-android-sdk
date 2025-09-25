@@ -28,17 +28,20 @@
 
 package org.hisp.dhis.android.persistence.trackedentity
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
 import org.hisp.dhis.android.persistence.program.ProgramSectionAttributeLinkTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class TrackedEntityAttributeStoreImpl(
-    val dao: TrackedEntityAttributeDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : TrackedEntityAttributeStore, IdentifiableObjectStoreImpl<TrackedEntityAttribute, TrackedEntityAttributeDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().trackedEntityAttributeDao() },
     TrackedEntityAttribute::toDB,
     SQLStatementBuilderImpl(TrackedEntityAttributeTableInfo.TABLE_INFO),
 ) {

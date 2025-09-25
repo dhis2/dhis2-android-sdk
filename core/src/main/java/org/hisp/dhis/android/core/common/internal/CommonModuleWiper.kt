@@ -27,20 +27,20 @@
  */
 package org.hisp.dhis.android.core.common.internal
 
-import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import org.hisp.dhis.android.persistence.valuetypedevicerendering.ValueTypeDeviceRenderingTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class CommonModuleWiper(
     private val tableWiper: TableWiper,
 ) : ModuleWiper {
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         tableWiper.wipeTables(ValueTypeDeviceRenderingTableInfo.TABLE_INFO)
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         // No metadata to wipe
     }
 }

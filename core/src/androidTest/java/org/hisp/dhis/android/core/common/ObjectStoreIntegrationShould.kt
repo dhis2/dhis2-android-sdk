@@ -31,9 +31,8 @@ import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseIntegrationTestWithDatabase
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.option.OptionSet
-import org.hisp.dhis.android.core.option.OptionSetTableInfo
-import org.hisp.dhis.android.core.option.internal.OptionSetStoreImpl
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.option.OptionSetStoreImpl
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -56,11 +55,7 @@ class ObjectStoreIntegrationShould : BaseIntegrationTestWithDatabase() {
     @Test
     fun insert_option_set() = runTest {
         store.insert(optionSet)
-        val cursor = databaseAdapter().query(
-            OptionSetTableInfo.TABLE_INFO.name(),
-            *OptionSetTableInfo.TABLE_INFO.columns().all(),
-        )
-        StoreMocks.optionSetCursorAssert(cursor, optionSet)
+        StoreMocks.optionSetSelectAssert(store, optionSet)
     }
 
     @Test(expected = RuntimeException::class)

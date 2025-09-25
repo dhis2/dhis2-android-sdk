@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.ValueTypeRendering
 import org.hisp.dhis.android.core.common.valuetype.rendering.internal.ValueTypeRenderingHandler
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramTrackedEntityAttributeTableInfo
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -47,7 +47,7 @@ import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
 class ProgramTrackedEntityAttributeHandlerShould {
-    private val store: ProgramTrackedEntityAttributeStore = mock()
+    private val programTrackedEntityAttributeStore: ProgramTrackedEntityAttributeStore = mock()
     private var programTrackedEntityAttributes: MutableList<ProgramTrackedEntityAttribute> = mock()
     private val programTrackedEntityAttribute: ProgramTrackedEntityAttribute = mock()
     private val renderTypeHandler: ValueTypeRenderingHandler = mock()
@@ -61,7 +61,7 @@ class ProgramTrackedEntityAttributeHandlerShould {
     @Before
     @Throws(Exception::class)
     fun setUp() = runTest {
-        handler = ProgramTrackedEntityAttributeHandler(store, renderTypeHandler)
+        handler = ProgramTrackedEntityAttributeHandler(programTrackedEntityAttributeStore, renderTypeHandler)
         programTrackedEntityAttributes = ArrayList()
         programTrackedEntityAttributes.add(programTrackedEntityAttribute)
 
@@ -71,14 +71,18 @@ class ProgramTrackedEntityAttributeHandlerShould {
         whenever(trackedEntityAttribute.uid()).thenReturn("tracked_entity_attribute_uid")
         whenever(programTrackedEntityAttribute.program()).thenReturn(program)
         whenever(program.uid()).thenReturn("program_uid")
-        whenever(store.updateOrInsert(any())).thenReturn(HandleAction.Insert)
+        whenever(
+            programTrackedEntityAttributeStore.updateOrInsert(any<List<ProgramTrackedEntityAttribute>>()),
+        ).thenReturn(
+            listOf(HandleAction.Insert),
+        )
     }
 
     @Test
     @Suppress("UnusedPrivateMember")
     fun extend_identifiable_handler_impl() {
         val genericHandler: IdentifiableHandlerImpl<ProgramTrackedEntityAttribute> =
-            ProgramTrackedEntityAttributeHandler(store, renderTypeHandler)
+            ProgramTrackedEntityAttributeHandler(programTrackedEntityAttributeStore, renderTypeHandler)
     }
 
     @Test

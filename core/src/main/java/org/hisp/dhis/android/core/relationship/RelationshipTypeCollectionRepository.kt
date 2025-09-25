@@ -44,6 +44,8 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollecti
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollectionRepositoryHelper.availableForTrackedEntityInstanceRawQuery
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
+import org.hisp.dhis.android.persistence.relationship.RelationshipConstraintTableInfo
+import org.hisp.dhis.android.persistence.relationship.RelationshipTypeTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

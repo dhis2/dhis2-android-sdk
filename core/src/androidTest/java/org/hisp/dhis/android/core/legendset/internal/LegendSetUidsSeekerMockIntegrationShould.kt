@@ -29,13 +29,14 @@
 package org.hisp.dhis.android.core.legendset.internal
 
 import com.google.common.truth.Truth
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 
 class LegendSetUidsSeekerMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 
     @Test
-    fun seek_legendSet_uids() {
+    fun seek_legendSet_uids() = runTest {
         val legendSets = LegendSetUidsSeeker(databaseAdapter).seekUids()
         Truth.assertThat(legendSets.size).isEqualTo(4)
         Truth.assertThat(legendSets.contains("TiOkbpGEud4")).isTrue()

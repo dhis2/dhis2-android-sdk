@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.visualization.internal
 import org.hisp.dhis.android.core.arch.cleaners.internal.CollectionCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.visualization.TrackerVisualization
-import org.hisp.dhis.android.core.visualization.TrackerVisualizationTableInfo
+import org.hisp.dhis.android.persistence.visualization.TrackerVisualizationTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

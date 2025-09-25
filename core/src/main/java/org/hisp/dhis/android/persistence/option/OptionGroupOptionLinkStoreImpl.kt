@@ -28,17 +28,20 @@
 
 package org.hisp.dhis.android.persistence.option
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.option.OptionGroupOptionLink
 import org.hisp.dhis.android.core.option.internal.OptionGroupOptionLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class OptionGroupOptionLinkStoreImpl(
-    val dao: OptionGroupOptionLinkDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : OptionGroupOptionLinkStore, LinkStoreImpl<OptionGroupOptionLink, OptionGroupOptionLinkDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().optionGroupOptionLinkDao() },
     OptionGroupOptionLink::toDB,
     LinkSQLStatementBuilderImpl(
         OptionGroupOptionLinkTableInfo.TABLE_INFO,

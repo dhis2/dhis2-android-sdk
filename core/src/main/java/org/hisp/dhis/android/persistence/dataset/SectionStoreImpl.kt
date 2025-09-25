@@ -28,17 +28,18 @@
 
 package org.hisp.dhis.android.persistence.dataset
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.dataset.Section
 import org.hisp.dhis.android.core.dataset.internal.SectionStore
-import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilder
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class SectionStoreImpl(
-    val dao: SectionDao,
-    override val builder: SQLStatementBuilder,
+    private val databaseAdapter: DatabaseAdapter,
 ) : SectionStore, IdentifiableObjectStoreImpl<Section, SectionDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().sectionDao() },
     Section::toDB,
     SQLStatementBuilderImpl(SectionTableInfo.TABLE_INFO),
 )

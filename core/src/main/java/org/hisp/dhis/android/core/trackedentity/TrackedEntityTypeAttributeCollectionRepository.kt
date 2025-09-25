@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilt
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeAttributeStore
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityTypeAttributeTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

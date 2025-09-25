@@ -29,6 +29,9 @@
 package org.hisp.dhis.android.network.settings
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.AnalyticsSettings
 import org.hisp.dhis.android.core.settings.AppearanceSettings
 import org.hisp.dhis.android.core.settings.CustomIntents
@@ -37,6 +40,7 @@ import org.hisp.dhis.android.core.settings.GeneralSettings
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.settings.SettingsAppInfo
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
+import org.hisp.dhis.android.core.settings.internal.SettingsAppDataStoreVersion
 import org.hisp.dhis.android.core.settings.internal.SettingsNetworkHandler
 import org.koin.core.annotation.Singleton
 
@@ -44,46 +48,82 @@ import org.koin.core.annotation.Singleton
 @Suppress("TooManyFunctions")
 internal class SettingsNetworkHandlerImpl(
     httpServiceClient: HttpServiceClient,
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : SettingsNetworkHandler {
     private val service = SettingsService(httpServiceClient)
 
-    override suspend fun settingsAppInfo(url: String): SettingsAppInfo {
-        val apiPayload = service.settingsAppInfo(url)
+    override suspend fun settingsAppInfo(): SettingsAppInfo {
+        val apiPayload = coroutineAPICallExecutor.wrap(storeError = false) {
+            service.settingsAppInfo()
+        }.getOrThrow()
+
         return apiPayload.toDomain()
     }
 
-    override suspend fun generalSettings(url: String): GeneralSettings {
-        val apiPayload = service.generalSettings(url)
-        return apiPayload.toDomain()
+    override suspend fun generalSettings(version: SettingsAppDataStoreVersion): Result<GeneralSettings, D2Error> {
+        return coroutineAPICallExecutor.wrap(storeError = false) {
+            val apiPayload = service.generalSettings(version)
+            apiPayload.toDomain()
+        }
     }
 
-    override suspend fun dataSetSettings(url: String): DataSetSettings {
-        val apiPayload = service.dataSetSettings(url)
-        return apiPayload.toDomain()
+    override suspend fun dataSetSettings(
+        version: SettingsAppDataStoreVersion,
+        storeError: Boolean,
+    ): Result<DataSetSettings, D2Error> {
+        return coroutineAPICallExecutor.wrap(storeError = storeError) {
+            val apiPayload = service.dataSetSettings(version)
+            apiPayload.toDomain()
+        }
     }
 
-    override suspend fun programSettings(url: String): ProgramSettings {
-        val apiPayload = service.programSettings(url)
-        return apiPayload.toDomain()
+    override suspend fun programSettings(
+        version: SettingsAppDataStoreVersion,
+        storeError: Boolean,
+    ): Result<ProgramSettings, D2Error> {
+        return coroutineAPICallExecutor.wrap(storeError = storeError) {
+            val apiPayload = service.programSettings(version)
+            apiPayload.toDomain()
+        }
     }
 
-    override suspend fun synchronizationSettings(url: String): SynchronizationSettings {
-        val apiPayload = service.synchronizationSettings(url)
-        return apiPayload.toDomain()
+    override suspend fun synchronizationSettings(
+        version: SettingsAppDataStoreVersion,
+        storeError: Boolean,
+    ): Result<SynchronizationSettings, D2Error> {
+        return coroutineAPICallExecutor.wrap(storeError = storeError) {
+            val apiPayload = service.synchronizationSettings(version)
+            apiPayload.toDomain()
+        }
     }
 
-    override suspend fun appearanceSettings(url: String): AppearanceSettings {
-        val apiPayload = service.appearanceSettings(url)
-        return apiPayload.toDomain()
+    override suspend fun appearanceSettings(
+        version: SettingsAppDataStoreVersion,
+        storeError: Boolean,
+    ): Result<AppearanceSettings, D2Error> {
+        return coroutineAPICallExecutor.wrap(storeError = storeError) {
+            val apiPayload = service.appearanceSettings(version)
+            apiPayload.toDomain()
+        }
     }
 
-    override suspend fun analyticsSettings(url: String): AnalyticsSettings {
-        val apiPayload = service.analyticsSettings(url)
-        return apiPayload.toDomain()
+    override suspend fun analyticsSettings(
+        version: SettingsAppDataStoreVersion,
+        storeError: Boolean,
+    ): Result<AnalyticsSettings, D2Error> {
+        return coroutineAPICallExecutor.wrap(storeError = storeError) {
+            val apiPayload = service.analyticsSettings(version)
+            apiPayload.toDomain()
+        }
     }
 
-    override suspend fun customIntents(url: String): CustomIntents {
-        val apiPayload = service.customIntents(url)
-        return apiPayload.toDomain()
+    override suspend fun customIntents(
+        version: SettingsAppDataStoreVersion,
+        storeError: Boolean,
+    ): Result<CustomIntents, D2Error> {
+        return coroutineAPICallExecutor.wrap(storeError = storeError) {
+            val apiPayload = service.customIntents(version)
+            apiPayload.toDomain()
+        }
     }
 }

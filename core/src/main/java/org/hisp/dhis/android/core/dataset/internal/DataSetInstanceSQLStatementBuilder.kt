@@ -33,19 +33,18 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBui
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl.Companion.getOrderBy
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
-import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.dataelement.DataElementTableInfo
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationTableInfo
-import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkTableInfo
-import org.hisp.dhis.android.core.dataset.DataSetElementLinkTableInfo
-import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo
-import org.hisp.dhis.android.core.dataset.DataSetTableInfo
-import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
-import org.hisp.dhis.android.core.period.PeriodTableInfo
+import org.hisp.dhis.android.persistence.category.CategoryOptionComboTableInfo
+import org.hisp.dhis.android.persistence.dataelement.DataElementTableInfo
+import org.hisp.dhis.android.persistence.dataset.DataSetCompleteRegistrationTableInfo
+import org.hisp.dhis.android.persistence.dataset.DataSetDataElementLinkTableInfo
+import org.hisp.dhis.android.persistence.dataset.DataSetOrganisationUnitLinkTableInfo
+import org.hisp.dhis.android.persistence.dataset.DataSetTableInfo
+import org.hisp.dhis.android.persistence.datavalue.DataValueTableInfo
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitTableInfo
+import org.hisp.dhis.android.persistence.period.PeriodTableInfo
 
 open class DataSetInstanceSQLStatementBuilder : ReadOnlySQLStatementBuilder {
     override fun selectWhere(whereClause: String): String {
@@ -161,7 +160,7 @@ open class DataSetInstanceSQLStatementBuilder : ReadOnlySQLStatementBuilder {
         private const val COMPLETED_BY =
             COMPLETE_TABLE_ALIAS + "." + DataSetCompleteRegistrationTableInfo.Columns.STORED_BY
         private const val DSE_CATEGORY_COMBO =
-            DATASETELEMENT_TABLE_ALIAS + "." + DataSetElementLinkTableInfo.Columns.CATEGORY_COMBO
+            DATASETELEMENT_TABLE_ALIAS + "." + DataSetDataElementLinkTableInfo.Columns.CATEGORY_COMBO
         private const val LAST_UPDATED_VALUES = "MAX($DATAVALUE_TABLE_ALIAS.${DataValueTableInfo.Columns.LAST_UPDATED})"
         private const val LAST_UPDATED = "MAX($LAST_UPDATED_VALUES, COALESCE($COMPLETION_DATE, 0))"
         private const val VALUE_STATE = "$DATAVALUE_TABLE_ALIAS.${DataColumns.SYNC_STATE}"

@@ -28,15 +28,10 @@
 
 package org.hisp.dhis.android.core.systeminfo;
 
-import android.database.Cursor;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
@@ -45,7 +40,6 @@ import java.util.Date;
 public abstract class SystemInfo implements CoreObject {
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date serverDate();
 
     @Nullable
@@ -59,11 +53,6 @@ public abstract class SystemInfo implements CoreObject {
 
     @Nullable
     public abstract String systemName();
-
-    @NonNull
-    public static SystemInfo create(Cursor cursor) {
-        return AutoValue_SystemInfo.createFromCursor(cursor);
-    }
 
     public static Builder builder() {
         return new AutoValue_SystemInfo.Builder();

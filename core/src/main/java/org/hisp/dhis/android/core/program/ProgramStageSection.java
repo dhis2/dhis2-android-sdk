@@ -28,17 +28,10 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.SectionRenderingColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreDataElementListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramIndicatorListAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -53,19 +46,15 @@ public abstract class ProgramStageSection extends BaseIdentifiableObject impleme
     public abstract Integer sortOrder();
 
     @Nullable
-    @ColumnAdapter(IgnoreProgramIndicatorListAdapter.class)
     public abstract List<ProgramIndicator> programIndicators();
 
     @Nullable
-    @ColumnAdapter(IgnoreDataElementListColumnAdapter.class)
     public abstract List<DataElement> dataElements();
 
     @Nullable
-    @ColumnAdapter(SectionRenderingColumnAdapter.class)
     public abstract SectionRendering renderType();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid programStage();
 
     @Nullable
@@ -75,11 +64,7 @@ public abstract class ProgramStageSection extends BaseIdentifiableObject impleme
     public abstract String displayDescription();
 
     public static Builder builder() {
-        return new $$AutoValue_ProgramStageSection.Builder();
-    }
-
-    public static ProgramStageSection create(Cursor cursor) {
-        return $AutoValue_ProgramStageSection.createFromCursor(cursor);
+        return new AutoValue_ProgramStageSection.Builder();
     }
 
     public abstract Builder toBuilder();

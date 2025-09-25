@@ -31,9 +31,10 @@ package org.hisp.dhis.android.core.maintenance.internal;
 import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.maintenance.ForeignKeyViolationSamples;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
-import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.hisp.dhis.android.persistence.maintenance.ForeignKeyViolationStoreImpl;
+import org.hisp.dhis.android.persistence.maintenance.ForeignKeyViolationTableInfo;
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)

@@ -28,16 +28,19 @@
 
 package org.hisp.dhis.android.persistence.category
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLink
 import org.hisp.dhis.android.core.category.internal.CategoryOptionOrganisationUnitLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class CategoryOptionOrganisationUnitLinkStoreImpl(
-    val dao: CategoryOptionOrganisationUnitLinkDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : CategoryOptionOrganisationUnitLinkStore,
     LinkStoreImpl<CategoryOptionOrganisationUnitLink, CategoryOptionOrganisationUnitLinkDB>(
-        dao,
+        { databaseAdapter.getCurrentDatabase().categoryOptionOrganisationUnitLinkDao() },
         CategoryOptionOrganisationUnitLink::toDB,
         LinkSQLStatementBuilderImpl(
             CategoryOptionOrganisationUnitLinkTableInfo.TABLE_INFO,

@@ -28,17 +28,20 @@
 
 package org.hisp.dhis.android.persistence.resource
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.resource.internal.Resource
 import org.hisp.dhis.android.core.resource.internal.ResourceStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ResourceStoreImpl(
-    val dao: ResourceDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : ResourceStore, ObjectWithoutUidStoreImpl<Resource, ResourceDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().resourceDao() },
     Resource::toDB,
     SQLStatementBuilderImpl(ResourceTableInfo.TABLE_INFO),
 ) {
@@ -55,10 +58,7 @@ internal class ResourceStoreImpl(
     }
 
     override suspend fun deleteResource(type: Resource.Type): Boolean {
-        val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(ResourceTableInfo.Columns.RESOURCE_TYPE, type.name)
-            .build()
-
-        return deleteWhere(whereClause)
+        val dao = databaseAdapter.getCurrentDatabase().resourceDao()
+        return dao.deleteResource(type) > 0
     }
 }

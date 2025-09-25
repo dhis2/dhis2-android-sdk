@@ -33,9 +33,10 @@ import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractInt
 import org.hisp.dhis.android.core.data.relationship.RelationshipItemSamples
 import org.hisp.dhis.android.core.relationship.RelationshipItem
 import org.hisp.dhis.android.core.relationship.RelationshipItemEvent
-import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.relationship.RelationshipItemStoreImpl
+import org.hisp.dhis.android.persistence.relationship.RelationshipItemTableInfo
 import org.junit.Test
 import org.junit.runner.RunWith
 

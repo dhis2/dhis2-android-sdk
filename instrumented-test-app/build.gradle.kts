@@ -70,6 +70,7 @@ dependencies {
     coreLibraryDesugaring(libs.desugaring)
     api(libs.kotlinx.serialization.json)
     androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
 
     if (sdkVersion != null && sdkVersion != "") {
         implementation("org.hisp.dhis:android-core:$sdkVersion!!")

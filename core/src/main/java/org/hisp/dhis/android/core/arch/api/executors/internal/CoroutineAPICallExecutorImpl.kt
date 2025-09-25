@@ -27,16 +27,13 @@
  */
 package org.hisp.dhis.android.core.arch.api.executors.internal
 
+import androidx.room.immediateTransaction
+import androidx.room.useWriterConnection
 import io.ktor.client.plugins.ClientRequestException
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.withContext
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpException
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
 import org.hisp.dhis.android.core.arch.api.internal.ktorToD2Response
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.access.Transaction
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.internal.D2ErrorStore
@@ -52,9 +49,6 @@ internal class CoroutineAPICallExecutorImpl(
     private val databaseAdapter: DatabaseAdapter,
     private val foreignKeyCleaner: ForeignKeyCleaner,
 ) : CoroutineAPICallExecutor {
-
-    @OptIn(DelicateCoroutinesApi::class)
-    private val dbDispatcher = newSingleThreadContext("DB")
 
     @Suppress("TooGenericExceptionCaught")
     override suspend fun <P> wrap(
@@ -101,16 +95,19 @@ internal class CoroutineAPICallExecutorImpl(
                         catchError(userAccountDisabledErrorCatcher, errorBuilder, d2ExceptionResponse, storeError),
                     )
                 }
+
                 errorClassParser != null && acceptedErrorCodes?.contains(d2ExceptionResponse.statusCode) == true -> {
                     Result.Success(
                         errorClassParser.invoke(d2ExceptionResponse.errorBody),
                     )
                 }
+
                 errorCatcher != null -> {
                     Result.Failure(
                         catchError(errorCatcher, errorBuilder, d2ExceptionResponse, storeError),
                     )
                 }
+
                 else -> {
                     Result.Failure(
                         storeAndReturn(
@@ -124,25 +121,20 @@ internal class CoroutineAPICallExecutorImpl(
     }
 
     @Suppress("TooGenericExceptionCaught")
-    override suspend fun <P> wrapTransactionally(
+    override suspend fun <P> wrapTransactionallyRoom(
         cleanForeignKeyErrors: Boolean,
         block: suspend () -> P,
     ): P {
-        return withContext(dbDispatcher) {
-            val transaction = databaseAdapter.beginNewTransaction()
-            try {
-                val result = coroutineScope {
-                    block.invoke()
+        return try {
+            databaseAdapter.getCurrentDatabase().useWriterConnection { transactor ->
+                transactor.immediateTransaction {
+                    block().also { successfulTransactionRoom(cleanForeignKeyErrors) }
                 }
-                successfulTransaction(transaction, cleanForeignKeyErrors)
-                return@withContext result
-            } catch (t: Throwable) {
-                throw when (t) {
-                    is D2Error -> t
-                    else -> errorMapper.mapHttpException(t, baseErrorBuilder())
-                }
-            } finally {
-                transaction.end()
+            }
+        } catch (t: Throwable) {
+            throw when (t) {
+                is D2Error -> t
+                else -> errorMapper.mapHttpException(t, baseErrorBuilder())
             }
         }
     }
@@ -166,7 +158,7 @@ internal class CoroutineAPICallExecutorImpl(
     }
 
     private suspend fun storeAndReturn(d2Error: D2Error, storeError: Boolean): D2Error {
-        if (errorStore.isReady && storeError) {
+        if (databaseAdapter.isReady && storeError) {
             errorStore.insert(d2Error)
         }
         return d2Error
@@ -180,10 +172,9 @@ internal class CoroutineAPICallExecutorImpl(
         return errorMapper.getBaseErrorBuilder()
     }
 
-    private suspend fun successfulTransaction(t: Transaction, cleanForeignKeys: Boolean) {
+    private suspend fun successfulTransactionRoom(cleanForeignKeys: Boolean) {
         if (cleanForeignKeys) {
             foreignKeyCleaner.cleanForeignKeyErrors()
         }
-        t.setSuccessful()
     }
 }

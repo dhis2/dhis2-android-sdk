@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.visualization.internal.VisualizationColumnsRowsFiltersChildrenAppender
 import org.hisp.dhis.android.core.visualization.internal.VisualizationStore
+import org.hisp.dhis.android.persistence.visualization.VisualizationTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

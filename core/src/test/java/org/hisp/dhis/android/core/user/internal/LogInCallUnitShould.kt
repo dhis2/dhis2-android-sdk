@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.user.internal
 
 import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
@@ -37,7 +36,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
 import org.hisp.dhis.android.core.common.BaseCallShould
-import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
+import org.hisp.dhis.android.core.configuration.internal.BaseMultiUserDatabaseManager
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
@@ -73,7 +72,7 @@ class LogInCallUnitShould : BaseCallShould() {
     private val credentials: Credentials = mock()
     private val userStore: UserStore = mock()
     private val systemInfoCall: SystemInfoCall = mock()
-    private val multiUserDatabaseManager: MultiUserDatabaseManager = mock()
+    private val multiUserDatabaseManager: BaseMultiUserDatabaseManager = mock()
     private val generalSettingCall: GeneralSettingCall = mock()
     private val accountManager: AccountManagerImpl = mock()
 
@@ -96,7 +95,6 @@ class LogInCallUnitShould : BaseCallShould() {
         whenAPICall { apiUser }
         whenever(userStore.selectFirst()).thenReturn(dbUser)
         whenever(userStore.selectByUid(any())).thenReturn(dbUser)
-        whenever(databaseAdapter.beginNewTransaction()).thenReturn(transaction)
         whenever(d2Error.errorCode()).thenReturn(D2ErrorCode.SOCKET_TIMEOUT)
         whenever(d2Error.isOffline).thenReturn(true)
         generalSettingCall.stub {
@@ -168,6 +166,7 @@ class LogInCallUnitShould : BaseCallShould() {
     @Throws(D2Error::class)
     fun not_invoke_stores_on_exception_on_call() = runTest {
         whenAPICall { throw d2Error }
+        whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(SERVER_URL, USERNAME)).thenReturn(false)
         whenever(d2Error.errorCode()).thenReturn(D2ErrorCode.UNEXPECTED)
 
         assertD2Error { login() }
@@ -212,13 +211,14 @@ class LogInCallUnitShould : BaseCallShould() {
         whenAPICall { throw d2Error }
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
         whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(SERVER_URL, USERNAME)).thenReturn(true)
-        runBlocking { login() }
+        login()
         verifySuccessOffline()
     }
 
     @Test
     fun throw_original_d2_error_if_no_previous_database_offline() = runTest {
         whenAPICall { throw d2Error }
+        whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(SERVER_URL, USERNAME)).thenReturn(false)
         whenever(authenticatedUserStore.selectFirst()).thenReturn(null)
         assertD2Error(d2Error.errorCode()) { login() }
     }

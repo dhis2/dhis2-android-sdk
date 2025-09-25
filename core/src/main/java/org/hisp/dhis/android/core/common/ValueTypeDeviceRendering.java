@@ -28,14 +28,9 @@
 
 package org.hisp.dhis.android.core.common;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ValueTypeRenderingTypeColumnAdapter;
 
 @AutoValue
 public abstract class ValueTypeDeviceRendering implements CoreObject {
@@ -50,7 +45,6 @@ public abstract class ValueTypeDeviceRendering implements CoreObject {
     public abstract String deviceType();
 
     @Nullable
-    @ColumnAdapter(ValueTypeRenderingTypeColumnAdapter.class)
     public abstract ValueTypeRenderingType type();
 
     @Nullable
@@ -64,10 +58,6 @@ public abstract class ValueTypeDeviceRendering implements CoreObject {
 
     @Nullable
     public abstract Integer decimalPoints();
-
-    public static ValueTypeDeviceRendering create(Cursor cursor) {
-        return $AutoValue_ValueTypeDeviceRendering.createFromCursor(cursor);
-    }
 
     public abstract Builder toBuilder();
 

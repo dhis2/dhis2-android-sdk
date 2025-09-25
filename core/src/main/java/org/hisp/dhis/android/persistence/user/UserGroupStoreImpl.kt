@@ -28,15 +28,18 @@
 
 package org.hisp.dhis.android.persistence.user
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.user.UserGroup
 import org.hisp.dhis.android.core.user.internal.UserGroupStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class UserGroupStoreImpl(
-    private val dao: UserGroupDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : UserGroupStore, IdentifiableObjectStoreImpl<UserGroup, UserGroupDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().userGroupDao() },
     UserGroup::toDB,
     SQLStatementBuilderImpl(UserGroupTableInfo.TABLE_INFO),
 )

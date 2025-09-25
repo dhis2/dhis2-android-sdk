@@ -77,7 +77,7 @@ class SectionHandlerShould {
 
         val greyedFields: List<DataElementOperand> = emptyList()
         whenever(section.greyedFields()).thenReturn(greyedFields)
-        whenever(sectionStore.updateOrInsert(section)).thenReturn(HandleAction.Insert)
+        whenever(sectionStore.updateOrInsert(listOf(section))).thenReturn(listOf(HandleAction.Insert))
     }
 
     @Test
@@ -85,7 +85,7 @@ class SectionHandlerShould {
         sectionHandler.handle(null)
 
         verify(sectionStore, never()).delete(any())
-        verify(sectionStore, never()).update(any())
+        verify(sectionStore, never()).update(any<Section>())
         verify(sectionStore, never()).insert(any<List<Section>>())
         verify(sectionStore, never()).insert(any<Section>())
     }

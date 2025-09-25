@@ -36,6 +36,7 @@ public class SectionGreyedFieldsLinkSamples {
         return SectionGreyedFieldsLink.builder()
                 .section("section")
                 .dataElementOperand("data_element_operand")
+                .categoryOptionCombo("Gmbgme7z9BF")
                 .build();
     }
 }

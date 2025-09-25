@@ -37,6 +37,8 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.validation.internal.ValidationRuleStore
+import org.hisp.dhis.android.persistence.validation.DataSetValidationRuleLinkTableInfo
+import org.hisp.dhis.android.persistence.validation.ValidationRuleTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

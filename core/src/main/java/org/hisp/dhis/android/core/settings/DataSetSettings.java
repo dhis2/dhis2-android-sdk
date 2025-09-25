@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.settings;
 
+
 import com.google.auto.value.AutoValue;
 
 import java.util.Collections;

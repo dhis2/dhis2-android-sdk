@@ -30,9 +30,10 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.trackedentity.AttributeValueFilterSamples
 import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
-import org.hisp.dhis.android.core.trackedentity.AttributeValueFilterTableInfo
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.trackedentity.AttributeValueFilterStoreImpl
+import org.hisp.dhis.android.persistence.trackedentity.AttributeValueFilterTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

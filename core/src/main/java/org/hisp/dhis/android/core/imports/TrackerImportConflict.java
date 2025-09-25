@@ -28,16 +28,10 @@
 
 package org.hisp.dhis.android.core.imports;
 
-import android.database.Cursor;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ImportStatusColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
@@ -76,20 +70,14 @@ public abstract class TrackerImportConflict implements CoreObject {
     public abstract String displayDescription();
 
     @Nullable
-    @ColumnAdapter(ImportStatusColumnAdapter.class)
     public abstract ImportStatus status();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
-    @NonNull
-    public static TrackerImportConflict create(Cursor cursor) {
-        return AutoValue_TrackerImportConflict.createFromCursor(cursor);
-    }
 
     public static Builder builder() {
-        return new $$AutoValue_TrackerImportConflict.Builder();
+        return new AutoValue_TrackerImportConflict.Builder();
     }
 
     public abstract Builder toBuilder();

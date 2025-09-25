@@ -28,15 +28,10 @@
 
 package org.hisp.dhis.android.core.resource.internal;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ResourceTypeColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
@@ -62,21 +57,15 @@ public abstract class Resource implements CoreObject {
     }
 
     @Nullable
-    @ColumnAdapter(ResourceTypeColumnAdapter.class)
     public abstract Resource.Type resourceType();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastSynced();
-
-    public static Resource create(Cursor cursor) {
-        return $AutoValue_Resource.createFromCursor(cursor);
-    }
 
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new $$AutoValue_Resource.Builder();
+        return new AutoValue_Resource.Builder();
     }
 
     @AutoValue.Builder

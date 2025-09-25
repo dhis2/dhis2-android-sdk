@@ -28,20 +28,13 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.settings.internal.CustomIntentActionColumnAdapter;
-import org.hisp.dhis.android.core.settings.internal.CustomIntentRequestColumnAdapter;
-import org.hisp.dhis.android.core.settings.internal.CustomIntentResponseColumnAdapter;
-import org.hisp.dhis.android.core.settings.internal.IgnoreCustomIntentTriggerColumnAdapter;
 
 import java.util.List;
 
@@ -56,27 +49,19 @@ public abstract class CustomIntent implements ObjectWithUidInterface, CoreObject
     public abstract String name();
 
     @Nullable
-    @ColumnAdapter(IgnoreCustomIntentTriggerColumnAdapter.class)
     public abstract CustomIntentTrigger trigger();
 
     @Nullable
-    @ColumnAdapter(CustomIntentActionColumnAdapter.class)
     public abstract List<CustomIntentActionType> action();
 
     @Nullable
     public abstract String packageName();
 
     @Nullable
-    @ColumnAdapter(CustomIntentRequestColumnAdapter.class)
     public abstract CustomIntentRequest request();
 
     @Nullable
-    @ColumnAdapter(CustomIntentResponseColumnAdapter.class)
     public abstract CustomIntentResponse response();
-
-    public static CustomIntent create(Cursor cursor) {
-        return $AutoValue_CustomIntent.createFromCursor(cursor);
-    }
 
     public abstract Builder toBuilder();
 

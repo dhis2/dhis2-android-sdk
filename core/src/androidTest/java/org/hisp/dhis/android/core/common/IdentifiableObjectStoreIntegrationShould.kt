@@ -27,15 +27,12 @@
  */
 package org.hisp.dhis.android.core.common
 
-import android.database.Cursor
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseIntegrationTestWithDatabase
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
-import org.hisp.dhis.android.core.data.database.CursorAssert
 import org.hisp.dhis.android.core.option.OptionSet
-import org.hisp.dhis.android.core.option.OptionSetTableInfo
-import org.hisp.dhis.android.core.option.internal.OptionSetStoreImpl
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.option.OptionSetStoreImpl
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -56,17 +53,10 @@ class IdentifiableObjectStoreIntegrationShould : BaseIntegrationTestWithDatabase
         this.store = OptionSetStoreImpl(databaseAdapter())
     }
 
-    private val cursor: Cursor
-        get() = databaseAdapter().query(
-            OptionSetTableInfo.TABLE_INFO.name(),
-            *OptionSetTableInfo.TABLE_INFO.columns().all(),
-        )
-
     @Test
     fun insert_option_set() = runTest {
         store.insert(optionSet)
-        val cursor = cursor
-        StoreMocks.optionSetCursorAssert(cursor, optionSet)
+        StoreMocks.optionSetSelectAssert(store, optionSet)
     }
 
     @Test(expected = RuntimeException::class)
@@ -85,7 +75,14 @@ class IdentifiableObjectStoreIntegrationShould : BaseIntegrationTestWithDatabase
     fun delete_existing_option_set() = runTest {
         store.insert(optionSet)
         store.delete(optionSet.uid())
-        CursorAssert.assertThatCursor(cursor).isExhausted()
+        StoreMocks.assertIsEmpty(store)
+    }
+
+    @Test
+    fun delete_existing_option_set_by_entity() = runTest {
+        store.insert(optionSet)
+        store.deleteByEntity(optionSet)
+        StoreMocks.assertIsEmpty(store)
     }
 
     @Test(expected = RuntimeException::class)
@@ -96,15 +93,14 @@ class IdentifiableObjectStoreIntegrationShould : BaseIntegrationTestWithDatabase
     @Test
     fun do_not_throw_exception_safe_deleting_non_existing_option_set() = runTest {
         store.deleteIfExists("new-id")
-        CursorAssert.assertThatCursor(cursor).isExhausted()
+        StoreMocks.assertIsEmpty(store)
     }
 
     @Test
     fun update_option_set() = runTest {
         store.insert(optionSet)
         store.update(updatedOptionSet)
-        val cursor = cursor
-        StoreMocks.optionSetCursorAssert(cursor, updatedOptionSet)
+        StoreMocks.optionSetSelectAssert(store, updatedOptionSet)
     }
 
     @Test(expected = RuntimeException::class)
@@ -120,15 +116,13 @@ class IdentifiableObjectStoreIntegrationShould : BaseIntegrationTestWithDatabase
     @Test
     fun insert_when_no_option_set_and_update_or_insert() = runTest {
         store.updateOrInsert(optionSet)
-        val cursor = cursor
-        StoreMocks.optionSetCursorAssert(cursor, optionSet)
+        StoreMocks.optionSetSelectAssert(store, optionSet)
     }
 
     @Test
     fun update_when_option_set_and_update_or_insert() = runTest {
         store.insert(optionSet)
         store.updateOrInsert(updatedOptionSet)
-        val cursor = cursor
-        StoreMocks.optionSetCursorAssert(cursor, updatedOptionSet)
+        StoreMocks.optionSetSelectAssert(store, updatedOptionSet)
     }
 }

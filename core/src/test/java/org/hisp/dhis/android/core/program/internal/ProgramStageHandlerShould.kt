@@ -98,7 +98,7 @@ class ProgramStageHandlerShould {
         whenever(programStage.toBuilder()).thenReturn(programStageBuilder)
         whenever(programStageBuilder.featureType(any())).thenReturn(programStageBuilder)
         whenever(programStageBuilder.build()).thenReturn(programStage)
-        whenever(programStageStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
+        whenever(programStageStore.updateOrInsert(any<List<ProgramStage>>())).thenReturn(listOf(HandleAction.Insert))
     }
 
     @Test
@@ -117,28 +117,28 @@ class ProgramStageHandlerShould {
 
     @Test
     fun clean_orphan_data_elements_after_update() = runTest {
-        whenever(programStageStore.updateOrInsert(any())).thenReturn(HandleAction.Update)
+        whenever(programStageStore.updateOrInsert(any<List<ProgramStage>>())).thenReturn(listOf(HandleAction.Update))
         programStageHandler.handle(programStage)
         verify(programStageDataElementCleaner).deleteOrphan(programStage, programStageDataElements)
     }
 
     @Test
     fun not_clean_orphan_data_elements_after_insert() = runTest {
-        whenever(programStageStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
+        whenever(programStageStore.updateOrInsert(any<List<ProgramStage>>())).thenReturn(listOf(HandleAction.Insert))
         programStageHandler.handle(programStage)
         verify(programStageDataElementCleaner, never()).deleteOrphan(programStage, programStageDataElements)
     }
 
     @Test
     fun clean_orphan_sections_after_update() = runTest {
-        whenever(programStageStore.updateOrInsert(any())).thenReturn(HandleAction.Update)
+        whenever(programStageStore.updateOrInsert(any<List<ProgramStage>>())).thenReturn(listOf(HandleAction.Update))
         programStageHandler.handle(programStage)
         verify(programStageSectionCleaner).deleteOrphan(programStage, programStageSections)
     }
 
     @Test
     fun not_clean_orphan_sections_after_insert() = runTest {
-        whenever(programStageStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
+        whenever(programStageStore.updateOrInsert(any<List<ProgramStage>>())).thenReturn(listOf(HandleAction.Insert))
         programStageHandler.handle(programStage)
         verify(programStageSectionCleaner, never()).deleteOrphan(programStage, programStageSections)
     }

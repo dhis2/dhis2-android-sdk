@@ -28,15 +28,18 @@
 
 package org.hisp.dhis.android.persistence.trackedentity
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.trackedentity.ReservedValueSetting
 import org.hisp.dhis.android.core.trackedentity.internal.ReservedValueSettingStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ReservedValueSettingStoreImpl(
-    val dao: ReservedValueSettingDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : ReservedValueSettingStore, IdentifiableObjectStoreImpl<ReservedValueSetting, ReservedValueSettingDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().reservedValueSettingDao() },
     ReservedValueSetting::toDB,
     SQLStatementBuilderImpl(ReservedValueSettingTableInfo.TABLE_INFO),
 )

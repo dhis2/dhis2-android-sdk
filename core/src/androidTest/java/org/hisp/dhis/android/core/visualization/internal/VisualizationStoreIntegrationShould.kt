@@ -33,7 +33,8 @@ import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFact
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.hisp.dhis.android.core.visualization.HideEmptyItemStrategy
 import org.hisp.dhis.android.core.visualization.Visualization
-import org.hisp.dhis.android.core.visualization.VisualizationTableInfo
+import org.hisp.dhis.android.persistence.visualization.VisualizationStoreImpl
+import org.hisp.dhis.android.persistence.visualization.VisualizationTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

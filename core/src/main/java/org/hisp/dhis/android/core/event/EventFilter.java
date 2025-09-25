@@ -28,14 +28,10 @@
 
 package org.hisp.dhis.android.core.event;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.EventQueryCriteriaColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 
@@ -52,15 +48,10 @@ public abstract class EventFilter extends BaseIdentifiableObject implements Core
     public abstract String description();
 
     @Nullable
-    @ColumnAdapter(EventQueryCriteriaColumnAdapter.class)
     public abstract EventQueryCriteria eventQueryCriteria();
 
     public static Builder builder() {
-        return new $$AutoValue_EventFilter.Builder();
-    }
-
-    public static EventFilter create(Cursor cursor) {
-        return $AutoValue_EventFilter.createFromCursor(cursor);
+        return new AutoValue_EventFilter.Builder();
     }
 
     public abstract Builder toBuilder();

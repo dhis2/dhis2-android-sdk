@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.usecase.stock;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -61,14 +59,10 @@ public abstract class InternalStockUseCaseTransaction implements CoreObject {
     @Nullable
     public abstract String stockCount();
 
-    public static InternalStockUseCaseTransaction create(Cursor cursor) {
-        return AutoValue_InternalStockUseCaseTransaction.createFromCursor(cursor);
-    }
-
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new $$AutoValue_InternalStockUseCaseTransaction.Builder();
+        return new AutoValue_InternalStockUseCaseTransaction.Builder();
     }
 
     @AutoValue.Builder

@@ -28,15 +28,18 @@
 
 package org.hisp.dhis.android.persistence.systeminfo
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class SystemInfoStoreImpl(
-    val dao: SystemInfoDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : SystemInfoStore, ObjectWithoutUidStoreImpl<SystemInfo, SystemInfoDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().systemInfoDao() },
     SystemInfo::toDB,
     SQLStatementBuilderImpl(SystemInfoTableInfo.TABLE_INFO),
 )

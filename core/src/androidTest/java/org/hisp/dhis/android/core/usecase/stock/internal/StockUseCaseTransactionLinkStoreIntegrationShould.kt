@@ -32,9 +32,10 @@ import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.usecase.stock.InternalStockUseCaseTransactionSamples
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCaseTransaction
-import org.hisp.dhis.android.core.usecase.stock.StockUseCaseTransactionTableInfo
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.usecase.StockUseCaseTransactionLinkStoreImpl
+import org.hisp.dhis.android.persistence.usecase.StockUseCaseTransactionTableInfo
 import org.junit.Test
 import org.junit.runner.RunWith
 

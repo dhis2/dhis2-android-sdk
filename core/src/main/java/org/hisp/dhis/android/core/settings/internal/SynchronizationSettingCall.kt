@@ -39,7 +39,7 @@ import java.net.HttpURLConnection
 @Singleton
 internal class SynchronizationSettingCall(
     private val synchronizationSettingHandler: SynchronizationSettingHandler,
-    private val settingAppService: SettingAppService,
+    private val networkHandler: SettingsNetworkHandler,
     coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val generalSettingCall: GeneralSettingCall,
     private val dataSetSettingCall: DataSetSettingCall,
@@ -76,11 +76,7 @@ internal class SynchronizationSettingCall(
             }
 
             SettingsAppDataStoreVersion.V2_0 -> {
-                coroutineAPICallExecutor.wrap(storeError = storeError) {
-                    settingAppService.synchronizationSettings(
-                        version,
-                    )
-                }
+                networkHandler.synchronizationSettings(version, storeError)
             }
         }
     }

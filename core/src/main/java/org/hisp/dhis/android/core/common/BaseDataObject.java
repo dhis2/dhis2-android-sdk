@@ -30,12 +30,6 @@ package org.hisp.dhis.android.core.common;
 
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.gabrielittner.auto.value.cursor.ColumnName;
-
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStateColumnAdapter;
-
 public abstract class BaseDataObject implements DataObject {
 
     /**
@@ -44,15 +38,12 @@ public abstract class BaseDataObject implements DataObject {
     @Deprecated
     @Override
     @Nullable
-    @ColumnAdapter(IgnoreStateColumnAdapter.class)
     public State state() {
         return syncState();
     }
 
     @Override
     @Nullable
-    @ColumnName(DataColumns.SYNC_STATE)
-    @ColumnAdapter(StateColumnAdapter.class)
     public abstract State syncState();
 
     protected interface Builder<T extends Builder<T>> {

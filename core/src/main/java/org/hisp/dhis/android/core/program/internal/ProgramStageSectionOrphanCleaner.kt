@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.ProgramStageSection
-import org.hisp.dhis.android.core.program.ProgramStageSectionTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramStageSectionTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

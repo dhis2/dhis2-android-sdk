@@ -42,7 +42,7 @@ class DataValueShould : CoreObjectShould("datavalue/data_value.json") {
         assertThat(dataValue.dataElement()).isEqualTo("s46m5MS0hxu")
         assertThat(dataValue.period()).isEqualTo("201712")
         assertThat(dataValue.organisationUnit()).isEqualTo("DiszpKrYNg8")
-        assertThat(dataValue.categoryOptionCombo()).isEqualTo("Prlt0C1RF0s")
+        assertThat(dataValue.categoryOptionCombo()).isEqualTo("Gmbgme7z9BF")
         assertThat(dataValue.attributeOptionCombo()).isEqualTo("bRowv6yZOF2")
         assertThat(dataValue.value()).isEqualTo("12")
         assertThat(dataValue.storedBy()).isEqualTo("bodata1")

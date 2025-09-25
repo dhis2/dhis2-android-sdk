@@ -28,15 +28,18 @@
 
 package org.hisp.dhis.android.persistence.user
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.user.UserRole
 import org.hisp.dhis.android.core.user.internal.UserRoleStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class UserRoleStoreImpl(
-    private val dao: UserRoleDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : UserRoleStore, IdentifiableObjectStoreImpl<UserRole, UserRoleDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().userRoleDao() },
     UserRole::toDB,
     SQLStatementBuilderImpl(UserRoleTableInfo.TABLE_INFO),
 )

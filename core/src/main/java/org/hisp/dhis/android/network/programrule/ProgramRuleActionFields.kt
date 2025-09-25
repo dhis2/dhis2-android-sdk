@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.network.programrule
 
 import org.hisp.dhis.android.core.program.ProgramRuleAction
-import org.hisp.dhis.android.core.program.ProgramRuleActionTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.persistence.program.ProgramRuleActionTableInfo.Columns
 
 internal object ProgramRuleActionFields : BaseFields<ProgramRuleAction>() {
     val allFields = Fields.from(
@@ -46,6 +46,6 @@ internal object ProgramRuleActionFields : BaseFields<ProgramRuleAction>() {
         fh.nestedFieldWithUid(Columns.DATA_ELEMENT),
         fh.nestedFieldWithUid(Columns.OPTION),
         fh.nestedFieldWithUid(Columns.OPTION_GROUP),
-        fh.field(Columns.DISPLAYCONTENT),
+        fh.field(Columns.DISPLAY_CONTENT),
     )
 }

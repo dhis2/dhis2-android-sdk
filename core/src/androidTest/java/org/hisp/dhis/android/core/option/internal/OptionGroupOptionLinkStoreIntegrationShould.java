@@ -31,9 +31,10 @@ package org.hisp.dhis.android.core.option.internal;
 import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.option.OptionGroupOptionLinkSamples;
 import org.hisp.dhis.android.core.option.OptionGroupOptionLink;
-import org.hisp.dhis.android.core.option.OptionGroupOptionLinkTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.hisp.dhis.android.persistence.option.OptionGroupOptionLinkStoreImpl;
+import org.hisp.dhis.android.persistence.option.OptionGroupOptionLinkTableInfo;
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)

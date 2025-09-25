@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.domain.aggregated.data.internal
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.domain.AggregatedDataSyncStoreImpl
+import org.hisp.dhis.android.persistence.domain.AggregatedDataSyncTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

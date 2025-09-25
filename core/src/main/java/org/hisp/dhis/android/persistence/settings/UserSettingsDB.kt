@@ -8,7 +8,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 @Entity(tableName = "UserSettings")
 internal data class UserSettingsDB(
     @PrimaryKey
-    val keyUiLocale: String?,
+    val keyUiLocale: String,
     val keyDbLocale: String?,
 ) : EntityDB<UserSettings> {
 
@@ -22,7 +22,7 @@ internal data class UserSettingsDB(
 
 internal fun UserSettings.toDB(): UserSettingsDB {
     return UserSettingsDB(
-        keyUiLocale = keyUiLocale(),
+        keyUiLocale = keyUiLocale()!!,
         keyDbLocale = keyDbLocale(),
     )
 }

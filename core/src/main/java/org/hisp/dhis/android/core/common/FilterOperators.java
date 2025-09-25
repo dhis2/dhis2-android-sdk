@@ -30,13 +30,6 @@ package org.hisp.dhis.android.core.common;
 
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.gabrielittner.auto.value.cursor.ColumnName;
-
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DateFilterPeriodColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringSetColumnAdapter;
-import org.hisp.dhis.android.core.common.tableinfo.FilterOperatorsColumns;
-
 import java.util.Set;
 
 public abstract class FilterOperators {
@@ -75,8 +68,6 @@ public abstract class FilterOperators {
      * In a list
      */
     @Nullable
-    @ColumnAdapter(StringSetColumnAdapter.class)
-    @ColumnName(FilterOperatorsColumns.IN)
     public abstract Set<String> in();
 
     /**
@@ -89,7 +80,6 @@ public abstract class FilterOperators {
      * If the dataItem is of type date, then date filtering parameters are specified using this.
      */
     @Nullable
-    @ColumnAdapter(DateFilterPeriodColumnAdapter.class)
     public abstract DateFilterPeriod dateFilter();
 
     public abstract static class Builder<T extends Builder> {

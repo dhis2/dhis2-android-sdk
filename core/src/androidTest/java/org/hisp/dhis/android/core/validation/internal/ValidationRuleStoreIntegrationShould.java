@@ -34,7 +34,8 @@ import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFact
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.hisp.dhis.android.core.validation.ValidationRule;
 import org.hisp.dhis.android.core.validation.ValidationRuleImportance;
-import org.hisp.dhis.android.core.validation.ValidationRuleTableInfo;
+import org.hisp.dhis.android.persistence.validation.ValidationRuleStoreImpl;
+import org.hisp.dhis.android.persistence.validation.ValidationRuleTableInfo;
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)

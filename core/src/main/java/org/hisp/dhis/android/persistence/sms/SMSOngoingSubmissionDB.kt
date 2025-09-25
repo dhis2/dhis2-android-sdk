@@ -9,7 +9,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 @Entity(tableName = "SMSOngoingSubmission")
 internal data class SMSOngoingSubmissionDB(
     @PrimaryKey
-    val submissionId: Int?,
+    val submissionId: Int,
     val type: String?,
 ) : EntityDB<SMSOngoingSubmission> {
 

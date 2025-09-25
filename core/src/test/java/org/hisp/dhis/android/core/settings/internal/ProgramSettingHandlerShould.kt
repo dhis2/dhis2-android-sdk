@@ -52,7 +52,9 @@ class ProgramSettingHandlerShould {
     @Throws(Exception::class)
     fun setUp() = runTest {
         programSettings = mutableListOf(programSetting)
-        whenever(programSettingStore.updateOrInsertWhere(any())).thenReturn(HandleAction.Insert)
+        whenever(
+            programSettingStore.updateOrInsert(any<List<ProgramSetting>>()),
+        ).thenReturn(listOf(HandleAction.Insert))
         programSettingHandler = ProgramSettingHandler(programSettingStore)
     }
 
@@ -60,13 +62,13 @@ class ProgramSettingHandlerShould {
     fun clean_database_before_insert_collection() = runTest {
         programSettingHandler.handleMany(programSettings)
         verify(programSettingStore, times(1)).delete()
-        verify(programSettingStore, times(1)).updateOrInsertWhere(programSetting)
+        verify(programSettingStore, times(1)).updateOrInsert(listOf(programSetting))
     }
 
     @Test
     fun clean_database_if_empty_collection() = runTest {
         programSettingHandler.handleMany(emptyList())
         verify(programSettingStore, times(1)).delete()
-        verify(programSettingStore, never()).updateOrInsertWhere(programSetting)
+        verify(programSettingStore, never()).updateOrInsert(listOf(programSetting))
     }
 }

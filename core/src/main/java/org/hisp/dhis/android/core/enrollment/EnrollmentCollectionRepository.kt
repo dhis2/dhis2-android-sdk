@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.common.internal.TrackerDataManager
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentProjectionTransformer
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.note.internal.NoteForEnrollmentChildrenAppender
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -120,7 +121,7 @@ class EnrollmentCollectionRepository internal constructor(
     }
 
     fun byFollowUp(): BooleanFilterConnector<EnrollmentCollectionRepository> {
-        return cf.bool(EnrollmentTableInfo.Columns.FOLLOW_UP)
+        return cf.bool(EnrollmentTableInfo.Columns.FOLLOWUP)
     }
 
     fun byStatus(): EnumFilterConnector<EnrollmentCollectionRepository, EnrollmentStatus> {

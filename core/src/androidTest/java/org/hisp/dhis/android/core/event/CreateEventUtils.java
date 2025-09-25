@@ -35,7 +35,8 @@ import androidx.annotation.Nullable;
 
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.event.EventTableInfo.Columns;
+import org.hisp.dhis.android.persistence.event.EventTableInfo;
+import org.hisp.dhis.android.persistence.event.EventTableInfo.Columns;
 
 public class CreateEventUtils {
 
@@ -69,7 +70,7 @@ public class CreateEventUtils {
         event.put(Columns.PROGRAM_STAGE, programStage);
         event.put(Columns.ORGANISATION_UNIT, orgUnit);
         event.put(Columns.EVENT_DATE, DATE);
-        event.put(Columns.COMPLETE_DATE, DATE);
+        event.put(Columns.COMPLETED_DATE, DATE);
         event.put(Columns.DUE_DATE, DATE);
         event.put(Columns.SYNC_STATE, State.TO_POST.name());
         return event;

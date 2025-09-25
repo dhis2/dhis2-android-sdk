@@ -27,24 +27,24 @@
  */
 package org.hisp.dhis.android.core.map.internal
 
-import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderTableInfo
-import org.hisp.dhis.android.core.map.layer.MapLayerTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import org.hisp.dhis.android.persistence.map.MapLayerImageryProviderTableInfo
+import org.hisp.dhis.android.persistence.map.MapLayerTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 class MapModuleWiper internal constructor(
     private val tableWiper: TableWiper,
 ) : ModuleWiper {
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         tableWiper.wipeTables(
             MapLayerTableInfo.TABLE_INFO,
             MapLayerImageryProviderTableInfo.TABLE_INFO,
         )
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         // No metadata to wipe
     }
 }

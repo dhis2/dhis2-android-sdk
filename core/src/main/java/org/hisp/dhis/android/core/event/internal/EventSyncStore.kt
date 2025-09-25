@@ -28,6 +28,6 @@
 
 package org.hisp.dhis.android.core.event.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.TrackerBaseSyncStore
 
-internal interface EventSyncStore : ObjectWithoutUidStore<EventSync>
+internal interface EventSyncStore : TrackerBaseSyncStore<EventSync>

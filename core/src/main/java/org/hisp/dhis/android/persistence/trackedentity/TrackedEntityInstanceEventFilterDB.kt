@@ -1,7 +1,9 @@
 package org.hisp.dhis.android.persistence.trackedentity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
@@ -20,9 +22,11 @@ import org.hisp.dhis.android.persistence.common.toDB
             deferred = true,
         ),
     ],
-    primaryKeys = ["trackedEntityInstanceFilter", "programStage"],
 )
 internal data class TrackedEntityInstanceEventFilterDB(
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val trackedEntityInstanceFilter: String,
     val programStage: String?,
     val eventStatus: String?,

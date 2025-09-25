@@ -28,15 +28,18 @@
 
 package org.hisp.dhis.android.persistence.validation
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.validation.ValidationRule
 import org.hisp.dhis.android.core.validation.internal.ValidationRuleStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ValidationRuleStoreImpl(
-    private val dao: ValidationRuleDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : ValidationRuleStore, IdentifiableObjectStoreImpl<ValidationRule, ValidationRuleDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().validationRuleDao() },
     ValidationRule::toDB,
     SQLStatementBuilderImpl(ValidationRuleTableInfo.TABLE_INFO),
 )

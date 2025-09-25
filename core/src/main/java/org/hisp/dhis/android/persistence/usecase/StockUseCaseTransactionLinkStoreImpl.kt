@@ -28,16 +28,19 @@
 
 package org.hisp.dhis.android.persistence.usecase
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCaseTransaction
 import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseTransactionLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class StockUseCaseTransactionLinkStoreImpl(
-    private val dao: StockUseCaseTransactionLinkDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : StockUseCaseTransactionLinkStore,
     LinkStoreImpl<InternalStockUseCaseTransaction, StockUseCaseTransactionDB>(
-        dao,
+        { databaseAdapter.getCurrentDatabase().stockUseCaseTransactionLinkDao() },
         InternalStockUseCaseTransaction::toDB,
         LinkSQLStatementBuilderImpl(
             StockUseCaseTransactionTableInfo.TABLE_INFO,

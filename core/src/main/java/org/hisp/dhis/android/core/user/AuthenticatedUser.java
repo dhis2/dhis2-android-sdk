@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -47,10 +45,6 @@ public abstract class AuthenticatedUser implements CoreObject {
 
     public static Builder builder() {
         return new AutoValue_AuthenticatedUser.Builder();
-    }
-
-    public static AuthenticatedUser create(Cursor cursor) {
-        return $AutoValue_AuthenticatedUser.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();

@@ -27,16 +27,22 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
-import org.hisp.dhis.android.core.category.*
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import org.hisp.dhis.android.persistence.category.CategoryCategoryComboLinkTableInfo
+import org.hisp.dhis.android.persistence.category.CategoryCategoryOptionLinkTableInfo
+import org.hisp.dhis.android.persistence.category.CategoryComboTableInfo
+import org.hisp.dhis.android.persistence.category.CategoryOptionComboCategoryOptionLinkTableInfo
+import org.hisp.dhis.android.persistence.category.CategoryOptionComboTableInfo
+import org.hisp.dhis.android.persistence.category.CategoryOptionTableInfo
+import org.hisp.dhis.android.persistence.category.CategoryTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class CategoryModuleWiper(
     private val tableWiper: TableWiper,
 ) : ModuleWiper {
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         tableWiper.wipeTables(
             CategoryTableInfo.TABLE_INFO,
             CategoryOptionTableInfo.TABLE_INFO,
@@ -48,7 +54,7 @@ internal class CategoryModuleWiper(
         )
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         // No data to wipe
     }
 }

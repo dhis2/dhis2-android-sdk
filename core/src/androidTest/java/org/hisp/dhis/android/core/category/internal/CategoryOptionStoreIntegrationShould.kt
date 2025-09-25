@@ -29,11 +29,12 @@
 package org.hisp.dhis.android.core.category.internal
 
 import org.hisp.dhis.android.core.category.CategoryOption
-import org.hisp.dhis.android.core.category.CategoryOptionTableInfo
 import org.hisp.dhis.android.core.data.category.CategoryOptionSamples
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.category.CategoryOptionStoreImpl
+import org.hisp.dhis.android.persistence.category.CategoryOptionTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

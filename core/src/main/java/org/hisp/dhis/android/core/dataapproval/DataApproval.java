@@ -28,15 +28,11 @@
 
 package org.hisp.dhis.android.core.dataapproval;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.DataApprovalStateColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
@@ -51,16 +47,10 @@ public abstract class DataApproval implements CoreObject {
     public abstract String attributeOptionCombo();
 
     @Nullable
-    @ColumnAdapter(DataApprovalStateColumnAdapter.class)
     public abstract DataApprovalState state();
 
-    @NonNull
-    public static DataApproval create(Cursor cursor) {
-        return AutoValue_DataApproval.createFromCursor(cursor);
-    }
-
     public static DataApproval.Builder builder() {
-        return new $$AutoValue_DataApproval.Builder();
+        return new AutoValue_DataApproval.Builder();
     }
 
     public abstract DataApproval.Builder toBuilder();

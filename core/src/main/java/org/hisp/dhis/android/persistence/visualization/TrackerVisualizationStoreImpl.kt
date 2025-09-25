@@ -28,15 +28,18 @@
 
 package org.hisp.dhis.android.persistence.visualization
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.visualization.TrackerVisualization
 import org.hisp.dhis.android.core.visualization.internal.TrackerVisualizationStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class TrackerVisualizationStoreImpl(
-    private val dao: TrackerVisualizationDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : TrackerVisualizationStore, IdentifiableObjectStoreImpl<TrackerVisualization, TrackerVisualizationDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().trackerVisualizationDao() },
     TrackerVisualization::toDB,
     SQLStatementBuilderImpl(TrackerVisualizationTableInfo.TABLE_INFO),
 )

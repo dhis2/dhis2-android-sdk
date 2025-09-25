@@ -23,7 +23,7 @@ internal data class GeometryDB(
 
 internal fun Geometry?.toDB(): GeometryDB {
     return GeometryDB(
-        geometryType = this?.type()?.geometryType,
+        geometryType = this?.type()?.name,
         geometryCoordinates = this?.coordinates(),
     )
 }

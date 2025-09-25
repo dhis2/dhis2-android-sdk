@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -46,10 +44,6 @@ public abstract class DataSetOrganisationUnitLink implements CoreObject {
 
     public static Builder builder() {
         return new AutoValue_DataSetOrganisationUnitLink.Builder();
-    }
-
-    public static DataSetOrganisationUnitLink create(Cursor cursor) {
-        return AutoValue_DataSetOrganisationUnitLink.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();

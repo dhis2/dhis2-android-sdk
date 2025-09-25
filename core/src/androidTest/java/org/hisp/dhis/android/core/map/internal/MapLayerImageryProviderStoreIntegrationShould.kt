@@ -30,10 +30,10 @@ package org.hisp.dhis.android.core.map.internal
 import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.maps.MapLayerImageryProviderSamples
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
-import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderTableInfo
-import org.hisp.dhis.android.core.map.layer.internal.MapLayerImageryProviderStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.map.MapLayerImageryProviderStoreImpl
+import org.hisp.dhis.android.persistence.map.MapLayerImageryProviderTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

@@ -2,6 +2,7 @@ package org.hisp.dhis.android.persistence.option
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.option.Option
@@ -21,6 +22,12 @@ import org.hisp.dhis.android.persistence.common.applyStyleFields
             childColumns = ["optionSet"],
             onDelete = ForeignKey.CASCADE,
             deferred = true,
+        ),
+    ],
+    indices = [
+        Index(
+            name = "optionset_optioncode",
+            value = ["optionSet", "code"],
         ),
     ],
 )

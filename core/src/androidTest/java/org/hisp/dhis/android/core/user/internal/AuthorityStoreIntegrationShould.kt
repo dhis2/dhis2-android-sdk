@@ -30,9 +30,10 @@ package org.hisp.dhis.android.core.user.internal
 import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.user.AuthoritySamples
 import org.hisp.dhis.android.core.user.Authority
-import org.hisp.dhis.android.core.user.AuthorityTableInfo
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.user.AuthorityStoreImpl
+import org.hisp.dhis.android.persistence.user.AuthorityTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

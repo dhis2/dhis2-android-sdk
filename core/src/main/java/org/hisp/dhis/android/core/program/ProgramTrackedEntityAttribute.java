@@ -28,15 +28,10 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreValueTypeRenderingAdapter;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -49,7 +44,6 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject i
     public abstract Boolean mandatory();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid trackedEntityAttribute();
 
     @Nullable
@@ -59,7 +53,6 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject i
     public abstract Boolean displayInList();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid program();
 
     @Nullable
@@ -69,15 +62,10 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject i
     public abstract Boolean searchable();
 
     @Nullable
-    @ColumnAdapter(IgnoreValueTypeRenderingAdapter.class)
     public abstract ValueTypeRendering renderType();
 
     public static Builder builder() {
-        return new $$AutoValue_ProgramTrackedEntityAttribute.Builder();
-    }
-
-    public static ProgramTrackedEntityAttribute create(Cursor cursor) {
-        return $AutoValue_ProgramTrackedEntityAttribute.createFromCursor(cursor);
+        return new AutoValue_ProgramTrackedEntityAttribute.Builder();
     }
 
     public abstract Builder toBuilder();

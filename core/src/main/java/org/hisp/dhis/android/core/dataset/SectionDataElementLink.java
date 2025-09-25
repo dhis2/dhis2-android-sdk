@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.dataset;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -49,10 +47,6 @@ public abstract class SectionDataElementLink implements CoreObject {
 
     public static Builder builder() {
         return new AutoValue_SectionDataElementLink.Builder();
-    }
-
-    public static SectionDataElementLink create(Cursor cursor) {
-        return $AutoValue_SectionDataElementLink.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();

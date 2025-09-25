@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.attribute;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -48,12 +46,8 @@ public abstract class ProgramAttributeValueLink implements CoreObject {
     @Nullable
     public abstract String value();
 
-    public static ProgramAttributeValueLink create(Cursor cursor) {
-        return AutoValue_ProgramAttributeValueLink.createFromCursor(cursor);
-    }
-
     public static Builder builder() {
-        return new $$AutoValue_ProgramAttributeValueLink.Builder();
+        return new AutoValue_ProgramAttributeValueLink.Builder();
     }
 
     public abstract Builder toBuilder();

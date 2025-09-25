@@ -32,9 +32,10 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.legendset.LegendSamples;
 import org.hisp.dhis.android.core.legendset.Legend;
-import org.hisp.dhis.android.core.legendset.LegendTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.hisp.dhis.android.persistence.legendset.LegendStoreImpl;
+import org.hisp.dhis.android.persistence.legendset.LegendTableInfo;
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)

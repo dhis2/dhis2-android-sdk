@@ -31,6 +31,8 @@ import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractInt
 import org.hisp.dhis.android.core.data.tracker.importer.internal.TrackerJobObjectSamples
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.tracker.TrackerJobObjectStoreImpl
+import org.hisp.dhis.android.persistence.tracker.TrackerJobObjectTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
@@ -46,7 +48,7 @@ class TrackerJobObjectStoreIntegrationShould : ObjectWithoutUidStoreAbstractInte
     override fun buildObjectToUpdate(): TrackerJobObject {
         return TrackerJobObjectSamples.get1()
             .toBuilder()
-            .jobUid("anotherJobId")
+            .fileResources(listOf("file_resource_uid"))
             .build()
     }
 }

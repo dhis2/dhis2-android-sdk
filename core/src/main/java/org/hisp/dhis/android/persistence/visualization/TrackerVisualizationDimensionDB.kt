@@ -56,8 +56,10 @@ internal data class TrackerVisualizationDimensionDB(
             .position(position.let { LayoutPosition.valueOf(it) })
             .dimension(dimension)
             .dimensionType(dimensionType)
-            .program(ObjectWithUid.create(program))
-            .programStage(ObjectWithUid.create(programStage))
+            .apply {
+                program?.let { program(ObjectWithUid.create(it)) }
+                programStage?.let { programStage(ObjectWithUid.create(it)) }
+            }
             .items(items?.toDomain())
             .filter(filter)
             .repetition(repetition?.toDomain())

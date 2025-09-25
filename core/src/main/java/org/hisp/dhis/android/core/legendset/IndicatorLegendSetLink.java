@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.legendset;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -47,12 +45,8 @@ public abstract class IndicatorLegendSetLink implements CoreObject {
     @Nullable
     public abstract Integer sortOrder();
 
-    public static IndicatorLegendSetLink create(Cursor cursor) {
-        return AutoValue_IndicatorLegendSetLink.createFromCursor(cursor);
-    }
-
     public static Builder builder() {
-        return new $$AutoValue_IndicatorLegendSetLink.Builder();
+        return new AutoValue_IndicatorLegendSetLink.Builder();
     }
 
     public abstract Builder toBuilder();

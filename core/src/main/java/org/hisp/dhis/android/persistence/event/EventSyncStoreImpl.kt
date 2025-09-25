@@ -28,15 +28,28 @@
 
 package org.hisp.dhis.android.persistence.event
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.event.internal.EventSync
 import org.hisp.dhis.android.core.event.internal.EventSyncStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class EventSyncStoreImpl(
-    val dao: EventSyncDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : EventSyncStore, ObjectWithoutUidStoreImpl<EventSync, EventSyncDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().eventSyncDao() },
     EventSync::toDB,
     SQLStatementBuilderImpl(EventSyncTableInfo.TABLE_INFO),
-)
+) {
+    override suspend fun deleteByProgram(programUid: String, organisationUnitIdsHash: Int): Boolean {
+        val dao = databaseAdapter.getCurrentDatabase().eventSyncDao()
+        return dao.deleteByProgram(programUid, organisationUnitIdsHash) > 0
+    }
+
+    override suspend fun deleteByNullProgram(organisationUnitIdsHash: Int): Boolean {
+        val dao = databaseAdapter.getCurrentDatabase().eventSyncDao()
+        return dao.deleteByNullProgram(organisationUnitIdsHash) > 0
+    }
+}

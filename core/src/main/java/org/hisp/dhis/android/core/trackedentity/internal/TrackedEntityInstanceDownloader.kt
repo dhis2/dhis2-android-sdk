@@ -109,16 +109,19 @@ class TrackedEntityInstanceDownloader internal constructor(
             params.toBuilder().overwrite(overwrite).build()
         }.eq(overwrite)
 
-    fun byFilterUids(): ListFilterConnector<TrackedEntityInstanceDownloader, String> =
+    fun byFilterUid(): ListFilterConnector<TrackedEntityInstanceDownloader, String> =
         connectorFactory.listConnector { filterUids -> params.toBuilder().filterUids(filterUids).build() }
 
-    fun byTrackedEntityInstanceFilter(filter: TrackedEntityInstanceFilter): TrackedEntityInstanceDownloader =
-        connectorFactory.eqConnector<TrackedEntityInstanceFilter> { trackedEntityInstanceFilter ->
-            params.toBuilder().trackedEntityInstanceFilter(trackedEntityInstanceFilter).build()
-        }.eq(filter)
+    fun byTrackedEntityInstanceFilter(): ListFilterConnector<
+        TrackedEntityInstanceDownloader,
+        TrackedEntityInstanceFilter,
+        > =
+        connectorFactory.listConnector { teiFilters ->
+            params.toBuilder().trackedEntityInstanceFilters(teiFilters).build()
+        }
 
-    fun byProgramStageWorkingList(workingList: ProgramStageWorkingList): TrackedEntityInstanceDownloader =
-        connectorFactory.eqConnector<ProgramStageWorkingList> { programStageWorkingList ->
-            params.toBuilder().programStageWorkingList(programStageWorkingList).build()
-        }.eq(workingList)
+    fun byProgramStageWorkingList(): ListFilterConnector<TrackedEntityInstanceDownloader, ProgramStageWorkingList> =
+        connectorFactory.listConnector { programStageWorkingLists ->
+            params.toBuilder().programStageWorkingLists(programStageWorkingLists).build()
+        }
 }

@@ -41,13 +41,13 @@ internal class ApkDistributionNetworkHandlerImpl(
 ) : ApkDistributionNetworkHandler {
     private val service = ApkDistributionService(httpServiceClient)
 
-    override suspend fun latestAppVersion(url: String): LatestAppVersion {
-        val apiPayload = service.latestAppVersion(url)
+    override suspend fun latestAppVersion(): LatestAppVersion {
+        val apiPayload = service.latestAppVersion()
         return apiPayload.toDomain()
     }
 
-    override suspend fun versions(url: String): Payload<ApkDistributionVersion> {
-        val apiPayload = service.versions(url)
+    override suspend fun versions(): Payload<ApkDistributionVersion> {
+        val apiPayload = service.versions()
         return apiPayload.mapItems(ApkDistributionVersionDTO::toDomain)
     }
 }

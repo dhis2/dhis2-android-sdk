@@ -28,16 +28,19 @@
 
 package org.hisp.dhis.android.persistence.icon
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.icon.CustomIcon
 import org.hisp.dhis.android.core.icon.internal.CustomIconStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class CustomIconStoreImpl(
-    val dao: CustomIconDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : CustomIconStore, ObjectWithoutUidStoreImpl<CustomIcon, CustomIconDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().customIconDao() },
     CustomIcon::toDB,
     SQLStatementBuilderImpl(CustomIconTableInfo.TABLE_INFO),
 ) {

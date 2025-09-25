@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.period
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
@@ -36,12 +37,14 @@ import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.internal.PeriodStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 import java.util.Date
 
+@Singleton
 internal class PeriodStoreImpl(
-    val dao: PeriodDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : PeriodStore, ObjectWithoutUidStoreImpl<Period, PeriodDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().periodDao() },
     Period::toDB,
     SQLStatementBuilderImpl(PeriodTableInfo.TABLE_INFO),
 ) {

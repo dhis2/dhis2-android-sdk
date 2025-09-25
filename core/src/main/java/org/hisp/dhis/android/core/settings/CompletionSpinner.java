@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -44,14 +42,10 @@ public abstract class CompletionSpinner implements CoreObject {
 
     public abstract Boolean visible();
 
-    public static CompletionSpinner create(Cursor cursor) {
-        return $AutoValue_CompletionSpinner.createFromCursor(cursor);
-    }
-
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new $AutoValue_CompletionSpinner.Builder();
+        return new AutoValue_CompletionSpinner.Builder();
     }
 
     @AutoValue.Builder

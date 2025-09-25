@@ -33,8 +33,8 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering
-import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingTableInfo
 import org.hisp.dhis.android.core.common.ValueTypeRendering
+import org.hisp.dhis.android.persistence.valuetypedevicerendering.ValueTypeDeviceRenderingTableInfo
 
 internal abstract class ValueTypeRenderingChildrenAppender<M : ObjectWithUidInterface>(
     private val store: ObjectWithoutUidStore<ValueTypeDeviceRendering>,

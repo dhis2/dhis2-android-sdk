@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.data.database
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
@@ -37,7 +38,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import java.io.IOException
-import kotlin.jvm.Throws
 
 abstract class ObjectStoreAbstractIntegrationShould<M : CoreObject> internal constructor(
     private val store: ObjectStore<M>,
@@ -52,13 +52,13 @@ abstract class ObjectStoreAbstractIntegrationShould<M : CoreObject> internal con
 
     @Before
     @Throws(IOException::class)
-    open fun setUp() = runTest {
-        store.delete()
+    open fun setUp() {
+        runBlocking { store.delete() }
     }
 
     @After
-    open fun tearDown() = runTest {
-        store.delete()
+    open fun tearDown() {
+        runBlocking { store.delete() }
     }
 
     @Test
@@ -69,8 +69,8 @@ abstract class ObjectStoreAbstractIntegrationShould<M : CoreObject> internal con
     }
 
     @Test
-    fun insert_as_content_values_and_select_first_object() = runTest {
-        databaseAdapter.insert(tableInfo.name(), null, `object`.toContentValues())
+    fun insert_object_and_select_first_object() = runTest {
+        store.insert(`object`)
         val objectFromDb = store.selectFirst()
         assertEqualsIgnoreId(objectFromDb)
     }
@@ -87,11 +87,7 @@ abstract class ObjectStoreAbstractIntegrationShould<M : CoreObject> internal con
     }
 
     fun assertEqualsIgnoreId(m1: M?, m2: M) {
-        val cv1 = m1!!.toContentValues()
-        cv1.remove("_id")
-        val cv2 = m2.toContentValues()
-        cv2.remove("_id")
-        assertThat(cv1).isEqualTo(cv2)
+        assertThat(m1).isEqualTo(m2)
     }
 
     init {

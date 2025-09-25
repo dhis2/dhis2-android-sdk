@@ -28,14 +28,10 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.WHONutritionComponentColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
@@ -45,17 +41,12 @@ public abstract class AnalyticsTeiDataElement implements CoreObject {
     public abstract String teiSetting();
 
     @Nullable
-    @ColumnAdapter(WHONutritionComponentColumnAdapter.class)
     public abstract WHONutritionComponent whoComponent();
 
     @Nullable
     public abstract String programStage();
 
     public abstract String dataElement();
-
-    public static AnalyticsTeiDataElement create(Cursor cursor) {
-        return AutoValue_AnalyticsTeiDataElement.createFromCursor(cursor);
-    }
 
     public abstract Builder toBuilder();
 

@@ -37,10 +37,11 @@ import org.hisp.dhis.android.persistence.common.querybuilders.ReadOnlySQLStateme
 
 @Suppress("TooManyFunctions")
 internal open class ReadableStoreImpl<D, P : EntityDB<D>>(
-    protected val readableDao: ReadableDao<P>,
+    protected open val daoProvider: () -> ReadableDao<P>,
     protected open val builder: ReadOnlySQLStatementBuilder,
 ) : ReadableStore<D> {
     override suspend fun selectAll(): List<D> {
+        val readableDao = daoProvider()
         val query = builder.selectAll()
         val dbEntities = readableDao.objectListRawQuery(query)
         return dbEntities.map { it.toDomain() }
@@ -48,18 +49,21 @@ internal open class ReadableStoreImpl<D, P : EntityDB<D>>(
 
     override suspend fun selectWhere(whereClause: String): List<D> {
         val query = builder.selectWhere(whereClause)
+        val readableDao = daoProvider()
         val dbEntities = readableDao.objectListRawQuery(query)
         return dbEntities.map { it.toDomain() }
     }
 
     override suspend fun selectWhere(filterWhereClause: String, orderByClause: String?): List<D> {
         val query = builder.selectWhere(filterWhereClause, orderByClause)
+        val readableDao = daoProvider()
         val dbEntities = readableDao.objectListRawQuery(query)
         return dbEntities.map { it.toDomain() }
     }
 
     override suspend fun selectWhere(filterWhereClause: String, orderByClause: String?, limit: Int): List<D> {
         val query = builder.selectWhere(filterWhereClause, orderByClause, limit)
+        val readableDao = daoProvider()
         val dbEntities = readableDao.objectListRawQuery(query)
         return dbEntities.map { it.toDomain() }
     }
@@ -71,11 +75,13 @@ internal open class ReadableStoreImpl<D, P : EntityDB<D>>(
         offset: Int?,
     ): List<D> {
         val query = builder.selectWhere(filterWhereClause, orderByClause, limit, offset)
+        val readableDao = daoProvider()
         val dbEntities = readableDao.objectListRawQuery(query)
         return dbEntities.map { it.toDomain() }
     }
 
     override suspend fun selectOneOrderedBy(orderingColumName: String, orderingType: SQLOrderType): D? {
+        val readableDao = daoProvider()
         val query = builder.selectOneOrderedBy(orderingColumName, orderingType)
         val dbEntity = readableDao.objectListRawQuery(query).firstOrNull()
         return dbEntity?.toDomain()
@@ -86,33 +92,39 @@ internal open class ReadableStoreImpl<D, P : EntityDB<D>>(
     }
 
     suspend fun selectRawQuery(sqlRawQuery: RoomRawQuery): List<D> {
+        val readableDao = daoProvider()
         val dbEntities = readableDao.objectListRawQuery(sqlRawQuery)
         return dbEntities.map { it.toDomain() }
     }
 
     override suspend fun selectOneWhere(whereClause: String): D? {
+        val readableDao = daoProvider()
         val query = builder.selectWhere(whereClause, 1)
         val dbEntity = readableDao.objectListRawQuery(query).firstOrNull()
         return dbEntity?.toDomain()
     }
 
     override suspend fun selectFirst(): D? {
+        val readableDao = daoProvider()
         val query = builder.selectAll()
         val entityDB = readableDao.objectListRawQuery(query).firstOrNull()
         return entityDB?.toDomain()
     }
 
     override suspend fun count(): Int {
+        val readableDao = daoProvider()
         val query = builder.count()
         return readableDao.intRawQuery(query)
     }
 
     override suspend fun countWhere(whereClause: String): Int {
+        val readableDao = daoProvider()
         val query = builder.countWhere(whereClause)
         return readableDao.intRawQuery(query)
     }
 
     override suspend fun groupAndGetCountBy(column: String): Map<String, Int> {
+        val readableDao = daoProvider()
         val query = builder.countAndGroupBy(column)
         val groupCountList = readableDao.groupCountListRawQuery(query)
         return groupCountList.associate { it.key to it.count }

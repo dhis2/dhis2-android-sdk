@@ -28,16 +28,10 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.FilterPeriodColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AssignedUserModeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.EventStatusColumnAdapter;
 import org.hisp.dhis.android.core.common.AssignedUserMode;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.FilterPeriod;
@@ -53,23 +47,16 @@ public abstract class TrackedEntityInstanceEventFilter implements CoreObject {
     public abstract String programStage();
 
     @Nullable
-    @ColumnAdapter(EventStatusColumnAdapter.class)
     public abstract EventStatus eventStatus();
 
     @Nullable
-    @ColumnAdapter(FilterPeriodColumnAdapter.class)
     public abstract FilterPeriod eventCreatedPeriod();
 
     @Nullable
-    @ColumnAdapter(AssignedUserModeColumnAdapter.class)
     public abstract AssignedUserMode assignedUserMode();
 
     public static Builder builder() {
-        return new $$AutoValue_TrackedEntityInstanceEventFilter.Builder();
-    }
-
-    public static TrackedEntityInstanceEventFilter create(Cursor cursor) {
-        return $AutoValue_TrackedEntityInstanceEventFilter.createFromCursor(cursor);
+        return new AutoValue_TrackedEntityInstanceEventFilter.Builder();
     }
 
     public abstract Builder toBuilder();

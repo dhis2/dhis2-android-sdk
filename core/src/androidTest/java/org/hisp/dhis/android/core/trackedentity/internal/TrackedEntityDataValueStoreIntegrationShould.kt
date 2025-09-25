@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import com.google.common.collect.Lists
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.common.ObjectWithUid
@@ -41,18 +42,20 @@ import org.hisp.dhis.android.core.data.trackedentity.EventSamples
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityDataValueSamples
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl
 import org.hisp.dhis.android.core.event.internal.EventStore
-import org.hisp.dhis.android.core.event.internal.EventStoreImpl
 import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.ProgramStageDataElement
-import org.hisp.dhis.android.core.program.internal.ProgramStageDataElementStoreImpl
-import org.hisp.dhis.android.core.program.internal.ProgramStageStoreImpl
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentStoreImpl
+import org.hisp.dhis.android.persistence.event.EventStoreImpl
+import org.hisp.dhis.android.persistence.program.ProgramStageDataElementStoreImpl
+import org.hisp.dhis.android.persistence.program.ProgramStageStoreImpl
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityDataValueStoreImpl
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityDataValueTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceStoreImpl
 import org.junit.After
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -70,13 +73,15 @@ class TrackedEntityDataValueStoreIntegrationShould :
     }
 
     @After
-    override fun tearDown() = runTest {
-        super.tearDown()
-        TrackedEntityInstanceStoreImpl(TestDatabaseAdapterFactory.get()).delete()
-        EnrollmentStoreImpl(TestDatabaseAdapterFactory.get()).delete()
-        EventStoreImpl(TestDatabaseAdapterFactory.get()).delete()
-        ProgramStageStoreImpl(TestDatabaseAdapterFactory.get()).delete()
-        ProgramStageDataElementStoreImpl(TestDatabaseAdapterFactory.get()).delete()
+    override fun tearDown() {
+        runBlocking {
+            super.tearDown()
+            TrackedEntityInstanceStoreImpl(TestDatabaseAdapterFactory.get()).delete()
+            EnrollmentStoreImpl(TestDatabaseAdapterFactory.get()).delete()
+            EventStoreImpl(TestDatabaseAdapterFactory.get()).delete()
+            ProgramStageStoreImpl(TestDatabaseAdapterFactory.get()).delete()
+            ProgramStageDataElementStoreImpl(TestDatabaseAdapterFactory.get()).delete()
+        }
     }
 
     override fun buildObjectToUpdate(): TrackedEntityDataValue {

@@ -28,17 +28,20 @@
 
 package org.hisp.dhis.android.persistence.category
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class CategoryOptionComboStoreImpl(
-    val dao: CategoryOptionComboDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : CategoryOptionComboStore,
     IdentifiableObjectStoreImpl<CategoryOptionCombo, CategoryOptionComboDB>(
-        dao,
+        { databaseAdapter.getCurrentDatabase().categoryOptionComboDao() },
         CategoryOptionCombo::toDB,
         SQLStatementBuilderImpl(CategoryOptionComboTableInfo.TABLE_INFO),
     ) {

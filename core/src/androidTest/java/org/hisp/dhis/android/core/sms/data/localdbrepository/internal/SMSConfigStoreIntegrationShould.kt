@@ -32,6 +32,8 @@ import org.hisp.dhis.android.core.data.datastore.KeyValuePairSamples.keyValuePai
 import org.hisp.dhis.android.core.datastore.KeyValuePair
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.sms.SMSConfigStoreImpl
+import org.hisp.dhis.android.persistence.sms.SMSConfigTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

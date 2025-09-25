@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.program.internal.ProgramRuleActionChildrenAppender
 import org.hisp.dhis.android.core.program.internal.ProgramRuleStore
+import org.hisp.dhis.android.persistence.program.ProgramRuleTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

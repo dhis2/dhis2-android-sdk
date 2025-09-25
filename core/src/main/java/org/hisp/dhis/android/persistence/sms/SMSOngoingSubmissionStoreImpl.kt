@@ -28,15 +28,23 @@
 
 package org.hisp.dhis.android.persistence.sms
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoingSubmission
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoingSubmissionStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class SMSOngoingSubmissionStoreImpl(
-    val dao: SMSOngoingSubmissionDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : SMSOngoingSubmissionStore, ObjectWithoutUidStoreImpl<SMSOngoingSubmission, SMSOngoingSubmissionDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().SMSOngoingSubmissionDao() },
     SMSOngoingSubmission::toDB,
     SQLStatementBuilderImpl(SMSOngoingSubmissionTableInfo.TABLE_INFO),
-)
+) {
+    override suspend fun deleteSubmissionIfExists(submissionId: Int) {
+        val dao = databaseAdapter.getCurrentDatabase().SMSOngoingSubmissionDao()
+        dao.deleteSubmissionIfExists(submissionId)
+    }
+}

@@ -29,10 +29,10 @@ package org.hisp.dhis.android.core.program.programindicatorengine
 
 import androidx.test.runner.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.category.CategoryCombo
-import org.hisp.dhis.android.core.category.CategoryComboTableInfo
 import org.hisp.dhis.android.core.category.internal.CreateCategoryComboUtils
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.AggregationType
@@ -59,6 +59,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
+import org.hisp.dhis.android.persistence.category.CategoryComboStoreImpl
 import org.junit.After
 import org.junit.AfterClass
 import org.junit.Before
@@ -98,48 +99,50 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         @BeforeClass
         @JvmStatic
         @Throws(Exception::class)
-        fun setUp() = runTest {
-            setUpClass()
+        fun setUp() {
+            runBlocking {
+                setUpClass()
 
-            val orgunit = OrganisationUnit.builder().uid(orgunitUid).build()
-            koin.get<OrganisationUnitStore>().insert(orgunit)
+                val orgunit = OrganisationUnit.builder().uid(orgunitUid).build()
+                koin.get<OrganisationUnitStore>().insert(orgunit)
 
-            val trackedEntityType = TrackedEntityType.builder().uid(teiTypeUid).build()
-            koin.get<TrackedEntityTypeStore>().insert(trackedEntityType)
+                val trackedEntityType = TrackedEntityType.builder().uid(teiTypeUid).build()
+                koin.get<TrackedEntityTypeStore>().insert(trackedEntityType)
 
-            val categoryCombo = CreateCategoryComboUtils.create(CategoryCombo.DEFAULT_UID)
-            databaseAdapter.insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo)
+                val categoryCombo = CreateCategoryComboUtils.create(CategoryCombo.DEFAULT_UID)
+                val store = CategoryComboStoreImpl(d2.databaseAdapter())
+                store.insert(categoryCombo)
 
-            val access = Access.create(true, false, DataAccess.create(true, true))
-            val program = Program.builder().uid(programUid)
-                .access(access)
-                .trackedEntityType(TrackedEntityType.builder().uid(teiTypeUid).build())
-                .build()
-            koin.get<ProgramStore>().insert(program)
+                val access = Access.create(true, false, DataAccess.create(true, true))
+                val program = Program.builder().uid(programUid)
+                    .access(access)
+                    .trackedEntityType(TrackedEntityType.builder().uid(teiTypeUid).build())
+                    .build()
+                koin.get<ProgramStore>().insert(program)
 
-            val stage1 = ProgramStage.builder().uid(programStage1).program(ObjectWithUid.create(programUid))
-                .formType(FormType.CUSTOM).build()
-            val stage2 = ProgramStage.builder().uid(programStage2).program(ObjectWithUid.create(programUid))
-                .formType(FormType.CUSTOM).build()
-            val programStageStore: ProgramStageStore = koin.get()
-            programStageStore.insert(stage1)
-            programStageStore.insert(stage2)
+                val stage1 = ProgramStage.builder().uid(programStage1).program(ObjectWithUid.create(programUid))
+                    .formType(FormType.CUSTOM).build()
+                val stage2 = ProgramStage.builder().uid(programStage2).program(ObjectWithUid.create(programUid))
+                    .formType(FormType.CUSTOM).build()
+                val programStageStore: ProgramStageStore = koin.get()
+                programStageStore.insert(stage1)
+                programStageStore.insert(stage2)
 
-            val de1 = DataElement.builder().uid(dataElement1).valueType(ValueType.NUMBER).build()
-            val de2 = DataElement.builder().uid(dataElement2).valueType(ValueType.NUMBER).build()
-            val dataElementStore: DataElementStore = koin.get()
-            dataElementStore.insert(de1)
-            dataElementStore.insert(de2)
+                val de1 = DataElement.builder().uid(dataElement1).valueType(ValueType.NUMBER).build()
+                val de2 = DataElement.builder().uid(dataElement2).valueType(ValueType.NUMBER).build()
+                val dataElementStore: DataElementStore = koin.get()
+                dataElementStore.insert(de1)
+                dataElementStore.insert(de2)
 
-            val tea = TrackedEntityAttribute.builder().uid(attribute1).build()
-            koin.get<TrackedEntityAttributeStore>().insert(tea)
+                val tea = TrackedEntityAttribute.builder().uid(attribute1).build()
+                koin.get<TrackedEntityAttributeStore>().insert(tea)
+            }
         }
 
         @AfterClass
         @JvmStatic
-        @Throws(D2Error::class)
         fun tearDownClass() {
-            d2.wipeModule().wipeEverything()
+            runBlocking { d2.wipeModule().wipeEverything() }
         }
     }
 
@@ -154,7 +157,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
     @After
     @Throws(D2Error::class)
     fun tearDown() {
-        d2.wipeModule().wipeData()
+        runBlocking { d2.wipeModule().wipeData() }
     }
 
     @Test

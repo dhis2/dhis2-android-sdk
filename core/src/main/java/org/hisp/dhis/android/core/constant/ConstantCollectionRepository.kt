@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.DoubleFilte
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.constant.internal.ConstantStore
+import org.hisp.dhis.android.persistence.constant.ConstantTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceSt
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerPostCall
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
-import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.ProgramOwnerTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -72,7 +72,7 @@ internal class TrackerImporterProgramOwnerPostCall(
         val selectWhere = WhereClauseBuilder()
             .appendKeyStringValue(ProgramOwnerTableInfo.Columns.PROGRAM, o.program())
             .appendKeyStringValue(ProgramOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE, o.trackedEntityInstance())
-            .appendKeyStringValue(ProgramOwnerTableInfo.Columns.OWNER_ORGUNIT, o.ownerOrgUnit())
+            .appendKeyStringValue(ProgramOwnerTableInfo.Columns.OWNER_ORG_UNIT, o.ownerOrgUnit())
             .build()
 
         return programOwnerStore.selectOneWhere(selectWhere)

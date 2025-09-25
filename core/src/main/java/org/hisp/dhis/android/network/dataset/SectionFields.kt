@@ -29,9 +29,9 @@ package org.hisp.dhis.android.network.dataset
 
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.dataset.Section
-import org.hisp.dhis.android.core.dataset.SectionTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.persistence.dataset.SectionTableInfo.Columns
 
 internal object SectionFields : BaseFields<Section>() {
     const val DATA_ELEMENTS = "dataElements"

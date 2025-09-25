@@ -28,14 +28,10 @@
 
 package org.hisp.dhis.android.core.note;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.NoteTypeColumnAdapter;
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
@@ -51,7 +47,6 @@ public abstract class Note extends BaseDeletableDataObject implements ObjectWith
     public abstract String uid();
 
     @Nullable
-    @ColumnAdapter(NoteTypeColumnAdapter.class)
     public abstract NoteType noteType();
 
     @Nullable
@@ -70,11 +65,7 @@ public abstract class Note extends BaseDeletableDataObject implements ObjectWith
     public abstract String storedDate();
 
     public static Builder builder() {
-        return new $$AutoValue_Note.Builder();
-    }
-
-    public static Note create(Cursor cursor) {
-        return $AutoValue_Note.createFromCursor(cursor);
+        return new AutoValue_Note.Builder();
     }
 
     public abstract Builder toBuilder();

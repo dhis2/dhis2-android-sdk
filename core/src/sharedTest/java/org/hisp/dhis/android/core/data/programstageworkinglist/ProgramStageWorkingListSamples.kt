@@ -28,7 +28,11 @@
 
 package org.hisp.dhis.android.core.data.programstageworkinglist
 
-import org.hisp.dhis.android.core.common.*
+import org.hisp.dhis.android.core.common.AssignedUserMode
+import org.hisp.dhis.android.core.common.DateFilterPeriod
+import org.hisp.dhis.android.core.common.DatePeriodType
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties
 import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
@@ -51,8 +55,8 @@ object ProgramStageWorkingListSamples {
                     .eventStatus(EventStatus.COMPLETED)
                     .eventCreatedAt(
                         DateFilterPeriod.builder()
-                            .startDate(parseDate("2014-05-01"))
-                            .endDate(parseDate("2014-05-01"))
+                            .startDate(parseDate("2014-05-01T00:00:00.000"))
+                            .endDate(parseDate("2014-05-01T00:00:00.000"))
                             .type(DatePeriodType.ABSOLUTE)
                             .build(),
                     )

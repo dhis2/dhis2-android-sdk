@@ -26,6 +26,10 @@ internal data class CategoryComboDB(
             .isDefault(isDefault)
             .build()
     }
+
+    companion object {
+        const val DEFAULT_UID = "p0KPaWEg3cf"
+    }
 }
 
 internal fun CategoryCombo.toDB(): CategoryComboDB {

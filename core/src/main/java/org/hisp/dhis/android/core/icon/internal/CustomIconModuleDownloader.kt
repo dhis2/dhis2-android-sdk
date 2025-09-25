@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.icon.internal
 
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedSuspendModuleDownloader
-import org.hisp.dhis.android.core.icon.CustomIconTableInfo
+import org.hisp.dhis.android.persistence.icon.CustomIconTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

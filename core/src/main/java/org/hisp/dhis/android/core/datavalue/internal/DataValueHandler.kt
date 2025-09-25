@@ -33,19 +33,26 @@ import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandler
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
+import org.hisp.dhis.android.persistence.datavalue.DataValueTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DataValueHandler(
     store: DataValueStore,
 ) : ObjectWithoutUidHandlerImpl<DataValue>(store) {
-    override suspend fun deleteOrPersist(o: DataValue): HandleAction {
-        return if (CollectionsHelper.isDeleted(o)) {
+    override suspend fun deleteOrPersist(oCollection: Collection<DataValue>) {
+        val (toDelete, toUpsert) = oCollection.partition { o ->
+            CollectionsHelper.isDeleted(o)
+        }
+
+        toDelete.forEach { o ->
             store.deleteWhereIfExists(o)
-            HandleAction.Delete
-        } else {
-            store.updateOrInsertWhere(o)
+            afterObjectHandled(o, HandleAction.Delete)
+        }
+
+        val upsertActions = store.updateOrInsert(toUpsert)
+        toUpsert.forEachIndexed { index, o ->
+            afterObjectHandled(o, upsertActions[index])
         }
     }
 

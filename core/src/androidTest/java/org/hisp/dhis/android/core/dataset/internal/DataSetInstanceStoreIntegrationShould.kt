@@ -29,12 +29,14 @@
 package org.hisp.dhis.android.core.dataset.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataDispatcher
+import org.hisp.dhis.android.persistence.dataset.DataSetInstanceStoreImpl
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -45,16 +47,20 @@ class DataSetInstanceStoreIntegrationShould : BaseMockIntegrationTestMetadataDis
     private lateinit var dataValueStore: DataValueStore
 
     @Before
-    fun setUp() = runTest {
-        dataSetInstanceStore = koin.get()
-        dataValueStore = koin.get()
+    fun setUp() {
+        runBlocking {
+            dataSetInstanceStore = koin.get()
+            dataValueStore = koin.get()
 
-        dataValueStore.delete()
+            dataValueStore.delete()
+        }
     }
 
     @After
-    fun tearDown() = runTest {
-        dataValueStore.delete()
+    fun tearDown() {
+        runBlocking {
+            dataValueStore.delete()
+        }
     }
 
     @Test

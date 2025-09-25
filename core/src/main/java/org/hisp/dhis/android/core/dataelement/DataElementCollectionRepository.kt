@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.dataelement.internal.DataElementAttributeChildrenAppender
 import org.hisp.dhis.android.core.dataelement.internal.DataElementLegendSetChildrenAppender
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
+import org.hisp.dhis.android.persistence.dataelement.DataElementTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

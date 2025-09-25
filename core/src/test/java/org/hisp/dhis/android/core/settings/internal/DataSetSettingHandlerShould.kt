@@ -52,7 +52,9 @@ class DataSetSettingHandlerShould {
     @Throws(Exception::class)
     fun setUp() = runTest {
         dataSetSettings = mutableListOf(dataSetSetting)
-        whenever(dataSetSettingStore.updateOrInsertWhere(any())).thenReturn(HandleAction.Insert)
+        whenever(
+            dataSetSettingStore.updateOrInsert(any<List<DataSetSetting>>()),
+        ).thenReturn(listOf(HandleAction.Insert))
         dataSetSettingHandler = DataSetSettingHandler(dataSetSettingStore)
     }
 
@@ -60,13 +62,13 @@ class DataSetSettingHandlerShould {
     fun clean_database_before_insert_collection() = runTest {
         dataSetSettingHandler.handleMany(dataSetSettings)
         verify(dataSetSettingStore, times(1)).delete()
-        verify(dataSetSettingStore, times(1)).updateOrInsertWhere(dataSetSetting)
+        verify(dataSetSettingStore, times(1)).updateOrInsert(listOf(dataSetSetting))
     }
 
     @Test
     fun clean_database_if_empty_collection() = runTest {
         dataSetSettingHandler.handleMany(emptyList())
         verify(dataSetSettingStore, times(1)).delete()
-        verify(dataSetSettingStore, never()).updateOrInsertWhere(dataSetSetting)
+        verify(dataSetSettingStore, never()).updateOrInsert(listOf(dataSetSetting))
     }
 }

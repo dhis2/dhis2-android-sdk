@@ -28,15 +28,18 @@
 
 package org.hisp.dhis.android.persistence.relationship
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.relationship.RelationshipConstraint
 import org.hisp.dhis.android.core.relationship.internal.RelationshipConstraintStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class RelationshipConstraintStoreImpl(
-    val dao: RelationshipConstraintDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : RelationshipConstraintStore, ObjectWithoutUidStoreImpl<RelationshipConstraint, RelationshipConstraintDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().relationshipConstraintDao() },
     RelationshipConstraint::toDB,
     SQLStatementBuilderImpl(RelationshipConstraintTableInfo.TABLE_INFO),
 )

@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.icon.internal
 
 import org.hisp.dhis.android.core.arch.cleaners.internal.BaseCollectionCleaner
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.icon.CustomIconTableInfo
+import org.hisp.dhis.android.persistence.icon.CustomIconTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

@@ -29,6 +29,9 @@
 package org.hisp.dhis.android.core.datavalue.internal
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
+import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
 
-internal interface DataValueConflictStore : ObjectStore<DataValueConflict>
+internal interface DataValueConflictStore : ObjectStore<DataValueConflict> {
+    suspend fun deleteDataValueWhereIfExists(dataValue: DataValue)
+}

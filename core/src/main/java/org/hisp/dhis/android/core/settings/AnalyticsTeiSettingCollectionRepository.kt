@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.settings.internal.AnalyticsTeiDataChildrenAppender
 import org.hisp.dhis.android.core.settings.internal.AnalyticsTeiSettingStore
+import org.hisp.dhis.android.persistence.settings.AnalyticsTeiSettingTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

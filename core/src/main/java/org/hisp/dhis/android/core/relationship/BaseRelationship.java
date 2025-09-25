@@ -30,10 +30,6 @@ package org.hisp.dhis.android.core.relationship;
 
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationshipItemAdapter;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
@@ -48,22 +44,18 @@ public abstract class BaseRelationship extends BaseDeletableDataObject implement
     public abstract String name();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
     @Nullable
     public abstract String relationshipType();
 
     @Nullable
-    @ColumnAdapter(IgnoreRelationshipItemAdapter.class)
     public abstract RelationshipItem from();
 
     @Nullable
-    @ColumnAdapter(IgnoreRelationshipItemAdapter.class)
     public abstract RelationshipItem to();
 
     public interface Builder<T extends Builder<T>> extends BaseDeletableDataObject.Builder<T> {

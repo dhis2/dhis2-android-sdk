@@ -58,7 +58,7 @@ class OptionHandlerShould {
         whenever(option.uid()).thenReturn("test_option_uid")
         options = listOf(option)
         whenever(option.style()).thenReturn(style)
-        whenever(optionStore.updateOrInsert(option)).thenReturn(HandleAction.Insert)
+        whenever(optionStore.updateOrInsert(listOf(option))).thenReturn(listOf(HandleAction.Insert))
     }
 
     @Test

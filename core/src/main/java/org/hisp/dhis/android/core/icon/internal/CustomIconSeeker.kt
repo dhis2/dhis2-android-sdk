@@ -39,7 +39,7 @@ import org.koin.core.annotation.Singleton
 internal class CustomIconSeeker(
     databaseAdapter: DatabaseAdapter,
 ) : BaseUidsSeeker(databaseAdapter) {
-    fun seekUids(): Set<String> {
+    suspend fun seekUids(): Set<String> {
         val query = MultipleTableQueryBuilder()
             .generateQuery(NameableWithStyleColumns.ICON, TableWithObjectStyle.allTableNames).build()
 

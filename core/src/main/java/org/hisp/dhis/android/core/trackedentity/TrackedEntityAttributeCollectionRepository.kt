@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeLegendSetChildrenAppender
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -99,11 +100,11 @@ class TrackedEntityAttributeCollectionRepository internal constructor(
     }
 
     fun byOrgUnitScope(): BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> {
-        return cf.bool(TrackedEntityAttributeTableInfo.Columns.ORG_UNIT_SCOPE)
+        return cf.bool(TrackedEntityAttributeTableInfo.Columns.ORGUNIT_SCOPE)
     }
 
     fun byUnique(): BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> {
-        return cf.bool(TrackedEntityAttributeTableInfo.Columns.UNIQUE)
+        return cf.bool(TrackedEntityAttributeTableInfo.Columns.UNIQUE_PROPERTY)
     }
 
     fun byInherit(): BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> {

@@ -28,8 +28,9 @@
 package org.hisp.dhis.android.core.configuration.internal
 
 import android.content.Context
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseExport
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
+import org.hisp.dhis.android.core.arch.db.access.internal.BaseDatabaseExport
 import org.hisp.dhis.android.core.common.BaseCallShould
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfigurationUtil.buildUserConfiguration
 import org.junit.Before
@@ -44,8 +45,8 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
     private val context: Context = mock()
     private val databaseConfigurationSecureStore: DatabaseConfigurationInsecureStore = mock()
     private val configurationHelper: DatabaseConfigurationHelper = mock()
-    private val databaseExport: DatabaseExport = mock()
-    private val databaseAdapterFactory: DatabaseAdapterFactory = mock()
+    private val databaseExport: BaseDatabaseExport = mock()
+    private val databaseManager: DatabaseManager = mock()
 
     private val username = "username"
     private val serverUrl = "https://dhis2.org"
@@ -77,7 +78,7 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
         .accounts(listOf(userConfigurationEncrypted))
         .build()
 
-    private lateinit var manager: MultiUserDatabaseManager
+    private lateinit var manager: BaseMultiUserDatabaseManager
 
     @Before
     @Throws(Exception::class)
@@ -85,54 +86,55 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
         super.setUp()
         manager = MultiUserDatabaseManager(
             context,
-            databaseAdapter,
             databaseConfigurationSecureStore,
             configurationHelper,
-            databaseAdapterFactory,
+            databaseManager,
             databaseExport,
         )
     }
 
     @Test
-    fun create_new_db_when_no_previous_configuration_on_loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew() {
-        val encrypt = false
-        whenever(configurationHelper.addOrUpdateAccount(null, serverUrl, username, encrypt))
-            .doReturn(unencryptedConfiguration)
+    fun create_new_db_when_no_previous_configuration_on_loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew() =
+        runTest {
+            val encrypt = false
+            whenever(configurationHelper.addOrUpdateAccount(null, serverUrl, username, encrypt))
+                .doReturn(unencryptedConfiguration)
 
-        manager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(serverUrl, username, encrypt)
+            manager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(serverUrl, username, encrypt)
 
-        verify(databaseAdapterFactory).createOrOpenDatabase(databaseAdapter, userConfigurationUnencrypted)
-    }
-
-    @Test
-    fun copy_database_when_changing_encryption_on_loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew() {
-        val encrypt = true
-        whenever(databaseConfigurationSecureStore.get()).doReturn(unencryptedConfiguration)
-        whenever(configurationHelper.addOrUpdateAccount(unencryptedConfiguration, serverUrl, username, encrypt))
-            .doReturn(encryptedConfiguration)
-
-        manager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(serverUrl, username, encrypt)
-
-        verify(databaseAdapterFactory).createOrOpenDatabase(databaseAdapter, userConfigurationEncrypted)
-        verify(databaseExport).encrypt(serverUrl, userConfigurationUnencrypted)
-        verify(databaseAdapterFactory).deleteDatabase(userConfigurationUnencrypted)
-    }
+            verify(databaseManager).createOrOpenDatabase(userConfigurationUnencrypted)
+        }
 
     @Test
-    fun not_create_database_when_non_existing_when_calling_loadExistingKeepingEncryption() {
+    fun copy_database_when_changing_encryption_on_loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew() =
+        runTest {
+            val encrypt = true
+            whenever(databaseConfigurationSecureStore.get()).doReturn(unencryptedConfiguration)
+            whenever(configurationHelper.addOrUpdateAccount(unencryptedConfiguration, serverUrl, username, encrypt))
+                .doReturn(encryptedConfiguration)
+
+            manager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(serverUrl, username, encrypt)
+
+            verify(databaseManager).createOrOpenDatabase(userConfigurationEncrypted)
+            verify(databaseExport).encrypt(serverUrl, userConfigurationUnencrypted)
+            verify(databaseManager).deleteDatabase(userConfigurationUnencrypted.databaseName(), false)
+        }
+
+    @Test
+    fun not_create_database_when_non_existing_when_calling_loadExistingKeepingEncryption() = runTest {
         manager.loadExistingKeepingEncryption(serverUrl, username)
-        verifyNoMoreInteractions(databaseAdapterFactory)
+        verifyNoMoreInteractions(databaseManager)
     }
 
     @Test
-    fun open_database_when_existing_when_calling_loadExistingKeepingEncryption() {
+    fun open_database_when_existing_when_calling_loadExistingKeepingEncryption() = runTest {
         whenever(databaseConfigurationSecureStore.get()).doReturn(unencryptedConfiguration)
         whenever(configurationHelper.addOrUpdateAccount(unencryptedConfiguration, serverUrl, username, false))
             .doReturn(unencryptedConfiguration)
 
         manager.loadExistingKeepingEncryption(serverUrl, username)
 
-        verify(databaseAdapterFactory).createOrOpenDatabase(databaseAdapter, userConfigurationUnencrypted)
+        verify(databaseManager).createOrOpenDatabase(userConfigurationUnencrypted)
     }
 
     @Test
@@ -160,8 +162,8 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
         manager.createNew(newServerUrl, newUsername, false)
 
         verify(databaseConfigurationSecureStore, times(2)).set(any())
-        verify(databaseAdapterFactory, times(4)).deleteDatabase(any())
-        verify(databaseAdapterFactory, times(1)).createOrOpenDatabase(any(), any())
+        verify(databaseManager, times(4)).deleteDatabase(any(), any())
+        verify(databaseManager, times(1)).createOrOpenDatabase(any())
     }
 
     companion object {

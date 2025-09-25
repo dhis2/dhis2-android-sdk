@@ -48,7 +48,7 @@ import org.mockito.kotlin.whenever
 @RunWith(JUnit4::class)
 class TwoFactorAuthManagerShould {
     private val networkHandler: TwoFactorAuthNetworkHandlerImpl = mock()
-    private val userStore: UserStoreImpl = mock()
+    private val userStore: UserStore = mock()
     private lateinit var authManager: TwoFactorAuthManagerImpl
 
     @Before

@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
 import org.hisp.dhis.android.core.maintenance.D2ErrorSamples
@@ -36,14 +35,20 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.kotlin.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doAnswer
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.stub
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
+import org.mockito.kotlin.whenever
 import org.mockito.stubbing.Answer
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 class DataSetSettingCallShould {
     private val handler: DataSetSettingHandler = mock()
-    private val service: SettingAppService = mock()
+    private val networkHandler: SettingsNetworkHandler = mock()
     private val dataSetSetting: DataSetSettings = mock()
     private val appVersionManager: SettingsAppInfoManager = mock()
     private val coroutineAPICallExecutor: CoroutineAPICallExecutorMock = CoroutineAPICallExecutorMock()
@@ -57,18 +62,18 @@ class DataSetSettingCallShould {
         }
         whenAPICall { dataSetSetting }
 
-        dataSetSettingCall = DataSetSettingCall(handler, service, coroutineAPICallExecutor, appVersionManager)
+        dataSetSettingCall = DataSetSettingCall(handler, networkHandler, coroutineAPICallExecutor, appVersionManager)
     }
 
     private fun whenAPICall(answer: Answer<DataSetSettings>) {
-        service.stub {
-            onBlocking { dataSetSettings(any()) }.doAnswer(answer)
+        networkHandler.stub {
+            onBlocking { dataSetSettings(any(), any()) }.doAnswer(answer)
         }
     }
 
     @Test
     fun default_to_empty_collection_if_not_found() = runTest {
-        whenever(service.dataSetSettings(any())) doAnswer { throw D2ErrorSamples.notFound() }
+        whenever(networkHandler.dataSetSettings(any(), any())) doAnswer { throw D2ErrorSamples.notFound() }
 
         dataSetSettingCall.download(false)
 

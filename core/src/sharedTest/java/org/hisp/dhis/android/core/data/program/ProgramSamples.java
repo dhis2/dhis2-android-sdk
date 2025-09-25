@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.core.data.program;
 
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate;
+
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.Access;
@@ -40,9 +43,6 @@ import org.hisp.dhis.android.core.program.AccessLevel;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
-
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate;
 
 public class ProgramSamples {
 
@@ -67,7 +67,7 @@ public class ProgramSamples {
                 .relatedProgram(ObjectWithUid.create("program_uid"))
                 .trackedEntityType(TrackedEntityType.builder().uid("tracked_entity_type").build())
                 .categoryCombo(ObjectWithUid.create("category_combo_uid"))
-                .access(Access.create(false, false, DataAccess.create(true, true)))
+                .access(Access.create(true, true, DataAccess.create(true, false)))
                 .expiryDays(2)
                 .completeEventsExpiryDays(3)
                 .minAttributesRequiredToSearch(1)

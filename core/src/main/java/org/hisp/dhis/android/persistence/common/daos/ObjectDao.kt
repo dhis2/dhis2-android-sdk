@@ -38,7 +38,7 @@ import androidx.room.Upsert
 import org.hisp.dhis.android.persistence.common.EntityDB
 
 @Suppress("TooManyFunctions")
-internal interface ObjectDao<P : EntityDB<*>> : ReadableDao<P> {
+internal interface ObjectDao<P : EntityDB<*>> : ReadableDao<P>, ObjectDaoQueryFallbacks {
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(entity: P): Long

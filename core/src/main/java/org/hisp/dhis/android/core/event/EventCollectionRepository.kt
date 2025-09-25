@@ -51,17 +51,18 @@ import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludingError
 import org.hisp.dhis.android.core.common.internal.TrackerDataManager
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.internal.EventPostParentCall
 import org.hisp.dhis.android.core.event.internal.EventProjectionTransformer
 import org.hisp.dhis.android.core.event.internal.EventStatusFilterConnector
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.note.internal.NoteForEventChildrenAppender
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueChildrenAppender
 import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall
 import org.hisp.dhis.android.core.user.internal.UserStore
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.persistence.event.EventTableInfo
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityDataValueTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -187,7 +188,7 @@ class EventCollectionRepository internal constructor(
     }
 
     fun byCompleteDate(): DateFilterConnector<EventCollectionRepository> {
-        return cf.simpleDate(EventTableInfo.Columns.COMPLETE_DATE)
+        return cf.simpleDate(EventTableInfo.Columns.COMPLETED_DATE)
     }
 
     fun byCompletedBy(): StringFilterConnector<EventCollectionRepository> {
@@ -246,7 +247,7 @@ class EventCollectionRepository internal constructor(
         return cf.subQuery(EventTableInfo.Columns.ENROLLMENT).inLinkTable(
             EnrollmentTableInfo.TABLE_INFO.name(),
             IdentifiableColumns.UID,
-            EnrollmentTableInfo.Columns.FOLLOW_UP,
+            EnrollmentTableInfo.Columns.FOLLOWUP,
             listOf(if (followUp) "1" else "0"),
         )
     }
@@ -272,7 +273,7 @@ class EventCollectionRepository internal constructor(
     }
 
     fun orderByCompleteDate(direction: OrderByDirection?): EventCollectionRepository {
-        return cf.withOrderBy(EventTableInfo.Columns.COMPLETE_DATE, direction)
+        return cf.withOrderBy(EventTableInfo.Columns.COMPLETED_DATE, direction)
     }
 
     fun orderByCreated(direction: OrderByDirection?): EventCollectionRepository {

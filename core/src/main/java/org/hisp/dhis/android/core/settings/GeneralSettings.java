@@ -28,17 +28,10 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreDataSyncPeriodColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreMetadataSyncPeriodColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
@@ -52,13 +45,11 @@ public abstract class GeneralSettings implements CoreObject {
      */
     @Deprecated
     @Nullable
-    @ColumnAdapter(IgnoreDataSyncPeriodColumnAdapter.class)
     public abstract DataSyncPeriod dataSync();
 
     public abstract Boolean encryptDB();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
     /**
@@ -66,7 +57,6 @@ public abstract class GeneralSettings implements CoreObject {
      */
     @Deprecated
     @Nullable
-    @ColumnAdapter(IgnoreMetadataSyncPeriodColumnAdapter.class)
     public abstract MetadataSyncPeriod metadataSync();
 
     @Nullable
@@ -109,20 +99,15 @@ public abstract class GeneralSettings implements CoreObject {
     public abstract String messageOfTheDay();
 
     @Nullable
-    @ColumnAdapter(StringListColumnAdapter.class)
     public abstract List<String> experimentalFeatures();
 
     @Nullable
     public abstract Boolean bypassDHIS2VersionCheck();
 
-    public static GeneralSettings create(Cursor cursor) {
-        return $AutoValue_GeneralSettings.createFromCursor(cursor);
-    }
-
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new $AutoValue_GeneralSettings.Builder();
+        return new AutoValue_GeneralSettings.Builder();
     }
 
     @AutoValue.Builder

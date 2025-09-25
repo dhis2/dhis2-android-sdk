@@ -55,7 +55,7 @@ class TwoFactorAuthManagerMockIntegrationShould : BaseMockIntegrationTestMetadat
     @After
     @Throws(D2Error::class)
     fun tearDown() {
-        d2.wipeModule().wipeData()
+        runBlocking { d2.wipeModule().wipeData() }
     }
 
     @Test

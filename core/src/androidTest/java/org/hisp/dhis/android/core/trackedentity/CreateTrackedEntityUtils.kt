@@ -1,0 +1,55 @@
+/*
+ *  Copyright (c) 2004-2023, University of Oslo
+ *  All rights reserved.
+ *
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
+ *
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+package org.hisp.dhis.android.core.trackedentity
+
+object CreateTrackedEntityUtils {
+    const val TEST_CODE: String = "test_code"
+    const val TEST_NAME: String = "test_name"
+    const val TEST_DISPLAY_NAME: String = "test_display_name"
+    const val TEST_CREATED: String = "2001-02-07T16:04:40.387"
+    const val TEST_LAST_UPDATED: String = "2001-02-07T16:04:40.387"
+    const val TEST_SHORT_NAME: String = "test_short_name"
+    const val TEST_DISPLAY_SHORT_NAME: String = "test_display_short_name"
+    const val TEST_DESCRIPTION: String = "test_description"
+    const val TEST_DISPLAY_DESCRIPTION: String = "test_display_description"
+
+    fun create(uid: String?): TrackedEntityType {
+        return TrackedEntityType.builder()
+            .uid(uid)
+            .code(TEST_CODE)
+            .name(TEST_NAME)
+            .displayName(TEST_DISPLAY_NAME)
+            .created(TEST_CREATED)
+            .lastUpdated(TEST_LAST_UPDATED)
+            .shortName(TEST_SHORT_NAME)
+            .displayShortName(TEST_DISPLAY_SHORT_NAME)
+            .description(TEST_DESCRIPTION)
+            .displayDescription(TEST_DISPLAY_DESCRIPTION)
+            .build()
+    }
+}

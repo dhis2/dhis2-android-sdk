@@ -28,15 +28,18 @@
 
 package org.hisp.dhis.android.persistence.configuration
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.configuration.internal.Configuration
 import org.hisp.dhis.android.core.configuration.internal.ConfigurationStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.ObjectStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class ConfigurationStoreImpl(
-    val dao: ConfigurationDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : ConfigurationStore, ObjectStoreImpl<Configuration, ConfigurationDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().configurationDao() },
     Configuration::toDB,
     SQLStatementBuilderImpl(ConfigurationTableInfo.TABLE_INFO),
 )

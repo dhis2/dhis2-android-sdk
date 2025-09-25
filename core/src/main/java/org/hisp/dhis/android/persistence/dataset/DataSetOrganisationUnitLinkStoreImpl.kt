@@ -28,17 +28,20 @@
 
 package org.hisp.dhis.android.persistence.dataset
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink
 import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataSetOrganisationUnitLinkStoreImpl(
-    val dao: DataSetOrganisationUnitLinkDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : DataSetOrganisationUnitLinkStore, LinkStoreImpl<DataSetOrganisationUnitLink, DataSetOrganisationUnitLinkDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().dataSetOrganisationUnitLinkDao() },
     DataSetOrganisationUnitLink::toDB,
     LinkSQLStatementBuilderImpl(
         DataSetOrganisationUnitLinkTableInfo.TABLE_INFO,

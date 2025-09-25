@@ -29,9 +29,10 @@ package org.hisp.dhis.android.core.programstageworkinglist
 
 import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.programstageworkinglist.ProgramStageWorkingListEventDataFilterSamples
-import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListEventDataFilterStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.programstageworkinglist.ProgramStageWorkingListEventDataFilterStoreImpl
+import org.hisp.dhis.android.persistence.programstageworkinglist.ProgramStageWorkingListEventDataFilterTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.persistence.dataelement
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
@@ -35,11 +36,13 @@ import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilde
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
 import org.hisp.dhis.android.persistence.dataset.SectionDataElementLinkTableInfo
 import org.hisp.dhis.android.persistence.program.ProgramStageSectionDataElementLinkTableInfo
+import org.koin.core.annotation.Singleton
 
+@Singleton
 internal class DataElementStoreImpl(
-    val dao: DataElementDao,
+    private val databaseAdapter: DatabaseAdapter,
 ) : DataElementStore, IdentifiableObjectStoreImpl<DataElement, DataElementDB>(
-    dao,
+    { databaseAdapter.getCurrentDatabase().dataElementDao() },
     DataElement::toDB,
     SQLStatementBuilderImpl(DataElementTableInfo.TABLE_INFO),
 ) {

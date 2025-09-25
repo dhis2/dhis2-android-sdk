@@ -27,24 +27,24 @@
  */
 package org.hisp.dhis.android.core.usecase.internal
 
-import org.hisp.dhis.android.core.usecase.stock.StockUseCaseTableInfo
-import org.hisp.dhis.android.core.usecase.stock.StockUseCaseTransactionTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import org.hisp.dhis.android.persistence.usecase.StockUseCaseTableInfo
+import org.hisp.dhis.android.persistence.usecase.StockUseCaseTransactionTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 class UseCaseModuleWiper internal constructor(
     private val tableWiper: TableWiper,
 ) : ModuleWiper {
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         tableWiper.wipeTables(
             StockUseCaseTableInfo.TABLE_INFO,
             StockUseCaseTransactionTableInfo.TABLE_INFO,
         )
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         // No metadata to wipe
     }
 }

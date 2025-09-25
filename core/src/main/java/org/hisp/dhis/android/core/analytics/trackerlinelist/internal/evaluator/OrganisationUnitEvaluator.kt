@@ -31,32 +31,31 @@ package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.trackerlinelist.OrganisationUnitFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
-import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.TrackerLineListContext
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EnrollmentAlias
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.OrgUnitAlias
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.SubOrgUnitAlias
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.TrackedEntityInstanceAlias
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStoreImpl
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitOrganisationUnitGroupLinkStoreImpl
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
-import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStoreImpl
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitOrganisationUnitGroupLinkStore
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
+import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceTableInfo
 
 internal class OrganisationUnitEvaluator(
     private val item: TrackerLineListItem.OrganisationUnitItem,
-    context: TrackerLineListContext,
 ) : TrackerLineListEvaluator() {
 
-    private val userOrganisationUnitLinkStore = UserOrganisationUnitLinkStoreImpl(context.databaseAdapter)
-    private val organisationUnitStore = OrganisationUnitStoreImpl(context.databaseAdapter)
-    private val orgunitLevelStore = OrganisationUnitLevelStoreImpl(context.databaseAdapter)
-    private val orgunitGroupLinkStore = OrganisationUnitOrganisationUnitGroupLinkStoreImpl(context.databaseAdapter)
+    private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore = koin.get()
+    private val organisationUnitStore: OrganisationUnitStore = koin.get()
+    private val orgunitLevelStore: OrganisationUnitLevelStore = koin.get()
+    private val orgunitGroupLinkStore: OrganisationUnitOrganisationUnitGroupLinkStore = koin.get()
 
     override suspend fun getCommonSelectSQL(): String {
         return "$OrgUnitAlias.${OrganisationUnitTableInfo.Columns.DISPLAY_NAME}"

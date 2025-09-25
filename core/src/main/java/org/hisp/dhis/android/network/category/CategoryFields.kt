@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.network.category
 
 import org.hisp.dhis.android.core.category.Category
-import org.hisp.dhis.android.core.category.CategoryTableInfo
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.persistence.category.CategoryTableInfo
 
 internal object CategoryFields : BaseFields<Category>() {
     const val CATEGORY_OPTIONS = "categoryOptions"

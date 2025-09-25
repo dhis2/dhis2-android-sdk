@@ -28,13 +28,14 @@
 package org.hisp.dhis.android.core.arch.db.access.internal
 
 import android.content.Context
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.DatabaseExportMetadata
 import org.hisp.dhis.android.core.arch.db.access.DatabaseImportExport
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.getCurrentTimeAndDate
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
+import org.hisp.dhis.android.core.configuration.internal.BaseMultiUserDatabaseManager
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
-import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
@@ -43,6 +44,7 @@ import org.hisp.dhis.android.core.util.CipherUtil
 import org.hisp.dhis.android.core.util.FileUtils
 import org.hisp.dhis.android.core.util.deleteIfExists
 import org.hisp.dhis.android.core.util.simpleDateFormat
+import org.hisp.dhis.android.persistence.db.access.RoomDatabaseManager
 import org.koin.core.annotation.Singleton
 import java.io.File
 import java.util.Date
@@ -50,10 +52,12 @@ import java.util.Date
 @Singleton
 internal class DatabaseImportExportImpl(
     private val context: Context,
-    private val multiUserDatabaseManager: MultiUserDatabaseManager,
+    private val multiUserDatabaseManager: BaseMultiUserDatabaseManager,
+    private val databaseManager: RoomDatabaseManager,
     private val userModule: UserModule,
     private val credentialsStore: CredentialsSecureStore,
-    private val databaseExport: DatabaseExport,
+    private val databaseExport: BaseDatabaseExport,
+    private val databaseAdapter: DatabaseAdapter,
 ) : DatabaseImportExport {
 
     companion object {
@@ -92,7 +96,7 @@ internal class DatabaseImportExportImpl(
             val metadata = KotlinxJsonParser.instance.decodeFromString<DatabaseExportMetadata>(metadataContent)
 
             when {
-                metadata.version > BaseDatabaseOpenHelper.VERSION ->
+                metadata.version > AppDatabase.VERSION ->
                     throw d2ErrorBuilder
                         .errorDescription("Import database version higher than supported")
                         .errorCode(D2ErrorCode.DATABASE_IMPORT_VERSION_HIGHER_THAN_SUPPORTED)
@@ -128,7 +132,7 @@ internal class DatabaseImportExportImpl(
         }
     }
 
-    override fun exportLoggedUserDatabase(): File {
+    override suspend fun exportLoggedUserDatabase(): File {
         val exportMetadataFile = getWorkingDir().resolve(ExportMetadata).also { it.deleteIfExists() }
         val copiedDatabase = getWorkingDir().resolve(ExportDatabase).also { it.deleteIfExists() }
         val protectedDatabase = getWorkingDir().resolve(ExportDatabaseProtected).also { it.deleteIfExists() }
@@ -150,12 +154,15 @@ internal class DatabaseImportExportImpl(
 
         val databaseName = userConfiguration.databaseName()
         val databaseFile = getDatabaseFile(databaseName)
+        databaseAdapter.close() // The database needs to be closed so the file consolidates all operations
 
         if (userConfiguration.encrypted()) {
             databaseExport.decryptAndCopyTo(userConfiguration, copiedDatabase)
         } else {
             databaseFile.copyTo(copiedDatabase)
         }
+
+        databaseManager.createOrOpenDatabase(userConfiguration)
 
         CipherUtil.createEncryptedZipFile(
             input = copiedDatabase,
@@ -164,7 +171,7 @@ internal class DatabaseImportExportImpl(
         )
 
         val metadata = DatabaseExportMetadata(
-            version = BaseDatabaseOpenHelper.VERSION,
+            version = AppDatabase.VERSION,
             date = Date().simpleDateFormat()!!,
             serverUrl = userConfiguration.serverUrl(),
             username = userConfiguration.username(),

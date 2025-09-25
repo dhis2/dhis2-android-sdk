@@ -41,14 +41,14 @@ internal open class CollectionCleanerImpl<P : ObjectWithUidInterface>(
         key = IdentifiableColumns.UID,
     ) {
 
-    override fun deleteNotPresent(objects: Collection<P>?): Boolean {
+    override suspend fun deleteNotPresent(objects: Collection<P>?): Boolean {
         if (objects == null) {
             return false
         }
         return deleteNotPresentByKey(objects.map { it.uid() })
     }
 
-    override fun deleteNotPresentByUid(uids: Collection<String>): Boolean {
+    override suspend fun deleteNotPresentByUid(uids: Collection<String>): Boolean {
         return deleteNotPresentByKey(uids)
     }
 }

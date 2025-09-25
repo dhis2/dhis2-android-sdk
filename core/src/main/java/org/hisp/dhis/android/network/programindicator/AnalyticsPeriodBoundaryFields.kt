@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.network.programindicator
 
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
-import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.persistence.program.AnalyticsPeriodBoundaryTableInfo.Columns
 
 internal object AnalyticsPeriodBoundaryFields : BaseFields<AnalyticsPeriodBoundary>() {
     val allFields = Fields.from(

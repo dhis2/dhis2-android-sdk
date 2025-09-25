@@ -31,8 +31,8 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.StoreWithState
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.relationship.RelationshipItem
-import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
+import org.hisp.dhis.android.persistence.relationship.RelationshipItemTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -53,8 +53,10 @@ internal class RelationshipItemElementStoreSelectorImpl(
         return when (elementType) {
             RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE ->
                 trackedEntityInstanceStore
+
             RelationshipItemTableInfo.Columns.ENROLLMENT ->
                 enrollmentStore
+
             else ->
                 eventStore
         }

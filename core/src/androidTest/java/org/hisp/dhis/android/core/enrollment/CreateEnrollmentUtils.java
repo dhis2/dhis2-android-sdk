@@ -34,7 +34,7 @@ import androidx.annotation.NonNull;
 
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo.Columns;
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo.Columns;
 
 public class CreateEnrollmentUtils {
     private static final String UID = "test_enrollment";
@@ -58,7 +58,7 @@ public class CreateEnrollmentUtils {
         enrollment.put(Columns.ORGANISATION_UNIT, organisationUnitUid);
         enrollment.put(Columns.PROGRAM, programUid);
         enrollment.put(Columns.TRACKED_ENTITY_INSTANCE, trackedEntityInstanceUid);
-        enrollment.put(Columns.FOLLOW_UP, FOLLOW_UP);
+        enrollment.put(Columns.FOLLOWUP, FOLLOW_UP);
         enrollment.put(Columns.GEOMETRY_TYPE, GEOMETRY_TYPE.getFeatureType());
         enrollment.put(Columns.GEOMETRY_COORDINATES, GEOMETRY_COORDINATES);
         enrollment.put(Columns.SYNC_STATE, STATE.name());

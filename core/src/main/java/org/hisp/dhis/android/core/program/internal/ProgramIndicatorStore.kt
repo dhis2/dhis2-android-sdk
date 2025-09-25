@@ -33,4 +33,5 @@ import org.hisp.dhis.android.core.program.ProgramIndicator
 
 internal interface ProgramIndicatorStore : IdentifiableObjectStore<ProgramIndicator> {
     suspend fun getForProgramStageSection(programStageSectionUid: String): List<ProgramIndicator>
+    suspend fun deleteByUids(uids: List<String>)
 }

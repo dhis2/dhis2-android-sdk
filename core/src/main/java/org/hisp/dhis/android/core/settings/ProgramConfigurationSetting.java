@@ -28,15 +28,10 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.ProgramItemHeaderColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.QuickActionListColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
@@ -61,7 +56,6 @@ public abstract class ProgramConfigurationSetting implements CoreObject, ObjectW
     public abstract Boolean disableCollapsibleSections();
 
     @Nullable
-    @ColumnAdapter(ProgramItemHeaderColumnAdapter.class)
     public abstract ProgramItemHeader itemHeader();
 
     @Nullable
@@ -71,12 +65,7 @@ public abstract class ProgramConfigurationSetting implements CoreObject, ObjectW
     public abstract Boolean disableManualLocation();
 
     @Nullable
-    @ColumnAdapter(QuickActionListColumnAdapter.class)
     public abstract List<QuickAction> quickActions();
-
-    public static ProgramConfigurationSetting create(Cursor cursor) {
-        return AutoValue_ProgramConfigurationSetting.createFromCursor(cursor);
-    }
 
     public abstract Builder toBuilder();
 

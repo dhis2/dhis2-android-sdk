@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.constant;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -44,11 +42,7 @@ public abstract class Constant extends BaseIdentifiableObject implements CoreObj
     public abstract Double value();
 
     public static Builder builder() {
-        return new $$AutoValue_Constant.Builder();
-    }
-
-    public static Constant create(Cursor cursor) {
-        return $AutoValue_Constant.createFromCursor(cursor);
+        return new AutoValue_Constant.Builder();
     }
 
     public abstract Builder toBuilder();

@@ -32,14 +32,15 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
-import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
-import org.hisp.dhis.android.core.note.NoteTableInfo
 import org.hisp.dhis.android.core.note.internal.NoteStore
+import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
+import org.hisp.dhis.android.persistence.event.EventTableInfo
+import org.hisp.dhis.android.persistence.note.NoteTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -70,7 +71,7 @@ internal class JobReportEventHandler internal constructor(
                 enrollmentStore.selectByUid(it)?.trackedEntityInstance()
             }
             if (errorReport.errorCode == ImporterError.E1032.name && event.deleted() == true) {
-                eventStore.delete(event.uid())
+                eventStore.deleteByEntity(event)
             } else {
                 conflictStore.updateOrInsertWhere(
                     conflictHelper.getConflictBuilder(errorReport)
@@ -84,8 +85,8 @@ internal class JobReportEventHandler internal constructor(
         }
     }
 
-    override suspend fun getRelatedRelationships(uid: String): List<String> {
-        return relationshipStore.getRelationshipsByItem(RelationshipHelper.eventItem(uid)).mapNotNull { it.uid() }
+    override suspend fun getRelatedRelationships(uid: String): List<Relationship> {
+        return relationshipStore.getRelationshipsByItem(RelationshipHelper.eventItem(uid)).mapNotNull { it }
     }
 
     suspend fun handleSyncedEvent(eventUid: String) {

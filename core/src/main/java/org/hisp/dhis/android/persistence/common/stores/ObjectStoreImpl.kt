@@ -28,9 +28,8 @@
 
 package org.hisp.dhis.android.persistence.common.stores
 
-import android.content.ContentValues
-import android.util.ArrayMap
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.MapperToDB
@@ -38,52 +37,71 @@ import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.persistence.common.querybuilders.ReadOnlySQLStatementBuilder
 
 internal open class ObjectStoreImpl<D : CoreObject, P : EntityDB<D>>(
-    protected val objectDao: ObjectDao<P>,
+    override val daoProvider: () -> ObjectDao<P>,
     protected val mapper: MapperToDB<D, P>,
     override val builder: ReadOnlySQLStatementBuilder,
-) : ObjectStore<D>, ReadableStoreImpl<D, P>(objectDao, builder), MapperToDB<D, P> by mapper {
+) : ObjectStore<D>, ReadableStoreImpl<D, P>(daoProvider, builder), MapperToDB<D, P> by mapper {
 
     override suspend fun selectStringColumnsWhereClause(column: String, clause: String): List<String> {
+        val objectDao = daoProvider()
         val query = builder.selectStringColumn(column, clause)
         return objectDao.stringListRawQuery(query)
     }
 
     override suspend fun delete(): Int {
-        val query = builder.deleteTable()
-        return objectDao.intRawQuery(query)
+        val objectDao = daoProvider()
+        return objectDao.deleteAllRows()
     }
 
-    open override suspend fun insert(o: D): Long {
+    override suspend fun insert(o: D): Long {
+        val objectDao = daoProvider()
         return objectDao.insert(o.toDB())
     }
 
     override suspend fun insert(objects: Collection<D>) {
+        val objectDao = daoProvider()
         objectDao.insert(objects.map { it.toDB() })
     }
 
-    suspend fun deleteByEntity(domainObj: D): Boolean {
-        val entityDB = domainObj.toDB()
+    @Suppress("TooGenericExceptionThrown")
+    override suspend fun update(o: D) {
+        val objectDao = daoProvider()
+        val updated = objectDao.update(o.toDB())
+        if (updated == 0) {
+            throw RuntimeException("No rows affected")
+        }
+    }
+
+    override suspend fun update(objects: Collection<D>) {
+        val objectDao = daoProvider()
+        objectDao.update(objects.map { it.toDB() })
+    }
+
+    override suspend fun updateOrInsert(o: D): HandleAction {
+        val objectDao = daoProvider()
+        val rowId = objectDao.upsert(o.toDB())
+        return if (rowId > -1) {
+            HandleAction.Insert
+        } else {
+            HandleAction.Update
+        }
+    }
+
+    override suspend fun updateOrInsert(objects: Collection<D>): List<HandleAction> {
+        val objectDao = daoProvider()
+        val rowIds = objectDao.upsert(objects.map { it.toDB() })
+        return rowIds.map { rowId ->
+            if (rowId > -1) {
+                HandleAction.Insert
+            } else {
+                HandleAction.Update
+            }
+        }
+    }
+
+    override suspend fun deleteByEntity(o: D): Boolean {
+        val objectDao = daoProvider()
+        val entityDB = o.toDB()
         return objectDao.delete(entityDB) > 0
     }
-
-    override suspend fun deleteWhere(clause: String): Boolean {
-        val query = builder.deleteWhere(clause)
-        return objectDao.intRawQuery(query) > 0
-    }
-
-    override suspend fun updateWhere(updates: ContentValues, whereClause: String): Int {
-        TODO("To be removed after Room migration")
-    }
-
-    suspend fun updateWhere(updates: ArrayMap<String, Any>, whereClause: String): Int {
-        val query = builder.updateWhere(updates, whereClause)
-        return objectDao.intRawQuery(query)
-    }
-
-    override suspend fun deleteWhereIfExists(whereClause: String) {
-        deleteWhere(whereClause)
-    }
-
-    override val isReady: Boolean
-        get() = TODO("To be removed after Room migration")
 }

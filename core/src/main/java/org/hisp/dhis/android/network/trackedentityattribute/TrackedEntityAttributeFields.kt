@@ -31,13 +31,13 @@ import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.legendset.LegendSet
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo
 import org.hisp.dhis.android.network.common.fields.AccessFields
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Field
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.fields.ObjectStyleFields
 import org.hisp.dhis.android.network.legendset.LegendSetFields
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeTableInfo
 
 internal object TrackedEntityAttributeFields : BaseFields<TrackedEntityAttribute>() {
     const val UNIQUE = "unique"
@@ -59,7 +59,7 @@ internal object TrackedEntityAttributeFields : BaseFields<TrackedEntityAttribute
         fh.field(TrackedEntityAttributeTableInfo.Columns.DISPLAY_IN_LIST_NO_PROGRAM),
         fh.field(TrackedEntityAttributeTableInfo.Columns.GENERATED),
         fh.field(TrackedEntityAttributeTableInfo.Columns.DISPLAY_ON_VISIT_SCHEDULE),
-        fh.field(TrackedEntityAttributeTableInfo.Columns.ORG_UNIT_SCOPE),
+        fh.field(TrackedEntityAttributeTableInfo.Columns.ORGUNIT_SCOPE),
         fh.field(UNIQUE),
         fh.field(TrackedEntityAttributeTableInfo.Columns.INHERIT),
         fh.field(TrackedEntityAttributeTableInfo.Columns.FIELD_MASK),

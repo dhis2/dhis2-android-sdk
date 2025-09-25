@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.relationship;
 import android.content.ContentValues;
 
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
+import org.hisp.dhis.android.persistence.relationship.RelationshipTypeTableInfo;
 
 public class CreateRelationshipTypeUtils {
     private static final String CODE = "test_code";

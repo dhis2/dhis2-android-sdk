@@ -29,9 +29,10 @@ package org.hisp.dhis.android.core.legendset
 
 import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.legendset.DataElementLegendSetLinkSamples
-import org.hisp.dhis.android.core.legendset.internal.DataElementLegendSetLinkStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.legendset.DataElementLegendSetLinkStoreImpl
+import org.hisp.dhis.android.persistence.legendset.DataElementLegendSetLinkTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

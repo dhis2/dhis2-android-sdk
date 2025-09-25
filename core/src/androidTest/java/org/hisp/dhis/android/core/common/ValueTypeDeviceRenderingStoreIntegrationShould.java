@@ -28,11 +28,12 @@
 
 package org.hisp.dhis.android.core.common;
 
-import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingStoreImpl;
 import org.hisp.dhis.android.core.data.common.ValueTypeDeviceRenderingSamples;
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.hisp.dhis.android.persistence.valuetypedevicerendering.ValueTypeDeviceRenderingStoreImpl;
+import org.hisp.dhis.android.persistence.valuetypedevicerendering.ValueTypeDeviceRenderingTableInfo;
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)

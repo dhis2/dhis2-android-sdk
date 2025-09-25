@@ -61,7 +61,7 @@ class LegendSetHandlerShould {
         legendSetHandler = LegendSetHandler(legendSetStore, legendHandler, legendCleaner)
         legends = mutableListOf(legend)
         whenever(legendSet.legends()).thenReturn(legends)
-        whenever(legendSetStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
+        whenever(legendSetStore.updateOrInsert(any<List<LegendSet>>())).thenReturn(listOf(HandleAction.Insert))
     }
 
     @Test
@@ -79,14 +79,14 @@ class LegendSetHandlerShould {
 
     @Test
     fun clean_orphan_legends_after_update() = runTest {
-        whenever(legendSetStore.updateOrInsert(any())).thenReturn(HandleAction.Update)
+        whenever(legendSetStore.updateOrInsert(any<List<LegendSet>>())).thenReturn(listOf(HandleAction.Update))
         legendSetHandler.handle(legendSet)
         verify(legendCleaner).deleteOrphan(legendSet, legends)
     }
 
     @Test
     fun not_clean_orphan_legends_after_insert() = runTest {
-        whenever(legendSetStore.updateOrInsert(any())).thenReturn(HandleAction.Insert)
+        whenever(legendSetStore.updateOrInsert(any<List<LegendSet>>())).thenReturn(listOf(HandleAction.Insert))
         legendSetHandler.handle(legendSet)
         verify(legendCleaner, never()).deleteOrphan(legendSet, legends)
     }

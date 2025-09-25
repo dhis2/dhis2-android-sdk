@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramRuleVariable
-import org.hisp.dhis.android.core.program.ProgramRuleVariableTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramRuleVariableTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

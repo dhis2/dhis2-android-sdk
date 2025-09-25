@@ -73,7 +73,7 @@ class EventFilterHandlerShould {
             .eventQueryCriteria(eventQueryCriteria)
             .build()
 
-        whenever(eventFilterStore.updateOrInsert(any())).doReturn(HandleAction.Insert)
+        whenever(eventFilterStore.updateOrInsert(any<List<EventFilter>>())).doReturn(listOf(HandleAction.Insert))
 
         eventFilters = mutableListOf(eventFilter)
     }

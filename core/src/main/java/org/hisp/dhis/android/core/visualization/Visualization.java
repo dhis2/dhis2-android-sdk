@@ -28,20 +28,10 @@
 
 package org.hisp.dhis.android.core.visualization;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbVisualizationLegendColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AggregationTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.DigitGroupSeparatorColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.DisplayDensityColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.HideEmptyItemStrategyColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.VisualizationTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreVisualizationDimensionListColumnAdapter;
 import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
@@ -74,7 +64,6 @@ public abstract class Visualization extends BaseIdentifiableObject implements Co
     public abstract String displaySubtitle();
 
     @Nullable
-    @ColumnAdapter(VisualizationTypeColumnAdapter.class)
     public abstract VisualizationType type();
 
     @Nullable
@@ -90,7 +79,6 @@ public abstract class Visualization extends BaseIdentifiableObject implements Co
     public abstract Boolean hideEmptyRows();
 
     @Nullable
-    @ColumnAdapter(HideEmptyItemStrategyColumnAdapter.class)
     public abstract HideEmptyItemStrategy hideEmptyRowItems();
 
     @Nullable
@@ -124,39 +112,28 @@ public abstract class Visualization extends BaseIdentifiableObject implements Co
     public abstract Boolean skipRounding();
 
     @Nullable
-    @ColumnAdapter(DbVisualizationLegendColumnAdapter.class)
     public abstract VisualizationLegend legend();
 
     @Nullable
-    @ColumnAdapter(DisplayDensityColumnAdapter.class)
     public abstract DisplayDensity displayDensity();
 
     @Nullable
-    @ColumnAdapter(DigitGroupSeparatorColumnAdapter.class)
     public abstract DigitGroupSeparator digitGroupSeparator();
 
     @Nullable
-    @ColumnAdapter(AggregationTypeColumnAdapter.class)
     public abstract AggregationType aggregationType();
 
     @Nullable
-    @ColumnAdapter(IgnoreVisualizationDimensionListColumnAdapter.class)
     public abstract List<VisualizationDimension> columns();
 
     @Nullable
-    @ColumnAdapter(IgnoreVisualizationDimensionListColumnAdapter.class)
     public abstract List<VisualizationDimension> rows();
 
     @Nullable
-    @ColumnAdapter(IgnoreVisualizationDimensionListColumnAdapter.class)
     public abstract List<VisualizationDimension> filters();
 
     public static Builder builder() {
-        return new $$AutoValue_Visualization.Builder();
-    }
-
-    public static Visualization create(Cursor cursor) {
-        return AutoValue_Visualization.createFromCursor(cursor);
+        return new AutoValue_Visualization.Builder();
     }
 
     public abstract Builder toBuilder();

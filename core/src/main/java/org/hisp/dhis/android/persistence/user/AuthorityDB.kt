@@ -8,7 +8,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 @Entity(tableName = "Authority")
 internal data class AuthorityDB(
     @PrimaryKey
-    val name: String?,
+    val name: String,
 ) : EntityDB<Authority> {
 
     override fun toDomain(): Authority {

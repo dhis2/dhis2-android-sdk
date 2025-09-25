@@ -133,6 +133,7 @@ dependencies {
     coreLibraryDesugaring(libs.desugaring)
 
     ksp(project(":processor"))
+    compileOnly(project(":annotations"))
 
     // RxJava
     api(libs.rx.java)
@@ -173,22 +174,17 @@ dependencies {
     api(libs.dhis2.antlr.parser)
     implementation(libs.dhis2.peg.parser)
 
-    // Extension which generates mappers for work with cursor and content values
-    api(libs.auto.value.cursor.annotations)
-    kapt(libs.auto.value.cursor)
-
-    api(libs.sqlcipher)
-    // From SQLCipher 4.5.5, it depends on androidx.sqlite:sqlite
-    api(libs.sqlite)
-
     implementation(libs.zip4j)
 
     implementation(libs.openid.appauth)
     implementation(libs.listenablefuture.empty)
 
+    // Database
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.paging)
     ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.sqlite.bundled)
+    api(libs.sqlcipher)
 
     // Java test dependencies
     testImplementation(libs.junit)
@@ -218,6 +214,7 @@ dependencies {
 
 ksp {
     arg("migrationDir", "$rootDir/core/src/main/assets/migrations")
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 detekt {

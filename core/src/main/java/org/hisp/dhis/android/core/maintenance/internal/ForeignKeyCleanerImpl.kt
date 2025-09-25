@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.maintenance.internal
 
-import android.database.Cursor
 import android.util.Log
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaAndSpaceSeparatedArrayValues
@@ -42,60 +41,81 @@ internal class ForeignKeyCleanerImpl(
     private val databaseAdapter: DatabaseAdapter,
     private val foreignKeyViolationStore: ForeignKeyViolationStore,
 ) : ForeignKeyCleaner {
+
     override suspend fun cleanForeignKeyErrors(): Int {
         var totalRows = 0
-        var rowsDeleted: Int
+        var rowsDeletedIteration: Int
 
         do {
-            rowsDeleted = cleanForeignKeyErrorsIteration()
-            totalRows += rowsDeleted
-        } while (rowsDeleted > 0)
+            val foreignKeyErrors = getForeignKeyErrors()
+            if (foreignKeyErrors.isEmpty()) {
+                rowsDeletedIteration = 0
+            } else {
+                for (error in foreignKeyErrors) {
+                    deleteForeignKeyReferencedObject(error)
+                }
+                rowsDeletedIteration = foreignKeyErrors.size
+            }
+            totalRows += rowsDeletedIteration
+        } while (rowsDeletedIteration > 0)
 
         return totalRows
     }
 
-    private suspend fun cleanForeignKeyErrorsIteration(): Int {
-        return foreignKeyErrorsCursor?.use { cursor ->
-            var count = 0
-            do {
-                deleteForeignKeyReferencedObject(cursor)
-                count++
-            } while (cursor.moveToNext())
-            count
-        } ?: 0
+    // Represents the data from "PRAGMA foreign_key_check"
+    private data class RawForeignKeyError(
+        val fromTable: String,
+        val rowId: String,
+        val toTable: String,
+        val foreignKeyId: String, // This is the 'id' of the foreign key constraint from foreign_key_list
+    )
+
+    private suspend fun getForeignKeyErrors(): List<RawForeignKeyError> {
+        val results = databaseAdapter.rawQueryWithTypedValues("PRAGMA foreign_key_check;")
+        return results.mapNotNull { rowMap ->
+            val valuesList = rowMap.values.toList()
+            if (valuesList.size >= 4) {
+                RawForeignKeyError(
+                    fromTable = valuesList[0].toString(),
+                    rowId = valuesList[1].toString(),
+                    toTable = valuesList[2].toString(),
+                    foreignKeyId = valuesList[3].toString(),
+                )
+            } else {
+                null
+            }
+        }
     }
 
-    private suspend fun deleteForeignKeyReferencedObject(cursor: Cursor) {
-        val fromTable = cursor.getString(0)
-        val rowId = cursor.getString(1)
-        val toTable = cursor.getString(2)
-        val foreignKeyId = cursor.getString(3)
-
-        val violation = getForeignKeyViolation(foreignKeyId, fromTable, toTable, rowId)
+    private suspend fun deleteForeignKeyReferencedObject(error: RawForeignKeyError) {
+        val violation = getForeignKeyViolation(
+            error.foreignKeyId,
+            error.fromTable,
+            error.toTable,
+            error.rowId,
+        )
         violation?.let {
             foreignKeyViolationStore.updateOrInsertWhere(it)
 
-            val deleteClause = "ROWID = ?"
-            val rowsAffected = databaseAdapter.delete(fromTable, deleteClause, arrayOf(rowId))
+            val rowsAffected = databaseAdapter.delete(error.fromTable, "ROWID = ?", arrayOf(error.rowId))
+
             if (rowsAffected > 0) {
                 val msg =
-                    " was not persisted on $fromTable table to avoid Foreign Key constraint error. " +
-                        "Target not found on $toTable table. $it"
-                val warningMsg = it.fromObjectUid()
-                    ?.let { uid -> "The object $uid$msg" }
-                    ?: "An object$msg"
+                    " was not persisted on ${error.fromTable} table to avoid Foreign Key constraint error. " +
+                        "Target not found on ${error.toTable} table. $it"
+                val warningMsg = it.fromObjectUid()?.let { uid -> "The object $uid$msg" } ?: "An object$msg"
                 Log.w(this::class.simpleName, warningMsg)
             }
         }
     }
 
-    private fun getForeignKeyViolation(
-        foreignKeyId: String,
+    private suspend fun getForeignKeyViolation(
+        foreignKeyIdString: String,
         fromTable: String,
         toTable: String,
         rowId: String,
     ): ForeignKeyViolation? {
-        val foreignKeyEntry = findForeignKeyEntry(fromTable, foreignKeyId) ?: return null
+        val foreignKeyEntry = findForeignKeyEntry(fromTable, foreignKeyIdString) ?: return null
         return buildViolation(foreignKeyEntry, fromTable, toTable, rowId)
     }
 
@@ -104,78 +124,55 @@ internal class ForeignKeyCleanerImpl(
         val toColumn: String,
     )
 
-    private fun findForeignKeyEntry(
+    private suspend fun findForeignKeyEntry(
         fromTable: String,
-        foreignKeyId: String,
+        foreignKeyIdString: String, // This is the 'id' from PRAGMA foreign_key_list
     ): ForeignKeyEntry? {
-        val sql = "PRAGMA foreign_key_list($fromTable);"
-        databaseAdapter.rawQuery(sql).use { cursor ->
-            while (cursor.moveToNext()) {
-                if (cursor.getInt(0).toString() == foreignKeyId) {
-                    return ForeignKeyEntry(
-                        fromColumn = cursor.getString(3),
-                        toColumn = cursor.getString(4),
-                    )
-                }
+        // `fromTable` needs to be part of the query string, not a bound argument for PRAGMA
+        val results = databaseAdapter.rawQueryWithTypedValues("PRAGMA foreign_key_list(`$fromTable`);")
+
+        for (rowMap in results) {
+            val valuesList = rowMap.values.toList()
+            if (valuesList.size > 4 && valuesList[0].toString() == foreignKeyIdString) {
+                return ForeignKeyEntry(
+                    fromColumn = valuesList[3].toString(),
+                    toColumn = valuesList[4].toString(),
+                )
             }
         }
         return null
     }
 
-    private fun buildViolation(
+    private suspend fun buildViolation(
         foreignKeyEntry: ForeignKeyEntry,
         fromTable: String,
         toTable: String,
         rowId: String,
     ): ForeignKeyViolation? {
-        val selectStmt = "SELECT * FROM $fromTable WHERE ROWID = $rowId;"
-        databaseAdapter.rawQuery(selectStmt).use { objectCursor ->
-            if (objectCursor.moveToFirst()) {
-                val uid = objectCursor.getColumnIndex(IdentifiableColumns.UID)
-                    .takeIf { it != -1 }
-                    ?.let { objectCursor.getString(it) }
+        val rowMap =
+            databaseAdapter.rawQueryWithTypedValues(
+                "SELECT * FROM `$fromTable` WHERE ROWID = ?",
+                arrayOf(rowId),
+            )
+                .firstOrNull()
 
-                val columnAndValues = objectCursor.columnNames.map { columnName ->
-                    "$columnName: ${getColumnValueAsString(objectCursor, columnName)}"
+        return rowMap?.let { map ->
+            val uid = map[IdentifiableColumns.UID] as? String
+
+            val columnAndValues = map.entries.map { entry ->
+                // entry.value can be String, Long, Double, ByteArray, null
+                val valueStr = when (val v = entry.value) {
+                    is ByteArray -> "[BLOB]" // Or a more sophisticated representation
+                    null -> "NULL"
+                    else -> v.toString()
                 }
-
-                return ForeignKeyViolation.builder()
-                    .fromTable(fromTable)
-                    .toTable(toTable)
-                    .fromColumn(foreignKeyEntry.fromColumn)
-                    .toColumn(foreignKeyEntry.toColumn)
-                    .notFoundValue(getColumnValueAsString(objectCursor, foreignKeyEntry.fromColumn))
-                    .fromObjectRow(commaAndSpaceSeparatedArrayValues(columnAndValues.toTypedArray()))
-                    .fromObjectUid(uid)
-                    .created(Date())
-                    .build()
+                "${entry.key}: $valueStr"
             }
-        }
-        return null
-    }
 
-    private fun getColumnValueAsString(cursor: Cursor, columnName: String): String? {
-        val index = cursor.getColumnIndex(columnName)
-        return if (index != -1) {
-            when (cursor.getType(index)) {
-                Cursor.FIELD_TYPE_INTEGER -> cursor.getInt(index).toString()
-                Cursor.FIELD_TYPE_FLOAT -> cursor.getFloat(index).toString()
-                Cursor.FIELD_TYPE_STRING -> cursor.getString(index)
-                else -> null
-            }
-        } else {
-            null
+            ForeignKeyViolation.builder().fromTable(fromTable).toTable(toTable).fromColumn(foreignKeyEntry.fromColumn)
+                .toColumn(foreignKeyEntry.toColumn).notFoundValue(map[foreignKeyEntry.fromColumn]?.toString() ?: "NULL")
+                .fromObjectRow(commaAndSpaceSeparatedArrayValues(columnAndValues.toTypedArray())).fromObjectUid(uid)
+                .created(Date()).build()
         }
     }
-
-    private val foreignKeyErrorsCursor: Cursor?
-        get() {
-            val cursor = databaseAdapter.rawQuery("PRAGMA foreign_key_check;")
-            return if (cursor.count > 0) {
-                cursor.apply { moveToFirst() }
-            } else {
-                cursor.close()
-                null
-            }
-        }
 }

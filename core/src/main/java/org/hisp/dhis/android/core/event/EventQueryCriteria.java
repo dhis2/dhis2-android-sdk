@@ -28,16 +28,10 @@
 
 package org.hisp.dhis.android.core.event;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DateFilterPeriodColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreEventDataFilterListColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.DateFilterPeriod;
 import org.hisp.dhis.android.core.common.FilterQueryCriteria;
@@ -48,27 +42,19 @@ import java.util.List;
 public abstract class EventQueryCriteria extends FilterQueryCriteria implements CoreObject {
 
     @Nullable
-    @ColumnAdapter(IgnoreEventDataFilterListColumnAdapter.class)
     public abstract List<EventDataFilter> dataFilters();
 
     @Nullable
-    @ColumnAdapter(StringListColumnAdapter.class)
     public abstract List<String> events();
 
     @Nullable
-    @ColumnAdapter(DateFilterPeriodColumnAdapter.class)
     public abstract DateFilterPeriod dueDate();
 
     @Nullable
-    @ColumnAdapter(DateFilterPeriodColumnAdapter.class)
     public abstract DateFilterPeriod completedDate();
 
     public static Builder builder() {
-        return new $$AutoValue_EventQueryCriteria.Builder();
-    }
-
-    public static EventQueryCriteria create(Cursor cursor) {
-        return $AutoValue_EventQueryCriteria.createFromCursor(cursor);
+        return new AutoValue_EventQueryCriteria.Builder();
     }
 
     public abstract Builder toBuilder();

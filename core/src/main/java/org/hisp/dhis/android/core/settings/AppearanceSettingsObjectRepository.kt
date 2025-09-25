@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.settings.internal.AppearanceSettingCall
 import org.hisp.dhis.android.core.settings.internal.DataSetConfigurationSettingStore
 import org.hisp.dhis.android.core.settings.internal.FilterSettingStore
 import org.hisp.dhis.android.core.settings.internal.ProgramConfigurationSettingStore
+import org.hisp.dhis.android.network.settings.FilterSettingDTO.Companion.FILTERSETTING_GLOBAL_ID
 import org.koin.core.annotation.Singleton
 
 @Singleton(binds = [AppearanceSettingsObjectRepository::class])
@@ -120,12 +121,12 @@ class AppearanceSettingsObjectRepository internal constructor(
             .filter { it.scope() == DataSetFilter::class.java.simpleName }
 
         val global = dataSetFilters
-            .filter { it.uid() == null }
+            .filter { it.uid() == FILTERSETTING_GLOBAL_ID }
             .associateBy { DataSetFilter.valueOf(it.filterType()!!) }
 
         val specific = dataSetFilters
-            .filter { it.uid() != null }
-            .groupBy { it.uid()!! }
+            .filter { it.uid() != FILTERSETTING_GLOBAL_ID }
+            .groupBy { it.uid() }
             .mapValues { entry ->
                 entry.value.associateBy {
                     DataSetFilter.valueOf(it.filterType()!!)
@@ -143,12 +144,12 @@ class AppearanceSettingsObjectRepository internal constructor(
             .filter { it.scope() == ProgramFilter::class.java.simpleName }
 
         val global = programFilters
-            .filter { it.uid() == null }
+            .filter { it.uid() == FILTERSETTING_GLOBAL_ID }
             .associateBy { ProgramFilter.valueOf(it.filterType()!!) }
 
         val specific = programFilters
-            .filter { it.uid() != null }
-            .groupBy { it.uid()!! }
+            .filter { it.uid() != FILTERSETTING_GLOBAL_ID }
+            .groupBy { it.uid() }
             .mapValues { entry ->
                 entry.value.associateBy {
                     ProgramFilter.valueOf(it.filterType()!!)

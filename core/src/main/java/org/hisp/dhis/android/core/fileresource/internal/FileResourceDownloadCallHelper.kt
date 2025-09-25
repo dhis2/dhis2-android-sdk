@@ -28,31 +28,31 @@
 package org.hisp.dhis.android.core.fileresource.internal
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.dataelement.DataElementTableInfo
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
-import org.hisp.dhis.android.core.dataset.DataSetDataElementLinkTableInfo
-import org.hisp.dhis.android.core.dataset.internal.DataSetElementStoreImpl
+import org.hisp.dhis.android.core.dataset.internal.DataSetElementStore
 import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
-import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.fileresource.FileResourceValueType
 import org.hisp.dhis.android.core.icon.CustomIcon
-import org.hisp.dhis.android.core.icon.CustomIconTableInfo
 import org.hisp.dhis.android.core.icon.internal.CustomIconStore
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
+import org.hisp.dhis.android.persistence.dataelement.DataElementTableInfo
+import org.hisp.dhis.android.persistence.dataset.DataSetDataElementLinkTableInfo
+import org.hisp.dhis.android.persistence.datavalue.DataValueTableInfo
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.persistence.event.EventTableInfo
+import org.hisp.dhis.android.persistence.icon.CustomIconTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeValueTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityDataValueTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceTableInfo
 import org.koin.core.annotation.Singleton
 
 @Suppress("LongParameterList")
@@ -64,7 +64,7 @@ internal class FileResourceDownloadCallHelper(
     private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
     private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
     private val eventStore: EventStore,
-    private val dataSetElementStore: DataSetElementStoreImpl,
+    private val dataSetElementStore: DataSetElementStore,
     private val dataValueStore: DataValueStore,
     private val customIconStore: CustomIconStore,
     private val dhisVersionManager: DHISVersionManager,

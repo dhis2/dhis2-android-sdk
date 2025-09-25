@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.network.attribute
 
 import org.hisp.dhis.android.core.attribute.Attribute
-import org.hisp.dhis.android.core.attribute.AttributeTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.persistence.attribute.AttributeTableInfo.Columns
 
 internal object AttributeFields : BaseFields<Attribute>() {
     const val UNIQUE = "unique"

@@ -112,6 +112,7 @@ class EventStatusFilterConnector internal constructor(
         return createComplexFilterRepository(buildScheduleCondition(negated = true))
     }
 
+    @Suppress("ComplexMethod")
     private fun handleStatusCollection(
         values: Collection<EventStatus>?,
         inclusion: Boolean,

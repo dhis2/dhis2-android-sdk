@@ -33,11 +33,14 @@ import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
 import org.hisp.dhis.android.core.settings.EnrollmentScope
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 import org.hisp.dhis.android.core.tracker.exporter.TrackerD2Progress
 import org.koin.core.annotation.Singleton
 
 @Singleton
+@Suppress("TooManyFunctions")
 class TrackedEntityInstanceDownloader internal constructor(
     private val call: TrackedEntityInstanceDownloadCall,
     private val params: ProgramDataDownloadParams,
@@ -105,4 +108,20 @@ class TrackedEntityInstanceDownloader internal constructor(
         connectorFactory.eqConnector<Boolean> { overwrite ->
             params.toBuilder().overwrite(overwrite).build()
         }.eq(overwrite)
+
+    fun byFilterUid(): ListFilterConnector<TrackedEntityInstanceDownloader, String> =
+        connectorFactory.listConnector { filterUids -> params.toBuilder().filterUids(filterUids).build() }
+
+    fun byTrackedEntityInstanceFilter(): ListFilterConnector<
+        TrackedEntityInstanceDownloader,
+        TrackedEntityInstanceFilter,
+        > =
+        connectorFactory.listConnector { teiFilters ->
+            params.toBuilder().trackedEntityInstanceFilters(teiFilters).build()
+        }
+
+    fun byProgramStageWorkingList(): ListFilterConnector<TrackedEntityInstanceDownloader, ProgramStageWorkingList> =
+        connectorFactory.listConnector { programStageWorkingLists ->
+            params.toBuilder().programStageWorkingLists(programStageWorkingLists).build()
+        }
 }

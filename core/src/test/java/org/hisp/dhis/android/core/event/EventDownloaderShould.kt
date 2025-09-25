@@ -73,4 +73,39 @@ class EventDownloaderShould {
         assertThat(params.uids()[1]).isEqualTo("uid1")
         assertThat(params.uids()[2]).isEqualTo("uid2")
     }
+
+    @Test
+    fun should_parse_filter_uid_eq_params() {
+        downloader.byFilterUid().eq("filterUid").download()
+
+        verify(call).download(paramsCapture.capture())
+        val params = paramsCapture.firstValue
+
+        assertThat(params.filterUids()?.size).isEqualTo(1)
+        assertThat(params.filterUids()?.get(0)).isEqualTo("filterUid")
+    }
+
+    @Test
+    fun should_parse_filter_uid_in_params() {
+        downloader.byFilterUid().`in`("filterUid0", "filterUid1", "filterUid2").download()
+
+        verify(call).download(paramsCapture.capture())
+        val params = paramsCapture.firstValue
+
+        assertThat(params.filterUids()?.size).isEqualTo(3)
+        assertThat(params.filterUids()?.get(0)).isEqualTo("filterUid0")
+        assertThat(params.filterUids()?.get(1)).isEqualTo("filterUid1")
+        assertThat(params.filterUids()?.get(2)).isEqualTo("filterUid2")
+    }
+
+    @Test
+    fun should_parse_event_filter_params() {
+        val eventFilter: EventFilter = mock()
+        downloader.byEventFilter().eq(eventFilter).download()
+
+        verify(call).download(paramsCapture.capture())
+        val params = paramsCapture.firstValue
+
+        assertThat(params.eventFilters()).isEqualTo(listOf(eventFilter))
+    }
 }

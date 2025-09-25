@@ -29,7 +29,9 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
 import org.hisp.dhis.android.core.settings.EnrollmentScope
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -98,5 +100,54 @@ class TrackedEntityInstanceDownloaderShould {
         assertThat(params.uids()[0]).isEqualTo("uid0")
         assertThat(params.uids()[1]).isEqualTo("uid1")
         assertThat(params.uids()[2]).isEqualTo("uid2")
+    }
+
+    @Test
+    fun should_parse_filter_uid_eq_params() {
+        downloader.byFilterUid().eq("filterUid").download()
+
+        verify(call).download(paramsCapture.capture())
+
+        val params = paramsCapture.firstValue
+        assertThat(params.filterUids()?.size).isEqualTo(1)
+        assertThat(params.filterUids()?.get(0)).isEqualTo("filterUid")
+    }
+
+    @Test
+    fun should_parse_filter_uid_in_params() {
+        downloader.byFilterUid().`in`("filterUid0", "filterUid1", "filterUid2").download()
+
+        verify(call).download(paramsCapture.capture())
+
+        val params = paramsCapture.firstValue
+        assertThat(params.filterUids()?.size).isEqualTo(3)
+        assertThat(params.filterUids()?.get(0)).isEqualTo("filterUid0")
+        assertThat(params.filterUids()?.get(1)).isEqualTo("filterUid1")
+        assertThat(params.filterUids()?.get(2)).isEqualTo("filterUid2")
+    }
+
+    @Test
+    fun should_parse_tracked_entity_instance_filter_params() {
+        val trackedEntityInstanceFilter: TrackedEntityInstanceFilter = mock()
+        downloader.byTrackedEntityInstanceFilter().eq(trackedEntityInstanceFilter).download()
+
+        verify(call).download(paramsCapture.capture())
+
+        val params = paramsCapture.firstValue
+        assertThat(params.trackedEntityInstanceFilters()).isEqualTo(listOf(trackedEntityInstanceFilter))
+    }
+
+    @Test
+    fun should_parse_program_stage_working_list_params() {
+        val programStageWorkingList1: ProgramStageWorkingList = mock()
+        val programStageWorkingList2: ProgramStageWorkingList = mock()
+        downloader.byProgramStageWorkingList().`in`(listOf(programStageWorkingList1, programStageWorkingList2))
+            .download()
+
+        verify(call).download(paramsCapture.capture())
+
+        val params = paramsCapture.firstValue
+        assertThat(params.programStageWorkingLists())
+            .isEqualTo(listOf(programStageWorkingList1, programStageWorkingList2))
     }
 }

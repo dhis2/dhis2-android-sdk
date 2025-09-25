@@ -34,8 +34,11 @@ import androidx.annotation.Nullable;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope;
+import org.hisp.dhis.android.core.event.EventFilter;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList;
 import org.hisp.dhis.android.core.settings.EnrollmentScope;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
 
 import java.util.Collections;
 import java.util.Date;
@@ -82,6 +85,18 @@ public abstract class ProgramDataDownloadParams implements BaseScope {
     @NonNull
     public abstract Boolean overwrite();
 
+    @Nullable
+    public abstract List<String> filterUids();
+
+    @Nullable
+    public abstract List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters();
+
+    @Nullable
+    public abstract List<ProgramStageWorkingList> programStageWorkingLists();
+
+    @Nullable
+    public abstract List<EventFilter> eventFilters();
+
     public static Builder builder() {
         return new AutoValue_ProgramDataDownloadParams.Builder()
                 .overwrite(false)
@@ -116,6 +131,15 @@ public abstract class ProgramDataDownloadParams implements BaseScope {
         public abstract Builder limit(Integer limit);
 
         public abstract Builder overwrite(Boolean overwrite);
+
+        public abstract Builder filterUids(List<String> filterUids);
+
+        public abstract Builder trackedEntityInstanceFilters(
+                List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters);
+
+        public abstract Builder programStageWorkingLists(List<ProgramStageWorkingList> programStageWorkingLists);
+
+        public abstract Builder eventFilters(List<EventFilter> eventFilters);
 
         public abstract ProgramDataDownloadParams build();
     }

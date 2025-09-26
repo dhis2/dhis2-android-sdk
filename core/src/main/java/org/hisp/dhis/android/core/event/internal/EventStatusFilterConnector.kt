@@ -37,8 +37,8 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositorySco
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper
 import org.hisp.dhis.android.core.event.EventCollectionRepository
 import org.hisp.dhis.android.core.event.EventStatus
-import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
+import org.hisp.dhis.android.persistence.event.EventTableInfo
 
 @Suppress("TooManyFunctions")
 class EventStatusFilterConnector internal constructor(

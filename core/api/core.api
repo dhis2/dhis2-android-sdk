@@ -5631,34 +5631,6 @@ public final class org/hisp/dhis/android/core/event/EventStatus : java/lang/Enum
 	public static fun values ()[Lorg/hisp/dhis/android/core/event/EventStatus;
 }
 
-public final class org/hisp/dhis/android/core/event/EventTableInfo {
-	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-}
-
-public class org/hisp/dhis/android/core/event/EventTableInfo$Columns : org/hisp/dhis/android/core/common/DeletableDataColumns {
-	public static final field ASSIGNED_USER Ljava/lang/String;
-	public static final field ATTRIBUTE_OPTION_COMBO Ljava/lang/String;
-	public static final field COMPLETED_BY Ljava/lang/String;
-	public static final field COMPLETE_DATE Ljava/lang/String;
-	public static final field CREATED Ljava/lang/String;
-	public static final field CREATED_AT_CLIENT Ljava/lang/String;
-	public static final field DUE_DATE Ljava/lang/String;
-	public static final field ENROLLMENT Ljava/lang/String;
-	public static final field EVENT_DATE Ljava/lang/String;
-	public static final field GEOMETRY_COORDINATES Ljava/lang/String;
-	public static final field GEOMETRY_TYPE Ljava/lang/String;
-	public static final field LAST_UPDATED Ljava/lang/String;
-	public static final field LAST_UPDATED_AT_CLIENT Ljava/lang/String;
-	public static final field ORGANISATION_UNIT Ljava/lang/String;
-	public static final field PROGRAM Ljava/lang/String;
-	public static final field PROGRAM_STAGE Ljava/lang/String;
-	public static final field STATUS Ljava/lang/String;
-	public static final field UID Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
-}
-
 public final class org/hisp/dhis/android/core/event/internal/EventStatusFilterConnector {
 	public final fun eq (Lorg/hisp/dhis/android/core/event/EventStatus;)Lorg/hisp/dhis/android/core/event/EventCollectionRepository;
 	public final fun in (Ljava/util/Collection;)Lorg/hisp/dhis/android/core/event/EventCollectionRepository;

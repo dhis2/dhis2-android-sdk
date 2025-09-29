@@ -4,6 +4,7 @@ dhis2AndroidSdkCode = "299"
 
 gradle = "8.9.3"
 kotlin = "2.0.20"
+java = "17"
 ksp = "2.0.20-1.0.24"
 ktlint = "12.1.1"
 sonarqube = "3.3"

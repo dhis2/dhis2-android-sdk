@@ -1,4 +1,6 @@
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
+import org.jetbrains.kotlin.gradle.dsl.*
+import com.android.build.api.dsl.*
 
 group = "org.hisp.dhis"
 version = libs.versions.dhis2AndroidSdkVersion.get()
@@ -43,6 +45,59 @@ allprojects {
 }
 
 apply(from = "tasks.gradle.kts")
+
+val jvmVersion = libs.versions.java.get().toInt()
+
+plugins.withType<JavaPlugin> {
+    extensions.configure<JavaPluginExtension> {
+        toolchain { languageVersion.set(JavaLanguageVersion.of(jvmVersion)) }
+    }
+}
+
+subprojects {
+    // Kotlin JVM pure
+    plugins.withId("org.jetbrains.kotlin.jvm") {
+        extensions.configure<KotlinJvmProjectExtension> {
+            jvmToolchain(jvmVersion)
+            compilerOptions {
+                jvmTarget.set(JvmTarget.fromTarget(jvmVersion.toString()))
+            }
+        }
+    }
+
+    // Kotlin Android
+    plugins.withId("org.jetbrains.kotlin.android") {
+        extensions.configure<KotlinAndroidProjectExtension> {
+            jvmToolchain(jvmVersion)
+            compilerOptions {
+                jvmTarget.set(JvmTarget.fromTarget(jvmVersion.toString()))
+            }
+        }
+    }
+
+    // Android (app / library)
+    plugins.withId("com.android.application") {
+        extensions.configure<ApplicationExtension> {
+            compileOptions {
+                sourceCompatibility = JavaVersion.toVersion(jvmVersion)
+                targetCompatibility = JavaVersion.toVersion(jvmVersion)
+            }
+        }
+    }
+    plugins.withId("com.android.library") {
+        extensions.configure<LibraryExtension> {
+            compileOptions {
+                sourceCompatibility = JavaVersion.toVersion(jvmVersion)
+                targetCompatibility = JavaVersion.toVersion(jvmVersion)
+            }
+        }
+    }
+
+    // Java tasks
+    tasks.withType<JavaCompile>().configureEach {
+        options.release.set(jvmVersion)
+    }
+}
 
 subprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")

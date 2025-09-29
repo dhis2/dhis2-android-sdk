@@ -1,5 +1,5 @@
-import org.jetbrains.dokka.gradle.DokkaTask
 import org.gradle.api.tasks.Sync
+import org.jetbrains.dokka.gradle.DokkaTask
 
 /*
  * Copyright (c) 2016, University of Oslo
@@ -70,7 +70,6 @@ tasks.configureEach {
     }
 }
 
-
 kotlin {
     jvmToolchain(17)
 }
@@ -124,7 +123,7 @@ android {
             java.srcDirs("src/sharedTest/java")
             resources.srcDirs(
                 "src/sharedAndroidTest/resources",
-                layout.buildDirectory.dir("generated/sharedAndroidTest/resources")
+                layout.buildDirectory.dir("generated/sharedAndroidTest/resources"),
             )
         }
     }

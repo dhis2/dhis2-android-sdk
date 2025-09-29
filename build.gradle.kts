@@ -92,11 +92,6 @@ subprojects {
             }
         }
     }
-
-    // Java tasks
-    tasks.withType<JavaCompile>().configureEach {
-        options.release.set(jvmVersion)
-    }
 }
 
 subprojects {

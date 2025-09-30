@@ -29,13 +29,17 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListCollectionRepository
 import org.hisp.dhis.android.core.settings.EnrollmentScope
 import org.hisp.dhis.android.core.settings.ProgramSettings
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterCollectionRepository
 
 internal class TrackerQueryBundleInternalFactory(
     commonHelper: TrackerQueryFactoryCommonHelper,
     params: ProgramDataDownloadParams,
     programSettings: ProgramSettings?,
+    val programStageWorkingListObjectRepository: ProgramStageWorkingListCollectionRepository,
+    val trackedEntityInstanceFilterCollectionRepository: TrackedEntityInstanceFilterCollectionRepository
 ) : TrackerQueryInternalFactory<TrackerQueryBundle>(commonHelper, params, programSettings) {
 
     override suspend fun queryInternal(
@@ -62,9 +66,35 @@ internal class TrackerQueryBundleInternalFactory(
 
         val programStatus = getProgramStatus(params, programSettings, programUid)
 
+        val programStageWorkingLists =
+            params.programStageWorkingLists()
+                ?.plus(
+                    programStageWorkingListObjectRepository
+                        .byUid().`in`(params.filterUids())
+                        .blockingGet()
+                )
+
+        val trackedEntityInstanceFilters = params.trackedEntityInstanceFilters()
+            ?.plus(
+                trackedEntityInstanceFilterCollectionRepository
+                    .byUid().`in`(params.filterUids())
+                    .blockingGet()
+            )
+
+        val programStageWorkingListsSettings = programStageWorkingListObjectRepository
+            .byUid().`in`(programSettings?.specificSettings()?.get(programUid)?.filters()?.map { it.uid() })
+            .blockingGet()
+
+        val trackedEntityInstanceFiltersSettings = trackedEntityInstanceFilterCollectionRepository
+            .byUid().`in`(programSettings?.specificSettings()?.get(programUid)?.filters()?.map { it.uid() })
+            .blockingGet()
+
+
         val builder = TrackerQueryBundle.builder()
             .commonParams(commonParams)
             .programStatus(programStatus)
+            .programStageWorkingLists(programStageWorkingLists ?: programStageWorkingListsSettings)
+            .trackedEntityInstanceFilters(trackedEntityInstanceFilters ?: trackedEntityInstanceFiltersSettings)
 
         return commonHelper.divideByOrgUnits(
             commonParams.orgUnitsBeforeDivision,

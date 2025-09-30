@@ -31,16 +31,22 @@ package org.hisp.dhis.android.core.settings.internal
 import io.reactivex.Single
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.settings.CustomIntent
 import org.hisp.dhis.android.core.settings.CustomIntentContext
 import org.hisp.dhis.android.core.settings.CustomIntentService
+import org.hisp.dhis.android.core.user.internal.UserStore
 import org.hisp.dhis.lib.expression.Expression
 import org.hisp.dhis.lib.expression.ExpressionMode
+import org.hisp.dhis.lib.expression.spi.AndroidCustomIntentVariable
 import org.hisp.dhis.lib.expression.spi.ExpressionData
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class CustomIntentServiceImpl : CustomIntentService {
+internal class CustomIntentServiceImpl(
+    private val userStore: UserStore,
+    private val orgunitStore: OrganisationUnitStore,
+) : CustomIntentService {
     override fun evaluateRequestParams(
         customIntent: CustomIntent,
         context: CustomIntentContext,
@@ -59,9 +65,15 @@ internal class CustomIntentServiceImpl : CustomIntentService {
         customIntent: CustomIntent,
         context: CustomIntentContext,
     ): Map<String, Any?> {
+        val user = userStore.selectFirst()
+        val orgunit = context.orgunitUid?.let { orgunitStore.selectByUid(it) }
+
         val programVariables = buildMap {
-            context.programUid?.let { put("program_id", it) }
-            context.programStageUid?.let { put("program_stage_id", it) }
+            user?.uid()?.let { put(AndroidCustomIntentVariable.user_id.name, it) }
+            user?.username()?.let { put(AndroidCustomIntentVariable.user_username.name, it) }
+            orgunit?.uid()?.let { put(AndroidCustomIntentVariable.orgunit_id.name, it) }
+            orgunit?.path()?.let { put(AndroidCustomIntentVariable.orgunit_path.name, it) }
+            orgunit?.code()?.let { put(AndroidCustomIntentVariable.orgunit_code.name, it) }
         }
 
         val data = ExpressionData(
@@ -73,7 +85,7 @@ internal class CustomIntentServiceImpl : CustomIntentService {
         )
 
         return customIntent.request()?.arguments()?.associate { argument ->
-            val expression = Expression(argument.value(), ExpressionMode.PROGRAM_INDICATOR_EXPRESSION, false)
+            val expression = Expression(argument.value(), ExpressionMode.ANDROID_CUSTOM_INTENT_EXPRESSION, false)
             val expressionValue = expression.evaluate({ _ -> null }, data)
 
             val argumentValue = when (expressionValue) {

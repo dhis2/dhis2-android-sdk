@@ -329,8 +329,8 @@ CREATE TABLE SynchronizationSetting(dataSync TEXT NOT NULL, metadataSync TEXT, t
 INSERT OR IGNORE INTO SynchronizationSetting(dataSync, metadataSync, trackerImporterVersion, trackerExporterVersion, fileMaxLengthBytes) SELECT dataSync, metadataSync, trackerImporterVersion, trackerExporterVersion, fileMaxLengthBytes FROM SynchronizationSetting_Old;
 
 ALTER TABLE FilterSetting RENAME TO FilterSetting_Old;
-CREATE TABLE FilterSetting(scope TEXT NOT NULL, filterType TEXT NOT NULL, uid TEXT NOT NULL, sort INTEGER, filter INTEGER, PRIMARY KEY(scope, filterType, uid));
-INSERT OR IGNORE INTO FilterSetting(scope, filterType, uid, sort, filter) SELECT scope, filterType, uid, sort, filter FROM FilterSetting_Old;
+CREATE TABLE FilterSetting(_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, scope TEXT, filterType TEXT, uid TEXT, sort INTEGER, filter INTEGER);
+INSERT OR IGNORE INTO FilterSetting(_id, scope, filterType, uid, sort, filter) SELECT _id, scope, filterType, uid, sort, filter FROM FilterSetting_Old;
 
 ALTER TABLE ProgramConfigurationSetting RENAME TO ProgramConfigurationSetting_Old;
 CREATE TABLE ProgramConfigurationSetting (_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, uid TEXT, completionSpinner INTEGER, optionalSearch INTEGER, disableReferrals INTEGER, disableCollapsibleSections INTEGER, itemHeaderProgramIndicator TEXT, minimumLocationAccuracy INTEGER, disableManualLocation INTEGER, quickActions TEXT);

@@ -32,7 +32,6 @@ import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.settings.DataSetFilter
 import org.hisp.dhis.android.core.settings.DataSetFilters
 import org.hisp.dhis.android.core.settings.FilterSetting
-import org.hisp.dhis.android.network.settings.FilterSettingDTO.Companion.FILTERSETTING_GLOBAL_ID
 
 @Serializable
 internal data class DataSetFiltersDTO(
@@ -41,13 +40,12 @@ internal data class DataSetFiltersDTO(
 ) {
     fun toDomain(): DataSetFilters {
         return DataSetFilters.builder()
-            .globalSettings(globalSettings.toDomainMap())
+            .globalSettings(globalSettings.toDomainMap(null))
             .specificSettings(specificSettings.map { (uidKey, value) -> uidKey to value.toDomainMap(uidKey) }.toMap())
             .build()
     }
 
-    private fun Map<String, FilterSettingDTO>.toDomainMap(uidKey: String = FILTERSETTING_GLOBAL_ID):
-        Map<DataSetFilter, FilterSetting> {
+    private fun Map<String, FilterSettingDTO>.toDomainMap(uidKey: String?): Map<DataSetFilter, FilterSetting> {
         return map { (key, value) -> DataSetFilter.Companion.from(key) to value.toDomain(uidKey) }.toMap()
     }
 }

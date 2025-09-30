@@ -14822,6 +14822,7 @@ public final class org/hisp/dhis/android/persistence/settings/FilterSettingTable
 	public static final field SCOPE Ljava/lang/String;
 	public static final field SORT Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
+	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }

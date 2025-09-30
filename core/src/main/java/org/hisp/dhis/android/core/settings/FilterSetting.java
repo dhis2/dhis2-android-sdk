@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -44,7 +43,7 @@ public abstract class FilterSetting implements CoreObject {
     @Nullable
     public abstract String filterType();
 
-    @NonNull
+    @Nullable
     public abstract String uid();
 
     @Nullable
@@ -66,7 +65,7 @@ public abstract class FilterSetting implements CoreObject {
 
         public abstract Builder filterType(String filterType);
 
-        public abstract Builder uid(@NonNull String uid);
+        public abstract Builder uid(String uid);
 
         public abstract Builder sort(Boolean sort);
 

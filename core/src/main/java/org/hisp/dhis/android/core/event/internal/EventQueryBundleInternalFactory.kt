@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
+import org.hisp.dhis.android.core.event.EventFilterCollectionRepository
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
@@ -37,6 +38,7 @@ internal class EventQueryBundleInternalFactory(
     commonHelper: TrackerQueryFactoryCommonHelper,
     params: ProgramDataDownloadParams,
     programSettings: ProgramSettings?,
+    val eventFilterCollectionRepository: EventFilterCollectionRepository,
 ) : TrackerQueryInternalFactory<EventQueryBundle>(commonHelper, params, programSettings) {
 
     override suspend fun queryInternal(
@@ -61,7 +63,15 @@ internal class EventQueryBundleInternalFactory(
             orgUnitByLimitExtractor,
         ) { it?.eventDateDownload() }
 
+        val eventFilters = params.eventFilters()?.plus(
+            eventFilterCollectionRepository.byUid().`in`(params.filterUids()).blockingGet()
+        )
+
+        val programSettingFilters = eventFilterCollectionRepository.byUid()
+            .`in`(programSettings?.specificSettings()?.get(programUid)?.filters()?.map { it.uid() }).blockingGet()
+
         val builder = EventQueryBundle.builder()
+            .eventFilters(eventFilters ?: programSettingFilters)
             .commonParams(commonParams)
 
         return commonHelper.divideByOrgUnits(commonParams.orgUnitsBeforeDivision, commonParams.hasLimitByOrgUnit) {

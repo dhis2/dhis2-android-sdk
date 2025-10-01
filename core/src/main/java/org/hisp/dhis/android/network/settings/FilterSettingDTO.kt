@@ -38,7 +38,7 @@ internal data class FilterSettingDTO(
     val sort: Boolean?,
     val filter: Boolean?,
 ) {
-    fun toDomain(uid: String = FILTERSETTING_GLOBAL_ID): FilterSetting {
+    fun toDomain(uid: String?): FilterSetting {
         return FilterSetting.builder()
             .scope(scope)
             .filterType(filterType)
@@ -46,9 +46,5 @@ internal data class FilterSettingDTO(
             .sort(sort)
             .filter(filter)
             .build()
-    }
-
-    companion object {
-        const val FILTERSETTING_GLOBAL_ID = "global_uid_"
     }
 }

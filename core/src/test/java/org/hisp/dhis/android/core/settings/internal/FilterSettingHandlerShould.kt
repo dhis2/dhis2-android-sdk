@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.settings.internal
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.settings.FilterSetting
-import org.hisp.dhis.android.network.settings.FilterSettingDTO.Companion.FILTERSETTING_GLOBAL_ID
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
@@ -45,7 +44,7 @@ class FilterSettingHandlerShould {
 
     private val filterSettingStore: FilterSettingStore = mock()
 
-    private val filterSetting: FilterSetting = FilterSetting.builder().uid(FILTERSETTING_GLOBAL_ID).build()
+    private val filterSetting: FilterSetting = FilterSetting.builder().build()
     private lateinit var filterSettingsHandler: FilterSettingHandler
     private lateinit var filterSettingsList: List<FilterSetting>
 

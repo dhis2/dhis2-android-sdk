@@ -8710,7 +8710,6 @@ public final class org/hisp/dhis/android/core/server/LoginConfig {
 	public final fun getEmailConfigured ()Z
 	public final fun getLoginPageLayout ()Lorg/hisp/dhis/android/core/server/LoginPageLayout;
 	public final fun getLoginPageLogo ()Ljava/lang/String;
-	public final fun getLoginPageTemplate ()Ljava/lang/String;
 	public final fun getLoginPopup ()Ljava/lang/String;
 	public final fun getMaxPasswordLength ()Ljava/lang/Integer;
 	public final fun getMinPasswordLength ()Ljava/lang/Integer;

@@ -63,7 +63,6 @@ class ServerCheckCallMockIntegrationShould : BaseMockIntegrationTest() {
         assertThat(loginConfig.loginPageLogo).isEqualTo("/api/staticContent/logo_front.png")
         assertThat(loginConfig.loginPopup).isEqualTo("")
         assertThat(loginConfig.loginPageLayout).isEqualTo(LoginPageLayout.SIDEBAR)
-        assertThat(loginConfig.loginPageTemplate).isEqualTo("login_page_template_test")
         assertThat(loginConfig.recaptchaSite).isEqualTo("6LcVwT0UAAAAAAkO_EGPiYOiymIszZUeHfqWIYX5")
         assertThat(loginConfig.minPasswordLength).isEqualTo(8)
         assertThat(loginConfig.maxPasswordLength).isEqualTo(72)

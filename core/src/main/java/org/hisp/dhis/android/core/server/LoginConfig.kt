@@ -41,7 +41,6 @@ data class LoginConfig(
     val loginPageLogo: String? = null,
     val loginPopup: String? = null,
     val loginPageLayout: LoginPageLayout? = LoginPageLayout.DEFAULT,
-    val loginPageTemplate: String? = null,
     val recaptchaSite: String? = null,
     val minPasswordLength: Int? = null,
     val maxPasswordLength: Int? = null,

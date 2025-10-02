@@ -32,6 +32,8 @@ import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.event.EventFilter
+import org.hisp.dhis.android.core.event.search.EventQueryCollectionRepository
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndPersistCallFactory
@@ -53,6 +55,7 @@ internal class EventDownloadCall internal constructor(
     private val trackerParentCallFactory: TrackerParentCallFactory,
     private val persistenceCallFactory: EventPersistenceCallFactory,
     private val lastUpdatedManager: EventLastUpdatedManager,
+    private val eventQueryCollectionRepository: EventQueryCollectionRepository,
 ) : TrackerDownloadCall<Event, EventQueryBundle>(
     userOrganisationUnitLinkStore,
     systemInfoModuleDownloader,
@@ -127,6 +130,8 @@ internal class EventDownloadCall internal constructor(
         orgunitUid: String?,
         limit: Int,
     ): TrackerAPIQuery {
+        val eventUidsByFilters: List<String> = getEventUidsByFilters(bundle.eventFilters())
+
         return TrackerAPIQuery(
             commonParams = bundle.commonParams().copy(
                 program = program,
@@ -134,7 +139,11 @@ internal class EventDownloadCall internal constructor(
             ),
             lastUpdatedStr = lastUpdatedManager.getLastUpdatedStr(bundle.commonParams()),
             orgUnit = orgunitUid,
-            uids = bundle.commonParams().uids,
+            uids = eventUidsByFilters,
         )
     }
+
+    private fun getEventUidsByFilters(eventFilters: List<EventFilter>?): List<String> = eventFilters?.flatMap {
+        eventQueryCollectionRepository.byEventFilterObject().eq(it).blockingGetUids() // Add online only
+    } ?: emptyList()
 }

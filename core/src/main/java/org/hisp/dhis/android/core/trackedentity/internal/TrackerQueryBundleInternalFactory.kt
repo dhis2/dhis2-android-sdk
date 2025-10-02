@@ -67,19 +67,17 @@ internal class TrackerQueryBundleInternalFactory(
         val programStatus = getProgramStatus(params, programSettings, programUid)
 
         val programStageWorkingLists =
-            params.programStageWorkingLists()
-                ?.plus(
-                    programStageWorkingListObjectRepository
-                        .byUid().`in`(params.filterUids())
-                        .blockingGet()
-                )
-
-        val trackedEntityInstanceFilters = params.trackedEntityInstanceFilters()
-            ?.plus(
-                trackedEntityInstanceFilterCollectionRepository
+            (params.programStageWorkingLists() ?: emptyList()).plus(
+                programStageWorkingListObjectRepository
                     .byUid().`in`(params.filterUids())
                     .blockingGet()
             )
+
+        val trackedEntityInstanceFilters = (params.trackedEntityInstanceFilters() ?: emptyList()).plus(
+            trackedEntityInstanceFilterCollectionRepository
+                .byUid().`in`(params.filterUids())
+                .blockingGet()
+        )
 
         val programStageWorkingListsSettings = programStageWorkingListObjectRepository
             .byUid().`in`(programSettings?.specificSettings()?.get(programUid)?.filters()?.map { it.uid() })
@@ -93,8 +91,10 @@ internal class TrackerQueryBundleInternalFactory(
         val builder = TrackerQueryBundle.builder()
             .commonParams(commonParams)
             .programStatus(programStatus)
-            .programStageWorkingLists(programStageWorkingLists ?: programStageWorkingListsSettings)
-            .trackedEntityInstanceFilters(trackedEntityInstanceFilters ?: trackedEntityInstanceFiltersSettings)
+            .programStageWorkingLists(programStageWorkingLists.takeIf { it.isNotEmpty() }
+                ?: programStageWorkingListsSettings)
+            .trackedEntityInstanceFilters(trackedEntityInstanceFilters.takeIf { it.isNotEmpty() }
+                ?: trackedEntityInstanceFiltersSettings)
 
         return commonHelper.divideByOrgUnits(
             commonParams.orgUnitsBeforeDivision,

@@ -180,6 +180,12 @@ class EventQueryCollectionRepository internal constructor(
         }
     }
 
+    internal fun byEventFilterObject(): EqFilterConnector<EventQueryCollectionRepository, EventFilter> {
+        return connectorFactory.eqConnector { eventFilter ->
+            EventQueryRepositoryScopeHelper.addEventFilter(scope, eventFilter!!)
+        }
+    }
+
     /**
      * Filter by sync status.
      * <br></br>**IMPORTANT:** using this filter forces **offlineOnly** mode.

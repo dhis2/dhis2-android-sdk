@@ -33,10 +33,13 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndPersistCallFactory
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerDownloadCall
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
@@ -52,6 +55,7 @@ internal class TrackedEntityInstanceDownloadCall(
     private val trackerCallFactory: TrackerParentCallFactory,
     private val persistenceCallFactory: TrackedEntityInstancePersistenceCallFactory,
     private val lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager,
+    private val teiQueryCollectionRepository: TrackedEntityInstanceQueryCollectionRepository,
 ) : TrackerDownloadCall<TrackedEntityInstance, TrackerQueryBundle>(
     userOrganisationUnitLinkStore,
     systemInfoModuleDownloader,
@@ -148,6 +152,9 @@ internal class TrackedEntityInstanceDownloadCall(
         orgunitUid: String?,
         limit: Int,
     ): TrackerAPIQuery {
+        val teiUids = getTeiUidsByFilter(bundle.trackedEntityInstanceFilters()) +
+            getTeiUidsByWorkingList(bundle.programStageWorkingLists())
+
         return TrackerAPIQuery(
             commonParams = bundle.commonParams().copy(
                 program = program,
@@ -156,6 +163,19 @@ internal class TrackedEntityInstanceDownloadCall(
             programStatus = bundle.programStatus(),
             lastUpdatedStr = lastUpdatedManager.getLastUpdatedStr(bundle.commonParams()),
             orgUnit = orgunitUid,
+            uids = teiUids,
         )
+    }
+
+    private fun getTeiUidsByFilter(trackedEntityInstanceFilters: List<TrackedEntityInstanceFilter>?): List<String> {
+        return trackedEntityInstanceFilters?.flatMap {
+            teiQueryCollectionRepository.byTrackedEntityInstanceFilterObject().eq(it).blockingGetUids()
+        } ?: emptyList()
+    }
+
+    private fun getTeiUidsByWorkingList(programStageWorkingLists: List<ProgramStageWorkingList>?): List<String> {
+        return programStageWorkingLists?.flatMap {
+            teiQueryCollectionRepository.byProgramStageWorkingListObject().eq(it).blockingGetUids()
+        } ?: emptyList()
     }
 }

@@ -70,10 +70,6 @@ tasks.configureEach {
     }
 }
 
-kotlin {
-    jvmToolchain(17)
-}
-
 android {
     compileSdk = libs.versions.targetSdkVersion.get().toInt()
 
@@ -86,17 +82,10 @@ android {
 
         buildConfigField("long", "VERSION_CODE", libs.versions.dhis2AndroidSdkCode.get())
         buildConfigField("String", "VERSION_NAME", "\"$version\"")
-
-        kotlinOptions {
-            freeCompilerArgs += "-opt-in=kotlinx.serialization.ExperimentalSerializationApi"
-        }
     }
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
-
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
     }
 
     packaging {
@@ -143,6 +132,12 @@ android {
     namespace = "org.hisp.dhis.android"
     buildFeatures {
         buildConfig = true
+    }
+}
+
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-opt-in=kotlinx.serialization.ExperimentalSerializationApi")
     }
 }
 

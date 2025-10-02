@@ -68,7 +68,9 @@ class MigrationProcessor(
 
         file += "package $outputPackage\n\n"
         file += "import androidx.room.migration.Migration\n"
-        file += "import androidx.sqlite.db.SupportSQLiteDatabase\n\n"
+        file += "import androidx.sqlite.SQLiteConnection\n"
+        file += "import androidx.sqlite.db.SupportSQLiteDatabase\n"
+        file += "import androidx.sqlite.execSQL\n\n"
         file += "internal object RoomGeneratedMigrations {\n"
 
         val migrationNames = mutableListOf<String>()
@@ -86,8 +88,17 @@ class MigrationProcessor(
 
             file += "    val $name = object : Migration($version, $next) {\n"
             file += "        override fun migrate(db: SupportSQLiteDatabase) {\n"
+            file += "            db.execSQL(\"PRAGMA foreign_keys = OFF;\")\n"
+            file += "            db.execSQL(\"PRAGMA legacy_alter_table = ON;\")\n"
             lines.forEach { line ->
                 file += "            db.execSQL(\"${escapeSqlLine(line)}\")\n"
+            }
+            file += "        }\n"
+            file += "        override fun migrate(connection: SQLiteConnection) {\n"
+            file += "            connection.execSQL(\"PRAGMA foreign_keys = OFF;\")\n"
+            file += "            connection.execSQL(\"PRAGMA legacy_alter_table = ON;\")\n"
+            lines.forEach { line ->
+                file += "            connection.execSQL(\"${escapeSqlLine(line)}\")\n"
             }
             file += "        }\n"
             file += "    }\n\n"

@@ -4,6 +4,7 @@ dhis2AndroidSdkCode = "299"
 
 gradle = "8.9.3"
 kotlin = "2.0.20"
+java = "17"
 ksp = "2.0.20-1.0.24"
 ktlint = "12.1.1"
 sonarqube = "3.3"
@@ -21,7 +22,7 @@ libraryDesugaring = "2.0.4"
 # android
 annotation = "1.6.0"
 paging = "3.2.1"
-androidx-room = "2.7.1"
+androidx-room = "2.7.2"
 
 # java
 autoValue = "1.10.2"

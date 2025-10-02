@@ -5429,7 +5429,7 @@ public final class org/hisp/dhis/android/core/event/EventCollectionRepository : 
 	public final fun byProgramStageUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byProgramUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byState ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
-	public final fun byStatus ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
+	public final fun byStatus ()Lorg/hisp/dhis/android/core/event/internal/EventStatusFilterConnector;
 	public final fun bySyncState ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
 	public final fun byTrackedEntityInstanceUids (Ljava/util/List;)Lorg/hisp/dhis/android/core/event/EventCollectionRepository;
 	public final fun byUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
@@ -5629,6 +5629,17 @@ public final class org/hisp/dhis/android/core/event/EventStatus : java/lang/Enum
 	public static final field VISITED Lorg/hisp/dhis/android/core/event/EventStatus;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/EventStatus;
 	public static fun values ()[Lorg/hisp/dhis/android/core/event/EventStatus;
+}
+
+public final class org/hisp/dhis/android/core/event/internal/EventStatusFilterConnector {
+	public final fun eq (Lorg/hisp/dhis/android/core/event/EventStatus;)Lorg/hisp/dhis/android/core/event/EventCollectionRepository;
+	public final fun in (Ljava/util/Collection;)Lorg/hisp/dhis/android/core/event/EventCollectionRepository;
+	public final fun in ([Lorg/hisp/dhis/android/core/event/EventStatus;)Lorg/hisp/dhis/android/core/event/EventCollectionRepository;
+	public final fun isNotNull ()Lorg/hisp/dhis/android/core/event/EventCollectionRepository;
+	public final fun isNull ()Lorg/hisp/dhis/android/core/event/EventCollectionRepository;
+	public final fun neq (Lorg/hisp/dhis/android/core/event/EventStatus;)Lorg/hisp/dhis/android/core/event/EventCollectionRepository;
+	public final fun notIn (Ljava/util/Collection;)Lorg/hisp/dhis/android/core/event/EventCollectionRepository;
+	public final fun notIn ([Lorg/hisp/dhis/android/core/event/EventStatus;)Lorg/hisp/dhis/android/core/event/EventCollectionRepository;
 }
 
 public abstract class org/hisp/dhis/android/core/event/internal/EventSync : org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync {
@@ -8662,22 +8673,21 @@ public final class org/hisp/dhis/android/core/resource/internal/Resource$Type : 
 public final class org/hisp/dhis/android/core/server/LoginConfig {
 	public static final field DHIS2_OAUTH_CLIENT_ID Ljava/lang/String;
 	public fun <init> ()V
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/server/LoginPageLayout;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;ZZZZZLjava/util/List;)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/server/LoginPageLayout;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;ZZZZZLjava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/server/LoginPageLayout;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;ZZZZZLjava/util/List;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/server/LoginPageLayout;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;ZZZZZLjava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component10 ()Ljava/lang/String;
 	public final fun component11 ()Lorg/hisp/dhis/android/core/server/LoginPageLayout;
 	public final fun component12 ()Ljava/lang/String;
-	public final fun component13 ()Ljava/lang/String;
+	public final fun component13 ()Ljava/lang/Integer;
 	public final fun component14 ()Ljava/lang/Integer;
-	public final fun component15 ()Ljava/lang/Integer;
+	public final fun component15 ()Z
 	public final fun component16 ()Z
 	public final fun component17 ()Z
 	public final fun component18 ()Z
 	public final fun component19 ()Z
 	public final fun component2 ()Ljava/lang/String;
-	public final fun component20 ()Z
-	public final fun component21 ()Ljava/util/List;
+	public final fun component20 ()Ljava/util/List;
 	public final fun component3 ()Ljava/lang/String;
 	public final fun component4 ()Ljava/lang/String;
 	public final fun component5 ()Ljava/lang/String;
@@ -8685,8 +8695,8 @@ public final class org/hisp/dhis/android/core/server/LoginConfig {
 	public final fun component7 ()Ljava/lang/String;
 	public final fun component8 ()Ljava/lang/String;
 	public final fun component9 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/server/LoginPageLayout;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;ZZZZZLjava/util/List;)Lorg/hisp/dhis/android/core/server/LoginConfig;
-	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/server/LoginConfig;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/server/LoginPageLayout;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;ZZZZZLjava/util/List;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/server/LoginConfig;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/server/LoginPageLayout;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;ZZZZZLjava/util/List;)Lorg/hisp/dhis/android/core/server/LoginConfig;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/server/LoginConfig;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/server/LoginPageLayout;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;ZZZZZLjava/util/List;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/server/LoginConfig;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAllowAccountRecovery ()Z
 	public final fun getApiVersion ()Ljava/lang/String;
@@ -8699,7 +8709,6 @@ public final class org/hisp/dhis/android/core/server/LoginConfig {
 	public final fun getEmailConfigured ()Z
 	public final fun getLoginPageLayout ()Lorg/hisp/dhis/android/core/server/LoginPageLayout;
 	public final fun getLoginPageLogo ()Ljava/lang/String;
-	public final fun getLoginPageTemplate ()Ljava/lang/String;
 	public final fun getLoginPopup ()Ljava/lang/String;
 	public final fun getMaxPasswordLength ()Ljava/lang/Integer;
 	public final fun getMinPasswordLength ()Ljava/lang/Integer;
@@ -14835,6 +14844,7 @@ public final class org/hisp/dhis/android/persistence/settings/FilterSettingTable
 	public static final field SCOPE Ljava/lang/String;
 	public static final field SORT Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
+	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }

@@ -376,11 +376,7 @@ abstract class TrackedEntitySearchOperators<R : BaseRepository> internal constru
 
     internal fun byTrackedEntityInstanceFilterObject(): EqFilterConnector<R, TrackedEntityInstanceFilter> {
         return connectorFactory.eqConnector { teiFilter: TrackedEntityInstanceFilter? ->
-            val filter = filtersRepository
-                .withTrackedEntityInstanceEventFilters()
-                .withAttributeValueFilters()
-                .uid(teiFilter?.uid()).blockingGet()
-            scopeHelper.addTrackedEntityInstanceFilter(scope, filter!!)
+            scopeHelper.addTrackedEntityInstanceFilter(scope, teiFilter!!)
         }
     }
 
@@ -402,10 +398,6 @@ abstract class TrackedEntitySearchOperators<R : BaseRepository> internal constru
 
     internal fun byProgramStageWorkingListObject(): EqFilterConnector<R, ProgramStageWorkingList> {
         return connectorFactory.eqConnector { workingList: ProgramStageWorkingList? ->
-            val workingList = workingListRepository
-                .withDataFilters()
-                .withAttributeValueFilters()
-                .uid(workingList?.uid()).blockingGet()
             scopeHelper.addProgramStageWorkingList(scope, workingList!!)
         }
     }

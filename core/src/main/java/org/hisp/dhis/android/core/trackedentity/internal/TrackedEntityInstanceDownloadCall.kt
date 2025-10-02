@@ -163,7 +163,7 @@ internal class TrackedEntityInstanceDownloadCall(
             programStatus = bundle.programStatus(),
             lastUpdatedStr = lastUpdatedManager.getLastUpdatedStr(bundle.commonParams()),
             orgUnit = orgunitUid,
-            uids = teiUids,
+            uids = teiUids.distinct(),
         )
     }
 

@@ -56,7 +56,6 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
     private val relationshipDownloadAndPersistCallFactory: RelationshipDownloadAndPersistCallFactory,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) {
-
     fun download(params: ProgramDataDownloadParams): Flow<TrackerD2Progress> = channelFlow {
         val progressManager = TrackerD2ProgressManager(null)
         if (userOrganisationUnitLinkStore.count() == 0) {

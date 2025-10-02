@@ -5429,7 +5429,7 @@ public final class org/hisp/dhis/android/core/event/EventCollectionRepository : 
 	public final fun byProgramStageUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byProgramUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byState ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
-	public final fun byStatus ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
+	public final fun byStatus ()Lorg/hisp/dhis/android/core/event/internal/EventStatusFilterConnector;
 	public final fun bySyncState ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
 	public final fun byTrackedEntityInstanceUids (Ljava/util/List;)Lorg/hisp/dhis/android/core/event/EventCollectionRepository;
 	public final fun byUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
@@ -5629,6 +5629,17 @@ public final class org/hisp/dhis/android/core/event/EventStatus : java/lang/Enum
 	public static final field VISITED Lorg/hisp/dhis/android/core/event/EventStatus;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/EventStatus;
 	public static fun values ()[Lorg/hisp/dhis/android/core/event/EventStatus;
+}
+
+public final class org/hisp/dhis/android/core/event/internal/EventStatusFilterConnector {
+	public final fun eq (Lorg/hisp/dhis/android/core/event/EventStatus;)Lorg/hisp/dhis/android/core/event/EventCollectionRepository;
+	public final fun in (Ljava/util/Collection;)Lorg/hisp/dhis/android/core/event/EventCollectionRepository;
+	public final fun in ([Lorg/hisp/dhis/android/core/event/EventStatus;)Lorg/hisp/dhis/android/core/event/EventCollectionRepository;
+	public final fun isNotNull ()Lorg/hisp/dhis/android/core/event/EventCollectionRepository;
+	public final fun isNull ()Lorg/hisp/dhis/android/core/event/EventCollectionRepository;
+	public final fun neq (Lorg/hisp/dhis/android/core/event/EventStatus;)Lorg/hisp/dhis/android/core/event/EventCollectionRepository;
+	public final fun notIn (Ljava/util/Collection;)Lorg/hisp/dhis/android/core/event/EventCollectionRepository;
+	public final fun notIn ([Lorg/hisp/dhis/android/core/event/EventStatus;)Lorg/hisp/dhis/android/core/event/EventCollectionRepository;
 }
 
 public abstract class org/hisp/dhis/android/core/event/internal/EventSync : org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync {

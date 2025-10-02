@@ -53,6 +53,7 @@ import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludi
 import org.hisp.dhis.android.core.common.internal.TrackerDataManager
 import org.hisp.dhis.android.core.event.internal.EventPostParentCall
 import org.hisp.dhis.android.core.event.internal.EventProjectionTransformer
+import org.hisp.dhis.android.core.event.internal.EventStatusFilterConnector
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.note.internal.NoteForEventChildrenAppender
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueChildrenAppender
@@ -147,8 +148,19 @@ class EventCollectionRepository internal constructor(
         return cf.string(EventTableInfo.Columns.LAST_UPDATED_AT_CLIENT)
     }
 
-    fun byStatus(): EnumFilterConnector<EventCollectionRepository, EventStatus> {
-        return cf.enumC(EventTableInfo.Columns.STATUS)
+    fun byStatus(): EventStatusFilterConnector {
+        val repositoryFactory = { s: RepositoryScope ->
+            EventCollectionRepository(
+                eventStore,
+                userStore,
+                s,
+                postCall,
+                transformer as EventProjectionTransformer,
+                trackerDataManager,
+                jobQueryCall,
+            )
+        }
+        return EventStatusFilterConnector(repositoryFactory, scope, EventTableInfo.Columns.STATUS)
     }
 
     fun byGeometryType(): EnumFilterConnector<EventCollectionRepository, FeatureType> {

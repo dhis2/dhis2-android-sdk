@@ -31,6 +31,7 @@ import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.imports.ImportStatus
+import org.hisp.dhis.android.core.imports.internal.ImportConflict
 import org.hisp.dhis.android.core.imports.internal.RelationshipImportSummary
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
@@ -126,5 +127,50 @@ class RelationshipImportHandlerShould {
         verify(relationshipStore, times(1)).setSyncStateOrDelete("missing_uid", State.TO_UPDATE)
 
         verify(dataStatePropagator, times(2)).propagateRelationshipUpdate(any())
+    }
+
+    @Test
+    fun delete_relationship_when_not_found_on_server_from_conflicts() = runTest {
+        val testUid = "test_uid000"
+        val relationshipNotFoundConflict = ImportConflict.create(
+            testUid,
+            "Relationship '$testUid' not found.",
+        )
+
+        whenever(importSummary.status()).thenReturn(ImportStatus.ERROR)
+        whenever(importSummary.reference()).thenReturn(testUid)
+        whenever(importSummary.conflicts()).thenReturn(listOf(relationshipNotFoundConflict))
+        whenever(importSummary.description()).thenReturn(null)
+        whenever(relationshipStore.deleteByEntity(any())).thenReturn(true)
+
+        relationshipImportHandler.handleRelationshipImportSummaries(
+            listOf(importSummary),
+            relationships,
+        )
+
+        verify(relationshipStore, times(1)).deleteByEntity(relationship)
+        verify(relationshipStore, never()).setSyncStateOrDelete(anyString(), any())
+        verify(dataStatePropagator, never()).propagateRelationshipUpdate(any())
+    }
+
+    @Test
+    fun delete_relationship_when_already_deleted_on_server_from_description() = runTest {
+        val testUid = "test_uid000"
+        whenever(importSummary.status()).thenReturn(ImportStatus.ERROR)
+        whenever(importSummary.reference()).thenReturn(testUid)
+        whenever(importSummary.description()).thenReturn(
+            "Relationship '$testUid' is already deleted and cannot be modified."
+        )
+        whenever(importSummary.conflicts()).thenReturn(emptyList())
+        whenever(relationshipStore.deleteByEntity(any())).thenReturn(true)
+
+        relationshipImportHandler.handleRelationshipImportSummaries(
+            listOf(importSummary),
+            relationships,
+        )
+
+        verify(relationshipStore, times(1)).deleteByEntity(relationship)
+        verify(relationshipStore, never()).setSyncStateOrDelete(anyString(), any())
+        verify(dataStatePropagator, never()).propagateRelationshipUpdate(any())
     }
 }

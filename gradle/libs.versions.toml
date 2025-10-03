@@ -36,7 +36,7 @@ sqLite = "2.5.2"
 zip4j = "2.11.5"
 smsCompression = "0.2.0"
 antlrExpressionParser = "1.0.37"
-pegExpressionParser = "1.1.11"
+pegExpressionParser = "1.2.1"
 
 # Kotlin
 kotlinxDatetime = "0.6.0"

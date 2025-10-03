@@ -29,7 +29,12 @@
 package org.hisp.dhis.android.core.settings
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.settings.internal.CustomIntentServiceImpl
+import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.core.user.internal.UserStore
 import org.junit.Test
 import org.mockito.Answers
 import org.mockito.kotlin.doReturn
@@ -39,25 +44,26 @@ import org.mockito.kotlin.whenever
 class CustomIntentServiceShould {
 
     private val customIntent: CustomIntent = mock(defaultAnswer = Answers.RETURNS_DEEP_STUBS)
+    private val userStore: UserStore = mock()
+    private val orgunitStore: OrganisationUnitStore = mock()
 
-    private val service: CustomIntentService = CustomIntentServiceImpl()
+    private val user: User = mock()
+    private val orgunit: OrganisationUnit = mock()
+
+    private val service: CustomIntentService = CustomIntentServiceImpl(userStore, orgunitStore)
 
     @Test
     fun evaluate_custom_intent_parameter() {
-        mockArguments(
-            listOf(
-                CustomIntentRequestArgument.builder().key("username").value("'admin'").build(),
-                CustomIntentRequestArgument.builder().key("quoted").value("'\\'admin\\''").build(),
-                CustomIntentRequestArgument.builder().key("project").value("V{program_stage_id}").build(),
-                CustomIntentRequestArgument.builder().key("version").value("20250102").build(),
-                CustomIntentRequestArgument.builder().key("threshold").value("98.3").build(),
+        mockCustomIntentArguments(
+            mapOf(
+                "username" to "'admin'",
+                "quoted" to "'\\'admin\\''",
+                "version" to "20250102",
+                "threshold" to "98.3",
             ),
         )
 
-        val context = CustomIntentContext(
-            programUid = "t62IcmZdP3T",
-            programStageUid = "yRqcmmdO6cJ",
-        )
+        val context = CustomIntentContext()
 
         val params = service.blockingEvaluateRequestParams(customIntent, context)
 
@@ -65,14 +71,69 @@ class CustomIntentServiceShould {
             mapOf(
                 "username" to "admin",
                 "quoted" to "'admin'",
-                "project" to "yRqcmmdO6cJ",
                 "version" to 20250102,
                 "threshold" to 98.3,
             ),
         )
     }
 
-    private fun mockArguments(arguments: List<CustomIntentRequestArgument>) {
-        whenever(customIntent.request()?.arguments()) doReturn arguments
+    @Test
+    fun evaluate_orgunit_variables() = runTest {
+        mockCustomIntentArguments(
+            mapOf(
+                "orgunit" to "VAR{orgunit_id}",
+                "district" to "d2:split(VAR{orgunit_path}, '/', 2)",
+                "oucode" to "d2:concatenate('OU_', VAR{orgunit_code})",
+            ),
+        )
+
+        val context = CustomIntentContext(orgunitUid = "yRqcmmdO6cJ")
+
+        whenever(orgunitStore.selectByUid("yRqcmmdO6cJ")).doReturn(orgunit)
+        whenever(orgunit.uid()).doReturn("yRqcmmdO6cJ")
+        whenever(orgunit.path()).doReturn("/ImspTQPwCqd/at6UHUQatSo/qtr8GGlm4gg/yRqcmmdO6cJ")
+        whenever(orgunit.code()).doReturn("LI456")
+
+        val params = service.blockingEvaluateRequestParams(customIntent, context)
+
+        assertThat(params).isEqualTo(
+            mapOf(
+                "orgunit" to "yRqcmmdO6cJ",
+                "district" to "at6UHUQatSo",
+                "oucode" to "OU_LI456",
+            ),
+        )
+    }
+
+    @Test
+    fun evaluate_user_variables() = runTest {
+        mockCustomIntentArguments(
+            mapOf(
+                "id" to "VAR{user_id}",
+                "name" to "VAR{user_username}",
+            ),
+        )
+
+        val context = CustomIntentContext()
+
+        whenever(userStore.selectFirst()).doReturn(user)
+        whenever(user.uid()).doReturn("yRqcmmdO6cJ")
+        whenever(user.username()).doReturn("admin")
+
+        val params = service.blockingEvaluateRequestParams(customIntent, context)
+
+        assertThat(params).isEqualTo(
+            mapOf(
+                "id" to "yRqcmmdO6cJ",
+                "name" to "admin",
+            ),
+        )
+    }
+
+    private fun mockCustomIntentArguments(argumentMap: Map<String, String>) {
+        val requestArguments = argumentMap.map { (key, value) ->
+            CustomIntentRequestArgument.builder().key(key).value(value).build()
+        }
+        whenever(customIntent.request()?.arguments()) doReturn requestArguments
     }
 }

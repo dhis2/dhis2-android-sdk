@@ -1,5 +1,5 @@
+import org.gradle.api.tasks.Sync
 import org.jetbrains.dokka.gradle.DokkaTask
-
 
 /*
  * Copyright (c) 2016, University of Oslo
@@ -55,6 +55,21 @@ repositories {
 group = rootProject.group
 version = rootProject.version
 
+val copySharedTestResourcesToAndroidTest by tasks.register<Sync>("copySharedTestResourcesToAndroidTest") {
+    from(layout.projectDirectory.dir("src/sharedTest/resources"))
+    into(layout.buildDirectory.dir("generated/sharedAndroidTest/resources"))
+}
+
+tasks.named("preBuild").configure {
+    dependsOn(copySharedTestResourcesToAndroidTest)
+}
+
+tasks.configureEach {
+    if (name.startsWith("pre") && name.endsWith("AndroidTestBuild")) {
+        dependsOn(copySharedTestResourcesToAndroidTest)
+    }
+}
+
 android {
     compileSdk = libs.versions.targetSdkVersion.get().toInt()
 
@@ -90,12 +105,15 @@ android {
         sourceSets.getByName("main") {
             java.srcDirs("build/generated/ksp/main/kotlin")
         }
-        sourceSets.getByName("test") {
+        getByName("test") {
             resources.srcDirs("src/sharedTest/resources")
         }
-        sourceSets.getByName("androidTest") {
+        getByName("androidTest") {
             java.srcDirs("src/sharedTest/java")
-            resources.srcDirs("src/sharedTest/resources")
+            resources.srcDirs(
+                "src/sharedAndroidTest/resources",
+                layout.buildDirectory.dir("generated/sharedAndroidTest/resources"),
+            )
         }
     }
 

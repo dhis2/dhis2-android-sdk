@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.relationship
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
@@ -44,6 +44,8 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollecti
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollectionRepositoryHelper.availableForTrackedEntityInstanceRawQuery
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
+import org.hisp.dhis.android.persistence.relationship.RelationshipConstraintTableInfo
+import org.hisp.dhis.android.persistence.relationship.RelationshipTypeTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -52,11 +54,9 @@ class RelationshipTypeCollectionRepository internal constructor(
     private val teiStore: TrackedEntityInstanceStore,
     private val enrollmentStore: EnrollmentStore,
     private val eventStore: EventStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<RelationshipType, RelationshipTypeCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(scope) { s: RepositoryScope ->
@@ -65,7 +65,6 @@ class RelationshipTypeCollectionRepository internal constructor(
             teiStore,
             enrollmentStore,
             eventStore,
-            databaseAdapter,
             s,
         )
     },
@@ -100,7 +99,7 @@ class RelationshipTypeCollectionRepository internal constructor(
      * - or the TEI might be assigned to the TO component and the RelationshipType is bidirectional
      */
     fun byAvailableForTrackedEntityInstance(trackedEntityInstanceUid: String): RelationshipTypeCollectionRepository {
-        val trackedEntityInstance = teiStore.selectByUid(trackedEntityInstanceUid)
+        val trackedEntityInstance = runBlocking { teiStore.selectByUid(trackedEntityInstanceUid) }
         return cf.subQuery(IdentifiableColumns.UID).rawSubQuery(
             FilterItemOperator.IN,
             availableForTrackedEntityInstanceRawQuery(trackedEntityInstance),
@@ -113,7 +112,7 @@ class RelationshipTypeCollectionRepository internal constructor(
      * - or the enrollment might be assigned to the TO component and the RelationshipType is bidirectional
      */
     fun byAvailableForEnrollment(enrollmentUid: String): RelationshipTypeCollectionRepository {
-        val enrollment = enrollmentStore.selectByUid(enrollmentUid)
+        val enrollment = runBlocking { enrollmentStore.selectByUid(enrollmentUid) }
         return cf.subQuery(IdentifiableColumns.UID).rawSubQuery(
             FilterItemOperator.IN,
             availableForEnrollmentRawQuery(enrollment),
@@ -126,7 +125,7 @@ class RelationshipTypeCollectionRepository internal constructor(
      * - or the event might be assigned to the TO component and the RelationshipType is bidirectional
      */
     fun byAvailableForEvent(eventUid: String): RelationshipTypeCollectionRepository {
-        val event = eventStore.selectByUid(eventUid)
+        val event = runBlocking { eventStore.selectByUid(eventUid) }
         return cf.subQuery(IdentifiableColumns.UID).rawSubQuery(
             FilterItemOperator.IN,
             availableForEventRawQuery(event),
@@ -166,7 +165,7 @@ class RelationshipTypeCollectionRepository internal constructor(
         private const val CONSTRAINTS = "constraints"
 
         val childrenAppenders: ChildrenAppenderGetter<RelationshipType> = mapOf(
-            CONSTRAINTS to ::RelationshipConstraintChildrenAppender,
+            CONSTRAINTS to RelationshipConstraintChildrenAppender::create,
         )
     }
 }

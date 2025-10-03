@@ -28,16 +28,17 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.never
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.settings.FilterSetting
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 class FilterSettingHandlerShould {
 
@@ -49,23 +50,23 @@ class FilterSettingHandlerShould {
 
     @Before
     @Throws(Exception::class)
-    fun setUp() {
+    fun setUp() = runTest {
         filterSettingsList = listOf(filterSetting)
-        whenever(filterSettingStore.updateOrInsertWhere(any())) doReturn HandleAction.Insert
+        whenever(filterSettingStore.updateOrInsert(any<List<FilterSetting>>())) doReturn listOf(HandleAction.Insert)
         filterSettingsHandler = FilterSettingHandler(filterSettingStore)
     }
 
     @Test
-    fun clean_database_before_insert_collection() {
+    fun clean_database_before_insert_collection() = runTest {
         filterSettingsHandler.handleMany(filterSettingsList)
         verify(filterSettingStore).delete()
-        verify(filterSettingStore).updateOrInsertWhere(filterSetting)
+        verify(filterSettingStore).updateOrInsert(listOf(filterSetting))
     }
 
     @Test
-    fun clean_database_if_empty_collection() {
+    fun clean_database_if_empty_collection() = runTest {
         filterSettingsHandler.handleMany(emptyList())
         verify(filterSettingStore).delete()
-        verify(filterSettingStore, never()).updateOrInsertWhere(filterSetting)
+        verify(filterSettingStore, never()).updateOrInsert(listOf(filterSetting))
     }
 }

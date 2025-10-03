@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.network.categorycombo
 
 import org.hisp.dhis.android.core.category.CategoryCombo
-import org.hisp.dhis.android.core.category.CategoryComboTableInfo.Columns
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
 import org.hisp.dhis.android.network.category.CategoryOptionComboFields
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.persistence.category.CategoryComboTableInfo.Columns
 
 internal object CategoryComboFields : BaseFields<CategoryCombo>() {
     const val CATEGORIES = "categories"

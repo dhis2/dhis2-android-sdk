@@ -46,16 +46,13 @@ import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuil
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem
-import org.hisp.dhis.android.core.common.CoreColumns
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeTableInfo
 import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeStore
 import org.hisp.dhis.android.core.settings.GeneralSettingObjectRepository
 import org.hisp.dhis.android.core.trackedentity.internal.ReservedValueSettingStore
@@ -64,6 +61,9 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeR
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitProgramLinkTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramTrackedEntityAttributeTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeTableInfo
 import org.koin.core.annotation.Singleton
 import java.util.Date
 
@@ -184,7 +184,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
     private fun downloadAllReservedValuesFlow(
         numberOfValuesToFillUp: Int?,
     ) = flow {
-        val flows = generatedAttributes.map { attribute ->
+        val flows = generatedAttributes().map { attribute ->
             downloadValuesForOrgUnits(attribute.uid(), numberOfValuesToFillUp)
         }
         emitAll(flows.merge())
@@ -199,7 +199,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
      * @return Single with the reserved value count by attribute or by attribute and organisation unit.
      */
     fun count(attributeUid: String, organisationUnitUid: String?): Single<Int> =
-        rxSingle { blockingCount(attributeUid, organisationUnitUid) }
+        rxSingle { countInternal(attributeUid, organisationUnitUid) }
 
     /**
      * @param attributeUid        Attribute uid
@@ -208,6 +208,10 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
      * @see .count
      */
     fun blockingCount(attributeUid: String, organisationUnitUid: String?): Int {
+        return runBlocking { countInternal(attributeUid, organisationUnitUid) }
+    }
+
+    private suspend fun countInternal(attributeUid: String, organisationUnitUid: String?): Int {
         return store.count(attributeUid, organisationUnitUid, null)
     }
 
@@ -217,7 +221,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
      * @return Single with a list of the reserved value summaries
      */
     fun getReservedValueSummaries(): Single<List<ReservedValueSummary>> {
-        return rxSingle { blockingGetReservedValueSummaries() }
+        return rxSingle { getReservedValueSummariesInternal() }
     }
 
     /**
@@ -225,6 +229,10 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
      * @see .getReservedValueSummaries
      */
     fun blockingGetReservedValueSummaries(): List<ReservedValueSummary> {
+        return runBlocking { getReservedValueSummariesInternal() }
+    }
+
+    private suspend fun getReservedValueSummariesInternal(): List<ReservedValueSummary> {
         val whereClause =
             WhereClauseBuilder().appendKeyNumberValue(TrackedEntityAttributeTableInfo.Columns.GENERATED, 1).build()
         val orderByClause = OrderByClauseBuilder.orderByFromItems(
@@ -232,7 +240,6 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
                 RepositoryScopeOrderByItem.builder().column(IdentifiableColumns.DISPLAY_NAME)
                     .direction(RepositoryScope.OrderByDirection.ASC).build(),
             ),
-            CoreColumns.ID,
         )
         val trackedEntityAttributes = trackedEntityAttributeStore.selectWhere(whereClause, orderByClause)
         val reservedValueSummaries: MutableList<ReservedValueSummary> = ArrayList()
@@ -362,7 +369,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
         }
     }
 
-    private fun getOrgUnitsWithCodeLinkedToAttributes(attribute: String): List<OrganisationUnit> {
+    private suspend fun getOrgUnitsWithCodeLinkedToAttributes(attribute: String): List<OrganisationUnit> {
         val linkedProgramUids = programTrackedEntityAttributeStore.selectStringColumnsWhereClause(
             ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM,
             WhereClauseBuilder().appendKeyStringValue(
@@ -389,14 +396,14 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
         ).filter { it.code() != null }
     }
 
-    private val generatedAttributes: List<TrackedEntityAttribute>
-        get() {
-            val whereClause =
-                WhereClauseBuilder().appendKeyNumberValue(TrackedEntityAttributeTableInfo.Columns.GENERATED, 1).build()
-            return trackedEntityAttributeStore.selectWhere(whereClause)
-        }
+    private suspend fun generatedAttributes(): List<TrackedEntityAttribute> {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyNumberValue(TrackedEntityAttributeTableInfo.Columns.GENERATED, 1)
+            .build()
+        return trackedEntityAttributeStore.selectWhere(whereClause)
+    }
 
-    private fun getOrganisationUnit(uid: String?): OrganisationUnit? {
+    private suspend fun getOrganisationUnit(uid: String?): OrganisationUnit? {
         return if (uid == null) null else organisationUnitStore.selectByUid(uid)
     }
 
@@ -404,7 +411,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
         return pattern != null && pattern.contains("ORG_UNIT_CODE")
     }
 
-    private fun getFillUpToValue(minNumberOfValuesToHave: Int?, attribute: String): Int? {
+    private suspend fun getFillUpToValue(minNumberOfValuesToHave: Int?, attribute: String): Int? {
         return if (minNumberOfValuesToHave == null) {
             val reservedValueSetting = reservedValueSettingStore.selectByUid(attribute)
             if (reservedValueSetting?.numberOfValuesToReserve() == null) {

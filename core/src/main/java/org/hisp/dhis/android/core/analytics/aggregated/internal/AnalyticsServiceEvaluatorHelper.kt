@@ -51,7 +51,7 @@ internal class AnalyticsServiceEvaluatorHelper(
     private val expressionDimensionItemEvaluator: ExpressionDimensionItemEvaluator,
     private val legendEvaluator: LegendEvaluator,
 ) {
-    fun evaluate(
+    suspend fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
         legendStrategy: AnalyticsLegendStrategy,

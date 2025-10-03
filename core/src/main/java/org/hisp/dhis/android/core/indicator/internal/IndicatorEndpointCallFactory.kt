@@ -56,7 +56,7 @@ internal class IndicatorEndpointCallFactory(
         }
     }
 
-    override fun processor(): CallProcessor<Indicator> {
+    override suspend fun processor(): CallProcessor<Indicator> {
         return TransactionalNoResourceSyncCallProcessor(
             data.databaseAdapter,
             handler,

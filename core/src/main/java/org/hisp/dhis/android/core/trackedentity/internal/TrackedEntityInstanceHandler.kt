@@ -60,7 +60,7 @@ internal class TrackedEntityInstanceHandler(
     relationshipVersionManager,
     relationshipHandler,
 ) {
-    override fun beforeObjectHandled(
+    override suspend fun beforeObjectHandled(
         o: TrackedEntityInstance,
         params: IdentifiableDataHandlerParams,
     ): TrackedEntityInstance {
@@ -75,7 +75,7 @@ internal class TrackedEntityInstanceHandler(
         }
     }
 
-    override fun afterObjectHandled(
+    override suspend fun afterObjectHandled(
         o: TrackedEntityInstance,
         action: HandleAction?,
         params: IdentifiableDataHandlerParams,
@@ -121,7 +121,7 @@ internal class TrackedEntityInstanceHandler(
         return o.toBuilder().aggregatedSyncState(State.SYNCED).syncState(State.SYNCED).build()
     }
 
-    private fun deleteOrphanAttributes(tei: TrackedEntityInstance, params: IdentifiableDataHandlerParams) {
+    private suspend fun deleteOrphanAttributes(tei: TrackedEntityInstance, params: IdentifiableDataHandlerParams) {
         tei.trackedEntityAttributeValues()?.let { attributes ->
             val attributeUids = attributes.mapNotNull { it.trackedEntityAttribute() }
 

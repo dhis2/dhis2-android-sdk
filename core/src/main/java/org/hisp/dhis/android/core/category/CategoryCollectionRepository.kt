@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.category
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -35,16 +34,15 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.category.internal.CategoryCategoryOptionChildrenAppender
 import org.hisp.dhis.android.core.category.internal.CategoryStore
+import org.hisp.dhis.android.persistence.category.CategoryTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 class CategoryCollectionRepository internal constructor(
     store: CategoryStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<Category, CategoryCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -52,7 +50,6 @@ class CategoryCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         CategoryCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },

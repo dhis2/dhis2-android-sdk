@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.map.layer.internal
 
-import com.nhaarman.mockitokotlin2.*
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.map.layer.MapLayer
@@ -35,6 +35,13 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
 class MapLayerHandlerShould {
@@ -48,26 +55,26 @@ class MapLayerHandlerShould {
     private var mapLayers = listOf(mapLayer)
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         mapLayerHandler = MapLayerHandler(store, providerHandler)
 
         whenever(mapLayer.uid()).doReturn("mapLayerId")
         whenever(mapLayer.imageryProviders()).doReturn(emptyList())
 
-        whenever(store.updateOrInsert(mapLayer)).doReturn(HandleAction.Insert)
+        whenever(store.updateOrInsert(listOf(mapLayer))).doReturn(listOf(HandleAction.Insert))
     }
 
     @Test
-    fun update_shouldUpdateMapLayer() {
+    fun update_shouldUpdateMapLayer() = runTest {
         mapLayerHandler.handleMany(mapLayers)
 
         // verify that update is called once
-        verify(store, times(1)).updateOrInsert(mapLayer)
+        verify(store, times(1)).updateOrInsert(listOf(mapLayer))
         verify(store, never()).delete(any())
     }
 
     @Test
-    fun call_imagery_provider_handlers() {
+    fun call_imagery_provider_handlers() = runTest {
         mapLayerHandler.handleMany(mapLayers)
         verify(providerHandler).handleMany(any(), any(), any())
     }

@@ -31,7 +31,6 @@ object ProgramConfigurationSettingSamples {
 
     fun get(): ProgramConfigurationSetting {
         return ProgramConfigurationSetting.builder()
-            .id(1L)
             .uid("aBcDeFg")
             .completionSpinner(true)
             .optionalSearch(true)

@@ -40,7 +40,7 @@ internal data class FilterSortingDTO(
 ) {
     fun toDomain(): FilterSorting {
         return FilterSorting.builder()
-            .home(home.map { (key, value) -> HomeFilter.Companion.from(key) to value.toDomain() }.toMap())
+            .home(home.map { (key, value) -> HomeFilter.Companion.from(key) to value.toDomain(null) }.toMap())
             .dataSetSettings(dataSetSettings.toDomain())
             .programSettings(programSettings.toDomain())
             .build()

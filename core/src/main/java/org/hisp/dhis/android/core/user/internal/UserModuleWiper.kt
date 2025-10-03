@@ -27,24 +27,24 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
-import org.hisp.dhis.android.core.user.AuthenticatedUserTableInfo
-import org.hisp.dhis.android.core.user.AuthorityTableInfo
-import org.hisp.dhis.android.core.user.UserGroupTableInfo
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
-import org.hisp.dhis.android.core.user.UserRoleTableInfo
-import org.hisp.dhis.android.core.user.UserTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import org.hisp.dhis.android.persistence.user.AuthenticatedUserTableInfo
+import org.hisp.dhis.android.persistence.user.AuthorityTableInfo
+import org.hisp.dhis.android.persistence.user.UserGroupTableInfo
+import org.hisp.dhis.android.persistence.user.UserOrganisationUnitTableInfo
+import org.hisp.dhis.android.persistence.user.UserRoleTableInfo
+import org.hisp.dhis.android.persistence.user.UserTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class UserModuleWiper(
     private val tableWiper: TableWiper,
 ) : ModuleWiper {
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         tableWiper.wipeTables(
             UserTableInfo.TABLE_INFO,
-            UserOrganisationUnitLinkTableInfo.TABLE_INFO,
+            UserOrganisationUnitTableInfo.TABLE_INFO,
             AuthenticatedUserTableInfo.TABLE_INFO,
             AuthorityTableInfo.TABLE_INFO,
             UserRoleTableInfo.TABLE_INFO,
@@ -52,7 +52,7 @@ internal class UserModuleWiper(
         )
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         // No data to wipe
     }
 }

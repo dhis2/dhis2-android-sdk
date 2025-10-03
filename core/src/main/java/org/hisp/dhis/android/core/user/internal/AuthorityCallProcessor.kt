@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.user.internal
 
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor.Companion.create
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -39,13 +40,13 @@ internal class AuthorityCallProcessor(
     private val handler: Handler<Authority>,
 ) : CallProcessor<Authority> {
     @Throws(D2Error::class)
-    override fun process(objectList: List<Authority>) {
-        AuthorityStoreImpl(databaseAdapter).delete()
+    override suspend fun process(objectList: List<Authority>) {
+        koin.get<AuthorityStore>().delete()
 
         if (objectList.isNotEmpty()) {
-            create(databaseAdapter).executeD2CallTransactionally<Unit>({
+            create(databaseAdapter).executeD2CallTransactionally {
                 handler.handleMany(objectList)
-            })
+            }
         }
     }
 }

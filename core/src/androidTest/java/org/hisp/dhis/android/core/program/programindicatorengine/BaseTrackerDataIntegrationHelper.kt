@@ -27,33 +27,34 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.AnalyticsType
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventStatus
-import org.hisp.dhis.android.core.event.internal.EventStoreImpl
+import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.program.ProgramIndicator
-import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStoreImpl
-import org.hisp.dhis.android.core.relationship.*
-import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStoreImpl
-import org.hisp.dhis.android.core.relationship.internal.RelationshipStoreImpl
+import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStore
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
+import org.hisp.dhis.android.core.relationship.RelationshipHelper
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStore
+import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStoreImpl
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl
-import java.util.*
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
+import java.util.Date
 
-open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: DatabaseAdapter) {
+open class BaseTrackerDataIntegrationHelper() {
 
-    fun createTrackedEntity(teiUid: String, orgunitUid: String, teiTypeUid: String) {
-        val teiStore = TrackedEntityInstanceStoreImpl(databaseAdapter)
+    suspend fun createTrackedEntity(teiUid: String, orgunitUid: String, teiTypeUid: String) {
+        val teiStore: TrackedEntityInstanceStore = koin.get()
         val trackedEntityInstance = TrackedEntityInstance.builder()
             .uid(teiUid)
             .created(Date())
@@ -64,7 +65,7 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         teiStore.insert(trackedEntityInstance)
     }
 
-    fun createEnrollment(
+    suspend fun createEnrollment(
         teiUid: String,
         enrollmentUid: String,
         programUid: String,
@@ -78,10 +79,10 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         val enrollment = Enrollment.builder().uid(enrollmentUid).organisationUnit(orgunitUid).program(programUid)
             .enrollmentDate(enrollmentDate).incidentDate(incidentDate).trackedEntityInstance(teiUid)
             .created(created).lastUpdated(lastUpdated).status(status).build()
-        EnrollmentStoreImpl(databaseAdapter).insert(enrollment)
+        koin.get<EnrollmentStore>().insert(enrollment)
     }
 
-    fun createEvent(
+    suspend fun createEvent(
         eventUid: String,
         programUid: String,
         programStageUid: String,
@@ -97,10 +98,10 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         val event = Event.builder().uid(eventUid).enrollment(enrollmentUid).created(created).lastUpdated(lastUpdated)
             .program(programUid).programStage(programStageUid).organisationUnit(orgunitUid)
             .eventDate(eventDate).deleted(deleted).status(status).attributeOptionCombo(attributeOptionCombo).build()
-        EventStoreImpl(databaseAdapter).insert(event)
+        koin.get<EventStore>().insert(event)
     }
 
-    fun createTrackerEvent(
+    suspend fun createTrackerEvent(
         eventUid: String,
         enrollmentUid: String,
         programUid: String,
@@ -128,7 +129,7 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         )
     }
 
-    fun createSingleEvent(
+    suspend fun createSingleEvent(
         eventUid: String,
         programUid: String,
         programStageUid: String,
@@ -151,7 +152,7 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         )
     }
 
-    fun setProgramIndicatorExpression(
+    suspend fun setProgramIndicatorExpression(
         programIndicatorUid: String,
         programUid: String,
         expression: String,
@@ -160,7 +161,7 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         insertProgramIndicator(programIndicatorUid, programUid, expression, AggregationType.AVERAGE, analyticsType)
     }
 
-    fun insertProgramIndicator(
+    suspend fun insertProgramIndicator(
         programIndicatorUid: String,
         programUid: String,
         expression: String,
@@ -178,29 +179,29 @@ open class BaseTrackerDataIntegrationHelper(private val databaseAdapter: Databas
         setProgramIndicator(programIndicator)
     }
 
-    fun setProgramIndicator(programIndicator: ProgramIndicator) {
-        ProgramIndicatorStoreImpl(databaseAdapter).updateOrInsert(programIndicator)
+    suspend fun setProgramIndicator(programIndicator: ProgramIndicator) {
+        koin.get<ProgramIndicatorStore>().updateOrInsert(programIndicator)
     }
 
-    fun insertTrackedEntityDataValue(eventUid: String, dataElementUid: String, value: String) {
+    suspend fun insertTrackedEntityDataValue(eventUid: String, dataElementUid: String, value: String) {
         val trackedEntityDataValue = TrackedEntityDataValue.builder()
             .event(eventUid)
             .dataElement(dataElementUid)
             .value(value).build()
-        TrackedEntityDataValueStoreImpl(databaseAdapter).updateOrInsertWhere(trackedEntityDataValue)
+        koin.get<TrackedEntityDataValueStore>().updateOrInsertWhere(trackedEntityDataValue)
     }
 
-    fun insertTrackedEntityAttributeValue(teiUid: String, attributeUid: String, value: String) {
+    suspend fun insertTrackedEntityAttributeValue(teiUid: String, attributeUid: String, value: String) {
         val trackedEntityAttributeValue = TrackedEntityAttributeValue.builder()
             .value(value).trackedEntityAttribute(attributeUid).trackedEntityInstance(teiUid).build()
-        TrackedEntityAttributeValueStoreImpl(databaseAdapter).updateOrInsertWhere(trackedEntityAttributeValue)
+        koin.get<TrackedEntityAttributeValueStore>().updateOrInsertWhere(trackedEntityAttributeValue)
     }
 
-    fun createRelationship(typeUid: String, fromTei: String, toTei: String) {
+    suspend fun createRelationship(typeUid: String, fromTei: String, toTei: String) {
         val relationship = RelationshipHelper.teiToTeiRelationship(fromTei, toTei, typeUid)
 
-        RelationshipStoreImpl(databaseAdapter).insert(relationship)
-        RelationshipItemStoreImpl(databaseAdapter).let {
+        koin.get<RelationshipStore>().insert(relationship)
+        koin.get<RelationshipItemStore>().let {
             val r = ObjectWithUid.create(relationship.uid())
             it.insert(
                 relationship.from()!!.toBuilder()

@@ -29,29 +29,28 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import io.reactivex.Observable
 import kotlinx.coroutines.rx2.asObservable
-import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryImpl
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.UnwrappedEqInFilterConnector
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
-import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams.QueryParams
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
 import org.hisp.dhis.android.core.settings.EnrollmentScope
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 import org.hisp.dhis.android.core.tracker.exporter.TrackerD2Progress
 import org.koin.core.annotation.Singleton
 
 @Singleton
+@Suppress("TooManyFunctions")
 class TrackedEntityInstanceDownloader internal constructor(
-    scope: RepositoryScope,
-    private val downloadCall: TrackedEntityInstanceDownloadCall,
-) : BaseRepositoryImpl<TrackedEntityInstanceDownloader>(
-    scope,
-    FilterConnectorFactory(scope) { s: RepositoryScope ->
-        TrackedEntityInstanceDownloader(
-            s,
-            downloadCall,
-        )
-    },
-) {
+    private val call: TrackedEntityInstanceDownloadCall,
+    private val params: ProgramDataDownloadParams,
+) : BaseRepository {
+
+    private val connectorFactory:
+        ScopedFilterConnectorFactory<TrackedEntityInstanceDownloader, ProgramDataDownloadParams> =
+        ScopedFilterConnectorFactory { params ->
+            TrackedEntityInstanceDownloader(call, params)
+        }
 
     /**
      * Downloads and persists TrackedEntityInstances from the server. Only instances in capture scope are downloaded.
@@ -63,37 +62,40 @@ class TrackedEntityInstanceDownloader internal constructor(
      * @return An Observable that notifies about the progress.
      */
     fun download(): Observable<TrackerD2Progress> {
-        val params = ProgramDataDownloadParams.fromRepositoryScope(scope)
-        return downloadCall.download(params).asObservable()
+        return call.download(params).asObservable()
     }
 
     fun blockingDownload() {
         download().blockingSubscribe()
     }
 
-    fun byUid(): UnwrappedEqInFilterConnector<TrackedEntityInstanceDownloader> {
-        return cf.unwrappedEqIn(QueryParams.UID)
-    }
+    fun byUid(): ListFilterConnector<TrackedEntityInstanceDownloader, String> =
+        connectorFactory.listConnector { uids -> params.toBuilder().uids(uids).build() }
 
-    fun byProgramUid(programUid: String): TrackedEntityInstanceDownloader {
-        return cf.baseString(QueryParams.PROGRAM).eq(programUid)
-    }
+    fun byProgramUid(programUid: String): TrackedEntityInstanceDownloader =
+        connectorFactory.eqConnector<String> { programUid ->
+            params.toBuilder().program(programUid).build()
+        }.eq(programUid)
 
-    fun limitByOrgunit(limitByOrgunit: Boolean): TrackedEntityInstanceDownloader {
-        return cf.bool(QueryParams.LIMIT_BY_ORGUNIT).eq(limitByOrgunit)
-    }
+    fun limitByOrgunit(limitByOrgunit: Boolean): TrackedEntityInstanceDownloader =
+        connectorFactory.eqConnector<Boolean> { limitByOrgunit ->
+            params.toBuilder().limitByOrgunit(limitByOrgunit).build()
+        }.eq(limitByOrgunit)
 
-    fun limitByProgram(limitByProgram: Boolean): TrackedEntityInstanceDownloader {
-        return cf.bool(QueryParams.LIMIT_BY_PROGRAM).eq(limitByProgram)
-    }
+    fun limitByProgram(limitByProgram: Boolean): TrackedEntityInstanceDownloader =
+        connectorFactory.eqConnector<Boolean> { limitByProgram ->
+            params.toBuilder().limitByProgram(limitByProgram).build()
+        }.eq(limitByProgram)
 
-    fun limit(limit: Int): TrackedEntityInstanceDownloader {
-        return cf.integer(QueryParams.LIMIT).eq(limit)
-    }
+    fun limit(limit: Int): TrackedEntityInstanceDownloader =
+        connectorFactory.eqConnector<Int> { limit ->
+            params.toBuilder().limit(limit).build()
+        }.eq(limit)
 
-    fun byProgramStatus(status: EnrollmentScope): TrackedEntityInstanceDownloader {
-        return cf.baseString(QueryParams.PROGRAM_STATUS).eq(status.toString())
-    }
+    fun byProgramStatus(status: EnrollmentScope): TrackedEntityInstanceDownloader =
+        connectorFactory.eqConnector<EnrollmentScope> { status ->
+            params.toBuilder().programStatus(status).build()
+        }.eq(status)
 
     /**
      * If true, it overwrites existing TEIs in the device with the TEIs returned from the server. It does not modify
@@ -102,7 +104,24 @@ class TrackedEntityInstanceDownloader internal constructor(
      * @param overwrite True to overwrite
      * @return the new repository
      */
-    fun overwrite(overwrite: Boolean): TrackedEntityInstanceDownloader {
-        return cf.bool(QueryParams.OVERWRITE).eq(overwrite)
-    }
+    fun overwrite(overwrite: Boolean): TrackedEntityInstanceDownloader =
+        connectorFactory.eqConnector<Boolean> { overwrite ->
+            params.toBuilder().overwrite(overwrite).build()
+        }.eq(overwrite)
+
+    fun byFilterUid(): ListFilterConnector<TrackedEntityInstanceDownloader, String> =
+        connectorFactory.listConnector { filterUids -> params.toBuilder().filterUids(filterUids).build() }
+
+    fun byTrackedEntityInstanceFilter(): ListFilterConnector<
+        TrackedEntityInstanceDownloader,
+        TrackedEntityInstanceFilter,
+        > =
+        connectorFactory.listConnector { teiFilters ->
+            params.toBuilder().trackedEntityInstanceFilters(teiFilters).build()
+        }
+
+    fun byProgramStageWorkingList(): ListFilterConnector<TrackedEntityInstanceDownloader, ProgramStageWorkingList> =
+        connectorFactory.listConnector { programStageWorkingLists ->
+            params.toBuilder().programStageWorkingLists(programStageWorkingLists).build()
+        }
 }

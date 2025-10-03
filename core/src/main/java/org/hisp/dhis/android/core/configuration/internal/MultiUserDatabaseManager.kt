@@ -29,27 +29,23 @@ package org.hisp.dhis.android.core.configuration.internal
 
 import android.content.Context
 import android.util.Log
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.DatabaseExportMetadata
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseExport
+import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
+import org.hisp.dhis.android.core.arch.db.access.internal.BaseDatabaseExport
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.util.CipherUtil
 import org.hisp.dhis.android.core.util.deleteIfExists
-import org.koin.core.annotation.Singleton
 
-@Singleton
 @Suppress("TooManyFunctions")
 internal class MultiUserDatabaseManager(
     private val context: Context,
-    private val databaseAdapter: DatabaseAdapter,
     private val databaseConfigurationSecureStore: DatabaseConfigurationInsecureStore,
     private val configurationHelper: DatabaseConfigurationHelper,
-    private val databaseAdapterFactory: DatabaseAdapterFactory,
-    private val databaseExport: DatabaseExport,
-) {
-    fun loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(
+    private val databaseManager: DatabaseManager,
+    private val databaseExport: BaseDatabaseExport,
+) : BaseMultiUserDatabaseManager {
+    override suspend fun loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(
         serverUrl: String,
         username: String,
         encrypt: Boolean,
@@ -66,7 +62,11 @@ internal class MultiUserDatabaseManager(
         }
     }
 
-    fun loadExistingKeepingEncryptionOtherwiseCreateNew(serverUrl: String, username: String, encrypt: Boolean) {
+    override suspend fun loadExistingKeepingEncryptionOtherwiseCreateNew(
+        serverUrl: String,
+        username: String,
+        encrypt: Boolean,
+    ) {
         val existing = loadExistingChangingEncryptionIfRequired(
             serverUrl,
             username,
@@ -79,13 +79,13 @@ internal class MultiUserDatabaseManager(
         }
     }
 
-    fun createNew(serverUrl: String, username: String, encrypt: Boolean) {
+    override fun createNew(serverUrl: String, username: String, encrypt: Boolean) {
         removeExceedingAccounts()
         val userConfiguration = addOrUpdateAccountInternal(serverUrl, username, encrypt)
-        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, userConfiguration)
+        databaseManager.createOrOpenDatabase(userConfiguration)
     }
 
-    fun createNewPendingToImport(metadata: DatabaseExportMetadata): DatabaseAccount {
+    override fun createNewPendingToImport(metadata: DatabaseExportMetadata): DatabaseAccount {
         removeExceedingAccounts()
         return addOrUpdateAccountInternal(
             metadata.serverUrl,
@@ -95,7 +95,7 @@ internal class MultiUserDatabaseManager(
         )
     }
 
-    fun changeEncryptionIfRequired(credentials: Credentials, encrypt: Boolean) {
+    override suspend fun changeEncryptionIfRequired(credentials: Credentials, encrypt: Boolean) {
         loadExistingChangingEncryptionIfRequired(
             credentials.serverUrl,
             credentials.username,
@@ -104,7 +104,7 @@ internal class MultiUserDatabaseManager(
         )
     }
 
-    fun loadExistingKeepingEncryption(serverUrl: String, username: String): Boolean {
+    override suspend fun loadExistingKeepingEncryption(serverUrl: String, username: String): Boolean {
         return loadExistingChangingEncryptionIfRequired(
             serverUrl,
             username,
@@ -113,7 +113,7 @@ internal class MultiUserDatabaseManager(
         )
     }
 
-    fun setMaxAccounts(maxAccounts: Int?) {
+    override fun setMaxAccounts(maxAccounts: Int?) {
         if (maxAccounts != null && maxAccounts <= 0) {
             throw IllegalArgumentException("MaxAccounts must be greater than 0")
         } else {
@@ -126,7 +126,7 @@ internal class MultiUserDatabaseManager(
     }
 
     @Suppress("TooGenericExceptionCaught")
-    fun importAndLoadDb(account: DatabaseAccount, password: String) {
+    override suspend fun importAndLoadDb(account: DatabaseAccount, password: String) {
         val protectedDbPath = context.getDatabasePath(account.importDB()!!.protectedDbName())
         val dbPath = context.getDatabasePath(account.databaseName())
         val tempDbPath = context.filesDir.resolve("temp.db").also { it.deleteIfExists() }
@@ -139,7 +139,7 @@ internal class MultiUserDatabaseManager(
             } else {
                 tempDbPath.copyTo(dbPath)
             }
-            databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, account)
+            databaseManager.createOrOpenDatabase(account)
             val importedAccount = account.toBuilder()
                 .importDB(
                     account.importDB()!!.toBuilder()
@@ -156,7 +156,7 @@ internal class MultiUserDatabaseManager(
         }
     }
 
-    private fun loadExistingChangingEncryptionIfRequired(
+    private suspend fun loadExistingChangingEncryptionIfRequired(
         serverUrl: String,
         username: String,
         encryptionExtractor: (config: DatabaseAccount) -> Boolean,
@@ -171,12 +171,12 @@ internal class MultiUserDatabaseManager(
                 username,
                 encrypt,
             )
-            databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, updatedAccount)
+            databaseManager.createOrOpenDatabase(updatedAccount)
         }
         return true
     }
 
-    private fun changeEncryptionIfRequired(
+    private suspend fun changeEncryptionIfRequired(
         serverUrl: String,
         existingAccount: DatabaseAccount,
         encrypt: Boolean,
@@ -191,11 +191,11 @@ internal class MultiUserDatabaseManager(
             } else if (!encrypt && existingAccount.encrypted()) {
                 databaseExport.decrypt(serverUrl, existingAccount)
             }
-            databaseAdapterFactory.deleteDatabase(existingAccount)
+            databaseManager.deleteDatabase(existingAccount.databaseName(), existingAccount.encrypted())
         }
     }
 
-    fun getAccount(serverUrl: String, username: String): DatabaseAccount? {
+    override fun getAccount(serverUrl: String, username: String): DatabaseAccount? {
         val configuration = databaseConfigurationSecureStore.get()
         return DatabaseConfigurationHelper.getAccount(configuration, serverUrl, username)
     }
@@ -238,13 +238,12 @@ internal class MultiUserDatabaseManager(
             databaseConfigurationSecureStore.set(updatedConfiguration)
             exceedingAccounts.forEach {
                 FileResourceDirectoryHelper.deleteFileResourceDirectories(context, it)
-                databaseAdapterFactory.deleteDatabase(it)
+                databaseManager.deleteDatabase(it.databaseName(), it.encrypted())
             }
         }
     }
 
     companion object {
-        const val DefaultMaxAccounts = 1
         internal val DefaultTestMaxAccounts = null
     }
 }

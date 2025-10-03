@@ -27,31 +27,23 @@
  */
 package org.hisp.dhis.android.core.note.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.singleParentChildStore
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.note.Note
 
 internal class NoteForEnrollmentChildrenAppender private constructor(
-    private val childStore: SingleParentChildStore<Enrollment, Note>,
+    private val childStore: NoteStore,
 ) : ChildrenAppender<Enrollment>() {
-    override fun appendChildren(m: Enrollment): Enrollment {
-        val builder = m.toBuilder()
-        builder.notes(childStore.getChildren(m))
-        return builder.build()
+    override suspend fun appendChildren(m: Enrollment): Enrollment {
+        val children = childStore.getForEnrollment(m.uid())
+        return m.toBuilder()
+            .notes(children)
+            .build()
     }
 
     companion object {
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<Enrollment> {
-            return NoteForEnrollmentChildrenAppender(
-                singleParentChildStore(
-                    databaseAdapter,
-                    NoteStoreImpl.ENROLLMENT_CHILD_PROJECTION,
-                ) { cursor: Cursor -> Note.create(cursor) },
-            )
+        fun create(): ChildrenAppender<Enrollment> {
+            return NoteForEnrollmentChildrenAppender(koin.get())
         }
     }
 }

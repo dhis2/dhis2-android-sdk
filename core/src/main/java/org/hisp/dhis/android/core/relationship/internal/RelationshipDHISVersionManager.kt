@@ -32,23 +32,24 @@ import org.hisp.dhis.android.core.relationship.BaseRelationship
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipItem
-import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo.Columns.ENROLLMENT
-import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo.Columns.EVENT
-import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE
+import org.hisp.dhis.android.persistence.relationship.RelationshipItemTableInfo.Columns
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class RelationshipDHISVersionManager(
     private val relationshipTypeStore: RelationshipTypeStore,
 ) {
-    fun getOwnedRelationships(relationships: Collection<Relationship>, elementUid: String): List<Relationship> {
+    suspend fun getOwnedRelationships(
+        relationships: Collection<Relationship>,
+        elementUid: String,
+    ): List<Relationship> {
         return relationships.filter { relationship ->
             val fromItem = relationship.from()
             isBidirectional(relationship) || fromItem?.elementUid() == elementUid
         }
     }
 
-    private fun isBidirectional(relationship: Relationship): Boolean {
+    private suspend fun isBidirectional(relationship: Relationship): Boolean {
         return relationship.relationshipType()?.let { relationshipTypeUid ->
             relationshipTypeStore.selectByUid(relationshipTypeUid)?.bidirectional()
         } ?: false
@@ -62,9 +63,11 @@ internal class RelationshipDHISVersionManager(
             parentUid == fromUid ->
                 baseRelationship.to()?.toBuilder()
                     ?.relationshipItemType(RelationshipConstraintType.TO)
+
             parentUid == toUid ->
                 baseRelationship.from()?.toBuilder()
                     ?.relationshipItemType(RelationshipConstraintType.FROM)
+
             else ->
                 null
         }
@@ -89,9 +92,9 @@ internal class RelationshipDHISVersionManager(
                     constraintType = item.relationshipItemType()!!,
                 )
                 when (item.elementType()) {
-                    TRACKED_ENTITY_INSTANCE -> relatives.addTrackedEntityInstance(relationshipItem)
-                    ENROLLMENT -> relatives.addEnrollment(relationshipItem)
-                    EVENT -> relatives.addEvent(relationshipItem)
+                    Columns.TRACKED_ENTITY_INSTANCE -> relatives.addTrackedEntityInstance(relationshipItem)
+                    Columns.ENROLLMENT -> relatives.addEnrollment(relationshipItem)
+                    Columns.EVENT -> relatives.addEvent(relationshipItem)
                     else -> {}
                 }
             }

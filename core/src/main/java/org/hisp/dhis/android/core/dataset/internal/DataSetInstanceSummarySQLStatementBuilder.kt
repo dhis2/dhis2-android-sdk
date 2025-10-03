@@ -27,11 +27,13 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl.Companion.getLimit
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl.Companion.getOffset
+import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl.Companion.getOrderBy
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
-import org.hisp.dhis.android.core.common.DeletableDataColumns
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.dataset.DataSetTableInfo
+import org.hisp.dhis.android.persistence.dataset.DataSetTableInfo
 
 class DataSetInstanceSummarySQLStatementBuilder : DataSetInstanceSQLStatementBuilder() {
     override fun selectWhere(whereClause: String): String {
@@ -41,7 +43,7 @@ class DataSetInstanceSummarySQLStatementBuilder : DataSetInstanceSQLStatementBui
 
     override fun selectWhere(whereClause: String, limit: Int): String {
         val innerSelectClause = super.selectWhere(whereClause)
-        return wrapInnerClause(innerSelectClause) + " LIMIT " + limit
+        return wrapInnerClause(innerSelectClause) + getLimit(limit)
     }
 
     override fun selectAll(): String {
@@ -57,12 +59,16 @@ class DataSetInstanceSummarySQLStatementBuilder : DataSetInstanceSQLStatementBui
         return "SELECT count(*) FROM (${selectWhere(whereClause)})"
     }
 
-    override fun selectWhere(whereClause: String, orderByClause: String): String {
-        return selectWhere(whereClause) + " ORDER BY " + orderByClause
+    override fun selectWhere(whereClause: String, orderByClause: String?): String {
+        return selectWhere(whereClause) + getOrderBy(orderByClause)
     }
 
-    override fun selectWhere(whereClause: String, orderByClause: String, limit: Int): String {
-        return selectWhere(whereClause, orderByClause) + " LIMIT " + limit
+    override fun selectWhere(whereClause: String, orderByClause: String?, limit: Int): String {
+        return selectWhere(whereClause, orderByClause) + getLimit(limit)
+    }
+
+    override fun selectWhere(whereClause: String, orderByClause: String?, limit: Int, offset: Int?): String {
+        return selectWhere(whereClause, orderByClause) + getLimit(limit) + getOffset(offset)
     }
 
     override fun selectOneOrderedBy(orderingColumnName: String, orderingType: SQLOrderType): String {
@@ -92,7 +98,6 @@ class DataSetInstanceSummarySQLStatementBuilder : DataSetInstanceSQLStatementBui
             "ELSE 5 END)"
 
         private val SELECT_CLAUSE = "SELECT " +
-            dot(DS_LIST_TABLE_ALIAS, DeletableDataColumns.ID) + AS + DeletableDataColumns.ID + "," +
             IdentifiableColumns.UID + AS + DATASET_UID_ALIAS + "," +
             IdentifiableColumns.NAME + AS + DATASET_NAME_ALIAS + "," +
             "SUM($VALUE_COUNT_ALIAS)" + AS + VALUE_COUNT_ALIAS + "," +
@@ -102,7 +107,6 @@ class DataSetInstanceSummarySQLStatementBuilder : DataSetInstanceSQLStatementBui
             SELECT_STATE_ORDERING
 
         private val DATASET_LIST_CLAUSE = "SELECT " +
-            DeletableDataColumns.ID + ", " +
             IdentifiableColumns.UID + ", " +
             IdentifiableColumns.NAME + " " +
             "FROM " + DataSetTableInfo.TABLE_INFO.name()

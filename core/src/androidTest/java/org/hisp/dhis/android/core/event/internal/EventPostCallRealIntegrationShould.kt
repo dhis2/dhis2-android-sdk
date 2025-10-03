@@ -31,6 +31,7 @@ import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.helpers.UidGenerator
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.common.State
@@ -40,9 +41,8 @@ import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl
 import org.junit.Before
-import java.util.*
+import java.util.Date
 
 class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
     private lateinit var eventStore: EventStore
@@ -59,8 +59,8 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
     @Before
     override fun setUp() {
         super.setUp()
-        eventStore = EventStoreImpl(d2.databaseAdapter())
-        trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl(d2.databaseAdapter())
+        eventStore = koin.get()
+        trackedEntityDataValueStore = koin.get()
         val uidGenerator: UidGenerator = UidGeneratorImpl()
         eventUid1 = uidGenerator.generate()
         eventUid2 = uidGenerator.generate()
@@ -99,7 +99,7 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
         downloadMetadata()
         createDummyDataToPost(eventUid1)
         pushDummyEvent()
-        val pushedEvent = eventFromDB
+        val pushedEvent = eventFromDB()
         d2.wipeModule().wipeEverything()
         downloadMetadata()
         downloadEvents()
@@ -124,14 +124,14 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
         createDummyDataToPost(eventUid1)
         createDummyDataToPost(eventUid2)
         pushDummyEvent()
-        val pushedEvent = eventFromDB
+        val pushedEvent = eventFromDB()
         d2.wipeModule().wipeEverything()
         downloadMetadata()
         downloadEvents()
         assertThatEventPushedIsDownloaded(pushedEvent)
     }
 
-    private fun createDummyDataToPost(eventUid: String?) {
+    private fun createDummyDataToPost(eventUid: String?) = runTest {
         eventStore.insert(
             Event.builder().uid(eventUid).created(Date()).lastUpdated(Date())
                 .status(EventStatus.ACTIVE).program(programUid)
@@ -151,7 +151,7 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
         trackedEntityDataValueStore.insert(trackedEntityDataValue)
     }
 
-    private fun assertThatEventPushedIsDownloaded(pushedEvent: Event?) {
+    private fun assertThatEventPushedIsDownloaded(pushedEvent: Event?) = runTest {
         val downloadedEvents = eventStore.querySingleEvents()
         Truth.assertThat(verifyPushedEventIsInPullList(pushedEvent, downloadedEvents)).isTrue()
     }
@@ -172,17 +172,16 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
         assertThat(events.isEmpty()).isFalse()
     }
 
-    private val eventFromDB: Event?
-        private get() {
-            var event: Event? = null
-            val storedEvents = eventStore.selectAll()
-            for (storedEvent in storedEvents) {
-                if (storedEvent.uid() == eventUid1) {
-                    event = storedEvent
-                }
+    private suspend fun eventFromDB(): Event? {
+        var event: Event? = null
+        val storedEvents = eventStore.selectAll()
+        for (storedEvent in storedEvents) {
+            if (storedEvent.uid() == eventUid1) {
+                event = storedEvent
             }
-            return event
         }
+        return event
+    }
 
     private fun pushDummyEvent() {
         d2.eventModule().events().blockingUpload()

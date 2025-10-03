@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.trackedentity.search
 
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.cache.internal.ExpirableCache
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -42,7 +42,6 @@ import java.util.concurrent.TimeUnit
 
 internal class TrackedEntitySearchDataFetcher(
     store: TrackedEntityInstanceStore,
-    databaseAdapter: DatabaseAdapter,
     trackerParentCallFactory: TrackerParentCallFactory,
     scope: TrackedEntityInstanceQueryRepositoryScope,
     childrenAppenders: ChildrenAppenderGetter<TrackedEntityInstance>,
@@ -54,7 +53,6 @@ internal class TrackedEntitySearchDataFetcher(
 
     private val instanceFetcher = TrackedEntityInstanceQueryDataFetcher(
         store,
-        databaseAdapter,
         trackerParentCallFactory,
         scope,
         childrenAppenders,
@@ -79,22 +77,26 @@ internal class TrackedEntitySearchDataFetcher(
     }
 
     fun loadPages(requestedLoadSize: Int): List<Result<TrackedEntitySearchItem, D2Error>> {
+        return runBlocking { loadPagesSuspend(requestedLoadSize) }
+    }
+
+    suspend fun loadPagesSuspend(requestedLoadSize: Int): List<Result<TrackedEntitySearchItem, D2Error>> {
         return transform(instanceFetcher.loadPages(requestedLoadSize))
     }
 
-    fun queryAllOffline(): List<Result<TrackedEntitySearchItem, D2Error>> {
+    suspend fun queryAllOffline(): List<Result<TrackedEntitySearchItem, D2Error>> {
         return transform(instanceFetcher.queryAllOffline())
     }
 
-    fun queryAllOfflineUids(): List<String> {
+    suspend fun queryAllOfflineUids(): List<String> {
         return instanceFetcher.queryAllOfflineUids()
     }
 
-    fun queryAllOnline(): List<Result<TrackedEntitySearchItem, D2Error>> {
+    suspend fun queryAllOnline(): List<Result<TrackedEntitySearchItem, D2Error>> {
         return transform(instanceFetcher.queryAllOnline())
     }
 
-    private fun transform(
+    private suspend fun transform(
         list: List<Result<TrackedEntityInstance, D2Error>>,
     ): List<Result<TrackedEntitySearchItem, D2Error>> {
         return list.map { itemResult ->
@@ -131,7 +133,7 @@ internal class TrackedEntitySearchDataFetcher(
         }
     }
 
-    private fun evaluateHeader(item: TrackedEntityInstance): String? {
+    private suspend fun evaluateHeader(item: TrackedEntityInstance): String? {
         return headerExpression?.let {
             helper.evaluateHeaderExpression(it, item)
         }

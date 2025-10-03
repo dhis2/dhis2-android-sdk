@@ -38,7 +38,7 @@ internal class ProgramOrphanCleaner(
     private val programTrackedEntityAttributeCleaner: ProgramTrackedEntityAttributeOrphanCleaner,
     private val programSectionCleaner: ProgramSectionOrphanCleaner,
 ) : ParentOrphanCleaner<Program> {
-    override fun deleteOrphan(parent: Program?) {
+    override suspend fun deleteOrphan(parent: Program?) {
         programRuleVariableCleaner.deleteOrphan(parent, ProgramInternalAccessor.accessProgramRuleVariables(parent))
         programTrackedEntityAttributeCleaner.deleteOrphan(
             parent,

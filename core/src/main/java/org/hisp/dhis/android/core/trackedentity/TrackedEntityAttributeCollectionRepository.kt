@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyNameableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
@@ -39,17 +38,16 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeLegendSetChildrenAppender
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 @Suppress("TooManyFunctions")
 class TrackedEntityAttributeCollectionRepository internal constructor(
     store: TrackedEntityAttributeStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyNameableCollectionRepositoryImpl<TrackedEntityAttribute, TrackedEntityAttributeCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -57,7 +55,6 @@ class TrackedEntityAttributeCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         TrackedEntityAttributeCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },
@@ -103,11 +100,11 @@ class TrackedEntityAttributeCollectionRepository internal constructor(
     }
 
     fun byOrgUnitScope(): BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> {
-        return cf.bool(TrackedEntityAttributeTableInfo.Columns.ORG_UNIT_SCOPE)
+        return cf.bool(TrackedEntityAttributeTableInfo.Columns.ORGUNIT_SCOPE)
     }
 
     fun byUnique(): BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> {
-        return cf.bool(TrackedEntityAttributeTableInfo.Columns.UNIQUE)
+        return cf.bool(TrackedEntityAttributeTableInfo.Columns.UNIQUE_PROPERTY)
     }
 
     fun byInherit(): BooleanFilterConnector<TrackedEntityAttributeCollectionRepository> {

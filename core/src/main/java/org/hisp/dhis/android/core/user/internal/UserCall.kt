@@ -27,17 +27,13 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
-import android.database.sqlite.SQLiteException
-import android.util.Log
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.user.User
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class UserCall(
-    private val genericCallData: GenericCallData,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val networkHandler: UserNetworkHandler,
     private val userHandler: UserHandler,
@@ -50,18 +46,8 @@ internal class UserCall(
                 networkHandler.getUser()
             }.getOrThrow()
 
-        val transaction = genericCallData.databaseAdapter.beginNewTransaction()
-        try {
+        coroutineAPICallExecutor.wrapTransactionallyRoom(cleanForeignKeyErrors = false) {
             userHandler.handle(user)
-            transaction.setSuccessful()
-        } catch (constraintException: SQLiteException) {
-            // TODO review
-            Log.d("CAll", "call: constraintException")
-        } catch (constraintException: android.database.SQLException) {
-            // TODO review
-            Log.d("CAll", "call: constraintException")
-        } finally {
-            transaction.end()
         }
         return user
     }

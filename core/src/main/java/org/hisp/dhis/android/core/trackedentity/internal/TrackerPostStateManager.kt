@@ -49,7 +49,7 @@ internal class TrackerPostStateManager internal constructor(
     private val h: StatePersistorHelper,
 ) {
 
-    fun restorePayloadStates(
+    suspend fun restorePayloadStates(
         trackedEntityInstances: List<TrackedEntityInstance> = emptyList(),
         events: List<Event> = emptyList(),
         relationships: List<Relationship> = emptyList(),
@@ -59,7 +59,7 @@ internal class TrackerPostStateManager internal constructor(
     }
 
     @Suppress("NestedBlockDepth")
-    fun setPayloadStates(
+    suspend fun setPayloadStates(
         trackedEntityInstances: List<TrackedEntityInstance> = emptyList(),
         events: List<Event> = emptyList(),
         relationships: List<Relationship> = emptyList(),

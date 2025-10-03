@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.arch.repositories.paging.internal
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
@@ -43,48 +42,35 @@ import java.io.IOException
 
 class RepositoryPagingSource<M : CoreObject> internal constructor(
     private val store: ReadableStore<M>,
-    private val databaseAdapter: DatabaseAdapter,
     private val scope: RepositoryScope,
     private val childrenAppenders: ChildrenAppenderGetter<M>,
-) : PagingSource<M, M>() {
+) : PagingSource<Int, M>() {
 
-    override fun getRefreshKey(state: PagingState<M, M>): M? {
+    override fun getRefreshKey(state: PagingState<Int, M>): Int? {
         return state.anchorPosition?.let { state.closestPageToPosition(it)?.prevKey }
     }
 
-    override suspend fun load(params: LoadParams<M>): LoadResult<M, M> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, M> {
         try {
-            val whereClauseBuilder = WhereClauseBuilder()
+            val offset = params.key
 
-            params.key?.let { key ->
-                val reverse = when (params) {
-                    is LoadParams.Prepend -> true
-                    else -> false
-                }
-
-                OrderByClauseBuilder.addSortingClauses(
-                    whereClauseBuilder,
-                    scope.orderBy(),
-                    key.toContentValues(),
-                    reverse,
-                    scope.pagingKey(),
-                )
-            }
-
-            val whereClause = WhereClauseFromScopeBuilder(whereClauseBuilder).getWhereClause(
-                scope,
-            )
+            val whereClause = WhereClauseFromScopeBuilder(WhereClauseBuilder()).getWhereClause(scope)
             val withoutChildren = store.selectWhere(
                 whereClause,
-                OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()),
+                OrderByClauseBuilder.orderByFromItems(scope.orderBy()),
                 params.loadSize,
+                offset,
             )
 
-            val items = appendInObjectCollection(withoutChildren, databaseAdapter, childrenAppenders, scope.children())
+            val items = appendInObjectCollection(withoutChildren, childrenAppenders, scope.children())
+
+            val prevKey = if (offset == null) null else offset - params.loadSize
+            val nextKey = if (items.size < params.loadSize) null else (offset ?: 0) + params.loadSize
+
             return LoadResult.Page(
                 data = items,
-                prevKey = items.firstOrNull(),
-                nextKey = items.getOrNull(params.loadSize - 1),
+                prevKey = prevKey,
+                nextKey = nextKey,
             )
         } catch (e: IOException) {
             return LoadResult.Error(e)

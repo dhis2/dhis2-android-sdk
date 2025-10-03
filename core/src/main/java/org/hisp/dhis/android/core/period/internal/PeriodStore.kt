@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.period.PeriodType
 import java.util.Date
 
 internal interface PeriodStore : ObjectWithoutUidStore<Period> {
-    fun selectByPeriodId(periodId: String?): Period?
-    fun selectPeriodByTypeAndDate(periodType: PeriodType, date: Date): Period?
-    val oldestPeriodStartDate: Date?
+    suspend fun selectByPeriodId(periodId: String?): Period?
+    suspend fun selectPeriodByTypeAndDate(periodType: PeriodType, date: Date): Period?
+    suspend fun oldestPeriodStartDate(): Date?
 }

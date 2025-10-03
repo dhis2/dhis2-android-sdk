@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.category
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyNameableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
@@ -37,16 +36,17 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.category.internal.CategoryOptionOrganisationUnitChildrenAppender
 import org.hisp.dhis.android.core.category.internal.CategoryOptionStore
 import org.hisp.dhis.android.core.common.IdentifiableColumns
+import org.hisp.dhis.android.persistence.category.CategoryCategoryOptionLinkTableInfo
+import org.hisp.dhis.android.persistence.category.CategoryOptionComboCategoryOptionLinkTableInfo
+import org.hisp.dhis.android.persistence.category.CategoryOptionTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 class CategoryOptionCollectionRepository internal constructor(
     store: CategoryOptionStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyNameableCollectionRepositoryImpl<CategoryOption, CategoryOptionCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -54,7 +54,6 @@ class CategoryOptionCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         CategoryOptionCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },

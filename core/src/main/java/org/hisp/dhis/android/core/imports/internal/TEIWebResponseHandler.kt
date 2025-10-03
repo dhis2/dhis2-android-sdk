@@ -36,7 +36,7 @@ internal class TEIWebResponseHandler(
     private val trackedEntityInstanceImportHandler: TrackedEntityInstanceImportHandler,
 ) {
 
-    fun handleWebResponse(
+    suspend fun handleWebResponse(
         webResponse: TEIWebResponse?,
         instances: List<TrackedEntityInstance>,
     ): TEIWebResponseHandlerSummary {

@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.event
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
@@ -39,17 +38,16 @@ import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.event.internal.EventFilterEventDataFilterChildrenAppender
 import org.hisp.dhis.android.core.event.internal.EventFilterStore
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import org.hisp.dhis.android.persistence.event.EventFilterTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 @Suppress("TooManyFunctions")
 class EventFilterCollectionRepository internal constructor(
     store: EventFilterStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<EventFilter, EventFilterCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -57,7 +55,6 @@ class EventFilterCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         EventFilterCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },
@@ -91,7 +88,7 @@ class EventFilterCollectionRepository internal constructor(
     }
 
     fun byOrder(): StringFilterConnector<EventFilterCollectionRepository> {
-        return cf.string(EventFilterTableInfo.Columns.ORDER)
+        return cf.string(EventFilterTableInfo.Columns.ORDER_PROPERTY)
     }
 
     fun byDisplayColumnOrder(): StringFilterConnector<EventFilterCollectionRepository> {

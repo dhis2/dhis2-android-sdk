@@ -32,33 +32,31 @@ import org.hisp.dhis.android.core.common.CoreObject
 
 internal open class LinkHandlerImpl<S, O : CoreObject>(private val store: LinkStore<O>) : LinkHandler<S, O> {
 
-    override fun handleMany(masterUid: String, slaves: Collection<S>?, transformer: Function1<S, O>) {
+    override suspend fun handleMany(masterUid: String, slaves: Collection<S>?, transformer: Function1<S, O>) {
         store.deleteLinksForMasterUid(masterUid)
         if (slaves != null) {
-            for (slave in slaves) {
-                handleInternal(slave, transformer)
-            }
+            val preHandledCollection = slaves
+                .map { beforeObjectHandled(it) }
+                .map { transformer.invoke(it) }
+
+            // TODO Previously it was store.insertIfNotExists(). Check if we should change anything
+            store.updateOrInsert(preHandledCollection)
+
+            preHandledCollection.forEach { afterObjectHandled(it) }
         }
     }
 
-    private fun handleInternal(s: S, transformer: Function1<S, O>) {
-        val s2 = beforeObjectHandled(s)
-        val s3 = transformer.invoke(s2)
-        store.insertIfNotExists(s3)
-        afterObjectHandled(s3)
-    }
-
-    protected open fun beforeObjectHandled(s: S): S {
+    protected open suspend fun beforeObjectHandled(s: S): S {
         return s
     }
 
-    protected open fun afterObjectHandled(o: O) {
+    protected open suspend fun afterObjectHandled(o: O) {
         /* Method is not abstract since empty action is the default action and we don't want it to
          * be unnecessarily written in every child.
          */
     }
 
-    override fun resetAllLinks() {
+    override suspend fun resetAllLinks() {
         store.deleteAllLinks()
     }
 }

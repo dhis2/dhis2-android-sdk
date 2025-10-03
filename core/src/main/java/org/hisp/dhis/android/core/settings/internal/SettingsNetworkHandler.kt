@@ -28,8 +28,11 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
+import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.AnalyticsSettings
 import org.hisp.dhis.android.core.settings.AppearanceSettings
+import org.hisp.dhis.android.core.settings.CustomIntents
 import org.hisp.dhis.android.core.settings.DataSetSettings
 import org.hisp.dhis.android.core.settings.GeneralSettings
 import org.hisp.dhis.android.core.settings.ProgramSettings
@@ -38,11 +41,39 @@ import org.hisp.dhis.android.core.settings.SynchronizationSettings
 
 @Suppress("TooManyFunctions")
 internal interface SettingsNetworkHandler {
-    suspend fun settingsAppInfo(url: String): SettingsAppInfo
-    suspend fun generalSettings(url: String): GeneralSettings
-    suspend fun dataSetSettings(url: String): DataSetSettings
-    suspend fun programSettings(url: String): ProgramSettings
-    suspend fun synchronizationSettings(url: String): SynchronizationSettings
-    suspend fun appearanceSettings(url: String): AppearanceSettings
-    suspend fun analyticsSettings(url: String): AnalyticsSettings
+    suspend fun settingsAppInfo(): SettingsAppInfo
+
+    suspend fun generalSettings(
+        version: SettingsAppDataStoreVersion,
+    ): Result<GeneralSettings, D2Error>
+
+    suspend fun dataSetSettings(
+        version: SettingsAppDataStoreVersion,
+        storeError: Boolean,
+    ): Result<DataSetSettings, D2Error>
+
+    suspend fun programSettings(
+        version: SettingsAppDataStoreVersion,
+        storeError: Boolean,
+    ): Result<ProgramSettings, D2Error>
+
+    suspend fun synchronizationSettings(
+        version: SettingsAppDataStoreVersion,
+        storeError: Boolean,
+    ): Result<SynchronizationSettings, D2Error>
+
+    suspend fun appearanceSettings(
+        version: SettingsAppDataStoreVersion,
+        storeError: Boolean,
+    ): Result<AppearanceSettings, D2Error>
+
+    suspend fun analyticsSettings(
+        version: SettingsAppDataStoreVersion,
+        storeError: Boolean,
+    ): Result<AnalyticsSettings, D2Error>
+
+    suspend fun customIntents(
+        version: SettingsAppDataStoreVersion,
+        storeError: Boolean,
+    ): Result<CustomIntents, D2Error>
 }

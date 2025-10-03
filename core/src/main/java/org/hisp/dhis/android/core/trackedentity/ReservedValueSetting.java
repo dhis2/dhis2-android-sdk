@@ -28,9 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.database.Cursor;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -47,11 +44,6 @@ public abstract class ReservedValueSetting implements CoreObject, ObjectWithUidI
     @Nullable
     public abstract Integer numberOfValuesToReserve();
 
-    @NonNull
-    public static ReservedValueSetting create(Cursor cursor) {
-        return AutoValue_ReservedValueSetting.createFromCursor(cursor);
-    }
-
     public abstract Builder toBuilder();
 
     public static Builder builder() {
@@ -60,8 +52,6 @@ public abstract class ReservedValueSetting implements CoreObject, ObjectWithUidI
 
     @AutoValue.Builder
     public abstract static class Builder {
-
-        public abstract Builder id(Long id);
 
         public abstract Builder uid(String uid);
 

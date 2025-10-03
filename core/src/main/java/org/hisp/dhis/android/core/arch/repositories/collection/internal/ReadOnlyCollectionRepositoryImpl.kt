@@ -37,7 +37,8 @@ import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
@@ -55,18 +56,20 @@ import org.hisp.dhis.android.core.common.CoreObject
 @Suppress("TooManyFunctions")
 open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollectionRepository<M>> internal constructor(
     private val store: ReadableStore<M>,
-    internal val databaseAdapter: DatabaseAdapter,
     internal val childrenAppenders: ChildrenAppenderGetter<M>,
     scope: RepositoryScope,
     cf: FilterConnectorFactory<R>,
 ) : BaseRepositoryImpl<R>(scope, cf), ReadOnlyCollectionRepository<M> {
 
     protected fun blockingGetWithoutChildren(): List<M> {
+        return runBlocking { getWithoutChildrenInternal() }
+    }
+
+    private suspend fun getWithoutChildrenInternal(): List<M> {
         return store.selectWhere(
             whereClause,
             OrderByClauseBuilder.orderByFromItems(
                 scope.orderBy(),
-                scope.pagingKey(),
             ),
         )
     }
@@ -77,7 +80,7 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
      * @return Object repository
      */
     override fun one(): ReadOnlyOneObjectRepositoryFinalImpl<M> {
-        return ReadOnlyOneObjectRepositoryFinalImpl(store, databaseAdapter, childrenAppenders, scope)
+        return ReadOnlyOneObjectRepositoryFinalImpl(store, childrenAppenders, scope)
     }
 
     /**
@@ -87,12 +90,9 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
      * @return List of objects
      */
     override fun blockingGet(): List<M> {
-        return ChildrenAppenderExecutor.appendInObjectCollection(
-            blockingGetWithoutChildren(),
-            databaseAdapter,
-            childrenAppenders,
-            scope.children(),
-        )
+        return runBlocking {
+            getInternal()
+        }
     }
 
     /**
@@ -101,7 +101,15 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
      * @return A `Single` object with the list of objects.
      */
     override fun get(): Single<List<M>> {
-        return Single.fromCallable { blockingGet() }
+        return rxSingle { getInternal() }
+    }
+
+    private suspend fun getInternal(): List<M> {
+        return ChildrenAppenderExecutor.appendInObjectCollection(
+            getWithoutChildrenInternal(),
+            childrenAppenders,
+            scope.children(),
+        )
     }
 
     /**
@@ -112,8 +120,8 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
      */
     @Deprecated("Use {@link #getPagingData()} instead}", replaceWith = ReplaceWith("getPagingData()"))
     override fun getPaged(pageSize: Int): LiveData<PagedList<M>> {
-        val factory: DataSource.Factory<M, M> = object : DataSource.Factory<M, M>() {
-            override fun create(): DataSource<M, M> {
+        val factory: DataSource.Factory<Int, M> = object : DataSource.Factory<Int, M>() {
+            override fun create(): DataSource<Int, M> {
                 return dataSource
             }
         }
@@ -124,7 +132,7 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
         return getPager(pageSize).flow
     }
 
-    fun getPager(pageSize: Int): Pager<M, M> {
+    fun getPager(pageSize: Int): Pager<Int, M> {
         return Pager(
             config = PagingConfig(pageSize = pageSize),
         ) {
@@ -133,18 +141,18 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
     }
 
     @Deprecated("Use {@link #getPagingData()} instead}", replaceWith = ReplaceWith("getPagingData()"))
-    val dataSource: DataSource<M, M>
-        get() = RepositoryDataSource(store, databaseAdapter, scope, childrenAppenders)
+    val dataSource: DataSource<Int, M>
+        get() = RepositoryDataSource(store, scope, childrenAppenders)
 
-    private val pagingSource: PagingSource<M, M>
-        get() = RepositoryPagingSource(store, databaseAdapter, scope, childrenAppenders)
+    private val pagingSource: PagingSource<Int, M>
+        get() = RepositoryPagingSource(store, scope, childrenAppenders)
 
     /**
      * Get the count of elements in an asynchronous way, returning a `Single`.
      * @return A `Single` object with the element count
      */
     override fun count(): Single<Int> {
-        return Single.fromCallable { blockingCount() }
+        return rxSingle { countInternal() }
     }
 
     /**
@@ -154,6 +162,10 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
      * @return Element count
      */
     override fun blockingCount(): Int {
+        return runBlocking { countInternal() }
+    }
+
+    private suspend fun countInternal(): Int {
         return store.countWhere(whereClause)
     }
 
@@ -163,7 +175,7 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
      * @return If selection is empty
      */
     override fun isEmpty(): Single<Boolean> {
-        return Single.fromCallable { blockingIsEmpty() }
+        return rxSingle { isEmptyProtected() }
     }
 
     /**
@@ -174,7 +186,11 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
      * @return If selection is empty
      */
     override fun blockingIsEmpty(): Boolean {
-        return !one().blockingExists()
+        return runBlocking { isEmptyProtected() }
+    }
+
+    protected suspend fun isEmptyProtected(): Boolean {
+        return !one().existsInternal()
     }
 
     protected val whereClause: String

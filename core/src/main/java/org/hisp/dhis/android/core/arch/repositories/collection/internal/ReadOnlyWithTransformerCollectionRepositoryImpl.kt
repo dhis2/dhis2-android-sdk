@@ -37,7 +37,8 @@ import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
@@ -61,7 +62,6 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
     R : ReadOnlyCollectionRepository<T>,
     > internal constructor(
     private val store: ReadableStore<M>,
-    internal val databaseAdapter: DatabaseAdapter,
     internal val childrenAppenders: ChildrenAppenderGetter<M>,
     scope: RepositoryScope,
     cf: FilterConnectorFactory<R>,
@@ -69,11 +69,14 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
 ) : BaseRepositoryImpl<R>(scope, cf), ReadOnlyCollectionRepository<T> {
 
     fun blockingGetWithoutChildren(): List<M> {
+        return runBlocking { getWithoutChildrenInternal() }
+    }
+
+    suspend fun getWithoutChildrenInternal(): List<M> {
         return store.selectWhere(
             whereClause,
             OrderByClauseBuilder.orderByFromItems(
                 scope.orderBy(),
-                scope.pagingKey(),
             ),
         )
     }
@@ -86,7 +89,6 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
     override fun one(): ReadOnlyObjectRepository<T> {
         return ReadOnlyWithTransformerObjectRepositoryImpl(
             store,
-            databaseAdapter,
             childrenAppenders,
             scope,
             transformer,
@@ -100,12 +102,7 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
      * @return List of objects
      */
     override fun blockingGet(): List<T> {
-        return ChildrenAppenderExecutor.appendInObjectCollection(
-            blockingGetWithoutChildren(),
-            databaseAdapter,
-            childrenAppenders,
-            scope.children(),
-        ).map { transformer.transform(it) }
+        return runBlocking { getInternal() }
     }
 
     /**
@@ -114,7 +111,15 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
      * @return A `Single` object with the list of objects.
      */
     override fun get(): Single<List<T>> {
-        return Single.fromCallable { blockingGet() }
+        return rxSingle { getInternal() }
+    }
+
+    private suspend fun getInternal(): List<T> {
+        return ChildrenAppenderExecutor.appendInObjectCollection(
+            getWithoutChildrenInternal(),
+            childrenAppenders,
+            scope.children(),
+        ).map { transformer.transform(it) }
     }
 
     /**
@@ -125,8 +130,8 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
      */
     @Deprecated("Use {@link #getPagingData()} instead}", replaceWith = ReplaceWith("getPagingData()"))
     override fun getPaged(pageSize: Int): LiveData<PagedList<T>> {
-        val factory: DataSource.Factory<M, T> = object : DataSource.Factory<M, T>() {
-            override fun create(): DataSource<M, T> {
+        val factory: DataSource.Factory<Int, T> = object : DataSource.Factory<Int, T>() {
+            override fun create(): DataSource<Int, T> {
                 return dataSource
             }
         }
@@ -141,7 +146,7 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
         }.flow
     }
 
-    fun getPager(pageSize: Int): Pager<M, T> {
+    fun getPager(pageSize: Int): Pager<Int, T> {
         return Pager(
             config = PagingConfig(pageSize = pageSize),
         ) {
@@ -149,18 +154,18 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
         }
     }
 
-    val dataSource: DataSource<M, T>
-        get() = RepositoryDataSourceWithTransformer(store, databaseAdapter, scope, childrenAppenders, transformer)
+    val dataSource: DataSource<Int, T>
+        get() = RepositoryDataSourceWithTransformer(store, scope, childrenAppenders, transformer)
 
-    private val pagingSource: PagingSource<M, T>
-        get() = RepositoryPagingSourceWithTransformer(store, databaseAdapter, scope, childrenAppenders, transformer)
+    private val pagingSource: PagingSource<Int, T>
+        get() = RepositoryPagingSourceWithTransformer(store, scope, childrenAppenders, transformer)
 
     /**
      * Get the count of elements in an asynchronous way, returning a `Single`.
      * @return A `Single` object with the element count
      */
     override fun count(): Single<Int> {
-        return Single.fromCallable { blockingCount() }
+        return rxSingle { countInternal() }
     }
 
     /**
@@ -170,6 +175,10 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
      * @return Element count
      */
     override fun blockingCount(): Int {
+        return runBlocking { countInternal() }
+    }
+
+    suspend fun countInternal(): Int {
         return store.countWhere(whereClause)
     }
 
@@ -190,6 +199,10 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
      * @return If selection is empty
      */
     override fun blockingIsEmpty(): Boolean {
+        return !one().blockingExists()
+    }
+
+    suspend fun isEmptyInternal(): Boolean {
         return !one().blockingExists()
     }
 

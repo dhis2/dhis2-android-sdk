@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.category.CategoryCombo
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
-import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo
+import org.hisp.dhis.android.persistence.category.CategoryOptionComboTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

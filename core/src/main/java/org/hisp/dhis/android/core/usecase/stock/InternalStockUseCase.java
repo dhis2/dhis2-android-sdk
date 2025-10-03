@@ -28,22 +28,18 @@
 
 package org.hisp.dhis.android.core.usecase.stock;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreInternalStockUseCaseTransactionListColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import java.util.List;
 
 @AutoValue
-public abstract class InternalStockUseCase extends BaseObject implements ObjectWithUidInterface {
+public abstract class InternalStockUseCase implements CoreObject, ObjectWithUidInterface {
 
     public static final String TRANSACTIONS = "transactions";
 
@@ -67,23 +63,16 @@ public abstract class InternalStockUseCase extends BaseObject implements ObjectW
     public abstract String stockOnHand();
 
     @Nullable
-    @ColumnAdapter(IgnoreInternalStockUseCaseTransactionListColumnAdapter.class)
     public abstract List<InternalStockUseCaseTransaction> transactions();
-
-    public static InternalStockUseCase create(Cursor cursor) {
-        return AutoValue_InternalStockUseCase.createFromCursor(cursor);
-    }
 
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new $$AutoValue_InternalStockUseCase.Builder();
+        return new AutoValue_InternalStockUseCase.Builder();
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
+    public abstract static class Builder {
         public abstract Builder uid(String uid);
 
         public abstract Builder itemCode(String itemCode);

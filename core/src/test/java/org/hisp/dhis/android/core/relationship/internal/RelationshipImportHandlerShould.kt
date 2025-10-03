@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
-import com.nhaarman.mockitokotlin2.*
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.imports.ImportStatus
@@ -39,8 +39,9 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.Answers
 import org.mockito.ArgumentMatchers.anyString
-import org.mockito.Mockito
+import org.mockito.kotlin.*
 
 @RunWith(JUnit4::class)
 class RelationshipImportHandlerShould {
@@ -50,7 +51,7 @@ class RelationshipImportHandlerShould {
     private val dataStatePropagator: DataStatePropagator = mock()
 
     private val relationshipCollectionRepository: RelationshipCollectionRepository =
-        mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
+        mock(defaultAnswer = Answers.RETURNS_DEEP_STUBS)
 
     private val importSummary: RelationshipImportSummary = mock()
 
@@ -73,7 +74,7 @@ class RelationshipImportHandlerShould {
     }
 
     @Test
-    fun do_nothing_when_passing_null_argument() {
+    fun do_nothing_when_passing_null_argument() = runTest {
         relationshipImportHandler.handleRelationshipImportSummaries(null, relationships)
 
         verify(relationshipStore, never()).setSyncStateOrDelete(anyString(), any())
@@ -81,7 +82,7 @@ class RelationshipImportHandlerShould {
     }
 
     @Test
-    fun setStatus_shouldUpdateRelationshipStatusSuccess() {
+    fun setStatus_shouldUpdateRelationshipStatusSuccess() = runTest {
         whenever(importSummary.status()).doReturn(ImportStatus.SUCCESS)
         whenever(importSummary.reference()).doReturn("test_uid")
 
@@ -95,7 +96,7 @@ class RelationshipImportHandlerShould {
     }
 
     @Test
-    fun setStatus_shouldUpdateRelationshipStatusError() {
+    fun setStatus_shouldUpdateRelationshipStatusError() = runTest {
         whenever(importSummary.status()).doReturn(ImportStatus.ERROR)
         whenever(importSummary.reference()).doReturn("test_uid")
 
@@ -109,7 +110,7 @@ class RelationshipImportHandlerShould {
     }
 
     @Test
-    fun mark_as_to_update_relationships_not_present_in_the_response() {
+    fun mark_as_to_update_relationships_not_present_in_the_response() = runTest {
         whenever(importSummary.status()).doReturn(ImportStatus.SUCCESS)
         whenever(importSummary.reference()).doReturn("test_uid")
 

@@ -34,11 +34,13 @@ import org.hisp.dhis.android.core.settings.DownloadPeriod
 import org.hisp.dhis.android.core.settings.EnrollmentScope
 import org.hisp.dhis.android.core.settings.LimitScope
 import org.hisp.dhis.android.core.settings.ProgramSetting
+import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 
 @Serializable
 internal data class ProgramSettingDTO(
     val id: String?,
     val name: String?,
+    val filters: List<ObjectWithUidDTO>?,
     val lastUpdated: String?,
     val teiDownload: Int?,
     val teiDBTrimming: Int?,
@@ -59,6 +61,7 @@ internal data class ProgramSettingDTO(
         return ProgramSetting.builder()
             .uid(id)
             .name(name)
+            .filters(filters?.map { it.toDomain() })
             .lastUpdated(lastUpdated?.let { DateUtils.DATE_FORMAT.parse(it) })
             .teiDownload(teiDownload)
             .teiDBTrimming(teiDBTrimming)

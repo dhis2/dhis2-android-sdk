@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -45,20 +43,14 @@ public abstract class UserSettings implements CoreObject {
     @Nullable
     public abstract String keyDbLocale();
 
-    public static UserSettings create(Cursor cursor) {
-        return $AutoValue_UserSettings.createFromCursor(cursor);
-    }
-
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new $AutoValue_UserSettings.Builder();
+        return new AutoValue_UserSettings.Builder();
     }
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder id(Long id);
-
         public abstract Builder keyUiLocale(String keyUiLocale);
 
         public abstract Builder keyDbLocale(String keyDbLocale);

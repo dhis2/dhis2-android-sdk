@@ -29,5 +29,5 @@
 package org.hisp.dhis.android.core.arch.db.access.internal.migrations
 
 internal interface DatabaseCodeMigration {
-    fun migrate()
+    suspend fun migrate()
 }

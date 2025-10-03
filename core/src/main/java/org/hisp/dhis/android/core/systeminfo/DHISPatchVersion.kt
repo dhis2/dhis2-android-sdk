@@ -71,6 +71,7 @@ enum class DHISPatchVersion(val majorVersion: DHISVersion, val strValue: String,
     V2_41_0(DHISVersion.V2_41, "2.41.0", SMSVersion.V2),
 
     V2_42_0(DHISVersion.V2_42, "2.42.0", SMSVersion.V2),
+    V2_42_1(DHISVersion.V2_42, "2.42.1", SMSVersion.V2),
 
     UNKNOWN(DHISVersion.UNKNOWN, "UNKNOWN", SMSVersion.V2),
     ;
@@ -80,6 +81,28 @@ enum class DHISPatchVersion(val majorVersion: DHISVersion, val strValue: String,
         fun getValue(versionStr: String, bypassDHIS2VersionCheck: Boolean? = false): DHISPatchVersion? {
             return entries.find { versionStr == it.strValue || versionStr.startsWith(it.strValue + "-") }
                 ?: bypassDHIS2VersionCheck.takeIf { it == true }?.let { UNKNOWN }
+        }
+
+        fun isGreaterThanPatch(thisVersionStr: String, otherPatchVersion: DHISPatchVersion): Boolean {
+            val majorVersion = DHISVersion.getValue(thisVersionStr)
+
+            return when {
+                majorVersion == null -> false
+                majorVersion > otherPatchVersion.majorVersion -> true
+                majorVersion < otherPatchVersion.majorVersion -> false
+                else -> {
+                    val thisMinorNumber = getMinorNumber(thisVersionStr)
+                    val otherMinorNumber = getMinorNumber(otherPatchVersion.strValue)
+                    thisMinorNumber > otherMinorNumber
+                }
+            }
+        }
+
+        private fun getMinorNumber(versionStr: String): Int {
+            return versionStr
+                .split("-SNAPSHOT")[0]
+                .split(".").getOrElse(2) { "0" }
+                .toInt()
         }
     }
 }

@@ -29,9 +29,9 @@ package org.hisp.dhis.android.network.trackervisualization
 
 import org.hisp.dhis.android.core.visualization.TrackerVisualization
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension
-import org.hisp.dhis.android.core.visualization.TrackerVisualizationTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.persistence.visualization.TrackerVisualizationTableInfo.Columns
 
 internal object TrackerVisualizationFields : BaseFields<TrackerVisualization>() {
     private const val COLUMNS = "columns"

@@ -27,15 +27,23 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.trackedentity.*
-import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import org.hisp.dhis.android.persistence.trackedentity.ProgramTempOwnerTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeReservedValueTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeValueTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityDataValueTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceEventFilterTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceFilterTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceSyncTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityTypeTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackedEntityModuleWiper(private val tableWiper: TableWiper) : ModuleWiper {
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         tableWiper.wipeTables(
             ProgramTempOwnerTableInfo.TABLE_INFO,
             TrackedEntityAttributeTableInfo.TABLE_INFO,
@@ -45,7 +53,7 @@ internal class TrackedEntityModuleWiper(private val tableWiper: TableWiper) : Mo
         )
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         tableWiper.wipeTables(
             TrackedEntityInstanceTableInfo.TABLE_INFO,
             TrackedEntityInstanceSyncTableInfo.TABLE_INFO,

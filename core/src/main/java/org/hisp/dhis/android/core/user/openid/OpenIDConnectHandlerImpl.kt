@@ -69,7 +69,7 @@ internal class OpenIDConnectHandlerImpl(
         return if (requestCode == RC_AUTH && intent != null) {
             val ex = AuthorizationException.fromIntent(intent)
             if (ex != null) {
-                Single.error<User>(ex)
+                Single.error(ex)
             } else {
                 val response = AuthorizationResponse.fromIntent(intent)!!
                 downloadToken(response.createTokenExchangeRequest())
@@ -81,7 +81,7 @@ internal class OpenIDConnectHandlerImpl(
                     }
             }
         } else {
-            Single.error<User>(RuntimeException("Unexpected intent or request code"))
+            Single.error(RuntimeException("Unexpected intent or request code"))
         }
     }
 

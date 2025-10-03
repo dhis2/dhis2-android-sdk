@@ -37,13 +37,12 @@ import org.hisp.dhis.android.core.event.EventQueryCriteria
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import java.text.ParseException
-import java.util.*
+import java.util.Date
 
 internal object EventFilterSamples {
     @JvmStatic
     fun get(): EventFilter {
         return EventFilter.builder()
-            .id(1L)
             .uid("event_filter_uid")
             .code("tb_events")
             .name("TB events")
@@ -61,7 +60,6 @@ internal object EventFilterSamples {
                     .assignedUserMode(AssignedUserMode.CURRENT)
                     .order("dueDate:asc,createdDate:desc")
                     .displayColumnOrder(listOf("eventDate", "status", "assignedUser", "qrur9Dvnyt5", "oZg33kd9taw"))
-                    .dataFilters(EventDataFilterSamples.eventDataFilters)
                     .events(listOf("event1Uid", "event2Uid"))
                     .eventStatus(EventStatus.ACTIVE)
                     .eventDate(

@@ -27,12 +27,11 @@
  */
 package org.hisp.dhis.android.core.settings
 
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.settings.AnalyticsSettingsDTO
 import org.junit.Test
 
-class AnalyticsSettingV1Should : BaseObjectKotlinxShould("settings/analytics_settings.json"), ObjectShould {
+class AnalyticsSettingV1Should : CoreObjectShould("settings/analytics_settings.json") {
 
     @Test
     override fun map_from_json_string() {

@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.dataset
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
@@ -44,18 +43,18 @@ import org.hisp.dhis.android.core.dataset.internal.DataSetStore
 import org.hisp.dhis.android.core.indicator.internal.DataSetIndicatorChildrenAppender
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.period.PeriodType
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
+import org.hisp.dhis.android.persistence.dataset.DataSetOrganisationUnitLinkTableInfo
+import org.hisp.dhis.android.persistence.dataset.DataSetTableInfo
+import org.hisp.dhis.android.persistence.user.UserOrganisationUnitTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 @Suppress("TooManyFunctions")
 class DataSetCollectionRepository internal constructor(
     store: DataSetStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<DataSet, DataSetCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -63,7 +62,6 @@ class DataSetCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         DataSetCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },
@@ -174,9 +172,9 @@ class DataSetCollectionRepository internal constructor(
             DataSetOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
             DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET,
             DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
-            UserOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
-            UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
-            UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT_SCOPE,
+            UserOrganisationUnitTableInfo.TABLE_INFO.name(),
+            UserOrganisationUnitTableInfo.Columns.ORGANISATION_UNIT,
+            UserOrganisationUnitTableInfo.Columns.ORGANISATION_UNIT_SCOPE,
             listOf(scope.name),
         )
     }

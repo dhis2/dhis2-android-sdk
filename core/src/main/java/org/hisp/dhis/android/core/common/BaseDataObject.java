@@ -30,13 +30,7 @@ package org.hisp.dhis.android.core.common;
 
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.gabrielittner.auto.value.cursor.ColumnName;
-
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStateColumnAdapter;
-
-public abstract class BaseDataObject extends BaseObject implements DataObject {
+public abstract class BaseDataObject implements DataObject {
 
     /**
      * @deprecated Use {@link #syncState()} instead.
@@ -44,25 +38,22 @@ public abstract class BaseDataObject extends BaseObject implements DataObject {
     @Deprecated
     @Override
     @Nullable
-    @ColumnAdapter(IgnoreStateColumnAdapter.class)
     public State state() {
         return syncState();
     }
 
     @Override
     @Nullable
-    @ColumnName(DataColumns.SYNC_STATE)
-    @ColumnAdapter(StateColumnAdapter.class)
     public abstract State syncState();
 
-    protected abstract static class Builder<T extends Builder> extends BaseObject.Builder<T> {
-        public abstract T syncState(@Nullable State syncState);
+    protected interface Builder<T extends Builder<T>> {
+        T syncState(@Nullable State syncState);
 
         /**
          * @deprecated Use {@link #syncState(State)} instead.
          */
         @Deprecated
-        public T state(State state) {
+        default T state(State state) {
             return syncState(state);
         }
     }

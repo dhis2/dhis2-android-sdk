@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
-import org.hisp.dhis.android.core.imports.TrackerImportConflictTableInfo
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponseHandlerSummary
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.core.program.AccessLevel
@@ -39,6 +38,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAcc
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
 import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipManagerImpl
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import org.hisp.dhis.android.persistence.imports.TrackerImportConflictTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -53,7 +53,7 @@ internal class TrackerImporterBreakTheGlassHelper(
     /**
      * Get glass errors for importer V1
      */
-    fun getGlassErrors(
+    suspend fun getGlassErrors(
         summary: TEIWebResponseHandlerSummary,
         instances: List<TrackedEntityInstance>,
     ): List<TrackedEntityInstance> {
@@ -78,7 +78,7 @@ internal class TrackerImporterBreakTheGlassHelper(
     /**
      * Get glass errors for importer V2
      */
-    fun getGlassErrors(payload: NewTrackerImporterPayload): NewTrackerImporterPayload {
+    suspend fun getGlassErrors(payload: NewTrackerImporterPayload): NewTrackerImporterPayload {
         val importedEnrollments = payload.enrollments.map { it.uid() }
         val enrollmentWhereClause = WhereClauseBuilder()
             .appendKeyStringValue(TrackerImportConflictTableInfo.Columns.ERROR_CODE, ImporterError.E1102.name)
@@ -171,7 +171,7 @@ internal class TrackerImporterBreakTheGlassHelper(
         }
     }
 
-    fun isProtectedInSearchScope(program: String?, organisationUnit: String?): Boolean {
+    suspend fun isProtectedInSearchScope(program: String?, organisationUnit: String?): Boolean {
         return if (program != null && organisationUnit != null) {
             isProtectedProgram(program) && isNotCaptureScope(organisationUnit)
         } else {
@@ -179,11 +179,11 @@ internal class TrackerImporterBreakTheGlassHelper(
         }
     }
 
-    private fun isProtectedProgram(program: String?): Boolean {
+    private suspend fun isProtectedProgram(program: String?): Boolean {
         return program?.let { programStore.selectByUid(it)?.accessLevel() == AccessLevel.PROTECTED } ?: false
     }
 
-    private fun isNotCaptureScope(organisationUnit: String?): Boolean {
+    private suspend fun isNotCaptureScope(organisationUnit: String?): Boolean {
         return organisationUnit?.let { !userOrganisationUnitLinkStore.isCaptureScope(it) } ?: false
     }
 }

@@ -29,11 +29,14 @@
 package org.hisp.dhis.android.core.dataset.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
-import org.hisp.dhis.android.core.datavalue.internal.DataValueStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataDispatcher
+import org.hisp.dhis.android.persistence.dataset.DataSetInstanceStoreImpl
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -45,19 +48,23 @@ class DataSetInstanceStoreIntegrationShould : BaseMockIntegrationTestMetadataDis
 
     @Before
     fun setUp() {
-        dataSetInstanceStore = DataSetInstanceStoreImpl(databaseAdapter)
-        dataValueStore = DataValueStoreImpl(databaseAdapter)
+        runBlocking {
+            dataSetInstanceStore = koin.get()
+            dataValueStore = koin.get()
 
-        dataValueStore.delete()
+            dataValueStore.delete()
+        }
     }
 
     @After
     fun tearDown() {
-        dataValueStore.delete()
+        runBlocking {
+            dataValueStore.delete()
+        }
     }
 
     @Test
-    fun should_prioritize_data_value_sync_states() {
+    fun should_prioritize_data_value_sync_states() = runTest {
         mapOf(
             listOf(State.SYNCED, State.TO_POST) to State.TO_POST,
             listOf(State.SYNCED, State.ERROR) to State.ERROR,
@@ -73,7 +80,7 @@ class DataSetInstanceStoreIntegrationShould : BaseMockIntegrationTestMetadataDis
         }
     }
 
-    private fun insertDataValuesWithStates(state1: State, state2: State) {
+    private suspend fun insertDataValuesWithStates(state1: State, state2: State) {
         val dataSetUid = "lyLU2wR22tC"
 
         val dataset = d2.dataSetModule().dataSets()

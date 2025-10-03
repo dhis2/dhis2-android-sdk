@@ -40,7 +40,7 @@ class AnalyticsDhisVisualizationsSettingObjectRepositoryMockIntegrationShould :
             .settingModule()
             .analyticsSetting()
             .visualizationsSettings()
-            .blockingGet()
+            .blockingGet()!!
 
         assertThat(analyticsDhisVisualizationsSetting.home().size).isEqualTo(2)
         assertThat(

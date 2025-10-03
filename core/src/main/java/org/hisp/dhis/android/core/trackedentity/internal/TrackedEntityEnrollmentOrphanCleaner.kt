@@ -30,10 +30,10 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterBreakTheGlassHelper
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -42,7 +42,7 @@ internal class TrackedEntityEnrollmentOrphanCleaner(
     private val breakTheGlassHelper: TrackerImporterBreakTheGlassHelper,
 ) {
 
-    fun deleteOrphan(
+    suspend fun deleteOrphan(
         parent: TrackedEntityInstance?,
         children: Collection<Enrollment>?,
         program: String?,
@@ -66,11 +66,7 @@ internal class TrackedEntityEnrollmentOrphanCleaner(
             val deletedEnrollments = orphanEnrollments.filter { e -> isAccessibleByGlass(e, program) }
 
             if (deletedEnrollments.isNotEmpty()) {
-                val deleteWhereClause = WhereClauseBuilder()
-                    .appendInKeyStringValues(EnrollmentTableInfo.Columns.UID, deletedEnrollments.map { it.uid() })
-                    .build()
-
-                enrollmentStore.deleteWhere(deleteWhereClause)
+                enrollmentStore.deleteByUid(deletedEnrollments)
             }
 
             deletedEnrollments.isNotEmpty()
@@ -79,7 +75,7 @@ internal class TrackedEntityEnrollmentOrphanCleaner(
         }
     }
 
-    private fun isAccessibleByGlass(enrollment: Enrollment, program: String?): Boolean {
+    private suspend fun isAccessibleByGlass(enrollment: Enrollment, program: String?): Boolean {
         val isProtected = breakTheGlassHelper.isProtectedInSearchScope(
             program = enrollment.program(),
             organisationUnit = enrollment.organisationUnit(),

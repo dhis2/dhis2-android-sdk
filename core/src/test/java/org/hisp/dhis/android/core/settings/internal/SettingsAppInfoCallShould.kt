@@ -28,15 +28,9 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.doAnswer
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.stub
-import com.nhaarman.mockitokotlin2.whenever
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
-import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.settings.GeneralSettings
@@ -47,11 +41,16 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doAnswer
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.stub
+import org.mockito.kotlin.whenever
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 class SettingsAppInfoCallShould {
-    private val service: SettingAppService = mock()
+    private val networkHandler: SettingsNetworkHandler = mock()
     private val settingsAppInfo = SettingsAppInfo.builder()
         .dataStoreVersion(SettingsAppDataStoreVersion.V2_0)
         .build()
@@ -60,25 +59,26 @@ class SettingsAppInfoCallShould {
         .encryptDB(true)
         .build()
 
-    private val coroutineAPICallExecutor: CoroutineAPICallExecutorMock = CoroutineAPICallExecutorMock()
     private lateinit var dataSetSettingCall: SettingsAppInfoCall
 
     @Before
     fun setUp() {
-        service.stub {
-            onBlocking { info() } doAnswer { settingsAppInfo }
+        networkHandler.stub {
+            onBlocking { settingsAppInfo() } doAnswer { settingsAppInfo }
         }
 
-        service.stub {
-            onBlocking { generalSettings(SettingsAppDataStoreVersion.V1_1) } doAnswer { generalSettings }
+        networkHandler.stub {
+            onBlocking { generalSettings(SettingsAppDataStoreVersion.V1_1) } doAnswer {
+                Result.Success(generalSettings)
+            }
         }
 
-        dataSetSettingCall = SettingsAppInfoCall(service, coroutineAPICallExecutor)
+        dataSetSettingCall = SettingsAppInfoCall(networkHandler)
     }
 
     @Test
     fun default_to_version_2_if_info_found() = runTest {
-        when (val version = dataSetSettingCall.fetch(false)) {
+        when (val version = dataSetSettingCall.fetch()) {
             is SettingsAppVersion.Valid -> {
                 assertThat(version.dataStore).isEquivalentAccordingToCompareTo(SettingsAppDataStoreVersion.V2_0)
                 assertThat(version.app).isNotEmpty()
@@ -90,9 +90,9 @@ class SettingsAppInfoCallShould {
 
     @Test
     fun default_to_version_1_if_info_not_found() = runTest {
-        whenever(service.info()) doAnswer { throw D2ErrorSamples.notFound() }
+        whenever(networkHandler.settingsAppInfo()) doAnswer { throw D2ErrorSamples.notFound() }
 
-        when (val version = dataSetSettingCall.fetch(false)) {
+        when (val version = dataSetSettingCall.fetch()) {
             is SettingsAppVersion.Valid -> {
                 assertThat(version.dataStore).isEquivalentAccordingToCompareTo(SettingsAppDataStoreVersion.V1_1)
                 assertThat(version.app).isNotEmpty()
@@ -104,33 +104,33 @@ class SettingsAppInfoCallShould {
 
     @Test
     fun return_data_store_empty_if_cannot_found_anything() = runTest {
-        whenever(service.info()) doAnswer { throw D2ErrorSamples.notFound() }
-        whenever(service.generalSettings(any())) doAnswer { throw D2ErrorSamples.notFound() }
+        whenever(networkHandler.settingsAppInfo()) doAnswer { throw D2ErrorSamples.notFound() }
+        whenever(networkHandler.generalSettings(any())) doReturn Result.Failure(D2ErrorSamples.notFound())
 
-        val version = dataSetSettingCall.fetch(false)
+        val version = dataSetSettingCall.fetch()
 
         assertThat(version is SettingsAppVersion.DataStoreEmpty).isTrue()
     }
 
     @Test
     fun throws_D2_exception_if_other_error_than_not_found_in_general_settings() = runTest {
-        whenever(service.info()) doAnswer { throw D2ErrorSamples.notFound() }
-        whenever(service.generalSettings(any())) doAnswer { throw D2ErrorSamples.get() }
+        whenever(networkHandler.settingsAppInfo()) doAnswer { throw D2ErrorSamples.notFound() }
+        whenever(networkHandler.generalSettings(any())) doReturn Result.Failure(D2ErrorSamples.get())
 
         assertThrows(D2Error::class.java) {
             runBlocking {
-                dataSetSettingCall.fetch(false)
+                dataSetSettingCall.fetch()
             }
         }
     }
 
     @Test
     fun throws_D2_exception_if_other_error_than_not_found_in_info() = runTest {
-        whenever(service.info()) doAnswer { throw D2ErrorSamples.get() }
+        whenever(networkHandler.settingsAppInfo()) doAnswer { throw D2ErrorSamples.get() }
 
         assertThrows(D2Error::class.java) {
             runBlocking {
-                dataSetSettingCall.fetch(false)
+                dataSetSettingCall.fetch()
             }
         }
     }

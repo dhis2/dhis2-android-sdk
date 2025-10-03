@@ -30,7 +30,11 @@ package org.hisp.dhis.android.core.relationship.internal
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.relationship.*
+import org.hisp.dhis.android.core.relationship.BaseRelationship
+import org.hisp.dhis.android.core.relationship.Relationship
+import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
+import org.hisp.dhis.android.core.relationship.RelationshipHelper
+import org.hisp.dhis.android.core.relationship.RelationshipItem
 
 internal abstract class RelationshipOrphanCleaner<O : ObjectWithUidInterface, R : BaseRelationship>(
     private val relationshipStore: RelationshipStore,
@@ -38,7 +42,7 @@ internal abstract class RelationshipOrphanCleaner<O : ObjectWithUidInterface, R 
 ) : OrphanCleaner<O, R> {
     abstract fun getItem(uid: String): RelationshipItem
     abstract fun relationships(relationships: Collection<R>): Collection<Relationship>
-    override fun deleteOrphan(parent: O?, children: Collection<R>?): Boolean {
+    override suspend fun deleteOrphan(parent: O?, children: Collection<R>?): Boolean {
         if (parent == null || children == null) {
             return false
         }
@@ -48,7 +52,7 @@ internal abstract class RelationshipOrphanCleaner<O : ObjectWithUidInterface, R 
             if (isSynced(existingRelationship.syncState()!!) &&
                 !isInRelationshipList(existingRelationship, relationships(children))
             ) {
-                relationshipStore.delete(existingRelationship.uid()!!)
+                relationshipStore.deleteByEntity(existingRelationship)
                 count++
             }
         }

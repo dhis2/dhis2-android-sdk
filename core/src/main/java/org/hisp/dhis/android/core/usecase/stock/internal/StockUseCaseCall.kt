@@ -45,7 +45,7 @@ internal class StockUseCaseCall(
         return coroutineAPICallExecutor.wrap(storeError = storeError) { networkHandler.getStockUseCases() }
     }
 
-    override fun process(item: List<InternalStockUseCase>?) {
+    override suspend fun process(item: List<InternalStockUseCase>?) {
         val stockUseCases = item ?: emptyList()
         stockUseCaseHandler.handleMany(stockUseCases)
     }

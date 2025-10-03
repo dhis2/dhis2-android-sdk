@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListResponse
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListSortingItem
-import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.TrackerLineListServiceHelper.mapCursorToColumns
+import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.TrackerLineListServiceHelper.fetchDataWithD2Dao
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListEvaluatorMapper
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EnrollmentAlias
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EventAlias
@@ -41,14 +41,13 @@ import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.T
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.repositories.paging.PageConfig
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
-import org.hisp.dhis.android.core.event.EventTableInfo
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
 import org.hisp.dhis.android.core.visualization.TrackerVisualization
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationCollectionRepository
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.persistence.event.EventTableInfo
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceTableInfo
 import org.koin.core.annotation.Singleton
-import java.lang.RuntimeException
 
 @Singleton
 @Suppress("TooManyFunctions")
@@ -59,10 +58,9 @@ internal class TrackerLineListService(
     private val trackerVisualizationMapper: TrackerVisualizationMapper,
 ) {
     @Suppress("TooGenericExceptionCaught")
-    fun evaluate(params: TrackerLineListParams): Result<TrackerLineListResponse, AnalyticsException> {
+    suspend fun evaluate(params: TrackerLineListParams): Result<TrackerLineListResponse, AnalyticsException> {
         return try {
             val evaluatedParams = evaluateParams(params)
-
             if (evaluatedParams.outputType == null) {
                 throw AnalyticsException.InvalidArguments("Output type cannot be empty.")
             }
@@ -71,16 +69,17 @@ internal class TrackerLineListService(
             val context = TrackerLineListContext(metadata, databaseAdapter)
 
             val sqlClause = when (evaluatedParams.outputType) {
-                TrackerLineListOutputType.EVENT -> getEventSqlClause(evaluatedParams, context)
-                TrackerLineListOutputType.ENROLLMENT -> getEnrollmentSqlClause(evaluatedParams, context)
-                TrackerLineListOutputType.TRACKED_ENTITY_INSTANCE -> getTrackedEntityInstanceSqlClause(
-                    evaluatedParams,
-                    context,
-                )
+                TrackerLineListOutputType.EVENT ->
+                    getEventSqlClause(evaluatedParams, context)
+
+                TrackerLineListOutputType.ENROLLMENT ->
+                    getEnrollmentSqlClause(evaluatedParams, context)
+
+                TrackerLineListOutputType.TRACKED_ENTITY_INSTANCE ->
+                    getTrackedEntityInstanceSqlClause(evaluatedParams, context)
             }
 
-            val cursor = databaseAdapter.rawQuery(sqlClause)
-            val values = mapCursorToColumns(evaluatedParams, cursor)
+            val values = fetchDataWithD2Dao(sqlClause, evaluatedParams, databaseAdapter)
 
             Result.Success(
                 TrackerLineListResponse(
@@ -97,7 +96,7 @@ internal class TrackerLineListService(
         }
     }
 
-    private fun evaluateParams(params: TrackerLineListParams): TrackerLineListParams {
+    private suspend fun evaluateParams(params: TrackerLineListParams): TrackerLineListParams {
         return params
             .run {
                 if (this.trackerVisualization != null) {
@@ -120,7 +119,7 @@ internal class TrackerLineListService(
             .blockingGet()
     }
 
-    private fun getEventSqlClause(params: TrackerLineListParams, context: TrackerLineListContext): String {
+    private suspend fun getEventSqlClause(params: TrackerLineListParams, context: TrackerLineListContext): String {
         return "SELECT " +
             "${getEventSelectColumns(params, context)} " +
             "FROM ${EventTableInfo.TABLE_INFO.name()} $EventAlias " +
@@ -141,7 +140,7 @@ internal class TrackerLineListService(
             appendPaging(params.pageConfig)
     }
 
-    private fun getEnrollmentSqlClause(params: TrackerLineListParams, context: TrackerLineListContext): String {
+    private suspend fun getEnrollmentSqlClause(params: TrackerLineListParams, context: TrackerLineListContext): String {
         return "SELECT " +
             "${getEnrollmentSelectColumns(params, context)} " +
             "FROM ${EnrollmentTableInfo.TABLE_INFO.name()} $EnrollmentAlias " +
@@ -159,7 +158,7 @@ internal class TrackerLineListService(
             appendPaging(params.pageConfig)
     }
 
-    private fun getTrackedEntityInstanceSqlClause(
+    private suspend fun getTrackedEntityInstanceSqlClause(
         params: TrackerLineListParams,
         context: TrackerLineListContext,
     ): String {
@@ -181,25 +180,31 @@ internal class TrackerLineListService(
             appendPaging(params.pageConfig)
     }
 
-    private fun getEventSelectColumns(params: TrackerLineListParams, context: TrackerLineListContext): String {
-        return params.allItems.joinToString(", ") {
+    private suspend fun getEventSelectColumns(params: TrackerLineListParams, context: TrackerLineListContext): String {
+        return params.allItems.map {
             "(${TrackerLineListEvaluatorMapper.getEvaluator(it, context).getSelectSQLForEvent()}) '${it.id}'"
-        }
+        }.joinToString(", ")
     }
 
-    private fun getEventWhereClause(params: TrackerLineListParams, context: TrackerLineListContext): String {
-        return params.allItems.joinToString(" AND ") {
+    private suspend fun getEventWhereClause(params: TrackerLineListParams, context: TrackerLineListContext): String {
+        return params.allItems.map {
             TrackerLineListEvaluatorMapper.getEvaluator(it, context).getWhereSQLForEvent()
-        }
+        }.joinToString(" AND ")
     }
 
-    private fun getEnrollmentSelectColumns(params: TrackerLineListParams, context: TrackerLineListContext): String {
-        return params.allItems.joinToString(", ") {
+    private suspend fun getEnrollmentSelectColumns(
+        params: TrackerLineListParams,
+        context: TrackerLineListContext,
+    ): String {
+        return params.allItems.map {
             "(${TrackerLineListEvaluatorMapper.getEvaluator(it, context).getSelectSQLForEnrollment()}) '${it.id}'"
-        }
+        }.joinToString(", ")
     }
 
-    private fun getEnrollmentWhereClause(params: TrackerLineListParams, context: TrackerLineListContext): String {
+    private suspend fun getEnrollmentWhereClause(
+        params: TrackerLineListParams,
+        context: TrackerLineListContext,
+    ): String {
         val unflattenedRepeatedDataElements = params.allItems.groupBy { item ->
             when (item) {
                 is TrackerLineListItem.ProgramDataElement -> item.stageDataElementIdx
@@ -207,27 +212,29 @@ internal class TrackerLineListService(
             }
         }
 
-        return unflattenedRepeatedDataElements.values.joinToString(" AND ") { items ->
-            val orClause = items.joinToString(" OR ") {
+        return unflattenedRepeatedDataElements.values.map { items ->
+            val orClause = items.map {
                 TrackerLineListEvaluatorMapper.getEvaluator(it, context).getWhereSQLForEnrollment()
-            }
+            }.joinToString(" OR ")
             "($orClause)"
-        }
+        }.joinToString(" AND ")
     }
 
-    private fun getTrackedEntityInstanceSelectColumns(
+    private suspend fun getTrackedEntityInstanceSelectColumns(
         params: TrackerLineListParams,
         context: TrackerLineListContext,
     ): String {
-        return params.allItems.joinToString(", ") {
-            "(${TrackerLineListEvaluatorMapper.getEvaluator(
-                it,
-                context,
-            ).getSelectSQLForTrackedEntityInstance()}) '${it.id}'"
-        }
+        return params.allItems.map {
+            "(${
+                TrackerLineListEvaluatorMapper.getEvaluator(
+                    it,
+                    context,
+                ).getSelectSQLForTrackedEntityInstance()
+            }) '${it.id}'"
+        }.joinToString(", ")
     }
 
-    private fun getTrackedEntityInstanceWhereClause(
+    private suspend fun getTrackedEntityInstanceWhereClause(
         params: TrackerLineListParams,
         context: TrackerLineListContext,
     ): String {
@@ -238,12 +245,12 @@ internal class TrackerLineListService(
             }
         }
 
-        return unflattenedRepeatedDataElements.values.joinToString(" AND ") { items ->
-            val orClause = items.joinToString(" OR ") {
+        return unflattenedRepeatedDataElements.values.map { items ->
+            val orClause = items.map {
                 TrackerLineListEvaluatorMapper.getEvaluator(it, context).getWhereSQLForTrackedEntityInstance()
-            }
+            }.joinToString(" OR ")
             "($orClause)"
-        }
+        }.joinToString(" AND ")
     }
 
     private fun appendPaging(pageConfig: PageConfig): String {

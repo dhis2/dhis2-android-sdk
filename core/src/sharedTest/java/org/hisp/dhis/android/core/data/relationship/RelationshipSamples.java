@@ -89,7 +89,6 @@ public class RelationshipSamples {
 
     public static Relationship getRelationshipToInsertOnDB() {
         return commonBuilder
-                .id(1L)
                 .uid(UID)
                 .relationshipType(TYPE)
                 .build();

@@ -36,7 +36,7 @@ internal class E1064Interpreter internal constructor(
     override val regex: Regex,
 ) : ErrorCodeInterpreter {
     override val unformattedDescription = R.string.E1064
-    override fun companions(error: JobValidationError): List<String> {
+    override suspend fun companions(error: JobValidationError): List<String> {
         val values = regex.find(error.message)!!.groupValues
         val attributeValue = values[1]
         val attributeUid = values.last()

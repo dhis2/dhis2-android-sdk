@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
@@ -40,12 +41,11 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntity1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntity2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntityType
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.AnalyticsType
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.RelativePeriod
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl
-import org.hisp.dhis.android.core.event.internal.EventStoreImpl
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryType
 import org.hisp.dhis.android.core.program.ProgramIndicator
@@ -59,15 +59,15 @@ import org.junit.runner.RunWith
 internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegrationShould() {
 
     private val programIndicatorEvaluator = ProgramIndicatorEvaluator(
-        EventStoreImpl(databaseAdapter),
-        EnrollmentStoreImpl(databaseAdapter),
+        koin.get(),
+        koin.get(),
         d2.programModule().programIndicatorEngine(),
     )
 
-    private val helper = BaseTrackerDataIntegrationHelper(databaseAdapter)
+    private val helper = BaseTrackerDataIntegrationHelper()
 
     @Test
-    fun should_aggregate_data_from_multiple_teis() {
+    fun should_aggregate_data_from_multiple_teis() = runTest {
         createSampleData()
 
         val valueSum = evaluateIndicator(
@@ -87,7 +87,7 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
     }
 
     @Test
-    fun should_override_aggregation_type() {
+    fun should_override_aggregation_type() = runTest {
         createSampleData()
 
         val defaultValue = evaluateIndicator(
@@ -106,7 +106,7 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
         assertThat(overrideValue).isEqualTo("15.0")
     }
 
-    private fun createSampleData() {
+    private suspend fun createSampleData() {
         helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment1 = generator.generate()
         helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
@@ -137,7 +137,7 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
         helper.insertTrackedEntityDataValue(event2, dataElement1.uid(), "20")
     }
 
-    private fun evaluateIndicator(
+    private suspend fun evaluateIndicator(
         programIndicator: ProgramIndicator,
         overrideAggregationType: AggregationType = AggregationType.DEFAULT,
     ): String? {
@@ -158,7 +158,7 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
         )
     }
 
-    private fun setProgramIndicator(
+    private suspend fun setProgramIndicator(
         expression: String,
         filter: String? = null,
         analyticsType: AnalyticsType? = AnalyticsType.EVENT,

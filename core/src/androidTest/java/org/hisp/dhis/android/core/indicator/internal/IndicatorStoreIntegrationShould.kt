@@ -32,8 +32,9 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.indicator.IndicatorSamples
 import org.hisp.dhis.android.core.indicator.Indicator
-import org.hisp.dhis.android.core.indicator.IndicatorTableInfo
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.persistence.indicator.IndicatorStoreImpl
+import org.hisp.dhis.android.persistence.indicator.IndicatorTableInfo
 
 class IndicatorStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<Indicator>(
     IndicatorStoreImpl(TestDatabaseAdapterFactory.get()),

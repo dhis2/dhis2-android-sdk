@@ -31,8 +31,8 @@ package org.hisp.dhis.android.testapp.maintenance;
 import org.hisp.dhis.android.core.common.IdentifiableColumns;
 import org.hisp.dhis.android.core.maintenance.D2Error;
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
-import org.hisp.dhis.android.core.option.OptionSetTableInfo;
-import org.hisp.dhis.android.core.option.OptionTableInfo;
+import org.hisp.dhis.android.persistence.option.OptionSetTableInfo;
+import org.hisp.dhis.android.persistence.option.OptionTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.junit.Test;
@@ -62,7 +62,7 @@ public class MaintenanceMockIntegrationShould extends BaseMockIntegrationTestFul
 
         List<ForeignKeyViolation> violationsToCompare = new ArrayList<>();
         for (ForeignKeyViolation violation : violations) {
-            violationsToCompare.add(violation.toBuilder().id(null).created(null).fromObjectRow(null).build());
+            violationsToCompare.add(violation.toBuilder().created(null).fromObjectRow(null).build());
         }
 
         assertThat(violationsToCompare.contains(optionViolation)).isTrue();

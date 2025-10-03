@@ -1,5 +1,5 @@
+import org.gradle.api.tasks.Sync
 import org.jetbrains.dokka.gradle.DokkaTask
-
 
 /*
  * Copyright (c) 2016, University of Oslo
@@ -31,12 +31,13 @@ import org.jetbrains.dokka.gradle.DokkaTask
 
 plugins {
     id("com.android.library")
-    id("com.google.devtools.ksp") version "${libs.versions.kotlin.get()}-1.0.24"
     id("kotlin-android")
     id("kotlin-kapt")
     id("maven-publish-conventions")
     id("jacoco-conventions")
+    alias(libs.plugins.ksp)
     alias(libs.plugins.detekt)
+    alias(libs.plugins.sonarqube)
     alias(libs.plugins.api.compatibility)
     alias(libs.plugins.kotlin.serialization)
 }
@@ -47,13 +48,26 @@ apply(from = project.file("plugins/android-pmd.gradle"))
 repositories {
     mavenCentral()
     maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
+    gradlePluginPortal()
+    google()
 }
 
 group = rootProject.group
 version = rootProject.version
 
-kotlin {
-    jvmToolchain(17)
+val copySharedTestResourcesToAndroidTest by tasks.register<Sync>("copySharedTestResourcesToAndroidTest") {
+    from(layout.projectDirectory.dir("src/sharedTest/resources"))
+    into(layout.buildDirectory.dir("generated/sharedAndroidTest/resources"))
+}
+
+tasks.named("preBuild").configure {
+    dependsOn(copySharedTestResourcesToAndroidTest)
+}
+
+tasks.configureEach {
+    if (name.startsWith("pre") && name.endsWith("AndroidTestBuild")) {
+        dependsOn(copySharedTestResourcesToAndroidTest)
+    }
 }
 
 android {
@@ -68,17 +82,10 @@ android {
 
         buildConfigField("long", "VERSION_CODE", libs.versions.dhis2AndroidSdkCode.get())
         buildConfigField("String", "VERSION_NAME", "\"$version\"")
-
-        kotlinOptions {
-            freeCompilerArgs += "-opt-in=kotlinx.serialization.ExperimentalSerializationApi"
-        }
     }
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
-
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
     }
 
     packaging {
@@ -98,12 +105,15 @@ android {
         sourceSets.getByName("main") {
             java.srcDirs("build/generated/ksp/main/kotlin")
         }
-        sourceSets.getByName("test") {
+        getByName("test") {
             resources.srcDirs("src/sharedTest/resources")
         }
-        sourceSets.getByName("androidTest") {
+        getByName("androidTest") {
             java.srcDirs("src/sharedTest/java")
-            resources.srcDirs("src/sharedTest/resources")
+            resources.srcDirs(
+                "src/sharedAndroidTest/resources",
+                layout.buildDirectory.dir("generated/sharedAndroidTest/resources"),
+            )
         }
     }
 
@@ -125,9 +135,18 @@ android {
     }
 }
 
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-opt-in=kotlinx.serialization.ExperimentalSerializationApi")
+    }
+}
+
 dependencies {
 
     coreLibraryDesugaring(libs.desugaring)
+
+    ksp(project(":processor"))
+    compileOnly(project(":annotations"))
 
     // RxJava
     api(libs.rx.java)
@@ -166,19 +185,19 @@ dependencies {
     // DHIS2 libraries
     api(libs.dhis2.compression)
     api(libs.dhis2.antlr.parser)
-
-    // Extension which generates mappers for work with cursor and content values
-    api(libs.auto.value.cursor.annotations)
-    kapt(libs.auto.value.cursor)
-
-    api(libs.sqlcipher)
-    // From SQLCipher 4.5.5, it depends on androidx.sqlite:sqlite
-    api(libs.sqlite)
+    implementation(libs.dhis2.peg.parser)
 
     implementation(libs.zip4j)
 
     implementation(libs.openid.appauth)
     implementation(libs.listenablefuture.empty)
+
+    // Database
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.paging)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.sqlite.bundled)
+    api(libs.sqlcipher)
 
     // Java test dependencies
     testImplementation(libs.junit)
@@ -204,6 +223,11 @@ dependencies {
     }
     androidTestImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.paging.testing)
+}
+
+ksp {
+    arg("migrationDir", "$rootDir/core/src/main/assets/migrations")
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 detekt {
@@ -242,4 +266,25 @@ tasks.withType<DokkaTask>().configureEach {
 
 tasks.dokkaJavadoc.configure {
     dependsOn("kaptReleaseKotlin")
+}
+
+sonarqube {
+    properties {
+        val branch = System.getenv("GIT_BRANCH")
+        val targetBranch = System.getenv("GIT_BRANCH_DEST")
+        val pullRequestId = System.getenv("PULL_REQUEST")
+
+        property("sonar.projectKey", "dhis2_dhis2-android-sdk")
+        property("sonar.organization", "dhis2")
+        property("sonar.host.url", "https://sonarcloud.io")
+        property("sonar.projectName", "dhis2-android-sdk")
+
+        if (pullRequestId == null) {
+            property("sonar.branch.name", branch)
+        } else {
+            property("sonar.pullrequest.base", targetBranch)
+            property("sonar.pullrequest.branch", branch)
+            property("sonar.pullrequest.key", pullRequestId)
+        }
+    }
 }

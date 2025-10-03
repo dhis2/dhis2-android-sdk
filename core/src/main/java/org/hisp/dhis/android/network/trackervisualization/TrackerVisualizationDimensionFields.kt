@@ -29,9 +29,9 @@ package org.hisp.dhis.android.network.trackervisualization
 
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionRepetition
-import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.persistence.visualization.TrackerVisualizationDimensionTableInfo.Columns
 
 internal object TrackerVisualizationDimensionFields : BaseFields<TrackerVisualizationDimension>() {
     val allFields = Fields.from(

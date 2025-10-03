@@ -28,20 +28,20 @@
 
 package org.hisp.dhis.android.core.data.dataelement;
 
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
+
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
-
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
 
 public class DataElementOperandSamples {
 
     public static DataElementOperand getDataElementOperand() {
         DataElementOperand.Builder builder = DataElementOperand.builder();
         builder
-                .id(1L)
                 .uid(UID)
                 .dataElement(ObjectWithUid.create("dataElement"))
-                .categoryOptionCombo(ObjectWithUid.create("optionCombo"));
+                .categoryOptionCombo(ObjectWithUid.create("optionCombo"))
+                .deleted(Boolean.FALSE);
         return builder.build();
     }
 }

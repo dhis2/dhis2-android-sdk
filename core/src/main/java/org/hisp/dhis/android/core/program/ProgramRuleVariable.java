@@ -28,15 +28,10 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbProgramRuleVariableSourceTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -48,28 +43,19 @@ public abstract class ProgramRuleVariable extends BaseIdentifiableObject impleme
     public abstract Boolean useCodeForOptionSet();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid program();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid programStage();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid dataElement();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid trackedEntityAttribute();
 
     @Nullable
-    @ColumnAdapter(DbProgramRuleVariableSourceTypeColumnAdapter.class)
     public abstract ProgramRuleVariableSourceType programRuleVariableSourceType();
-
-    public static ProgramRuleVariable create(Cursor cursor) {
-        return AutoValue_ProgramRuleVariable.createFromCursor(cursor);
-    }
 
     public static Builder builder() {
         return new AutoValue_ProgramRuleVariable.Builder();
@@ -79,8 +65,6 @@ public abstract class ProgramRuleVariable extends BaseIdentifiableObject impleme
 
     @AutoValue.Builder
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
         public abstract Builder useCodeForOptionSet(Boolean useCodeForOptionSet);
 
         public abstract Builder program(ObjectWithUid program);

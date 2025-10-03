@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.enrollment
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl
@@ -46,33 +45,31 @@ import org.hisp.dhis.android.core.common.internal.TrackerDataManager
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentProjectionTransformer
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.note.internal.NoteForEnrollmentChildrenAppender
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 @Suppress("TooManyFunctions")
 class EnrollmentCollectionRepository internal constructor(
     private val enrollmentStore: EnrollmentStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
     transformer: EnrollmentProjectionTransformer,
     private val trackerDataManager: TrackerDataManager,
 ) : ReadWriteWithUidCollectionRepositoryImpl<Enrollment, EnrollmentCreateProjection, EnrollmentCollectionRepository>(
     enrollmentStore,
-    databaseAdapter,
     childrenAppenders,
     scope,
     transformer,
     FilterConnectorFactory(scope) { s: RepositoryScope ->
         EnrollmentCollectionRepository(
             enrollmentStore,
-            databaseAdapter,
             s,
             transformer,
             trackerDataManager,
         )
     },
 ) {
-    override fun propagateState(m: Enrollment, action: HandleAction?) {
+    override suspend fun propagateState(m: Enrollment, action: HandleAction?) {
         trackerDataManager.propagateEnrollmentUpdate(m, action!!)
     }
 
@@ -81,7 +78,6 @@ class EnrollmentCollectionRepository internal constructor(
         return EnrollmentObjectRepository(
             enrollmentStore,
             uid,
-            databaseAdapter,
             childrenAppenders,
             updatedScope,
             trackerDataManager,
@@ -125,7 +121,7 @@ class EnrollmentCollectionRepository internal constructor(
     }
 
     fun byFollowUp(): BooleanFilterConnector<EnrollmentCollectionRepository> {
-        return cf.bool(EnrollmentTableInfo.Columns.FOLLOW_UP)
+        return cf.bool(EnrollmentTableInfo.Columns.FOLLOWUP)
     }
 
     fun byStatus(): EnumFilterConnector<EnrollmentCollectionRepository, EnrollmentStatus> {

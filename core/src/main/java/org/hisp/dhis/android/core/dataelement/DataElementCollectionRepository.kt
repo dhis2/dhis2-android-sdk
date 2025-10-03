@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.dataelement
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
@@ -39,17 +38,16 @@ import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.dataelement.internal.DataElementAttributeChildrenAppender
 import org.hisp.dhis.android.core.dataelement.internal.DataElementLegendSetChildrenAppender
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
+import org.hisp.dhis.android.persistence.dataelement.DataElementTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 @Suppress("TooManyFunctions")
 class DataElementCollectionRepository internal constructor(
     store: DataElementStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<DataElement, DataElementCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -57,7 +55,6 @@ class DataElementCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         DataElementCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },

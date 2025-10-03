@@ -28,16 +28,10 @@
 
 package org.hisp.dhis.android.core.category;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.AccessColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreObjectWithUidListColumnAdapter;
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
@@ -51,26 +45,19 @@ import java.util.List;
 public abstract class CategoryOption extends BaseNameableObject implements CoreObject {
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date startDate();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date endDate();
 
-    @ColumnAdapter(AccessColumnAdapter.class)
     public abstract Access access();
 
     /**
      * This method only return results in versions greater or equal to 2.37.
      */
     @Nullable
-    @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)
     public abstract List<ObjectWithUid> organisationUnits();
 
-    public static CategoryOption create(Cursor cursor) {
-        return $AutoValue_CategoryOption.createFromCursor(cursor);
-    }
 
     public abstract Builder toBuilder();
 
@@ -80,8 +67,6 @@ public abstract class CategoryOption extends BaseNameableObject implements CoreO
 
     @AutoValue.Builder
     public abstract static class Builder extends BaseNameableObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
         public abstract Builder startDate(@Nullable Date startDate);
 
         public abstract Builder endDate(@Nullable Date endDate);

@@ -31,9 +31,9 @@ package org.hisp.dhis.android.core.attribute.internal
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQueryBuilder
 import org.hisp.dhis.android.core.arch.db.uidseeker.internal.BaseUidsSeeker
-import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLinkTableInfo
-import org.hisp.dhis.android.core.attribute.ProgramAttributeValueLinkTableInfo
-import org.hisp.dhis.android.core.attribute.ProgramStageAttributeValueLinkTableInfo
+import org.hisp.dhis.android.persistence.attribute.DataElementAttributeValueLinkTableInfo
+import org.hisp.dhis.android.persistence.attribute.ProgramAttributeValueLinkTableInfo
+import org.hisp.dhis.android.persistence.attribute.ProgramStageAttributeValueLinkTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -41,7 +41,7 @@ internal class AttributeUidsSeeker(
     databaseAdapter: DatabaseAdapter,
 ) : BaseUidsSeeker(databaseAdapter) {
 
-    fun seekUids(): Set<String> {
+    suspend fun seekUids(): Set<String> {
         val tableNames = listOf(
             DataElementAttributeValueLinkTableInfo.TABLE_INFO.name(),
             ProgramAttributeValueLinkTableInfo.TABLE_INFO.name(),

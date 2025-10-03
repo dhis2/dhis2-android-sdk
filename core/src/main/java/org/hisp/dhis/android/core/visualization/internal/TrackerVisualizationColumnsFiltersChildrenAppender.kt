@@ -27,23 +27,16 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.singleParentChildStore
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.SingleParentChildProjection
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.visualization.LayoutPosition
 import org.hisp.dhis.android.core.visualization.TrackerVisualization
-import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension
-import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionTableInfo
 
 internal class TrackerVisualizationColumnsFiltersChildrenAppender private constructor(
-    private val linkChildStore: SingleParentChildStore<TrackerVisualization, TrackerVisualizationDimension>,
+    private val childStore: TrackerVisualizationDimensionStore,
 ) : ChildrenAppender<TrackerVisualization>() {
-    override fun appendChildren(m: TrackerVisualization): TrackerVisualization {
-        val items = linkChildStore.getChildren(m)
-        val groupedByPosition = items
+    override suspend fun appendChildren(m: TrackerVisualization): TrackerVisualization {
+        val groupedByPosition = childStore.getTrackerVisualizationDimensionForTrackerVisualization(m.uid())
             .groupBy { it.position() }
 
         return m.toBuilder()
@@ -53,18 +46,8 @@ internal class TrackerVisualizationColumnsFiltersChildrenAppender private constr
     }
 
     companion object {
-        private val CHILD_PROJECTION = SingleParentChildProjection(
-            TrackerVisualizationDimensionTableInfo.TABLE_INFO,
-            TrackerVisualizationDimensionTableInfo.Columns.TRACKER_VISUALIZATION,
-        )
-
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<TrackerVisualization> {
-            return TrackerVisualizationColumnsFiltersChildrenAppender(
-                singleParentChildStore(
-                    databaseAdapter,
-                    CHILD_PROJECTION,
-                ) { cursor: Cursor -> TrackerVisualizationDimension.create(cursor) },
-            )
+        fun create(): ChildrenAppender<TrackerVisualization> {
+            return TrackerVisualizationColumnsFiltersChildrenAppender(koin.get())
         }
     }
 }

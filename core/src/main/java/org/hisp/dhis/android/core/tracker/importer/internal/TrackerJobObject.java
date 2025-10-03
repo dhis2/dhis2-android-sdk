@@ -28,26 +28,19 @@
 
 package org.hisp.dhis.android.core.tracker.importer.internal;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringArrayColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.TrackerImporterObjectTypeColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
 import java.util.List;
 
 @AutoValue
-public abstract class TrackerJobObject extends BaseObject {
+public abstract class TrackerJobObject implements CoreObject {
 
     @NonNull
-    @ColumnAdapter(TrackerImporterObjectTypeColumnAdapter.class)
     public abstract TrackerImporterObjectType trackerType();
 
     @NonNull
@@ -57,26 +50,19 @@ public abstract class TrackerJobObject extends BaseObject {
     public abstract String jobUid();
 
     @NonNull
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
     @NonNull
-    @ColumnAdapter(StringArrayColumnAdapter.class)
     public abstract List<String> fileResources();
 
-    @NonNull
-    public static TrackerJobObject create(Cursor cursor) {
-        return AutoValue_TrackerJobObject.createFromCursor(cursor);
-    }
-
     public static Builder builder() {
-        return new $$AutoValue_TrackerJobObject.Builder();
+        return new AutoValue_TrackerJobObject.Builder();
     }
 
     abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder {
         public abstract Builder trackerType(TrackerImporterObjectType trackerType);
 
         public abstract Builder objectUid(String objectUid);

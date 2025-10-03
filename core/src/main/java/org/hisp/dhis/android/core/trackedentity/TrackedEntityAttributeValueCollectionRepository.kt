@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
@@ -37,17 +36,16 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeValueTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 class TrackedEntityAttributeValueCollectionRepository internal constructor(
     private val store: TrackedEntityAttributeValueStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
     private val dataStatePropagator: DataStatePropagator,
 ) : ReadOnlyCollectionRepositoryImpl<TrackedEntityAttributeValue, TrackedEntityAttributeValueCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -55,7 +53,6 @@ class TrackedEntityAttributeValueCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         TrackedEntityAttributeValueCollectionRepository(
             store,
-            databaseAdapter,
             s,
             dataStatePropagator,
         )
@@ -69,7 +66,6 @@ class TrackedEntityAttributeValueCollectionRepository internal constructor(
             .byTrackedEntityInstance().eq(trackedEntityInstance).scope
         return TrackedEntityAttributeValueObjectRepository(
             store,
-            databaseAdapter,
             childrenAppenders,
             updatedScope,
             dataStatePropagator,

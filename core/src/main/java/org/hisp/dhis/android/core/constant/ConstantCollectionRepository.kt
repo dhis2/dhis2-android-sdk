@@ -27,23 +27,21 @@
  */
 package org.hisp.dhis.android.core.constant
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DoubleFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.constant.internal.ConstantStore
+import org.hisp.dhis.android.persistence.constant.ConstantTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 class ConstantCollectionRepository internal constructor(
     store: ConstantStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<Constant, ConstantCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -51,7 +49,6 @@ class ConstantCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         ConstantCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },

@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.enrollment
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
@@ -45,20 +44,17 @@ import java.util.Date
 class EnrollmentObjectRepository internal constructor(
     store: EnrollmentStore,
     uid: String?,
-    databaseAdapter: DatabaseAdapter,
     childrenAppenders: ChildrenAppenderGetter<Enrollment>,
     scope: RepositoryScope,
     private val trackerDataManager: TrackerDataManager,
 ) : ReadWriteWithUidDataObjectRepositoryImpl<Enrollment, EnrollmentObjectRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     ObjectRepositoryFactory { s: RepositoryScope ->
         EnrollmentObjectRepository(
             store,
             uid,
-            databaseAdapter,
             childrenAppenders,
             s,
             trackerDataManager,
@@ -128,11 +124,11 @@ class EnrollmentObjectRepository internal constructor(
             .lastUpdatedAtClient(updateDate)
     }
 
-    override fun propagateState(m: Enrollment, action: HandleAction) {
+    override suspend fun propagateState(m: Enrollment, action: HandleAction) {
         trackerDataManager.propagateEnrollmentUpdate(m, action)
     }
 
-    override fun deleteObject(m: Enrollment) {
+    override suspend fun deleteObject(m: Enrollment) {
         trackerDataManager.deleteEnrollment(m)
     }
 }

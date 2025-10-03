@@ -31,12 +31,12 @@ import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo.Columns
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.enrollment.EnrollmentFields
 import org.hisp.dhis.android.network.relationship.RelationshipFields
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceTableInfo.Columns
 
 internal object TrackedEntityInstanceFields : BaseFields<TrackedEntityInstance>() {
     const val UID = "trackedEntityInstance"

@@ -28,17 +28,15 @@
 
 package org.hisp.dhis.android.core.usecase.stock;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
-public abstract class InternalStockUseCaseTransaction extends BaseObject {
+public abstract class InternalStockUseCaseTransaction implements CoreObject {
 
     @Nullable
     public abstract String programUid();
@@ -61,18 +59,14 @@ public abstract class InternalStockUseCaseTransaction extends BaseObject {
     @Nullable
     public abstract String stockCount();
 
-    public static InternalStockUseCaseTransaction create(Cursor cursor) {
-        return AutoValue_InternalStockUseCaseTransaction.createFromCursor(cursor);
-    }
-
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new $$AutoValue_InternalStockUseCaseTransaction.Builder();
+        return new AutoValue_InternalStockUseCaseTransaction.Builder();
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder {
 
         public abstract Builder programUid(String programUid);
 

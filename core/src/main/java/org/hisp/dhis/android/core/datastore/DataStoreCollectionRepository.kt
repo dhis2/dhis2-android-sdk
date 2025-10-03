@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.datastore
 
 import io.reactivex.Observable
 import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
@@ -44,20 +43,19 @@ import org.hisp.dhis.android.core.common.DeletableColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryStore
 import org.hisp.dhis.android.core.datastore.internal.DataStorePostCall
+import org.hisp.dhis.android.persistence.datastore.DataStoreTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 class DataStoreCollectionRepository internal constructor(
     private val store: DataStoreEntryStore,
     private val call: DataStorePostCall,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyCollectionRepositoryImpl<DataStoreEntry, DataStoreCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
-    FilterConnectorFactory(scope) { s -> DataStoreCollectionRepository(store, call, databaseAdapter, s) },
+    FilterConnectorFactory(scope) { s -> DataStoreCollectionRepository(store, call, s) },
 ),
     ReadOnlyWithUploadCollectionRepository<DataStoreEntry> {
     override fun upload(): Observable<D2Progress> {
@@ -77,19 +75,19 @@ class DataStoreCollectionRepository internal constructor(
             .byKey().eq(key)
             .scope
 
-        return DataStoreObjectRepository(store, databaseAdapter, childrenAppenders, valueScope, namespace, key)
+        return DataStoreObjectRepository(store, childrenAppenders, valueScope, namespace, key)
     }
 
     fun byNamespace(): StringFilterConnector<DataStoreCollectionRepository> {
-        return cf.string(DataStoreEntryTableInfo.Columns.NAMESPACE)
+        return cf.string(DataStoreTableInfo.Columns.NAMESPACE)
     }
 
     fun byKey(): StringFilterConnector<DataStoreCollectionRepository> {
-        return cf.string(DataStoreEntryTableInfo.Columns.KEY)
+        return cf.string(DataStoreTableInfo.Columns.KEY)
     }
 
     fun byValue(): StringFilterConnector<DataStoreCollectionRepository> {
-        return cf.string(DataStoreEntryTableInfo.Columns.VALUE)
+        return cf.string(DataStoreTableInfo.Columns.VALUE)
     }
 
     fun bySyncState(): EnumFilterConnector<DataStoreCollectionRepository, State> {

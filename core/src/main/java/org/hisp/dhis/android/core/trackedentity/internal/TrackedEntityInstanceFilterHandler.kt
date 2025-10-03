@@ -39,14 +39,14 @@ internal class TrackedEntityInstanceFilterHandler(
     private val attributeValueFilterHandler: AttributeValueFilterHandler,
 ) : IdentifiableHandlerImpl<TrackedEntityInstanceFilter>(trackedEntityInstanceFilterStore) {
 
-    override fun beforeCollectionHandled(
+    override suspend fun beforeCollectionHandled(
         oCollection: Collection<TrackedEntityInstanceFilter>,
     ): Collection<TrackedEntityInstanceFilter> {
         store.delete()
         return super.beforeCollectionHandled(oCollection)
     }
 
-    override fun afterObjectHandled(o: TrackedEntityInstanceFilter, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: TrackedEntityInstanceFilter, action: HandleAction) {
         if (action !== HandleAction.Delete) {
             trackedEntityInstanceEventFilterHandler.handleMany(o.eventFilters())
             o.entityQueryCriteria().attributeValueFilters()?.let { attributeValueFilterHandler.handleMany(it) }

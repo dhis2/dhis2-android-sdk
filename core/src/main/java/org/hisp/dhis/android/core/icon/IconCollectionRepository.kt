@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.icon
 
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore
 import org.hisp.dhis.android.core.icon.internal.CustomIconStore
@@ -43,10 +45,14 @@ class IconCollectionRepository internal constructor(
     fun key(key: String): ReadOnlyObjectRepository<Icon> {
         return object : ReadOnlyObjectRepository<Icon> {
             override fun get(): Single<Icon?> {
-                return Single.fromCallable { blockingGet() }
+                return rxSingle { getInternal()!! }.map { it }
             }
 
             override fun blockingGet(): Icon? {
+                return runBlocking { getInternal() }
+            }
+
+            private suspend fun getInternal(): Icon? {
                 return if (DefaultIcon.all.contains(key)) {
                     Icon.Default(key)
                 } else {
@@ -58,11 +64,15 @@ class IconCollectionRepository internal constructor(
             }
 
             override fun exists(): Single<Boolean> {
-                return Single.fromCallable { blockingExists() }
+                return rxSingle { existInternal() }
             }
 
             override fun blockingExists(): Boolean {
-                return blockingGet() != null
+                return runBlocking { existInternal() }
+            }
+
+            private suspend fun existInternal(): Boolean {
+                return getInternal() != null
             }
         }
     }

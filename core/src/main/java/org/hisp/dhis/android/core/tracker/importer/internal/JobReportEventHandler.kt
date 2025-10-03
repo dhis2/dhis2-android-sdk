@@ -32,14 +32,15 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
-import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
-import org.hisp.dhis.android.core.note.NoteTableInfo
 import org.hisp.dhis.android.core.note.internal.NoteStore
+import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
+import org.hisp.dhis.android.persistence.event.EventTableInfo
+import org.hisp.dhis.android.persistence.note.NoteTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -53,7 +54,7 @@ internal class JobReportEventHandler internal constructor(
     relationshipStore: RelationshipStore,
 ) : JobReportTypeHandler(relationshipStore) {
 
-    override fun handleObject(uid: String, state: State): HandleAction {
+    override suspend fun handleObject(uid: String, state: State): HandleAction {
         conflictStore.deleteEventConflicts(uid)
         val handleAction = eventStore.setSyncStateOrDelete(uid, state)
 
@@ -64,15 +65,15 @@ internal class JobReportEventHandler internal constructor(
         return handleAction
     }
 
-    override fun storeConflict(errorReport: JobValidationError) {
+    override suspend fun storeConflict(errorReport: JobValidationError) {
         eventStore.selectByUid(errorReport.uid)?.let { event ->
             val trackedEntityInstanceUid = event.enrollment()?.let {
                 enrollmentStore.selectByUid(it)?.trackedEntityInstance()
             }
             if (errorReport.errorCode == ImporterError.E1032.name && event.deleted() == true) {
-                eventStore.delete(event.uid())
+                eventStore.deleteByEntity(event)
             } else {
-                conflictStore.insert(
+                conflictStore.updateOrInsertWhere(
                     conflictHelper.getConflictBuilder(errorReport)
                         .tableReference(EventTableInfo.TABLE_INFO.name())
                         .trackedEntityInstance(trackedEntityInstanceUid)
@@ -84,18 +85,18 @@ internal class JobReportEventHandler internal constructor(
         }
     }
 
-    override fun getRelatedRelationships(uid: String): List<String> {
-        return relationshipStore.getRelationshipsByItem(RelationshipHelper.eventItem(uid)).mapNotNull { it.uid() }
+    override suspend fun getRelatedRelationships(uid: String): List<Relationship> {
+        return relationshipStore.getRelationshipsByItem(RelationshipHelper.eventItem(uid)).mapNotNull { it }
     }
 
-    fun handleSyncedEvent(eventUid: String) {
+    suspend fun handleSyncedEvent(eventUid: String) {
         handleEventNotes(eventUid, State.SYNCED)
         trackedEntityDataValueStore.setSyncStateByEvent(eventUid, State.SYNCED)
         trackedEntityDataValueStore.removeDeletedDataValuesByEvent(eventUid)
         trackedEntityDataValueStore.removeUnassignedDataValuesByEvent(eventUid)
     }
 
-    private fun handleEventNotes(eventUid: String, state: State) {
+    private suspend fun handleEventNotes(eventUid: String, state: State) {
         val newNoteState = if (state == State.SYNCED) State.SYNCED else State.TO_POST
         val whereClause = WhereClauseBuilder()
             .appendInKeyStringValues(

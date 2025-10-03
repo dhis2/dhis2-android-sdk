@@ -40,7 +40,7 @@ import java.net.HttpURLConnection
 internal class AnalyticsSettingCall(
     private val analyticsTeiSettingHandler: AnalyticsTeiSettingHandler,
     private val analyticsDhisVisualizationsSettingHandler: AnalyticsDhisVisualizationSettingHandler,
-    private val settingAppService: SettingAppService,
+    private val networkHandler: SettingsNetworkHandler,
     coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val appVersionManager: SettingsAppInfoManager,
 ) : BaseSettingCall<AnalyticsSettings>(coroutineAPICallExecutor) {
@@ -58,14 +58,12 @@ internal class AnalyticsSettingCall(
             }
 
             else -> {
-                coroutineAPICallExecutor.wrap(storeError = storeError) {
-                    settingAppService.analyticsSettings(version)
-                }
+                networkHandler.analyticsSettings(version, storeError)
             }
         }
     }
 
-    override fun process(item: AnalyticsSettings?) {
+    override suspend fun process(item: AnalyticsSettings?) {
         val analyticsTeiSettingList = item?.tei() ?: emptyList()
         analyticsTeiSettingHandler.handleMany(analyticsTeiSettingList)
 

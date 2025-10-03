@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
 import org.hisp.dhis.android.core.imports.internal.BaseImportSummaryHelper.getReferences
 import org.hisp.dhis.android.core.imports.internal.EventImportSummary
@@ -41,11 +40,12 @@ import org.hisp.dhis.android.core.imports.internal.TEIWebResponseHandlerSummary
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.core.tracker.importer.internal.JobReportEventHandler
+import org.hisp.dhis.android.persistence.event.EventTableInfo
 import org.koin.core.annotation.Singleton
 import java.util.*
 
 @Singleton
-internal class EventImportHandler constructor(
+internal class EventImportHandler(
     private val eventStore: EventStore,
     private val enrollmentStore: EnrollmentStore,
     private val trackerImportConflictStore: TrackerImportConflictStore,
@@ -55,7 +55,7 @@ internal class EventImportHandler constructor(
 ) {
 
     @Suppress("NestedBlockDepth")
-    fun handleEventImportSummaries(
+    suspend fun handleEventImportSummaries(
         eventImportSummaries: List<EventImportSummary?>?,
         events: List<Event>,
     ): TEIWebResponseHandlerSummary {
@@ -108,7 +108,7 @@ internal class EventImportHandler constructor(
         return summary
     }
 
-    private fun processIgnoredEvents(
+    private suspend fun processIgnoredEvents(
         eventImportSummaries: List<EventImportSummary?>?,
         events: List<Event>,
     ): List<Event> {
@@ -121,7 +121,7 @@ internal class EventImportHandler constructor(
         }
     }
 
-    private fun storeEventImportConflicts(
+    private suspend fun storeEventImportConflicts(
         importSummary: EventImportSummary,
         enrollmentUid: String?,
     ) {
@@ -144,10 +144,10 @@ internal class EventImportHandler constructor(
             )
         }
 
-        trackerImportConflicts.forEach { trackerImportConflictStore.insert(it) }
+        trackerImportConflicts.forEach { trackerImportConflictStore.updateOrInsertWhere(it) }
     }
 
-    private fun getConflictBuilder(
+    private suspend fun getConflictBuilder(
         enrollmentUid: String?,
         eventImportSummary: EventImportSummary,
     ): TrackerImportConflict.Builder {

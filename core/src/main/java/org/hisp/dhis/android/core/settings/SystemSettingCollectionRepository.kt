@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.settings
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
@@ -37,16 +36,15 @@ import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyOneObjectRe
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.settings.SystemSetting.SystemSettingKey
 import org.hisp.dhis.android.core.settings.internal.SystemSettingStore
+import org.hisp.dhis.android.persistence.settings.SystemSettingTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 class SystemSettingCollectionRepository internal constructor(
     store: SystemSettingStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyCollectionRepositoryImpl<SystemSetting, SystemSettingCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -54,7 +52,6 @@ class SystemSettingCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         SystemSettingCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },

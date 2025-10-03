@@ -29,29 +29,32 @@
 package org.hisp.dhis.android.core.configuration.internal.migration
 
 import android.content.Context
+import android.database.SQLException
+import android.util.Log
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
+import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceStoreImpl
+import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigKey
-import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigStoreImpl
+import org.hisp.dhis.android.persistence.fileresource.FileResourceStoreImpl
+import org.hisp.dhis.android.persistence.sms.SMSConfigStoreImpl
 import java.io.File
 
 internal class Migration260(
     private val context: Context,
     private val databaseConfigurationStore: ObjectKeyValueStore<DatabasesConfiguration>,
-    private val databaseAdapterFactory: DatabaseAdapterFactory,
+    private val databaseManager: DatabaseManager,
 ) {
-    fun apply() {
+    suspend fun apply() {
         val configuration = databaseConfigurationStore.get()
 
         configuration?.let {
             if (configuration.accounts().size == 1) {
                 val existingAccount = configuration.accounts().first()
-                val databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter()
-                databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, existingAccount)
+                val databaseAdapter =
+                    databaseManager.createOrOpenUnencryptedDatabaseWithoutMigration(existingAccount.databaseName())
 
                 migrateFileResources260(databaseAdapter)
                 migrateSmsSettings(databaseAdapter)
@@ -61,8 +64,8 @@ internal class Migration260(
         }
     }
 
-    private fun migrateFileResources260(databaseAdapter: DatabaseAdapter) {
-        val accountSubFolder = FileResourceDirectoryHelper.getSubfolderName(databaseAdapter.databaseName)
+    private suspend fun migrateFileResources260(databaseAdapter: DatabaseAdapter) {
+        val accountSubFolder = FileResourceDirectoryHelper.getSubfolderName(databaseAdapter.getDatabaseName())
 
         val rootResources = FileResourceDirectoryHelper.getRootFileResourceDirectory(context)
         val dstResources = FileResourceDirectoryHelper.getFileResourceDirectory(context, accountSubFolder)
@@ -72,7 +75,12 @@ internal class Migration260(
             ?.forEach { file -> file.renameTo(File(dstResources, file.name)) }
 
         val fileResourcesStore = FileResourceStoreImpl(databaseAdapter)
-        val fileResources = fileResourcesStore.selectAll()
+        val fileResources = try {
+            fileResourcesStore.selectAll()
+        } catch (e: SQLException) {
+            Log.e("Room Exception", "$e")
+            emptyList<FileResource>()
+        }
         fileResources.forEach {
             val newPath = it.path()?.replace(
                 oldValue = FileResourceDirectoryHelper.FilesDir,
@@ -84,7 +92,7 @@ internal class Migration260(
     }
 
     @Suppress("MagicNumber")
-    private fun migrateSmsSettings(databaseAdapter: DatabaseAdapter) {
+    private suspend fun migrateSmsSettings(databaseAdapter: DatabaseAdapter) {
         val configFile = "smsconfig"
 
         val keyModuleEnabled = "module_enabled"
@@ -97,25 +105,29 @@ internal class Migration260(
         val smsPrefs = context.getSharedPreferences(configFile, Context.MODE_PRIVATE)
         val smsConfigStore = SMSConfigStoreImpl(databaseAdapter)
 
-        smsPrefs.getBoolean(keyModuleEnabled, false).let {
-            smsConfigStore.set(SMSConfigKey.MODULE_ENABLED, it.toString())
+        try {
+            smsPrefs.getBoolean(keyModuleEnabled, false).let {
+                smsConfigStore.set(SMSConfigKey.MODULE_ENABLED, it.toString())
+            }
+            smsPrefs.getString(keyGateway, null)?.let {
+                smsConfigStore.set(SMSConfigKey.GATEWAY, it)
+            }
+            smsPrefs.getString(keyConfirmationSender, null)?.let {
+                smsConfigStore.set(SMSConfigKey.CONFIRMATION_SENDER, it)
+            }
+            smsPrefs.getInt(keyWaitingResultTimeout, 120).let {
+                smsConfigStore.set(SMSConfigKey.WAITING_RESULT_TIMEOUT, it.toString())
+            }
+            smsPrefs.getString(keyMetadataConfig, null)?.let {
+                smsConfigStore.set(SMSConfigKey.METADATA_CONFIG, it)
+            }
+            smsPrefs.getBoolean(keyWaitForResult, false).let {
+                smsConfigStore.set(SMSConfigKey.WAIT_FOR_RESULT, it.toString())
+            }
+        } catch (e: SQLException) {
+            Log.e("MIGRATION", "Couldn't migrate sms settings")
+        } finally {
+            smsPrefs.edit().clear().apply()
         }
-        smsPrefs.getString(keyGateway, null)?.let {
-            smsConfigStore.set(SMSConfigKey.GATEWAY, it)
-        }
-        smsPrefs.getString(keyConfirmationSender, null)?.let {
-            smsConfigStore.set(SMSConfigKey.CONFIRMATION_SENDER, it)
-        }
-        smsPrefs.getInt(keyWaitingResultTimeout, 120).let {
-            smsConfigStore.set(SMSConfigKey.WAITING_RESULT_TIMEOUT, it.toString())
-        }
-        smsPrefs.getString(keyMetadataConfig, null)?.let {
-            smsConfigStore.set(SMSConfigKey.METADATA_CONFIG, it)
-        }
-        smsPrefs.getBoolean(keyWaitForResult, false).let {
-            smsConfigStore.set(SMSConfigKey.WAIT_FOR_RESULT, it.toString())
-        }
-
-        smsPrefs.edit().clear().apply()
     }
 }

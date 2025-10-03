@@ -28,9 +28,7 @@
 package org.hisp.dhis.android.core.analytics.aggregated
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.argumentCaptor
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsRepositoryImpl
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsRepositoryParams
@@ -39,6 +37,9 @@ import org.hisp.dhis.android.core.common.AggregationType
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 
 @RunWith(JUnit4::class)
 class AnalyticsRepositoryShould {
@@ -52,7 +53,7 @@ class AnalyticsRepositoryShould {
     private val repository = AnalyticsRepositoryImpl(initialParams, analyticsService)
 
     @Test
-    fun `Call service with fixed legend strategy`() {
+    fun `Call service with fixed legend strategy`() = runTest {
         repository
             .withLegendStrategy(AnalyticsLegendStrategy.Fixed("uid1"))
             .blockingEvaluate()
@@ -65,7 +66,7 @@ class AnalyticsRepositoryShould {
     }
 
     @Test
-    fun `Call service with none legend strategy`() {
+    fun `Call service with none legend strategy`() = runTest {
         repository
             .withLegendStrategy(AnalyticsLegendStrategy.None)
             .blockingEvaluate()
@@ -77,7 +78,7 @@ class AnalyticsRepositoryShould {
     }
 
     @Test
-    fun `Call service with byDataItem legend strategy`() {
+    fun `Call service with byDataItem legend strategy`() = runTest {
         repository
             .withLegendStrategy(AnalyticsLegendStrategy.ByDataItem)
             .blockingEvaluate()
@@ -89,7 +90,7 @@ class AnalyticsRepositoryShould {
     }
 
     @Test
-    fun `Call service with overriden aggregation type`() {
+    fun `Call service with overriden aggregation type`() = runTest {
         repository
             .withAggregationType(AggregationType.LAST)
             .blockingEvaluate()

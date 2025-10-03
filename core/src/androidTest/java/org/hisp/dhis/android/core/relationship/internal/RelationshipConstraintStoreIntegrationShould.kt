@@ -30,10 +30,11 @@ package org.hisp.dhis.android.core.relationship.internal
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.relationship.RelationshipConstraintSamples.relationshipConstraint
 import org.hisp.dhis.android.core.relationship.RelationshipConstraint
-import org.hisp.dhis.android.core.relationship.RelationshipConstraintTableInfo
 import org.hisp.dhis.android.core.relationship.RelationshipEntityType
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.relationship.RelationshipConstraintStoreImpl
+import org.hisp.dhis.android.persistence.relationship.RelationshipConstraintTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

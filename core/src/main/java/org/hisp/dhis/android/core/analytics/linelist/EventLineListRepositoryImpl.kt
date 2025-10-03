@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.analytics.linelist
 
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.OrganisationUnitFilterConnector
@@ -94,10 +96,10 @@ internal class EventLineListRepositoryImpl(
     }
 
     override fun evaluate(): Single<List<LineListResponse>> {
-        return Single.fromCallable { blockingEvaluate() }
+        return rxSingle { eventLineListService.evaluate(eventLineListParams) }
     }
 
     override fun blockingEvaluate(): List<LineListResponse> {
-        return eventLineListService.evaluate(eventLineListParams)
+        return runBlocking { eventLineListService.evaluate(eventLineListParams) }
     }
 }

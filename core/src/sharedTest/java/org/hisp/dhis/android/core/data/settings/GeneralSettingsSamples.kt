@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.settings.GeneralSettings
 object GeneralSettingsSamples {
     fun getGeneralSettings(): GeneralSettings {
         return GeneralSettings.builder()
-            .id(1L)
             .encryptDB(true)
             .lastUpdated(FillPropertiesTestUtils.LAST_UPDATED)
             .reservedValues(100)

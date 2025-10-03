@@ -28,18 +28,10 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AggregationTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AnalyticsTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreAnalyticsPeriodBoundaryListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreObjectWithUidListColumnAdapter;
 import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.AnalyticsType;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
@@ -67,40 +59,29 @@ public abstract class ProgramIndicator extends BaseNameableObject implements Cor
     public abstract Integer decimals();
 
     @Nullable
-    @ColumnAdapter(AggregationTypeColumnAdapter.class)
     public abstract AggregationType aggregationType();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid program();
 
     @Nullable
-    @ColumnAdapter(AnalyticsTypeColumnAdapter.class)
     public abstract AnalyticsType analyticsType();
 
     @Nullable
-    @ColumnAdapter(IgnoreAnalyticsPeriodBoundaryListColumnAdapter.class)
     public abstract List<AnalyticsPeriodBoundary> analyticsPeriodBoundaries();
 
     @Nullable
-    @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)
     public abstract List<ObjectWithUid> legendSets();
-
-    public static ProgramIndicator create(Cursor cursor) {
-        return $AutoValue_ProgramIndicator.createFromCursor(cursor);
-    }
 
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new $$AutoValue_ProgramIndicator.Builder()
+        return new AutoValue_ProgramIndicator.Builder()
                 .aggregationType(AggregationType.NONE);
     }
 
     @AutoValue.Builder
     public abstract static class Builder  extends BaseNameableObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
         public abstract Builder displayInForm(Boolean displayInForm);
 
         public abstract Builder expression(String expression);

@@ -28,13 +28,6 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.doAnswer
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
-import com.nhaarman.mockitokotlin2.whenever
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
@@ -45,12 +38,17 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.kotlin.doAnswer
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
+import org.mockito.kotlin.whenever
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 class LatestAppVersionCallShould {
     private val handler: LatestAppVersionHandler = mock()
-    private val service: SettingAppService = mock()
+    private val networkHandler: ApkDistributionNetworkHandler = mock()
     private val userModule: UserModule = mock()
     private val userGroupCollectionRepository: UserGroupCollectionRepository = mock()
     private val coroutineAPICallExecutor: CoroutineAPICallExecutorMock = CoroutineAPICallExecutorMock()
@@ -78,7 +76,7 @@ class LatestAppVersionCallShould {
     @Before
     fun setUp() {
         latestAppVersionCall = LatestAppVersionCall(
-            handler, service, userModule, versionComparator, coroutineAPICallExecutor,
+            handler, networkHandler, userModule, versionComparator, coroutineAPICallExecutor,
         )
     }
 
@@ -91,7 +89,7 @@ class LatestAppVersionCallShould {
         val payload = mock<Payload<ApkDistributionVersion>> {
             on { items } doReturn versions
         }
-        whenever(service.versions()).thenReturn(payload)
+        whenever(networkHandler.versions()).thenReturn(payload)
     }
 
     @Test
@@ -99,8 +97,8 @@ class LatestAppVersionCallShould {
         whenever(userModule.userGroups()).thenReturn(userGroupCollectionRepository)
         whenever(userGroupCollectionRepository.blockingGet()).thenReturn(emptyList())
 
-        whenever(service.versions()) doAnswer { throw D2ErrorSamples.notFound() }
-        whenever(service.latestAppVersion()) doAnswer { throw D2ErrorSamples.notFound() }
+        whenever(networkHandler.versions()) doAnswer { throw D2ErrorSamples.notFound() }
+        whenever(networkHandler.latestAppVersion()) doAnswer { throw D2ErrorSamples.notFound() }
 
         latestAppVersionCall.download(false)
 
@@ -119,7 +117,7 @@ class LatestAppVersionCallShould {
 
     @Test
     fun resolve_correct_apk_distribution_version_default() = runTest {
-        mockUserGroups(emptyList<String>())
+        mockUserGroups(emptyList())
         mockVersions(listOf(version1, version2, version3))
 
         val result = latestAppVersionCall.resolveApkDistributionVersion()
@@ -130,8 +128,8 @@ class LatestAppVersionCallShould {
     fun resolve_correct_apk_distribution_version_repeated() = runTest {
         mockUserGroups(listOf("uid1", "uid2"))
 
-        val version2_rep = mockApkDistributionVersion(listOf("uid2"), false, "1.1.1")
-        mockVersions(listOf(version1, version2, version3, version2_rep))
+        val version2Rep = mockApkDistributionVersion(listOf("uid2"), false, "1.1.1")
+        mockVersions(listOf(version1, version2, version3, version2Rep))
 
         val result = latestAppVersionCall.resolveApkDistributionVersion()
         assertThat("1.1.1").isEqualTo(result?.version)
@@ -150,8 +148,8 @@ class LatestAppVersionCallShould {
     fun resolve_correct_apk_distribution_version_repeated_default() = runTest {
         mockUserGroups(listOf("uid1", "uid2"))
 
-        val version_rep_default = mockApkDistributionVersion(listOf("uid2"), true, "1.1.1")
-        mockVersions(listOf(version1, version2, version3, version_rep_default))
+        val versionRepDefault = mockApkDistributionVersion(listOf("uid2"), true, "1.1.1")
+        mockVersions(listOf(version1, version2, version3, versionRepDefault))
 
         val result = latestAppVersionCall.resolveApkDistributionVersion()
         assertThat("1.1.1").isEqualTo(result?.version)

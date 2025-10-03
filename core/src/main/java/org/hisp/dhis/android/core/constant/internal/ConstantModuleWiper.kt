@@ -27,20 +27,20 @@
  */
 package org.hisp.dhis.android.core.constant.internal
 
-import org.hisp.dhis.android.core.constant.ConstantTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import org.hisp.dhis.android.persistence.constant.ConstantTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ConstantModuleWiper(
     private val tableWiper: TableWiper,
 ) : ModuleWiper {
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         tableWiper.wipeTable(ConstantTableInfo.TABLE_INFO)
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         // No data to wipe
     }
 }

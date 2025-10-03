@@ -65,7 +65,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         } else {
             val relatives = RelationshipItemRelatives()
             systemInfoModuleDownloader.downloadWithProgressManager(progressManager)
-            coroutineAPICallExecutor.wrapTransactionally(cleanForeignKeyErrors = true) {
+            coroutineAPICallExecutor.wrapTransactionallyRoom(cleanForeignKeyErrors = true) {
                 downloadInternal(params, progressManager, relatives).collect { v -> send(v) }
                 downloadRelationships(progressManager, relatives).collect { v -> send(v) }
                 send(progressManager.complete())
@@ -365,7 +365,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         const val BUNDLE_SECURITY_FACTOR = 2
     }
 
-    protected abstract fun getBundles(params: ProgramDataDownloadParams): List<Q>
+    protected abstract suspend fun getBundles(params: ProgramDataDownloadParams): List<Q>
 
     protected abstract suspend fun getPayloadResult(query: TrackerAPIQuery): Result<Payload<T>, D2Error>
 
@@ -375,7 +375,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         relatives: RelationshipItemRelatives,
     )
 
-    protected abstract fun updateLastUpdated(bundle: Q)
+    protected abstract suspend fun updateLastUpdated(bundle: Q)
 
     protected abstract suspend fun queryByUids(
         bundle: Q,

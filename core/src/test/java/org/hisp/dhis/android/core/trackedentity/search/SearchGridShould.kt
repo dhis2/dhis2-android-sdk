@@ -28,12 +28,11 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.trackedentityinstance.SearchGridDTO
 import org.junit.Test
 
-class SearchGridShould : BaseObjectKotlinxShould("trackedentity/search_grid.json"), ObjectShould {
+class SearchGridShould : CoreObjectShould("trackedentity/search_grid.json") {
     @Test
     override fun map_from_json_string() {
         val searchGrid = deserialize(SearchGridDTO.serializer())

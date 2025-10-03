@@ -44,7 +44,7 @@ internal class AnalyticsService(
     private val analyticsServiceEvaluatorHelper: AnalyticsServiceEvaluatorHelper,
 ) {
 
-    fun evaluate(params: AnalyticsRepositoryParams): Result<DimensionalResponse, AnalyticsException> {
+    suspend fun evaluate(params: AnalyticsRepositoryParams): Result<DimensionalResponse, AnalyticsException> {
         return try {
             if (params.dimensions.isEmpty()) {
                 throw AnalyticsException.InvalidArguments("At least one dimension must be specified")

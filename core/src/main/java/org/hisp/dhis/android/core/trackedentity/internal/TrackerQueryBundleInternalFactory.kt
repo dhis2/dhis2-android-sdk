@@ -32,16 +32,16 @@ import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.settings.EnrollmentScope
 import org.hisp.dhis.android.core.settings.ProgramSettings
 
-internal class TrackerQueryBundleInternalFactory constructor(
+internal class TrackerQueryBundleInternalFactory(
     commonHelper: TrackerQueryFactoryCommonHelper,
     params: ProgramDataDownloadParams,
     programSettings: ProgramSettings?,
 ) : TrackerQueryInternalFactory<TrackerQueryBundle>(commonHelper, params, programSettings) {
 
-    override fun queryInternal(
+    override suspend fun queryInternal(
         programs: List<String>,
         programUid: String?,
-        orgUnitByLimitExtractor: () -> List<String>,
+        orgUnitByLimitExtractor: suspend () -> List<String>,
     ): List<TrackerQueryBundle> {
         val limit = commonHelper.getLimit(
             params,

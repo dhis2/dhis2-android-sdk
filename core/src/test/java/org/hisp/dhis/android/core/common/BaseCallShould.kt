@@ -27,9 +27,7 @@
  */
 package org.hisp.dhis.android.core.common
 
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpException
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
@@ -37,6 +35,9 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.Transaction
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 import java.util.Date
 import javax.net.ssl.HttpsURLConnection
 
@@ -53,7 +54,7 @@ abstract class BaseCallShould {
     protected lateinit var errorResponse: D2HttpException
 
     @Throws(Exception::class)
-    open fun setUp() {
+    open fun setUp() = runTest {
         whenever(genericCallData.databaseAdapter).thenReturn(databaseAdapter)
         whenever(
             genericCallData.resourceHandler,

@@ -31,30 +31,30 @@ package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 
 internal open class TrackerLineListEvaluator {
-    open fun getSelectSQLForEvent(): String {
+    open suspend fun getSelectSQLForEvent(): String {
         return getCommonSelectSQL()
     }
-    open fun getWhereSQLForEvent(): String {
+    open suspend fun getWhereSQLForEvent(): String {
         return getCommonWhereSQL()
     }
-    open fun getSelectSQLForEnrollment(): String {
+    open suspend fun getSelectSQLForEnrollment(): String {
         return getCommonSelectSQL()
     }
-    open fun getWhereSQLForEnrollment(): String {
+    open suspend fun getWhereSQLForEnrollment(): String {
         return getCommonWhereSQL()
     }
-    open fun getSelectSQLForTrackedEntityInstance(): String {
+    open suspend fun getSelectSQLForTrackedEntityInstance(): String {
         return getCommonSelectSQL()
     }
-    open fun getWhereSQLForTrackedEntityInstance(): String {
+    open suspend fun getWhereSQLForTrackedEntityInstance(): String {
         return getCommonWhereSQL()
     }
 
-    protected open fun getCommonSelectSQL(): String {
+    protected open suspend fun getCommonSelectSQL(): String {
         throw AnalyticsException.SQLException("SELECT clause is not implemented for this evaluator")
     }
 
-    protected open fun getCommonWhereSQL(): String {
+    protected open suspend fun getCommonWhereSQL(): String {
         throw AnalyticsException.SQLException("WHERE clause is not implemented for this evaluator")
     }
 }

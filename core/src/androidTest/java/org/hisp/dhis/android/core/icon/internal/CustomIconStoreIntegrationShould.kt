@@ -31,9 +31,10 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.icon.CustomIconSamples
 import org.hisp.dhis.android.core.icon.CustomIcon
-import org.hisp.dhis.android.core.icon.CustomIconTableInfo
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.icon.CustomIconStoreImpl
+import org.hisp.dhis.android.persistence.icon.CustomIconTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

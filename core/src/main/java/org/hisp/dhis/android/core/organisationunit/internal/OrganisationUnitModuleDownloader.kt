@@ -49,14 +49,14 @@ internal class OrganisationUnitModuleDownloader(
     }
 
     suspend fun refreshOrganisationUnits() {
-        coroutineAPICallExecutor.wrapTransactionally(cleanForeignKeyErrors = true) {
+        coroutineAPICallExecutor.wrapTransactionallyRoom(cleanForeignKeyErrors = true) {
             val user = userCall.call()
             downloadMetadata(user)
             cleanLinksFromDB()
         }
     }
 
-    private fun cleanLinksFromDB() {
+    private suspend fun cleanLinksFromDB() {
         dataSetLinkCleaner.deleteNotPresentInDb()
         programLinkCleaner.deleteNotPresentInDb()
     }

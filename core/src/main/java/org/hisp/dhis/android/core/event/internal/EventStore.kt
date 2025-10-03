@@ -32,25 +32,25 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event
 
 internal interface EventStore : IdentifiableDeletableDataObjectStore<Event> {
-    fun queryEventsAttachedToEnrollmentToPost(): Map<String, List<Event>>
+    suspend fun queryEventsAttachedToEnrollmentToPost(): Map<String, List<Event>>
 
-    fun querySingleEventsToPost(): List<Event>
+    suspend fun querySingleEventsToPost(): List<Event>
 
-    fun querySingleEvents(): List<Event>
+    suspend fun querySingleEvents(): List<Event>
 
-    fun queryOrderedForEnrollmentAndProgramStage(
+    suspend fun queryOrderedForEnrollmentAndProgramStage(
         enrollmentUid: String,
         programStageUid: String,
         includeDeleted: Boolean,
     ): List<Event>
 
-    fun countEventsForEnrollment(enrollmentUid: String, includeDeleted: Boolean): Int
+    suspend fun countEventsForEnrollment(enrollmentUid: String, includeDeleted: Boolean): Int
 
-    fun countTeisWhereEvents(whereClause: String): Int
+    suspend fun countTeisWhereEvents(whereClause: String): Int
 
-    fun queryMissingRelationshipsUids(): List<String>
+    suspend fun queryMissingRelationshipsUids(): List<String>
 
-    fun setAggregatedSyncState(uid: String, state: State): Int
+    suspend fun setAggregatedSyncState(uid: String, state: State): Int
 
-    fun selectAggregatedSyncStateWhere(whereClause: String): List<State>
+    suspend fun selectAggregatedSyncStateWhere(whereClause: String): List<State>
 }

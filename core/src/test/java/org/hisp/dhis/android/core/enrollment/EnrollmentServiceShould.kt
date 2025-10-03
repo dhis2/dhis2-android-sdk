@@ -27,11 +27,8 @@
  */
 package org.hisp.dhis.android.core.enrollment
 
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Single
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.Access
@@ -55,6 +52,10 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 class EnrollmentServiceShould {
 
@@ -148,7 +149,7 @@ class EnrollmentServiceShould {
     }
 
     @Test
-    fun `GetEnrollmentAccess should return data access if protected program in capture scope`() {
+    fun `GetEnrollmentAccess should return data access if protected program in capture scope`() = runTest {
         whenever(program.accessLevel()) doReturn AccessLevel.PROTECTED
         whenever(program.access()) doReturn AccessHelper.createForDataWrite(true)
         whenever(
@@ -157,13 +158,14 @@ class EnrollmentServiceShould {
                 .uid(organisationUnitId)
                 .blockingExists(),
         ) doReturn true
+        whenever(programTempOwnerStore.selectWhere(any())) doReturn emptyList()
 
         val access = enrollmentService.blockingGetEnrollmentAccess(trackedEntityInstanceUid, programUid)
         assert(access == EnrollmentAccess.WRITE_ACCESS)
     }
 
     @Test
-    fun `GetEnrollmentAccess should return access denied if protected program not in capture scope`() {
+    fun `GetEnrollmentAccess should return access denied if protected program not in capture scope`() = runTest {
         whenever(program.accessLevel()) doReturn AccessLevel.PROTECTED
         whenever(program.access()) doReturn AccessHelper.createForDataWrite(true)
         whenever(
@@ -180,7 +182,7 @@ class EnrollmentServiceShould {
     }
 
     @Test
-    fun `GetEnrollmentAccess should return data access if protected program has broken glass`() {
+    fun `GetEnrollmentAccess should return data access if protected program has broken glass`() = runTest {
         whenever(program.accessLevel()) doReturn AccessLevel.PROTECTED
         whenever(program.access()) doReturn AccessHelper.createForDataWrite(true)
         whenever(

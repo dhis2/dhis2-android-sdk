@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
@@ -47,20 +46,17 @@ import java.util.Date
 class TrackedEntityInstanceObjectRepository internal constructor(
     store: TrackedEntityInstanceStore,
     uid: String?,
-    databaseAdapter: DatabaseAdapter,
     childrenAppenders: ChildrenAppenderGetter<TrackedEntityInstance>,
     scope: RepositoryScope,
     private val trackerDataManager: TrackerDataManager,
 ) : ReadWriteWithUidDataObjectRepositoryImpl<TrackedEntityInstance, TrackedEntityInstanceObjectRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     ObjectRepositoryFactory { s: RepositoryScope ->
         TrackedEntityInstanceObjectRepository(
             store,
             uid,
-            databaseAdapter,
             childrenAppenders,
             s,
             trackerDataManager,
@@ -103,11 +99,11 @@ class TrackedEntityInstanceObjectRepository internal constructor(
             .lastUpdatedAtClient(updateDate)
     }
 
-    override fun propagateState(m: TrackedEntityInstance, action: HandleAction) {
+    override suspend fun propagateState(m: TrackedEntityInstance, action: HandleAction) {
         trackerDataManager.propagateTrackedEntityUpdate(m, action)
     }
 
-    override fun deleteObject(m: TrackedEntityInstance) {
+    override suspend fun deleteObject(m: TrackedEntityInstance) {
         trackerDataManager.deleteTrackedEntity(m)
     }
 }

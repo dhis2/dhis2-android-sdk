@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.network.trackedentitytype
 
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttributeTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityTypeAttributeTableInfo.Columns
 
 internal object TrackedEntityTypeAttributeFields : BaseFields<TrackedEntityTypeAttribute>() {
     val allFields = Fields.from(

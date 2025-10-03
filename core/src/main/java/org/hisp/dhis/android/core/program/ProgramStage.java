@@ -1,22 +1,9 @@
 package org.hisp.dhis.android.core.program;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.AccessColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DBCaptureCoordinatesFromFeatureTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbFormTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.FeatureTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ValidationStrategyColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreAttributeValuesListAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramStageDataElementListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramStageSectionListColumnAdapter;
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.attribute.AttributeValue;
 import org.hisp.dhis.android.core.common.Access;
@@ -87,15 +74,12 @@ public abstract class ProgramStage extends BaseIdentifiableObject
      */
     @Deprecated
     @Nullable
-    @ColumnAdapter(DBCaptureCoordinatesFromFeatureTypeColumnAdapter.class)
     abstract Boolean captureCoordinates();
 
     @Nullable
-    @ColumnAdapter(FeatureTypeColumnAdapter.class)
     public abstract FeatureType featureType();
 
     @Nullable
-    @ColumnAdapter(DbFormTypeColumnAdapter.class)
     public abstract FormType formType();
 
     @Nullable
@@ -126,29 +110,23 @@ public abstract class ProgramStage extends BaseIdentifiableObject
     public abstract Boolean enableUserAssignment();
 
     @Nullable
-    @ColumnAdapter(IgnoreProgramStageSectionListColumnAdapter.class)
     abstract List<ProgramStageSection> programStageSections();
 
     @Nullable
-    @ColumnAdapter(IgnoreProgramStageDataElementListColumnAdapter.class)
     abstract List<ProgramStageDataElement> programStageDataElements();
 
     @Nullable
-    @ColumnAdapter(PeriodTypeColumnAdapter.class)
     public abstract PeriodType periodType();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid program();
 
-    @ColumnAdapter(AccessColumnAdapter.class)
     public abstract Access access();
 
     @Nullable
     public abstract Boolean remindCompleted();
 
     @Nullable
-    @ColumnAdapter(ValidationStrategyColumnAdapter.class)
     public abstract ValidationStrategy validationStrategy();
 
     /**
@@ -176,15 +154,10 @@ public abstract class ProgramStage extends BaseIdentifiableObject
     public abstract String displayEventLabel();
 
     @Nullable
-    @ColumnAdapter(IgnoreAttributeValuesListAdapter.class)
     public abstract List<AttributeValue> attributeValues();
 
     public static Builder builder() {
-        return new $$AutoValue_ProgramStage.Builder();
-    }
-
-    public static ProgramStage create(Cursor cursor) {
-        return AutoValue_ProgramStage.createFromCursor(cursor);
+        return new AutoValue_ProgramStage.Builder();
     }
 
     public abstract Builder toBuilder();
@@ -192,8 +165,6 @@ public abstract class ProgramStage extends BaseIdentifiableObject
     @AutoValue.Builder
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder>
             implements ObjectWithStyle.Builder<ProgramStage, Builder> {
-
-        public abstract Builder id(Long id);
 
         public abstract Builder description(String description);
 

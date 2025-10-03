@@ -30,6 +30,6 @@ package org.hisp.dhis.android.core.resource.internal
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 
 internal interface ResourceStore : ObjectWithoutUidStore<Resource> {
-    fun getLastUpdated(type: Resource.Type): String?
-    fun deleteResource(type: Resource.Type): Boolean
+    suspend fun getLastUpdated(type: Resource.Type): String?
+    suspend fun deleteResource(type: Resource.Type): Boolean
 }

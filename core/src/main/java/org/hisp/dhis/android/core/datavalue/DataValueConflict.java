@@ -28,23 +28,17 @@
 
 package org.hisp.dhis.android.core.datavalue;
 
-import android.database.Cursor;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ImportStatusColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.imports.ImportStatus;
 
 import java.util.Date;
 
 @AutoValue
-public abstract class DataValueConflict extends BaseObject {
+public abstract class DataValueConflict implements CoreObject {
 
     @Nullable
     public abstract String conflict();
@@ -74,26 +68,19 @@ public abstract class DataValueConflict extends BaseObject {
     public abstract String displayDescription();
 
     @Nullable
-    @ColumnAdapter(ImportStatusColumnAdapter.class)
     public abstract ImportStatus status();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
-    @NonNull
-    public static DataValueConflict create(Cursor cursor) {
-        return AutoValue_DataValueConflict.createFromCursor(cursor);
-    }
-
     public static Builder builder() {
-        return new $$AutoValue_DataValueConflict.Builder();
+        return new AutoValue_DataValueConflict.Builder();
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder {
         public abstract Builder conflict(String conflict);
 
         public abstract Builder value(String value);

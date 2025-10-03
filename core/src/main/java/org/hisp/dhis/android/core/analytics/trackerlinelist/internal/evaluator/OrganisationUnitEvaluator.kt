@@ -31,46 +31,45 @@ package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.trackerlinelist.OrganisationUnitFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
-import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.TrackerLineListContext
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EnrollmentAlias
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.OrgUnitAlias
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.SubOrgUnitAlias
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.TrackedEntityInstanceAlias
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStoreImpl
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitOrganisationUnitGroupLinkStoreImpl
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
-import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStoreImpl
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitOrganisationUnitGroupLinkStore
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
+import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceTableInfo
 
 internal class OrganisationUnitEvaluator(
     private val item: TrackerLineListItem.OrganisationUnitItem,
-    context: TrackerLineListContext,
 ) : TrackerLineListEvaluator() {
 
-    private val userOrganisationUnitLinkStore = UserOrganisationUnitLinkStoreImpl(context.databaseAdapter)
-    private val organisationUnitStore = OrganisationUnitStoreImpl(context.databaseAdapter)
-    private val orgunitLevelStore = OrganisationUnitLevelStoreImpl(context.databaseAdapter)
-    private val orgunitGroupLinkStore = OrganisationUnitOrganisationUnitGroupLinkStoreImpl(context.databaseAdapter)
+    private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore = koin.get()
+    private val organisationUnitStore: OrganisationUnitStore = koin.get()
+    private val orgunitLevelStore: OrganisationUnitLevelStore = koin.get()
+    private val orgunitGroupLinkStore: OrganisationUnitOrganisationUnitGroupLinkStore = koin.get()
 
-    override fun getCommonSelectSQL(): String {
+    override suspend fun getCommonSelectSQL(): String {
         return "$OrgUnitAlias.${OrganisationUnitTableInfo.Columns.DISPLAY_NAME}"
     }
 
-    override fun getCommonWhereSQL(): String {
+    override suspend fun getCommonWhereSQL(): String {
         return if (item.filters.isEmpty()) {
             "1"
         } else {
-            return item.filters.joinToString(" AND ") { getFilterWhereClause(it) }
+            return item.filters.map { getFilterWhereClause(it) }.joinToString(" AND ")
         }
     }
 
-    override fun getSelectSQLForTrackedEntityInstance(): String {
+    override suspend fun getSelectSQLForTrackedEntityInstance(): String {
         return if (item.programUid.isNullOrBlank()) {
             "$OrgUnitAlias.${OrganisationUnitTableInfo.Columns.DISPLAY_NAME}"
         } else {
@@ -86,7 +85,7 @@ internal class OrganisationUnitEvaluator(
         }
     }
 
-    private fun getFilterWhereClause(filter: OrganisationUnitFilter): String {
+    private suspend fun getFilterWhereClause(filter: OrganisationUnitFilter): String {
         val filterHelper = FilterHelper(item.id)
         return when (filter) {
             is OrganisationUnitFilter.Absolute -> inPathOf(filter.uid)
@@ -156,7 +155,7 @@ internal class OrganisationUnitEvaluator(
         return "$OrgUnitAlias.${OrganisationUnitTableInfo.Columns.PATH} LIKE '%$orgunit%'"
     }
 
-    private fun getChildren(orgunits: List<String>): List<String> {
+    private suspend fun getChildren(orgunits: List<String>): List<String> {
         return organisationUnitStore.selectUidsWhere(
             WhereClauseBuilder()
                 .appendInKeyStringValues(OrganisationUnitTableInfo.Columns.PARENT, orgunits)

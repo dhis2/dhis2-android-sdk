@@ -30,9 +30,10 @@ package org.hisp.dhis.android.core.event.internal
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.event.EventFilterSamples
 import org.hisp.dhis.android.core.event.EventFilter
-import org.hisp.dhis.android.core.event.EventFilterTableInfo
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.event.EventFilterStoreImpl
+import org.hisp.dhis.android.persistence.event.EventFilterTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

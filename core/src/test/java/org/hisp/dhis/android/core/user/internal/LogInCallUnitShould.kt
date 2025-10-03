@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.user.internal
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.*
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
@@ -38,7 +36,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
 import org.hisp.dhis.android.core.common.BaseCallShould
-import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
+import org.hisp.dhis.android.core.configuration.internal.BaseMultiUserDatabaseManager
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
@@ -51,6 +49,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.*
+import org.mockito.kotlin.*
 import org.mockito.stubbing.Answer
 
 @RunWith(JUnit4::class)
@@ -73,13 +72,13 @@ class LogInCallUnitShould : BaseCallShould() {
     private val credentials: Credentials = mock()
     private val userStore: UserStore = mock()
     private val systemInfoCall: SystemInfoCall = mock()
-    private val multiUserDatabaseManager: MultiUserDatabaseManager = mock()
+    private val multiUserDatabaseManager: BaseMultiUserDatabaseManager = mock()
     private val generalSettingCall: GeneralSettingCall = mock()
     private val accountManager: AccountManagerImpl = mock()
 
     @Before
     @Throws(Exception::class)
-    override fun setUp() {
+    override fun setUp() = runTest {
         super.setUp()
         whenever(apiUser.uid()).thenReturn(UID)
         whenever(dbUser.uid()).thenReturn(UID)
@@ -88,15 +87,14 @@ class LogInCallUnitShould : BaseCallShould() {
         whenever(credentials.password).thenReturn(PASSWORD)
         whenever(authenticatedUser.user()).thenReturn(UID)
         whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, PASSWORD))
-        whenever(systemInfoFromAPI.contextPath()).thenReturn(baseEndpoint)
-        whenever(systemInfoFromDb.contextPath()).thenReturn(baseEndpoint)
+        whenever(systemInfoFromAPI.contextPath()).thenReturn(BASE_URL)
+        whenever(systemInfoFromDb.contextPath()).thenReturn(BASE_URL)
         systemInfoCall.stub {
             onBlocking { download(any()) }.doReturn(Unit)
         }
         whenAPICall { apiUser }
         whenever(userStore.selectFirst()).thenReturn(dbUser)
         whenever(userStore.selectByUid(any())).thenReturn(dbUser)
-        whenever(databaseAdapter.beginNewTransaction()).thenReturn(transaction)
         whenever(d2Error.errorCode()).thenReturn(D2ErrorCode.SOCKET_TIMEOUT)
         whenever(d2Error.isOffline).thenReturn(true)
         generalSettingCall.stub {
@@ -104,7 +102,7 @@ class LogInCallUnitShould : BaseCallShould() {
         }
     }
 
-    private suspend fun login() = instantiateCall(USERNAME, PASSWORD, serverUrl)
+    private suspend fun login() = instantiateCall(USERNAME, PASSWORD, SERVER_URL)
 
     private suspend fun instantiateCall(username: String?, password: String?, serverUrl: String?): User {
         return LogInCall(
@@ -123,12 +121,12 @@ class LogInCallUnitShould : BaseCallShould() {
 
     @Test
     fun throw_d2_error_for_null_username() = runTest {
-        assertD2Error(D2ErrorCode.LOGIN_USERNAME_NULL) { instantiateCall(null, PASSWORD, serverUrl) }
+        assertD2Error(D2ErrorCode.LOGIN_USERNAME_NULL) { instantiateCall(null, PASSWORD, SERVER_URL) }
     }
 
     @Test
     fun throw_d2_error_for_null_password() = runTest {
-        assertD2Error(D2ErrorCode.LOGIN_PASSWORD_NULL) { instantiateCall(USERNAME, null, serverUrl) }
+        assertD2Error(D2ErrorCode.LOGIN_PASSWORD_NULL) { instantiateCall(USERNAME, null, SERVER_URL) }
     }
 
     @Test
@@ -168,6 +166,7 @@ class LogInCallUnitShould : BaseCallShould() {
     @Throws(D2Error::class)
     fun not_invoke_stores_on_exception_on_call() = runTest {
         whenAPICall { throw d2Error }
+        whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(SERVER_URL, USERNAME)).thenReturn(false)
         whenever(d2Error.errorCode()).thenReturn(D2ErrorCode.UNEXPECTED)
 
         assertD2Error { login() }
@@ -201,24 +200,25 @@ class LogInCallUnitShould : BaseCallShould() {
     @Test
     fun succeed_for_login_offline_if_database_exists_and_authenticated_user_too() = runTest {
         whenAPICall { throw d2Error }
-        whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(serverUrl, USERNAME)).thenReturn(true)
+        whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(SERVER_URL, USERNAME)).thenReturn(true)
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
         login()
         verifySuccessOffline()
     }
 
     @Test
-    fun succeed_for_login_offline_if_server_has_a_trailing_slash() {
+    fun succeed_for_login_offline_if_server_has_a_trailing_slash() = runTest {
         whenAPICall { throw d2Error }
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
-        whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(serverUrl, USERNAME)).thenReturn(true)
-        runBlocking { login() }
+        whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(SERVER_URL, USERNAME)).thenReturn(true)
+        login()
         verifySuccessOffline()
     }
 
     @Test
     fun throw_original_d2_error_if_no_previous_database_offline() = runTest {
         whenAPICall { throw d2Error }
+        whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(SERVER_URL, USERNAME)).thenReturn(false)
         whenever(authenticatedUserStore.selectFirst()).thenReturn(null)
         assertD2Error(d2Error.errorCode()) { login() }
     }
@@ -226,7 +226,7 @@ class LogInCallUnitShould : BaseCallShould() {
     @Test
     fun throw_d2_error_if_no_previous_authenticated_user_offline() = runTest {
         whenAPICall { throw d2Error }
-        whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(serverUrl, USERNAME)).thenReturn(true)
+        whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(SERVER_URL, USERNAME)).thenReturn(true)
         whenever(authenticatedUserStore.selectFirst()).thenReturn(null)
         assertD2Error(D2ErrorCode.NO_AUTHENTICATED_USER_OFFLINE) { login() }
     }
@@ -235,12 +235,12 @@ class LogInCallUnitShould : BaseCallShould() {
     fun throw_d2_error_if_logging_offline_with_bad_credentials() = runTest {
         whenAPICall { throw d2Error }
         whenever(authenticatedUser.hash()).thenReturn("different_hash")
-        whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(serverUrl, USERNAME)).thenReturn(true)
+        whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(SERVER_URL, USERNAME)).thenReturn(true)
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
         assertD2Error(D2ErrorCode.BAD_CREDENTIALS) { login() }
     }
 
-    private fun verifySuccess() {
+    private fun verifySuccess() = runTest {
         val authenticatedUserModel = AuthenticatedUser.builder()
             .user(UID)
             .hash(UserHelper.md5(USERNAME, PASSWORD))
@@ -250,7 +250,7 @@ class LogInCallUnitShould : BaseCallShould() {
     }
 
     private fun verifySuccessOffline() {
-        verify(credentialsSecureStore).set(Credentials(USERNAME, serverUrl, PASSWORD, null))
+        verify(credentialsSecureStore).set(Credentials(USERNAME, SERVER_URL, PASSWORD, null))
         verify(userIdStore).set("test_uid")
     }
 
@@ -258,7 +258,7 @@ class LogInCallUnitShould : BaseCallShould() {
         private const val USERNAME = "test_username"
         private const val UID = "test_uid"
         private const val PASSWORD = "test_password"
-        private const val baseEndpoint = "https://dhis-instance.org"
-        private const val serverUrl = baseEndpoint
+        private const val BASE_URL = "https://dhis-instance.org"
+        private const val SERVER_URL = BASE_URL
     }
 }

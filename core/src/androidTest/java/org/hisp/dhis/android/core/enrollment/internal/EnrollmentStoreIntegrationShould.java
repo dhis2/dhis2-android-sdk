@@ -32,9 +32,10 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.IdentifiableDataObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.enrollment.EnrollmentSamples;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentStoreImpl;
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo;
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)

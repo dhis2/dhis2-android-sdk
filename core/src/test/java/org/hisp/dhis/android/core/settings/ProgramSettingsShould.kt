@@ -29,12 +29,11 @@ package org.hisp.dhis.android.core.settings
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.settings.ProgramSettingsDTO
 import org.junit.Test
 
-class ProgramSettingsShould : BaseObjectKotlinxShould("settings/program_settings.json"), ObjectShould {
+class ProgramSettingsShould : CoreObjectShould("settings/program_settings.json") {
     @Test
     override fun map_from_json_string() {
         val programSettingsDTO = deserialize(ProgramSettingsDTO.serializer())
@@ -64,6 +63,8 @@ class ProgramSettingsShould : BaseObjectKotlinxShould("settings/program_settings
         assertThat(childProgramme).isNotNull()
         assertThat(childProgramme!!.uid()).isEqualTo("IpHINAT79UW")
         assertThat(childProgramme.name()).isEqualTo("Child Programme")
+        assertThat(childProgramme.filters()).hasSize(2)
+        assertThat(childProgramme.filters()?.getOrNull(0)?.uid()).isEqualTo("uidFilter1")
         assertThat(childProgramme.lastUpdated())
             .isEqualTo(BaseIdentifiableObject.parseDate("2020-02-01T19:55:32.002Z"))
         assertThat(childProgramme.teiDownload()).isEqualTo(40)

@@ -28,21 +28,22 @@
 package org.hisp.dhis.android.core.user.internal
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
 class IsUserLoggedInCallableShould {
     private val credentialsSecureStore: CredentialsSecureStore = mock()
-    private val authenticatedUserStore: AuthenticatedUserStore = mock()
+    private val databaseAdapter: DatabaseAdapter = mock()
     private val credentials: Credentials = mock()
 
     private lateinit var isUserLoggedInSingle: Single<Boolean>
@@ -51,7 +52,7 @@ class IsUserLoggedInCallableShould {
     fun setUp() {
         whenever(credentials.username).doReturn("user")
         whenever(credentials.password).doReturn("password")
-        isUserLoggedInSingle = IsUserLoggedInCallableFactory(credentialsSecureStore, authenticatedUserStore).isLogged
+        isUserLoggedInSingle = IsUserLoggedInCallableFactory(credentialsSecureStore, databaseAdapter).isLogged
     }
 
     @Test
@@ -62,14 +63,14 @@ class IsUserLoggedInCallableShould {
     @Test
     fun return_false_if_database_is_not_ready() {
         whenever(credentialsSecureStore.get()).doReturn(credentials)
-        whenever(authenticatedUserStore.isReady).doReturn(false)
+        whenever(databaseAdapter.isReady).doReturn(false)
         assertThat(isUserLoggedInSingle.blockingGet()).isFalse()
     }
 
     @Test
     fun return_true_if_credentials_stored() {
         whenever(credentialsSecureStore.get()).doReturn(credentials)
-        whenever(authenticatedUserStore.isReady).doReturn(true)
+        whenever(databaseAdapter.isReady).doReturn(true)
         assertThat(isUserLoggedInSingle.blockingGet()).isTrue()
     }
 }

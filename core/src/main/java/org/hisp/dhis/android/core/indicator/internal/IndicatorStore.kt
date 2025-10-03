@@ -31,4 +31,7 @@ package org.hisp.dhis.android.core.indicator.internal
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.indicator.Indicator
 
-internal interface IndicatorStore : IdentifiableObjectStore<Indicator>
+internal interface IndicatorStore : IdentifiableObjectStore<Indicator> {
+    suspend fun getForDataSet(dataSetUid: String): List<Indicator>
+    suspend fun getForSection(sectionUid: String): List<Indicator>
+}

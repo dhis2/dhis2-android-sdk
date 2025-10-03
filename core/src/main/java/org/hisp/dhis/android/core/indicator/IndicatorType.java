@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.indicator;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -47,19 +45,13 @@ public abstract class IndicatorType extends BaseIdentifiableObject implements Co
     public abstract Integer factor();
 
     public static Builder builder() {
-        return new $$AutoValue_IndicatorType.Builder();
-    }
-
-    public static IndicatorType create(Cursor cursor) {
-        return $AutoValue_IndicatorType.createFromCursor(cursor);
+        return new AutoValue_IndicatorType.Builder();
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
         public abstract Builder number(Boolean number);
 
         public abstract Builder factor(Integer factor);

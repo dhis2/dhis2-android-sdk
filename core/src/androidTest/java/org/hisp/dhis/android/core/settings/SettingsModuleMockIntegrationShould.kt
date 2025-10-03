@@ -30,11 +30,8 @@ package org.hisp.dhis.android.core.settings
 import com.google.common.truth.Truth
 import org.hisp.dhis.android.core.settings.SystemSetting.SystemSettingKey
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner::class)
 class SettingsModuleMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun allow_access_to_system_setting() {
@@ -47,15 +44,15 @@ class SettingsModuleMockIntegrationShould : BaseMockIntegrationTestFullDispatche
         val systemSettingsFlag = d2.settingModule().systemSetting().byKey()
             .eq(SystemSettingKey.FLAG).blockingGet()
         Truth.assertThat(systemSettingsFlag.size).isEqualTo(1)
-        Truth.assertThat(systemSettingsFlag.get(0).value()).isEqualTo("sierra_leone")
+        Truth.assertThat(systemSettingsFlag[0].value()).isEqualTo("sierra_leone")
 
         val systemSettingsStyle = d2.settingModule().systemSetting().byKey()
             .eq(SystemSettingKey.STYLE).blockingGet()
-        Truth.assertThat(systemSettingsStyle.get(0).value()).isEqualTo("light_blue/light_blue.css")
+        Truth.assertThat(systemSettingsStyle[0].value()).isEqualTo("light_blue/light_blue.css")
 
         val systemSettingsDefaultBaseMap = d2.settingModule().systemSetting().byKey()
             .eq(SystemSettingKey.DEFAULT_BASE_MAP).blockingGet()
-        Truth.assertThat(systemSettingsDefaultBaseMap.get(0).value()).isEqualTo("keyDefaultBaseMap")
+        Truth.assertThat(systemSettingsDefaultBaseMap[0].value()).isEqualTo("keyDefaultBaseMap")
     }
 
     @Test
@@ -63,15 +60,15 @@ class SettingsModuleMockIntegrationShould : BaseMockIntegrationTestFullDispatche
         val systemSettingsFlag = d2.settingModule().systemSetting().byValue()
             .eq("sierra_leone").blockingGet()
         Truth.assertThat(systemSettingsFlag.size).isEqualTo(1)
-        Truth.assertThat(systemSettingsFlag.get(0).key()).isEqualTo(SystemSettingKey.FLAG)
+        Truth.assertThat(systemSettingsFlag[0].key()).isEqualTo(SystemSettingKey.FLAG)
 
         val systemSettingsStyle = d2.settingModule().systemSetting().byValue()
             .eq("light_blue/light_blue.css").blockingGet()
-        Truth.assertThat(systemSettingsStyle.get(0).key()).isEqualTo(SystemSettingKey.STYLE)
+        Truth.assertThat(systemSettingsStyle[0].key()).isEqualTo(SystemSettingKey.STYLE)
 
         val systemSettingsDefaultBaseMap = d2.settingModule().systemSetting().byValue()
             .eq("keyDefaultBaseMap").blockingGet()
-        Truth.assertThat(systemSettingsDefaultBaseMap.get(0).key())
+        Truth.assertThat(systemSettingsDefaultBaseMap[0].key())
             .isEqualTo(SystemSettingKey.DEFAULT_BASE_MAP)
     }
 

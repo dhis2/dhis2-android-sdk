@@ -28,31 +28,49 @@
 
 package org.hisp.dhis.android.core.analytics.trackerlinelist.internal
 
-import android.database.Cursor
+import android.util.Log
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListValue
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 
+@Suppress("TooGenericExceptionCaught")
 internal object TrackerLineListServiceHelper {
-    fun mapCursorToColumns(params: TrackerLineListParams, cursor: Cursor): List<List<TrackerLineListValue>> {
+    suspend fun fetchDataWithD2Dao(
+        sqlClause: String,
+        evaluatedParams: TrackerLineListParams,
+        databaseAdapter: DatabaseAdapter,
+    ): List<List<TrackerLineListValue>> {
         val rows: MutableList<List<TrackerLineListValue>> = mutableListOf()
-        cursor.use { c ->
-            if (c.count > 0) {
-                c.moveToFirst()
-                do {
-                    val row = mapRowValues(cursor, params.columns)
+
+        try {
+            val rawResults: List<Map<String, String?>> = databaseAdapter.rawQuery(sqlClause)
+
+            if (rawResults.isNotEmpty()) {
+                rawResults.forEach { dynamicRow ->
+                    val row = mapRowMapToLineListValues(dynamicRow, evaluatedParams.columns)
                     rows.add(row)
-                } while (c.moveToNext())
+                }
             }
+        } catch (e: Exception) {
+            Log.e("TrackerHelper", "Error fetching data with D2Dao: ${e.message}", e)
         }
         return rows
     }
 
-    private fun mapRowValues(cursor: Cursor, columns: List<TrackerLineListItem>): List<TrackerLineListValue> {
-        val row: MutableList<TrackerLineListValue> = mutableListOf()
+    private fun mapRowMapToLineListValues(
+        rowMap: Map<String, String?>,
+        columns: List<TrackerLineListItem>,
+    ): List<TrackerLineListValue> {
+        val rowValues: MutableList<TrackerLineListValue> = mutableListOf()
         columns.forEach { item ->
-            val columnIndex = cursor.columnNames.indexOf(item.id)
-            row.add(TrackerLineListValue(item.id, cursor.getString(columnIndex)))
+            val valueFromMap = rowMap[item.id]
+            val stringValue: String? = if (valueFromMap?.isEmpty() == true) {
+                null
+            } else {
+                valueFromMap
+            }
+            rowValues.add(TrackerLineListValue(item.id, stringValue))
         }
-        return row
+        return rowValues
     }
 }

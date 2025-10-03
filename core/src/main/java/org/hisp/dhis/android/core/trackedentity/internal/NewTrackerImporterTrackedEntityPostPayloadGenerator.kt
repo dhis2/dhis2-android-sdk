@@ -49,21 +49,21 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator internal cons
     private val oldTrackerImporterPayloadGenerator: OldTrackerImporterPayloadGenerator,
 ) {
 
-    fun getTrackedEntityPayload(
+    suspend fun getTrackedEntityPayload(
         instances: List<TrackedEntityInstance>,
     ): NewTrackerImporterPayloadWrapper {
         val oldPayload = oldTrackerImporterPayloadGenerator.getTrackedEntityInstancePayload(instances)
         return transformPayload(oldPayload)
     }
 
-    fun getEventPayload(
+    suspend fun getEventPayload(
         events: List<Event>,
     ): NewTrackerImporterPayloadWrapper {
         val oldPayload = oldTrackerImporterPayloadGenerator.getEventPayload(events)
         return transformPayload(oldPayload)
     }
 
-    private fun transformPayload(
+    private suspend fun transformPayload(
         oldPayload: OldTrackerImporterPayload,
     ): NewTrackerImporterPayloadWrapper {
         val wrapper = NewTrackerImporterPayloadWrapper(programOwners = oldPayload.programOwners)
@@ -160,14 +160,14 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator internal cons
         }
     }
 
-    private fun getProgramAttributesMap(): Map<String, List<String>> {
+    private suspend fun getProgramAttributesMap(): Map<String, List<String>> {
         return programTrackedEntityAttributeStore.selectAll()
             .filter { it.program()?.uid() != null }
             .groupBy { it.program()?.uid()!! }
             .mapValues { it.value.mapNotNull { a -> a.trackedEntityAttribute()?.uid() } }
     }
 
-    private fun getTrackedEntityTypeAttributeMap(): Map<String, List<String>> {
+    private suspend fun getTrackedEntityTypeAttributeMap(): Map<String, List<String>> {
         return trackedEntityTypeAttributeStore.selectAll()
             .filter { it.trackedEntityType()?.uid() != null }
             .groupBy { it.trackedEntityType()?.uid()!! }

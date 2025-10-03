@@ -1,0 +1,6 @@
+{
+  "httpStatus": "OK",
+  "httpStatusCode": 200,
+  "status": "OK",
+  "message": "2FA was disabled successfully"
+}

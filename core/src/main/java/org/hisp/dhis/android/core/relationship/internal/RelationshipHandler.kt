@@ -41,7 +41,7 @@ internal class RelationshipHandler(
     private val relationshipItemHandler: RelationshipItemHandler,
 ) : IdentifiableHandlerImpl<Relationship>(relationshipStore) {
 
-    override fun afterObjectHandled(o: Relationship, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: Relationship, action: HandleAction) {
         relationshipItemHandler.handle(
             o.from()!!.toBuilder()
                 .relationship(ObjectWithUid.create(o.uid()))
@@ -54,18 +54,18 @@ internal class RelationshipHandler(
         )
     }
 
-    fun doesRelationshipExist(relationship: Relationship): Boolean {
+    suspend fun doesRelationshipExist(relationship: Relationship): Boolean {
         return getExistingRelationshipUid(relationship) != null
     }
 
-    fun deleteLinkedRelationships(entityUid: String) {
+    suspend fun deleteLinkedRelationships(entityUid: String) {
         relationshipItemStore.getByEntityUid(entityUid)
             .mapNotNull { it.relationship()?.uid() }
             .distinct()
             .forEach { store.deleteIfExists(it) }
     }
 
-    private fun getExistingRelationshipUid(relationship: Relationship): String? {
+    private suspend fun getExistingRelationshipUid(relationship: Relationship): String? {
         val existingRelationshipUidsForPair = relationshipItemStore.getRelationshipUidsForItems(
             relationship.from()!!,
             relationship.to()!!,

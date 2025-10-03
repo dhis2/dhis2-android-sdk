@@ -44,7 +44,7 @@ internal class IndicatorEngine(
     private val expressionService: ExpressionService,
 ) {
 
-    fun evaluateIndicator(
+    suspend fun evaluateIndicator(
         indicator: Indicator,
         contextEvaluationItem: AnalyticsServiceEvaluationItem,
         contextMetadata: Map<String, MetadataItem>,

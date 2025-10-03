@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.expressiondimensionitem;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -44,19 +42,13 @@ public abstract class ExpressionDimensionItem extends BaseIdentifiableObject imp
     public abstract String expression();
 
     public static Builder builder() {
-        return new $$AutoValue_ExpressionDimensionItem.Builder();
-    }
-
-    public static ExpressionDimensionItem create(Cursor cursor) {
-        return $AutoValue_ExpressionDimensionItem.createFromCursor(cursor);
+        return new AutoValue_ExpressionDimensionItem.Builder();
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
         public abstract Builder expression(String expression);
 
         public abstract ExpressionDimensionItem build();

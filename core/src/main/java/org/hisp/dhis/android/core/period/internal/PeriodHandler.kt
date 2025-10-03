@@ -34,7 +34,7 @@ internal class PeriodHandler(
     private val store: PeriodStore,
     private val generator: ParentPeriodGenerator,
 ) {
-    fun generateAndPersist() {
+    suspend fun generateAndPersist() {
         val periods = generator.generatePeriods()
         for (period in periods) {
             store.updateOrInsertWhere(period)

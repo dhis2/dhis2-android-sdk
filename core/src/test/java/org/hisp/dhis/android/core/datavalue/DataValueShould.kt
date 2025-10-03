@@ -29,12 +29,11 @@ package org.hisp.dhis.android.core.datavalue
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.datavalue.DataValueDTO
 import org.junit.Test
 
-class DataValueShould : BaseObjectKotlinxShould("datavalue/data_value.json"), ObjectShould {
+class DataValueShould : CoreObjectShould("datavalue/data_value.json") {
     @Test
     override fun map_from_json_string() {
         val dataValueDTO = deserialize(DataValueDTO.serializer())
@@ -43,7 +42,7 @@ class DataValueShould : BaseObjectKotlinxShould("datavalue/data_value.json"), Ob
         assertThat(dataValue.dataElement()).isEqualTo("s46m5MS0hxu")
         assertThat(dataValue.period()).isEqualTo("201712")
         assertThat(dataValue.organisationUnit()).isEqualTo("DiszpKrYNg8")
-        assertThat(dataValue.categoryOptionCombo()).isEqualTo("Prlt0C1RF0s")
+        assertThat(dataValue.categoryOptionCombo()).isEqualTo("Gmbgme7z9BF")
         assertThat(dataValue.attributeOptionCombo()).isEqualTo("bRowv6yZOF2")
         assertThat(dataValue.value()).isEqualTo("12")
         assertThat(dataValue.storedBy()).isEqualTo("bodata1")

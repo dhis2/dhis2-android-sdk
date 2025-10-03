@@ -27,36 +27,28 @@
  */
 package org.hisp.dhis.android.core.programstageworkinglist.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.singleParentChildStore
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
-import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
 
 internal class ProgramStageWorkingListAttributeValueFilterChildrenAppender private constructor(
-    private val childStore:
-    SingleParentChildStore<ProgramStageWorkingList, ProgramStageWorkingListAttributeValueFilter>,
+    private val childStore: ProgramStageWorkingListAttributeValueFilterStore,
 ) : ChildrenAppender<ProgramStageWorkingList>() {
 
-    override fun appendChildren(m: ProgramStageWorkingList): ProgramStageWorkingList {
-        val builder = m.toBuilder()
-        val children = childStore.getChildren(m).filter { it.attribute() != null }
+    override suspend fun appendChildren(m: ProgramStageWorkingList): ProgramStageWorkingList {
+        val children = childStore.getForProgramStageWorkingList(m.uid())
+            .filter { it.attribute() != null }
         val queryCriteria = m.programStageQueryCriteria()?.toBuilder()
             ?.attributeValueFilters(children)
             ?.build()
-        return builder.programStageQueryCriteria(queryCriteria).build()
+        return m.toBuilder()
+            .programStageQueryCriteria(queryCriteria)
+            .build()
     }
 
     companion object {
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<ProgramStageWorkingList> {
-            return ProgramStageWorkingListAttributeValueFilterChildrenAppender(
-                singleParentChildStore(
-                    databaseAdapter,
-                    ProgramStageWorkingListAttributeValueFilterStoreImpl.CHILD_PROJECTION,
-                ) { cursor: Cursor -> ProgramStageWorkingListAttributeValueFilter.create(cursor) },
-            )
+        fun create(): ChildrenAppender<ProgramStageWorkingList> {
+            return ProgramStageWorkingListAttributeValueFilterChildrenAppender(koin.get())
         }
     }
 }

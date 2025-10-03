@@ -29,10 +29,6 @@
 package org.hisp.dhis.android.core.dataset
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Single
 import kotlinx.datetime.Clock
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper
@@ -58,6 +54,10 @@ import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 import java.util.Date
 import kotlin.time.Duration.Companion.days
 

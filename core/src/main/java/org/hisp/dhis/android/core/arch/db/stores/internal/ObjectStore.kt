@@ -27,24 +27,30 @@
  */
 package org.hisp.dhis.android.core.arch.db.stores.internal
 
-import android.content.ContentValues
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 
 internal interface ObjectStore<O> : ReadableStore<O> {
     @Throws(RuntimeException::class)
-    fun selectStringColumnsWhereClause(column: String, clause: String): List<String>
+    suspend fun selectStringColumnsWhereClause(column: String, clause: String): List<String>
 
     @Throws(RuntimeException::class)
-    fun insert(o: O): Long
+    suspend fun insert(o: O): Long
 
     @Throws(RuntimeException::class)
-    fun insert(objects: Collection<O>)
-    fun delete(): Int
-    fun deleteById(o: O): Boolean
-    fun deleteWhere(clause: String): Boolean
-
-    fun updateWhere(updates: ContentValues, whereClause: String): Int
+    suspend fun insert(objects: Collection<O>)
 
     @Throws(RuntimeException::class)
-    fun deleteWhereIfExists(whereClause: String)
-    val isReady: Boolean
+    suspend fun update(o: O)
+
+    @Throws(RuntimeException::class)
+    suspend fun update(objects: Collection<O>)
+
+    @Throws(RuntimeException::class)
+    suspend fun updateOrInsert(o: O): HandleAction
+
+    @Throws(RuntimeException::class)
+    suspend fun updateOrInsert(objects: Collection<O>): List<HandleAction>
+
+    suspend fun delete(): Int
+    suspend fun deleteByEntity(o: O): Boolean
 }

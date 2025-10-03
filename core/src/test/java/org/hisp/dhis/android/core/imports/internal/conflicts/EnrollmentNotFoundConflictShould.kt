@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 internal class EnrollmentNotFoundConflictShould : BaseConflictShould() {
@@ -45,7 +46,7 @@ internal class EnrollmentNotFoundConflictShould : BaseConflictShould() {
     }
 
     @Test
-    fun `Should create display description`() {
+    fun `Should create display description`() = runTest {
         val displayDescription =
             EnrollmentNotFoundConflict.getDisplayDescription(importConflict, context)
         assert(displayDescription == "Your enrollment $enrollmentUid does not exist in the server")

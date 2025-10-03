@@ -39,7 +39,6 @@ public class TrackerImportConflictSamples {
 
     public static TrackerImportConflict get() {
         return TrackerImportConflict.builder()
-                .id(1L)
                 .conflict("conflict")
                 .value("value")
                 .trackedEntityInstance("tracked_entity_instance")

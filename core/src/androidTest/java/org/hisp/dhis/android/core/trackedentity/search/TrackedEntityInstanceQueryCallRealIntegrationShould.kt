@@ -144,6 +144,16 @@ class TrackedEntityInstanceQueryCallRealIntegrationShould : BaseRealIntegrationT
     }
 
     // @Test
+    fun query_multiple_tracked_entity_instances_using_in_filter() {
+        login()
+        val queryResponse = repository.onlineOnly()
+            .byFilter("w75KJ2mc4zz").`in`(listOf("Tom", "Evelyn", "John"))
+            .blockingGet()
+
+        assertThat(queryResponse).isNotEmpty()
+    }
+
+    // @Test
     fun throw_exception_for_too_long_list_of_org_units() {
         login()
         val orgUnits = listOf(

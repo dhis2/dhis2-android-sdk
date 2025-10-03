@@ -28,9 +28,7 @@
 package org.hisp.dhis.android.core.program.programindicatorengine.internal
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.constant.Constant
@@ -51,6 +49,9 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 import java.text.ParseException
 
 /**
@@ -121,7 +122,7 @@ class ProgramIndicatorExecutorShould {
 
     @Before
     @Throws(Exception::class)
-    fun setUp() {
+    fun setUp() = runTest {
         whenever(attributeValue1.trackedEntityAttribute()) doReturn attributeUid1
         whenever(attributeValue2.trackedEntityAttribute()) doReturn attributeUid2
 
@@ -428,7 +429,7 @@ class ProgramIndicatorExecutorShould {
     }
 
     @Test
-    fun evaluate_program_stage_name() {
+    fun evaluate_program_stage_name() = runTest {
         setExpression(`var`("program_stage_name"))
         whenever(event1.eventDate()) doReturn DateUtils.DATE_FORMAT.parse("2020-01-01T00:00:00.000")
         whenever(event2_1.eventDate()) doReturn DateUtils.DATE_FORMAT.parse("2020-01-02T00:00:00.000")
@@ -503,7 +504,7 @@ class ProgramIndicatorExecutorShould {
     }
 
     @Test
-    fun evaluate_missing_dataelement() {
+    fun evaluate_missing_dataelement() = runTest {
         whenever(dataElementStore.selectByUid(dataElementUid1)).doReturn(null)
         setExpression(de(programStage1, dataElementUid1))
 
@@ -512,7 +513,7 @@ class ProgramIndicatorExecutorShould {
     }
 
     @Test
-    fun evaluate_missing_attribute() {
+    fun evaluate_missing_attribute() = runTest {
         whenever(trackedEntityAttributeStore.selectByUid(attributeUid1)).doReturn(null)
         setExpression(att(attributeUid1))
 

@@ -27,12 +27,10 @@
  */
 package org.hisp.dhis.android.core.tracker.importer.internal
 
-import io.reactivex.Observable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
@@ -41,6 +39,7 @@ import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPostStateManager
+import org.hisp.dhis.android.persistence.tracker.TrackerJobObjectTableInfo
 import org.koin.core.annotation.Singleton
 import kotlin.time.Duration.Companion.seconds
 
@@ -59,7 +58,7 @@ internal class JobQueryCall internal constructor(
     private val stateManager: NewTrackerImporterTrackedEntityPostStateManager,
 ) {
 
-    fun queryPendingJobs(): Observable<D2Progress> = flow {
+    fun queryPendingJobs(): Flow<D2Progress> = flow {
         val pendingJobs = trackerJobObjectStore.selectAll()
             .sortedBy { it.lastUpdated() }
             .groupBy { it.jobUid() }
@@ -71,14 +70,14 @@ internal class JobQueryCall internal constructor(
             emitAll(queryJobInternal(it.first, it.second, it.third, ATTEMPTS_WHEN_QUERYING))
             updateFileResourceStates(it.second)
         }
-    }.asObservable()
-
-    fun queryJob(jobId: String): Flow<D2Progress> {
-        val jobObjects = trackerJobObjectStore.selectWhere(byJobIdClause(jobId))
-        return queryJobInternal(jobId, jobObjects, true, ATTEMPTS_AFTER_UPLOAD)
     }
 
-    private fun updateFileResourceStates(jobObjects: List<TrackerJobObject>) {
+    fun queryJob(jobId: String): Flow<D2Progress> = flow {
+        val jobObjects = trackerJobObjectStore.selectWhere(byJobIdClause(jobId))
+        emitAll(queryJobInternal(jobId, jobObjects, true, ATTEMPTS_AFTER_UPLOAD))
+    }
+
+    private suspend fun updateFileResourceStates(jobObjects: List<TrackerJobObject>) {
         return fileResourceHandler.updateFileResourceStates(jobObjects)
     }
 
@@ -144,12 +143,12 @@ internal class JobQueryCall internal constructor(
             networkHandler.getJobReport(jobId)
         }.getOrThrow()
 
-        trackerJobObjectStore.deleteWhere(byJobIdClause(jobId))
+        trackerJobObjectStore.deleteByJobUid(jobId)
         handler.handle(jobReport, jobObjects)
     }
 
-    private fun handlerError(jobId: String, jobObjects: List<TrackerJobObject>) {
-        trackerJobObjectStore.deleteWhere(byJobIdClause(jobId))
+    private suspend fun handlerError(jobId: String, jobObjects: List<TrackerJobObject>) {
+        trackerJobObjectStore.deleteByJobUid(jobId)
         stateManager.restoreStates(jobObjects)
     }
 

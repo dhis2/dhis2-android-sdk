@@ -33,7 +33,6 @@ public class ProgramAttributeValueLinkSamples {
 
     public static ProgramAttributeValueLink getProgramAttribute() {
         return ProgramAttributeValueLink.builder()
-                .id(1L)
                 .program("program")
                 .attribute("attribute")
                 .value("value")

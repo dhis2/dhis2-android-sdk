@@ -28,29 +28,20 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
-import android.database.Cursor;
-
-import androidx.annotation.NonNull;
-
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-abstract class TrackedEntityInstanceSync extends TrackerBaseSync {
+public abstract class TrackedEntityInstanceSync implements TrackerBaseSync {
 
-    @NonNull
-    static TrackedEntityInstanceSync create(Cursor cursor) {
-        return AutoValue_TrackedEntityInstanceSync.createFromCursor(cursor);
-    }
-
-    static Builder builder() {
+    public static Builder builder() {
         return new AutoValue_TrackedEntityInstanceSync.Builder();
     }
 
-    abstract Builder toBuilder();
+    public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    abstract static class Builder extends TrackerBaseSync.Builder<Builder> {
+    public abstract static class Builder implements TrackerBaseSync.Builder<Builder> {
 
-        abstract TrackedEntityInstanceSync build();
+        public abstract TrackedEntityInstanceSync build();
     }
 }

@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.legendset
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -35,16 +34,15 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.legendset.internal.LegendChildrenAppender
 import org.hisp.dhis.android.core.legendset.internal.LegendSetStore
+import org.hisp.dhis.android.persistence.legendset.LegendSetTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 class LegendSetCollectionRepository internal constructor(
     store: LegendSetStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<LegendSet, LegendSetCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -52,7 +50,6 @@ class LegendSetCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         LegendSetCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },

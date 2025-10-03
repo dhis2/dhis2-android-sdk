@@ -28,16 +28,10 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.DataElementWithUidColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreValueTypeRenderingAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -63,31 +57,22 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject imp
     public abstract Boolean allowFutureDate();
 
     @Nullable
-    @ColumnAdapter(DataElementWithUidColumnAdapter.class)
     public abstract DataElement dataElement();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid programStage();
 
     @Nullable
-    @ColumnAdapter(IgnoreValueTypeRenderingAdapter.class)
     public abstract ValueTypeRendering renderType();
 
-    public static ProgramStageDataElement create(Cursor cursor) {
-        return AutoValue_ProgramStageDataElement.createFromCursor(cursor);
-    }
-
     public static Builder builder() {
-        return new $$AutoValue_ProgramStageDataElement.Builder();
+        return new AutoValue_ProgramStageDataElement.Builder();
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
-
-        public abstract Builder id(Long id);
 
         public abstract Builder displayInReports(Boolean displayInReports);
 

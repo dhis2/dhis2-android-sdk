@@ -31,4 +31,6 @@ package org.hisp.dhis.android.core.attribute.internal
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLink
 
-internal interface DataElementAttributeValueLinkStore : LinkStore<DataElementAttributeValueLink>
+internal interface DataElementAttributeValueLinkStore : LinkStore<DataElementAttributeValueLink> {
+    suspend fun getLinksForDataElement(dataElementUid: String): List<DataElementAttributeValueLink>
+}

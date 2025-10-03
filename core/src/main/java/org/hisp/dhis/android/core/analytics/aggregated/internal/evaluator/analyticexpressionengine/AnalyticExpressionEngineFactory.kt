@@ -59,7 +59,7 @@ internal class AnalyticExpressionEngineFactory(
     private val constantStore: ConstantStore,
 ) {
 
-    fun getEngine(
+    suspend fun getEngine(
         method: ExpressionItemMethod,
         contextEvaluationItem: AnalyticsServiceEvaluationItem,
         contextMetadata: Map<String, MetadataItem>,
@@ -87,13 +87,12 @@ internal class AnalyticExpressionEngineFactory(
         return AnalyticExpressionEngine(visitor)
     }
 
-    private val constantMap: Map<String, Constant>
-        get() {
-            val constants = constantStore.selectAll()
-            return mapByUid(constants)
-        }
+    private suspend fun constantMap(): Map<String, Constant> {
+        val constants = constantStore.selectAll()
+        return mapByUid(constants)
+    }
 
-    private fun newVisitor(
+    private suspend fun newVisitor(
         indicatorContext: IndicatorContext,
         method: ExpressionItemMethod,
     ): CommonExpressionVisitor {
@@ -101,7 +100,7 @@ internal class AnalyticExpressionEngineFactory(
             CommonExpressionVisitorScope.AnalyticsIndicator(
                 itemMap = AnalyticExpressionParserUtils.ANALYTIC_EXPRESSION_ITEMS,
                 itemMethod = method,
-                constantMap = constantMap,
+                constantMap = constantMap(),
                 indicatorContext = indicatorContext,
             ),
         )

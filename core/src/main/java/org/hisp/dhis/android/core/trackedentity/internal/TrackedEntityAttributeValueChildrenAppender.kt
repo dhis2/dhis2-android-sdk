@@ -27,31 +27,23 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.singleParentChildStore
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
 internal class TrackedEntityAttributeValueChildrenAppender private constructor(
-    private val childStore: SingleParentChildStore<TrackedEntityInstance, TrackedEntityAttributeValue>,
+    private val childStore: TrackedEntityAttributeValueStore,
 ) : ChildrenAppender<TrackedEntityInstance>() {
-    override fun appendChildren(m: TrackedEntityInstance): TrackedEntityInstance {
-        val builder = m.toBuilder()
-        builder.trackedEntityAttributeValues(childStore.getChildren(m))
-        return builder.build()
+    override suspend fun appendChildren(m: TrackedEntityInstance): TrackedEntityInstance {
+        val children = childStore.queryByTrackedEntityInstance(m.uid())
+        return m.toBuilder()
+            .trackedEntityAttributeValues(children)
+            .build()
     }
 
     companion object {
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<TrackedEntityInstance> {
-            return TrackedEntityAttributeValueChildrenAppender(
-                singleParentChildStore(
-                    databaseAdapter,
-                    TrackedEntityAttributeValueStoreImpl.CHILD_PROJECTION,
-                ) { cursor: Cursor -> TrackedEntityAttributeValue.create(cursor) },
-            )
+        fun create(): ChildrenAppender<TrackedEntityInstance> {
+            return TrackedEntityAttributeValueChildrenAppender(koin.get())
         }
     }
 }

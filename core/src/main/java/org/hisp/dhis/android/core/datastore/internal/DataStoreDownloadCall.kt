@@ -49,7 +49,7 @@ internal class DataStoreDownloadCall(
 ) {
 
     fun download(params: DataStoreDownloadParams): Observable<D2Progress> = rxObservable {
-        coroutineAPICallExecutor.wrapTransactionally(cleanForeignKeyErrors = true) {
+        coroutineAPICallExecutor.wrapTransactionallyRoom(cleanForeignKeyErrors = true) {
             val namespaces = networkHandler.getNamespaces()
                 .map { filterNamespaces(params, it) }
                 .getOrThrow()

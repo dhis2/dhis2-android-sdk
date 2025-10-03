@@ -28,12 +28,11 @@
 package org.hisp.dhis.android.core.settings
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.apkdistribution.ApkDistributionVersionDTO
 import org.junit.Test
 
-class VersionsSettingsShould : BaseObjectKotlinxShould("settings/version.json"), ObjectShould {
+class VersionsSettingsShould : CoreObjectShould("settings/version.json") {
 
     @Test
     override fun map_from_json_string() {

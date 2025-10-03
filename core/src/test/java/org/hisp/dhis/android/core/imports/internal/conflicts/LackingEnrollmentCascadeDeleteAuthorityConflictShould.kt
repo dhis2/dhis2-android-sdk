@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 internal class LackingEnrollmentCascadeDeleteAuthorityConflictShould : BaseConflictShould() {
@@ -46,7 +47,7 @@ internal class LackingEnrollmentCascadeDeleteAuthorityConflictShould : BaseConfl
     }
 
     @Test
-    fun `Should create display description`() {
+    fun `Should create display description`() = runTest {
         val displayDescription = LackingEnrollmentCascadeDeleteAuthorityConflict
             .getDisplayDescription(importConflict, context)
         assert(displayDescription == "You lack the authority to delete the enrollment: $enrollmentUid")

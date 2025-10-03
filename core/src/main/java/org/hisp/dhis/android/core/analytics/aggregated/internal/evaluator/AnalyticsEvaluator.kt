@@ -34,13 +34,13 @@ import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
 
 internal interface AnalyticsEvaluator {
 
-    fun evaluate(
+    suspend fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
         queryMods: QueryMods? = null,
     ): String?
 
-    fun getSql(
+    suspend fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
         queryMods: QueryMods? = null,

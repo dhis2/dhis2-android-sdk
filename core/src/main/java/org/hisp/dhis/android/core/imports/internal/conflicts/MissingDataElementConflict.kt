@@ -45,7 +45,7 @@ internal object MissingDataElementConflict : TrackerImportConflictItem {
         return conflict.`object`()
     }
 
-    override fun getDisplayDescription(
+    override suspend fun getDisplayDescription(
         conflict: ImportConflict,
         context: TrackerImportConflictItemContext,
     ): String {

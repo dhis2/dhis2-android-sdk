@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.arch.db.querybuilders.internal
 
 import com.google.common.truth.Truth
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
-import org.hisp.dhis.android.core.category.CategoryTableInfo
+import org.hisp.dhis.android.persistence.category.CategoryTableInfo
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4

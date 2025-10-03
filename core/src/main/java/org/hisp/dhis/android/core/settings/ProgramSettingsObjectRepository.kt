@@ -39,14 +39,14 @@ class ProgramSettingsObjectRepository internal constructor(
     programSettingCall: ProgramSettingCall,
 ) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<ProgramSettings>(programSettingCall),
     ReadOnlyWithDownloadObjectRepository<ProgramSettings> {
-    override fun blockingGet(): ProgramSettings? {
+    override suspend fun getInternal(): ProgramSettings? {
         val settings = store.selectAll()
         return if (settings.isEmpty()) {
             null
         } else {
             val specifics = settings
                 .filter { it.uid() != null }
-                .associateBy { it.uid()!! }
+                .associateBy { it.uid() }
 
             ProgramSettings.builder()
                 .globalSettings(settings.find { it.uid() == null })

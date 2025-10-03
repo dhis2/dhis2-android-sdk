@@ -32,12 +32,12 @@ import org.hisp.dhis.android.core.option.Option
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class OptionHandler constructor(
+internal class OptionHandler(
     optionStore: OptionStore,
     private val optionCleaner: OptionSubCollectionCleaner,
 ) : IdentifiableHandlerImpl<Option>(optionStore) {
 
-    override fun afterCollectionHandled(oCollection: Collection<Option>?) {
+    override suspend fun afterCollectionHandled(oCollection: Collection<Option>?) {
         optionCleaner.deleteNotPresent(oCollection)
     }
 }

@@ -27,14 +27,12 @@
  */
 package org.hisp.dhis.android.core.datavalue.internal
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.State.ERROR
 import org.hisp.dhis.android.core.common.State.SYNCED
 import org.hisp.dhis.android.core.common.State.WARNING
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
-import org.hisp.dhis.android.core.datavalue.DataValueConflictTableInfo
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
@@ -47,7 +45,7 @@ internal class DataValueImportHandler(
     private val dataValueConflictStore: DataValueConflictStore,
 ) {
 
-    fun handleImportSummary(
+    suspend fun handleImportSummary(
         dataValueSet: DataValueSet?,
         dataValueImportSummary: DataValueImportSummary?,
     ) {
@@ -70,34 +68,13 @@ internal class DataValueImportHandler(
         }
     }
 
-    private fun deleteDataValueConflicts(dataValues: List<DataValue>) {
+    private suspend fun deleteDataValueConflicts(dataValues: List<DataValue>) {
         dataValues.forEach { dataValue ->
-            val whereClause = WhereClauseBuilder()
-                .appendKeyStringValue(
-                    DataValueConflictTableInfo.Columns.ATTRIBUTE_OPTION_COMBO,
-                    dataValue.attributeOptionCombo()!!,
-                )
-                .appendKeyStringValue(
-                    DataValueConflictTableInfo.Columns.CATEGORY_OPTION_COMBO,
-                    dataValue.categoryOptionCombo()!!,
-                )
-                .appendKeyStringValue(
-                    DataValueConflictTableInfo.Columns.DATA_ELEMENT,
-                    dataValue.dataElement()!!,
-                )
-                .appendKeyStringValue(
-                    DataValueConflictTableInfo.Columns.PERIOD,
-                    dataValue.period()!!,
-                )
-                .appendKeyStringValue(
-                    DataValueConflictTableInfo.Columns.ORG_UNIT,
-                    dataValue.organisationUnit()!!,
-                ).build()
-            dataValueConflictStore.deleteWhereIfExists(whereClause)
+            dataValueConflictStore.deleteDataValueWhereIfExists(dataValue)
         }
     }
 
-    private fun handleDataValueWarnings(
+    private suspend fun handleDataValueWarnings(
         dataValues: List<DataValue>,
         dataValueImportSummary: DataValueImportSummary,
     ) {
@@ -109,7 +86,7 @@ internal class DataValueImportHandler(
         } ?: setStateToDataValues(WARNING, dataValues)
     }
 
-    private fun getValuesWithConflicts(
+    private suspend fun getValuesWithConflicts(
         dataValues: List<DataValue>,
         importConflicts: List<ImportConflict>?,
     ): Set<DataValue>? {
@@ -138,7 +115,7 @@ internal class DataValueImportHandler(
         }.toSet()
     }
 
-    private fun setDataValueStates(
+    private suspend fun setDataValueStates(
         dataValues: List<DataValue>,
         dataValueConflicts: Set<DataValue>,
     ) {
@@ -149,7 +126,7 @@ internal class DataValueImportHandler(
         setStateToDataValues(SYNCED, syncedValues)
     }
 
-    private fun setStateToDataValues(state: State, dataValues: Collection<DataValue>) {
+    private suspend fun setStateToDataValues(state: State, dataValues: Collection<DataValue>) {
         for (dataValue in dataValues) {
             if (dataValueStore.isDataValueBeingUpload(dataValue)) {
                 if (state == SYNCED && dataValueStore.isDeleted(dataValue)) {

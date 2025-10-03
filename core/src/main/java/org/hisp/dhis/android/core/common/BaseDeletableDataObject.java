@@ -30,16 +30,13 @@ package org.hisp.dhis.android.core.common;
 
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnName;
-
 public abstract class BaseDeletableDataObject extends BaseDataObject implements DeletableDataObject {
 
     @Override
     @Nullable
-    @ColumnName(DeletableDataColumns.DELETED)
     public abstract Boolean deleted();
 
-    protected abstract static class Builder<T extends Builder> extends BaseDataObject.Builder<T> {
-        public abstract T deleted(@Nullable Boolean deleted);
+    protected interface Builder<T extends Builder<T>> extends BaseDataObject.Builder<T> {
+        T deleted(@Nullable Boolean deleted);
     }
 }

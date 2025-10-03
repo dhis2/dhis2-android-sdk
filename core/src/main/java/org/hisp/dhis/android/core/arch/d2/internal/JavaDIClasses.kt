@@ -28,26 +28,15 @@
 
 package org.hisp.dhis.android.core.arch.d2.internal
 
-import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordGenerator
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
-import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleaner
-import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleanerImpl
-import org.hisp.dhis.android.core.note.internal.NoteUniquenessManager
-import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.DataSetsStore
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.FileResourceCleaner
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService
 import org.koin.dsl.module
 
 internal val javaDIClasses = module {
-    single<ForeignKeyCleaner> { ForeignKeyCleanerImpl(get(), get()) }
     single { FileResourceCleaner(get(), get(), get()) }
-    single { NoteUniquenessManager(get()) }
     single { DatabaseEncryptionPasswordManager(get(), get()) }
     single { DatabaseEncryptionPasswordGenerator() }
     single { TrackedEntityInstanceService(get(), get(), get(), get()) }
-    single { DatabaseAdapterFactory(get(), get()) }
-    single { D2CallExecutor(get(), get()) }
-    single { DataSetsStore(get(), get(), get(), get()) }
 }

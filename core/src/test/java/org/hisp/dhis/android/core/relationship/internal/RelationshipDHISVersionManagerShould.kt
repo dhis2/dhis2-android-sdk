@@ -28,11 +28,12 @@
 package org.hisp.dhis.android.core.relationship.internal
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 class RelationshipDHISVersionManagerShould {
     private val relationshipTypeStore: RelationshipTypeStore = mock()
@@ -47,7 +48,7 @@ class RelationshipDHISVersionManagerShould {
     }
 
     @Test
-    fun get_owned_relationships_in_bidirectional() {
+    fun get_owned_relationships_in_bidirectional() = runTest {
         whenever(relationshipTypeStore.selectByUid(RelationshipSamples.TYPE)).thenReturn(relationshipType)
         whenever(relationshipType.bidirectional()).thenReturn(true)
 
@@ -59,7 +60,7 @@ class RelationshipDHISVersionManagerShould {
     }
 
     @Test
-    fun get_owned_relationships_in_non_bidirectional() {
+    fun get_owned_relationships_in_non_bidirectional() = runTest {
         whenever(relationshipTypeStore.selectByUid(RelationshipSamples.TYPE)).thenReturn(relationshipType)
         whenever(relationshipType.bidirectional()).thenReturn(false)
 

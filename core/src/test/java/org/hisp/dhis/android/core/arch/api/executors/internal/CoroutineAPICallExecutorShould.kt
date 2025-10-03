@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.arch.api.executors.internal
 
-import com.nhaarman.mockitokotlin2.mock
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
@@ -41,6 +40,7 @@ import org.hisp.dhis.android.core.user.internal.UserAccountDisabledErrorCatcher
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.mock
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CoroutineAPICallExecutorShould {

@@ -27,12 +27,6 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import com.nhaarman.mockitokotlin2.doAnswer
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.stub
-import com.nhaarman.mockitokotlin2.whenever
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.common.BaseCallShould
@@ -54,8 +48,13 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.ArgumentMatchers
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doAnswer
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.stub
+import org.mockito.kotlin.whenever
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 class ProgramModuleDownloaderShould : BaseCallShould() {
     private val program: Program = mock()
@@ -80,9 +79,10 @@ class ProgramModuleDownloaderShould : BaseCallShould() {
 
     @Before
     @Throws(Exception::class)
-    override fun setUp() {
+    override fun setUp() = runTest {
         super.setUp()
 
+        whenever(organisationUnitProgramLinkLinkStore.selectDistinctSlaves(any())).doReturn(setOf("programUid"))
         // Calls
         returnSingletonList(programCall, program)
         returnSingletonList(trackedEntityTypeCall, trackedEntityType)

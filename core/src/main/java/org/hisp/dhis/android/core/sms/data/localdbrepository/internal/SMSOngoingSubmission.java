@@ -28,14 +28,10 @@
 
 package org.hisp.dhis.android.core.sms.data.localdbrepository.internal;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.SMSOngoingSubmissionColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType;
 
@@ -46,23 +42,16 @@ public abstract class SMSOngoingSubmission implements CoreObject {
     public abstract Integer submissionId();
 
     @NonNull
-    @ColumnAdapter(SMSOngoingSubmissionColumnAdapter.class)
     public abstract SubmissionType type();
 
     public static Builder builder() {
-        return new $AutoValue_SMSOngoingSubmission.Builder();
-    }
-
-    public static SMSOngoingSubmission create(Cursor cursor) {
-        return $AutoValue_SMSOngoingSubmission.createFromCursor(cursor);
+        return new AutoValue_SMSOngoingSubmission.Builder();
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder id(Long id);
-
         public abstract Builder submissionId(Integer submissionId);
 
         public abstract Builder type(SubmissionType type);

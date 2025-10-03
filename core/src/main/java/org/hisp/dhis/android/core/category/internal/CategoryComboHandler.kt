@@ -44,7 +44,7 @@ internal class CategoryComboHandler(
     private val categoryOptionCleaner: CategoryOptionComboOrphanCleaner,
 ) : IdentifiableHandlerImpl<CategoryCombo>(store) {
 
-    override fun afterObjectHandled(o: CategoryCombo, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: CategoryCombo, action: HandleAction) {
         optionComboHandler.handleMany(CategoryComboInternalAccessor.accessCategoryOptionCombos(o))
         categoryCategoryComboLinkHandler.handleMany(
             o.uid(),

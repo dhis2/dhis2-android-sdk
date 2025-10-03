@@ -27,14 +27,7 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.eq
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.never
-import com.nhaarman.mockitokotlin2.same
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.category.Category
@@ -43,6 +36,14 @@ import org.hisp.dhis.android.core.category.CategoryComboInternalAccessor.accessC
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.same
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 class CategoryComboHandlerShould {
     private val categoryComboStore: CategoryComboStore = mock()
@@ -60,12 +61,12 @@ class CategoryComboHandlerShould {
     private lateinit var categories: List<Category>
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         categories = listOf(category)
         whenever(combo.uid()).doReturn(comboUid)
         whenever(accessCategoryOptionCombos(combo)).doReturn(optionCombos)
         whenever(combo.categories()).thenReturn(categories)
-        whenever(categoryComboStore.updateOrInsert(any())).doReturn(HandleAction.Insert)
+        whenever(categoryComboStore.updateOrInsert(any<List<CategoryCombo>>())).doReturn(listOf(HandleAction.Insert))
 
         categoryComboHandler = CategoryComboHandler(
             categoryComboStore,
@@ -76,26 +77,26 @@ class CategoryComboHandlerShould {
     }
 
     @Test
-    fun handle_option_combos() {
+    fun handle_option_combos() = runTest {
         categoryComboHandler.handle(combo)
         verify(optionComboHandler).handleMany(eq(optionCombos))
     }
 
     @Test
-    fun handle_category_category_combo_links() {
+    fun handle_category_category_combo_links() = runTest {
         categoryComboHandler.handle(combo)
         verify(categoryCategoryComboLinkHandler).handleMany(same(comboUid), eq(categories), any())
     }
 
     @Test
-    fun clean_option_combo_orphans_for_update() {
-        whenever(categoryComboStore.updateOrInsert(combo)).doReturn(HandleAction.Update)
+    fun clean_option_combo_orphans_for_update() = runTest {
+        whenever(categoryComboStore.updateOrInsert(listOf(combo))).doReturn(listOf(HandleAction.Update))
         categoryComboHandler.handle(combo)
         verify(categoryOptionCleaner).deleteOrphan(combo, optionCombos)
     }
 
     @Test
-    fun not_clean_option_combo_orphans_for_insert() {
+    fun not_clean_option_combo_orphans_for_insert() = runTest {
         whenever(categoryComboStore.updateOrInsert(combo)).doReturn(HandleAction.Insert)
         categoryComboHandler.handle(combo)
         verify(categoryOptionCleaner, never()).deleteOrphan(combo, optionCombos)

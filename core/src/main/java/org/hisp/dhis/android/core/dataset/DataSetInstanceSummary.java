@@ -28,17 +28,11 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.State;
 
@@ -60,28 +54,19 @@ public abstract class DataSetInstanceSummary implements CoreObject {
     public abstract Integer dataSetInstanceCount();
 
     @NonNull
-    @ColumnAdapter(StateColumnAdapter.class)
     public abstract State state();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
-
-    @NonNull
-    public static DataSetInstanceSummary create(Cursor cursor) {
-        return AutoValue_DataSetInstanceSummary.createFromCursor(cursor);
-    }
 
     public abstract DataSetInstanceSummary.Builder toBuilder();
 
     public static DataSetInstanceSummary.Builder builder() {
-        return new $$AutoValue_DataSetInstanceSummary.Builder();
+        return new AutoValue_DataSetInstanceSummary.Builder();
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
+    public abstract static class Builder {
         public abstract Builder dataSetUid(String dataSetUid);
 
         public abstract Builder dataSetDisplayName(String dataSetDisplayName);

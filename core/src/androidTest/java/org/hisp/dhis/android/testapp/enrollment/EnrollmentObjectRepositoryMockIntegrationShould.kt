@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.testapp.enrollment
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.Geometry
 import org.hisp.dhis.android.core.common.IdentifiableColumns
@@ -36,21 +38,22 @@ import org.hisp.dhis.android.core.data.enrollment.EnrollmentSamples
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection
 import org.hisp.dhis.android.core.enrollment.EnrollmentObjectRepository
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentStoreImpl
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
 import org.junit.Assert
 import org.junit.Test
 import java.util.Date
 
 class EnrollmentObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    fun update_organisation_unit() {
+    fun update_organisation_unit() = runTest {
         val orgUnitUid = "new_org_unit"
-        OrganisationUnitStoreImpl(databaseAdapter).insert(OrganisationUnit.builder().uid(orgUnitUid).build())
+        koin.get<OrganisationUnitStore>().insert(OrganisationUnit.builder().uid(orgUnitUid).build())
 
         val repository = objectRepository()
 
@@ -58,7 +61,7 @@ class EnrollmentObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestF
         assertThat(repository.blockingGet()!!.organisationUnit()).isEqualTo(orgUnitUid)
 
         repository.blockingDelete()
-        OrganisationUnitStoreImpl(databaseAdapter).delete(orgUnitUid)
+        koin.get<OrganisationUnitStore>().delete(orgUnitUid)
     }
 
     @Test(expected = D2Error::class)
@@ -88,12 +91,10 @@ class EnrollmentObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestF
     }
 
     @Test
-    fun not_update_status_when_passing_same_value() {
+    fun not_update_status_when_passing_same_value() = runTest {
         val enrollmentUid = "enrollment_uid"
-
-        d2.databaseAdapter().insert(
-            EnrollmentTableInfo.TABLE_INFO.name(),
-            null,
+        val store = EnrollmentStoreImpl(d2.databaseAdapter())
+        store.insert(
             EnrollmentSamples.get(
                 enrollmentUid,
                 "DiszpKrYNg8",
@@ -101,12 +102,10 @@ class EnrollmentObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestF
                 "nWrB0TfWlvh",
                 Date(),
             ).toBuilder()
-                .id(null)
                 .aggregatedSyncState(State.SYNCED)
                 .syncState(State.SYNCED)
                 .status(EnrollmentStatus.ACTIVE)
-                .build()
-                .toContentValues(),
+                .build(),
         )
 
         val repository = d2.enrollmentModule().enrollments().uid(enrollmentUid)

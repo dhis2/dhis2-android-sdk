@@ -27,13 +27,10 @@
  */
 package org.hisp.dhis.android.core.organisationunit;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
@@ -49,16 +46,10 @@ public abstract class OrganisationUnitProgramLink implements CoreObject {
         return new AutoValue_OrganisationUnitProgramLink.Builder();
     }
 
-    public static OrganisationUnitProgramLink create(Cursor cursor) {
-        return $AutoValue_OrganisationUnitProgramLink.createFromCursor(cursor);
-    }
-
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-
-        public abstract Builder id(Long id);
+    public abstract static class Builder {
 
         public abstract Builder program(@Nullable String program);
 

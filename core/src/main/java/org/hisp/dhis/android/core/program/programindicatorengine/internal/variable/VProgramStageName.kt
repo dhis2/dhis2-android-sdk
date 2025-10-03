@@ -27,20 +27,23 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine.internal.variable
 
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.common.AnalyticsType
 import org.hisp.dhis.android.core.common.IdentifiableColumns
-import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
-import org.hisp.dhis.android.core.program.ProgramStageTableInfo
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramExpressionItem
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils
+import org.hisp.dhis.android.persistence.event.EventTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramStageTableInfo
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal class VProgramStageName : ProgramExpressionItem() {
 
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
-        return getLatestEvent(visitor)?.programStage()?.let {
-            visitor.programStageStore!!.selectByUid(it)?.name()
+        return runBlocking {
+            getLatestEvent(visitor)?.programStage()?.let {
+                visitor.programStageStore!!.selectByUid(it)?.name()
+            }
         }
     }
 
@@ -52,6 +55,7 @@ internal class VProgramStageName : ProgramExpressionItem() {
                     "WHERE ps.${IdentifiableColumns.UID} = " +
                     "${ProgramIndicatorSQLUtils.EventAlias}.${EventTableInfo.Columns.PROGRAM_STAGE}" +
                     ")"
+
             AnalyticsType.ENROLLMENT, null ->
                 ProgramIndicatorSQLUtils.getEventColumnForEnrollmentWhereClause(
                     column = "(SELECT ${ProgramStageTableInfo.Columns.NAME} " +

@@ -1,0 +1,4 @@
+{
+  "totp2faEnabled": true,
+  "email2faEnabled": false
+}

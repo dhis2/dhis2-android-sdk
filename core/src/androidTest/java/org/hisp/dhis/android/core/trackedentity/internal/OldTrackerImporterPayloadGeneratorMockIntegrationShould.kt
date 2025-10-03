@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
@@ -43,7 +44,7 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
     private val oldTrackerPayloadGenerator = objects.d2DIComponent.oldTrackerImporterPayloadGenerator
 
     @Test
-    fun build_tracked_entity_instance_payload_with_nested_elements() {
+    fun build_tracked_entity_instance_payload_with_nested_elements() = runTest {
         storeTrackerData()
         val trackedEntityInstance = teiStore.selectByUid(teiId)!!
 
@@ -65,7 +66,7 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
     }
 
     @Test
-    fun build_single_event_with_nested_elements() {
+    fun build_single_event_with_nested_elements() = runTest {
         storeTrackerData()
         val event = eventStore.selectByUid(singleEventId)!!
 
@@ -81,7 +82,7 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
     }
 
     @Test
-    fun build_payload_from_tei_with_related_single_events() {
+    fun build_payload_from_tei_with_related_single_events() = runTest {
         storeTrackerData()
         storeRelationship(
             relationshipUid = "relationship1",
@@ -100,7 +101,7 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
     }
 
     @Test
-    fun build_payload_from_tei_with_related_tracker_event() {
+    fun build_payload_from_tei_with_related_tracker_event() = runTest {
         val fromTeiUid = "fromTei"
         storeTrackerData()
         storeSimpleTrackedEntityInstance(fromTeiUid, State.TO_UPDATE)
@@ -118,7 +119,7 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
     }
 
     @Test
-    fun build_payload_from_tei_with_related_enrollments() {
+    fun build_payload_from_tei_with_related_enrollments() = runTest {
         val fromTeiUid = "fromTei"
         storeTrackerData()
         storeSimpleTrackedEntityInstance(fromTeiUid, State.TO_UPDATE)
@@ -136,7 +137,7 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
     }
 
     @Test
-    fun build_payload_from_tei_with_related_trackedEntityInstances() {
+    fun build_payload_from_tei_with_related_trackedEntityInstances() = runTest {
         val fromTeiUid = "fromTei"
         storeTrackerData()
         storeSimpleTrackedEntityInstance(fromTeiUid, State.TO_UPDATE)
@@ -168,7 +169,7 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
     }
 
     @Test
-    fun build_payload_from_single_event_with_related_tei() {
+    fun build_payload_from_single_event_with_related_tei() = runTest {
         storeTrackerData()
 
         storeRelationship(
@@ -189,7 +190,7 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
     }
 
     @Test
-    fun build_recursive_relationship() {
+    fun build_recursive_relationship() = runTest {
         storeTrackerData()
 
         storeRelationship(
@@ -207,7 +208,7 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
     }
 
     @Test
-    fun build_payload_with_non_accessible_data() {
+    fun build_payload_with_non_accessible_data() = runTest {
         storeTrackerData()
         val previousTrackedEntityType = trackedEntityTypeStore.selectFirst()!!
         val previousProgram = programStore.selectFirst()!!
@@ -232,7 +233,7 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
     }
 
     @Test
-    fun do_not_include_data_values_not_assigned_to_program_stage() {
+    fun do_not_include_data_values_not_assigned_to_program_stage() = runTest {
         storeTrackerData()
         d2.trackedEntityModule().trackedEntityDataValues()
             .value(event1Id, unassignedDataElementId)

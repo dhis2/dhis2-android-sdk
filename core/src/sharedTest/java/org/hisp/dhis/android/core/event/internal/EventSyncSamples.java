@@ -34,7 +34,6 @@ public class EventSyncSamples {
 
     public static EventSync get1() {
         return EventSync.builder()
-                .id(1L)
                 .program("program")
                 .organisationUnitIdsHash(865)
                 .downloadLimit(500)

@@ -31,7 +31,6 @@ import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
-import org.hisp.dhis.android.core.common.CoreColumns
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 
 // TODO save TableInfo instead of separate files when architecture 1.0 is ready
@@ -102,9 +101,9 @@ internal class SQLStatementBuilderImpl internal constructor(
         return SELECT + IdentifiableColumns.UID + FROM + tableName + WHERE + whereClause + ";"
     }
 
-    override fun selectUidsWhere(whereClause: String, orderByClause: String): String {
+    override fun selectUidsWhere(whereClause: String, orderByClause: String?): String {
         return SELECT + IdentifiableColumns.UID + FROM + tableName + WHERE + whereClause +
-            ORDER_BY + orderByClause + ";"
+            getOrderBy(orderByClause) + ";"
     }
 
     override fun selectColumnWhere(column: String, whereClause: String): String {
@@ -153,15 +152,19 @@ internal class SQLStatementBuilderImpl internal constructor(
     }
 
     override fun selectWhere(whereClause: String, limit: Int): String {
-        return selectWhere(whereClause + LIMIT + limit)
+        return selectWhere(whereClause + getLimit(limit))
     }
 
-    override fun selectWhere(whereClause: String, orderByClause: String): String {
-        return selectWhere(whereClause + ORDER_BY + orderByClause)
+    override fun selectWhere(whereClause: String, orderByClause: String?): String {
+        return selectWhere(whereClause + getOrderBy(orderByClause))
     }
 
-    override fun selectWhere(whereClause: String, orderByClause: String, limit: Int): String {
-        return selectWhere(whereClause + ORDER_BY + orderByClause + LIMIT + limit)
+    override fun selectWhere(whereClause: String, orderByClause: String?, limit: Int): String {
+        return selectWhere(whereClause + getOrderBy(orderByClause) + getLimit(limit))
+    }
+
+    override fun selectWhere(whereClause: String, orderByClause: String?, limit: Int, offset: Int?): String {
+        return selectWhere(whereClause + getOrderBy(orderByClause) + getLimit(limit) + getOffset(offset))
     }
 
     override fun selectAll(): String {
@@ -189,7 +192,7 @@ internal class SQLStatementBuilderImpl internal constructor(
         // TODO refactor to only generate for object without uids store.
         val whereClause =
             if (whereColumns.isEmpty()) {
-                CoreColumns.ID + " = -1"
+                "0"
             } else {
                 andSeparatedColumnEqualInterrogationMark(
                     *whereColumns,
@@ -202,7 +205,7 @@ internal class SQLStatementBuilderImpl internal constructor(
     override fun deleteWhere(): String {
         val whereClause =
             if (whereColumns.isEmpty()) {
-                CoreColumns.ID + " = -1"
+                "0"
             } else {
                 andSeparatedColumnEqualInterrogationMark(
                     *whereColumns,
@@ -218,5 +221,18 @@ internal class SQLStatementBuilderImpl internal constructor(
         private const val SELECT = "SELECT "
         private const val AND = " AND "
         private const val ORDER_BY = " ORDER BY "
+        private const val OFFSET = " OFFSET "
+
+        internal fun getOrderBy(orderByClause: String?): String {
+            return orderByClause?.let { ORDER_BY + it } ?: ""
+        }
+
+        internal fun getLimit(limit: Int): String {
+            return LIMIT + limit
+        }
+
+        internal fun getOffset(offset: Int?): String {
+            return offset?.let { OFFSET + it } ?: ""
+        }
     }
 }

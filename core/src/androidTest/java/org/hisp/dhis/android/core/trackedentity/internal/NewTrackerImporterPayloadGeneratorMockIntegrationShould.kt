@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
@@ -40,7 +41,7 @@ class NewTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
     private val newTrackerPayloadGenerator = objects.d2DIComponent.newTrackerImporterPayloadGenerator
 
     @Test
-    fun build_tracked_entity_instance_payload_with_flat_elements() {
+    fun build_tracked_entity_instance_payload_with_flat_elements() = runTest {
         storeTrackerData()
         val trackedEntity = teiStore.selectByUid(teiId)!!
 
@@ -52,7 +53,7 @@ class NewTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
     }
 
     @Test
-    fun filter_synced_attribute_values() {
+    fun filter_synced_attribute_values() = runTest {
         storeTrackerData()
         val trackedEntity = teiStore.selectByUid(teiId)!!
 
@@ -67,7 +68,7 @@ class NewTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
     }
 
     @Test
-    fun filter_synced_data_values() {
+    fun filter_synced_data_values() = runTest {
         storeTrackerData()
         val event = eventStore.selectByUid(singleEventId)!!
 

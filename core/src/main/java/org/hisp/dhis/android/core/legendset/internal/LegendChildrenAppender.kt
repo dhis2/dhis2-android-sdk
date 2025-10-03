@@ -27,31 +27,23 @@
  */
 package org.hisp.dhis.android.core.legendset.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.singleParentChildStore
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.legendset.Legend
 import org.hisp.dhis.android.core.legendset.LegendSet
 
 internal class LegendChildrenAppender private constructor(
-    private val childStore: SingleParentChildStore<LegendSet, Legend>,
+    private val childStore: LegendStore,
 ) : ChildrenAppender<LegendSet>() {
-    override fun appendChildren(m: LegendSet): LegendSet {
-        val builder = m.toBuilder()
-        builder.legends(childStore.getChildren(m))
-        return builder.build()
+    override suspend fun appendChildren(m: LegendSet): LegendSet {
+        val children = childStore.getForLegendSet(m.uid())
+        return m.toBuilder()
+            .legends(children)
+            .build()
     }
 
     companion object {
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<LegendSet> {
-            return LegendChildrenAppender(
-                singleParentChildStore(
-                    databaseAdapter,
-                    LegendStoreImpl.CHILD_PROJECTION,
-                ) { cursor: Cursor -> Legend.create(cursor) },
-            )
+        fun create(): ChildrenAppender<LegendSet> {
+            return LegendChildrenAppender(koin.get())
         }
     }
 }

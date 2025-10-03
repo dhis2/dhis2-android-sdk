@@ -30,8 +30,11 @@ package org.hisp.dhis.android.core.fileresource
 import android.content.Context
 import io.reactivex.Observable
 import io.reactivex.Single
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
+import kotlinx.coroutines.withContext
 import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepository
@@ -51,28 +54,26 @@ import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.saveFil
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
+import org.hisp.dhis.android.persistence.fileresource.FileResourceTableInfo
 import org.koin.core.annotation.Singleton
 import java.io.File
 
 @Singleton
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions", "TooGenericExceptionCaught")
 class FileResourceCollectionRepository internal constructor(
     private val fileResourceStore: FileResourceStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
     transformer: FileResourceProjectionTransformer,
     dataStatePropagator: DataStatePropagator,
     private val context: Context,
 ) : ReadWriteWithUidCollectionRepositoryImpl<FileResource, File, FileResourceCollectionRepository>(
     fileResourceStore,
-    databaseAdapter,
     childrenAppenders,
     scope,
     transformer,
     FilterConnectorFactory(scope) { s: RepositoryScope ->
         FileResourceCollectionRepository(
             fileResourceStore,
-            databaseAdapter,
             s,
             transformer,
             dataStatePropagator,
@@ -101,13 +102,16 @@ class FileResourceCollectionRepository internal constructor(
     }
 
     override fun add(o: File): Single<String> {
-        return Single.fromCallable { blockingAdd(o) }
+        return rxSingle { addInternal(o) }
     }
 
     @Throws(D2Error::class)
-    @Suppress("TooGenericExceptionCaught")
     override fun blockingAdd(o: File): String {
-        return try {
+        return runBlocking { addInternal(o) }
+    }
+
+    override suspend fun addInternal(o: File): String = withContext(Dispatchers.IO) {
+        try {
             val generatedUid = UidGeneratorImpl().generate()
             val dstFile = saveFile(o, generatedUid, context)
             val fileResource = transformer.transform(dstFile).toBuilder().uid(generatedUid).name(o.name).build()
@@ -126,7 +130,7 @@ class FileResourceCollectionRepository internal constructor(
 
     override fun uid(uid: String?): FileResourceObjectRepository {
         val updatedScope = withUidFilterItem(scope, uid)
-        return FileResourceObjectRepository(fileResourceStore, uid, databaseAdapter, childrenAppenders, updatedScope)
+        return FileResourceObjectRepository(fileResourceStore, uid, childrenAppenders, updatedScope)
     }
 
     fun byUid(): StringFilterConnector<FileResourceCollectionRepository> {

@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.dataset.internal
 import org.hisp.dhis.android.core.arch.cleaners.internal.LinkCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.dataset.DataSet
-import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo
+import org.hisp.dhis.android.persistence.dataset.DataSetOrganisationUnitLinkTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

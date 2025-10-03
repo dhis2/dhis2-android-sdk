@@ -28,19 +28,11 @@
 
 package org.hisp.dhis.android.core.maintenance;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.D2ErrorCodeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.D2ErrorComponentColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreExceptionAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
@@ -52,11 +44,9 @@ public abstract class D2Error extends Exception implements CoreObject {
     public abstract String url();
 
     @Nullable
-    @ColumnAdapter(D2ErrorComponentColumnAdapter.class)
     public abstract D2ErrorComponent errorComponent();
 
     @NonNull
-    @ColumnAdapter(D2ErrorCodeColumnAdapter.class)
     public abstract D2ErrorCode errorCode();
 
     @NonNull
@@ -66,17 +56,10 @@ public abstract class D2Error extends Exception implements CoreObject {
     public abstract Integer httpErrorCode();
 
     @Nullable
-    @ColumnAdapter(IgnoreExceptionAdapter.class)
     public abstract Exception originalException();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
-
-    @NonNull
-    public static D2Error create(Cursor cursor) {
-        return AutoValue_D2Error.createFromCursor(cursor);
-    }
 
     public static Builder builder() {
         return new AutoValue_D2Error.Builder();
@@ -91,7 +74,7 @@ public abstract class D2Error extends Exception implements CoreObject {
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder {
 
         public abstract Builder url(String url);
 
@@ -109,9 +92,12 @@ public abstract class D2Error extends Exception implements CoreObject {
 
         abstract D2Error autoBuild();
         abstract D2ErrorCode errorCode();
+        abstract Date created();
 
         public D2Error build() {
-            this.created(new Date());
+            if (created() == null) {
+                created(new Date());
+            }
             try {
                 errorCode();
             } catch (IllegalStateException e) {

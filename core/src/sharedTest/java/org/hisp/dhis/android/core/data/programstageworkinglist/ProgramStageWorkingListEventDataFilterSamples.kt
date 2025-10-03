@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingLis
 internal object ProgramStageWorkingListEventDataFilterSamples {
     fun get(): ProgramStageWorkingListEventDataFilter {
         return ProgramStageWorkingListEventDataFilter.builder()
-            .id(1L)
             .programStageWorkingList("programStageWorkingList")
             .dataItem("abcDataElementUid")
             .le("20")
@@ -47,8 +46,8 @@ internal object ProgramStageWorkingListEventDataFilterSamples {
             .like("abc")
             .dateFilter(
                 DateFilterPeriod.builder()
-                    .startDate(parseDate("2014-05-01"))
-                    .endDate(parseDate("2019-03-20"))
+                    .startDate(parseDate("2014-05-01T00:00:00.000"))
+                    .endDate(parseDate("2019-03-20T00:00:00.000"))
                     .type(DatePeriodType.ABSOLUTE)
                     .build(),
             )

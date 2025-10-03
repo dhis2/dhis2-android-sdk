@@ -1,4 +1,6 @@
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
+import org.jetbrains.kotlin.gradle.dsl.*
+import com.android.build.api.dsl.*
 
 group = "org.hisp.dhis"
 version = libs.versions.dhis2AndroidSdkVersion.get()
@@ -27,31 +29,9 @@ buildscript {
 }
 
 plugins {
-    alias(libs.plugins.sonarqube)
     alias(libs.plugins.dokka)
     alias(libs.plugins.nexus.publish)
     alias(libs.plugins.cyclonedx)
-}
-
-sonarqube {
-    properties {
-        val branch = System.getenv("GIT_BRANCH")
-        val targetBranch = System.getenv("GIT_BRANCH_DEST")
-        val pullRequestId = System.getenv("PULL_REQUEST")
-
-        property("sonar.projectKey", "dhis2_dhis2-android-sdk")
-        property("sonar.organization", "dhis2")
-        property("sonar.host.url", "https://sonarcloud.io")
-        property("sonar.projectName", "dhis2-android-sdk")
-
-        if (pullRequestId == null) {
-            property("sonar.branch.name", branch)
-        } else {
-            property("sonar.pullrequest.base", targetBranch)
-            property("sonar.pullrequest.branch", branch)
-            property("sonar.pullrequest.key", pullRequestId)
-        }
-    }
 }
 
 allprojects {
@@ -65,6 +45,54 @@ allprojects {
 }
 
 apply(from = "tasks.gradle.kts")
+
+val jvmVersion = libs.versions.java.get().toInt()
+
+plugins.withType<JavaPlugin> {
+    extensions.configure<JavaPluginExtension> {
+        toolchain { languageVersion.set(JavaLanguageVersion.of(jvmVersion)) }
+    }
+}
+
+subprojects {
+    // Kotlin JVM pure
+    plugins.withId("org.jetbrains.kotlin.jvm") {
+        extensions.configure<KotlinJvmProjectExtension> {
+            jvmToolchain(jvmVersion)
+            compilerOptions {
+                jvmTarget.set(JvmTarget.fromTarget(jvmVersion.toString()))
+            }
+        }
+    }
+
+    // Kotlin Android
+    plugins.withId("org.jetbrains.kotlin.android") {
+        extensions.configure<KotlinAndroidProjectExtension> {
+            jvmToolchain(jvmVersion)
+            compilerOptions {
+                jvmTarget.set(JvmTarget.fromTarget(jvmVersion.toString()))
+            }
+        }
+    }
+
+    // Android (app / library)
+    plugins.withId("com.android.application") {
+        extensions.configure<ApplicationExtension> {
+            compileOptions {
+                sourceCompatibility = JavaVersion.toVersion(jvmVersion)
+                targetCompatibility = JavaVersion.toVersion(jvmVersion)
+            }
+        }
+    }
+    plugins.withId("com.android.library") {
+        extensions.configure<LibraryExtension> {
+            compileOptions {
+                sourceCompatibility = JavaVersion.toVersion(jvmVersion)
+                targetCompatibility = JavaVersion.toVersion(jvmVersion)
+            }
+        }
+    }
+}
 
 subprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")

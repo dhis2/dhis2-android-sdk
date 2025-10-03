@@ -34,7 +34,7 @@ internal open class OrderedLinkHandlerImpl<S, M : CoreObject>(
     private val store: LinkStore<M>,
 ) : OrderedLinkHandler<S, M> {
 
-    override fun handleMany(masterUid: String, slaves: List<S>?, transformer: Function2<S, Int, M>) {
+    override suspend fun handleMany(masterUid: String, slaves: List<S>?, transformer: Function2<S, Int, M>) {
         store.deleteLinksForMasterUid(masterUid)
         if (slaves != null) {
             for (i in slaves.indices) {

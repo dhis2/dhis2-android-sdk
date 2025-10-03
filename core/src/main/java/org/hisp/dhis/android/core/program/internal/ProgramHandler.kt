@@ -50,7 +50,7 @@ internal class ProgramHandler(
     private val programAttributeLinkHandler: ProgramAttributeValueLinkHandler,
 ) : IdentifiableHandlerImpl<Program>(programStore) {
 
-    override fun afterObjectHandled(o: Program, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: Program, action: HandleAction) {
         programTrackedEntityAttributeHandler.handleMany(
             ProgramInternalAccessor
                 .accessProgramTrackedEntityAttributes(o),
@@ -76,7 +76,7 @@ internal class ProgramHandler(
         }
     }
 
-    override fun beforeCollectionHandled(oCollection: Collection<Program>): Collection<Program> {
+    override suspend fun beforeCollectionHandled(oCollection: Collection<Program>): Collection<Program> {
         val filteredPrograms: MutableList<Program> = ArrayList(oCollection.size)
         for (p in oCollection) {
             if (!(p.programType() == ProgramType.WITH_REGISTRATION && p.trackedEntityType() == null)) {
@@ -86,7 +86,7 @@ internal class ProgramHandler(
         return filteredPrograms
     }
 
-    override fun afterCollectionHandled(oCollection: Collection<Program>?) {
+    override suspend fun afterCollectionHandled(oCollection: Collection<Program>?) {
         collectionCleaner.deleteNotPresent(oCollection)
         linkCleaner.deleteNotPresent(oCollection)
     }

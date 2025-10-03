@@ -29,16 +29,15 @@ package org.hisp.dhis.android.core.organisationunit
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.core.common.FeatureType
-import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.network.organisationunit.OrganisationUnitDTO
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class OrganisationUnitShould : BaseObjectKotlinxShould("organisationunit/organisation_unit.json"), ObjectShould {
+class OrganisationUnitShould : CoreObjectShould("organisationunit/organisation_unit.json") {
 
     @Test
     override fun map_from_json_string() {

@@ -79,7 +79,7 @@ internal object SettingsAppHelper {
 
     private fun getHomeFilters(filters: MutableMap<HomeFilter, FilterSetting>) = filters.map { entry ->
         entry.value.toBuilder()
-            .scope(HomeFilter::class.simpleName)
+            .scope(HomeFilter::class.simpleName!!)
             .filterType(entry.key.name)
             .build()
     }
@@ -87,7 +87,7 @@ internal object SettingsAppHelper {
     private fun getDataSetFilters(dataSetScope: DataSetFilters): List<FilterSetting> {
         val globalFilters = dataSetScope.globalSettings().map { entry ->
             entry.value.toBuilder()
-                .scope(DataSetFilter::class.simpleName)
+                .scope(DataSetFilter::class.simpleName!!)
                 .filterType(entry.key.name)
                 .build()
         }
@@ -95,7 +95,7 @@ internal object SettingsAppHelper {
         val specificFilters = dataSetScope.specificSettings().flatMap { entry ->
             entry.value.map { filter ->
                 filter.value.toBuilder()
-                    .scope(DataSetFilter::class.simpleName)
+                    .scope(DataSetFilter::class.simpleName!!)
                     .filterType(filter.key.name)
                     .build()
             }
@@ -107,7 +107,7 @@ internal object SettingsAppHelper {
     private fun getProgramFilters(programScope: ProgramFilters): List<FilterSetting> {
         val globalFilters = programScope.globalSettings().map { entry ->
             entry.value.toBuilder()
-                .scope(ProgramFilter::class.simpleName)
+                .scope(ProgramFilter::class.simpleName!!)
                 .filterType(entry.key.name)
                 .build()
         }
@@ -115,7 +115,7 @@ internal object SettingsAppHelper {
         val specificFilters = programScope.specificSettings().flatMap { entry ->
             entry.value.map { filter ->
                 filter.value.toBuilder()
-                    .scope(ProgramFilter::class.simpleName)
+                    .scope(ProgramFilter::class.simpleName!!)
                     .filterType(filter.key.name)
                     .build()
             }

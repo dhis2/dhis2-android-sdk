@@ -39,7 +39,6 @@ public class UserGroupSamples {
 
         fillIdentifiableProperties(builder);
         return builder
-                .id(1L)
                 .build();
     }
 }

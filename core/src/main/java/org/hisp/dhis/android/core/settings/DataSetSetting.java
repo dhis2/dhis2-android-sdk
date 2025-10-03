@@ -28,14 +28,10 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
@@ -50,7 +46,6 @@ public abstract class DataSetSetting implements CoreObject {
     public abstract String name();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
     @Nullable
@@ -59,20 +54,14 @@ public abstract class DataSetSetting implements CoreObject {
     @Nullable
     public abstract Integer periodDSDBTrimming();
 
-    public static DataSetSetting create(Cursor cursor) {
-        return $AutoValue_DataSetSetting.createFromCursor(cursor);
-    }
-
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new $AutoValue_DataSetSetting.Builder();
+        return new AutoValue_DataSetSetting.Builder();
     }
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder id(Long id);
-
         public abstract Builder uid(String uid);
 
         public abstract Builder name(String name);

@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventImportHandler
 import org.hisp.dhis.android.core.imports.TrackerImportConflict
@@ -43,6 +42,7 @@ import org.hisp.dhis.android.core.imports.internal.TEIWebResponseHandlerSummary
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.core.tracker.importer.internal.JobReportEnrollmentHandler
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
 import org.koin.core.annotation.Singleton
 import java.util.*
 
@@ -57,7 +57,7 @@ internal class EnrollmentImportHandler(
 ) {
 
     @Suppress("NestedBlockDepth")
-    fun handleEnrollmentImportSummary(
+    suspend fun handleEnrollmentImportSummary(
         enrollmentImportSummaries: List<EnrollmentImportSummary?>?,
         enrollments: List<Enrollment>,
         teiState: State,
@@ -108,7 +108,7 @@ internal class EnrollmentImportHandler(
         return summary
     }
 
-    private fun handleEventImportSummaries(
+    private suspend fun handleEventImportSummaries(
         enrollmentImportSummary: EnrollmentImportSummary,
         enrollments: List<Enrollment>,
     ): TEIWebResponseHandlerSummary {
@@ -121,7 +121,7 @@ internal class EnrollmentImportHandler(
         } ?: TEIWebResponseHandlerSummary()
     }
 
-    private fun storeEnrollmentImportConflicts(
+    private suspend fun storeEnrollmentImportConflicts(
         enrollmentImportSummary: EnrollmentImportSummary,
         teiUid: String,
     ) {
@@ -144,10 +144,10 @@ internal class EnrollmentImportHandler(
             )
         }
 
-        trackerImportConflicts.forEach { trackerImportConflictStore.insert(it) }
+        trackerImportConflicts.forEach { trackerImportConflictStore.updateOrInsertWhere(it) }
     }
 
-    private fun processIgnoredEnrollments(
+    private suspend fun processIgnoredEnrollments(
         enrollmentImportSummaries: List<EnrollmentImportSummary?>?,
         enrollments: List<Enrollment>,
         teiState: State,
@@ -176,7 +176,7 @@ internal class EnrollmentImportHandler(
         }
     }
 
-    private fun resetNestedDataStates(enrollment: Enrollment?) {
+    private suspend fun resetNestedDataStates(enrollment: Enrollment?) {
         enrollment?.let {
             dataStatePropagator.resetUploadingEventStates(enrollment.uid())
         }

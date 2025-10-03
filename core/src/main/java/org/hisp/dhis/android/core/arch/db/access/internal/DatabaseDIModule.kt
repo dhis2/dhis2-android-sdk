@@ -27,15 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.db.access.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.koin.core.annotation.Module
-import org.koin.core.annotation.Singleton
 
 @Module
-internal class DatabaseDIModule {
-
-    @Singleton
-    fun databaseAdapter(adapterFactory: DatabaseAdapterFactory): DatabaseAdapter {
-        return adapterFactory.newParentDatabaseAdapter()
-    }
-}
+internal class DatabaseDIModule

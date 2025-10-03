@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.network.trackedentityinstancefilter
 
-import org.hisp.dhis.android.core.common.tableinfo.ItemFilterTableInfo.Columns
 import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.persistence.trackedentity.AttributeValueFilterTableInfo.Columns
 
 internal object AttributeValueFilterFields : BaseFields<AttributeValueFilter>() {
     private const val API_IN = "in"

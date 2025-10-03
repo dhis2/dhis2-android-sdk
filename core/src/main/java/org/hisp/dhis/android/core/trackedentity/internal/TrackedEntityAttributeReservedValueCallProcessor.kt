@@ -42,7 +42,7 @@ internal class TrackedEntityAttributeReservedValueCallProcessor(
     organisationUnit: OrganisationUnit?,
     private val pattern: String?,
 ) : CallProcessor<TrackedEntityAttributeReservedValue> {
-    private val organisationUnitUid = if (organisationUnit == null) null else organisationUnit.uid()
+    private val organisationUnitUid = organisationUnit?.uid()
     private val temporalValidityDate: Date?
 
     init {
@@ -50,9 +50,9 @@ internal class TrackedEntityAttributeReservedValueCallProcessor(
     }
 
     @Throws(D2Error::class)
-    override fun process(objectList: List<TrackedEntityAttributeReservedValue>) {
+    override suspend fun process(objectList: List<TrackedEntityAttributeReservedValue>) {
         if (objectList.isNotEmpty()) {
-            create(databaseAdapter).executeD2CallTransactionally<Any?>({
+            create(databaseAdapter).executeD2CallTransactionally<Any?> {
                 for (trackedEntityAttributeReservedValue in objectList) {
                     handler.handle(
                         trackedEntityAttributeReservedValue.toBuilder()
@@ -62,18 +62,17 @@ internal class TrackedEntityAttributeReservedValueCallProcessor(
                             .build(),
                     )
                 }
-            })
+            }
         }
     }
 
     private fun fillTemporalValidityDate(pattern: String?): Date? {
-        try {
-            return Date(
-                TrackedEntityAttributeReservedValueValidatorHelper()
-                    .getExpiryDateCode(pattern).toEpochMilliseconds(),
+        return try {
+            Date(
+                TrackedEntityAttributeReservedValueValidatorHelper().getExpiryDateCode(pattern).toEpochMilliseconds(),
             )
         } catch (e: IllegalStateException) {
-            return null
+            null
         }
     }
 }

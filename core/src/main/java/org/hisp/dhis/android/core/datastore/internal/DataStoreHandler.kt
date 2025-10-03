@@ -29,13 +29,12 @@
 package org.hisp.dhis.android.core.datastore.internal
 
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.HandlerBaseImpl
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.DataStoreEntry
-import org.hisp.dhis.android.core.datastore.DataStoreEntryTableInfo
+import org.hisp.dhis.android.persistence.datastore.DataStoreTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -43,7 +42,7 @@ internal class DataStoreHandler(
     private val store: DataStoreEntryStore,
 ) : LinkHandler<DataStoreEntry, DataStoreEntry>, HandlerBaseImpl<DataStoreEntry>() {
 
-    override fun handleMany(
+    override suspend fun handleMany(
         masterUid: String,
         slaves: Collection<DataStoreEntry>?,
         transformer: (DataStoreEntry) -> DataStoreEntry,
@@ -53,21 +52,24 @@ internal class DataStoreHandler(
         cleanOrphan(masterUid, entriesToHandle)
     }
 
-    override fun resetAllLinks() {
+    override suspend fun resetAllLinks() {
         store.delete()
     }
 
-    override fun deleteOrPersist(o: DataStoreEntry): HandleAction {
-        return store.updateOrInsertWhere(o)
+    override suspend fun deleteOrPersist(oCollection: Collection<DataStoreEntry>) {
+        val handleActions = store.updateOrInsert(oCollection)
+        oCollection.forEachIndexed { index, o ->
+            afterObjectHandled(o, handleActions[index])
+        }
     }
 
-    private fun filterNotSyncedEntries(
+    private suspend fun filterNotSyncedEntries(
         namespace: String,
         slaves: Collection<DataStoreEntry>?,
     ): List<DataStoreEntry>? {
         return slaves?.let {
             val whereClause = WhereClauseBuilder().run {
-                appendKeyStringValue(DataStoreEntryTableInfo.Columns.NAMESPACE, namespace)
+                appendKeyStringValue(DataStoreTableInfo.Columns.NAMESPACE, namespace)
                 appendNotInKeyStringValues(
                     DataColumns.SYNC_STATE,
                     listOf(State.SYNCED.name, State.SYNCED_VIA_SMS.name),
@@ -82,20 +84,10 @@ internal class DataStoreHandler(
         }
     }
 
-    private fun cleanOrphan(
+    private suspend fun cleanOrphan(
         namespace: String,
         slaves: Collection<DataStoreEntry>?,
     ) {
-        val notInSlaves = WhereClauseBuilder().run {
-            appendKeyStringValue(DataStoreEntryTableInfo.Columns.NAMESPACE, namespace)
-            appendInKeyEnumValues(DataColumns.SYNC_STATE, listOf(State.SYNCED, State.SYNCED_VIA_SMS))
-
-            if (!slaves.isNullOrEmpty()) {
-                appendNotInKeyStringValues(DataStoreEntryTableInfo.Columns.KEY, slaves.map { it.key() })
-            }
-            build()
-        }
-
-        store.deleteWhere(notInSlaves)
+        store.cleanOrphan(namespace, slaves)
     }
 }

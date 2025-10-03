@@ -41,7 +41,7 @@ internal class JobReportHandler internal constructor(
     private val dataStatePropagator: DataStatePropagator,
 ) {
 
-    fun handle(o: JobReport, jobObjects: List<TrackerJobObject>) {
+    suspend fun handle(o: JobReport, jobObjects: List<TrackerJobObject>) {
         val jobObjectsMap = jobObjects.associateBy { jo -> Pair(jo.trackerType(), jo.objectUid()) }
         val relatedUids = getRelatedUids(jobObjects)
 
@@ -52,7 +52,7 @@ internal class JobReportHandler internal constructor(
         dataStatePropagator.refreshAggregatedSyncStates(relatedUids)
     }
 
-    private fun handleErrors(
+    private suspend fun handleErrors(
         o: JobReport,
         jobObjectsMap: Map<Pair<TrackerImporterObjectType, String>, TrackerJobObject>,
     ) {
@@ -63,7 +63,7 @@ internal class JobReportHandler internal constructor(
         }
     }
 
-    private fun handleSuccesses(
+    private suspend fun handleSuccesses(
         o: JobReport,
         jobObjectsMap: Map<Pair<TrackerImporterObjectType, String>, TrackerJobObject>,
     ) {
@@ -76,12 +76,12 @@ internal class JobReportHandler internal constructor(
         }
     }
 
-    private fun handleNotPresent(
+    private suspend fun handleNotPresent(
         o: JobReport,
         jobObjectsMap: Map<Pair<TrackerImporterObjectType, String>, TrackerJobObject>,
     ) {
         val presentSuccesses = if (o.bundleReport == null) {
-            emptySet<Pair<TrackerImporterObjectType, String>>()
+            emptySet()
         } else {
             val tm = o.bundleReport.typeReportMap
             setOf(tm.event, tm.trackedEntity, tm.enrollment, tm.relationship).flatMap {
@@ -102,7 +102,7 @@ internal class JobReportHandler internal constructor(
             .forEach { getHandler(it.trackerType()).handleNotPresent(it) }
     }
 
-    private fun applySuccess(
+    private suspend fun applySuccess(
         typeReport: JobTypeReport,
         jobObjects: Map<Pair<TrackerImporterObjectType, String>, TrackerJobObject>,
         typeHandler: JobReportTypeHandler,
@@ -112,7 +112,7 @@ internal class JobReportHandler internal constructor(
             .forEach { typeHandler.handleSuccess(it) }
     }
 
-    private fun getRelatedUids(jobObjects: List<TrackerJobObject>): DataStateUidHolder {
+    private suspend fun getRelatedUids(jobObjects: List<TrackerJobObject>): DataStateUidHolder {
         return dataStatePropagator.getRelatedUids(
             jobObjects.filter { it.trackerType() == TRACKED_ENTITY }.map { it.objectUid() },
             jobObjects.filter { it.trackerType() == ENROLLMENT }.map { it.objectUid() },

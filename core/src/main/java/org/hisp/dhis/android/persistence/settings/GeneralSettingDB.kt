@@ -1,0 +1,59 @@
+package org.hisp.dhis.android.persistence.settings
+
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.settings.GeneralSettings
+import org.hisp.dhis.android.core.util.dateFormat
+import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.persistence.common.StringListDB
+import org.hisp.dhis.android.persistence.common.toDB
+
+@Entity(tableName = "GeneralSetting")
+internal data class GeneralSettingDB(
+    @PrimaryKey
+    val encryptDB: Boolean,
+    val lastUpdated: String?,
+    val reservedValues: Int?,
+    val smsGateway: String?,
+    val smsResultSender: String?,
+    val matomoID: Int?,
+    val matomoURL: String?,
+    val allowScreenCapture: Boolean?,
+    val messageOfTheDay: String?,
+    val experimentalFeatures: StringListDB?,
+    val bypassDHIS2VersionCheck: Boolean?,
+) : EntityDB<GeneralSettings> {
+
+    override fun toDomain(): GeneralSettings {
+        return GeneralSettings.builder()
+            .encryptDB(encryptDB)
+            .lastUpdated(lastUpdated.toJavaDate())
+            .reservedValues(reservedValues)
+            .smsGateway(smsGateway)
+            .smsResultSender(smsResultSender)
+            .matomoID(matomoID)
+            .matomoURL(matomoURL)
+            .allowScreenCapture(allowScreenCapture)
+            .messageOfTheDay(messageOfTheDay)
+            .experimentalFeatures(experimentalFeatures?.toDomain())
+            .bypassDHIS2VersionCheck(bypassDHIS2VersionCheck)
+            .build()
+    }
+}
+
+internal fun GeneralSettings.toDB(): GeneralSettingDB {
+    return GeneralSettingDB(
+        encryptDB = encryptDB(),
+        lastUpdated = lastUpdated().dateFormat(),
+        reservedValues = reservedValues(),
+        smsGateway = smsGateway(),
+        smsResultSender = smsResultSender(),
+        matomoID = matomoID(),
+        matomoURL = matomoURL(),
+        allowScreenCapture = allowScreenCapture(),
+        messageOfTheDay = messageOfTheDay(),
+        experimentalFeatures = experimentalFeatures()?.toDB(),
+        bypassDHIS2VersionCheck = bypassDHIS2VersionCheck(),
+    )
+}

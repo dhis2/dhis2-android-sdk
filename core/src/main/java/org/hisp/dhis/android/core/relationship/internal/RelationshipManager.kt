@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
@@ -40,7 +41,15 @@ internal class RelationshipManager(
     private val relationshipVersionManager: RelationshipDHISVersionManager,
 ) {
 
-    fun getByItem(
+    fun blockingGetByItem(
+        searchItem: RelationshipItem,
+        includeDeleted: Boolean,
+        onlyAccessible: Boolean,
+    ): List<Relationship> {
+        return runBlocking { getByItem(searchItem, includeDeleted, onlyAccessible) }
+    }
+
+    private suspend fun getByItem(
         searchItem: RelationshipItem,
         includeDeleted: Boolean,
         onlyAccessible: Boolean,

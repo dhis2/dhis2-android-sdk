@@ -27,10 +27,8 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
-import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink
 import org.hisp.dhis.android.core.legendset.internal.ProgramIndicatorLegendSetLinkHandler
 import org.hisp.dhis.android.core.program.ProgramIndicator
@@ -43,7 +41,7 @@ internal class ProgramIndicatorHandler(
     private val analyticsPeriodBoundaryHandler: AnalyticsPeriodBoundaryHandler,
 ) : IdentifiableHandlerImpl<ProgramIndicator>(programIndicatorStore) {
 
-    override fun afterCollectionHandled(oCollection: Collection<ProgramIndicator>?) {
+    override suspend fun afterCollectionHandled(oCollection: Collection<ProgramIndicator>?) {
         val inDbProgramIndicatorUids = programIndicatorStore.selectUids()
         val apiProgramIndicatorUids = oCollection?.map(ProgramIndicator::uid)
         val deleteProgramIndicatorUid = inDbProgramIndicatorUids.filter { inDbProgramIndicatorUid ->
@@ -52,15 +50,11 @@ internal class ProgramIndicatorHandler(
         }
 
         if (deleteProgramIndicatorUid.isNotEmpty()) {
-            val query = WhereClauseBuilder()
-                .appendInKeyStringValues(IdentifiableColumns.UID, deleteProgramIndicatorUid)
-            if (!query.isEmpty) {
-                programIndicatorStore.deleteWhere(query.build())
-            }
+            programIndicatorStore.deleteByUids(deleteProgramIndicatorUid)
         }
     }
 
-    override fun afterObjectHandled(o: ProgramIndicator, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: ProgramIndicator, action: HandleAction) {
         programIndicatorLegendSetLinkHandler.handleMany(o.uid(), o.legendSets()) { legendSet, sortOrder ->
             ProgramIndicatorLegendSetLink.builder()
                 .programIndicator(o.uid())

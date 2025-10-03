@@ -31,9 +31,10 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityInstanceEventFilterSamples;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilterTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceEventFilterStoreImpl;
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceEventFilterTableInfo;
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)

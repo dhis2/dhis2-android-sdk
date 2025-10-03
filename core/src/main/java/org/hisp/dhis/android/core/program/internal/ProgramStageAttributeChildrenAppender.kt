@@ -28,42 +28,31 @@
 
 package org.hisp.dhis.android.core.program.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.attribute.AttributeValue
-import org.hisp.dhis.android.core.attribute.ProgramStageAttributeValueLink
-import org.hisp.dhis.android.core.attribute.ProgramStageAttributeValueLinkTableInfo
+import org.hisp.dhis.android.core.attribute.internal.ProgramStageAttributeValueLinkStore
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramStage
 
 internal class ProgramStageAttributeChildrenAppender private constructor(
-    private val linkChildStore: SingleParentChildStore<ProgramStage, AttributeValue>,
+    private val linkStore: ProgramStageAttributeValueLinkStore,
 ) : ChildrenAppender<ProgramStage>() {
 
-    override fun appendChildren(m: ProgramStage): ProgramStage {
-        val builder = m.toBuilder()
-        builder.attributeValues(linkChildStore.getChildren(m))
-        return builder.build()
+    override suspend fun appendChildren(m: ProgramStage): ProgramStage {
+        val attributeValues = linkStore.getLinksForProgramStage(m.uid())
+            .map {
+                AttributeValue.builder()
+                    .attribute(ObjectWithUid.create(it.attribute()))
+                    .value(it.value())
+                    .build()
+            }
+        return m.toBuilder().attributeValues(attributeValues).build()
     }
 
     companion object {
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<ProgramStage> {
-            return ProgramStageAttributeChildrenAppender(
-                StoreFactory.singleParentChildStore(
-                    databaseAdapter,
-                    ProgramStageAttributeValueLinkTableInfo.CHILD_PROJECTION,
-                ) { cursor: Cursor ->
-                    val linkTable = ProgramStageAttributeValueLink.create(cursor)
-
-                    AttributeValue.builder()
-                        .attribute(ObjectWithUid.create(linkTable.attribute()))
-                        .value(linkTable.value())
-                        .build()
-                },
-            )
+        fun create(): ChildrenAppender<ProgramStage> {
+            return ProgramStageAttributeChildrenAppender(koin.get())
         }
     }
 }

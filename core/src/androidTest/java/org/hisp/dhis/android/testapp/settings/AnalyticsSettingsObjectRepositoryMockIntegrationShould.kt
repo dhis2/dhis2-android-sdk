@@ -50,10 +50,10 @@ class AnalyticsSettingsObjectRepositoryMockIntegrationShould : BaseMockIntegrati
                 assertThat(teiSetting.whoNutritionData()).isNull()
             } else if ("yEdtdG7ql9K" == teiSetting.uid()) {
                 assertThat(teiSetting.data()).isNull()
-                assertThat(teiSetting.whoNutritionData()!!.x().dataElements().size).isEqualTo(1)
-                assertThat(teiSetting.whoNutritionData()!!.x().indicators().size).isEqualTo(0)
-                assertThat(teiSetting.whoNutritionData()!!.y().dataElements().size).isEqualTo(0)
-                assertThat(teiSetting.whoNutritionData()!!.y().indicators().size).isEqualTo(1)
+                assertThat(teiSetting.whoNutritionData()!!.x()!!.dataElements().size).isEqualTo(1)
+                assertThat(teiSetting.whoNutritionData()!!.x()!!.indicators().size).isEqualTo(0)
+                assertThat(teiSetting.whoNutritionData()!!.y()!!.dataElements().size).isEqualTo(0)
+                assertThat(teiSetting.whoNutritionData()!!.y()!!.indicators().size).isEqualTo(1)
             }
         }
 

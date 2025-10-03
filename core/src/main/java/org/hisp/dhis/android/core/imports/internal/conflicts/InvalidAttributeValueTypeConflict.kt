@@ -54,7 +54,7 @@ internal object InvalidAttributeValueTypeConflict : TrackerImportConflictItem {
         return errorRegex.find { it.matches(conflict.value()) }?.find(conflict.value())?.groupValues?.getOrNull(1)
     }
 
-    override fun getDisplayDescription(
+    override suspend fun getDisplayDescription(
         conflict: ImportConflict,
         context: TrackerImportConflictItemContext,
     ): String {

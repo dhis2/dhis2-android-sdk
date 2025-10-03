@@ -33,12 +33,11 @@ import org.hisp.dhis.android.core.common.DatePeriodType
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.event.EventDataFilter
 import java.text.ParseException
-import java.util.*
+import java.util.Date
 
 internal object EventDataFilterSamples {
     fun get(): EventDataFilter {
         return EventDataFilter.builder()
-            .id(1L)
             .eventFilter("eventFilter")
             .dataItem("abcDataElementUid")
             .le("20")
@@ -61,6 +60,7 @@ internal object EventDataFilterSamples {
     fun get1(): EventDataFilter {
         return EventDataFilter.builder()
             .dataItem("abcDataElementUid")
+            .eventFilter("event_filter_uid")
             .le("20")
             .ge("10")
             .gt("10")
@@ -73,6 +73,7 @@ internal object EventDataFilterSamples {
     fun get2(): EventDataFilter {
         return EventDataFilter.builder()
             .dataItem("dateDataElementUid")
+            .eventFilter("event_filter_uid")
             .dateFilter(
                 DateFilterPeriod.builder()
                     .startDate(getSimpleDate("2014-05-01"))
@@ -86,6 +87,7 @@ internal object EventDataFilterSamples {
     fun get3(): EventDataFilter {
         return EventDataFilter.builder()
             .dataItem("anotherDateDataElementUid")
+            .eventFilter("event_filter_uid")
             .dateFilter(
                 DateFilterPeriod.builder()
                     .startBuffer(-5)
@@ -99,6 +101,7 @@ internal object EventDataFilterSamples {
     fun get4(): EventDataFilter {
         return EventDataFilter.builder()
             .dataItem("yetAnotherDateDataElementUid")
+            .eventFilter("event_filter_uid")
             .dateFilter(
                 DateFilterPeriod.builder()
                     .period(RelativePeriod.LAST_WEEK)

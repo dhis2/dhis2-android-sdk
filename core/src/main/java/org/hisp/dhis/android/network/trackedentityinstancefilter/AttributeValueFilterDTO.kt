@@ -44,7 +44,7 @@ internal data class AttributeValueFilterDTO(
     override val `in`: Set<String>?,
     override val like: String?,
     override val dateFilter: DateFilterPeriodDTO?,
-    val attribute: String?,
+    val attribute: String,
     val ew: String?,
     val sw: String?,
 ) : FilterOperatorsDTO {

@@ -1,0 +1,106 @@
+{
+  "customIntents": [
+    {
+      "id": "intent1id",
+      "name": "Face recognition",
+      "trigger": {
+        "dataElements": [
+          {
+            "id": "dataElementUid",
+            "program": "programUid",
+            "programStage": "programStageUid",
+            "dataSet": "dataSetUid"
+          }
+        ],
+        "attributes": [
+          {
+            "id": "attributeUid",
+            "program": "programUid"
+          }
+        ]
+      },
+      "action": [
+        "DATA_ENTRY"
+      ],
+      "packageName": "com.company.application.REGISTER",
+      "request": {
+        "arguments": [
+          {
+            "key": "projectID",
+            "value": "project one"
+          },
+          {
+            "key": "serverUrl",
+            "value": "https://server.org"
+          },
+          {
+            "key": "location",
+            "value": "V{orgunit_uid}"
+          }
+        ]
+      },
+      "response": {
+        "data": {
+          "extras": [
+            {
+              "extraName": "registration",
+              "extraType": "OBJECT",
+              "key": "guid"
+            },
+            {
+              "extraName": "otherExtra",
+              "extraType": "STRING",
+              "key": "otherKey"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "intent2id",
+      "name": "Fingerprint",
+      "trigger": {
+        "dataElements": [
+          {
+            "id": "dataElementUid",
+            "program": "programUid",
+            "programStage": "programStageUid",
+            "dataSet": "dataSetUid"
+          }
+        ]
+      },
+      "action": [
+        "SEARCH",
+        "DATA_ENTRY"
+      ],
+      "packageName": "com.company.application.REGISTER",
+      "request": {
+        "arguments": [
+          {
+            "key": "projectID",
+            "value": "project one"
+          },
+          {
+            "key": "serverUrl",
+            "value": "https://server.org"
+          },
+          {
+            "key": "location",
+            "value": "V{orgunit_uid}"
+          }
+        ]
+      },
+      "response": {
+        "data": {
+          "extras": [
+            {
+              "extraName": "registration",
+              "extraType": "BOOLEAN",
+              "key": "guid"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

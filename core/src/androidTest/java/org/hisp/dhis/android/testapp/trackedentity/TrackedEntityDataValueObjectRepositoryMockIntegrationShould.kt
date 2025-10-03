@@ -28,13 +28,13 @@
 package org.hisp.dhis.android.testapp.trackedentity
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueObjectRepository
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.After
 import org.junit.Before
@@ -46,12 +46,12 @@ class TrackedEntityDataValueObjectRepositoryMockIntegrationShould : BaseMockInte
 
     @Before
     fun setup() {
-        hardDeleteDataValue()
+        runBlocking { hardDeleteDataValue() }
     }
 
     @After
     fun tearDown() {
-        hardDeleteDataValue()
+        runBlocking { hardDeleteDataValue() }
     }
 
     @Test
@@ -71,7 +71,7 @@ class TrackedEntityDataValueObjectRepositoryMockIntegrationShould : BaseMockInte
     }
 
     @Test
-    fun update_value() {
+    fun update_value() = runTest {
         val value1 = "new_value"
         val value2 = "other_value"
 
@@ -141,19 +141,13 @@ class TrackedEntityDataValueObjectRepositoryMockIntegrationShould : BaseMockInte
             .value(sampleEvent, sampleDataElement)
     }
 
-    private fun hardDeleteDataValue() {
-        val store: TrackedEntityDataValueStore = TrackedEntityDataValueStoreImpl(databaseAdapter)
-
-        store.deleteWhereIfExists(
-            WhereClauseBuilder()
-                .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.EVENT, sampleEvent)
-                .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT, sampleDataElement)
-                .build(),
-        )
+    private suspend fun hardDeleteDataValue() {
+        val store: TrackedEntityDataValueStore = koin.get()
+        store.deleteByEventAndDataElement(sampleEvent, sampleDataElement)
     }
 
-    private fun setDataValueStateToError(value: TrackedEntityDataValue) {
-        val store: TrackedEntityDataValueStore = TrackedEntityDataValueStoreImpl(databaseAdapter)
+    private suspend fun setDataValueStateToError(value: TrackedEntityDataValue) {
+        val store: TrackedEntityDataValueStore = koin.get()
         store.updateWhere(value.toBuilder().syncState(State.ERROR).build())
     }
 }

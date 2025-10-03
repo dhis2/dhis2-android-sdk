@@ -36,7 +36,9 @@ import org.koin.core.annotation.Singleton
 internal class LatestAppVersionHandler(store: LatestAppVersionStore) :
     ObjectWithoutUidHandlerImpl<LatestAppVersion>(store) {
 
-    override fun beforeCollectionHandled(oCollection: Collection<LatestAppVersion>): Collection<LatestAppVersion> {
+    override suspend fun beforeCollectionHandled(
+        oCollection: Collection<LatestAppVersion>,
+    ): Collection<LatestAppVersion> {
         store.delete()
         return oCollection
     }

@@ -28,23 +28,17 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreBooleanColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 @AutoValue
-public abstract class DataElementOperand extends BaseObject
-        implements ObjectWithUidInterface, ObjectWithDeleteInterface {
+public abstract class DataElementOperand implements CoreObject, ObjectWithUidInterface, ObjectWithDeleteInterface {
 
     @Override
     @Nullable
@@ -52,29 +46,22 @@ public abstract class DataElementOperand extends BaseObject
 
     @Override
     @Nullable
-    @ColumnAdapter(IgnoreBooleanColumnAdapter.class)
     public abstract Boolean deleted();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid dataElement();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid categoryOptionCombo();
-
-    public static DataElementOperand create(Cursor cursor) {
-        return AutoValue_DataElementOperand.createFromCursor(cursor);
-    }
 
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new $$AutoValue_DataElementOperand.Builder();
+        return new AutoValue_DataElementOperand.Builder();
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder {
 
         public abstract Builder uid(String uid);
 

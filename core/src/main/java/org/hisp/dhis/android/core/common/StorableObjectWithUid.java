@@ -28,25 +28,18 @@
 
 package org.hisp.dhis.android.core.common;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 
 import com.google.auto.value.AutoValue;
 
 @AutoValue
-public abstract class StorableObjectWithUid extends BaseObject implements ObjectWithUidInterface {
+public abstract class StorableObjectWithUid implements CoreObject, ObjectWithUidInterface {
 
     @Override
     @NonNull
     public abstract String uid();
 
-    @NonNull
-    public static StorableObjectWithUid create(Cursor cursor) {
-        return AutoValue_StorableObjectWithUid.createFromCursor(cursor);
-    }
-
     public static StorableObjectWithUid create(String uid) {
-        return new AutoValue_StorableObjectWithUid(null, uid);
+        return new AutoValue_StorableObjectWithUid(uid);
     }
 }

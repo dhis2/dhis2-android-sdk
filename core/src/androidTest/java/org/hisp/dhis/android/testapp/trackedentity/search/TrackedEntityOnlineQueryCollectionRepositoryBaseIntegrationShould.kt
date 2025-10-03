@@ -28,8 +28,10 @@
 package org.hisp.dhis.android.testapp.trackedentity.search
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.runBlocking
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
-import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStoreImpl
+import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
 import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
@@ -50,22 +52,26 @@ abstract class TrackedEntityOnlineQueryCollectionRepositoryBaseIntegrationShould
     abstract val responseFile: String
 
     private lateinit var initSyncParams: SynchronizationSettings
-    private val syncStore = SynchronizationSettingStoreImpl(databaseAdapter)
+    private val syncStore: SynchronizationSettingStore = koin.get()
 
     @Before
     fun setUp() {
-        initSyncParams = syncStore.selectFirst()!!
-        val testParams = initSyncParams.toBuilder().trackerImporterVersion(importerVersion)
-            .trackerExporterVersion(exporterVersion).build()
-        syncStore.delete()
-        syncStore.insert(testParams)
+        runBlocking {
+            initSyncParams = syncStore.selectFirst()!!
+            val testParams = initSyncParams.toBuilder().trackerImporterVersion(importerVersion)
+                .trackerExporterVersion(exporterVersion).build()
+            syncStore.delete()
+            syncStore.insert(testParams)
+        }
     }
 
     @After
     fun tearDown() {
-        d2.wipeModule().wipeData()
-        syncStore.delete()
-        syncStore.insert(initSyncParams)
+        runBlocking {
+            d2.wipeModule().wipeData()
+            syncStore.delete()
+            syncStore.insert(initSyncParams)
+        }
     }
 
     @Test

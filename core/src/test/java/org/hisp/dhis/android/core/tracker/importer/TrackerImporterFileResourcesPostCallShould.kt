@@ -28,11 +28,6 @@
 package org.hisp.dhis.android.core.tracker.importer
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.times
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
@@ -47,6 +42,11 @@ import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPaylo
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterFileResourcesPostCall
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 class TrackerImporterFileResourcesPostCallShould {
 

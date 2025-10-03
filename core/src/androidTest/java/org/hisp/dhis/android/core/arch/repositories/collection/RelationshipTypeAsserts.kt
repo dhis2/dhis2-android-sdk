@@ -35,13 +35,11 @@ internal object RelationshipTypeAsserts : BaseRealIntegrationTest() {
 
     fun assertTypesWithoutConstraints(target: RelationshipType, reference: RelationshipType) {
         val prunedTarget = target.toBuilder()
-            .id(null)
             .toConstraint(null)
             .fromConstraint(null)
             .build()
 
         val prunedReference = reference.toBuilder()
-            .id(null)
             .toConstraint(null)
             .fromConstraint(null)
             .build()
@@ -51,34 +49,29 @@ internal object RelationshipTypeAsserts : BaseRealIntegrationTest() {
 
     fun assertTypeWithConstraints(target: RelationshipType, reference: RelationshipType) {
         val prunedTarget = target.toBuilder()
-            .id(null)
             .toConstraint(
-                target.toConstraint()?.toBuilder()?.id(null)
-                    ?.trackerDataView(
-                        target.toConstraint()?.trackerDataView()?.toBuilder()?.id(null)?.build(),
-                    )?.build(),
+                target.toConstraint()?.toBuilder()
+                    ?.trackerDataView(target.toConstraint()?.trackerDataView()?.toBuilder()?.build())
+                    ?.build(),
             )
             .fromConstraint(
-                target.fromConstraint()?.toBuilder()?.id(null)
-                    ?.trackerDataView(
-                        target.fromConstraint()?.trackerDataView()?.toBuilder()?.id(null)?.build(),
-                    )?.build(),
+                target.fromConstraint()?.toBuilder()
+                    ?.trackerDataView(target.fromConstraint()?.trackerDataView()?.toBuilder()?.build())
+                    ?.build(),
             )
             .build()
 
         val prunedReference = reference.toBuilder()
-            .id(null)
             .toConstraint(
-                reference.toConstraint()?.toBuilder()?.id(null)
+                reference.toConstraint()?.toBuilder()
                     ?.trackerDataView(
-                        reference.toConstraint()?.trackerDataView()?.toBuilder()?.id(null)?.build(),
+                        reference.toConstraint()?.trackerDataView()?.toBuilder()?.build(),
                     )?.build(),
             )
             .fromConstraint(
-                reference.fromConstraint()?.toBuilder()?.id(null)
-                    ?.trackerDataView(
-                        reference.fromConstraint()?.trackerDataView()?.toBuilder()?.id(null)?.build(),
-                    )?.build(),
+                reference.fromConstraint()?.toBuilder()
+                    ?.trackerDataView(reference.fromConstraint()?.trackerDataView()?.toBuilder()?.build())
+                    ?.build(),
             )
             .build()
 

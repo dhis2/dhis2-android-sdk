@@ -28,14 +28,11 @@
 
 package org.hisp.dhis.android.core.category;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
@@ -50,19 +47,13 @@ public abstract class CategoryOptionOrganisationUnitLink implements CoreObject {
     public abstract String restriction();
 
     public static Builder builder() {
-        return new $$AutoValue_CategoryOptionOrganisationUnitLink.Builder();
+        return new AutoValue_CategoryOptionOrganisationUnitLink.Builder();
     }
 
     public abstract Builder toBuilder();
 
-    public static CategoryOptionOrganisationUnitLink create(Cursor cursor) {
-        return $AutoValue_CategoryOptionOrganisationUnitLink.createFromCursor(cursor);
-    }
-
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
+    public abstract static class Builder {
         public abstract Builder categoryOption(String categoryOption);
 
         public abstract Builder organisationUnit(@Nullable String organisationUnit);

@@ -27,6 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.handlers.internal
 
-interface Transformer<O, T> {
+fun interface Transformer<O, T> {
     fun transform(o: O): T
 }

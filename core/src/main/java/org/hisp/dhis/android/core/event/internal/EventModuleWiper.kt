@@ -27,20 +27,21 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import org.hisp.dhis.android.persistence.event.EventSyncTableInfo
+import org.hisp.dhis.android.persistence.event.EventTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class EventModuleWiper(
     private val tableWiper: TableWiper,
 ) : ModuleWiper {
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         // No metadata to wipe
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         tableWiper.wipeTable(EventTableInfo.TABLE_INFO)
         tableWiper.wipeTable(EventSyncTableInfo.TABLE_INFO)
     }

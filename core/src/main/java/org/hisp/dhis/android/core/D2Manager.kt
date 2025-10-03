@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core
 import android.util.Log
 import androidx.annotation.VisibleForTesting
 import io.reactivex.Single
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.D2ConfigurationValidator.validateAndSetDefaultValues
 import org.hisp.dhis.android.core.NotClosedObjectsDetector.enableNotClosedObjectsDetection
 import org.hisp.dhis.android.core.arch.api.ssl.internal.SSLContextInitializer
@@ -87,7 +88,7 @@ object D2Manager {
      */
     @JvmStatic
     fun instantiateD2(d2Config: D2Configuration): Single<D2> {
-        return Single.fromCallable {
+        return rxSingle {
             val startTime = System.currentTimeMillis()
             val context = d2Config.context()
 
@@ -132,7 +133,7 @@ object D2Manager {
             val setUpTime = System.currentTimeMillis() - startTime
             Log.i(D2Manager::class.java.name, "D2 instantiation took " + setUpTime + "ms")
 
-            d2
+            d2!!
         }
     }
 

@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.arch.cleaners.internal.SubCollectionCleanerImp
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.program.ProgramStage
-import org.hisp.dhis.android.core.program.ProgramStageTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramStageTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -41,9 +41,5 @@ internal class ProgramStageSubCollectionCleaner(
     tableName = ProgramStageTableInfo.TABLE_INFO.name(),
     parentColumn = ProgramStageTableInfo.Columns.PROGRAM,
     databaseAdapter = databaseAdapter,
-    keyExtractor = object : Transformer<ProgramStage, String> {
-        override fun transform(o: ProgramStage): String {
-            return o.program()!!.uid()
-        }
-    },
+    keyExtractor = Transformer { o -> o.program()!!.uid() },
 )

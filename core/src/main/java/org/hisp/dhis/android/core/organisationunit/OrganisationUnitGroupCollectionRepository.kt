@@ -27,23 +27,21 @@
  */
 package org.hisp.dhis.android.core.organisationunit
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitGroupStore
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitGroupTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 class OrganisationUnitGroupCollectionRepository internal constructor(
     store: OrganisationUnitGroupStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<OrganisationUnitGroup, OrganisationUnitGroupCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -51,7 +49,6 @@ class OrganisationUnitGroupCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         OrganisationUnitGroupCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },

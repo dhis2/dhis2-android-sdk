@@ -31,5 +31,5 @@ import java.io.File
 
 interface DatabaseImportExport {
     fun importDatabase(file: File): DatabaseExportMetadata
-    fun exportLoggedUserDatabase(): File
+    suspend fun exportLoggedUserDatabase(): File
 }

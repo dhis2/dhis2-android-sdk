@@ -37,7 +37,7 @@ internal class ProgramConfigurationSettingHandler(
     store: ProgramConfigurationSettingStore,
 ) : ObjectWithoutUidHandlerImpl<ProgramConfigurationSetting>(store) {
 
-    override fun beforeCollectionHandled(
+    override suspend fun beforeCollectionHandled(
         oCollection: Collection<ProgramConfigurationSetting>,
     ): Collection<ProgramConfigurationSetting> {
         store.delete()

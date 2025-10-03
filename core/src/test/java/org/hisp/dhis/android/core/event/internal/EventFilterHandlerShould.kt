@@ -27,12 +27,9 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.event.EventDataFilter
 import org.hisp.dhis.android.core.event.EventFilter
 import org.hisp.dhis.android.core.event.EventQueryCriteria
@@ -40,6 +37,11 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
 class EventFilterHandlerShould {
@@ -50,11 +52,11 @@ class EventFilterHandlerShould {
 
     // object to test
     private lateinit var eventFilters: MutableList<EventFilter>
-    private lateinit var eventDataFilters: List<EventDataFilter?>
+    private lateinit var eventDataFilters: List<EventDataFilter>
     private lateinit var eventFilterHandler: EventFilterHandler
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         eventFilterHandler = EventFilterHandler(
             eventFilterStore,
             eventDataFilterHandler,
@@ -71,7 +73,7 @@ class EventFilterHandlerShould {
             .eventQueryCriteria(eventQueryCriteria)
             .build()
 
-        whenever(eventFilterStore.updateOrInsert(any())).doReturn(HandleAction.Insert)
+        whenever(eventFilterStore.updateOrInsert(any<List<EventFilter>>())).doReturn(listOf(HandleAction.Insert))
 
         eventFilters = mutableListOf(eventFilter)
     }
@@ -79,15 +81,15 @@ class EventFilterHandlerShould {
     @Test
     @Suppress("UnusedPrivateMember")
     fun extend_identifiable_handler_impl() {
-        val genericHandler = EventFilterHandler(
+        val genericHandler: IdentifiableHandlerImpl<EventFilter> = EventFilterHandler(
             eventFilterStore,
             eventDataFilterHandler,
         )
     }
 
     @Test
-    fun handle_event_filters() {
+    fun handle_event_filters() = runTest {
         eventFilterHandler.handleMany(eventFilters)
-        verify(eventDataFilterHandler).handleMany(eventDataFilters.filterNotNull())
+        verify(eventDataFilterHandler).handleMany(eventDataFilters)
     }
 }

@@ -30,9 +30,10 @@ package org.hisp.dhis.android.core.settings.internal
 import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.settings.AnalyticsSettingsSamples
 import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
-import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElementTableInfo
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.settings.AnalyticsTeiDataElementStoreImpl
+import org.hisp.dhis.android.persistence.settings.AnalyticsTeiDataElementTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

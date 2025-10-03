@@ -28,17 +28,10 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbValueTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreAttributeValuesListAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreObjectWithUidListColumnAdapter;
 import org.hisp.dhis.android.core.attribute.AttributeValue;
 import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
@@ -55,7 +48,6 @@ public abstract class DataElement extends BaseNameableObject
         implements CoreObject, ObjectWithStyle<DataElement, DataElement.Builder> {
 
     @Nullable
-    @ColumnAdapter(DbValueTypeColumnAdapter.class)
     public abstract ValueType valueType();
 
     @Nullable
@@ -74,7 +66,6 @@ public abstract class DataElement extends BaseNameableObject
     public abstract String displayFormName();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid optionSet();
 
     public String optionSetUid() {
@@ -83,7 +74,6 @@ public abstract class DataElement extends BaseNameableObject
     }
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid categoryCombo();
 
     public String categoryComboUid() {
@@ -92,22 +82,16 @@ public abstract class DataElement extends BaseNameableObject
     }
 
     @Nullable
-    @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)
     public abstract List<ObjectWithUid> legendSets();
 
     @Nullable
     public abstract String fieldMask();
 
     @Nullable
-    @ColumnAdapter(IgnoreAttributeValuesListAdapter.class)
     public abstract List<AttributeValue> attributeValues();
 
     public static Builder builder() {
-        return new $$AutoValue_DataElement.Builder();
-    }
-
-    public static DataElement create(Cursor cursor) {
-        return $AutoValue_DataElement.createFromCursor(cursor);
+        return new AutoValue_DataElement.Builder();
     }
 
     public abstract Builder toBuilder();
@@ -115,9 +99,6 @@ public abstract class DataElement extends BaseNameableObject
     @AutoValue.Builder
     public abstract static class Builder extends BaseNameableObject.Builder<DataElement.Builder>
             implements ObjectWithStyle.Builder<DataElement, DataElement.Builder> {
-
-        public abstract DataElement.Builder id(Long id);
-
         public abstract DataElement.Builder valueType(ValueType valueType);
 
         public abstract DataElement.Builder zeroIsSignificant(Boolean zeroIsSignificant);

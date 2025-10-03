@@ -27,10 +27,9 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import com.nhaarman.mockitokotlin2.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
+import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2ErrorSamples
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
 import org.junit.Before
@@ -38,14 +37,22 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.Mockito
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doAnswer
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.stub
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
+import org.mockito.kotlin.whenever
 import org.mockito.stubbing.Answer
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 class SynchronizationSettingCallShould {
 
     private val handler: SynchronizationSettingHandler = mock()
-    private val service: SettingAppService = mock()
+    private val networkHandler: SettingsNetworkHandler = mock()
     private val coroutineAPICallExecutor: CoroutineAPICallExecutorMock = CoroutineAPICallExecutorMock()
     private val generalSettingCall: GeneralSettingCall = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val dataSetSettingCall: DataSetSettingCall = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
@@ -64,7 +71,7 @@ class SynchronizationSettingCallShould {
         }
         synchronizationSettingCall = SynchronizationSettingCall(
             handler,
-            service,
+            networkHandler,
             coroutineAPICallExecutor,
             generalSettingCall,
             dataSetSettingCall,
@@ -74,8 +81,8 @@ class SynchronizationSettingCallShould {
     }
 
     private fun whenAPICall(answer: Answer<SynchronizationSettings>) {
-        service.stub {
-            onBlocking { synchronizationSettings(any()) }.doAnswer(answer)
+        networkHandler.stub {
+            onBlocking { synchronizationSettings(any(), any()) }.doAnswer(answer)
         }
     }
 
@@ -88,12 +95,12 @@ class SynchronizationSettingCallShould {
         verify(generalSettingCall).fetch(any(), any())
         verify(dataSetSettingCall).fetch(any())
         verify(programSettingCall).fetch(any())
-        verify(service, never()).synchronizationSettings(any())
+        verify(networkHandler, never()).synchronizationSettings(any(), any())
     }
 
     @Test
     fun call_synchronization_endpoint_if_version_2() = runTest {
-        whenever(service.synchronizationSettings(any())) doReturn synchronizationSettings
+        whenever(networkHandler.synchronizationSettings(any(), any())) doReturn Result.Success(synchronizationSettings)
 
         whenever(appVersionManager.getDataStoreVersion()) doReturn SettingsAppDataStoreVersion.V2_0
 
@@ -105,13 +112,13 @@ class SynchronizationSettingCallShould {
 
         verify(programSettingCall, never()).fetch(any())
 
-        verify(service).synchronizationSettings(any())
+        verify(networkHandler).synchronizationSettings(any(), any())
     }
 
     @Test
     fun default_to_empty_collection_if_not_found() = runTest {
         whenever(appVersionManager.getDataStoreVersion()) doReturn SettingsAppDataStoreVersion.V2_0
-        whenever(service.synchronizationSettings(any())) doAnswer { throw D2ErrorSamples.notFound() }
+        whenever(networkHandler.synchronizationSettings(any(), any())) doAnswer { throw D2ErrorSamples.notFound() }
 
         synchronizationSettingCall.download(false)
 

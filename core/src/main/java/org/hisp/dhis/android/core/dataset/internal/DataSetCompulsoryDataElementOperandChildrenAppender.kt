@@ -27,41 +27,24 @@
  */
 package org.hisp.dhis.android.core.dataset.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkChildStore
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.dataelement.DataElementOperand
-import org.hisp.dhis.android.core.dataelement.DataElementOperandTableInfo
+import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandStore
 import org.hisp.dhis.android.core.dataset.DataSet
-import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLinkTableInfo
 
 internal class DataSetCompulsoryDataElementOperandChildrenAppender private constructor(
-    private val linkChildStore: LinkChildStore<DataSet, DataElementOperand>,
+    private val linkChildStore: DataElementOperandStore,
 ) : ChildrenAppender<DataSet>() {
-    override fun appendChildren(m: DataSet): DataSet {
-        val builder = m.toBuilder()
-        builder.compulsoryDataElementOperands(linkChildStore.getChildren(m))
-        return builder.build()
+    override suspend fun appendChildren(m: DataSet): DataSet {
+        val children = linkChildStore.getForDataSet(m.uid())
+        return m.toBuilder()
+            .compulsoryDataElementOperands(children)
+            .build()
     }
 
     companion object {
-        private val CHILD_PROJECTION = LinkTableChildProjection(
-            DataElementOperandTableInfo.TABLE_INFO,
-            DataSetCompulsoryDataElementOperandLinkTableInfo.Columns.DATA_SET,
-            DataSetCompulsoryDataElementOperandLinkTableInfo.Columns.DATA_ELEMENT_OPERAND,
-        )
-
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<DataSet> {
-            return DataSetCompulsoryDataElementOperandChildrenAppender(
-                linkChildStore(
-                    databaseAdapter,
-                    DataSetCompulsoryDataElementOperandLinkTableInfo.TABLE_INFO,
-                    CHILD_PROJECTION,
-                ) { cursor: Cursor -> DataElementOperand.create(cursor) },
-            )
+        fun create(): ChildrenAppender<DataSet> {
+            return DataSetCompulsoryDataElementOperandChildrenAppender(koin.get())
         }
     }
 }

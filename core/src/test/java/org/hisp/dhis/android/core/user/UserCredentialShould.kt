@@ -28,12 +28,11 @@
 package org.hisp.dhis.android.core.user
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.user.UserCredentialsDTO
 import org.junit.Test
 
-class UserCredentialShould : BaseObjectKotlinxShould("user/user_credentials.json"), ObjectShould {
+class UserCredentialShould : CoreObjectShould("user/user_credentials.json") {
 
     @Test
     override fun map_from_json_string() {

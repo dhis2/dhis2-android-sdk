@@ -32,6 +32,8 @@ import org.hisp.dhis.android.core.data.sms.SMSOngoingSubmissionSample
 import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.sms.SMSOngoingSubmissionStoreImpl
+import org.hisp.dhis.android.persistence.sms.SMSOngoingSubmissionTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

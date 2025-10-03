@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.core.category.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkTableInfo
-import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo
-import org.hisp.dhis.android.core.category.CategoryOptionTableInfo
+import org.hisp.dhis.android.persistence.category.CategoryOptionComboCategoryOptionLinkTableInfo
+import org.hisp.dhis.android.persistence.category.CategoryOptionComboTableInfo
+import org.hisp.dhis.android.persistence.category.CategoryOptionTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -43,7 +43,7 @@ internal class CategoryOptionComboIntegrityChecker(
      * access the CategoryOptionCombo linked to that CategoryOption.
      * This function removes those incomplete CategoryOptionCombos from the database.
      */
-    fun removeIncompleteCategoryOptionCombos() {
+    suspend fun removeIncompleteCategoryOptionCombos() {
         val notExistsInCategoryOptionSql =
             "SELECT ${CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION} " +
                 "FROM ${CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO.name()} " +

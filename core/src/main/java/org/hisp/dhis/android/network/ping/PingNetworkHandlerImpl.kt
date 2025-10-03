@@ -40,7 +40,12 @@ internal class PingNetworkHandlerImpl(
     dhisVersionManager: DHISVersionManager,
 ) : PingNetworkHandler {
     private val service = PingService(httpServiceClient, dhisVersionManager)
+
     override suspend fun getPing(): HttpResponse {
         return service.getPing()
+    }
+
+    override suspend fun getPingFor(serverUrl: String): HttpResponse {
+        return service.getPingFor(serverUrl)
     }
 }

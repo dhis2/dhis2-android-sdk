@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.domain.metadata
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
@@ -40,7 +39,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.attribute.internal.AttributeModuleDownloader
 import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader
 import org.hisp.dhis.android.core.common.BaseCallShould
-import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
+import org.hisp.dhis.android.core.configuration.internal.BaseMultiUserDatabaseManager
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleDownloader
 import org.hisp.dhis.android.core.dataset.internal.DataSetModuleDownloader
 import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemModuleDownloader
@@ -49,10 +48,10 @@ import org.hisp.dhis.android.core.indicator.internal.IndicatorModuleDownloader
 import org.hisp.dhis.android.core.legendset.internal.LegendSetModuleDownloader
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
-import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorModuleDownloader
 import org.hisp.dhis.android.core.program.internal.ProgramModuleDownloader
+import org.hisp.dhis.android.core.server.internal.LoginConfigDownloader
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
 import org.hisp.dhis.android.core.settings.internal.SettingModuleDownloader
 import org.hisp.dhis.android.core.sms.SmsModule
@@ -63,17 +62,20 @@ import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.UserModuleDownloader
 import org.hisp.dhis.android.core.visualization.internal.TrackerVisualizationModuleDownloader
 import org.hisp.dhis.android.core.visualization.internal.VisualizationModuleDownloader
+import org.hisp.dhis.android.persistence.maintenance.ForeignKeyViolationTableInfo
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.kotlin.*
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 class MetadataCallShould : BaseCallShould() {
     private val user: User = mock()
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor = CoroutineAPICallExecutorMock()
+    private val loginConfigDownloader: LoginConfigDownloader = mock()
     private val systemInfoDownloader: SystemInfoModuleDownloader = mock()
     private val systemSettingDownloader: SettingModuleDownloader = mock()
     private val useCaseModuleDownloader: UseCaseModuleDownloader = mock()
@@ -90,7 +92,7 @@ class MetadataCallShould : BaseCallShould() {
     private val smsModule: SmsModule = mock()
     private val configCase: ConfigCase = mock()
     private val generalSettingCall: GeneralSettingCall = mock()
-    private val multiUserDatabaseManager: MultiUserDatabaseManager = mock()
+    private val multiUserDatabaseManager: BaseMultiUserDatabaseManager = mock()
     private val credentialsSecureStore: CredentialsSecureStore = mock()
     private val legendSetModuleDownloader: LegendSetModuleDownloader = mock()
     private val attributeModuleDownloader: AttributeModuleDownloader = mock()
@@ -111,6 +113,9 @@ class MetadataCallShould : BaseCallShould() {
     override fun setUp() {
         super.setUp()
         // Calls
+        loginConfigDownloader.stub {
+            onBlocking { downloadMetadata() }.doReturn(Unit)
+        }
         systemInfoDownloader.stub {
             onBlocking { downloadWithProgressManager(any()) }.doReturn(BaseD2Progress.empty(10))
         }
@@ -174,6 +179,7 @@ class MetadataCallShould : BaseCallShould() {
         // Metadata call
         metadataCall = MetadataCall(
             coroutineAPICallExecutor,
+            loginConfigDownloader,
             systemInfoDownloader,
             systemSettingDownloader,
             useCaseModuleDownloader,
@@ -268,7 +274,7 @@ class MetadataCallShould : BaseCallShould() {
     }
 
     @Test
-    fun delete_foreign_key_violations_before_calls() {
+    fun delete_foreign_key_violations_before_calls() = runTest {
         metadataCall.blockingDownload()
         verify(databaseAdapter).delete(ForeignKeyViolationTableInfo.TABLE_INFO.name())
     }

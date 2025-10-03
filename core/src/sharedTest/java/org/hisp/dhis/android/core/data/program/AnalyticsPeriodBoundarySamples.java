@@ -36,7 +36,6 @@ public class AnalyticsPeriodBoundarySamples {
 
     public static AnalyticsPeriodBoundary getAnalyticsPeriodBoundary() {
         return AnalyticsPeriodBoundary.builder()
-                .id(1L)
                 .programIndicator("program_indicator")
                 .boundaryTarget("Custom boundary")
                 .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.AFTER_END_OF_REPORTING_PERIOD)

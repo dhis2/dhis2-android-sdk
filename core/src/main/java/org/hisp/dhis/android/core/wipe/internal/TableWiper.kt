@@ -33,11 +33,11 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 class TableWiper(private val databaseAdapter: DatabaseAdapter) {
-    fun wipeTable(tableInfo: TableInfo) {
+    suspend fun wipeTable(tableInfo: TableInfo) {
         databaseAdapter.delete(tableInfo.name())
     }
 
-    fun wipeTables(vararg tableInfos: TableInfo) {
+    suspend fun wipeTables(vararg tableInfos: TableInfo) {
         for (tableInfo in tableInfos) {
             wipeTable(tableInfo)
         }

@@ -28,6 +28,6 @@
 package org.hisp.dhis.android.core.wipe.internal
 
 internal interface ModuleWiper {
-    fun wipeMetadata()
-    fun wipeData()
+    suspend fun wipeMetadata()
+    suspend fun wipeData()
 }

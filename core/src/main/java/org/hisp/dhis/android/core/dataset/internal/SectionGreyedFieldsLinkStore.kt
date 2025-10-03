@@ -31,4 +31,6 @@ package org.hisp.dhis.android.core.dataset.internal
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLink
 
-internal interface SectionGreyedFieldsLinkStore : LinkStore<SectionGreyedFieldsLink>
+internal interface SectionGreyedFieldsLinkStore : LinkStore<SectionGreyedFieldsLink> {
+    suspend fun deleteBySection(sectionUid: String)
+}

@@ -47,7 +47,7 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class EnrollmentHandler constructor(
+internal class EnrollmentHandler(
     relationshipVersionManager: RelationshipDHISVersionManager,
     relationshipHandler: RelationshipHandler,
     private val noteVersionManager: NoteDHISVersionManager,
@@ -67,7 +67,7 @@ internal class EnrollmentHandler constructor(
         return o.toBuilder().aggregatedSyncState(State.SYNCED).syncState(State.SYNCED).build()
     }
 
-    override fun beforeObjectHandled(o: Enrollment, params: IdentifiableDataHandlerParams): Enrollment {
+    override suspend fun beforeObjectHandled(o: Enrollment, params: IdentifiableDataHandlerParams): Enrollment {
         return if (GeometryHelper.isValid(o.geometry())) {
             o
         } else {
@@ -79,7 +79,7 @@ internal class EnrollmentHandler constructor(
         }
     }
 
-    override fun afterObjectHandled(
+    override suspend fun afterObjectHandled(
         o: Enrollment,
         action: HandleAction?,
         params: IdentifiableDataHandlerParams,

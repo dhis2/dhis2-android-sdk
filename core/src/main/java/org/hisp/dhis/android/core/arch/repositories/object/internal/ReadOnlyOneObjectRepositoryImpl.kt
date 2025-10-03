@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
@@ -37,13 +37,16 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFr
 
 open class ReadOnlyOneObjectRepositoryImpl<M, R : ReadOnlyObjectRepository<M>> internal constructor(
     private val store: ReadableStore<M>,
-    databaseAdapter: DatabaseAdapter,
     childrenAppenders: ChildrenAppenderGetter<M>,
     scope: RepositoryScope,
     repositoryFactory: ObjectRepositoryFactory<R>,
-) : ReadOnlyObjectRepositoryImpl<M, R>(databaseAdapter, childrenAppenders, scope, repositoryFactory) {
+) : ReadOnlyObjectRepositoryImpl<M, R>(childrenAppenders, scope, repositoryFactory) {
 
     override fun blockingGetWithoutChildren(): M? {
+        return runBlocking { getWithoutChildrenInternal() }
+    }
+
+    override suspend fun getWithoutChildrenInternal(): M? {
         val whereClauseBuilder = WhereClauseFromScopeBuilder(WhereClauseBuilder())
         return store.selectOneWhere(whereClauseBuilder.getWhereClause(scope))
     }

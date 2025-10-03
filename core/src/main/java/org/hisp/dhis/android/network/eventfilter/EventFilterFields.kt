@@ -28,10 +28,10 @@
 package org.hisp.dhis.android.network.eventfilter
 
 import org.hisp.dhis.android.core.event.EventFilter
-import org.hisp.dhis.android.core.event.EventFilterTableInfo.Columns
 import org.hisp.dhis.android.core.event.EventQueryCriteria
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.persistence.event.EventFilterTableInfo.Columns
 
 internal object EventFilterFields : BaseFields<EventFilter>() {
     private const val EVENT_QUERY_CRITERIA = "eventQueryCriteria"

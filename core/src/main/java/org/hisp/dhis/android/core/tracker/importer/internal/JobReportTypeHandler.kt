@@ -29,30 +29,31 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 
-internal abstract class JobReportTypeHandler constructor(
+internal abstract class JobReportTypeHandler(
     protected val relationshipStore: RelationshipStore,
 ) {
 
-    fun handleSuccess(jo: TrackerJobObject) {
+    suspend fun handleSuccess(jo: TrackerJobObject) {
         val handleAction = handleObject(jo.objectUid(), State.SYNCED)
 
         if (handleAction === HandleAction.Delete) {
-            getRelatedRelationships(jo.objectUid()).forEach { relationshipStore.delete(it) }
+            getRelatedRelationships(jo.objectUid()).forEach { relationshipStore.deleteByEntity(it) }
         }
     }
 
-    fun handleError(jo: TrackerJobObject, errorReport: JobValidationError) {
+    suspend fun handleError(jo: TrackerJobObject, errorReport: JobValidationError) {
         handleObject(jo.objectUid(), State.ERROR)
         storeConflict(errorReport)
     }
 
-    fun handleNotPresent(jo: TrackerJobObject) {
+    suspend fun handleNotPresent(jo: TrackerJobObject) {
         handleObject(jo.objectUid(), State.TO_UPDATE)
     }
 
-    protected abstract fun handleObject(uid: String, state: State): HandleAction
-    protected abstract fun storeConflict(errorReport: JobValidationError)
-    protected abstract fun getRelatedRelationships(uid: String): List<String>
+    protected abstract suspend fun handleObject(uid: String, state: State): HandleAction
+    protected abstract suspend fun storeConflict(errorReport: JobValidationError)
+    protected abstract suspend fun getRelatedRelationships(uid: String): List<Relationship>
 }

@@ -60,7 +60,7 @@ internal class EventDownloadCall internal constructor(
     coroutineAPICallExecutor,
 ) {
 
-    override fun getBundles(params: ProgramDataDownloadParams): List<EventQueryBundle> {
+    override suspend fun getBundles(params: ProgramDataDownloadParams): List<EventQueryBundle> {
         return eventQueryBundleFactory.getQueries(params)
     }
 
@@ -78,7 +78,7 @@ internal class EventDownloadCall internal constructor(
         persistenceCallFactory.persistEvents(items, relatives)
     }
 
-    override fun updateLastUpdated(bundle: EventQueryBundle) {
+    override suspend fun updateLastUpdated(bundle: EventQueryBundle) {
         lastUpdatedManager.update(bundle)
     }
 

@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.user.internal
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.data.user.UserSamples
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
@@ -43,12 +43,12 @@ import org.junit.runner.RunWith
 @RunWith(D2JunitRunner::class)
 class UserCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
 
-    private lateinit var userStore: IdentifiableObjectStore<User>
+    private lateinit var userStore: UserStore
     private lateinit var userCall: suspend() -> User
 
     @Before
     fun setUp() {
-        userStore = UserStoreImpl(databaseAdapter)
+        userStore = koin.get()
         userCall = { objects.d2DIComponent.internalModules.user.userCall.call() }
     }
 
@@ -58,6 +58,7 @@ class UserCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
         userCall.invoke()
 
         assertThat(userStore.count()).isEqualTo(1)
-        assertThat(userStore.selectFirst()).isEqualTo(UserSamples.getUser())
+        assertThat(userStore.selectFirst())
+            .isEqualTo(UserSamples.getUser().toBuilder().twoFactorAuthEnabled(null).build())
     }
 }

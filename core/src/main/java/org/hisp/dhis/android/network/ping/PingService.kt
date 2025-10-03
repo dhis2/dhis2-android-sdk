@@ -48,4 +48,12 @@ internal class PingService(
             }
         }
     }
+
+    suspend fun getPingFor(serverUrl: String): HttpResponse {
+        return client.get {
+            val pingUrl = serverUrl.dropLastWhile { it == '/' } + "/api/ping"
+            absoluteUrl(pingUrl)
+            excludeCredentials()
+        }
+    }
 }

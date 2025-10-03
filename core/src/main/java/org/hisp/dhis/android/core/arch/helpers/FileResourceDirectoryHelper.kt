@@ -108,7 +108,7 @@ object FileResourceDirectoryHelper {
     }
 
     private fun getSubfolderName(): String {
-        val dbName = D2Manager.getD2().databaseAdapter().databaseName
+        val dbName = D2Manager.getD2().databaseAdapter().getDatabaseName()
         return getSubfolderName(dbName)
     }
 }

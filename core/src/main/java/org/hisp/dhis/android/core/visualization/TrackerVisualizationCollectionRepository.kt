@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.visualization
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
@@ -36,17 +35,16 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.visualization.internal.TrackerVisualizationColumnsFiltersChildrenAppender
 import org.hisp.dhis.android.core.visualization.internal.TrackerVisualizationStore
+import org.hisp.dhis.android.persistence.visualization.TrackerVisualizationTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 @Suppress("TooManyFunctions")
 class TrackerVisualizationCollectionRepository internal constructor(
     store: TrackerVisualizationStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<TrackerVisualization, TrackerVisualizationCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -54,7 +52,6 @@ class TrackerVisualizationCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         TrackerVisualizationCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },

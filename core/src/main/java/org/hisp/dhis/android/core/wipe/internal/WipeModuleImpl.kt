@@ -27,44 +27,51 @@
  */
 package org.hisp.dhis.android.core.wipe.internal
 
-import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
+import kotlinx.coroutines.runBlocking
+import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutorInterface
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class WipeModuleImpl(
-    private val d2CallExecutor: D2CallExecutor,
+    private val d2CallExecutor: D2CallExecutorInterface,
     private val moduleWipers: List<ModuleWiper>,
 ) : WipeModule {
     @Throws(D2Error::class)
     override fun wipeEverything() {
-        return d2CallExecutor.executeD2CallTransactionally<Unit> {
-            wipeMetadataInternal()
-            wipeDataInternal()
+        return runBlocking {
+            d2CallExecutor.executeD2CallTransactionally {
+                wipeMetadataInternal()
+                wipeDataInternal()
+            }
         }
     }
 
     @Throws(D2Error::class)
     override fun wipeMetadata() {
-        return d2CallExecutor.executeD2CallTransactionally<Unit> {
-            wipeMetadataInternal()
+        return runBlocking {
+            d2CallExecutor.executeD2CallTransactionally {
+                wipeMetadataInternal()
+            }
         }
     }
 
     @Throws(D2Error::class)
     override fun wipeData() {
-        return d2CallExecutor.executeD2CallTransactionally<Unit> {
-            wipeDataInternal()
+        return runBlocking {
+            d2CallExecutor.executeD2CallTransactionally {
+                wipeDataInternal()
+            }
         }
     }
 
-    private fun wipeMetadataInternal() {
+    private suspend fun wipeMetadataInternal() {
         for (moduleWiper in moduleWipers) {
             moduleWiper.wipeMetadata()
         }
     }
 
-    private fun wipeDataInternal() {
+    private suspend fun wipeDataInternal() {
         for (moduleWiper in moduleWipers) {
             moduleWiper.wipeData()
         }

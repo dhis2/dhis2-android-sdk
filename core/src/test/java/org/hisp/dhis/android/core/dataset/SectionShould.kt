@@ -29,12 +29,11 @@ package org.hisp.dhis.android.core.dataset
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.dataset.SectionDTO
 import org.junit.Test
 
-class SectionShould : BaseObjectKotlinxShould("dataset/section.json"), ObjectShould {
+class SectionShould : CoreObjectShould("dataset/section.json") {
     @Test
     override fun map_from_json_string() {
         val sectionDTO = deserialize(SectionDTO.serializer())
@@ -60,7 +59,7 @@ class SectionShould : BaseObjectKotlinxShould("dataset/section.json"), ObjectSho
         assertThat(section.dataElements()!!.size).isEqualTo(15)
         assertThat(section.dataElements()!![0].uid()).isEqualTo("s46m5MS0hxu")
         assertThat(section.greyedFields()!!.size).isEqualTo(1)
-        assertThat(section.greyedFields()!![0].uid()).isEqualTo("ca8lfO062zg.Prlt0C1RF0s")
+        assertThat(section.greyedFields()!![0].uid()).isEqualTo("ca8lfO062zg.Gmbgme7z9BF")
 
         assertThat(section.displayOptions()!!.afterSectionText()).isEqualTo(null)
         assertThat(section.displayOptions()!!.beforeSectionText()).isEqualTo("Text before section")

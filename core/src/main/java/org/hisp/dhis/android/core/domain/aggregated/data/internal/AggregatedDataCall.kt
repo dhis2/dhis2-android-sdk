@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallEx
 import org.hisp.dhis.android.core.arch.call.D2ProgressSyncStatus
 import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
-import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
 import org.hisp.dhis.android.core.dataapproval.DataApproval
 import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalCall
@@ -49,6 +48,7 @@ import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedD2Progress
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
+import org.hisp.dhis.android.persistence.category.CategoryOptionComboTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -75,7 +75,7 @@ internal class AggregatedDataCall(
         progressManager: AggregatedD2ProgressManager,
     ): Flow<AggregatedD2Progress> {
         return flow {
-            val bundles = aggregatedDataCallBundleFactory.bundles
+            val bundles = aggregatedDataCallBundleFactory.bundles()
             val dataSets = bundles.flatMap { it.dataSets }.mapNotNull { it.uid() }
 
             progressManager.setTotalCalls(bundles.size + 2)
@@ -100,7 +100,7 @@ internal class AggregatedDataCall(
         bundle: AggregatedDataCallBundle,
     ) {
         return try {
-            coroutineCallExecutor.wrapTransactionally(cleanForeignKeyErrors = true) {
+            coroutineCallExecutor.wrapTransactionallyRoom(cleanForeignKeyErrors = true) {
                 downloadDataValues(bundle)
                 downloadCompleteRegistration(bundle)
                 downloadApproval(bundle)
@@ -130,7 +130,7 @@ internal class AggregatedDataCall(
         return dsCompleteRegistrationCall.download(completeRegistrationQuery)
     }
 
-    private fun updateAggregatedDataSync(
+    private suspend fun updateAggregatedDataSync(
         bundle: AggregatedDataCallBundle,
     ) {
         for (dataSet in bundle.dataSets) {
@@ -169,7 +169,7 @@ internal class AggregatedDataCall(
         }
     }
 
-    private fun getAttributeOptionCombosUidsFrom(dataSetsWithWorkflow: Collection<DataSet>): Set<String> {
+    private suspend fun getAttributeOptionCombosUidsFrom(dataSetsWithWorkflow: Collection<DataSet>): Set<String> {
         val categoryComboUids = dataSetsWithWorkflow.mapNotNull { it.categoryCombo()?.uid() }.toSet()
 
         val whereClause = WhereClauseBuilder()

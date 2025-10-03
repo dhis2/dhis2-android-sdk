@@ -1,0 +1,73 @@
+/*
+ *  Copyright (c) 2004-2025, University of Oslo
+ *  All rights reserved.
+ *
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
+ *
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+package org.hisp.dhis.android.core.server
+
+import org.hisp.dhis.android.core.systeminfo.DHISPatchVersion
+
+data class LoginConfig(
+    val apiVersion: String? = null,
+    val applicationTitle: String? = null,
+    val applicationDescription: String? = null,
+    val applicationNotification: String? = null,
+    val applicationLeftSideFooter: String? = null,
+    val applicationRightSideFooter: String? = null,
+    val countryFlag: String? = null,
+    val uiLocale: String? = null,
+    val loginPageLogo: String? = null,
+    val loginPopup: String? = null,
+    val loginPageLayout: LoginPageLayout? = LoginPageLayout.DEFAULT,
+    val recaptchaSite: String? = null,
+    val minPasswordLength: Int? = null,
+    val maxPasswordLength: Int? = null,
+    val emailConfigured: Boolean = false,
+    val selfRegistrationEnabled: Boolean = false,
+    val selfRegistrationNoRecaptcha: Boolean = false,
+    val allowAccountRecovery: Boolean = false,
+    val useCustomLogoFront: Boolean = false,
+    val oidcProviders: List<LoginOidcProvider> = emptyList(),
+) {
+    fun isOauthEnabled(): Boolean {
+        return isAtLeast42dot2() && oidcProviders.any { it.id == DHIS2_OAUTH_CLIENT_ID }
+    }
+
+    private fun isAtLeast42dot2(): Boolean {
+        return apiVersion?.let {
+            DHISPatchVersion.isGreaterThanPatch(apiVersion, DHISPatchVersion.V2_42_1)
+        } ?: false
+    }
+
+    internal companion object {
+        const val DHIS2_OAUTH_CLIENT_ID = "dhis2-client"
+
+        fun createDefault(serverUrl: String): LoginConfig {
+            return LoginConfig(
+                applicationTitle = serverUrl,
+            )
+        }
+    }
+}

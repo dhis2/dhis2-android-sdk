@@ -27,34 +27,27 @@
  */
 package org.hisp.dhis.android.core.arch.db.stores.internal
 
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
 internal interface IdentifiableObjectStore<O : ObjectWithUidInterface> : ObjectStore<O> {
     @Throws(RuntimeException::class)
-    fun delete(uid: String)
+    suspend fun delete(uid: String)
 
     @Throws(RuntimeException::class)
-    fun deleteIfExists(uid: String)
+    suspend fun deleteIfExists(uid: String)
 
     @Throws(RuntimeException::class)
-    fun update(o: O)
+    suspend fun selectUids(): List<String>
 
     @Throws(RuntimeException::class)
-    fun updateOrInsert(o: O): HandleAction
+    suspend fun selectUidsWhere(whereClause: String): List<String>
 
     @Throws(RuntimeException::class)
-    fun selectUids(): List<String>
+    suspend fun selectUidsWhere(whereClause: String, orderByClause: String?): List<String>
 
     @Throws(RuntimeException::class)
-    fun selectUidsWhere(whereClause: String): List<String>
+    suspend fun selectByUid(uid: String): O?
 
     @Throws(RuntimeException::class)
-    fun selectUidsWhere(whereClause: String, orderByClause: String): List<String>
-
-    @Throws(RuntimeException::class)
-    fun selectByUid(uid: String): O?
-
-    @Throws(RuntimeException::class)
-    fun selectByUids(uid: List<String>): List<O>
+    suspend fun selectByUids(uid: List<String>): List<O>
 }

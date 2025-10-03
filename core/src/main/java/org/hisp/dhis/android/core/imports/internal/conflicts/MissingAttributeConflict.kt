@@ -44,7 +44,7 @@ internal object MissingAttributeConflict : TrackerImportConflictItem {
         return regex.find(conflict.value())?.groupValues?.get(1)
     }
 
-    override fun getDisplayDescription(
+    override suspend fun getDisplayDescription(
         conflict: ImportConflict,
         context: TrackerImportConflictItemContext,
     ): String {

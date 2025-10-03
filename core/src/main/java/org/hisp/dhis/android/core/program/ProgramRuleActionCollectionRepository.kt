@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.program
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
@@ -35,17 +34,16 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.program.internal.ProgramRuleActionStore
+import org.hisp.dhis.android.persistence.program.ProgramRuleActionTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 @Suppress("TooManyFunctions")
 class ProgramRuleActionCollectionRepository internal constructor(
     store: ProgramRuleActionStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramRuleAction, ProgramRuleActionCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -53,7 +51,6 @@ class ProgramRuleActionCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         ProgramRuleActionCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },
@@ -107,7 +104,7 @@ class ProgramRuleActionCollectionRepository internal constructor(
     }
 
     fun byDisplayContent(): StringFilterConnector<ProgramRuleActionCollectionRepository> {
-        return cf.string(ProgramRuleActionTableInfo.Columns.DISPLAYCONTENT)
+        return cf.string(ProgramRuleActionTableInfo.Columns.DISPLAY_CONTENT)
     }
 
     internal companion object {

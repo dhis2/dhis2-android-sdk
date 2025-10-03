@@ -23,6 +23,11 @@ pipeline {
         label "ec2-android"
     }
 
+    environment {
+        GRADLE_USER_HOME = "${env.WORKSPACE}/.gradle"
+    }
+
+
     options {
         disableConcurrentBuilds(abortPrevious: true)
     }
@@ -129,4 +134,22 @@ pipeline {
             }
         }
     }
+    post {
+        failure {
+            sendNotification(env.GIT_BRANCH, '*Build Failed*\n', 'bad')
+        }
+    }
+}
+
+def sendNotification(String branch, String messagePrefix, String color){
+   slackSend channel: '#android-sdk-dev', color: color, message: messagePrefix+ custom_msg()
+}
+
+def custom_msg(){
+  def BUILD_URL= env.BUILD_URL
+  def JOB_NAME = env.JOB_NAME
+  def BUILD_ID = env.BUILD_ID
+  def BRANCH_NAME = env.GIT_BRANCH
+  def JENKINS_LOG= "*Job:* $JOB_NAME\n *Branch:* $BRANCH_NAME\n *Build Number:* $BUILD_NUMBER (<${BUILD_URL}|Open>)"
+  return JENKINS_LOG
 }

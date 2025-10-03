@@ -39,7 +39,7 @@ import org.koin.core.annotation.Singleton
 internal class DataSetCompleteRegistrationImportHandler(
     private val dataSetCompleteRegistrationStore: DataSetCompleteRegistrationStore,
 ) {
-    fun handleImportSummary(
+    suspend fun handleImportSummary(
         toPostDataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
         dataValueImportSummary: DataValueImportSummary,
         deletedDataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
@@ -66,7 +66,7 @@ internal class DataSetCompleteRegistrationImportHandler(
         )
     }
 
-    private fun handleDeletedDataSetCompleteRegistrations(
+    private suspend fun handleDeletedDataSetCompleteRegistrations(
         deletedDataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
         withErrorDataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
     ): List<ImportConflict> {
@@ -82,7 +82,7 @@ internal class DataSetCompleteRegistrationImportHandler(
 
         deletedDataSetCompleteRegistrations
             .filter { dataSetCompleteRegistrationStore.isBeingUpload(it) }
-            .forEach { dataSetCompleteRegistrationStore.deleteById(it) }
+            .forEach { dataSetCompleteRegistrationStore.deleteWhereIfExists(it) }
 
         return conflicts
     }

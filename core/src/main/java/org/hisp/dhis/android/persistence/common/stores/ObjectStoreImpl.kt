@@ -1,0 +1,107 @@
+/*
+ *  Copyright (c) 2004-2025, University of Oslo
+ *  All rights reserved.
+ *
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
+ *
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.hisp.dhis.android.persistence.common.stores
+
+import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.persistence.common.MapperToDB
+import org.hisp.dhis.android.persistence.common.daos.ObjectDao
+import org.hisp.dhis.android.persistence.common.querybuilders.ReadOnlySQLStatementBuilder
+
+internal open class ObjectStoreImpl<D : CoreObject, P : EntityDB<D>>(
+    override val daoProvider: () -> ObjectDao<P>,
+    protected val mapper: MapperToDB<D, P>,
+    override val builder: ReadOnlySQLStatementBuilder,
+) : ObjectStore<D>, ReadableStoreImpl<D, P>(daoProvider, builder), MapperToDB<D, P> by mapper {
+
+    override suspend fun selectStringColumnsWhereClause(column: String, clause: String): List<String> {
+        val objectDao = daoProvider()
+        val query = builder.selectStringColumn(column, clause)
+        return objectDao.stringListRawQuery(query)
+    }
+
+    override suspend fun delete(): Int {
+        val objectDao = daoProvider()
+        return objectDao.deleteAllRows()
+    }
+
+    override suspend fun insert(o: D): Long {
+        val objectDao = daoProvider()
+        return objectDao.insert(o.toDB())
+    }
+
+    override suspend fun insert(objects: Collection<D>) {
+        val objectDao = daoProvider()
+        objectDao.insert(objects.map { it.toDB() })
+    }
+
+    @Suppress("TooGenericExceptionThrown")
+    override suspend fun update(o: D) {
+        val objectDao = daoProvider()
+        val updated = objectDao.update(o.toDB())
+        if (updated == 0) {
+            throw RuntimeException("No rows affected")
+        }
+    }
+
+    override suspend fun update(objects: Collection<D>) {
+        val objectDao = daoProvider()
+        objectDao.update(objects.map { it.toDB() })
+    }
+
+    override suspend fun updateOrInsert(o: D): HandleAction {
+        val objectDao = daoProvider()
+        val rowId = objectDao.upsert(o.toDB())
+        return if (rowId > -1) {
+            HandleAction.Insert
+        } else {
+            HandleAction.Update
+        }
+    }
+
+    override suspend fun updateOrInsert(objects: Collection<D>): List<HandleAction> {
+        val objectDao = daoProvider()
+        val rowIds = objectDao.upsert(objects.map { it.toDB() })
+        return rowIds.map { rowId ->
+            if (rowId > -1) {
+                HandleAction.Insert
+            } else {
+                HandleAction.Update
+            }
+        }
+    }
+
+    override suspend fun deleteByEntity(o: D): Boolean {
+        val objectDao = daoProvider()
+        val entityDB = o.toDB()
+        return objectDao.delete(entityDB) > 0
+    }
+}

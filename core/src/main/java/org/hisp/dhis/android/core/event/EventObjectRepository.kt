@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.event
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
@@ -48,13 +47,11 @@ class EventObjectRepository internal constructor(
     store: EventStore,
     private val userStore: UserStore,
     uid: String?,
-    databaseAdapter: DatabaseAdapter,
     childrenAppenders: ChildrenAppenderGetter<Event>,
     scope: RepositoryScope,
     private val trackerDataManager: TrackerDataManager,
 ) : ReadWriteWithUidDataObjectRepositoryImpl<Event, EventObjectRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     ObjectRepositoryFactory { s: RepositoryScope ->
@@ -62,7 +59,6 @@ class EventObjectRepository internal constructor(
             store,
             userStore,
             uid,
-            databaseAdapter,
             childrenAppenders,
             s,
             trackerDataManager,
@@ -147,11 +143,11 @@ class EventObjectRepository internal constructor(
             .lastUpdatedAtClient(updateDate)
     }
 
-    override fun propagateState(m: Event, action: HandleAction) {
+    override suspend fun propagateState(m: Event, action: HandleAction) {
         trackerDataManager.propagateEventUpdate(m, action)
     }
 
-    override fun deleteObject(m: Event) {
+    override suspend fun deleteObject(m: Event) {
         trackerDataManager.deleteEvent(m)
     }
 }

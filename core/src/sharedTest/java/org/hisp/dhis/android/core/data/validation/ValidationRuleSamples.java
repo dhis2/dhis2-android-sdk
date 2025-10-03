@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.data.validation;
 
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
+
 import com.google.common.collect.Lists;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -41,8 +43,6 @@ import org.hisp.dhis.android.core.validation.ValidationRuleOperator;
 import java.text.ParseException;
 import java.util.Date;
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
-
 public class ValidationRuleSamples {
 
     public static ValidationRule get() {
@@ -50,7 +50,6 @@ public class ValidationRuleSamples {
 
         fillNameableProperties(builder);
         return builder
-                .id(1L)
                 .instruction("instruction")
                 .importance(ValidationRuleImportance.HIGH)
                 .operator(ValidationRuleOperator.compulsory_pair)
@@ -67,7 +66,6 @@ public class ValidationRuleSamples {
                         .missingValueStrategy(MissingValueStrategy.SKIP_IF_ALL_VALUES_MISSING)
                         .build())
                 .organisationUnitLevels(Lists.newArrayList(2, 3, 4))
-                .deleted(false)
                 .build();
     }
 

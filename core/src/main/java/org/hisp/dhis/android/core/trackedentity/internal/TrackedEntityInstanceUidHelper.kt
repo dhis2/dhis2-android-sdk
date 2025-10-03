@@ -30,6 +30,6 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
 internal interface TrackedEntityInstanceUidHelper {
-    fun hasMissingOrganisationUnitUids(trackedEntityInstances: Collection<TrackedEntityInstance>): Boolean
-    fun getMissingOrganisationUnitUids(trackedEntityInstances: Collection<TrackedEntityInstance>): Set<String>
+    suspend fun hasMissingOrganisationUnitUids(trackedEntityInstances: Collection<TrackedEntityInstance>): Boolean
+    suspend fun getMissingOrganisationUnitUids(trackedEntityInstances: Collection<TrackedEntityInstance>): Set<String>
 }

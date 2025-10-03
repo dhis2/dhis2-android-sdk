@@ -29,8 +29,18 @@ package org.hisp.dhis.android.core.user.internal
 
 import io.reactivex.Completable
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
-import org.hisp.dhis.android.core.user.*
+import org.hisp.dhis.android.core.user.AccountManager
+import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository
+import org.hisp.dhis.android.core.user.AuthorityCollectionRepository
+import org.hisp.dhis.android.core.user.TwoFactorAuthManager
+import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.core.user.UserCredentialsObjectRepository
+import org.hisp.dhis.android.core.user.UserGroupCollectionRepository
+import org.hisp.dhis.android.core.user.UserModule
+import org.hisp.dhis.android.core.user.UserObjectRepository
+import org.hisp.dhis.android.core.user.UserRoleCollectionRepository
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectHandler
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectHandlerImpl
 import org.koin.core.annotation.Singleton
@@ -49,6 +59,7 @@ internal class UserModuleImpl(
     private val user: UserObjectRepository,
     private val accountManager: AccountManagerImpl,
     private val openIDConnectHandler: OpenIDConnectHandlerImpl,
+    private val twoFactorAuthManager: TwoFactorAuthManagerImpl,
 ) : UserModule {
 
     override fun authenticatedUser(): AuthenticatedUserObjectRepository {
@@ -81,7 +92,7 @@ internal class UserModuleImpl(
     }
 
     override fun blockingLogIn(username: String, password: String, serverUrl: String): User {
-        return logIn(username, password, serverUrl).blockingGet()
+        return runBlocking { logInCall.logIn(username, password, serverUrl) }
     }
 
     override fun logOut(): Completable {
@@ -106,5 +117,9 @@ internal class UserModuleImpl(
 
     override fun openIdHandler(): OpenIDConnectHandler {
         return openIDConnectHandler
+    }
+
+    override fun twoFactorAuthManager(): TwoFactorAuthManager {
+        return twoFactorAuthManager
     }
 }

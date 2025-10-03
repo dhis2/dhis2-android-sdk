@@ -41,7 +41,7 @@ internal class AppearanceSettingCall(
     private val filterSettingHandler: FilterSettingHandler,
     private val programConfigurationSettingHandler: ProgramConfigurationSettingHandler,
     private val dataSetConfigurationSettingHandler: DataSetConfigurationSettingHandler,
-    private val settingAppService: SettingAppService,
+    private val networkHandler: SettingsNetworkHandler,
     coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val appVersionManager: SettingsAppInfoManager,
 ) : BaseSettingCall<AppearanceSettings>(coroutineAPICallExecutor) {
@@ -59,14 +59,12 @@ internal class AppearanceSettingCall(
             }
 
             SettingsAppDataStoreVersion.V2_0 -> {
-                coroutineAPICallExecutor.wrap(storeError = storeError) {
-                    settingAppService.appearanceSettings(version)
-                }
+                networkHandler.appearanceSettings(version, storeError)
             }
         }
     }
 
-    override fun process(item: AppearanceSettings?) {
+    override suspend fun process(item: AppearanceSettings?) {
         val filterSettingsList = item?.let {
             SettingsAppHelper.getFilterSettingsList(it)
         } ?: emptyList()

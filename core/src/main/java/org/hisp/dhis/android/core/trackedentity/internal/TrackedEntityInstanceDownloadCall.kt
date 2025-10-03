@@ -58,7 +58,7 @@ internal class TrackedEntityInstanceDownloadCall(
     relationshipDownloadAndPersistCallFactory,
     coroutineCallExecutor,
 ) {
-    override fun getBundles(params: ProgramDataDownloadParams): List<TrackerQueryBundle> {
+    override suspend fun getBundles(params: ProgramDataDownloadParams): List<TrackerQueryBundle> {
         return queryFactory.getQueries(params)
     }
 
@@ -78,7 +78,7 @@ internal class TrackedEntityInstanceDownloadCall(
         persistenceCallFactory.persistTEIs(items, params, relatives)
     }
 
-    override fun updateLastUpdated(bundle: TrackerQueryBundle) {
+    override suspend fun updateLastUpdated(bundle: TrackerQueryBundle) {
         lastUpdatedManager.update(bundle)
     }
 

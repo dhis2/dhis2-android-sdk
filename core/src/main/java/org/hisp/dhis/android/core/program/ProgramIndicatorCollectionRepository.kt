@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.program
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
@@ -40,16 +39,15 @@ import org.hisp.dhis.android.core.common.AnalyticsType
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorAnalyticsPeriodBoundaryChildrenAppender
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorLegendSetChildrenAppender
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStore
+import org.hisp.dhis.android.persistence.program.ProgramIndicatorTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 class ProgramIndicatorCollectionRepository internal constructor(
     store: ProgramIndicatorStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramIndicator, ProgramIndicatorCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -57,7 +55,6 @@ class ProgramIndicatorCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         ProgramIndicatorCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },

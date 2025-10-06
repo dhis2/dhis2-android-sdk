@@ -64,7 +64,7 @@ internal class EventQueryBundleInternalFactory(
         ) { it?.eventDateDownload() }
 
         val eventFilters = (params.eventFilters() ?: emptyList()).plus(
-            eventFilterCollectionRepository.byUid().`in`(params.filterUids()).blockingGet()
+            eventFilterCollectionRepository.byUid().`in`(params.filterUids()).blockingGet(),
         )
 
         val programSettingFilters = eventFilterCollectionRepository.byUid()
@@ -74,7 +74,10 @@ internal class EventQueryBundleInternalFactory(
             .eventFilters(eventFilters.takeIf { it.isNotEmpty() } ?: programSettingFilters)
             .commonParams(commonParams)
 
-        return commonHelper.divideByOrgUnits(commonParams.orgUnitsBeforeDivision, commonParams.hasLimitByOrgUnit) {
+        return commonHelper.divideByOrgUnits(
+            commonParams.orgUnitsBeforeDivision,
+            commonParams.hasLimitByOrgUnit,
+        ) {
             builder.orgUnits(it).build()
         }
     }

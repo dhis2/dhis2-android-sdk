@@ -43,7 +43,7 @@ internal class TrackerQueryBundleFactory(
     lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager,
     commonHelper: TrackerQueryFactoryCommonHelper,
     programStageWorkingListObjectRepository: ProgramStageWorkingListCollectionRepository,
-    trackedEntityInstanceFilterCollectionRepository: TrackedEntityInstanceFilterCollectionRepository
+    trackedEntityInstanceFilterCollectionRepository: TrackedEntityInstanceFilterCollectionRepository,
 ) : TrackerQueryFactory<TrackerQueryBundle, TrackedEntityInstanceSync>(
     programStore,
     programSettingsObjectRepository,

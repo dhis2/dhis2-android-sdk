@@ -162,7 +162,6 @@ class EventQueryBundleFactoryShould {
         assertThat(query.eventFilters()?.first()).isEqualTo(f1)
     }
 
-
     @Test
     fun get_event_date_if_defined() = runTest {
         val settings = ProgramSetting.builder().uid(p1).eventDateDownload(DownloadPeriod.LAST_3_MONTHS).build()

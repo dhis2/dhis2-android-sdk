@@ -10997,13 +10997,17 @@ public class org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSyncCo
 public abstract class org/hisp/dhis/android/core/trackedentity/internal/TrackerQueryBundle : org/hisp/dhis/android/core/tracker/exporter/BaseTrackerQueryBundle {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/internal/TrackerQueryBundle$Builder;
+	public abstract fun programStageWorkingLists ()Ljava/util/List;
 	public abstract fun programStatus ()Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;
+	public abstract fun trackedEntityInstanceFilters ()Ljava/util/List;
 }
 
 public abstract class org/hisp/dhis/android/core/trackedentity/internal/TrackerQueryBundle$Builder : org/hisp/dhis/android/core/tracker/exporter/BaseTrackerQueryBundle$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/trackedentity/internal/TrackerQueryBundle;
+	public abstract fun programStageWorkingLists (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackerQueryBundle$Builder;
 	public abstract fun programStatus (Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackerQueryBundle$Builder;
+	public abstract fun trackedEntityInstanceFilters (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackerQueryBundle$Builder;
 }
 
 public abstract interface class org/hisp/dhis/android/core/trackedentity/ownership/OwnershipManager {

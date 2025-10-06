@@ -69,7 +69,6 @@ class TrackedEntityInstanceQueryFactoryShould {
     private val teiFilterCollectionRepository: TrackedEntityInstanceFilterCollectionRepository = mock()
     private val connectorTei: StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> = mock()
 
-
     private val p1 = "program1"
     private val p2 = "program2"
     private val p3 = "program3"
@@ -118,7 +117,6 @@ class TrackedEntityInstanceQueryFactoryShould {
         whenever(teiFilterCollectionRepository.byUid()).thenReturn(connectorTei)
         whenever(connectorTei.`in`(null)).thenReturn(teiFilterCollectionRepository)
         whenever(teiFilterCollectionRepository.blockingGet()).thenReturn(emptyList())
-
 
         val commonHelper = TrackerQueryFactoryCommonHelper(
             userOrganisationUnitLinkStore,

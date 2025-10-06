@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkCleaner
 import org.hisp.dhis.android.core.program.internal.ProgramOrganisationUnitLinkCleaner
 import org.hisp.dhis.android.core.user.User
@@ -39,7 +38,6 @@ internal class OrganisationUnitModuleDownloader(
     private val organisationUnitCall: OrganisationUnitCall,
     private val userCall: UserCall,
     private val organisationUnitLevelEndpointCall: OrganisationUnitLevelEndpointCall,
-    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val dataSetLinkCleaner: DataSetOrganisationUnitLinkCleaner,
     private val programLinkCleaner: ProgramOrganisationUnitLinkCleaner,
 ) {

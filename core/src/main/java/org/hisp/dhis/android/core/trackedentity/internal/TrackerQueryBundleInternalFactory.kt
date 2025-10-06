@@ -39,7 +39,7 @@ internal class TrackerQueryBundleInternalFactory(
     params: ProgramDataDownloadParams,
     programSettings: ProgramSettings?,
     val programStageWorkingListObjectRepository: ProgramStageWorkingListCollectionRepository,
-    val trackedEntityInstanceFilterCollectionRepository: TrackedEntityInstanceFilterCollectionRepository
+    val trackedEntityInstanceFilterCollectionRepository: TrackedEntityInstanceFilterCollectionRepository,
 ) : TrackerQueryInternalFactory<TrackerQueryBundle>(commonHelper, params, programSettings) {
 
     override suspend fun queryInternal(
@@ -70,13 +70,13 @@ internal class TrackerQueryBundleInternalFactory(
             (params.programStageWorkingLists() ?: emptyList()).plus(
                 programStageWorkingListObjectRepository
                     .byUid().`in`(params.filterUids())
-                    .blockingGet()
+                    .blockingGet(),
             )
 
         val trackedEntityInstanceFilters = (params.trackedEntityInstanceFilters() ?: emptyList()).plus(
             trackedEntityInstanceFilterCollectionRepository
                 .byUid().`in`(params.filterUids())
-                .blockingGet()
+                .blockingGet(),
         )
 
         val programStageWorkingListsSettings = programStageWorkingListObjectRepository
@@ -87,14 +87,17 @@ internal class TrackerQueryBundleInternalFactory(
             .byUid().`in`(programSettings?.specificSettings()?.get(programUid)?.filters()?.map { it.uid() })
             .blockingGet()
 
-
         val builder = TrackerQueryBundle.builder()
             .commonParams(commonParams)
             .programStatus(programStatus)
-            .programStageWorkingLists(programStageWorkingLists.takeIf { it.isNotEmpty() }
-                ?: programStageWorkingListsSettings)
-            .trackedEntityInstanceFilters(trackedEntityInstanceFilters.takeIf { it.isNotEmpty() }
-                ?: trackedEntityInstanceFiltersSettings)
+            .programStageWorkingLists(
+                programStageWorkingLists.takeIf { it.isNotEmpty() }
+                    ?: programStageWorkingListsSettings,
+            )
+            .trackedEntityInstanceFilters(
+                trackedEntityInstanceFilters.takeIf { it.isNotEmpty() }
+                    ?: trackedEntityInstanceFiltersSettings,
+            )
 
         return commonHelper.divideByOrgUnits(
             commonParams.orgUnitsBeforeDivision,

@@ -48,6 +48,7 @@ internal class D2CallExecutor(
         .errorComponent(D2ErrorComponent.SDK)
 
     @Throws(D2Error::class)
+    @Suppress("TooGenericExceptionCaught")
     override suspend fun <C> executeD2Call(call: suspend () -> C): C {
         try {
             return call()

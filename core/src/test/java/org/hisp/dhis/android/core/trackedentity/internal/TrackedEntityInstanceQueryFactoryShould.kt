@@ -29,15 +29,21 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStore
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.program.internal.ProgramStore
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListCollectionRepository
 import org.hisp.dhis.android.core.settings.DownloadPeriod
 import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterCollectionRepository
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 import org.junit.Before
 import org.junit.Test
@@ -57,9 +63,27 @@ class TrackedEntityInstanceQueryFactoryShould {
     private val programSettings: ProgramSettings = mock()
     private val lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager = mock()
 
+    private val programStageWorkingListObjectRepository: ProgramStageWorkingListCollectionRepository = mock()
+    private val connectorWorkingList: StringFilterConnector<ProgramStageWorkingListCollectionRepository> = mock()
+
+    private val teiFilterCollectionRepository: TrackedEntityInstanceFilterCollectionRepository = mock()
+    private val connectorTei: StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> = mock()
+
+
     private val p1 = "program1"
     private val p2 = "program2"
     private val p3 = "program3"
+    private val w1 = ProgramStageWorkingList.builder()
+        .uid("workingList1")
+        .program(ObjectWithUid.create(p1))
+        .programStage(ObjectWithUid.create("stage1"))
+        .build()
+
+    private val f1 = TrackedEntityInstanceFilter.builder()
+        .uid("filter1")
+        .program(ObjectWithUid.create(p1))
+        .build()
+
     private val ou1 = "ou1"
     private val ou1c1 = "ou1.1"
     private val ou2 = "ou2"
@@ -87,6 +111,15 @@ class TrackedEntityInstanceQueryFactoryShould {
         )
         whenever(programSettingsObjectRepository.blockingGet()).thenReturn(programSettings)
 
+        whenever(programStageWorkingListObjectRepository.byUid()).thenReturn(connectorWorkingList)
+        whenever(connectorWorkingList.`in`(null)).thenReturn(programStageWorkingListObjectRepository)
+        whenever(programStageWorkingListObjectRepository.blockingGet()).thenReturn(emptyList())
+
+        whenever(teiFilterCollectionRepository.byUid()).thenReturn(connectorTei)
+        whenever(connectorTei.`in`(null)).thenReturn(teiFilterCollectionRepository)
+        whenever(teiFilterCollectionRepository.blockingGet()).thenReturn(emptyList())
+
+
         val commonHelper = TrackerQueryFactoryCommonHelper(
             userOrganisationUnitLinkStore,
             organisationUnitProgramLinkLinkStore,
@@ -96,6 +129,8 @@ class TrackedEntityInstanceQueryFactoryShould {
             programSettingsObjectRepository,
             lastUpdatedManager,
             commonHelper,
+            programStageWorkingListObjectRepository,
+            teiFilterCollectionRepository,
         )
     }
 
@@ -136,6 +171,28 @@ class TrackedEntityInstanceQueryFactoryShould {
             assertThat(query.commonParams().program).isEqualTo(p1)
             assertThat(query.commonParams().limit).isEqualTo(5000)
         }
+    }
+
+    @Test
+    fun single_query_if_working_list_provided_by_user() = runTest {
+        val params = ProgramDataDownloadParams.builder().limit(5000)
+            .programStageWorkingLists(listOf(w1)).build()
+        val queries = queryFactory.getQueries(params)
+        assertThat(queries.size).isEqualTo(1)
+        val query = queries.first()
+        assertThat(query.programStageWorkingLists()?.size).isEqualTo(1)
+        assertThat(query.programStageWorkingLists()?.first()).isEqualTo(w1)
+    }
+
+    @Test
+    fun single_query_if_tei_filter_provided_by_user() = runTest {
+        val params = ProgramDataDownloadParams.builder().limit(5000)
+            .trackedEntityInstanceFilters(listOf(f1)).build()
+        val queries = queryFactory.getQueries(params)
+        assertThat(queries.size).isEqualTo(1)
+        val query = queries.first()
+        assertThat(query.trackedEntityInstanceFilters()?.size).isEqualTo(1)
+        assertThat(query.trackedEntityInstanceFilters()?.first()).isEqualTo(f1)
     }
 
     @Test

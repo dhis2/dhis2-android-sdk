@@ -29,7 +29,5 @@
 package org.hisp.dhis.android.core.settings
 
 data class CustomIntentContext(
-    val programUid: String? = null,
-    val programStageUid: String? = null,
     val orgunitUid: String? = null,
 )

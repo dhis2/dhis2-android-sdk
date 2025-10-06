@@ -51,7 +51,7 @@ internal abstract class TrackerQueryFactory<T, S : TrackerBaseSync>(
         val programSettings = programSettingsObjectRepository.blockingGet()
         val internalFactory = internalFactoryCreator.invoke(params, programSettings)
         lastUpdatedManager.prepare(programSettings, params)
-        return if (params.program() == null) {
+        return if (params.program() == null && params.programStageWorkingLists() == null) {
             val programs = programStore.getUidsByProgramType(programType)
             when {
                 params.uids().isNotEmpty() ->
@@ -67,8 +67,11 @@ internal abstract class TrackerQueryFactory<T, S : TrackerBaseSync>(
                         internalFactory.queryGlobal(globalPrograms)
                 }
             }
-        } else {
+        } else if (params.program() != null) {
             internalFactory.queryPerProgram(params.program())
+        } else {
+            val programs = params.programStageWorkingLists()?.map { it.program().uid() }
+            programs?.flatMap { internalFactory.queryPerProgram(it) } ?: emptyList()
         }
     }
 }

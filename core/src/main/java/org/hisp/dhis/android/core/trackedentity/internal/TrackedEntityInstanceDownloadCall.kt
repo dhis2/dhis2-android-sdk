@@ -98,31 +98,35 @@ internal class TrackedEntityInstanceDownloadCall(
             programStatus = bundle.programStatus(),
         )
 
-        for (uid in bundle.commonParams().uids) {
-            try {
-                val useEntityEndpoint = teiQuery.commonParams.program != null
+        val useEntityEndpoint = teiQuery.commonParams.program != null
 
+        try {
+            val teisList = mutableListOf<TrackedEntityInstance>()
+
+            for (uid in bundle.commonParams().uids) {
                 val tei = querySingleTei(uid, useEntityEndpoint, teiQuery).getOrThrow()
 
                 if (tei != null) {
-                    val persistParams = IdentifiableDataHandlerParams(
-                        hasAllAttributes = !useEntityEndpoint,
-                        overwrite = overwrite,
-                        asRelationship = false,
-                        program = teiQuery.commonParams.program,
-                    )
-
-                    persistItems(listOf(tei), persistParams, relatives)
-
+                    teisList.add(tei)
                     result.count++
                 }
-            } catch (d2Error: D2Error) {
-                result.successfulSync = false
-                if (result.d2Error == null) {
-                    result.d2Error = d2Error
-                }
             }
+
+            if (teisList.isNotEmpty()) {
+                val persistParams = IdentifiableDataHandlerParams(
+                    hasAllAttributes = !useEntityEndpoint,
+                    overwrite = overwrite,
+                    asRelationship = false,
+                    program = teiQuery.commonParams.program,
+                )
+
+                persistItems(teisList, persistParams, relatives)
+            }
+        } catch (d2Error: D2Error) {
+            result.successfulSync = false
+            result.d2Error = d2Error
         }
+
         return result
     }
 

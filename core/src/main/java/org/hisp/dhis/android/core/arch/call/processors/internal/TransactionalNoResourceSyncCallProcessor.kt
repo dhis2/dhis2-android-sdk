@@ -38,7 +38,7 @@ internal class TransactionalNoResourceSyncCallProcessor<O>(
 ) : CallProcessor<O> {
     @Throws(D2Error::class)
     override suspend fun process(objectList: List<O>) {
-        create(databaseAdapter).executeD2CallTransactionally {
+        create(databaseAdapter).executeD2Call {
             handler.handleMany(objectList)
         }
     }

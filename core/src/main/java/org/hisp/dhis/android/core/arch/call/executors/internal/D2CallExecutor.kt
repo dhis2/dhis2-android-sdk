@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.arch.call.executors.internal
 
 import android.util.Log
-import androidx.room.immediateTransaction
+import androidx.room.deferredTransaction
 import androidx.room.useWriterConnection
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
@@ -48,6 +48,20 @@ internal class D2CallExecutor(
         .errorComponent(D2ErrorComponent.SDK)
 
     @Throws(D2Error::class)
+    override suspend fun <C> executeD2Call(call: suspend () -> C): C {
+        try {
+            return call()
+        } catch (d2E: D2Error) {
+            throw d2E
+        } catch (e: Exception) {
+            Log.e(this.javaClass.simpleName, e.toString())
+            throw exceptionBuilder
+                .errorCode(D2ErrorCode.UNEXPECTED)
+                .errorDescription("Unexpected error calling $call").build()
+        }
+    }
+
+    @Throws(D2Error::class)
     override suspend fun <C> executeD2CallTransactionally(call: suspend () -> C): C {
         try {
             return innerExecuteD2CallTransactionally(call)
@@ -62,7 +76,7 @@ internal class D2CallExecutor(
     private suspend fun <C> innerExecuteD2CallTransactionally(call: suspend () -> C): C {
         return try {
             databaseAdapter.getCurrentDatabase().useWriterConnection { transactor ->
-                transactor.immediateTransaction {
+                transactor.deferredTransaction {
                     call()
                 }
             }

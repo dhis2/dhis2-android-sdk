@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.api.executors.internal
 
-import androidx.room.immediateTransaction
+import androidx.room.deferredTransaction
 import androidx.room.useWriterConnection
 import io.ktor.client.plugins.ClientRequestException
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpException
@@ -127,7 +127,7 @@ internal class CoroutineAPICallExecutorImpl(
     ): P {
         return try {
             databaseAdapter.getCurrentDatabase().useWriterConnection { transactor ->
-                transactor.immediateTransaction {
+                transactor.deferredTransaction {
                     block().also { successfulTransactionRoom(cleanForeignKeyErrors) }
                 }
             }

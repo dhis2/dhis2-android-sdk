@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.call.processors.internal
 
-import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
+import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor.Companion.create
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -38,10 +38,8 @@ internal class TransactionalNoResourceSyncCallProcessor<O>(
 ) : CallProcessor<O> {
     @Throws(D2Error::class)
     override suspend fun process(objectList: List<O>) {
-        if (objectList.isNotEmpty()) {
-            D2CallExecutor.create(databaseAdapter).executeD2CallTransactionally {
-                handler.handleMany(objectList)
-            }
+        create(databaseAdapter).executeD2CallTransactionally {
+            handler.handleMany(objectList)
         }
     }
 }

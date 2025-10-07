@@ -33,11 +33,11 @@ import androidx.paging.testing.asSnapshot
 import com.jraska.livedata.TestObserver
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.internal.CategoryOptionStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.hisp.dhis.android.persistence.common.querybuilders.OrderByClauseBuilder
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule

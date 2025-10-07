@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.arch.db
 
 import com.google.common.collect.Lists
 import com.google.common.truth.Truth
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.junit.Test
 
 class WhereClauseBuilderShould {

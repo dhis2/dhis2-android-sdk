@@ -49,18 +49,17 @@ internal class JobReportRelationshipHandler internal constructor(
         return relationshipStore.setSyncStateOrDelete(uid, handledState)
     }
 
-    @Suppress("EmptyFunctionBlock")
     override suspend fun storeConflict(errorReport: JobValidationError) {
         val relationship = relationshipStore.selectByUid(errorReport.uid)
-        if (relationship != null &&
-            (
-                errorReport.errorCode == ImporterError.E4005.name ||
-                    errorReport.errorCode == ImporterError.E4016.name ||
-                    errorReport.errorCode == ImporterError.E4017.name
-                )
-        ) {
+        if (relationship != null && isRelationshipNotFoundError(errorReport.errorCode)) {
             relationshipStore.deleteByEntity(relationship)
         }
+    }
+
+    private fun isRelationshipNotFoundError(errorCode: String?): Boolean {
+        return errorCode == ImporterError.E4005.name ||
+            errorCode == ImporterError.E4016.name ||
+            errorCode == ImporterError.E4017.name
     }
 
     override suspend fun getRelatedRelationships(uid: String): List<Relationship> {

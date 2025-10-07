@@ -51,33 +51,49 @@ internal class RelationshipImportHandler internal constructor(
     ) {
         importSummaries?.filterNotNull()?.forEach { importSummary ->
             importSummary.reference()?.let { relationshipUid ->
-                val relationship = relationshipRepository.withItems().uid(relationshipUid).blockingGet()
-
-                val state = getSyncState(importSummary.status())
-
-                val relationshipNotFoundOnServer = checkRelationshipNotFoundOnServer(importSummary)
-
-                val handleAction = if (relationshipNotFoundOnServer) {
-                    relationship?.let { relationshipStore.deleteByEntity(it) }
-                    HandleAction.Delete
-                } else {
-                    val handledState =
-                        if (state == State.ERROR || state == State.WARNING) {
-                            State.TO_UPDATE
-                        } else {
-                            state
-                        }
-
-                    relationshipStore.setSyncStateOrDelete(relationshipUid, handledState)
-                }
-
-                if (handleAction != HandleAction.Delete) {
-                    dataStatePropagator.propagateRelationshipUpdate(relationship)
-                }
+                handleSingleRelationship(importSummary, relationshipUid)
             }
         }
 
         processIgnoredRelationships(importSummaries, relationships)
+    }
+
+    private suspend fun handleSingleRelationship(
+        importSummary: RelationshipImportSummary,
+        relationshipUid: String,
+    ) {
+        val relationship = relationshipRepository.withItems().uid(relationshipUid).blockingGet()
+        val relationshipNotFoundOnServer = checkRelationshipNotFoundOnServer(importSummary)
+
+        val handleAction = if (relationshipNotFoundOnServer) {
+            handleRelationshipNotFound(relationship)
+        } else {
+            handleRelationshipUpdateState(importSummary, relationshipUid)
+        }
+
+        if (handleAction != HandleAction.Delete) {
+            dataStatePropagator.propagateRelationshipUpdate(relationship)
+        }
+    }
+
+    private suspend fun handleRelationshipNotFound(relationship: Relationship?): HandleAction {
+        relationship?.let { relationshipStore.deleteByEntity(it) }
+        return HandleAction.Delete
+    }
+
+    private suspend fun handleRelationshipUpdateState(
+        importSummary: RelationshipImportSummary,
+        relationshipUid: String,
+    ): HandleAction {
+        val state = getSyncState(importSummary.status())
+        val handledState = if (state == State.ERROR || state == State.WARNING) {
+            State.TO_UPDATE
+        } else {
+            state
+        }
+
+        relationshipStore.setSyncStateOrDelete(relationshipUid, handledState)
+        return HandleAction.Update
     }
 
     private fun checkRelationshipNotFoundOnServer(importSummary: RelationshipImportSummary): Boolean {

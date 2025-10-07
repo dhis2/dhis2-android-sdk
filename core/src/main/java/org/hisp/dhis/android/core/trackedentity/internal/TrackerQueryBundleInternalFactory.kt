@@ -81,10 +81,14 @@ internal class TrackerQueryBundleInternalFactory(
 
         val programStageWorkingListsSettings = programStageWorkingListObjectRepository
             .byUid().`in`(programSettings?.specificSettings()?.get(programUid)?.filters()?.map { it.uid() })
+            .withAttributeValueFilters()
+            .withDataFilters()
             .blockingGet()
 
         val trackedEntityInstanceFiltersSettings = trackedEntityInstanceFilterCollectionRepository
             .byUid().`in`(programSettings?.specificSettings()?.get(programUid)?.filters()?.map { it.uid() })
+            .withTrackedEntityInstanceEventFilters()
+            .withAttributeValueFilters()
             .blockingGet()
 
         val builder = TrackerQueryBundle.builder()

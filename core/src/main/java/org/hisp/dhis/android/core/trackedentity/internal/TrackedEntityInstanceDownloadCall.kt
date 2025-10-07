@@ -173,13 +173,13 @@ internal class TrackedEntityInstanceDownloadCall(
 
     private fun getTeiUidsByFilter(trackedEntityInstanceFilters: List<TrackedEntityInstanceFilter>?): List<String> {
         return trackedEntityInstanceFilters?.flatMap {
-            teiQueryCollectionRepository.byTrackedEntityInstanceFilterObject().eq(it).blockingGetUids()
+            teiQueryCollectionRepository.byTrackedEntityInstanceFilterObject().eq(it).onlineOnly().blockingGetUids()
         } ?: emptyList()
     }
 
     private fun getTeiUidsByWorkingList(programStageWorkingLists: List<ProgramStageWorkingList>?): List<String> {
         return programStageWorkingLists?.flatMap {
-            teiQueryCollectionRepository.byProgramStageWorkingListObject().eq(it).blockingGetUids()
+            teiQueryCollectionRepository.byProgramStageWorkingListObject().eq(it).onlineOnly().blockingGetUids()
         } ?: emptyList()
     }
 }

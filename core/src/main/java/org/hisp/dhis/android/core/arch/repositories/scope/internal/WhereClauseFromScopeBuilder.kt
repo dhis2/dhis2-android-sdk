@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.scope.internal
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 
 internal class WhereClauseFromScopeBuilder(private val builder: WhereClauseBuilder) {
     fun getWhereClause(scope: RepositoryScope): String {

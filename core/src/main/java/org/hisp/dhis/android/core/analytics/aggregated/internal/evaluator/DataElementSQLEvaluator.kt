@@ -35,10 +35,10 @@ import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
 import org.hisp.dhis.android.core.util.SqlAggregator
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.datavalue.DataValueTableInfo
 import org.hisp.dhis.android.persistence.period.PeriodTableInfo
 import org.koin.core.annotation.Singleton
@@ -83,7 +83,7 @@ internal class DataElementSQLEvaluator(
                 }
             }
             appendDateQueryMods(queryMods, this)
-            appendKeyNumberValue(DataValueTableInfo.Columns.DELETED, 0)
+            appendKeyNumberValue(dvColumns.DELETED, 0)
         }.build()
 
         return when (aggregator) {
@@ -202,9 +202,9 @@ internal class DataElementSQLEvaluator(
                         innerBuilder.appendOrKeyStringValue(DataValueTableInfo.Columns.DATA_ELEMENT, item.uid)
                     is DimensionItem.DataItem.DataElementOperandItem -> {
                         val operandClause = WhereClauseBuilder()
-                            .appendKeyStringValue(DataValueTableInfo.Columns.DATA_ELEMENT, item.dataElement)
+                            .appendKeyStringValue(dvColumns.DATA_ELEMENT, item.dataElement)
                             .appendKeyStringValue(
-                                DataValueTableInfo.Columns.CATEGORY_OPTION_COMBO,
+                                dvColumns.CATEGORY_OPTION_COMBO,
                                 item.categoryOptionCombo,
                             )
                             .build()

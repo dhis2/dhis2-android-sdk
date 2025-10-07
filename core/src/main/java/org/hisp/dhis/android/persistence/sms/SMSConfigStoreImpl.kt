@@ -29,12 +29,12 @@
 package org.hisp.dhis.android.persistence.sms
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.datastore.KeyValuePair
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigKey
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 import org.koin.core.annotation.Singleton
 

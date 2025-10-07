@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.persistence.category
 
-import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 import org.hisp.dhis.android.core.category.Category
@@ -52,7 +51,7 @@ internal class CategoryStoreImpl(
             CategoryCategoryComboLinkTableInfo.Columns.CATEGORY_COMBO,
             CategoryCategoryComboLinkTableInfo.Columns.CATEGORY,
         )
-        val sectionSqlBuilder = org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl(
+        val sectionSqlBuilder = SQLStatementBuilderImpl(
             CategoryCategoryComboLinkTableInfo.TABLE_INFO,
         )
         val query = sectionSqlBuilder.selectChildrenWithLinkTable(
@@ -60,7 +59,7 @@ internal class CategoryStoreImpl(
             categoryComboUid,
             null,
         )
-        val dbEntities = dao.objectListRawQuery(RoomRawQuery(query))
+        val dbEntities = dao.objectListRawQuery(query)
         return dbEntities.map { it.toDomain() }
     }
 }

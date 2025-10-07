@@ -1765,16 +1765,6 @@ public abstract interface class org/hisp/dhis/android/core/arch/db/access/intern
 	public abstract fun encryptAndCopyTo (Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;Ljava/io/File;Ljava/io/File;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public class org/hisp/dhis/android/core/arch/db/querybuilders/internal/MultipleTableQueryBuilder {
-	public fun <init> ()V
-	public fun build ()Ljava/lang/String;
-	public fun generateQuery (Ljava/lang/String;Ljava/util/Collection;)Lorg/hisp/dhis/android/core/arch/db/querybuilders/internal/MultipleTableQueryBuilder;
-}
-
-public final class org/hisp/dhis/android/core/arch/db/querybuilders/internal/OrderByClauseBuilder {
-	public static fun orderByFromItems (Ljava/util/List;)Ljava/lang/String;
-}
-
 public final class org/hisp/dhis/android/core/arch/db/sqlorder/internal/SQLOrderType : java/lang/Enum {
 	public static final field ASC Lorg/hisp/dhis/android/core/arch/db/sqlorder/internal/SQLOrderType;
 	public static final field DESC Lorg/hisp/dhis/android/core/arch/db/sqlorder/internal/SQLOrderType;
@@ -4812,55 +4802,6 @@ public final class org/hisp/dhis/android/core/dataset/TextAlign : java/lang/Enum
 }
 
 public final class org/hisp/dhis/android/core/dataset/TextAlign$Companion {
-}
-
-public class org/hisp/dhis/android/core/dataset/internal/DataSetInstanceSQLStatementBuilder : org/hisp/dhis/android/core/arch/db/querybuilders/internal/ReadOnlySQLStatementBuilder {
-	public static final field AS Ljava/lang/String;
-	public static final field ATTRIBUTE_OPTION_COMBO_UID_ALIAS Ljava/lang/String;
-	public static final field COMPLETION_STATE_ALIAS Ljava/lang/String;
-	public static final field Companion Lorg/hisp/dhis/android/core/dataset/internal/DataSetInstanceSQLStatementBuilder$Companion;
-	public static final field DATASET_NAME_ALIAS Ljava/lang/String;
-	public static final field DATASET_UID_ALIAS Ljava/lang/String;
-	public static final field LAST_UPDATED_ALIAS Ljava/lang/String;
-	public static final field ORGANISATION_UNIT_UID_ALIAS Ljava/lang/String;
-	public static final field PERIOD_ALIAS Ljava/lang/String;
-	public static final field PERIOD_END_DATE_ALIAS Ljava/lang/String;
-	public static final field PERIOD_START_DATE_ALIAS Ljava/lang/String;
-	public static final field PERIOD_TYPE_ALIAS Ljava/lang/String;
-	public static final field STATE_ALIAS Ljava/lang/String;
-	public static final field VALUE_COUNT_ALIAS Ljava/lang/String;
-	public static final field VALUE_STATE_ALIAS Ljava/lang/String;
-	public fun <init> ()V
-	public fun count ()Ljava/lang/String;
-	public fun countAndGroupBy (Ljava/lang/String;)Ljava/lang/String;
-	public fun countWhere (Ljava/lang/String;)Ljava/lang/String;
-	public fun selectAll ()Ljava/lang/String;
-	public fun selectOneOrderedBy (Ljava/lang/String;Lorg/hisp/dhis/android/core/arch/db/sqlorder/internal/SQLOrderType;)Ljava/lang/String;
-	public fun selectWhere (Ljava/lang/String;)Ljava/lang/String;
-	public fun selectWhere (Ljava/lang/String;I)Ljava/lang/String;
-	public fun selectWhere (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
-	public fun selectWhere (Ljava/lang/String;Ljava/lang/String;I)Ljava/lang/String;
-	public fun selectWhere (Ljava/lang/String;Ljava/lang/String;ILjava/lang/Integer;)Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/dataset/internal/DataSetInstanceSQLStatementBuilder$Companion {
-}
-
-public final class org/hisp/dhis/android/core/dataset/internal/DataSetInstanceSummarySQLStatementBuilder : org/hisp/dhis/android/core/dataset/internal/DataSetInstanceSQLStatementBuilder {
-	public static final field Companion Lorg/hisp/dhis/android/core/dataset/internal/DataSetInstanceSummarySQLStatementBuilder$Companion;
-	public fun <init> ()V
-	public fun count ()Ljava/lang/String;
-	public fun countWhere (Ljava/lang/String;)Ljava/lang/String;
-	public fun selectAll ()Ljava/lang/String;
-	public fun selectOneOrderedBy (Ljava/lang/String;Lorg/hisp/dhis/android/core/arch/db/sqlorder/internal/SQLOrderType;)Ljava/lang/String;
-	public fun selectWhere (Ljava/lang/String;)Ljava/lang/String;
-	public fun selectWhere (Ljava/lang/String;I)Ljava/lang/String;
-	public fun selectWhere (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
-	public fun selectWhere (Ljava/lang/String;Ljava/lang/String;I)Ljava/lang/String;
-	public fun selectWhere (Ljava/lang/String;Ljava/lang/String;ILjava/lang/Integer;)Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/dataset/internal/DataSetInstanceSummarySQLStatementBuilder$Companion {
 }
 
 public final class org/hisp/dhis/android/core/dataset/internal/DataSetModuleImpl : org/hisp/dhis/android/core/dataset/DataSetModule {

@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.core.indicator.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQueryBuilder
 import org.hisp.dhis.android.core.arch.db.uidseeker.internal.BaseUidsSeeker
 import org.hisp.dhis.android.core.visualization.DimensionItemType
+import org.hisp.dhis.android.persistence.common.querybuilders.MultipleTableQueryBuilder
 import org.hisp.dhis.android.persistence.dataset.SectionIndicatorLinkTableInfo
 import org.hisp.dhis.android.persistence.indicator.DataSetIndicatorLinkTableInfo
 import org.hisp.dhis.android.persistence.visualization.VisualizationDimensionItemTableInfo

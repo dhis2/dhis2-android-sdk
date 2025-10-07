@@ -28,10 +28,10 @@
 package org.hisp.dhis.android.core.program.internal
 
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
 import org.hisp.dhis.android.core.program.ProgramIndicator
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.program.AnalyticsPeriodBoundaryTableInfo
 
 internal class ProgramIndicatorAnalyticsPeriodBoundaryChildrenAppender private constructor(

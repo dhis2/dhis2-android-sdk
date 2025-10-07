@@ -137,5 +137,9 @@ internal open class ReadOnlySQLStatementBuilderImpl(
         internal fun getOffset(offset: Int?): String {
             return offset?.let { OFFSET + it } ?: ""
         }
+
+        internal fun getLimit(limit: Int): String {
+            return LIMIT + limit
+        }
     }
 }

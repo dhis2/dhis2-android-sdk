@@ -28,13 +28,13 @@
 package org.hisp.dhis.android.core.category.internal
 
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.internal.CategoryOptionOrganisationUnitsCall.CategoryOptionRestriction.Companion.NOT_ACCESSIBLE_TO_USER
 import org.hisp.dhis.android.core.category.internal.CategoryOptionOrganisationUnitsCall.CategoryOptionRestriction.Companion.NOT_RESTRICTED
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.persistence.category.CategoryOptionOrganisationUnitLinkTableInfo
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 
 internal class CategoryOptionOrganisationUnitChildrenAppender private constructor(
     private val childStore: CategoryOptionOrganisationUnitLinkStore,

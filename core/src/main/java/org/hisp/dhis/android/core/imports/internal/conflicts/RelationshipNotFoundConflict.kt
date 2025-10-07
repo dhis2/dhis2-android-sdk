@@ -33,13 +33,13 @@ internal object RelationshipNotFoundConflict : TrackerImportConflictItem {
 
     private val notFoundRegex: Regex = Regex("Relationship '(\\w{11})' not found\\.")
     private val alreadyDeletedRegex: Regex = Regex(
-        "Relationship '(\\w{11})' is already deleted and cannot be modified\\."
+        "Relationship '(\\w{11})' is already deleted and cannot be modified\\.",
     )
 
     private fun description(relationshipUid: String) =
         "Your relationship $relationshipUid does not exist in the server"
 
-    override val errorCode: String = "E4005"
+    override val errorCode: String = "E4017"
 
     override fun matches(conflict: ImportConflict): Boolean {
         return matchesString(conflict.value())

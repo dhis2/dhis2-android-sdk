@@ -112,7 +112,7 @@ object TrackedImportConflictSamples {
         return ImportConflict.create(
             teiUid,
             "Tracked entity instance $teiUid cannot be deleted as it has associated enrollments and user does" +
-                    " not have authority F_TEI_CASCADE_DELETE",
+                " not have authority F_TEI_CASCADE_DELETE",
         )
     }
 
@@ -120,7 +120,7 @@ object TrackedImportConflictSamples {
         return ImportConflict.create(
             enrollmentUid,
             "Enrollment $enrollmentUid cannot be deleted as it has associated events and user does not" +
-                    " have authority: F_ENROLLMENT_CASCADE_DELETE",
+                " have authority: F_ENROLLMENT_CASCADE_DELETE",
         )
     }
 
@@ -173,7 +173,7 @@ object TrackedImportConflictSamples {
     fun relationshipAlreadyDeleted(relationshipUid: String): ImportConflict {
         return ImportConflict.create(
             relationshipUid,
-            "Relationship '$relationshipUid' is already deleted and cannot be modified."
+            "Relationship '$relationshipUid' is already deleted and cannot be modified.",
         )
     }
 

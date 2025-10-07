@@ -53,9 +53,11 @@ internal class JobReportRelationshipHandler internal constructor(
     override suspend fun storeConflict(errorReport: JobValidationError) {
         val relationship = relationshipStore.selectByUid(errorReport.uid)
         if (relationship != null &&
-            (errorReport.errorCode == ImporterError.E4005.name ||
-                errorReport.errorCode == ImporterError.E4016.name ||
-                errorReport.errorCode == ImporterError.E4017.name)
+            (
+                errorReport.errorCode == ImporterError.E4005.name ||
+                    errorReport.errorCode == ImporterError.E4016.name ||
+                    errorReport.errorCode == ImporterError.E4017.name
+                )
         ) {
             relationshipStore.deleteByEntity(relationship)
         }

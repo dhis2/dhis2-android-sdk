@@ -159,7 +159,7 @@ class RelationshipImportHandlerShould {
         whenever(importSummary.status()).thenReturn(ImportStatus.ERROR)
         whenever(importSummary.reference()).thenReturn(testUid)
         whenever(importSummary.description()).thenReturn(
-            "Relationship '$testUid' is already deleted and cannot be modified."
+            "Relationship '$testUid' is already deleted and cannot be modified.",
         )
         whenever(importSummary.conflicts()).thenReturn(emptyList())
         whenever(relationshipStore.deleteByEntity(any())).thenReturn(true)

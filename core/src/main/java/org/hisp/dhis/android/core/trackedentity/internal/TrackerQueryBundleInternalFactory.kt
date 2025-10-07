@@ -78,18 +78,23 @@ internal class TrackerQueryBundleInternalFactory(
                 .byUid().`in`(params.filterUids())
                 .blockingGet(),
         )
+        val filters = programSettings?.specificSettings()?.get(programUid)?.filters()?.map { it.uid() }
 
-        val programStageWorkingListsSettings = programStageWorkingListObjectRepository
-            .byUid().`in`(programSettings?.specificSettings()?.get(programUid)?.filters()?.map { it.uid() })
-            .withAttributeValueFilters()
-            .withDataFilters()
-            .blockingGet()
+        val programStageWorkingListsSettings = filters.takeIf { !it.isNullOrEmpty() }?.let {
+            programStageWorkingListObjectRepository
+                .byUid().`in`(it)
+                .withAttributeValueFilters()
+                .withDataFilters()
+                .blockingGet()
+        }
 
-        val trackedEntityInstanceFiltersSettings = trackedEntityInstanceFilterCollectionRepository
-            .byUid().`in`(programSettings?.specificSettings()?.get(programUid)?.filters()?.map { it.uid() })
-            .withTrackedEntityInstanceEventFilters()
-            .withAttributeValueFilters()
-            .blockingGet()
+        val trackedEntityInstanceFiltersSettings = filters.takeIf { !it.isNullOrEmpty() }?.let {
+            trackedEntityInstanceFilterCollectionRepository
+                .byUid().`in`(it)
+                .withTrackedEntityInstanceEventFilters()
+                .withAttributeValueFilters()
+                .blockingGet()
+        }
 
         val builder = TrackerQueryBundle.builder()
             .commonParams(commonParams)

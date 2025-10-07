@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.arch.call.executors.internal
 
 import android.util.Log
-import androidx.room.deferredTransaction
+import androidx.room.immediateTransaction
 import androidx.room.useWriterConnection
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
@@ -77,7 +77,7 @@ internal class D2CallExecutor(
     private suspend fun <C> innerExecuteD2CallTransactionally(call: suspend () -> C): C {
         return try {
             databaseAdapter.getCurrentDatabase().useWriterConnection { transactor ->
-                transactor.deferredTransaction {
+                transactor.immediateTransaction {
                     call()
                 }
             }

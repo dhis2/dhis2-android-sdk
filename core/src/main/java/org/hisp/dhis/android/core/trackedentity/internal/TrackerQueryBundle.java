@@ -60,9 +60,11 @@ public abstract class TrackerQueryBundle extends BaseTrackerQueryBundle {
 
         public abstract Builder programStatus(EnrollmentStatus programStatus);
 
-        public abstract Builder trackedEntityInstanceFilters(List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters);
+        public abstract Builder trackedEntityInstanceFilters(
+                List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters);
 
-        public abstract Builder programStageWorkingLists(List<ProgramStageWorkingList> programStageWorkingLists);
+        public abstract Builder programStageWorkingLists(
+                List<ProgramStageWorkingList> programStageWorkingLists);
 
         public abstract TrackerQueryBundle build();
     }

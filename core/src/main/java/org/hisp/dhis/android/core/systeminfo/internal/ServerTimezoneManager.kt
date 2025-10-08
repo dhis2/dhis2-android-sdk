@@ -40,15 +40,15 @@ internal class ServerTimezoneManager(
 
     /**
      * Gets the server timezone from cache or database.
-     * Falls back to UTC if not available or invalid.
+     * Falls back to client's system timezone if not available or invalid.
      *
-     * @return The server timezone, defaulting to UTC
+     * @return The server timezone, defaulting to client's system timezone
      */
     fun getServerTimeZone(): TimeZone {
         return serverTimeZone ?: runBlocking {
             systemInfoStore.selectFirst()?.serverTimeZoneId()?.let { serverTimeZoneId ->
                 parseTimeZone(serverTimeZoneId).also { serverTimeZone = it }
-            } ?: TimeZone.UTC
+            } ?: TimeZone.currentSystemDefault()
         }
     }
 
@@ -58,9 +58,9 @@ internal class ServerTimezoneManager(
 
     private fun parseTimeZone(serverTimeZoneId: String?): TimeZone {
         return try {
-            serverTimeZoneId?.let { TimeZone.of(it) } ?: TimeZone.UTC
+            serverTimeZoneId?.let { TimeZone.of(it) } ?: TimeZone.currentSystemDefault()
         } catch (_: IllegalTimeZoneException) {
-            TimeZone.UTC
+            TimeZone.currentSystemDefault()
         }
     }
 }

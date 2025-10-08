@@ -38,7 +38,7 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class SQLStatementBuilderShould {
-    private val builder = SQLStatementBuilderImpl(testTableInfo())
+    private val builder = SQLStatementBuilderImpl(TestTableInfo())
 
     @Test
     fun generate_select_where_statement() {
@@ -95,7 +95,7 @@ class SQLStatementBuilderShould {
 
     @Test
     fun generate_select_children_with_link_table_with_sort_order() {
-        val builderWithSortOrder = SQLStatementBuilderImpl(testTableInfoOrder())
+        val builderWithSortOrder = SQLStatementBuilderImpl(TestTableInfoOrder())
         Truth.assertThat(
             builderWithSortOrder.selectChildrenWithLinkTable(
                 CHILD_PROJECTION,
@@ -120,34 +120,33 @@ class SQLStatementBuilderShould {
             COL_2,
         )
 
-        private class testTableInfo : TableInfo() {
+        private class TestTableInfo : TableInfo() {
             override fun name(): String? {
                 return "Test_Table"
             }
 
             override fun columns(): CoreColumns? {
-                return testColumns()
+                return TestColumns()
             }
         }
 
-        private class testColumns : CoreColumns() {
+        private class TestColumns : CoreColumns() {
             override fun all(): Array<String>? {
                 return arrayOf(COL_1, COL_2)
             }
         }
 
-
-        private class testTableInfoOrder : TableInfo() {
+        private class TestTableInfoOrder : TableInfo() {
             override fun name(): String? {
                 return "Test_Table"
             }
 
             override fun columns(): CoreColumns? {
-                return testColumnsOrder()
+                return TestColumnsOrder()
             }
         }
 
-        private class testColumnsOrder : CoreColumns() {
+        private class TestColumnsOrder : CoreColumns() {
             override fun all(): Array<String>? {
                 return arrayOf(COL_1, COL_ORDER)
             }

@@ -11693,7 +11693,6 @@ public final class org/hisp/dhis/android/core/user/UserInternalAccessor {
 	public static final fun accessOrganisationUnits (Lorg/hisp/dhis/android/core/user/User;)Ljava/util/List;
 	public static final fun accessTeiSearchOrganisationUnits (Lorg/hisp/dhis/android/core/user/User;)Ljava/util/List;
 	public final fun insertOrganisationUnits (Lorg/hisp/dhis/android/core/user/User$Builder;Ljava/util/List;)Lorg/hisp/dhis/android/core/user/User$Builder;
-	public final fun insertTeiSearchOrganisationUnits (Lorg/hisp/dhis/android/core/user/User$Builder;Ljava/util/List;)Lorg/hisp/dhis/android/core/user/User$Builder;
 }
 
 public abstract interface class org/hisp/dhis/android/core/user/UserModule {

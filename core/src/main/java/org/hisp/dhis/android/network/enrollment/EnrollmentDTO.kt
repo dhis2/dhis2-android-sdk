@@ -36,6 +36,8 @@ import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
 import org.hisp.dhis.android.network.common.dto.DateStringDTO
 import org.hisp.dhis.android.network.common.dto.GeometryDTO
 import org.hisp.dhis.android.network.common.dto.toDto
+import org.hisp.dhis.android.network.common.dto.ZonedDateDTO
+import org.hisp.dhis.android.network.common.dto.toZonedDateDto
 import org.hisp.dhis.android.network.event.EventDTO
 import org.hisp.dhis.android.network.event.toDto
 import org.hisp.dhis.android.network.note.NoteDTO
@@ -47,10 +49,10 @@ import org.hisp.dhis.android.network.relationship.toDto
 internal data class EnrollmentDTO(
     override val deleted: Boolean?,
     val enrollment: String,
-    val created: DateStringDTO?,
-    val lastUpdated: DateStringDTO?,
-    val createdAtClient: DateStringDTO?,
-    val lastUpdatedAtClient: DateStringDTO?,
+    val created: ZonedDateDTO?,
+    val lastUpdated: ZonedDateDTO?,
+    val createdAtClient: ZonedDateDTO?,
+    val lastUpdatedAtClient: ZonedDateDTO?,
     val orgUnit: String?,
     val program: String?,
     val enrollmentDate: DateStringDTO?,
@@ -92,10 +94,10 @@ internal fun Enrollment.toDto(): EnrollmentDTO {
     return EnrollmentDTO(
         deleted = this.deleted(),
         enrollment = this.uid(),
-        created = this.created()?.toDto(),
-        lastUpdated = this.lastUpdated()?.toDto(),
-        createdAtClient = this.createdAtClient()?.toDto(),
-        lastUpdatedAtClient = this.lastUpdatedAtClient()?.toDto(),
+        created = this.created()?.toZonedDateDto(),
+        lastUpdated = this.lastUpdated()?.toZonedDateDto(),
+        createdAtClient = this.createdAtClient()?.toZonedDateDto(),
+        lastUpdatedAtClient = this.lastUpdatedAtClient()?.toZonedDateDto(),
         orgUnit = this.organisationUnit(),
         program = this.program(),
         enrollmentDate = this.enrollmentDate()?.toDto(),

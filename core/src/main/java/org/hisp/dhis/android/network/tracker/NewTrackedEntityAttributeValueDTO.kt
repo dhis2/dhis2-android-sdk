@@ -33,14 +33,16 @@ import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityA
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.network.common.dto.DateStringDTO
 import org.hisp.dhis.android.network.common.dto.ValueDTO
+import org.hisp.dhis.android.network.common.dto.ZonedDateDTO
 import org.hisp.dhis.android.network.common.dto.toDto
+import org.hisp.dhis.android.network.common.dto.toZonedDateDto
 
 @Serializable
 internal data class NewTrackedEntityAttributeValueDTO(
     val attribute: String?,
     val value: ValueDTO?,
-    val createdAt: DateStringDTO?,
-    val updatedAt: DateStringDTO?,
+    val createdAt: ZonedDateDTO?,
+    val updatedAt: ZonedDateDTO?,
 ) {
     fun toDomain(teiUid: String): TrackedEntityAttributeValue {
         return TrackedEntityAttributeValue.builder()
@@ -57,7 +59,7 @@ internal fun NewTrackerImporterTrackedEntityAttributeValue.toDto(): NewTrackedEn
     return NewTrackedEntityAttributeValueDTO(
         attribute = trackedEntityAttribute,
         value = ValueDTO(value),
-        createdAt = createdAt?.toDto(),
-        updatedAt = updatedAt?.toDto(),
+        createdAt = createdAt?.toZonedDateDto(),
+        updatedAt = updatedAt?.toZonedDateDto(),
     )
 }

@@ -38,7 +38,9 @@ import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
 import org.hisp.dhis.android.network.common.dto.DateStringDTO
 import org.hisp.dhis.android.network.common.dto.GeometryDTO
 import org.hisp.dhis.android.network.common.dto.PagerDTO
+import org.hisp.dhis.android.network.common.dto.ZonedDateDTO
 import org.hisp.dhis.android.network.common.dto.toDto
+import org.hisp.dhis.android.network.common.dto.toZonedDateDto
 import org.hisp.dhis.android.network.note.NoteDTO
 import org.hisp.dhis.android.network.note.toDto
 import org.hisp.dhis.android.network.relationship.RelationshipDTO
@@ -50,10 +52,10 @@ internal data class EventDTO(
     val event: String,
     val enrollment: String?,
     val trackedEntityInstance: String?,
-    val created: DateStringDTO?,
-    val lastUpdated: DateStringDTO?,
-    val createdAtClient: DateStringDTO?,
-    val lastUpdatedAtClient: DateStringDTO?,
+    val created: ZonedDateDTO?,
+    val lastUpdated: ZonedDateDTO?,
+    val createdAtClient: ZonedDateDTO?,
+    val lastUpdatedAtClient: ZonedDateDTO?,
     val program: String?,
     val programStage: String?,
     val orgUnit: String?,
@@ -103,10 +105,10 @@ internal fun Event.toDto(): EventDTO {
         event = this.uid(),
         enrollment = this.enrollment(),
         trackedEntityInstance = EventInternalAccessor.accessTrackedEntityInstance(this),
-        created = this.created()?.toDto(),
-        lastUpdated = this.lastUpdated()?.toDto(),
-        createdAtClient = this.createdAtClient()?.toDto(),
-        lastUpdatedAtClient = this.lastUpdatedAtClient()?.toDto(),
+        created = this.created()?.toZonedDateDto(),
+        lastUpdated = this.lastUpdated()?.toZonedDateDto(),
+        createdAtClient = this.createdAtClient()?.toZonedDateDto(),
+        lastUpdatedAtClient = this.lastUpdatedAtClient()?.toZonedDateDto(),
         program = this.program(),
         programStage = this.programStage(),
         orgUnit = this.organisationUnit(),

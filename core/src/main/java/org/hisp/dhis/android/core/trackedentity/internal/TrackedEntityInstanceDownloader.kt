@@ -34,8 +34,10 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterC
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListCollectionRepository
 import org.hisp.dhis.android.core.settings.EnrollmentScope
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterCollectionRepository
 import org.hisp.dhis.android.core.tracker.exporter.TrackerD2Progress
 import org.koin.core.annotation.Singleton
 
@@ -44,12 +46,19 @@ import org.koin.core.annotation.Singleton
 class TrackedEntityInstanceDownloader internal constructor(
     private val call: TrackedEntityInstanceDownloadCall,
     private val params: ProgramDataDownloadParams,
+    val programStageWorkingListObjectRepository: ProgramStageWorkingListCollectionRepository,
+    val trackedEntityInstanceFilterCollectionRepository: TrackedEntityInstanceFilterCollectionRepository,
 ) : BaseRepository {
 
     private val connectorFactory:
         ScopedFilterConnectorFactory<TrackedEntityInstanceDownloader, ProgramDataDownloadParams> =
         ScopedFilterConnectorFactory { params ->
-            TrackedEntityInstanceDownloader(call, params)
+            TrackedEntityInstanceDownloader(
+                call,
+                params,
+                programStageWorkingListObjectRepository,
+                trackedEntityInstanceFilterCollectionRepository
+            )
         }
 
     /**
@@ -109,8 +118,28 @@ class TrackedEntityInstanceDownloader internal constructor(
             params.toBuilder().overwrite(overwrite).build()
         }.eq(overwrite)
 
-    fun byFilterUid(): ListFilterConnector<TrackedEntityInstanceDownloader, String> =
-        connectorFactory.listConnector { filterUids -> params.toBuilder().filterUids(filterUids).build() }
+    fun byFilterUid(): ListFilterConnector<TrackedEntityInstanceDownloader, String> {
+        return connectorFactory.listConnector { filterUids ->
+            val wl = programStageWorkingListObjectRepository
+                .byUid().`in`(filterUids)
+                .withAttributeValueFilters()
+                .withDataFilters()
+                .blockingGet()
+            val teiFilters = trackedEntityInstanceFilterCollectionRepository
+                .byUid().`in`(filterUids)
+                .withTrackedEntityInstanceEventFilters()
+                .withAttributeValueFilters()
+                .blockingGet()
+            if (wl.isNotEmpty()) {
+                params.toBuilder().programStageWorkingLists(wl).build()
+            } else if (teiFilters.isNotEmpty()) {
+                params.toBuilder().trackedEntityInstanceFilters(teiFilters).build()
+            } else {
+                params
+            }
+
+        }
+    }
 
     fun byTrackedEntityInstanceFilter(): ListFilterConnector<
         TrackedEntityInstanceDownloader,

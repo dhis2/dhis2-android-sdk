@@ -67,17 +67,11 @@ internal class TrackerQueryBundleInternalFactory(
         val programStatus = getProgramStatus(params, programSettings, programUid)
 
         val programStageWorkingLists =
-            (params.programStageWorkingLists() ?: emptyList()).plus(
-                programStageWorkingListObjectRepository
-                    .byUid().`in`(params.filterUids())
-                    .blockingGet(),
-            )
+            (params.programStageWorkingLists()?.filter { it.program().uid() == programUid } ?: emptyList())
 
-        val trackedEntityInstanceFilters = (params.trackedEntityInstanceFilters() ?: emptyList()).plus(
-            trackedEntityInstanceFilterCollectionRepository
-                .byUid().`in`(params.filterUids())
-                .blockingGet(),
-        )
+        val trackedEntityInstanceFilters =
+            (params.trackedEntityInstanceFilters()?.filter { it.program()?.uid() == programUid } ?: emptyList())
+
         val filters = programSettings?.specificSettings()?.get(programUid)?.filters()?.map { it.uid() }
 
         val programStageWorkingListsSettings = filters.takeIf { !it.isNullOrEmpty() }?.let {

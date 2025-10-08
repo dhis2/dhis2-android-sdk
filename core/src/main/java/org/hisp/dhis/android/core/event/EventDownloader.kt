@@ -41,11 +41,12 @@ import org.koin.core.annotation.Singleton
 class EventDownloader internal constructor(
     private val call: EventDownloadCall,
     private val params: ProgramDataDownloadParams,
+    val eventFilterCollectionRepository: EventFilterCollectionRepository,
 ) : BaseRepository {
 
     private val connectorFactory: ScopedFilterConnectorFactory<EventDownloader, ProgramDataDownloadParams> =
         ScopedFilterConnectorFactory { params ->
-            EventDownloader(call, params)
+            EventDownloader(call, params, eventFilterCollectionRepository)
         }
 
     /**
@@ -88,8 +89,15 @@ class EventDownloader internal constructor(
             params.toBuilder().limit(limit).build()
         }.eq(limit)
 
-    fun byFilterUid(): ListFilterConnector<EventDownloader, String> =
-        connectorFactory.listConnector { filterUids -> params.toBuilder().filterUids(filterUids).build() }
+    fun byFilterUid(): ListFilterConnector<EventDownloader, String> {
+        return connectorFactory.listConnector { filterUids ->
+            val eventFilters = eventFilterCollectionRepository
+                .byUid().`in`(filterUids)
+                .withEventDataFilters()
+                .blockingGet()
+            params.toBuilder().eventFilters(eventFilters).build()
+        }
+    }
 
     fun byEventFilter(): ListFilterConnector<EventDownloader, EventFilter> =
         connectorFactory.listConnector { eventFilters ->

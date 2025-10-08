@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.helpers
 import com.google.common.truth.Truth.assertThat
 import kotlinx.datetime.TimeZone
 import org.hisp.dhis.android.core.systeminfo.internal.ServerTimezoneManager
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -48,7 +49,9 @@ import java.util.Locale
 class DateTimezoneConverterShould {
 
     private val serverTimezoneManager: ServerTimezoneManager = mock()
-    private val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US)
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US).apply {
+        timeZone = java.util.TimeZone.getTimeZone("UTC")
+    }
 
     @Before
     fun setUp() {
@@ -62,52 +65,49 @@ class DateTimezoneConverterShould {
         }
     }
 
+    @After
+    fun tearDown() {
+        stopKoin()
+    }
+
     @Test
     fun convert_client_to_server_with_same_timezone() {
-        // Server uses client's system timezone (common scenario)
         whenever(serverTimezoneManager.getServerTimeZone()).doReturn(TimeZone.currentSystemDefault())
 
         val clientDate = dateFormat.parse("2024-01-15T10:30:00")!!
         val serverDate = DateTimezoneConverter.convertClientToServer(clientDate)
 
-        // When server and client are in same timezone, date should not change
         assertThat(serverDate.time).isEqualTo(clientDate.time)
     }
 
     @Test
     fun convert_server_to_client_with_same_timezone() {
-        // Server uses client's system timezone (common scenario)
         whenever(serverTimezoneManager.getServerTimeZone()).doReturn(TimeZone.currentSystemDefault())
 
         val serverDate = dateFormat.parse("2024-01-15T10:30:00")!!
         val clientDate = DateTimezoneConverter.convertServerToClient(serverDate)
 
-        // When server and client are in same timezone, date should not change
         assertThat(clientDate.time).isEqualTo(serverDate.time)
     }
 
     @Test
     fun convert_client_to_server_with_different_timezone() {
-        // Server timezone: Asia/Kolkata (UTC+5:30)
         whenever(serverTimezoneManager.getServerTimeZone()).doReturn(TimeZone.of("Asia/Kolkata"))
 
         val clientDate = dateFormat.parse("2024-01-15T10:30:00")!!
         val serverDate = DateTimezoneConverter.convertClientToServer(clientDate)
 
-        // The conversion should preserve the local date-time but in server timezone context
         assertThat(serverDate).isNotNull()
         assertThat(serverDate).isNotEqualTo(clientDate)
     }
 
     @Test
     fun convert_server_to_client_with_different_timezone() {
-        // Server timezone: Asia/Kolkata (UTC+5:30)
         whenever(serverTimezoneManager.getServerTimeZone()).doReturn(TimeZone.of("Asia/Kolkata"))
 
         val serverDate = dateFormat.parse("2024-01-15T10:30:00")!!
         val clientDate = DateTimezoneConverter.convertServerToClient(serverDate)
 
-        // The conversion should preserve the local date-time but in client timezone context
         assertThat(clientDate).isNotNull()
         assertThat(clientDate).isNotEqualTo(serverDate)
     }
@@ -118,11 +118,9 @@ class DateTimezoneConverterShould {
 
         val originalDate = dateFormat.parse("2024-01-15T10:30:00")!!
 
-        // Convert client -> server -> client
         val serverDate = DateTimezoneConverter.convertClientToServer(originalDate)
         val roundTripDate = DateTimezoneConverter.convertServerToClient(serverDate)
 
-        // Round trip should preserve the original date
         assertThat(roundTripDate.time).isEqualTo(originalDate.time)
     }
 

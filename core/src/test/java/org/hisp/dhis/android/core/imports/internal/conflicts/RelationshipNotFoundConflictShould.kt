@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,44 +25,42 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.tracker.importer.internal
+package org.hisp.dhis.android.core.imports.internal.conflicts
 
-import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.relationship.Relationship
-import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
-import org.koin.core.annotation.Singleton
+import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
+import org.junit.Test
 
-@Singleton
-internal class JobReportRelationshipHandler internal constructor(
-    relationshipStore: RelationshipStore,
-) : JobReportTypeHandler(relationshipStore) {
+internal class RelationshipNotFoundConflictShould : BaseConflictShould() {
 
-    override suspend fun handleObject(uid: String, state: State): HandleAction {
-        val handledState =
-            if (state == State.ERROR || state == State.WARNING) {
-                State.TO_UPDATE
-            } else {
-                state
-            }
+    private val notFoundConflict = TrackedImportConflictSamples.relationshipNotFound(relationshipUid)
+    private val alreadyDeletedConflict = TrackedImportConflictSamples.relationshipAlreadyDeleted(relationshipUid)
 
-        return relationshipStore.setSyncStateOrDelete(uid, handledState)
+    @Test
+    fun match_not_found_error_message() {
+        assertThat(RelationshipNotFoundConflict.matches(notFoundConflict)).isTrue()
     }
 
-    override suspend fun storeConflict(errorReport: JobValidationError) {
-        val relationship = relationshipStore.selectByUid(errorReport.uid)
-        if (relationship != null && isRelationshipNotFoundError(errorReport.errorCode)) {
-            relationshipStore.deleteByEntity(relationship)
-        }
+    @Test
+    fun match_already_deleted_error_message() {
+        assertThat(RelationshipNotFoundConflict.matches(alreadyDeletedConflict)).isTrue()
     }
 
-    private fun isRelationshipNotFoundError(errorCode: String?): Boolean {
-        return errorCode == ImporterError.E4005.name ||
-            errorCode == ImporterError.E4016.name ||
-            errorCode == ImporterError.E4017.name
+    @Test
+    fun match_relationship_uid_from_not_found() {
+        val value = RelationshipNotFoundConflict.getRelationship(notFoundConflict)
+        assertThat(value == relationshipUid).isTrue()
     }
 
-    override suspend fun getRelatedRelationships(uid: String): List<Relationship> {
-        return emptyList()
+    @Test
+    fun match_relationship_uid_from_already_deleted() {
+        val value = RelationshipNotFoundConflict.getRelationship(alreadyDeletedConflict)
+        assertThat(value == relationshipUid).isTrue()
+    }
+
+    @Test
+    fun create_display_description() = runTest {
+        val displayDescription = RelationshipNotFoundConflict.getDisplayDescription(notFoundConflict, context)
+        assertThat(displayDescription == "Your relationship $relationshipUid does not exist in the server").isTrue()
     }
 }

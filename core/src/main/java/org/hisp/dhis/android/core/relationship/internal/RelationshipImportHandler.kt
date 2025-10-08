@@ -28,10 +28,12 @@
 package org.hisp.dhis.android.core.relationship.internal
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreUtils.getSyncState
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.imports.internal.BaseImportSummaryHelper.getReferences
 import org.hisp.dhis.android.core.imports.internal.RelationshipImportSummary
+import org.hisp.dhis.android.core.imports.internal.conflicts.RelationshipNotFoundConflict
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
 import org.koin.core.annotation.Singleton
@@ -49,23 +51,58 @@ internal class RelationshipImportHandler internal constructor(
     ) {
         importSummaries?.filterNotNull()?.forEach { importSummary ->
             importSummary.reference()?.let { relationshipUid ->
-                val relationship = relationshipRepository.withItems().uid(relationshipUid).blockingGet()
-
-                val state = getSyncState(importSummary.status())
-
-                val handledState =
-                    if (state == State.ERROR || state == State.WARNING) {
-                        State.TO_UPDATE
-                    } else {
-                        state
-                    }
-
-                relationshipStore.setSyncStateOrDelete(relationshipUid, handledState)
-                dataStatePropagator.propagateRelationshipUpdate(relationship)
+                handleSingleRelationship(importSummary, relationshipUid)
             }
         }
 
         processIgnoredRelationships(importSummaries, relationships)
+    }
+
+    private suspend fun handleSingleRelationship(
+        importSummary: RelationshipImportSummary,
+        relationshipUid: String,
+    ) {
+        val relationship = relationshipRepository.withItems().uid(relationshipUid).blockingGet()
+        val relationshipNotFoundOnServer = checkRelationshipNotFoundOnServer(importSummary)
+
+        if (relationshipNotFoundOnServer) {
+            handleRelationshipNotFound(relationship)
+        } else {
+            handleRelationshipUpdateState(importSummary, relationshipUid)
+        }
+
+        dataStatePropagator.propagateRelationshipUpdate(relationship)
+    }
+
+    private suspend fun handleRelationshipNotFound(relationship: Relationship?): HandleAction {
+        relationship?.let { relationshipStore.deleteByEntity(it) }
+        return HandleAction.Delete
+    }
+
+    private suspend fun handleRelationshipUpdateState(
+        importSummary: RelationshipImportSummary,
+        relationshipUid: String,
+    ): HandleAction {
+        val state = getSyncState(importSummary.status())
+        val handledState = if (state == State.ERROR || state == State.WARNING) {
+            State.TO_UPDATE
+        } else {
+            state
+        }
+
+        return relationshipStore.setSyncStateOrDelete(relationshipUid, handledState)
+    }
+
+    private fun checkRelationshipNotFoundOnServer(importSummary: RelationshipImportSummary): Boolean {
+        val hasConflict = importSummary.conflicts()?.any { conflict ->
+            RelationshipNotFoundConflict.matches(conflict)
+        } ?: false
+
+        val hasDescriptionError = importSummary.description()?.let { description ->
+            RelationshipNotFoundConflict.matchesString(description)
+        } ?: false
+
+        return hasConflict || hasDescriptionError
     }
 
     private suspend fun processIgnoredRelationships(

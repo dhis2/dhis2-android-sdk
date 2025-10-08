@@ -65,15 +65,13 @@ internal class RelationshipImportHandler internal constructor(
         val relationship = relationshipRepository.withItems().uid(relationshipUid).blockingGet()
         val relationshipNotFoundOnServer = checkRelationshipNotFoundOnServer(importSummary)
 
-        val handleAction = if (relationshipNotFoundOnServer) {
+        if (relationshipNotFoundOnServer) {
             handleRelationshipNotFound(relationship)
         } else {
             handleRelationshipUpdateState(importSummary, relationshipUid)
         }
 
-        if (handleAction != HandleAction.Delete) {
-            dataStatePropagator.propagateRelationshipUpdate(relationship)
-        }
+        dataStatePropagator.propagateRelationshipUpdate(relationship)
     }
 
     private suspend fun handleRelationshipNotFound(relationship: Relationship?): HandleAction {
@@ -92,8 +90,7 @@ internal class RelationshipImportHandler internal constructor(
             state
         }
 
-        relationshipStore.setSyncStateOrDelete(relationshipUid, handledState)
-        return HandleAction.Update
+        return relationshipStore.setSyncStateOrDelete(relationshipUid, handledState)
     }
 
     private fun checkRelationshipNotFoundOnServer(importSummary: RelationshipImportSummary): Boolean {

@@ -150,7 +150,7 @@ class RelationshipImportHandlerShould {
 
         verify(relationshipStore, times(1)).deleteByEntity(relationship)
         verify(relationshipStore, never()).setSyncStateOrDelete(anyString(), any())
-        verify(dataStatePropagator, never()).propagateRelationshipUpdate(any())
+        verify(dataStatePropagator, times(1)).propagateRelationshipUpdate(any())
     }
 
     @Test
@@ -171,6 +171,6 @@ class RelationshipImportHandlerShould {
 
         verify(relationshipStore, times(1)).deleteByEntity(relationship)
         verify(relationshipStore, never()).setSyncStateOrDelete(anyString(), any())
-        verify(dataStatePropagator, never()).propagateRelationshipUpdate(any())
+        verify(dataStatePropagator, times(1)).propagateRelationshipUpdate(any())
     }
 }

@@ -46,6 +46,7 @@ class SystemInfoCall internal constructor(
     private val systemInfoNetworkHandler: SystemInfoNetworkHandler,
     private val resourceHandler: ResourceHandler,
     private val versionManager: DHISVersionManagerImpl,
+    private val serverTimezoneManager: ServerTimezoneManager,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : DownloadProvider {
 
@@ -63,8 +64,8 @@ class SystemInfoCall internal constructor(
                         .errorCode(D2ErrorCode.INVALID_DHIS_VERSION)
                         .errorDescription(
                             "Server DHIS version (" + version + ") not valid. " +
-                                "Allowed versions: " +
-                                CollectionsHelper.commaAndSpaceSeparatedArrayValues(allowedVersionsAsStr()),
+                                    "Allowed versions: " +
+                                    CollectionsHelper.commaAndSpaceSeparatedArrayValues(allowedVersionsAsStr()),
                         )
                         .build()
                 }
@@ -77,6 +78,7 @@ class SystemInfoCall internal constructor(
     private suspend fun insertOrUpdateSystemInfo(systemInfo: SystemInfo) {
         systemInfoHandler.handle(systemInfo)
         resourceHandler.serverDate = systemInfo.serverDate()
+        serverTimezoneManager.setServerTimeZone(systemInfo.serverTimeZoneId())
         resourceHandler.handleResource(Resource.Type.SYSTEM_INFO)
     }
 }

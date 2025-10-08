@@ -25,27 +25,42 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.systeminfo.internal
 
-package org.hisp.dhis.android.network.common.dto
+import kotlinx.coroutines.runBlocking
+import kotlinx.datetime.IllegalTimeZoneException
+import kotlinx.datetime.TimeZone
+import org.koin.core.annotation.Singleton
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.arch.helpers.DateTimezoneConverter
-import org.hisp.dhis.android.core.util.dateFormat
-import org.hisp.dhis.android.core.util.toJavaDate
-import java.util.Date
-
-@JvmInline
-@Serializable
-internal value class ZonedDateDTO(
-    val date: String?,
+@Singleton
+internal class ServerTimezoneManager(
+    private val systemInfoStore: SystemInfoStore,
 ) {
-    fun toDomain(): Date? {
-        val serverDate = date.toJavaDate() ?: return null
-        return DateTimezoneConverter.convertServerToClient(serverDate)
-    }
-}
+    private var serverTimeZone: TimeZone? = null
 
-internal fun Date.toZonedDateDto(): ZonedDateDTO {
-    val serverDate = DateTimezoneConverter.convertClientToServer(this)
-    return ZonedDateDTO(serverDate.dateFormat())
+    /**
+     * Gets the server timezone from cache or database.
+     * Falls back to UTC if not available or invalid.
+     *
+     * @return The server timezone, defaulting to UTC
+     */
+    fun getServerTimeZone(): TimeZone {
+        return serverTimeZone ?: runBlocking {
+            systemInfoStore.selectFirst()?.serverTimeZoneId()?.let { serverTimeZoneId ->
+                parseTimeZone(serverTimeZoneId).also { serverTimeZone = it }
+            } ?: TimeZone.UTC
+        }
+    }
+
+    fun setServerTimeZone(serverTimeZoneId: String?) {
+        serverTimeZone = parseTimeZone(serverTimeZoneId)
+    }
+
+    private fun parseTimeZone(serverTimeZoneId: String?): TimeZone {
+        return try {
+            serverTimeZoneId?.let { TimeZone.of(it) } ?: TimeZone.UTC
+        } catch (_: IllegalTimeZoneException) {
+            TimeZone.UTC
+        }
+    }
 }

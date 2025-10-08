@@ -69,6 +69,7 @@ class SystemInfoCallShould {
 
     private val systemInfo: SystemInfo = mock()
     private val versionManager: DHISVersionManagerImpl = mock()
+    private val serverTimezoneManager: ServerTimezoneManager = mock()
     private val serverDate: Date = mock()
 
     private lateinit var systemInfoSyncCall: SystemInfoCall
@@ -80,6 +81,7 @@ class SystemInfoCallShould {
             systemInfoNetworkHandler,
             resourceHandler,
             versionManager,
+            serverTimezoneManager,
             coroutineAPICallExecutor,
         )
 
@@ -117,6 +119,7 @@ class SystemInfoCallShould {
 
         verifyNoMoreInteractions(systemInfoHandler)
         verifyNoMoreInteractions(resourceHandler)
+        verifyNoMoreInteractions(serverTimezoneManager)
     }
 
     @Test
@@ -125,6 +128,7 @@ class SystemInfoCallShould {
 
         verify(systemInfoHandler).handle(systemInfo)
         verify(resourceHandler).handleResource(eq(Resource.Type.SYSTEM_INFO))
+        verify(serverTimezoneManager).setServerTimeZone(any())
     }
 
     @Test
@@ -155,6 +159,17 @@ class SystemInfoCallShould {
 
         verify(systemInfoHandler, never()).handle(systemInfo)
         verify(resourceHandler, never()).handleResource(eq(Resource.Type.SYSTEM_INFO))
+        verify(serverTimezoneManager, never()).setServerTimeZone(any())
+    }
+
+    @Test
+    fun set_server_timezone_after_successful_call() = runTest {
+        val serverTimeZoneId = "Etc/UTC"
+        whenever(systemInfo.serverTimeZoneId()).thenReturn(serverTimeZoneId)
+
+        systemInfoSyncCall.download(true)
+
+        verify(serverTimezoneManager).setServerTimeZone(serverTimeZoneId)
     }
 
     private suspend fun verifyThrowD2Error(block: suspend () -> Unit, code: D2ErrorCode? = null) {

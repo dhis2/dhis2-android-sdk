@@ -43,9 +43,6 @@ internal object RelationshipTypeFields : BaseFields<RelationshipType>() {
     private const val TO_CONSTRAINT = "toConstraint"
     private const val ACCESS = "access"
 
-    // Used only for children appending, can't be used in query
-    const val CONSTRAINTS = "constraints"
-
     val lastUpdated = fh.lastUpdated()
 
     val allFields = Fields.from(

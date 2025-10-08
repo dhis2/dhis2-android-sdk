@@ -40,5 +40,5 @@ internal interface EventDaoAux : IdentifiableDeletableDataObjectDao<EventDB> {
         SET ${EventTableInfo.Columns.AGGREGATED_SYNC_STATE} = :state
         WHERE ${IdentifiableColumns.UID} = :uid;""",
     )
-    fun setAggregatedSyncState(state: String, uid: String): Int
+    suspend fun setAggregatedSyncState(state: String, uid: String): Int
 }

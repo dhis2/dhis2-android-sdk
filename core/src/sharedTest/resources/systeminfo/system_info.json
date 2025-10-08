@@ -19,6 +19,7 @@
   "encryption": false,
   "systemId": "eed3d451-4ff5-4193-b951-ffcc68954299",
   "systemName": "DHIS 2 Demo - Sierra Leone",
+  "serverTimeZoneId": "Etc/UTC",
   "isMetadataVersionEnabled": true,
   "isMetadataSyncEnabled": false
 }

@@ -43,6 +43,7 @@ public class SystemInfoSamples {
                 .version("2.41.0")
                 .contextPath("https://play.dhis2.org/android-current")
                 .systemName("DHIS 2 Demo - Sierra Leone")
+                .serverTimeZoneId("Etc/UTC")
                 .build();
     }
 
@@ -53,6 +54,7 @@ public class SystemInfoSamples {
                 .version("2.29")
                 .contextPath("https://play.dhis2.org/android-current")
                 .systemName("DHIS 2 Demo - Sierra Leone")
+                .serverTimeZoneId("Etc/UTC")
                 .build();
     }
 

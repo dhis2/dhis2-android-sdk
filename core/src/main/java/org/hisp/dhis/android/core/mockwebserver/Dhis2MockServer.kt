@@ -41,6 +41,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 @Suppress("TooManyFunctions")
 class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
@@ -425,6 +426,16 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
     @Throws(InterruptedException::class)
     fun takeRequest(): RecordedRequest {
         return server.takeRequest()
+    }
+
+    fun takeLastRequest(): RecordedRequest? {
+        var lastRequest: RecordedRequest? = null
+
+        do {
+            lastRequest = server.takeRequest(1, TimeUnit.SECONDS) ?: break
+        } while (true)
+
+        return lastRequest
     }
 
     fun addResponse(

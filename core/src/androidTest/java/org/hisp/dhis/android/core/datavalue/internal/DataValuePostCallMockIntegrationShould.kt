@@ -31,6 +31,9 @@ package org.hisp.dhis.android.core.datavalue.internal
 import com.google.common.truth.Truth.assertThat
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonObject
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
@@ -47,7 +50,7 @@ class DataValuePostCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
     }
 
     @Test
-    fun post_dataValues_success() {
+    fun post_datavalues_success() {
         // Given user sets correct data values
         dhis2MockServer.enqueueMockResponse("datavalueset/data_value_set_success.json")
         provideDataValues("30", "40")
@@ -61,7 +64,7 @@ class DataValuePostCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
     }
 
     @Test
-    fun post_dataValues_undetermined_warning() {
+    fun post_datavalues_undetermined_warning() {
         // Given user sets one undetermined data value
         dhis2MockServer.enqueueMockResponse(HttpStatusCode.Conflict.value, "datavalueset/data_value_set_warning.json")
         provideDataValues("40", "50L")
@@ -72,6 +75,26 @@ class DataValuePostCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
         // Then all data values should be marked as WARNING
         val warnings = d2.dataValueModule().dataValues().bySyncState().eq(State.WARNING).blockingGet()
         assertThat(warnings.size).isEqualTo(2)
+    }
+
+    @Test
+    fun post_datavalues_without_created_or_last_updated() {
+        // Provide any mocked response, we just want to inspect the request
+        dhis2MockServer.enqueueMockResponse("datavalueset/data_value_set_success.json")
+        provideDataValues("20", "10")
+
+        d2.dataValueModule().dataValues().blockingUpload()
+
+        // Catch the request to inspect the payload
+        val requestBody = dhis2MockServer.takeLastRequest()?.body?.readUtf8()!!
+        val payload = KotlinxJsonParser.instance.parseToJsonElement(requestBody) as JsonObject
+
+        val jsonDataValues = payload["dataValues"] as JsonArray
+        assertThat(jsonDataValues.size).isEqualTo(2)
+
+        val firstValue = jsonDataValues.first() as JsonObject
+        assertThat(firstValue["created"]).isNull()
+        assertThat(firstValue["lastUpdated"]).isNull()
     }
 
     private fun provideDataValues(value1: String, value2: String) {

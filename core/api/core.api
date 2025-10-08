@@ -6824,6 +6824,7 @@ public final class org/hisp/dhis/android/core/mockwebserver/Dhis2MockServer {
 	public final fun setDhis2Dispatcher ()V
 	public final fun setRequestDispatcher ()V
 	public final fun shutdown ()V
+	public final fun takeLastRequest ()Lokhttp3/mockwebserver/RecordedRequest;
 	public final fun takeRequest ()Lokhttp3/mockwebserver/RecordedRequest;
 }
 

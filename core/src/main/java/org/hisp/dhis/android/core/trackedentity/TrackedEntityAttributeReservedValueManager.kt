@@ -41,8 +41,6 @@ import kotlinx.coroutines.rx2.asObservable
 import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem
@@ -61,6 +59,8 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeR
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import org.hisp.dhis.android.persistence.common.querybuilders.OrderByClauseBuilder
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitProgramLinkTableInfo
 import org.hisp.dhis.android.persistence.program.ProgramTrackedEntityAttributeTableInfo
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeTableInfo

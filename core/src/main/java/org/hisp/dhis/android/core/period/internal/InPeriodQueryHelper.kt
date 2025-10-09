@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.period.internal
 
 import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.period.DatePeriod
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 
 internal object InPeriodQueryHelper {
 

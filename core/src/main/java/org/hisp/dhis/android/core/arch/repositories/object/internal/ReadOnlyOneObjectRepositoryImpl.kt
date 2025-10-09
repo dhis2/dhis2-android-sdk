@@ -28,12 +28,12 @@
 package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 
 import kotlinx.coroutines.runBlocking
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 
 open class ReadOnlyOneObjectRepositoryImpl<M, R : ReadOnlyObjectRepository<M>> internal constructor(
     private val store: ReadableStore<M>,

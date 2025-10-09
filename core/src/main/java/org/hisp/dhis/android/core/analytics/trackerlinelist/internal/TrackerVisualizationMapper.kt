@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.analytics.trackerlinelist.EnumFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.OrganisationUnitFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.TrackerLineListSortingMapper.mapSorting
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
@@ -48,6 +47,7 @@ import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLeve
 import org.hisp.dhis.android.core.visualization.TrackerVisualization
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationOutputType
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitLevelTableInfo
 import org.koin.core.annotation.Singleton
 

@@ -34,11 +34,11 @@ import kotlinx.coroutines.flow.flow
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterTrackedEntityPostStateManager
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.tracker.TrackerJobObjectTableInfo
 import org.koin.core.annotation.Singleton
 import kotlin.time.Duration.Companion.seconds

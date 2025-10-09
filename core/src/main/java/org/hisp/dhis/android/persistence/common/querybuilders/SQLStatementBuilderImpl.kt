@@ -89,7 +89,7 @@ internal open class SQLStatementBuilderImpl(
     }
 
     override fun selectByUid(uid: String): RoomRawQuery {
-        return selectWhere(IdentifiableColumns.UID + " = '$uid'")
+        return selectWhere(IdentifiableColumns.UID + "='$uid'")
     }
 
     override fun selectDistinct(column: String): RoomRawQuery {

@@ -37,7 +37,6 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
@@ -48,6 +47,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.period.clock.internal.ClockProvider
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.trackedentity.ProgramTempOwnerTableInfo
 import org.koin.core.annotation.Singleton
 import java.util.Date

@@ -29,11 +29,11 @@
 package org.hisp.dhis.android.persistence.trackedentity
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeReservedValueStore
 import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeReservedValueTableInfo.Columns
 import org.koin.core.annotation.Singleton

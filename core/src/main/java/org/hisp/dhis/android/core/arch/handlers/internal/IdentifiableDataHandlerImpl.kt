@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.handlers.internal
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidsList
@@ -40,6 +39,7 @@ import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 
 @Suppress("TooManyFunctions")
 internal abstract class IdentifiableDataHandlerImpl<O>(

@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory
@@ -38,6 +37,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositorySco
 import org.hisp.dhis.android.core.event.EventCollectionRepository
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.event.EventTableInfo
 
 @Suppress("TooManyFunctions")

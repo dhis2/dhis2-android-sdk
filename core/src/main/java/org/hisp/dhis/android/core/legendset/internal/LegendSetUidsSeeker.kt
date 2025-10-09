@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.legendset.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQueryBuilder
 import org.hisp.dhis.android.core.arch.db.uidseeker.internal.BaseUidsSeeker
+import org.hisp.dhis.android.persistence.common.querybuilders.MultipleTableQueryBuilder
 import org.hisp.dhis.android.persistence.legendset.DataElementLegendSetLinkTableInfo
 import org.hisp.dhis.android.persistence.legendset.IndicatorLegendSetLinkTableInfo
 import org.hisp.dhis.android.persistence.legendset.ProgramIndicatorLegendSetLinkTableInfo

@@ -40,5 +40,5 @@ internal interface TrackedEntityInstanceDaoAux : IdentifiableDeletableDataObject
         SET ${TrackedEntityInstanceTableInfo.Columns.AGGREGATED_SYNC_STATE} = :state
         WHERE ${IdentifiableColumns.UID} = :uid;""",
     )
-    fun setAggregatedSyncState(state: String, uid: String): Int
+    suspend fun setAggregatedSyncState(state: String, uid: String): Int
 }

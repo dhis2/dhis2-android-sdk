@@ -29,13 +29,13 @@
 package org.hisp.dhis.android.persistence.enrollment
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.persistence.common.querybuilders.IdentifiableDeletableDataObjectSQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableDeletableDataObjectStoreImpl
 import org.hisp.dhis.android.persistence.event.EventTableInfo
 import org.hisp.dhis.android.persistence.program.ProgramTrackedEntityAttributeTableInfo

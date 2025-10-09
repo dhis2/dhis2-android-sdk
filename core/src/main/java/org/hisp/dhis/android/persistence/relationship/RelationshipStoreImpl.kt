@@ -29,12 +29,12 @@
 package org.hisp.dhis.android.persistence.relationship
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipItem
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.persistence.common.querybuilders.IdentifiableDeletableDataObjectSQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableDeletableDataObjectStoreImpl
 import org.koin.core.annotation.Singleton
 

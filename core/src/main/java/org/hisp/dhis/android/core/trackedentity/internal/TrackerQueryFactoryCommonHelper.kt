@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toKtxInstant
@@ -40,6 +39,7 @@ import org.hisp.dhis.android.core.settings.LimitScope
 import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitProgramLinkTableInfo
 import org.koin.core.annotation.Singleton
 import java.util.*

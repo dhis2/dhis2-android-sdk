@@ -30,14 +30,14 @@ package org.hisp.dhis.android.core.arch.repositories.paging.internal
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor.appendInObjectCollection
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder
 import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.persistence.common.querybuilders.OrderByClauseBuilder
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import java.io.IOException
 
 class RepositoryPagingSource<M : CoreObject> internal constructor(

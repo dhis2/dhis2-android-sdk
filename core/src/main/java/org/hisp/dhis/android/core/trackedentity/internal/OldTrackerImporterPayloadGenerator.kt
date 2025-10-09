@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
@@ -49,6 +48,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.trackedentity.ProgramOwnerTableInfo
 import org.koin.core.annotation.Singleton
 

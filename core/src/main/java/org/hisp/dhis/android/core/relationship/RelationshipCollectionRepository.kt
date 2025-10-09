@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.relationship
 import io.reactivex.Single
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
@@ -57,6 +56,7 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipItemChildren
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemElementStoreSelector
 import org.hisp.dhis.android.core.relationship.internal.RelationshipManager
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.relationship.RelationshipItemTableInfo
 import org.hisp.dhis.android.persistence.relationship.RelationshipTableInfo
 import org.koin.core.annotation.Singleton

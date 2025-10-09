@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.category.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQueryBuilder
 import org.hisp.dhis.android.core.arch.db.uidseeker.internal.BaseUidsSeeker
+import org.hisp.dhis.android.persistence.common.querybuilders.MultipleTableQueryBuilder
 import org.hisp.dhis.android.persistence.dataelement.DataElementTableInfo
 import org.hisp.dhis.android.persistence.dataset.DataSetDataElementLinkTableInfo
 import org.hisp.dhis.android.persistence.dataset.DataSetTableInfo

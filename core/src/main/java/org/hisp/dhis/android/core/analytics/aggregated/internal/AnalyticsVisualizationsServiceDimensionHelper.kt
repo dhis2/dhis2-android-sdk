@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.composedUidO
 import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.orgunitLevelRegex
 import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.singleUidRegex
 import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.tripleComposedUidOperandRegex
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.category.internal.CategoryCategoryOptionLinkStore
 import org.hisp.dhis.android.core.category.internal.CategoryStore
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
@@ -46,6 +45,7 @@ import org.hisp.dhis.android.core.visualization.DataDimensionItemType
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationDimension
 import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitLevelTableInfo
 import org.koin.core.annotation.Singleton
 

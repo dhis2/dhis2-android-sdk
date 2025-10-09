@@ -29,13 +29,13 @@
 package org.hisp.dhis.android.persistence.datavalue
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper.dataValueKey
 import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper.whereClause
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 import org.koin.core.annotation.Singleton
 

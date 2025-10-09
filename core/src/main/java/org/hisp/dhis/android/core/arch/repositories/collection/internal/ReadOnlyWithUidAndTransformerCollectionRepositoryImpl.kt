@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.arch.repositories.collection.internal
 import io.reactivex.Single
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
@@ -43,6 +42,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import org.hisp.dhis.android.persistence.common.querybuilders.OrderByClauseBuilder
 
 internal class ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<
     M,

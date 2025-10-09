@@ -29,13 +29,12 @@
 package org.hisp.dhis.android.persistence.common.querybuilders
 
 import androidx.room.RoomRawQuery
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl.Companion.getLimit
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl.Companion.getOffset
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl.Companion.getOrderBy
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.dataset.internal.DataSetInstanceSQLStatementBuilder
+import org.hisp.dhis.android.persistence.common.querybuilders.ReadOnlySQLStatementBuilderImpl.Companion.getLimit
+import org.hisp.dhis.android.persistence.common.querybuilders.ReadOnlySQLStatementBuilderImpl.Companion.getOffset
+import org.hisp.dhis.android.persistence.common.querybuilders.ReadOnlySQLStatementBuilderImpl.Companion.getOrderBy
 import org.hisp.dhis.android.persistence.dataset.DataSetTableInfo
 
 internal class DataSetInstanceSummarySQLStatementBuilderImpl : DataSetInstanceSQLStatementBuilderImpl() {
@@ -83,7 +82,7 @@ internal class DataSetInstanceSummarySQLStatementBuilderImpl : DataSetInstanceSQ
             " FROM ($DATASET_LIST_CLAUSE) $DS_LIST_TABLE_ALIAS" +
             " LEFT JOIN ($innerClause) $DS_INSTANCE_ALIAS" +
             " ON " + dot(DS_LIST_TABLE_ALIAS, IdentifiableColumns.UID) + " = " +
-            dot(DS_INSTANCE_ALIAS, DataSetInstanceSQLStatementBuilder.DATASET_UID_ALIAS) +
+            dot(DS_INSTANCE_ALIAS, DataSetInstanceSQLStatementBuilderImpl.DATASET_UID_ALIAS) +
             " " + GROUP_BY_CLAUSE
     }
 
@@ -91,7 +90,7 @@ internal class DataSetInstanceSummarySQLStatementBuilderImpl : DataSetInstanceSQ
         private const val DATASETINSTANCE_COUNT_ALIAS = "dataSetInstanceCount"
         private const val DS_LIST_TABLE_ALIAS = "dslist"
         private const val DS_INSTANCE_ALIAS = "dsinstance"
-        private const val STATE = DataSetInstanceSQLStatementBuilder.STATE_ALIAS
+        private const val STATE = DataSetInstanceSQLStatementBuilderImpl.STATE_ALIAS
 
         private val SELECT_STATE_ORDERING = " MAX(CASE " +
             "WHEN $STATE IN ('${State.SYNCED}','${State.SYNCED_VIA_SMS}') THEN 1 " +
@@ -101,18 +100,19 @@ internal class DataSetInstanceSummarySQLStatementBuilderImpl : DataSetInstanceSQ
             "ELSE 5 END)"
 
         private val SELECT_CLAUSE = "SELECT " +
-            IdentifiableColumns.UID + DataSetInstanceSQLStatementBuilder.AS +
-            DataSetInstanceSQLStatementBuilder.DATASET_UID_ALIAS + "," +
-            IdentifiableColumns.NAME + DataSetInstanceSQLStatementBuilder.AS +
-            DataSetInstanceSQLStatementBuilder.DATASET_NAME_ALIAS + "," +
-            "SUM(${DataSetInstanceSQLStatementBuilder.VALUE_COUNT_ALIAS})" +
-            DataSetInstanceSQLStatementBuilder.AS + DataSetInstanceSQLStatementBuilder.VALUE_COUNT_ALIAS + "," +
-            "COUNT(${DataSetInstanceSQLStatementBuilder.VALUE_COUNT_ALIAS})" +
-            DataSetInstanceSQLStatementBuilder.AS + DATASETINSTANCE_COUNT_ALIAS + "," +
-            "IFNULL($STATE,'SYNCED')" + DataSetInstanceSQLStatementBuilder.AS + STATE + "," +
-            "MAX(${DataSetInstanceSQLStatementBuilder.LAST_UPDATED_ALIAS})" +
-            DataSetInstanceSQLStatementBuilder.AS + DataSetInstanceSQLStatementBuilder.LAST_UPDATED_ALIAS + "," +
-            SELECT_STATE_ORDERING
+            IdentifiableColumns.UID + DataSetInstanceSQLStatementBuilderImpl.AS +
+            DataSetInstanceSQLStatementBuilderImpl.DATASET_UID_ALIAS + "," +
+            IdentifiableColumns.NAME + DataSetInstanceSQLStatementBuilderImpl.AS +
+            DataSetInstanceSQLStatementBuilderImpl.DATASET_NAME_ALIAS + "," +
+            "SUM(${DataSetInstanceSQLStatementBuilderImpl.VALUE_COUNT_ALIAS})" +
+            DataSetInstanceSQLStatementBuilderImpl.AS +
+            DataSetInstanceSQLStatementBuilderImpl.VALUE_COUNT_ALIAS + "," +
+            "COUNT(${DataSetInstanceSQLStatementBuilderImpl.VALUE_COUNT_ALIAS})" +
+            DataSetInstanceSQLStatementBuilderImpl.AS + DATASETINSTANCE_COUNT_ALIAS + "," +
+            "IFNULL($STATE,'SYNCED')" + DataSetInstanceSQLStatementBuilderImpl.AS + STATE + "," +
+            "MAX(${DataSetInstanceSQLStatementBuilderImpl.LAST_UPDATED_ALIAS})" +
+            DataSetInstanceSQLStatementBuilderImpl.AS +
+            DataSetInstanceSQLStatementBuilderImpl.LAST_UPDATED_ALIAS + "," + SELECT_STATE_ORDERING
 
         private val DATASET_LIST_CLAUSE = "SELECT " +
             IdentifiableColumns.UID + ", " +

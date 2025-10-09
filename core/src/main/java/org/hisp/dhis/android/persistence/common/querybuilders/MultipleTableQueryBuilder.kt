@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,44 +25,47 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.querybuilders.internal;
 
-import java.util.Collection;
+package org.hisp.dhis.android.persistence.common.querybuilders
 
-public class MultipleTableQueryBuilder {
+@Suppress("TooGenericExceptionThrown")
+internal class MultipleTableQueryBuilder {
+    private val clause = StringBuilder()
+    private var isFirst = true
 
-    private static final String NOT_NULL = " IS NOT NULL";
-    private static final String SELECT = "SELECT ";
-    private static final String WHERE = " WHERE ";
-    private static final String FROM = " FROM ";
-    private static final String UNION = " UNION ";
-    private static final String END_STR = ";";
-
-    @SuppressWarnings("PMD.AvoidStringBufferField")
-    private final StringBuilder clause = new StringBuilder();
-    private boolean isFirst = true;
-
-    public MultipleTableQueryBuilder generateQuery(String columnName, Collection<String> tableNames) {
-        for (String tableName : tableNames) {
-            appendKeyValue(columnName, tableName);
+    fun generateQuery(
+        columnName: String?,
+        tableNames: List<String?>,
+    ): MultipleTableQueryBuilder {
+        for (tableName in tableNames) {
+            appendKeyValue(columnName, tableName)
         }
-        clause.append(END_STR);
-        return this;
+        clause.append(END_STR)
+        return this
     }
 
-    private MultipleTableQueryBuilder appendKeyValue(String column, String tableName) {
-        String andOpt = isFirst ? "" : UNION;
-        isFirst = false;
+    private fun appendKeyValue(column: String?, tableName: String?): MultipleTableQueryBuilder {
+        val andOpt = if (isFirst) "" else UNION
+        isFirst = false
         clause.append(andOpt).append(SELECT).append(column).append(FROM).append(tableName)
-                .append(WHERE).append(column).append(NOT_NULL);
-        return this;
+            .append(WHERE).append(column).append(NOT_NULL)
+        return this
     }
 
-    public String build() {
-        if (clause.length() == 0) {
-            throw new RuntimeException("No columns added");
+    fun build(): String {
+        if (clause.length == 0) {
+            throw RuntimeException("No columns added")
         } else {
-            return clause.toString();
+            return clause.toString()
         }
+    }
+
+    companion object {
+        private const val NOT_NULL = " IS NOT NULL"
+        private const val SELECT = "SELECT "
+        private const val WHERE = " WHERE "
+        private const val FROM = " FROM "
+        private const val UNION = " UNION "
+        private const val END_STR = ";"
     }
 }

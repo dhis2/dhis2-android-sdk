@@ -86,9 +86,6 @@ public abstract class ProgramDataDownloadParams implements BaseScope {
     public abstract Boolean overwrite();
 
     @Nullable
-    public abstract List<String> filterUids();
-
-    @Nullable
     public abstract List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters();
 
     @Nullable
@@ -132,8 +129,6 @@ public abstract class ProgramDataDownloadParams implements BaseScope {
 
         public abstract Builder overwrite(Boolean overwrite);
 
-        public abstract Builder filterUids(List<String> filterUids);
-
         public abstract Builder trackedEntityInstanceFilters(
                 List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters);
 
@@ -142,5 +137,12 @@ public abstract class ProgramDataDownloadParams implements BaseScope {
         public abstract Builder eventFilters(List<EventFilter> eventFilters);
 
         public abstract ProgramDataDownloadParams build();
+    }
+
+    public boolean hasProgramOrFilters() {
+        return program() != null ||
+                programStageWorkingLists() != null && !programStageWorkingLists().isEmpty() ||
+                trackedEntityInstanceFilters() != null && !trackedEntityInstanceFilters().isEmpty() ||
+                eventFilters() != null && !eventFilters().isEmpty();
     }
 }

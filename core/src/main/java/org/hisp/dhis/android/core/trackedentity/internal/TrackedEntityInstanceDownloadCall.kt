@@ -33,10 +33,13 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndPersistCallFactory
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerDownloadCall
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
@@ -52,6 +55,7 @@ internal class TrackedEntityInstanceDownloadCall(
     private val trackerCallFactory: TrackerParentCallFactory,
     private val persistenceCallFactory: TrackedEntityInstancePersistenceCallFactory,
     private val lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager,
+    private val teiQueryCollectionRepository: TrackedEntityInstanceQueryCollectionRepository,
 ) : TrackerDownloadCall<TrackedEntityInstance, TrackerQueryBundle>(
     userOrganisationUnitLinkStore,
     systemInfoModuleDownloader,
@@ -94,31 +98,35 @@ internal class TrackedEntityInstanceDownloadCall(
             programStatus = bundle.programStatus(),
         )
 
-        for (uid in bundle.commonParams().uids) {
-            try {
-                val useEntityEndpoint = teiQuery.commonParams.program != null
+        val useEntityEndpoint = teiQuery.commonParams.program != null
 
+        try {
+            val teisList = mutableListOf<TrackedEntityInstance>()
+
+            for (uid in bundle.commonParams().uids) {
                 val tei = querySingleTei(uid, useEntityEndpoint, teiQuery).getOrThrow()
 
                 if (tei != null) {
-                    val persistParams = IdentifiableDataHandlerParams(
-                        hasAllAttributes = !useEntityEndpoint,
-                        overwrite = overwrite,
-                        asRelationship = false,
-                        program = teiQuery.commonParams.program,
-                    )
-
-                    persistItems(listOf(tei), persistParams, relatives)
-
+                    teisList.add(tei)
                     result.count++
                 }
-            } catch (d2Error: D2Error) {
-                result.successfulSync = false
-                if (result.d2Error == null) {
-                    result.d2Error = d2Error
-                }
             }
+
+            if (teisList.isNotEmpty()) {
+                val persistParams = IdentifiableDataHandlerParams(
+                    hasAllAttributes = !useEntityEndpoint,
+                    overwrite = overwrite,
+                    asRelationship = false,
+                    program = teiQuery.commonParams.program,
+                )
+
+                persistItems(teisList, persistParams, relatives)
+            }
+        } catch (d2Error: D2Error) {
+            result.successfulSync = false
+            result.d2Error = d2Error
         }
+
         return result
     }
 
@@ -147,15 +155,42 @@ internal class TrackedEntityInstanceDownloadCall(
         program: String?,
         orgunitUid: String?,
         limit: Int,
-    ): TrackerAPIQuery {
-        return TrackerAPIQuery(
-            commonParams = bundle.commonParams().copy(
-                program = program,
-                limit = limit,
-            ),
-            programStatus = bundle.programStatus(),
-            lastUpdatedStr = lastUpdatedManager.getLastUpdatedStr(bundle.commonParams()),
-            orgUnit = orgunitUid,
-        )
+    ): TrackerAPIQuery? {
+        val teiUids = if (
+            bundle.trackedEntityInstanceFilters() != null ||
+            bundle.programStageWorkingLists() != null
+        ) {
+            val filteredUids = getTeiUidsByFilter(bundle.trackedEntityInstanceFilters()) +
+                getTeiUidsByWorkingList(bundle.programStageWorkingLists())
+
+            filteredUids.takeIf { it.isNotEmpty() }
+        } else {
+            emptyList()
+        }
+
+        return teiUids?.let {
+            TrackerAPIQuery(
+                commonParams = bundle.commonParams().copy(
+                    program = program,
+                    limit = limit,
+                ),
+                programStatus = bundle.programStatus(),
+                lastUpdatedStr = lastUpdatedManager.getLastUpdatedStr(bundle.commonParams()),
+                orgUnit = orgunitUid,
+                uids = teiUids.distinct(),
+            )
+        }
+    }
+
+    private fun getTeiUidsByFilter(trackedEntityInstanceFilters: List<TrackedEntityInstanceFilter>?): List<String> {
+        return trackedEntityInstanceFilters?.flatMap {
+            teiQueryCollectionRepository.byTrackedEntityInstanceFilterObject().eq(it).onlineOnly().blockingGetUids()
+        } ?: emptyList()
+    }
+
+    private fun getTeiUidsByWorkingList(programStageWorkingLists: List<ProgramStageWorkingList>?): List<String> {
+        return programStageWorkingLists?.flatMap {
+            teiQueryCollectionRepository.byProgramStageWorkingListObject().eq(it).onlineOnly().blockingGetUids()
+        } ?: emptyList()
     }
 }

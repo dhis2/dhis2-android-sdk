@@ -56,7 +56,6 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
     private val relationshipDownloadAndPersistCallFactory: RelationshipDownloadAndPersistCallFactory,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) {
-
     fun download(params: ProgramDataDownloadParams): Flow<TrackerD2Progress> = channelFlow {
         val progressManager = TrackerD2ProgressManager(null)
         if (userOrganisationUnitLinkStore.count() == 0) {
@@ -187,13 +186,17 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                 if (bundleResult.bundleCount < bundle.commonParams().limit) {
                     val trackerQuery = getQuery(bundle, bundleProgram.program, orgUnitUid, limit)
 
-                    val result = getItemsForOrgUnitProgramCombination(
-                        trackerQuery,
-                        limit,
-                        bundleProgram.itemCount,
-                        params.overwrite(),
-                        relatives,
-                    )
+                    val result = if (trackerQuery != null) {
+                        getItemsForOrgUnitProgramCombination(
+                            trackerQuery,
+                            limit,
+                            bundleProgram.itemCount,
+                            params.overwrite(),
+                            relatives,
+                        )
+                    } else {
+                        ItemsWithPagingResult(0, true, null, false)
+                    }
 
                     bundleResult.bundleCount += result.count
                     bundleProgram.itemCount += result.count
@@ -388,5 +391,5 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         program: String?,
         orgunitUid: String?,
         limit: Int,
-    ): TrackerAPIQuery
+    ): TrackerAPIQuery?
 }

@@ -92,4 +92,8 @@ internal class FakeD2CallExecutor : D2CallExecutorInterface {
     override suspend fun <C> executeD2CallTransactionally(call: suspend () -> C): C {
         return call()
     }
+
+    override suspend fun <C> executeD2Call(call: suspend () -> C): C {
+        return call()
+    }
 }

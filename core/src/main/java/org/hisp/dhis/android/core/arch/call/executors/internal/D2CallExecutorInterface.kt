@@ -30,4 +30,5 @@ package org.hisp.dhis.android.core.arch.call.executors.internal
 
 internal interface D2CallExecutorInterface {
     suspend fun <C> executeD2CallTransactionally(call: suspend () -> C): C
+    suspend fun <C> executeD2Call(call: suspend () -> C): C
 }

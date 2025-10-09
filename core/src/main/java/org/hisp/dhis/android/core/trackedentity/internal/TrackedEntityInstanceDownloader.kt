@@ -130,12 +130,10 @@ class TrackedEntityInstanceDownloader internal constructor(
                 .withTrackedEntityInstanceEventFilters()
                 .withAttributeValueFilters()
                 .blockingGet()
-            if (wl.isNotEmpty()) {
-                params.toBuilder().programStageWorkingLists(wl).build()
-            } else if (teiFilters.isNotEmpty()) {
-                params.toBuilder().trackedEntityInstanceFilters(teiFilters).build()
-            } else {
-                params
+            params.toBuilder().run {
+                wl.takeIf { it.isNotEmpty() }?.let { programStageWorkingLists(it) }
+                teiFilters.takeIf { it.isNotEmpty() }?.let { trackedEntityInstanceFilters(it) }
+                build()
             }
 
         }

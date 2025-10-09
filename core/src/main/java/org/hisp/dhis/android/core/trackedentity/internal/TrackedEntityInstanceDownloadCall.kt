@@ -155,7 +155,12 @@ internal class TrackedEntityInstanceDownloadCall(
         program: String?,
         orgunitUid: String?,
         limit: Int,
-    ): TrackerAPIQuery {
+    ): TrackerAPIQuery? {
+        if (
+            bundle.trackedEntityInstanceFilters()?.isEmpty() == true &&
+            bundle.programStageWorkingLists()?.isEmpty() == true
+        ) return null
+
         val teiUids = getTeiUidsByFilter(bundle.trackedEntityInstanceFilters()) +
             getTeiUidsByWorkingList(bundle.programStageWorkingLists())
 

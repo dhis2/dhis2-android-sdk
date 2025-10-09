@@ -129,7 +129,8 @@ internal class EventDownloadCall internal constructor(
         program: String?,
         orgunitUid: String?,
         limit: Int,
-    ): TrackerAPIQuery {
+    ): TrackerAPIQuery? {
+        if (bundle.eventFilters()?.isEmpty() == true) return null
         val eventUidsByFilters: List<String> = getEventUidsByFilters(bundle.eventFilters())
 
         return TrackerAPIQuery(

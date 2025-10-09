@@ -63,12 +63,16 @@ internal class EventQueryBundleInternalFactory(
             orgUnitByLimitExtractor,
         ) { it?.eventDateDownload() }
 
-        val eventFilters = (params.eventFilters() ?: emptyList())
+        val eventFilters = (params.eventFilters()?.filter { it.program() == programUid } ?: emptyList())
 
-        val programSettingFilters = eventFilterCollectionRepository
-            .byUid().`in`(programSettings?.specificSettings()?.get(programUid)?.filters()?.map { it.uid() })
-            .withEventDataFilters()
-            .blockingGet()
+        val eventFilterSettings = programSettings?.specificSettings()?.get(programUid)?.filters()?.map { it.uid() }
+
+        val programSettingFilters = eventFilterSettings.takeIf { !it.isNullOrEmpty() }?.let {
+            eventFilterCollectionRepository
+                .byUid().`in`(it)
+                .withEventDataFilters()
+                .blockingGet()
+        }
 
         val builder = EventQueryBundle.builder()
             .eventFilters(eventFilters.takeIf { it.isNotEmpty() } ?: programSettingFilters)

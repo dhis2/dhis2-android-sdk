@@ -38,10 +38,10 @@ internal object OrderByClauseBuilder {
             stringList.add(item.toSQLString())
         }
 
-        if (stringList.isEmpty()) {
-            return null
+        return if (stringList.isEmpty()) {
+            null
         } else {
-            return CollectionsHelper.commaAndSpaceSeparatedCollectionValues(stringList)
+            CollectionsHelper.commaAndSpaceSeparatedCollectionValues(stringList)
         }
     }
 }

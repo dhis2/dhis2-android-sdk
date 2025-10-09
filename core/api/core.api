@@ -8173,7 +8173,6 @@ public abstract class org/hisp/dhis/android/core/program/internal/ProgramDataDow
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
 	public abstract fun eventFilters ()Ljava/util/List;
-	public abstract fun filterUids ()Ljava/util/List;
 	public fun hasProgramOrFilters ()Z
 	public abstract fun limit ()Ljava/lang/Integer;
 	public abstract fun limitByOrgunit ()Ljava/lang/Boolean;
@@ -8196,7 +8195,6 @@ public abstract class org/hisp/dhis/android/core/program/internal/ProgramDataDow
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams;
 	public abstract fun eventFilters (Ljava/util/List;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
-	public abstract fun filterUids (Ljava/util/List;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
 	public abstract fun limit (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
 	public abstract fun limitByOrgunit (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
 	public abstract fun limitByProgram (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;

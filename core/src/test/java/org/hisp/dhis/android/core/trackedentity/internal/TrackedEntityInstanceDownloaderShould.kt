@@ -28,10 +28,13 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListCollectionRepository
 import org.hisp.dhis.android.core.settings.EnrollmentScope
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterCollectionRepository
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -40,20 +43,69 @@ import org.mockito.kotlin.KArgumentCaptor
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
 class TrackedEntityInstanceDownloaderShould {
     private val call: TrackedEntityInstanceDownloadCall = mock()
+    private val programStageWorkingListCollectionRepository: ProgramStageWorkingListCollectionRepository = mock()
+    private val trackedEntityInstanceFilterCollectionRepository: TrackedEntityInstanceFilterCollectionRepository =
+        mock()
+    private val trackedEntityInstanceFilterCollectionRepositoryList: TrackedEntityInstanceFilterCollectionRepository =
+        mock()
+    private val connectorTei: StringFilterConnector<TrackedEntityInstanceFilterCollectionRepository> = mock()
+    private val connectorWl: StringFilterConnector<ProgramStageWorkingListCollectionRepository> = mock()
 
     private val paramsCapture: KArgumentCaptor<ProgramDataDownloadParams> = argumentCaptor()
 
     private lateinit var params: ProgramDataDownloadParams
     private lateinit var downloader: TrackedEntityInstanceDownloader
 
+    private val filterUid = "filterUid"
+    private val filterUidList = listOf("filterUid0", "filterUid1", "filterUid2")
+    private val teiFilter = TrackedEntityInstanceFilter.builder().uid(filterUid).build()
+    private val teiFilterList = filterUidList.map { TrackedEntityInstanceFilter.builder().uid(it).build() }
+
     @Before
     fun setUp() {
         params = ProgramDataDownloadParams.builder().build()
-        downloader = TrackedEntityInstanceDownloader(call, params)
+        downloader = TrackedEntityInstanceDownloader(
+            call,
+            params,
+            programStageWorkingListCollectionRepository,
+            trackedEntityInstanceFilterCollectionRepository,
+        )
+
+        whenever(programStageWorkingListCollectionRepository.byUid()).thenReturn(connectorWl)
+        whenever(connectorWl.`in`(listOf(filterUid))).thenReturn(programStageWorkingListCollectionRepository)
+        whenever(connectorWl.`in`(filterUidList)).thenReturn(programStageWorkingListCollectionRepository)
+        whenever(programStageWorkingListCollectionRepository.withAttributeValueFilters()).thenReturn(
+            programStageWorkingListCollectionRepository,
+        )
+        whenever(programStageWorkingListCollectionRepository.withDataFilters()).thenReturn(
+            programStageWorkingListCollectionRepository,
+        )
+        whenever(programStageWorkingListCollectionRepository.blockingGet()).thenReturn(emptyList())
+
+        whenever(trackedEntityInstanceFilterCollectionRepository.byUid()).thenReturn(connectorTei)
+        whenever(connectorTei.`in`(listOf(filterUid))).thenReturn(trackedEntityInstanceFilterCollectionRepository)
+        whenever(connectorTei.`in`(filterUidList)).thenReturn(trackedEntityInstanceFilterCollectionRepositoryList)
+        whenever(trackedEntityInstanceFilterCollectionRepository.withTrackedEntityInstanceEventFilters()).thenReturn(
+            trackedEntityInstanceFilterCollectionRepository,
+        )
+        whenever(trackedEntityInstanceFilterCollectionRepository.withAttributeValueFilters()).thenReturn(
+            trackedEntityInstanceFilterCollectionRepository,
+        )
+        whenever(
+            trackedEntityInstanceFilterCollectionRepositoryList.withTrackedEntityInstanceEventFilters(),
+        ).thenReturn(
+            trackedEntityInstanceFilterCollectionRepositoryList,
+        )
+        whenever(trackedEntityInstanceFilterCollectionRepositoryList.withAttributeValueFilters()).thenReturn(
+            trackedEntityInstanceFilterCollectionRepositoryList,
+        )
+        whenever(trackedEntityInstanceFilterCollectionRepository.blockingGet()).thenReturn(listOf(teiFilter))
+        whenever(trackedEntityInstanceFilterCollectionRepositoryList.blockingGet()).thenReturn(teiFilterList)
     }
 
     @Test
@@ -109,8 +161,8 @@ class TrackedEntityInstanceDownloaderShould {
         verify(call).download(paramsCapture.capture())
 
         val params = paramsCapture.firstValue
-        assertThat(params.filterUids()?.size).isEqualTo(1)
-        assertThat(params.filterUids()?.get(0)).isEqualTo("filterUid")
+        assertThat(params.trackedEntityInstanceFilters()?.size).isEqualTo(1)
+        assertThat(params.trackedEntityInstanceFilters()?.get(0)?.uid()).isEqualTo("filterUid")
     }
 
     @Test
@@ -120,10 +172,10 @@ class TrackedEntityInstanceDownloaderShould {
         verify(call).download(paramsCapture.capture())
 
         val params = paramsCapture.firstValue
-        assertThat(params.filterUids()?.size).isEqualTo(3)
-        assertThat(params.filterUids()?.get(0)).isEqualTo("filterUid0")
-        assertThat(params.filterUids()?.get(1)).isEqualTo("filterUid1")
-        assertThat(params.filterUids()?.get(2)).isEqualTo("filterUid2")
+        assertThat(params.trackedEntityInstanceFilters()?.size).isEqualTo(3)
+        assertThat(params.trackedEntityInstanceFilters()?.get(0)?.uid()).isEqualTo("filterUid0")
+        assertThat(params.trackedEntityInstanceFilters()?.get(1)?.uid()).isEqualTo("filterUid1")
+        assertThat(params.trackedEntityInstanceFilters()?.get(2)?.uid()).isEqualTo("filterUid2")
     }
 
     @Test

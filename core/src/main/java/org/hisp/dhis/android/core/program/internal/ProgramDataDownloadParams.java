@@ -86,9 +86,6 @@ public abstract class ProgramDataDownloadParams implements BaseScope {
     public abstract Boolean overwrite();
 
     @Nullable
-    public abstract List<String> filterUids();
-
-    @Nullable
     public abstract List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters();
 
     @Nullable
@@ -131,8 +128,6 @@ public abstract class ProgramDataDownloadParams implements BaseScope {
         public abstract Builder limit(Integer limit);
 
         public abstract Builder overwrite(Boolean overwrite);
-
-        public abstract Builder filterUids(List<String> filterUids);
 
         public abstract Builder trackedEntityInstanceFilters(
                 List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters);

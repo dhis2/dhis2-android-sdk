@@ -146,8 +146,8 @@ public abstract class ProgramDataDownloadParams implements BaseScope {
 
     public boolean hasProgramOrFilters() {
         return program() != null ||
-                (programStageWorkingLists() != null && !programStageWorkingLists().isEmpty()) ||
-                (trackedEntityInstanceFilters() != null && !trackedEntityInstanceFilters().isEmpty()) ||
-                (eventFilters() != null && !eventFilters().isEmpty());
+                programStageWorkingLists() != null && !programStageWorkingLists().isEmpty() ||
+                trackedEntityInstanceFilters() != null && !trackedEntityInstanceFilters().isEmpty() ||
+                eventFilters() != null && !eventFilters().isEmpty();
     }
 }

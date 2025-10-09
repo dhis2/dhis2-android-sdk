@@ -57,7 +57,7 @@ class TrackedEntityInstanceDownloader internal constructor(
                 call,
                 params,
                 programStageWorkingListObjectRepository,
-                trackedEntityInstanceFilterCollectionRepository
+                trackedEntityInstanceFilterCollectionRepository,
             )
         }
 
@@ -135,7 +135,6 @@ class TrackedEntityInstanceDownloader internal constructor(
                 teiFilters.takeIf { it.isNotEmpty() }?.let { trackedEntityInstanceFilters(it) }
                 build()
             }
-
         }
     }
 

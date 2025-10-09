@@ -156,24 +156,30 @@ internal class TrackedEntityInstanceDownloadCall(
         orgunitUid: String?,
         limit: Int,
     ): TrackerAPIQuery? {
-        if (
-            bundle.trackedEntityInstanceFilters()?.isEmpty() == true &&
-            bundle.programStageWorkingLists()?.isEmpty() == true
-        ) return null
+        val teiUids = if (
+            bundle.trackedEntityInstanceFilters() != null ||
+            bundle.programStageWorkingLists() != null
+        ) {
+            val filteredUids = getTeiUidsByFilter(bundle.trackedEntityInstanceFilters()) +
+                getTeiUidsByWorkingList(bundle.programStageWorkingLists())
 
-        val teiUids = getTeiUidsByFilter(bundle.trackedEntityInstanceFilters()) +
-            getTeiUidsByWorkingList(bundle.programStageWorkingLists())
+            filteredUids.takeIf { it.isNotEmpty() }
+        } else {
+            emptyList()
+        }
 
-        return TrackerAPIQuery(
-            commonParams = bundle.commonParams().copy(
-                program = program,
-                limit = limit,
-            ),
-            programStatus = bundle.programStatus(),
-            lastUpdatedStr = lastUpdatedManager.getLastUpdatedStr(bundle.commonParams()),
-            orgUnit = orgunitUid,
-            uids = teiUids.distinct(),
-        )
+        return teiUids?.let {
+            TrackerAPIQuery(
+                commonParams = bundle.commonParams().copy(
+                    program = program,
+                    limit = limit,
+                ),
+                programStatus = bundle.programStatus(),
+                lastUpdatedStr = lastUpdatedManager.getLastUpdatedStr(bundle.commonParams()),
+                orgUnit = orgunitUid,
+                uids = teiUids.distinct(),
+            )
+        }
     }
 
     private fun getTeiUidsByFilter(trackedEntityInstanceFilters: List<TrackedEntityInstanceFilter>?): List<String> {

@@ -5496,6 +5496,7 @@ public final class org/hisp/dhis/android/core/event/EventDownloader : org/hisp/d
 	public final fun byProgramUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/EventDownloader;
 	public final fun byUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/ListFilterConnector;
 	public final fun download ()Lio/reactivex/Observable;
+	public final fun getEventFilterCollectionRepository ()Lorg/hisp/dhis/android/core/event/EventFilterCollectionRepository;
 	public final fun limit (I)Lorg/hisp/dhis/android/core/event/EventDownloader;
 	public final fun limitByOrgunit (Z)Lorg/hisp/dhis/android/core/event/EventDownloader;
 	public final fun limitByProgram (Z)Lorg/hisp/dhis/android/core/event/EventDownloader;
@@ -8173,6 +8174,7 @@ public abstract class org/hisp/dhis/android/core/program/internal/ProgramDataDow
 	public static fun builder ()Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
 	public abstract fun eventFilters ()Ljava/util/List;
 	public abstract fun filterUids ()Ljava/util/List;
+	public fun hasProgramOrFilters ()Z
 	public abstract fun limit ()Ljava/lang/Integer;
 	public abstract fun limitByOrgunit ()Ljava/lang/Boolean;
 	public abstract fun limitByProgram ()Ljava/lang/Boolean;
@@ -10946,6 +10948,8 @@ public final class org/hisp/dhis/android/core/trackedentity/internal/TrackedEnti
 	public final fun byTrackedEntityInstanceFilter ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/ListFilterConnector;
 	public final fun byUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/ListFilterConnector;
 	public final fun download ()Lio/reactivex/Observable;
+	public final fun getProgramStageWorkingListObjectRepository ()Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListCollectionRepository;
+	public final fun getTrackedEntityInstanceFilterCollectionRepository ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceFilterCollectionRepository;
 	public final fun limit (I)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceDownloader;
 	public final fun limitByOrgunit (Z)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceDownloader;
 	public final fun limitByProgram (Z)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceDownloader;

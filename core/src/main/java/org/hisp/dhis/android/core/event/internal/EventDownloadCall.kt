@@ -130,18 +130,25 @@ internal class EventDownloadCall internal constructor(
         orgunitUid: String?,
         limit: Int,
     ): TrackerAPIQuery? {
-        if (bundle.eventFilters()?.isEmpty() == true) return null
-        val eventUidsByFilters: List<String> = getEventUidsByFilters(bundle.eventFilters())
+        val eventUids = if (bundle.eventFilters() != null) {
+            val filteredUids = getEventUidsByFilters(bundle.eventFilters())
 
-        return TrackerAPIQuery(
-            commonParams = bundle.commonParams().copy(
-                program = program,
-                limit = limit,
-            ),
-            lastUpdatedStr = lastUpdatedManager.getLastUpdatedStr(bundle.commonParams()),
-            orgUnit = orgunitUid,
-            uids = eventUidsByFilters,
-        )
+            filteredUids.takeIf { it.isNotEmpty() }
+        } else {
+            emptyList()
+        }
+
+        return eventUids?.let {
+            TrackerAPIQuery(
+                commonParams = bundle.commonParams().copy(
+                    program = program,
+                    limit = limit,
+                ),
+                lastUpdatedStr = lastUpdatedManager.getLastUpdatedStr(bundle.commonParams()),
+                orgUnit = orgunitUid,
+                uids = eventUids.distinct(),
+            )
+        }
     }
 
     private fun getEventUidsByFilters(eventFilters: List<EventFilter>?): List<String> = eventFilters?.flatMap {

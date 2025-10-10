@@ -30,15 +30,12 @@ package org.hisp.dhis.android.core.event.internal
 import com.google.common.truth.Truth.assertThat
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.helpers.DateTimezoneConverter
-import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toKtxInstant
 import org.hisp.dhis.android.core.systeminfo.internal.ServerTimezoneManager
-import org.junit.Test
 
 /**
  * Integration test to verify that timezone conversions work correctly when downloading events.
@@ -56,9 +53,9 @@ import org.junit.Test
  */
 class EventTimezoneConversionRealIntegrationShould : BaseRealIntegrationTest() {
 
-    //@Test
+    // @Test
     fun download_events_and_convert_timezones_correctly() {
-        d2.userModule().blockingLogIn(username,"Android123!", "https://android.im.dhis2.org/dev")
+        d2.userModule().blockingLogIn(username, "Android123!", "https://android.im.dhis2.org/dev")
         d2.metadataModule().blockingDownload()
         d2.eventModule().eventDownloader().limit(10).blockingDownload()
 
@@ -86,8 +83,8 @@ class EventTimezoneConversionRealIntegrationShould : BaseRealIntegrationTest() {
 
         // Test the round-trip conversion: server string -> client Date -> verify LocalDateTime preservation
         val testCases = listOf(
-            "2025-09-23T07:51:46.118",  // Example timestamp from server
-            "2025-10-02T06:37:08.735"   // Another example
+            "2025-09-23T07:51:46.118", // Example timestamp from server
+            "2025-10-02T06:37:08.735", // Another example
         )
 
         testCases.forEach { serverDateString ->
@@ -126,5 +123,4 @@ class EventTimezoneConversionRealIntegrationShould : BaseRealIntegrationTest() {
 
         println("\n✓ Timezone conversions verified successfully")
     }
-
 }

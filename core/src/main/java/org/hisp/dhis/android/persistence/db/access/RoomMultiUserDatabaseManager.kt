@@ -189,7 +189,7 @@ internal class RoomMultiUserDatabaseManager(
                 serverUrl,
                 username,
                 encrypt,
-                loginConfig = existingAccount.loginConfig()
+                loginConfig = existingAccount.loginConfig(),
             )
             openDatabase(updatedAccount)
         }

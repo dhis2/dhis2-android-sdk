@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.configuration.internal
 
 import org.hisp.dhis.android.core.server.LoginConfig
 import org.koin.core.annotation.Singleton
-import kotlin.math.log
 
 @Singleton
 internal class DatabaseConfigurationHelper(
@@ -50,6 +49,7 @@ internal class DatabaseConfigurationHelper(
             .build()
     }
 
+    @Suppress("LongParameterList")
     fun addOrUpdateAccount(
         configuration: DatabasesConfiguration?,
         serverUrl: String,

@@ -64,8 +64,8 @@ class SystemInfoCall internal constructor(
                         .errorCode(D2ErrorCode.INVALID_DHIS_VERSION)
                         .errorDescription(
                             "Server DHIS version (" + version + ") not valid. " +
-                                    "Allowed versions: " +
-                                    CollectionsHelper.commaAndSpaceSeparatedArrayValues(allowedVersionsAsStr()),
+                                "Allowed versions: " +
+                                CollectionsHelper.commaAndSpaceSeparatedArrayValues(allowedVersionsAsStr()),
                         )
                         .build()
                 }

@@ -35,8 +35,8 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
 import org.hisp.dhis.android.network.common.dto.DateStringDTO
 import org.hisp.dhis.android.network.common.dto.GeometryDTO
-import org.hisp.dhis.android.network.common.dto.toDto
 import org.hisp.dhis.android.network.common.dto.ZonedDateDTO
+import org.hisp.dhis.android.network.common.dto.toDto
 import org.hisp.dhis.android.network.common.dto.toZonedDateDto
 import org.hisp.dhis.android.network.event.EventDTO
 import org.hisp.dhis.android.network.event.toDto

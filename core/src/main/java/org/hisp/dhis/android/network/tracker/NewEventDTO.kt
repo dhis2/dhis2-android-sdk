@@ -39,8 +39,8 @@ import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
 import org.hisp.dhis.android.network.common.dto.DateStringDTO
 import org.hisp.dhis.android.network.common.dto.GeometryDTO
 import org.hisp.dhis.android.network.common.dto.PagerDTO
-import org.hisp.dhis.android.network.common.dto.toDto
 import org.hisp.dhis.android.network.common.dto.ZonedDateDTO
+import org.hisp.dhis.android.network.common.dto.toDto
 import org.hisp.dhis.android.network.common.dto.toZonedDateDto
 
 @Serializable

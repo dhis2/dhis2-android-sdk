@@ -31,10 +31,8 @@ package org.hisp.dhis.android.network.tracker
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
-import org.hisp.dhis.android.network.common.dto.DateStringDTO
 import org.hisp.dhis.android.network.common.dto.ValueDTO
 import org.hisp.dhis.android.network.common.dto.ZonedDateDTO
-import org.hisp.dhis.android.network.common.dto.toDto
 import org.hisp.dhis.android.network.common.dto.toZonedDateDto
 
 @Serializable

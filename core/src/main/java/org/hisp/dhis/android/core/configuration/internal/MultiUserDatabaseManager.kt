@@ -211,6 +211,7 @@ internal class MultiUserDatabaseManager(
             serverUrl,
             username,
             encrypt,
+            null,
             importStatus,
         )
         databaseConfigurationSecureStore.set(updatedAccount)

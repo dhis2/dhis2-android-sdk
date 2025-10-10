@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHe
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationInsecureStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
+import org.hisp.dhis.android.core.server.LoginConfig
 import org.hisp.dhis.android.core.util.CipherUtil
 import org.hisp.dhis.android.core.util.deleteIfExists
 import org.koin.core.annotation.Singleton
@@ -188,6 +189,7 @@ internal class RoomMultiUserDatabaseManager(
                 serverUrl,
                 username,
                 encrypt,
+                loginConfig = existingAccount.loginConfig()
             )
             openDatabase(updatedAccount)
         }
@@ -220,6 +222,7 @@ internal class RoomMultiUserDatabaseManager(
         serverUrl: String,
         username: String,
         encrypt: Boolean,
+        loginConfig: LoginConfig? = null,
         importStatus: DatabaseAccountImportStatus? = null,
     ): DatabaseAccount {
         val updatedAccount = configurationHelper.addOrUpdateAccount(
@@ -227,6 +230,7 @@ internal class RoomMultiUserDatabaseManager(
             serverUrl,
             username,
             encrypt,
+            loginConfig,
             importStatus,
         )
         databaseConfigurationSecureStore.set(updatedAccount)

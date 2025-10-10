@@ -27,7 +27,9 @@
  */
 package org.hisp.dhis.android.core.configuration.internal
 
+import org.hisp.dhis.android.core.server.LoginConfig
 import org.koin.core.annotation.Singleton
+import kotlin.math.log
 
 @Singleton
 internal class DatabaseConfigurationHelper(
@@ -53,6 +55,7 @@ internal class DatabaseConfigurationHelper(
         serverUrl: String,
         username: String,
         encrypt: Boolean,
+        loginConfig: LoginConfig? = null,
         importStatus: DatabaseAccountImportStatus? = null,
     ): DatabasesConfiguration {
         val dbName = databaseNameGenerator.getDatabaseName(serverUrl, username, encrypt)
@@ -68,6 +71,7 @@ internal class DatabaseConfigurationHelper(
             .databaseName(dbName)
             .encrypted(encrypt)
             .databaseCreationDate(dateProvider.dateStr)
+            .loginConfig(loginConfig)
             .importDB(importDb)
             .build()
 

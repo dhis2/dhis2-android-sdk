@@ -31,7 +31,6 @@ package org.hisp.dhis.android.network.common.dto
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.arch.helpers.DateTimezoneConverter
 import org.hisp.dhis.android.core.util.dateFormat
-import org.hisp.dhis.android.core.util.toJavaDate
 import java.util.Date
 
 @JvmInline
@@ -40,8 +39,8 @@ internal value class ZonedDateDTO(
     val date: String?,
 ) {
     fun toDomain(): Date? {
-        val serverDate = date.toJavaDate() ?: return null
-        return DateTimezoneConverter.convertServerToClient(serverDate)
+        if (date == null) return null
+        return DateTimezoneConverter.convertServerStringToClient(date)
     }
 }
 

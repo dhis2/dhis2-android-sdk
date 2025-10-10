@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.arch.helpers
 
 import com.google.common.truth.Truth.assertThat
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import org.hisp.dhis.android.core.arch.helpers.DateUtils.toKtxInstant
 import org.hisp.dhis.android.core.systeminfo.internal.ServerTimezoneManager
 import org.junit.After
 import org.junit.Before
@@ -134,5 +136,35 @@ class DateTimezoneConverterShould {
 
         assertThat(serverDate).isNotNull()
         assertThat(clientDate.time).isEqualTo(epochDate.time)
+    }
+
+    @Test
+    fun preserve_local_datetime_when_converting_to_server() {
+        // Server is in Asia/Kolkata (UTC+5:30)
+        val serverTimeZone = TimeZone.of("Asia/Kolkata")
+        whenever(serverTimezoneManager.getServerTimeZone()).doReturn(serverTimeZone)
+
+        val clientDate = dateFormat.parse("2024-01-15T10:30:00")!!
+        val serverDate = DateTimezoneConverter.convertClientToServer(clientDate)
+
+        val clientLocalDateTime = clientDate.toKtxInstant().toLocalDateTime(TimeZone.currentSystemDefault())
+        val serverLocalDateTime = serverDate.toKtxInstant().toLocalDateTime(serverTimeZone)
+
+        assertThat(serverLocalDateTime).isEqualTo(clientLocalDateTime)
+    }
+
+    @Test
+    fun preserve_local_datetime_when_converting_to_client() {
+        // Server is in America/New_York (UTC-5 in winter)
+        val serverTimeZone = TimeZone.of("America/New_York")
+        whenever(serverTimezoneManager.getServerTimeZone()).doReturn(serverTimeZone)
+
+        val serverDate = dateFormat.parse("2024-01-15T10:30:00")!!
+        val clientDate = DateTimezoneConverter.convertServerToClient(serverDate)
+
+        val serverLocalDateTime = serverDate.toKtxInstant().toLocalDateTime(serverTimeZone)
+        val clientLocalDateTime = clientDate.toKtxInstant().toLocalDateTime(TimeZone.currentSystemDefault())
+
+        assertThat(clientLocalDateTime).isEqualTo(serverLocalDateTime)
     }
 }

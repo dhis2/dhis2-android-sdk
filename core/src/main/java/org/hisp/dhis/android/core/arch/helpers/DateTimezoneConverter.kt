@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toKtxInstant
 import org.hisp.dhis.android.core.systeminfo.internal.ServerTimezoneManager
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import org.koin.core.component.get
 import java.util.Date
 
 /**
@@ -45,8 +45,6 @@ import java.util.Date
  */
 internal object DateTimezoneConverter : KoinComponent {
 
-    private val serverTimezoneManager: ServerTimezoneManager by inject()
-
     /**
      * Converts a date from client timezone to server timezone.
      * Uses the cached server timezone from ServerTimezoneManager.
@@ -55,11 +53,9 @@ internal object DateTimezoneConverter : KoinComponent {
      * @return Date converted to server timezone context
      */
     fun convertClientToServer(date: Date): Date {
-        val serverTimeZone = serverTimezoneManager.getServerTimeZone()
-        val clientLocalDateTime = date.toKtxInstant().toLocalDateTime(TimeZone.currentSystemDefault())
-        val serverInstant = clientLocalDateTime.toInstant(serverTimeZone)
-
-        return serverInstant.toJavaDate()
+        val serverTimeZone = get<ServerTimezoneManager>().getServerTimeZone()
+        val clientTimeZone = TimeZone.currentSystemDefault()
+        return convertBetweenTimezones(date, from = clientTimeZone, to = serverTimeZone)
     }
 
     /**
@@ -70,10 +66,19 @@ internal object DateTimezoneConverter : KoinComponent {
      * @return Date converted to client timezone context
      */
     fun convertServerToClient(date: Date): Date {
-        val serverTimeZone = serverTimezoneManager.getServerTimeZone()
-        val serverLocalDateTime = date.toKtxInstant().toLocalDateTime(serverTimeZone)
-        val clientInstant = serverLocalDateTime.toInstant(TimeZone.currentSystemDefault())
+        val serverTimeZone = get<ServerTimezoneManager>().getServerTimeZone()
+        val clientTimeZone = TimeZone.currentSystemDefault()
+        return convertBetweenTimezones(date, from = serverTimeZone, to = clientTimeZone)
+    }
 
-        return clientInstant.toJavaDate()
+    private fun convertBetweenTimezones(date: Date, from: TimeZone, to: TimeZone): Date {
+        if (from == to) {
+            return date
+        }
+
+        val localDateTime = date.toKtxInstant().toLocalDateTime(from)
+        val instant = localDateTime.toInstant(to)
+
+        return instant.toJavaDate()
     }
 }

@@ -25,34 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event.internal
 
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
-import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnline
-import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
-import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterNetworkHandler
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.core.trackedentity.search;
 
-@Singleton
-internal class NewEventEndpointCallFactory(
-    private val networkHandler: TrackerExporterNetworkHandler,
-) : EventEndpointCallFactory {
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion;
 
-    override suspend fun getCollectionCall(eventQuery: TrackerAPIQuery): Payload<Event> {
-        return networkHandler.getEventCollectionCall(eventQuery)
-    }
-
-    override suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Payload<Event> {
-        return networkHandler.getEventRelationshipEntityCall(item)
-    }
-
-    override suspend fun getQueryCall(query: TrackedEntityInstanceQueryOnline): Payload<Event> {
-        return networkHandler.getEventQueryCall(query)
-    }
-
-    override suspend fun getQueryUids(query: TrackedEntityInstanceQueryOnline): List<String> {
-        return networkHandler.getEventQueryForSearch(query).map { it.uid() }
-    }
+public interface QueryScopeOrderByItem {
+    String toAPIString(TrackerExporterVersion version);
 }

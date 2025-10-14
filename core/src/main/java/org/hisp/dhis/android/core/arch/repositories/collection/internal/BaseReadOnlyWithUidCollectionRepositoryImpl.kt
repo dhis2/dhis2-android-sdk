@@ -67,7 +67,7 @@ abstract class BaseReadOnlyWithUidCollectionRepositoryImpl<M, R : ReadOnlyCollec
         return runBlocking { getUidsInternal() }
     }
 
-    protected suspend fun getUidsInternal(): List<String> {
+    internal suspend fun getUidsInternal(): List<String> {
         return store.selectUidsWhere(
             whereClause,
             OrderByClauseBuilder.orderByFromItems(

@@ -32,7 +32,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
 import org.hisp.dhis.android.core.common.AssignedUserMode
@@ -71,7 +70,6 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
     private val eventNetworkHandler: EventNetworkHandler = mock()
     private val coroutineAPICallExecutor = CoroutineAPICallExecutorMock()
     private val teis: List<TrackedEntityInstance> = mock()
-    private val eventPayload: Payload<Event> = mock()
     private val attribute: List<RepositoryScopeFilterItem> = emptyList()
     private val order: List<TrackedEntityInstanceQueryScopeOrderByItem> =
         listOf(TrackedEntityInstanceQueryScopeOrderByItem.DEFAULT_TRACKER_ORDER)
@@ -110,7 +108,6 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
         )
 
         whenServiceQuery { teis }
-        whenEventServiceQuery { eventPayload }
 
         // Metadata call
         callFactory = TrackedEntityInstanceQueryCallFactory(
@@ -166,7 +163,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
             EventInternalAccessor.insertTrackedEntityInstance(Event.builder().uid("uid1"), "tei1").build(),
             EventInternalAccessor.insertTrackedEntityInstance(Event.builder().uid("uid2"), "tei2").build(),
         )
-        whenever(eventPayload.items).doReturn(events)
+        whenEventServiceQuery { events }
 
         val query = query.copy(
             dataValueFilter = listOf(
@@ -188,7 +185,7 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
 
     @Test
     fun should_query_events_for_multiple_orgunits() = runTest {
-        whenever(eventPayload.items).doReturn(emptyList())
+        whenEventServiceQuery { emptyList() }
 
         val query = query.copy(
             dataValueFilter = listOf(
@@ -216,16 +213,16 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
         query: TrackedEntityInstanceQueryOnline,
     ) {
         if (query.orgUnits.size <= 1) {
-            verifyEventServiceForOrgunit(query, query.orgUnits.firstOrNull())
+            verifyEventServiceForOrgunit(query)
         } else {
             query.orgUnits.forEach {
-                verifyEventServiceForOrgunit(query, it)
+                verifyEventServiceForOrgunit(query.copy(orgUnits = listOf(it)))
             }
         }
     }
 
-    private fun verifyEventServiceForOrgunit(query: TrackedEntityInstanceQueryOnline, orgunit: String?) = runBlocking {
-        verify(eventNetworkHandler).getEventQueryForOrgunit(query, orgunit)
+    private fun verifyEventServiceForOrgunit(query: TrackedEntityInstanceQueryOnline) = runBlocking {
+        verify(eventNetworkHandler).getEventQueryForSearch(query)
     }
 
     private fun whenServiceQuery(answer: (InvocationOnMock) -> List<TrackedEntityInstance>?) {
@@ -236,10 +233,10 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
         }
     }
 
-    private fun whenEventServiceQuery(answer: (InvocationOnMock) -> Payload<Event>) {
+    private fun whenEventServiceQuery(answer: (InvocationOnMock) -> List<Event>) {
         eventNetworkHandler.stub {
             onBlocking {
-                getEventQueryForOrgunit(anyOrNull(), anyOrNull())
+                getEventQueryForSearch(anyOrNull())
             }.doAnswer(answer)
         }
     }

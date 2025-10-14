@@ -31,15 +31,17 @@ package org.hisp.dhis.android.core.event.search;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
+import org.hisp.dhis.android.core.trackedentity.search.QueryScopeOrderByItem;
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion;
 
 @AutoValue
-public abstract class EventQueryScopeOrderByItem {
+public abstract class EventQueryScopeOrderByItem implements QueryScopeOrderByItem {
 
     public abstract EventQueryScopeOrderColumn column();
 
     public abstract RepositoryScope.OrderByDirection direction();
 
-    String toAPIString() {
+    public String toAPIString(TrackerExporterVersion version) {
         return column().hasApiName() ? column().apiName() + ":" + direction().getApi() : null;
     }
 

@@ -40,10 +40,6 @@ internal object TrackerQueryHelper {
         return getOrgunits(query.orgUnits, query.orgUnitMode)
     }
 
-    fun getOrgunits(orgunit: String?, mode: OrganisationUnitMode?): List<String>? {
-        return getOrgunits(orgunit?.let { listOf(it) }, mode)
-    }
-
     private fun getOrgunits(orgunits: List<String>?, mode: OrganisationUnitMode?): List<String>? {
         return if (orgunits.isNullOrEmpty()) {
             null

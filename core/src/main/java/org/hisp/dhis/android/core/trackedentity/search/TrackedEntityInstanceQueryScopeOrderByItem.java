@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
 import org.hisp.dhis.android.core.tracker.TrackerExporterVersion;
 
 @AutoValue
-public abstract class TrackedEntityInstanceQueryScopeOrderByItem {
+public abstract class TrackedEntityInstanceQueryScopeOrderByItem implements QueryScopeOrderByItem {
 
     public static TrackedEntityInstanceQueryScopeOrderByItem DEFAULT_TRACKER_ORDER = builder()
             .column(TrackedEntityInstanceQueryScopeOrderColumn.CREATED)

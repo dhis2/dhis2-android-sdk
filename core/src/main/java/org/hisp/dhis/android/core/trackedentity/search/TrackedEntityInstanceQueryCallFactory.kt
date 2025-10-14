@@ -76,21 +76,20 @@ internal class TrackedEntityInstanceQueryCallFactory(
 
     private suspend fun getEventQuery(query: TrackedEntityInstanceQueryOnline): List<Event> {
         return if (query.orgUnits.size <= 1) {
-            getEventQueryForOrgunit(query, query.orgUnits.firstOrNull())
+            getEventQueryForOrgunit(query)
         } else {
             query.orgUnits.foldRight(emptyList()) { orgunit: String, events: List<Event> ->
-                events + getEventQueryForOrgunit(query, orgunit)
+                events + getEventQueryForOrgunit(query.copy(orgUnits = listOf(orgunit)))
             }
         }
     }
 
     private suspend fun getEventQueryForOrgunit(
         query: TrackedEntityInstanceQueryOnline,
-        orgunit: String?,
     ): List<Event> {
         return coroutineAPICallExecutor.wrap(storeError = false) {
-            eventNetworkHandler.getEventQueryForOrgunit(query, orgunit)
-        }.getOrThrow().items
+            eventNetworkHandler.getEventQueryForSearch(query)
+        }.getOrThrow()
     }
 
     private suspend fun getTrackedEntityQuery(query: TrackedEntityInstanceQueryOnline): List<TrackedEntityInstance> {

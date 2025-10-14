@@ -152,6 +152,6 @@ internal class EventDownloadCall internal constructor(
     }
 
     private fun getEventUidsByFilters(eventFilters: List<EventFilter>?): List<String> = eventFilters?.flatMap {
-        eventQueryCollectionRepository.byEventFilterObject().eq(it).blockingGetUids() // Do in another task
+        eventQueryCollectionRepository.byEventFilterObject().eq(it).onlineOnly().blockingGetUids()
     } ?: emptyList()
 }

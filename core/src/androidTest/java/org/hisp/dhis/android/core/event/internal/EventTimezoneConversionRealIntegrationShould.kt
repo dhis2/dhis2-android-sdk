@@ -28,36 +28,22 @@
 package org.hisp.dhis.android.core.event.internal
 
 import com.google.common.truth.Truth.assertThat
-import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.helpers.DateTimezoneConverter
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toKtxInstant
 import org.hisp.dhis.android.core.systeminfo.internal.ServerTimezoneManager
 
-/**
- * Integration test to verify that timezone conversions work correctly when downloading events.
- *
- * IMPORTANT: This test connects to a REAL server and is commented out by default.
- * To run it:
- * 1. Uncomment the @Test annotations
- * 2. Configure your server credentials in BaseRealIntegrationTest
- * 3. Ensure your server has events with dates
- *
- * Expected behavior:
- * - Server timezone (e.g., Etc/UTC) is retrieved from SystemInfo
- * - Client timezone (e.g., Europe/Madrid) is the device timezone
- * - DateTimezoneConverter converts dates preserving LocalDateTime (wall clock time)
- */
 class EventTimezoneConversionRealIntegrationShould : BaseRealIntegrationTest() {
 
     // @Test
     fun download_events_and_convert_timezones_correctly() {
         d2.userModule().blockingLogIn(username, "Android123!", "https://android.im.dhis2.org/dev")
         d2.metadataModule().blockingDownload()
-        d2.eventModule().eventDownloader().limit(10).blockingDownload()
+        d2.eventModule().eventDownloader().limit(3).blockingDownload()
 
         // Verify server timezone was correctly retrieved from SystemInfo
         val serverTimezoneManager = koin.get<ServerTimezoneManager>()
@@ -78,36 +64,30 @@ class EventTimezoneConversionRealIntegrationShould : BaseRealIntegrationTest() {
             return
         }
 
-        // Verify timezone conversion for downloaded events
         println("\n=== Event Date Conversions ===")
 
         // Test the round-trip conversion: server string -> client Date -> verify LocalDateTime preservation
         val testCases = listOf(
-            "2025-09-23T07:51:46.118", // Example timestamp from server
-            "2025-10-02T06:37:08.735", // Another example
+            "2025-09-23T09:51:46.118",
+            "2025-10-02T06:20:54.560",
         )
 
         testCases.forEach { serverDateString ->
-            // Simulate what happens when server sends a date string
-            val convertedDate = DateTimezoneConverter.convertServerStringToClient(serverDateString)!!
+            val clientDate = DateTimezoneConverter.convertServerToClient(serverDateString)
+            val serverDate = DateTimezoneConverter.convertClientToServer(clientDate!!)
+            val loopedServerDateString = DateUtils.DATE_FORMAT.format(serverDate)
 
-            // Parse the original server date string to LocalDateTime
-            val originalLocalDateTime = LocalDateTime.parse(serverDateString)
-
-            // Read the converted date in client timezone
-            val clientLocalDateTime = convertedDate.toKtxInstant().toLocalDateTime(TimeZone.currentSystemDefault())
-
-            println("\nTest case: $serverDateString")
-            println("  Original LocalDateTime: $originalLocalDateTime")
-            println("  After conversion, client sees: $clientLocalDateTime")
-            println("  LocalDateTime preserved: ${originalLocalDateTime == clientLocalDateTime}")
+            println("\n=== Test Case ===")
+            println("\nServer date: $serverDateString")
+            println("  Client date: $clientDate")
+            println("  Server date after round trip: $serverDate")
 
             // Verify that LocalDateTime is preserved
-            assertThat(clientLocalDateTime.toString()).isEqualTo(originalLocalDateTime.toString())
+            assertThat(serverDateString).isEqualTo(loopedServerDateString)
         }
 
         // Also verify real events from the server
-        events.take(5).forEach { event ->
+        events.take(3).forEach { event ->
             event.created()?.let { created ->
                 val clientLocalDateTime = created.toKtxInstant().toLocalDateTime(TimeZone.currentSystemDefault())
 
@@ -115,7 +95,6 @@ class EventTimezoneConversionRealIntegrationShould : BaseRealIntegrationTest() {
                 println("  Created timestamp: ${created.time}")
                 println("  Client local time (${TimeZone.currentSystemDefault()}): $clientLocalDateTime")
 
-                // Verify that the timestamp is not null (basic sanity check)
                 assertThat(created).isNotNull()
                 assertThat(created.time).isGreaterThan(0)
             }

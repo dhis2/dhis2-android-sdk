@@ -160,8 +160,8 @@ internal class TrackedEntityInstanceDownloadCall(
             bundle.trackedEntityInstanceFilters() != null ||
             bundle.programStageWorkingLists() != null
         ) {
-            val filteredUids = getTeiUidsByFilter(bundle.trackedEntityInstanceFilters()) +
-                getTeiUidsByWorkingList(bundle.programStageWorkingLists())
+            val filteredUids = getTeiUidsByFilter(bundle, orgunitUid) +
+                getTeiUidsByWorkingList(bundle, orgunitUid)
 
             filteredUids.takeIf { it.isNotEmpty() }
         } else {
@@ -182,15 +182,23 @@ internal class TrackedEntityInstanceDownloadCall(
         }
     }
 
-    private fun getTeiUidsByFilter(trackedEntityInstanceFilters: List<TrackedEntityInstanceFilter>?): List<String> {
-        return trackedEntityInstanceFilters?.flatMap {
-            teiQueryCollectionRepository.byTrackedEntityInstanceFilterObject().eq(it).onlineOnly().blockingGetUids()
+    private fun getTeiUidsByFilter(bundle: TrackerQueryBundle, orgunitUid: String?): List<String> {
+        return bundle.trackedEntityInstanceFilters()?.flatMap {
+            teiQueryCollectionRepository
+                .byTrackedEntityInstanceFilterObject().eq(it)
+                .byOrgUnits().eq(orgunitUid)
+                .byOrgUnitMode().eq(bundle.commonParams().ouMode)
+                .onlineOnly().blockingGetUids()
         } ?: emptyList()
     }
 
-    private fun getTeiUidsByWorkingList(programStageWorkingLists: List<ProgramStageWorkingList>?): List<String> {
-        return programStageWorkingLists?.flatMap {
-            teiQueryCollectionRepository.byProgramStageWorkingListObject().eq(it).onlineOnly().blockingGetUids()
+    private fun getTeiUidsByWorkingList(bundle: TrackerQueryBundle, orgunitUid: String?): List<String> {
+        return bundle.programStageWorkingLists()?.flatMap {
+            teiQueryCollectionRepository
+                .byProgramStageWorkingListObject().eq(it)
+                .byOrgUnits().eq(orgunitUid)
+                .byOrgUnitMode().eq(bundle.commonParams().ouMode)
+                .onlineOnly().blockingGetUids()
         } ?: emptyList()
     }
 }

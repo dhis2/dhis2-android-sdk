@@ -154,7 +154,7 @@ internal class EventDownloadCall internal constructor(
     private fun getEventUidsByFilters(
         eventFilters: List<EventFilter>?,
         orgunitUid: String?,
-        bundle: EventQueryBundle
+        bundle: EventQueryBundle,
     ): List<String> {
         return eventFilters?.flatMap {
             eventQueryCollectionRepository

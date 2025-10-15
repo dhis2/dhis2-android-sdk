@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.trackedentity.search;
 
+import androidx.annotation.NonNull;
+
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
@@ -45,7 +47,7 @@ public abstract class TrackedEntityInstanceQueryScopeOrderByItem implements Quer
 
     public abstract RepositoryScope.OrderByDirection direction();
 
-    public String toAPIString(TrackerExporterVersion version) {
+    public String toAPIString(@NonNull TrackerExporterVersion version) {
         String apiName = column().apiName() == null ? null : column().apiName().getApiName(version);
         return apiName == null ? null : apiName + ":" + direction().getApi();
     }

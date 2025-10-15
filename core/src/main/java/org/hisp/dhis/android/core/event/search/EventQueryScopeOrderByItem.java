@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.event.search;
 
+import androidx.annotation.NonNull;
+
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
@@ -41,7 +43,7 @@ public abstract class EventQueryScopeOrderByItem implements QueryScopeOrderByIte
 
     public abstract RepositoryScope.OrderByDirection direction();
 
-    public String toAPIString(TrackerExporterVersion version) {
+    public String toAPIString(@NonNull TrackerExporterVersion version) {
         return column().hasApiName() ? column().apiName() + ":" + direction().getApi() : null;
     }
 

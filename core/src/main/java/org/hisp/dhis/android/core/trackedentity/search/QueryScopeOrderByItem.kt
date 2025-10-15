@@ -25,11 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.search
 
-package org.hisp.dhis.android.core.trackedentity.search;
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 
-import org.hisp.dhis.android.core.tracker.TrackerExporterVersion;
-
-public interface QueryScopeOrderByItem {
-    String toAPIString(TrackerExporterVersion version);
+internal interface QueryScopeOrderByItem {
+    fun toAPIString(version: TrackerExporterVersion): String?
 }

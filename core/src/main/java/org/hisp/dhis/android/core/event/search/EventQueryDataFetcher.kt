@@ -50,23 +50,23 @@ internal class EventQueryDataFetcher(
     private val onlineAdapter: EventQueryOnlineAdapter,
 ) {
     suspend fun get(): List<Event> {
-        return if (isOnline(scope)) {
-            trackerCallFatory.getEventCall().getQueryCall(getOnlineQuery(scope)).items
+        return if (isOnline()) {
+            trackerCallFatory.getEventCall().getQueryCall(getOnlineQuery()).items
         } else {
             getOfflineRepository().getInternal()
         }
     }
 
     suspend fun getUids(): List<String> {
-        return if (isOnline(scope)) {
-            trackerCallFatory.getEventCall().getQueryUids(getOnlineQuery(scope))
+        return if (isOnline()) {
+            trackerCallFatory.getEventCall().getQueryUids(getOnlineQuery())
         } else {
             getOfflineRepository().getUidsInternal()
         }
     }
 
     suspend fun count(): Int {
-        return if (isOnline(scope)) {
+        return if (isOnline()) {
             getUids().size
         } else {
             getOfflineRepository().countInternal()
@@ -74,7 +74,7 @@ internal class EventQueryDataFetcher(
     }
 
     suspend fun isEmpty(): Boolean {
-        return if (isOnline(scope)) {
+        return if (isOnline()) {
             count() > 0
         } else {
             getOfflineRepository().isEmptyProtected()
@@ -108,7 +108,7 @@ internal class EventQueryDataFetcher(
         return getOfflineRepository().uid(uid)
     }
 
-    private fun isOnline(scope: EventQueryRepositoryScope): Boolean {
+    private fun isOnline(): Boolean {
         return scope.mode() == RepositoryMode.ONLINE_FIRST || scope.mode() == RepositoryMode.ONLINE_ONLY
     }
 
@@ -116,7 +116,7 @@ internal class EventQueryDataFetcher(
         return offlineAdapter.getCollectionRepository(scope)
     }
 
-    private fun getOnlineQuery(scope: EventQueryRepositoryScope): TrackedEntityInstanceQueryOnline {
+    private fun getOnlineQuery(): TrackedEntityInstanceQueryOnline {
         return onlineAdapter.scopeToOnlineQuery(scope)
     }
 }

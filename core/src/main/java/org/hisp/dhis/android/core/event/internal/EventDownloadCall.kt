@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.event.EventFilter
 import org.hisp.dhis.android.core.event.search.EventQueryCollectionRepository
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
@@ -131,7 +130,7 @@ internal class EventDownloadCall internal constructor(
         limit: Int,
     ): TrackerAPIQuery? {
         val eventUids = if (bundle.eventFilters() != null) {
-            val filteredUids = getEventUidsByFilters(bundle.eventFilters(), orgunitUid, bundle)
+            val filteredUids = getEventUidsByFilters(bundle, orgunitUid)
 
             filteredUids.takeIf { it.isNotEmpty() }
         } else {
@@ -152,11 +151,10 @@ internal class EventDownloadCall internal constructor(
     }
 
     private fun getEventUidsByFilters(
-        eventFilters: List<EventFilter>?,
-        orgunitUid: String?,
         bundle: EventQueryBundle,
+        orgunitUid: String?,
     ): List<String> {
-        return eventFilters?.flatMap {
+        return bundle.eventFilters()?.flatMap {
             eventQueryCollectionRepository
                 .byOrgUnits().eq(orgunitUid)
                 .byOrgUnitMode().eq(bundle.commonParams().ouMode)

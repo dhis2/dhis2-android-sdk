@@ -33,7 +33,6 @@ import kotlinx.datetime.toLocalDateTime
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.helpers.DateTimezoneConverter
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toKtxInstant
 import org.hisp.dhis.android.core.systeminfo.internal.ServerTimezoneManager
 
@@ -74,13 +73,12 @@ class EventTimezoneConversionRealIntegrationShould : BaseRealIntegrationTest() {
 
         testCases.forEach { serverDateString ->
             val clientDate = DateTimezoneConverter.convertServerToClient(serverDateString)
-            val serverDate = DateTimezoneConverter.convertClientToServer(clientDate!!)
-            val loopedServerDateString = DateUtils.DATE_FORMAT.format(serverDate)
+            val loopedServerDateString = DateTimezoneConverter.convertClientToServer(clientDate!!)
 
             println("\n=== Test Case ===")
             println("\nServer date: $serverDateString")
             println("  Client date: $clientDate")
-            println("  Server date after round trip: $serverDate")
+            println("  Server date after round trip: $loopedServerDateString")
 
             // Verify that LocalDateTime is preserved
             assertThat(serverDateString).isEqualTo(loopedServerDateString)

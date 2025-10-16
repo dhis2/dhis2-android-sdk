@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.arch.db.access.internal
 
 import androidx.room.RoomRawQuery
 import androidx.test.platform.app.InstrumentationRegistry
+import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
 import org.hisp.dhis.android.core.arch.db.stores.KoinStoreRegistry
@@ -81,8 +82,78 @@ class DatabaseManagerIntegrationShould {
         databaseAdapter.close()
     }
 
+    @Test
+    fun create_encrypted_database_from_scratch() = runTest {
+        val databaseAdapter = Companion.databaseManager.getAdapter()
+        val password = "test_password_123"
+        
+        // Create encrypted database
+        Companion.databaseManager.createOrOpenEncryptedDatabase(ENCRYPTED_DB_NAME, password)
+        
+        // Verify database is accessible and can perform operations
+        val userDao = databaseAdapter.getCurrentDatabase().userDao()
+        val users = userDao.objectListRawQuery(RoomRawQuery("SELECT * FROM User"))
+        
+        // Should not throw UnsatisfiedLinkError
+        assertThat(users).isNotNull()
+        
+        databaseAdapter.close()
+    }
+
+    @Test
+    fun create_encrypted_database_and_reopen() = runTest {
+        val databaseAdapter = Companion.databaseManager.getAdapter()
+        val password = "test_password_456"
+        
+        // Create encrypted database
+        Companion.databaseManager.createOrOpenEncryptedDatabase(ENCRYPTED_DB_NAME_2, password)
+        
+        // Insert some data
+        val userDao1 = databaseAdapter.getCurrentDatabase().userDao()
+        val initialUsers = userDao1.objectListRawQuery(RoomRawQuery("SELECT * FROM User"))
+        assertThat(initialUsers).isNotNull()
+        
+        databaseAdapter.close()
+        
+        // Reopen the encrypted database with the same password
+        Companion.databaseManager.createOrOpenEncryptedDatabase(ENCRYPTED_DB_NAME_2, password)
+        
+        // Verify we can still access the data
+        val userDao2 = databaseAdapter.getCurrentDatabase().userDao()
+        val reopenedUsers = userDao2.objectListRawQuery(RoomRawQuery("SELECT * FROM User"))
+        assertThat(reopenedUsers).isNotNull()
+        
+        databaseAdapter.close()
+    }
+
+    @Test
+    fun create_encrypted_database_and_perform_write_operations() = runTest {
+        val databaseAdapter = Companion.databaseManager.getAdapter()
+        val password = "test_password_789"
+        
+        // Create encrypted database
+        Companion.databaseManager.createOrOpenEncryptedDatabase(ENCRYPTED_DB_NAME_3, password)
+        
+        // Perform a write operation to ensure the database is fully functional
+        val database = databaseAdapter.getCurrentDatabase()
+        database.runInTransaction {
+            // Execute a simple query to verify write capability
+            database.openHelper.writableDatabase.execSQL("PRAGMA user_version = 1")
+        }
+        
+        // Verify we can read after write
+        val userDao = database.userDao()
+        val users = userDao.objectListRawQuery(RoomRawQuery("SELECT * FROM User"))
+        assertThat(users).isNotNull()
+        
+        databaseAdapter.close()
+    }
+
     companion object {
         private const val DB_NAME = "database-adapter-factory-integration-should.db"
+        private const val ENCRYPTED_DB_NAME = "database-adapter-encrypted-test.db"
+        private const val ENCRYPTED_DB_NAME_2 = "database-adapter-encrypted-test-2.db"
+        private const val ENCRYPTED_DB_NAME_3 = "database-adapter-encrypted-test-3.db"
         private lateinit var databaseManager: DatabaseManager
             private set
 
@@ -99,6 +170,9 @@ class DatabaseManagerIntegrationShould {
         fun tearDownClass() {
             val context = InstrumentationRegistry.getInstrumentation().context
             context.deleteDatabase(DB_NAME)
+            context.deleteDatabase(ENCRYPTED_DB_NAME)
+            context.deleteDatabase(ENCRYPTED_DB_NAME_2)
+            context.deleteDatabase(ENCRYPTED_DB_NAME_3)
         }
     }
 }

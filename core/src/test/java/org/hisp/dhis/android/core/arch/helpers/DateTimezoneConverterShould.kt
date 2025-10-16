@@ -58,7 +58,11 @@ class DateTimezoneConverterShould {
 
     @Before
     fun setUp() {
-        stopKoin()
+        try {
+            stopKoin()
+        } catch (_: Exception) {
+            // Ignore if Koin is not started
+        }
         val koinApp = startKoin {
             modules(
                 module {
@@ -67,11 +71,34 @@ class DateTimezoneConverterShould {
             )
         }
         DhisAndroidSdkKoinContext.koin = koinApp.koin
+
+        // Force DateTimezoneConverter to use this test's mock
+        DateTimezoneConverter.serverTimezoneManager = serverTimezoneManager
     }
 
     @After
     fun tearDown() {
-        stopKoin()
+        try {
+            stopKoin()
+        } catch (_: Exception) {
+            // Ignore if Koin is not started
+        }
+
+        // Reinitialize with neutral mock to avoid affecting other tests
+        val neutralMock: ServerTimezoneManager = mock {
+            on { getServerTimeZone() } doReturn TimeZone.currentSystemDefault()
+        }
+        val koinApp = startKoin {
+            modules(
+                module {
+                    single { neutralMock }
+                },
+            )
+        }
+        DhisAndroidSdkKoinContext.koin = koinApp.koin
+
+        // Force DateTimezoneConverter to use the neutral mock
+        DateTimezoneConverter.serverTimezoneManager = neutralMock
     }
 
     @Test

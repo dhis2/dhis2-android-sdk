@@ -56,6 +56,10 @@ internal class ServerTimezoneManager(
         serverTimeZone = parseTimeZone(serverTimeZoneId)
     }
 
+    fun clearCache() {
+        serverTimeZone = null
+    }
+
     private fun parseTimeZone(serverTimeZoneId: String?): TimeZone {
         return try {
             serverTimeZoneId?.let { TimeZone.of(it) } ?: TimeZone.currentSystemDefault()

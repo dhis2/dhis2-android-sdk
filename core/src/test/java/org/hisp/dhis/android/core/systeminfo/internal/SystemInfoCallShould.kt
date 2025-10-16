@@ -45,6 +45,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.kotlin.any
+import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.doAnswer
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.eq
@@ -128,7 +129,7 @@ class SystemInfoCallShould {
 
         verify(systemInfoHandler).handle(systemInfo)
         verify(resourceHandler).handleResource(eq(Resource.Type.SYSTEM_INFO))
-        verify(serverTimezoneManager).setServerTimeZone(any())
+        verify(serverTimezoneManager).setServerTimeZone(anyOrNull())
     }
 
     @Test
@@ -159,7 +160,7 @@ class SystemInfoCallShould {
 
         verify(systemInfoHandler, never()).handle(systemInfo)
         verify(resourceHandler, never()).handleResource(eq(Resource.Type.SYSTEM_INFO))
-        verify(serverTimezoneManager, never()).setServerTimeZone(any())
+        verify(serverTimezoneManager, never()).setServerTimeZone(anyOrNull())
     }
 
     @Test

@@ -45,6 +45,7 @@ import java.util.Date
  * backward compatibility with domain and persistence layers.
  */
 internal object DateTimezoneConverter {
+    lateinit var serverTimezoneManager: ServerTimezoneManager
 
     /**
      * Converts a date from client timezone to server timezone.
@@ -54,7 +55,11 @@ internal object DateTimezoneConverter {
      * @return Date converted to server timezone context
      */
     fun convertClientToServer(date: Date): Date {
-        val serverTimeZone = koin.get<ServerTimezoneManager>().getServerTimeZone()
+        if (!::serverTimezoneManager.isInitialized) {
+            serverTimezoneManager = koin.get()
+        }
+
+        val serverTimeZone = serverTimezoneManager.getServerTimeZone()
         val clientTimeZone = TimeZone.currentSystemDefault()
 
         if (serverTimeZone == clientTimeZone) {
@@ -76,7 +81,11 @@ internal object DateTimezoneConverter {
      * @return Date converted to client timezone context
      */
     fun convertServerToClient(dateString: String?): Date? {
-        val serverTimeZone = koin.get<ServerTimezoneManager>().getServerTimeZone()
+        if (!::serverTimezoneManager.isInitialized) {
+            serverTimezoneManager = koin.get()
+        }
+
+        val serverTimeZone = serverTimezoneManager.getServerTimeZone()
         val clientTimeZone = TimeZone.currentSystemDefault()
 
         if (dateString == null) {

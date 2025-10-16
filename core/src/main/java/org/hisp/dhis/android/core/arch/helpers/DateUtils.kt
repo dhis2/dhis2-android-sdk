@@ -45,6 +45,8 @@ import java.util.Date
 @Suppress("TooManyFunctions")
 object DateUtils {
 
+    private const val MILLISECOND_DIGITS = 3
+
     @JvmField
     val DATE_FORMAT = SafeDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
 
@@ -62,7 +64,7 @@ object DateUtils {
         char(':')
         second()
         char('.')
-        secondFraction(3)
+        secondFraction(MILLISECOND_DIGITS)
     }
 
     @JvmField
@@ -85,26 +87,26 @@ object DateUtils {
             PeriodType.WeeklySunday,
             PeriodType.WeeklyThursday,
             PeriodType.WeeklyWednesday,
-                -> instant.plus(periods, DateTimeUnit.WEEK, TimeZone.currentSystemDefault())
+            -> instant.plus(periods, DateTimeUnit.WEEK, TimeZone.currentSystemDefault())
 
             PeriodType.BiWeekly -> instant.plus(periods * 2, DateTimeUnit.WEEK, TimeZone.currentSystemDefault())
             PeriodType.Monthly -> instant.plus(periods, DateTimeUnit.MONTH, TimeZone.currentSystemDefault())
             PeriodType.BiMonthly -> instant.plus(periods * 2, DateTimeUnit.MONTH, TimeZone.currentSystemDefault())
             PeriodType.Quarterly,
             PeriodType.QuarterlyNov,
-                -> instant.plus(periods * 3, DateTimeUnit.MONTH, TimeZone.currentSystemDefault())
+            -> instant.plus(periods * 3, DateTimeUnit.MONTH, TimeZone.currentSystemDefault())
 
             PeriodType.SixMonthly,
             PeriodType.SixMonthlyApril,
             PeriodType.SixMonthlyNov,
-                -> instant.plus(periods * 6, DateTimeUnit.MONTH, TimeZone.currentSystemDefault())
+            -> instant.plus(periods * 6, DateTimeUnit.MONTH, TimeZone.currentSystemDefault())
 
             PeriodType.Yearly,
             PeriodType.FinancialApril,
             PeriodType.FinancialJuly,
             PeriodType.FinancialOct,
             PeriodType.FinancialNov,
-                -> instant.plus(periods, DateTimeUnit.YEAR, TimeZone.currentSystemDefault())
+            -> instant.plus(periods, DateTimeUnit.YEAR, TimeZone.currentSystemDefault())
         }
 
         return instantWithOffset

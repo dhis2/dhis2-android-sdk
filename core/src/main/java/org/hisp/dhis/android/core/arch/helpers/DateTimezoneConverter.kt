@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.arch.helpers
 
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
@@ -37,7 +36,6 @@ import org.hisp.dhis.android.core.arch.helpers.DateUtils.KTX_DATE_FORMAT
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toKtxInstant
 import org.hisp.dhis.android.core.systeminfo.internal.ServerTimezoneManager
-import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.core.util.toJavaDate
 import java.util.Date
 

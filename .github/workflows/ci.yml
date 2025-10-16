@@ -89,20 +89,16 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-outputs
-          path: core/build/
       
       - name: Make gradlew executable
         run: chmod +x ./gradlew
       
-      - name: Make runChecks.sh executable
-        run: chmod +x ./runChecks.sh
-      
-      - name: Run code quality checks
+      - name: Run code quality checks (without clean)
         uses: nick-fields/retry@v3
         with:
           timeout_minutes: 15
           max_attempts: 3
-          command: ./runChecks.sh
+          command: ./gradlew ktlintCheck detekt checkstyleDebug pmdDebug lintDebug --project-dir core
       
       - name: Upload lint reports
         if: failure()
@@ -134,7 +130,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-outputs
-          path: core/build/
       
       - name: Make gradlew executable
         run: chmod +x ./gradlew
@@ -175,7 +170,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-outputs
-          path: core/build/
       
       - name: Make gradlew executable
         run: chmod +x ./gradlew

@@ -105,10 +105,11 @@ class DateTimezoneConverterShould {
     fun convert_client_to_server_with_same_timezone() {
         whenever(serverTimezoneManager.getServerTimeZone()).doReturn(TimeZone.currentSystemDefault())
 
-        val clientDate = dateFormat.parse("2024-01-15T10:30:00.000")!!
+        val stringDate = "2024-01-15T10:30:00.000"
+        val clientDate = dateFormat.parse(stringDate)!!
         val serverDate = DateTimezoneConverter.convertClientToServer(clientDate)
 
-        assertThat(serverDate.time).isEqualTo(clientDate.time)
+        assertThat(serverDate).isEqualTo(stringDate)
     }
 
     @Test
@@ -150,8 +151,7 @@ class DateTimezoneConverterShould {
 
         val originalDate = dateFormat.parse("2024-01-15T10:30:00.000")!!
 
-        val serverDate = DateTimezoneConverter.convertClientToServer(originalDate)
-        val serverDateString = dateFormat.format(serverDate)
+        val serverDateString = DateTimezoneConverter.convertClientToServer(originalDate)
         val roundTripDate = DateTimezoneConverter.convertServerToClient(serverDateString)
 
         assertThat(roundTripDate).isEqualTo(originalDate)
@@ -162,10 +162,10 @@ class DateTimezoneConverterShould {
         whenever(serverTimezoneManager.getServerTimeZone()).doReturn(TimeZone.UTC)
 
         val epochDate = Date(0)
-        val serverDate = DateTimezoneConverter.convertClientToServer(epochDate)
-        val clientDate = DateTimezoneConverter.convertServerToClient(dateFormat.format(serverDate))
+        val serverDateString = DateTimezoneConverter.convertClientToServer(epochDate)
+        val clientDate = DateTimezoneConverter.convertServerToClient(serverDateString)
 
-        assertThat(serverDate).isNotNull()
+        assertThat(serverDateString).isNotNull()
         assertThat(clientDate).isEqualTo(epochDate)
     }
 }

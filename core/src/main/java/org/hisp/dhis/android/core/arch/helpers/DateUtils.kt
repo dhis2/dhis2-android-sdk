@@ -31,8 +31,10 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.format.char
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat
@@ -45,6 +47,23 @@ object DateUtils {
 
     @JvmField
     val DATE_FORMAT = SafeDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
+
+    @JvmField
+    val KTX_DATE_FORMAT = LocalDateTime.Format {
+        year()
+        char('-')
+        monthNumber()
+        char('-')
+        dayOfMonth()
+        char('T')
+        hour()
+        char(':')
+        minute()
+        char(':')
+        second()
+        char('.')
+        secondFraction(3)
+    }
 
     @JvmField
     val SPACE_DATE_FORMAT = SafeDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
@@ -66,26 +85,26 @@ object DateUtils {
             PeriodType.WeeklySunday,
             PeriodType.WeeklyThursday,
             PeriodType.WeeklyWednesday,
-            -> instant.plus(periods, DateTimeUnit.WEEK, TimeZone.currentSystemDefault())
+                -> instant.plus(periods, DateTimeUnit.WEEK, TimeZone.currentSystemDefault())
 
             PeriodType.BiWeekly -> instant.plus(periods * 2, DateTimeUnit.WEEK, TimeZone.currentSystemDefault())
             PeriodType.Monthly -> instant.plus(periods, DateTimeUnit.MONTH, TimeZone.currentSystemDefault())
             PeriodType.BiMonthly -> instant.plus(periods * 2, DateTimeUnit.MONTH, TimeZone.currentSystemDefault())
             PeriodType.Quarterly,
             PeriodType.QuarterlyNov,
-            -> instant.plus(periods * 3, DateTimeUnit.MONTH, TimeZone.currentSystemDefault())
+                -> instant.plus(periods * 3, DateTimeUnit.MONTH, TimeZone.currentSystemDefault())
 
             PeriodType.SixMonthly,
             PeriodType.SixMonthlyApril,
             PeriodType.SixMonthlyNov,
-            -> instant.plus(periods * 6, DateTimeUnit.MONTH, TimeZone.currentSystemDefault())
+                -> instant.plus(periods * 6, DateTimeUnit.MONTH, TimeZone.currentSystemDefault())
 
             PeriodType.Yearly,
             PeriodType.FinancialApril,
             PeriodType.FinancialJuly,
             PeriodType.FinancialOct,
             PeriodType.FinancialNov,
-            -> instant.plus(periods, DateTimeUnit.YEAR, TimeZone.currentSystemDefault())
+                -> instant.plus(periods, DateTimeUnit.YEAR, TimeZone.currentSystemDefault())
         }
 
         return instantWithOffset

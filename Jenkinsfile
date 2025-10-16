@@ -25,6 +25,8 @@ pipeline {
 
     environment {
         GRADLE_USER_HOME = "${env.WORKSPACE}/.gradle"
+        // Improvement 1 & 2: Increase memory and disable daemon for stability
+        GRADLE_OPTS = "-Xmx4096m -XX:MaxMetaspaceSize=1024m -XX:+HeapDumpOnOutOfMemoryError -Dorg.gradle.daemon=false"
     }
 
 
@@ -33,6 +35,19 @@ pipeline {
     }
 
     stages{
+        stage('Clean Gradle Cache Periodically') {
+            when {
+                // Improvement 4: Clean cache every 10 builds to prevent corruption
+                expression { currentBuild.number % 10 == 0 }
+            }
+            steps {
+                script {
+                    echo "Periodic cache cleanup (build #${currentBuild.number})"
+                    sh 'rm -rf ${GRADLE_USER_HOME}/caches'
+                    sh 'rm -rf ${GRADLE_USER_HOME}/daemon'
+                }
+            }
+        }
         stage('Change to JAVA 17') {
             steps {
                 script {
@@ -135,6 +150,15 @@ pipeline {
         }
     }
     post {
+        always {
+            script {
+                // Improvement 3: Always stop daemon and clean locks after build
+                echo 'Cleaning up Gradle daemon and locks'
+                sh './gradlew --stop || true'
+                sh 'rm -rf ${GRADLE_USER_HOME}/daemon || true'
+                sh 'rm -rf ${GRADLE_USER_HOME}/caches/*.lock || true'
+            }
+        }
         failure {
             sendNotification(env.GIT_BRANCH, '*Build Failed*\n', 'bad')
         }

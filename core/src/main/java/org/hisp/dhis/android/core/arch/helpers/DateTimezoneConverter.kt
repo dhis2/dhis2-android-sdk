@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.arch.helpers.DateUtils.KTX_DATE_FORMAT
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toKtxInstant
 import org.hisp.dhis.android.core.systeminfo.internal.ServerTimezoneManager
-import org.hisp.dhis.android.core.util.toJavaDate
 import java.util.Date
 
 /**

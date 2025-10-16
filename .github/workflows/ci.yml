@@ -240,7 +240,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: [jacoco-report]
-    if: ${{ secrets.SONAR_TOKEN != '' }}
     
     steps:
       - name: Checkout code
@@ -267,7 +266,19 @@ jobs:
           name: jacoco-reports
           path: core/build/reports/jacoco/
       
+      - name: Check if SonarQube token exists
+        id: sonar_check
+        run: |
+          if [ -z "${{ secrets.SONAR_TOKEN }}" ]; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+            echo "⚠️ SONAR_TOKEN not configured, skipping SonarQube analysis"
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+            echo "✅ SONAR_TOKEN configured, running SonarQube analysis"
+          fi
+      
       - name: Run SonarQube analysis
+        if: steps.sonar_check.outputs.skip != 'true'
         uses: nick-fields/retry@v3
         with:
           timeout_minutes: 10

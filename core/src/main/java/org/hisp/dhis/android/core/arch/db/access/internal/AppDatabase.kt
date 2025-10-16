@@ -610,6 +610,6 @@ abstract class AppDatabase : RoomDatabase() {
     internal abstract fun visualizationDimensionItemDao(): VisualizationDimensionItemDao
 
     companion object {
-        const val VERSION = 176
+        const val VERSION = 177
     }
 }

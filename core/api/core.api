@@ -1881,6 +1881,7 @@ public final class org/hisp/dhis/android/core/arch/helpers/CoordinateHelper {
 public final class org/hisp/dhis/android/core/arch/helpers/DateUtils {
 	public static final field DATE_FORMAT Lorg/hisp/dhis/android/core/arch/dateformat/internal/SafeDateFormat;
 	public static final field INSTANCE Lorg/hisp/dhis/android/core/arch/helpers/DateUtils;
+	public static final field KTX_DATE_FORMAT Lkotlinx/datetime/format/DateTimeFormat;
 	public static final field SIMPLE_DATE_FORMAT Lorg/hisp/dhis/android/core/arch/dateformat/internal/SafeDateFormat;
 	public static final field SPACE_DATE_FORMAT Lorg/hisp/dhis/android/core/arch/dateformat/internal/SafeDateFormat;
 	public static final fun addMonths (Ljava/util/Date;I)Ljava/util/Date;

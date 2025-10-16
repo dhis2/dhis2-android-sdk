@@ -28,10 +28,10 @@ env:
   GRADLE_OPTS: -Dorg.gradle.daemon=false -Dorg.gradle.parallel=true -Dorg.gradle.caching=true
 
 jobs:
-  code-quality-checks:
-    name: Code Quality Checks
+  build:
+    name: Build & Compile
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
     
     steps:
       - name: Checkout code
@@ -49,13 +49,58 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
       
+      - name: Build project and APKs
+        run: |
+          ./gradlew assembleDebug assembleDebugUnitTest --stacktrace
+          ./gradlew :core:assembleDebugAndroidTest -Pcoverage --stacktrace
+          ./gradlew :instrumented-test-app:assembleDebug --stacktrace
+      
+      - name: Upload build outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-outputs
+          path: |
+            core/build/
+            instrumented-test-app/build/
+            !**/intermediates/
+            !**/tmp/
+          retention-days: 1
+
+  code-quality-checks:
+    name: Code Quality Checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: build
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+      
+      - name: Download build outputs
+        uses: actions/download-artifact@v4
+        with:
+          name: build-outputs
+          path: core/build/
+      
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+      
       - name: Make runChecks.sh executable
         run: chmod +x ./runChecks.sh
       
       - name: Run code quality checks
         uses: nick-fields/retry@v3
         with:
-          timeout_minutes: 20
+          timeout_minutes: 15
           max_attempts: 3
           command: ./runChecks.sh
       
@@ -72,6 +117,7 @@ jobs:
     name: API Validation
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    needs: build
     
     steps:
       - name: Checkout code
@@ -83,6 +129,12 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: 'gradle'
+      
+      - name: Download build outputs
+        uses: actions/download-artifact@v4
+        with:
+          name: build-outputs
+          path: core/build/
       
       - name: Make gradlew executable
         run: chmod +x ./gradlew
@@ -105,7 +157,8 @@ jobs:
   unit-tests:
     name: Unit Tests
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
+    needs: build
     
     steps:
       - name: Checkout code
@@ -118,13 +171,19 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
       
+      - name: Download build outputs
+        uses: actions/download-artifact@v4
+        with:
+          name: build-outputs
+          path: core/build/
+      
       - name: Make gradlew executable
         run: chmod +x ./gradlew
       
       - name: Run unit tests
         uses: nick-fields/retry@v3
         with:
-          timeout_minutes: 15
+          timeout_minutes: 10
           max_attempts: 3
           command: ./gradlew testDebugUnitTest --stacktrace --no-daemon
       
@@ -148,8 +207,8 @@ jobs:
   instrumented-tests:
     name: Instrumented Tests (BrowserStack)
     runs-on: ubuntu-latest
-    timeout-minutes: 25
-    needs: [unit-tests]
+    timeout-minutes: 20
+    needs: [build]
     
     steps:
       - name: Checkout code
@@ -162,6 +221,11 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
       
+      - name: Download build outputs
+        uses: actions/download-artifact@v4
+        with:
+          name: build-outputs
+      
       - name: Make gradlew executable
         run: chmod +x ./gradlew
       
@@ -171,12 +235,13 @@ jobs:
       - name: Run instrumented tests on BrowserStack
         uses: nick-fields/retry@v3
         with:
-          timeout_minutes: 20
+          timeout_minutes: 15
           max_attempts: 3
           command: ./scripts/browserstackGithub.sh
         env:
           BROWSERSTACK_USR: ${{ secrets.BROWSERSTACK_USERNAME }}
           BROWSERSTACK_PSW: ${{ secrets.BROWSERSTACK_PASSWORD }}
+          SKIP_BUILD: 'true'
       
       - name: Upload coverage report
         if: always()
@@ -196,7 +261,8 @@ jobs:
     name: JaCoCo Coverage Report
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [instrumented-tests]
+    needs: [build, instrumented-tests]
+    if: always() && needs.build.result == 'success' && needs.instrumented-tests.result == 'success'
     
     steps:
       - name: Checkout code
@@ -209,19 +275,39 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
       
+      - name: Download build outputs
+        uses: actions/download-artifact@v4
+        with:
+          name: build-outputs
+      
       - name: Make gradlew executable
         run: chmod +x ./gradlew
       
       - name: Download coverage report
         uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
           name: coverage-report
           path: core/build/outputs/code_coverage/
       
       - name: Generate JaCoCo report
+        id: jacoco_gen
         run: ./gradlew jacocoReport --stacktrace --no-daemon
+        continue-on-error: true
+      
+      - name: Check if JaCoCo reports exist
+        id: check_reports
+        run: |
+          if [ -d "core/build/reports/jacoco" ] && [ "$(ls -A core/build/reports/jacoco)" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "✅ JaCoCo reports generated"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "⚠️ JaCoCo reports not found"
+          fi
       
       - name: Upload JaCoCo reports
+        if: steps.check_reports.outputs.exists == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: jacoco-reports
@@ -239,7 +325,8 @@ jobs:
     name: SonarQube Analysis
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    needs: [jacoco-report]
+    needs: [build, jacoco-report]
+    if: always() && needs.build.result == 'success'
     
     steps:
       - name: Checkout code
@@ -254,6 +341,11 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
       
+      - name: Download build outputs
+        uses: actions/download-artifact@v4
+        with:
+          name: build-outputs
+      
       - name: Make gradlew executable
         run: chmod +x ./gradlew
       
@@ -262,6 +354,7 @@ jobs:
       
       - name: Download JaCoCo reports
         uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
           name: jacoco-reports
           path: core/build/reports/jacoco/

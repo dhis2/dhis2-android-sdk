@@ -35,10 +35,15 @@ source "$(dirname $0)/browserstackCommon.sh"
 
 coverage_result_path="$(dirname $0)/../core/build/outputs/code_coverage"
 
-# Build apks
-./gradlew :core:assembleDebug
-./gradlew :core:assembleDebugAndroidTest -Pcoverage
-./gradlew :instrumented-test-app:assembleDebug
+# Build apks (skip if already built in CI)
+if [ "$SKIP_BUILD" != "true" ]; then
+  echo "Building APKs..."
+  ./gradlew :core:assembleDebug
+  ./gradlew :core:assembleDebugAndroidTest -Pcoverage
+  ./gradlew :instrumented-test-app:assembleDebug
+else
+  echo "Skipping build - using pre-built APKs from artifacts"
+fi
 
 app_apk_path=$(findApkPath "instrumented-test-app" "debug")
 test_apk_path=$(findApkPath "core" "androidTest/debug")

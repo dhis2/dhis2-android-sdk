@@ -63,7 +63,7 @@ class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
 
     @Before
     fun setUp() {
-        scopeHelper = TrackedEntityInstanceQueryRepositoryScopeHelper(dateFilterPeriodHelper)
+        scopeHelper = TrackedEntityInstanceQueryRepositoryScopeHelper(FilterOperatorHelper(dateFilterPeriodHelper))
     }
 
     @Test

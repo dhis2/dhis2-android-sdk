@@ -2069,7 +2069,6 @@ public abstract interface class org/hisp/dhis/android/core/arch/repositories/col
 public abstract class org/hisp/dhis/android/core/arch/repositories/collection/internal/BaseReadOnlyWithUidCollectionRepositoryImpl : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyCollectionRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUidCollectionRepository {
 	public fun blockingGetUids ()Ljava/util/List;
 	public fun getUids ()Lio/reactivex/Single;
-	protected final fun getUidsInternal (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public class org/hisp/dhis/android/core/arch/repositories/collection/internal/BaseRepositoryImpl : org/hisp/dhis/android/core/arch/repositories/collection/BaseRepository {
@@ -2091,7 +2090,6 @@ public class org/hisp/dhis/android/core/arch/repositories/collection/internal/Re
 	public fun getPagingData (I)Lkotlinx/coroutines/flow/Flow;
 	protected final fun getWhereClause ()Ljava/lang/String;
 	public fun isEmpty ()Lio/reactivex/Single;
-	protected final fun isEmptyProtected (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun one ()Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository;
 	public fun one ()Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyOneObjectRepositoryFinalImpl;
 }
@@ -5663,10 +5661,11 @@ public abstract class org/hisp/dhis/android/core/event/search/EventQueryReposito
 	public abstract fun trackedEntityInstance ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/event/search/EventQueryScopeOrderByItem {
+public abstract class org/hisp/dhis/android/core/event/search/EventQueryScopeOrderByItem : org/hisp/dhis/android/core/trackedentity/search/QueryScopeOrderByItem {
 	public fun <init> ()V
 	public abstract fun column ()Lorg/hisp/dhis/android/core/event/search/EventQueryScopeOrderColumn;
 	public abstract fun direction ()Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;
+	public fun toAPIString (Lorg/hisp/dhis/android/core/tracker/TrackerExporterVersion;)Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
@@ -11102,7 +11101,7 @@ public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntity
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem {
+public abstract class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem : org/hisp/dhis/android/core/trackedentity/search/QueryScopeOrderByItem {
 	public static field DEFAULT_TRACKER_ORDER Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem;
 	public fun <init> ()V
 	public abstract fun column ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;

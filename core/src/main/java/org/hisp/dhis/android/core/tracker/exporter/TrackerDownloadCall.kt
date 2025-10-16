@@ -328,6 +328,10 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
             }
         }
 
+        if (downloadedItemsForCombination < combinationLimit) {
+            emptyProgram = true
+        }
+
         return ItemsWithPagingResult(downloadedItemsForCombination, true, null, emptyProgram)
     }
 

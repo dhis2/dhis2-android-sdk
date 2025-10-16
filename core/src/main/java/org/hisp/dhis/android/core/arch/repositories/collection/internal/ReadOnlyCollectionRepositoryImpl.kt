@@ -104,7 +104,7 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
         return rxSingle { getInternal() }
     }
 
-    private suspend fun getInternal(): List<M> {
+    internal suspend fun getInternal(): List<M> {
         return ChildrenAppenderExecutor.appendInObjectCollection(
             getWithoutChildrenInternal(),
             childrenAppenders,
@@ -165,7 +165,7 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
         return runBlocking { countInternal() }
     }
 
-    private suspend fun countInternal(): Int {
+    internal suspend fun countInternal(): Int {
         return store.countWhere(whereClause)
     }
 
@@ -189,7 +189,7 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
         return runBlocking { isEmptyProtected() }
     }
 
-    protected suspend fun isEmptyProtected(): Boolean {
+    internal suspend fun isEmptyProtected(): Boolean {
         return !one().existsInternal()
     }
 

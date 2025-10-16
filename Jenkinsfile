@@ -128,26 +128,8 @@ pipeline {
                 }
             }
         }
-        stage('Deploy') {
-            when {
-                allOf {
-                    // Do not deploy on PR builds
-                    expression { env.CHANGE_ID == null }
-                    anyOf {
-                        expression { env.GIT_BRANCH == "develop" }
-                        expression { env.GIT_BRANCH ==~ /[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?-rc/ }
-                    }
-                }
-            }
-            environment {
-                NEXUS_USERNAME = credentials('sonatype-portal-username')
-                NEXUS_PASSWORD = credentials('sonatype-portal-password')
-            }
-            steps {
-                echo 'Deploy to Sonatype nexus'
-                sh './gradlew :core:publishToSonatype'
-            }
-        }
+        // Deploy stage removed - now handled by GitHub Actions workflow
+        // See .github/workflows/deploy.yml for deployment configuration
     }
     post {
         always {

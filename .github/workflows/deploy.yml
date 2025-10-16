@@ -23,7 +23,13 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  GRADLE_OPTS: -Dorg.gradle.daemon=false -Dorg.gradle.parallel=true -Dorg.gradle.caching=true
+  GRADLE_OPTS: >-
+    -Dorg.gradle.daemon=false
+    -Dorg.gradle.parallel=true
+    -Dorg.gradle.caching=true
+    -Dorg.gradle.configuration-cache=true
+    -Dkotlin.incremental=true
+    -Dkotlin.compiler.execution.strategy=in-process
 
 jobs:
   validate:

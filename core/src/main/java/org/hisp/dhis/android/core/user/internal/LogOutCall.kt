@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
+import org.hisp.dhis.android.core.systeminfo.internal.ServerTimezoneManager
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -41,6 +42,7 @@ class LogOutCall internal constructor(
     private val databaseManager: DatabaseManager,
     private val credentialsSecureStore: CredentialsSecureStore,
     private val userIdStore: UserIdInMemoryStore,
+    private val serverTimezoneManager: ServerTimezoneManager,
 ) {
 
     fun logOut(): Completable {
@@ -56,6 +58,7 @@ class LogOutCall internal constructor(
             databaseManager.disableDatabase()
             credentialsSecureStore.remove()
             userIdStore.remove()
+            serverTimezoneManager.clearCache()
         }
     }
 }

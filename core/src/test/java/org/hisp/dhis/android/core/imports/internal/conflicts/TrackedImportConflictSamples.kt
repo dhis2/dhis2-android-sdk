@@ -166,6 +166,17 @@ object TrackedImportConflictSamples {
         )
     }
 
+    fun relationshipNotFound(relationshipUid: String): ImportConflict {
+        return ImportConflict.create(relationshipUid, "Relationship '$relationshipUid' not found.")
+    }
+
+    fun relationshipAlreadyDeleted(relationshipUid: String): ImportConflict {
+        return ImportConflict.create(
+            relationshipUid,
+            "Relationship '$relationshipUid' is already deleted and cannot be modified.",
+        )
+    }
+
     // Data value types
 
     fun valueNotNumeric(dataElementId: String): ImportConflict {

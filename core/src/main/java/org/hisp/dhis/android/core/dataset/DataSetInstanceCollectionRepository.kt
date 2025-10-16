@@ -35,9 +35,9 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyOneObjectRepositoryFinalImpl
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.dataset.internal.DataSetInstanceSQLStatementBuilder
 import org.hisp.dhis.android.core.dataset.internal.DataSetInstanceStore
 import org.hisp.dhis.android.core.period.PeriodType
+import org.hisp.dhis.android.persistence.common.querybuilders.DataSetInstanceSQLStatementBuilderImpl
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -72,34 +72,34 @@ class DataSetInstanceCollectionRepository internal constructor(
     }
 
     fun byDataSetUid(): StringFilterConnector<DataSetInstanceCollectionRepository> {
-        return cf.string(DataSetInstanceSQLStatementBuilder.DATASET_UID_ALIAS)
+        return cf.string(DataSetInstanceSQLStatementBuilderImpl.DATASET_UID_ALIAS)
     }
 
     fun byPeriod(): StringFilterConnector<DataSetInstanceCollectionRepository> {
-        return cf.string(DataSetInstanceSQLStatementBuilder.PERIOD_ALIAS)
+        return cf.string(DataSetInstanceSQLStatementBuilderImpl.PERIOD_ALIAS)
     }
 
     fun byPeriodType(): EnumFilterConnector<DataSetInstanceCollectionRepository, PeriodType> {
-        return cf.enumC(DataSetInstanceSQLStatementBuilder.PERIOD_TYPE_ALIAS)
+        return cf.enumC(DataSetInstanceSQLStatementBuilderImpl.PERIOD_TYPE_ALIAS)
     }
 
     fun byPeriodStartDate(): DateFilterConnector<DataSetInstanceCollectionRepository> {
-        return cf.date(DataSetInstanceSQLStatementBuilder.PERIOD_START_DATE_ALIAS)
+        return cf.date(DataSetInstanceSQLStatementBuilderImpl.PERIOD_START_DATE_ALIAS)
     }
 
     fun byPeriodEndDate(): DateFilterConnector<DataSetInstanceCollectionRepository> {
-        return cf.date(DataSetInstanceSQLStatementBuilder.PERIOD_END_DATE_ALIAS)
+        return cf.date(DataSetInstanceSQLStatementBuilderImpl.PERIOD_END_DATE_ALIAS)
     }
 
     fun byOrganisationUnitUid(): StringFilterConnector<DataSetInstanceCollectionRepository> {
-        return cf.string(DataSetInstanceSQLStatementBuilder.ORGANISATION_UNIT_UID_ALIAS)
+        return cf.string(DataSetInstanceSQLStatementBuilderImpl.ORGANISATION_UNIT_UID_ALIAS)
     }
 
     fun byAttributeOptionComboUid(): StringFilterConnector<DataSetInstanceCollectionRepository> {
-        return cf.string(DataSetInstanceSQLStatementBuilder.ATTRIBUTE_OPTION_COMBO_UID_ALIAS)
+        return cf.string(DataSetInstanceSQLStatementBuilderImpl.ATTRIBUTE_OPTION_COMBO_UID_ALIAS)
     }
 
     fun byState(): EnumFilterConnector<DataSetInstanceCollectionRepository, State> {
-        return cf.enumC(DataSetInstanceSQLStatementBuilder.STATE_ALIAS)
+        return cf.enumC(DataSetInstanceSQLStatementBuilderImpl.STATE_ALIAS)
     }
 }

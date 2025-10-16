@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,44 +25,42 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.querybuilders.internal;
+package org.hisp.dhis.android.core.imports.internal.conflicts
 
-import java.util.Collection;
+import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
+import org.junit.Test
 
-public class MultipleTableQueryBuilder {
+internal class RelationshipNotFoundConflictShould : BaseConflictShould() {
 
-    private static final String NOT_NULL = " IS NOT NULL";
-    private static final String SELECT = "SELECT ";
-    private static final String WHERE = " WHERE ";
-    private static final String FROM = " FROM ";
-    private static final String UNION = " UNION ";
-    private static final String END_STR = ";";
+    private val notFoundConflict = TrackedImportConflictSamples.relationshipNotFound(relationshipUid)
+    private val alreadyDeletedConflict = TrackedImportConflictSamples.relationshipAlreadyDeleted(relationshipUid)
 
-    @SuppressWarnings("PMD.AvoidStringBufferField")
-    private final StringBuilder clause = new StringBuilder();
-    private boolean isFirst = true;
-
-    public MultipleTableQueryBuilder generateQuery(String columnName, Collection<String> tableNames) {
-        for (String tableName : tableNames) {
-            appendKeyValue(columnName, tableName);
-        }
-        clause.append(END_STR);
-        return this;
+    @Test
+    fun match_not_found_error_message() {
+        assertThat(RelationshipNotFoundConflict.matches(notFoundConflict)).isTrue()
     }
 
-    private MultipleTableQueryBuilder appendKeyValue(String column, String tableName) {
-        String andOpt = isFirst ? "" : UNION;
-        isFirst = false;
-        clause.append(andOpt).append(SELECT).append(column).append(FROM).append(tableName)
-                .append(WHERE).append(column).append(NOT_NULL);
-        return this;
+    @Test
+    fun match_already_deleted_error_message() {
+        assertThat(RelationshipNotFoundConflict.matches(alreadyDeletedConflict)).isTrue()
     }
 
-    public String build() {
-        if (clause.length() == 0) {
-            throw new RuntimeException("No columns added");
-        } else {
-            return clause.toString();
-        }
+    @Test
+    fun match_relationship_uid_from_not_found() {
+        val value = RelationshipNotFoundConflict.getRelationship(notFoundConflict)
+        assertThat(value == relationshipUid).isTrue()
+    }
+
+    @Test
+    fun match_relationship_uid_from_already_deleted() {
+        val value = RelationshipNotFoundConflict.getRelationship(alreadyDeletedConflict)
+        assertThat(value == relationshipUid).isTrue()
+    }
+
+    @Test
+    fun create_display_description() = runTest {
+        val displayDescription = RelationshipNotFoundConflict.getDisplayDescription(notFoundConflict, context)
+        assertThat(displayDescription == "Your relationship $relationshipUid does not exist in the server").isTrue()
     }
 }

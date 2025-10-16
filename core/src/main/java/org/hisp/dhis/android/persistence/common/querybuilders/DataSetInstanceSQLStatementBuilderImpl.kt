@@ -29,15 +29,15 @@
 package org.hisp.dhis.android.persistence.common.querybuilders
 
 import androidx.room.RoomRawQuery
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl.Companion.getLimit
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl.Companion.getOffset
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.SQLStatementBuilderImpl.Companion.getOrderBy
 import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.persistence.category.CategoryOptionComboTableInfo
+import org.hisp.dhis.android.persistence.common.querybuilders.ReadOnlySQLStatementBuilderImpl.Companion.getLimit
+import org.hisp.dhis.android.persistence.common.querybuilders.ReadOnlySQLStatementBuilderImpl.Companion.getOffset
+import org.hisp.dhis.android.persistence.common.querybuilders.ReadOnlySQLStatementBuilderImpl.Companion.getOrderBy
 import org.hisp.dhis.android.persistence.dataelement.DataElementTableInfo
 import org.hisp.dhis.android.persistence.dataset.DataSetCompleteRegistrationTableInfo
 import org.hisp.dhis.android.persistence.dataset.DataSetDataElementLinkTableInfo

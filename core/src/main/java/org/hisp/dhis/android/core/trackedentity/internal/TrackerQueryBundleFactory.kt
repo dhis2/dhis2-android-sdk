@@ -30,8 +30,10 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.program.internal.ProgramStore
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListCollectionRepository
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterCollectionRepository
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -40,6 +42,8 @@ internal class TrackerQueryBundleFactory(
     programSettingsObjectRepository: ProgramSettingsObjectRepository,
     lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager,
     commonHelper: TrackerQueryFactoryCommonHelper,
+    programStageWorkingListObjectRepository: ProgramStageWorkingListCollectionRepository,
+    trackedEntityInstanceFilterCollectionRepository: TrackedEntityInstanceFilterCollectionRepository,
 ) : TrackerQueryFactory<TrackerQueryBundle, TrackedEntityInstanceSync>(
     programStore,
     programSettingsObjectRepository,
@@ -49,6 +53,12 @@ internal class TrackerQueryBundleFactory(
     { params: ProgramDataDownloadParams,
             programSettings: ProgramSettings?,
         ->
-        TrackerQueryBundleInternalFactory(commonHelper, params, programSettings)
+        TrackerQueryBundleInternalFactory(
+            commonHelper,
+            params,
+            programSettings,
+            programStageWorkingListObjectRepository,
+            trackedEntityInstanceFilterCollectionRepository,
+        )
     },
 )

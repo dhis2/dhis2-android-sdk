@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerQueryHelper.getOrgunits
 import org.hisp.dhis.android.core.util.simpleDateFormat
+import org.hisp.dhis.android.network.common.fields.Fields
 import org.koin.core.annotation.Singleton
 import java.net.HttpURLConnection.HTTP_CONFLICT
 
@@ -83,13 +84,25 @@ internal class EventNetworkHandlerImpl(
         return apiPayload.mapItems { it.toDomain() }
     }
 
-    override suspend fun getEventQueryForOrgunit(
+    override suspend fun getEventQueryCall(
         query: TrackedEntityInstanceQueryOnline,
-        orgunit: String?,
+    ): Payload<Event> {
+        return getEventQueryForSearchInternal(query, EventFields.allFields)
+    }
+
+    override suspend fun getEventQueryForSearch(
+        query: TrackedEntityInstanceQueryOnline,
+    ): List<Event> {
+        return getEventQueryForSearchInternal(query, EventFields.teiQueryFields).items
+    }
+
+    private suspend fun getEventQueryForSearchInternal(
+        query: TrackedEntityInstanceQueryOnline,
+        fields: Fields<Event>,
     ): Payload<Event> {
         val apiPayload = service.getEvents(
-            fields = EventFields.teiQueryFields,
-            orgUnit = getOrgunits(orgunit, query.orgUnitMode)?.firstOrNull(),
+            fields = fields,
+            orgUnit = getOrgunits(query)?.firstOrNull(),
             orgUnitMode = query.orgUnitMode?.toString(),
             status = query.eventStatus?.toString(),
             program = query.program,

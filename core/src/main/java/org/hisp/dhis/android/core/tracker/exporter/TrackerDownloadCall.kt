@@ -56,7 +56,6 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
     private val relationshipDownloadAndPersistCallFactory: RelationshipDownloadAndPersistCallFactory,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) {
-
     fun download(params: ProgramDataDownloadParams): Flow<TrackerD2Progress> = channelFlow {
         val progressManager = TrackerD2ProgressManager(null)
         if (userOrganisationUnitLinkStore.count() == 0) {
@@ -187,13 +186,17 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                 if (bundleResult.bundleCount < bundle.commonParams().limit) {
                     val trackerQuery = getQuery(bundle, bundleProgram.program, orgUnitUid, limit)
 
-                    val result = getItemsForOrgUnitProgramCombination(
-                        trackerQuery,
-                        limit,
-                        bundleProgram.itemCount,
-                        params.overwrite(),
-                        relatives,
-                    )
+                    val result = if (trackerQuery != null) {
+                        getItemsForOrgUnitProgramCombination(
+                            trackerQuery,
+                            limit,
+                            bundleProgram.itemCount,
+                            params.overwrite(),
+                            relatives,
+                        )
+                    } else {
+                        ItemsWithPagingResult(0, true, null, false)
+                    }
 
                     bundleResult.bundleCount += result.count
                     bundleProgram.itemCount += result.count
@@ -276,33 +279,57 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         var downloadedItemsForCombination = 0
         var emptyProgram = false
 
-        val pagingList = ApiPagingEngine.getPaginationList(query.pageSize, combinationLimit, downloadedCount)
+        val callPages: List<TrackerDownloadCallPage<T>> =
+            if (query.uids.isNotEmpty()) {
+                val targetQueries = query.uids.drop(downloadedCount)
+                val uidChunks = targetQueries.chunked(query.pageSize)
 
-        for (paging in pagingList) {
-            val pageQuery = query.copy(
-                pageSize = paging.pageSize,
-                page = paging.page,
-            )
+                uidChunks.map { uidChunk ->
+                    val pageQuery = query.copy(
+                        uids = uidChunk,
+                        pageSize = uidChunk.size,
+                        page = 1,
+                    )
 
-            val items = getItems(pageQuery)
+                    TrackerDownloadCallPage(pageQuery)
+                }
+            } else {
+                val pagingList = ApiPagingEngine.getPaginationList(query.pageSize, combinationLimit, downloadedCount)
 
-            val itemsToPersist = getItemsToPersist(paging, items)
+                pagingList.map { paging ->
+                    val pageQuery = query.copy(
+                        pageSize = paging.pageSize,
+                        page = paging.page,
+                    )
+
+                    TrackerDownloadCallPage(pageQuery) { list -> getItemsToPersist(paging, list) }
+                }
+            }
+
+        for (callPage in callPages) {
+            val items = getItems(callPage.query)
+
+            val itemsToPersist = callPage.itemsToPersist(items)
 
             val persistParams = IdentifiableDataHandlerParams(
                 hasAllAttributes = true,
                 overwrite = overwrite,
                 asRelationship = false,
-                program = pageQuery.commonParams.program,
+                program = callPage.query.commonParams.program,
             )
 
             persistItems(itemsToPersist, persistParams, relatives)
 
             downloadedItemsForCombination += itemsToPersist.size
 
-            if (items.size < paging.pageSize) {
+            if (items.size < callPage.query.pageSize) {
                 emptyProgram = true
                 break
             }
+        }
+
+        if (downloadedItemsForCombination < combinationLimit) {
+            emptyProgram = true
         }
 
         return ItemsWithPagingResult(downloadedItemsForCombination, true, null, emptyProgram)
@@ -310,11 +337,9 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
 
     private fun getItemsToPersist(paging: Paging, pageItems: List<T>): List<T> {
         return if (paging.isFullPage && pageItems.size > paging.previousItemsToSkipCount) {
-            val toIndex = min(
-                pageItems.size,
-                paging.pageSize - paging.posteriorItemsToSkipCount,
-            )
-            pageItems.subList(paging.previousItemsToSkipCount, toIndex)
+            pageItems
+                .drop(paging.previousItemsToSkipCount)
+                .dropLast(paging.posteriorItemsToSkipCount)
         } else {
             pageItems
         }
@@ -388,5 +413,5 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         program: String?,
         orgunitUid: String?,
         limit: Int,
-    ): TrackerAPIQuery
+    ): TrackerAPIQuery?
 }

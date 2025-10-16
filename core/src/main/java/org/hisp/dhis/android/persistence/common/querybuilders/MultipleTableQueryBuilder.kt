@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,24 +25,47 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.call.processors.internal
 
-import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor.Companion.create
-import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
-import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.resource.internal.Resource
+package org.hisp.dhis.android.persistence.common.querybuilders
 
-internal class TransactionalResourceSyncCallProcessor<O>(
-    private val data: GenericCallData,
-    private val handler: Handler<O>,
-    private val resourceType: Resource.Type,
-) : CallProcessor<O> {
-    @Throws(D2Error::class)
-    override suspend fun process(objectList: List<O>) {
-        create(data.databaseAdapter).executeD2Call {
-            handler.handleMany(objectList)
-            data.handleResource(resourceType)
+@Suppress("TooGenericExceptionThrown")
+internal class MultipleTableQueryBuilder {
+    private val clause = StringBuilder()
+    private var isFirst = true
+
+    fun generateQuery(
+        columnName: String?,
+        tableNames: List<String?>,
+    ): MultipleTableQueryBuilder {
+        for (tableName in tableNames) {
+            appendKeyValue(columnName, tableName)
         }
+        clause.append(END_STR)
+        return this
+    }
+
+    private fun appendKeyValue(column: String?, tableName: String?): MultipleTableQueryBuilder {
+        val andOpt = if (isFirst) "" else UNION
+        isFirst = false
+        clause.append(andOpt).append(SELECT).append(column).append(FROM).append(tableName)
+            .append(WHERE).append(column).append(NOT_NULL)
+        return this
+    }
+
+    fun build(): String {
+        if (clause.length == 0) {
+            throw RuntimeException("No columns added")
+        } else {
+            return clause.toString()
+        }
+    }
+
+    companion object {
+        private const val NOT_NULL = " IS NOT NULL"
+        private const val SELECT = "SELECT "
+        private const val WHERE = " WHERE "
+        private const val FROM = " FROM "
+        private const val UNION = " UNION "
+        private const val END_STR = ";"
     }
 }

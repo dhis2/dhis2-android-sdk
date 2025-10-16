@@ -33,13 +33,23 @@ import androidx.annotation.Nullable;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList;
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
 import org.hisp.dhis.android.core.tracker.exporter.BaseTrackerQueryBundle;
+
+import java.util.List;
 
 @AutoValue
 public abstract class TrackerQueryBundle extends BaseTrackerQueryBundle {
 
     @Nullable
     public abstract EnrollmentStatus programStatus();
+
+    @Nullable
+    public abstract List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters();
+
+    @Nullable
+    public abstract List<ProgramStageWorkingList> programStageWorkingLists();
 
     public static Builder builder() {
         return new AutoValue_TrackerQueryBundle.Builder();
@@ -49,6 +59,12 @@ public abstract class TrackerQueryBundle extends BaseTrackerQueryBundle {
     public abstract static class Builder extends BaseTrackerQueryBundle.Builder<Builder> {
 
         public abstract Builder programStatus(EnrollmentStatus programStatus);
+
+        public abstract Builder trackedEntityInstanceFilters(
+                List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters);
+
+        public abstract Builder programStageWorkingLists(
+                List<ProgramStageWorkingList> programStageWorkingLists);
 
         public abstract TrackerQueryBundle build();
     }

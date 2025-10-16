@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.core.icon.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQueryBuilder
 import org.hisp.dhis.android.core.arch.db.uidseeker.internal.BaseUidsSeeker
 import org.hisp.dhis.android.core.common.NameableWithStyleColumns
 import org.hisp.dhis.android.core.common.objectstyle.internal.TableWithObjectStyle
 import org.hisp.dhis.android.core.icon.DefaultIcon
+import org.hisp.dhis.android.persistence.common.querybuilders.MultipleTableQueryBuilder
 import org.koin.core.annotation.Singleton
 
 @Singleton

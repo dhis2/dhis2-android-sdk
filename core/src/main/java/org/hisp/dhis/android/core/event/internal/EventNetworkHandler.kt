@@ -40,10 +40,10 @@ import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 internal interface EventNetworkHandler {
     suspend fun postEvents(events: List<Event>, strategy: String): Result<EventWebResponse, D2Error>
     suspend fun getCollectionCall(eventQuery: TrackerAPIQuery): Payload<Event>
-    suspend fun getEventQueryForOrgunit(
+    suspend fun getEventQueryCall(query: TrackedEntityInstanceQueryOnline): Payload<Event>
+    suspend fun getEventQueryForSearch(
         query: TrackedEntityInstanceQueryOnline,
-        orgunit: String?,
-    ): Payload<Event>
+    ): List<Event>
 
     suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Payload<Event>
     suspend fun getEvent(

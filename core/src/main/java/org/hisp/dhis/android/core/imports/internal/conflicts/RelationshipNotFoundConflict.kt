@@ -25,10 +25,46 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.imports.internal.conflicts
 
-package org.hisp.dhis.android.persistence.common
+import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
-internal interface EntityWithUpdateQuery {
-    fun getUpdateQuery(dbObject: EntityDB<*>): String
-    fun getDeleteQuery(dbObject: EntityDB<*>): String
+internal object RelationshipNotFoundConflict : TrackerImportConflictItem {
+
+    private val notFoundRegex: Regex = Regex("Relationship '(\\w{11})' not found\\.")
+    private val alreadyDeletedRegex: Regex = Regex(
+        "Relationship '(\\w{11})' is already deleted and cannot be modified\\.",
+    )
+
+    private fun description(relationshipUid: String) =
+        "Your relationship $relationshipUid does not exist in the server"
+
+    override val errorCode: String = "E4017"
+
+    override fun matches(conflict: ImportConflict): Boolean {
+        return matchesString(conflict.value())
+    }
+
+    /**
+     * Checks if the given string matches the relationship not found or already deleted patterns.
+     * This is used by both conflict matching and description field checking.
+     */
+    fun matchesString(value: String): Boolean {
+        return notFoundRegex.matches(value) || alreadyDeletedRegex.matches(value)
+    }
+
+    fun getRelationship(conflict: ImportConflict): String? {
+        return notFoundRegex.find(conflict.value())?.groupValues?.get(1)
+            ?: alreadyDeletedRegex.find(conflict.value())?.groupValues?.get(1)
+    }
+
+    override suspend fun getDisplayDescription(
+        conflict: ImportConflict,
+        context: TrackerImportConflictItemContext,
+    ): String {
+        return getRelationship(conflict)?.let { relationshipUid ->
+            description(relationshipUid)
+        }
+            ?: conflict.value()
+    }
 }

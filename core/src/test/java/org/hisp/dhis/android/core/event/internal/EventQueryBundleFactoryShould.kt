@@ -29,13 +29,20 @@ package org.hisp.dhis.android.core.event.internal
 
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.event.EventFilter
+import org.hisp.dhis.android.core.event.EventFilterCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStore
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
-import org.hisp.dhis.android.core.settings.*
+import org.hisp.dhis.android.core.settings.DownloadPeriod
+import org.hisp.dhis.android.core.settings.LimitScope
+import org.hisp.dhis.android.core.settings.ProgramSetting
+import org.hisp.dhis.android.core.settings.ProgramSettings
+import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryFactoryCommonHelper
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 import org.junit.Assert.fail
@@ -57,10 +64,17 @@ class EventQueryBundleFactoryShould {
     private val lastUpdatedManager: EventLastUpdatedManager = mock()
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore = mock()
     private val organisationUnitProgramLinkLinkStore: OrganisationUnitProgramLinkStore = mock()
+    private val eventFilterCollectionRepository: EventFilterCollectionRepository = mock()
+    private val connectorEvent: StringFilterConnector<EventFilterCollectionRepository> = mock()
 
     private val p1 = "program1"
     private val p2 = "program2"
     private val p3 = "program3"
+    private val f1 = EventFilter.builder()
+        .uid("filter1")
+        .program(p1)
+        .build()
+
     private val ou1 = "ou1"
     private val ou1c1 = "ou1.1"
     private val ou2 = "ou2"
@@ -84,6 +98,10 @@ class EventQueryBundleFactoryShould {
 
         whenever(programSettingsObjectRepository.blockingGet()).thenReturn(programSettings)
 
+        whenever(eventFilterCollectionRepository.byUid()).thenReturn(connectorEvent)
+        whenever(connectorEvent.`in`(null)).thenReturn(eventFilterCollectionRepository)
+        whenever(eventFilterCollectionRepository.blockingGet()).thenReturn(emptyList())
+
         val commonHelper = TrackerQueryFactoryCommonHelper(
             userOrganisationUnitLinkStore,
             organisationUnitProgramLinkLinkStore,
@@ -93,6 +111,7 @@ class EventQueryBundleFactoryShould {
             programSettingsObjectRepository,
             lastUpdatedManager,
             commonHelper,
+            eventFilterCollectionRepository,
         )
     }
 
@@ -130,6 +149,17 @@ class EventQueryBundleFactoryShould {
                 }
             }
         }
+    }
+
+    @Test
+    fun single_query_if_event_filter_provided_by_user() = runTest {
+        val params = ProgramDataDownloadParams.builder().limit(5000)
+            .eventFilters(listOf(f1)).build()
+        val queries = bundleFactory.getQueries(params)
+        assertThat(queries.size).isEqualTo(1)
+        val query = queries.first()
+        assertThat(query.eventFilters()?.size).isEqualTo(1)
+        assertThat(query.eventFilters()?.first()).isEqualTo(f1)
     }
 
     @Test

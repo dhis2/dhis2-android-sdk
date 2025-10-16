@@ -35,10 +35,10 @@ import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
 import org.hisp.dhis.android.core.util.SqlAggregator
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.persistence.event.EventTableInfo
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeValueTableInfo
@@ -252,7 +252,7 @@ internal class EventDataItemSQLEvaluator(
                     is DimensionItem.DataItem.EventDataItem.DataElement -> {
                         val operandClause = WhereClauseBuilder()
                             .appendKeyStringValue(
-                                "$DataValueAlias.${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT}",
+                                "$DataValueAlias.${dvColumns.DATA_ELEMENT}",
                                 item.dataElement,
                             )
                             .appendKeyStringValue(
@@ -260,7 +260,7 @@ internal class EventDataItemSQLEvaluator(
                                 item.program,
                             )
                             .appendIsNotNullValue(
-                                "$DataValueAlias.${TrackedEntityDataValueTableInfo.Columns.VALUE}",
+                                "$DataValueAlias.${dvColumns.VALUE}",
                             )
                             .build()
                         innerBuilder.appendOrComplexQuery(operandClause)
@@ -269,7 +269,7 @@ internal class EventDataItemSQLEvaluator(
                     is DimensionItem.DataItem.EventDataItem.Attribute -> {
                         val operandClause = WhereClauseBuilder()
                             .appendKeyStringValue(
-                                "$AttAlias.${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE}",
+                                "$AttAlias.${tavColumns.TRACKED_ENTITY_ATTRIBUTE}",
                                 item.attribute,
                             )
                             .appendKeyStringValue(
@@ -277,7 +277,7 @@ internal class EventDataItemSQLEvaluator(
                                 item.program,
                             )
                             .appendIsNotNullValue(
-                                "$AttAlias.${TrackedEntityAttributeValueTableInfo.Columns.VALUE}",
+                                "$AttAlias.${tavColumns.VALUE}",
                             )
                             .build()
                         innerBuilder.appendOrComplexQuery(operandClause)
@@ -286,7 +286,7 @@ internal class EventDataItemSQLEvaluator(
                     is DimensionItem.DataItem.EventDataItem.DataElementOption -> {
                         val operandClause = WhereClauseBuilder()
                             .appendKeyStringValue(
-                                "$DataValueAlias.${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT}",
+                                "$DataValueAlias.${dvColumns.DATA_ELEMENT}",
                                 item.dataElement,
                             )
                             .appendKeyStringValue(
@@ -294,11 +294,11 @@ internal class EventDataItemSQLEvaluator(
                                 item.program,
                             )
                             .appendKeyStringValue(
-                                "$DataValueAlias.${TrackedEntityDataValueTableInfo.Columns.VALUE}",
+                                "$DataValueAlias.${dvColumns.VALUE}",
                                 (metadata[item.id] as MetadataItem.EventDataElementOptionItem).option.code()!!,
                             )
                             .appendIsNotNullValue(
-                                "$DataValueAlias.${TrackedEntityDataValueTableInfo.Columns.VALUE}",
+                                "$DataValueAlias.${dvColumns.VALUE}",
                             )
                             .build()
                         innerBuilder.appendOrComplexQuery(operandClause)
@@ -307,7 +307,7 @@ internal class EventDataItemSQLEvaluator(
                     is DimensionItem.DataItem.EventDataItem.AttributeOption -> {
                         val operandClause = WhereClauseBuilder()
                             .appendKeyStringValue(
-                                "$AttAlias.${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE}",
+                                "$AttAlias.${tavColumns.TRACKED_ENTITY_ATTRIBUTE}",
                                 item.attribute,
                             )
                             .appendKeyStringValue(
@@ -315,11 +315,11 @@ internal class EventDataItemSQLEvaluator(
                                 item.program,
                             )
                             .appendKeyStringValue(
-                                "$AttAlias.${TrackedEntityAttributeValueTableInfo.Columns.VALUE}",
+                                "$AttAlias.${tavColumns.VALUE}",
                                 (metadata[item.id] as MetadataItem.EventAttributeOptionItem).option.code()!!,
                             )
                             .appendIsNotNullValue(
-                                "$AttAlias.${TrackedEntityAttributeValueTableInfo.Columns.VALUE}",
+                                "$AttAlias.${tavColumns.VALUE}",
                             )
                             .build()
                         innerBuilder.appendOrComplexQuery(operandClause)

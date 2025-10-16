@@ -77,8 +77,8 @@ internal fun DataValue.toDto(): DataValueDTO {
         attributeOptionCombo = this.attributeOptionCombo()!!,
         value = this.value(),
         storedBy = this.storedBy(),
-        created = this.created()?.let { DateUtils.DATE_FORMAT.format(it) },
-        lastUpdated = this.lastUpdated()?.let { DateUtils.DATE_FORMAT.format(it) },
+        created = null,
+        lastUpdated = null,
         comment = this.comment(),
         followup = this.followUp(),
     )

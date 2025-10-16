@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,29 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.querybuilders.internal;
 
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem;
+package org.hisp.dhis.android.persistence.common.querybuilders
 
-import java.util.ArrayList;
-import java.util.List;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem
 
-public final class OrderByClauseBuilder {
-
-    public static String orderByFromItems(List<RepositoryScopeOrderByItem> orderByItems) {
-        List<String> stringList = new ArrayList<>(orderByItems.size());
-        for (RepositoryScopeOrderByItem item: orderByItems) {
-            stringList.add(item.toSQLString());
+internal object OrderByClauseBuilder {
+    fun orderByFromItems(orderByItems: List<RepositoryScopeOrderByItem>): String? {
+        val stringList: MutableList<String> = ArrayList<String>(orderByItems.size)
+        for (item in orderByItems) {
+            stringList.add(item.toSQLString())
         }
 
-        if (stringList.isEmpty()) {
-            return null;
+        return if (stringList.isEmpty()) {
+            null
         } else {
-            return CollectionsHelper.commaAndSpaceSeparatedCollectionValues(stringList);
+            CollectionsHelper.commaAndSpaceSeparatedCollectionValues(stringList)
         }
-    }
-
-    private OrderByClauseBuilder() {
     }
 }

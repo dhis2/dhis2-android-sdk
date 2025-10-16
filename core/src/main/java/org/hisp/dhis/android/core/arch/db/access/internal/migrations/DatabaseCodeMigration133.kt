@@ -31,8 +31,8 @@ package org.hisp.dhis.android.core.arch.db.access.internal.migrations
 import android.util.Log
 import androidx.sqlite.db.SimpleSQLiteQuery
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.valuetype.validation.validators.NumberValidatorBase
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 
 internal class DatabaseCodeMigration133(private val databaseAdapter: DatabaseAdapter) : DatabaseCodeMigration {
     override suspend fun migrate() {

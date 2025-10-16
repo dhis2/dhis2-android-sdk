@@ -37,7 +37,6 @@ import org.hisp.dhis.android.persistence.category.CategoryOptionTableInfo
 
 internal object CategoryOptionFields : BaseFields<CategoryOption>() {
     private const val ACCESS = "access"
-    internal const val ORGANISATION_UNITS = "organisationUnits"
     val uid = fh.uid()
 
     val allFields = Fields.from(

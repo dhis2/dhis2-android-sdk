@@ -46,11 +46,4 @@ object UserInternalAccessor {
     fun accessTeiSearchOrganisationUnits(user: User): List<OrganisationUnit>? {
         return user.teiSearchOrganisationUnits()
     }
-
-    fun insertTeiSearchOrganisationUnits(
-        builder: User.Builder,
-        teiSearchOrganisationUnits: List<OrganisationUnit?>?,
-    ): User.Builder {
-        return builder.teiSearchOrganisationUnits(teiSearchOrganisationUnits)
-    }
 }

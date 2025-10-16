@@ -129,7 +129,7 @@ internal class TrackedEntityInstanceQueryOnlineHelper(
     companion object {
 
         fun toAPIOrderFormat(
-            orders: List<TrackedEntityInstanceQueryScopeOrderByItem>,
+            orders: List<QueryScopeOrderByItem>,
             version: TrackerExporterVersion,
         ): String? {
             val apiOrders = orders.mapNotNull { it.toAPIString(version) }

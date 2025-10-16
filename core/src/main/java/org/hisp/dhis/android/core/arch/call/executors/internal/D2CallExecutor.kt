@@ -48,6 +48,21 @@ internal class D2CallExecutor(
         .errorComponent(D2ErrorComponent.SDK)
 
     @Throws(D2Error::class)
+    @Suppress("TooGenericExceptionCaught")
+    override suspend fun <C> executeD2Call(call: suspend () -> C): C {
+        try {
+            return call()
+        } catch (d2E: D2Error) {
+            throw d2E
+        } catch (e: Exception) {
+            Log.e(this.javaClass.simpleName, e.toString())
+            throw exceptionBuilder
+                .errorCode(D2ErrorCode.UNEXPECTED)
+                .errorDescription("Unexpected error calling $call").build()
+        }
+    }
+
+    @Throws(D2Error::class)
     override suspend fun <C> executeD2CallTransactionally(call: suspend () -> C): C {
         try {
             return innerExecuteD2CallTransactionally(call)

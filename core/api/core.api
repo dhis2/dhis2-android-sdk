@@ -1765,16 +1765,6 @@ public abstract interface class org/hisp/dhis/android/core/arch/db/access/intern
 	public abstract fun encryptAndCopyTo (Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;Ljava/io/File;Ljava/io/File;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public class org/hisp/dhis/android/core/arch/db/querybuilders/internal/MultipleTableQueryBuilder {
-	public fun <init> ()V
-	public fun build ()Ljava/lang/String;
-	public fun generateQuery (Ljava/lang/String;Ljava/util/Collection;)Lorg/hisp/dhis/android/core/arch/db/querybuilders/internal/MultipleTableQueryBuilder;
-}
-
-public final class org/hisp/dhis/android/core/arch/db/querybuilders/internal/OrderByClauseBuilder {
-	public static fun orderByFromItems (Ljava/util/List;)Ljava/lang/String;
-}
-
 public final class org/hisp/dhis/android/core/arch/db/sqlorder/internal/SQLOrderType : java/lang/Enum {
 	public static final field ASC Lorg/hisp/dhis/android/core/arch/db/sqlorder/internal/SQLOrderType;
 	public static final field DESC Lorg/hisp/dhis/android/core/arch/db/sqlorder/internal/SQLOrderType;
@@ -2079,7 +2069,6 @@ public abstract interface class org/hisp/dhis/android/core/arch/repositories/col
 public abstract class org/hisp/dhis/android/core/arch/repositories/collection/internal/BaseReadOnlyWithUidCollectionRepositoryImpl : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyCollectionRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUidCollectionRepository {
 	public fun blockingGetUids ()Ljava/util/List;
 	public fun getUids ()Lio/reactivex/Single;
-	protected final fun getUidsInternal (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public class org/hisp/dhis/android/core/arch/repositories/collection/internal/BaseRepositoryImpl : org/hisp/dhis/android/core/arch/repositories/collection/BaseRepository {
@@ -2101,7 +2090,6 @@ public class org/hisp/dhis/android/core/arch/repositories/collection/internal/Re
 	public fun getPagingData (I)Lkotlinx/coroutines/flow/Flow;
 	protected final fun getWhereClause ()Ljava/lang/String;
 	public fun isEmpty ()Lio/reactivex/Single;
-	protected final fun isEmptyProtected (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun one ()Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository;
 	public fun one ()Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyOneObjectRepositoryFinalImpl;
 }
@@ -4814,55 +4802,6 @@ public final class org/hisp/dhis/android/core/dataset/TextAlign : java/lang/Enum
 public final class org/hisp/dhis/android/core/dataset/TextAlign$Companion {
 }
 
-public class org/hisp/dhis/android/core/dataset/internal/DataSetInstanceSQLStatementBuilder : org/hisp/dhis/android/core/arch/db/querybuilders/internal/ReadOnlySQLStatementBuilder {
-	public static final field AS Ljava/lang/String;
-	public static final field ATTRIBUTE_OPTION_COMBO_UID_ALIAS Ljava/lang/String;
-	public static final field COMPLETION_STATE_ALIAS Ljava/lang/String;
-	public static final field Companion Lorg/hisp/dhis/android/core/dataset/internal/DataSetInstanceSQLStatementBuilder$Companion;
-	public static final field DATASET_NAME_ALIAS Ljava/lang/String;
-	public static final field DATASET_UID_ALIAS Ljava/lang/String;
-	public static final field LAST_UPDATED_ALIAS Ljava/lang/String;
-	public static final field ORGANISATION_UNIT_UID_ALIAS Ljava/lang/String;
-	public static final field PERIOD_ALIAS Ljava/lang/String;
-	public static final field PERIOD_END_DATE_ALIAS Ljava/lang/String;
-	public static final field PERIOD_START_DATE_ALIAS Ljava/lang/String;
-	public static final field PERIOD_TYPE_ALIAS Ljava/lang/String;
-	public static final field STATE_ALIAS Ljava/lang/String;
-	public static final field VALUE_COUNT_ALIAS Ljava/lang/String;
-	public static final field VALUE_STATE_ALIAS Ljava/lang/String;
-	public fun <init> ()V
-	public fun count ()Ljava/lang/String;
-	public fun countAndGroupBy (Ljava/lang/String;)Ljava/lang/String;
-	public fun countWhere (Ljava/lang/String;)Ljava/lang/String;
-	public fun selectAll ()Ljava/lang/String;
-	public fun selectOneOrderedBy (Ljava/lang/String;Lorg/hisp/dhis/android/core/arch/db/sqlorder/internal/SQLOrderType;)Ljava/lang/String;
-	public fun selectWhere (Ljava/lang/String;)Ljava/lang/String;
-	public fun selectWhere (Ljava/lang/String;I)Ljava/lang/String;
-	public fun selectWhere (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
-	public fun selectWhere (Ljava/lang/String;Ljava/lang/String;I)Ljava/lang/String;
-	public fun selectWhere (Ljava/lang/String;Ljava/lang/String;ILjava/lang/Integer;)Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/dataset/internal/DataSetInstanceSQLStatementBuilder$Companion {
-}
-
-public final class org/hisp/dhis/android/core/dataset/internal/DataSetInstanceSummarySQLStatementBuilder : org/hisp/dhis/android/core/dataset/internal/DataSetInstanceSQLStatementBuilder {
-	public static final field Companion Lorg/hisp/dhis/android/core/dataset/internal/DataSetInstanceSummarySQLStatementBuilder$Companion;
-	public fun <init> ()V
-	public fun count ()Ljava/lang/String;
-	public fun countWhere (Ljava/lang/String;)Ljava/lang/String;
-	public fun selectAll ()Ljava/lang/String;
-	public fun selectOneOrderedBy (Ljava/lang/String;Lorg/hisp/dhis/android/core/arch/db/sqlorder/internal/SQLOrderType;)Ljava/lang/String;
-	public fun selectWhere (Ljava/lang/String;)Ljava/lang/String;
-	public fun selectWhere (Ljava/lang/String;I)Ljava/lang/String;
-	public fun selectWhere (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
-	public fun selectWhere (Ljava/lang/String;Ljava/lang/String;I)Ljava/lang/String;
-	public fun selectWhere (Ljava/lang/String;Ljava/lang/String;ILjava/lang/Integer;)Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/dataset/internal/DataSetInstanceSummarySQLStatementBuilder$Companion {
-}
-
 public final class org/hisp/dhis/android/core/dataset/internal/DataSetModuleImpl : org/hisp/dhis/android/core/dataset/DataSetModule {
 	public fun <init> (Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistrationCollectionRepository;Lorg/hisp/dhis/android/core/dataset/DataSetCollectionRepository;Lorg/hisp/dhis/android/core/dataset/SectionCollectionRepository;Lorg/hisp/dhis/android/core/dataapproval/DataApprovalCollectionRepository;Lorg/hisp/dhis/android/core/dataset/DataSetInstanceCollectionRepository;Lorg/hisp/dhis/android/core/dataset/DataSetInstanceSummaryCollectionRepository;Lorg/hisp/dhis/android/core/dataset/DataSetInstanceService;)V
 	public fun dataApprovals ()Lorg/hisp/dhis/android/core/dataapproval/DataApprovalCollectionRepository;
@@ -5496,6 +5435,7 @@ public final class org/hisp/dhis/android/core/event/EventDownloader : org/hisp/d
 	public final fun byProgramUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/EventDownloader;
 	public final fun byUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/ListFilterConnector;
 	public final fun download ()Lio/reactivex/Observable;
+	public final fun getEventFilterCollectionRepository ()Lorg/hisp/dhis/android/core/event/EventFilterCollectionRepository;
 	public final fun limit (I)Lorg/hisp/dhis/android/core/event/EventDownloader;
 	public final fun limitByOrgunit (Z)Lorg/hisp/dhis/android/core/event/EventDownloader;
 	public final fun limitByProgram (Z)Lorg/hisp/dhis/android/core/event/EventDownloader;
@@ -5721,10 +5661,11 @@ public abstract class org/hisp/dhis/android/core/event/search/EventQueryReposito
 	public abstract fun trackedEntityInstance ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/event/search/EventQueryScopeOrderByItem {
+public abstract class org/hisp/dhis/android/core/event/search/EventQueryScopeOrderByItem : org/hisp/dhis/android/core/trackedentity/search/QueryScopeOrderByItem {
 	public fun <init> ()V
 	public abstract fun column ()Lorg/hisp/dhis/android/core/event/search/EventQueryScopeOrderColumn;
 	public abstract fun direction ()Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;
+	public fun toAPIString (Lorg/hisp/dhis/android/core/tracker/TrackerExporterVersion;)Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
@@ -6824,6 +6765,7 @@ public final class org/hisp/dhis/android/core/mockwebserver/Dhis2MockServer {
 	public final fun setDhis2Dispatcher ()V
 	public final fun setRequestDispatcher ()V
 	public final fun shutdown ()V
+	public final fun takeLastRequest ()Lokhttp3/mockwebserver/RecordedRequest;
 	public final fun takeRequest ()Lokhttp3/mockwebserver/RecordedRequest;
 }
 
@@ -8172,7 +8114,7 @@ public abstract class org/hisp/dhis/android/core/program/internal/ProgramDataDow
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
 	public abstract fun eventFilters ()Ljava/util/List;
-	public abstract fun filterUids ()Ljava/util/List;
+	public fun hasProgramOrFilters ()Z
 	public abstract fun limit ()Ljava/lang/Integer;
 	public abstract fun limitByOrgunit ()Ljava/lang/Boolean;
 	public abstract fun limitByProgram ()Ljava/lang/Boolean;
@@ -8194,7 +8136,6 @@ public abstract class org/hisp/dhis/android/core/program/internal/ProgramDataDow
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams;
 	public abstract fun eventFilters (Ljava/util/List;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
-	public abstract fun filterUids (Ljava/util/List;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
 	public abstract fun limit (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
 	public abstract fun limitByOrgunit (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
 	public abstract fun limitByProgram (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
@@ -9170,17 +9111,13 @@ public final class org/hisp/dhis/android/core/settings/CustomIntentCollectionRep
 
 public final class org/hisp/dhis/android/core/settings/CustomIntentContext {
 	public fun <init> ()V
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/lang/String;
-	public final fun component2 ()Ljava/lang/String;
-	public final fun component3 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntentContext;
-	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/settings/CustomIntentContext;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/settings/CustomIntentContext;
+	public final fun copy (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntentContext;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/settings/CustomIntentContext;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/settings/CustomIntentContext;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getOrgunitUid ()Ljava/lang/String;
-	public final fun getProgramStageUid ()Ljava/lang/String;
-	public final fun getProgramUid ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -10948,6 +10885,8 @@ public final class org/hisp/dhis/android/core/trackedentity/internal/TrackedEnti
 	public final fun byTrackedEntityInstanceFilter ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/ListFilterConnector;
 	public final fun byUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/ListFilterConnector;
 	public final fun download ()Lio/reactivex/Observable;
+	public final fun getProgramStageWorkingListObjectRepository ()Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListCollectionRepository;
+	public final fun getTrackedEntityInstanceFilterCollectionRepository ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceFilterCollectionRepository;
 	public final fun limit (I)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceDownloader;
 	public final fun limitByOrgunit (Z)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceDownloader;
 	public final fun limitByProgram (Z)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceDownloader;
@@ -10999,13 +10938,17 @@ public class org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSyncCo
 public abstract class org/hisp/dhis/android/core/trackedentity/internal/TrackerQueryBundle : org/hisp/dhis/android/core/tracker/exporter/BaseTrackerQueryBundle {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/internal/TrackerQueryBundle$Builder;
+	public abstract fun programStageWorkingLists ()Ljava/util/List;
 	public abstract fun programStatus ()Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;
+	public abstract fun trackedEntityInstanceFilters ()Ljava/util/List;
 }
 
 public abstract class org/hisp/dhis/android/core/trackedentity/internal/TrackerQueryBundle$Builder : org/hisp/dhis/android/core/tracker/exporter/BaseTrackerQueryBundle$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/trackedentity/internal/TrackerQueryBundle;
+	public abstract fun programStageWorkingLists (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackerQueryBundle$Builder;
 	public abstract fun programStatus (Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackerQueryBundle$Builder;
+	public abstract fun trackedEntityInstanceFilters (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackerQueryBundle$Builder;
 }
 
 public abstract interface class org/hisp/dhis/android/core/trackedentity/ownership/OwnershipManager {
@@ -11160,7 +11103,7 @@ public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntity
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem {
+public abstract class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem : org/hisp/dhis/android/core/trackedentity/search/QueryScopeOrderByItem {
 	public static field DEFAULT_TRACKER_ORDER Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem;
 	public fun <init> ()V
 	public abstract fun column ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
@@ -11754,7 +11697,6 @@ public final class org/hisp/dhis/android/core/user/UserInternalAccessor {
 	public static final fun accessOrganisationUnits (Lorg/hisp/dhis/android/core/user/User;)Ljava/util/List;
 	public static final fun accessTeiSearchOrganisationUnits (Lorg/hisp/dhis/android/core/user/User;)Ljava/util/List;
 	public final fun insertOrganisationUnits (Lorg/hisp/dhis/android/core/user/User$Builder;Ljava/util/List;)Lorg/hisp/dhis/android/core/user/User$Builder;
-	public final fun insertTeiSearchOrganisationUnits (Lorg/hisp/dhis/android/core/user/User$Builder;Ljava/util/List;)Lorg/hisp/dhis/android/core/user/User$Builder;
 }
 
 public abstract interface class org/hisp/dhis/android/core/user/UserModule {

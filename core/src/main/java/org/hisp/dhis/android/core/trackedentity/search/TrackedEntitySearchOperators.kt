@@ -374,6 +374,12 @@ abstract class TrackedEntitySearchOperators<R : BaseRepository> internal constru
         }
     }
 
+    internal fun byTrackedEntityInstanceFilterObject(): EqFilterConnector<R, TrackedEntityInstanceFilter> {
+        return connectorFactory.eqConnector { teiFilter: TrackedEntityInstanceFilter? ->
+            scopeHelper.addTrackedEntityInstanceFilter(scope, teiFilter!!)
+        }
+    }
+
     /**
      * Apply the filters defined in a [ProgramStageWorkingList]. It will overwrite previous filters in case
      * they overlap. In the same way, they could be overwritten by subsequent filters.
@@ -386,6 +392,12 @@ abstract class TrackedEntitySearchOperators<R : BaseRepository> internal constru
                 .withDataFilters()
                 .withAttributeValueFilters()
                 .uid(id).blockingGet()
+            scopeHelper.addProgramStageWorkingList(scope, workingList!!)
+        }
+    }
+
+    internal fun byProgramStageWorkingListObject(): EqFilterConnector<R, ProgramStageWorkingList> {
+        return connectorFactory.eqConnector { workingList: ProgramStageWorkingList? ->
             scopeHelper.addProgramStageWorkingList(scope, workingList!!)
         }
     }

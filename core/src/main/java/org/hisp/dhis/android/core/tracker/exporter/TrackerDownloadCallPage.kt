@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,29 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.querybuilders.internal
 
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
+package org.hisp.dhis.android.core.tracker.exporter
 
-@Suppress("TooManyFunctions")
-internal interface SQLStatementBuilder : ReadOnlySQLStatementBuilder {
-    fun getTableName(): String
-    fun getColumns(): Array<String>
-    fun selectUids(): String
-    fun selectUidsWhere(whereClause: String): String
-    fun selectUidsWhere(whereClause: String, orderByClause: String?): String
-    fun selectColumnWhere(column: String, whereClause: String): String
-    fun selectChildrenWithLinkTable(
-        projection: LinkTableChildProjection,
-        parentUid: String,
-        whereClause: String?,
-    ): String
-
-    fun selectByUid(): String
-    fun selectDistinct(column: String): String
-    fun insert(): String
-    fun update(): String
-    fun updateWhere(): String
-    fun deleteById(): String
-    fun deleteWhere(): String
-}
+internal class TrackerDownloadCallPage<T>(
+    val query: TrackerAPIQuery,
+    val itemsToPersist: (List<T>) -> List<T> = { it },
+)

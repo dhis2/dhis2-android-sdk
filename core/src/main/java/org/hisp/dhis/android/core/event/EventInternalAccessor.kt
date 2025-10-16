@@ -36,13 +36,6 @@ internal object EventInternalAccessor {
         return event.relationships()
     }
 
-    fun insertRelationships(
-        builder: Event.Builder,
-        relationships: List<Relationship>,
-    ): Event.Builder {
-        return builder.relationships(relationships)
-    }
-
     fun accessTrackedEntityInstance(event: Event): String? {
         return event.trackedEntityInstance()
     }

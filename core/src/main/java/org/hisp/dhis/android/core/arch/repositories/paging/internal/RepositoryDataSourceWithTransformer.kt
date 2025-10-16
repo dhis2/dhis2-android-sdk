@@ -29,8 +29,6 @@ package org.hisp.dhis.android.core.arch.repositories.paging.internal
 
 import androidx.paging.PageKeyedDataSource
 import kotlinx.coroutines.runBlocking
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
 import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor
@@ -38,6 +36,8 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder
 import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.persistence.common.querybuilders.OrderByClauseBuilder
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 
 internal class RepositoryDataSourceWithTransformer<M : CoreObject, T : Any> internal constructor(
     private val store: ReadableStore<M>,

@@ -29,11 +29,11 @@
 package org.hisp.dhis.android.core.attribute.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQueryBuilder
 import org.hisp.dhis.android.core.arch.db.uidseeker.internal.BaseUidsSeeker
 import org.hisp.dhis.android.persistence.attribute.DataElementAttributeValueLinkTableInfo
 import org.hisp.dhis.android.persistence.attribute.ProgramAttributeValueLinkTableInfo
 import org.hisp.dhis.android.persistence.attribute.ProgramStageAttributeValueLinkTableInfo
+import org.hisp.dhis.android.persistence.common.querybuilders.MultipleTableQueryBuilder
 import org.koin.core.annotation.Singleton
 
 @Singleton

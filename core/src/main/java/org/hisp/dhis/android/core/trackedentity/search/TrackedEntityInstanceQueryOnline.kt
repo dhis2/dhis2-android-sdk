@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
-import java.util.*
+import java.util.Date
 
 internal data class TrackedEntityInstanceQueryOnline(
     val page: Int,
@@ -62,7 +62,7 @@ internal data class TrackedEntityInstanceQueryOnline(
     val uids: List<String>? = null,
     val lastUpdatedStartDate: Date? = null,
     val lastUpdatedEndDate: Date? = null,
-    val order: List<TrackedEntityInstanceQueryScopeOrderByItem> = emptyList(),
+    val order: List<QueryScopeOrderByItem> = emptyList(),
 ) {
     fun shouldCallEventFirst(): Boolean {
         return dataValueFilter.isNotEmpty() ||

@@ -45,10 +45,7 @@ internal class UserCall(
             coroutineAPICallExecutor.wrap {
                 networkHandler.getUser()
             }.getOrThrow()
-
-        coroutineAPICallExecutor.wrapTransactionallyRoom(cleanForeignKeyErrors = false) {
-            userHandler.handle(user)
-        }
+        userHandler.handle(user)
         return user
     }
 }

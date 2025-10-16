@@ -25,19 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.querybuilders.internal
+package org.hisp.dhis.android.core.trackedentity.search
 
-import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 
-internal interface ReadOnlySQLStatementBuilder {
-    fun selectWhere(whereClause: String): String
-    fun selectWhere(whereClause: String, limit: Int): String
-    fun selectWhere(whereClause: String, orderByClause: String?): String
-    fun selectWhere(whereClause: String, orderByClause: String?, limit: Int): String
-    fun selectWhere(whereClause: String, orderByClause: String?, limit: Int, offset: Int?): String
-    fun selectOneOrderedBy(orderingColumName: String, orderingType: SQLOrderType): String
-    fun selectAll(): String
-    fun count(): String
-    fun countWhere(whereClause: String): String
-    fun countAndGroupBy(column: String): String
+internal interface QueryScopeOrderByItem {
+    fun toAPIString(version: TrackerExporterVersion): String?
 }

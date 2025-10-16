@@ -28,12 +28,20 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
+import androidx.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.event.EventFilter;
 import org.hisp.dhis.android.core.tracker.exporter.BaseTrackerQueryBundle;
+
+import java.util.List;
 
 @AutoValue
 abstract class EventQueryBundle extends BaseTrackerQueryBundle {
+
+    @Nullable
+    public abstract List<EventFilter> eventFilters();
 
     static Builder builder() {
         return new AutoValue_EventQueryBundle.Builder();
@@ -41,6 +49,9 @@ abstract class EventQueryBundle extends BaseTrackerQueryBundle {
 
     @AutoValue.Builder
     abstract static class Builder extends BaseTrackerQueryBundle.Builder<Builder> {
+
+        abstract Builder eventFilters(List<EventFilter> eventFilters);
+
         abstract EventQueryBundle build();
     }
 }

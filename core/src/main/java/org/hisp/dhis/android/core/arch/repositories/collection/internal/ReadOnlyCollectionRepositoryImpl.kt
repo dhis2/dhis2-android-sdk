@@ -39,8 +39,6 @@ import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
@@ -52,6 +50,8 @@ import org.hisp.dhis.android.core.arch.repositories.paging.internal.RepositoryPa
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder
 import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.persistence.common.querybuilders.OrderByClauseBuilder
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 
 @Suppress("TooManyFunctions")
 open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollectionRepository<M>> internal constructor(
@@ -104,7 +104,7 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
         return rxSingle { getInternal() }
     }
 
-    private suspend fun getInternal(): List<M> {
+    internal suspend fun getInternal(): List<M> {
         return ChildrenAppenderExecutor.appendInObjectCollection(
             getWithoutChildrenInternal(),
             childrenAppenders,
@@ -165,7 +165,7 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
         return runBlocking { countInternal() }
     }
 
-    private suspend fun countInternal(): Int {
+    internal suspend fun countInternal(): Int {
         return store.countWhere(whereClause)
     }
 
@@ -189,7 +189,7 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
         return runBlocking { isEmptyProtected() }
     }
 
-    protected suspend fun isEmptyProtected(): Boolean {
+    internal suspend fun isEmptyProtected(): Boolean {
         return !one().existsInternal()
     }
 

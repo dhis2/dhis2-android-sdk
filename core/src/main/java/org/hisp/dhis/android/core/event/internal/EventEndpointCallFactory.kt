@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.event.internal
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnline
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 
 internal interface EventEndpointCallFactory {
@@ -37,4 +38,8 @@ internal interface EventEndpointCallFactory {
     suspend fun getCollectionCall(eventQuery: TrackerAPIQuery): Payload<Event>
 
     suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Payload<Event>
+
+    suspend fun getQueryCall(query: TrackedEntityInstanceQueryOnline): Payload<Event>
+
+    suspend fun getQueryUids(query: TrackedEntityInstanceQueryOnline): List<String>
 }

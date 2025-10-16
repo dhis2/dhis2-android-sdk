@@ -62,15 +62,13 @@ internal object DateTimezoneConverter {
         val serverTimeZone = serverTimezoneManager.getServerTimeZone()
         val clientTimeZone = TimeZone.currentSystemDefault()
 
-        if (serverTimeZone == clientTimeZone) {
-            return date
+        return if (serverTimeZone == clientTimeZone) {
+            date
+        } else {
+            val localDateTime = date.toKtxInstant().toLocalDateTime(serverTimeZone)
+            val fromInstant = localDateTime.toInstant(clientTimeZone)
+            fromInstant.toJavaDate()
         }
-
-        val localDateTime = date.toKtxInstant().toLocalDateTime(serverTimeZone)
-        val fromInstant = localDateTime.toInstant(clientTimeZone)
-        val serverDate = fromInstant.toJavaDate()
-
-        return serverDate
     }
 
     /**
@@ -88,18 +86,14 @@ internal object DateTimezoneConverter {
         val serverTimeZone = serverTimezoneManager.getServerTimeZone()
         val clientTimeZone = TimeZone.currentSystemDefault()
 
-        if (dateString == null) {
-            return null
+        return dateString?.let {
+            if (serverTimeZone == clientTimeZone) {
+                it.toJavaDate()
+            } else {
+                val localDateTime = LocalDateTime.parse(it)
+                val fromInstant = localDateTime.toInstant(serverTimeZone)
+                fromInstant.toJavaDate()
+            }
         }
-
-        if (serverTimeZone == clientTimeZone) {
-            return dateString.toJavaDate()
-        }
-
-        val localDateTime = LocalDateTime.parse(dateString)
-        val fromInstant = localDateTime.toInstant(serverTimeZone)
-        val localDate = fromInstant.toJavaDate()
-
-        return localDate
     }
 }

@@ -10994,10 +10994,6 @@ public abstract class org/hisp/dhis/android/core/trackedentity/ownership/Program
 	public abstract fun validUntil (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/ownership/ProgramTempOwner$Builder;
 }
 
-public abstract interface class org/hisp/dhis/android/core/trackedentity/search/QueryScopeOrderByItem {
-	public abstract fun toAPIString (Lorg/hisp/dhis/android/core/tracker/TrackerExporterVersion;)Ljava/lang/String;
-}
-
 public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceOnlineResult {
 	public fun <init> (Ljava/util/List;Z)V
 	public final fun component1 ()Ljava/util/List;

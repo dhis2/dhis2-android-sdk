@@ -103,7 +103,7 @@ internal class RoomDatabaseManager(
     override fun createOrOpenEncryptedDatabase(databaseName: String, password: String): DatabaseAdapter {
         // Load SQLCipher native library before creating encrypted database
         NativeLibraryLoader.loadSQLCipher()
-        
+
         val hook = RoomDatabaseExport.Companion.EncryptionHook
         val factory = SupportOpenHelperFactory(password.toByteArray(StandardCharsets.UTF_8), hook, true)
         val database = Room.databaseBuilder(context, AppDatabase::class.java, databaseName)
@@ -131,7 +131,7 @@ internal class RoomDatabaseManager(
     ): net.zetetic.database.sqlcipher.SQLiteDatabase {
         // Load SQLCipher native library before opening database directly
         NativeLibraryLoader.loadSQLCipher()
-        
+
         return net.zetetic.database.sqlcipher.SQLiteDatabase.openOrCreateDatabase(
             databaseFile,
             (password ?: "").toByteArray(StandardCharsets.UTF_8),

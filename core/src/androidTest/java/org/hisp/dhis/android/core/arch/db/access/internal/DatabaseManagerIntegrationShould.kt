@@ -86,17 +86,17 @@ class DatabaseManagerIntegrationShould {
     fun create_encrypted_database_from_scratch() = runTest {
         val databaseAdapter = Companion.databaseManager.getAdapter()
         val password = "test_password_123"
-        
+
         // Create encrypted database
         Companion.databaseManager.createOrOpenEncryptedDatabase(ENCRYPTED_DB_NAME, password)
-        
+
         // Verify database is accessible and can perform operations
         val userDao = databaseAdapter.getCurrentDatabase().userDao()
         val users = userDao.objectListRawQuery(RoomRawQuery("SELECT * FROM User"))
-        
+
         // Should not throw UnsatisfiedLinkError
         assertThat(users).isNotNull()
-        
+
         databaseAdapter.close()
     }
 
@@ -104,25 +104,25 @@ class DatabaseManagerIntegrationShould {
     fun create_encrypted_database_and_reopen() = runTest {
         val databaseAdapter = Companion.databaseManager.getAdapter()
         val password = "test_password_456"
-        
+
         // Create encrypted database
         Companion.databaseManager.createOrOpenEncryptedDatabase(ENCRYPTED_DB_NAME_2, password)
-        
+
         // Insert some data
         val userDao1 = databaseAdapter.getCurrentDatabase().userDao()
         val initialUsers = userDao1.objectListRawQuery(RoomRawQuery("SELECT * FROM User"))
         assertThat(initialUsers).isNotNull()
-        
+
         databaseAdapter.close()
-        
+
         // Reopen the encrypted database with the same password
         Companion.databaseManager.createOrOpenEncryptedDatabase(ENCRYPTED_DB_NAME_2, password)
-        
+
         // Verify we can still access the data
         val userDao2 = databaseAdapter.getCurrentDatabase().userDao()
         val reopenedUsers = userDao2.objectListRawQuery(RoomRawQuery("SELECT * FROM User"))
         assertThat(reopenedUsers).isNotNull()
-        
+
         databaseAdapter.close()
     }
 
@@ -130,22 +130,22 @@ class DatabaseManagerIntegrationShould {
     fun create_encrypted_database_and_perform_write_operations() = runTest {
         val databaseAdapter = Companion.databaseManager.getAdapter()
         val password = "test_password_789"
-        
+
         // Create encrypted database
         Companion.databaseManager.createOrOpenEncryptedDatabase(ENCRYPTED_DB_NAME_3, password)
-        
+
         // Perform a write operation to ensure the database is fully functional
         val database = databaseAdapter.getCurrentDatabase()
         database.runInTransaction {
             // Execute a simple query to verify write capability
             database.openHelper.writableDatabase.execSQL("PRAGMA user_version = 1")
         }
-        
+
         // Verify we can read after write
         val userDao = database.userDao()
         val users = userDao.objectListRawQuery(RoomRawQuery("SELECT * FROM User"))
         assertThat(users).isNotNull()
-        
+
         databaseAdapter.close()
     }
 

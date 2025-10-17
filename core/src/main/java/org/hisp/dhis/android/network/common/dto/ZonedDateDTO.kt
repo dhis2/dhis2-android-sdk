@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,44 +26,24 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.systeminfo;
+package org.hisp.dhis.android.network.common.dto
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.arch.helpers.DateTimezoneConverter.convertClientToServer
+import org.hisp.dhis.android.core.arch.helpers.DateTimezoneConverter.convertServerToClient
+import java.util.Date
 
-import java.text.ParseException;
-import java.util.Date;
-
-public class SystemInfoSamples {
-
-    public static SystemInfo get1() {
-        return SystemInfo.builder()
-                .serverDate(getDate("2017-11-29T11:27:46.935"))
-                .dateFormat("yyyy-mm-dd")
-                .version("2.41.0")
-                .contextPath("https://play.dhis2.org/android-current")
-                .systemName("DHIS 2 Demo - Sierra Leone")
-                .serverTimeZoneId("Etc/UTC")
-                .build();
+@JvmInline
+@Serializable
+internal value class ZonedDateDTO(
+    val date: String?,
+) {
+    fun toDomain(): Date? {
+        return convertServerToClient(date)
     }
+}
 
-    public static SystemInfo get2() {
-        return SystemInfo.builder()
-                .serverDate(getDate("2018-04-29T11:27:46.935"))
-                .dateFormat("yyyy-DD-mm")
-                .version("2.29")
-                .contextPath("https://play.dhis2.org/android-current")
-                .systemName("DHIS 2 Demo - Sierra Leone")
-                .serverTimeZoneId("Etc/UTC")
-                .build();
-    }
-
-    private static Date getDate(String dateStr) {
-        try {
-            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+internal fun Date.toZonedDateDto(): ZonedDateDTO {
+    val serverDate = convertClientToServer(this)
+    return ZonedDateDTO(serverDate)
 }

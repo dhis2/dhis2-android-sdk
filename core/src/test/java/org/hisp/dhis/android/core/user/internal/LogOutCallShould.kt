@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.systeminfo.internal.ServerTimezoneManager
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -49,6 +50,7 @@ class LogOutCallShould {
     private val userIdStore: UserIdInMemoryStore = mock()
     private val credentials: Credentials = mock()
     private val databaseManager: DatabaseManager = mock()
+    private val serverTimezoneManager: ServerTimezoneManager = mock()
 
     private lateinit var logOutCall: LogOutCall
 
@@ -56,7 +58,7 @@ class LogOutCallShould {
     fun setUp() {
         whenever(credentials.username).thenReturn("user")
         whenever(credentials.password).thenReturn("password")
-        logOutCall = LogOutCall(databaseManager, credentialsSecureStore, userIdStore)
+        logOutCall = LogOutCall(databaseManager, credentialsSecureStore, userIdStore, serverTimezoneManager)
     }
 
     @Test
@@ -65,6 +67,14 @@ class LogOutCallShould {
         whenever(userIdStore.get()).thenReturn("user-id")
         logOutCall.logOut().blockingAwait()
         verify(credentialsSecureStore, times(1)).remove()
+        verify(serverTimezoneManager, times(1)).clearCache()
+    }
+
+    @Test
+    fun clear_server_timezone_cache() {
+        whenever(credentialsSecureStore.get()).thenReturn(credentials)
+        logOutCall.logOut().blockingAwait()
+        verify(serverTimezoneManager, times(1)).clearCache()
     }
 
     @Test

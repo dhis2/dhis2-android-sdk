@@ -28,12 +28,43 @@
 
 package org.hisp.dhis.android.core.common
 
+import kotlinx.datetime.TimeZone
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext
+import org.hisp.dhis.android.core.arch.helpers.DateTimezoneConverter
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
+import org.hisp.dhis.android.core.systeminfo.internal.ServerTimezoneManager
+import org.junit.Before
+import org.koin.core.context.startKoin
+import org.koin.dsl.module
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
 import java.io.InputStream
 
 abstract class CoreObjectShould(private val jsonPath: String) {
 
     private val jsonParser = KotlinxJsonParser.instance
+
+    @Before
+    fun setUpKoin() {
+        // Initialize Koin if not already initialized to support DateTimezoneConverter
+        try {
+            DhisAndroidSdkKoinContext.koin
+        } catch (_: Exception) {
+            // Koin not initialized, initialize with neutral mock
+            val neutralMock: ServerTimezoneManager = mock {
+                on { getServerTimeZone() } doReturn TimeZone.currentSystemDefault()
+            }
+            val koinApp = startKoin {
+                modules(
+                    module {
+                        single { neutralMock }
+                    },
+                )
+            }
+            DhisAndroidSdkKoinContext.koin = koinApp.koin
+            DateTimezoneConverter.serverTimezoneManager = neutralMock
+        }
+    }
 
     abstract fun map_from_json_string()
 

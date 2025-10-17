@@ -54,6 +54,9 @@ public abstract class SystemInfo implements CoreObject {
     @Nullable
     public abstract String systemName();
 
+    @Nullable
+    public abstract String serverTimeZoneId();
+
     public static Builder builder() {
         return new AutoValue_SystemInfo.Builder();
     }
@@ -71,6 +74,8 @@ public abstract class SystemInfo implements CoreObject {
         public abstract Builder contextPath(String contextPath);
 
         public abstract Builder systemName(String systemName);
+
+        public abstract Builder serverTimeZoneId(String serverTimeZoneId);
 
         public abstract SystemInfo build();
     }

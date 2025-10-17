@@ -1881,6 +1881,7 @@ public final class org/hisp/dhis/android/core/arch/helpers/CoordinateHelper {
 public final class org/hisp/dhis/android/core/arch/helpers/DateUtils {
 	public static final field DATE_FORMAT Lorg/hisp/dhis/android/core/arch/dateformat/internal/SafeDateFormat;
 	public static final field INSTANCE Lorg/hisp/dhis/android/core/arch/helpers/DateUtils;
+	public static final field KTX_DATE_FORMAT Lkotlinx/datetime/format/DateTimeFormat;
 	public static final field SIMPLE_DATE_FORMAT Lorg/hisp/dhis/android/core/arch/dateformat/internal/SafeDateFormat;
 	public static final field SPACE_DATE_FORMAT Lorg/hisp/dhis/android/core/arch/dateformat/internal/SafeDateFormat;
 	public static final fun addMonths (Ljava/util/Date;I)Ljava/util/Date;
@@ -10281,6 +10282,7 @@ public abstract class org/hisp/dhis/android/core/systeminfo/SystemInfo : org/his
 	public abstract fun contextPath ()Ljava/lang/String;
 	public abstract fun dateFormat ()Ljava/lang/String;
 	public abstract fun serverDate ()Ljava/util/Date;
+	public abstract fun serverTimeZoneId ()Ljava/lang/String;
 	public abstract fun systemName ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/systeminfo/SystemInfo$Builder;
 	public abstract fun version ()Ljava/lang/String;
@@ -10292,6 +10294,7 @@ public abstract class org/hisp/dhis/android/core/systeminfo/SystemInfo$Builder {
 	public abstract fun contextPath (Ljava/lang/String;)Lorg/hisp/dhis/android/core/systeminfo/SystemInfo$Builder;
 	public abstract fun dateFormat (Ljava/lang/String;)Lorg/hisp/dhis/android/core/systeminfo/SystemInfo$Builder;
 	public abstract fun serverDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/systeminfo/SystemInfo$Builder;
+	public abstract fun serverTimeZoneId (Ljava/lang/String;)Lorg/hisp/dhis/android/core/systeminfo/SystemInfo$Builder;
 	public abstract fun systemName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/systeminfo/SystemInfo$Builder;
 	public abstract fun version (Ljava/lang/String;)Lorg/hisp/dhis/android/core/systeminfo/SystemInfo$Builder;
 }
@@ -15016,6 +15019,7 @@ public final class org/hisp/dhis/android/persistence/systeminfo/SystemInfoTableI
 	public static final field Companion Lorg/hisp/dhis/android/persistence/systeminfo/SystemInfoTableInfo$Columns$Companion;
 	public static final field DATE_FORMAT Ljava/lang/String;
 	public static final field SERVER_DATE Ljava/lang/String;
+	public static final field SERVER_TIME_ZONE_ID Ljava/lang/String;
 	public static final field SYSTEM_NAME Ljava/lang/String;
 	public static final field VERSION Ljava/lang/String;
 	public fun <init> ()V

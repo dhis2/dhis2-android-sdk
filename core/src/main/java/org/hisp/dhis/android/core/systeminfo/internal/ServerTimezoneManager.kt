@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,45 +25,46 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.systeminfo.internal
 
-package org.hisp.dhis.android.core.data.systeminfo;
+import kotlinx.coroutines.runBlocking
+import kotlinx.datetime.IllegalTimeZoneException
+import kotlinx.datetime.TimeZone
+import org.koin.core.annotation.Singleton
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+@Singleton
+internal class ServerTimezoneManager(
+    private val systemInfoStore: SystemInfoStore,
+) {
+    private var serverTimeZone: TimeZone? = null
 
-import java.text.ParseException;
-import java.util.Date;
-
-public class SystemInfoSamples {
-
-    public static SystemInfo get1() {
-        return SystemInfo.builder()
-                .serverDate(getDate("2017-11-29T11:27:46.935"))
-                .dateFormat("yyyy-mm-dd")
-                .version("2.41.0")
-                .contextPath("https://play.dhis2.org/android-current")
-                .systemName("DHIS 2 Demo - Sierra Leone")
-                .serverTimeZoneId("Etc/UTC")
-                .build();
+    /**
+     * Gets the server timezone from cache or database.
+     * Falls back to client's system timezone if not available or invalid.
+     *
+     * @return The server timezone, defaulting to client's system timezone
+     */
+    fun getServerTimeZone(): TimeZone {
+        return serverTimeZone ?: runBlocking {
+            systemInfoStore.selectFirst()?.serverTimeZoneId()?.let { serverTimeZoneId ->
+                parseTimeZone(serverTimeZoneId).also { serverTimeZone = it }
+            } ?: TimeZone.currentSystemDefault()
+        }
     }
 
-    public static SystemInfo get2() {
-        return SystemInfo.builder()
-                .serverDate(getDate("2018-04-29T11:27:46.935"))
-                .dateFormat("yyyy-DD-mm")
-                .version("2.29")
-                .contextPath("https://play.dhis2.org/android-current")
-                .systemName("DHIS 2 Demo - Sierra Leone")
-                .serverTimeZoneId("Etc/UTC")
-                .build();
+    fun setServerTimeZone(serverTimeZoneId: String?) {
+        serverTimeZone = parseTimeZone(serverTimeZoneId)
     }
 
-    private static Date getDate(String dateStr) {
-        try {
-            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
+    fun clearCache() {
+        serverTimeZone = null
+    }
+
+    private fun parseTimeZone(serverTimeZoneId: String?): TimeZone {
+        return try {
+            serverTimeZoneId?.let { TimeZone.of(it) } ?: TimeZone.currentSystemDefault()
+        } catch (_: IllegalTimeZoneException) {
+            TimeZone.currentSystemDefault()
         }
     }
 }

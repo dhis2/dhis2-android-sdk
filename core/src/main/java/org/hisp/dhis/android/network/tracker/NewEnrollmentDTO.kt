@@ -36,16 +36,18 @@ import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
 import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
 import org.hisp.dhis.android.network.common.dto.DateStringDTO
 import org.hisp.dhis.android.network.common.dto.GeometryDTO
+import org.hisp.dhis.android.network.common.dto.ZonedDateDTO
 import org.hisp.dhis.android.network.common.dto.toDto
+import org.hisp.dhis.android.network.common.dto.toZonedDateDto
 
 @Serializable
 internal data class NewEnrollmentDTO(
     override val deleted: Boolean?,
     val enrollment: String,
-    val createdAt: DateStringDTO?,
-    val updatedAt: DateStringDTO?,
-    val createdAtClient: DateStringDTO?,
-    val updatedAtClient: DateStringDTO?,
+    val createdAt: ZonedDateDTO?,
+    val updatedAt: ZonedDateDTO?,
+    val createdAtClient: ZonedDateDTO?,
+    val updatedAtClient: ZonedDateDTO?,
     val orgUnit: String?,
     val program: String?,
     val enrolledAt: DateStringDTO?,
@@ -88,10 +90,10 @@ internal fun NewTrackerImporterEnrollment.toDto(): NewEnrollmentDTO {
     return NewEnrollmentDTO(
         enrollment = uid,
         deleted = deleted,
-        createdAt = createdAt?.toDto(),
-        updatedAt = updatedAt?.toDto(),
-        createdAtClient = createdAtClient?.toDto(),
-        updatedAtClient = updatedAtClient?.toDto(),
+        createdAt = createdAt?.toZonedDateDto(),
+        updatedAt = updatedAt?.toZonedDateDto(),
+        createdAtClient = createdAtClient?.toZonedDateDto(),
+        updatedAtClient = updatedAtClient?.toZonedDateDto(),
         orgUnit = organisationUnit,
         program = program,
         enrolledAt = enrolledAt?.toDto(),

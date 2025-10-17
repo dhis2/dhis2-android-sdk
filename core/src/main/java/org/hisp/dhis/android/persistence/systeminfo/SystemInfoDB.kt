@@ -15,6 +15,7 @@ internal data class SystemInfoDB(
     @PrimaryKey
     val contextPath: String,
     val systemName: String?,
+    val serverTimeZoneId: String?,
 ) : EntityDB<SystemInfo> {
 
     override fun toDomain(): SystemInfo {
@@ -24,6 +25,7 @@ internal data class SystemInfoDB(
             .version(version)
             .contextPath(contextPath)
             .systemName(systemName)
+            .serverTimeZoneId(serverTimeZoneId)
             .build()
     }
 }
@@ -35,5 +37,6 @@ internal fun SystemInfo.toDB(): SystemInfoDB {
         version = version(),
         contextPath = contextPath()!!,
         systemName = systemName(),
+        serverTimeZoneId = serverTimeZoneId(),
     )
 }

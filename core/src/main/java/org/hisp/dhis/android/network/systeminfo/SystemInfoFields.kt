@@ -39,5 +39,6 @@ internal object SystemInfoFields : BaseFields<SystemInfo>() {
         fh.field(Columns.VERSION),
         fh.field(Columns.CONTEXT_PATH),
         fh.field(Columns.SYSTEM_NAME),
+        fh.field(Columns.SERVER_TIME_ZONE_ID),
     )
 }

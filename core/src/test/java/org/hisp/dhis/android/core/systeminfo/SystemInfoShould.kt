@@ -45,5 +45,6 @@ class SystemInfoShould : CoreObjectShould("systeminfo/system_info.json") {
         assertThat(systemInfo.version()).isEqualTo("2.41.0")
         assertThat(systemInfo.contextPath()).isEqualTo("https://play.dhis2.org/android-current")
         assertThat(systemInfo.systemName()).isEqualTo("DHIS 2 Demo - Sierra Leone")
+        assertThat(systemInfo.serverTimeZoneId()).isEqualTo("Etc/UTC")
     }
 }

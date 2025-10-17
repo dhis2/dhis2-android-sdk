@@ -39,17 +39,19 @@ import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
 import org.hisp.dhis.android.network.common.dto.DateStringDTO
 import org.hisp.dhis.android.network.common.dto.GeometryDTO
 import org.hisp.dhis.android.network.common.dto.PagerDTO
+import org.hisp.dhis.android.network.common.dto.ZonedDateDTO
 import org.hisp.dhis.android.network.common.dto.toDto
+import org.hisp.dhis.android.network.common.dto.toZonedDateDto
 
 @Serializable
 internal data class NewEventDTO(
     override val deleted: Boolean?,
     val event: String?,
     val enrollment: String?,
-    val createdAt: DateStringDTO?,
-    val updatedAt: DateStringDTO?,
-    val createdAtClient: DateStringDTO?,
-    val updatedAtClient: DateStringDTO?,
+    val createdAt: ZonedDateDTO?,
+    val updatedAt: ZonedDateDTO?,
+    val createdAtClient: ZonedDateDTO?,
+    val updatedAtClient: ZonedDateDTO?,
     val program: String?,
     val programStage: String?,
     val orgUnit: String?,
@@ -99,10 +101,10 @@ internal fun NewTrackerImporterEvent.toDto(): NewEventDTO {
         event = uid,
         deleted = deleted,
         enrollment = enrollment,
-        createdAt = createdAt?.toDto(),
-        updatedAt = updatedAt?.toDto(),
-        createdAtClient = createdAtClient?.toDto(),
-        updatedAtClient = updatedAtClient?.toDto(),
+        createdAt = createdAt?.toZonedDateDto(),
+        updatedAt = updatedAt?.toZonedDateDto(),
+        createdAtClient = createdAtClient?.toZonedDateDto(),
+        updatedAtClient = updatedAtClient?.toZonedDateDto(),
         program = program,
         programStage = programStage,
         orgUnit = organisationUnit,

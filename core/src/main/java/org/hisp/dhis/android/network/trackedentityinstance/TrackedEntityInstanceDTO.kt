@@ -34,10 +34,11 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
-import org.hisp.dhis.android.network.common.dto.DateStringDTO
 import org.hisp.dhis.android.network.common.dto.GeometryDTO
 import org.hisp.dhis.android.network.common.dto.PagerDTO
+import org.hisp.dhis.android.network.common.dto.ZonedDateDTO
 import org.hisp.dhis.android.network.common.dto.toDto
+import org.hisp.dhis.android.network.common.dto.toZonedDateDto
 import org.hisp.dhis.android.network.enrollment.EnrollmentDTO
 import org.hisp.dhis.android.network.enrollment.toDto
 import org.hisp.dhis.android.network.relationship.RelationshipDTO
@@ -47,10 +48,10 @@ import org.hisp.dhis.android.network.relationship.toDto
 internal data class TrackedEntityInstanceDTO(
     override val deleted: Boolean?,
     val trackedEntityInstance: String,
-    val created: DateStringDTO?,
-    val lastUpdated: DateStringDTO?,
-    val createdAtClient: DateStringDTO?,
-    val lastUpdatedAtClient: DateStringDTO?,
+    val created: ZonedDateDTO?,
+    val lastUpdated: ZonedDateDTO?,
+    val createdAtClient: ZonedDateDTO?,
+    val lastUpdatedAtClient: ZonedDateDTO?,
     val orgUnit: String?,
     val trackedEntityType: String?,
     val geometry: GeometryDTO?,
@@ -82,10 +83,10 @@ internal fun TrackedEntityInstance.toDto(): TrackedEntityInstanceDTO {
     return TrackedEntityInstanceDTO(
         deleted = deleted(),
         trackedEntityInstance = uid(),
-        created = created()?.toDto(),
-        lastUpdated = lastUpdated()?.toDto(),
-        createdAtClient = createdAtClient()?.toDto(),
-        lastUpdatedAtClient = lastUpdatedAtClient()?.toDto(),
+        created = created()?.toZonedDateDto(),
+        lastUpdated = lastUpdated()?.toZonedDateDto(),
+        createdAtClient = createdAtClient()?.toZonedDateDto(),
+        lastUpdatedAtClient = lastUpdatedAtClient()?.toZonedDateDto(),
         orgUnit = organisationUnit(),
         trackedEntityType = trackedEntityType(),
         geometry = geometry()?.toDto(),

@@ -1,9 +1,6 @@
 name: Deploy
 
 on:
-  push:
-    branches:
-      - develop
   # Trigger after CI workflow completes successfully
   workflow_run:
     workflows: ["CI"]

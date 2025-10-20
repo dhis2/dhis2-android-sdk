@@ -2400,7 +2400,6 @@ public abstract class org/hisp/dhis/android/core/arch/repositories/object/intern
 	public final fun download ()Lio/reactivex/Completable;
 	public final fun exists ()Lio/reactivex/Single;
 	public final fun get ()Lio/reactivex/Single;
-	protected abstract fun getInternal (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public class org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyFirstObjectWithDownloadRepositoryImpl : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyOneObjectRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository {

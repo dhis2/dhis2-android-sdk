@@ -85,7 +85,7 @@ internal class FileResourceDownloadCall(
         downloadCustomIcons(paramsWithCorrectedMaxContentLength, existingFileResources)
         emit(progressManager.increaseProgress(FileResource::class.java, isComplete = false))
 
-        fileResourceRoutine.blockingDeleteOutdatedFileResources()
+        fileResourceRoutine.internalDeleteOutdatedFileResources()
         emit(progressManager.increaseProgress(FileResource::class.java, isComplete = true))
     }
 

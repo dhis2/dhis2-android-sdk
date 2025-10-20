@@ -117,8 +117,8 @@ jobs:
           max_attempts: 3
           command: ./gradlew :core:publishToSonatype
         env:
-          SONATYPE_PORTAL_USERNAME: ${{ secrets.SONATYPE_PORTAL_USERNAME }}
-          SONATYPE_PORTAL_PASSWORD: ${{ secrets.SONATYPE_PORTAL_PASSWORD }}
+          NEXUS_USERNAME: ${{ secrets.SONATYPE_PORTAL_USERNAME }}
+          NEXUS_PASSWORD: ${{ secrets.SONATYPE_PORTAL_PASSWORD }}
       
       - name: Extract version
         id: version

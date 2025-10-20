@@ -49,6 +49,7 @@ import org.hisp.dhis.android.persistence.db.migrations.RoomGeneratedMigrations.A
 import org.koin.core.annotation.Singleton
 import java.io.File
 import java.nio.charset.StandardCharsets
+import java.util.concurrent.Executors
 
 /**
  * Room-based implementation of DatabaseManager with encryption capabilities.
@@ -62,6 +63,9 @@ internal class RoomDatabaseManager(
 
     companion object {
         private const val TAG = "RoomDatabaseManager"
+        private val singleThreadExecutor = Executors.newFixedThreadPool(1) { r ->
+            Thread(r, "SQLCipher-DB-Thread")
+        }
     }
 
     override fun createInMemoryDatabase(): DatabaseAdapter {
@@ -107,7 +111,8 @@ internal class RoomDatabaseManager(
         val hook = RoomDatabaseExport.Companion.EncryptionHook
         val factory = SupportOpenHelperFactory(password.toByteArray(StandardCharsets.UTF_8), hook, true)
         val database = Room.databaseBuilder(context, AppDatabase::class.java, databaseName)
-            .setQueryCoroutineContext(Dispatchers.IO)
+            .setQueryExecutor(singleThreadExecutor)
+            .setTransactionExecutor(singleThreadExecutor)
             .addMigrations(*ALL_MIGRATIONS.toTypedArray())
             .openHelperFactory(factory)
             .build()

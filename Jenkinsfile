@@ -25,6 +25,8 @@ pipeline {
 
     environment {
         GRADLE_USER_HOME = "${env.WORKSPACE}/.gradle"
+        // Improvement 1 & 2: Increase memory and disable daemon for stability
+        GRADLE_OPTS = "-Xmx4096m -XX:MaxMetaspaceSize=1024m -XX:+HeapDumpOnOutOfMemoryError -Dorg.gradle.daemon=false"
     }
 
 
@@ -33,6 +35,19 @@ pipeline {
     }
 
     stages{
+        stage('Clean Gradle Cache Periodically') {
+            when {
+                // Improvement 4: Clean cache every 10 builds to prevent corruption
+                expression { currentBuild.number % 10 == 0 }
+            }
+            steps {
+                script {
+                    echo "Periodic cache cleanup (build #${currentBuild.number})"
+                    sh 'rm -rf ${GRADLE_USER_HOME}/caches'
+                    sh 'rm -rf ${GRADLE_USER_HOME}/daemon'
+                }
+            }
+        }
         stage('Change to JAVA 17') {
             steps {
                 script {
@@ -113,28 +128,19 @@ pipeline {
                 }
             }
         }
-        stage('Deploy') {
-            when {
-                allOf {
-                    // Do not deploy on PR builds
-                    expression { env.CHANGE_ID == null }
-                    anyOf {
-                        expression { env.GIT_BRANCH == "develop" }
-                        expression { env.GIT_BRANCH ==~ /[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?-rc/ }
-                    }
-                }
-            }
-            environment {
-                NEXUS_USERNAME = credentials('sonatype-portal-username')
-                NEXUS_PASSWORD = credentials('sonatype-portal-password')
-            }
-            steps {
-                echo 'Deploy to Sonatype nexus'
-                sh './gradlew :core:publishToSonatype'
-            }
-        }
+        // Deploy stage removed - now handled by GitHub Actions workflow
+        // See .github/workflows/deploy.yml for deployment configuration
     }
     post {
+        always {
+            script {
+                // Improvement 3: Always stop daemon and clean locks after build
+                echo 'Cleaning up Gradle daemon and locks'
+                sh './gradlew --stop || true'
+                sh 'rm -rf ${GRADLE_USER_HOME}/daemon || true'
+                sh 'rm -rf ${GRADLE_USER_HOME}/caches/*.lock || true'
+            }
+        }
         failure {
             sendNotification(env.GIT_BRANCH, '*Build Failed*\n', 'bad')
         }

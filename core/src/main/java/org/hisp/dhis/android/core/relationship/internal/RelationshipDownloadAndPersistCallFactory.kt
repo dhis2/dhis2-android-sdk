@@ -32,6 +32,8 @@ import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentPersistenceCallFactory
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventPersistenceCallFactory
+import org.hisp.dhis.android.core.program.ProgramType
+import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipItem
 import org.hisp.dhis.android.core.relationship.RelationshipItemEnrollment
@@ -46,6 +48,7 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class RelationshipDownloadAndPersistCallFactory(
     private val relationshipStore: RelationshipStore,
+    private val programStore: ProgramStore,
     private val trackerParentCallFactory: TrackerParentCallFactory,
     private val teiPersistenceCallFactory: TrackedEntityInstancePersistenceCallFactory,
     private val enrollmentPersistenceCallFactory: EnrollmentPersistenceCallFactory,
@@ -70,14 +73,16 @@ internal class RelationshipDownloadAndPersistCallFactory(
                 }.fold(
                     onSuccess = { eventPayload ->
                         events.addAll(eventPayload.items)
-                        eventPayload.items.mapNotNull { it.enrollment() }.forEach { enrollment ->
-                            val relativeEnrollment = RelationshipItemRelative(
-                                itemUid = enrollment,
-                                itemType = RelationshipItemTableInfo.Columns.ENROLLMENT,
-                                relationshipTypeUid = item.relationshipTypeUid,
-                                constraintType = item.constraintType,
-                            )
-                            relatives.addEnrollment(relativeEnrollment)
+                        eventPayload.items.forEach { event ->
+                            getTrackerEnrollment(event)?.let { enrollment ->
+                                val relativeEnrollment = RelationshipItemRelative(
+                                    itemUid = enrollment,
+                                    itemType = RelationshipItemTableInfo.Columns.ENROLLMENT,
+                                    relationshipTypeUid = item.relationshipTypeUid,
+                                    constraintType = item.constraintType,
+                                )
+                                relatives.addEnrollment(relativeEnrollment)
+                            }
                         }
                     },
                     onFailure = { failedEvents.add(item.itemUid) },
@@ -170,5 +175,17 @@ internal class RelationshipDownloadAndPersistCallFactory(
 
     private suspend fun itemDoesNotExist(item: RelationshipItemRelative): Boolean {
         return !relationshipItemStoreSelector.getElementStore(item).exists(item.itemUid)
+    }
+
+    private suspend fun getTrackerEnrollment(event: Event): String? {
+        val isTrackerEvent = event.program()?.let {
+            programStore.selectByUid(it)?.programType() == ProgramType.WITH_REGISTRATION
+        } ?: false
+
+        return if (isTrackerEvent) {
+            event.enrollment()
+        } else {
+            null
+        }
     }
 }

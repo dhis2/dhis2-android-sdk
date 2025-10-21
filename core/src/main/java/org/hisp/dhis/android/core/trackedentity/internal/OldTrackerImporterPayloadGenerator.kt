@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStore
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
@@ -55,7 +55,7 @@ import org.koin.core.annotation.Singleton
 @Singleton
 @Suppress("TooManyFunctions", "LongParameterList")
 internal class OldTrackerImporterPayloadGenerator internal constructor(
-    private val versionManager: DHISVersionManager,
+    private val versionManager: DHISVersionManagerImpl,
     private val relationshipRepository: RelationshipCollectionRepository,
     private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
     private val enrollmentStore: EnrollmentStore,
@@ -333,7 +333,7 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
             .trackedEntityDataValues(eventDataValues)
             .notes(eventNotes)
 
-        if (versionManager.getVersion() == DHISVersion.V2_30) {
+        if (versionManager.getVersionInternal() == DHISVersion.V2_30) {
             eventBuilder.geometry(null)
         }
 

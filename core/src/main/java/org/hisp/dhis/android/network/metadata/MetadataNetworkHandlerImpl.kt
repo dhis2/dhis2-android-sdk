@@ -34,20 +34,20 @@ import org.hisp.dhis.android.core.sms.data.webapirepository.internal.MetadataNet
 import org.hisp.dhis.android.core.sms.data.webapirepository.internal.WebApiRepositoryImpl
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository.GetMetadataIdsConfig
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class MetadataNetworkHandlerImpl(
     httpClient: HttpServiceClient,
-    private val dhisVersionManager: DHISVersionManager,
+    private val dhisVersionManager: DHISVersionManagerImpl,
 ) : MetadataNetworkHandler {
     private val service: MetadataService = MetadataService(httpClient)
 
     override suspend fun getMetadataFields(
         config: GetMetadataIdsConfig,
     ): MetadataIds {
-        val updatedConfig = if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_35) && config.users) {
+        val updatedConfig = if (dhisVersionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_35) && config.users) {
             Log.i(TAG, "Version greater or equal to 2.35. Skipping users query to metadata endpoint")
             config.copy(users = false)
         } else {

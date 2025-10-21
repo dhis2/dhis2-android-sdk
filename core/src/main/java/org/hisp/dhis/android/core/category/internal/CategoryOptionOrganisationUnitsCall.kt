@@ -31,14 +31,14 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.helpers.internal.UrlLengthHelper
 import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLink
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class CategoryOptionOrganisationUnitsCall(
     private val handler: CategoryOptionOrganisationUnitLinkHandler,
     private val networkHandler: CategoryOptionNetworkHandler,
-    private val dhisVersionManager: DHISVersionManager,
+    private val dhisVersionManager: DHISVersionManagerImpl,
     private val apiDownloader: APIDownloader,
 ) {
 
@@ -47,7 +47,7 @@ internal class CategoryOptionOrganisationUnitsCall(
     }
 
     suspend fun download(uids: Set<String>): Map<String, List<String?>> {
-        return if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_37)) {
+        return if (dhisVersionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_37)) {
             apiDownloader.downloadPartitionedMap(
                 uids = uids,
                 pageSize = UrlLengthHelper.getHowManyUidsFitInURL(QUERY_WITHOUT_UIDS_LENGTH),

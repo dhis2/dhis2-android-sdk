@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.network.user
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.UserNetworkHandler
 import org.koin.core.annotation.Singleton
@@ -38,7 +38,7 @@ import org.koin.core.annotation.Singleton
 internal class UserNetworkHandlerImpl(
     private val httpClient: HttpServiceClient,
     private val service: UserService = UserService(httpClient),
-    private val dhisVersionManager: DHISVersionManager,
+    private val dhisVersionManager: DHISVersionManagerImpl,
 ) : UserNetworkHandler {
     override suspend fun authenticate(
         credentials: String,
@@ -48,7 +48,7 @@ internal class UserNetworkHandlerImpl(
     }
 
     override suspend fun getUser(): User {
-        val userDTO = service.getUser(UserFields.allFieldsWithOrgUnit(dhisVersionManager.getVersion()))
+        val userDTO = service.getUser(UserFields.allFieldsWithOrgUnit(dhisVersionManager.getVersionInternal()))
         return userDTO.toDomain()
     }
 }

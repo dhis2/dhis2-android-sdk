@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationPa
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
 import org.hisp.dhis.android.network.datavalue.DataValueImportSummaryWebResponseDTO
 import org.koin.core.annotation.Singleton
 import java.net.HttpURLConnection
@@ -49,7 +49,7 @@ import java.net.HttpURLConnection
 @Singleton
 internal class DataSetCompleteRegistrationNetworkHandlerImpl(
     httpClient: HttpServiceClient,
-    private val versionManager: DHISVersionManager,
+    private val versionManager: DHISVersionManagerImpl,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val categoryOptionComboCollectionRepository: CategoryOptionComboCollectionRepository,
 ) : DataSetCompleteRegistrationNetworkHandler {
@@ -76,7 +76,7 @@ internal class DataSetCompleteRegistrationNetworkHandlerImpl(
     ): Result<DataValueImportSummary, D2Error> {
         val apiPayload = DataSetCompleteRegistrationPayload(null, dataSetCompleteRegistrations.map { it.toDto() })
 
-        return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_38)) {
+        return if (versionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_38)) {
             coroutineAPICallExecutor.wrap(
                 acceptedErrorCodes = listOf(HttpURLConnection.HTTP_CONFLICT),
                 errorClassParser = DataValueImportSummaryWebResponseDTO::toErrorClass,

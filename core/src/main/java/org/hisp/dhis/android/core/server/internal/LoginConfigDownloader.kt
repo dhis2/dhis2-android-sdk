@@ -33,12 +33,12 @@ import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationInsecureStore
 import org.hisp.dhis.android.core.server.LoginConfig
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class LoginConfigDownloader(
-    private val dhisVersionManager: DHISVersionManager,
+    private val dhisVersionManager: DHISVersionManagerImpl,
     private val networkHandler: LoginConfigNetworkHandler,
     private val credentialsSecureStore: CredentialsSecureStore,
     private val databaseConfigurationSecureStore: DatabaseConfigurationInsecureStore,
@@ -48,7 +48,7 @@ internal class LoginConfigDownloader(
             credentialsSecureStore.getServerUrl() ?: throw IllegalArgumentException("Credentials are not set")
 
         val loginConfig =
-            if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_41)) {
+            if (dhisVersionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_41)) {
                 networkHandler.loginConfig()
             } else {
                 LoginConfig.createDefault(serverUrl)

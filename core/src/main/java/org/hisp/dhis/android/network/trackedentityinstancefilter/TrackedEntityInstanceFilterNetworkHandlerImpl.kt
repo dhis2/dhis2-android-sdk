@@ -30,7 +30,7 @@ package org.hisp.dhis.android.network.trackedentityinstancefilter
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterNetworkHandler
 import org.hisp.dhis.android.network.common.PayloadJson
@@ -40,7 +40,7 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class TrackedEntityInstanceFilterNetworkHandlerImpl(
     httpClient: HttpServiceClient,
-    private val dhis2VersionManager: DHISVersionManager,
+    private val dhis2VersionManager: DHISVersionManagerImpl,
 ) : TrackedEntityInstanceFilterNetworkHandler {
     private val service: TrackedEntityInstanceFilterService = TrackedEntityInstanceFilterService(httpClient)
     val accessDataReadFilter = "access." + DataAccessFields.read.eq(true).generateString()
@@ -48,7 +48,7 @@ internal class TrackedEntityInstanceFilterNetworkHandlerImpl(
     override suspend fun getTrackedEntityInstanceFilters(
         partitionUids: Set<String>,
     ): PayloadJson<TrackedEntityInstanceFilter> {
-        return if (dhis2VersionManager.isGreaterOrEqualThan(DHISVersion.V2_38)) {
+        return if (dhis2VersionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_38)) {
             val apiPayload = service.getTrackedEntityInstanceFilters(
                 TrackedEntityInstanceFilterFields.programUid.`in`(partitionUids),
                 accessDataReadFilter,

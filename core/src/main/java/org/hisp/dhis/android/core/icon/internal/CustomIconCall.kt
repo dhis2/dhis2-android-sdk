@@ -32,14 +32,14 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.icon.CustomIcon
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class CustomIconCall(
     private val handler: CustomIconHandler,
     private val networkHandker: IconNetworkHandler,
-    private val dhis2VersionManager: DHISVersionManager,
+    private val dhis2VersionManager: DHISVersionManagerImpl,
     private val apiDownloader: APIDownloader,
 ) : UidsCallCoroutines<CustomIcon> {
 
@@ -48,7 +48,7 @@ internal class CustomIconCall(
     }
 
     override suspend fun download(uids: Set<String>): List<CustomIcon> {
-        return if (dhis2VersionManager.isGreaterOrEqualThan(DHISVersion.V2_41)) {
+        return if (dhis2VersionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_41)) {
             apiDownloader.downloadPartitioned(
                 uids,
                 MAX_UID_LIST_SIZE,

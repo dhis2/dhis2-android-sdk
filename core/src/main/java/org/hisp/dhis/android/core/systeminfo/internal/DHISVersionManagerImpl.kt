@@ -47,37 +47,43 @@ internal class DHISVersionManagerImpl internal constructor(
     private var bypassDHIS2Version: Boolean? = null
 
     override fun getVersion(): DHISVersion {
-        return runBlocking {
-            version
-                ?: systemInfoStore.selectFirst()?.let { systemInfo ->
-                    systemInfo.version()?.let { DHISVersion.getValue(it, getBypassVersion()) }
-                        .also { dhisVersion -> version = dhisVersion }
-                }
-                ?: throw D2Error.builder()
-                    .errorComponent(D2ErrorComponent.SDK)
-                    .errorCode(D2ErrorCode.INVALID_DHIS_VERSION)
-                    .errorDescription("Invalid DHIS version")
-                    .build()
-        }
+        return runBlocking { getVersionInternal() }
+    }
+
+    internal suspend fun getVersionInternal(): DHISVersion {
+        return version
+            ?: systemInfoStore.selectFirst()?.let { systemInfo ->
+                systemInfo.version()?.let { DHISVersion.getValue(it, getBypassVersion()) }
+                    .also { dhisVersion -> version = dhisVersion }
+            }
+            ?: throw D2Error.builder()
+                .errorComponent(D2ErrorComponent.SDK)
+                .errorCode(D2ErrorCode.INVALID_DHIS_VERSION)
+                .errorDescription("Invalid DHIS version")
+                .build()
     }
 
     override fun getPatchVersion(): DHISPatchVersion? {
-        return runBlocking {
-            patchVersion ?: systemInfoStore.selectFirst()?.let { systemInfo ->
-                systemInfo.version()?.let { DHISPatchVersion.getValue(it, getBypassVersion()) }
-                    .also { patch -> patchVersion = patch }
-            }
+        return runBlocking { getPatchVersionInternal() }
+    }
+
+    internal suspend fun getPatchVersionInternal(): DHISPatchVersion? {
+        return patchVersion ?: systemInfoStore.selectFirst()?.let { systemInfo ->
+            systemInfo.version()?.let { DHISPatchVersion.getValue(it, getBypassVersion()) }
+                .also { patch -> patchVersion = patch }
         }
     }
 
     override fun getSmsVersion(): SMSVersion? {
-        return runBlocking {
-            smsVersion
-                ?: systemInfoStore.selectFirst()?.let { systemInfo ->
-                    systemInfo.version()?.let { SMSVersion.getValue(it, getBypassVersion()) }
-                        .also { sms -> smsVersion = sms }
-                }
-        }
+        return runBlocking { getSmsVersionInternal() }
+    }
+
+    internal suspend fun getSmsVersionInternal(): SMSVersion? {
+        return smsVersion
+            ?: systemInfoStore.selectFirst()?.let { systemInfo ->
+                systemInfo.version()?.let { SMSVersion.getValue(it, getBypassVersion()) }
+                    .also { sms -> smsVersion = sms }
+            }
     }
 
     override fun getBypassVersion(): Boolean? {
@@ -85,15 +91,27 @@ internal class DHISVersionManagerImpl internal constructor(
     }
 
     override fun isVersion(version: DHISVersion): Boolean {
-        return version === getVersion()
+        return runBlocking { isVersionInternal(version) }
+    }
+
+    internal suspend fun isVersionInternal(version: DHISVersion): Boolean {
+        return version === getVersionInternal()
     }
 
     override fun isGreaterThan(version: DHISVersion): Boolean {
-        return version < getVersion()
+        return runBlocking { isGreaterThanInternal(version) }
+    }
+
+    internal suspend fun isGreaterThanInternal(version: DHISVersion): Boolean {
+        return version < getVersionInternal()
     }
 
     override fun isGreaterOrEqualThan(version: DHISVersion): Boolean {
-        return version <= getVersion()
+        return runBlocking { isGreaterOrEqualThanInternal(version) }
+    }
+
+    internal suspend fun isGreaterOrEqualThanInternal(version: DHISVersion): Boolean {
+        return version <= getVersionInternal()
     }
 
     internal fun setVersion(versionStr: String) {

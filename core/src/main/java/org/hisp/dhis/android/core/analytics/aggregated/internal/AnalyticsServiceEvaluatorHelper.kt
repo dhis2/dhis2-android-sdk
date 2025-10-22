@@ -61,7 +61,10 @@ internal class AnalyticsServiceEvaluatorHelper(
         val value = evaluator.evaluate(evaluationItem, metadata)
 
         val legend = when (legendStrategy) {
-            is AnalyticsLegendStrategy.Fixed -> legendEvaluator.getLegendByLegendSet(legendStrategy.legendSetUid, value)
+            is AnalyticsLegendStrategy.Fixed -> legendEvaluator.getLegendByLegendSetInternal(
+                legendStrategy.legendSetUid,
+                value,
+            )
             is AnalyticsLegendStrategy.ByDataItem -> getLegendFromDataDimension(evaluationItem, value)
             is AnalyticsLegendStrategy.None -> null
         }

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.analytics
 
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.dataelement.DataElementCollectionRepository
 import org.hisp.dhis.android.core.indicator.IndicatorCollectionRepository
 import org.hisp.dhis.android.core.legendset.LegendCollectionRepository
@@ -48,6 +49,13 @@ internal class LegendEvaluator(
         programIndicatorUid: String,
         value: String?,
     ): String? {
+        return runBlocking { getLegendByProgramIndicatorInternal(programIndicatorUid, value) }
+    }
+
+    suspend fun getLegendByProgramIndicatorInternal(
+        programIndicatorUid: String,
+        value: String?,
+    ): String? {
         return if (value == null) {
             null
         } else {
@@ -55,11 +63,11 @@ internal class LegendEvaluator(
                 val programIndicator = programIndicatorRepository
                     .byUid().eq(programIndicatorUid)
                     .withLegendSets()
-                    .one().blockingGet()
+                    .one().getInternal()
 
                 val legendSet = programIndicator?.legendSets()!![0]
 
-                return getLegendByLegendSet(legendSet.uid(), value)
+                return getLegendByLegendSetInternal(legendSet.uid(), value)
             } catch (e: Exception) {
                 null
             }
@@ -70,6 +78,13 @@ internal class LegendEvaluator(
         dataElementUid: String,
         value: String?,
     ): String? {
+        return runBlocking { getLegendByDataElementInternal(dataElementUid, value) }
+    }
+
+    suspend fun getLegendByDataElementInternal(
+        dataElementUid: String,
+        value: String?,
+    ): String? {
         return if (value == null) {
             null
         } else {
@@ -77,11 +92,11 @@ internal class LegendEvaluator(
                 val dataElement = dataElementRepository
                     .byUid().eq(dataElementUid)
                     .withLegendSets()
-                    .one().blockingGet()
+                    .one().getInternal()
 
                 val legendSet = dataElement?.legendSets()!![0]
 
-                return getLegendByLegendSet(legendSet.uid(), value)
+                return getLegendByLegendSetInternal(legendSet.uid(), value)
             } catch (e: Exception) {
                 null
             }
@@ -133,6 +148,13 @@ internal class LegendEvaluator(
     }
 
     fun getLegendByLegendSet(
+        legendSetUid: String,
+        value: String?,
+    ): String? {
+        return runBlocking { getLegendByLegendSetInternal(legendSetUid, value) }
+    }
+
+    suspend fun getLegendByLegendSetInternal(
         legendSetUid: String,
         value: String?,
     ): String? {

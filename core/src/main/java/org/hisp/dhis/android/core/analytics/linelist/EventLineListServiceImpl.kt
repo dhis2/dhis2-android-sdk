@@ -95,11 +95,12 @@ internal class EventLineListServiceImpl(
 
                     val legend = when (params.analyticsLegendStrategy) {
                         is AnalyticsLegendStrategy.None -> null
-                        is AnalyticsLegendStrategy.ByDataItem -> legendEvaluator.getLegendByDataElement(
+                        is AnalyticsLegendStrategy.ByDataItem -> legendEvaluator.getLegendByDataElementInternal(
                             de.uid,
                             dv?.value(),
                         )
-                        is AnalyticsLegendStrategy.Fixed -> legendEvaluator.getLegendByLegendSet(
+
+                        is AnalyticsLegendStrategy.Fixed -> legendEvaluator.getLegendByLegendSetInternal(
                             params.analyticsLegendStrategy.legendSetUid,
                             dv?.value(),
                         )
@@ -119,11 +120,12 @@ internal class EventLineListServiceImpl(
 
                     val legend = when (params.analyticsLegendStrategy) {
                         is AnalyticsLegendStrategy.None -> null
-                        is AnalyticsLegendStrategy.ByDataItem -> legendEvaluator.getLegendByProgramIndicator(
+                        is AnalyticsLegendStrategy.ByDataItem -> legendEvaluator.getLegendByProgramIndicatorInternal(
                             pi.uid,
                             value,
                         )
-                        is AnalyticsLegendStrategy.Fixed -> legendEvaluator.getLegendByLegendSet(
+
+                        is AnalyticsLegendStrategy.Fixed -> legendEvaluator.getLegendByLegendSetInternal(
                             params.analyticsLegendStrategy.legendSetUid,
                             value,
                         )
@@ -179,7 +181,7 @@ internal class EventLineListServiceImpl(
         }
     }
 
-    private fun getMetadataMap(
+    private suspend fun getMetadataMap(
         dataElements: List<LineListItem>,
         programIndicators: List<LineListItem>,
         organisationUnitUids: HashSet<String>,
@@ -187,7 +189,7 @@ internal class EventLineListServiceImpl(
         val dataElementNameMap = if (dataElements.isNotEmpty()) {
             dataElementRepository
                 .byUid().`in`(dataElements.map { it.uid })
-                .blockingGet()
+                .getInternal()
                 .map { it.uid()!! to it.displayName()!! }.toMap()
         } else {
             mapOf()

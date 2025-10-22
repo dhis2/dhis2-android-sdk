@@ -112,11 +112,11 @@ internal class TrackerLineListService(
             }
     }
 
-    private fun getTrackerVisualization(trackerVisualization: String): TrackerVisualization? {
+    private suspend fun getTrackerVisualization(trackerVisualization: String): TrackerVisualization? {
         return trackerVisualizationCollectionRepository
             .withColumnsAndFilters()
             .uid(trackerVisualization)
-            .blockingGet()
+            .getInternal()
     }
 
     private suspend fun getEventSqlClause(params: TrackerLineListParams, context: TrackerLineListContext): String {

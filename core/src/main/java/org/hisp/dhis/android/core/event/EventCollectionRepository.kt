@@ -100,7 +100,7 @@ class EventCollectionRepository internal constructor(
         val events = byAggregatedSyncState()
             .`in`(*uploadableStatesIncludingError())
             .byEnrollmentUid().isNull
-            .blockingGetWithoutChildren()
+            .getWithoutChildrenInternal()
         emitAll(postCall.uploadEvents(events))
     }.asObservable()
 

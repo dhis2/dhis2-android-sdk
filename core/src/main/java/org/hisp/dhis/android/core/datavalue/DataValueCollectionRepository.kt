@@ -68,7 +68,7 @@ class DataValueCollectionRepository internal constructor(
 
     override fun upload(): Observable<D2Progress> = flow {
         val dataValues =
-            bySyncState().`in`(State.uploadableStatesIncludingError().toMutableList()).blockingGetWithoutChildren()
+            bySyncState().`in`(State.uploadableStatesIncludingError().toMutableList()).getWithoutChildrenInternal()
         emitAll(postCall.uploadDataValues(dataValues))
     }.asObservable()
 

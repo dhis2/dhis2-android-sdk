@@ -99,7 +99,7 @@ class TrackedEntityInstanceCollectionRepository internal constructor(
         emitAll(jobQueryCall.queryPendingJobs())
         val trackedEntityInstances = byAggregatedSyncState()
             .`in`(*uploadableStatesIncludingError())
-            .blockingGetWithoutChildren()
+            .getWithoutChildrenInternal()
         emitAll(postCall.uploadTrackedEntityInstances(trackedEntityInstances))
     }.asObservable()
 

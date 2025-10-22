@@ -63,7 +63,7 @@ abstract class ReadOnlyObjectRepositoryImpl<M, R : ReadOnlyObjectRepository<M>> 
         return runBlocking { getInternal() }
     }
 
-    protected suspend fun getInternal(): M? {
+    internal suspend fun getInternal(): M? {
         return ChildrenAppenderExecutor.appendInObject(
             blockingGetWithoutChildren(),
             childrenAppenderGetter,

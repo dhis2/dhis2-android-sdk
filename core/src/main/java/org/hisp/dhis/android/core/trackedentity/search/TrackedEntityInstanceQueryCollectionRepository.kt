@@ -248,7 +248,7 @@ class TrackedEntityInstanceQueryCollectionRepository internal constructor(
         return if (scope.mode() == RepositoryMode.OFFLINE_ONLY || scope.mode() == RepositoryMode.OFFLINE_FIRST) {
             getDataFetcher().queryAllOfflineUids()
         } else {
-            getUids(blockingGet()).toList()
+            getUids(getProtected()).toList()
         }
     }
 

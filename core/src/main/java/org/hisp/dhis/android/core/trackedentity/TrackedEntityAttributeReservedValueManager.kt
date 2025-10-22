@@ -415,7 +415,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
         return if (minNumberOfValuesToHave == null) {
             val reservedValueSetting = reservedValueSettingStore.selectByUid(attribute)
             if (reservedValueSetting?.numberOfValuesToReserve() == null) {
-                val generalSettings = generalSettingObjectRepository.blockingGet()
+                val generalSettings = generalSettingObjectRepository.getInternal()
                 if (generalSettings?.reservedValues() == null) {
                     FILL_UP_TO
                 } else {

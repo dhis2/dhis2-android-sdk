@@ -40,8 +40,8 @@ class AnalyticsSettingObjectRepository internal constructor(
 ) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<AnalyticsSettings>(analyticsSettingCall),
     ReadOnlyWithDownloadObjectRepository<AnalyticsSettings> {
     override suspend fun getInternal(): AnalyticsSettings? {
-        val analyticsTeiSettings = analyticsTeiSettingRepository.blockingGet()
-        val analyticsDhisVisualizationsSetting = analyticsDhisVisualizationsSettingObjectRepository.blockingGet()
+        val analyticsTeiSettings = analyticsTeiSettingRepository.getInternal()
+        val analyticsDhisVisualizationsSetting = analyticsDhisVisualizationsSettingObjectRepository.getInternal()
 
         return AnalyticsSettings.builder()
             .tei(analyticsTeiSettings)

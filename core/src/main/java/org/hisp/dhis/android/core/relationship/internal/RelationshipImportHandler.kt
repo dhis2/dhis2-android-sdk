@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.imports.internal.RelationshipImportSummary
 import org.hisp.dhis.android.core.imports.internal.conflicts.RelationshipNotFoundConflict
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
+import org.hisp.dhis.android.core.relationship.RelationshipObjectRepository
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -62,7 +63,8 @@ internal class RelationshipImportHandler internal constructor(
         importSummary: RelationshipImportSummary,
         relationshipUid: String,
     ) {
-        val relationship = relationshipRepository.withItems().uid(relationshipUid).blockingGet()
+        val relationship =
+            (relationshipRepository.withItems().uid(relationshipUid) as RelationshipObjectRepository).getInternal()
         val relationshipNotFoundOnServer = checkRelationshipNotFoundOnServer(importSummary)
 
         if (relationshipNotFoundOnServer) {

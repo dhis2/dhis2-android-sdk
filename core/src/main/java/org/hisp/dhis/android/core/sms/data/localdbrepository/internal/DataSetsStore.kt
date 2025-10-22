@@ -99,7 +99,7 @@ internal class DataSetsStore(
             .byPeriod().eq(period)
             .byAttributeOptionComboUid().eq(attributeOptionComboUid)
             .one()
-            .blockingGet()
+            .getInternal()
             ?.let { dataSetStore.setState(it, state) }
     }
 }

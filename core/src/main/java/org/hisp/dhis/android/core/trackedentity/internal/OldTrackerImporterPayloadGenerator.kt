@@ -254,7 +254,7 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
             relationships = relationshipRepository.bySyncState()
                 .`in`(State.uploadableStatesIncludingError().toList())
                 .withItems()
-                .blockingGet(),
+                .getInternal(),
         )
     }
 

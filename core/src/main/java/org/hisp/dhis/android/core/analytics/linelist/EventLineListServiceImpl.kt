@@ -68,7 +68,7 @@ internal class EventLineListServiceImpl(
     @Suppress("LongMethod", "ComplexMethod")
     private suspend fun evaluateEvents(params: EventLineListParams): List<LineListResponse> {
         val events = getEvents(params)
-        val programStage = programStageRepository.uid(params.programStage).blockingGet()
+        val programStage = programStageRepository.uid(params.programStage).getInternal()
 
         val metadataMap = getMetadataMap(
             params.dataElements,
@@ -80,7 +80,7 @@ internal class EventLineListServiceImpl(
             dataValueRepository
                 .byEvent().`in`(events.map { it.uid() })
                 .byDataElement().`in`(params.dataElements.map { it.uid })
-                .blockingGet()
+                .getInternal()
         } else {
             listOf()
         }
@@ -88,7 +88,7 @@ internal class EventLineListServiceImpl(
         return events.mapNotNull {
             (it.eventDate() ?: it.dueDate())?.let { referenceDate ->
                 val periodType = programStage?.periodType() ?: PeriodType.Daily
-                val eventPeriod = periodHelper.blockingGetPeriodForPeriodTypeAndDate(periodType, referenceDate)
+                val eventPeriod = periodHelper.getPeriodForPeriodTypeAndDateInternal(periodType, referenceDate)
 
                 val eventDataValues = params.dataElements.map { de ->
                     val dv = dataElementValues.find { dv -> dv.event() == it.uid() && dv.dataElement() == de.uid }
@@ -164,7 +164,7 @@ internal class EventLineListServiceImpl(
         }
 
         return if (params.eventDates.isNullOrEmpty()) {
-            repoBuilder.blockingGet()
+            repoBuilder.getInternal()
         } else {
             params.eventDates.flatMap { filter ->
                 var innerBuilder = repoBuilder
@@ -174,7 +174,7 @@ internal class EventLineListServiceImpl(
                 dateFilterPeriodHelper.getEndDate(filter)?.let {
                     innerBuilder = innerBuilder.byEventDate().beforeOrEqual(it)
                 }
-                innerBuilder.blockingGet()
+                innerBuilder.getInternal()
             }
         }
     }

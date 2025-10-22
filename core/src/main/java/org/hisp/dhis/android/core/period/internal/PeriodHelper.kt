@@ -100,7 +100,7 @@ class PeriodHelper internal constructor(
         return runBlocking { getPeriodForPeriodTypeAndDateInternal(periodType, date, periodOffset) }
     }
 
-    private suspend fun getPeriodForPeriodTypeAndDateInternal(
+    internal suspend fun getPeriodForPeriodTypeAndDateInternal(
         periodType: PeriodType,
         date: Date,
         periodOffset: Int = 0,

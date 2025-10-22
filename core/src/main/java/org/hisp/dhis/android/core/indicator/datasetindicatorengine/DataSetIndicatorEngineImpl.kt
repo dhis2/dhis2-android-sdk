@@ -85,8 +85,8 @@ internal class DataSetIndicatorEngineImpl(
         orgUnitUid: String,
         attributeOptionComboUid: String,
     ): Double {
-        val indicator = indicatorRepository.uid(indicatorUid).blockingGet()
-        val indicatorType = indicatorTypeRepository.uid(indicator?.indicatorType()?.uid()).blockingGet()
+        val indicator = indicatorRepository.uid(indicatorUid).getInternal()
+        val indicatorType = indicatorTypeRepository.uid(indicator?.indicatorType()?.uid()).getInternal()
 
         return if (indicator != null && indicatorType != null) {
             val context = ExpressionServiceContext(

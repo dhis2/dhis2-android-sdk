@@ -115,6 +115,9 @@ internal class RoomDatabaseManager(
             .setTransactionExecutor(singleThreadExecutor)
             .addMigrations(*ALL_MIGRATIONS.toTypedArray())
             .openHelperFactory(factory)
+            .setQueryCallback({ sqlQuery, bindArgs ->
+                println("SQL Query: $sqlQuery SQL Args: $bindArgs")
+            }, Executors.newSingleThreadExecutor())
             .build()
         databaseAdapter.activate(database, databaseName)
         return databaseAdapter

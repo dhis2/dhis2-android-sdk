@@ -49,8 +49,19 @@ class UserCredentialsObjectRepository internal constructor(
     transformer,
 ) {
 
+    private val delegate = ReadOnlyWithTransformerObjectRepositoryImpl(
+        store,
+        childrenAppenders,
+        scope,
+        transformer,
+    )
+
     private val cf: FilterConnectorFactory<UserCredentialsObjectRepository> = FilterConnectorFactory(scope) { s ->
         UserCredentialsObjectRepository(store, s, transformer)
+    }
+
+    internal suspend fun getInternal(): UserCredentials? {
+        return delegate.getInternal()
     }
 
     fun withUserRoles(): UserCredentialsObjectRepository {

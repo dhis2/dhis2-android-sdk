@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.systeminfo.SMSVersion
 import org.koin.core.annotation.Singleton
 
 @Singleton
+@Suppress("TooManyFunctions")
 internal class DHISVersionManagerImpl internal constructor(
     private val systemInfoStore: SystemInfoStore,
 ) : DHISVersionManager {

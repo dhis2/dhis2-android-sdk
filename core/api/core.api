@@ -2414,7 +2414,6 @@ public abstract class org/hisp/dhis/android/core/arch/repositories/object/intern
 	public abstract fun blockingGetWithoutChildren ()Ljava/lang/Object;
 	public fun exists ()Lio/reactivex/Single;
 	public fun get ()Lio/reactivex/Single;
-	protected final fun getInternal (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected final fun getScope ()Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope;
 	protected abstract fun getWithoutChildrenInternal (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }

@@ -149,7 +149,10 @@ internal class TrackedEntityInstanceNetworkHandlerImpl(
     private suspend fun getEventStatus(query: TrackedEntityInstanceQueryOnline): String? {
         return if (query.eventStatus == null) {
             null
-        } else if (!dhisVersionManager.isGreaterThanInternal(DHISVersion.V2_33) && query.eventStatus == EventStatus.ACTIVE) {
+        } else if (
+            !dhisVersionManager.isGreaterThanInternal(DHISVersion.V2_33) &&
+            query.eventStatus == EventStatus.ACTIVE
+        ) {
             EventStatus.VISITED.toString()
         } else {
             query.eventStatus.toString()

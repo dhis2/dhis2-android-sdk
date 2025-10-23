@@ -158,9 +158,9 @@ internal class AnalyticsServiceEvaluatorHelper(
             is DimensionItem.DataItem.EventDataItem.Attribute ->
                 legendEvaluator
                     .getLegendByTrackedEntityAttributeInternal(
-                dimensionDataItem.attribute,
-                value,
-            )
+                        dimensionDataItem.attribute,
+                        value,
+                    )
 
             is DimensionItem.DataItem.EventDataItem.DataElementOption -> legendEvaluator.getLegendByDataElementInternal(
                 dimensionDataItem.dataElement,

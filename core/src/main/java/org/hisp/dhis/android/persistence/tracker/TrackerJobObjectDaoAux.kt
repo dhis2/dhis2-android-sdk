@@ -40,5 +40,5 @@ internal interface TrackerJobObjectDaoAux : ObjectDao<TrackerJobObjectDB> {
         WHERE ${TrackerJobObjectTableInfo.Columns.JOB_UID} = :jobUid
     """,
     )
-    suspend fun deleteByJobUid(jobUid: String): Int
+    fun deleteByJobUid(jobUid: String): Int
 }

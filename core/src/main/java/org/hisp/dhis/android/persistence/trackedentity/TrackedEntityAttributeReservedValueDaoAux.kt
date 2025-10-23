@@ -46,7 +46,7 @@ internal interface TrackedEntityAttributeReservedValueDaoAux : ObjectDao<Tracked
             AND ${TrackedEntityAttributeReservedValueTableInfo.Columns.TEMPORAL_VALIDITY_DATE} IS NOT NULL)
         """,
     )
-    suspend fun deleteExpired(serverDateAsString: String): Int
+    fun deleteExpired(serverDateAsString: String): Int
 
     @Query(
         """
@@ -55,5 +55,5 @@ internal interface TrackedEntityAttributeReservedValueDaoAux : ObjectDao<Tracked
         AND ${TrackedEntityAttributeReservedValueTableInfo.Columns.PATTERN} != :pattern
         """,
     )
-    suspend fun deleteIfOutdatedPattern(ownerUid: String, pattern: String)
+    fun deleteIfOutdatedPattern(ownerUid: String, pattern: String)
 }

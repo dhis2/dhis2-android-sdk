@@ -40,5 +40,5 @@ internal interface SMSConfigDaoAux : ObjectDao<SMSConfigDB> {
         WHERE `${SMSConfigTableInfo.Columns.KEY}` = :keyName 
         """,
     )
-    suspend fun deleteByKeyName(keyName: String): Int
+    fun deleteByKeyName(keyName: String): Int
 }

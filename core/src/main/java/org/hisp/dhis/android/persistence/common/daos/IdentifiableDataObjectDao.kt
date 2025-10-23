@@ -38,5 +38,5 @@ internal interface IdentifiableDataObjectDao<P : EntityDB<*>> :
     IdentifiableDataObjectDaoQueryFallbacks {
 
     @RawQuery
-    suspend fun stateRawQuery(query: RoomRawQuery): State?
+    fun stateRawQuery(query: RoomRawQuery): State?
 }

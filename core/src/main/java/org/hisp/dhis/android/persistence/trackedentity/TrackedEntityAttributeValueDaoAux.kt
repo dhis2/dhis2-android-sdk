@@ -40,7 +40,7 @@ internal interface TrackedEntityAttributeValueDaoAux : ObjectDao<TrackedEntityAt
         SET ${TrackedEntityAttributeValueTableInfo.Columns.SYNC_STATE} = :state 
         WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = :uid""",
     )
-    suspend fun setSyncStateByInstance(state: String, uid: String)
+    fun setSyncStateByInstance(state: String, uid: String)
 
     @Query(
         """
@@ -50,7 +50,7 @@ internal interface TrackedEntityAttributeValueDaoAux : ObjectDao<TrackedEntityAt
             NOT IN (:trackedEntityAttributeUids)
     """,
     )
-    suspend fun deleteByInstanceAndNotInAttributes(
+    fun deleteByInstanceAndNotInAttributes(
         trackedEntityInstanceUid: String,
         trackedEntityAttributeUids: List<String>,
     ): Int
@@ -68,7 +68,7 @@ internal interface TrackedEntityAttributeValueDaoAux : ObjectDao<TrackedEntityAt
           )
     """,
     )
-    suspend fun deleteByInstanceAndNotInProgramAttributes(
+    fun deleteByInstanceAndNotInProgramAttributes(
         trackedEntityInstanceUid: String,
         trackedEntityAttributeUids: List<String>,
         programUid: String,
@@ -91,7 +91,7 @@ internal interface TrackedEntityAttributeValueDaoAux : ObjectDao<TrackedEntityAt
           )
     """,
     )
-    suspend fun deleteByInstanceAndNotInAccessibleAttributes(
+    fun deleteByInstanceAndNotInAccessibleAttributes(
         trackedEntityInstanceUid: String,
         trackedEntityAttributeUids: List<String>,
         programUids: List<String>,
@@ -105,7 +105,7 @@ internal interface TrackedEntityAttributeValueDaoAux : ObjectDao<TrackedEntityAt
           AND ${TrackedEntityAttributeValueTableInfo.Columns.VALUE} IS NULL
     """,
     )
-    suspend fun removeDeletedAttributeValuesByInstance(
+    fun removeDeletedAttributeValuesByInstance(
         trackedEntityInstanceUid: String,
     ): Int
 }

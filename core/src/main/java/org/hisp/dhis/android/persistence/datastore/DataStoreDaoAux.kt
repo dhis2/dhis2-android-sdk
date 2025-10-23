@@ -40,7 +40,7 @@ internal interface DataStoreDaoAux : ObjectDao<DataStoreDB> {
         WHERE ${DataStoreTableInfo.Columns.NAMESPACE} = :namespace 
         AND `${DataStoreTableInfo.Columns.KEY}` = :key;""",
     )
-    suspend fun setSyncState(state: String, namespace: String, key: String)
+    fun setSyncState(state: String, namespace: String, key: String)
 
     @Query(
         """UPDATE DataStore 
@@ -49,7 +49,7 @@ internal interface DataStoreDaoAux : ObjectDao<DataStoreDB> {
         AND `${DataStoreTableInfo.Columns.KEY}` = :key 
         AND ${DataStoreTableInfo.Columns.SYNC_STATE} = 'UPLOADING';""",
     )
-    suspend fun setStateIfUploading(state: String, namespace: String, key: String)
+    fun setStateIfUploading(state: String, namespace: String, key: String)
 
     @Query(
         """
@@ -58,7 +58,7 @@ internal interface DataStoreDaoAux : ObjectDao<DataStoreDB> {
           AND ${DataStoreTableInfo.Columns.SYNC_STATE} IN (:syncStates) 
     """,
     )
-    suspend fun deleteByNamespaceAndSyncStates(
+    fun deleteByNamespaceAndSyncStates(
         namespace: String,
         syncStates: List<String>,
     ): Int
@@ -71,7 +71,7 @@ internal interface DataStoreDaoAux : ObjectDao<DataStoreDB> {
           AND `${DataStoreTableInfo.Columns.KEY}` NOT IN (:keysToKeep) 
     """,
     )
-    suspend fun deleteByNamespaceSyncStatesAndNotInKeys(
+    fun deleteByNamespaceSyncStatesAndNotInKeys(
         namespace: String,
         syncStates: List<String>,
         keysToKeep: List<String>,

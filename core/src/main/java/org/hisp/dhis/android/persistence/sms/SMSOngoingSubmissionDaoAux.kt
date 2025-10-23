@@ -41,5 +41,5 @@ internal interface SMSOngoingSubmissionDaoAux : ObjectDao<SMSOngoingSubmissionDB
         WHERE ${SMSOngoingSubmissionTableInfo.Columns.SUBMISSION_ID} = :submissionId
     """,
     )
-    suspend fun deleteSubmissionIfExists(submissionId: Int)
+    fun deleteSubmissionIfExists(submissionId: Int)
 }

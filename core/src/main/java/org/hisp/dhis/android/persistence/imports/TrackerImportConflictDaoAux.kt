@@ -41,7 +41,7 @@ internal interface TrackerImportConflictDaoAux : ObjectDao<TrackerImportConflict
           AND ${TrackerImportConflictTableInfo.Columns.TABLE_REFERENCE} = :tableName
     """,
     )
-    suspend fun deleteEventConflict(uid: String, tableName: String): Int
+    fun deleteEventConflict(uid: String, tableName: String): Int
 
     @Query(
         """
@@ -50,7 +50,7 @@ internal interface TrackerImportConflictDaoAux : ObjectDao<TrackerImportConflict
           AND ${TrackerImportConflictTableInfo.Columns.TABLE_REFERENCE} = :tableName
     """,
     )
-    suspend fun deleteEnrollmentConflict(uid: String, tableName: String): Int
+    fun deleteEnrollmentConflict(uid: String, tableName: String): Int
 
     @Query(
         """
@@ -59,5 +59,5 @@ internal interface TrackerImportConflictDaoAux : ObjectDao<TrackerImportConflict
           AND ${TrackerImportConflictTableInfo.Columns.TABLE_REFERENCE} = :tableName
     """,
     )
-    suspend fun deleteTrackedEntityConflict(uid: String, tableName: String): Int
+    fun deleteTrackedEntityConflict(uid: String, tableName: String): Int
 }

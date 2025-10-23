@@ -29,6 +29,6 @@
 package org.hisp.dhis.android.persistence.common.daos
 
 internal interface LinkDaoQueryFallbacks {
-    suspend fun deleteLinksForMasterUid(parentUid: String): Int
-    suspend fun deleteLinksForMasterUid(): Int
+    fun deleteLinksForMasterUid(parentUid: String): Int
+    fun deleteLinksForMasterUid(): Int
 }

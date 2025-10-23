@@ -40,7 +40,7 @@ internal interface EnrollmentDaoAux : IdentifiableDeletableDataObjectDao<Enrollm
         SET ${EnrollmentTableInfo.Columns.AGGREGATED_SYNC_STATE} = :state
         WHERE ${IdentifiableColumns.UID} = :uid;""",
     )
-    suspend fun setAggregatedSyncState(state: String, uid: String): Int
+    fun setAggregatedSyncState(state: String, uid: String): Int
 
     @Query(
         """
@@ -48,5 +48,5 @@ internal interface EnrollmentDaoAux : IdentifiableDeletableDataObjectDao<Enrollm
         WHERE ${EnrollmentTableInfo.Columns.UID} IN (:enrollmentUids)
     """,
     )
-    suspend fun deleteByUids(enrollmentUids: List<String>): Int
+    fun deleteByUids(enrollmentUids: List<String>): Int
 }

@@ -169,44 +169,44 @@ class DaoQueriesProcessor(
 
     private fun buildObjectDaoQueries(tableName: String): String {
         return "    @Query(\"DELETE FROM ${'$'}{${tableName}}\")\n" +
-            "    override suspend fun deleteAllRows(): Int\n\n"
+            "    override fun deleteAllRows(): Int\n\n"
     }
 
     private fun buildIdentifiableObjectDaoQueries(tableName: String): String {
         return buildObjectDaoQueries(tableName) +
             "    @Query(\"DELETE FROM ${'$'}{${tableName}} WHERE uid = :uid\")\n" +
-            "    override suspend fun delete(uid: String): Int\n\n"
+            "    override fun delete(uid: String): Int\n\n"
     }
 
     private fun buildLinkDaoQueries(tableName: String, parentColumnName: String): String {
         return buildObjectDaoQueries(tableName) +
             "    @Query(\"DELETE FROM ${'$'}{${tableName}} WHERE ${'$'}{${parentColumnName}} = :parentUid\")\n" +
-            "    override suspend fun deleteLinksForMasterUid(parentUid: String): Int\n\n" +
+            "    override fun deleteLinksForMasterUid(parentUid: String): Int\n\n" +
             "    @Query(\"DELETE FROM ${'$'}{${tableName}}\")" +
-            "    override suspend fun deleteLinksForMasterUid(): Int"
+            "    override fun deleteLinksForMasterUid(): Int"
     }
 
     private fun buildIdentifiableDataObjectDaoQueries(tableName: String): String {
         return buildIdentifiableObjectDaoQueries(tableName) +
             "    @Query(\"UPDATE ${'$'}{${tableName}} SET ${'$'}{DataColumns.SYNC_STATE} = :state WHERE " +
             "${'$'}{IdentifiableColumns.UID} = :uid\")\n" +
-            "    override suspend fun setSyncState(uid: String, state: State): Int\n\n" +
+            "    override fun setSyncState(uid: String, state: State): Int\n\n" +
             "    @Query(\"UPDATE ${'$'}{${tableName}} SET ${'$'}{DataColumns.SYNC_STATE} = :state WHERE " +
             "${'$'}{IdentifiableColumns.UID} IN (:uids)\")\n" +
-            "    override suspend fun setSyncState(uids: List<String>, state: State): Int\n\n" +
+            "    override fun setSyncState(uids: List<String>, state: State): Int\n\n" +
             "    @Query(\"UPDATE ${'$'}{${tableName}} SET ${'$'}{DataColumns.SYNC_STATE} = :newstate WHERE " +
             "${'$'}{IdentifiableColumns.UID} = :uid AND ${'$'}{DataColumns.SYNC_STATE} = :updateState\")\n" +
-            "    override suspend fun setSyncStateIfUploading(uid: String, newstate: State, updateState: State): Int\n\n"
+            "    override fun setSyncStateIfUploading(uid: String, newstate: State, updateState: State): Int\n\n"
     }
 
     private fun buildIdentifiableDeletableDataObjectDaoQueries(tableName: String): String {
         return buildIdentifiableDataObjectDaoQueries(tableName) +
             "    @Query(\"UPDATE ${'$'}{${tableName}} SET ${'$'}{DeletableDataColumns.DELETED} = 1 " +
             "WHERE ${'$'}{IdentifiableColumns.UID} = :uid\")\n" +
-            "    override suspend fun setDeleted(uid: String): Int\n\n" +
+            "    override fun setDeleted(uid: String): Int\n\n" +
             "    @Query(\"DELETE FROM ${'$'}{${tableName}} WHERE ${'$'}{DataColumns.SYNC_STATE} = :state AND " +
             "${'$'}{IdentifiableColumns.UID} = :uid AND ${'$'}{DeletableDataColumns.DELETED} = :deleted\")\n" +
-            "    override suspend fun deleteWhere(uid: String, deleted: Boolean, state: State): Int\n\n"
+            "    override fun deleteWhere(uid: String, deleted: Boolean, state: State): Int\n\n"
     }
 
     // Operador de extensión para escribir Strings fácilmente en OutputStream

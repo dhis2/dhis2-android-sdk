@@ -42,7 +42,7 @@ internal interface TrackedEntityInstanceSyncDaoAux : ObjectDao<TrackedEntityInst
         AND ${Columns.PROGRAM} = :programUid
     """,
     )
-    suspend fun deleteByProgram(programUid: String, organisationUnitIdsHash: Int): Int
+    fun deleteByProgram(programUid: String, organisationUnitIdsHash: Int): Int
 
     @Query(
         """
@@ -51,5 +51,5 @@ internal interface TrackedEntityInstanceSyncDaoAux : ObjectDao<TrackedEntityInst
         AND ${Columns.PROGRAM} IS NULL
     """,
     )
-    suspend fun deleteByNullProgram(organisationUnitIdsHash: Int): Int
+    fun deleteByNullProgram(organisationUnitIdsHash: Int): Int
 }

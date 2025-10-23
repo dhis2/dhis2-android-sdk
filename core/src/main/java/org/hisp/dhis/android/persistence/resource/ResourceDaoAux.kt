@@ -42,5 +42,5 @@ internal interface ResourceDaoAux : ObjectDao<ResourceDB> {
         WHERE ${ResourceTableInfo.Columns.RESOURCE_TYPE} = :type
         """,
     )
-    suspend fun deleteResource(type: Resource.Type): Int
+    fun deleteResource(type: Resource.Type): Int
 }

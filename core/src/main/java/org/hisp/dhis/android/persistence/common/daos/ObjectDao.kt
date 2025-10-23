@@ -41,32 +41,32 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 internal interface ObjectDao<P : EntityDB<*>> : ReadableDao<P>, ObjectDaoQueryFallbacks {
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insert(entity: P): Long
+    fun insert(entity: P): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(entities: Collection<P>): LongArray
+    fun insert(entities: Collection<P>): LongArray
 
     @Update
-    suspend fun update(entity: P): Int
+    fun update(entity: P): Int
 
     @Update
-    suspend fun update(entities: Collection<P>): Int
+    fun update(entities: Collection<P>): Int
 
     @Upsert
-    suspend fun upsert(entity: P): Long
+    fun upsert(entity: P): Long
 
     @Upsert
-    suspend fun upsert(entities: Collection<P>): LongArray
+    fun upsert(entities: Collection<P>): LongArray
 
     @Delete
-    suspend fun delete(entity: P): Int
+    fun delete(entity: P): Int
 
     @Delete
-    suspend fun delete(entities: Collection<P>): Int
+    fun delete(entities: Collection<P>): Int
 
     @RawQuery
-    suspend fun objectRawQuery(query: RoomRawQuery): P?
+    fun objectRawQuery(query: RoomRawQuery): P?
 
     @RawQuery
-    suspend fun stringListRawQuery(query: RoomRawQuery): List<String>
+    fun stringListRawQuery(query: RoomRawQuery): List<String>
 }

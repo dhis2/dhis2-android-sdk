@@ -42,7 +42,7 @@ internal interface TrackedEntityDataValueDaoAux : ObjectDao<TrackedEntityDataVal
         SET ${TrackedEntityDataValueTableInfo.Columns.SYNC_STATE} = :state 
         WHERE ${TrackedEntityDataValueTableInfo.Columns.EVENT} = :uid;""",
     )
-    suspend fun setSyncStateByEvent(uid: String, state: String)
+    fun setSyncStateByEvent(uid: String, state: String)
 
     @Query(
         """
@@ -51,7 +51,7 @@ internal interface TrackedEntityDataValueDaoAux : ObjectDao<TrackedEntityDataVal
           AND ${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT} NOT IN (:dataElementUids)
     """,
     )
-    suspend fun deleteByEventAndNotInDataElements(
+    fun deleteByEventAndNotInDataElements(
         eventUid: String,
         dataElementUids: List<String>,
     ): Int
@@ -63,7 +63,7 @@ internal interface TrackedEntityDataValueDaoAux : ObjectDao<TrackedEntityDataVal
           AND ${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT} = :dataElementUid
     """,
     )
-    suspend fun deleteByEventAndDataElement(
+    fun deleteByEventAndDataElement(
         eventUid: String,
         dataElementUid: String,
     ): Int
@@ -74,7 +74,7 @@ internal interface TrackedEntityDataValueDaoAux : ObjectDao<TrackedEntityDataVal
         WHERE ${TrackedEntityDataValueTableInfo.Columns.EVENT} = :eventUid
     """,
     )
-    suspend fun deleteByEvent(eventUid: String): Int
+    fun deleteByEvent(eventUid: String): Int
 
     @Query(
         """
@@ -83,7 +83,7 @@ internal interface TrackedEntityDataValueDaoAux : ObjectDao<TrackedEntityDataVal
           AND ${TrackedEntityDataValueTableInfo.Columns.VALUE} IS NULL 
     """,
     )
-    suspend fun removeDeletedDataValuesByEvent(
+    fun removeDeletedDataValuesByEvent(
         eventUid: String,
     ): Int
 
@@ -101,5 +101,5 @@ internal interface TrackedEntityDataValueDaoAux : ObjectDao<TrackedEntityDataVal
           )
     """,
     )
-    suspend fun removeUnassignedDataValuesByEvent(eventUid: String): Int
+    fun removeUnassignedDataValuesByEvent(eventUid: String): Int
 }

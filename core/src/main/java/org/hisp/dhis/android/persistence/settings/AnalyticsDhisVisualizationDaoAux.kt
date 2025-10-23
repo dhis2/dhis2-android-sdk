@@ -41,5 +41,5 @@ internal interface AnalyticsDhisVisualizationDaoAux : ObjectDao<AnalyticsDhisVis
           AND ${AnalyticsDhisVisualizationTableInfo.Columns.UID} NOT IN (:uidsToKeep)
     """,
     )
-    suspend fun deleteByTypeAndUidNotIn(typeName: String, uidsToKeep: List<String>): Int
+    fun deleteByTypeAndUidNotIn(typeName: String, uidsToKeep: List<String>): Int
 }

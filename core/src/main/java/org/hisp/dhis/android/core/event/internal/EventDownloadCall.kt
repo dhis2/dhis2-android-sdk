@@ -123,7 +123,7 @@ internal class EventDownloadCall internal constructor(
         return result
     }
 
-    override fun getQuery(
+    override suspend fun getQuery(
         bundle: EventQueryBundle,
         program: String?,
         orgunitUid: String?,
@@ -150,7 +150,7 @@ internal class EventDownloadCall internal constructor(
         }
     }
 
-    private fun getEventUidsByFilters(
+    private suspend fun getEventUidsByFilters(
         bundle: EventQueryBundle,
         orgunitUid: String?,
     ): List<String> {
@@ -159,7 +159,7 @@ internal class EventDownloadCall internal constructor(
                 .byOrgUnits().eq(orgunitUid)
                 .byOrgUnitMode().eq(bundle.commonParams().ouMode)
                 .byEventFilterObject().eq(it)
-                .onlineOnly().blockingGetUids()
+                .onlineOnly().getDataFetcher().getUids()
         } ?: emptyList()
     }
 }

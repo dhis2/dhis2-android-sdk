@@ -123,8 +123,8 @@ internal class DataSetIndicatorEngineImpl(
         return ExpressionHelper.getValueMap(dataValues)
     }
 
-    private fun getConstantMap(): Map<String, Constant> {
-        val constants: List<Constant> = constantRepository.blockingGet()
+    private suspend fun getConstantMap(): Map<String, Constant> {
+        val constants: List<Constant> = constantRepository.getInternal()
         return mapByUid(constants)
     }
 

@@ -34,6 +34,7 @@ import androidx.paging.PagedList
 import androidx.paging.Pager
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode
 import org.hisp.dhis.android.core.event.Event
@@ -53,7 +54,7 @@ internal class EventQueryDataFetcher(
         return if (isOnline()) {
             trackerCallFatory.getEventCall().getQueryCall(getOnlineQuery()).items
         } else {
-            getOfflineRepository().getInternal()
+            getOfflineRepositoryInternal().getInternal()
         }
     }
 
@@ -61,7 +62,7 @@ internal class EventQueryDataFetcher(
         return if (isOnline()) {
             trackerCallFatory.getEventCall().getQueryUids(getOnlineQuery())
         } else {
-            getOfflineRepository().getUidsInternal()
+            getOfflineRepositoryInternal().getUidsInternal()
         }
     }
 
@@ -69,7 +70,7 @@ internal class EventQueryDataFetcher(
         return if (isOnline()) {
             getUids().size
         } else {
-            getOfflineRepository().countInternal()
+            getOfflineRepositoryInternal().countInternal()
         }
     }
 
@@ -77,7 +78,7 @@ internal class EventQueryDataFetcher(
         return if (isOnline()) {
             count() > 0
         } else {
-            getOfflineRepository().isEmptyProtected()
+            getOfflineRepositoryInternal().isEmptyProtected()
         }
     }
 
@@ -113,6 +114,10 @@ internal class EventQueryDataFetcher(
     }
 
     private fun getOfflineRepository(): EventCollectionRepository {
+        return runBlocking { offlineAdapter.getCollectionRepository(scope) }
+    }
+
+    private suspend fun getOfflineRepositoryInternal(): EventCollectionRepository {
         return offlineAdapter.getCollectionRepository(scope)
     }
 

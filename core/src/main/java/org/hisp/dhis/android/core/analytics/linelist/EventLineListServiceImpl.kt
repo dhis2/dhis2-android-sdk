@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
-import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorEngineImpl
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCollectionRepository
 import org.koin.core.annotation.Singleton
 
@@ -54,7 +54,7 @@ internal class EventLineListServiceImpl(
     private val programIndicatorRepository: ProgramIndicatorCollectionRepository,
     private val organisationUnitRepository: OrganisationUnitCollectionRepository,
     private val programStageRepository: ProgramStageCollectionRepository,
-    private val programIndicatorEngine: ProgramIndicatorEngine,
+    private val programIndicatorEngine: ProgramIndicatorEngineImpl,
     private val periodHelper: PeriodHelper,
     private val dateFilterPeriodHelper: DateFilterPeriodHelper,
     private val organisationUnitHelper: AnalyticsOrganisationUnitHelper,
@@ -116,7 +116,7 @@ internal class EventLineListServiceImpl(
 
                 val programIndicatorValues = params.programIndicators.map { pi ->
 
-                    val value = programIndicatorEngine.getEventProgramIndicatorValue(it.uid(), pi.uid)
+                    val value = programIndicatorEngine.getEventProgramIndicatorValueInternal(it.uid(), pi.uid)
 
                     val legend = when (params.analyticsLegendStrategy) {
                         is AnalyticsLegendStrategy.None -> null
@@ -198,7 +198,7 @@ internal class EventLineListServiceImpl(
         val programIndicatorNameMap = if (programIndicators.isNotEmpty()) {
             programIndicatorRepository
                 .byUid().`in`(programIndicators.map { it.uid })
-                .blockingGet()
+                .getInternal()
                 .map { it.uid()!! to it.displayName()!! }.toMap()
         } else {
             mapOf()
@@ -206,7 +206,7 @@ internal class EventLineListServiceImpl(
 
         val organisationUnitNameMap = organisationUnitRepository
             .byUid().`in`(organisationUnitUids)
-            .blockingGet()
+            .getInternal()
             .map { it.uid()!! to it.displayName()!! }.toMap()
 
         return dataElementNameMap + programIndicatorNameMap + organisationUnitNameMap

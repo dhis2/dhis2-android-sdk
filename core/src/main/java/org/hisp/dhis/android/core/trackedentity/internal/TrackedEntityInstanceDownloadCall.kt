@@ -148,7 +148,7 @@ internal class TrackedEntityInstanceDownloadCall(
         }
     }
 
-    override fun getQuery(
+    override suspend fun getQuery(
         bundle: TrackerQueryBundle,
         program: String?,
         orgunitUid: String?,
@@ -180,23 +180,23 @@ internal class TrackedEntityInstanceDownloadCall(
         }
     }
 
-    private fun getTeiUidsByFilter(bundle: TrackerQueryBundle, orgunitUid: String?): List<String> {
+    private suspend fun getTeiUidsByFilter(bundle: TrackerQueryBundle, orgunitUid: String?): List<String> {
         return bundle.trackedEntityInstanceFilters()?.flatMap {
             teiQueryCollectionRepository
                 .byTrackedEntityInstanceFilterObject().eq(it)
                 .byOrgUnits().eq(orgunitUid)
                 .byOrgUnitMode().eq(bundle.commonParams().ouMode)
-                .onlineOnly().blockingGetUids()
+                .onlineOnly().getUidsInternal()
         } ?: emptyList()
     }
 
-    private fun getTeiUidsByWorkingList(bundle: TrackerQueryBundle, orgunitUid: String?): List<String> {
+    private suspend fun getTeiUidsByWorkingList(bundle: TrackerQueryBundle, orgunitUid: String?): List<String> {
         return bundle.programStageWorkingLists()?.flatMap {
             teiQueryCollectionRepository
                 .byProgramStageWorkingListObject().eq(it)
                 .byOrgUnits().eq(orgunitUid)
                 .byOrgUnitMode().eq(bundle.commonParams().ouMode)
-                .onlineOnly().blockingGetUids()
+                .onlineOnly().getUidsInternal()
         } ?: emptyList()
     }
 }

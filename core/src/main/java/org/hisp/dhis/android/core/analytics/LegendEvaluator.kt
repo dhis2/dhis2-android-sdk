@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.analytics
 
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.dataelement.DataElementCollectionRepository
 import org.hisp.dhis.android.core.indicator.IndicatorCollectionRepository
 import org.hisp.dhis.android.core.legendset.LegendCollectionRepository
@@ -45,13 +44,6 @@ internal class LegendEvaluator(
     private val legendRepository: LegendCollectionRepository,
     private val trackedEntityAttributeCollectionRepository: TrackedEntityAttributeCollectionRepository,
 ) {
-    fun getLegendByProgramIndicator(
-        programIndicatorUid: String,
-        value: String?,
-    ): String? {
-        return runBlocking { getLegendByProgramIndicatorInternal(programIndicatorUid, value) }
-    }
-
     suspend fun getLegendByProgramIndicatorInternal(
         programIndicatorUid: String,
         value: String?,
@@ -72,13 +64,6 @@ internal class LegendEvaluator(
                 null
             }
         }
-    }
-
-    fun getLegendByDataElement(
-        dataElementUid: String,
-        value: String?,
-    ): String? {
-        return runBlocking { getLegendByDataElementInternal(dataElementUid, value) }
     }
 
     suspend fun getLegendByDataElementInternal(
@@ -103,7 +88,7 @@ internal class LegendEvaluator(
         }
     }
 
-    fun getLegendByTrackedEntityAttribute(
+    suspend fun getLegendByTrackedEntityAttributeInternal(
         trackedEntityAttributeUid: String,
         value: String?,
     ): String? {
@@ -114,18 +99,18 @@ internal class LegendEvaluator(
                 val trackedEntityAttribute = trackedEntityAttributeCollectionRepository
                     .byUid().eq(trackedEntityAttributeUid)
                     .withLegendSets()
-                    .one().blockingGet()
+                    .one().getInternal()
 
                 val legendSet = trackedEntityAttribute?.legendSets()!![0]
 
-                return getLegendByLegendSet(legendSet.uid(), value)
+                return getLegendByLegendSetInternal(legendSet.uid(), value)
             } catch (e: Exception) {
                 null
             }
         }
     }
 
-    fun getLegendByIndicator(
+    suspend fun getLegendByIndicatorInternal(
         indicatorUid: String,
         value: String?,
     ): String? {
@@ -136,22 +121,15 @@ internal class LegendEvaluator(
                 val indicator = indicatorRepository
                     .byUid().eq(indicatorUid)
                     .withLegendSets()
-                    .one().blockingGet()
+                    .one().getInternal()
 
                 val legendSet = indicator?.legendSets()!![0]
 
-                return getLegendByLegendSet(legendSet.uid(), value)
+                return getLegendByLegendSetInternal(legendSet.uid(), value)
             } catch (e: Exception) {
                 null
             }
         }
-    }
-
-    fun getLegendByLegendSet(
-        legendSetUid: String,
-        value: String?,
-    ): String? {
-        return runBlocking { getLegendByLegendSetInternal(legendSetUid, value) }
     }
 
     suspend fun getLegendByLegendSetInternal(
@@ -167,7 +145,7 @@ internal class LegendEvaluator(
                     .byEndValue().biggerOrEqualTo(value.toDouble())
                     .byLegendSet().eq(legendSetUid)
                     .one()
-                    .blockingGet()?.uid()
+                    .getInternal()?.uid()
             } catch (e: Exception) {
                 null
             }

@@ -49,7 +49,7 @@ internal class RelationshipManager(
         return runBlocking { getByItem(searchItem, includeDeleted, onlyAccessible) }
     }
 
-    private suspend fun getByItem(
+    internal suspend fun getByItem(
         searchItem: RelationshipItem,
         includeDeleted: Boolean,
         onlyAccessible: Boolean,

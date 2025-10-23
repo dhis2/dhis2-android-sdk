@@ -46,7 +46,11 @@ internal abstract class RelationshipOrphanCleaner<O : ObjectWithUidInterface, R 
         if (parent == null || children == null) {
             return false
         }
-        val existingRelationships = relationshipRepository.getByItem(getItem(parent.uid()), true, false)
+        val existingRelationships = relationshipRepository.getByItemInternal(
+            getItem(parent.uid()),
+            true,
+            false,
+        )
         var count = 0
         for (existingRelationship in existingRelationships) {
             if (isSynced(existingRelationship.syncState()!!) &&

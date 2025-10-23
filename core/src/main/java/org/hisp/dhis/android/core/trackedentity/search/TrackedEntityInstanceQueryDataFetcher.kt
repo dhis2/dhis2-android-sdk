@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity.search
 
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
@@ -103,7 +102,7 @@ internal class TrackedEntityInstanceQueryDataFetcher(
         return store.selectUidsWhere(sqlQuery)
     }
 
-    fun queryAllOnline(): List<Result<TrackedEntityInstance, D2Error>> {
+    suspend fun queryAllOnline(): List<Result<TrackedEntityInstance, D2Error>> {
         return queryOnline(-1)
     }
 
@@ -122,7 +121,7 @@ internal class TrackedEntityInstanceQueryDataFetcher(
     }
 
     @Suppress("ComplexCondition")
-    private fun queryOnline(requestLoadSize: Int): List<Result<TrackedEntityInstance, D2Error>> {
+    private suspend fun queryOnline(requestLoadSize: Int): List<Result<TrackedEntityInstance, D2Error>> {
         val result: MutableList<Result<TrackedEntityInstance, D2Error>> = ArrayList()
 
         do {
@@ -140,7 +139,7 @@ internal class TrackedEntityInstanceQueryDataFetcher(
         return result
     }
 
-    private fun getOnlineQueryResults(
+    private suspend fun getOnlineQueryResults(
         baseOnlineQuery: TrackedEntityInstanceQueryOnline,
         requestLoadSize: Int,
     ): List<Result<TrackedEntityInstance, D2Error>> {
@@ -186,17 +185,14 @@ internal class TrackedEntityInstanceQueryDataFetcher(
             }
     }
 
-    private fun queryOnline(
+    private suspend fun queryOnline(
         onlineQuery: TrackedEntityInstanceQueryOnline,
     ): TrackedEntityInstanceOnlineResult {
         return try {
             val cachedInstances = if (scope.allowOnlineCache()) onlineCache[onlineQuery] else null
 
-            cachedInstances ?: runBlocking {
-                trackerParentCallFactory.getTrackedEntityCall()
-                    .getQueryCall(onlineQuery)
-            }
-                .let { result ->
+            cachedInstances ?: trackerParentCallFactory.getTrackedEntityCall()
+                .getQueryCall(onlineQuery).let { result ->
                     TrackedEntityInstanceOnlineResult(
                         items = result.trackedEntities.map { Result.Success(it) },
                         exhausted = result.exhausted,

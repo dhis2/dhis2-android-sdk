@@ -54,7 +54,7 @@ internal class LatestAppVersionCall(
     }
 
     internal suspend fun resolveApkDistributionVersion(): ApkDistributionVersion? {
-        val userGroupUids = userModule.userGroups().blockingGetUids()
+        val userGroupUids = userModule.userGroups().getUidsInternal()
 
         val versions = networkHandler.versions().items
 

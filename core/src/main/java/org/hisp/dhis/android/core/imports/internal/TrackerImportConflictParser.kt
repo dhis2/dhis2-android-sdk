@@ -141,17 +141,17 @@ internal class TrackerImportConflictParser(
             .build()
     }
 
-    private fun getConflictValue(conflictBuilder: TrackerImportConflict.Builder): String? {
+    private suspend fun getConflictValue(conflictBuilder: TrackerImportConflict.Builder): String? {
         val auxConflict = conflictBuilder.build()
 
         return if (auxConflict.dataElement() != null && auxConflict.event() != null) {
             trackedEntityInstanceDataValueRepository
                 .value(auxConflict.event()!!, auxConflict.dataElement()!!)
-                .blockingGet()?.value()
+                .getInternal()?.value()
         } else if (auxConflict.trackedEntityAttribute() != null && auxConflict.trackedEntityInstance() != null) {
             trackedEntityAttributeValueRepository
                 .value(auxConflict.trackedEntityAttribute()!!, auxConflict.trackedEntityInstance()!!)
-                .blockingGet()?.value()
+                .getInternal()?.value()
         } else {
             null
         }

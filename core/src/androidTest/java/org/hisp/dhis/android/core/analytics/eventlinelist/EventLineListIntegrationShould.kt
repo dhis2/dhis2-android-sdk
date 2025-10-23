@@ -83,6 +83,7 @@ import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStore
 import org.hisp.dhis.android.core.program.internal.ProgramStageStore
 import org.hisp.dhis.android.core.program.internal.ProgramStore
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorEngineImpl
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
@@ -135,7 +136,7 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         programIndicatorRepository = d2.programModule().programIndicators(),
         organisationUnitRepository = d2.organisationUnitModule().organisationUnits(),
         programStageRepository = d2.programModule().programStages(),
-        programIndicatorEngine = d2.programModule().programIndicatorEngine(),
+        programIndicatorEngine = d2.programModule().programIndicatorEngine() as ProgramIndicatorEngineImpl,
         periodHelper = d2.periodModule().periodHelper(),
         dateFilterPeriodHelper = dateFilterPeriodHelper,
         organisationUnitHelper = organisationUnitHelper,

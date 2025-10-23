@@ -408,7 +408,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         relatives: RelationshipItemRelatives,
     ): ItemsWithPagingResult
 
-    protected abstract fun getQuery(
+    protected abstract suspend fun getQuery(
         bundle: Q,
         program: String?,
         orgunitUid: String?,

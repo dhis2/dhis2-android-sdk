@@ -82,6 +82,7 @@ internal constructor(
     @Throws(D2Error::class)
     protected open suspend fun deleteInternal() {
         getWithoutChildrenInternal()?.let { delete(it) }
+//        getWithoutChildrenInternal()?.let { deleteInternal(it) }
     }
 
     /**
@@ -127,7 +128,7 @@ internal constructor(
 
     @Throws(D2Error::class)
     @Suppress("TooGenericExceptionCaught")
-    protected open suspend fun deleteInternal(m: M) {
+    protected open suspend fun deleteInternal(m: M) { // sdfsdf
         try {
             store.deleteWhere(m)
             propagateState(m)

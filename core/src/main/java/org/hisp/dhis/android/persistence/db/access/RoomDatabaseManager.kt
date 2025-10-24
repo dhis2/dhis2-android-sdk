@@ -34,7 +34,6 @@ import android.util.Log
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import kotlinx.coroutines.Dispatchers
 import net.zetetic.database.DatabaseErrorHandler
 import net.zetetic.database.sqlcipher.SQLiteDatabaseHook
@@ -86,8 +85,8 @@ internal class RoomDatabaseManager(
     @Suppress("SpreadOperator")
     override fun createOrOpenUnencryptedDatabase(databaseName: String): DatabaseAdapter {
         val database = Room.databaseBuilder(context, AppDatabase::class.java, databaseName)
-            .setDriver(BundledSQLiteDriver())
-            .setQueryCoroutineContext(Dispatchers.IO)
+            .setQueryExecutor(singleThreadExecutor)
+            .setTransactionExecutor(singleThreadExecutor)
             .addMigrations(*ALL_MIGRATIONS.toTypedArray())
             .build()
         databaseAdapter.activate(database, databaseName)
@@ -96,8 +95,8 @@ internal class RoomDatabaseManager(
 
     override fun createOrOpenUnencryptedDatabaseWithoutMigration(databaseName: String): DatabaseAdapter {
         val database = Room.databaseBuilder(context, AppDatabase::class.java, databaseName)
-            .setDriver(BundledSQLiteDriver())
-            .setQueryCoroutineContext(Dispatchers.IO)
+            .setQueryExecutor(singleThreadExecutor)
+            .setTransactionExecutor(singleThreadExecutor)
             .build()
         databaseAdapter.activate(database, databaseName)
         return databaseAdapter

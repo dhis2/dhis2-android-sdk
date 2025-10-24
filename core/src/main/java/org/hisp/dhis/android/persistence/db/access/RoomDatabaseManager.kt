@@ -96,7 +96,6 @@ internal class RoomDatabaseManager(
 
     override fun createOrOpenUnencryptedDatabaseWithoutMigration(databaseName: String): DatabaseAdapter {
         val database = Room.databaseBuilder(context, AppDatabase::class.java, databaseName)
-            .setDriver(BundledSQLiteDriver())
             .setQueryCoroutineContext(Dispatchers.IO)
             .build()
         databaseAdapter.activate(database, databaseName)
@@ -115,9 +114,6 @@ internal class RoomDatabaseManager(
             .setTransactionExecutor(singleThreadExecutor)
             .addMigrations(*ALL_MIGRATIONS.toTypedArray())
             .openHelperFactory(factory)
-            .setQueryCallback({ sqlQuery, bindArgs ->
-                println("SQL Query: $sqlQuery SQL Args: $bindArgs")
-            }, Executors.newSingleThreadExecutor())
             .build()
         databaseAdapter.activate(database, databaseName)
         return databaseAdapter

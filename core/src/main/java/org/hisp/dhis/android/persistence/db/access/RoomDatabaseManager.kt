@@ -96,6 +96,7 @@ internal class RoomDatabaseManager(
 
     override fun createOrOpenUnencryptedDatabaseWithoutMigration(databaseName: String): DatabaseAdapter {
         val database = Room.databaseBuilder(context, AppDatabase::class.java, databaseName)
+            .setDriver(BundledSQLiteDriver())
             .setQueryCoroutineContext(Dispatchers.IO)
             .build()
         databaseAdapter.activate(database, databaseName)

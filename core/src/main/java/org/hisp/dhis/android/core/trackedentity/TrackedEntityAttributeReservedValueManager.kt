@@ -211,7 +211,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
         return runBlocking { countInternal(attributeUid, organisationUnitUid) }
     }
 
-    private suspend fun countInternal(attributeUid: String, organisationUnitUid: String?): Int {
+    internal suspend fun countInternal(attributeUid: String, organisationUnitUid: String?): Int {
         return store.count(attributeUid, organisationUnitUid, null)
     }
 
@@ -249,7 +249,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
                 val organisationUnits = getOrgUnitsWithCodeLinkedToAttributes(trackedEntityAttribute.uid())
                 for (organisationUnit in organisationUnits) {
                     builder.organisationUnit(organisationUnit)
-                        .count(blockingCount(trackedEntityAttribute.uid(), organisationUnit.uid()))
+                        .count(countInternal(trackedEntityAttribute.uid(), organisationUnit.uid()))
                         .numberOfValuesToFillUp(
                             getFillUpToValue(
                                 null,
@@ -259,7 +259,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
                     reservedValueSummaries.add(builder.build())
                 }
             } else {
-                builder.count(blockingCount(trackedEntityAttribute.uid(), null))
+                builder.count(countInternal(trackedEntityAttribute.uid(), null))
                     .numberOfValuesToFillUp(getFillUpToValue(null, trackedEntityAttribute.uid()))
                 reservedValueSummaries.add(builder.build())
             }
@@ -415,7 +415,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
         return if (minNumberOfValuesToHave == null) {
             val reservedValueSetting = reservedValueSettingStore.selectByUid(attribute)
             if (reservedValueSetting?.numberOfValuesToReserve() == null) {
-                val generalSettings = generalSettingObjectRepository.blockingGet()
+                val generalSettings = generalSettingObjectRepository.getInternal()
                 if (generalSettings?.reservedValues() == null) {
                     FILL_UP_TO
                 } else {

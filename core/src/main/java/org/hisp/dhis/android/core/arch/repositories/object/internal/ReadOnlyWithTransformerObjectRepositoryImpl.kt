@@ -73,7 +73,7 @@ internal constructor(
         return runBlocking { getInternal() }
     }
 
-    private suspend fun getInternal(): T? {
+    internal suspend fun getInternal(): T? {
         val item = ChildrenAppenderExecutor.appendInObject(
             getWithoutChildrenInternal(),
             childrenAppenders,

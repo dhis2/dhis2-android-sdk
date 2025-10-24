@@ -128,7 +128,7 @@ internal interface IndicatorDataItem : ExpressionItem {
                 val programIndicator = visitor.indicatorContext!!.programIndicatorRepository
                     .withAnalyticsPeriodBoundaries()
                     .uid(dataItem.uid)
-                    .blockingGet()
+                    .getInternal()
                     ?: throw AnalyticsException.InvalidProgramIndicator(dataItem.uid)
 
                 dataItem.uid to MetadataItem.ProgramIndicatorItem(programIndicator)

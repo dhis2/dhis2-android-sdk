@@ -82,7 +82,7 @@ class DataSetCompleteRegistrationObjectRepository internal constructor(
     private suspend fun setInternal() {
         val dataSetCompleteRegistration = getWithoutChildrenInternal()
         if (dataSetCompleteRegistration == null) {
-            val username = credentialsRepository.blockingGet()!!.username()
+            val username = credentialsRepository.getInternal()!!.username()
             dataSetCompleteRegistrationStore.insert(
                 DataSetCompleteRegistration.builder()
                     .period(period)

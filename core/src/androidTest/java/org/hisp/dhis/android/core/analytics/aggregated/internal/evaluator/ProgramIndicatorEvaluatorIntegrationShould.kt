@@ -51,6 +51,7 @@ import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryType
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper
 import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.de
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorEngineImpl
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -61,7 +62,7 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
     private val programIndicatorEvaluator = ProgramIndicatorEvaluator(
         koin.get(),
         koin.get(),
-        d2.programModule().programIndicatorEngine(),
+        d2.programModule().programIndicatorEngine() as ProgramIndicatorEngineImpl,
     )
 
     private val helper = BaseTrackerDataIntegrationHelper()

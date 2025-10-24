@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.imports.internal.RelationshipImportSummary
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
 import org.hisp.dhis.android.core.relationship.RelationshipItem
+import org.hisp.dhis.android.core.relationship.RelationshipObjectRepository
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -54,6 +55,8 @@ class RelationshipImportHandlerShould {
     private val relationshipCollectionRepository: RelationshipCollectionRepository =
         mock(defaultAnswer = Answers.RETURNS_DEEP_STUBS)
 
+    private val relationshipObjectRepository: RelationshipObjectRepository = mock()
+
     private val importSummary: RelationshipImportSummary = mock()
 
     private val relationship: Relationship = mock()
@@ -66,11 +69,12 @@ class RelationshipImportHandlerShould {
 
     @Before
     @Throws(Exception::class)
-    fun setUp() {
+    fun setUp() = runTest {
         relationshipImportHandler =
             RelationshipImportHandler(relationshipStore, dataStatePropagator, relationshipCollectionRepository)
 
-        whenever(relationshipCollectionRepository.withItems().uid(any()).blockingGet()).doReturn(relationship)
+        whenever(relationshipCollectionRepository.withItems().uid(any())).doReturn(relationshipObjectRepository)
+        whenever(relationshipObjectRepository.getInternal()).doReturn(relationship)
         whenever(relationship.from()).doReturn(relationshipItem)
     }
 

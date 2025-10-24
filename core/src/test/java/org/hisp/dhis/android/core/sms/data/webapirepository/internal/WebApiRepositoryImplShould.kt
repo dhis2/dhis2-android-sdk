@@ -33,7 +33,7 @@ import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository.GetMetadataIdsConfig
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
 import org.hisp.dhis.android.network.metadata.MetadataIdsDTO
 import org.hisp.dhis.android.network.metadata.MetadataNetworkHandlerImpl
 import org.hisp.dhis.android.network.metadata.MetadataService
@@ -41,13 +41,21 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.kotlin.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.anyOrNull
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.isNull
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
+import org.mockito.kotlin.whenever
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
 class WebApiRepositoryImplShould {
 
-    private val dhisVersionManager: DHISVersionManager = mock()
+    private val dhisVersionManager: DHISVersionManagerImpl = mock()
     private val metadataIdsDTO: MetadataIdsDTO = mock()
     private val metadataService: MetadataService = mock()
     private val httpClient: HttpServiceClient = mock()
@@ -72,7 +80,7 @@ class WebApiRepositoryImplShould {
 
     @Test
     fun `Include users query if version lower than 2_35`() = runTest {
-        whenever(dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_35)) doReturn false
+        whenever(dhisVersionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_35)) doReturn false
         whenever(metadataService.getMetadataFields(any(), any(), any(), any(), any(), any(), any()))
             .thenReturn(metadataIdsDTO)
 
@@ -91,7 +99,7 @@ class WebApiRepositoryImplShould {
 
     @Test
     fun `Exclude users if version greater or equal to 2_35`() = runTest {
-        whenever(dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_35)) doReturn true
+        whenever(dhisVersionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_35)) doReturn true
         whenever(metadataService.getMetadataFields(any(), any(), any(), anyOrNull(), any(), any(), any()))
             .thenReturn(metadataIdsDTO)
 

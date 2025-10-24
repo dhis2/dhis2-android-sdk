@@ -83,7 +83,7 @@ internal class EnrollmentServiceImpl(
         trackedEntityInstanceUid: String,
         programUid: String,
     ): EnrollmentAccess {
-        val program = programRepository.uid(programUid).blockingGet() ?: return EnrollmentAccess.NO_ACCESS
+        val program = programRepository.uid(programUid).getInternal() ?: return EnrollmentAccess.NO_ACCESS
 
         val dataAccess =
             if (program.access()?.data()?.write() == true) {

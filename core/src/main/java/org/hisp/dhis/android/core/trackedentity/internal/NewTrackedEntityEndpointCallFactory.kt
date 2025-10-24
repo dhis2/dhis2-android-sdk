@@ -135,11 +135,11 @@ internal class NewTrackedEntityEndpointCallFactory(
         )
     }
 
-    private fun getRelatedProgramUid(item: RelationshipItemRelative): String? {
+    private suspend fun getRelatedProgramUid(item: RelationshipItemRelative): String? {
         val relationshipType = relationshipTypeRepository
             .withConstraints()
             .uid(item.relationshipTypeUid)
-            .blockingGet()
+            .getInternal()
 
         val constraint = when (item.constraintType) {
             RelationshipConstraintType.FROM -> relationshipType?.fromConstraint()

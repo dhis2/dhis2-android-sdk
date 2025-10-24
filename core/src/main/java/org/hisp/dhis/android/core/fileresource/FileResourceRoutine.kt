@@ -66,31 +66,31 @@ internal class FileResourceRoutine(
 ) {
     fun deleteOutdatedFileResources(after: Date? = null): Completable {
         return rxCompletable {
-            blockingDeleteOutdatedFileResources(after)
+            internalDeleteOutdatedFileResources(after)
         }
     }
 
     @SuppressWarnings("MagicNumber")
-    suspend fun blockingDeleteOutdatedFileResources(after: Date? = null) {
+    suspend fun internalDeleteOutdatedFileResources(after: Date? = null) {
         val dataElementsUids = dataElementCollectionRepository
             .byValueType().`in`(ValueType.FILE_RESOURCE, ValueType.IMAGE)
-            .blockingGet().map(DataElement::uid)
+            .getInternal().map(DataElement::uid)
 
         val trackedEntityAttributesUids = trackedEntityAttributeCollectionRepository
             .byValueType().`in`(ValueType.FILE_RESOURCE, ValueType.IMAGE)
-            .blockingGet().map(TrackedEntityAttribute::uid)
+            .getInternal().map(TrackedEntityAttribute::uid)
 
         val trackedEntityDataValues = trackedEntityDataValueCollectionRepository
             .byDataElement().`in`(dataElementsUids)
-            .blockingGet()
+            .getInternal()
 
         val trackedEntityAttributeValues = trackedEntityAttributeValueCollectionRepository
             .byTrackedEntityAttribute().`in`(trackedEntityAttributesUids)
-            .blockingGet()
+            .getInternal()
 
         val dataValues = dataValueCollectionRepository
             .byDataElementUid().`in`(dataElementsUids)
-            .blockingGet()
+            .getInternal()
 
         val customIcons = customIconStore.selectAll()
 
@@ -106,12 +106,12 @@ internal class FileResourceRoutine(
             .byUid().notIn(fileResourceUids.mapNotNull { it })
             .byDomain().`in`(FileResourceDomain.DATA_VALUE, FileResourceDomain.ICON)
             .byLastUpdated().before(lastUpdatedBefore)
-            .blockingGet()
+            .getInternal()
 
-        blockingDeleteFileResources(fileResources)
+        deleteFileResources(fileResources)
     }
 
-    private suspend fun blockingDeleteFileResources(fileResources: List<FileResource>) {
+    private suspend fun deleteFileResources(fileResources: List<FileResource>) {
         fileResources.forEach { fileResource ->
             fileResource.uid()?.let { uid ->
                 fileResourceStore.deleteIfExists(uid)

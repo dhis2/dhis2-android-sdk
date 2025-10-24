@@ -149,7 +149,7 @@ internal class AnalyticsServiceMetadataHelper(
                         ?: throw AnalyticsException.InvalidIndicator(item.uid)
 
                 is DimensionItem.DataItem.ProgramIndicatorItem ->
-                    programIndicatorRepository.withAnalyticsPeriodBoundaries().uid(item.uid).blockingGet()
+                    programIndicatorRepository.withAnalyticsPeriodBoundaries().uid(item.uid).getInternal()
                         ?.let { programIndicator -> MetadataItem.ProgramIndicatorItem(programIndicator) }
                         ?: throw AnalyticsException.InvalidProgramIndicator(item.uid)
 

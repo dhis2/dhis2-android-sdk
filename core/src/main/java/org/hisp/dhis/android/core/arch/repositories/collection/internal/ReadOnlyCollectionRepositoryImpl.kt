@@ -65,7 +65,7 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
         return runBlocking { getWithoutChildrenInternal() }
     }
 
-    private suspend fun getWithoutChildrenInternal(): List<M> {
+    internal suspend fun getWithoutChildrenInternal(): List<M> {
         return store.selectWhere(
             whereClause,
             OrderByClauseBuilder.orderByFromItems(

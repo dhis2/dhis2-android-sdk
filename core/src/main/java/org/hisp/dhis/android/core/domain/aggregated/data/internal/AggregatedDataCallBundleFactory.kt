@@ -51,13 +51,13 @@ internal class AggregatedDataCallBundleFactory(
         val rootOrganisationUnitUids = organisationUnitRepository
             .byRootOrganisationUnit(true)
             .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-            .blockingGetUids()
+            .getUidsInternal()
         val allOrganisationUnitUids = organisationUnitRepository
             .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-            .blockingGetUids()
+            .getUidsInternal()
         return getBundlesInternal(
-            dataSets,
-            dataSetSettingsObjectRepository.blockingGet(),
+            getDataSets(),
+            dataSetSettingsObjectRepository.getInternal(),
             rootOrganisationUnitUids,
             HashSet(allOrganisationUnitUids),
             syncValuesByDataSetUid(),
@@ -146,8 +146,9 @@ internal class AggregatedDataCallBundleFactory(
         return periods.mapNotNull { it.periodId() }
     }
 
-    private val dataSets: List<DataSet>
-        get() = dataSetRepository
+    private suspend fun getDataSets(): List<DataSet> {
+        return dataSetRepository
             .withDataSetElements()
-            .blockingGet()
+            .getInternal()
+    }
 }

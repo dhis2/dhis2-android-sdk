@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -86,9 +85,7 @@ internal class SynchronizationSettingCall(
         synchronizationSettingHandler.handleMany(syncSettingsList)
     }
 
-    private fun <T> tryOrNull(call: T): T? {
-        return runBlocking {
-            coroutineAPICallExecutor.wrap { call }.getOrNull()
-        }
+    private suspend fun <T> tryOrNull(call: T): T? {
+        return coroutineAPICallExecutor.wrap { call }.getOrNull()
     }
 }

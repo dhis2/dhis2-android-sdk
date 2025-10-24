@@ -244,11 +244,11 @@ class TrackedEntityInstanceQueryCollectionRepository internal constructor(
         return runBlocking { getUidsInternal() }
     }
 
-    private suspend fun getUidsInternal(): List<String> {
+    internal suspend fun getUidsInternal(): List<String> {
         return if (scope.mode() == RepositoryMode.OFFLINE_ONLY || scope.mode() == RepositoryMode.OFFLINE_FIRST) {
             getDataFetcher().queryAllOfflineUids()
         } else {
-            getUids(blockingGet()).toList()
+            getUids(getProtected()).toList()
         }
     }
 

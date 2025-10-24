@@ -54,7 +54,7 @@ internal class EventCollectionRepositoryAdapter(
 ) {
 
     @Suppress("ComplexMethod")
-    fun getCollectionRepository(scope: EventQueryRepositoryScope): EventCollectionRepository {
+    suspend fun getCollectionRepository(scope: EventQueryRepositoryScope): EventCollectionRepository {
         var repository = eventCollectionRepository
 
         scope.program()?.let { repository = repository.byProgramUid().eq(it) }
@@ -96,7 +96,7 @@ internal class EventCollectionRepositoryAdapter(
         return repository
     }
 
-    private fun applyOrgunitSelection(
+    private suspend fun applyOrgunitSelection(
         repository: EventCollectionRepository,
         scope: EventQueryRepositoryScope,
     ): EventCollectionRepository {
@@ -135,23 +135,23 @@ internal class EventCollectionRepositoryAdapter(
         return filterRepo
     }
 
-    fun getOrganisationUnits(scope: EventQueryRepositoryScope): List<String>? {
+    suspend fun getOrganisationUnits(scope: EventQueryRepositoryScope): List<String>? {
         return when (scope.orgUnitMode()) {
             OrganisationUnitMode.ALL, OrganisationUnitMode.ACCESSIBLE ->
-                organisationUnitCollectionRepository.blockingGetUids()
+                organisationUnitCollectionRepository.getUidsInternal()
 
             OrganisationUnitMode.CAPTURE ->
                 organisationUnitCollectionRepository
-                    .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE).blockingGetUids()
+                    .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE).getUidsInternal()
 
             OrganisationUnitMode.CHILDREN ->
                 scope.orgUnits()?.map { orgUnit ->
-                    organisationUnitCollectionRepository.byParentUid().eq(orgUnit).blockingGetUids() + orgUnit
+                    organisationUnitCollectionRepository.byParentUid().eq(orgUnit).getUidsInternal() + orgUnit
                 }?.flatten()
 
             OrganisationUnitMode.DESCENDANTS ->
                 scope.orgUnits()?.map { orgUnit ->
-                    organisationUnitCollectionRepository.byPath().like(orgUnit).blockingGetUids()
+                    organisationUnitCollectionRepository.byPath().like(orgUnit).getUidsInternal()
                 }?.flatten()
 
             OrganisationUnitMode.SELECTED ->

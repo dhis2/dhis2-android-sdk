@@ -208,7 +208,7 @@ internal class RoomDatabaseAdapter(
         val results = mutableListOf<Map<String, Any?>>()
 
         database!!.useWriterConnection { transactor ->
-            transactor.withTransaction(Transactor.SQLiteTransactionType.DEFERRED) {
+            transactor.withTransaction(Transactor.SQLiteTransactionType.IMMEDIATE) {
                 this.usePrepared(sqlQuery) { statement: SQLiteStatement ->
                     queryArgs?.forEachIndexed { index, arg ->
                         val argIndex = index + 1
@@ -226,8 +226,12 @@ internal class RoomDatabaseAdapter(
 
                         val rowMap = mutableMapOf<String, Any?>()
                         columnNamesCache.forEachIndexed { idx, name ->
-                            val value = statement.getText(idx)
-                            rowMap[name] = value
+                            if (statement.isNull(idx)) {
+                                rowMap[name] = ""
+                            } else {
+                                val value = statement.getText(idx)
+                                rowMap[name] = value
+                            }
                         }
                         results.add(rowMap)
                     }

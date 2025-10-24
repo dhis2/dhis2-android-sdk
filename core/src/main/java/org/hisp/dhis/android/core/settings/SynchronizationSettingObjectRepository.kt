@@ -43,8 +43,8 @@ class SynchronizationSettingObjectRepository internal constructor(
     ReadOnlyWithDownloadObjectRepository<SynchronizationSettings> {
     override suspend fun getInternal(): SynchronizationSettings? {
         val syncSettings = syncStore.selectAll()
-        val dataSetSettings = dataSetSettingsRepository.blockingGet()
-        val programSettings = programSettingsRepository.blockingGet()
+        val dataSetSettings = dataSetSettingsRepository.getInternal()
+        val programSettings = programSettingsRepository.getInternal()
 
         return if (syncSettings.isEmpty() && dataSetSettings == null && programSettings == null) {
             null

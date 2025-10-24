@@ -45,7 +45,7 @@ abstract class ReadOnlyAnyObjectWithDownloadRepositoryImpl<M> internal construct
         return runBlocking { getInternal() }
     }
 
-    protected abstract suspend fun getInternal(): M?
+    internal abstract suspend fun getInternal(): M?
 
     fun exists(): Single<Boolean> {
         return rxSingle { existsInternal() }

@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
 import org.hisp.dhis.android.core.program.ProgramIndicator
-import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorEngineImpl
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.EnrollmentAlias
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.EventAlias
 import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
@@ -48,7 +48,7 @@ import org.koin.core.annotation.Singleton
 internal class ProgramIndicatorEvaluator(
     private val eventStore: EventStore,
     private val enrollmentStore: EnrollmentStore,
-    private val programIndicatorEngine: ProgramIndicatorEngine,
+    private val programIndicatorEngine: ProgramIndicatorEngineImpl,
 ) : AnalyticsEvaluator {
 
     override suspend fun evaluate(
@@ -85,7 +85,7 @@ internal class ProgramIndicatorEvaluator(
         queryMods: QueryMods?,
     ): List<String?> {
         return getFilteredEventUids(programIndicator, evaluationItem, metadata, queryMods).map {
-            programIndicatorEngine.getEventProgramIndicatorValue(it, programIndicator.uid())
+            programIndicatorEngine.getEventProgramIndicatorValueInternal(it, programIndicator.uid())
         }
     }
 
@@ -109,7 +109,7 @@ internal class ProgramIndicatorEvaluator(
         queryMods: QueryMods?,
     ): List<String?> {
         return getFilteredEnrollmentUids(programIndicator, evaluationItem, metadata, queryMods).map {
-            programIndicatorEngine.getEnrollmentProgramIndicatorValue(it, programIndicator.uid())
+            programIndicatorEngine.getEnrollmentProgramIndicatorValueInternal(it, programIndicator.uid())
         }
     }
 

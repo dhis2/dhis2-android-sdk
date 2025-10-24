@@ -324,7 +324,7 @@ class EventQueryCollectionRepository internal constructor(
         return getDataFetcher().one()
     }
 
-    private fun getDataFetcher(): EventQueryDataFetcher {
+    internal fun getDataFetcher(): EventQueryDataFetcher {
         return EventQueryDataFetcher(
             scope,
             eventCollectionRepositoryAdapter,

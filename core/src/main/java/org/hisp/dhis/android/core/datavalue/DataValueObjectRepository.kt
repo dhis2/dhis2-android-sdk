@@ -105,7 +105,7 @@ class DataValueObjectRepository internal constructor(
     override suspend fun deleteInternal() {
         getWithoutChildrenInternal()?.let { dataValue ->
             if (dataValue.syncState() === State.TO_POST) {
-                super.delete(dataValue)
+                super.deleteInternal(dataValue)
             } else {
                 setObject(dataValue.toBuilder().deleted(true).syncState(State.TO_UPDATE).build())
             }

@@ -58,7 +58,7 @@ internal class FileResourceRoutineShould : BaseFileResourceRoutineIntegrationSho
     fun delete_outdated_file_resources_if_present() = runTest {
         trackedEntityDataValueStore.delete()
         trackedEntityAttributeValueStore.delete()
-        fileResourceRoutine.blockingDeleteOutdatedFileResources()
+        fileResourceRoutine.internalDeleteOutdatedFileResources()
         val fileResources = d2.fileResourceModule().fileResources().blockingGet()
         assertThat(fileResources.size).isEqualTo(2)
         assertThat(File(FileResourceRoutineSamples.fileResource1.path()!!).exists()).isTrue()

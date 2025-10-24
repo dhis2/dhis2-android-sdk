@@ -43,7 +43,7 @@ internal class DataSetsStore(
     private val dataSetStore: DataSetCompleteRegistrationStore,
     private val completeRegistrationRepository: DataSetCompleteRegistrationCollectionRepository,
 ) {
-    fun getDataValues(
+    suspend fun getDataValues(
         dataSetUid: String?,
         orgUnit: String,
         period: String,
@@ -58,11 +58,11 @@ internal class DataSetsStore(
         val uploadable = uploadableStatesIncludingError().toList()
         val dataValues = baseQuery
             .bySyncState().`in`(uploadable)
-            .blockingGet()
+            .getInternal()
 
         return dataValues.ifEmpty {
             baseQuery
-                .blockingGet()
+                .getInternal()
                 .takeIf { it.isNotEmpty() }
                 ?.take(1)
                 ?: emptyList()
@@ -99,7 +99,7 @@ internal class DataSetsStore(
             .byPeriod().eq(period)
             .byAttributeOptionComboUid().eq(attributeOptionComboUid)
             .one()
-            .blockingGet()
+            .getInternal()
             ?.let { dataSetStore.setState(it, state) }
     }
 }

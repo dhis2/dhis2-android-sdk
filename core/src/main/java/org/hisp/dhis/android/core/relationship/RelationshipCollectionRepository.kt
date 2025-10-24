@@ -202,6 +202,14 @@ class RelationshipCollectionRepository internal constructor(
         return relationshipManager.blockingGetByItem(searchItem, includeDeleted, onlyAccessible)
     }
 
+    internal suspend fun getByItemInternal(
+        searchItem: RelationshipItem,
+        includeDeleted: Boolean,
+        onlyAccessible: Boolean,
+    ): List<Relationship> {
+        return relationshipManager.getByItem(searchItem, includeDeleted, onlyAccessible)
+    }
+
     /**
      * Filter the relationship linked to the searchItem. The difference with [getByItem] is that this method allows
      * chaining other filters.

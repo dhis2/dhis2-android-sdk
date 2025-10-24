@@ -108,7 +108,7 @@ class TrackedEntityInstanceQueryFactoryShould {
         whenever(programStore.getUidsByProgramType(any())).thenReturn(
             listOf(p1, p2, p3),
         )
-        whenever(programSettingsObjectRepository.blockingGet()).thenReturn(programSettings)
+        whenever(programSettingsObjectRepository.getInternal()).thenReturn(programSettings)
 
         whenever(programStageWorkingListObjectRepository.byUid()).thenReturn(connectorWorkingList)
         whenever(connectorWorkingList.`in`(null)).thenReturn(programStageWorkingListObjectRepository)

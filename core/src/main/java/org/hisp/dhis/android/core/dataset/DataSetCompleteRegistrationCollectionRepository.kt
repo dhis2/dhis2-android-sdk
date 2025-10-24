@@ -99,7 +99,7 @@ class DataSetCompleteRegistrationCollectionRepository internal constructor(
 
     override fun upload(): Observable<D2Progress> = flow {
         val dataSetCompleteRegistrations =
-            bySyncState().`in`(*uploadableStatesIncludingError()).blockingGetWithoutChildren()
+            bySyncState().`in`(*uploadableStatesIncludingError()).getWithoutChildrenInternal()
 
         emitAll(postCall.uploadDataSetCompleteRegistrations(dataSetCompleteRegistrations))
     }.asObservable()

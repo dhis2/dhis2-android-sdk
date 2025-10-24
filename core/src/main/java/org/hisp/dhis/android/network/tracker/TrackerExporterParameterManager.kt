@@ -29,47 +29,47 @@ package org.hisp.dhis.android.network.tracker
 
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackerExporterParameterManager(
-    private val dhisVersionManager: DHISVersionManager,
+    private val dhisVersionManager: DHISVersionManagerImpl,
 ) {
-    fun getTrackedEntitiesParameter(uids: Collection<String>?): Map<String, String> {
+    suspend fun getTrackedEntitiesParameter(uids: Collection<String>?): Map<String, String> {
         return if (uids.isNullOrEmpty()) {
             emptyMap()
-        } else if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_41)) {
+        } else if (dhisVersionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_41)) {
             mapOf(TrackerExporterService.TRACKED_ENTITIES to uids.joinToString(","))
         } else {
             mapOf(TrackerExporterService.TRACKED_ENTITY to uids.joinToString(";"))
         }
     }
 
-    fun getEventsParameter(uids: Collection<String>?): Map<String, String> {
+    suspend fun getEventsParameter(uids: Collection<String>?): Map<String, String> {
         return if (uids.isNullOrEmpty()) {
             emptyMap()
-        } else if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_41)) {
+        } else if (dhisVersionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_41)) {
             mapOf(TrackerExporterService.EVENTS to uids.joinToString(","))
         } else {
             mapOf(TrackerExporterService.EVENT to uids.joinToString(";"))
         }
     }
 
-    fun getOrgunitModeParameter(mode: OrganisationUnitMode?): Map<String, String> {
+    suspend fun getOrgunitModeParameter(mode: OrganisationUnitMode?): Map<String, String> {
         return if (mode == null) {
             emptyMap()
-        } else if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_41)) {
+        } else if (dhisVersionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_41)) {
             mapOf(TrackerExporterService.OU_MODE to mode.name)
         } else {
             mapOf(TrackerExporterService.OU_MODE_BELOW_41 to mode.name)
         }
     }
 
-    fun getOrgunitsParameter(uids: Collection<String>?): Map<String, String> {
+    suspend fun getOrgunitsParameter(uids: Collection<String>?): Map<String, String> {
         return if (uids.isNullOrEmpty()) {
             emptyMap()
-        } else if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_41)) {
+        } else if (dhisVersionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_41)) {
             mapOf(TrackerExporterService.ORG_UNITS to uids.joinToString(","))
         } else {
             mapOf(TrackerExporterService.ORG_UNIT to uids.joinToString(";"))

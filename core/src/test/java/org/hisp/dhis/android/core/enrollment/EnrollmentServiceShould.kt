@@ -84,13 +84,13 @@ class EnrollmentServiceShould {
     private lateinit var enrollmentService: EnrollmentService
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         whenever(enrollmentRepository.uid(enrollmentUid).blockingGet()) doReturn enrollment
         whenever(
             trackedEntityInstanceRepository
-                .uid(trackedEntityInstanceUid).blockingGet(),
+                .uid(trackedEntityInstanceUid).getInternal(),
         ) doReturn trackedEntityInstance
-        whenever(programRepository.uid(programUid).blockingGet()) doReturn program
+        whenever(programRepository.uid(programUid).getInternal()) doReturn program
 
         whenever(enrollment.uid()) doReturn enrollmentUid
         whenever(trackedEntityInstance.organisationUnit()) doReturn organisationUnitId

@@ -96,7 +96,7 @@ class EventQueryBundleFactoryShould {
         whenever(userOrganisationUnitLinkStore.queryOrganisationUnitUidsByScope(any()))
             .thenReturn(captureOrgUnits)
 
-        whenever(programSettingsObjectRepository.blockingGet()).thenReturn(programSettings)
+        whenever(programSettingsObjectRepository.getInternal()).thenReturn(programSettings)
 
         whenever(eventFilterCollectionRepository.byUid()).thenReturn(connectorEvent)
         whenever(connectorEvent.`in`(null)).thenReturn(eventFilterCollectionRepository)

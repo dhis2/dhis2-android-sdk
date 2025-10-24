@@ -80,7 +80,7 @@ internal class ProgramIndicatorEngineImpl(
         return runBlocking { getProgramIndicatorValueInternal(enrollmentUid, eventUid, programIndicatorUid) }
     }
 
-    private suspend fun getEnrollmentProgramIndicatorValueInternal(
+    internal suspend fun getEnrollmentProgramIndicatorValueInternal(
         enrollmentUid: String,
         programIndicatorUid: String,
     ): String? {
@@ -103,14 +103,14 @@ internal class ProgramIndicatorEngineImpl(
         return runBlocking { getEnrollmentProgramIndicatorValueInternal(enrollmentUid, programIndicatorUid) }
     }
 
-    private suspend fun getEventProgramIndicatorValueInternal(eventUid: String, programIndicatorUid: String): String? {
+    internal suspend fun getEventProgramIndicatorValueInternal(eventUid: String, programIndicatorUid: String): String? {
         val programIndicator = programIndicatorStore.selectByUid(programIndicatorUid) ?: return null
 
         val event = eventRepository
             .withTrackedEntityDataValues()
             .byDeleted().isFalse
             .uid(eventUid)
-            .blockingGet() ?: throw NoSuchElementException("Event $eventUid does not exist or is deleted.")
+            .getInternal() ?: throw NoSuchElementException("Event $eventUid does not exist or is deleted.")
 
         val enrollment = event.enrollment()?.let {
             enrollmentStore.selectByUid(it)
@@ -157,8 +157,8 @@ internal class ProgramIndicatorEngineImpl(
             .associateBy { it.trackedEntityAttribute()!! }
     }
 
-    private fun getEnrollmentEvents(enrollment: Enrollment): Map<String, List<Event>> {
-        val programStageUids = programRepository.byProgramUid().eq(enrollment.program()).blockingGetUids()
+    private suspend fun getEnrollmentEvents(enrollment: Enrollment): Map<String, List<Event>> {
+        val programStageUids = programRepository.byProgramUid().eq(enrollment.program()).getUidsInternal()
 
         return programStageUids.associateWith { programStageUid ->
             val programStageEvents = eventRepository
@@ -168,7 +168,7 @@ internal class ProgramIndicatorEngineImpl(
                 .orderByEventDate(RepositoryScope.OrderByDirection.ASC)
                 .orderByLastUpdated(RepositoryScope.OrderByDirection.ASC)
                 .withTrackedEntityDataValues()
-                .blockingGet()
+                .getInternal()
 
             programStageEvents
         }

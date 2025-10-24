@@ -79,7 +79,7 @@ internal class TrackerQueryBundleInternalFactory(
                 .byUid().`in`(it)
                 .withAttributeValueFilters()
                 .withDataFilters()
-                .blockingGet()
+                .getInternal()
         }
 
         val trackedEntityInstanceFiltersSettings = filters.takeIf { !it.isNullOrEmpty() }?.let {
@@ -87,7 +87,7 @@ internal class TrackerQueryBundleInternalFactory(
                 .byUid().`in`(it)
                 .withTrackedEntityInstanceEventFilters()
                 .withAttributeValueFilters()
-                .blockingGet()
+                .getInternal()
         }
 
         val builder = TrackerQueryBundle.builder()

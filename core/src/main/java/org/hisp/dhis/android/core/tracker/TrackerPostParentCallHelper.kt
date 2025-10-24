@@ -30,22 +30,22 @@ package org.hisp.dhis.android.core.tracker
 
 import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackerPostParentCallHelper(
-    private val dhisVersionManager: DHISVersionManager,
+    private val dhisVersionManager: DHISVersionManagerImpl,
     private val synchronizationSettingStore: SynchronizationSettingStore,
 ) {
 
     suspend fun useNewTrackerImporter(): Boolean {
         val explicitTrackerVersion = synchronizationSettingStore.selectFirst()?.trackerImporterVersion()
         return when {
-            !dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_38) -> false
-            dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_42) -> true
+            !dhisVersionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_38) -> false
+            dhisVersionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_42) -> true
             explicitTrackerVersion == TrackerImporterVersion.V2 -> true
-            explicitTrackerVersion == null && dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_40) -> true
+            explicitTrackerVersion == null && dhisVersionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_40) -> true
             else -> false
         }
     }
@@ -53,8 +53,8 @@ internal class TrackerPostParentCallHelper(
     suspend fun useNewTrackerExporter(): Boolean {
         val explicitTrackerVersion = synchronizationSettingStore.selectFirst()?.trackerExporterVersion()
         return when {
-            !dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_40) -> false
-            dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_42) -> true
+            !dhisVersionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_40) -> false
+            dhisVersionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_42) -> true
             explicitTrackerVersion == TrackerExporterVersion.V2 -> true
             explicitTrackerVersion == null -> true
             else -> false

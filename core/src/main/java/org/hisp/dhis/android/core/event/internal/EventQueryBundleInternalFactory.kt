@@ -71,7 +71,7 @@ internal class EventQueryBundleInternalFactory(
             eventFilterCollectionRepository
                 .byUid().`in`(it)
                 .withEventDataFilters()
-                .blockingGet()
+                .getInternal()
         }
 
         val builder = EventQueryBundle.builder()

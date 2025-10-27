@@ -67,18 +67,18 @@ class DaoQueriesProcessor(
             logger.info("Successfully extracted tableName: '$tableName' for ${symbol.qualifiedName?.asString()}")
 
             val superInterfaceSimpleNames = symbol.superTypes
-                .map { it.resolve() } // Resuelve cada KSTypeReference a KSType
-                .filterNot { it.isError } // Filtra los que son KSErrorType
-                .mapNotNull { ksType -> // Para los restantes (no error)
+                .map { it.resolve() } // Resolves each KSTypeReference to KSType
+                .filterNot { it.isError } // Filters out KSErrorType instances
+                .mapNotNull { ksType -> // For the remaining (non-error) types
                     (ksType.declaration as? KSClassDeclaration)?.simpleName?.asString()
-                    // Intenta castear la declaración a KSClassDeclaration y luego obtén el simpleName
-                    // Si el casteo falla o simpleName es null, mapNotNull lo omitirá
+                    // Attempts to cast the declaration to KSClassDeclaration and then get the simpleName
+                    // If the cast fails or simpleName is null, mapNotNull will omit it
                 }
                 .toList()
 
             logger.info("DAO ${symbol.qualifiedName?.asString()} (resolved) super interface simple names: $superInterfaceSimpleNames")
 
-            // o si hay jerarquías más profundas que necesitas inspeccionar.
+            // or if there are deeper hierarchies you need to inspect.
             val baseInterfaceType: String? = when {
                 superInterfaceSimpleNames.any { it == "ObjectDao" } -> "ObjectDao"
                 superInterfaceSimpleNames.any { it == "IdentifiableDeletableDataObjectDao" } -> "IdentifiableDeletableDataObjectDao"
@@ -209,7 +209,7 @@ class DaoQueriesProcessor(
             "    override fun deleteWhere(uid: String, deleted: Boolean, state: State): Int\n\n"
     }
 
-    // Operador de extensión para escribir Strings fácilmente en OutputStream
+    // Extension operator to easily write Strings to OutputStream
     private operator fun OutputStream.plusAssign(str: String) {
         this.write(str.toByteArray())
     }

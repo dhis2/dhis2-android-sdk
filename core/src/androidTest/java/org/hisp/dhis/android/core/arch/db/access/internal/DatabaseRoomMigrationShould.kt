@@ -172,9 +172,9 @@ class DatabaseRoomMigrationShould {
                 FINAL_DB_VERSION,
                 migratedRoomDb.openHelper.readableDatabase.version,
             )
-            println("Room abrió y validó con éxito MIGRATED_DB_NAME.")
+            println("Room database opened and validated successfully with MIGRATED_DB_NAME.")
         } catch (e: IllegalStateException) {
-            println("Error al validar el esquema de la base de datos migrada por Room: ${e.message}")
+            println("Error validating the schema of the database migrated by Room: ${e.message}")
             throw e
         }
 

@@ -179,6 +179,6 @@ internal class RoomDatabaseManager(
 
 internal class LoggingErrorHandler(private val tag: String) : DatabaseErrorHandler {
     override fun onCorruption(dbObj: net.zetetic.database.sqlcipher.SQLiteDatabase?, exception: SQLiteException?) {
-        Log.e(tag, "¡CORRUPCIÓN DETECTADA! DB Path: ${dbObj?.path}")
+        Log.e(tag, "CORRUPTION DETECTED! DB Path: ${dbObj?.path}")
     }
 }

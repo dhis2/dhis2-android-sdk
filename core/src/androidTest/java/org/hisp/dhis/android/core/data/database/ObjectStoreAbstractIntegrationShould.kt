@@ -58,7 +58,11 @@ abstract class ObjectStoreAbstractIntegrationShould<M : CoreObject> internal con
 
     @After
     open fun tearDown() {
-        runBlocking { store.delete() }
+        runBlocking { 
+            store.delete()
+            // Close database connection to avoid resource leaks
+            databaseAdapter.close()
+        }
     }
 
     @Test

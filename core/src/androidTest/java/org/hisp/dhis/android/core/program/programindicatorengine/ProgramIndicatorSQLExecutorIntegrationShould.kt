@@ -103,7 +103,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
                 analyticsType = AnalyticsType.EVENT,
                 aggregationType = AggregationType.AVERAGE,
             ),
-        ).isEqualTo("15.0")
+        ).isEqualTo("15")
 
         assertThat(
             evaluateProgramIndicator(
@@ -111,7 +111,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
                 analyticsType = AnalyticsType.ENROLLMENT,
                 aggregationType = AggregationType.AVERAGE,
             ),
-        ).isEqualTo("15.0")
+        ).isEqualTo("15")
     }
 
     @Test
@@ -124,7 +124,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
                 expression = cons(constant1.uid()),
                 analyticsType = AnalyticsType.EVENT,
             ),
-        ).isEqualTo("10.0")
+        ).isEqualTo("10")
     }
 
     @Test
@@ -273,7 +273,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
                 analyticsType = AnalyticsType.EVENT,
                 aggregationType = AggregationType.AVERAGE,
             ),
-        ).isEqualTo("1.0")
+        ).isEqualTo("1")
 
         assertThat(
             evaluateProgramIndicator(
@@ -281,7 +281,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
                 analyticsType = AnalyticsType.EVENT,
                 aggregationType = AggregationType.AVERAGE,
             ),
-        ).isEqualTo("13.0")
+        ).isEqualTo("13")
 
         assertThat(
             evaluateProgramIndicator(
@@ -289,7 +289,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
                 analyticsType = AnalyticsType.EVENT,
                 aggregationType = AggregationType.AVERAGE,
             ),
-        ).isEqualTo("56.0")
+        ).isEqualTo("56")
 
         assertThat(
             evaluateProgramIndicator(
@@ -297,7 +297,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
                 analyticsType = AnalyticsType.EVENT,
                 aggregationType = AggregationType.AVERAGE,
             ),
-        ).isEqualTo("397.0")
+        ).isEqualTo("397")
 
         assertThat(
             evaluateProgramIndicator(
@@ -305,7 +305,7 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
                 analyticsType = AnalyticsType.EVENT,
                 aggregationType = AggregationType.AVERAGE,
             ),
-        ).isEqualTo("571680.0")
+        ).isEqualTo("571680")
     }
 
     @Test
@@ -1299,6 +1299,6 @@ internal class ProgramIndicatorSQLExecutorIntegrationShould : BaseProgramIndicat
                 analyticsType = AnalyticsType.EVENT,
                 aggregationType = AggregationType.AVERAGE,
             ),
-        ).isEqualTo("3.0")
+        ).isEqualTo("3")
     }
 }

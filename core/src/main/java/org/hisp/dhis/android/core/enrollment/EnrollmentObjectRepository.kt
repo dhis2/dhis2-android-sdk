@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.common.internal.TrackerDataManager
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.maintenance.D2Error
 import java.util.Date
+import kotlinx.coroutines.runBlocking
 
 class EnrollmentObjectRepository internal constructor(
     store: EnrollmentStore,
@@ -64,6 +65,11 @@ class EnrollmentObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setOrganisationUnitUid(organisationUnitUid: String?): Unit {
+        return runBlocking { setOrganisationUnitUidInternal(organisationUnitUid) }
+    }
+
+    @Throws(D2Error::class)
+    internal suspend fun setOrganisationUnitUidInternal(organisationUnitUid: String?): Unit {
         return updateIfChanged(organisationUnitUid, { it.organisationUnit() }) { enrollment: Enrollment, value ->
             updateBuilder(enrollment).organisationUnit(value).build()
         }
@@ -71,6 +77,11 @@ class EnrollmentObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setEnrollmentDate(enrollmentDate: Date?): Unit {
+        return runBlocking { setEnrollmentDateInternal(enrollmentDate) }
+    }
+
+    @Throws(D2Error::class)
+    internal suspend fun setEnrollmentDateInternal(enrollmentDate: Date?): Unit {
         return updateIfChanged(enrollmentDate, { it.enrollmentDate() }) { enrollment: Enrollment, value ->
             updateBuilder(enrollment).enrollmentDate(value).build()
         }
@@ -78,6 +89,11 @@ class EnrollmentObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setIncidentDate(incidentDate: Date?): Unit {
+        return runBlocking { setIncidentDateInternal(incidentDate) }
+    }
+
+    @Throws(D2Error::class)
+    internal suspend fun setIncidentDateInternal(incidentDate: Date?): Unit {
         return updateIfChanged(incidentDate, { it.incidentDate() }) { enrollment: Enrollment, value ->
             updateBuilder(enrollment).incidentDate(value).build()
         }
@@ -85,6 +101,11 @@ class EnrollmentObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setCompletedDate(completedDate: Date?): Unit {
+        return runBlocking { setCompletedDateInternal(completedDate) }
+    }
+
+    @Throws(D2Error::class)
+    internal suspend fun setCompletedDateInternal(completedDate: Date?): Unit {
         return updateIfChanged(completedDate, { it.completedDate() }) { enrollment: Enrollment, value ->
             updateBuilder(enrollment).completedDate(value).build()
         }
@@ -92,6 +113,11 @@ class EnrollmentObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setFollowUp(followUp: Boolean?): Unit {
+        return runBlocking { setFollowUpInternal(followUp) }
+    }
+
+    @Throws(D2Error::class)
+    internal suspend fun setFollowUpInternal(followUp: Boolean?): Unit {
         return updateIfChanged(followUp, { it.followUp() }) { enrollment: Enrollment, value ->
             updateBuilder(enrollment).followUp(value).build()
         }
@@ -99,6 +125,11 @@ class EnrollmentObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setStatus(enrollmentStatus: EnrollmentStatus): Unit {
+        return runBlocking { setStatusInternal(enrollmentStatus) }
+    }
+
+    @Throws(D2Error::class)
+    internal suspend fun setStatusInternal(enrollmentStatus: EnrollmentStatus): Unit {
         return updateIfChanged(enrollmentStatus, { it.status() }) { enrollment: Enrollment, value ->
             val completedDate = if (value == EnrollmentStatus.COMPLETED) Date() else null
             updateBuilder(enrollment).status(value).completedDate(completedDate).build()
@@ -107,6 +138,11 @@ class EnrollmentObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setGeometry(geometry: Geometry?): Unit {
+        return runBlocking { setGeometryInternal(geometry) }
+    }
+
+    @Throws(D2Error::class)
+    internal suspend fun setGeometryInternal(geometry: Geometry?): Unit {
         GeometryHelper.validateGeometry(geometry)
         return updateIfChanged(geometry, { it.geometry() }) { enrollment: Enrollment, value ->
             updateBuilder(enrollment).geometry(value).build()

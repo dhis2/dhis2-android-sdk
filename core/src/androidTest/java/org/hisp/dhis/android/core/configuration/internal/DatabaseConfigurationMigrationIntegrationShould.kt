@@ -44,6 +44,7 @@ import org.hisp.dhis.android.persistence.configuration.migration.DatabaseUserCon
 import org.hisp.dhis.android.persistence.configuration.migration.DatabasesConfigurationOldDB
 import org.hisp.dhis.android.persistence.db.access.RoomDatabaseAdapter
 import org.hisp.dhis.android.persistence.db.access.RoomDatabaseManager
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -95,6 +96,12 @@ class DatabaseConfigurationMigrationIntegrationShould {
         )
 
         FileResourceDirectoryHelper.deleteRootFileResourceDirectory(context)
+    }
+
+    @After
+    fun tearDown() {
+        // Close database connection to avoid resource leaks
+        databaseAdapter.close()
     }
 
     @Test

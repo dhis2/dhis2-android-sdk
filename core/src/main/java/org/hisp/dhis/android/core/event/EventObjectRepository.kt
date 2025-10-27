@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.user.internal.UserStore
 import java.util.Date
+import kotlinx.coroutines.runBlocking
 
 @Suppress("TooManyFunctions")
 class EventObjectRepository internal constructor(
@@ -68,6 +69,11 @@ class EventObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setOrganisationUnitUid(organisationUnitUid: String?): Unit {
+        return runBlocking { setOrganisationUnitUidInternal(organisationUnitUid) }
+    }
+
+    @Throws(D2Error::class)
+    internal suspend fun setOrganisationUnitUidInternal(organisationUnitUid: String?): Unit {
         return updateIfChanged(organisationUnitUid, { it.organisationUnit() }) { event: Event, value ->
             updateBuilder(event).organisationUnit(value).build()
         }
@@ -75,6 +81,11 @@ class EventObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setEventDate(eventDate: Date?): Unit {
+        return runBlocking { setEventDateInternal(eventDate) }
+    }
+
+    @Throws(D2Error::class)
+    internal suspend fun setEventDateInternal(eventDate: Date?): Unit {
         return updateIfChanged(eventDate, { it.eventDate() }) { event: Event, value ->
             updateBuilder(event).eventDate(value).build()
         }
@@ -82,6 +93,11 @@ class EventObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setStatus(eventStatus: EventStatus): Unit {
+        return runBlocking { setStatusInternal(eventStatus) }
+    }
+
+    @Throws(D2Error::class)
+    internal suspend fun setStatusInternal(eventStatus: EventStatus): Unit {
         return updateIfChanged(eventStatus, { it.status() }) { event: Event, value ->
             val completedDate = if (value == EventStatus.COMPLETED) Date() else null
             val completedBy = if (value == EventStatus.COMPLETED) userStore.selectFirst()!!.username() else null
@@ -91,6 +107,11 @@ class EventObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setCompletedDate(completedDate: Date?): Unit {
+        return runBlocking { setCompletedDateInternal(completedDate) }
+    }
+
+    @Throws(D2Error::class)
+    internal suspend fun setCompletedDateInternal(completedDate: Date?): Unit {
         return updateIfChanged(completedDate, { it.completedDate() }) { event: Event, value ->
             updateBuilder(event).completedDate(value).build()
         }
@@ -98,6 +119,11 @@ class EventObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setCompletedBy(completedBy: String?): Unit {
+        return runBlocking { setCompletedByInternal(completedBy) }
+    }
+
+    @Throws(D2Error::class)
+    internal suspend fun setCompletedByInternal(completedBy: String?): Unit {
         return updateIfChanged(completedBy, { it.completedBy() }) { event: Event, value ->
             updateBuilder(event).completedBy(value).build()
         }
@@ -105,6 +131,11 @@ class EventObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setDueDate(dueDate: Date?): Unit {
+        return runBlocking { setDueDateInternal(dueDate) }
+    }
+
+    @Throws(D2Error::class)
+    internal suspend fun setDueDateInternal(dueDate: Date?): Unit {
         return updateIfChanged(dueDate, { it.dueDate() }) { event: Event, value ->
             updateBuilder(event).dueDate(value).build()
         }
@@ -112,6 +143,11 @@ class EventObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setGeometry(geometry: Geometry?): Unit {
+        return runBlocking { setGeometryInternal(geometry) }
+    }
+
+    @Throws(D2Error::class)
+    internal suspend fun setGeometryInternal(geometry: Geometry?): Unit {
         GeometryHelper.validateGeometry(geometry)
         return updateIfChanged(geometry, { it.geometry() }) { event: Event, value ->
             updateBuilder(event).geometry(value).build()
@@ -120,6 +156,11 @@ class EventObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setAttributeOptionComboUid(attributeOptionComboUid: String?): Unit {
+        return runBlocking { setAttributeOptionComboUidInternal(attributeOptionComboUid) }
+    }
+
+    @Throws(D2Error::class)
+    internal suspend fun setAttributeOptionComboUidInternal(attributeOptionComboUid: String?): Unit {
         return updateIfChanged(attributeOptionComboUid, { it.attributeOptionCombo() }) { event: Event, value ->
             updateBuilder(event).attributeOptionCombo(value).build()
         }
@@ -127,6 +168,11 @@ class EventObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setAssignedUser(assignedUser: String?): Unit {
+        return runBlocking { setAssignedUserInternal(assignedUser) }
+    }
+
+    @Throws(D2Error::class)
+    internal suspend fun setAssignedUserInternal(assignedUser: String?): Unit {
         return updateIfChanged(assignedUser, { it.assignedUser() }) { event: Event, value ->
             updateBuilder(event).assignedUser(value).build()
         }

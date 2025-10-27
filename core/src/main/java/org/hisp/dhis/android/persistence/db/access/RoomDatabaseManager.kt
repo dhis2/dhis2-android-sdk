@@ -34,7 +34,6 @@ import android.util.Log
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import kotlinx.coroutines.Dispatchers
 import net.zetetic.database.DatabaseErrorHandler
 import net.zetetic.database.sqlcipher.SQLiteDatabaseHook
 import net.zetetic.database.sqlcipher.SupportOpenHelperFactory
@@ -70,7 +69,8 @@ internal class RoomDatabaseManager(
     override fun createInMemoryDatabase(): DatabaseAdapter {
         Log.d(TAG, "createInMemoryDatabase called. Setting up PRAGMA foreign_keys=OFF.")
         val database = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java)
-            .setQueryCoroutineContext(Dispatchers.IO)
+            .setQueryExecutor(singleThreadExecutor)
+            .setTransactionExecutor(singleThreadExecutor)
             .allowMainThreadQueries()
             .addCallback(object : RoomDatabase.Callback() {
                 override fun onOpen(db: SupportSQLiteDatabase) {

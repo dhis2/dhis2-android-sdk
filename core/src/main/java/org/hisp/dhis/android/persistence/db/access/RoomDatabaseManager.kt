@@ -116,6 +116,7 @@ internal class RoomDatabaseManager(
         val database = Room.databaseBuilder(context, AppDatabase::class.java, databaseName)
             .setQueryExecutor(singleThreadExecutor)
             .setTransactionExecutor(singleThreadExecutor)
+            .allowMainThreadQueries()
             .addMigrations(*ALL_MIGRATIONS.toTypedArray())
             .openHelperFactory(factory)
             .build()

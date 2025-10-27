@@ -29,10 +29,11 @@ package org.hisp.dhis.android.core.configuration.internal
 
 import android.content.Context
 import kotlinx.coroutines.test.runTest
-import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
 import org.hisp.dhis.android.core.arch.db.access.internal.BaseDatabaseExport
 import org.hisp.dhis.android.core.common.BaseCallShould
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfigurationUtil.buildUserConfiguration
+import org.hisp.dhis.android.persistence.db.access.RoomDatabaseManager
+import org.hisp.dhis.android.persistence.db.access.RoomMultiUserDatabaseManager
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -46,7 +47,8 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
     private val databaseConfigurationSecureStore: DatabaseConfigurationInsecureStore = mock()
     private val configurationHelper: DatabaseConfigurationHelper = mock()
     private val databaseExport: BaseDatabaseExport = mock()
-    private val databaseManager: DatabaseManager = mock()
+    private val databaseManager: RoomDatabaseManager = mock()
+    private val passwordManager: DatabaseEncryptionPasswordManager = mock()
 
     private val username = "username"
     private val serverUrl = "https://dhis2.org"
@@ -78,17 +80,19 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
         .accounts(listOf(userConfigurationEncrypted))
         .build()
 
-    private lateinit var manager: BaseMultiUserDatabaseManager
+    private lateinit var manager: MultiUserDatabaseManager
 
     @Before
     @Throws(Exception::class)
     override fun setUp() {
         super.setUp()
-        manager = MultiUserDatabaseManager(
+        manager = RoomMultiUserDatabaseManager(
             context,
+            databaseAdapter,
             databaseConfigurationSecureStore,
             configurationHelper,
             databaseManager,
+            passwordManager,
             databaseExport,
         )
     }
@@ -102,22 +106,25 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
 
             manager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(serverUrl, username, encrypt)
 
-            verify(databaseManager).createOrOpenDatabase(userConfigurationUnencrypted)
+            verify(databaseManager).createOrOpenUnencryptedDatabase(unencryptedDbName)
         }
 
     @Test
     fun copy_database_when_changing_encryption_on_loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew() =
         runTest {
             val encrypt = true
+            val password = "test-password"
             whenever(databaseConfigurationSecureStore.get()).doReturn(unencryptedConfiguration)
             whenever(configurationHelper.addOrUpdateAccount(unencryptedConfiguration, serverUrl, username, encrypt))
                 .doReturn(encryptedConfiguration)
+            whenever(passwordManager.getPassword(encryptedDbName)).doReturn(password)
+            whenever(databaseManager.databaseExists(unencryptedDbName)).doReturn(true)
 
             manager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(serverUrl, username, encrypt)
 
-            verify(databaseManager).createOrOpenDatabase(userConfigurationEncrypted)
+            verify(databaseManager).createOrOpenEncryptedDatabase(encryptedDbName, password)
             verify(databaseExport).encrypt(serverUrl, userConfigurationUnencrypted)
-            verify(databaseManager).deleteDatabase(userConfigurationUnencrypted.databaseName(), false)
+            verify(databaseManager).deleteDatabase(unencryptedDbName, false)
         }
 
     @Test
@@ -134,7 +141,7 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
 
         manager.loadExistingKeepingEncryption(serverUrl, username)
 
-        verify(databaseManager).createOrOpenDatabase(userConfigurationUnencrypted)
+        verify(databaseManager).createOrOpenUnencryptedDatabase(unencryptedDbName)
     }
 
     @Test
@@ -152,6 +159,7 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
             .build()
 
         whenever(databaseConfigurationSecureStore.get()).doReturn(configuration)
+        whenever(databaseManager.databaseExists(any())).doReturn(true)
 
         val newUsername = "new_username"
         val newServerUrl = "new_server_url"
@@ -163,7 +171,7 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
 
         verify(databaseConfigurationSecureStore, times(2)).set(any())
         verify(databaseManager, times(4)).deleteDatabase(any(), any())
-        verify(databaseManager, times(1)).createOrOpenDatabase(any())
+        verify(databaseManager, times(1)).createOrOpenUnencryptedDatabase(any())
     }
 
     companion object {

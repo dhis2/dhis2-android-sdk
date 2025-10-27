@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core
 
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
-import org.hisp.dhis.android.core.configuration.internal.BaseMultiUserDatabaseManager
+import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.data.category.CategoryOptionSamples
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
@@ -97,7 +97,7 @@ class MultiUserMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
         @AfterClass
         @JvmStatic
         fun tearDownTestClass() {
-            d2.userModule().accountManager().setMaxAccounts(BaseMultiUserDatabaseManager.DefaultTestMaxAccounts)
+            d2.userModule().accountManager().setMaxAccounts(MultiUserDatabaseManager.DefaultTestMaxAccounts)
         }
     }
 }

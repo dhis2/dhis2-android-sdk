@@ -29,7 +29,7 @@ package org.hisp.dhis.android.testapp.user
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.configuration.internal.BaseMultiUserDatabaseManager
+import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
@@ -99,7 +99,7 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
         d2.userModule().accountManager().setMaxAccounts(5)
         assertThat(d2.userModule().accountManager().getMaxAccounts()).isEqualTo(5)
 
-        val defaultMaxAccounts = BaseMultiUserDatabaseManager.DefaultTestMaxAccounts
+        val defaultMaxAccounts = MultiUserDatabaseManager.DefaultTestMaxAccounts
         d2.userModule().accountManager().setMaxAccounts(defaultMaxAccounts)
         assertThat(d2.userModule().accountManager().getMaxAccounts()).isEqualTo(defaultMaxAccounts)
     }
@@ -109,7 +109,7 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
         d2.userModule().accountManager().setMaxAccounts(null)
         assertThat(d2.userModule().accountManager().getMaxAccounts()).isNull()
 
-        d2.userModule().accountManager().setMaxAccounts(BaseMultiUserDatabaseManager.DefaultTestMaxAccounts)
+        d2.userModule().accountManager().setMaxAccounts(MultiUserDatabaseManager.DefaultTestMaxAccounts)
     }
 
     @Test

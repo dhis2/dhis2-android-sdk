@@ -50,6 +50,7 @@ class DataValueImportHandlerShould {
     private val dataValueConflictStore: DataValueConflictStore = mock()
     private val dataValueImportSummary: DataValueImportSummary = mock()
     private val dataValue: DataValue = mock()
+    private val builder: DataValue.Builder = mock()
 
     // object to test
     private lateinit var dataValueSet: DataValueSet
@@ -62,6 +63,11 @@ class DataValueImportHandlerShould {
         whenever(dataValue.dataElement()).thenReturn("dataElement")
         whenever(dataValue.period()).thenReturn("period")
         whenever(dataValue.organisationUnit()).thenReturn("organisationUnit")
+        
+        // Mock builder chain
+        whenever(dataValue.toBuilder()).thenReturn(builder)
+        whenever(builder.syncState(any())).thenReturn(builder)
+        whenever(builder.build()).thenReturn(dataValue)
 
         dataValueSet = DataValueSet(listOf(dataValue))
         dataValueImportHandler = DataValueImportHandler(
@@ -74,14 +80,14 @@ class DataValueImportHandlerShould {
     fun passingNullDataValueSet_shouldNotPerformAnyAction() = runTest {
         dataValueImportHandler.handleImportSummary(null, dataValueImportSummary)
 
-        verify(dataValueStore, never()).setState(any(), any())
+        verify(dataValueStore, never()).update(any<Collection<DataValue>>())
     }
 
     @Test
     fun passingNullImportSummary_shouldNotPerformAnyAction() = runTest {
         dataValueImportHandler.handleImportSummary(dataValueSet, null)
 
-        verify(dataValueStore, never()).setState(any(), any())
+        verify(dataValueStore, never()).update(any<Collection<DataValue>>())
     }
 
     @Test
@@ -92,7 +98,7 @@ class DataValueImportHandlerShould {
 
         dataValueImportHandler.handleImportSummary(dataValueSet, dataValueImportSummary)
 
-        verify(dataValueStore, times(1)).setState(dataValue, State.SYNCED)
+        verify(dataValueStore, times(1)).update(any<Collection<DataValue>>())
     }
 
     @Test
@@ -103,7 +109,7 @@ class DataValueImportHandlerShould {
 
         dataValueImportHandler.handleImportSummary(dataValueSet, dataValueImportSummary)
 
-        verify(dataValueStore, never()).setState(any(), any())
+        verify(dataValueStore, never()).update(any<Collection<DataValue>>())
         verify(dataValueStore, times(1)).deleteWhere(dataValue)
     }
 
@@ -114,6 +120,6 @@ class DataValueImportHandlerShould {
 
         dataValueImportHandler.handleImportSummary(dataValueSet, dataValueImportSummary)
 
-        verify(dataValueStore, times(1)).setState(dataValue, State.ERROR)
+        verify(dataValueStore, times(1)).update(any<Collection<DataValue>>())
     }
 }

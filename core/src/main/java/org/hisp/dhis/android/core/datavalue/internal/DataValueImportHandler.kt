@@ -127,14 +127,26 @@ internal class DataValueImportHandler(
     }
 
     private suspend fun setStateToDataValues(state: State, dataValues: Collection<DataValue>) {
+        val toUpdate = mutableListOf<DataValue>()
+        val toDelete = mutableListOf<DataValue>()
+        
         for (dataValue in dataValues) {
             if (dataValueStore.isDataValueBeingUpload(dataValue)) {
                 if (state == SYNCED && dataValueStore.isDeleted(dataValue)) {
-                    dataValueStore.deleteWhere(dataValue)
+                    toDelete.add(dataValue)
                 } else {
-                    dataValueStore.setState(dataValue, state)
+                    toUpdate.add(dataValue)
                 }
             }
         }
+        
+        // Batch update
+        if (toUpdate.isNotEmpty()) {
+            val updatedDataValues = toUpdate.map { it.toBuilder().syncState(state).build() }
+            dataValueStore.update(updatedDataValues)
+        }
+        
+        // Batch delete
+        toDelete.forEach { dataValueStore.deleteWhere(it) }
     }
 }

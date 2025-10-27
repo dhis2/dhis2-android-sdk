@@ -88,8 +88,9 @@ internal class DataValuePostCall(
     }
 
     private suspend fun markObjectsAs(dataValues: Collection<DataValue>, forcedState: State?) {
-        for (dataValue in dataValues) {
-            dataValueStore.setState(dataValue, forcedOrOwn(dataValue, forcedState))
+        val updatedDataValues = dataValues.map { dataValue ->
+            dataValue.toBuilder().syncState(forcedOrOwn(dataValue, forcedState)).build()
         }
+        dataValueStore.update(updatedDataValues)
     }
 }

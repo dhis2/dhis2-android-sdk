@@ -49,7 +49,7 @@ internal interface DataSetCompleteRegistrationDaoAux : ObjectDao<DataSetComplete
           AND ${DataSetCompleteRegistrationTableInfo.Columns.SYNC_STATE} = :syncedStateValue
     """,
     )
-    suspend fun removeNotPresentAndSynced(
+    fun removeNotPresentAndSynced(
         dataSetUids: Collection<String>,
         periodIds: Collection<String>,
         orgUnitPathQuery: String, // pass this as  "%$rootOrgunitUid%"

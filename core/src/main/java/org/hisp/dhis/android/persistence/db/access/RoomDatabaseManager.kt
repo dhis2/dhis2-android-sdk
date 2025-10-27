@@ -72,6 +72,7 @@ internal class RoomDatabaseManager(
         Log.d(TAG, "createInMemoryDatabase called. Setting up PRAGMA foreign_keys=OFF.")
         val database = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java)
             .setQueryCoroutineContext(Dispatchers.IO)
+            .allowMainThreadQueries()
             .addCallback(object : RoomDatabase.Callback() {
                 override fun onOpen(db: SupportSQLiteDatabase) {
                     super.onOpen(db)
@@ -88,6 +89,7 @@ internal class RoomDatabaseManager(
         val database = Room.databaseBuilder(context, AppDatabase::class.java, databaseName)
             .setDriver(BundledSQLiteDriver())
             .setQueryCoroutineContext(Dispatchers.IO)
+            .allowMainThreadQueries()
             .addMigrations(*ALL_MIGRATIONS.toTypedArray())
             .build()
         databaseAdapter.activate(database, databaseName)
@@ -98,6 +100,7 @@ internal class RoomDatabaseManager(
         val database = Room.databaseBuilder(context, AppDatabase::class.java, databaseName)
             .setDriver(BundledSQLiteDriver())
             .setQueryCoroutineContext(Dispatchers.IO)
+            .allowMainThreadQueries()
             .build()
         databaseAdapter.activate(database, databaseName)
         return databaseAdapter
@@ -113,6 +116,7 @@ internal class RoomDatabaseManager(
         val database = Room.databaseBuilder(context, AppDatabase::class.java, databaseName)
             .setQueryExecutor(singleThreadExecutor)
             .setTransactionExecutor(singleThreadExecutor)
+            .allowMainThreadQueries()
             .addMigrations(*ALL_MIGRATIONS.toTypedArray())
             .openHelperFactory(factory)
             .build()
@@ -176,6 +180,6 @@ internal class RoomDatabaseManager(
 
 internal class LoggingErrorHandler(private val tag: String) : DatabaseErrorHandler {
     override fun onCorruption(dbObj: net.zetetic.database.sqlcipher.SQLiteDatabase?, exception: SQLiteException?) {
-        Log.e(tag, "¡CORRUPCIÓN DETECTADA! DB Path: ${dbObj?.path}")
+        Log.e(tag, "CORRUPTION DETECTED! DB Path: ${dbObj?.path}")
     }
 }

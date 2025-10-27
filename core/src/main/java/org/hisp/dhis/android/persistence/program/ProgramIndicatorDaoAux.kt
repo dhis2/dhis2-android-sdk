@@ -41,5 +41,5 @@ internal interface ProgramIndicatorDaoAux : IdentifiableObjectDao<ProgramIndicat
         WHERE ${IdentifiableColumns.UID} IN (:uids)
     """,
     )
-    suspend fun deleteByUids(uids: List<String>)
+    fun deleteByUids(uids: List<String>)
 }

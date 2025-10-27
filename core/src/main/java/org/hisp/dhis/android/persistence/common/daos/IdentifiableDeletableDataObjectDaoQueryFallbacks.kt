@@ -31,6 +31,6 @@ package org.hisp.dhis.android.persistence.common.daos
 import org.hisp.dhis.android.core.common.State
 
 internal interface IdentifiableDeletableDataObjectDaoQueryFallbacks {
-    suspend fun setDeleted(uid: String): Int
-    suspend fun deleteWhere(uid: String, deleted: Boolean, state: State): Int
+    fun setDeleted(uid: String): Int
+    fun deleteWhere(uid: String, deleted: Boolean, state: State): Int
 }

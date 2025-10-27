@@ -41,7 +41,7 @@ internal interface NoteDaoAux : IdentifiableObjectDao<NoteDB> {
         WHERE ${NoteTableInfo.Columns.ENROLLMENT} = :enrollmentUid
     """,
     )
-    suspend fun deleteNotesByEnrollment(enrollmentUid: String): Int
+    fun deleteNotesByEnrollment(enrollmentUid: String): Int
 
     @Query(
         """
@@ -49,5 +49,5 @@ internal interface NoteDaoAux : IdentifiableObjectDao<NoteDB> {
         WHERE ${NoteTableInfo.Columns.EVENT} = :eventUid
     """,
     )
-    suspend fun deleteNotesByEvent(eventUid: String): Int
+    fun deleteNotesByEvent(eventUid: String): Int
 }

@@ -36,7 +36,7 @@ import org.hisp.dhis.android.processor.GenerateDaoQueries
 @GenerateDaoQueries(tableName = "RelationshipItemTableInfo.TABLE_NAME")
 internal interface RelationshipItemDaoAux : ObjectDao<RelationshipItemDB> {
     @RawQuery
-    suspend fun getRelationshipRow(query: RoomRawQuery): List<RelationshipRow>
+    fun getRelationshipRow(query: RoomRawQuery): List<RelationshipRow>
 }
 
 internal data class RelationshipRow(

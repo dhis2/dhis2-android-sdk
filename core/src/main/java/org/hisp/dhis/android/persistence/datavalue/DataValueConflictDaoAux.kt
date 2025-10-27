@@ -44,7 +44,7 @@ internal interface DataValueConflictDaoAux : ObjectDao<DataValueConflictDB> {
           AND ${DataValueConflictTableInfo.Columns.ORG_UNIT} = :organisationUnit
     """,
     )
-    suspend fun deleteDataValueConflict(
+    fun deleteDataValueConflict(
         attributeOptionCombo: String,
         categoryOptionCombo: String,
         dataElement: String,

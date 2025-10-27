@@ -67,18 +67,18 @@ class DaoQueriesProcessor(
             logger.info("Successfully extracted tableName: '$tableName' for ${symbol.qualifiedName?.asString()}")
 
             val superInterfaceSimpleNames = symbol.superTypes
-                .map { it.resolve() } // Resuelve cada KSTypeReference a KSType
-                .filterNot { it.isError } // Filtra los que son KSErrorType
-                .mapNotNull { ksType -> // Para los restantes (no error)
+                .map { it.resolve() } // Resolves each KSTypeReference to KSType
+                .filterNot { it.isError } // Filters out KSErrorType instances
+                .mapNotNull { ksType -> // For the remaining (non-error) types
                     (ksType.declaration as? KSClassDeclaration)?.simpleName?.asString()
-                    // Intenta castear la declaración a KSClassDeclaration y luego obtén el simpleName
-                    // Si el casteo falla o simpleName es null, mapNotNull lo omitirá
+                    // Attempts to cast the declaration to KSClassDeclaration and then get the simpleName
+                    // If the cast fails or simpleName is null, mapNotNull will omit it
                 }
                 .toList()
 
             logger.info("DAO ${symbol.qualifiedName?.asString()} (resolved) super interface simple names: $superInterfaceSimpleNames")
 
-            // o si hay jerarquías más profundas que necesitas inspeccionar.
+            // or if there are deeper hierarchies you need to inspect.
             val baseInterfaceType: String? = when {
                 superInterfaceSimpleNames.any { it == "ObjectDao" } -> "ObjectDao"
                 superInterfaceSimpleNames.any { it == "IdentifiableDeletableDataObjectDao" } -> "IdentifiableDeletableDataObjectDao"
@@ -169,47 +169,47 @@ class DaoQueriesProcessor(
 
     private fun buildObjectDaoQueries(tableName: String): String {
         return "    @Query(\"DELETE FROM ${'$'}{${tableName}}\")\n" +
-            "    override suspend fun deleteAllRows(): Int\n\n"
+            "    override fun deleteAllRows(): Int\n\n"
     }
 
     private fun buildIdentifiableObjectDaoQueries(tableName: String): String {
         return buildObjectDaoQueries(tableName) +
             "    @Query(\"DELETE FROM ${'$'}{${tableName}} WHERE uid = :uid\")\n" +
-            "    override suspend fun delete(uid: String): Int\n\n"
+            "    override fun delete(uid: String): Int\n\n"
     }
 
     private fun buildLinkDaoQueries(tableName: String, parentColumnName: String): String {
         return buildObjectDaoQueries(tableName) +
             "    @Query(\"DELETE FROM ${'$'}{${tableName}} WHERE ${'$'}{${parentColumnName}} = :parentUid\")\n" +
-            "    override suspend fun deleteLinksForMasterUid(parentUid: String): Int\n\n" +
+            "    override fun deleteLinksForMasterUid(parentUid: String): Int\n\n" +
             "    @Query(\"DELETE FROM ${'$'}{${tableName}}\")" +
-            "    override suspend fun deleteLinksForMasterUid(): Int"
+            "    override fun deleteLinksForMasterUid(): Int"
     }
 
     private fun buildIdentifiableDataObjectDaoQueries(tableName: String): String {
         return buildIdentifiableObjectDaoQueries(tableName) +
             "    @Query(\"UPDATE ${'$'}{${tableName}} SET ${'$'}{DataColumns.SYNC_STATE} = :state WHERE " +
             "${'$'}{IdentifiableColumns.UID} = :uid\")\n" +
-            "    override suspend fun setSyncState(uid: String, state: State): Int\n\n" +
+            "    override fun setSyncState(uid: String, state: State): Int\n\n" +
             "    @Query(\"UPDATE ${'$'}{${tableName}} SET ${'$'}{DataColumns.SYNC_STATE} = :state WHERE " +
             "${'$'}{IdentifiableColumns.UID} IN (:uids)\")\n" +
-            "    override suspend fun setSyncState(uids: List<String>, state: State): Int\n\n" +
+            "    override fun setSyncState(uids: List<String>, state: State): Int\n\n" +
             "    @Query(\"UPDATE ${'$'}{${tableName}} SET ${'$'}{DataColumns.SYNC_STATE} = :newstate WHERE " +
             "${'$'}{IdentifiableColumns.UID} = :uid AND ${'$'}{DataColumns.SYNC_STATE} = :updateState\")\n" +
-            "    override suspend fun setSyncStateIfUploading(uid: String, newstate: State, updateState: State): Int\n\n"
+            "    override fun setSyncStateIfUploading(uid: String, newstate: State, updateState: State): Int\n\n"
     }
 
     private fun buildIdentifiableDeletableDataObjectDaoQueries(tableName: String): String {
         return buildIdentifiableDataObjectDaoQueries(tableName) +
             "    @Query(\"UPDATE ${'$'}{${tableName}} SET ${'$'}{DeletableDataColumns.DELETED} = 1 " +
             "WHERE ${'$'}{IdentifiableColumns.UID} = :uid\")\n" +
-            "    override suspend fun setDeleted(uid: String): Int\n\n" +
+            "    override fun setDeleted(uid: String): Int\n\n" +
             "    @Query(\"DELETE FROM ${'$'}{${tableName}} WHERE ${'$'}{DataColumns.SYNC_STATE} = :state AND " +
             "${'$'}{IdentifiableColumns.UID} = :uid AND ${'$'}{DeletableDataColumns.DELETED} = :deleted\")\n" +
-            "    override suspend fun deleteWhere(uid: String, deleted: Boolean, state: State): Int\n\n"
+            "    override fun deleteWhere(uid: String, deleted: Boolean, state: State): Int\n\n"
     }
 
-    // Operador de extensión para escribir Strings fácilmente en OutputStream
+    // Extension operator to easily write Strings to OutputStream
     private operator fun OutputStream.plusAssign(str: String) {
         this.write(str.toByteArray())
     }

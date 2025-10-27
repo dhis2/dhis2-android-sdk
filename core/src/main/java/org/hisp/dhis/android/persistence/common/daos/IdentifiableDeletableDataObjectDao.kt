@@ -38,5 +38,5 @@ internal interface IdentifiableDeletableDataObjectDao<P : EntityDB<*>> :
     IdentifiableDeletableDataObjectDaoQueryFallbacks {
 
     @RawQuery
-    suspend fun stateListRawQuery(query: RoomRawQuery): List<State>
+    fun stateListRawQuery(query: RoomRawQuery): List<State>
 }

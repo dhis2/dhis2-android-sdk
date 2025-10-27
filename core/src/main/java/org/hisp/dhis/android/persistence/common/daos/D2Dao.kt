@@ -42,29 +42,29 @@ import org.hisp.dhis.android.persistence.common.SchemaRow
 internal interface D2Dao {
 
     @RawQuery
-    suspend fun intRawQuery(sqlRawQuery: RoomRawQuery): Int
+    fun intRawQuery(sqlRawQuery: RoomRawQuery): Int
 
     @RawQuery
-    suspend fun stringListRawQuery(query: SupportSQLiteQuery): List<String>
+    fun stringListRawQuery(query: SupportSQLiteQuery): List<String>
 
     @RawQuery
-    suspend fun stringRawQuery(query: RoomRawQuery): String
+    fun stringRawQuery(query: RoomRawQuery): String
 
     @RawQuery
-    suspend fun queryStringValue(query: SupportSQLiteQuery): String?
+    fun queryStringValue(query: SupportSQLiteQuery): String?
 
     @TypeConverters(StateTypeConverter::class)
     @RawQuery
-    suspend fun getTypedSyncStates(query: SupportSQLiteQuery): List<State>
+    fun getTypedSyncStates(query: SupportSQLiteQuery): List<State>
 
     @RawQuery
-    suspend fun getCodeMigration133DataValue(query: SupportSQLiteQuery): List<DatabaseCodeMigration133DataValue>
+    fun getCodeMigration133DataValue(query: SupportSQLiteQuery): List<DatabaseCodeMigration133DataValue>
 
     @Query("SELECT name, sql FROM sqlite_master ORDER BY name")
-    suspend fun getSchemaRows(): List<SchemaRow>
+    fun getSchemaRows(): List<SchemaRow>
 
     @RawQuery
-    suspend fun getTableInfo(query: SupportSQLiteQuery): List<PragmaTableInfoRow>
+    fun getTableInfo(query: SupportSQLiteQuery): List<PragmaTableInfoRow>
 }
 
 internal data class PragmaTableInfoRow(

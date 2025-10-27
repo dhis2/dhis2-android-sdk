@@ -44,5 +44,5 @@ internal interface SectionGreyedFieldsLinkDaoAux : LinkDao<SectionGreyedFieldsLi
         WHERE ${SectionGreyedFieldsLinkTableInfo.Columns.SECTION} = :sectionUid
     """,
     )
-    suspend fun deleteBySectionUid(sectionUid: String): Int
+    fun deleteBySectionUid(sectionUid: String): Int
 }

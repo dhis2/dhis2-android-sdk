@@ -35,13 +35,13 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 internal interface ReadableDao<P : EntityDB<*>> {
 
     @RawQuery
-    suspend fun objectListRawQuery(sqlRawQuery: RoomRawQuery): List<P>
+    fun objectListRawQuery(sqlRawQuery: RoomRawQuery): List<P>
 
     @RawQuery
-    suspend fun intRawQuery(sqlRawQuery: RoomRawQuery): Int
+    fun intRawQuery(sqlRawQuery: RoomRawQuery): Int
 
     @RawQuery
-    suspend fun groupCountListRawQuery(sqlRawQuery: RoomRawQuery): List<GroupCount>
+    fun groupCountListRawQuery(sqlRawQuery: RoomRawQuery): List<GroupCount>
 }
 
 internal data class GroupCount(

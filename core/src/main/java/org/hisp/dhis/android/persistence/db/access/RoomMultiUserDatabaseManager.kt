@@ -35,20 +35,20 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseExportMetadata
 import org.hisp.dhis.android.core.arch.db.access.internal.BaseDatabaseExport
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
-import org.hisp.dhis.android.core.configuration.internal.BaseMultiUserDatabaseManager
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccountImportStatus
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationInsecureStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
+import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.server.LoginConfig
 import org.hisp.dhis.android.core.util.CipherUtil
 import org.hisp.dhis.android.core.util.deleteIfExists
 import org.koin.core.annotation.Singleton
 
 /**
- * Room-based implementation of BaseMultiUserDatabaseManager
+ * Room-based implementation of MultiUserDatabaseManager
  */
 @Singleton
 @Suppress("TooManyFunctions")
@@ -60,7 +60,7 @@ internal class RoomMultiUserDatabaseManager(
     private val databaseManager: RoomDatabaseManager,
     private val passwordManager: DatabaseEncryptionPasswordManager,
     private val databaseExport: BaseDatabaseExport,
-) : BaseMultiUserDatabaseManager {
+) : MultiUserDatabaseManager {
 
     override suspend fun loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(
         serverUrl: String,

@@ -36,11 +36,11 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
-import org.hisp.dhis.android.core.configuration.internal.BaseMultiUserDatabaseManager
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccountImportStatus
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationInsecureStore
+import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
@@ -52,7 +52,7 @@ import org.koin.core.annotation.Singleton
 @Suppress("TooManyFunctions")
 internal class AccountManagerImpl(
     private val databasesConfigurationStore: DatabaseConfigurationInsecureStore,
-    private val multiUserDatabaseManager: BaseMultiUserDatabaseManager,
+    private val multiUserDatabaseManager: MultiUserDatabaseManager,
     private val databaseManager: DatabaseManager,
     private val credentialsSecureStore: CredentialsSecureStore,
     private val logOutCall: LogOutCall,

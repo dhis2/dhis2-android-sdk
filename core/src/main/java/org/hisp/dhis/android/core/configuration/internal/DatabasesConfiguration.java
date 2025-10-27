@@ -52,7 +52,7 @@ public abstract class DatabasesConfiguration {
     public static Builder builder() {
         return new AutoValue_DatabasesConfiguration.Builder()
                 .versionCode(BuildConfig.VERSION_CODE)
-                .maxAccounts(BaseMultiUserDatabaseManager.DefaultMaxAccounts)
+                .maxAccounts(MultiUserDatabaseManager.DefaultMaxAccounts)
                 .accounts(Collections.emptyList());
     }
 

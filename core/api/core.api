@@ -2432,7 +2432,6 @@ public abstract class org/hisp/dhis/android/core/arch/repositories/object/intern
 	protected final fun deleteInternal (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected abstract fun deleteObject (Lorg/hisp/dhis/android/core/common/CoreObject;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected abstract fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lorg/hisp/dhis/android/core/arch/handlers/internal/HandleAction;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	protected final fun updateIfChanged (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;)Lorg/hisp/dhis/android/core/common/Unit;
 	protected final fun updateIfChangedInternal (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected fun updateObject (Lorg/hisp/dhis/android/core/common/CoreObject;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }

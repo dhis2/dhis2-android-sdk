@@ -288,3 +288,30 @@ sonarqube {
         }
     }
 }
+
+// Custom task to run code quality checks, unit tests, and instrumentation tests sequentially
+tasks.register("testAll") {
+    group = "verification"
+    description = "Runs code quality checks, unit tests, and instrumentation tests sequentially"
+
+    dependsOn(
+        "clean",
+        "ktlintFormat",
+        "detekt",
+        "checkstyleDebug",
+        "pmdDebug",
+        "lintDebug",
+        "apiDump",
+        "testDebugUnitTest",
+        "connectedDebugAndroidTest",
+    )
+
+    tasks.findByName("ktlintFormat")?.mustRunAfter("clean")
+    tasks.findByName("detekt")?.mustRunAfter("ktlintFormat")
+    tasks.findByName("checkstyleDebug")?.mustRunAfter("detekt")
+    tasks.findByName("pmdDebug")?.mustRunAfter("checkstyleDebug")
+    tasks.findByName("lintDebug")?.mustRunAfter("pmdDebug")
+    tasks.findByName("apiDump")?.mustRunAfter("lintDebug")
+    tasks.findByName("testDebugUnitTest")?.mustRunAfter("apiDump")
+    tasks.findByName("connectedDebugAndroidTest")?.mustRunAfter("testDebugUnitTest")
+}

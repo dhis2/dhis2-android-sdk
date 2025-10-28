@@ -30,7 +30,7 @@ package org.hisp.dhis.android.testapp.trackedentity
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.arch.helpers.DateTimezoneConverter.convertServerToClient
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
@@ -67,10 +67,9 @@ class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShould : Bas
     @Test
     @Throws(ParseException::class)
     fun filter_by_created() {
-        val date = BaseIdentifiableObject.DATE_FORMAT.parse("2019-01-10T13:40:28.000")
         val trackedEntityAttributeValues =
             d2.trackedEntityModule().trackedEntityAttributeValues()
-                .byCreated().eq(date)
+                .byCreated().eq(convertServerToClient("2019-01-10T13:40:28.000"))
                 .blockingGet()
         assertThat(trackedEntityAttributeValues.size).isEqualTo(1)
     }
@@ -78,9 +77,8 @@ class TrackedEntityAttributeValueCollectionRepositoryMockIntegrationShould : Bas
     @Test
     @Throws(ParseException::class)
     fun filter_by_last_updated() {
-        val date = BaseIdentifiableObject.DATE_FORMAT.parse("2018-01-10T13:40:28.000")
         val trackedEntityAttributeValues = d2.trackedEntityModule().trackedEntityAttributeValues()
-            .byLastUpdated().eq(date)
+            .byLastUpdated().eq(convertServerToClient("2018-01-10T13:40:28.000"))
             .blockingGet()
         assertThat(trackedEntityAttributeValues.size).isEqualTo(1)
     }

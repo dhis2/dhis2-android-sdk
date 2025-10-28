@@ -29,10 +29,11 @@ package org.hisp.dhis.android.testapp.trackedentity
 
 import com.google.common.collect.Lists
 import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.helpers.DateTimezoneConverter.convertServerToClient
+import org.hisp.dhis.android.core.arch.helpers.DateTimezoneConverter.convertServerToClientAsString
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 
@@ -56,7 +57,7 @@ class TrackedEntityCollectionRepositoryMockIntegrationShould : BaseMockIntegrati
     @Test
     fun filter_by_created() {
         val trackedEntityInstances = d2.trackedEntityModule().trackedEntityInstances()
-            .byCreated().eq("2019-01-10T13:40:27.987".toJavaDate())
+            .byCreated().eq(convertServerToClient("2019-01-10T13:40:27.987"))
             .blockingGet()
 
         assertThat(trackedEntityInstances.size).isEqualTo(1)
@@ -65,7 +66,7 @@ class TrackedEntityCollectionRepositoryMockIntegrationShould : BaseMockIntegrati
     @Test
     fun filter_by_lastUpdated() {
         val trackedEntityInstances = d2.trackedEntityModule().trackedEntityInstances()
-            .byLastUpdated().eq("2018-01-10T13:40:28.592".toJavaDate())
+            .byLastUpdated().eq(convertServerToClient("2018-01-10T13:40:28.592"))
             .blockingGet()
 
         assertThat(trackedEntityInstances.size).isEqualTo(1)
@@ -74,7 +75,7 @@ class TrackedEntityCollectionRepositoryMockIntegrationShould : BaseMockIntegrati
     @Test
     fun filter_by_created_at_client() {
         val trackedEntityInstances = d2.trackedEntityModule().trackedEntityInstances()
-            .byCreatedAtClient().eq("2019-01-22T18:38:15.845")
+            .byCreatedAtClient().eq(convertServerToClientAsString("2019-01-22T18:38:15.845"))
             .blockingGet()
 
         assertThat(trackedEntityInstances.size).isEqualTo(1)

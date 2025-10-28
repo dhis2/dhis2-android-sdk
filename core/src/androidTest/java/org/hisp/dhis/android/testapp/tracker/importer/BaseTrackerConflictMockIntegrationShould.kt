@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.testapp.tracker.importer
 
-import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.tracker.importer.internal.ImporterError
@@ -58,7 +57,7 @@ internal abstract class BaseTrackerConflictMockIntegrationShould : BaseMockInteg
     @Test
     fun generate_correct_display_descriptions_for_error() = runTest {
         val trackerConflictHelper = TrackerConflictHelper(
-            InstrumentationRegistry.getInstrumentation().context,
+            LocaleTestUtils.createEnglishContext(d2.context()),
             objects.d2DIComponent.interpreterSelector,
         )
         val trackerImportConflict = trackerConflictHelper.getConflictBuilder(errorReport).build()

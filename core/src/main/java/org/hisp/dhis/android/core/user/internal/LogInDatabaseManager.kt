@@ -28,14 +28,14 @@
 package org.hisp.dhis.android.core.user.internal
 
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
-import org.hisp.dhis.android.core.configuration.internal.BaseMultiUserDatabaseManager
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccountImportStatus
+import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class LogInDatabaseManager(
-    private val multiUserDatabaseManager: BaseMultiUserDatabaseManager,
+    private val multiUserDatabaseManager: MultiUserDatabaseManager,
     private val generalSettingCall: GeneralSettingCall,
 ) {
 

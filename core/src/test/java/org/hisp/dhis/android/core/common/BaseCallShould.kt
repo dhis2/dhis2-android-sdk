@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.Transaction
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
+import org.hisp.dhis.android.persistence.db.access.RoomDatabaseAdapter
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
@@ -44,7 +45,7 @@ import javax.net.ssl.HttpsURLConnection
 @Suppress("UnnecessaryAbstractClass")
 abstract class BaseCallShould {
 
-    protected val databaseAdapter: DatabaseAdapter = mock()
+    protected val databaseAdapter: DatabaseAdapter = mock<RoomDatabaseAdapter>()
     protected val serverDate: Date = mock()
     internal val resourceHandler: ResourceHandler = mock()
     internal val genericCallData: GenericCallData = mock()

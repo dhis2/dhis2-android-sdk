@@ -34,8 +34,8 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseImportExport
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.getCurrentTimeAndDate
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
-import org.hisp.dhis.android.core.configuration.internal.BaseMultiUserDatabaseManager
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
+import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
@@ -52,7 +52,7 @@ import java.util.Date
 @Singleton
 internal class DatabaseImportExportImpl(
     private val context: Context,
-    private val multiUserDatabaseManager: BaseMultiUserDatabaseManager,
+    private val multiUserDatabaseManager: MultiUserDatabaseManager,
     private val databaseManager: RoomDatabaseManager,
     private val userModule: UserModule,
     private val credentialsStore: CredentialsSecureStore,

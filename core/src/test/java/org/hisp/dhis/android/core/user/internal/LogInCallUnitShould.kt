@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
 import org.hisp.dhis.android.core.common.BaseCallShould
-import org.hisp.dhis.android.core.configuration.internal.BaseMultiUserDatabaseManager
+import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
@@ -72,7 +72,7 @@ class LogInCallUnitShould : BaseCallShould() {
     private val credentials: Credentials = mock()
     private val userStore: UserStore = mock()
     private val systemInfoCall: SystemInfoCall = mock()
-    private val multiUserDatabaseManager: BaseMultiUserDatabaseManager = mock()
+    private val multiUserDatabaseManager: MultiUserDatabaseManager = mock()
     private val generalSettingCall: GeneralSettingCall = mock()
     private val accountManager: AccountManagerImpl = mock()
 

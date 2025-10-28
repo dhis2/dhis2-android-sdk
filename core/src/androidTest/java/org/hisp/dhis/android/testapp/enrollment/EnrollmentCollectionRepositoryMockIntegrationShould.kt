@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.testapp.enrollment
 
 import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.helpers.DateTimezoneConverter.convertServerToClient
+import org.hisp.dhis.android.core.arch.helpers.DateTimezoneConverter.convertServerToClientAsString
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.State
@@ -81,7 +83,7 @@ class EnrollmentCollectionRepositoryMockIntegrationShould : BaseMockIntegrationT
     @Test
     fun filter_by_created() {
         val enrollments = d2.enrollmentModule().enrollments()
-            .byCreated().eq("2019-01-10T13:40:28.322".toJavaDate())
+            .byCreated().eq(convertServerToClient("2019-01-10T13:40:28.322"))
             .blockingGet()
 
         assertThat(enrollments.size).isEqualTo(1)
@@ -90,7 +92,7 @@ class EnrollmentCollectionRepositoryMockIntegrationShould : BaseMockIntegrationT
     @Test
     fun filter_by_last_updated() {
         val enrollments = d2.enrollmentModule().enrollments()
-            .byLastUpdated().eq("2019-01-10T13:40:28.718".toJavaDate())
+            .byLastUpdated().eq(convertServerToClient("2019-01-10T13:40:28.718"))
             .blockingGet()
 
         assertThat(enrollments.size).isEqualTo(1)
@@ -99,7 +101,7 @@ class EnrollmentCollectionRepositoryMockIntegrationShould : BaseMockIntegrationT
     @Test
     fun filter_by_created_as_client() {
         val enrollments = d2.enrollmentModule().enrollments()
-            .byCreatedAtClient().eq("2018-01-08T13:40:28.718")
+            .byCreatedAtClient().eq(convertServerToClientAsString("2018-01-08T13:40:28.718"))
             .blockingGet()
 
         assertThat(enrollments.size).isEqualTo(1)
@@ -108,7 +110,7 @@ class EnrollmentCollectionRepositoryMockIntegrationShould : BaseMockIntegrationT
     @Test
     fun filter_by_last_updated_as_client() {
         val enrollments = d2.enrollmentModule().enrollments()
-            .byLastUpdatedAtClient().eq("2018-01-11T13:40:28.718")
+            .byLastUpdatedAtClient().eq(convertServerToClientAsString("2018-01-11T13:40:28.718"))
             .blockingGet()
 
         assertThat(enrollments.size).isEqualTo(1)

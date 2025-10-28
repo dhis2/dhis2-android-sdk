@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.testapp.trackedentity
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.core.arch.helpers.DateTimezoneConverter.convertServerToClient
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Ignore
 import org.junit.Test
@@ -53,7 +53,7 @@ class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould : BaseMock
     @Test
     fun filter_by_created() {
         val trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
-            .byCreated().eq("2015-02-28T12:05:00.333".toJavaDate())
+            .byCreated().eq(convertServerToClient("2015-02-28T12:05:00.333"))
             .blockingGet()
 
         assertThat(trackedEntityDataValues.size).isEqualTo(1)
@@ -62,7 +62,7 @@ class TrackedEntityDataValueCollectionRepositoryMockIntegrationShould : BaseMock
     @Test
     fun filter_by_last_updated() {
         val trackedEntityDataValues = d2.trackedEntityModule().trackedEntityDataValues()
-            .byLastUpdated().eq("2015-02-28T12:05:00.222".toJavaDate())
+            .byLastUpdated().eq(convertServerToClient("2015-02-28T12:05:00.222"))
             .blockingGet()
 
         assertThat(trackedEntityDataValues.size).isEqualTo(1)

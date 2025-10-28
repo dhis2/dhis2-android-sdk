@@ -86,4 +86,16 @@ internal object DateTimezoneConverter {
             fromInstant.toJavaDate()
         }
     }
+
+    /**
+     * Converts a date from server timezone to client timezone.
+     * Uses the cached server timezone from ServerTimezoneManager.
+     *
+     * @param dateString The date string in server timezone
+     * @return Date as String converted to client timezone context
+     */
+    fun convertServerToClientAsString(dateString: String?): String? {
+        val convertedDate = convertServerToClient(dateString)
+        return convertedDate?.let { DateUtils.DATE_FORMAT.format(it) }
+    }
 }

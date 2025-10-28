@@ -190,7 +190,12 @@ internal class RoomDatabaseAdapter(
 
                         val rowMap = mutableMapOf<String, String?>()
                         columnNamesCache.forEachIndexed { idx, name ->
-                            rowMap[name] = statement.getText(idx)
+                            if (statement.isNull(idx)) {
+                                rowMap[name] = ""
+                            } else {
+                                val value = statement.getText(idx)
+                                rowMap[name] = value
+                            }
                         }
                         results.add(rowMap)
                     }

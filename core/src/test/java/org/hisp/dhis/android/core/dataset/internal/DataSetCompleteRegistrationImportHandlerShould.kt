@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.dataset.internal
 
 import kotlinx.coroutines.test.runTest
-import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
@@ -49,6 +48,7 @@ class DataSetCompleteRegistrationImportHandlerShould {
     private val dataSetCompleteRegistrationStore: DataSetCompleteRegistrationStore = mock()
     private val dataValueImportSummary: DataValueImportSummary = mock()
     private val dataSetCompleteRegistration: DataSetCompleteRegistration = mock()
+    private val builder: DataSetCompleteRegistration.Builder = mock()
 
     private lateinit var dataSetCompleteRegistrationImportHandler: DataSetCompleteRegistrationImportHandler
 
@@ -58,6 +58,11 @@ class DataSetCompleteRegistrationImportHandlerShould {
             DataSetCompleteRegistrationImportHandler(dataSetCompleteRegistrationStore)
         whenever(dataValueImportSummary.importCount()).thenReturn(ImportCount.EMPTY)
         whenever(dataValueImportSummary.responseType()).thenReturn("ImportSummary")
+
+        // Mock builder chain
+        whenever(dataSetCompleteRegistration.toBuilder()).thenReturn(builder)
+        whenever(builder.syncState(any())).thenReturn(builder)
+        whenever(builder.build()).thenReturn(dataSetCompleteRegistration)
     }
 
     @Test
@@ -70,9 +75,8 @@ class DataSetCompleteRegistrationImportHandlerShould {
             emptyList(),
         )
 
-        verify(dataSetCompleteRegistrationStore, never()).setState(
-            any<DataSetCompleteRegistration>(),
-            any<State>(),
+        verify(dataSetCompleteRegistrationStore, never()).update(
+            any<Collection<DataSetCompleteRegistration>>(),
         )
     }
 
@@ -91,7 +95,7 @@ class DataSetCompleteRegistrationImportHandlerShould {
         )
 
         verify(dataSetCompleteRegistrationStore, times(1))
-            .setState(dataSetCompleteRegistration, State.SYNCED)
+            .update(any<Collection<DataSetCompleteRegistration>>())
     }
 
     @Test
@@ -109,6 +113,6 @@ class DataSetCompleteRegistrationImportHandlerShould {
         )
 
         verify(dataSetCompleteRegistrationStore, times(1))
-            .setState(dataSetCompleteRegistration, State.ERROR)
+            .update(any<Collection<DataSetCompleteRegistration>>())
     }
 }

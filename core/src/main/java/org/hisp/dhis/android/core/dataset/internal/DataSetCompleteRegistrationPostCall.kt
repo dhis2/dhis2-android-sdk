@@ -121,8 +121,9 @@ internal class DataSetCompleteRegistrationPostCall(
         dataSetCompleteRegistrations: Collection<DataSetCompleteRegistration>,
         forcedState: State?,
     ) {
-        dataSetCompleteRegistrations.forEach {
-            dataSetCompleteRegistrationStore.setState(it, forcedOrOwn(it, forcedState))
+        val updatedRegistrations = dataSetCompleteRegistrations.map { registration ->
+            registration.toBuilder().syncState(forcedOrOwn(registration, forcedState)).build()
         }
+        dataSetCompleteRegistrationStore.update(updatedRegistrations)
     }
 }

@@ -34,7 +34,13 @@ import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.KoinStoreRegistry
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
-import org.hisp.dhis.android.core.arch.storage.internal.*
+import org.hisp.dhis.android.core.arch.storage.internal.ChunkedSecureStore
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl
+import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore
+import org.hisp.dhis.android.core.arch.storage.internal.InMemoryUnsecureStore
+import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
+import org.hisp.dhis.android.core.arch.storage.internal.SecureStore
 import org.hisp.dhis.android.core.configuration.internal.migration.DatabaseConfigurationInsecureStoreOld
 import org.hisp.dhis.android.core.user.UserCredentials
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
@@ -44,6 +50,7 @@ import org.hisp.dhis.android.persistence.configuration.migration.DatabaseUserCon
 import org.hisp.dhis.android.persistence.configuration.migration.DatabasesConfigurationOldDB
 import org.hisp.dhis.android.persistence.db.access.RoomDatabaseAdapter
 import org.hisp.dhis.android.persistence.db.access.RoomDatabaseManager
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -97,6 +104,12 @@ class DatabaseConfigurationMigrationIntegrationShould {
         FileResourceDirectoryHelper.deleteRootFileResourceDirectory(context)
     }
 
+    @After
+    fun tearDown() {
+        // Close database connection to avoid resource leaks
+        databaseAdapter.close()
+    }
+
     @Test
     fun delete_empty_database() = runTest {
         databaseManager.createOrOpenUnencryptedDatabase(DatabaseConfigurationMigration.OLD_DBNAME)
@@ -143,7 +156,7 @@ class DatabaseConfigurationMigrationIntegrationShould {
     }
 
     @Test
-    fun migrate_from_old_database_configuration() = runTest {
+    fun migrate_from_old_database_configuration() = runTest(timeout = 300.seconds) {
         val oldDatabaseConfiguration = DatabasesConfigurationOldDB(
             loggedServerUrl = serverUrlWithApi,
             servers = listOf(

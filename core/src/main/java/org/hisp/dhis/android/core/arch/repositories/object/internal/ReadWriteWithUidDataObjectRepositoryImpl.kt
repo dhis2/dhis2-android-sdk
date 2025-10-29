@@ -134,14 +134,6 @@ abstract class ReadWriteWithUidDataObjectRepositoryImpl<M, R : ReadOnlyObjectRep
         return Unit()
     }
 
-    protected inline fun <V> updateIfChanged(
-        newValue: V?,
-        crossinline propertyGetter: (M) -> V?,
-        crossinline updater: suspend (M, V?) -> M,
-    ): Unit {
-        return runBlocking { updateIfChangedInternal(newValue, propertyGetter, updater) }
-    }
-
     protected suspend inline fun <V> updateIfChangedInternal(
         newValue: V?,
         propertyGetter: (M) -> V?,

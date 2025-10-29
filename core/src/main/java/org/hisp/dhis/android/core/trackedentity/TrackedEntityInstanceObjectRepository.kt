@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
@@ -66,15 +67,28 @@ class TrackedEntityInstanceObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setOrganisationUnitUid(organisationUnitUid: String?): Unit {
-        return updateIfChanged(organisationUnitUid, { it.organisationUnit() }) { tei: TrackedEntityInstance, value ->
+        return runBlocking { setOrganisationUnitUidInternal(organisationUnitUid) }
+    }
+
+    @Throws(D2Error::class)
+    internal suspend fun setOrganisationUnitUidInternal(organisationUnitUid: String?): Unit {
+        return updateIfChangedInternal(
+            organisationUnitUid,
+            { it.organisationUnit() },
+        ) { tei: TrackedEntityInstance, value ->
             updateBuilder(tei).organisationUnit(value).build()
         }
     }
 
     @Throws(D2Error::class)
     fun setGeometry(geometry: Geometry?): Unit {
+        return runBlocking { setGeometryInternal(geometry) }
+    }
+
+    @Throws(D2Error::class)
+    internal suspend fun setGeometryInternal(geometry: Geometry?): Unit {
         GeometryHelper.validateGeometry(geometry)
-        return updateIfChanged(geometry, { it.geometry() }) { tei: TrackedEntityInstance, value ->
+        return updateIfChangedInternal(geometry, { it.geometry() }) { tei: TrackedEntityInstance, value ->
             updateBuilder(tei).geometry(value).build()
         }
     }

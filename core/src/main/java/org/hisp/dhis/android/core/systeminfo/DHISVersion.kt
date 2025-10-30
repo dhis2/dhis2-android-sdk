@@ -42,7 +42,7 @@ enum class DHISVersion(internal val prefix: String, internal val supported: Bool
     V2_40("2.40"),
     V2_41("2.41"),
     V2_42("2.42"),
-    V2_43("2.43"),
+    V2_43("2.43", false),
     UNKNOWN("UNKNOWN", false),
     ;
 

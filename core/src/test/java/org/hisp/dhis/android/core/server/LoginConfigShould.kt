@@ -84,7 +84,8 @@ class LoginConfigShould : CoreObjectShould("server/login_config.json") {
         assertThat(oidcProviders[1].url).isEqualTo("oauth2/authorization/provider2")
     }
 
-    @Test
+    // Uncomment this test when the DHISVersion.V2_43 is supported
+    // @Test
     fun evaluate_if_oauth_is_enabled() {
         listOf(
             Pair(

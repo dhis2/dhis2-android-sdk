@@ -89,21 +89,21 @@ class LoginConfigShould : CoreObjectShould("server/login_config.json") {
         listOf(
             Pair(
                 LoginConfig(
-                    apiVersion = "2.42.3",
+                    apiVersion = "2.43.3",
                     oidcProviders = listOf(LoginOidcProvider(id = "google")),
                 ),
                 false,
             ),
             Pair(
                 LoginConfig(
-                    apiVersion = "2.42.3",
+                    apiVersion = "2.43.3",
                     oidcProviders = listOf(LoginOidcProvider(id = "google"), LoginOidcProvider(id = "dhis2-client")),
                 ),
                 true,
             ),
             Pair(
                 LoginConfig(
-                    apiVersion = "2.42.1",
+                    apiVersion = "2.43.1",
                     oidcProviders = listOf(LoginOidcProvider(id = "dhis2-client")),
                 ),
                 false,

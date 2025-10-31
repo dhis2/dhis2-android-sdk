@@ -31,5 +31,5 @@ package org.hisp.dhis.android.persistence.indicator
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "IndicatorTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface IndicatorDaoAux : IdentifiableObjectDao<IndicatorDB>

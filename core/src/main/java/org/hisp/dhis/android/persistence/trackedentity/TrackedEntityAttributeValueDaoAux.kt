@@ -33,7 +33,7 @@ import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.persistence.program.ProgramTrackedEntityAttributeTableInfo
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "TrackedEntityAttributeValueTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface TrackedEntityAttributeValueDaoAux : ObjectDao<TrackedEntityAttributeValueDB> {
     @Query(
         """UPDATE TrackedEntityAttributeValue 

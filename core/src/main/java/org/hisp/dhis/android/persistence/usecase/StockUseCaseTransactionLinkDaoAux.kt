@@ -31,8 +31,5 @@ package org.hisp.dhis.android.persistence.usecase
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(
-    tableName = "StockUseCaseTransactionTableInfo.TABLE_NAME",
-    parentColumnName = "StockUseCaseTransactionTableInfo.Columns.PROGRAM_UID",
-)
+@GenerateDaoQueries
 internal interface StockUseCaseTransactionLinkDaoAux : LinkDao<StockUseCaseTransactionDB>

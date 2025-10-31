@@ -7,6 +7,7 @@ import org.hisp.dhis.android.core.dataset.DataSetElement
 import org.hisp.dhis.android.persistence.category.CategoryComboDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.dataelement.DataElementDB
+import org.hisp.dhis.android.processor.ParentColumn
 
 @Entity(
     tableName = "DataSetDataElementLink",
@@ -36,7 +37,7 @@ import org.hisp.dhis.android.persistence.dataelement.DataElementDB
     primaryKeys = ["dataSet", "dataElement"],
 )
 internal data class DataSetDataElementLinkDB(
-    val dataSet: String,
+    @ParentColumn val dataSet: String,
     val dataElement: String,
     val categoryCombo: String?,
 ) : EntityDB<DataSetElement> {

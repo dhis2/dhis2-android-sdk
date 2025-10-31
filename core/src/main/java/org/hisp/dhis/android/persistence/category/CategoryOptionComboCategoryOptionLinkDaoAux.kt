@@ -31,8 +31,5 @@ package org.hisp.dhis.android.persistence.category
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(
-    tableName = "CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_NAME",
-    parentColumnName = "CategoryOptionComboCategoryOptionLinkTableInfo.Columns.CATEGORY_OPTION_COMBO",
-)
+@GenerateDaoQueries
 internal interface CategoryOptionComboCategoryOptionLinkDaoAux : LinkDao<CategoryOptionComboCategoryOptionLinkDB>

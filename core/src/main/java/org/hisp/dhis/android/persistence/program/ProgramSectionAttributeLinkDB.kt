@@ -5,6 +5,7 @@ import androidx.room.ForeignKey
 import org.hisp.dhis.android.core.program.ProgramSectionAttributeLink
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeDB
+import org.hisp.dhis.android.processor.ParentColumn
 
 @Entity(
     tableName = "ProgramSectionAttributeLink",
@@ -27,7 +28,7 @@ import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeDB
     primaryKeys = ["programSection", "attribute"],
 )
 internal data class ProgramSectionAttributeLinkDB(
-    val programSection: String,
+    @ParentColumn val programSection: String,
     val attribute: String,
     val sortOrder: Int?,
 ) : EntityDB<ProgramSectionAttributeLink> {

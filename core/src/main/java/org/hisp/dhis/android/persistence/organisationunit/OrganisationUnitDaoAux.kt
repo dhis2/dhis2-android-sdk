@@ -31,5 +31,5 @@ package org.hisp.dhis.android.persistence.organisationunit
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "OrganisationUnitTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface OrganisationUnitDaoAux : IdentifiableObjectDao<OrganisationUnitDB>

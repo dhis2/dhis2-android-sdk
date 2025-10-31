@@ -5,6 +5,7 @@ import androidx.room.ForeignKey
 import org.hisp.dhis.android.core.legendset.IndicatorLegendSetLink
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.indicator.IndicatorDB
+import org.hisp.dhis.android.processor.ParentColumn
 
 @Entity(
     tableName = "IndicatorLegendSetLink",
@@ -27,7 +28,7 @@ import org.hisp.dhis.android.persistence.indicator.IndicatorDB
     primaryKeys = ["indicator", "legendSet"],
 )
 internal data class IndicatorLegendSetLinkDB(
-    val indicator: String,
+    @ParentColumn val indicator: String,
     val legendSet: String,
     val sortOrder: Int?,
 ) : EntityDB<IndicatorLegendSetLink> {

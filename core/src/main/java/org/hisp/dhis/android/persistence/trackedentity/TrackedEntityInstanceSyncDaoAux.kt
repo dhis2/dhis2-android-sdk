@@ -33,7 +33,7 @@ import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceSyncTableInfo.Columns
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "TrackedEntityInstanceSyncTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface TrackedEntityInstanceSyncDaoAux : ObjectDao<TrackedEntityInstanceSyncDB> {
     @Query(
         """

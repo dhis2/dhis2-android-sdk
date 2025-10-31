@@ -5,6 +5,7 @@ import androidx.room.ForeignKey
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.program.ProgramIndicatorDB
+import org.hisp.dhis.android.processor.ParentColumn
 
 @Entity(
     tableName = "ProgramIndicatorLegendSetLink",
@@ -27,7 +28,7 @@ import org.hisp.dhis.android.persistence.program.ProgramIndicatorDB
     primaryKeys = ["programIndicator", "legendSet"],
 )
 internal data class ProgramIndicatorLegendSetLinkDB(
-    val programIndicator: String,
+    @ParentColumn val programIndicator: String,
     val legendSet: String,
     val sortOrder: Int?,
 ) : EntityDB<ProgramIndicatorLegendSetLink> {

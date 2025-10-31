@@ -31,6 +31,6 @@ package org.hisp.dhis.android.persistence.programstageworkinglist
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "ProgramStageWorkingListAttributeValueFilterTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface ProgramStageWorkingListAttributeValueFilterDaoAux :
     ObjectDao<ProgramStageWorkingListAttributeValueFilterDB>

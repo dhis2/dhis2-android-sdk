@@ -31,5 +31,5 @@ package org.hisp.dhis.android.persistence.visualization
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "VisualizationTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface VisualizationDaoAux : IdentifiableObjectDao<VisualizationDB>

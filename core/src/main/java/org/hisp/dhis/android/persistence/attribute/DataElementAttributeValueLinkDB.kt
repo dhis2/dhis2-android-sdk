@@ -5,6 +5,7 @@ import androidx.room.ForeignKey
 import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLink
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.dataelement.DataElementDB
+import org.hisp.dhis.android.processor.ParentColumn
 
 @Entity(
     tableName = "DataElementAttributeValueLink",
@@ -27,7 +28,7 @@ import org.hisp.dhis.android.persistence.dataelement.DataElementDB
     primaryKeys = ["dataElement", "attribute"],
 )
 internal data class DataElementAttributeValueLinkDB(
-    val dataElement: String,
+    @ParentColumn val dataElement: String,
     val attribute: String,
     val value: String?,
 ) : EntityDB<DataElementAttributeValueLink> {

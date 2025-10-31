@@ -65,6 +65,7 @@ class EntityProcessor(
             val tableInfoClass = tableName + "TableInfo"
 
             val columns = getColumns(symbol)
+            val parentColumn = getParentColumn(symbol)
 
             val file = codeGenerator.createNewFile(
                 // Make sure to associate the generated file with sources to keep/maintain it across incremental builds.
@@ -95,6 +96,7 @@ class EntityProcessor(
                 }
                 
                 const val TABLE_NAME = "$tableName"
+                ${if (parentColumn != null) "const val PARENT_COLUMN = Columns.${parentColumn.propertyName}" else ""}
                 
                 class Columns : CoreColumns() {
                     override fun all(): Array<String> {
@@ -152,6 +154,18 @@ class EntityProcessor(
             ?.value?.toString()
 
         return serialNameValue ?: property.simpleName.getShortName()
+    }
+
+    private fun getParentColumn(symbol: KSClassDeclaration): TableColumn? {
+        return symbol.getDeclaredProperties()
+            .firstOrNull { property ->
+                property.annotations.any { it.shortName.getShortName() == "ParentColumn" }
+            }
+            ?.let { property ->
+                val columnName = getColumnName(property)
+                val propertyName = camelToUpperSnakeCase(columnName)
+                TableColumn(propertyName = propertyName, columnName = columnName)
+            }
     }
 }
 

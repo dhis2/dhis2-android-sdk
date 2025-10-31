@@ -12519,6 +12519,7 @@ public final class org/hisp/dhis/android/persistence/attribute/AttributeTableInf
 
 public final class org/hisp/dhis/android/persistence/attribute/DataElementAttributeValueLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/attribute/DataElementAttributeValueLinkTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -12537,6 +12538,7 @@ public final class org/hisp/dhis/android/persistence/attribute/DataElementAttrib
 
 public final class org/hisp/dhis/android/persistence/attribute/ProgramAttributeValueLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/attribute/ProgramAttributeValueLinkTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -12555,6 +12557,7 @@ public final class org/hisp/dhis/android/persistence/attribute/ProgramAttributeV
 
 public final class org/hisp/dhis/android/persistence/attribute/ProgramStageAttributeValueLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/attribute/ProgramStageAttributeValueLinkTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -12573,6 +12576,7 @@ public final class org/hisp/dhis/android/persistence/attribute/ProgramStageAttri
 
 public final class org/hisp/dhis/android/persistence/category/CategoryCategoryComboLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/category/CategoryCategoryComboLinkTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -12591,6 +12595,7 @@ public final class org/hisp/dhis/android/persistence/category/CategoryCategoryCo
 
 public final class org/hisp/dhis/android/persistence/category/CategoryCategoryOptionLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/category/CategoryCategoryOptionLinkTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -12631,6 +12636,7 @@ public final class org/hisp/dhis/android/persistence/category/CategoryComboTable
 
 public final class org/hisp/dhis/android/persistence/category/CategoryOptionComboCategoryOptionLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/category/CategoryOptionComboCategoryOptionLinkTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -12670,6 +12676,7 @@ public final class org/hisp/dhis/android/persistence/category/CategoryOptionComb
 
 public final class org/hisp/dhis/android/persistence/category/CategoryOptionOrganisationUnitLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/category/CategoryOptionOrganisationUnitLinkTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -12851,6 +12858,7 @@ public final class org/hisp/dhis/android/persistence/dataelement/DataElementTabl
 
 public final class org/hisp/dhis/android/persistence/dataset/DataInputPeriodTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/dataset/DataInputPeriodTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -12893,6 +12901,7 @@ public final class org/hisp/dhis/android/persistence/dataset/DataSetCompleteRegi
 
 public final class org/hisp/dhis/android/persistence/dataset/DataSetCompulsoryDataElementOperandsLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/dataset/DataSetCompulsoryDataElementOperandsLinkTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -12910,6 +12919,7 @@ public final class org/hisp/dhis/android/persistence/dataset/DataSetCompulsoryDa
 
 public final class org/hisp/dhis/android/persistence/dataset/DataSetDataElementLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/dataset/DataSetDataElementLinkTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -12928,6 +12938,7 @@ public final class org/hisp/dhis/android/persistence/dataset/DataSetDataElementL
 
 public final class org/hisp/dhis/android/persistence/dataset/DataSetOrganisationUnitLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/dataset/DataSetOrganisationUnitLinkTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -12993,6 +13004,7 @@ public final class org/hisp/dhis/android/persistence/dataset/DataSetTableInfo$Co
 
 public final class org/hisp/dhis/android/persistence/dataset/SectionDataElementLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/dataset/SectionDataElementLinkTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -13011,6 +13023,7 @@ public final class org/hisp/dhis/android/persistence/dataset/SectionDataElementL
 
 public final class org/hisp/dhis/android/persistence/dataset/SectionGreyedFieldsLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/dataset/SectionGreyedFieldsLinkTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -13029,6 +13042,7 @@ public final class org/hisp/dhis/android/persistence/dataset/SectionGreyedFields
 
 public final class org/hisp/dhis/android/persistence/dataset/SectionIndicatorLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/dataset/SectionIndicatorLinkTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -13438,6 +13452,7 @@ public final class org/hisp/dhis/android/persistence/imports/TrackerImportConfli
 
 public final class org/hisp/dhis/android/persistence/indicator/DataSetIndicatorLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/indicator/DataSetIndicatorLinkTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -13513,6 +13528,7 @@ public final class org/hisp/dhis/android/persistence/indicator/IndicatorTypeTabl
 
 public final class org/hisp/dhis/android/persistence/legendset/DataElementLegendSetLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/legendset/DataElementLegendSetLinkTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -13531,6 +13547,7 @@ public final class org/hisp/dhis/android/persistence/legendset/DataElementLegend
 
 public final class org/hisp/dhis/android/persistence/legendset/IndicatorLegendSetLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/legendset/IndicatorLegendSetLinkTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -13596,6 +13613,7 @@ public final class org/hisp/dhis/android/persistence/legendset/LegendTableInfo$C
 
 public final class org/hisp/dhis/android/persistence/legendset/ProgramIndicatorLegendSetLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/legendset/ProgramIndicatorLegendSetLinkTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -13662,6 +13680,7 @@ public final class org/hisp/dhis/android/persistence/maintenance/ForeignKeyViola
 
 public final class org/hisp/dhis/android/persistence/map/MapLayerImageryProviderTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/map/MapLayerImageryProviderTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -13732,6 +13751,7 @@ public final class org/hisp/dhis/android/persistence/note/NoteTableInfo$Columns$
 
 public final class org/hisp/dhis/android/persistence/option/OptionGroupOptionLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/option/OptionGroupOptionLinkTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -13864,6 +13884,7 @@ public final class org/hisp/dhis/android/persistence/organisationunit/Organisati
 
 public final class org/hisp/dhis/android/persistence/organisationunit/OrganisationUnitOrganisationUnitGroupLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/organisationunit/OrganisationUnitOrganisationUnitGroupLinkTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -13881,6 +13902,7 @@ public final class org/hisp/dhis/android/persistence/organisationunit/Organisati
 
 public final class org/hisp/dhis/android/persistence/organisationunit/OrganisationUnitProgramLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/organisationunit/OrganisationUnitProgramLinkTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -13950,6 +13972,7 @@ public final class org/hisp/dhis/android/persistence/period/PeriodTableInfo$Colu
 
 public final class org/hisp/dhis/android/persistence/program/AnalyticsPeriodBoundaryTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/program/AnalyticsPeriodBoundaryTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -14089,6 +14112,7 @@ public final class org/hisp/dhis/android/persistence/program/ProgramRuleVariable
 
 public final class org/hisp/dhis/android/persistence/program/ProgramSectionAttributeLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/program/ProgramSectionAttributeLinkTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -14164,6 +14188,7 @@ public final class org/hisp/dhis/android/persistence/program/ProgramStageDataEle
 
 public final class org/hisp/dhis/android/persistence/program/ProgramStageSectionDataElementLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/program/ProgramStageSectionDataElementLinkTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -14182,6 +14207,7 @@ public final class org/hisp/dhis/android/persistence/program/ProgramStageSection
 
 public final class org/hisp/dhis/android/persistence/program/ProgramStageSectionProgramIndicatorLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/program/ProgramStageSectionProgramIndicatorLinkTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -14586,6 +14612,7 @@ public final class org/hisp/dhis/android/persistence/settings/AnalyticsDhisVisua
 
 public final class org/hisp/dhis/android/persistence/settings/AnalyticsTeiAttributeTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/settings/AnalyticsTeiAttributeTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -14604,6 +14631,7 @@ public final class org/hisp/dhis/android/persistence/settings/AnalyticsTeiAttrib
 
 public final class org/hisp/dhis/android/persistence/settings/AnalyticsTeiDataElementTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/settings/AnalyticsTeiDataElementTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -14623,6 +14651,7 @@ public final class org/hisp/dhis/android/persistence/settings/AnalyticsTeiDataEl
 
 public final class org/hisp/dhis/android/persistence/settings/AnalyticsTeiIndicatorTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/settings/AnalyticsTeiIndicatorTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -14664,6 +14693,7 @@ public final class org/hisp/dhis/android/persistence/settings/AnalyticsTeiSettin
 
 public final class org/hisp/dhis/android/persistence/settings/AnalyticsTeiWHONutritionDataTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/settings/AnalyticsTeiWHONutritionDataTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -14684,6 +14714,7 @@ public final class org/hisp/dhis/android/persistence/settings/AnalyticsTeiWHONut
 
 public final class org/hisp/dhis/android/persistence/settings/CustomIntentAttributeTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/settings/CustomIntentAttributeTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -14701,6 +14732,7 @@ public final class org/hisp/dhis/android/persistence/settings/CustomIntentAttrib
 
 public final class org/hisp/dhis/android/persistence/settings/CustomIntentDataElementTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/settings/CustomIntentDataElementTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -15111,6 +15143,7 @@ public final class org/hisp/dhis/android/persistence/trackedentity/ReservedValue
 
 public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntityAttributeLegendSetLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/trackedentity/TrackedEntityAttributeLegendSetLinkTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -15351,6 +15384,7 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 
 public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntityTypeAttributeTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/trackedentity/TrackedEntityTypeAttributeTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -15442,6 +15476,7 @@ public final class org/hisp/dhis/android/persistence/usecase/StockUseCaseTableIn
 
 public final class org/hisp/dhis/android/persistence/usecase/StockUseCaseTransactionTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/usecase/StockUseCaseTransactionTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -15518,6 +15553,7 @@ public final class org/hisp/dhis/android/persistence/user/UserGroupTableInfo$Col
 
 public final class org/hisp/dhis/android/persistence/user/UserOrganisationUnitTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/user/UserOrganisationUnitTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -15595,6 +15631,7 @@ public final class org/hisp/dhis/android/persistence/user/UserTableInfo$Columns$
 
 public final class org/hisp/dhis/android/persistence/validation/DataSetValidationRuleLinkTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/validation/DataSetValidationRuleLinkTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -15672,6 +15709,7 @@ public final class org/hisp/dhis/android/persistence/valuetypedevicerendering/Va
 
 public final class org/hisp/dhis/android/persistence/visualization/TrackerVisualizationDimensionTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/visualization/TrackerVisualizationDimensionTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }
@@ -15726,6 +15764,7 @@ public final class org/hisp/dhis/android/persistence/visualization/TrackerVisual
 
 public final class org/hisp/dhis/android/persistence/visualization/VisualizationDimensionItemTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/visualization/VisualizationDimensionItemTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
 	public static final field TABLE_NAME Ljava/lang/String;
 }

@@ -1,12 +1,16 @@
 # Database { #android_sdk_database }
 
+## Database architecture { #android_sdk_database_architecture }
+The SDK uses **Android Room Persistence Library** as its database layer. Room provides compile-time verification of SQL queries, reduces boilerplate code, and offers better integration with Android architecture components.
+
+The database implementation is internal to the SDK and apps should interact with data through the provided repositories and services. Direct database access is not recommended as the internal structure may change between versions.
+
 ## Database scope { #android_sdk_database_scope }
 The SDK keeps the data of a [server, user] pair in an isolated database. As of version 1.6.0, the SDK supports multiple accounts (pairs [server, user]) and the information for each account is stored in an isolated database. The database is deleted only when the account is deleted. Databases are created automatically on a successful login.
 
 ## Encryption { #android_sdk_database_encryption }
 As of SDK version 1.1.0, it is possible to store the data in an encrypted database. The encryption key is generated randomly
 by the SDK and kept secure.
-
 The encryption status (if the database is encrypted or not) can be configured at server level in the android-settings-app.
 The default status is false: If the app is not installed, the database won't be encrypted.
 

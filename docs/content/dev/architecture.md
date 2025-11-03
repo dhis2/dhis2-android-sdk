@@ -4,10 +4,12 @@
 
 ## Frameworks and auxiliary libraries
 
-- [Koin](https://insert-koin.io/)
-- [Autovalue](https://github.com/google/auto/blob/master/value/userguide/index.md)
-- [Ktor](https://github.com/ktorio/ktor)/[OkHttp3](https://github.com/square/okhttp)
-- [SQLCipher](https://www.zetetic.net/sqlcipher/)
+- [Koin](https://insert-koin.io/) - Dependency injection
+- [Room](https://developer.android.com/training/data-storage/room) - Database persistence layer
+- [KSP](https://github.com/google/ksp) - Kotlin Symbol Processing for code generation
+- [Autovalue](https://github.com/google/auto/blob/master/value/userguide/index.md) - Immutable value classes
+- [Ktor](https://github.com/ktorio/ktor)/[OkHttp3](https://github.com/square/okhttp) - HTTP client
+- [SQLCipher](https://www.zetetic.net/sqlcipher/) - Database encryption
 
 ## Public API overview
 
@@ -38,4 +40,19 @@ Feature packages contain at least:
 
 ## Local database
 
-The SDK runs the DB migrations itself. The database has a version number defined in `DbOpenHelper`. In case the device has an outdated database, it will execute the pending migrations up to the current version number. Migrations are defined in `assets/migrations`.
+The SDK uses **Room Persistence Library** as its database layer. Room provides:
+- Compile-time verification of SQL queries
+- Convenient database access with DAOs (Data Access Objects)
+- Automatic database migrations
+- Better integration with Android architecture components
+
+### Database entities
+
+Database entities are defined using Room annotations and follow these patterns:
+- Entity classes are suffixed with `DB` (e.g., `ProgramDB`, `EventDB`)
+- Entities implement common interfaces like `BaseIdentifiableObjectDB`, `BaseNameableObjectDB`
+- Each entity has `toDomain()` and `toDB()` mapper functions for conversion between database and domain models
+
+### Database migrations
+
+The SDK handles database migrations automatically. Migrations are generated using custom KSP processors that convert SQL migration files into Room migration classes. The database version is managed by Room, and migrations are applied automatically when the SDK detects an outdated database version.

@@ -10193,6 +10193,7 @@ public final class org/hisp/dhis/android/core/systeminfo/DHISPatchVersion : java
 	public static final field V2_41_0 Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion;
 	public static final field V2_42_0 Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion;
 	public static final field V2_42_1 Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion;
+	public static final field V2_43_0 Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public final fun getMajorVersion ()Lorg/hisp/dhis/android/core/systeminfo/DHISVersion;
 	public final fun getSmsVersion ()Lorg/hisp/dhis/android/core/systeminfo/SMSVersion;
@@ -10225,6 +10226,7 @@ public final class org/hisp/dhis/android/core/systeminfo/DHISVersion : java/lang
 	public static final field V2_40 Lorg/hisp/dhis/android/core/systeminfo/DHISVersion;
 	public static final field V2_41 Lorg/hisp/dhis/android/core/systeminfo/DHISVersion;
 	public static final field V2_42 Lorg/hisp/dhis/android/core/systeminfo/DHISVersion;
+	public static final field V2_43 Lorg/hisp/dhis/android/core/systeminfo/DHISVersion;
 	public static final fun allowedVersionsAsStr ()[Ljava/lang/String;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static final fun getValue (Ljava/lang/String;Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/systeminfo/DHISVersion;

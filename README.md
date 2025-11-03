@@ -1,6 +1,6 @@
 # DHIS2 Android SDK
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.hisp.dhis/android-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.hisp.dhis/android-core)
+[![Maven Central](https://img.shields.io/maven-central/v/org.hisp.dhis/android-core?label=maven%20central)](https://central.sonatype.com/artifact/org.hisp.dhis/android-core)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=dhis2_dhis2-android-sdk&metric=coverage&branch=master)](https://sonarcloud.io/summary/new_code?id=dhis2_dhis2-android-sdk&branch=master)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=dhis2_dhis2-android-sdk&metric=ncloc&branch=master)](https://sonarcloud.io/summary/new_code?id=dhis2_dhis2-android-sdk&branch=master)
 [![KDoc link](https://img.shields.io/badge/API_reference-KDoc-blue)](https://dhis2.github.io/dhis2-android-sdk/api/)

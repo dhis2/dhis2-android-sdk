@@ -113,14 +113,9 @@ The SDK provides a `CustomIntentService` to evaluate request parameters based on
 List<CustomIntent> intents = d2.settingModule().customIntents()
     .blockingGet();
 
-// Evaluate parameters for a specific context
-CustomIntentContext context = CustomIntentContext.builder()
-    .trackedEntityInstance("teiUid")
-    .enrollment("enrollmentUid")
-    .build();
+// Evaluate parameters for a specific context (optionally with orgunit)
+CustomIntentContext context = new CustomIntentContext("orgunitUid");
 
 Map<String, Object> params = d2.settingModule().customIntentService()
     .blockingEvaluateRequestParams(customIntent, context);
 ```
-
-The custom intent service uses the expression parser to evaluate dynamic values, allowing you to include tracked entity attributes, data element values, program indicators, and other context-specific data in the intent parameters.

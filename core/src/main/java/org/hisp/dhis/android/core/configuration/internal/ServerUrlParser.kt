@@ -46,7 +46,7 @@ internal object ServerUrlParser {
                 val urlBuilder = URLBuilder(removeTrailingApi(url))
                 urlBuilder.encodedPathSegments += "api/"
                 return urlBuilder.build()
-            } catch (e: URLParserException) {
+            } catch (_: URLParserException) {
                 throw malformedUrlD2Error()
             }
         }
@@ -69,7 +69,7 @@ internal object ServerUrlParser {
     }
 
     fun trimAndRemoveTrailingSlash(url: String?): String? {
-        return url?.trim()?.trimEnd('/')
+        return url?.trim()?.replace('\\', '/')?.trimEnd('/')
     }
 
     fun removeTrailingApi(url: String): String {

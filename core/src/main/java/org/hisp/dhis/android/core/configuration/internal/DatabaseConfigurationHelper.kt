@@ -141,6 +141,7 @@ internal class DatabaseConfigurationHelper(
 
         private fun removeProtocol(s: String): String {
             return s.replace("https://", "").replace("http://", "")
+                .replace('\\', '/')
         }
     }
 }

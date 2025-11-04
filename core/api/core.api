@@ -4397,7 +4397,7 @@ public final class org/hisp/dhis/android/core/dataset/DataSetCollectionRepositor
 	public final fun byColor ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byCustomTextAlign ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
 	public final fun byDataElementDecoration ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
-	public final fun byExpiryDays ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/IntegerFilterConnector;
+	public final fun byExpiryDays ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/DoubleFilterConnector;
 	public final fun byFieldCombinationRequired ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
 	public final fun byHeader ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byIcon ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
@@ -4414,7 +4414,7 @@ public final class org/hisp/dhis/android/core/dataset/DataSetCollectionRepositor
 	public final fun bySkipOffline ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
 	public final fun bySubHeader ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byTabsDirection ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
-	public final fun byTimelyDays ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/IntegerFilterConnector;
+	public final fun byTimelyDays ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/DoubleFilterConnector;
 	public final fun byValidCompleteOnly ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
 	public final fun byVersion ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/IntegerFilterConnector;
 	public final fun withCompulsoryDataElementOperands ()Lorg/hisp/dhis/android/core/dataset/DataSetCollectionRepository;

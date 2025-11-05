@@ -28,4 +28,3 @@ Code examples can be found in the [Android Skeleton app](https://github.com/dhis
 Community support can be found in [Android SDK Development](https://community.dhis2.org/c/development/sdk-android-development) category in the community portal. Any feedback on the SDK will be highly appreciated.
 
 To report bugs or request new features, there is project in DHIS2 Jira named [ANDROSDK](https://jira.dhis2.org/projects/ANDROSDK/issues). Please do not hesitate to create an issue with your request.
-

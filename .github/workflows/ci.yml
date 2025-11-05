@@ -293,7 +293,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: [jacoco-report]
-    if: always()
+    if: always() && !cancelled()
     
     steps:
       - name: Checkout code

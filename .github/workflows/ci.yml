@@ -166,13 +166,6 @@ jobs:
           max_attempts: 3
           command: ./gradlew testDebugUnitTest --stacktrace --no-daemon
       
-      - name: Publish test results
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
-        with:
-          files: |
-            core/build/test-results/**/*.xml
-      
       - name: Upload test reports
         if: always()
         uses: actions/upload-artifact@v4

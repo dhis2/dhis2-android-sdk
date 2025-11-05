@@ -283,10 +283,16 @@ jobs:
           retention-days: 7
       
       - name: Add coverage to summary
-        if: always()
+        if: steps.check_reports.outputs.exists == 'true'
         run: |
           echo "## Code Coverage Report" >> $GITHUB_STEP_SUMMARY
-          echo "JaCoCo coverage report generated successfully" >> $GITHUB_STEP_SUMMARY
+          echo "✅ JaCoCo coverage report generated successfully" >> $GITHUB_STEP_SUMMARY
+      
+      - name: Add coverage failure to summary
+        if: steps.check_reports.outputs.exists != 'true'
+        run: |
+          echo "## Code Coverage Report" >> $GITHUB_STEP_SUMMARY
+          echo "⚠️ JaCoCo coverage report could not be generated" >> $GITHUB_STEP_SUMMARY
 
   sonarqube:
     name: SonarQube Analysis
@@ -315,11 +321,20 @@ jobs:
         run: chmod +x ./scripts/sonarqube.sh
       
       - name: Download JaCoCo reports
+        id: download_jacoco
         uses: actions/download-artifact@v4
         continue-on-error: true
         with:
           name: jacoco-reports
           path: core/build/reports/jacoco/
+      
+      - name: Check JaCoCo reports availability
+        run: |
+          if [ -d "core/build/reports/jacoco" ] && [ "$(ls -A core/build/reports/jacoco 2>/dev/null)" ]; then
+            echo "✅ JaCoCo reports available for SonarQube analysis"
+          else
+            echo "⚠️ JaCoCo reports not available, SonarQube will run without coverage data"
+          fi
       
       - name: Check if SonarQube token exists
         id: sonar_check

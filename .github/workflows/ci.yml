@@ -353,29 +353,14 @@ jobs:
           GIT_BRANCH_DEST: ${{ github.base_ref }}
           PULL_REQUEST: ${{ github.event.pull_request.number }}
 
-  notify:
-    name: Notify Results
-    runs-on: ubuntu-latest
+  deploy:
+    name: Trigger Deployment
     needs: [code-quality-checks, api-validation, unit-tests, instrumented-tests, jacoco-report, sonarqube]
-    if: always() && failure()
-    
-    steps:
-      - name: Send Slack notification
-        uses: slackapi/slack-github-action@v1
-        with:
-          payload: |
-            {
-              "text": "*Build Failed*",
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "*Build Failed* :x:\n*Job:* ${{ github.workflow }}\n*Branch:* ${{ github.ref_name }}\n*Run Number:* ${{ github.run_number }} (<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Open>)"
-                  }
-                }
-              ]
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+    if: |
+      success() &&
+      github.event_name == 'push' &&
+      (github.ref_name == 'develop' || endsWith(github.ref_name, '-rc') || endsWith(github.ref_name, '-RC'))
+    uses: ./.github/workflows/deploy.yml
+    secrets:
+      SONATYPE_PORTAL_USERNAME: ${{ secrets.SONATYPE_PORTAL_USERNAME }}
+      SONATYPE_PORTAL_PASSWORD: ${{ secrets.SONATYPE_PORTAL_PASSWORD }}

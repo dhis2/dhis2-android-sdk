@@ -251,27 +251,53 @@ jobs:
         run: chmod +x ./gradlew
       
       - name: Download coverage report
+        id: download_coverage
         uses: actions/download-artifact@v4
         continue-on-error: true
         with:
           name: coverage-report
           path: core/build/outputs/code_coverage/
       
+      - name: Check downloaded coverage files
+        run: |
+          if [ -d "core/build/outputs/code_coverage" ]; then
+            echo "📁 Coverage files downloaded:"
+            ls -la core/build/outputs/code_coverage/ || echo "Directory exists but is empty"
+          else
+            echo "⚠️ No coverage files downloaded from instrumented tests"
+          fi
+      
       - name: Generate JaCoCo report
         id: jacoco_gen
-        run: ./gradlew jacocoReport --stacktrace --no-daemon
+        run: |
+          echo "🔨 Generating JaCoCo report..."
+          ./gradlew jacocoReport --stacktrace --no-daemon
         continue-on-error: true
       
       - name: Check if JaCoCo reports exist
         id: check_reports
         run: |
-          if [ -d "core/build/reports/jacoco" ] && [ "$(ls -A core/build/reports/jacoco)" ]; then
-            echo "exists=true" >> $GITHUB_OUTPUT
-            echo "✅ JaCoCo reports generated"
+          echo "🔍 Checking for JaCoCo reports..."
+          if [ -d "core/build/reports/jacoco" ]; then
+            echo "📁 JaCoCo directory exists, contents:"
+            ls -la core/build/reports/jacoco/
+            if [ "$(ls -A core/build/reports/jacoco)" ]; then
+              echo "exists=true" >> $GITHUB_OUTPUT
+              echo "✅ JaCoCo reports generated successfully"
+            else
+              echo "exists=false" >> $GITHUB_OUTPUT
+              echo "⚠️ JaCoCo directory exists but is empty"
+            fi
           else
             echo "exists=false" >> $GITHUB_OUTPUT
-            echo "⚠️ JaCoCo reports not found"
+            echo "❌ JaCoCo reports directory not found"
           fi
+      
+      - name: Check gradle task result
+        if: steps.jacoco_gen.outcome == 'failure'
+        run: |
+          echo "⚠️ Gradle jacocoReport task failed"
+          echo "This might be why reports are not available"
       
       - name: Upload JaCoCo reports
         if: steps.check_reports.outputs.exists == 'true'

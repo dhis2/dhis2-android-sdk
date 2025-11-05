@@ -31,8 +31,5 @@ package org.hisp.dhis.android.persistence.option
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(
-    tableName = "OptionGroupOptionLinkTableInfo.TABLE_NAME",
-    parentColumnName = "OptionGroupOptionLinkTableInfo.Columns.OPTION_GROUP",
-)
+@GenerateDaoQueries
 internal interface OptionGroupOptionLinkDaoAux : LinkDao<OptionGroupOptionLinkDB>

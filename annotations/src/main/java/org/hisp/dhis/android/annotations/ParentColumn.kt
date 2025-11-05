@@ -26,10 +26,8 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.trackedentity
+package org.hisp.dhis.android.processor
 
-import org.hisp.dhis.android.persistence.common.daos.LinkDao
-import org.hisp.dhis.android.processor.GenerateDaoQueries
-
-@GenerateDaoQueries
-internal interface TrackedEntityAttributeLegendSetLinkDaoAux : LinkDao<TrackedEntityAttributeLegendSetLinkDB>
+@Target(AnnotationTarget.PROPERTY)
+@Retention(AnnotationRetention.SOURCE)
+annotation class ParentColumn

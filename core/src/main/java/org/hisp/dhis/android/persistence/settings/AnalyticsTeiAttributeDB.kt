@@ -6,6 +6,7 @@ import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
 import org.hisp.dhis.android.core.settings.WHONutritionComponent
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeDB
+import org.hisp.dhis.android.processor.ParentColumn
 
 @Entity(
     tableName = "AnalyticsTeiAttribute",
@@ -28,7 +29,7 @@ import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeDB
     primaryKeys = ["teiSetting", "attribute"],
 )
 internal data class AnalyticsTeiAttributeDB(
-    val teiSetting: String,
+    @ParentColumn val teiSetting: String,
     val whoComponent: String?,
     val attribute: String,
 ) : EntityDB<AnalyticsTeiAttribute> {

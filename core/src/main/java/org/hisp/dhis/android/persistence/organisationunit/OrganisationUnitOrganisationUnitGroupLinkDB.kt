@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink
 import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.processor.ParentColumn
 
 @Entity(
     tableName = "OrganisationUnitOrganisationUnitGroupLink",
@@ -26,7 +27,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
     primaryKeys = ["organisationUnit", "organisationUnitGroup"],
 )
 internal data class OrganisationUnitOrganisationUnitGroupLinkDB(
-    val organisationUnit: String,
+    @ParentColumn val organisationUnit: String,
     val organisationUnitGroup: String,
 ) : EntityDB<OrganisationUnitOrganisationUnitGroupLink> {
 

@@ -31,5 +31,5 @@ package org.hisp.dhis.android.persistence.expressiondimensionitem
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "ExpressionDimensionItemTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface ExpressionDimensionItemDaoAux : IdentifiableObjectDao<ExpressionDimensionItemDB>

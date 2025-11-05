@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.resource.internal.Resource
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "ResourceTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface ResourceDaoAux : ObjectDao<ResourceDB> {
 
     @Query(

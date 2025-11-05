@@ -31,6 +31,6 @@ package org.hisp.dhis.android.persistence.trackedentity
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "ReservedValueSettingTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface ReservedValueSettingDaoAux :
     IdentifiableObjectDao<ReservedValueSettingDB>

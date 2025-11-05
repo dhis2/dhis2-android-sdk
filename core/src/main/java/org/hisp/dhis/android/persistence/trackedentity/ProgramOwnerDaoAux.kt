@@ -31,5 +31,5 @@ package org.hisp.dhis.android.persistence.trackedentity
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "ProgramOwnerTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface ProgramOwnerDaoAux : ObjectDao<ProgramOwnerDB>

@@ -8,6 +8,7 @@ import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.period.PeriodDB
+import org.hisp.dhis.android.processor.ParentColumn
 
 @Entity(
     tableName = "DataInputPeriod",
@@ -30,7 +31,7 @@ import org.hisp.dhis.android.persistence.period.PeriodDB
     primaryKeys = ["dataSet", "period", "openingDate", "closingDate"],
 )
 internal data class DataInputPeriodDB(
-    val dataSet: String,
+    @ParentColumn val dataSet: String,
     val period: String,
     val openingDate: String,
     val closingDate: String,

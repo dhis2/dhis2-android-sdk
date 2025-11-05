@@ -31,9 +31,6 @@ package org.hisp.dhis.android.persistence.organisationunit
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(
-    tableName = "OrganisationUnitOrganisationUnitGroupLinkTableInfo.TABLE_NAME",
-    parentColumnName = "OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT",
-)
+@GenerateDaoQueries
 internal interface OrganisationUnitOrganisationUnitGroupLinkDaoAux :
     LinkDao<OrganisationUnitOrganisationUnitGroupLinkDB>

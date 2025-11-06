@@ -207,6 +207,35 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
         assertThat(loginConfig?.apiVersion).isEqualTo("2.41.3")
     }
 
+    @Test
+    fun preserve_current_account_after_get_accounts() {
+        if (d2.userModule().blockingIsLogged()) {
+            d2.userModule().blockingLogOut()
+        }
+
+        dhis2MockServer.enqueueLoginResponses()
+        d2.userModule().blockingLogIn(user1, pass1, dhis2MockServer.baseEndpoint)
+        d2.userModule().blockingLogOut()
+
+        val server2 = Dhis2MockServer(0)
+        server2.enqueueLoginResponses()
+        d2.userModule().blockingLogIn(user2, pass2, server2.baseEndpoint)
+        d2.userModule().blockingLogOut()
+
+        dhis2MockServer.enqueueLoginResponses()
+        d2.userModule().blockingLogIn(user1, pass1, dhis2MockServer.baseEndpoint)
+        val user1Name = d2.userModule().user().blockingGet()?.name()
+
+        d2.userModule().accountManager().getAccounts()
+
+        val activeUser = d2.userModule().user().blockingGet()?.name()
+        assertThat(activeUser).isEqualTo(user1Name)
+
+        d2.userModule().blockingLogOut()
+        loginAndDeleteAccount(user1, pass1, dhis2MockServer)
+        loginAndDeleteAccount(user2, pass2, server2)
+    }
+
     private fun addDataValue() {
         val period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodTypeAndDate(PeriodType.Yearly, Date())
         val orgunit = d2.organisationUnitModule().organisationUnits().one().blockingGet()!!

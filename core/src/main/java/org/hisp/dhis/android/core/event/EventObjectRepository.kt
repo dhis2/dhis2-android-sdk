@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.event
 
 import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.helpers.CoordinateHelper
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
@@ -150,7 +151,10 @@ class EventObjectRepository internal constructor(
     internal suspend fun setGeometryInternal(geometry: Geometry?): Unit {
         GeometryHelper.validateGeometry(geometry)
         return updateIfChangedInternal(geometry, { it.geometry() }) { event: Event, value ->
-            updateBuilder(event).geometry(value).build()
+            updateBuilder(event)
+                .geometry(value)
+                .coordinate(value?.let { CoordinateHelper.getCoordinatesFromGeometry(it) })
+                .build()
         }
     }
 

@@ -89,7 +89,10 @@ class TrackedEntityInstanceObjectRepository internal constructor(
     internal suspend fun setGeometryInternal(geometry: Geometry?): Unit {
         GeometryHelper.validateGeometry(geometry)
         return updateIfChangedInternal(geometry, { it.geometry() }) { tei: TrackedEntityInstance, value ->
-            updateBuilder(tei).geometry(value).build()
+            updateBuilder(tei)
+                .geometry(value)
+                .coordinates(value?.coordinates())
+                .build()
         }
     }
 

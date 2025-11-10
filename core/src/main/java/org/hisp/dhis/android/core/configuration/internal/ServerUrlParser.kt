@@ -69,10 +69,14 @@ internal object ServerUrlParser {
     }
 
     fun trimAndRemoveTrailingSlash(url: String?): String? {
-        return url?.trim()?.replace('\\', '/')?.trimEnd('/')
+        return sanitizeUrl(url)?.trimEnd('/')
+    }
+
+    fun sanitizeUrl(url: String?): String? {
+        return url?.trim()?.replace('\\', '/')
     }
 
     fun removeTrailingApi(url: String): String {
-        return url.trimEnd('/').removeSuffix("/api")
+        return trimAndRemoveTrailingSlash(url)!!.removeSuffix("/api")
     }
 }

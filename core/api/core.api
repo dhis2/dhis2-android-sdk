@@ -5320,7 +5320,7 @@ public abstract class org/hisp/dhis/android/core/event/Event$Builder : org/hisp/
 	public abstract fun aggregatedSyncState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/event/Event$Builder;
 	public abstract fun assignedUser (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/Event$Builder;
 	public abstract fun attributeOptionCombo (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/Event$Builder;
-	public fun build ()Lorg/hisp/dhis/android/core/event/Event;
+	public abstract fun build ()Lorg/hisp/dhis/android/core/event/Event;
 	public abstract fun completedBy (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/Event$Builder;
 	public abstract fun completedDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/event/Event$Builder;
 	public abstract fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/event/Event$Builder;
@@ -10640,7 +10640,7 @@ public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityInst
 public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder : org/hisp/dhis/android/core/common/BaseDeletableDataObject$Builder {
 	public fun <init> ()V
 	public abstract fun aggregatedSyncState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
-	public fun build ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance;
+	public abstract fun build ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance;
 	public abstract fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
 	public abstract fun createdAtClient (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
 	public abstract fun geometry (Lorg/hisp/dhis/android/core/common/Geometry;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;

@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.event.search
 
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.event.EventFilter
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 
 internal object EventQueryRepositoryScopeHelper {
 
@@ -47,7 +48,7 @@ internal object EventQueryRepositoryScopeHelper {
             criteria.organisationUnit()?.let { builder.orgUnits(listOf(it)) }
             criteria.ouMode()?.let { builder.orgUnitMode(it) }
             criteria.assignedUserMode()?.let { builder.assignedUserMode(it) }
-            criteria.order()?.let { builder.order(parseOrderString(it)) }
+            criteria.order()?.let { builder.order(parseOrderString(it, TrackerExporterVersion.V2)) }
             criteria.dataFilters()?.let { builder.dataFilters(it) }
             criteria.events()?.let { builder.events(it) }
             criteria.eventStatus()?.let { builder.eventStatus(listOf(it)) }
@@ -60,13 +61,13 @@ internal object EventQueryRepositoryScopeHelper {
         return builder.build()
     }
 
-    private fun parseOrderString(orderStr: String): List<EventQueryScopeOrderByItem> {
+    private fun parseOrderString(orderStr: String, version: TrackerExporterVersion): List<EventQueryScopeOrderByItem> {
         return orderStr.split(",").mapNotNull { token ->
             val tokens = token.split(":")
 
             when (tokens.size) {
                 2 -> {
-                    val column = parseOrderColumn(tokens[0])
+                    val column = parseOrderColumn(tokens[0], version)
                     val direction = RepositoryScope.OrderByDirection.values().find { it.api == tokens[1] }
 
                     if (column != null && direction != null) {
@@ -83,8 +84,9 @@ internal object EventQueryRepositoryScopeHelper {
         }
     }
 
-    private fun parseOrderColumn(orderColumn: String): EventQueryScopeOrderColumn? {
-        val fixedColumn = EventQueryScopeOrderColumn.fixedOrderColumns.find { it.apiName() == orderColumn }
+    private fun parseOrderColumn(orderColumn: String, version: TrackerExporterVersion): EventQueryScopeOrderColumn? {
+        val fixedColumn =
+            EventQueryScopeOrderColumn.fixedOrderColumns.find { it.apiName()?.getApiName(version) == orderColumn }
 
         return when {
             fixedColumn != null -> fixedColumn

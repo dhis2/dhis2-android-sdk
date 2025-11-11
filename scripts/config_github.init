@@ -28,7 +28,6 @@
 #
 
 # GitHub Actions configuration for BrowserStack
-# Adapted from config_jenkins.init
 
 # BrowserStack credentials from GitHub Secrets
 bs_auth="$BROWSERSTACK_USR:$BROWSERSTACK_PSW"

@@ -91,11 +91,7 @@ jobs:
         run: chmod +x ./gradlew
       
       - name: Run code quality checks
-        uses: nick-fields/retry@v3
-        with:
-          timeout_minutes: 15
-          max_attempts: 3
-          command: ./gradlew ktlintCheck detekt checkstyleDebug pmdDebug lintDebug --project-dir core
+        run: ./gradlew ktlintCheck detekt checkstyleDebug pmdDebug lintDebug --project-dir core
       
       - name: Upload lint reports
         if: failure()
@@ -126,11 +122,7 @@ jobs:
         run: chmod +x ./gradlew
       
       - name: Run API validation
-        uses: nick-fields/retry@v3
-        with:
-          timeout_minutes: 10
-          max_attempts: 3
-          command: ./gradlew :core:apiCheck
+        run: ./gradlew :core:apiCheck
       
       - name: Upload API dump
         if: failure()
@@ -160,18 +152,7 @@ jobs:
         run: chmod +x ./gradlew
       
       - name: Run unit tests
-        uses: nick-fields/retry@v3
-        with:
-          timeout_minutes: 10
-          max_attempts: 3
-          command: ./gradlew testDebugUnitTest --stacktrace --no-daemon
-      
-      - name: Publish test results
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
-        with:
-          files: |
-            core/build/test-results/**/*.xml
+        run: ./gradlew testDebugUnitTest --stacktrace --no-daemon
       
       - name: Upload test reports
         if: always()
@@ -181,6 +162,15 @@ jobs:
           path: |
             core/build/reports/tests/
             core/build/test-results/
+          retention-days: 7
+      
+      - name: Upload unit test coverage data
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-coverage
+          path: |
+            core/build/jacoco/
           retention-days: 7
 
   instrumented-tests:
@@ -212,11 +202,7 @@ jobs:
         run: chmod +x ./scripts/browserstackGithub.sh
       
       - name: Run instrumented tests on BrowserStack
-        uses: nick-fields/retry@v3
-        with:
-          timeout_minutes: 20
-          max_attempts: 3
-          command: ./scripts/browserstackGithub.sh
+        run: ./scripts/browserstackGithub.sh
         env:
           BROWSERSTACK_USR: ${{ secrets.BROWSERSTACK_USERNAME }}
           BROWSERSTACK_PSW: ${{ secrets.BROWSERSTACK_PASSWORD }}
@@ -257,28 +243,69 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
       
-      - name: Download coverage report
+      - name: Download unit test coverage
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: unit-test-coverage
+          path: core/build/jacoco/
+      
+      - name: Download instrumented test coverage
+        id: download_coverage
         uses: actions/download-artifact@v4
         continue-on-error: true
         with:
           name: coverage-report
           path: core/build/outputs/code_coverage/
       
+      - name: Check downloaded coverage files
+        run: |
+          echo "📁 Checking unit test coverage:"
+          if [ -d "core/build/jacoco" ]; then
+            ls -la core/build/jacoco/ || echo "Directory exists but is empty"
+          else
+            echo "⚠️ No unit test coverage files found"
+          fi
+          
+          echo ""
+          echo "📁 Checking instrumented test coverage:"
+          if [ -d "core/build/outputs/code_coverage" ]; then
+            ls -la core/build/outputs/code_coverage/ || echo "Directory exists but is empty"
+          else
+            echo "⚠️ No instrumented test coverage files found"
+          fi
+      
       - name: Generate JaCoCo report
         id: jacoco_gen
-        run: ./gradlew jacocoReport --stacktrace --no-daemon
+        run: |
+          echo "🔨 Generating JaCoCo report..."
+          ./gradlew jacocoReport --stacktrace --no-daemon
         continue-on-error: true
       
       - name: Check if JaCoCo reports exist
         id: check_reports
         run: |
-          if [ -d "core/build/reports/jacoco" ] && [ "$(ls -A core/build/reports/jacoco)" ]; then
-            echo "exists=true" >> $GITHUB_OUTPUT
-            echo "✅ JaCoCo reports generated"
+          echo "🔍 Checking for JaCoCo reports..."
+          if [ -d "core/build/coverage-report" ]; then
+            echo "📁 JaCoCo directory exists, contents:"
+            ls -la core/build/coverage-report/
+            if [ "$(ls -A core/build/coverage-report)" ]; then
+              echo "exists=true" >> $GITHUB_OUTPUT
+              echo "✅ JaCoCo reports generated successfully"
+            else
+              echo "exists=false" >> $GITHUB_OUTPUT
+              echo "⚠️ JaCoCo directory exists but is empty"
+            fi
           else
             echo "exists=false" >> $GITHUB_OUTPUT
-            echo "⚠️ JaCoCo reports not found"
+            echo "❌ JaCoCo reports directory not found"
           fi
+      
+      - name: Check gradle task result
+        if: steps.jacoco_gen.outcome == 'failure'
+        run: |
+          echo "⚠️ Gradle jacocoReport task failed"
+          echo "This might be why reports are not available"
       
       - name: Upload JaCoCo reports
         if: steps.check_reports.outputs.exists == 'true'
@@ -286,21 +313,27 @@ jobs:
         with:
           name: jacoco-reports
           path: |
-            core/build/reports/jacoco/
+            core/build/coverage-report/
           retention-days: 7
       
       - name: Add coverage to summary
-        if: always()
+        if: steps.check_reports.outputs.exists == 'true'
         run: |
           echo "## Code Coverage Report" >> $GITHUB_STEP_SUMMARY
-          echo "JaCoCo coverage report generated successfully" >> $GITHUB_STEP_SUMMARY
+          echo "✅ JaCoCo coverage report generated successfully" >> $GITHUB_STEP_SUMMARY
+      
+      - name: Add coverage failure to summary
+        if: steps.check_reports.outputs.exists != 'true'
+        run: |
+          echo "## Code Coverage Report" >> $GITHUB_STEP_SUMMARY
+          echo "⚠️ JaCoCo coverage report could not be generated" >> $GITHUB_STEP_SUMMARY
 
   sonarqube:
     name: SonarQube Analysis
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: [jacoco-report]
-    if: always()
+    if: always() && !cancelled()
     
     steps:
       - name: Checkout code
@@ -322,11 +355,20 @@ jobs:
         run: chmod +x ./scripts/sonarqube.sh
       
       - name: Download JaCoCo reports
+        id: download_jacoco
         uses: actions/download-artifact@v4
         continue-on-error: true
         with:
           name: jacoco-reports
-          path: core/build/reports/jacoco/
+          path: core/build/coverage-report/
+      
+      - name: Check JaCoCo reports availability
+        run: |
+          if [ -d "core/build/coverage-report" ] && [ "$(ls -A core/build/coverage-report 2>/dev/null)" ]; then
+            echo "✅ JaCoCo reports available for SonarQube analysis"
+          else
+            echo "⚠️ JaCoCo reports not available, SonarQube will run without coverage data"
+          fi
       
       - name: Check if SonarQube token exists
         id: sonar_check
@@ -341,11 +383,7 @@ jobs:
       
       - name: Run SonarQube analysis
         if: steps.sonar_check.outputs.skip != 'true'
-        uses: nick-fields/retry@v3
-        with:
-          timeout_minutes: 10
-          max_attempts: 3
-          command: ./scripts/sonarqube.sh
+        run: ./scripts/sonarqube.sh
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -353,29 +391,14 @@ jobs:
           GIT_BRANCH_DEST: ${{ github.base_ref }}
           PULL_REQUEST: ${{ github.event.pull_request.number }}
 
-  notify:
-    name: Notify Results
-    runs-on: ubuntu-latest
+  deploy:
+    name: Trigger Deployment
     needs: [code-quality-checks, api-validation, unit-tests, instrumented-tests, jacoco-report, sonarqube]
-    if: always() && failure()
-    
-    steps:
-      - name: Send Slack notification
-        uses: slackapi/slack-github-action@v1
-        with:
-          payload: |
-            {
-              "text": "*Build Failed*",
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "*Build Failed* :x:\n*Job:* ${{ github.workflow }}\n*Branch:* ${{ github.ref_name }}\n*Run Number:* ${{ github.run_number }} (<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Open>)"
-                  }
-                }
-              ]
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+    if: |
+      success() &&
+      github.event_name == 'push' &&
+      (github.ref_name == 'develop' || endsWith(github.ref_name, '-rc') || endsWith(github.ref_name, '-RC'))
+    uses: ./.github/workflows/deploy.yml
+    secrets:
+      SONATYPE_PORTAL_USERNAME: ${{ secrets.SONATYPE_PORTAL_USERNAME }}
+      SONATYPE_PORTAL_PASSWORD: ${{ secrets.SONATYPE_PORTAL_PASSWORD }}

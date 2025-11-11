@@ -1,14 +1,13 @@
 name: Deploy
 
 on:
-  # Trigger after CI workflow completes successfully
-  workflow_run:
-    workflows: ["CI"]
-    types:
-      - completed
-    branches:
-      - develop
-      - '*-rc'
+  # Called by CI workflow when deployment is needed
+  workflow_call:
+    secrets:
+      SONATYPE_PORTAL_USERNAME:
+        required: true
+      SONATYPE_PORTAL_PASSWORD:
+        required: true
   # Allow manual deployment
   workflow_dispatch:
     inputs:
@@ -39,39 +38,13 @@ jobs:
       should_deploy: ${{ steps.check.outputs.should_deploy }}
     
     steps:
-      - name: Check CI workflow success
-        id: ci_check
-        run: |
-          # If triggered by workflow_run, check that CI was successful
-          if [ "${{ github.event_name }}" == "workflow_run" ]; then
-            if [ "${{ github.event.workflow_run.conclusion }}" != "success" ]; then
-              echo "❌ CI workflow did not succeed. Conclusion: ${{ github.event.workflow_run.conclusion }}"
-              echo "should_deploy=false" >> $GITHUB_OUTPUT
-              exit 0
-            else
-              echo "✅ CI workflow succeeded"
-            fi
-          fi
-      
       - name: Check deployment conditions
         id: check
         run: |
-          # Check if it's a PR
-          if [ "${{ github.event_name }}" == "pull_request" ]; then
-            echo "should_deploy=false" >> $GITHUB_OUTPUT
-            echo "❌ Deployment skipped: Pull Request builds are not deployed"
-            exit 0
-          fi
+          BRANCH="${{ github.ref_name }}"
           
-          # For workflow_run events, use the head branch
-          if [ "${{ github.event_name }}" == "workflow_run" ]; then
-            BRANCH="${{ github.event.workflow_run.head_branch }}"
-          else
-            BRANCH="${{ github.ref_name }}"
-          fi
-          
-          # Check if it's a valid branch
-          if [[ "$BRANCH" == "develop" ]] || [[ "$BRANCH" =~ ^[0-9]+\.[0-9]+\.[0-9]+(\.[0-9]+)?-rc$ ]]; then
+          # Check if it's a valid branch for deployment
+          if [[ "$BRANCH" == "develop" ]] || [[ "$BRANCH" =~ -rc$ ]] || [[ "$BRANCH" =~ -RC$ ]]; then
             echo "should_deploy=true" >> $GITHUB_OUTPUT
             echo "✅ Deployment allowed for branch: $BRANCH"
           elif [ "${{ inputs.force_deploy }}" == "true" ]; then
@@ -93,8 +66,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          # For workflow_run, checkout the commit that triggered CI
-          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
           fetch-depth: 0
       
       - name: Set up JDK 17
@@ -108,11 +79,7 @@ jobs:
         run: chmod +x ./gradlew
       
       - name: Publish to Sonatype
-        uses: nick-fields/retry@v3
-        with:
-          timeout_minutes: 15
-          max_attempts: 3
-          command: ./gradlew :core:publishToSonatype
+        run: ./gradlew :core:publishToSonatype
         env:
           NEXUS_USERNAME: ${{ secrets.SONATYPE_PORTAL_USERNAME }}
           NEXUS_PASSWORD: ${{ secrets.SONATYPE_PORTAL_PASSWORD }}
@@ -133,56 +100,3 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "Published to Sonatype Nexus" >> $GITHUB_STEP_SUMMARY
 
-  notify-success:
-    name: Notify Success
-    runs-on: ubuntu-latest
-    needs: [validate, deploy]
-    if: success() && needs.validate.outputs.should_deploy == 'true'
-    
-    steps:
-      - name: Send Slack notification
-        uses: slackapi/slack-github-action@v1
-        with:
-          payload: |
-            {
-              "text": "*Deployment Successful*",
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "*Deployment Successful* :white_check_mark:\n*Job:* ${{ github.workflow }}\n*Branch:* ${{ github.ref_name }}\n*Run Number:* ${{ github.run_number }} (<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Open>)\n*Published to:* Sonatype Nexus"
-                  }
-                }
-              ]
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
-
-  notify-failure:
-    name: Notify Failure
-    runs-on: ubuntu-latest
-    needs: [validate, deploy]
-    if: failure() && needs.validate.outputs.should_deploy == 'true'
-    
-    steps:
-      - name: Send Slack notification
-        uses: slackapi/slack-github-action@v1
-        with:
-          payload: |
-            {
-              "text": "*Deployment Failed*",
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "*Deployment Failed* :x:\n*Job:* ${{ github.workflow }}\n*Branch:* ${{ github.ref_name }}\n*Run Number:* ${{ github.run_number }} (<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Open>)"
-                  }
-                }
-              ]
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK

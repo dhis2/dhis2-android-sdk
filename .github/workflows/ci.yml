@@ -163,6 +163,15 @@ jobs:
             core/build/reports/tests/
             core/build/test-results/
           retention-days: 7
+      
+      - name: Upload unit test coverage data
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-coverage
+          path: |
+            core/build/jacoco/
+          retention-days: 7
 
   instrumented-tests:
     name: Instrumented Tests (BrowserStack)
@@ -234,7 +243,14 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
       
-      - name: Download coverage report
+      - name: Download unit test coverage
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: unit-test-coverage
+          path: core/build/jacoco/
+      
+      - name: Download instrumented test coverage
         id: download_coverage
         uses: actions/download-artifact@v4
         continue-on-error: true
@@ -244,11 +260,19 @@ jobs:
       
       - name: Check downloaded coverage files
         run: |
+          echo "📁 Checking unit test coverage:"
+          if [ -d "core/build/jacoco" ]; then
+            ls -la core/build/jacoco/ || echo "Directory exists but is empty"
+          else
+            echo "⚠️ No unit test coverage files found"
+          fi
+          
+          echo ""
+          echo "📁 Checking instrumented test coverage:"
           if [ -d "core/build/outputs/code_coverage" ]; then
-            echo "📁 Coverage files downloaded:"
             ls -la core/build/outputs/code_coverage/ || echo "Directory exists but is empty"
           else
-            echo "⚠️ No coverage files downloaded from instrumented tests"
+            echo "⚠️ No instrumented test coverage files found"
           fi
       
       - name: Generate JaCoCo report

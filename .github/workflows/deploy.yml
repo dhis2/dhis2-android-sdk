@@ -79,11 +79,7 @@ jobs:
         run: chmod +x ./gradlew
       
       - name: Publish to Sonatype
-        uses: nick-fields/retry@v3
-        with:
-          timeout_minutes: 15
-          max_attempts: 3
-          command: ./gradlew :core:publishToSonatype
+        run: ./gradlew :core:publishToSonatype
         env:
           NEXUS_USERNAME: ${{ secrets.SONATYPE_PORTAL_USERNAME }}
           NEXUS_PASSWORD: ${{ secrets.SONATYPE_PORTAL_PASSWORD }}

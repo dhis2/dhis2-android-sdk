@@ -65,7 +65,10 @@ internal class AccountManagerImpl(
     }
 
     suspend fun getAccountsInternal(): List<DatabaseAccount> {
-        return databasesConfigurationStore.get()?.accounts()?.map { updateSyncState(it) } ?: emptyList()
+        val currentAccount = getCurrentAccountInternal()
+        val accounts = databasesConfigurationStore.get()?.accounts()?.map { updateSyncState(it) } ?: emptyList()
+        currentAccount?.let { databaseManager.createOrOpenDatabase(it) }
+        return accounts
     }
 
     override fun getCurrentAccount(): DatabaseAccount? {

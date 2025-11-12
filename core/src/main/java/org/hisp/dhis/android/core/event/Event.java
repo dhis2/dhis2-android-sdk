@@ -32,9 +32,7 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.helpers.CoordinateHelper;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
-import org.hisp.dhis.android.core.common.Coordinates;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
@@ -81,13 +79,6 @@ public abstract class Event extends BaseDeletableDataObject implements ObjectWit
 
     @Nullable
     public abstract EventStatus status();
-
-    /**
-     * @deprecated since 2.30, replaced by {@link #geometry()}
-     */
-    @Nullable
-    @Deprecated
-    abstract Coordinates coordinate();
 
     @Nullable
     public abstract Geometry geometry();
@@ -161,11 +152,6 @@ public abstract class Event extends BaseDeletableDataObject implements ObjectWit
 
         public abstract Builder status(EventStatus status);
 
-        /**
-         * @deprecated since 2.29, replaced by {@link #geometry(Geometry geometry)}
-         */
-        abstract Builder coordinate(Coordinates coordinate);
-
         public abstract Builder geometry(Geometry geometry);
 
         public abstract Builder completedDate(Date completedDate);
@@ -196,20 +182,6 @@ public abstract class Event extends BaseDeletableDataObject implements ObjectWit
             return aggregatedSyncState(state).syncState(state);
         }
 
-        abstract Event autoBuild();
-
-        // Auxiliary fields to access values
-        abstract Coordinates coordinate();
-        abstract Geometry geometry();
-        public Event build() {
-            if (geometry() == null) {
-                if (coordinate() != null) {
-                    geometry(CoordinateHelper.getGeometryFromCoordinates(coordinate()));
-                }
-            } else {
-                coordinate(CoordinateHelper.getCoordinatesFromGeometry(geometry()));
-            }
-            return autoBuild();
-        }
+        public abstract Event build();
     }
 }

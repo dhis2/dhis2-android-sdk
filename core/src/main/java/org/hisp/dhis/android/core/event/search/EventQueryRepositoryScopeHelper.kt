@@ -48,7 +48,7 @@ internal object EventQueryRepositoryScopeHelper {
             criteria.organisationUnit()?.let { builder.orgUnits(listOf(it)) }
             criteria.ouMode()?.let { builder.orgUnitMode(it) }
             criteria.assignedUserMode()?.let { builder.assignedUserMode(it) }
-            criteria.order()?.let { builder.order(parseOrderString(it, TrackerExporterVersion.V2)) }
+            criteria.order()?.let { builder.order(parseOrderString(it, TrackerExporterVersion.V1)) }
             criteria.dataFilters()?.let { builder.dataFilters(it) }
             criteria.events()?.let { builder.events(it) }
             criteria.eventStatus()?.let { builder.eventStatus(listOf(it)) }

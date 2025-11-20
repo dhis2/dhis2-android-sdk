@@ -65,9 +65,7 @@ internal class AccountManagerImpl(
     }
 
     suspend fun getAccountsInternal(): List<DatabaseAccount> {
-        val currentAccount = getCurrentAccountInternal()
-        val accounts = databasesConfigurationStore.get()?.accounts()?.map { updateSyncState(it) } ?: emptyList()
-        currentAccount?.let { databaseManager.createOrOpenDatabase(it) }
+        val accounts = databasesConfigurationStore.get()?.accounts() ?: emptyList()
         return accounts
     }
 
@@ -78,7 +76,6 @@ internal class AccountManagerImpl(
     suspend fun getCurrentAccountInternal(): DatabaseAccount? {
         return credentialsSecureStore.get()
             ?.let { multiUserDatabaseManager.getAccount(it.serverUrl, it.username) }
-            ?.let { updateSyncState(it) }
     }
 
     override fun setMaxAccounts(maxAccounts: Int?) {
@@ -148,7 +145,7 @@ internal class AccountManagerImpl(
         }
     }
 
-    private suspend fun updateSyncState(account: DatabaseAccount): DatabaseAccount {
+    /*private suspend fun updateSyncState(account: DatabaseAccount): DatabaseAccount {
         return if (account.importDB()?.status() != DatabaseAccountImportStatus.PENDING_TO_IMPORT) {
             val databaseAdapter = databaseManager.createOrOpenDatabase(account)
             val syncState = AccountManagerHelper.getSyncState(databaseAdapter)
@@ -159,7 +156,7 @@ internal class AccountManagerImpl(
         } else {
             account
         }
-    }
+    }*/
 
     override fun accountDeletionObservable(): Observable<AccountDeletionReason> {
         return accountDeletionSubject

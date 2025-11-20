@@ -64,6 +64,7 @@ internal class RoomDatabaseManager(
         private val singleThreadExecutor = Executors.newFixedThreadPool(1) { r ->
             Thread(r, "SQLCipher-DB-Thread")
         }
+        private val dbListoToPreventCloseError: MutableList<RoomDatabase> = ArrayList()
     }
 
     override fun createInMemoryDatabase(): DatabaseAdapter {
@@ -92,6 +93,7 @@ internal class RoomDatabaseManager(
             .addMigrations(*ALL_MIGRATIONS.toTypedArray())
             .build()
         databaseAdapter.activate(database, databaseName)
+        dbListoToPreventCloseError.add(database)
         return databaseAdapter
     }
 
@@ -102,6 +104,7 @@ internal class RoomDatabaseManager(
             .allowMainThreadQueries()
             .build()
         databaseAdapter.activate(database, databaseName)
+        dbListoToPreventCloseError.add(database)
         return databaseAdapter
     }
 
@@ -120,6 +123,7 @@ internal class RoomDatabaseManager(
             .openHelperFactory(factory)
             .build()
         databaseAdapter.activate(database, databaseName)
+        dbListoToPreventCloseError.add(database)
         return databaseAdapter
     }
 

@@ -71,7 +71,6 @@ internal class RoomDatabaseAdapter(
     }
 
     override fun deactivate() {
-        database?.close()
         database = null
         databaseName = ""
     }

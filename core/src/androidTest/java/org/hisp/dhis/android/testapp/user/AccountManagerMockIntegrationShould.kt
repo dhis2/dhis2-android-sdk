@@ -79,7 +79,8 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
 
         val currentAccount = d2.userModule().accountManager().getCurrentAccount()
         assertThat(currentAccount?.username()).isEqualTo(user1)
-        assertThat(currentAccount?.syncState()).isNotNull()
+        // assertThat(currentAccount?.syncState()).isNotNull() commented out due to temporary disabling of
+        // syncState update on 1.13.0 release
 
         loginAndDeleteAccount(user1, pass1, dhis2MockServer)
     }
@@ -154,7 +155,7 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
         loginAndDeleteAccount(user1, pass1, dhis2MockServer)
     }
 
-    @Test
+    // @Test commented out due to temporary disabling of syncState update on 1.13.0 release
     fun evaluate_sync_status() {
         val initialAccountSize = d2.userModule().accountManager().getAccounts().size
 

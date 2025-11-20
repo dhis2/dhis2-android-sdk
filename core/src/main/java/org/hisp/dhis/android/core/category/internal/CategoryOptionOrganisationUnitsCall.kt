@@ -64,14 +64,14 @@ internal class CategoryOptionOrganisationUnitsCall(
         }
     }
 
-    private fun getUpdatedEntries(
+    private suspend fun getUpdatedEntries(
         uids: Set<String>,
         data: Map<String, List<String?>>,
     ): Map<String, List<CategoryOptionRestriction>> {
         val updatedEntries = mutableMapOf<String, List<CategoryOptionRestriction>>()
         for (uid in uids) {
             if (!data.keys.contains(uid)) {
-                if (dhisVersionManager.isVersion(DHISVersion.V2_42)) {
+                if (dhisVersionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_42)) {
                     updatedEntries[uid] = listOf(CategoryOptionRestriction.NotRestricted())
                 } else {
                     updatedEntries[uid] = listOf(CategoryOptionRestriction.NotAccessibleToUser())

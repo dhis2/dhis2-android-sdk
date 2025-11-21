@@ -157,7 +157,6 @@ internal class DatabaseImportExportImpl(
             databaseFile.copyTo(copiedDatabase)
         }
 
-
         CipherUtil.createEncryptedZipFile(
             input = copiedDatabase,
             output = protectedDatabase,

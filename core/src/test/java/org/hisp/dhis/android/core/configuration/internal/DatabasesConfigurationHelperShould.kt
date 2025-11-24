@@ -195,7 +195,7 @@ class DatabasesConfigurationHelperShould {
         val found = DatabaseConfigurationHelper.getAccount(
             configuration,
             "http://dhis2.org",
-            "admin"
+            "admin",
         )
 
         assertThat(found).isNotNull()
@@ -220,7 +220,7 @@ class DatabasesConfigurationHelperShould {
         val found = DatabaseConfigurationHelper.getAccount(
             configuration,
             "https://dhis2.org/",
-            "admin"
+            "admin",
         )
 
         assertThat(found).isNotNull()
@@ -245,7 +245,7 @@ class DatabasesConfigurationHelperShould {
         val found = DatabaseConfigurationHelper.getAccount(
             configuration,
             "https://dhis2.org/api",
-            "admin"
+            "admin",
         )
 
         assertThat(found).isNotNull()
@@ -270,7 +270,7 @@ class DatabasesConfigurationHelperShould {
         val found = DatabaseConfigurationHelper.getAccount(
             configuration,
             "https://dhis2.ORG",
-            "admin"
+            "admin",
         )
 
         assertThat(found).isNotNull()

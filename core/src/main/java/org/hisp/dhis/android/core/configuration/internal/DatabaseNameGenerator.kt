@@ -69,8 +69,8 @@ internal class DatabaseNameGenerator {
         val md = MessageDigest.getInstance("SHA-256")
         val digest = md.digest(input.toByteArray())
         // First 4 bytes = 8 hex characters
-        return digest.take(4).joinToString("") {
-            it.toUByte().toString(16).padStart(2, '0')
+        return digest.take(HASH_BYTE_COUNT).joinToString("") {
+            it.toUByte().toString(HEX_RADIX).padStart(HEX_STRING_WIDTH, '0')
         }
     }
 
@@ -96,5 +96,8 @@ internal class DatabaseNameGenerator {
 
     companion object {
         const val DB_SUFFIX = ".db"
+        private const val HASH_BYTE_COUNT = 4
+        private const val HEX_STRING_WIDTH = 2
+        private const val HEX_RADIX = 16
     }
 }

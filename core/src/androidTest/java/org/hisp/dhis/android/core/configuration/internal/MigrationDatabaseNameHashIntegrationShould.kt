@@ -55,7 +55,7 @@ class MigrationDatabaseNameHashIntegrationShould {
             context,
             databaseConfigurationStore,
             nameGenerator,
-            renamer
+            renamer,
         )
 
         // Clean up any existing test files
@@ -76,6 +76,7 @@ class MigrationDatabaseNameHashIntegrationShould {
 
         @Suppress("DEPRECATION")
         val oldDbName1 = nameGenerator.getOldDatabaseName(url1, username, false)
+
         @Suppress("DEPRECATION")
         val oldDbName2 = nameGenerator.getOldDatabaseName(url2, username, false)
 
@@ -90,22 +91,24 @@ class MigrationDatabaseNameHashIntegrationShould {
 
         // Create configuration with both accounts pointing to same DB
         val configuration = DatabasesConfiguration.builder()
-            .accounts(listOf(
-                DatabaseAccount.builder()
-                    .username(username)
-                    .serverUrl(url1)
-                    .databaseName(oldDbName1)
-                    .encrypted(false)
-                    .databaseCreationDate("2024-01-01")
-                    .build(),
-                DatabaseAccount.builder()
-                    .username(username)
-                    .serverUrl(url2)
-                    .databaseName(oldDbName2)
-                    .encrypted(false)
-                    .databaseCreationDate("2024-01-01")
-                    .build()
-            ))
+            .accounts(
+                listOf(
+                    DatabaseAccount.builder()
+                        .username(username)
+                        .serverUrl(url1)
+                        .databaseName(oldDbName1)
+                        .encrypted(false)
+                        .databaseCreationDate("2024-01-01")
+                        .build(),
+                    DatabaseAccount.builder()
+                        .username(username)
+                        .serverUrl(url2)
+                        .databaseName(oldDbName2)
+                        .encrypted(false)
+                        .databaseCreationDate("2024-01-01")
+                        .build(),
+                ),
+            )
             .build()
 
         databaseConfigurationStore.set(configuration)
@@ -166,15 +169,17 @@ class MigrationDatabaseNameHashIntegrationShould {
 
         // Create configuration
         val configuration = DatabasesConfiguration.builder()
-            .accounts(listOf(
-                DatabaseAccount.builder()
-                    .username(username)
-                    .serverUrl(url)
-                    .databaseName(oldDbName)
-                    .encrypted(false)
-                    .databaseCreationDate("2024-01-01")
-                    .build()
-            ))
+            .accounts(
+                listOf(
+                    DatabaseAccount.builder()
+                        .username(username)
+                        .serverUrl(url)
+                        .databaseName(oldDbName)
+                        .encrypted(false)
+                        .databaseCreationDate("2024-01-01")
+                        .build(),
+                ),
+            )
             .build()
 
         databaseConfigurationStore.set(configuration)
@@ -221,21 +226,23 @@ class MigrationDatabaseNameHashIntegrationShould {
 
         // Create configuration with pending import
         val configuration = DatabasesConfiguration.builder()
-            .accounts(listOf(
-                DatabaseAccount.builder()
-                    .username(username)
-                    .serverUrl(url)
-                    .databaseName(oldDbName)
-                    .encrypted(false)
-                    .databaseCreationDate("2024-01-01")
-                    .importDB(
-                        DatabaseAccountImport.builder()
-                            .status(DatabaseAccountImportStatus.PENDING_TO_IMPORT)
-                            .protectedDbName(oldProtectedName)
-                            .build()
-                    )
-                    .build()
-            ))
+            .accounts(
+                listOf(
+                    DatabaseAccount.builder()
+                        .username(username)
+                        .serverUrl(url)
+                        .databaseName(oldDbName)
+                        .encrypted(false)
+                        .databaseCreationDate("2024-01-01")
+                        .importDB(
+                            DatabaseAccountImport.builder()
+                                .status(DatabaseAccountImportStatus.PENDING_TO_IMPORT)
+                                .protectedDbName(oldProtectedName)
+                                .build(),
+                        )
+                        .build(),
+                ),
+            )
             .build()
 
         databaseConfigurationStore.set(configuration)
@@ -272,15 +279,17 @@ class MigrationDatabaseNameHashIntegrationShould {
         }
 
         val configuration = DatabasesConfiguration.builder()
-            .accounts(listOf(
-                DatabaseAccount.builder()
-                    .username(username)
-                    .serverUrl(url)
-                    .databaseName(newDbName)
-                    .encrypted(false)
-                    .databaseCreationDate("2024-01-01")
-                    .build()
-            ))
+            .accounts(
+                listOf(
+                    DatabaseAccount.builder()
+                        .username(username)
+                        .serverUrl(url)
+                        .databaseName(newDbName)
+                        .encrypted(false)
+                        .databaseCreationDate("2024-01-01")
+                        .build(),
+                ),
+            )
             .build()
 
         databaseConfigurationStore.set(configuration)
@@ -306,15 +315,17 @@ class MigrationDatabaseNameHashIntegrationShould {
 
         // Create configuration but NO physical database file
         val configuration = DatabasesConfiguration.builder()
-            .accounts(listOf(
-                DatabaseAccount.builder()
-                    .username(username)
-                    .serverUrl(url)
-                    .databaseName(oldDbName)
-                    .encrypted(false)
-                    .databaseCreationDate("2024-01-01")
-                    .build()
-            ))
+            .accounts(
+                listOf(
+                    DatabaseAccount.builder()
+                        .username(username)
+                        .serverUrl(url)
+                        .databaseName(oldDbName)
+                        .encrypted(false)
+                        .databaseCreationDate("2024-01-01")
+                        .build(),
+                ),
+            )
             .build()
 
         databaseConfigurationStore.set(configuration)
@@ -339,7 +350,7 @@ class MigrationDatabaseNameHashIntegrationShould {
         val accounts = listOf(
             Triple("https://server1.org", "user1", false),
             Triple("https://server2.org", "user2", true),
-            Triple("https://server3.org", "user3", false)
+            Triple("https://server3.org", "user3", false),
         )
 
         // Create old-format accounts with physical files
@@ -392,7 +403,8 @@ class MigrationDatabaseNameHashIntegrationShould {
         // Clean up database files
         context.databaseList().forEach { dbName ->
             if (dbName.contains("play") || dbName.contains("demo") ||
-                dbName.contains("server") || dbName.contains("test")) {
+                dbName.contains("server") || dbName.contains("test")
+            ) {
                 context.deleteDatabase(dbName)
             }
         }

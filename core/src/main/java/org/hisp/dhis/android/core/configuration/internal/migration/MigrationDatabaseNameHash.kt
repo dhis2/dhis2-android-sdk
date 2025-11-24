@@ -57,9 +57,8 @@ internal class MigrationDatabaseNameHash(
 ) {
 
     fun apply() {
-        val configuration = databaseConfigurationStore.get() ?: return
-
-        if (configuration.accounts().isEmpty()) {
+        val configuration = databaseConfigurationStore.get()
+        if (configuration == null || configuration.accounts().isEmpty()) {
             return
         }
 
@@ -74,13 +73,6 @@ internal class MigrationDatabaseNameHash(
 
         Log.i(TAG, "Starting database name hash migration for ${configuration.accounts().size} accounts")
 
-        val collisions = detectCollisions(configuration)
-
-        if (collisions.isNotEmpty()) {
-            Log.w(TAG, "Detected ${collisions.size} database name collisions")
-            handleCollisions(collisions)
-        }
-
         val migratedAccounts = configuration.accounts().mapNotNull { account ->
             migrateAccount(account)
         }
@@ -94,41 +86,12 @@ internal class MigrationDatabaseNameHash(
         Log.i(TAG, "Database name hash migration completed successfully")
     }
 
-    private fun detectCollisions(configuration: DatabasesConfiguration): Map<String, List<DatabaseAccount>> {
-        return configuration.accounts()
-            .groupBy { it.databaseName() }
-            .filterValues { it.size > 1 }
-    }
-
-    /**
-     * Handles collision scenarios by keeping only the first account's data
-     * and marking others for re-login.
-     *
-     * Strategy:
-     * - First account in the collision list keeps the database
-     * - Other accounts will get a new database name (empty database)
-     * - User will need to sync data again for the other accounts
-     */
-    private fun handleCollisions(collisions: Map<String, List<DatabaseAccount>>) {
-        collisions.forEach { (dbName, accounts) ->
-            Log.w(TAG, """
-                Collision detected for database: $dbName
-                Affected accounts: ${accounts.size}
-                ${accounts.mapIndexed { index, acc ->
-                    "  ${index + 1}. ${acc.username()}@${acc.serverUrl()}"
-                }.joinToString("\n")}
-
-                Resolution: First account keeps data, others will get new empty databases.
-            """.trimIndent())
-        }
-    }
-
     private fun migrateAccount(account: DatabaseAccount): DatabaseAccount? {
         val oldDbName = account.databaseName()
         val newDbName = nameGenerator.getDatabaseName(
             account.serverUrl(),
             account.username(),
-            account.encrypted()
+            account.encrypted(),
         )
 
         return try {
@@ -143,11 +106,14 @@ internal class MigrationDatabaseNameHash(
             if (dbRenamed) {
                 Log.i(TAG, "Successfully migrated account: ${account.username()}@${account.serverUrl()}")
             } else {
-                Log.w(TAG, "Account migrated but database file didn't exist: ${account.username()}@${account.serverUrl()}")
+                Log.w(
+                    TAG,
+                    "Account migrated but database file didn't exist: ${account.username()}@${account.serverUrl()}",
+                )
             }
 
             updatedAccount
-        } catch (e: Exception) {
+        } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {
             Log.e(TAG, "Failed to migrate account: ${account.username()}@${account.serverUrl()}", e)
             account
         }
@@ -159,25 +125,25 @@ internal class MigrationDatabaseNameHash(
      */
     private fun renameDatabaseFile(oldDbName: String, newDbName: String): Boolean {
         val oldDbFile = context.getDatabasePath(oldDbName)
-
-        if (!oldDbFile.exists()) {
-            Log.d(TAG, "Database file doesn't exist: $oldDbName")
-            return false
-        }
-
         val newDbFile = context.getDatabasePath(newDbName)
-        if (newDbFile.exists()) {
-            Log.e(TAG, "Target database already exists, skipping rename: $newDbName")
-            return false
+
+        return when {
+            !oldDbFile.exists() -> {
+                Log.d(TAG, "Database file doesn't exist: $oldDbName")
+                false
+            }
+            newDbFile.exists() -> {
+                Log.e(TAG, "Target database already exists, skipping rename: $newDbName")
+                false
+            }
+            else -> {
+                val success = databaseRenamer.renameDatabase(oldDbName, newDbName)
+                if (!success) {
+                    throw IllegalStateException("Failed to rename database from $oldDbName to $newDbName")
+                }
+                true
+            }
         }
-
-        val success = databaseRenamer.renameDatabase(oldDbName, newDbName)
-
-        if (!success) {
-            throw IllegalStateException("Failed to rename database from $oldDbName to $newDbName")
-        }
-
-        return true
     }
 
     private fun renameFileResourceDirectories(oldDbName: String, newDbName: String) {
@@ -205,27 +171,27 @@ internal class MigrationDatabaseNameHash(
     private fun updateImportDB(
         account: DatabaseAccount,
         oldDbName: String,
-        newDbName: String
+        newDbName: String,
     ): org.hisp.dhis.android.core.configuration.internal.DatabaseAccountImport? {
-        val importDB = account.importDB() ?: return null
+        val importDB = account.importDB()
 
-        if (importDB.status() != DatabaseAccountImportStatus.PENDING_TO_IMPORT) {
-            return null
+        return if (importDB == null || importDB.status() != DatabaseAccountImportStatus.PENDING_TO_IMPORT) {
+            null
+        } else {
+            val oldProtectedName = "$oldDbName.protected"
+            val newProtectedName = "$newDbName.protected"
+
+            val oldProtectedFile = context.getDatabasePath(oldProtectedName)
+            val newProtectedFile = context.getDatabasePath(newProtectedName)
+
+            if (oldProtectedFile.exists()) {
+                oldProtectedFile.renameTo(newProtectedFile)
+            }
+
+            importDB.toBuilder()
+                .protectedDbName(newProtectedName)
+                .build()
         }
-
-        val oldProtectedName = "$oldDbName.protected"
-        val newProtectedName = "$newDbName.protected"
-
-        val oldProtectedFile = context.getDatabasePath(oldProtectedName)
-        val newProtectedFile = context.getDatabasePath(newProtectedName)
-
-        if (oldProtectedFile.exists()) {
-            oldProtectedFile.renameTo(newProtectedFile)
-        }
-
-        return importDB.toBuilder()
-            .protectedDbName(newProtectedName)
-            .build()
     }
 
     companion object {

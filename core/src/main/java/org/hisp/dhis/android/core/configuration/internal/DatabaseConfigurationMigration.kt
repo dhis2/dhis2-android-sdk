@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
 import org.hisp.dhis.android.core.configuration.internal.migration.DatabaseConfigurationInsecureStoreOld
 import org.hisp.dhis.android.core.configuration.internal.migration.Migration260
+import org.hisp.dhis.android.core.configuration.internal.migration.MigrationDatabaseNameHash
 import org.hisp.dhis.android.persistence.configuration.ConfigurationStoreImpl
 import org.koin.core.annotation.Singleton
 
@@ -79,11 +80,11 @@ internal class DatabaseConfigurationMigration(
                     existingVersionCode = configuration!!.versionCode()
 
                     migrateVersionCodeIfNeeded(configuration)
-                } catch (e: RuntimeException) {
+                } catch (_: RuntimeException) {
                     val configuration = tryOldDatabaseConfiguration()
                     databaseConfigurationStore.set(configuration!!)
                 }
-            } catch (e: RuntimeException) {
+            } catch (_: RuntimeException) {
                 databaseConfigurationStore.remove()
             }
         }
@@ -95,6 +96,12 @@ internal class DatabaseConfigurationMigration(
         if (existingVersionCode == null) {
             Migration260(context, databaseConfigurationStore, databaseManager).apply()
         }
+
+        MigrationDatabaseNameHash(context, databaseConfigurationStore, nameGenerator, renamer).apply()
+    }
+
+    companion object {
+        const val OLD_DBNAME = "dhis.db"
     }
 
     private fun migrateVersionCodeIfNeeded(configuration: DatabasesConfiguration) {
@@ -105,7 +112,7 @@ internal class DatabaseConfigurationMigration(
     }
 
     private fun tryOldDatabaseConfiguration(): DatabasesConfiguration? {
-        val oldDatabaseConfigurationStore = DatabaseConfigurationInsecureStoreOld.get(insecureStore)
+        val oldDatabaseConfigurationStore = DatabaseConfigurationInsecureStoreOld[insecureStore]
 
         return oldDatabaseConfigurationStore.get()?.let { config ->
             credentialsStore.setServerUrl(ServerUrlParser.removeTrailingApi(config.loggedServerUrl))
@@ -122,12 +129,12 @@ internal class DatabaseConfigurationMigration(
         }
     }
 
-    private suspend fun getUsernameForOldDatabase(databaseAdapter: DatabaseAdapter): String? {
+    private fun getUsernameForOldDatabase(databaseAdapter: DatabaseAdapter): String? {
         return try {
             val d2Dao = databaseAdapter.getCurrentDatabase().d2Dao()
             val roomQuery = SimpleSQLiteQuery("SELECT username FROM UserCredentials")
             d2Dao.queryStringValue(roomQuery)
-        } catch (e: SQLException) {
+        } catch (_: SQLException) {
             return null
         }
     }
@@ -136,12 +143,8 @@ internal class DatabaseConfigurationMigration(
         val store = ConfigurationStoreImpl(databaseAdapter)
         return try {
             store.selectFirst()?.serverUrl()
-        } catch (e: SQLException) {
+        } catch (_: SQLException) {
             null
         }
-    }
-
-    companion object {
-        const val OLD_DBNAME = "dhis.db"
     }
 }

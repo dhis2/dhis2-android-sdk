@@ -83,7 +83,7 @@ internal class DatabaseConfigurationHelper(
         account: DatabaseAccount,
     ): DatabasesConfiguration {
         val otherAccounts = configuration?.accounts()?.filterNot {
-            equalsIgnoreProtocol(it.serverUrl(), account.serverUrl()) && it.username() == account.username()
+            equalsNormalized(it.serverUrl(), account.serverUrl()) && it.username() == account.username()
         } ?: emptyList()
 
         return (configuration?.toBuilder() ?: DatabasesConfiguration.builder())
@@ -98,7 +98,7 @@ internal class DatabaseConfigurationHelper(
             username: String,
         ): DatabaseAccount? {
             return configuration?.accounts()?.find {
-                equalsIgnoreProtocol(it.serverUrl(), serverUrl) && it.username() == username
+                equalsNormalized(it.serverUrl(), serverUrl) && it.username() == username
             }
         }
 
@@ -135,12 +135,16 @@ internal class DatabaseConfigurationHelper(
             }
         }
 
-        private fun equalsIgnoreProtocol(s1: String, s2: String): Boolean {
-            return removeProtocol(s1) == removeProtocol(s2)
+        private fun equalsNormalized(s1: String, s2: String): Boolean {
+            return normalizeUrl(s1) == normalizeUrl(s2)
         }
 
-        private fun removeProtocol(s: String): String {
-            return s.replace("https://", "").replace("http://", "")
+        private fun normalizeUrl(url: String): String {
+            return url.lowercase()
+                .removePrefix("https://")
+                .removePrefix("http://")
+                .trimEnd('/')
+                .removeSuffix("/api")
         }
     }
 }

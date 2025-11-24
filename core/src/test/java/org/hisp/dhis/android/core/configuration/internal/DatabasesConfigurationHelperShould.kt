@@ -175,6 +175,108 @@ class DatabasesConfigurationHelperShould {
         assertThat(DatabaseConfigurationHelper.getOldestAccounts(emptyList(), 1)).isEmpty()
     }
 
+    // NEW TESTS FOR URL NORMALIZATION
+
+    @Test
+    fun find_account_with_normalized_url_different_protocol() {
+        val account = DatabaseAccount.builder()
+            .username("admin")
+            .serverUrl("https://dhis2.org")
+            .databaseName("test.db")
+            .encrypted(true)
+            .databaseCreationDate("2024-01-01")
+            .build()
+
+        val configuration = DatabasesConfiguration.builder()
+            .accounts(listOf(account))
+            .build()
+
+        // Search with http instead of https
+        val found = DatabaseConfigurationHelper.getAccount(
+            configuration,
+            "http://dhis2.org",
+            "admin"
+        )
+
+        assertThat(found).isNotNull()
+        assertThat(found).isEqualTo(account)
+    }
+
+    @Test
+    fun find_account_with_normalized_url_trailing_slash() {
+        val account = DatabaseAccount.builder()
+            .username("admin")
+            .serverUrl("https://dhis2.org")
+            .databaseName("test.db")
+            .encrypted(true)
+            .databaseCreationDate("2024-01-01")
+            .build()
+
+        val configuration = DatabasesConfiguration.builder()
+            .accounts(listOf(account))
+            .build()
+
+        // Search with trailing slash
+        val found = DatabaseConfigurationHelper.getAccount(
+            configuration,
+            "https://dhis2.org/",
+            "admin"
+        )
+
+        assertThat(found).isNotNull()
+        assertThat(found).isEqualTo(account)
+    }
+
+    @Test
+    fun find_account_with_normalized_url_api_suffix() {
+        val account = DatabaseAccount.builder()
+            .username("admin")
+            .serverUrl("https://dhis2.org")
+            .databaseName("test.db")
+            .encrypted(true)
+            .databaseCreationDate("2024-01-01")
+            .build()
+
+        val configuration = DatabasesConfiguration.builder()
+            .accounts(listOf(account))
+            .build()
+
+        // Search with /api suffix
+        val found = DatabaseConfigurationHelper.getAccount(
+            configuration,
+            "https://dhis2.org/api",
+            "admin"
+        )
+
+        assertThat(found).isNotNull()
+        assertThat(found).isEqualTo(account)
+    }
+
+    @Test
+    fun find_account_with_normalized_url_case_insensitive() {
+        val account = DatabaseAccount.builder()
+            .username("admin")
+            .serverUrl("https://DHIS2.org")
+            .databaseName("test.db")
+            .encrypted(true)
+            .databaseCreationDate("2024-01-01")
+            .build()
+
+        val configuration = DatabasesConfiguration.builder()
+            .accounts(listOf(account))
+            .build()
+
+        // Search with different case
+        val found = DatabaseConfigurationHelper.getAccount(
+            configuration,
+            "https://dhis2.ORG",
+            "admin"
+        )
+
+        assertThat(found).isNotNull()
+        assertThat(found).isEqualTo(account)
+    }
+
     companion object {
         private const val DATE = "2014-06-06T20:44:21.375"
     }

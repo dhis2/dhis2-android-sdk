@@ -397,6 +397,7 @@ jobs:
     if: |
       success() &&
       github.event_name == 'push' &&
+      github.event.pull_request == null &&
       (github.ref_name == 'develop' || endsWith(github.ref_name, '-rc') || endsWith(github.ref_name, '-RC'))
     uses: ./.github/workflows/deploy.yml
     secrets:

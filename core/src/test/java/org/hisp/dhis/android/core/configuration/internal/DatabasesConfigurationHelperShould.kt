@@ -175,8 +175,6 @@ class DatabasesConfigurationHelperShould {
         assertThat(DatabaseConfigurationHelper.getOldestAccounts(emptyList(), 1)).isEmpty()
     }
 
-    // NEW TESTS FOR URL NORMALIZATION
-
     @Test
     fun find_account_with_normalized_url_different_protocol() {
         val account = DatabaseAccount.builder()

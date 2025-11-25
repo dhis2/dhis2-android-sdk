@@ -172,7 +172,7 @@ class EnrollmentServiceShould {
     }
 
     @Test
-    fun `GetEnrollmentAccess should return access denied if protected program owner not in capture scope and no temp ownership`() =
+    fun `GetEnrollmentAccess should return access denied`() =
         runTest {
             whenever(program.accessLevel()) doReturn AccessLevel.PROTECTED
             whenever(program.access()) doReturn AccessHelper.createForDataWrite(true)
@@ -192,7 +192,7 @@ class EnrollmentServiceShould {
         }
 
     @Test
-    fun `GetEnrollmentAccess should return data access if protected program owner not in capture scope but has valid broken glass`() =
+    fun `GetEnrollmentAccess should return data access`() =
         runTest {
             whenever(program.accessLevel()) doReturn AccessLevel.PROTECTED
             whenever(program.access()) doReturn AccessHelper.createForDataWrite(true)

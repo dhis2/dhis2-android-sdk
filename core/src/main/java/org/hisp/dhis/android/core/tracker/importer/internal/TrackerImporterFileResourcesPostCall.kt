@@ -32,7 +32,10 @@ import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
 import org.hisp.dhis.android.core.fileresource.internal.FileResourcePostCall
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceStorageStatusVerifier
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceUploadResult
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceValue
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceVerificationResult
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityAttributeValue
@@ -41,9 +44,11 @@ import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPaylo
 import org.koin.core.annotation.Singleton
 
 @Singleton
+@Suppress("TooManyFunctions")
 internal class TrackerImporterFileResourcesPostCall internal constructor(
     private val fileResourcePostCall: FileResourcePostCall,
     private val fileResourceHelper: FileResourceHelper,
+    private val fileResourceStorageStatusVerifier: FileResourceStorageStatusVerifier,
 ) {
 
     suspend fun uploadFileResources(
@@ -124,18 +129,56 @@ internal class TrackerImporterFileResourcesPostCall internal constructor(
         fileResourcesByEntity: MutableMap<String, List<String>>,
     ): List<NewTrackerImporterTrackedEntityAttributeValue>? {
         val entityFileResources = mutableListOf<String>()
-        val updatedAttributes = attributeValues?.map { attributeValue ->
+
+        // First pass: collect all file resources that need to be uploaded
+        val uploadResults =
+            mutableListOf<Pair<NewTrackerImporterTrackedEntityAttributeValue, FileResourceUploadResult>>()
+
+        attributeValues?.forEach { attributeValue ->
             fileResourceHelper.findAttributeFileResource(attributeValue, fileResources)?.let { fileResource ->
                 val uploadedFileResource = uploadedFileResources[fileResource.uid()]
 
-                val newUid = if (uploadedFileResource != null) {
-                    uploadedFileResource.uid()!!
-                } else {
+                if (uploadedFileResource == null) {
+                    // Upload without updating value immediately
                     val fValue = FileResourceValue.AttributeValue(attributeValue.trackedEntityAttribute!!)
-                    fileResourcePostCall.uploadFileResource(fileResource, fValue)?.also {
-                        uploadedFileResources[fileResource.uid()!!] = fileResource.toBuilder().uid(it).build()
-                    }
+                    val uploadResult = fileResourcePostCall.uploadFileResourceWithoutUpdate(fileResource, fValue)
+                    uploadResults.add(attributeValue to uploadResult)
                 }
+            }
+        }
+
+        // Verify storage status in batch
+        val uidsToVerify = uploadResults.mapNotNull { it.second.uploadedUid }
+        val verificationResults = if (uidsToVerify.isNotEmpty()) {
+            fileResourceStorageStatusVerifier.verifyStorageStatusBatch(uidsToVerify)
+        } else {
+            emptyMap()
+        }
+
+        // Update uploadedFileResources map with verified files
+        uploadResults.forEach { (_, uploadResult) ->
+            uploadResult.uploadedUid?.let { uploadedUid ->
+                val verificationResult = verificationResults[uploadedUid]
+                if (verificationResult?.isVerified == true) {
+                    uploadedFileResources[uploadResult.originalFileResource.uid()!!] =
+                        uploadResult.originalFileResource.toBuilder().uid(uploadedUid).build()
+
+                    // Update the value now that we've verified the file is stored
+                    fileResourcePostCall.updateValueAfterVerification(
+                        uploadResult.originalFileResource,
+                        uploadedUid,
+                        uploadResult.value,
+                    )
+                }
+            }
+        }
+
+        // Second pass: build updated attributes with verified UIDs
+        val updatedAttributes = attributeValues?.map { attributeValue ->
+            fileResourceHelper.findAttributeFileResource(attributeValue, fileResources)?.let { fileResource ->
+                val uploadedFileResource = uploadedFileResources[fileResource.uid()]
+                val newUid = uploadedFileResource?.uid()
+
                 newUid?.let { entityFileResources.add(it) }
                 attributeValue.copy(value = newUid)
             } ?: attributeValue
@@ -152,17 +195,91 @@ internal class TrackerImporterFileResourcesPostCall internal constructor(
         events: List<NewTrackerImporterEvent>,
         fileResources: List<FileResource>,
     ): Pair<List<NewTrackerImporterEvent>, Map<String, List<String>>> {
-        val uploadedFileResources = mutableMapOf<String, List<String>>()
+        val eventUploadResults = uploadEventFileResources(events, fileResources)
+        val verificationResults = verifyEventFileResources(eventUploadResults)
+        updateVerifiedEventValues(eventUploadResults, verificationResults)
 
-        val successfulEvents = events.mapNotNull { event ->
+        val uploadedFileResources = mutableMapOf<String, List<String>>()
+        val successfulEvents = buildUpdatedEvents(
+            events,
+            fileResources,
+            eventUploadResults,
+            verificationResults,
+            uploadedFileResources,
+        )
+
+        return Pair(successfulEvents, uploadedFileResources)
+    }
+
+    private suspend fun uploadEventFileResources(
+        events: List<NewTrackerImporterEvent>,
+        fileResources: List<FileResource>,
+    ): Map<String, List<FileResourceUploadResult>> {
+        val eventUploadResults = mutableMapOf<String, List<FileResourceUploadResult>>()
+
+        events.forEach { event ->
+            val uploadResults = mutableListOf<FileResourceUploadResult>()
+            event.trackedEntityDataValues?.forEach { dataValue ->
+                fileResourceHelper.findDataValueFileResource(dataValue, fileResources)?.let { fileResource ->
+                    val fValue = FileResourceValue.EventValue(dataValue.dataElement!!)
+                    val uploadResult = fileResourcePostCall.uploadFileResourceWithoutUpdate(fileResource, fValue)
+                    uploadResults.add(uploadResult)
+                }
+            }
+            if (uploadResults.isNotEmpty()) {
+                eventUploadResults[event.uid()] = uploadResults
+            }
+        }
+
+        return eventUploadResults
+    }
+
+    private suspend fun verifyEventFileResources(
+        eventUploadResults: Map<String, List<FileResourceUploadResult>>,
+    ): Map<String, FileResourceVerificationResult> {
+        val allUidsToVerify = eventUploadResults.values.flatten().mapNotNull { it.uploadedUid }
+        return if (allUidsToVerify.isNotEmpty()) {
+            fileResourceStorageStatusVerifier.verifyStorageStatusBatch(allUidsToVerify)
+        } else {
+            emptyMap()
+        }
+    }
+
+    private suspend fun updateVerifiedEventValues(
+        eventUploadResults: Map<String, List<FileResourceUploadResult>>,
+        verificationResults: Map<String, FileResourceVerificationResult>,
+    ) {
+        eventUploadResults.forEach { (_, uploadResults) ->
+            uploadResults.forEach { uploadResult ->
+                val uploadedUid = uploadResult.uploadedUid ?: return@forEach
+                val verificationResult = verificationResults[uploadedUid]
+                if (verificationResult?.isVerified == true) {
+                    fileResourcePostCall.updateValueAfterVerification(
+                        uploadResult.originalFileResource,
+                        uploadedUid,
+                        uploadResult.value,
+                    )
+                }
+            }
+        }
+    }
+
+    private suspend fun buildUpdatedEvents(
+        events: List<NewTrackerImporterEvent>,
+        fileResources: List<FileResource>,
+        eventUploadResults: Map<String, List<FileResourceUploadResult>>,
+        verificationResults: Map<String, FileResourceVerificationResult>,
+        uploadedFileResources: MutableMap<String, List<String>>,
+    ): List<NewTrackerImporterEvent> {
+        return events.mapNotNull { event ->
             catchErrorToNull {
                 val eventFileResources = mutableListOf<String>()
                 val updatedDataValues = event.trackedEntityDataValues?.map { dataValue ->
                     fileResourceHelper.findDataValueFileResource(dataValue, fileResources)?.let { fileResource ->
-                        val fValue = FileResourceValue.EventValue(dataValue.dataElement!!)
-                        val newUid = fileResourcePostCall.uploadFileResource(fileResource, fValue)?.also {
-                            eventFileResources.add(it)
+                        val uploadResult = eventUploadResults[event.uid()]?.find {
+                            it.originalFileResource.uid() == fileResource.uid()
                         }
+                        val newUid = getVerifiedUidForEvent(uploadResult, verificationResults, eventFileResources)
                         dataValue.copy(value = newUid)
                     } ?: dataValue
                 }
@@ -172,8 +289,21 @@ internal class TrackerImporterFileResourcesPostCall internal constructor(
                 event.copy(trackedEntityDataValues = updatedDataValues)
             }
         }
+    }
 
-        return Pair(successfulEvents, uploadedFileResources)
+    private fun getVerifiedUidForEvent(
+        uploadResult: FileResourceUploadResult?,
+        verificationResults: Map<String, FileResourceVerificationResult>,
+        eventFileResources: MutableList<String>,
+    ): String? {
+        val uploadedUid = uploadResult?.uploadedUid ?: return null
+        val verificationResult = verificationResults[uploadedUid]
+        return if (verificationResult?.isVerified == true) {
+            eventFileResources.add(uploadedUid)
+            uploadedUid
+        } else {
+            null
+        }
     }
 
     @Suppress("TooGenericExceptionCaught")

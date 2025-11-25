@@ -28,36 +28,102 @@
 package org.hisp.dhis.android.core.datavalue.internal
 
 import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.FileResourceDataDomainType
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
 import org.hisp.dhis.android.core.fileresource.internal.FileResourcePostCall
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceStorageStatusVerifier
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceUploadResult
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceValue
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceVerificationResult
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DataValueFileResourcePostCall(
     private val fileResourceHelper: FileResourceHelper,
     private val fileResourcePostCall: FileResourcePostCall,
+    private val fileResourceStorageStatusVerifier: FileResourceStorageStatusVerifier,
 ) {
     suspend fun uploadFileResource(dataValues: List<DataValue>): DataValueFileResourcePostCallResult {
         val fileResources = fileResourceHelper.getUploadableFileResources()
+        if (fileResources.isEmpty()) {
+            return DataValueFileResourcePostCallResult(dataValues, emptyList())
+        }
 
-        return if (fileResources.isEmpty()) {
-            DataValueFileResourcePostCallResult(dataValues, emptyList())
-        } else {
-            val uploadedFileResources = mutableListOf<String>()
+        val uploadResults = uploadAllFiles(dataValues, fileResources)
+        val verificationResults = verifyUploadedFiles(uploadResults)
+        updateVerifiedValues(uploadResults, verificationResults)
 
-            val validDataValues = dataValues.map { dataValue ->
-                fileResourceHelper.findDataValueFileResource(dataValue, fileResources)?.let { fileResource ->
-                    val fValue = FileResourceValue.DataValue(dataValue.dataElement()!!)
-                    val newUid = fileResourcePostCall.uploadFileResource(fileResource, fValue)?.also {
-                        uploadedFileResources.add(it)
-                    }
-                    newUid?.let { dataValue.toBuilder().value(newUid).build() }
-                } ?: dataValue
+        return buildFinalResult(dataValues, uploadResults, verificationResults)
+    }
+
+    private suspend fun uploadAllFiles(
+        dataValues: List<DataValue>,
+        fileResources: List<FileResource>,
+    ): List<Pair<DataValue, FileResourceUploadResult>> {
+        return dataValues.mapNotNull { dataValue ->
+            fileResourceHelper.findDataValueFileResource(dataValue, fileResources)?.let { fileResource ->
+                val fValue = FileResourceValue.DataValue(dataValue.dataElement()!!)
+                val uploadResult = fileResourcePostCall.uploadFileResourceWithoutUpdate(fileResource, fValue)
+                dataValue to uploadResult
             }
+        }
+    }
 
-            DataValueFileResourcePostCallResult(validDataValues, uploadedFileResources)
+    private suspend fun verifyUploadedFiles(
+        uploadResults: List<Pair<DataValue, FileResourceUploadResult>>,
+    ): Map<String, FileResourceVerificationResult> {
+        val uidsToVerify = uploadResults.mapNotNull { it.second.uploadedUid }
+        return if (uidsToVerify.isNotEmpty()) {
+            fileResourceStorageStatusVerifier.verifyStorageStatusBatch(uidsToVerify)
+        } else {
+            emptyMap()
+        }
+    }
+
+    private suspend fun updateVerifiedValues(
+        uploadResults: List<Pair<DataValue, FileResourceUploadResult>>,
+        verificationResults: Map<String, FileResourceVerificationResult>,
+    ) {
+        uploadResults.forEach { (_, uploadResult) ->
+            val uploadedUid = uploadResult.uploadedUid ?: return@forEach
+            val verificationResult = verificationResults[uploadedUid]
+            if (verificationResult?.isVerified == true) {
+                fileResourcePostCall.updateValueAfterVerification(
+                    uploadResult.originalFileResource,
+                    uploadedUid,
+                    uploadResult.value,
+                )
+            }
+        }
+    }
+
+    private fun buildFinalResult(
+        dataValues: List<DataValue>,
+        uploadResults: List<Pair<DataValue, FileResourceUploadResult>>,
+        verificationResults: Map<String, FileResourceVerificationResult>,
+    ): DataValueFileResourcePostCallResult {
+        val uploadedFileResources = mutableListOf<String>()
+        val validDataValues = dataValues.map { dataValue ->
+            val uploadResult = uploadResults.find { it.first == dataValue }?.second
+            val newUid = getVerifiedUid(uploadResult, verificationResults, uploadedFileResources)
+            newUid?.let { dataValue.toBuilder().value(it).build() } ?: dataValue
+        }
+        return DataValueFileResourcePostCallResult(validDataValues, uploadedFileResources)
+    }
+
+    private fun getVerifiedUid(
+        uploadResult: FileResourceUploadResult?,
+        verificationResults: Map<String, FileResourceVerificationResult>,
+        uploadedFileResources: MutableList<String>,
+    ): String? {
+        val uploadedUid = uploadResult?.uploadedUid ?: return null
+        val verificationResult = verificationResults[uploadedUid]
+        return if (verificationResult?.isVerified == true) {
+            uploadedFileResources.add(uploadedUid)
+            uploadedUid
+        } else {
+            null
         }
     }
 

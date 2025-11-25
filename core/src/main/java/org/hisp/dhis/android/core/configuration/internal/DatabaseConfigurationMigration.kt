@@ -112,10 +112,6 @@ internal class DatabaseConfigurationMigration(
         }
     }
 
-    companion object {
-        const val OLD_DBNAME = "dhis.db"
-    }
-
     private fun migrateVersionCodeIfNeeded(configuration: DatabasesConfiguration) {
         if (configuration.versionCode() != BuildConfig.VERSION_CODE) {
             configuration.toBuilder().versionCode(BuildConfig.VERSION_CODE).build()
@@ -141,7 +137,7 @@ internal class DatabaseConfigurationMigration(
         }
     }
 
-    private fun getUsernameForOldDatabase(databaseAdapter: DatabaseAdapter): String? {
+    private suspend fun getUsernameForOldDatabase(databaseAdapter: DatabaseAdapter): String? {
         return try {
             val d2Dao = databaseAdapter.getCurrentDatabase().d2Dao()
             val roomQuery = SimpleSQLiteQuery("SELECT username FROM UserCredentials")
@@ -158,5 +154,9 @@ internal class DatabaseConfigurationMigration(
         } catch (_: SQLException) {
             null
         }
+    }
+
+    companion object {
+        const val OLD_DBNAME = "dhis.db"
     }
 }

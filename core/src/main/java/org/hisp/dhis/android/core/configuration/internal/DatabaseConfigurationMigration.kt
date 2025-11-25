@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
 import org.hisp.dhis.android.core.configuration.internal.migration.DatabaseConfigurationInsecureStoreOld
 import org.hisp.dhis.android.core.configuration.internal.migration.Migration260
-import org.hisp.dhis.android.core.configuration.internal.migration.MigrationDatabaseNameHash
+import org.hisp.dhis.android.core.configuration.internal.migration.Migration301
 import org.hisp.dhis.android.persistence.configuration.ConfigurationStoreImpl
 import org.koin.core.annotation.Singleton
 
@@ -93,11 +93,23 @@ internal class DatabaseConfigurationMigration(
             databaseConfigurationStore.set(DatabasesConfiguration.builder().build())
         }
 
-        if (existingVersionCode == null) {
+        runMigrationIfNeeded(existingVersionCode, Migration260.VERSION) {
             Migration260(context, databaseConfigurationStore, databaseManager).apply()
         }
 
-        MigrationDatabaseNameHash(context, databaseConfigurationStore, nameGenerator, renamer).apply()
+        runMigrationIfNeeded(existingVersionCode, Migration301.VERSION) {
+            Migration301(context, databaseConfigurationStore, nameGenerator, renamer).apply()
+        }
+    }
+
+    private suspend fun runMigrationIfNeeded(
+        existingVersionCode: Long?,
+        migrationVersion: Long,
+        migration: suspend () -> Unit,
+    ) {
+        if (existingVersionCode == null || existingVersionCode < migrationVersion) {
+            migration()
+        }
     }
 
     companion object {

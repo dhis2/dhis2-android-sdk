@@ -49,7 +49,7 @@ import java.io.File
  *
  * The hash suffix ensures each unique URL+username combination has its own database.
  */
-internal class MigrationDatabaseNameHash(
+internal class Migration301(
     private val context: Context,
     private val databaseConfigurationStore: ObjectKeyValueStore<DatabasesConfiguration>,
     private val nameGenerator: DatabaseNameGenerator,
@@ -196,5 +196,6 @@ internal class MigrationDatabaseNameHash(
 
     companion object {
         private const val TAG = "MigrationDbNameHash"
+        const val VERSION = 301L
     }
 }

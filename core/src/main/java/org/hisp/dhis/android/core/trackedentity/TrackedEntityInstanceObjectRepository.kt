@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
@@ -47,20 +47,17 @@ import java.util.Date
 class TrackedEntityInstanceObjectRepository internal constructor(
     store: TrackedEntityInstanceStore,
     uid: String?,
-    databaseAdapter: DatabaseAdapter,
     childrenAppenders: ChildrenAppenderGetter<TrackedEntityInstance>,
     scope: RepositoryScope,
     private val trackerDataManager: TrackerDataManager,
 ) : ReadWriteWithUidDataObjectRepositoryImpl<TrackedEntityInstance, TrackedEntityInstanceObjectRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     ObjectRepositoryFactory { s: RepositoryScope ->
         TrackedEntityInstanceObjectRepository(
             store,
             uid,
-            databaseAdapter,
             childrenAppenders,
             s,
             trackerDataManager,
@@ -70,15 +67,28 @@ class TrackedEntityInstanceObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setOrganisationUnitUid(organisationUnitUid: String?): Unit {
-        return updateIfChanged(organisationUnitUid, { it.organisationUnit() }) { tei: TrackedEntityInstance, value ->
+        return runBlocking { setOrganisationUnitUidInternal(organisationUnitUid) }
+    }
+
+    @Throws(D2Error::class)
+    internal suspend fun setOrganisationUnitUidInternal(organisationUnitUid: String?): Unit {
+        return updateIfChangedInternal(
+            organisationUnitUid,
+            { it.organisationUnit() },
+        ) { tei: TrackedEntityInstance, value ->
             updateBuilder(tei).organisationUnit(value).build()
         }
     }
 
     @Throws(D2Error::class)
     fun setGeometry(geometry: Geometry?): Unit {
+        return runBlocking { setGeometryInternal(geometry) }
+    }
+
+    @Throws(D2Error::class)
+    internal suspend fun setGeometryInternal(geometry: Geometry?): Unit {
         GeometryHelper.validateGeometry(geometry)
-        return updateIfChanged(geometry, { it.geometry() }) { tei: TrackedEntityInstance, value ->
+        return updateIfChangedInternal(geometry, { it.geometry() }) { tei: TrackedEntityInstance, value ->
             updateBuilder(tei).geometry(value).build()
         }
     }
@@ -103,11 +113,11 @@ class TrackedEntityInstanceObjectRepository internal constructor(
             .lastUpdatedAtClient(updateDate)
     }
 
-    override fun propagateState(m: TrackedEntityInstance, action: HandleAction) {
+    override suspend fun propagateState(m: TrackedEntityInstance, action: HandleAction) {
         trackerDataManager.propagateTrackedEntityUpdate(m, action)
     }
 
-    override fun deleteObject(m: TrackedEntityInstance) {
+    override suspend fun deleteObject(m: TrackedEntityInstance) {
         trackerDataManager.deleteTrackedEntity(m)
     }
 }

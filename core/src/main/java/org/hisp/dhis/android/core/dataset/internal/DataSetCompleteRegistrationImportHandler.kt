@@ -39,17 +39,19 @@ import org.koin.core.annotation.Singleton
 internal class DataSetCompleteRegistrationImportHandler(
     private val dataSetCompleteRegistrationStore: DataSetCompleteRegistrationStore,
 ) {
-    fun handleImportSummary(
+    suspend fun handleImportSummary(
         toPostDataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
         dataValueImportSummary: DataValueImportSummary,
         deletedDataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
         withErrorDataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
     ): DataValueImportSummary {
         val newState = if (dataValueImportSummary.importStatus() == ImportStatus.ERROR) State.ERROR else State.SYNCED
-        for (dataSetCompleteRegistration in toPostDataSetCompleteRegistrations) {
-            if (dataSetCompleteRegistrationStore.isBeingUpload(dataSetCompleteRegistration)) {
-                dataSetCompleteRegistrationStore.setState(dataSetCompleteRegistration, newState)
-            }
+        val toUpdate = toPostDataSetCompleteRegistrations.filter {
+            dataSetCompleteRegistrationStore.isBeingUpload(it)
+        }
+        if (toUpdate.isNotEmpty()) {
+            val updatedRegistrations = toUpdate.map { it.toBuilder().syncState(newState).build() }
+            dataSetCompleteRegistrationStore.update(updatedRegistrations)
         }
         val deletedDatasetConflicts = handleDeletedDataSetCompleteRegistrations(
             deletedDataSetCompleteRegistrations,
@@ -66,23 +68,28 @@ internal class DataSetCompleteRegistrationImportHandler(
         )
     }
 
-    private fun handleDeletedDataSetCompleteRegistrations(
+    private suspend fun handleDeletedDataSetCompleteRegistrations(
         deletedDataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
         withErrorDataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
     ): List<ImportConflict> {
-        val conflicts = withErrorDataSetCompleteRegistrations
+        val withError = withErrorDataSetCompleteRegistrations
             .filter { dataSetCompleteRegistrationStore.isBeingUpload(it) }
-            .map {
-                dataSetCompleteRegistrationStore.setState(it, State.ERROR)
-                ImportConflict.create(
-                    it.toString(),
-                    "Error marking as incomplete",
-                )
-            }
+
+        if (withError.isNotEmpty()) {
+            val updatedWithError = withError.map { it.toBuilder().syncState(State.ERROR).build() }
+            dataSetCompleteRegistrationStore.update(updatedWithError)
+        }
+
+        val conflicts = withError.map {
+            ImportConflict.create(
+                it.toString(),
+                "Error marking as incomplete",
+            )
+        }
 
         deletedDataSetCompleteRegistrations
             .filter { dataSetCompleteRegistrationStore.isBeingUpload(it) }
-            .forEach { dataSetCompleteRegistrationStore.deleteById(it) }
+            .forEach { dataSetCompleteRegistrationStore.deleteWhereIfExists(it) }
 
         return conflicts
     }

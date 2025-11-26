@@ -29,14 +29,11 @@ package org.hisp.dhis.android.core.enrollment
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.tracker.NewEnrollmentDTO
 import org.junit.Test
 
-class NewTrackerImporterEnrollmentShould :
-    BaseObjectKotlinxShould("enrollment/new_tracker_importer_enrollment.json"),
-    ObjectShould {
+class NewTrackerImporterEnrollmentShould : CoreObjectShould("enrollment/new_tracker_importer_enrollment.json") {
 
     @Test
     override fun map_from_json_string() {

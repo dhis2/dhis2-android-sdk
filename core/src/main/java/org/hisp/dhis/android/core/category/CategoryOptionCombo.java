@@ -28,15 +28,10 @@
 
 package org.hisp.dhis.android.core.category;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCategoryOptionListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -47,27 +42,19 @@ import java.util.List;
 public abstract class CategoryOptionCombo extends BaseIdentifiableObject implements CoreObject {
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid categoryCombo();
 
     @Nullable
-    @ColumnAdapter(IgnoreCategoryOptionListColumnAdapter.class)
     public abstract List<CategoryOption> categoryOptions();
-
-    public static CategoryOptionCombo create(Cursor cursor) {
-        return $AutoValue_CategoryOptionCombo.createFromCursor(cursor);
-    }
 
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new $$AutoValue_CategoryOptionCombo.Builder();
+        return new AutoValue_CategoryOptionCombo.Builder();
     }
 
     @AutoValue.Builder
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
-
-        public abstract Builder id(Long id);
 
         public abstract Builder categoryCombo(ObjectWithUid categoryCombo);
 

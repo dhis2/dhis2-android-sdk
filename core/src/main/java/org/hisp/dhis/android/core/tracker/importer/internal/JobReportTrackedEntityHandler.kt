@@ -30,11 +30,12 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
+import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -46,7 +47,7 @@ internal class JobReportTrackedEntityHandler internal constructor(
     relationshipStore: RelationshipStore,
 ) : JobReportTypeHandler(relationshipStore) {
 
-    override fun handleObject(uid: String, state: State): HandleAction {
+    override suspend fun handleObject(uid: String, state: State): HandleAction {
         conflictStore.deleteTrackedEntityConflicts(uid)
         val handleAction = trackedEntityStore.setSyncStateOrDelete(uid, state)
 
@@ -56,10 +57,10 @@ internal class JobReportTrackedEntityHandler internal constructor(
         return handleAction
     }
 
-    override fun storeConflict(errorReport: JobValidationError) {
+    override suspend fun storeConflict(errorReport: JobValidationError) {
         trackedEntityStore.selectByUid(errorReport.uid)?.let { trackedEntity ->
             if (errorReport.errorCode == ImporterError.E1063.name && trackedEntity.deleted() == true) {
-                trackedEntityStore.delete(trackedEntity.uid())
+                trackedEntityStore.deleteByEntity(trackedEntity)
             } else {
                 conflictStore.insert(
                     conflictHelper.getConflictBuilder(errorReport)
@@ -70,11 +71,11 @@ internal class JobReportTrackedEntityHandler internal constructor(
         }
     }
 
-    override fun getRelatedRelationships(uid: String): List<String> {
-        return relationshipStore.getRelationshipsByItem(RelationshipHelper.teiItem(uid)).mapNotNull { it.uid() }
+    override suspend fun getRelatedRelationships(uid: String): List<Relationship> {
+        return relationshipStore.getRelationshipsByItem(RelationshipHelper.teiItem(uid)).mapNotNull { it }
     }
 
-    fun handleSyncedEntity(uid: String) {
+    suspend fun handleSyncedEntity(uid: String) {
         trackedEntityAttributeValueStore.setSyncStateByInstance(uid, State.SYNCED)
         trackedEntityAttributeValueStore.removeDeletedAttributeValuesByInstance(uid)
     }

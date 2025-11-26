@@ -27,17 +27,22 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingStoreImpl
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingStore
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute
 
 internal class ProgramTrackedEntityAttributeValueTypeRenderingChildrenAppender(
-    databaseAdapter: DatabaseAdapter,
-) : ValueTypeRenderingChildrenAppender<ProgramTrackedEntityAttribute>(
-    ValueTypeDeviceRenderingStoreImpl(databaseAdapter),
-) {
-    override fun appendChildren(m: ProgramTrackedEntityAttribute): ProgramTrackedEntityAttribute {
+    store: ValueTypeDeviceRenderingStore,
+) : ValueTypeRenderingChildrenAppender<ProgramTrackedEntityAttribute>(store) {
+    override suspend fun appendChildren(m: ProgramTrackedEntityAttribute): ProgramTrackedEntityAttribute {
         val valueTypeRendering = getValueTypeDeviceRendering(m)
         return m.toBuilder().renderType(valueTypeRendering).build()
+    }
+
+    companion object {
+        fun create(): ChildrenAppender<ProgramTrackedEntityAttribute> {
+            return ProgramTrackedEntityAttributeValueTypeRenderingChildrenAppender(koin.get())
+        }
     }
 }

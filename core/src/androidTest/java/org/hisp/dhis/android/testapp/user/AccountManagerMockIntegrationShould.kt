@@ -40,7 +40,7 @@ import org.junit.Assert
 import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.util.*
+import java.util.Date
 
 @RunWith(D2JunitRunner::class)
 class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
@@ -79,7 +79,8 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
 
         val currentAccount = d2.userModule().accountManager().getCurrentAccount()
         assertThat(currentAccount?.username()).isEqualTo(user1)
-        assertThat(currentAccount?.syncState()).isNotNull()
+        // assertThat(currentAccount?.syncState()).isNotNull() commented out due to temporary disabling of
+        // syncState update on 1.13.0 release
 
         loginAndDeleteAccount(user1, pass1, dhis2MockServer)
     }
@@ -154,7 +155,7 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
         loginAndDeleteAccount(user1, pass1, dhis2MockServer)
     }
 
-    @Test
+    // @Test commented out due to temporary disabling of syncState update on 1.13.0 release
     fun evaluate_sync_status() {
         val initialAccountSize = d2.userModule().accountManager().getAccounts().size
 
@@ -187,6 +188,51 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
         assertThat(account1.syncState()).isEqualTo(State.SYNCED)
         assertThat(account2.syncState()).isEqualTo(State.TO_UPDATE)
 
+        loginAndDeleteAccount(user1, pass1, dhis2MockServer)
+        loginAndDeleteAccount(user2, pass2, server2)
+    }
+
+    @Test
+    fun return_login_config() {
+        if (d2.userModule().blockingIsLogged()) {
+            d2.userModule().blockingLogOut()
+        }
+        dhis2MockServer.enqueueLoginResponses()
+        d2.userModule().blockingLogIn(user1, pass1, dhis2MockServer.baseEndpoint)
+
+        dhis2MockServer.enqueueMetadataResponses()
+        d2.metadataModule().blockingDownload()
+
+        val loginConfig = d2.userModule().accountManager().getCurrentAccount()?.loginConfig()
+        assertThat(loginConfig).isNotNull()
+        assertThat(loginConfig?.apiVersion).isEqualTo("2.41.3")
+    }
+
+    @Test
+    fun preserve_current_account_after_get_accounts() {
+        if (d2.userModule().blockingIsLogged()) {
+            d2.userModule().blockingLogOut()
+        }
+
+        dhis2MockServer.enqueueLoginResponses()
+        d2.userModule().blockingLogIn(user1, pass1, dhis2MockServer.baseEndpoint)
+        d2.userModule().blockingLogOut()
+
+        val server2 = Dhis2MockServer(0)
+        server2.enqueueLoginResponses()
+        d2.userModule().blockingLogIn(user2, pass2, server2.baseEndpoint)
+        d2.userModule().blockingLogOut()
+
+        dhis2MockServer.enqueueLoginResponses()
+        d2.userModule().blockingLogIn(user1, pass1, dhis2MockServer.baseEndpoint)
+        val user1Name = d2.userModule().user().blockingGet()?.name()
+
+        d2.userModule().accountManager().getAccounts()
+
+        val activeUser = d2.userModule().user().blockingGet()?.name()
+        assertThat(activeUser).isEqualTo(user1Name)
+
+        d2.userModule().blockingLogOut()
         loginAndDeleteAccount(user1, pass1, dhis2MockServer)
         loginAndDeleteAccount(user2, pass2, server2)
     }

@@ -55,13 +55,14 @@ import org.hisp.dhis.android.core.indicator.internal.IndicatorModuleDownloader
 import org.hisp.dhis.android.core.legendset.LegendSet
 import org.hisp.dhis.android.core.legendset.internal.LegendSetModuleDownloader
 import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitModuleDownloader
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorModuleDownloader
 import org.hisp.dhis.android.core.program.internal.ProgramModuleDownloader
+import org.hisp.dhis.android.core.server.LoginConfig
+import org.hisp.dhis.android.core.server.internal.LoginConfigDownloader
 import org.hisp.dhis.android.core.settings.SystemSetting
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
 import org.hisp.dhis.android.core.settings.internal.SettingModuleDownloader
@@ -75,12 +76,14 @@ import org.hisp.dhis.android.core.visualization.TrackerVisualization
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.internal.TrackerVisualizationModuleDownloader
 import org.hisp.dhis.android.core.visualization.internal.VisualizationModuleDownloader
+import org.hisp.dhis.android.persistence.maintenance.ForeignKeyViolationTableInfo
 import org.koin.core.annotation.Singleton
 
 @Suppress("LongParameterList")
 @Singleton
 internal class MetadataCall(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
+    private val loginConfigDownloader: LoginConfigDownloader,
     private val systemInfoDownloader: SystemInfoModuleDownloader,
     private val systemSettingDownloader: SettingModuleDownloader,
     private val useCaseDownloader: UseCaseModuleDownloader,
@@ -106,7 +109,7 @@ internal class MetadataCall(
 ) {
 
     companion object {
-        const val CALLS_COUNT = 17
+        const val CALLS_COUNT = 18
     }
 
     @Suppress("TooGenericExceptionCaught")
@@ -115,7 +118,7 @@ internal class MetadataCall(
 
         changeEncryptionIfRequiredCoroutines()
 
-        coroutineAPICallExecutor.wrapTransactionally(cleanForeignKeyErrors = true) {
+        coroutineAPICallExecutor.wrapTransactionallyRoom(cleanForeignKeyErrors = true) {
             try {
                 systemInfoDownloader.downloadWithProgressManager(progressManager).also { send(it) }
                 executeIndependentCalls(progressManager).collect { send(it) }
@@ -132,6 +135,9 @@ internal class MetadataCall(
 
     private fun executeIndependentCalls(progressManager: D2ProgressManager): Flow<D2Progress> = flow {
         databaseAdapter.delete(ForeignKeyViolationTableInfo.TABLE_INFO.name())
+
+        loginConfigDownloader.downloadMetadata()
+        emit(progressManager.increaseProgress(LoginConfig::class.java, false))
 
         systemSettingDownloader.downloadMetadata()
         emit(progressManager.increaseProgress(SystemSetting::class.java, false))

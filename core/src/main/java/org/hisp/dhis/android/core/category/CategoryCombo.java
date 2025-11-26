@@ -28,15 +28,10 @@
 
 package org.hisp.dhis.android.core.category;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCategoryListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCategoryOptionComboListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 
@@ -51,16 +46,10 @@ public abstract class CategoryCombo extends BaseIdentifiableObject implements Co
     public abstract Boolean isDefault();
 
     @Nullable
-    @ColumnAdapter(IgnoreCategoryListColumnAdapter.class)
     public abstract List<Category> categories();
 
     @Nullable
-    @ColumnAdapter(IgnoreCategoryOptionComboListColumnAdapter.class)
     abstract List<CategoryOptionCombo> categoryOptionCombos();
-
-    public static CategoryCombo create(Cursor cursor) {
-        return $AutoValue_CategoryCombo.createFromCursor(cursor);
-    }
 
     public abstract Builder toBuilder();
 
@@ -70,8 +59,6 @@ public abstract class CategoryCombo extends BaseIdentifiableObject implements Co
 
     @AutoValue.Builder
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
-
-        public abstract Builder id(Long id);
 
         public abstract Builder isDefault(Boolean isDefault);
 

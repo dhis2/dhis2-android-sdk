@@ -37,7 +37,6 @@ object IndicatorTypeSamples {
             val indicatorTypeBuilder = IndicatorType.builder()
             fillIdentifiableProperties(indicatorTypeBuilder)
             indicatorTypeBuilder
-                .id(1L)
                 .number(true)
                 .factor(1)
 

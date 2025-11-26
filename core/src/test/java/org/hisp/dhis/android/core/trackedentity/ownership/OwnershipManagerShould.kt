@@ -28,16 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.ownership
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.doAnswer
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.stub
-import com.nhaarman.mockitokotlin2.times
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
-import com.nhaarman.mockitokotlin2.whenever
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.LocalDateTime
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
@@ -52,9 +43,15 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
+import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
-@OptIn(ExperimentalCoroutinesApi::class)
 class OwnershipManagerShould {
 
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor = CoroutineAPICallExecutorMock()
@@ -70,10 +67,9 @@ class OwnershipManagerShould {
     private lateinit var ownershipManager: OwnershipManagerImpl
 
     @Before
-    fun setUp() {
-        ownershipNetworkHandler.stub {
-            onBlocking { breakGlass(any(), any(), any()) }.doAnswer { httpResponse }
-        }
+    fun setUp() = runTest {
+        whenever(ownershipNetworkHandler.breakGlass(any(), any(), any())).doReturn(httpResponse)
+        whenever(programTempOwnerStore.selectWhere(any(), any(), any())).doReturn(emptyList())
 
         ownershipManager = OwnershipManagerImpl(
             coroutineAPICallExecutor,
@@ -86,17 +82,18 @@ class OwnershipManagerShould {
     }
 
     @Test
-    fun persist_program_temp_owner_record_if_success() {
-        whenever(httpResponse.httpStatusCode()).doReturn(200)
+    fun persist_program_temp_owner_record_if_success() = runTest {
+        whenever(httpResponse.httpStatusCode()).doReturn(HttpStatusCode.OK.value)
+        whenever(programTempOwnerStore.insert(any<ProgramTempOwner>())).doReturn(1L)
 
-        ownershipManager.blockingBreakGlass("tei_uid", "program", "reason")
+        ownershipManager.breakGlass("tei_uid", "program", "reason").blockingAwait()
 
-        verify(programTempOwnerStore, times(1)).insert(any<ProgramTempOwner>())
+        verify(programTempOwnerStore, times(1)).updateOrInsertWhere(any<ProgramTempOwner>())
     }
 
     @Test
     fun do_not_persist_program_temp_owner_record_if_error() {
-        whenever(httpResponse.httpStatusCode()).doReturn(401)
+        whenever(httpResponse.httpStatusCode()).doReturn(HttpStatusCode.Unauthorized.value)
         whenever(httpResponse.message()).doReturn("Error in break the glass")
 
         try {
@@ -118,7 +115,7 @@ class OwnershipManagerShould {
     }
 
     @Test
-    fun propagate_program_ownership_update() {
+    fun propagate_program_ownership_update() = runTest {
         ownershipManager.blockingTransfer("tei_uid", "program_uid", "orgunit")
 
         verify(programOwnerStore).updateOrInsertWhere(any())

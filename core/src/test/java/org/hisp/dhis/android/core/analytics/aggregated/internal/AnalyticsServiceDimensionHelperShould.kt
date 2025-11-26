@@ -30,10 +30,7 @@
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.analytics.aggregated.AbsoluteDimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
@@ -42,6 +39,10 @@ import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceHelperSamples as s
 
 @RunWith(JUnit4::class)
@@ -145,7 +146,7 @@ class AnalyticsServiceDimensionHelperShould {
     }
 
     @Test
-    fun `Should evaluate relative periods`() {
+    fun `Should evaluate relative periods`() = runTest {
         whenever(periodGenerator.generateRelativePeriods(s.periodLast3Days.relative))
             .thenReturn(listOf(s.period1, s.period2, s.period3))
 
@@ -176,7 +177,7 @@ class AnalyticsServiceDimensionHelperShould {
     }
 
     @Test
-    fun `Should evaluate orgunits by level`() {
+    fun `Should evaluate orgunits by level`() = runTest {
         whenever(organisationUnitHelper.getOrganisationUnitUidsByLevelUid(any()))
             .thenReturn(listOf("orgunit1", "orgunit2", "orgunit3"))
 

@@ -30,9 +30,10 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityInstanceFilterSamples
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterTableInfo
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceFilterStoreImpl
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceFilterTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

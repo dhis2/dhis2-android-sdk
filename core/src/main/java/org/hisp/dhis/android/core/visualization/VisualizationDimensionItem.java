@@ -28,14 +28,10 @@
 
 package org.hisp.dhis.android.core.visualization;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.LayoutPositionColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
@@ -45,7 +41,6 @@ public abstract class VisualizationDimensionItem implements CoreObject {
     public abstract String visualization();
 
     @Nullable
-    @ColumnAdapter(LayoutPositionColumnAdapter.class)
     public abstract LayoutPosition position();
 
     @Nullable
@@ -57,21 +52,17 @@ public abstract class VisualizationDimensionItem implements CoreObject {
     @Nullable
     public abstract String dimensionItemType();
 
+    @Nullable
+    public abstract Integer sortOrder();
 
     public static Builder builder() {
-        return new $$AutoValue_VisualizationDimensionItem.Builder();
-    }
-
-    public static VisualizationDimensionItem create(Cursor cursor) {
-        return $AutoValue_VisualizationDimensionItem.createFromCursor(cursor);
+        return new AutoValue_VisualizationDimensionItem.Builder();
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
     public abstract static class Builder {
-
-        public abstract Builder id(Long id);
 
         public abstract Builder visualization(String visualization);
 
@@ -82,6 +73,8 @@ public abstract class VisualizationDimensionItem implements CoreObject {
         public abstract Builder dimensionItem(String dimensionItem);
 
         public abstract Builder dimensionItemType(String dimensionItemType);
+
+        public abstract Builder sortOrder(Integer sortOrder);
 
         public abstract VisualizationDimensionItem build();
     }

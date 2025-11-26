@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.settings
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
@@ -37,16 +36,15 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.settings.internal.AnalyticsTeiDataChildrenAppender
 import org.hisp.dhis.android.core.settings.internal.AnalyticsTeiSettingStore
+import org.hisp.dhis.android.persistence.settings.AnalyticsTeiSettingTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 class AnalyticsTeiSettingCollectionRepository internal constructor(
     store: AnalyticsTeiSettingStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyCollectionRepositoryImpl<AnalyticsTeiSetting, AnalyticsTeiSettingCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope.toBuilder().children(scope.children().withChild(AnalyticsTeiDataChildrenAppender.KEY)).build(),
     FilterConnectorFactory(
@@ -54,7 +52,6 @@ class AnalyticsTeiSettingCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         AnalyticsTeiSettingCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },
@@ -89,7 +86,7 @@ class AnalyticsTeiSettingCollectionRepository internal constructor(
 
     internal companion object {
         val childrenAppenders: ChildrenAppenderGetter<AnalyticsTeiSetting> = mapOf(
-            AnalyticsTeiDataChildrenAppender.KEY to ::AnalyticsTeiDataChildrenAppender,
+            AnalyticsTeiDataChildrenAppender.KEY to AnalyticsTeiDataChildrenAppender::create,
         )
     }
 }

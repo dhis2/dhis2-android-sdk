@@ -27,20 +27,20 @@
  */
 package org.hisp.dhis.android.core.datavalue.internal
 
-import org.hisp.dhis.android.core.datavalue.DataValueConflictTableInfo
-import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
-import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataSyncTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import org.hisp.dhis.android.persistence.datavalue.DataValueConflictTableInfo
+import org.hisp.dhis.android.persistence.datavalue.DataValueTableInfo
+import org.hisp.dhis.android.persistence.domain.AggregatedDataSyncTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 class DataValueModuleWiper internal constructor(private val tableWiper: TableWiper) : ModuleWiper {
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         // No metadata to wipe
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         tableWiper.wipeTables(
             DataValueTableInfo.TABLE_INFO,
             AggregatedDataSyncTableInfo.TABLE_INFO,

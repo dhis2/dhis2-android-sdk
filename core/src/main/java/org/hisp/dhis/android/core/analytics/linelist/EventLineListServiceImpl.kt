@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.hisp.dhis.android.core.program.ProgramIndicatorCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
-import org.hisp.dhis.android.core.program.programindicatorengine.ProgramIndicatorEngine
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorEngineImpl
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCollectionRepository
 import org.koin.core.annotation.Singleton
 
@@ -54,21 +54,21 @@ internal class EventLineListServiceImpl(
     private val programIndicatorRepository: ProgramIndicatorCollectionRepository,
     private val organisationUnitRepository: OrganisationUnitCollectionRepository,
     private val programStageRepository: ProgramStageCollectionRepository,
-    private val programIndicatorEngine: ProgramIndicatorEngine,
+    private val programIndicatorEngine: ProgramIndicatorEngineImpl,
     private val periodHelper: PeriodHelper,
     private val dateFilterPeriodHelper: DateFilterPeriodHelper,
     private val organisationUnitHelper: AnalyticsOrganisationUnitHelper,
     private val legendEvaluator: LegendEvaluator,
 ) : EventLineListService {
 
-    override fun evaluate(params: EventLineListParams): List<LineListResponse> {
+    override suspend fun evaluate(params: EventLineListParams): List<LineListResponse> {
         return evaluateEvents(params)
     }
 
     @Suppress("LongMethod", "ComplexMethod")
-    private fun evaluateEvents(params: EventLineListParams): List<LineListResponse> {
+    private suspend fun evaluateEvents(params: EventLineListParams): List<LineListResponse> {
         val events = getEvents(params)
-        val programStage = programStageRepository.uid(params.programStage).blockingGet()
+        val programStage = programStageRepository.uid(params.programStage).getInternal()
 
         val metadataMap = getMetadataMap(
             params.dataElements,
@@ -80,7 +80,7 @@ internal class EventLineListServiceImpl(
             dataValueRepository
                 .byEvent().`in`(events.map { it.uid() })
                 .byDataElement().`in`(params.dataElements.map { it.uid })
-                .blockingGet()
+                .getInternal()
         } else {
             listOf()
         }
@@ -88,18 +88,19 @@ internal class EventLineListServiceImpl(
         return events.mapNotNull {
             (it.eventDate() ?: it.dueDate())?.let { referenceDate ->
                 val periodType = programStage?.periodType() ?: PeriodType.Daily
-                val eventPeriod = periodHelper.blockingGetPeriodForPeriodTypeAndDate(periodType, referenceDate)
+                val eventPeriod = periodHelper.getPeriodForPeriodTypeAndDateInternal(periodType, referenceDate)
 
                 val eventDataValues = params.dataElements.map { de ->
                     val dv = dataElementValues.find { dv -> dv.event() == it.uid() && dv.dataElement() == de.uid }
 
                     val legend = when (params.analyticsLegendStrategy) {
                         is AnalyticsLegendStrategy.None -> null
-                        is AnalyticsLegendStrategy.ByDataItem -> legendEvaluator.getLegendByDataElement(
+                        is AnalyticsLegendStrategy.ByDataItem -> legendEvaluator.getLegendByDataElementInternal(
                             de.uid,
                             dv?.value(),
                         )
-                        is AnalyticsLegendStrategy.Fixed -> legendEvaluator.getLegendByLegendSet(
+
+                        is AnalyticsLegendStrategy.Fixed -> legendEvaluator.getLegendByLegendSetInternal(
                             params.analyticsLegendStrategy.legendSetUid,
                             dv?.value(),
                         )
@@ -115,15 +116,16 @@ internal class EventLineListServiceImpl(
 
                 val programIndicatorValues = params.programIndicators.map { pi ->
 
-                    val value = programIndicatorEngine.getEventProgramIndicatorValue(it.uid(), pi.uid)
+                    val value = programIndicatorEngine.getEventProgramIndicatorValueInternal(it.uid(), pi.uid)
 
                     val legend = when (params.analyticsLegendStrategy) {
                         is AnalyticsLegendStrategy.None -> null
-                        is AnalyticsLegendStrategy.ByDataItem -> legendEvaluator.getLegendByProgramIndicator(
+                        is AnalyticsLegendStrategy.ByDataItem -> legendEvaluator.getLegendByProgramIndicatorInternal(
                             pi.uid,
                             value,
                         )
-                        is AnalyticsLegendStrategy.Fixed -> legendEvaluator.getLegendByLegendSet(
+
+                        is AnalyticsLegendStrategy.Fixed -> legendEvaluator.getLegendByLegendSetInternal(
                             params.analyticsLegendStrategy.legendSetUid,
                             value,
                         )
@@ -149,7 +151,7 @@ internal class EventLineListServiceImpl(
         }
     }
 
-    private fun getEvents(params: EventLineListParams): List<Event> {
+    private suspend fun getEvents(params: EventLineListParams): List<Event> {
         var repoBuilder = eventRepository
             .byProgramStageUid().eq(params.programStage)
             .orderByTimeline(RepositoryScope.OrderByDirection.ASC)
@@ -164,7 +166,7 @@ internal class EventLineListServiceImpl(
         }
 
         return if (params.eventDates.isNullOrEmpty()) {
-            repoBuilder.blockingGet()
+            repoBuilder.getInternal()
         } else {
             params.eventDates.flatMap { filter ->
                 var innerBuilder = repoBuilder
@@ -174,12 +176,12 @@ internal class EventLineListServiceImpl(
                 dateFilterPeriodHelper.getEndDate(filter)?.let {
                     innerBuilder = innerBuilder.byEventDate().beforeOrEqual(it)
                 }
-                innerBuilder.blockingGet()
+                innerBuilder.getInternal()
             }
         }
     }
 
-    private fun getMetadataMap(
+    private suspend fun getMetadataMap(
         dataElements: List<LineListItem>,
         programIndicators: List<LineListItem>,
         organisationUnitUids: HashSet<String>,
@@ -187,7 +189,7 @@ internal class EventLineListServiceImpl(
         val dataElementNameMap = if (dataElements.isNotEmpty()) {
             dataElementRepository
                 .byUid().`in`(dataElements.map { it.uid })
-                .blockingGet()
+                .getInternal()
                 .map { it.uid()!! to it.displayName()!! }.toMap()
         } else {
             mapOf()
@@ -196,7 +198,7 @@ internal class EventLineListServiceImpl(
         val programIndicatorNameMap = if (programIndicators.isNotEmpty()) {
             programIndicatorRepository
                 .byUid().`in`(programIndicators.map { it.uid })
-                .blockingGet()
+                .getInternal()
                 .map { it.uid()!! to it.displayName()!! }.toMap()
         } else {
             mapOf()
@@ -204,13 +206,13 @@ internal class EventLineListServiceImpl(
 
         val organisationUnitNameMap = organisationUnitRepository
             .byUid().`in`(organisationUnitUids)
-            .blockingGet()
+            .getInternal()
             .map { it.uid()!! to it.displayName()!! }.toMap()
 
         return dataElementNameMap + programIndicatorNameMap + organisationUnitNameMap
     }
 
-    private fun getOrganisationUnitUids(organisationUnitFilters: List<OrganisationUnitFilter>?): List<String>? {
+    private suspend fun getOrganisationUnitUids(organisationUnitFilters: List<OrganisationUnitFilter>?): List<String>? {
         return organisationUnitFilters?.flatMap { filter ->
             val relativeOrgunitUids = filter.relativeOrganisationUnit?.let {
                 organisationUnitHelper.getRelativeOrganisationUnitUids(it)

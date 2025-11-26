@@ -29,6 +29,8 @@
 package org.hisp.dhis.android.core.user
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
@@ -45,11 +47,11 @@ class UserDisabledMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueab
     @After
     @Throws(D2Error::class)
     fun tearDown() {
-        d2.wipeModule().wipeData()
+        runBlocking { d2.wipeModule().wipeData() }
     }
 
     @Test
-    fun delete_database_when_user_disabled() {
+    fun delete_database_when_user_disabled() = runTest {
         dhis2MockServer.enqueueMockResponse(401, "user/user_disabled.json")
         addDummyData()
         assertThat(d2.userModule().accountManager().getAccounts().size).isEqualTo(1)
@@ -64,7 +66,7 @@ class UserDisabledMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueab
     }
 
     @Test
-    fun do_not_delete_database_when_user_has_bad_credentials() {
+    fun do_not_delete_database_when_user_has_bad_credentials() = runTest {
         dhis2MockServer.enqueueMockResponse(401, "user/user_unauthorized.json")
         addDummyData()
         assertThat(d2.userModule().accountManager().getAccounts().size).isEqualTo(1)

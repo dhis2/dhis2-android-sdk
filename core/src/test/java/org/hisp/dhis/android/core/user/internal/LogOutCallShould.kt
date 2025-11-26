@@ -28,29 +28,29 @@
 package org.hisp.dhis.android.core.user.internal
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.times
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
+import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.systeminfo.internal.ServerTimezoneManager
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
 class LogOutCallShould {
     private val credentialsSecureStore: CredentialsSecureStore = mock()
     private val userIdStore: UserIdInMemoryStore = mock()
     private val credentials: Credentials = mock()
-    private val databaseAdapter: DatabaseAdapter = mock()
-    private val databaseAdapterFactory: DatabaseAdapterFactory = mock()
+    private val databaseManager: DatabaseManager = mock()
+    private val serverTimezoneManager: ServerTimezoneManager = mock()
 
     private lateinit var logOutCall: LogOutCall
 
@@ -58,7 +58,7 @@ class LogOutCallShould {
     fun setUp() {
         whenever(credentials.username).thenReturn("user")
         whenever(credentials.password).thenReturn("password")
-        logOutCall = LogOutCall(databaseAdapter, databaseAdapterFactory, credentialsSecureStore, userIdStore)
+        logOutCall = LogOutCall(databaseManager, credentialsSecureStore, userIdStore, serverTimezoneManager)
     }
 
     @Test
@@ -67,6 +67,14 @@ class LogOutCallShould {
         whenever(userIdStore.get()).thenReturn("user-id")
         logOutCall.logOut().blockingAwait()
         verify(credentialsSecureStore, times(1)).remove()
+        verify(serverTimezoneManager, times(1)).clearCache()
+    }
+
+    @Test
+    fun clear_server_timezone_cache() {
+        whenever(credentialsSecureStore.get()).thenReturn(credentials)
+        logOutCall.logOut().blockingAwait()
+        verify(serverTimezoneManager, times(1)).clearCache()
     }
 
     @Test

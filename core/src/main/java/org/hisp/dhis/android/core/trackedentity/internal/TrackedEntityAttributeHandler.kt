@@ -39,7 +39,7 @@ internal class TrackedEntityAttributeHandler(
     trackedEntityAttributeStore: TrackedEntityAttributeStore,
     private val trackedEntityAttributeLegendSetLinkHandler: TrackedEntityAttributeLegendSetLinkHandler,
 ) : IdentifiableHandlerImpl<TrackedEntityAttribute>(trackedEntityAttributeStore) {
-    override fun beforeObjectHandled(o: TrackedEntityAttribute): TrackedEntityAttribute {
+    override suspend fun beforeObjectHandled(o: TrackedEntityAttribute): TrackedEntityAttribute {
         val builder = o.toBuilder()
         if (o.formName() == null) {
             builder.formName(o.name())
@@ -50,7 +50,7 @@ internal class TrackedEntityAttributeHandler(
         return builder.build()
     }
 
-    override fun afterObjectHandled(o: TrackedEntityAttribute, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: TrackedEntityAttribute, action: HandleAction) {
         if (o.legendSets() != null) {
             trackedEntityAttributeLegendSetLinkHandler.handleMany(
                 o.uid(),
@@ -65,7 +65,7 @@ internal class TrackedEntityAttributeHandler(
         }
     }
 
-    override fun deleteIfCondition(o: TrackedEntityAttribute): Boolean {
+    override suspend fun deleteIfCondition(o: TrackedEntityAttribute): Boolean {
         return !o.access().read()
     }
 }

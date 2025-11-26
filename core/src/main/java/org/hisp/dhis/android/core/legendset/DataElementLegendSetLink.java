@@ -28,14 +28,11 @@
 
 package org.hisp.dhis.android.core.legendset;
 
-import android.database.Cursor;
+import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.CoreObject;
-
-import androidx.annotation.Nullable;
 
 @AutoValue
 public abstract class DataElementLegendSetLink implements CoreObject {
@@ -49,20 +46,14 @@ public abstract class DataElementLegendSetLink implements CoreObject {
     @Nullable
     public abstract Integer sortOrder();
 
-    public static DataElementLegendSetLink create(Cursor cursor) {
-        return AutoValue_DataElementLegendSetLink.createFromCursor(cursor);
-    }
-
     public static Builder builder() {
-        return new $$AutoValue_DataElementLegendSetLink.Builder();
+        return new AutoValue_DataElementLegendSetLink.Builder();
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
+    public abstract static class Builder {
         public abstract Builder dataElement(String dataElement);
 
         public abstract Builder legendSet(String legendSet);

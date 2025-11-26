@@ -28,32 +28,24 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetLinkTableInfo
 
 internal class TrackedEntityAttributeLegendSetChildrenAppender(
-    private val linkChildStore: ObjectWithUidChildStore<TrackedEntityAttribute>,
+    private val linkStore: TrackedEntityAttributeLegendSetLinkStore,
 ) : ChildrenAppender<TrackedEntityAttribute>() {
 
-    override fun appendChildren(m: TrackedEntityAttribute): TrackedEntityAttribute {
-        val builder = m.toBuilder()
-        builder.legendSets(linkChildStore.getChildren(m))
-        return builder.build()
+    override suspend fun appendChildren(m: TrackedEntityAttribute): TrackedEntityAttribute {
+        val legendSets = linkStore.getForTrackedEntityAttribute(m.uid())
+        return m.toBuilder()
+            .legendSets(legendSets)
+            .build()
     }
 
     companion object {
-        fun create(databaseAdapter: DatabaseAdapter): TrackedEntityAttributeLegendSetChildrenAppender {
-            return TrackedEntityAttributeLegendSetChildrenAppender(
-                StoreFactory.objectWithUidChildStore(
-                    databaseAdapter,
-                    TrackedEntityAttributeLegendSetLinkTableInfo.TABLE_INFO,
-                    TrackedEntityAttributeLegendSetLinkTableInfo.CHILD_PROJECTION,
-                ),
-            )
+        fun create(): TrackedEntityAttributeLegendSetChildrenAppender {
+            return TrackedEntityAttributeLegendSetChildrenAppender(koin.get())
         }
     }
 }

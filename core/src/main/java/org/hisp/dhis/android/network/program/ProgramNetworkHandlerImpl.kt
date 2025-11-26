@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.internal.ProgramNetworkHandler
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
 import org.hisp.dhis.android.network.common.fields.DataAccessFields
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.koin.core.annotation.Singleton
@@ -41,7 +41,7 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class ProgramNetworkHandlerImpl(
     httpServiceClient: HttpServiceClient,
-    private val dhisVersionManager: DHISVersionManager,
+    private val dhisVersionManager: DHISVersionManagerImpl,
 ) : ProgramNetworkHandler {
     private val service = ProgramService(httpServiceClient)
     override suspend fun getPrograms(uids: Set<String>): Payload<Program> {
@@ -55,8 +55,8 @@ internal class ProgramNetworkHandlerImpl(
         return apiPayload.mapItems(ProgramDTO::toDomain)
     }
 
-    private fun getFields(): Fields<Program> {
-        return if (dhisVersionManager.isGreaterThan(DHISVersion.V2_34)) {
+    private suspend fun getFields(): Fields<Program> {
+        return if (dhisVersionManager.isGreaterThanInternal(DHISVersion.V2_34)) {
             ProgramFields.allFields
         } else {
             ProgramFields.allFieldsBefore35

@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.program
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
@@ -38,16 +37,15 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope.OrderByDirection
 import org.hisp.dhis.android.core.program.internal.DataElementValueTypeRenderingChildrenAppender
 import org.hisp.dhis.android.core.program.internal.ProgramStageDataElementStore
+import org.hisp.dhis.android.persistence.program.ProgramStageDataElementTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 class ProgramStageDataElementCollectionRepository internal constructor(
     store: ProgramStageDataElementStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramStageDataElement, ProgramStageDataElementCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -55,7 +53,6 @@ class ProgramStageDataElementCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         ProgramStageDataElementCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },
@@ -100,7 +97,7 @@ class ProgramStageDataElementCollectionRepository internal constructor(
         private const val RENDER_TYPE = "renderType"
 
         val childrenAppenders: ChildrenAppenderGetter<ProgramStageDataElement> = mapOf(
-            RENDER_TYPE to ::DataElementValueTypeRenderingChildrenAppender,
+            RENDER_TYPE to DataElementValueTypeRenderingChildrenAppender::create,
         )
     }
 }

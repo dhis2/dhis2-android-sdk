@@ -31,20 +31,19 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.paging.PagedList
 import androidx.paging.testing.asSnapshot
 import com.jraska.livedata.TestObserver
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.internal.CategoryOptionStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.hisp.dhis.android.persistence.common.querybuilders.OrderByClauseBuilder
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class PagingMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 
     @get:Rule
@@ -54,12 +53,14 @@ class PagingMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     private lateinit var allValues: List<CategoryOption>
 
     private val empty = RepositoryScope.empty()
-    private val orderByClause = OrderByClauseBuilder.orderByFromItems(empty.orderBy(), empty.pagingKey())
+    private val orderByClause = OrderByClauseBuilder.orderByFromItems(empty.orderBy())
 
     @Before
     fun setUp() {
-        store = objects.d2DIComponent.categoryOptionStore
-        allValues = store.selectWhere("1", orderByClause, 8)
+        runBlocking {
+            store = objects.d2DIComponent.categoryOptionStore
+            allValues = store.selectWhere("1", orderByClause, 8)
+        }
     }
 
     @Test

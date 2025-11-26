@@ -37,7 +37,7 @@ import org.koin.core.annotation.Singleton
 internal class JobReportFileResourceHandler internal constructor(
     private val fileResourceHelper: FileResourceHelper,
 ) {
-    fun updateFileResourceStates(jobObjects: List<TrackerJobObject>) {
+    suspend fun updateFileResourceStates(jobObjects: List<TrackerJobObject>) {
         val progress = D2ProgressManager(null)
 
         val fileResources = jobObjects.flatMap { it.fileResources() }

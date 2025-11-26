@@ -35,18 +35,18 @@ import io.ktor.client.request.forms.formData
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.systeminfo.internal.PingCall
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
+import org.hisp.dhis.android.persistence.datavalue.DataValueTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeValueTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityDataValueTableInfo
 import org.koin.core.annotation.Singleton
 import java.io.File
 import java.io.IOException
@@ -98,7 +98,7 @@ internal class FileResourcePostCall(
                     key = "file",
                     value = file.readBytes(),
                     headers = Headers.build {
-                        append(HttpHeaders.ContentDisposition, "form-data; name=\"file\"; filename=\"$fileName\"")
+                        append(HttpHeaders.ContentDisposition, "filename=\"$fileName\"")
                         append(HttpHeaders.ContentType, type)
                     },
                 )
@@ -106,7 +106,7 @@ internal class FileResourcePostCall(
         )
     }
 
-    private fun handleResponse(
+    private suspend fun handleResponse(
         downloadedFileResource: FileResource,
         fileResource: FileResource,
         file: File,
@@ -128,14 +128,14 @@ internal class FileResourcePostCall(
         }
     }
 
-    private fun handleMissingFile(fileResource: FileResource, value: FileResourceValue) {
+    private suspend fun handleMissingFile(fileResource: FileResource, value: FileResourceValue) {
         if (fileResource.uid() != null) {
             updateValue(fileResource, null, value)
             fileResourceStore.deleteIfExists(fileResource.uid()!!)
         }
     }
 
-    private fun updateValue(
+    private suspend fun updateValue(
         fileResource: FileResource,
         newUid: String?,
         value: FileResourceValue,
@@ -149,7 +149,7 @@ internal class FileResourcePostCall(
         updateValueMethod(fileResource, newUid, value.uid)
     }
 
-    private fun updateAggregatedDataValue(fileResource: FileResource, newUid: String?, elementUid: String) {
+    private suspend fun updateAggregatedDataValue(fileResource: FileResource, newUid: String?, elementUid: String) {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(DataValueTableInfo.Columns.VALUE, fileResource.uid()!!)
             .appendKeyStringValue(DataValueTableInfo.Columns.DATA_ELEMENT, elementUid)
@@ -167,7 +167,7 @@ internal class FileResourcePostCall(
         }
     }
 
-    private fun updateTrackedEntityAttributeValue(
+    private suspend fun updateTrackedEntityAttributeValue(
         fileResource: FileResource,
         newUid: String?,
         elementUid: String,
@@ -187,7 +187,7 @@ internal class FileResourcePostCall(
         } ?: false
     }
 
-    private fun updateTrackedEntityDataValue(fileResource: FileResource, newUid: String?, elementUid: String) {
+    private suspend fun updateTrackedEntityDataValue(fileResource: FileResource, newUid: String?, elementUid: String) {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.VALUE, fileResource.uid()!!)
             .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT, elementUid)
@@ -202,12 +202,12 @@ internal class FileResourcePostCall(
         }
     }
 
-    private fun updateFileResource(
+    private suspend fun updateFileResource(
         fileResource: FileResource,
         downloadedFileResource: FileResource,
         file: File,
     ) {
-        fileResourceStore.delete(fileResource.uid()!!)
+        fileResourceStore.deleteByEntity(fileResource)
         fileResourceHandler.handle(
             downloadedFileResource.toBuilder()
                 .syncState(State.UPLOADING)

@@ -28,14 +28,11 @@
 package org.hisp.dhis.android.core.icon
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.customicon.CustomIconDTO
 import org.junit.Test
 
-class CustomIconShould :
-    BaseObjectKotlinxShould("icon/custom_icon.json"),
-    ObjectShould {
+class CustomIconShould : CoreObjectShould("icon/custom_icon.json") {
 
     @Test
     override fun map_from_json_string() {

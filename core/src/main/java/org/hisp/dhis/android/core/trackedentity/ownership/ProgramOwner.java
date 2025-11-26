@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.trackedentity.ownership;
 
-import android.database.Cursor;
-
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseDataObject;
@@ -44,19 +42,13 @@ public abstract class ProgramOwner extends BaseDataObject {
     public abstract String ownerOrgUnit();
 
     public static Builder builder() {
-        return new $$AutoValue_ProgramOwner.Builder();
-    }
-
-    public static ProgramOwner create(Cursor cursor) {
-        return $AutoValue_ProgramOwner.createFromCursor(cursor);
+        return new AutoValue_ProgramOwner.Builder();
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseDataObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
+    public abstract static class Builder implements BaseDataObject.Builder<Builder> {
         public abstract Builder program(String event);
 
         public abstract Builder trackedEntityInstance(String trackedEntityInstance);

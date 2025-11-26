@@ -27,15 +27,22 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingStoreImpl
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
+import org.hisp.dhis.android.core.common.valuetype.devicerendering.internal.ValueTypeDeviceRenderingStore
 import org.hisp.dhis.android.core.program.ProgramStageDataElement
 
 internal class DataElementValueTypeRenderingChildrenAppender(
-    databaseAdapter: DatabaseAdapter,
-) : ValueTypeRenderingChildrenAppender<ProgramStageDataElement>(ValueTypeDeviceRenderingStoreImpl(databaseAdapter)) {
-    override fun appendChildren(m: ProgramStageDataElement): ProgramStageDataElement {
+    store: ValueTypeDeviceRenderingStore,
+) : ValueTypeRenderingChildrenAppender<ProgramStageDataElement>(store) {
+    override suspend fun appendChildren(m: ProgramStageDataElement): ProgramStageDataElement {
         val valueTypeRendering = getValueTypeDeviceRendering(m)
         return m.toBuilder().renderType(valueTypeRendering).build()
+    }
+
+    companion object {
+        fun create(): ChildrenAppender<ProgramStageDataElement> {
+            return DataElementValueTypeRenderingChildrenAppender(koin.get())
+        }
     }
 }

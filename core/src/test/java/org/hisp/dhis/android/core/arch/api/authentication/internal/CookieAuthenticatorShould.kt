@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.arch.api.authentication.internal
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.mock
 import io.ktor.client.call.HttpClientCall
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.statement.HttpResponse
@@ -41,6 +40,7 @@ import io.ktor.util.InternalAPI
 import io.ktor.util.date.GMTDate
 import io.ktor.utils.io.ByteReadChannel
 import org.junit.Test
+import org.mockito.kotlin.mock
 import kotlin.coroutines.CoroutineContext
 
 class CookieAuthenticatorShould {

@@ -27,41 +27,21 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.linkChildStore
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroupTableInfo
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo
 
 internal class OrganisationUnitOrganisationUnitGroupProgramChildrenAppender private constructor(
-    private val linkChildStore: LinkChildStore<OrganisationUnit, OrganisationUnitGroup>,
+    private val childStore: OrganisationUnitGroupStore,
 ) : ChildrenAppender<OrganisationUnit>() {
-    override fun appendChildren(m: OrganisationUnit): OrganisationUnit {
-        val builder = m.toBuilder()
-        builder.organisationUnitGroups(linkChildStore.getChildren(m))
-        return builder.build()
+    override suspend fun appendChildren(m: OrganisationUnit): OrganisationUnit {
+        val children = childStore.getForOrganisationUnit(m.uid())
+        return m.toBuilder().organisationUnitGroups(children).build()
     }
 
     companion object {
-        private val CHILD_PROJECTION = LinkTableChildProjection(
-            OrganisationUnitGroupTableInfo.TABLE_INFO,
-            OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT,
-            OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT_GROUP,
-        )
-
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<OrganisationUnit> {
-            return OrganisationUnitOrganisationUnitGroupProgramChildrenAppender(
-                linkChildStore(
-                    databaseAdapter,
-                    OrganisationUnitOrganisationUnitGroupLinkTableInfo.TABLE_INFO,
-                    CHILD_PROJECTION,
-                ) { cursor: Cursor -> OrganisationUnitGroup.create(cursor) },
-            )
+        fun create(): ChildrenAppender<OrganisationUnit> {
+            return OrganisationUnitOrganisationUnitGroupProgramChildrenAppender(koin.get())
         }
     }
 }

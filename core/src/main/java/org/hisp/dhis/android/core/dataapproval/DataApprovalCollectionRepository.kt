@@ -27,23 +27,21 @@
  */
 package org.hisp.dhis.android.core.dataapproval
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalStore
+import org.hisp.dhis.android.persistence.dataapproval.DataApprovalTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 class DataApprovalCollectionRepository internal constructor(
     dataApprovalStore: DataApprovalStore,
-    databaseAdapter: DatabaseAdapter,
     repositoryScope: RepositoryScope,
 ) : ReadOnlyCollectionRepositoryImpl<DataApproval, DataApprovalCollectionRepository>(
     dataApprovalStore,
-    databaseAdapter,
     emptyMap(),
     repositoryScope,
     FilterConnectorFactory(
@@ -51,7 +49,6 @@ class DataApprovalCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         DataApprovalCollectionRepository(
             dataApprovalStore,
-            databaseAdapter,
             s,
         )
     },

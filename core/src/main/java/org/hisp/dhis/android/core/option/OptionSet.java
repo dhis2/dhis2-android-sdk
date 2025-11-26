@@ -28,14 +28,10 @@
 
 package org.hisp.dhis.android.core.option;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbValueTypeColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ValueType;
@@ -47,23 +43,16 @@ public abstract class OptionSet extends BaseIdentifiableObject implements CoreOb
     public abstract Integer version();
 
     @Nullable
-    @ColumnAdapter(DbValueTypeColumnAdapter.class)
     public abstract ValueType valueType();
 
     public static Builder builder() {
-        return new $$AutoValue_OptionSet.Builder();
-    }
-
-    public static OptionSet create(Cursor cursor) {
-        return $AutoValue_OptionSet.createFromCursor(cursor);
+        return new AutoValue_OptionSet.Builder();
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
         public abstract Builder version(@Nullable Integer version);
 
         public abstract Builder valueType(@Nullable ValueType valueType);

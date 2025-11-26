@@ -27,21 +27,21 @@
  */
 package org.hisp.dhis.android.core.maintenance.internal
 
-import org.hisp.dhis.android.core.maintenance.D2ErrorTableInfo
-import org.hisp.dhis.android.core.maintenance.ForeignKeyViolationTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import org.hisp.dhis.android.persistence.maintenance.D2ErrorTableInfo
+import org.hisp.dhis.android.persistence.maintenance.ForeignKeyViolationTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class MaintenanceModuleWiper(
     private val tableWiper: TableWiper,
 ) : ModuleWiper {
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         // No metadata to wipe
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         tableWiper.wipeTables(
             D2ErrorTableInfo.TABLE_INFO,
             ForeignKeyViolationTableInfo.TABLE_INFO,

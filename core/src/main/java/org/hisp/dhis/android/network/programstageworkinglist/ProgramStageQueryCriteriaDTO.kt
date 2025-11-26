@@ -53,7 +53,7 @@ internal data class ProgramStageQueryCriteriaDTO(
     val dataFilters: List<ProgramStageWorkingListEventDataFilterDTO>?,
     val attributeValueFilters: List<ProgramStageWorkingListAttributeValueFilterDTO>?,
 ) {
-    fun toDomain(): ProgramStageQueryCriteria {
+    fun toDomain(programStageWorkingList: String): ProgramStageQueryCriteria {
         return ProgramStageQueryCriteria.builder()
             .eventStatus(eventStatus?.let { EventStatus.valueOf(it) })
             .eventCreatedAt(eventCreatedAt?.toDomain())
@@ -67,8 +67,8 @@ internal data class ProgramStageQueryCriteriaDTO(
             .orgUnit(orgUnit)
             .ouMode(ouMode?.let { OrganisationUnitMode.valueOf(it) })
             .assignedUserMode(assignedUserMode?.let { AssignedUserMode.valueOf(it) })
-            .dataFilters(dataFilters?.map { it.toDomain() })
-            .attributeValueFilters(attributeValueFilters?.map { it.toDomain() })
+            .dataFilters(dataFilters?.map { it.toDomain(programStageWorkingList) })
+            .attributeValueFilters(attributeValueFilters?.map { it.toDomain(programStageWorkingList) })
             .build()
     }
 }

@@ -32,10 +32,11 @@ import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.TrackerLineListContext
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper
 import org.hisp.dhis.android.core.constant.Constant
-import org.hisp.dhis.android.core.constant.internal.ConstantStoreImpl
-import org.hisp.dhis.android.core.dataelement.internal.DataElementStoreImpl
+import org.hisp.dhis.android.core.constant.internal.ConstantStore
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitorScope
 import org.hisp.dhis.android.core.parser.internal.expression.CommonParser
@@ -46,7 +47,7 @@ import org.hisp.dhis.android.core.program.programindicatorengine.internal.Progra
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorParserUtils
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLContext
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.literal.ProgramIndicatorSQLLiteral
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStoreImpl
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.antlr.Parser
 
 internal class ProgramIndicatorEvaluator(
@@ -54,11 +55,11 @@ internal class ProgramIndicatorEvaluator(
     private val context: TrackerLineListContext,
 ) : TrackerLineListEvaluator() {
 
-    private val constantStore = ConstantStoreImpl(context.databaseAdapter)
-    private val dataElementStore = DataElementStoreImpl(context.databaseAdapter)
-    private val trackedEntityAttributeStore = TrackedEntityAttributeStoreImpl(context.databaseAdapter)
+    private val constantStore: ConstantStore = koin.get()
+    private val dataElementStore: DataElementStore = koin.get()
+    private val trackedEntityAttributeStore: TrackedEntityAttributeStore = koin.get()
 
-    override fun getCommonSelectSQL(): String {
+    override suspend fun getCommonSelectSQL(): String {
         val programIndicator = getProgramIndicator()
 
         val context = ProgramIndicatorSQLContext(
@@ -86,7 +87,7 @@ internal class ProgramIndicatorEvaluator(
             "END"
     }
 
-    override fun getCommonWhereSQL(): String {
+    override suspend fun getCommonWhereSQL(): String {
         return DataFilterHelper.getWhereClause(item.id, item.filters)
     }
 
@@ -97,12 +98,12 @@ internal class ProgramIndicatorEvaluator(
         return ((programIndicatorMetadata) as MetadataItem.ProgramIndicatorItem).item
     }
 
-    private fun constantMap(): Map<String, Constant> {
+    private suspend fun constantMap(): Map<String, Constant> {
         val constants = constantStore.selectAll()
         return UidsHelper.mapByUid(constants)
     }
 
-    private fun newVisitor(
+    private suspend fun newVisitor(
         itemMethod: ExpressionItemMethod,
         context: ProgramIndicatorSQLContext,
     ): CommonExpressionVisitor {
@@ -118,13 +119,13 @@ internal class ProgramIndicatorEvaluator(
         )
     }
 
-    override fun getSelectSQLForTrackedEntityInstance(): String {
+    override suspend fun getSelectSQLForTrackedEntityInstance(): String {
         throw AnalyticsException.InvalidArguments(
             "ProgramIndicator is not supported in TRACKED_ENTITY_INSTANCE output type",
         )
     }
 
-    override fun getWhereSQLForTrackedEntityInstance(): String {
+    override suspend fun getWhereSQLForTrackedEntityInstance(): String {
         throw AnalyticsException.InvalidArguments(
             "ProgramIndicator is not supported in TRACKED_ENTITY_INSTANCE output type",
         )

@@ -29,9 +29,14 @@ package org.hisp.dhis.android.core.arch.db.access.internal
 
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.cursors.internal.CursorExecutorImpl
-import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore
+import org.hisp.dhis.android.core.arch.db.stores.KoinStoreRegistry
+import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore
+import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
+import org.hisp.dhis.android.persistence.common.SchemaRow
+import org.hisp.dhis.android.persistence.db.access.RoomDatabaseAdapter
+import org.hisp.dhis.android.persistence.db.access.RoomDatabaseManager
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Test
@@ -41,15 +46,17 @@ class DatabaseFromMigrationsIntegrationShould {
     companion object {
         private const val DB_NAME_1 = "database-from-migrations-integration-should-1.db"
         private const val DB_NAME_2 = "database-from-migrations-integration-should-2.db"
-        private lateinit var databaseAdapterFactory: DatabaseAdapterFactory
-
+        private val storeRegistry = KoinStoreRegistry()
+        private val databasAdapter = RoomDatabaseAdapter(storeRegistry)
         private val context = InstrumentationRegistry.getInstrumentation().context
+        private val secureStore = AndroidSecureStore(context)
+        private val passwordManager = DatabaseEncryptionPasswordManager.Companion.create(secureStore)
+        private val databaseManager = RoomDatabaseManager(databasAdapter, context, passwordManager)
 
         @BeforeClass
         @JvmStatic
         fun setUpClass() {
             deleteDatabases()
-            databaseAdapterFactory = DatabaseAdapterFactory.create(context, InMemorySecureStore())
         }
 
         @AfterClass
@@ -65,18 +72,14 @@ class DatabaseFromMigrationsIntegrationShould {
     }
 
     @Test
-    fun ensure_db_from_snapshots_and_from_migrations_have_the_same_schema() {
-        val databaseAdapter = databaseAdapterFactory.newParentDatabaseAdapter()
+    fun ensure_db_from_snapshots_and_from_migrations_have_the_same_schema() = runTest {
+        createDb(DB_NAME_1)
+        val schema1 = getSchema(Companion.databasAdapter)
 
-        createDb(databaseAdapter, DB_NAME_1)
-        val schema1 = getSchema(databaseAdapter)
+        createDb(DB_NAME_2)
+        val schema2 = getSchema(Companion.databasAdapter)
 
-        DatabaseMigrationExecutor.USE_SNAPSHOT = false
-
-        createDb(databaseAdapter, DB_NAME_2)
-        val schema2 = getSchema(databaseAdapter)
-
-        databaseAdapter.close()
+        Companion.databasAdapter.close()
 
         val diff1 = schema1 - schema2
         val diff2 = schema2 - schema1
@@ -85,17 +88,13 @@ class DatabaseFromMigrationsIntegrationShould {
         assertThat(diff2).isEmpty()
     }
 
-    private fun createDb(databaseAdapter: DatabaseAdapter, name: String) {
-        databaseAdapterFactory.createOrOpenDatabase(databaseAdapter, name, false)
+    private fun createDb(name: String) {
+        databaseManager.createOrOpenUnencryptedDatabase(name)
     }
 
-    private fun getSchema(databaseAdapter: DatabaseAdapter): List<SchemaRow> {
-        val cursor = databaseAdapter.rawQuery("SELECT name, sql FROM sqlite_master ORDER BY name")
-        val list = mutableListOf<SchemaRow>()
-        val cursorExecutor = CursorExecutorImpl { c -> SchemaRow(c.getString(0), c.getString(1)) }
-        cursorExecutor.addObjectsToCollection(cursor, list)
-        return list.toList().map { row -> row.copy(sql = row.sql?.replace("\"", "")) }
+    private suspend fun getSchema(databaseAdapter: DatabaseAdapter): List<SchemaRow> {
+        val dao = databaseAdapter.getCurrentDatabase().d2Dao()
+        val schemaRowList = dao.getSchemaRows()
+        return schemaRowList.map { row -> row.copy(sql = row.sql?.replace("\"", "")) }
     }
-
-    private data class SchemaRow(val name: String, val sql: String?)
 }

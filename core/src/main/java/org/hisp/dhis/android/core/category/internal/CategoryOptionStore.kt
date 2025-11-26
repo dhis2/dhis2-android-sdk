@@ -31,4 +31,7 @@ package org.hisp.dhis.android.core.category.internal
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.category.CategoryOption
 
-internal interface CategoryOptionStore : IdentifiableObjectStore<CategoryOption>
+internal interface CategoryOptionStore : IdentifiableObjectStore<CategoryOption> {
+    suspend fun getForCategoryOptionCombo(categoryOptionComboUid: String): List<CategoryOption>
+    suspend fun getForCategory(categoryUid: String): List<CategoryOption>
+}

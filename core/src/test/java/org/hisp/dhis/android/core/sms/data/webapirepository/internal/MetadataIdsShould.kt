@@ -29,12 +29,11 @@ package org.hisp.dhis.android.core.sms.data.webapirepository.internal
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.metadata.MetadataIdsDTO
 import org.junit.Test
 
-class MetadataIdsShould : BaseObjectKotlinxShould("sms/metadata_ids.json"), ObjectShould {
+class MetadataIdsShould : CoreObjectShould("sms/metadata_ids.json") {
 
     @Test
     override fun map_from_json_string() {

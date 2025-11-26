@@ -29,24 +29,48 @@
 package org.hisp.dhis.android.core.event
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.*
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.event.internal.EventDownloadCall
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.KArgumentCaptor
+import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 class EventDownloaderShould {
 
     private val call: EventDownloadCall = mock()
+    private val eventFilterCollectionRepository: EventFilterCollectionRepository = mock()
+    private val eventFilterCollectionRepositoryList: EventFilterCollectionRepository = mock()
+    private val connectorEvent: StringFilterConnector<EventFilterCollectionRepository> = mock()
 
     private val paramsCapture: KArgumentCaptor<ProgramDataDownloadParams> = argumentCaptor()
 
+    private lateinit var params: ProgramDataDownloadParams
     private lateinit var downloader: EventDownloader
+
+    private val filterUid = "filterUid"
+    private val filterUidList = listOf("filterUid0", "filterUid1", "filterUid2")
+    private val eventFilter = EventFilter.builder().uid(filterUid).build()
+    private val eventFilterList = filterUidList.map { EventFilter.builder().uid(it).build() }
 
     @Before
     fun setUp() {
-        downloader = EventDownloader(RepositoryScope.empty(), call)
+        params = ProgramDataDownloadParams.builder().build()
+        downloader = EventDownloader(call, params, eventFilterCollectionRepository)
+
+        whenever(eventFilterCollectionRepository.byUid()).thenReturn(connectorEvent)
+        whenever(connectorEvent.`in`(listOf(filterUid))).thenReturn(eventFilterCollectionRepository)
+        whenever(connectorEvent.`in`(filterUidList)).thenReturn(eventFilterCollectionRepositoryList)
+        whenever(eventFilterCollectionRepository.withEventDataFilters()).thenReturn(eventFilterCollectionRepository)
+        whenever(eventFilterCollectionRepositoryList.withEventDataFilters()).thenReturn(
+            eventFilterCollectionRepositoryList,
+        )
+        whenever(eventFilterCollectionRepository.blockingGet()).thenReturn(listOf(eventFilter))
+        whenever(eventFilterCollectionRepositoryList.blockingGet()).thenReturn(eventFilterList)
     }
 
     @Test
@@ -71,5 +95,40 @@ class EventDownloaderShould {
         assertThat(params.uids()[0]).isEqualTo("uid0")
         assertThat(params.uids()[1]).isEqualTo("uid1")
         assertThat(params.uids()[2]).isEqualTo("uid2")
+    }
+
+    @Test
+    fun should_parse_filter_uid_eq_params() {
+        downloader.byFilterUid().eq(filterUid).download()
+
+        verify(call).download(paramsCapture.capture())
+        val params = paramsCapture.firstValue
+
+        assertThat(params.eventFilters()?.size).isEqualTo(1)
+        assertThat(params.eventFilters()?.get(0)?.uid()).isEqualTo(filterUid)
+    }
+
+    @Test
+    fun should_parse_filter_uid_in_params() {
+        downloader.byFilterUid().`in`(filterUidList).download()
+
+        verify(call).download(paramsCapture.capture())
+        val params = paramsCapture.firstValue
+
+        assertThat(params.eventFilters()?.size).isEqualTo(3)
+        assertThat(params.eventFilters()?.get(0)?.uid()).isEqualTo("filterUid0")
+        assertThat(params.eventFilters()?.get(1)?.uid()).isEqualTo("filterUid1")
+        assertThat(params.eventFilters()?.get(2)?.uid()).isEqualTo("filterUid2")
+    }
+
+    @Test
+    fun should_parse_event_filter_params() {
+        val eventFilter: EventFilter = mock()
+        downloader.byEventFilter().eq(eventFilter).download()
+
+        verify(call).download(paramsCapture.capture())
+        val params = paramsCapture.firstValue
+
+        assertThat(params.eventFilters()).isEqualTo(listOf(eventFilter))
     }
 }

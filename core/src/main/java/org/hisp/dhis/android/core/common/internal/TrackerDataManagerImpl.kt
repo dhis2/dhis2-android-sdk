@@ -27,17 +27,14 @@
  */
 package org.hisp.dhis.android.core.common.internal
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.DeletableDataObject
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
@@ -47,7 +44,10 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
-import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerTableInfo
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.persistence.event.EventTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.ProgramOwnerTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -62,7 +62,7 @@ internal class TrackerDataManagerImpl(
     private val programOwner: ProgramOwnerStore,
 ) : TrackerDataManager {
 
-    override fun deleteTrackedEntity(tei: TrackedEntityInstance?) {
+    override suspend fun deleteTrackedEntity(tei: TrackedEntityInstance?) {
         tei?.let {
             deleteRelationships(tei)
             deleteCascadeItems(tei)
@@ -72,7 +72,7 @@ internal class TrackerDataManagerImpl(
         }
     }
 
-    override fun deleteEnrollment(enrollment: Enrollment?) {
+    override suspend fun deleteEnrollment(enrollment: Enrollment?) {
         enrollment?.let {
             deleteRelationships(enrollment)
             deleteCascadeItems(enrollment)
@@ -82,7 +82,7 @@ internal class TrackerDataManagerImpl(
         }
     }
 
-    override fun deleteEvent(event: Event?) {
+    override suspend fun deleteEvent(event: Event?) {
         event?.let {
             deleteRelationships(event)
             internalDelete(event, eventStore) {
@@ -91,7 +91,7 @@ internal class TrackerDataManagerImpl(
         }
     }
 
-    override fun deleteRelationship(relationship: Relationship?) {
+    override suspend fun deleteRelationship(relationship: Relationship?) {
         relationship?.let {
             internalDelete(relationship, relationshipStore) {
                 propagateRelationshipUpdate(relationship, HandleAction.Delete)
@@ -99,13 +99,13 @@ internal class TrackerDataManagerImpl(
         }
     }
 
-    private fun <O> internalDelete(
+    private suspend fun <O> internalDelete(
         obj: O,
         store: IdentifiableDeletableDataObjectStore<O>,
-        propagateState: (O) -> Any,
+        propagateState: suspend (O) -> Any,
     ) where O : ObjectWithUidInterface, O : DeletableDataObject {
         if (obj.syncState() === State.TO_POST) {
-            store.delete(obj.uid())
+            store.deleteByEntity(obj)
         } else {
             store.setDeleted(obj.uid())
             store.setSyncState(obj.uid(), State.TO_UPDATE)
@@ -113,22 +113,22 @@ internal class TrackerDataManagerImpl(
         propagateState(obj)
     }
 
-    override fun propagateTrackedEntityUpdate(tei: TrackedEntityInstance?, action: HandleAction) {
+    override suspend fun propagateTrackedEntityUpdate(tei: TrackedEntityInstance?, action: HandleAction) {
         dataStatePropagator.propagateTrackedEntityInstanceUpdate(tei)
     }
 
-    override fun propagateEnrollmentUpdate(enrollment: Enrollment?, action: HandleAction) {
+    override suspend fun propagateEnrollmentUpdate(enrollment: Enrollment?, action: HandleAction) {
         dataStatePropagator.propagateEnrollmentUpdate(enrollment)
         if (action == HandleAction.Insert) {
             createProgramOwnerIfNeeded(enrollment)
         }
     }
 
-    override fun propagateEventUpdate(event: Event?, action: HandleAction) {
+    override suspend fun propagateEventUpdate(event: Event?, action: HandleAction) {
         dataStatePropagator.propagateEventUpdate(event)
     }
 
-    override fun propagateRelationshipUpdate(relationship: Relationship, action: HandleAction) {
+    override suspend fun propagateRelationshipUpdate(relationship: Relationship, action: HandleAction) {
         val withChildren =
             if (relationship.from() == null || relationship.to() == null) {
                 relationshipChildrenAppender.appendChildren(relationship)
@@ -138,22 +138,22 @@ internal class TrackerDataManagerImpl(
         dataStatePropagator.propagateRelationshipUpdate(withChildren)
     }
 
-    private fun deleteRelationships(tei: TrackedEntityInstance) {
+    private suspend fun deleteRelationships(tei: TrackedEntityInstance) {
         relationshipStore.getRelationshipsByItem(RelationshipHelper.teiItem(tei.uid()))
             .forEach { deleteRelationship(it) }
     }
 
-    private fun deleteRelationships(enrollment: Enrollment) {
+    private suspend fun deleteRelationships(enrollment: Enrollment) {
         relationshipStore.getRelationshipsByItem(RelationshipHelper.enrollmentItem(enrollment.uid()))
             .forEach { deleteRelationship(it) }
     }
 
-    private fun deleteRelationships(event: Event) {
+    private suspend fun deleteRelationships(event: Event) {
         relationshipStore.getRelationshipsByItem(RelationshipHelper.eventItem(event.uid()))
             .forEach { deleteRelationship(it) }
     }
 
-    private fun deleteCascadeItems(tei: TrackedEntityInstance) {
+    private suspend fun deleteCascadeItems(tei: TrackedEntityInstance) {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE, tei.uid())
             .build()
@@ -163,7 +163,7 @@ internal class TrackerDataManagerImpl(
         }
     }
 
-    private fun deleteCascadeItems(enrollment: Enrollment) {
+    private suspend fun deleteCascadeItems(enrollment: Enrollment) {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(EventTableInfo.Columns.ENROLLMENT, enrollment.uid())
             .build()
@@ -173,7 +173,7 @@ internal class TrackerDataManagerImpl(
         }
     }
 
-    private fun createProgramOwnerIfNeeded(enrollment: Enrollment?) {
+    private suspend fun createProgramOwnerIfNeeded(enrollment: Enrollment?) {
         enrollment?.let {
             val program = enrollment.program()
             val instance = enrollment.trackedEntityInstance()

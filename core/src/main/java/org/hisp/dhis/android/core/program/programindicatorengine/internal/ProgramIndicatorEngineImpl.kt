@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine.internal
 
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByUid
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.constant.Constant
@@ -44,7 +45,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
 import org.koin.core.annotation.Singleton
-import java.util.*
 
 @Singleton
 internal class ProgramIndicatorEngineImpl(
@@ -59,20 +59,31 @@ internal class ProgramIndicatorEngineImpl(
     private val programStageStore: ProgramStageStore,
 ) : ProgramIndicatorEngine {
 
+    private suspend fun getProgramIndicatorValueInternal(
+        enrollmentUid: String?,
+        eventUid: String?,
+        programIndicatorUid: String,
+    ): String? {
+        return when {
+            eventUid != null -> getEventProgramIndicatorValueInternal(eventUid, programIndicatorUid)
+            enrollmentUid != null -> getEnrollmentProgramIndicatorValueInternal(enrollmentUid, programIndicatorUid)
+            else -> return null
+        }
+    }
+
     @Deprecated("Deprecated in Java")
     override fun getProgramIndicatorValue(
         enrollmentUid: String?,
         eventUid: String?,
         programIndicatorUid: String,
     ): String? {
-        return when {
-            eventUid != null -> getEventProgramIndicatorValue(eventUid, programIndicatorUid)
-            enrollmentUid != null -> getEnrollmentProgramIndicatorValue(enrollmentUid, programIndicatorUid)
-            else -> return null
-        }
+        return runBlocking { getProgramIndicatorValueInternal(enrollmentUid, eventUid, programIndicatorUid) }
     }
 
-    override fun getEnrollmentProgramIndicatorValue(enrollmentUid: String, programIndicatorUid: String): String? {
+    internal suspend fun getEnrollmentProgramIndicatorValueInternal(
+        enrollmentUid: String,
+        programIndicatorUid: String,
+    ): String? {
         val programIndicator = programIndicatorStore.selectByUid(programIndicatorUid) ?: return null
 
         val enrollment = enrollmentStore.selectByUid(enrollmentUid)
@@ -88,14 +99,18 @@ internal class ProgramIndicatorEngineImpl(
         return evaluateProgramIndicatorContext(programIndicatorContext)
     }
 
-    override fun getEventProgramIndicatorValue(eventUid: String, programIndicatorUid: String): String? {
+    override fun getEnrollmentProgramIndicatorValue(enrollmentUid: String, programIndicatorUid: String): String? {
+        return runBlocking { getEnrollmentProgramIndicatorValueInternal(enrollmentUid, programIndicatorUid) }
+    }
+
+    internal suspend fun getEventProgramIndicatorValueInternal(eventUid: String, programIndicatorUid: String): String? {
         val programIndicator = programIndicatorStore.selectByUid(programIndicatorUid) ?: return null
 
         val event = eventRepository
             .withTrackedEntityDataValues()
             .byDeleted().isFalse
             .uid(eventUid)
-            .blockingGet() ?: throw NoSuchElementException("Event $eventUid does not exist or is deleted.")
+            .getInternal() ?: throw NoSuchElementException("Event $eventUid does not exist or is deleted.")
 
         val enrollment = event.enrollment()?.let {
             enrollmentStore.selectByUid(it)
@@ -111,9 +126,13 @@ internal class ProgramIndicatorEngineImpl(
         return evaluateProgramIndicatorContext(programIndicatorContext)
     }
 
-    private fun evaluateProgramIndicatorContext(context: ProgramIndicatorContext): String? {
+    override fun getEventProgramIndicatorValue(eventUid: String, programIndicatorUid: String): String? {
+        return runBlocking { getEventProgramIndicatorValueInternal(eventUid, programIndicatorUid) }
+    }
+
+    private suspend fun evaluateProgramIndicatorContext(context: ProgramIndicatorContext): String? {
         val executor = ProgramIndicatorExecutor(
-            constantMap,
+            constantMap(),
             context,
             dataElementStore,
             trackedEntityAttributeStore,
@@ -123,13 +142,12 @@ internal class ProgramIndicatorEngineImpl(
         return executor.getProgramIndicatorValue(context.programIndicator)
     }
 
-    private val constantMap: Map<String, Constant>
-        get() {
-            val constants = constantStore.selectAll()
-            return mapByUid(constants)
-        }
+    private suspend fun constantMap(): Map<String, Constant> {
+        val constants = constantStore.selectAll()
+        return mapByUid(constants)
+    }
 
-    private fun getAttributeValues(enrollment: Enrollment?): Map<String, TrackedEntityAttributeValue> {
+    private suspend fun getAttributeValues(enrollment: Enrollment?): Map<String, TrackedEntityAttributeValue> {
         val trackedEntityAttributeValues = enrollment?.trackedEntityInstance()?.let { teiUid ->
             trackedEntityAttributeValueStore.queryByTrackedEntityInstance(teiUid)
         } ?: return mapOf()
@@ -139,10 +157,10 @@ internal class ProgramIndicatorEngineImpl(
             .associateBy { it.trackedEntityAttribute()!! }
     }
 
-    private fun getEnrollmentEvents(enrollment: Enrollment): Map<String, List<Event>> {
-        val programStageUids = programRepository.byProgramUid().eq(enrollment.program()).blockingGetUids()
+    private suspend fun getEnrollmentEvents(enrollment: Enrollment): Map<String, List<Event>> {
+        val programStageUids = programRepository.byProgramUid().eq(enrollment.program()).getUidsInternal()
 
-        return programStageUids.map { programStageUid ->
+        return programStageUids.associateWith { programStageUid ->
             val programStageEvents = eventRepository
                 .byProgramStageUid().eq(programStageUid)
                 .byEnrollmentUid().eq(enrollment.uid())
@@ -150,9 +168,9 @@ internal class ProgramIndicatorEngineImpl(
                 .orderByEventDate(RepositoryScope.OrderByDirection.ASC)
                 .orderByLastUpdated(RepositoryScope.OrderByDirection.ASC)
                 .withTrackedEntityDataValues()
-                .blockingGet()
+                .getInternal()
 
-            programStageUid to programStageEvents
-        }.toMap()
+            programStageEvents
+        }
     }
 }

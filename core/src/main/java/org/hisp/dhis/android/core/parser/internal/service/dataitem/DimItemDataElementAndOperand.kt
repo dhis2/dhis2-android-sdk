@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.parser.internal.service.dataitem
 
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.DOUBLE_VALUE_IF_NULL
 import org.hisp.dhis.antlr.ParserExceptionWithoutContext
@@ -43,18 +44,20 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
  */
 internal class DimItemDataElementAndOperand : DimensionalItem() {
     override fun getDescription(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        val dataElement = visitor.dataElementStore!!.selectByUid(ctx.uid0.text)
+        runBlocking {
+            val dataElement = visitor.dataElementStore!!.selectByUid(ctx.uid0.text)
 
-        dataElement?.displayName()?.let { deName ->
-            visitor.itemDescriptions[ctx.text] =
-                buildString {
-                    append(deName)
-                    if (isDataElementOperandSyntax(ctx)) {
-                        val categoryOptionCombo = visitor.categoryOptionComboStore!!.selectByUid(ctx.uid1.text)
-                        val cocDescription = categoryOptionCombo?.displayName() ?: ctx.uid1.text
-                        append(" ($cocDescription)")
+            dataElement?.displayName()?.let { deName ->
+                visitor.itemDescriptions[ctx.text] =
+                    buildString {
+                        append(deName)
+                        if (isDataElementOperandSyntax(ctx)) {
+                            val categoryOptionCombo = visitor.categoryOptionComboStore!!.selectByUid(ctx.uid1.text)
+                            val cocDescription = categoryOptionCombo?.displayName() ?: ctx.uid1.text
+                            append(" ($cocDescription)")
+                        }
                     }
-                }
+            }
         }
 
         return DOUBLE_VALUE_IF_NULL

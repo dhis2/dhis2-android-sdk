@@ -28,17 +28,19 @@
 package org.hisp.dhis.android.core.period.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.period.PeriodSamples
 import org.hisp.dhis.android.core.period.Period
-import org.hisp.dhis.android.core.period.PeriodTableInfo
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 import org.hisp.dhis.android.core.period.clock.internal.createFixed
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl.Companion.create
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.period.PeriodStoreImpl
+import org.hisp.dhis.android.persistence.period.PeriodTableInfo
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.Date
@@ -62,7 +64,7 @@ class PeriodStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationSho
     }
 
     @Test
-    fun select_correct_period_passing_period_type_and_a_date() {
+    fun select_correct_period_passing_period_type_and_a_date() = runTest {
         PeriodHandler(periodStore, create(ClockProviderFactory.createFixed())).generateAndPersist()
         val period = periodStore.selectPeriodByTypeAndDate(
             PeriodType.SixMonthly,

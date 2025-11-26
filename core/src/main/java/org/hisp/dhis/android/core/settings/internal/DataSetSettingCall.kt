@@ -36,18 +36,16 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class DataSetSettingCall(
     private val dataSetSettingHandler: DataSetSettingHandler,
-    private val settingAppService: SettingAppService,
+    private val networkHandler: SettingsNetworkHandler,
     coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val appVersionManager: SettingsAppInfoManager,
 ) : BaseSettingCall<DataSetSettings>(coroutineAPICallExecutor) {
 
     override suspend fun tryFetch(storeError: Boolean): Result<DataSetSettings, D2Error> {
-        return coroutineAPICallExecutor.wrap(storeError = storeError) {
-            settingAppService.dataSetSettings(appVersionManager.getDataStoreVersion())
-        }
+        return networkHandler.dataSetSettings(appVersionManager.getDataStoreVersion(), storeError)
     }
 
-    override fun process(item: DataSetSettings?) {
+    override suspend fun process(item: DataSetSettings?) {
         val dataSetSettingList = item?.let { SettingsAppHelper.getDataSetSettingList(it) } ?: emptyList()
         dataSetSettingHandler.handleMany(dataSetSettingList)
     }

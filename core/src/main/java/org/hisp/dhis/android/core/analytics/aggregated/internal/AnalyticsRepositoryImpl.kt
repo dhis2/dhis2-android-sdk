@@ -29,6 +29,8 @@
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
@@ -61,11 +63,11 @@ internal class AnalyticsRepositoryImpl(
     }
 
     override fun evaluate(): Single<Result<DimensionalResponse, AnalyticsException>> {
-        return Single.fromCallable { blockingEvaluate() }
+        return rxSingle { analyticsService.evaluate(params) }
     }
 
     override fun blockingEvaluate(): Result<DimensionalResponse, AnalyticsException> {
-        return analyticsService.evaluate(params)
+        return runBlocking { analyticsService.evaluate(params) }
     }
 
     private fun updateParams(

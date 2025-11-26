@@ -28,10 +28,11 @@
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
 import org.junit.Test
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.whenever
 
 internal class InvalidAttributeValueTypeConflictShould : BaseConflictShould() {
 
@@ -54,7 +55,7 @@ internal class InvalidAttributeValueTypeConflictShould : BaseConflictShould() {
     }
 
     @Test
-    fun `Should generate display description`() {
+    fun `Should generate display description`() = runTest {
         checkDescription(TrackedImportConflictSamples.invalidNumericAttribute(attributeUid, value))
         checkDescription(TrackedImportConflictSamples.invalidBooleanAttribute(attributeUid, value))
         checkDescription(TrackedImportConflictSamples.invalidTrueOnlyAttribute(attributeUid, value))
@@ -73,7 +74,7 @@ internal class InvalidAttributeValueTypeConflictShould : BaseConflictShould() {
         assertThat(InvalidAttributeValueTypeConflict.getTrackedEntityAttribute(conflict) == attributeUid).isTrue()
     }
 
-    private fun checkDescription(conflict: ImportConflict) {
+    private fun checkDescription(conflict: ImportConflict) = runTest {
         whenever(attribute.displayFormName()) doReturn "Attribute form name"
         val description = InvalidAttributeValueTypeConflict.getDisplayDescription(conflict, context)
         assertThat(description == "Invalid value type for attribute: Attribute form name").isTrue()

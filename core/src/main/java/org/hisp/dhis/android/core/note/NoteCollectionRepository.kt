@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.note
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl
@@ -44,18 +43,17 @@ import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.note.Note.NoteType
 import org.hisp.dhis.android.core.note.internal.NoteProjectionTransformer
 import org.hisp.dhis.android.core.note.internal.NoteStore
+import org.hisp.dhis.android.persistence.note.NoteTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 class NoteCollectionRepository internal constructor(
     store: NoteStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
     transformer: NoteProjectionTransformer,
     private val dataStatePropagator: DataStatePropagator,
 ) : ReadWriteWithUidCollectionRepositoryImpl<Note, NoteCreateProjection, NoteCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     transformer,
@@ -64,7 +62,6 @@ class NoteCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         NoteCollectionRepository(
             store,
-            databaseAdapter,
             s,
             transformer,
             dataStatePropagator,
@@ -105,10 +102,10 @@ class NoteCollectionRepository internal constructor(
 
     override fun uid(uid: String?): ReadOnlyObjectRepository<Note> {
         val updatedScope: RepositoryScope = withUidFilterItem(scope, uid)
-        return ReadOnlyOneObjectRepositoryFinalImpl(store, databaseAdapter, childrenAppenders, updatedScope)
+        return ReadOnlyOneObjectRepositoryFinalImpl(store, childrenAppenders, updatedScope)
     }
 
-    override fun propagateState(m: Note, action: HandleAction?) {
+    override suspend fun propagateState(m: Note, action: HandleAction?) {
         dataStatePropagator.propagateNoteCreation(m)
     }
 

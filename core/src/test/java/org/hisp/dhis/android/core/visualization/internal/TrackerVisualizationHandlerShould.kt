@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
-import com.nhaarman.mockitokotlin2.*
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.settings.internal.AnalyticsDhisVisualizationCleaner
 import org.hisp.dhis.android.core.visualization.TrackerVisualization
@@ -36,11 +36,16 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
 class TrackerVisualizationHandlerShould {
 
-    private val store: TrackerVisualizationStore = mock()
+    private val trackerVisualizationStore: TrackerVisualizationStore = mock()
     private val collectionCleaner: TrackerVisualizationCollectionCleaner = mock()
     private val dimensionHandler: TrackerVisualizationDimensionHandler = mock()
     private val analyticsDhisVisualizationCleaner: AnalyticsDhisVisualizationCleaner = mock()
@@ -51,9 +56,9 @@ class TrackerVisualizationHandlerShould {
     private lateinit var trackerVisualizationHandler: TrackerVisualizationHandler
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         trackerVisualizationHandler = TrackerVisualizationHandler(
-            store,
+            trackerVisualizationStore,
             collectionCleaner,
             analyticsDhisVisualizationCleaner,
             dimensionHandler,
@@ -61,18 +66,22 @@ class TrackerVisualizationHandlerShould {
 
         whenever(trackerVisualization.columns()).doReturn(listOf(dimension))
         whenever(trackerVisualization.filters()).doReturn(listOf(dimension))
-        whenever(store.updateOrInsert(any())).doReturn(HandleAction.Insert)
+        whenever(trackerVisualizationStore.updateOrInsert(any<List<TrackerVisualization>>())).doReturn(
+            listOf(
+                HandleAction.Insert,
+            ),
+        )
         whenever(trackerVisualization.uid()).doReturn("tracker_visualization_uid")
     }
 
     @Test
-    fun call_items_handler() {
+    fun call_items_handler() = runTest {
         trackerVisualizationHandler.handleMany(listOf(trackerVisualization))
         verify(dimensionHandler).handleMany(any(), any())
     }
 
     @Test
-    fun call_collection_cleaner() {
+    fun call_collection_cleaner() = runTest {
         trackerVisualizationHandler.handleMany(listOf(trackerVisualization))
         verify(collectionCleaner).deleteNotPresent(any())
     }

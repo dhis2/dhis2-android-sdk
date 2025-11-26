@@ -28,10 +28,7 @@
 package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.DataSetCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository
@@ -44,6 +41,10 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
 class AggregatedDataCallBundleFactoryShould {
@@ -72,7 +73,7 @@ class AggregatedDataCallBundleFactoryShould {
     private lateinit var bundleFactory: AggregatedDataCallBundleFactory
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         whenever(dataSet1.uid()).doReturn(ds1)
         whenever(dataSet2.uid()).doReturn(ds2)
         whenever(dataSetSettings.specificSettings()).doReturn(emptyMap())
@@ -90,7 +91,7 @@ class AggregatedDataCallBundleFactoryShould {
     }
 
     @Test
-    fun create_single_bundle_if_same_periods() {
+    fun create_single_bundle_if_same_periods() = runTest {
         whenever(dataSet1.openFuturePeriods()).doReturn(1)
         whenever(dataSet1.periodType()).doReturn(PeriodType.Monthly)
         whenever(dataSet2.openFuturePeriods()).doReturn(1)
@@ -109,7 +110,7 @@ class AggregatedDataCallBundleFactoryShould {
     }
 
     @Test
-    fun create_different_bundles_if_different_periods() {
+    fun create_different_bundles_if_different_periods() = runTest {
         whenever(dataSet1.openFuturePeriods()).doReturn(1)
         whenever(dataSet1.periodType()).doReturn(PeriodType.Monthly)
         whenever(dataSet2.openFuturePeriods()).doReturn(2)

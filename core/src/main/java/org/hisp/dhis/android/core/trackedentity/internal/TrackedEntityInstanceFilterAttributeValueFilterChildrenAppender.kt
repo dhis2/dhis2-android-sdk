@@ -27,31 +27,23 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.singleParentChildStore
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
-import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 
 internal class TrackedEntityInstanceFilterAttributeValueFilterChildrenAppender private constructor(
-    private val childStore: SingleParentChildStore<TrackedEntityInstanceFilter, AttributeValueFilter>,
+    private val childStore: AttributeValueFilterStore,
 ) : ChildrenAppender<TrackedEntityInstanceFilter>() {
 
-    override fun appendChildren(m: TrackedEntityInstanceFilter): TrackedEntityInstanceFilter {
-        val criteria = m.entityQueryCriteria().toBuilder().attributeValueFilters(childStore.getChildren(m)).build()
+    override suspend fun appendChildren(m: TrackedEntityInstanceFilter): TrackedEntityInstanceFilter {
+        val children = childStore.getForTrackedEntityInstanceFilter(m.uid())
+        val criteria = m.entityQueryCriteria().toBuilder().attributeValueFilters(children).build()
         return m.toBuilder().entityQueryCriteria(criteria).build()
     }
 
     companion object {
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<TrackedEntityInstanceFilter> {
-            return TrackedEntityInstanceFilterAttributeValueFilterChildrenAppender(
-                singleParentChildStore(
-                    databaseAdapter,
-                    AttributeValueFilterStoreImpl.CHILD_PROJECTION,
-                    AttributeValueFilter::create,
-                ),
-            )
+        fun create(): ChildrenAppender<TrackedEntityInstanceFilter> {
+            return TrackedEntityInstanceFilterAttributeValueFilterChildrenAppender(koin.get())
         }
     }
 }

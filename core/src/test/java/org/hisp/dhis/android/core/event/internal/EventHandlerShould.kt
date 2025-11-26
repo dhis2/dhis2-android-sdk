@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import com.nhaarman.mockitokotlin2.*
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.common.State
@@ -48,6 +48,13 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
 class EventHandlerShould {
@@ -70,17 +77,19 @@ class EventHandlerShould {
     private lateinit var eventHandler: EventHandler
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         whenever(event.uid()).doReturn("test_event_uid")
         whenever(event.notes()).doReturn(listOf(note))
         whenever(event.organisationUnit()).doReturn("org_unit_uid")
         whenever(event.status()).doReturn(EventStatus.SCHEDULE)
         whenever(event.trackedEntityDataValues()).doReturn(listOf(trackedEntityDataValue))
-        whenever(eventStore.updateOrInsert(any())).doReturn(HandleAction.Insert)
+        whenever(eventStore.updateOrInsert(any<Event>())).doReturn(HandleAction.Insert)
+        whenever(eventStore.selectUidsWhere(any())).doReturn(listOf("test_event_uid"))
         whenever(event.toBuilder()).doReturn(eventBuilder)
         whenever(eventBuilder.syncState(State.SYNCED)).doReturn(eventBuilder)
         whenever(eventBuilder.aggregatedSyncState(State.SYNCED)).doReturn(eventBuilder)
         whenever(eventBuilder.build()).doReturn(event)
+        whenever(programStore.selectAll()).doReturn(emptyList())
 
         eventHandler = EventHandler(
             relationshipVersionManager,
@@ -96,19 +105,19 @@ class EventHandlerShould {
     }
 
     @Test
-    fun do_nothing_when_passing_empty_list_argument() {
+    fun do_nothing_when_passing_empty_list_argument() = runTest {
         val params = IdentifiableDataHandlerParams(hasAllAttributes = false, overwrite = false, asRelationship = false)
         eventHandler.handleMany(listOf(), params, relationshipItemRelatives)
 
         // verify that store is never invoked
         verify(eventStore, never()).deleteIfExists(any())
-        verify(eventStore, never()).update(any())
+        verify(eventStore, never()).update(any<Event>())
         verify(eventStore, never()).insert(any<Event>())
         verify(noteHandler, never()).handleMany(any())
     }
 
     @Test
-    fun invoke_only_delete_when_a_event_is_set_as_deleted() {
+    fun invoke_only_delete_when_a_event_is_set_as_deleted() = runTest {
         whenever(event.deleted()).doReturn(true)
 
         val params = IdentifiableDataHandlerParams(hasAllAttributes = false, overwrite = false, asRelationship = false)
@@ -119,7 +128,7 @@ class EventHandlerShould {
         verify(relationshipHandler, times(1)).deleteLinkedRelationships(any())
 
         // verify that update and insert is never invoked
-        verify(eventStore, never()).update(any())
+        verify(eventStore, never()).update(any<Event>())
         verify(eventStore, never()).insert(any<Event>())
         verify(noteHandler, never()).handleMany(any())
 
@@ -128,16 +137,17 @@ class EventHandlerShould {
     }
 
     @Test
-    fun invoke_update_and_insert_when_handle_event_not_inserted() {
-        whenever(eventStore.updateOrInsert(any())).doReturn(HandleAction.Insert)
+    fun invoke_update_and_insert_when_handle_event_not_inserted() = runTest {
+        whenever(eventStore.updateOrInsert(any<Event>())).doReturn(HandleAction.Insert)
         whenever(event.organisationUnit()).doReturn("org_unit_uid")
         whenever(event.status()).doReturn(EventStatus.SCHEDULE)
+        whenever(noteUniquenessManager.buildUniqueCollection(any(), any(), any())).doReturn(setOf(note))
 
         val params = IdentifiableDataHandlerParams(hasAllAttributes = false, overwrite = false, asRelationship = false)
         eventHandler.handleMany(listOf(event), params, relationshipItemRelatives)
 
         // verify that update and insert is invoked, since we're updating before inserting
-        verify(eventStore, times(1)).updateOrInsert(any())
+        verify(eventStore, times(1)).updateOrInsert(any<Event>())
         verify(trackedEntityDataValueHandler, times(1)).handleMany(any(), any())
         verify(noteHandler, times(1)).handleMany(any())
 
@@ -147,7 +157,7 @@ class EventHandlerShould {
     }
 
     @Test
-    fun delete_event_data_values_if_empty_list() {
+    fun delete_event_data_values_if_empty_list() = runTest {
         whenever(event.trackedEntityDataValues()).doReturn(emptyList())
 
         val params = IdentifiableDataHandlerParams(hasAllAttributes = false, overwrite = false, asRelationship = false)

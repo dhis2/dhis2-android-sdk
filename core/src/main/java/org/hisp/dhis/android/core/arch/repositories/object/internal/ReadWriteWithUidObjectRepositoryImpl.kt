@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
@@ -41,13 +40,11 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 
 open class ReadWriteWithUidObjectRepositoryImpl<M, R : ReadOnlyObjectRepository<M>> internal constructor(
     private val store: IdentifiableObjectStore<M>,
-    databaseAdapter: DatabaseAdapter,
     childrenAppenders: ChildrenAppenderGetter<M>,
     scope: RepositoryScope,
     repositoryFactory: ObjectRepositoryFactory<R>,
 ) : ReadOnlyOneObjectRepositoryImpl<M, R>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     repositoryFactory,
@@ -55,7 +52,7 @@ open class ReadWriteWithUidObjectRepositoryImpl<M, R : ReadOnlyObjectRepository<
 
     @Throws(D2Error::class)
     @Suppress("TooGenericExceptionCaught")
-    protected open fun updateObject(m: M): Unit {
+    protected open suspend fun updateObject(m: M): Unit {
         return try {
             store.update(m)
             Unit()

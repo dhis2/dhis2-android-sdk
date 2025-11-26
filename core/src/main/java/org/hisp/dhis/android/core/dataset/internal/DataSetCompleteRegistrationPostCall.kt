@@ -117,12 +117,13 @@ internal class DataSetCompleteRegistrationPostCall(
         return networkHandler.postDataSetCompleteRegistrations(dataSetCompleteRegistrations)
     }
 
-    private fun markObjectsAs(
+    private suspend fun markObjectsAs(
         dataSetCompleteRegistrations: Collection<DataSetCompleteRegistration>,
         forcedState: State?,
     ) {
-        dataSetCompleteRegistrations.forEach {
-            dataSetCompleteRegistrationStore.setState(it, forcedOrOwn(it, forcedState))
+        val updatedRegistrations = dataSetCompleteRegistrations.map { registration ->
+            registration.toBuilder().syncState(forcedOrOwn(registration, forcedState)).build()
         }
+        dataSetCompleteRegistrationStore.update(updatedRegistrations)
     }
 }

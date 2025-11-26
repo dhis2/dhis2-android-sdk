@@ -37,7 +37,6 @@ object RelationshipConstraintSamples {
     @JvmStatic
     val relationshipConstraint: RelationshipConstraint
         get() = RelationshipConstraint.builder()
-            .id(1L)
             .relationshipType(ObjectWithUid.create("relationship_type_uid"))
             .constraintType(RelationshipConstraintType.FROM)
             .relationshipEntity(RelationshipEntityType.TRACKED_ENTITY_INSTANCE)

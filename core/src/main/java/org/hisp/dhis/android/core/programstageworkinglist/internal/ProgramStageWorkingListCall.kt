@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -39,10 +39,10 @@ internal class ProgramStageWorkingListCall(
     private val networkHandler: ProgramStageWorkingListNetworkHandler,
     private val handler: ProgramStageWorkingListHandler,
     private val apiDownloader: APIDownloader,
-    private val versionManager: DHISVersionManager,
+    private val versionManager: DHISVersionManagerImpl,
 ) : UidsCallCoroutines<ProgramStageWorkingList> {
     override suspend fun download(uids: Set<String>): List<ProgramStageWorkingList> {
-        return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_40)) {
+        return if (versionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_40)) {
             apiDownloader.downloadPartitioned(
                 uids,
                 MAX_UID_LIST_SIZE,

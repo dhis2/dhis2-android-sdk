@@ -41,10 +41,10 @@ class SynchronizationSettingObjectRepository internal constructor(
     synchronizationSettingCall: SynchronizationSettingCall,
 ) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<SynchronizationSettings>(synchronizationSettingCall),
     ReadOnlyWithDownloadObjectRepository<SynchronizationSettings> {
-    override fun blockingGet(): SynchronizationSettings? {
+    override suspend fun getInternal(): SynchronizationSettings? {
         val syncSettings = syncStore.selectAll()
-        val dataSetSettings = dataSetSettingsRepository.blockingGet()
-        val programSettings = programSettingsRepository.blockingGet()
+        val dataSetSettings = dataSetSettingsRepository.getInternal()
+        val programSettings = programSettingsRepository.getInternal()
 
         return if (syncSettings.isEmpty() && dataSetSettings == null && programSettings == null) {
             null

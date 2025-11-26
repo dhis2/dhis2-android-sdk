@@ -48,7 +48,6 @@ public class EventSamples {
     public static Event get(String uid, String enrollment, String organisationUnit, String program,
                             String programStage, String attributeOptionCombo, Date eventDate) {
         return Event.builder()
-                .id(1L)
                 .uid(uid)
                 .enrollment(enrollment)
                 .created(getDate("2014-08-20T12:28:56.409"))

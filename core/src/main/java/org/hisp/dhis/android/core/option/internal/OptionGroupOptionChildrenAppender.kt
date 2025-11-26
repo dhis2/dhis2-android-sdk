@@ -27,39 +27,22 @@
  */
 package org.hisp.dhis.android.core.option.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithUidChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.objectWithUidChildStore
-import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.option.OptionGroup
-import org.hisp.dhis.android.core.option.OptionGroupOptionLinkTableInfo
-import org.hisp.dhis.android.core.option.OptionTableInfo
 
 internal class OptionGroupOptionChildrenAppender private constructor(
-    private val childStore: ObjectWithUidChildStore<OptionGroup>,
+    private val linkStore: OptionGroupOptionLinkStore,
 ) : ChildrenAppender<OptionGroup>() {
-    override fun appendChildren(m: OptionGroup): OptionGroup {
-        val builder = m.toBuilder()
-        builder.options(childStore.getChildren(m))
-        return builder.build()
+    override suspend fun appendChildren(m: OptionGroup): OptionGroup {
+        return m.toBuilder()
+            .options(linkStore.getForOptionGroup(m.uid()))
+            .build()
     }
 
     companion object {
-        private val CHILD_PROJECTION = LinkTableChildProjection(
-            OptionTableInfo.TABLE_INFO,
-            OptionGroupOptionLinkTableInfo.Columns.OPTION_GROUP,
-            OptionGroupOptionLinkTableInfo.Columns.OPTION,
-        )
-
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<OptionGroup> {
-            return OptionGroupOptionChildrenAppender(
-                objectWithUidChildStore(
-                    databaseAdapter,
-                    OptionGroupOptionLinkTableInfo.TABLE_INFO,
-                    CHILD_PROJECTION,
-                ),
-            )
+        fun create(): ChildrenAppender<OptionGroup> {
+            return OptionGroupOptionChildrenAppender(koin.get())
         }
     }
 }

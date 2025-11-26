@@ -30,9 +30,9 @@ package org.hisp.dhis.android.network.programstageworkinglist
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageQueryCriteria
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListAttributeValueFilter
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListEventDataFilter
-import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.persistence.programstageworkinglist.ProgramStageWorkingListTableInfo.Columns
 
 internal object ProgramStageQueryCriteriaFields : BaseFields<ProgramStageQueryCriteria>() {
     const val DATA_FILTERS = "dataFilters"
@@ -45,7 +45,7 @@ internal object ProgramStageQueryCriteriaFields : BaseFields<ProgramStageQueryCr
         fh.field(Columns.EVENT_OCCURRED_AT),
         fh.field(Columns.EVENT_SCHEDULED_AT),
         fh.field(Columns.ENROLLMENT_STATUS),
-        fh.field(Columns.ENROLLMENT_AT),
+        fh.field(Columns.ENROLLED_AT),
         fh.field(Columns.ENROLLMENT_OCCURRED_AT),
         fh.field(ORDER),
         fh.field(Columns.ORG_UNIT),

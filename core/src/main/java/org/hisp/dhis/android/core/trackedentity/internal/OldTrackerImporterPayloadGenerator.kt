@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
@@ -44,16 +43,19 @@ import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStore
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import org.hisp.dhis.android.core.trackedentity.*
+import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
-import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerTableInfo
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
+import org.hisp.dhis.android.persistence.trackedentity.ProgramOwnerTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 @Suppress("TooManyFunctions", "LongParameterList")
 internal class OldTrackerImporterPayloadGenerator internal constructor(
-    private val versionManager: DHISVersionManager,
+    private val versionManager: DHISVersionManagerImpl,
     private val relationshipRepository: RelationshipCollectionRepository,
     private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
     private val enrollmentStore: EnrollmentStore,
@@ -75,7 +77,7 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
         val relationships: List<Relationship>,
     )
 
-    fun getTrackedEntityInstancePayload(
+    suspend fun getTrackedEntityInstancePayload(
         trackedEntityInstances: List<TrackedEntityInstance>,
     ): OldTrackerImporterPayload {
         val extraData = getExtraData()
@@ -90,7 +92,7 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
         )
     }
 
-    fun getEventPayload(
+    suspend fun getEventPayload(
         events: List<Event>,
     ): OldTrackerImporterPayload {
         val extraData = getExtraData()
@@ -105,7 +107,7 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
         )
     }
 
-    private fun generatePayload(
+    private suspend fun generatePayload(
         payload: OldTrackerImporterPayload,
         extraData: ExtraData,
     ): OldTrackerImporterPayload {
@@ -115,7 +117,7 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
             .run { pruneNonWritableData(this) }
     }
 
-    private fun addRelationships(
+    private suspend fun addRelationships(
         payload: OldTrackerImporterPayload,
         extraData: ExtraData,
     ): OldTrackerImporterPayload {
@@ -126,7 +128,7 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
         return addRelatedItems(payloadWithRelationships, extraData)
     }
 
-    private fun addRelatedItems(
+    private suspend fun addRelatedItems(
         payload: OldTrackerImporterPayload,
         extraData: ExtraData,
     ): OldTrackerImporterPayload {
@@ -142,7 +144,7 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
     }
 
     @Suppress("NestedBlockDepth")
-    private fun getMissingItems(
+    private suspend fun getMissingItems(
         payload: OldTrackerImporterPayload,
         extraData: ExtraData,
     ): OldTrackerImporterPayload {
@@ -197,30 +199,30 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
         }
     }
 
-    private fun isMissingTei(uid: String, payload: OldTrackerImporterPayload): Boolean {
-        val isIncludeInPayload = payload.trackedEntityInstances.map { it.uid() }.contains(uid)
-        val isPendingToSync: Boolean by lazy {
-            val dbTei = trackedEntityInstanceStore.selectByUid(uid)
-            State.uploadableStatesIncludingError().contains(dbTei?.aggregatedSyncState())
-        }
+    private suspend fun isMissingTei(uid: String, payload: OldTrackerImporterPayload): Boolean {
+        val isIncludedInPayload = payload.trackedEntityInstances.map { it.uid() }.contains(uid)
+        if (isIncludedInPayload) { return false }
 
-        return !isIncludeInPayload && isPendingToSync
+        val dbTei = trackedEntityInstanceStore.selectByUid(uid)
+        val isPendingToSync = State.uploadableStatesIncludingError().contains(dbTei?.aggregatedSyncState())
+
+        return isPendingToSync
     }
 
-    private fun isMissingEnrollment(uid: String, payload: OldTrackerImporterPayload): Boolean {
+    private suspend fun isMissingEnrollment(uid: String, payload: OldTrackerImporterPayload): Boolean {
         val enrollments = payload.trackedEntityInstances.flatMap {
             TrackedEntityInstanceInternalAccessor.accessEnrollments(it) ?: emptyList()
         }
-        val isIncludeInPayload = enrollments.map { it.uid() }.contains(uid)
-        val isPendingToSync: Boolean by lazy {
-            val enrollment = enrollmentStore.selectByUid(uid)
-            State.uploadableStatesIncludingError().contains(enrollment?.aggregatedSyncState())
-        }
+        val isIncludedInPayload = enrollments.map { it.uid() }.contains(uid)
+        if (isIncludedInPayload) { return false }
 
-        return !isIncludeInPayload && isPendingToSync
+        val enrollment = enrollmentStore.selectByUid(uid)
+        val isPendingToSync = State.uploadableStatesIncludingError().contains(enrollment?.aggregatedSyncState())
+
+        return isPendingToSync
     }
 
-    private fun isMissingEvent(uid: String, payload: OldTrackerImporterPayload): Boolean {
+    private suspend fun isMissingEvent(uid: String, payload: OldTrackerImporterPayload): Boolean {
         val events = payload.trackedEntityInstances.flatMap {
             TrackedEntityInstanceInternalAccessor.accessEnrollments(it) ?: emptyList()
         }.flatMap {
@@ -228,15 +230,15 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
         } + payload.events
 
         val isIncludedInPayload = events.map { it.uid() }.contains(uid)
-        val isPendingToSync: Boolean by lazy {
-            val event = eventStore.selectByUid(uid)
-            State.uploadableStatesIncludingError().contains(event?.aggregatedSyncState())
-        }
+        if (isIncludedInPayload) { return false }
 
-        return !isIncludedInPayload && isPendingToSync
+        val event = eventStore.selectByUid(uid)
+        val isPendingToSync = State.uploadableStatesIncludingError().contains(event?.aggregatedSyncState())
+
+        return isPendingToSync
     }
 
-    private fun getExtraData(): ExtraData {
+    private suspend fun getExtraData(): ExtraData {
         return ExtraData(
             eventMap = eventStore.queryEventsAttachedToEnrollmentToPost(),
             enrollmentMap = enrollmentStore.queryEnrollmentsToPost(),
@@ -252,11 +254,11 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
             relationships = relationshipRepository.bySyncState()
                 .`in`(State.uploadableStatesIncludingError().toList())
                 .withItems()
-                .blockingGet(),
+                .getInternal(),
         )
     }
 
-    private fun extractRelationships(
+    private suspend fun extractRelationships(
         payload: OldTrackerImporterPayload,
         extraData: ExtraData,
     ): List<Relationship> {
@@ -294,7 +296,7 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
         }
     }
 
-    private fun getTrackedEntityInstance(
+    private suspend fun getTrackedEntityInstance(
         trackedEntityInstance: TrackedEntityInstance,
         extraData: ExtraData,
     ): TrackedEntityInstance {
@@ -306,7 +308,7 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
             .build()
     }
 
-    private fun getEnrollments(
+    private suspend fun getEnrollments(
         extraData: ExtraData,
         trackedEntityInstanceUid: String,
     ): List<Enrollment> {
@@ -323,7 +325,7 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
         } ?: emptyList()
     }
 
-    private fun getEvent(event: Event, extraData: ExtraData): Event {
+    private suspend fun getEvent(event: Event, extraData: ExtraData): Event {
         val eventDataValues = trackedEntityDataValueStore.queryToPostByEvent(event.uid())
         val eventNotes = extraData.notes.filter { it.event() == event.uid() }
 
@@ -331,14 +333,14 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
             .trackedEntityDataValues(eventDataValues)
             .notes(eventNotes)
 
-        if (versionManager.getVersion() == DHISVersion.V2_30) {
+        if (versionManager.getVersionInternal() == DHISVersion.V2_30) {
             eventBuilder.geometry(null)
         }
 
         return eventBuilder.build()
     }
 
-    private fun addProgramOwners(payload: OldTrackerImporterPayload): OldTrackerImporterPayload {
+    private suspend fun addProgramOwners(payload: OldTrackerImporterPayload): OldTrackerImporterPayload {
         return if (payload.trackedEntityInstances.isNotEmpty()) {
             val programOwnerWhere = WhereClauseBuilder()
                 .appendInKeyStringValues(
@@ -359,14 +361,14 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
         }
     }
 
-    private fun pruneNonWritableData(payload: OldTrackerImporterPayload): OldTrackerImporterPayload {
+    private suspend fun pruneNonWritableData(payload: OldTrackerImporterPayload): OldTrackerImporterPayload {
         val typeIds = payload.trackedEntityInstances.mapNotNull { it.trackedEntityType() }
         val programIds = payload.trackedEntityInstances.flatMap {
             TrackedEntityInstanceInternalAccessor.accessEnrollments(it).mapNotNull { e -> e.program() }
         }
 
-        val typeAccessMap = typeIds.map { it to trackedEntityTypeStore.selectByUid(it)?.access() }.toMap()
-        val programAccessMap = programIds.map { it to programStore.selectByUid(it)?.access() }.toMap()
+        val typeAccessMap = typeIds.associateWith { trackedEntityTypeStore.selectByUid(it)?.access() }
+        val programAccessMap = programIds.associateWith { programStore.selectByUid(it)?.access() }
 
         val pendingEvents = mutableListOf<Event>()
         val prunedTrackedEntityInstances = payload.trackedEntityInstances.mapNotNull { tei ->

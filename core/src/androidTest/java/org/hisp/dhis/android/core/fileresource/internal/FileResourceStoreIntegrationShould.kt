@@ -30,9 +30,10 @@ package org.hisp.dhis.android.core.fileresource.internal
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.fileresource.FileResourceSamples
 import org.hisp.dhis.android.core.fileresource.FileResource
-import org.hisp.dhis.android.core.fileresource.FileResourceTableInfo
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.fileresource.FileResourceStoreImpl
+import org.hisp.dhis.android.persistence.fileresource.FileResourceTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

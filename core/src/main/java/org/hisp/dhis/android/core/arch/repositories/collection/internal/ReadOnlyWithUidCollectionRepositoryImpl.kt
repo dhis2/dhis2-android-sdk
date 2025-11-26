@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository
@@ -40,13 +39,11 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
 open class ReadOnlyWithUidCollectionRepositoryImpl<M, R : ReadOnlyCollectionRepository<M>> internal constructor(
     store: IdentifiableObjectStore<M>,
-    databaseAdapter: DatabaseAdapter,
     childrenAppenders: ChildrenAppenderGetter<M>,
     scope: RepositoryScope,
     cf: FilterConnectorFactory<R>,
 ) : BaseReadOnlyWithUidCollectionRepositoryImpl<M, R>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     cf,
@@ -59,6 +56,6 @@ open class ReadOnlyWithUidCollectionRepositoryImpl<M, R : ReadOnlyCollectionRepo
      */
     override fun uid(uid: String?): ReadOnlyOneObjectRepositoryFinalImpl<M> {
         val updatedScope: RepositoryScope = RepositoryScopeHelper.withUidFilterItem(scope, uid)
-        return ReadOnlyOneObjectRepositoryFinalImpl(store, databaseAdapter, childrenAppenders, updatedScope)
+        return ReadOnlyOneObjectRepositoryFinalImpl(store, childrenAppenders, updatedScope)
     }
 }

@@ -28,14 +28,14 @@
 package org.hisp.dhis.android.core.usecase.stock
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.usecase.stock.StockUseCaseDTO
 import org.junit.Test
 
-class InternalStockUseCaseShould : BaseObjectKotlinxShould("usecase.stock/stock_use_case.json") {
+class InternalStockUseCaseShould : CoreObjectShould("usecase.stock/stock_use_case.json") {
 
     @Test
-    fun map_from_json_string() {
+    override fun map_from_json_string() {
         val stockUseCaseDTO = deserialize(StockUseCaseDTO.serializer())
         val internalStockUseCase = stockUseCaseDTO.toDomain()
 

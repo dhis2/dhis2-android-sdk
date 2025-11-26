@@ -30,11 +30,11 @@ package org.hisp.dhis.android.network.relationshiptype
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.relationship.RelationshipConstraint
 import org.hisp.dhis.android.core.relationship.RelationshipType
-import org.hisp.dhis.android.core.relationship.RelationshipTypeTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.AccessFields
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.DataAccessFields
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.persistence.relationship.RelationshipTypeTableInfo.Columns
 
 internal object RelationshipTypeFields : BaseFields<RelationshipType>() {
     private const val B_IS_TO_A = "bIsToA"
@@ -42,9 +42,6 @@ internal object RelationshipTypeFields : BaseFields<RelationshipType>() {
     private const val FROM_CONSTRAINT = "fromConstraint"
     private const val TO_CONSTRAINT = "toConstraint"
     private const val ACCESS = "access"
-
-    // Used only for children appending, can't be used in query
-    const val CONSTRAINTS = "constraints"
 
     val lastUpdated = fh.lastUpdated()
 

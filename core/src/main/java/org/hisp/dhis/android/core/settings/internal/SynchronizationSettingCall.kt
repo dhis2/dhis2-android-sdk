@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -39,7 +38,7 @@ import java.net.HttpURLConnection
 @Singleton
 internal class SynchronizationSettingCall(
     private val synchronizationSettingHandler: SynchronizationSettingHandler,
-    private val settingAppService: SettingAppService,
+    private val networkHandler: SettingsNetworkHandler,
     coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val generalSettingCall: GeneralSettingCall,
     private val dataSetSettingCall: DataSetSettingCall,
@@ -76,23 +75,17 @@ internal class SynchronizationSettingCall(
             }
 
             SettingsAppDataStoreVersion.V2_0 -> {
-                coroutineAPICallExecutor.wrap(storeError = storeError) {
-                    settingAppService.synchronizationSettings(
-                        version,
-                    )
-                }
+                networkHandler.synchronizationSettings(version, storeError)
             }
         }
     }
 
-    override fun process(item: SynchronizationSettings?) {
+    override suspend fun process(item: SynchronizationSettings?) {
         val syncSettingsList = listOfNotNull(item)
         synchronizationSettingHandler.handleMany(syncSettingsList)
     }
 
-    private fun <T> tryOrNull(call: T): T? {
-        return runBlocking {
-            coroutineAPICallExecutor.wrap { call }.getOrNull()
-        }
+    private suspend fun <T> tryOrNull(call: T): T? {
+        return coroutineAPICallExecutor.wrap { call }.getOrNull()
     }
 }

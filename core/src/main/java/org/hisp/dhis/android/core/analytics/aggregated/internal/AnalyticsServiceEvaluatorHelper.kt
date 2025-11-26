@@ -51,7 +51,7 @@ internal class AnalyticsServiceEvaluatorHelper(
     private val expressionDimensionItemEvaluator: ExpressionDimensionItemEvaluator,
     private val legendEvaluator: LegendEvaluator,
 ) {
-    fun evaluate(
+    suspend fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
         legendStrategy: AnalyticsLegendStrategy,
@@ -61,7 +61,10 @@ internal class AnalyticsServiceEvaluatorHelper(
         val value = evaluator.evaluate(evaluationItem, metadata)
 
         val legend = when (legendStrategy) {
-            is AnalyticsLegendStrategy.Fixed -> legendEvaluator.getLegendByLegendSet(legendStrategy.legendSetUid, value)
+            is AnalyticsLegendStrategy.Fixed -> legendEvaluator.getLegendByLegendSetInternal(
+                legendStrategy.legendSetUid,
+                value,
+            )
             is AnalyticsLegendStrategy.ByDataItem -> getLegendFromDataDimension(evaluationItem, value)
             is AnalyticsLegendStrategy.None -> null
         }
@@ -117,51 +120,56 @@ internal class AnalyticsServiceEvaluatorHelper(
     }
 
     @Suppress("MaxLineLength")
-    private fun getLegendFromDataDimension(evaluationItem: AnalyticsServiceEvaluationItem, value: String?): String? {
+    private suspend fun getLegendFromDataDimension(
+        evaluationItem: AnalyticsServiceEvaluationItem,
+        value: String?,
+    ): String? {
         val dimensionDataItem = (
             evaluationItem.dimensionItems.filterIsInstance<DimensionItem.DataItem>() +
                 evaluationItem.filters.filterIsInstance<DimensionItem.DataItem>()
             ).first()
 
         return when (dimensionDataItem) {
-            is DimensionItem.DataItem.DataElementItem -> legendEvaluator.getLegendByDataElement(
+            is DimensionItem.DataItem.DataElementItem -> legendEvaluator.getLegendByDataElementInternal(
                 dimensionDataItem.uid,
                 value,
             )
 
-            is DimensionItem.DataItem.DataElementOperandItem -> legendEvaluator.getLegendByDataElement(
+            is DimensionItem.DataItem.DataElementOperandItem -> legendEvaluator.getLegendByDataElementInternal(
                 dimensionDataItem.dataElement,
                 value,
             )
 
-            is DimensionItem.DataItem.ProgramIndicatorItem -> legendEvaluator.getLegendByProgramIndicator(
+            is DimensionItem.DataItem.ProgramIndicatorItem -> legendEvaluator.getLegendByProgramIndicatorInternal(
                 dimensionDataItem.uid,
                 value,
             )
 
-            is DimensionItem.DataItem.IndicatorItem -> legendEvaluator.getLegendByIndicator(
+            is DimensionItem.DataItem.IndicatorItem -> legendEvaluator.getLegendByIndicatorInternal(
                 dimensionDataItem.uid,
                 value,
             )
 
-            is DimensionItem.DataItem.EventDataItem.DataElement -> legendEvaluator.getLegendByDataElement(
+            is DimensionItem.DataItem.EventDataItem.DataElement -> legendEvaluator.getLegendByDataElementInternal(
                 dimensionDataItem.dataElement,
                 value,
             )
 
-            is DimensionItem.DataItem.EventDataItem.Attribute -> legendEvaluator.getLegendByTrackedEntityAttribute(
-                dimensionDataItem.attribute,
-                value,
-            )
+            is DimensionItem.DataItem.EventDataItem.Attribute ->
+                legendEvaluator
+                    .getLegendByTrackedEntityAttributeInternal(
+                        dimensionDataItem.attribute,
+                        value,
+                    )
 
-            is DimensionItem.DataItem.EventDataItem.DataElementOption -> legendEvaluator.getLegendByDataElement(
+            is DimensionItem.DataItem.EventDataItem.DataElementOption -> legendEvaluator.getLegendByDataElementInternal(
                 dimensionDataItem.dataElement,
                 value,
             )
 
             is DimensionItem.DataItem.EventDataItem.AttributeOption ->
                 legendEvaluator
-                    .getLegendByTrackedEntityAttribute(
+                    .getLegendByTrackedEntityAttributeInternal(
                         dimensionDataItem.attribute,
                         value,
                     )

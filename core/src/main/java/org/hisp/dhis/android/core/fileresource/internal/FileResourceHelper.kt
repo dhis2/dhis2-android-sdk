@@ -27,11 +27,9 @@
  */
 package org.hisp.dhis.android.core.fileresource.internal
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventStore
@@ -40,14 +38,16 @@ import org.hisp.dhis.android.core.fileresource.FileResourceDataDomainType
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
+import org.hisp.dhis.android.persistence.datavalue.DataValueTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeValueTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityDataValueTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -63,17 +63,20 @@ internal class FileResourceHelper(
     private val fileResourceStore: FileResourceStore,
 ) {
 
-    fun getUploadableFileResources(): List<FileResource> {
+    suspend fun getUploadableFileResources(): List<FileResource> {
         return fileResourceStore.getUploadableSyncStatesIncludingError()
     }
 
-    fun isPresentInDataValues(fileResourceUid: String, dataValues: Collection<TrackedEntityDataValue>?): Boolean {
+    suspend fun isPresentInDataValues(
+        fileResourceUid: String,
+        dataValues: Collection<TrackedEntityDataValue>?,
+    ): Boolean {
         return dataValues?.any {
             fileResourceUid == it.value() && isFileDataElement(it.dataElement())
         } ?: false
     }
 
-    fun isPresentInAttributeValues(
+    suspend fun isPresentInAttributeValues(
         fileResourceUid: String,
         attributeValues: Collection<TrackedEntityAttributeValue>?,
     ): Boolean {
@@ -82,7 +85,7 @@ internal class FileResourceHelper(
         } ?: false
     }
 
-    fun findAttributeFileResource(
+    suspend fun findAttributeFileResource(
         attributeValue: NewTrackerImporterTrackedEntityAttributeValue,
         fileResources: List<FileResource>,
     ): FileResource? {
@@ -91,7 +94,7 @@ internal class FileResourceHelper(
         }
     }
 
-    fun findAttributeFileResource(
+    suspend fun findAttributeFileResource(
         attributeValue: TrackedEntityAttributeValue,
         fileResources: List<FileResource>,
     ): FileResource? {
@@ -100,7 +103,7 @@ internal class FileResourceHelper(
         }
     }
 
-    fun findDataValueFileResource(
+    suspend fun findDataValueFileResource(
         dataValue: NewTrackerImporterTrackedEntityDataValue,
         fileResources: List<FileResource>,
     ): FileResource? {
@@ -109,7 +112,7 @@ internal class FileResourceHelper(
         }
     }
 
-    fun findDataValueFileResource(
+    suspend fun findDataValueFileResource(
         dataValue: TrackedEntityDataValue,
         fileResources: List<FileResource>,
     ): FileResource? {
@@ -118,7 +121,7 @@ internal class FileResourceHelper(
         }
     }
 
-    fun findDataValueFileResource(
+    suspend fun findDataValueFileResource(
         dataValue: DataValue,
         fileResource: List<FileResource>,
     ): FileResource? {
@@ -127,7 +130,7 @@ internal class FileResourceHelper(
         }
     }
 
-    fun updateFileResourceStates(fileResources: List<String>, domainType: FileResourceDataDomainType) {
+    suspend fun updateFileResourceStates(fileResources: List<String>, domainType: FileResourceDataDomainType) {
         fileResources.forEach { fr ->
             val relatedState = getRelatedResourceState(fr, domainType)
             val state = if (relatedState == State.SYNCED) State.SYNCED else State.TO_POST
@@ -135,19 +138,20 @@ internal class FileResourceHelper(
         }
     }
 
-    private fun getRelatedResourceState(fileResourceUid: String, domain: FileResourceDataDomainType): State {
+    private suspend fun getRelatedResourceState(fileResourceUid: String, domain: FileResourceDataDomainType): State {
         return when (domain) {
             FileResourceDataDomainType.TRACKER ->
                 getRelatedEvent(fileResourceUid)?.syncState()
                     ?: getRelatedTei(fileResourceUid)?.syncState()
                     ?: State.TO_POST
+
             FileResourceDataDomainType.AGGREGATED ->
                 getRelatedDataValue(fileResourceUid)?.syncState()
                     ?: State.TO_POST
         }
     }
 
-    private fun getRelatedEvent(fileResourceUid: String): Event? {
+    private suspend fun getRelatedEvent(fileResourceUid: String): Event? {
         val candidates = trackedEntityDataValueStore.selectWhere(
             WhereClauseBuilder()
                 .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.VALUE, fileResourceUid)
@@ -158,7 +162,7 @@ internal class FileResourceHelper(
         return dataValue?.event()?.let { eventStore.selectByUid(it) }
     }
 
-    private fun getRelatedTei(fileResourceUid: String): TrackedEntityInstance? {
+    private suspend fun getRelatedTei(fileResourceUid: String): TrackedEntityInstance? {
         val candidates = trackedEntityAttributeValueStore.selectWhere(
             WhereClauseBuilder()
                 .appendKeyStringValue(TrackedEntityAttributeValueTableInfo.Columns.VALUE, fileResourceUid)
@@ -169,7 +173,7 @@ internal class FileResourceHelper(
         return attributeValue?.trackedEntityInstance()?.let { trackedEntityInstanceStore.selectByUid(it) }
     }
 
-    private fun getRelatedDataValue(fileResourceUid: String): DataValue? {
+    private suspend fun getRelatedDataValue(fileResourceUid: String): DataValue? {
         val candidates = dataValueStore.selectWhere(
             WhereClauseBuilder()
                 .appendKeyStringValue(DataValueTableInfo.Columns.VALUE, fileResourceUid)
@@ -178,11 +182,11 @@ internal class FileResourceHelper(
         return candidates.find { isFileDataElement(it.dataElement()) }
     }
 
-    private fun isFileDataElement(dataElementUid: String?): Boolean {
+    private suspend fun isFileDataElement(dataElementUid: String?): Boolean {
         return dataElementUid?.let { dataElementStore.selectByUid(it)?.valueType()?.isFile } ?: false
     }
 
-    private fun isFileAttribute(attributeUid: String?): Boolean {
+    private suspend fun isFileAttribute(attributeUid: String?): Boolean {
         return attributeUid?.let { attributeStore.selectByUid(it)?.valueType()?.isFile } ?: false
     }
 }

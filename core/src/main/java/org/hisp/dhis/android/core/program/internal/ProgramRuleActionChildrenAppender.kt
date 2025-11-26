@@ -27,31 +27,21 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.singleParentChildStore
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.program.ProgramRule
-import org.hisp.dhis.android.core.program.ProgramRuleAction
 
 internal class ProgramRuleActionChildrenAppender private constructor(
-    private val childStore: SingleParentChildStore<ProgramRule, ProgramRuleAction>,
+    private val childStore: ProgramRuleActionStore,
 ) : ChildrenAppender<ProgramRule>() {
-    override fun appendChildren(m: ProgramRule): ProgramRule {
-        val builder = m.toBuilder()
-        builder.programRuleActions(childStore.getChildren(m))
-        return builder.build()
+    override suspend fun appendChildren(m: ProgramRule): ProgramRule {
+        val children = childStore.getForProgramRule(m.uid())
+        return m.toBuilder().programRuleActions(children).build()
     }
 
     companion object {
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<ProgramRule> {
-            return ProgramRuleActionChildrenAppender(
-                singleParentChildStore(
-                    databaseAdapter,
-                    ProgramRuleActionStoreImpl.CHILD_PROJECTION,
-                ) { cursor: Cursor -> ProgramRuleAction.create(cursor) },
-            )
+        fun create(): ChildrenAppender<ProgramRule> {
+            return ProgramRuleActionChildrenAppender(koin.get())
         }
     }
 }

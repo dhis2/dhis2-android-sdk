@@ -36,7 +36,7 @@ internal open class BaseCollectionCleaner(
     private val databaseAdapter: DatabaseAdapter,
     private val key: String,
 ) {
-    fun deleteNotPresentByKey(uids: Collection<String>): Boolean {
+    suspend fun deleteNotPresentByKey(uids: Collection<String>): Boolean {
         val objectUids = CollectionsHelper.commaAndSpaceSeparatedCollectionValues(uids.map { "'$it'" })
         val clause = "$key NOT IN ($objectUids);"
         return databaseAdapter.delete(tableName, clause, null) > 0

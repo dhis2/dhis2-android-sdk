@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.network.dataset
 
 import org.hisp.dhis.android.core.dataset.DataSetElement
-import org.hisp.dhis.android.core.dataset.DataSetElementLinkTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.persistence.dataset.DataSetDataElementLinkTableInfo.Columns
 
 internal object DataSetElementFields : BaseFields<DataSetElement>() {
     val allFields = Fields.from(

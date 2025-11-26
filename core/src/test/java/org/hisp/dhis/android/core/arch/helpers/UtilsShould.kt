@@ -31,7 +31,7 @@ import com.google.common.truth.Truth
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.setPartition
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.runners.MockitoJUnitRunner
+import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
 class UtilsShould {

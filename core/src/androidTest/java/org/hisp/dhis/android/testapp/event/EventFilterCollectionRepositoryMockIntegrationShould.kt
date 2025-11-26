@@ -182,7 +182,9 @@ class EventFilterCollectionRepositoryMockIntegrationShould : BaseMockIntegration
         val eventFilter = d2.eventModule().eventFilters()
             .withEventDataFilters().one().blockingGet()
 
-        assertThat(eventFilter!!.eventQueryCriteria()!!.dataFilters()!!.size).isEqualTo(4)
-        assertThat(eventFilter.eventQueryCriteria()!!.dataFilters()!![0].dataItem()).isEqualTo("abcDataElementUid")
+        assertThat(eventFilter!!.uid()).isEqualTo("UjoQ7Zs9Ijo")
+        assertThat(eventFilter.eventQueryCriteria()!!.dataFilters()!!.size).isEqualTo(4)
+        assertThat(eventFilter.eventQueryCriteria()!!.dataFilters()!!.map { it.dataItem() }.toSet())
+            .isEqualTo(setOf("g9eOBujte1U", "ciWE5jde1ax", "jDx8LZlznYu", "uFAQYm3UgBL"))
     }
 }

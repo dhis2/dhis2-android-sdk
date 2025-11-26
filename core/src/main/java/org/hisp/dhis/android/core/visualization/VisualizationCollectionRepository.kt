@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.visualization
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
@@ -37,17 +36,16 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.visualization.internal.VisualizationColumnsRowsFiltersChildrenAppender
 import org.hisp.dhis.android.core.visualization.internal.VisualizationStore
+import org.hisp.dhis.android.persistence.visualization.VisualizationTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 @Suppress("TooManyFunctions")
 class VisualizationCollectionRepository internal constructor(
     store: VisualizationStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<Visualization, VisualizationCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -55,7 +53,6 @@ class VisualizationCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         VisualizationCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },

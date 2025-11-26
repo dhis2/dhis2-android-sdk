@@ -32,20 +32,23 @@ import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentPersistenceCallFactory
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventPersistenceCallFactory
+import org.hisp.dhis.android.core.program.ProgramType
+import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipItem
 import org.hisp.dhis.android.core.relationship.RelationshipItemEnrollment
 import org.hisp.dhis.android.core.relationship.RelationshipItemEvent
-import org.hisp.dhis.android.core.relationship.RelationshipItemTableInfo
 import org.hisp.dhis.android.core.relationship.RelationshipItemTrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePersistenceCallFactory
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
+import org.hisp.dhis.android.persistence.relationship.RelationshipItemTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class RelationshipDownloadAndPersistCallFactory(
     private val relationshipStore: RelationshipStore,
+    private val programStore: ProgramStore,
     private val trackerParentCallFactory: TrackerParentCallFactory,
     private val teiPersistenceCallFactory: TrackedEntityInstancePersistenceCallFactory,
     private val enrollmentPersistenceCallFactory: EnrollmentPersistenceCallFactory,
@@ -70,14 +73,16 @@ internal class RelationshipDownloadAndPersistCallFactory(
                 }.fold(
                     onSuccess = { eventPayload ->
                         events.addAll(eventPayload.items)
-                        eventPayload.items.mapNotNull { it.enrollment() }.forEach { enrollment ->
-                            val relativeEnrollment = RelationshipItemRelative(
-                                itemUid = enrollment,
-                                itemType = RelationshipItemTableInfo.Columns.ENROLLMENT,
-                                relationshipTypeUid = item.relationshipTypeUid,
-                                constraintType = item.constraintType,
-                            )
-                            relatives.addEnrollment(relativeEnrollment)
+                        eventPayload.items.forEach { event ->
+                            getTrackerEnrollment(event)?.let { enrollment ->
+                                val relativeEnrollment = RelationshipItemRelative(
+                                    itemUid = enrollment,
+                                    itemType = RelationshipItemTableInfo.Columns.ENROLLMENT,
+                                    relationshipTypeUid = item.relationshipTypeUid,
+                                    constraintType = item.constraintType,
+                                )
+                                relatives.addEnrollment(relativeEnrollment)
+                            }
                         }
                     },
                     onFailure = { failedEvents.add(item.itemUid) },
@@ -116,7 +121,7 @@ internal class RelationshipDownloadAndPersistCallFactory(
             }
         }
 
-        enrollmentPersistenceCallFactory.persistAsRelationships(enrollments).blockingAwait()
+        enrollmentPersistenceCallFactory.persistAsRelationships(enrollments)
 
         cleanFailedRelationships(failedEnrollments, RelationshipItemTableInfo.Columns.ENROLLMENT)
     }
@@ -141,7 +146,7 @@ internal class RelationshipDownloadAndPersistCallFactory(
         cleanFailedRelationships(failedTeis, RelationshipItemTableInfo.Columns.TRACKED_ENTITY_INSTANCE)
     }
 
-    private fun cleanFailedRelationships(failedTeis: List<String>, elementType: String) {
+    private suspend fun cleanFailedRelationships(failedTeis: List<String>, elementType: String) {
         val corruptedRelationships: MutableList<Relationship> = mutableListOf()
         for (uid in failedTeis) {
             val builder = RelationshipItem.builder()
@@ -164,11 +169,23 @@ internal class RelationshipDownloadAndPersistCallFactory(
             corruptedRelationships.addAll(relationshipStore.getRelationshipsByItem(builder.build()))
         }
         for (r in corruptedRelationships) {
-            relationshipStore.deleteById(r)
+            r.uid()?.let { relationshipStore.deleteIfExists(it) }
         }
     }
 
-    private fun itemDoesNotExist(item: RelationshipItemRelative): Boolean {
+    private suspend fun itemDoesNotExist(item: RelationshipItemRelative): Boolean {
         return !relationshipItemStoreSelector.getElementStore(item).exists(item.itemUid)
+    }
+
+    private suspend fun getTrackerEnrollment(event: Event): String? {
+        val isTrackerEvent = event.program()?.let {
+            programStore.selectByUid(it)?.programType() == ProgramType.WITH_REGISTRATION
+        } ?: false
+
+        return if (isTrackerEvent) {
+            event.enrollment()
+        } else {
+            null
+        }
     }
 }

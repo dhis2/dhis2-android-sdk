@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getDataValueEventWhereClause
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
+import org.hisp.dhis.android.persistence.event.EventTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityDataValueTableInfo
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal abstract class ProgramMinMaxFunction : ExpressionItem {

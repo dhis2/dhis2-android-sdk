@@ -31,14 +31,14 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.helpers.internal.UrlLengthHelper
 import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLink
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class CategoryOptionOrganisationUnitsCall(
     private val handler: CategoryOptionOrganisationUnitLinkHandler,
     private val networkHandler: CategoryOptionNetworkHandler,
-    private val dhisVersionManager: DHISVersionManager,
+    private val dhisVersionManager: DHISVersionManagerImpl,
     private val apiDownloader: APIDownloader,
 ) {
 
@@ -47,7 +47,7 @@ internal class CategoryOptionOrganisationUnitsCall(
     }
 
     suspend fun download(uids: Set<String>): Map<String, List<String?>> {
-        return if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_37)) {
+        return if (dhisVersionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_37)) {
             apiDownloader.downloadPartitionedMap(
                 uids = uids,
                 pageSize = UrlLengthHelper.getHowManyUidsFitInURL(QUERY_WITHOUT_UIDS_LENGTH),
@@ -64,14 +64,18 @@ internal class CategoryOptionOrganisationUnitsCall(
         }
     }
 
-    private fun getUpdatedEntries(
+    private suspend fun getUpdatedEntries(
         uids: Set<String>,
         data: Map<String, List<String?>>,
     ): Map<String, List<CategoryOptionRestriction>> {
         val updatedEntries = mutableMapOf<String, List<CategoryOptionRestriction>>()
         for (uid in uids) {
             if (!data.keys.contains(uid)) {
-                updatedEntries[uid] = listOf(CategoryOptionRestriction.NotAccessibleToUser())
+                if (dhisVersionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_42)) {
+                    updatedEntries[uid] = listOf(CategoryOptionRestriction.NotRestricted())
+                } else {
+                    updatedEntries[uid] = listOf(CategoryOptionRestriction.NotAccessibleToUser())
+                }
             } else {
                 updatedEntries[uid] = data[uid]!!.map {
                     if (it == null) {
@@ -85,7 +89,7 @@ internal class CategoryOptionOrganisationUnitsCall(
         return updatedEntries
     }
 
-    private fun handleEntry(entry: Map.Entry<String, List<CategoryOptionRestriction>>) {
+    private suspend fun handleEntry(entry: Map.Entry<String, List<CategoryOptionRestriction>>) {
         handler.handleMany(
             masterUid = entry.key,
             slaves = entry.value,

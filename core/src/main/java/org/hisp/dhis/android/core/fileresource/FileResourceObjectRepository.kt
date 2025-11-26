@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.fileresource
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyOneObjectRepositoryImpl
@@ -37,19 +36,16 @@ import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore
 class FileResourceObjectRepository internal constructor(
     store: FileResourceStore,
     uid: String?,
-    databaseAdapter: DatabaseAdapter,
     childrenAppenders: ChildrenAppenderGetter<FileResource>,
     scope: RepositoryScope,
 ) : ReadOnlyOneObjectRepositoryImpl<FileResource, FileResourceObjectRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     ObjectRepositoryFactory { s: RepositoryScope ->
         FileResourceObjectRepository(
             store,
             uid,
-            databaseAdapter,
             childrenAppenders,
             s,
         )

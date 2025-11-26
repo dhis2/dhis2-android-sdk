@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.testapp.event
 
 import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.helpers.DateTimezoneConverter.convertServerToClient
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.State
@@ -70,7 +71,7 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
     @Test
     fun filter_by_created() {
         val events = d2.eventModule().events()
-            .byCreated().eq("2017-08-07T15:47:25.959".toJavaDate())
+            .byCreated().eq(convertServerToClient("2017-08-07T15:47:25.959"))
             .blockingGet()
 
         assertThat(events.size).isEqualTo(1)
@@ -79,7 +80,7 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
     @Test
     fun filter_by_last_updated() {
         val events = d2.eventModule().events()
-            .byLastUpdated().eq("2019-01-01T22:26:39.094".toJavaDate())
+            .byLastUpdated().eq(convertServerToClient("2019-01-01T22:26:39.094"))
             .blockingGet()
 
         assertThat(events.size).isEqualTo(1)

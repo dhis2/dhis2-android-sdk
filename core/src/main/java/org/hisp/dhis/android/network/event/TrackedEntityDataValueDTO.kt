@@ -30,14 +30,14 @@ package org.hisp.dhis.android.network.event
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
-import org.hisp.dhis.android.network.common.dto.DateStringDTO
 import org.hisp.dhis.android.network.common.dto.ValueDTO
-import org.hisp.dhis.android.network.common.dto.toDto
+import org.hisp.dhis.android.network.common.dto.ZonedDateDTO
+import org.hisp.dhis.android.network.common.dto.toZonedDateDto
 
 @Serializable
 internal data class TrackedEntityDataValueDTO(
-    val created: DateStringDTO?,
-    val lastUpdated: DateStringDTO?,
+    val created: ZonedDateDTO?,
+    val lastUpdated: ZonedDateDTO?,
     val dataElement: String?,
     val storedBy: String?,
     val value: ValueDTO?,
@@ -58,8 +58,8 @@ internal data class TrackedEntityDataValueDTO(
 
 internal fun TrackedEntityDataValue.toDto(): TrackedEntityDataValueDTO {
     return TrackedEntityDataValueDTO(
-        created = this.created()?.toDto(),
-        lastUpdated = this.lastUpdated()?.toDto(),
+        created = this.created()?.toZonedDateDto(),
+        lastUpdated = this.lastUpdated()?.toZonedDateDto(),
         dataElement = this.dataElement(),
         storedBy = this.storedBy(),
         value = ValueDTO(this.value()),

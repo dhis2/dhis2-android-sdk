@@ -28,20 +28,19 @@
 package org.hisp.dhis.android.core.dataelement
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.dataset.DataElementOperandDTO
 import org.junit.Test
 
-class DataElementOperandShould : BaseObjectKotlinxShould("dataelement/data_element_operand.json"), ObjectShould {
+class DataElementOperandShould : CoreObjectShould("dataelement/data_element_operand.json") {
     @Test
     override fun map_from_json_string() {
         val dataElementOperandDTO = deserialize(DataElementOperandDTO.serializer())
         val dataElementOperand = dataElementOperandDTO.toDomain()
 
-        assertThat(dataElementOperand.uid()).isEqualTo("ca8lfO062zg.Prlt0C1RF0s")
+        assertThat(dataElementOperand.uid()).isEqualTo("ca8lfO062zg.Gmbgme7z9BF")
         assertThat(dataElementOperand.deleted()).isFalse()
         assertThat(dataElementOperand.dataElement()!!.uid()).isEqualTo("ca8lfO062zg")
-        assertThat(dataElementOperand.categoryOptionCombo()!!.uid()).isEqualTo("Prlt0C1RF0s")
+        assertThat(dataElementOperand.categoryOptionCombo()!!.uid()).isEqualTo("Gmbgme7z9BF")
     }
 }

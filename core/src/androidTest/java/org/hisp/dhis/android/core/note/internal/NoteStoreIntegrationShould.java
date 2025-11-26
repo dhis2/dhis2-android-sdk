@@ -32,9 +32,10 @@ import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.note.NoteSamples;
 import org.hisp.dhis.android.core.note.Note;
-import org.hisp.dhis.android.core.note.NoteTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.hisp.dhis.android.persistence.note.NoteStoreImpl;
+import org.hisp.dhis.android.persistence.note.NoteTableInfo;
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)

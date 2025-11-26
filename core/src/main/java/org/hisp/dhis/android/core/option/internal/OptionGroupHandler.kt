@@ -41,7 +41,7 @@ internal class OptionGroupHandler(
     private val collectionCleaner: OptionGroupCollectionCleaner,
 ) : IdentifiableHandlerImpl<OptionGroup>(optionStore) {
 
-    override fun afterObjectHandled(o: OptionGroup, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: OptionGroup, action: HandleAction) {
         optionGroupOptionLinkHandler.handleMany(
             o.uid(),
             o.options(),
@@ -50,7 +50,7 @@ internal class OptionGroupHandler(
         }
     }
 
-    override fun afterCollectionHandled(oCollection: Collection<OptionGroup>?) {
+    override suspend fun afterCollectionHandled(oCollection: Collection<OptionGroup>?) {
         collectionCleaner.deleteNotPresent(oCollection)
     }
 }

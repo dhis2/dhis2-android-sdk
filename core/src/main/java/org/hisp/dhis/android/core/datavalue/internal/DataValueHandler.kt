@@ -27,31 +27,37 @@
  */
 package org.hisp.dhis.android.core.datavalue.internal
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.ObjectWithoutUidHandlerImpl
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
+import org.hisp.dhis.android.persistence.datavalue.DataValueTableInfo
 import org.koin.core.annotation.Singleton
-import java.util.Arrays
 
 @Singleton
 internal class DataValueHandler(
     store: DataValueStore,
 ) : ObjectWithoutUidHandlerImpl<DataValue>(store) {
-    override fun deleteOrPersist(o: DataValue): HandleAction {
-        return if (CollectionsHelper.isDeleted(o)) {
+    override suspend fun deleteOrPersist(oCollection: Collection<DataValue>) {
+        val (toDelete, toUpsert) = oCollection.partition { o ->
+            CollectionsHelper.isDeleted(o)
+        }
+
+        toDelete.forEach { o ->
             store.deleteWhereIfExists(o)
-            HandleAction.Delete
-        } else {
-            store.updateOrInsertWhere(o)
+            afterObjectHandled(o, HandleAction.Delete)
+        }
+
+        val upsertActions = store.updateOrInsert(toUpsert)
+        toUpsert.forEachIndexed { index, o ->
+            afterObjectHandled(o, upsertActions[index])
         }
     }
 
-    override fun beforeCollectionHandled(oCollection: Collection<DataValue>): Collection<DataValue> {
-        val dataValuesPendingToSync = dataValuesPendingToSync
+    override suspend fun beforeCollectionHandled(oCollection: Collection<DataValue>): Collection<DataValue> {
+        val dataValuesPendingToSync = dataValuesPendingToSync()
         val dataValuesToUpdate: MutableList<DataValue> = ArrayList()
         for (dataValue in oCollection) {
             if (!containsDataValue(dataValuesPendingToSync, dataValue)) {
@@ -81,14 +87,13 @@ internal class DataValueHandler(
         }
     }
 
-    private val dataValuesPendingToSync: List<DataValue>
-        get() {
-            val whereClause = WhereClauseBuilder()
-                .appendNotInKeyStringValues(
-                    DataValueTableInfo.Columns.SYNC_STATE,
-                    Arrays.asList(State.SYNCED.name, State.SYNCED_VIA_SMS.name),
-                )
-                .build()
-            return store.selectWhere(whereClause)
-        }
+    private suspend fun dataValuesPendingToSync(): List<DataValue> {
+        val whereClause = WhereClauseBuilder()
+            .appendNotInKeyStringValues(
+                DataValueTableInfo.Columns.SYNC_STATE,
+                listOf(State.SYNCED.name, State.SYNCED_VIA_SMS.name),
+            )
+            .build()
+        return store.selectWhere(whereClause)
+    }
 }

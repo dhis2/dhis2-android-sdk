@@ -32,6 +32,6 @@ import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class DataElementOperandHandler constructor(
+internal class DataElementOperandHandler(
     store: DataElementOperandStore,
 ) : IdentifiableHandlerImpl<DataElementOperand>(store)

@@ -31,16 +31,16 @@ package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EventAlias
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLinkTableInfo
-import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkTableInfo
-import org.hisp.dhis.android.core.category.CategoryOptionTableInfo
-import org.hisp.dhis.android.core.event.EventTableInfo
+import org.hisp.dhis.android.persistence.category.CategoryCategoryOptionLinkTableInfo
+import org.hisp.dhis.android.persistence.category.CategoryOptionComboCategoryOptionLinkTableInfo
+import org.hisp.dhis.android.persistence.category.CategoryOptionTableInfo
+import org.hisp.dhis.android.persistence.event.EventTableInfo
 
 internal class CategoryEvaluator(
     private val item: TrackerLineListItem.Category,
 ) : TrackerLineListEvaluator() {
 
-    override fun getSelectSQLForEvent(): String {
+    override suspend fun getSelectSQLForEvent(): String {
         return "SELECT $COAlias.${CategoryOptionTableInfo.Columns.DISPLAY_NAME} " +
             "FROM ${CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO.name()} $COCCOLAlias " +
             "JOIN ${CategoryOptionTableInfo.TABLE_INFO.name()} $COAlias ON " +
@@ -58,23 +58,23 @@ internal class CategoryEvaluator(
             "AND " + DataFilterHelper.getWhereClause(CategoryOptionTableInfo.Columns.UID, item.filters)
     }
 
-    override fun getWhereSQLForEvent(): String {
+    override suspend fun getWhereSQLForEvent(): String {
         return " ${item.uid} IS NOT NULL "
     }
 
-    override fun getSelectSQLForEnrollment(): String {
+    override suspend fun getSelectSQLForEnrollment(): String {
         throw AnalyticsException.InvalidArguments("Category is not supported in ENROLLMENT output type")
     }
 
-    override fun getWhereSQLForEnrollment(): String {
+    override suspend fun getWhereSQLForEnrollment(): String {
         throw AnalyticsException.InvalidArguments("Category is not supported in ENROLLMENT output type")
     }
 
-    override fun getSelectSQLForTrackedEntityInstance(): String {
+    override suspend fun getSelectSQLForTrackedEntityInstance(): String {
         throw AnalyticsException.InvalidArguments("Category is not supported in TRACKED_ENTITY_INSTANCE output type")
     }
 
-    override fun getWhereSQLForTrackedEntityInstance(): String {
+    override suspend fun getWhereSQLForTrackedEntityInstance(): String {
         throw AnalyticsException.InvalidArguments("Category is not supported in TRACKED_ENTITY_INSTANCE output type")
     }
 

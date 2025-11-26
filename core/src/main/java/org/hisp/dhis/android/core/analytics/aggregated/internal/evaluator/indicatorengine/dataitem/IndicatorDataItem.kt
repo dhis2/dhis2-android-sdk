@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.dataitem
 
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.AbsoluteDimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
@@ -44,24 +45,28 @@ internal interface IndicatorDataItem : ExpressionItem {
 
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
         return getEvaluationItem(ctx, visitor)?.let { evaluationItem ->
-            getMetadataEntry(evaluationItem, visitor)?.let { metadataEntry ->
-                getEvaluator(visitor).evaluate(
-                    evaluationItem = evaluationItem,
-                    metadata = visitor.indicatorContext!!.contextMetadata + metadataEntry,
-                    queryMods = visitor.state.queryMods,
-                )
+            runBlocking {
+                getMetadataEntry(evaluationItem, visitor)?.let { metadataEntry ->
+                    getEvaluator(visitor).evaluate(
+                        evaluationItem = evaluationItem,
+                        metadata = visitor.indicatorContext!!.contextMetadata + metadataEntry,
+                        queryMods = visitor.state.queryMods,
+                    )
+                }
             }
         } ?: ParserUtils.DOUBLE_VALUE_IF_NULL
     }
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
         return getEvaluationItem(ctx, visitor)?.let { evaluationItem ->
-            getMetadataEntry(evaluationItem, visitor)?.let { metadataEntry ->
-                getEvaluator(visitor).getSql(
-                    evaluationItem = evaluationItem,
-                    metadata = visitor.indicatorContext!!.contextMetadata + metadataEntry,
-                    queryMods = visitor.state.queryMods,
-                )?.let { "($it)" }
+            runBlocking {
+                getMetadataEntry(evaluationItem, visitor)?.let { metadataEntry ->
+                    getEvaluator(visitor).getSql(
+                        evaluationItem = evaluationItem,
+                        metadata = visitor.indicatorContext!!.contextMetadata + metadataEntry,
+                        queryMods = visitor.state.queryMods,
+                    )?.let { "($it)" }
+                }
             }
         }
     }
@@ -84,7 +89,7 @@ internal interface IndicatorDataItem : ExpressionItem {
     }
 
     @Suppress("ThrowsCount")
-    private fun getMetadataEntry(
+    private suspend fun getMetadataEntry(
         evaluationItem: AnalyticsServiceEvaluationItem,
         visitor: CommonExpressionVisitor,
     ): Pair<String, MetadataItem>? {
@@ -123,7 +128,7 @@ internal interface IndicatorDataItem : ExpressionItem {
                 val programIndicator = visitor.indicatorContext!!.programIndicatorRepository
                     .withAnalyticsPeriodBoundaries()
                     .uid(dataItem.uid)
-                    .blockingGet()
+                    .getInternal()
                     ?: throw AnalyticsException.InvalidProgramIndicator(dataItem.uid)
 
                 dataItem.uid to MetadataItem.ProgramIndicatorItem(programIndicator)

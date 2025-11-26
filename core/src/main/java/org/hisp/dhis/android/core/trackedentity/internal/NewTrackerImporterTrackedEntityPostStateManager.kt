@@ -46,15 +46,15 @@ internal class NewTrackerImporterTrackedEntityPostStateManager internal construc
     private val h: StatePersistorHelper,
 ) {
 
-    fun restoreStates(payload: NewTrackerImporterPayload) {
+    suspend fun restoreStates(payload: NewTrackerImporterPayload) {
         setStates(payload, null)
     }
 
-    fun restoreStates(objects: List<TrackerJobObject>) {
+    suspend fun restoreStates(objects: List<TrackerJobObject>) {
         setStates(objects, null)
     }
 
-    fun setStates(payload: NewTrackerImporterPayload, forcedState: State?) {
+    suspend fun setStates(payload: NewTrackerImporterPayload, forcedState: State?) {
         val teiMap = mutableMapOf<State, MutableList<String>>()
         val enrollmentMap = mutableMapOf<State, MutableList<String>>()
         val eventMap = mutableMapOf<State, MutableList<String>>()
@@ -76,7 +76,7 @@ internal class NewTrackerImporterTrackedEntityPostStateManager internal construc
         h.persistStates(relationshipMap, relationshipStore)
     }
 
-    fun setStates(objects: List<TrackerJobObject>, forcedState: State?) {
+    suspend fun setStates(objects: List<TrackerJobObject>, forcedState: State?) {
         val teiMap = mutableMapOf<State, MutableList<String>>()
         val enrollmentMap = mutableMapOf<State, MutableList<String>>()
         val eventMap = mutableMapOf<State, MutableList<String>>()

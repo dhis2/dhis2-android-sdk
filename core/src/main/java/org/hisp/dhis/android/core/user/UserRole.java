@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.user;
 
-import android.database.Cursor;
-
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
@@ -39,19 +37,13 @@ import org.hisp.dhis.android.core.common.CoreObject;
 public abstract class UserRole extends BaseIdentifiableObject implements CoreObject {
 
     public static Builder builder() {
-        return new $$AutoValue_UserRole.Builder();
-    }
-
-    public static UserRole create(Cursor cursor) {
-        return $AutoValue_UserRole.createFromCursor(cursor);
+        return new AutoValue_UserRole.Builder();
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
         public abstract UserRole build();
     }
 }

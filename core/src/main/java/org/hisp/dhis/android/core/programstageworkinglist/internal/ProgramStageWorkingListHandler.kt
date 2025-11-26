@@ -39,14 +39,14 @@ internal class ProgramStageWorkingListHandler(
     private val attributeValueFilterHandler: ProgramStageWorkingListAttributeValueFilterHandler,
 ) : IdentifiableHandlerImpl<ProgramStageWorkingList>(store) {
 
-    override fun beforeCollectionHandled(
+    override suspend fun beforeCollectionHandled(
         oCollection: Collection<ProgramStageWorkingList>,
     ): Collection<ProgramStageWorkingList> {
         store.delete()
         return super.beforeCollectionHandled(oCollection)
     }
 
-    override fun afterObjectHandled(o: ProgramStageWorkingList, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: ProgramStageWorkingList, action: HandleAction) {
         if (action !== HandleAction.Delete && o.programStageQueryCriteria() != null) {
             o.programStageQueryCriteria()?.let { criteria ->
                 eventDataFilterHandler.handleMany(

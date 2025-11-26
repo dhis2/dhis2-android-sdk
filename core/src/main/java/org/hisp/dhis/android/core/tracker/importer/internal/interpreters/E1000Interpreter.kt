@@ -37,7 +37,7 @@ internal class E1000Interpreter internal constructor(
 ) : ErrorCodeInterpreter {
     // User: `User (DXyJmlo9rge)`, has no write access to OrganisationUnit: `OrganisationUnit (DiszpKrYNg8)`.
     override val unformattedDescription = R.string.E1000
-    override fun companions(error: JobValidationError): List<String> {
+    override suspend fun companions(error: JobValidationError): List<String> {
         val organisationUnitUid = interpreterHelper.parseIdentifiableUid(regex.find(error.message)!!.groupValues.last())
         return listOf(interpreterHelper.organisationUnitDisplayName(organisationUnitUid))
     }

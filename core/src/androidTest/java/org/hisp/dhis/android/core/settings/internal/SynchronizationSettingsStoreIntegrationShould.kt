@@ -29,10 +29,11 @@ package org.hisp.dhis.android.core.settings.internal
 
 import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.settings.SynchronizationSettingsSamples
-import org.hisp.dhis.android.core.settings.SynchronizationSettingTableInfo
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.settings.SynchronizationSettingStoreImpl
+import org.hisp.dhis.android.persistence.settings.SynchronizationSettingTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

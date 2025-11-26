@@ -42,7 +42,6 @@ public class ProgramRuleVariableSamples {
 
         fillIdentifiableProperties(builder);
         builder
-                .id(1L)
                 .useCodeForOptionSet(true)
                 .program(ObjectWithUid.create("program"))
                 .programStage(ObjectWithUid.create("program_stage"))
@@ -54,7 +53,6 @@ public class ProgramRuleVariableSamples {
 
     public static ProgramRuleVariable getHemoglobin() {
         return ProgramRuleVariable.builder()
-                .id(1L)
                 .uid("omrL0gtPpDL")
                 .created(parseDate("2016-04-12T15:57:18.645"))
                 .lastUpdated(parseDate("2017-05-23T00:29:24.356"))

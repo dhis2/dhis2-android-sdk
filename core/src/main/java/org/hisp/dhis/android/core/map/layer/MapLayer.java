@@ -28,26 +28,18 @@
 
 package org.hisp.dhis.android.core.map.layer;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.StringListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ImageFormatColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.MapLayerPositionColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.MapServiceColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreMapLayerImageryProviderColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
 import java.util.List;
 
 @AutoValue
-public abstract class MapLayer extends BaseObject implements ObjectWithUidInterface {
+public abstract class MapLayer implements CoreObject, ObjectWithUidInterface {
 
     public static final String IMAGERY_PROVIDERS = "imageryProviders";
 
@@ -65,7 +57,6 @@ public abstract class MapLayer extends BaseObject implements ObjectWithUidInterf
     public abstract Boolean external();
 
     @NonNull
-    @ColumnAdapter(MapLayerPositionColumnAdapter.class)
     public abstract MapLayerPosition mapLayerPosition();
 
     @Nullable
@@ -75,42 +66,34 @@ public abstract class MapLayer extends BaseObject implements ObjectWithUidInterf
     public abstract String imageUrl();
 
     @Nullable
-    @ColumnAdapter(StringListColumnAdapter.class)
     public abstract List<String> subdomains();
 
     @Nullable
     public abstract String subdomainPlaceholder();
 
     @Nullable
-    @ColumnAdapter(IgnoreMapLayerImageryProviderColumnAdapter.class)
     public abstract List<MapLayerImageryProvider> imageryProviders();
 
     @Nullable
     public abstract String code();
 
     @Nullable
-    @ColumnAdapter(MapServiceColumnAdapter.class)
     public abstract MapService mapService();
 
     @Nullable
-    @ColumnAdapter(ImageFormatColumnAdapter.class)
     public abstract ImageFormat imageFormat();
 
     @Nullable
     public abstract String layers();
 
-    public static MapLayer create(Cursor cursor) {
-        return $AutoValue_MapLayer.createFromCursor(cursor);
-    }
-
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new $$AutoValue_MapLayer.Builder();
+        return new AutoValue_MapLayer.Builder();
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder {
 
         public abstract Builder uid(String uid);
 

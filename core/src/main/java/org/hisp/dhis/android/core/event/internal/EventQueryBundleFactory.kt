@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
+import org.hisp.dhis.android.core.event.EventFilterCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.program.internal.ProgramStore
@@ -42,6 +43,7 @@ internal class EventQueryBundleFactory(
     programSettingsObjectRepository: ProgramSettingsObjectRepository,
     lastUpdatedManager: EventLastUpdatedManager,
     commonHelper: TrackerQueryFactoryCommonHelper,
+    eventFilterCollectionRepository: EventFilterCollectionRepository,
 ) : TrackerQueryFactory<EventQueryBundle, EventSync>(
     programStore,
     programSettingsObjectRepository,
@@ -51,6 +53,6 @@ internal class EventQueryBundleFactory(
     { params: ProgramDataDownloadParams,
             programSettings: ProgramSettings?,
         ->
-        EventQueryBundleInternalFactory(commonHelper, params, programSettings)
+        EventQueryBundleInternalFactory(commonHelper, params, programSettings, eventFilterCollectionRepository)
     },
 )

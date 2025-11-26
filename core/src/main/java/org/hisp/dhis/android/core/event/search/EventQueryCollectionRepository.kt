@@ -34,6 +34,8 @@ import androidx.paging.Pager
 import androidx.paging.PagingData
 import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EventDataFilterConnector
@@ -42,25 +44,28 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.PeriodFilte
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope.OrderByDirection
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode
 import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.common.DateFilterPeriod
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.event.EventCollectionRepository
 import org.hisp.dhis.android.core.event.EventDataFilter
 import org.hisp.dhis.android.core.event.EventFilter
 import org.hisp.dhis.android.core.event.EventFilterCollectionRepository
 import org.hisp.dhis.android.core.event.EventObjectRepository
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
 import org.koin.core.annotation.Singleton
 
 @Singleton
 @Suppress("TooManyFunctions")
 class EventQueryCollectionRepository internal constructor(
     private val eventCollectionRepositoryAdapter: EventCollectionRepositoryAdapter,
+    private val eventQueryOnlineAdapter: EventQueryOnlineAdapter,
     private val eventFilterRepository: EventFilterCollectionRepository,
+    private val trackerCallFactory: TrackerParentCallFactory,
     @JvmField val scope: EventQueryRepositoryScope,
 ) : ReadOnlyWithUidCollectionRepository<Event> {
 
@@ -70,9 +75,17 @@ class EventQueryCollectionRepository internal constructor(
         > = ScopedFilterConnectorFactory { s: EventQueryRepositoryScope ->
         EventQueryCollectionRepository(
             eventCollectionRepositoryAdapter,
+            eventQueryOnlineAdapter,
             eventFilterRepository,
+            trackerCallFactory,
             s,
         )
+    }
+
+    internal fun onlineOnly(): EventQueryCollectionRepository {
+        return connectorFactory.eqConnector<Any> {
+            scope.toBuilder().mode(RepositoryMode.ONLINE_ONLY).build()
+        }.eq(null)
     }
 
     fun byUid(): ListFilterConnector<EventQueryCollectionRepository, String> {
@@ -180,6 +193,12 @@ class EventQueryCollectionRepository internal constructor(
         }
     }
 
+    internal fun byEventFilterObject(): EqFilterConnector<EventQueryCollectionRepository, EventFilter> {
+        return connectorFactory.eqConnector { eventFilter ->
+            EventQueryRepositoryScopeHelper.addEventFilter(scope, eventFilter!!)
+        }
+    }
+
     /**
      * Filter by sync status.
      * <br></br>**IMPORTANT:** using this filter forces **offlineOnly** mode.
@@ -251,61 +270,66 @@ class EventQueryCollectionRepository internal constructor(
     }
 
     override fun uid(uid: String?): EventObjectRepository {
-        return eventCollectionRepository.uid(uid)
+        return getDataFetcher().uid(uid)
     }
 
     override fun getUids(): Single<List<String>> {
-        return eventCollectionRepository.getUids()
+        return rxSingle { getDataFetcher().getUids() }
     }
 
     override fun blockingGetUids(): List<String> {
-        return eventCollectionRepository.blockingGetUids()
+        return runBlocking { getDataFetcher().getUids() }
     }
 
     override fun get(): Single<List<Event>> {
-        return eventCollectionRepository.get()
+        return rxSingle { getDataFetcher().get() }
     }
 
     override fun blockingGet(): List<Event> {
-        return eventCollectionRepository.blockingGet()
+        return runBlocking { getDataFetcher().get() }
     }
 
     override fun getPaged(pageSize: Int): LiveData<PagedList<Event>> {
-        return eventCollectionRepository.getPaged(pageSize)
+        return getDataFetcher().getPaged(pageSize)
     }
 
     override fun getPagingData(pageSize: Int): Flow<PagingData<Event>> {
-        return eventCollectionRepository.getPagingData(pageSize)
+        return getDataFetcher().getPagingData(pageSize)
     }
 
-    fun getPager(pageSize: Int): Pager<Event, Event> {
-        return eventCollectionRepository.getPager(pageSize)
+    fun getPager(pageSize: Int): Pager<Int, Event> {
+        return getDataFetcher().getPager(pageSize)
     }
 
-    val dataSource: DataSource<Event, Event>
-        get() = eventCollectionRepository.dataSource
+    val dataSource: DataSource<Int, Event>
+        get() = getDataFetcher().dataSource
 
     override fun count(): Single<Int> {
-        return eventCollectionRepository.count()
+        return rxSingle { getDataFetcher().count() }
     }
 
     override fun blockingCount(): Int {
-        return eventCollectionRepository.blockingCount()
+        return runBlocking { getDataFetcher().count() }
     }
 
     override fun isEmpty(): Single<Boolean> {
-        return eventCollectionRepository.isEmpty()
+        return rxSingle { getDataFetcher().isEmpty() }
     }
+
     override fun blockingIsEmpty(): Boolean {
-        return eventCollectionRepository.blockingIsEmpty()
+        return runBlocking { getDataFetcher().isEmpty() }
     }
 
     override fun one(): ReadOnlyObjectRepository<Event> {
-        return eventCollectionRepository.one()
+        return getDataFetcher().one()
     }
 
-    private val eventCollectionRepository: EventCollectionRepository
-        get() = eventCollectionRepositoryAdapter
-            .getCollectionRepository(scope)
-            .withTrackedEntityDataValues()
+    internal fun getDataFetcher(): EventQueryDataFetcher {
+        return EventQueryDataFetcher(
+            scope,
+            eventCollectionRepositoryAdapter,
+            trackerCallFactory,
+            eventQueryOnlineAdapter,
+        )
+    }
 }

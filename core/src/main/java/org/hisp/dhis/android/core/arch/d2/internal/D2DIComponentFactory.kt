@@ -64,6 +64,7 @@ import org.hisp.dhis.android.core.program.ProgramDIModule
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListDIModule
 import org.hisp.dhis.android.core.relationship.RelationshipDIModule
 import org.hisp.dhis.android.core.resource.internal.ResourceDIModule
+import org.hisp.dhis.android.core.server.ServerDIModule
 import org.hisp.dhis.android.core.settings.SettingsDIModule
 import org.hisp.dhis.android.core.sms.SmsDIModule
 import org.hisp.dhis.android.core.systeminfo.SystemInfoDIModule
@@ -75,6 +76,7 @@ import org.hisp.dhis.android.core.validation.ValidationDIModule
 import org.hisp.dhis.android.core.visualization.VisualizationDIModule
 import org.hisp.dhis.android.core.wipe.internal.WipeDIModule
 import org.hisp.dhis.android.network.dependencyinjection.NetworkDIModule
+import org.hisp.dhis.android.persistence.dependencyinjection.PersistenceDIModule
 import org.koin.core.Koin
 import org.koin.dsl.koinApplication
 import org.koin.ksp.generated.module
@@ -121,10 +123,12 @@ internal object DhisAndroidSdkKoinContext {
                 OrganisationUnitDIModule().module,
                 ParserDIModule().module,
                 PeriodDIModule().module,
+                PersistenceDIModule().module,
                 ProgramDIModule().module,
                 ProgramStageWorkingListDIModule().module,
                 RelationshipDIModule().module,
                 ResourceDIModule().module,
+                ServerDIModule().module,
                 SettingsDIModule().module,
                 SmsDIModule().module,
                 SystemInfoDIModule().module,

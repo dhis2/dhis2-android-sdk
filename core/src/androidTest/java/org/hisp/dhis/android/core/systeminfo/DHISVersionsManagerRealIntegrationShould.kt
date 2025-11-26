@@ -28,12 +28,13 @@
 package org.hisp.dhis.android.core.systeminfo
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.data.server.RealServerMother
 
 class DHISVersionsManagerRealIntegrationShould : BaseRealIntegrationTest() {
     // @Test
-    fun return_2_30_version_when_connecting_to_2_30_server() {
+    fun return_2_30_version_when_connecting_to_2_30_server() = runTest {
         d2.wipeModule().wipeEverything()
         val versionManager = d2.systemInfoModule().versionManager()
         d2.userModule().logIn(username, password, RealServerMother.url2_30).blockingGet()
@@ -44,7 +45,7 @@ class DHISVersionsManagerRealIntegrationShould : BaseRealIntegrationTest() {
 
     // @Test
     @Throws(Exception::class)
-    fun return_2_31_version_when_connecting_to_2_31_server() {
+    fun return_2_31_version_when_connecting_to_2_31_server() = runTest {
         d2.wipeModule().wipeEverything()
         val versionManager = d2.systemInfoModule().versionManager()
         d2.userModule().logIn(username, password, RealServerMother.url2_31).blockingGet()

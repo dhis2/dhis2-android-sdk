@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.map.layer.MapLayer
 import org.hisp.dhis.android.core.map.layer.internal.MapLayerHandler
 import org.hisp.dhis.android.core.settings.internal.SystemSettingsNetworkHandler
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
 import org.koin.core.annotation.Singleton
 import kotlin.time.Duration.Companion.seconds
 
@@ -49,7 +49,7 @@ import kotlin.time.Duration.Companion.seconds
 internal class MicrosoftMapsCallFactory(
     private val coroutineExecutor: CoroutineAPICallExecutor,
     private val mapLayerHandler: MapLayerHandler,
-    private val versionManager: DHISVersionManager,
+    private val versionManager: DHISVersionManagerImpl,
     private val networkHandler: SystemSettingsNetworkHandler,
     private val bingNetworkHandler: BingNetworkHandler,
     private val azureNetworkHandler: AzureNetworkHandler,
@@ -59,7 +59,7 @@ internal class MicrosoftMapsCallFactory(
     }
 
     suspend fun download(): List<MapLayer> {
-        if (!versionManager.isGreaterOrEqualThan(DHISVersion.V2_34)) return emptyList()
+        if (!versionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_34)) return emptyList()
 
         return runCatching {
             val key = coroutineExecutor.wrap(storeError = true) { networkHandler.getBingApiKey() }

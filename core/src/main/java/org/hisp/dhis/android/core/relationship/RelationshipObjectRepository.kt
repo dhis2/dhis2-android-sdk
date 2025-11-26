@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.relationship
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
@@ -39,31 +38,28 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 internal class RelationshipObjectRepository(
     store: RelationshipStore,
     uid: String?,
-    databaseAdapter: DatabaseAdapter,
     childrenAppenders: ChildrenAppenderGetter<Relationship>,
     scope: RepositoryScope,
     private val trackerDataManager: TrackerDataManager,
 ) : ReadWriteWithUidDataObjectRepositoryImpl<Relationship, RelationshipObjectRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     ObjectRepositoryFactory { s: RepositoryScope ->
         RelationshipObjectRepository(
             store,
             uid,
-            databaseAdapter,
             childrenAppenders,
             s,
             trackerDataManager,
         )
     },
 ) {
-    override fun propagateState(m: Relationship, action: HandleAction) {
+    override suspend fun propagateState(m: Relationship, action: HandleAction) {
         trackerDataManager.propagateRelationshipUpdate(m, action)
     }
 
-    override fun deleteObject(m: Relationship) {
+    override suspend fun deleteObject(m: Relationship) {
         trackerDataManager.deleteRelationship(m)
     }
 }

@@ -28,14 +28,10 @@
 
 package org.hisp.dhis.android.core.legendset;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreLegendListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 
@@ -48,12 +44,7 @@ public abstract class LegendSet extends BaseIdentifiableObject implements CoreOb
     public abstract String symbolizer();
 
     @Nullable
-    @ColumnAdapter(IgnoreLegendListColumnAdapter.class)
     public abstract List<Legend> legends();
-
-    public static LegendSet create(Cursor cursor) {
-        return $AutoValue_LegendSet.createFromCursor(cursor);
-    }
 
     public abstract Builder toBuilder();
 
@@ -63,8 +54,6 @@ public abstract class LegendSet extends BaseIdentifiableObject implements CoreOb
 
     @AutoValue.Builder
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
         public abstract Builder symbolizer(String symbolizer);
 
         public abstract Builder legends(List<Legend> legends);

@@ -29,18 +29,18 @@ package org.hisp.dhis.android.core.arch.repositories.scope
 
 import com.google.common.collect.Lists
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
-import com.nhaarman.mockitokotlin2.whenever
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
+import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
 class WhereClauseFromScopeBuilderShould {

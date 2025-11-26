@@ -44,12 +44,11 @@ internal data class ProgramStageWorkingListAttributeValueFilterDTO(
     override val `in`: Set<String>?,
     override val like: String?,
     override val dateFilter: DateFilterPeriodDTO?,
-    val programStageWorkingList: String?,
-    val attribute: String?,
+    val attribute: String,
     val ew: String?,
     val sw: String?,
 ) : FilterOperatorsDTO {
-    fun toDomain(): ProgramStageWorkingListAttributeValueFilter {
+    fun toDomain(programStageWorkingList: String): ProgramStageWorkingListAttributeValueFilter {
         return ProgramStageWorkingListAttributeValueFilter.builder()
             .applyFilterOperatorsFields(this)
             .programStageWorkingList(programStageWorkingList)

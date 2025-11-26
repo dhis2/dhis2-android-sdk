@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.validation.engine.internal
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.mock
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
@@ -45,6 +44,7 @@ import org.hisp.dhis.android.core.validation.ValidationRuleExpression
 import org.hisp.dhis.android.core.validation.ValidationRuleImportance
 import org.hisp.dhis.android.core.validation.ValidationRuleOperator
 import org.junit.Test
+import org.mockito.kotlin.mock
 
 class ValidationExecutorShould {
 

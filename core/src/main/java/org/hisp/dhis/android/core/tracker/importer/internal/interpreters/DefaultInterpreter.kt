@@ -35,7 +35,7 @@ internal class DefaultInterpreter internal constructor(
     override val regex: Regex,
 ) : ErrorCodeInterpreter {
     override val unformattedDescription = 0
-    override fun displayDescription(context: Context, error: JobValidationError): String {
+    override suspend fun displayDescription(context: Context, error: JobValidationError): String {
         return error.message
     }
 }

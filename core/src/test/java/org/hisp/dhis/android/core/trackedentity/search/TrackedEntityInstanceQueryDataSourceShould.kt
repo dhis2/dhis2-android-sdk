@@ -29,10 +29,8 @@ package org.hisp.dhis.android.core.trackedentity.search
 
 import androidx.paging.ItemKeyedDataSource
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode
@@ -49,6 +47,16 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.ArgumentMatchers.anyString
+import org.mockito.kotlin.KArgumentCaptor
+import org.mockito.kotlin.any
+import org.mockito.kotlin.argThat
+import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.stub
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
+import org.mockito.kotlin.whenever
 import java.util.concurrent.TimeUnit
 
 @RunWith(JUnit4::class)
@@ -58,7 +66,6 @@ class TrackedEntityInstanceQueryDataSourceShould {
     private lateinit var multipleEventFilterScope: TrackedEntityInstanceQueryRepositoryScope
 
     private val store: TrackedEntityInstanceStore = mock()
-    private val databaseAdapter: DatabaseAdapter = mock()
     private val trackerParentCallFactory: TrackerParentCallFactory = mock()
     private val onlineCallFactory: TrackedEntityEndpointCallFactory = mock()
     private val trackedEntity: TrackedEntityInstance = mock()
@@ -81,7 +88,7 @@ class TrackedEntityInstanceQueryDataSourceShould {
     private val initialLoad = 30
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         offlineObjects = listOf(
             TrackedEntityInstance.builder().uid("offline1").build(),
             TrackedEntityInstance.builder().uid("offline2").build(),
@@ -122,7 +129,7 @@ class TrackedEntityInstanceQueryDataSourceShould {
                 .doReturn(TrackerQueryResult(emptyList(), true))
         }
 
-        whenever(childrenAppenders[anyString()]).doReturn { _ -> identityAppender() }
+        whenever(childrenAppenders[anyString()]).doReturn { identityAppender() }
     }
 
     @Test
@@ -140,7 +147,7 @@ class TrackedEntityInstanceQueryDataSourceShould {
     }
 
     @Test
-    fun get_initial_offline_page() {
+    fun get_initial_offline_page() = runTest {
         val scope = singleEventFilterScope.toBuilder().mode(RepositoryMode.OFFLINE_ONLY).build()
         val dataSource = TrackedEntityInstanceQueryDataSource(getDataFetcher(scope))
         dataSource.loadInitial(
@@ -266,7 +273,6 @@ class TrackedEntityInstanceQueryDataSourceShould {
     ): TrackedEntityInstanceQueryDataFetcher {
         return TrackedEntityInstanceQueryDataFetcher(
             store,
-            databaseAdapter,
             trackerParentCallFactory,
             scope,
             childrenAppenders,
@@ -278,7 +284,7 @@ class TrackedEntityInstanceQueryDataSourceShould {
 
     private fun identityAppender(): ChildrenAppender<TrackedEntityInstance> {
         return object : ChildrenAppender<TrackedEntityInstance>() {
-            override fun appendChildren(m: TrackedEntityInstance): TrackedEntityInstance {
+            override suspend fun appendChildren(m: TrackedEntityInstance): TrackedEntityInstance {
                 return m
             }
         }

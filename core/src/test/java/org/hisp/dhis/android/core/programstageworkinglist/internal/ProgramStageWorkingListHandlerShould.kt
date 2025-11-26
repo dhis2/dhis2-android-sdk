@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.programstageworkinglist.internal
 
-import com.nhaarman.mockitokotlin2.*
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageQueryCriteria
@@ -38,6 +38,12 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
 class ProgramStageWorkingListHandlerShould {
@@ -57,7 +63,7 @@ class ProgramStageWorkingListHandlerShould {
     private lateinit var handler: ProgramStageWorkingListHandler
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         handler = ProgramStageWorkingListHandler(
             programStageWorkingListStore,
             eventDataFilterHandler,
@@ -79,7 +85,11 @@ class ProgramStageWorkingListHandlerShould {
             .programStageQueryCriteria(queryCriteria)
             .build()
 
-        whenever(programStageWorkingListStore.updateOrInsert(any())).doReturn(HandleAction.Insert)
+        whenever(programStageWorkingListStore.updateOrInsert(any<List<ProgramStageWorkingList>>())).doReturn(
+            listOf(
+                HandleAction.Insert,
+            ),
+        )
         workingLists = listOf(workingList)
     }
 
@@ -93,13 +103,13 @@ class ProgramStageWorkingListHandlerShould {
     }
 
     @Test
-    fun handle_event_filters() {
+    fun handle_event_filters() = runTest {
         handler.handleMany(workingLists)
         verify(eventDataFilterHandler).handleMany(eq(eventDataFilters), any())
     }
 
     @Test
-    fun handle_attribute_filters() {
+    fun handle_attribute_filters() = runTest {
         handler.handleMany(workingLists)
         verify(attributeValueFilterHandler).handleMany(eq(attributeValueFilters), any())
     }

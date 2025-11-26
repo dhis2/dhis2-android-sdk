@@ -28,21 +28,10 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.AccessColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreDataElementOperandListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreDataInputPeriodListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreDataSetElementListAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreIndicatorListAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreSectionListAdapter;
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
@@ -51,7 +40,6 @@ import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
-import org.hisp.dhis.android.core.dataset.internal.DataSetDisplayOptionsColumnAdapter;
 import org.hisp.dhis.android.core.indicator.Indicator;
 import org.hisp.dhis.android.core.period.PeriodType;
 
@@ -63,11 +51,9 @@ public abstract class DataSet extends BaseNameableObject
         implements CoreObject, ObjectWithStyle<DataSet, DataSet.Builder> {
 
     @Nullable
-    @ColumnAdapter(PeriodTypeColumnAdapter.class)
     public abstract PeriodType periodType();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid categoryCombo();
 
     @Nullable
@@ -110,42 +96,30 @@ public abstract class DataSet extends BaseNameableObject
     public abstract Boolean renderHorizontally();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid workflow();
 
     @Nullable
-    @ColumnAdapter(IgnoreDataSetElementListAdapter.class)
     public abstract List<DataSetElement> dataSetElements();
 
     @Nullable
-    @ColumnAdapter(IgnoreIndicatorListAdapter.class)
     public abstract List<Indicator> indicators();
 
     @Nullable
-    @ColumnAdapter(IgnoreSectionListAdapter.class)
     abstract List<Section> sections();
 
     @Nullable
-    @ColumnAdapter(IgnoreDataElementOperandListColumnAdapter.class)
     public abstract List<DataElementOperand> compulsoryDataElementOperands();
 
     @Nullable
-    @ColumnAdapter(IgnoreDataInputPeriodListColumnAdapter.class)
     public abstract List<DataInputPeriod> dataInputPeriods();
 
     @Nullable
-    @ColumnAdapter(DataSetDisplayOptionsColumnAdapter.class)
     public abstract DataSetDisplayOptions displayOptions();
 
-    @ColumnAdapter(AccessColumnAdapter.class)
     public abstract Access access();
 
     public static Builder builder() {
-        return new $$AutoValue_DataSet.Builder();
-    }
-
-    public static DataSet create(Cursor cursor) {
-        return $AutoValue_DataSet.createFromCursor(cursor);
+        return new AutoValue_DataSet.Builder();
     }
 
     public abstract Builder toBuilder();
@@ -153,8 +127,6 @@ public abstract class DataSet extends BaseNameableObject
     @AutoValue.Builder
     public abstract static class Builder extends BaseNameableObject.Builder<Builder>
             implements ObjectWithStyle.Builder<DataSet, DataSet.Builder> {
-        public abstract Builder id(Long id);
-
         public abstract Builder periodType(PeriodType periodType);
 
         public abstract Builder categoryCombo(ObjectWithUid categoryCombo);

@@ -28,15 +28,10 @@
 
 package org.hisp.dhis.android.core.program;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramRuleActionListAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -53,31 +48,22 @@ public abstract class ProgramRule extends BaseIdentifiableObject implements Core
     public abstract String condition();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid program();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid programStage();
 
     @Nullable
-    @ColumnAdapter(IgnoreProgramRuleActionListAdapter.class)
     public abstract List<ProgramRuleAction> programRuleActions();
 
-    public static ProgramRule create(Cursor cursor) {
-        return AutoValue_ProgramRule.createFromCursor(cursor);
-    }
-
     public static Builder builder() {
-        return new $$AutoValue_ProgramRule.Builder();
+        return new AutoValue_ProgramRule.Builder();
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
     public abstract static class Builder extends BaseIdentifiableObject.Builder<ProgramRule.Builder> {
-
-        public abstract Builder id(Long id);
 
         public abstract Builder priority(Integer priority);
 

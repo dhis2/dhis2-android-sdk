@@ -28,25 +28,19 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 @AutoValue
 public abstract class TrackedEntityTypeAttribute implements CoreObject {
 
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid trackedEntityType();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid trackedEntityAttribute();
 
     public abstract Boolean displayInList();
@@ -60,19 +54,13 @@ public abstract class TrackedEntityTypeAttribute implements CoreObject {
     public abstract Integer sortOrder();
 
     public static Builder builder() {
-        return new $AutoValue_TrackedEntityTypeAttribute.Builder();
-    }
-
-    public static TrackedEntityTypeAttribute create(Cursor cursor) {
-        return $AutoValue_TrackedEntityTypeAttribute.createFromCursor(cursor);
+        return new AutoValue_TrackedEntityTypeAttribute.Builder();
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
     public abstract static class Builder {
-
-        public abstract Builder id(Long id);
 
         public abstract Builder trackedEntityType(ObjectWithUid trackedEntityType);
 

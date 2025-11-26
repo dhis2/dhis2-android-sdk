@@ -28,16 +28,6 @@
 package org.hisp.dhis.android.core.systeminfo.internal
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.doAnswer
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.eq
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.never
-import com.nhaarman.mockitokotlin2.stub
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
-import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
@@ -54,6 +44,17 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.kotlin.any
+import org.mockito.kotlin.anyOrNull
+import org.mockito.kotlin.doAnswer
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.stub
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
+import org.mockito.kotlin.whenever
 import java.util.Date
 
 @RunWith(JUnit4::class)
@@ -69,6 +70,7 @@ class SystemInfoCallShould {
 
     private val systemInfo: SystemInfo = mock()
     private val versionManager: DHISVersionManagerImpl = mock()
+    private val serverTimezoneManager: ServerTimezoneManager = mock()
     private val serverDate: Date = mock()
 
     private lateinit var systemInfoSyncCall: SystemInfoCall
@@ -80,6 +82,7 @@ class SystemInfoCallShould {
             systemInfoNetworkHandler,
             resourceHandler,
             versionManager,
+            serverTimezoneManager,
             coroutineAPICallExecutor,
         )
 
@@ -117,6 +120,7 @@ class SystemInfoCallShould {
 
         verifyNoMoreInteractions(systemInfoHandler)
         verifyNoMoreInteractions(resourceHandler)
+        verifyNoMoreInteractions(serverTimezoneManager)
     }
 
     @Test
@@ -125,6 +129,7 @@ class SystemInfoCallShould {
 
         verify(systemInfoHandler).handle(systemInfo)
         verify(resourceHandler).handleResource(eq(Resource.Type.SYSTEM_INFO))
+        verify(serverTimezoneManager).setServerTimeZone(anyOrNull())
     }
 
     @Test
@@ -155,6 +160,17 @@ class SystemInfoCallShould {
 
         verify(systemInfoHandler, never()).handle(systemInfo)
         verify(resourceHandler, never()).handleResource(eq(Resource.Type.SYSTEM_INFO))
+        verify(serverTimezoneManager, never()).setServerTimeZone(anyOrNull())
+    }
+
+    @Test
+    fun set_server_timezone_after_successful_call() = runTest {
+        val serverTimeZoneId = "Etc/UTC"
+        whenever(systemInfo.serverTimeZoneId()).thenReturn(serverTimeZoneId)
+
+        systemInfoSyncCall.download(true)
+
+        verify(serverTimezoneManager).setServerTimeZone(serverTimeZoneId)
     }
 
     private suspend fun verifyThrowD2Error(block: suspend () -> Unit, code: D2ErrorCode? = null) {

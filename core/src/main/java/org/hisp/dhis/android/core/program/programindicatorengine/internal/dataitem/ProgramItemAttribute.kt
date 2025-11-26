@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine.internal.dataitem
 
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemId
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemType
@@ -35,8 +36,8 @@ import org.hisp.dhis.android.core.program.programindicatorengine.internal.Progra
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getDefaultValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
 import org.hisp.dhis.android.core.util.SqlUtils.getColumnValueCast
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeValueTableInfo
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal class ProgramItemAttribute : ProgramExpressionItem() {
@@ -93,7 +94,9 @@ internal class ProgramItemAttribute : ProgramExpressionItem() {
     }
 
     private fun getAttribute(visitor: CommonExpressionVisitor, uid: String): TrackedEntityAttribute {
-        return visitor.trackedEntityAttributeStore!!.selectByUid(uid)
-            ?: throw IllegalArgumentException("Attribute $uid does not exist.")
+        return runBlocking {
+            visitor.trackedEntityAttributeStore!!.selectByUid(uid)
+                ?: throw IllegalArgumentException("Attribute $uid does not exist.")
+        }
     }
 }

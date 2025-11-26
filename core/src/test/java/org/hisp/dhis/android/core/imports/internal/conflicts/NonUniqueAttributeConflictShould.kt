@@ -27,9 +27,10 @@
  */
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.whenever
 
 internal class NonUniqueAttributeConflictShould : BaseConflictShould() {
 
@@ -47,7 +48,7 @@ internal class NonUniqueAttributeConflictShould : BaseConflictShould() {
     }
 
     @Test
-    fun `Should create display description`() {
+    fun `Should create display description`() = runTest {
         whenever(attribute.displayFormName()) doReturn "Attribute form name"
 
         val displayDescription =

@@ -28,14 +28,10 @@
 
 package org.hisp.dhis.android.core.category;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreCategoryOptionListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 
@@ -48,12 +44,7 @@ public abstract class Category extends BaseIdentifiableObject implements CoreObj
     public abstract String dataDimensionType();
 
     @Nullable
-    @ColumnAdapter(IgnoreCategoryOptionListColumnAdapter.class)
     public abstract List<CategoryOption> categoryOptions();
-
-    public static Category create(Cursor cursor) {
-        return $AutoValue_Category.createFromCursor(cursor);
-    }
 
     public abstract Builder toBuilder();
 
@@ -63,8 +54,6 @@ public abstract class Category extends BaseIdentifiableObject implements CoreObj
 
     @AutoValue.Builder
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
         public abstract Builder categoryOptions(@Nullable List<CategoryOption> categoryOptions);
 
         public abstract Builder dataDimensionType(String dimensionType);

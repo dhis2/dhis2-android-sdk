@@ -29,9 +29,9 @@ package org.hisp.dhis.android.core.fileresource.internal
 
 import android.content.Context
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
-import org.hisp.dhis.android.core.fileresource.FileResourceTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import org.hisp.dhis.android.persistence.fileresource.FileResourceTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -40,11 +40,11 @@ internal class FileResourceModuleWiper(
     private val context: Context,
 ) : ModuleWiper {
 
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         // No metadata to wipe
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         tableWiper.wipeTable(FileResourceTableInfo.TABLE_INFO)
         FileResourceDirectoryHelper.getFileResourceDirectory(context).deleteRecursively()
     }

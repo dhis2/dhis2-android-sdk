@@ -28,14 +28,10 @@
 
 package org.hisp.dhis.android.core.option;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectStyle;
@@ -50,15 +46,10 @@ public abstract class Option extends BaseIdentifiableObject
     public abstract Integer sortOrder();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid optionSet();
 
     public static Builder builder() {
-        return new $$AutoValue_Option.Builder();
-    }
-
-    public static Option create(Cursor cursor) {
-        return $AutoValue_Option.createFromCursor(cursor);
+        return new AutoValue_Option.Builder();
     }
 
     public abstract Builder toBuilder();
@@ -66,8 +57,6 @@ public abstract class Option extends BaseIdentifiableObject
     @AutoValue.Builder
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder>
             implements ObjectWithStyle.Builder<Option, Option.Builder> {
-
-        public abstract Builder id(Long id);
 
         public abstract Builder sortOrder(@Nullable Integer sortOrder);
 

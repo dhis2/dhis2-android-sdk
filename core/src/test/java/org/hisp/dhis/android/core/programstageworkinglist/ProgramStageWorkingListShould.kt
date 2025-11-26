@@ -30,17 +30,14 @@ package org.hisp.dhis.android.core.programstageworkinglist
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.AssignedUserMode
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.network.programstageworkinglist.ProgramStageWorkingListDTO
 import org.junit.Test
 
-class ProgramStageWorkingListShould :
-    BaseObjectKotlinxShould("programstageworkinglist/program_stage_working_list.json"),
-    ObjectShould {
+class ProgramStageWorkingListShould : CoreObjectShould("programstageworkinglist/program_stage_working_list.json") {
 
     @Test
     override fun map_from_json_string() {

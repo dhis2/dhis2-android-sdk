@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.organisationunit
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.DateFilterConnector
@@ -38,23 +37,23 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.IdentifiableColumns
-import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLinkTableInfo
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitDataSetChildrenAppender
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitOrganisationUnitGroupProgramChildrenAppender
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramChildrenAppender
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
+import org.hisp.dhis.android.persistence.dataset.DataSetOrganisationUnitLinkTableInfo
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitProgramLinkTableInfo
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitTableInfo
+import org.hisp.dhis.android.persistence.user.UserOrganisationUnitTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 @Suppress("TooManyFunctions")
 class OrganisationUnitCollectionRepository internal constructor(
     store: OrganisationUnitStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<OrganisationUnit, OrganisationUnitCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -62,7 +61,6 @@ class OrganisationUnitCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         OrganisationUnitCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },
@@ -97,18 +95,18 @@ class OrganisationUnitCollectionRepository internal constructor(
 
     fun byOrganisationUnitScope(scope: OrganisationUnit.Scope): OrganisationUnitCollectionRepository {
         return cf.subQuery(IdentifiableColumns.UID).inLinkTable(
-            UserOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
-            UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
-            UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT_SCOPE,
+            UserOrganisationUnitTableInfo.TABLE_INFO.name(),
+            UserOrganisationUnitTableInfo.Columns.ORGANISATION_UNIT,
+            UserOrganisationUnitTableInfo.Columns.ORGANISATION_UNIT_SCOPE,
             listOf(scope.name),
         )
     }
 
     fun byRootOrganisationUnit(isRoot: Boolean): OrganisationUnitCollectionRepository {
         return cf.subQuery(IdentifiableColumns.UID).inLinkTable(
-            UserOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
-            UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
-            UserOrganisationUnitLinkTableInfo.Columns.ROOT,
+            UserOrganisationUnitTableInfo.TABLE_INFO.name(),
+            UserOrganisationUnitTableInfo.Columns.ORGANISATION_UNIT,
+            UserOrganisationUnitTableInfo.Columns.ROOT,
             listOf(if (isRoot) "1" else "0"),
         )
     }

@@ -28,13 +28,13 @@
 package org.hisp.dhis.android.core.validation.engine.internal
 
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByUid
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.constant.ConstantCollectionRepository
 import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitOrganisationUnitGroupLinkStore
 import org.hisp.dhis.android.core.parser.internal.service.ExpressionServiceContext
 import org.hisp.dhis.android.core.parser.internal.service.dataobject.DimensionalItemObject
@@ -46,6 +46,7 @@ import org.hisp.dhis.android.core.validation.ValidationRuleCollectionRepository
 import org.hisp.dhis.android.core.validation.engine.ValidationEngine
 import org.hisp.dhis.android.core.validation.engine.ValidationResult
 import org.hisp.dhis.android.core.validation.engine.ValidationResult.ValidationResultStatus
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -137,9 +138,11 @@ internal class ValidationEngineImpl(
     }
 
     private val orgunitGroupMap: Map<String, Int>
-        get() = orgunitGroupLinkStore.groupAndGetCountBy(
-            OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT_GROUP,
-        )
+        get() = runBlocking {
+            orgunitGroupLinkStore.groupAndGetCountBy(
+                OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT_GROUP,
+            )
+        }
 
     private fun getPeriod(periodId: String): Period {
         return periodHelper.blockingGetPeriodForPeriodId(periodId)

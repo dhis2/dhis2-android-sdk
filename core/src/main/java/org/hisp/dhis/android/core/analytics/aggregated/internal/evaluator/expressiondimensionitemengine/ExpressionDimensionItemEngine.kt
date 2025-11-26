@@ -42,7 +42,7 @@ internal class ExpressionDimensionItemEngine(
     private val expressionService: ExpressionService,
 ) {
 
-    fun evaluateIndicator(
+    suspend fun evaluateIndicator(
         expressionDimensionItem: ExpressionDimensionItem,
         contextEvaluationItem: AnalyticsServiceEvaluationItem,
         contextMetadata: Map<String, MetadataItem>,

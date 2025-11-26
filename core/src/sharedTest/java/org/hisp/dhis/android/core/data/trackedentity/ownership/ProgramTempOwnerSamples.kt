@@ -35,7 +35,6 @@ object ProgramTempOwnerSamples {
 
     val programTempOwner: ProgramTempOwner
         get() = ProgramTempOwner.builder()
-            .id(1L)
             .program("lxAQ7Zs9VYR")
             .trackedEntityInstance("nWrB0TfWlvh")
             .created(DateUtils.DATE_FORMAT.parse("2022-01-29T11:27:46.935"))

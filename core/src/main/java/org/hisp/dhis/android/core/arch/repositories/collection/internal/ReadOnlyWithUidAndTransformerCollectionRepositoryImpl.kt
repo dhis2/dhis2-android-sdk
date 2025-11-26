@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.arch.repositories.collection.internal
 
 import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import org.hisp.dhis.android.persistence.common.querybuilders.OrderByClauseBuilder
 
 internal class ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<
     M,
@@ -49,14 +50,12 @@ internal class ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<
     R : ReadOnlyCollectionRepository<T>,
     > internal constructor(
     private val store: IdentifiableObjectStore<M>,
-    databaseAdapter: DatabaseAdapter,
     childrenAppenders: ChildrenAppenderGetter<M>,
     scope: RepositoryScope,
     cf: FilterConnectorFactory<R>,
     override val transformer: TwoWayTransformer<M, T>,
 ) : ReadOnlyWithTransformerCollectionRepositoryImpl<M, T, R>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     cf,
@@ -70,7 +69,7 @@ internal class ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<
      * @return A `Single` object with the list of uids.
      */
     override fun getUids(): Single<List<String>> {
-        return Single.fromCallable { blockingGetUids() }
+        return rxSingle { getUidsInternal() }
     }
 
     /**
@@ -80,11 +79,14 @@ internal class ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<
      * @return List of uids
      */
     override fun blockingGetUids(): List<String> {
+        return runBlocking { getUidsInternal() }
+    }
+
+    suspend fun getUidsInternal(): List<String> {
         return store.selectUidsWhere(
             whereClause,
             OrderByClauseBuilder.orderByFromItems(
                 scope.orderBy(),
-                scope.pagingKey(),
             ),
         )
     }
@@ -99,7 +101,6 @@ internal class ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<
         val updatedScope: RepositoryScope = RepositoryScopeHelper.withUidFilterItem(scope, uid)
         return ReadOnlyWithTransformerObjectRepositoryImpl(
             store,
-            databaseAdapter,
             childrenAppenders,
             updatedScope,
             transformer,

@@ -29,9 +29,15 @@ package org.hisp.dhis.android.core.data.visualization
 
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils
-import org.hisp.dhis.android.core.visualization.*
+import org.hisp.dhis.android.core.visualization.DigitGroupSeparator
+import org.hisp.dhis.android.core.visualization.DisplayDensity
+import org.hisp.dhis.android.core.visualization.HideEmptyItemStrategy
+import org.hisp.dhis.android.core.visualization.LegendStrategy
+import org.hisp.dhis.android.core.visualization.LegendStyle
+import org.hisp.dhis.android.core.visualization.Visualization
+import org.hisp.dhis.android.core.visualization.VisualizationLegend
+import org.hisp.dhis.android.core.visualization.VisualizationType
 
 internal object VisualizationSamples {
 
@@ -40,7 +46,6 @@ internal object VisualizationSamples {
 
     @JvmStatic
     fun visualization(): Visualization = Visualization.builder()
-        .id(1L)
         .uid("PYBH8ZaAQnC")
         .name("Android SDK Visualization sample")
         .displayName("Android SDK Visualization sample")
@@ -79,85 +84,6 @@ internal object VisualizationSamples {
         )
         .displayDensity(DisplayDensity.NORMAL)
         .digitGroupSeparator(DigitGroupSeparator.COMMA)
-        .columns(
-            listOf(
-                VisualizationDimension.builder()
-                    .id("dx")
-                    .items(
-                        listOf(
-                            VisualizationDimensionItem.builder()
-                                .dimensionItem("Uvn6LCg7dVU")
-                                .dimensionItemType(DataDimensionItemType.INDICATOR.name)
-                                .build(),
-                            VisualizationDimensionItem.builder()
-                                .dimensionItem("cYeuwXTCPkU")
-                                .dimensionItemType(DataDimensionItemType.DATA_ELEMENT.name)
-                                .build(),
-                        ),
-                    )
-                    .build(),
-                VisualizationDimension.builder()
-                    .id("fMZEcRHuamy")
-                    .items(
-                        listOf(
-                            VisualizationDimensionItem.builder()
-                                .dimensionItem("qkPbeWaFsnU")
-                                .dimensionItemType("CATEGORY_OPTION")
-                                .build(),
-                            VisualizationDimensionItem.builder()
-                                .dimensionItem("wbrDrL2aYEc")
-                                .dimensionItemType("CATEGORY_OPTION")
-                                .build(),
-                        ),
-                    )
-                    .build(),
-            ),
-        )
-        .rows(
-            listOf(
-                VisualizationDimension.builder()
-                    .id("pe")
-                    .items(
-                        listOf(
-                            VisualizationDimensionItem.builder()
-                                .dimensionItem("202102")
-                                .dimensionItemType("PERIOD")
-                                .build(),
-                            VisualizationDimensionItem.builder()
-                                .dimensionItem("202103")
-                                .dimensionItemType("PERIOD")
-                                .build(),
-                            VisualizationDimensionItem.builder()
-                                .dimensionItem("2021S2")
-                                .dimensionItemType("PERIOD")
-                                .build(),
-                            VisualizationDimensionItem.builder()
-                                .dimensionItem(RelativePeriod.LAST_12_MONTHS.name)
-                                .dimensionItemType("PERIOD")
-                                .build(),
-                        ),
-                    )
-                    .build(),
-            ),
-        )
-        .filters(
-            listOf(
-                VisualizationDimension.builder()
-                    .id("ou")
-                    .items(
-                        listOf(
-                            VisualizationDimensionItem.builder()
-                                .dimensionItem("YuQRtpLP10I")
-                                .dimensionItemType("ORGANISATION_UNIT")
-                                .build(),
-                            VisualizationDimensionItem.builder()
-                                .dimensionItem("USER_ORGUNIT")
-                                .build(),
-                        ),
-                    )
-                    .build(),
-            ),
-        )
         .aggregationType(AggregationType.SUM)
         .build()
 }

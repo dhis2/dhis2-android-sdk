@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndP
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerDownloadCall
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
@@ -52,13 +53,14 @@ internal class TrackedEntityInstanceDownloadCall(
     private val trackerCallFactory: TrackerParentCallFactory,
     private val persistenceCallFactory: TrackedEntityInstancePersistenceCallFactory,
     private val lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager,
+    private val teiQueryCollectionRepository: TrackedEntityInstanceQueryCollectionRepository,
 ) : TrackerDownloadCall<TrackedEntityInstance, TrackerQueryBundle>(
     userOrganisationUnitLinkStore,
     systemInfoModuleDownloader,
     relationshipDownloadAndPersistCallFactory,
     coroutineCallExecutor,
 ) {
-    override fun getBundles(params: ProgramDataDownloadParams): List<TrackerQueryBundle> {
+    override suspend fun getBundles(params: ProgramDataDownloadParams): List<TrackerQueryBundle> {
         return queryFactory.getQueries(params)
     }
 
@@ -78,7 +80,7 @@ internal class TrackedEntityInstanceDownloadCall(
         persistenceCallFactory.persistTEIs(items, params, relatives)
     }
 
-    override fun updateLastUpdated(bundle: TrackerQueryBundle) {
+    override suspend fun updateLastUpdated(bundle: TrackerQueryBundle) {
         lastUpdatedManager.update(bundle)
     }
 
@@ -94,31 +96,35 @@ internal class TrackedEntityInstanceDownloadCall(
             programStatus = bundle.programStatus(),
         )
 
-        for (uid in bundle.commonParams().uids) {
-            try {
-                val useEntityEndpoint = teiQuery.commonParams.program != null
+        val useEntityEndpoint = teiQuery.commonParams.program != null
 
+        try {
+            val teisList = mutableListOf<TrackedEntityInstance>()
+
+            for (uid in bundle.commonParams().uids) {
                 val tei = querySingleTei(uid, useEntityEndpoint, teiQuery).getOrThrow()
 
                 if (tei != null) {
-                    val persistParams = IdentifiableDataHandlerParams(
-                        hasAllAttributes = !useEntityEndpoint,
-                        overwrite = overwrite,
-                        asRelationship = false,
-                        program = teiQuery.commonParams.program,
-                    )
-
-                    persistItems(listOf(tei), persistParams, relatives)
-
+                    teisList.add(tei)
                     result.count++
                 }
-            } catch (d2Error: D2Error) {
-                result.successfulSync = false
-                if (result.d2Error == null) {
-                    result.d2Error = d2Error
-                }
             }
+
+            if (teisList.isNotEmpty()) {
+                val persistParams = IdentifiableDataHandlerParams(
+                    hasAllAttributes = !useEntityEndpoint,
+                    overwrite = overwrite,
+                    asRelationship = false,
+                    program = teiQuery.commonParams.program,
+                )
+
+                persistItems(teisList, persistParams, relatives)
+            }
+        } catch (d2Error: D2Error) {
+            result.successfulSync = false
+            result.d2Error = d2Error
         }
+
         return result
     }
 
@@ -142,20 +148,55 @@ internal class TrackedEntityInstanceDownloadCall(
         }
     }
 
-    override fun getQuery(
+    override suspend fun getQuery(
         bundle: TrackerQueryBundle,
         program: String?,
         orgunitUid: String?,
         limit: Int,
-    ): TrackerAPIQuery {
-        return TrackerAPIQuery(
-            commonParams = bundle.commonParams().copy(
-                program = program,
-                limit = limit,
-            ),
-            programStatus = bundle.programStatus(),
-            lastUpdatedStr = lastUpdatedManager.getLastUpdatedStr(bundle.commonParams()),
-            orgUnit = orgunitUid,
-        )
+    ): TrackerAPIQuery? {
+        val teiUids = if (
+            bundle.trackedEntityInstanceFilters() != null ||
+            bundle.programStageWorkingLists() != null
+        ) {
+            val filteredUids = getTeiUidsByFilter(bundle, orgunitUid) +
+                getTeiUidsByWorkingList(bundle, orgunitUid)
+
+            filteredUids.takeIf { it.isNotEmpty() }
+        } else {
+            emptyList()
+        }
+
+        return teiUids?.let {
+            TrackerAPIQuery(
+                commonParams = bundle.commonParams().copy(
+                    program = program,
+                    limit = limit,
+                ),
+                programStatus = bundle.programStatus(),
+                lastUpdatedStr = lastUpdatedManager.getLastUpdatedStr(bundle.commonParams()),
+                orgUnit = orgunitUid,
+                uids = teiUids.distinct(),
+            )
+        }
+    }
+
+    private suspend fun getTeiUidsByFilter(bundle: TrackerQueryBundle, orgunitUid: String?): List<String> {
+        return bundle.trackedEntityInstanceFilters()?.flatMap {
+            teiQueryCollectionRepository
+                .byTrackedEntityInstanceFilterObject().eq(it)
+                .byOrgUnits().eq(orgunitUid)
+                .byOrgUnitMode().eq(bundle.commonParams().ouMode)
+                .onlineOnly().getUidsInternal()
+        } ?: emptyList()
+    }
+
+    private suspend fun getTeiUidsByWorkingList(bundle: TrackerQueryBundle, orgunitUid: String?): List<String> {
+        return bundle.programStageWorkingLists()?.flatMap {
+            teiQueryCollectionRepository
+                .byProgramStageWorkingListObject().eq(it)
+                .byOrgUnits().eq(orgunitUid)
+                .byOrgUnitMode().eq(bundle.commonParams().ouMode)
+                .onlineOnly().getUidsInternal()
+        } ?: emptyList()
     }
 }

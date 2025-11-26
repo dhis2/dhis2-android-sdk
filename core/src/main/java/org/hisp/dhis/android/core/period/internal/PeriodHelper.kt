@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.period.internal
 
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.PeriodType.Companion.periodTypeFromPeriodId
@@ -80,7 +82,7 @@ class PeriodHelper internal constructor(
      * @return `Single` with the generated period.
      */
     fun getPeriodForPeriodTypeAndDate(periodType: PeriodType, date: Date, periodOffset: Int): Single<Period> {
-        return Single.just(blockingGetPeriodForPeriodTypeAndDate(periodType, date, periodOffset))
+        return rxSingle { getPeriodForPeriodTypeAndDateInternal(periodType, date, periodOffset) }
     }
 
     /**
@@ -95,6 +97,14 @@ class PeriodHelper internal constructor(
     @JvmOverloads
     @Throws(IllegalStateException::class)
     fun blockingGetPeriodForPeriodTypeAndDate(periodType: PeriodType, date: Date, periodOffset: Int = 0): Period {
+        return runBlocking { getPeriodForPeriodTypeAndDateInternal(periodType, date, periodOffset) }
+    }
+
+    internal suspend fun getPeriodForPeriodTypeAndDateInternal(
+        periodType: PeriodType,
+        date: Date,
+        periodOffset: Int = 0,
+    ): Period {
         return parentPeriodGenerator.generatePeriod(periodType, date, periodOffset)?.also { period ->
             periodStore.selectByPeriodId(period.periodId()) ?: periodStore.updateOrInsertWhere(period)
         } ?: error("Generated period is null")

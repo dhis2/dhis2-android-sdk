@@ -35,30 +35,30 @@ import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.T
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.EventAlias
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.ProgramStageAlias
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator.TrackerLineListSQLLabel.TrackedEntityInstanceAlias
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
-import org.hisp.dhis.android.core.event.EventTableInfo
-import org.hisp.dhis.android.core.program.ProgramStageTableInfo
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
 import org.hisp.dhis.android.core.util.SqlUtils.getColumnValueCast
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.persistence.event.EventTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramStageTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityDataValueTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceTableInfo
 
 internal class ProgramDataElementEvaluator(
     private val item: TrackerLineListItem.ProgramDataElement,
     private val metadata: Map<String, MetadataItem>,
 ) : TrackerLineListEvaluator() {
-    override fun getSelectSQLForEvent(): String {
+    override suspend fun getSelectSQLForEvent(): String {
         val selectEventClause = "= $EventAlias.${EventTableInfo.Columns.UID} "
 
         return getSelectClause(selectEventClause)
     }
 
-    override fun getSelectSQLForEnrollment(): String {
+    override suspend fun getSelectSQLForEnrollment(): String {
         val enrollmentSelectClause = "= $EnrollmentAlias.${EnrollmentTableInfo.Columns.UID}"
         val eventSelectClause = getEventSelectClause(enrollmentSelectClause)
         return getSelectClause(eventSelectClause)
     }
 
-    override fun getSelectSQLForTrackedEntityInstance(): String {
+    override suspend fun getSelectSQLForTrackedEntityInstance(): String {
         val enrollmentSelectClause = "IN (SELECT " +
             "$EnrollmentAlias.${EnrollmentTableInfo.Columns.UID} " +
             "FROM ${EnrollmentTableInfo.TABLE_INFO.name()} $EnrollmentAlias " +
@@ -75,7 +75,7 @@ internal class ProgramDataElementEvaluator(
         return getSelectClause(eventSelectClause)
     }
 
-    override fun getCommonWhereSQL(): String {
+    override suspend fun getCommonWhereSQL(): String {
         return DataFilterHelper.getWhereClause(item.id, item.filters)
     }
 

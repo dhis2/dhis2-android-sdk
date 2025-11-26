@@ -41,6 +41,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 @Suppress("TooManyFunctions")
 class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
@@ -119,6 +120,9 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
                     path.startsWith("/api/me?") ->
                         createMockResponse(USER_JSON)
 
+                    path.startsWith("/api/loginConfig") ->
+                        createMockResponse(LOGIN_CONFIG_JSON)
+
                     path.startsWith("/api/system/info?") ->
                         createMockResponse(SYSTEM_INFO_JSON)
 
@@ -160,6 +164,9 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
 
                     path.startsWith("/api/dataStore/APK_DISTRIBUTION/latestVersion") ->
                         createMockResponse(LATEST_APP_VERSION_JSON)
+
+                    path.startsWith("/api/dataStore/ANDROID_SETTINGS_APP/customIntents") ->
+                        createMockResponse(CUSTOM_INTENTS)
 
                     path.startsWith("/api/programs?") ->
                         createMockResponse(PROGRAMS_JSON)
@@ -331,10 +338,12 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
         enqueueMockResponse(ANDROID_SETTINGS_INFO_JSON)
         enqueueMockResponse(GENERAL_SETTINGS_V2_JSON)
         enqueueMockResponse(SYSTEM_INFO_JSON)
+        enqueueMockResponse(LOGIN_CONFIG_JSON)
         enqueueMockResponse(GENERAL_SETTINGS_V2_JSON)
         enqueueMockResponse(SYNCHRONIZATION_SETTTINGS_JSON)
         enqueueMockResponse(APPEARANCE_SETTINGS_JSON)
         enqueueMockResponse(ANALYTICS_SETTINGS_JSON)
+        enqueueMockResponse(CUSTOM_INTENTS)
         enqueueMockResponse(USER_SETTINGS_JSON)
         enqueueMockResponse(SYSTEM_SETTINGS_JSON)
         enqueueMockResponse(VERSIONS_JSON)
@@ -419,6 +428,16 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
         return server.takeRequest()
     }
 
+    fun takeLastRequest(): RecordedRequest? {
+        var lastRequest: RecordedRequest? = null
+
+        do {
+            lastRequest = server.takeRequest(1, TimeUnit.SECONDS) ?: break
+        } while (true)
+
+        return lastRequest
+    }
+
     fun addResponse(
         method: String,
         path: String,
@@ -431,6 +450,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
 
     companion object {
         private const val AUTHORITIES_JSON = "authority/authorities.json"
+        private const val LOGIN_CONFIG_JSON = "server/login_config.json"
         private const val SYSTEM_INFO_JSON = "systeminfo/system_info.json"
         private const val SYSTEM_SETTINGS_JSON = "settings/system_settings.json"
         private const val STOCK_USE_CASES_JSON = "usecase.stock/stock_use_cases.json"
@@ -445,6 +465,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
         private const val USER_SETTINGS_JSON = "settings/user_settings.json"
         private const val VERSIONS_JSON = "settings/versions.json"
         private const val LATEST_APP_VERSION_JSON = "settings/latest_app_version.json"
+        private const val CUSTOM_INTENTS = "settings/custom_intents.json"
         private const val PROGRAMS_JSON = "program/programs.json"
         private const val PROGRAMS_INDICATORS_JSON = "program/program_indicators.json"
         private const val PROGRAM_STAGES_JSON = "program/program_stages.json"

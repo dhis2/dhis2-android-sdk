@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.sms.internal
 
-import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigTableInfo
-import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSMetadataIdTableInfo
-import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoingSubmissionTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import org.hisp.dhis.android.persistence.sms.SMSConfigTableInfo
+import org.hisp.dhis.android.persistence.sms.SMSOngoingSubmissionTableInfo
+import org.hisp.dhis.android.persistence.sms.SmsMetadataIdTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -39,15 +39,15 @@ class SMSModuleWiper internal constructor(
     private val tableWiper: TableWiper,
 ) : ModuleWiper {
 
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         tableWiper.wipeTables(
-            SMSMetadataIdTableInfo.TABLE_INFO,
+            SmsMetadataIdTableInfo.TABLE_INFO,
             SMSConfigTableInfo.TABLE_INFO,
             SMSOngoingSubmissionTableInfo.TABLE_INFO,
         )
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         // No data to wipe
     }
 }

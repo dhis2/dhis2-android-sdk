@@ -28,8 +28,7 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.database.Cursor;
-
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -49,7 +48,7 @@ public abstract class AttributeValueFilter extends FilterOperators implements Co
     /**
      * The attribute id
      */
-    @Nullable
+    @NonNull
     public abstract String attribute();
 
     /**
@@ -65,19 +64,13 @@ public abstract class AttributeValueFilter extends FilterOperators implements Co
     public abstract String sw();
 
     public static Builder builder() {
-        return new $$AutoValue_AttributeValueFilter.Builder();
-    }
-
-    public static AttributeValueFilter create(Cursor cursor) {
-        return $AutoValue_AttributeValueFilter.createFromCursor(cursor);
+        return new AutoValue_AttributeValueFilter.Builder();
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
     public abstract static class Builder extends FilterOperators.Builder<Builder> {
-        public abstract Builder id(Long id);
-
         public abstract Builder trackedEntityInstanceFilter(String trackedEntityInstanceFilter);
 
         public abstract Builder attribute(String attribute);

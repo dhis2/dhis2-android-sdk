@@ -40,18 +40,13 @@ public class SynchronizationSettingsSamples {
 
     public static SynchronizationSettings getSynchronizationSettings() {
         return SynchronizationSettings.builder()
-                .id(1L)
                 .dataSync(DataSyncPeriod.EVERY_24_HOURS)
                 .metadataSync(MetadataSyncPeriod.EVERY_12_HOURS)
                 .trackerImporterVersion(TrackerImporterVersion.V2)
                 .trackerExporterVersion(TrackerExporterVersion.V2)
                 .fileMaxLengthBytes(10240000)
-                .programSettings(ProgramSettings.builder()
-                        .globalSettings(ProgramSettingSamples.getProgramSetting())
-                        .build())
-                .dataSetSettings(DataSetSettings.builder()
-                        .globalSettings(DataSetSettingSamples.getDataSetSetting())
-                        .build())
+                .programSettings(ProgramSettings.builder().build())
+                .dataSetSettings(DataSetSettings.builder().build())
                 .build();
     }
 }

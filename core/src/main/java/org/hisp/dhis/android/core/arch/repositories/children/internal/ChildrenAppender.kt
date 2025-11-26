@@ -28,11 +28,11 @@
 package org.hisp.dhis.android.core.arch.repositories.children.internal
 
 internal abstract class ChildrenAppender<M> {
-    open fun prepareChildren(collection: Collection<M>) {
+    open suspend fun prepareChildren(collection: Collection<M>) {
         /* Method is not abstract since empty action is the default action and we don't want it to
          * be unnecessarily written in every child.
          */
     }
 
-    abstract fun appendChildren(m: M): M
+    abstract suspend fun appendChildren(m: M): M
 }

@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.user
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -38,11 +37,9 @@ import org.koin.core.annotation.Singleton
 @Singleton
 class UserRoleCollectionRepository internal constructor(
     store: UserRoleStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<UserRole, UserRoleCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -50,7 +47,6 @@ class UserRoleCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         UserRoleCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },

@@ -30,9 +30,10 @@ package org.hisp.dhis.android.core.user.internal
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.user.UserRoleSamples
 import org.hisp.dhis.android.core.user.UserRole
-import org.hisp.dhis.android.core.user.UserRoleTableInfo
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.user.UserRoleStoreImpl
+import org.hisp.dhis.android.persistence.user.UserRoleTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

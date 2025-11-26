@@ -37,7 +37,6 @@ public class TrackedEntityInstanceEventFilterSamples {
 
     public static TrackedEntityInstanceEventFilter get() {
         return TrackedEntityInstanceEventFilter.builder()
-                .id(1L)
                 .trackedEntityInstanceFilter("tei_filter")
                 .eventStatus(EventStatus.ACTIVE)
                 .assignedUserMode(AssignedUserMode.CURRENT)

@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.program
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
@@ -43,17 +42,16 @@ import org.hisp.dhis.android.core.common.ValidationStrategy
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.program.internal.ProgramStageAttributeChildrenAppender
 import org.hisp.dhis.android.core.program.internal.ProgramStageStore
+import org.hisp.dhis.android.persistence.program.ProgramStageTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 @Suppress("TooManyFunctions")
 class ProgramStageCollectionRepository internal constructor(
     store: ProgramStageStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramStage, ProgramStageCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -61,7 +59,6 @@ class ProgramStageCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         ProgramStageCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },
@@ -115,7 +112,7 @@ class ProgramStageCollectionRepository internal constructor(
     }
 
     fun byGeneratedByEnrollmentDate(): BooleanFilterConnector<ProgramStageCollectionRepository> {
-        return cf.bool(ProgramStageTableInfo.Columns.GENERATED_BY_ENROLMENT_DATE)
+        return cf.bool(ProgramStageTableInfo.Columns.GENERATED_BY_ENROLLMENT_DATE)
     }
 
     fun byAutoGenerateEvent(): BooleanFilterConnector<ProgramStageCollectionRepository> {

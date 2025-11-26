@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.relationship
 
 import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
@@ -56,13 +56,15 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipItemChildren
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemElementStoreSelector
 import org.hisp.dhis.android.core.relationship.internal.RelationshipManager
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
+import org.hisp.dhis.android.persistence.relationship.RelationshipItemTableInfo
+import org.hisp.dhis.android.persistence.relationship.RelationshipTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 @Suppress("TooManyFunctions")
 class RelationshipCollectionRepository internal constructor(
     private val relationshipStore: RelationshipStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
     private val relationshipHandler: RelationshipHandler,
     private val storeSelector: RelationshipItemElementStoreSelector,
@@ -70,7 +72,6 @@ class RelationshipCollectionRepository internal constructor(
     private val trackerDataManager: TrackerDataManager,
 ) : BaseReadOnlyWithUidCollectionRepositoryImpl<Relationship, RelationshipCollectionRepository>(
     relationshipStore,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -78,7 +79,6 @@ class RelationshipCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         RelationshipCollectionRepository(
             relationshipStore,
-            databaseAdapter,
             s,
             relationshipHandler,
             storeSelector,
@@ -89,11 +89,17 @@ class RelationshipCollectionRepository internal constructor(
 ),
     ReadWriteWithUidCollectionRepository<Relationship, Relationship> {
     override fun add(o: Relationship): Single<String> {
-        return Single.fromCallable { blockingAdd(o) }
+        return rxSingle { addInternal(o) }
     }
 
     @Throws(D2Error::class)
     override fun blockingAdd(o: Relationship): String {
+        return runBlocking { addInternal(o) }
+    }
+
+    @Suppress("ThrowsCount")
+    @Throws(D2Error::class)
+    private suspend fun addInternal(o: Relationship): String {
         val relationshipWithUid: Relationship
         if (relationshipHandler.doesRelationshipExist(o)) {
             throw D2Error
@@ -149,7 +155,6 @@ class RelationshipCollectionRepository internal constructor(
         return RelationshipObjectRepository(
             relationshipStore,
             uid,
-            databaseAdapter,
             childrenAppenders,
             updatedScope,
             trackerDataManager,
@@ -167,7 +172,7 @@ class RelationshipCollectionRepository internal constructor(
      * @return List of relationships
      */
     fun getByItem(searchItem: RelationshipItem): List<Relationship> {
-        return relationshipManager.getByItem(searchItem, includeDeleted = false, onlyAccessible = true)
+        return relationshipManager.blockingGetByItem(searchItem, includeDeleted = false, onlyAccessible = true)
     }
 
     /**
@@ -178,7 +183,7 @@ class RelationshipCollectionRepository internal constructor(
      * @return List of relationships
      */
     fun getByItem(searchItem: RelationshipItem, includeDeleted: Boolean): List<Relationship> {
-        return relationshipManager.getByItem(searchItem, includeDeleted, true)
+        return relationshipManager.blockingGetByItem(searchItem, includeDeleted, true)
     }
 
     /**
@@ -190,6 +195,14 @@ class RelationshipCollectionRepository internal constructor(
      * @return List of relationships
      */
     fun getByItem(
+        searchItem: RelationshipItem,
+        includeDeleted: Boolean,
+        onlyAccessible: Boolean,
+    ): List<Relationship> {
+        return relationshipManager.blockingGetByItem(searchItem, includeDeleted, onlyAccessible)
+    }
+
+    internal suspend fun getByItemInternal(
         searchItem: RelationshipItem,
         includeDeleted: Boolean,
         onlyAccessible: Boolean,
@@ -257,7 +270,7 @@ class RelationshipCollectionRepository internal constructor(
         private const val ITEMS = "items"
 
         val childrenAppenders: ChildrenAppenderGetter<Relationship> = mapOf(
-            ITEMS to ::RelationshipItemChildrenAppender,
+            ITEMS to RelationshipItemChildrenAppender::create,
         )
     }
 }

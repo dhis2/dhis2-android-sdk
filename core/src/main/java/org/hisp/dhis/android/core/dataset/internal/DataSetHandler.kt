@@ -40,7 +40,7 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 @Suppress("LongParameterList")
-internal class DataSetHandler constructor(
+internal class DataSetHandler(
     dataSetStore: DataSetStore,
     private val sectionHandler: SectionHandler,
     private val sectionOrphanCleaner: SectionOrphanCleaner,
@@ -53,7 +53,7 @@ internal class DataSetHandler constructor(
     private val linkCleaner: DataSetOrganisationUnitLinkCleaner,
 ) : IdentifiableHandlerImpl<DataSet>(dataSetStore) {
 
-    override fun afterObjectHandled(o: DataSet, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: DataSet, action: HandleAction) {
         val sections = DataSetInternalAccessor.accessSections(o)
         sectionHandler.handleMany(sections)
         compulsoryDataElementOperandHandler.handleMany(o.compulsoryDataElementOperands())
@@ -90,7 +90,7 @@ internal class DataSetHandler constructor(
         }
     }
 
-    override fun afterCollectionHandled(oCollection: Collection<DataSet>?) {
+    override suspend fun afterCollectionHandled(oCollection: Collection<DataSet>?) {
         collectionCleaner.deleteNotPresent(oCollection)
         linkCleaner.deleteNotPresent(oCollection)
     }

@@ -53,7 +53,7 @@ internal class DatabaseImportExportImpl(
     private val multiUserDatabaseManager: MultiUserDatabaseManager,
     private val userModule: UserModule,
     private val credentialsStore: CredentialsSecureStore,
-    private val databaseExport: DatabaseExport,
+    private val databaseExport: BaseDatabaseExport,
 ) : DatabaseImportExport {
 
     companion object {
@@ -92,7 +92,7 @@ internal class DatabaseImportExportImpl(
             val metadata = KotlinxJsonParser.instance.decodeFromString<DatabaseExportMetadata>(metadataContent)
 
             when {
-                metadata.version > BaseDatabaseOpenHelper.VERSION ->
+                metadata.version > AppDatabase.VERSION ->
                     throw d2ErrorBuilder
                         .errorDescription("Import database version higher than supported")
                         .errorCode(D2ErrorCode.DATABASE_IMPORT_VERSION_HIGHER_THAN_SUPPORTED)
@@ -128,7 +128,7 @@ internal class DatabaseImportExportImpl(
         }
     }
 
-    override fun exportLoggedUserDatabase(): File {
+    override suspend fun exportLoggedUserDatabase(): File {
         val exportMetadataFile = getWorkingDir().resolve(ExportMetadata).also { it.deleteIfExists() }
         val copiedDatabase = getWorkingDir().resolve(ExportDatabase).also { it.deleteIfExists() }
         val protectedDatabase = getWorkingDir().resolve(ExportDatabaseProtected).also { it.deleteIfExists() }
@@ -164,7 +164,7 @@ internal class DatabaseImportExportImpl(
         )
 
         val metadata = DatabaseExportMetadata(
-            version = BaseDatabaseOpenHelper.VERSION,
+            version = AppDatabase.VERSION,
             date = Date().simpleDateFormat()!!,
             serverUrl = userConfiguration.serverUrl(),
             username = userConfiguration.username(),

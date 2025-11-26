@@ -30,21 +30,21 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toKtxInstant
 import org.hisp.dhis.android.core.category.CategoryDataDimensionType
 import org.hisp.dhis.android.core.common.AggregationType
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
 import org.hisp.dhis.android.core.period.Period
-import org.hisp.dhis.android.core.period.PeriodTableInfo
 import org.hisp.dhis.android.core.period.PeriodType
-import java.util.*
-import org.hisp.dhis.android.core.category.CategoryCategoryComboLinkTableInfo as cToCcInfo
-import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkTableInfo as cocToCoInfo
-import org.hisp.dhis.android.core.category.CategoryOptionComboTableInfo as cocInfo
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitTableInfo
+import org.hisp.dhis.android.persistence.period.PeriodTableInfo
+import java.util.Date
+import org.hisp.dhis.android.persistence.category.CategoryCategoryComboLinkTableInfo as cToCcInfo
+import org.hisp.dhis.android.persistence.category.CategoryOptionComboCategoryOptionLinkTableInfo as cocToCoInfo
+import org.hisp.dhis.android.persistence.category.CategoryOptionComboTableInfo as cocInfo
 
 /**
  * This class includes some SQL helpers to build the where clause. Dimensions might include several items, like for

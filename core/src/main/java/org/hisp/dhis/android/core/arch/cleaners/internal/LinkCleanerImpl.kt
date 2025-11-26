@@ -43,14 +43,14 @@ internal open class LinkCleanerImpl<P : ObjectWithUidInterface>(
         key = applicableColumn,
     ) {
 
-    override fun deleteNotPresent(objects: Collection<P>?): Boolean {
+    override suspend fun deleteNotPresent(objects: Collection<P>?): Boolean {
         if (objects == null) {
             return false
         }
         return deleteNotPresentByKey(objects.map { it.uid() })
     }
 
-    override fun deleteNotPresentInDb(): Boolean {
+    override suspend fun deleteNotPresentInDb(): Boolean {
         return deleteNotPresent(parentStore.selectAll())
     }
 }

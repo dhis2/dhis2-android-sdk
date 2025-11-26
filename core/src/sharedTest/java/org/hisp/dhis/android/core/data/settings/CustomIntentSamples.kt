@@ -1,0 +1,94 @@
+/*
+ *  Copyright (c) 2004-2025, University of Oslo
+ *  All rights reserved.
+ *
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
+ *
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package org.hisp.dhis.android.core.data.settings
+
+import org.hisp.dhis.android.core.settings.CustomIntent
+import org.hisp.dhis.android.core.settings.CustomIntentActionType
+import org.hisp.dhis.android.core.settings.CustomIntentAttribute
+import org.hisp.dhis.android.core.settings.CustomIntentDataElement
+import org.hisp.dhis.android.core.settings.CustomIntentRequest
+import org.hisp.dhis.android.core.settings.CustomIntentRequestArgument
+import org.hisp.dhis.android.core.settings.CustomIntentResponse
+import org.hisp.dhis.android.core.settings.CustomIntentResponseData
+import org.hisp.dhis.android.core.settings.CustomIntentResponseDataExtra
+import org.hisp.dhis.android.core.settings.CustomIntentResponseExtraType
+
+object CustomIntentSamples {
+    fun getCustomIntent(): CustomIntent {
+        return CustomIntent.builder()
+            .uid("uid")
+            .name("Face Recognition")
+            .action(listOf(CustomIntentActionType.SEARCH))
+            .packageName("package.name")
+            .request(
+                CustomIntentRequest.builder()
+                    .arguments(
+                        listOf(
+                            CustomIntentRequestArgument.builder()
+                                .key("some key")
+                                .value("some value")
+                                .build(),
+                        ),
+                    )
+                    .build(),
+            )
+            .response(
+                CustomIntentResponse.builder()
+                    .data(
+                        CustomIntentResponseData.builder()
+                            .extras(
+                                listOf(
+                                    CustomIntentResponseDataExtra.builder()
+                                        .key("response path")
+                                        .extraName("response argument")
+                                        .extraType(CustomIntentResponseExtraType.BOOLEAN)
+                                        .build(),
+                                ),
+                            )
+                            .build(),
+                    )
+                    .build(),
+            )
+            .build()
+    }
+
+    fun getCustomIntentDataElementTrigger(): CustomIntentDataElement {
+        return CustomIntentDataElement.builder()
+            .uid("deUid")
+            .customIntentUid("uid")
+            .build()
+    }
+
+    fun getCustomIntentAttributeTrigger(): CustomIntentAttribute {
+        return CustomIntentAttribute.builder()
+            .uid("attUid")
+            .customIntentUid("uid")
+            .build()
+    }
+}

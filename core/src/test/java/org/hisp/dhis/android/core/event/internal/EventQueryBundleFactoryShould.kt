@@ -28,17 +28,21 @@
 package org.hisp.dhis.android.core.event.internal
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
+import org.hisp.dhis.android.core.event.EventFilter
+import org.hisp.dhis.android.core.event.EventFilterCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStore
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
-import org.hisp.dhis.android.core.settings.*
+import org.hisp.dhis.android.core.settings.DownloadPeriod
+import org.hisp.dhis.android.core.settings.LimitScope
+import org.hisp.dhis.android.core.settings.ProgramSetting
+import org.hisp.dhis.android.core.settings.ProgramSettings
+import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryFactoryCommonHelper
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 import org.junit.Assert.fail
@@ -46,6 +50,10 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
 class EventQueryBundleFactoryShould {
@@ -56,10 +64,17 @@ class EventQueryBundleFactoryShould {
     private val lastUpdatedManager: EventLastUpdatedManager = mock()
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore = mock()
     private val organisationUnitProgramLinkLinkStore: OrganisationUnitProgramLinkStore = mock()
+    private val eventFilterCollectionRepository: EventFilterCollectionRepository = mock()
+    private val connectorEvent: StringFilterConnector<EventFilterCollectionRepository> = mock()
 
     private val p1 = "program1"
     private val p2 = "program2"
     private val p3 = "program3"
+    private val f1 = EventFilter.builder()
+        .uid("filter1")
+        .program(p1)
+        .build()
+
     private val ou1 = "ou1"
     private val ou1c1 = "ou1.1"
     private val ou2 = "ou2"
@@ -74,14 +89,18 @@ class EventQueryBundleFactoryShould {
 
     @Before
     @Throws(Exception::class)
-    fun setUp() {
+    fun setUp() = runTest {
         whenever(resourceHandler.getLastUpdated(any())).thenReturn(null)
         whenever(programStore.getUidsByProgramType(any())).thenReturn(programList)
         whenever(userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids()).thenReturn(rootOrgUnits)
         whenever(userOrganisationUnitLinkStore.queryOrganisationUnitUidsByScope(any()))
             .thenReturn(captureOrgUnits)
 
-        whenever(programSettingsObjectRepository.blockingGet()).thenReturn(programSettings)
+        whenever(programSettingsObjectRepository.getInternal()).thenReturn(programSettings)
+
+        whenever(eventFilterCollectionRepository.byUid()).thenReturn(connectorEvent)
+        whenever(connectorEvent.`in`(null)).thenReturn(eventFilterCollectionRepository)
+        whenever(eventFilterCollectionRepository.blockingGet()).thenReturn(emptyList())
 
         val commonHelper = TrackerQueryFactoryCommonHelper(
             userOrganisationUnitLinkStore,
@@ -92,11 +111,12 @@ class EventQueryBundleFactoryShould {
             programSettingsObjectRepository,
             lastUpdatedManager,
             commonHelper,
+            eventFilterCollectionRepository,
         )
     }
 
     @Test
-    fun create_a_single_bundle_when_global() {
+    fun create_a_single_bundle_when_global() = runTest {
         val bundles = bundleFactory.getQueries(params)
         assertThat(bundles.size).isEqualTo(1)
         val bundle = bundles[0]
@@ -106,7 +126,7 @@ class EventQueryBundleFactoryShould {
     }
 
     @Test
-    fun create_separate_bundle_for_program_if_has_specific_settings() {
+    fun create_separate_bundle_for_program_if_has_specific_settings() = runTest {
         val settings = ProgramSetting.builder().uid(p1).eventsDownload(200).build()
         whenever(programSettings.specificSettings()).thenReturn(mapOf(p1 to settings))
 
@@ -132,7 +152,18 @@ class EventQueryBundleFactoryShould {
     }
 
     @Test
-    fun get_event_date_if_defined() {
+    fun single_query_if_event_filter_provided_by_user() = runTest {
+        val params = ProgramDataDownloadParams.builder().limit(5000)
+            .eventFilters(listOf(f1)).build()
+        val queries = bundleFactory.getQueries(params)
+        assertThat(queries.size).isEqualTo(1)
+        val query = queries.first()
+        assertThat(query.eventFilters()?.size).isEqualTo(1)
+        assertThat(query.eventFilters()?.first()).isEqualTo(f1)
+    }
+
+    @Test
+    fun get_event_date_if_defined() = runTest {
         val settings = ProgramSetting.builder().uid(p1).eventDateDownload(DownloadPeriod.LAST_3_MONTHS).build()
         whenever(programSettings.specificSettings()).thenReturn(mapOf(p1 to settings))
 
@@ -147,7 +178,7 @@ class EventQueryBundleFactoryShould {
     }
 
     @Test
-    fun apply_user_defined_limit_only_to_global_if_no_program() {
+    fun apply_user_defined_limit_only_to_global_if_no_program() = runTest {
         val params = ProgramDataDownloadParams.builder().limit(5000).build()
 
         val settings = ProgramSetting.builder().uid(p1).eventsDownload(100).build()
@@ -166,7 +197,7 @@ class EventQueryBundleFactoryShould {
     }
 
     @Test
-    fun should_create_different_queries_if_per_orgunit_in_specific() {
+    fun should_create_different_queries_if_per_orgunit_in_specific() = runTest {
         val params = ProgramDataDownloadParams.builder().build()
 
         val settings = ProgramSetting.builder().uid(p1).settingDownload(LimitScope.PER_ORG_UNIT).build()
@@ -186,7 +217,7 @@ class EventQueryBundleFactoryShould {
     }
 
     @Test
-    fun apply_specific_limit_by_orgunit_when_global_param_provided() {
+    fun apply_specific_limit_by_orgunit_when_global_param_provided() = runTest {
         val settings = ProgramSetting.builder().uid(p1).settingDownload(LimitScope.ALL_ORG_UNITS).build()
         whenever(programSettings.specificSettings()).doReturn(mapOf(p1 to settings))
         whenever(organisationUnitProgramLinkLinkStore.selectWhere(any())).doReturn(
@@ -208,7 +239,7 @@ class EventQueryBundleFactoryShould {
     }
 
     @Test
-    fun apply_user_limit_by_orgunit_when_user_program_param_provided() {
+    fun apply_user_limit_by_orgunit_when_user_program_param_provided() = runTest {
         val settings = ProgramSetting.builder().uid(p1).settingDownload(LimitScope.ALL_ORG_UNITS).build()
         whenever(programSettings.specificSettings()).doReturn(mapOf(p1 to settings))
         whenever(organisationUnitProgramLinkLinkStore.selectWhere(any())).doReturn(

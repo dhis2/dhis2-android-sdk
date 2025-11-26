@@ -33,10 +33,6 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
-kotlin {
-    jvmToolchain(17)
-}
-
 val sdkVersion = project.findProperty("sdkVersion")
 
 android {
@@ -53,9 +49,6 @@ android {
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
-
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
     }
 
     buildTypes {
@@ -68,8 +61,9 @@ android {
 
 dependencies {
     coreLibraryDesugaring(libs.desugaring)
-    api(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.serialization.json)
     androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
 
     if (sdkVersion != null && sdkVersion != "") {
         implementation("org.hisp.dhis:android-core:$sdkVersion!!")

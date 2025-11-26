@@ -28,20 +28,11 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.IsColumnNotNullColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.period.PeriodType;
@@ -61,7 +52,6 @@ public abstract class DataSetInstance implements CoreObject {
     public abstract String period();
 
     @NonNull
-    @ColumnAdapter(PeriodTypeColumnAdapter.class)
     public abstract PeriodType periodType();
 
     @NonNull
@@ -80,48 +70,34 @@ public abstract class DataSetInstance implements CoreObject {
     public abstract Integer valueCount();
 
     @NonNull
-    @ColumnName("completionDate")
-    @ColumnAdapter(IsColumnNotNullColumnAdapter.class)
     public abstract Boolean completed();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date completionDate();
 
     @Nullable
     public abstract String completedBy();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
     @Nullable
-    @ColumnAdapter(StateColumnAdapter.class)
     public abstract State dataValueState();
 
     @Nullable
-    @ColumnAdapter(StateColumnAdapter.class)
     public abstract State completionState();
 
     @Nullable
-    @ColumnAdapter(StateColumnAdapter.class)
     public abstract State state();
-
-    @NonNull
-    public static DataSetInstance create(Cursor cursor) {
-        return AutoValue_DataSetInstance.createFromCursor(cursor);
-    }
 
     public abstract DataSetInstance.Builder toBuilder();
 
     public static DataSetInstance.Builder builder() {
-        return new $$AutoValue_DataSetInstance.Builder();
+        return new AutoValue_DataSetInstance.Builder();
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
+    public abstract static class Builder {
         public abstract Builder dataSetUid(String dataSetUid);
 
         public abstract Builder dataSetDisplayName(String dataSetDisplayName);

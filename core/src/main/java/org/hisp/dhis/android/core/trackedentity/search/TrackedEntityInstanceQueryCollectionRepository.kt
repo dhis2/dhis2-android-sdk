@@ -37,7 +37,8 @@ import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
@@ -63,7 +64,6 @@ import java.util.Date
 class TrackedEntityInstanceQueryCollectionRepository internal constructor(
     private val store: TrackedEntityInstanceStore,
     private val trackerParentCallFactory: TrackerParentCallFactory,
-    private val databaseAdapter: DatabaseAdapter,
     scope: TrackedEntityInstanceQueryRepositoryScope,
     scopeHelper: TrackedEntityInstanceQueryRepositoryScopeHelper,
     versionManager: DHISVersionManager,
@@ -88,7 +88,7 @@ class TrackedEntityInstanceQueryCollectionRepository internal constructor(
             > =
         ScopedFilterConnectorFactory { s: TrackedEntityInstanceQueryRepositoryScope ->
             TrackedEntityInstanceQueryCollectionRepository(
-                store, trackerParentCallFactory, databaseAdapter,
+                store, trackerParentCallFactory,
                 s, scopeHelper, versionManager, filtersRepository, workingListRepository, onlineCache,
                 onlineHelper, localQueryHelper,
             )
@@ -154,7 +154,6 @@ class TrackedEntityInstanceQueryCollectionRepository internal constructor(
     val pagingSource: PagingSource<TrackedEntityInstance, TrackedEntityInstance>
         get() = TrackedEntityInstanceQueryPagingSource(
             store,
-            databaseAdapter,
             trackerParentCallFactory,
             scope,
             childrenAppenders,
@@ -169,6 +168,10 @@ class TrackedEntityInstanceQueryCollectionRepository internal constructor(
 
     @Suppress("TooGenericExceptionCaught", "TooGenericExceptionThrown")
     override fun blockingGet(): List<TrackedEntityInstance> {
+        return runBlocking { getProtected() }
+    }
+
+    private suspend fun getProtected(): List<TrackedEntityInstance> {
         val dataFetcher = getDataFetcher()
         val searchResult =
             if (scope.mode() == RepositoryMode.OFFLINE_ONLY || scope.mode() == RepositoryMode.OFFLINE_FIRST) {
@@ -197,28 +200,29 @@ class TrackedEntityInstanceQueryCollectionRepository internal constructor(
         return blockingGet().size
     }
 
+    private suspend fun countProtected(): Int {
+        return getProtected().size
+    }
+
     override fun isEmpty(): Single<Boolean> {
-        return Single.fromCallable { blockingIsEmpty() }
+        return rxSingle { isEmptyProtected() }
     }
 
     override fun blockingIsEmpty(): Boolean {
-        return blockingCount() == 0
+        return runBlocking { isEmptyProtected() }
+    }
+
+    private suspend fun isEmptyProtected(): Boolean {
+        return countProtected() == 0
     }
 
     override fun one(): ReadOnlyObjectRepository<TrackedEntityInstance> {
-        return objectRepository(
-            object : Transformer<List<TrackedEntityInstance>, TrackedEntityInstance?> {
-                override fun transform(o: List<TrackedEntityInstance>): TrackedEntityInstance? {
-                    return o.firstOrNull()
-                }
-            },
-        )
+        return objectRepository { o -> o.firstOrNull() }
     }
 
     private fun getDataFetcher(): TrackedEntityInstanceQueryDataFetcher {
         return TrackedEntityInstanceQueryDataFetcher(
             store,
-            databaseAdapter,
             trackerParentCallFactory,
             scope,
             childrenAppenders,
@@ -229,13 +233,7 @@ class TrackedEntityInstanceQueryCollectionRepository internal constructor(
     }
 
     override fun uid(uid: String?): ReadOnlyObjectRepository<TrackedEntityInstance> {
-        return byTrackedEntities().eq(uid).objectRepository(
-            object : Transformer<List<TrackedEntityInstance>, TrackedEntityInstance?> {
-                override fun transform(o: List<TrackedEntityInstance>): TrackedEntityInstance? {
-                    return o.find { uid == it.uid() }
-                }
-            },
-        )
+        return byTrackedEntities().eq(uid).objectRepository { o -> o.find { uid == it.uid() } }
     }
 
     override fun getUids(): Single<List<String>> {
@@ -243,10 +241,14 @@ class TrackedEntityInstanceQueryCollectionRepository internal constructor(
     }
 
     override fun blockingGetUids(): List<String> {
+        return runBlocking { getUidsInternal() }
+    }
+
+    internal suspend fun getUidsInternal(): List<String> {
         return if (scope.mode() == RepositoryMode.OFFLINE_ONLY || scope.mode() == RepositoryMode.OFFLINE_FIRST) {
             getDataFetcher().queryAllOfflineUids()
         } else {
-            getUids(blockingGet()).toList()
+            getUids(getProtected()).toList()
         }
     }
 

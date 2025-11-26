@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.arch.repositories.collection.internal
 
 import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository
@@ -38,14 +38,14 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import org.hisp.dhis.android.persistence.common.querybuilders.OrderByClauseBuilder
 
 abstract class BaseReadOnlyWithUidCollectionRepositoryImpl<M, R : ReadOnlyCollectionRepository<M>> internal constructor(
     @JvmField internal val store: IdentifiableObjectStore<M>,
-    databaseAdapter: DatabaseAdapter,
     childrenAppenders: ChildrenAppenderGetter<M>,
     scope: RepositoryScope,
     cf: FilterConnectorFactory<R>,
-) : ReadOnlyCollectionRepositoryImpl<M, R>(store, databaseAdapter, childrenAppenders, scope, cf),
+) : ReadOnlyCollectionRepositoryImpl<M, R>(store, childrenAppenders, scope, cf),
     ReadOnlyWithUidCollectionRepository<M> where M : CoreObject, M : ObjectWithUidInterface {
 
     /**
@@ -54,7 +54,7 @@ abstract class BaseReadOnlyWithUidCollectionRepositoryImpl<M, R : ReadOnlyCollec
      * @return A `Single` object with the list of uids.
      */
     override fun getUids(): Single<List<String>> {
-        return Single.fromCallable { blockingGetUids() }
+        return rxSingle { getUidsInternal() }
     }
 
     /**
@@ -64,11 +64,14 @@ abstract class BaseReadOnlyWithUidCollectionRepositoryImpl<M, R : ReadOnlyCollec
      * @return List of uids
      */
     override fun blockingGetUids(): List<String> {
+        return runBlocking { getUidsInternal() }
+    }
+
+    internal suspend fun getUidsInternal(): List<String> {
         return store.selectUidsWhere(
             whereClause,
             OrderByClauseBuilder.orderByFromItems(
                 scope.orderBy(),
-                scope.pagingKey(),
             ),
         )
     }

@@ -30,7 +30,7 @@ package org.hisp.dhis.android.network.visualization
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.internal.VisualizationNetworkHandler
 import org.hisp.dhis.android.network.common.PayloadJson
@@ -40,18 +40,18 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class VisualizationNetworkHandlerImpl(
     httpClient: HttpServiceClient,
-    private val dhis2VersionManager: DHISVersionManager,
+    private val dhis2VersionManager: DHISVersionManagerImpl,
 ) : VisualizationNetworkHandler {
     private val service: VisualizationService = VisualizationService(httpClient)
 
     override suspend fun getVisualizations(partitionUids: Set<String>): Payload<Visualization> {
         val accessFilter = "access." + AccessFields.read.eq(true).generateString()
         val visualizations =
-            if (dhis2VersionManager.isGreaterOrEqualThan(DHISVersion.V2_34)) {
+            if (dhis2VersionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_34)) {
                 // Workaround for DHIS2-15322. Request visualizations using the entity endpoint.
                 partitionUids.mapNotNull { visualizationUid ->
                     try {
-                        if (dhis2VersionManager.isGreaterOrEqualThan(DHISVersion.V2_37)) {
+                        if (dhis2VersionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_37)) {
                             getVisualization(visualizationUid, accessFilter)
                         } else {
                             getVisualization36(visualizationUid, accessFilter)

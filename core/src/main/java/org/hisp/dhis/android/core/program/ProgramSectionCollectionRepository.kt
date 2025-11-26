@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.program
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -36,16 +35,15 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.program.internal.ProgramSectionAttributeChildrenAppender
 import org.hisp.dhis.android.core.program.internal.ProgramSectionStore
+import org.hisp.dhis.android.persistence.program.ProgramSectionTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 class ProgramSectionCollectionRepository internal constructor(
     store: ProgramSectionStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<ProgramSection, ProgramSectionCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -53,7 +51,6 @@ class ProgramSectionCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         ProgramSectionCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },

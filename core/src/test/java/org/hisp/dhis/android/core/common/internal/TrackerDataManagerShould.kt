@@ -27,13 +27,7 @@
  */
 package org.hisp.dhis.android.core.common.internal
 
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.times
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
-import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
@@ -49,6 +43,13 @@ import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
+import org.mockito.kotlin.whenever
 
 class TrackerDataManagerShould {
 
@@ -68,7 +69,7 @@ class TrackerDataManagerShould {
     private lateinit var trackerDataManager: TrackerDataManager
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         whenever(trackedEntity.uid()).doReturn("tei_uid")
         whenever(enrollment.uid()).doReturn("enrollment_uid")
         whenever(event.uid()).doReturn("event_uid")
@@ -90,7 +91,7 @@ class TrackerDataManagerShould {
     }
 
     @Test
-    fun cascade_tracked_entity_deletion_when_existing() {
+    fun cascade_tracked_entity_deletion_when_existing() = runTest {
         whenever(trackedEntity.syncState()).doReturn(State.TO_UPDATE)
         whenever(enrollment.syncState()).doReturn(State.TO_UPDATE)
         whenever(event.syncState()).doReturn(State.TO_UPDATE)
@@ -109,7 +110,7 @@ class TrackerDataManagerShould {
     }
 
     @Test
-    fun cascade_tracked_entity_deletion_when_new() {
+    fun cascade_tracked_entity_deletion_when_new() = runTest {
         whenever(trackedEntity.syncState()).doReturn(State.TO_POST)
         whenever(enrollment.syncState()).doReturn(State.TO_POST)
         whenever(event.syncState()).doReturn(State.TO_POST)
@@ -117,17 +118,18 @@ class TrackerDataManagerShould {
 
         trackerDataManager.deleteTrackedEntity(trackedEntity)
 
-        verify(trackedEntityStore, times(1)).delete(any())
-        verify(enrollmentStore, times(1)).delete(any())
-        verify(eventStore, times(1)).delete(any())
-        verify(relationshipStore, times(3)).delete(any())
+        verify(trackedEntityStore, times(1)).deleteByEntity(any())
+        verify(enrollmentStore, times(1)).deleteByEntity(any())
+        verify(eventStore, times(1)).deleteByEntity(any())
+        verify(relationshipStore, times(3)).deleteByEntity(any())
     }
 
     @Test
-    fun create_program_owner_entry_on_new_enrollment() {
+    fun create_program_owner_entry_on_new_enrollment() = runTest {
         whenever(enrollment.program()).doReturn("program")
         whenever(enrollment.trackedEntityInstance()).doReturn("instance")
         whenever(enrollment.organisationUnit()).doReturn("orgunit")
+        whenever(programOwnerStore.selectWhere(any())).doReturn(emptyList())
 
         trackerDataManager.propagateEnrollmentUpdate(enrollment, HandleAction.Insert)
         verify(programOwnerStore, times(1)).selectWhere(any())

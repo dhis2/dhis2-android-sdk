@@ -28,16 +28,10 @@
 
 package org.hisp.dhis.android.core.period;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
@@ -49,20 +43,13 @@ public abstract class Period implements CoreObject {
     public abstract String periodId();
 
     @Nullable
-    @ColumnAdapter(PeriodTypeColumnAdapter.class)
     public abstract PeriodType periodType();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date startDate();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date endDate();
-
-    public static Period create(Cursor cursor) {
-        return $AutoValue_Period.createFromCursor(cursor);
-    }
 
     public abstract Builder toBuilder();
 
@@ -71,9 +58,7 @@ public abstract class Period implements CoreObject {
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
+    public abstract static class Builder {
         public abstract Builder periodId(String periodId);
 
         public abstract Builder periodType(PeriodType periodType);

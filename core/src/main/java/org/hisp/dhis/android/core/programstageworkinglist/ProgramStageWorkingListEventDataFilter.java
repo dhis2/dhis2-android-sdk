@@ -28,9 +28,7 @@
 
 package org.hisp.dhis.android.core.programstageworkinglist;
 
-import android.database.Cursor;
-
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 
 import com.google.auto.value.AutoValue;
 
@@ -43,29 +41,23 @@ public abstract class ProgramStageWorkingListEventDataFilter extends FilterOpera
     /**
      * The related program stage working list
      */
-    @Nullable
+    @NonNull
     public abstract String programStageWorkingList();
 
     /**
      * The data element id or data item
      */
-    @Nullable
+    @NonNull
     public abstract String dataItem();
 
     public static Builder builder() {
-        return new $$AutoValue_ProgramStageWorkingListEventDataFilter.Builder();
-    }
-
-    public static ProgramStageWorkingListEventDataFilter create(Cursor cursor) {
-        return $AutoValue_ProgramStageWorkingListEventDataFilter.createFromCursor(cursor);
+        return new AutoValue_ProgramStageWorkingListEventDataFilter.Builder();
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
     public abstract static class Builder extends FilterOperators.Builder<Builder> {
-        public abstract Builder id(Long id);
-
         public abstract Builder programStageWorkingList(String programStageWorkingList);
 
         public abstract Builder dataItem(String dataItem);

@@ -46,6 +46,7 @@ class SystemInfoCall internal constructor(
     private val systemInfoNetworkHandler: SystemInfoNetworkHandler,
     private val resourceHandler: ResourceHandler,
     private val versionManager: DHISVersionManagerImpl,
+    private val serverTimezoneManager: ServerTimezoneManager,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : DownloadProvider {
 
@@ -74,9 +75,10 @@ class SystemInfoCall internal constructor(
         )
     }
 
-    private fun insertOrUpdateSystemInfo(systemInfo: SystemInfo) {
+    private suspend fun insertOrUpdateSystemInfo(systemInfo: SystemInfo) {
         systemInfoHandler.handle(systemInfo)
         resourceHandler.serverDate = systemInfo.serverDate()
+        serverTimezoneManager.setServerTimeZone(systemInfo.serverTimeZoneId())
         resourceHandler.handleResource(Resource.Type.SYSTEM_INFO)
     }
 }

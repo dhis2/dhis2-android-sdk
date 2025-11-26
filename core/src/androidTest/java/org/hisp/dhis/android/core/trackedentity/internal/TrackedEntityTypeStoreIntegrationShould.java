@@ -31,9 +31,10 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityTypeSamples;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityTypeStoreImpl;
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityTypeTableInfo;
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)

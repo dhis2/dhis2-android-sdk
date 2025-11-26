@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.sms.data.localdbrepository.internal
 
 import io.reactivex.Completable
 import io.reactivex.Single
+import kotlinx.coroutines.rx2.rxCompletable
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.smscompression.SMSConsts
 import org.hisp.dhis.smscompression.models.SMSMetadata
@@ -40,7 +42,7 @@ internal class MetadataIdsStore(
     private val smsConfigStore: SMSConfigStore,
 ) {
     fun getMetadataIds(): Single<SMSMetadata> {
-        return Single.fromCallable {
+        return rxSingle {
             val lastSync = smsConfigStore.get(SMSConfigKey.METADATA_SYNC_DATE)
             val metadataIdList = smsMetadataIdsStore.selectAll()
 
@@ -77,30 +79,32 @@ internal class MetadataIdsStore(
     }
 
     fun setMetadataIds(metadata: SMSMetadata?): Completable {
-        return Completable.fromAction {
-            metadata?.let {
-                it.lastSyncDate?.let { date ->
-                    smsConfigStore.set(SMSConfigKey.METADATA_SYNC_DATE, DateUtils.DATE_FORMAT.format(date))
-                }
-                val metadataIds =
-                    buildFor(it, SMSConsts.MetadataType.USER) +
-                        buildFor(it, SMSConsts.MetadataType.TRACKED_ENTITY_TYPE) +
-                        buildFor(it, SMSConsts.MetadataType.TRACKED_ENTITY_ATTRIBUTE) +
-                        buildFor(it, SMSConsts.MetadataType.PROGRAM) +
-                        buildFor(it, SMSConsts.MetadataType.ORGANISATION_UNIT) +
-                        buildFor(it, SMSConsts.MetadataType.DATA_ELEMENT) +
-                        buildFor(it, SMSConsts.MetadataType.CATEGORY_OPTION_COMBO) +
-                        buildFor(it, SMSConsts.MetadataType.DATASET) +
-                        buildFor(it, SMSConsts.MetadataType.PROGRAM_STAGE) +
-                        buildFor(it, SMSConsts.MetadataType.EVENT) +
-                        buildFor(it, SMSConsts.MetadataType.ENROLLMENT) +
-                        buildFor(it, SMSConsts.MetadataType.TRACKED_ENTITY_INSTANCE) +
-                        buildFor(it, SMSConsts.MetadataType.RELATIONSHIP) +
-                        buildFor(it, SMSConsts.MetadataType.RELATIONSHIP_TYPE)
+        return rxCompletable { setMetadataIdsSuspend(metadata) }
+    }
 
-                smsMetadataIdsStore.delete()
-                metadataIds.forEach { id -> smsMetadataIdsStore.insert(id) }
+    suspend fun setMetadataIdsSuspend(metadata: SMSMetadata?) {
+        metadata?.let {
+            it.lastSyncDate?.let { date ->
+                smsConfigStore.set(SMSConfigKey.METADATA_SYNC_DATE, DateUtils.DATE_FORMAT.format(date))
             }
+            val metadataIds =
+                buildFor(it, SMSConsts.MetadataType.USER) +
+                    buildFor(it, SMSConsts.MetadataType.TRACKED_ENTITY_TYPE) +
+                    buildFor(it, SMSConsts.MetadataType.TRACKED_ENTITY_ATTRIBUTE) +
+                    buildFor(it, SMSConsts.MetadataType.PROGRAM) +
+                    buildFor(it, SMSConsts.MetadataType.ORGANISATION_UNIT) +
+                    buildFor(it, SMSConsts.MetadataType.DATA_ELEMENT) +
+                    buildFor(it, SMSConsts.MetadataType.CATEGORY_OPTION_COMBO) +
+                    buildFor(it, SMSConsts.MetadataType.DATASET) +
+                    buildFor(it, SMSConsts.MetadataType.PROGRAM_STAGE) +
+                    buildFor(it, SMSConsts.MetadataType.EVENT) +
+                    buildFor(it, SMSConsts.MetadataType.ENROLLMENT) +
+                    buildFor(it, SMSConsts.MetadataType.TRACKED_ENTITY_INSTANCE) +
+                    buildFor(it, SMSConsts.MetadataType.RELATIONSHIP) +
+                    buildFor(it, SMSConsts.MetadataType.RELATIONSHIP_TYPE)
+
+            smsMetadataIdsStore.delete()
+            metadataIds.forEach { id -> smsMetadataIdsStore.insert(id) }
         }
     }
 
@@ -109,7 +113,7 @@ internal class MetadataIdsStore(
     }
 
     fun clear(): Completable {
-        return Completable.fromAction {
+        return rxCompletable {
             smsMetadataIdsStore.delete()
             smsConfigStore.delete(SMSConfigKey.METADATA_SYNC_DATE)
         }

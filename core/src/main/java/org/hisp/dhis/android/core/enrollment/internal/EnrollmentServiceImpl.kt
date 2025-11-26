@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.enrollment.internal
 
 import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.enrollment.EnrollmentAccess
 import org.hisp.dhis.android.core.enrollment.EnrollmentCollectionRepository
@@ -44,7 +45,8 @@ import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerStore
-import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerTableInfo
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
+import org.hisp.dhis.android.persistence.trackedentity.ProgramTempOwnerTableInfo
 import org.koin.core.annotation.Singleton
 import java.util.Date
 
@@ -69,8 +71,19 @@ internal class EnrollmentServiceImpl(
         return Single.fromCallable { blockingIsOpen(enrollmentUid) }
     }
 
+    override fun getEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): Single<EnrollmentAccess> {
+        return rxSingle { getEnrollmentAccessInternal(trackedEntityInstanceUid, programUid) }
+    }
+
     override fun blockingGetEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): EnrollmentAccess {
-        val program = programRepository.uid(programUid).blockingGet() ?: return EnrollmentAccess.NO_ACCESS
+        return runBlocking { getEnrollmentAccessInternal(trackedEntityInstanceUid, programUid) }
+    }
+
+    private suspend fun getEnrollmentAccessInternal(
+        trackedEntityInstanceUid: String,
+        programUid: String,
+    ): EnrollmentAccess {
+        val program = programRepository.uid(programUid).getInternal() ?: return EnrollmentAccess.NO_ACCESS
 
         val dataAccess =
             if (program.access()?.data()?.write() == true) {
@@ -86,19 +99,17 @@ internal class EnrollmentServiceImpl(
                 } else {
                     EnrollmentAccess.PROTECTED_PROGRAM_DENIED
                 }
+
             AccessLevel.CLOSED ->
                 if (isTeiInCaptureScope(trackedEntityInstanceUid)) {
                     dataAccess
                 } else {
                     EnrollmentAccess.CLOSED_PROGRAM_DENIED
                 }
+
             else ->
                 dataAccess
         }
-    }
-
-    override fun getEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): Single<EnrollmentAccess> {
-        return Single.fromCallable { blockingGetEnrollmentAccess(trackedEntityInstanceUid, programUid) }
     }
 
     private fun isTeiInCaptureScope(trackedEntityInstanceUid: String): Boolean {
@@ -137,7 +148,7 @@ internal class EnrollmentServiceImpl(
         return Single.fromCallable { blockingGetAllowEventCreation(enrollmentUid, stagesToHide) }
     }
 
-    private fun hasTempOwnership(tei: String, program: String): Boolean {
+    private suspend fun hasTempOwnership(tei: String, program: String): Boolean {
         val nowStr = DateUtils.DATE_FORMAT.format(Date())
         val columns = ProgramTempOwnerTableInfo.Columns
         val whereClause = WhereClauseBuilder()

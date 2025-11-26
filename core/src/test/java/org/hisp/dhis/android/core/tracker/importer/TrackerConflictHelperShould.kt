@@ -29,10 +29,7 @@ package org.hisp.dhis.android.core.tracker.importer
 
 import android.content.Context
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.tracker.importer.internal.JobValidationError
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerConflictHelper
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType
@@ -40,6 +37,10 @@ import org.hisp.dhis.android.core.tracker.importer.internal.interpreters.Interpr
 import org.hisp.dhis.android.core.tracker.importer.internal.interpreters.InterpreterSelector
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 class TrackerConflictHelperShould {
 
@@ -48,21 +49,21 @@ class TrackerConflictHelperShould {
     private val selector = InterpreterSelector(interpreterHelper)
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         whenever(context.getString(any())) doReturn "The %s event was not found in the server. (Event: %s)"
         whenever(interpreterHelper.programStageUid(any())) doReturn "programStageUid"
         whenever(interpreterHelper.programStageDisplayName(any())) doReturn "Antenatal care visiting"
     }
 
     @Test
-    fun `Should return the import error display description when passing a valid ErrorCode`() {
+    fun `Should return the import error display description when passing a valid ErrorCode`() = runTest {
         val trackerImportConflict = TrackerConflictHelper(context, selector).getConflictBuilder(errorReport).build()
         assertThat(trackerImportConflict.displayDescription())
             .isEqualTo("The Antenatal care visiting event was not found in the server. (Event: PXi7gfVIk1p)")
     }
 
     @Test
-    fun `Should return the error message display description when passing a wrong ErrorCode`() {
+    fun `Should return the error message display description when passing a wrong ErrorCode`() = runTest {
         val trackerImportConflict = TrackerConflictHelper(context, selector)
             .getConflictBuilder(wrongCodeErrorReport).build()
         assertThat(trackerImportConflict.displayDescription())

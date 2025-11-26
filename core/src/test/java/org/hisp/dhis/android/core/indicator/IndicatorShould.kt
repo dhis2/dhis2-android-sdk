@@ -30,14 +30,13 @@ package org.hisp.dhis.android.core.indicator
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.network.indicator.IndicatorDTO
 import org.junit.Test
 
-class IndicatorShould : BaseObjectKotlinxShould("indicators/indicator.json"), ObjectShould {
+class IndicatorShould : CoreObjectShould("indicators/indicator.json") {
     @Test
     override fun map_from_json_string() {
         val indicatorDTO = deserialize(IndicatorDTO.serializer())

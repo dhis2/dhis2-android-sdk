@@ -28,13 +28,10 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
@@ -46,20 +43,14 @@ public abstract class LatestAppVersion implements CoreObject {
     @Nullable
     public abstract String downloadURL();
 
-    public static LatestAppVersion create(Cursor cursor) {
-        return $AutoValue_LatestAppVersion.createFromCursor(cursor);
-    }
-
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new $AutoValue_LatestAppVersion.Builder();
+        return new AutoValue_LatestAppVersion.Builder();
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
+    public abstract static class Builder {
         public abstract Builder version(String version);
 
         public abstract Builder downloadURL(String downloadURL);

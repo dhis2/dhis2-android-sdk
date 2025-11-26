@@ -29,13 +29,14 @@
 package org.hisp.dhis.android.core.arch.db.access.internal.migrations
 
 import android.util.Log
+import androidx.sqlite.db.SimpleSQLiteQuery
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.valuetype.validation.validators.NumberValidatorBase
-import java.util.ArrayList
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 
 internal class DatabaseCodeMigration133(private val databaseAdapter: DatabaseAdapter) : DatabaseCodeMigration {
-    override fun migrate() {
+    override suspend fun migrate() {
+        val dao = databaseAdapter.getCurrentDatabase().d2Dao()
         val valueTypes = "'NUMBER','INTEGER','INTEGER_POSITIVE','INTEGER_NEGATIVE','INTEGER_ZERO_OR_POSITIVE'"
         val whereClause = WhereClauseBuilder()
             .appendNotKeyStringValue("syncState", "SYNCED")
@@ -45,20 +46,9 @@ internal class DatabaseCodeMigration133(private val databaseAdapter: DatabaseAda
             )
             .build()
 
-        val query = "SELECT _id, value FROM DataValue WHERE $whereClause"
+        val selectQueryString = "SELECT _id, value FROM DataValue WHERE $whereClause"
 
-        val cursor = databaseAdapter.rawQuery(query)
-
-        val dataValues: MutableList<DatabaseCodeMigration133DataValue> = ArrayList(cursor.count)
-        cursor.use { c ->
-            if (c.count > 0) {
-                c.moveToFirst()
-                do {
-                    val value = DatabaseCodeMigration133DataValue(c.getLong(0), c.getString(1))
-                    dataValues.add(value)
-                } while (c.moveToNext())
-            }
-        }
+        val dataValues = dao.getCodeMigration133DataValue(SimpleSQLiteQuery(selectQueryString))
 
         dataValues.forEach { dataValue ->
             if (dataValue.value?.matches(NumberValidatorBase.HAS_LEADING_ZERO_REGEX) == true) {

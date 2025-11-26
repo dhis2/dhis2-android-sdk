@@ -27,30 +27,33 @@
  */
 package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationTableInfo
-import org.hisp.dhis.android.core.settings.AnalyticsTeiAttributeTableInfo
-import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElementTableInfo
-import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicatorTableInfo
-import org.hisp.dhis.android.core.settings.AnalyticsTeiSettingTableInfo
-import org.hisp.dhis.android.core.settings.DataSetConfigurationSettingTableInfo
-import org.hisp.dhis.android.core.settings.DataSetSettingTableInfo
-import org.hisp.dhis.android.core.settings.FilterSettingTableInfo
-import org.hisp.dhis.android.core.settings.GeneralSettingTableInfo
-import org.hisp.dhis.android.core.settings.LatestAppVersionTableInfo
-import org.hisp.dhis.android.core.settings.ProgramConfigurationSettingTableInfo
-import org.hisp.dhis.android.core.settings.ProgramSettingTableInfo
-import org.hisp.dhis.android.core.settings.SynchronizationSettingTableInfo
-import org.hisp.dhis.android.core.settings.SystemSettingTableInfo
-import org.hisp.dhis.android.core.settings.UserSettingsTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import org.hisp.dhis.android.persistence.settings.AnalyticsDhisVisualizationTableInfo
+import org.hisp.dhis.android.persistence.settings.AnalyticsTeiAttributeTableInfo
+import org.hisp.dhis.android.persistence.settings.AnalyticsTeiDataElementTableInfo
+import org.hisp.dhis.android.persistence.settings.AnalyticsTeiIndicatorTableInfo
+import org.hisp.dhis.android.persistence.settings.AnalyticsTeiSettingTableInfo
+import org.hisp.dhis.android.persistence.settings.CustomIntentAttributeTableInfo
+import org.hisp.dhis.android.persistence.settings.CustomIntentDataElementTableInfo
+import org.hisp.dhis.android.persistence.settings.CustomIntentTableInfo
+import org.hisp.dhis.android.persistence.settings.DataSetConfigurationSettingTableInfo
+import org.hisp.dhis.android.persistence.settings.DataSetSettingTableInfo
+import org.hisp.dhis.android.persistence.settings.FilterSettingTableInfo
+import org.hisp.dhis.android.persistence.settings.GeneralSettingTableInfo
+import org.hisp.dhis.android.persistence.settings.LatestAppVersionTableInfo
+import org.hisp.dhis.android.persistence.settings.ProgramConfigurationSettingTableInfo
+import org.hisp.dhis.android.persistence.settings.ProgramSettingTableInfo
+import org.hisp.dhis.android.persistence.settings.SynchronizationSettingTableInfo
+import org.hisp.dhis.android.persistence.settings.SystemSettingTableInfo
+import org.hisp.dhis.android.persistence.settings.UserSettingsTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class SettingModuleWiper(
     private val tableWiper: TableWiper,
 ) : ModuleWiper {
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         tableWiper.wipeTable(SystemSettingTableInfo.TABLE_INFO)
         tableWiper.wipeTable(GeneralSettingTableInfo.TABLE_INFO)
         tableWiper.wipeTable(DataSetSettingTableInfo.TABLE_INFO)
@@ -63,12 +66,15 @@ internal class SettingModuleWiper(
         tableWiper.wipeTable(AnalyticsTeiDataElementTableInfo.TABLE_INFO)
         tableWiper.wipeTable(AnalyticsTeiIndicatorTableInfo.TABLE_INFO)
         tableWiper.wipeTable(AnalyticsTeiAttributeTableInfo.TABLE_INFO)
+        tableWiper.wipeTable(CustomIntentTableInfo.TABLE_INFO)
+        tableWiper.wipeTable(CustomIntentDataElementTableInfo.TABLE_INFO)
+        tableWiper.wipeTable(CustomIntentAttributeTableInfo.TABLE_INFO)
         tableWiper.wipeTable(UserSettingsTableInfo.TABLE_INFO)
         tableWiper.wipeTable(AnalyticsDhisVisualizationTableInfo.TABLE_INFO)
         tableWiper.wipeTable(LatestAppVersionTableInfo.TABLE_INFO)
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         // No data to wipe
     }
 }

@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 
 import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
 import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor
@@ -37,17 +37,21 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 
-internal class ReadOnlyWithTransformerObjectRepositoryImpl<M, T, R : ReadOnlyObjectRepository<T>>
+internal class ReadOnlyWithTransformerObjectRepositoryImpl<M, T>
 internal constructor(
     private val store: ReadableStore<M>,
-    private val databaseAdapter: DatabaseAdapter,
     private val childrenAppenders: ChildrenAppenderGetter<M>,
     private val scope: RepositoryScope,
     private val transformer: TwoWayTransformer<M, T>,
 ) : ReadOnlyObjectRepository<T> {
 
     fun blockingGetWithoutChildren(): M? {
+        return runBlocking { getWithoutChildrenInternal() }
+    }
+
+    private suspend fun getWithoutChildrenInternal(): M? {
         val whereClauseBuilder = WhereClauseFromScopeBuilder(WhereClauseBuilder())
         return store.selectOneWhere(whereClauseBuilder.getWhereClause(scope))
     }
@@ -66,9 +70,12 @@ internal constructor(
      * @return the object
      */
     override fun blockingGet(): T? {
+        return runBlocking { getInternal() }
+    }
+
+    internal suspend fun getInternal(): T? {
         val item = ChildrenAppenderExecutor.appendInObject(
-            blockingGetWithoutChildren(),
-            databaseAdapter,
+            getWithoutChildrenInternal(),
             childrenAppenders,
             scope.children(),
         )
@@ -81,7 +88,7 @@ internal constructor(
      * @return if the object exists, wrapped in a `Single`
      */
     override fun exists(): Single<Boolean> {
-        return Single.fromCallable { blockingExists() }
+        return rxSingle { existsInternal() }
     }
 
     /**
@@ -90,6 +97,10 @@ internal constructor(
      * @return if the object exists
      */
     override fun blockingExists(): Boolean {
-        return blockingGetWithoutChildren() != null
+        return runBlocking { existsInternal() }
+    }
+
+    private suspend fun existsInternal(): Boolean {
+        return getWithoutChildrenInternal() != null
     }
 }

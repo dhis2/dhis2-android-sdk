@@ -28,10 +28,11 @@
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
 import org.junit.Test
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.whenever
 
 internal class InvalidDataValueConflictShould : BaseConflictShould() {
 
@@ -54,7 +55,7 @@ internal class InvalidDataValueConflictShould : BaseConflictShould() {
     }
 
     @Test
-    fun `Should create display description`() {
+    fun `Should create display description`() = runTest {
         whenever(dataElement.displayFormName()) doReturn "Data Element form name"
 
         val conflict = TrackedImportConflictSamples.valueNotNumeric(dataElementUid)

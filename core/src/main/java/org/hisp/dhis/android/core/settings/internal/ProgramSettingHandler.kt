@@ -35,7 +35,7 @@ import org.koin.core.annotation.Singleton
 internal class ProgramSettingHandler(store: ProgramSettingStore) :
     ObjectWithoutUidHandlerImpl<ProgramSetting>(store) {
 
-    override fun beforeCollectionHandled(oCollection: Collection<ProgramSetting>): Collection<ProgramSetting> {
+    override suspend fun beforeCollectionHandled(oCollection: Collection<ProgramSetting>): Collection<ProgramSetting> {
         store.delete()
         return oCollection
     }

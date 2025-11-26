@@ -29,15 +29,15 @@
 package org.hisp.dhis.android.network.ownership
 
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class OwnsershipParameterManager(
-    private val dhisVersionManager: DHISVersionManager,
+    private val dhisVersionManager: DHISVersionManagerImpl,
 ) {
-    fun getTrackedEntityForOwnershipParameter(uid: String): Map<String, String> {
-        return if (dhisVersionManager.isGreaterOrEqualThan(DHISVersion.V2_41)) {
+    suspend fun getTrackedEntityForOwnershipParameter(uid: String): Map<String, String> {
+        return if (dhisVersionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_41)) {
             mapOf(OwnershipService.TRACKED_ENTITY to uid)
         } else {
             mapOf(OwnershipService.TRACKED_ENTITY_INSTACE to uid)

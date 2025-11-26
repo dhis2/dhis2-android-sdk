@@ -38,7 +38,7 @@ internal open class OrphanCleanerImpl<P : ObjectWithUidInterface, C : ObjectWith
     private val databaseAdapter: DatabaseAdapter,
 ) : OrphanCleaner<P, C> {
 
-    override fun deleteOrphan(parent: P?, children: Collection<C>?): Boolean {
+    override suspend fun deleteOrphan(parent: P?, children: Collection<C>?): Boolean {
         if (parent == null || children == null) {
             return false
         }

@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.resource.internal
 
-import androidx.annotation.VisibleForTesting
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.koin.core.annotation.Singleton
 import java.util.Date
 
@@ -44,7 +42,7 @@ internal class ResourceHandler(private val resourceStore: ResourceStore) {
         return Date(serverDate!!.time)
     }
 
-    fun handleResource(resourceType: Resource.Type?) {
+    suspend fun handleResource(resourceType: Resource.Type?) {
         if (resourceType == null || serverDate == null) {
             return
         }
@@ -60,16 +58,9 @@ internal class ResourceHandler(private val resourceStore: ResourceStore) {
      * A wrapper to expose resourceStore.getLastUpdated(str).
      *
      * @param type Type of the resource.
-     * @return a string representing the last synched date
+     * @return a string representing the last synced date
      */
-    fun getLastUpdated(type: Resource.Type?): String? {
-        return resourceStore.getLastUpdated(type!!)
-    }
-
-    companion object {
-        @VisibleForTesting
-        fun create(databaseAdapter: DatabaseAdapter): ResourceHandler {
-            return ResourceHandler(ResourceStoreImpl(databaseAdapter))
-        }
+    suspend fun getLastUpdated(type: Resource.Type): String? {
+        return resourceStore.getLastUpdated(type)
     }
 }

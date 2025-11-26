@@ -28,12 +28,11 @@
 package org.hisp.dhis.android.core.note
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.note.NoteDTO
 import org.junit.Test
 
-class NoteShould : BaseObjectKotlinxShould("note/note_30.json"), ObjectShould {
+class NoteShould : CoreObjectShould("note/note_30.json") {
     @Test
     override fun map_from_json_string() {
         val noteDTO = deserialize(NoteDTO.serializer())

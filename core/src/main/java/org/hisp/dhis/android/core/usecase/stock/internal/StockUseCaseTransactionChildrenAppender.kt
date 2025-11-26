@@ -27,18 +27,23 @@
  */
 package org.hisp.dhis.android.core.usecase.stock.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
 
 internal class StockUseCaseTransactionChildrenAppender(
-    databaseAdapter: DatabaseAdapter,
+    private val transactionLinkStore: StockUseCaseTransactionLinkStore,
 ) : ChildrenAppender<InternalStockUseCase>() {
-    private val transactionLinkStore = StockUseCaseTransactionLinkStoreImpl(databaseAdapter)
 
-    override fun appendChildren(internalStockUseCase: InternalStockUseCase): InternalStockUseCase {
+    override suspend fun appendChildren(internalStockUseCase: InternalStockUseCase): InternalStockUseCase {
         return internalStockUseCase.toBuilder()
             .transactions(transactionLinkStore.selectLinksForMasterUid(internalStockUseCase.uid()))
             .build()
+    }
+
+    companion object {
+        fun create(): ChildrenAppender<InternalStockUseCase> {
+            return StockUseCaseTransactionChildrenAppender(koin.get())
+        }
     }
 }

@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.tracker.importer.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.koin.core.annotation.Singleton
 
@@ -37,7 +38,7 @@ internal class JobReportRelationshipHandler internal constructor(
     relationshipStore: RelationshipStore,
 ) : JobReportTypeHandler(relationshipStore) {
 
-    override fun handleObject(uid: String, state: State): HandleAction {
+    override suspend fun handleObject(uid: String, state: State): HandleAction {
         val handledState =
             if (state == State.ERROR || state == State.WARNING) {
                 State.TO_UPDATE
@@ -48,16 +49,20 @@ internal class JobReportRelationshipHandler internal constructor(
         return relationshipStore.setSyncStateOrDelete(uid, handledState)
     }
 
-    @Suppress("EmptyFunctionBlock")
-    override fun storeConflict(errorReport: JobValidationError) {
-        val relationship by lazy { relationshipStore.selectByUid(errorReport.uid) }
-
-        if (errorReport.errorCode == ImporterError.E4005.name && relationship?.deleted() == true) {
-            relationshipStore.delete(errorReport.uid)
+    override suspend fun storeConflict(errorReport: JobValidationError) {
+        val relationship = relationshipStore.selectByUid(errorReport.uid)
+        if (relationship != null && isRelationshipNotFoundError(errorReport.errorCode)) {
+            relationshipStore.deleteByEntity(relationship)
         }
     }
 
-    override fun getRelatedRelationships(uid: String): List<String> {
+    private fun isRelationshipNotFoundError(errorCode: String?): Boolean {
+        return errorCode == ImporterError.E4005.name ||
+            errorCode == ImporterError.E4016.name ||
+            errorCode == ImporterError.E4017.name
+    }
+
+    override suspend fun getRelatedRelationships(uid: String): List<Relationship> {
         return emptyList()
     }
 }

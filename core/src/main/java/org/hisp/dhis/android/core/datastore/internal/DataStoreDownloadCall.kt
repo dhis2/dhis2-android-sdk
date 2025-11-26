@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.datastore.DataStoreEntry
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -45,11 +45,11 @@ internal class DataStoreDownloadCall(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val networkHandler: DataStoreNetworkHandler,
     private val dataStoreEntryHandler: DataStoreHandler,
-    private val versionManager: DHISVersionManager,
+    private val versionManager: DHISVersionManagerImpl,
 ) {
 
     fun download(params: DataStoreDownloadParams): Observable<D2Progress> = rxObservable {
-        coroutineAPICallExecutor.wrapTransactionally(cleanForeignKeyErrors = true) {
+        coroutineAPICallExecutor.wrapTransactionallyRoom(cleanForeignKeyErrors = true) {
             val namespaces = networkHandler.getNamespaces()
                 .map { filterNamespaces(params, it) }
                 .getOrThrow()
@@ -75,7 +75,7 @@ internal class DataStoreDownloadCall(
     }
 
     private suspend fun fetchNamespace(namespace: String): Result<List<DataStoreEntry>, D2Error> {
-        return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_38)) {
+        return if (versionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_38)) {
             fetchNamespace38(namespace)
         } else {
             fetchNamespace37(namespace)

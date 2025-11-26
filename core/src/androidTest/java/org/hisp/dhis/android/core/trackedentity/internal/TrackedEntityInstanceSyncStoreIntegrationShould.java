@@ -28,13 +28,15 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
-import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceSyncStoreImpl;
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceSyncTableInfo;
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)
-public class TrackedEntityInstanceSyncStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<TrackedEntityInstanceSync> {
+public class TrackedEntityInstanceSyncStoreIntegrationShould extends ObjectStoreAbstractIntegrationShould<TrackedEntityInstanceSync> {
 
     public TrackedEntityInstanceSyncStoreIntegrationShould() {
         super(new TrackedEntityInstanceSyncStoreImpl(TestDatabaseAdapterFactory.get()), TrackedEntityInstanceSyncTableInfo.TABLE_INFO,
@@ -44,13 +46,5 @@ public class TrackedEntityInstanceSyncStoreIntegrationShould extends ObjectWitho
     @Override
     protected TrackedEntityInstanceSync buildObject() {
         return TrackedEntityInstanceSyncSamples.get1();
-    }
-
-    @Override
-    protected TrackedEntityInstanceSync buildObjectToUpdate() {
-        return TrackedEntityInstanceSyncSamples.get1()
-                .toBuilder()
-                .downloadLimit(1000)
-                .build();
     }
 }

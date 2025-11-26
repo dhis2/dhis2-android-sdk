@@ -31,9 +31,10 @@ package org.hisp.dhis.android.core.organisationunit.internal;
 import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitProgramLinkSamples;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitProgramLinkStoreImpl;
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitProgramLinkTableInfo;
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)

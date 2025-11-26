@@ -32,6 +32,6 @@ import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.settings.LatestAppVersion
 
 internal interface ApkDistributionNetworkHandler {
-    suspend fun latestAppVersion(url: String): LatestAppVersion
-    suspend fun versions(url: String): Payload<ApkDistributionVersion>
+    suspend fun latestAppVersion(): LatestAppVersion
+    suspend fun versions(): Payload<ApkDistributionVersion>
 }

@@ -41,16 +41,20 @@ import org.hisp.dhis.smscompression.models.SMSMetadata
 interface LocalDbRepository {
     fun getUserName(): Single<String>
     fun getGatewayNumber(): Single<String>
+    suspend fun getGatewayNumberSuspend(): String
     fun setGatewayNumber(number: String): Completable
+    suspend fun setGatewayNumberSuspend(number: String)
     fun deleteGatewayNumber(): Completable
     fun getWaitingResultTimeout(): Single<Int>
+    suspend fun getWaitingResultTimeoutSuspend(): Int
     fun setWaitingResultTimeout(timeoutSeconds: Int): Completable
     fun deleteWaitingResultTimeout(): Completable
     fun getConfirmationSenderNumber(): Single<String>
+    suspend fun getConfirmationSenderNumberSuspend(): String
     fun setConfirmationSenderNumber(number: String): Completable
     fun deleteConfirmationSenderNumber(): Completable
     fun getMetadataIds(): Single<SMSMetadata>
-    fun setMetadataIds(metadata: SMSMetadata): Completable
+    suspend fun setMetadataIds(metadata: SMSMetadata)
     fun getTrackerEventToSubmit(eventUid: String): Single<Event>
     fun getSimpleEventToSubmit(eventUid: String): Single<Event>
     fun getTeiEnrollmentToSubmit(enrollmentUid: String): Single<TrackedEntityInstance>
@@ -58,11 +62,13 @@ interface LocalDbRepository {
     fun updateEnrollmentSubmissionState(tei: TrackedEntityInstance, state: State): Completable
     fun updateRelationshipSubmissionState(relationshipUid: String, state: State): Completable
     fun setMetadataDownloadConfig(metadataIdsConfig: GetMetadataIdsConfig): Completable
-    fun getMetadataDownloadConfig(): Single<GetMetadataIdsConfig>
+    suspend fun getMetadataDownloadConfig(): GetMetadataIdsConfig
     fun setModuleEnabled(enabled: Boolean): Completable
     fun isModuleEnabled(): Single<Boolean>
+    suspend fun isModuleEnabledSuspend(): Boolean
     fun setWaitingForResultEnabled(enabled: Boolean): Completable
     fun getWaitingForResultEnabled(): Single<Boolean>
+    suspend fun getWaitingForResultEnabledSuspend(): Boolean
     fun getOngoingSubmissions(): Single<Map<Int, SubmissionType>>
     fun generateNextSubmissionId(): Single<Int>
     fun addOngoingSubmission(id: Int, type: SubmissionType): Completable

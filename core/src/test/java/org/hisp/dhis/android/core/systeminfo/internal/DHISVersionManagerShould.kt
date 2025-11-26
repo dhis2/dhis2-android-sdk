@@ -28,8 +28,7 @@
 package org.hisp.dhis.android.core.systeminfo.internal
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISPatchVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
@@ -38,6 +37,8 @@ import org.hisp.dhis.android.core.systeminfo.SMSVersion
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 class DHISVersionManagerShould {
     private val systemInfoStore: SystemInfoStore = mock()
@@ -47,7 +48,7 @@ class DHISVersionManagerShould {
     private lateinit var dhisVersionManager: DHISVersionManager
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         whenever(systemInfoStore.selectFirst()).thenReturn(systemInfo)
         dhisVersionManager = DHISVersionManagerImpl(systemInfoStore)
     }

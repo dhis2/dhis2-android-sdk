@@ -28,53 +28,37 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import android.database.Cursor;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 import java.util.Date;
 
 @AutoValue
-public abstract class DataInputPeriod extends BaseObject {
+public abstract class DataInputPeriod implements CoreObject {
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid dataSet();
 
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid period();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date openingDate();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date closingDate();
-
-    @NonNull
-    public static DataInputPeriod create(Cursor cursor) {
-        return $AutoValue_DataInputPeriod.createFromCursor(cursor);
-    }
 
     public abstract DataInputPeriod.Builder toBuilder();
 
     public static DataInputPeriod.Builder builder() {
-        return new $$AutoValue_DataInputPeriod.Builder();
+        return new AutoValue_DataInputPeriod.Builder();
     }
 
-
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<DataInputPeriod.Builder> {
+    public abstract static class Builder {
 
         public abstract Builder dataSet(ObjectWithUid dataSet);
 

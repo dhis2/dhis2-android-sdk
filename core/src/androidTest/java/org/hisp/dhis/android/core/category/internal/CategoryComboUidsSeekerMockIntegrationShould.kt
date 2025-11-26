@@ -28,12 +28,13 @@
 package org.hisp.dhis.android.core.category.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 
 class CategoryComboUidsSeekerMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    fun seek_category_combos_uids() {
+    fun seek_category_combos_uids() = runTest {
         val categories = CategoryComboUidsSeeker(databaseAdapter).seekUids()
         assertThat(categories.size).isEqualTo(2)
         assertThat(categories.contains("m2jTvAj5kkm")).isTrue()

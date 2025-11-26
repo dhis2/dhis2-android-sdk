@@ -39,6 +39,7 @@ internal data class SystemInfoDTO(
     val version: String?,
     val contextPath: String?,
     val systemName: String?,
+    val serverTimeZoneId: String?,
 ) {
     fun toDomain(): SystemInfo =
         SystemInfo.builder().apply {
@@ -47,5 +48,6 @@ internal data class SystemInfoDTO(
             version(version)
             contextPath(contextPath)
             systemName(systemName)
+            serverTimeZoneId(serverTimeZoneId)
         }.build()
 }

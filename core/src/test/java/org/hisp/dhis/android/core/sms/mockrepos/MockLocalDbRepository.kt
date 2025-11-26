@@ -65,8 +65,16 @@ class MockLocalDbRepository : LocalDbRepository {
         return Single.fromCallable { gatewayNumber ?: "" }
     }
 
+    override suspend fun getGatewayNumberSuspend(): String {
+        return gatewayNumber ?: ""
+    }
+
     override fun setGatewayNumber(number: String): Completable {
         return Completable.fromAction { gatewayNumber = number }
+    }
+
+    override suspend fun setGatewayNumberSuspend(number: String) {
+        gatewayNumber = number
     }
 
     override fun deleteGatewayNumber(): Completable {
@@ -75,6 +83,10 @@ class MockLocalDbRepository : LocalDbRepository {
 
     override fun getWaitingResultTimeout(): Single<Int> {
         return Single.fromCallable { resultWaitingTimeout }
+    }
+
+    override suspend fun getWaitingResultTimeoutSuspend(): Int {
+        return resultWaitingTimeout
     }
 
     override fun setWaitingResultTimeout(timeoutSeconds: Int): Completable {
@@ -89,6 +101,10 @@ class MockLocalDbRepository : LocalDbRepository {
         return Single.fromCallable { confirmationSenderNumber ?: "" }
     }
 
+    override suspend fun getConfirmationSenderNumberSuspend(): String {
+        return confirmationSenderNumber ?: ""
+    }
+
     override fun setConfirmationSenderNumber(number: String): Completable {
         return Completable.fromAction { confirmationSenderNumber = number }
     }
@@ -101,8 +117,8 @@ class MockLocalDbRepository : LocalDbRepository {
         return Single.fromCallable { metadata }
     }
 
-    override fun setMetadataIds(metadata: SMSMetadata): Completable {
-        return Completable.fromAction { this.metadata = metadata }
+    override suspend fun setMetadataIds(metadata: SMSMetadata) {
+        this.metadata = metadata
     }
 
     override fun getTrackerEventToSubmit(eventUid: String): Single<Event> {
@@ -151,8 +167,8 @@ class MockLocalDbRepository : LocalDbRepository {
         return Completable.fromAction { this.metadataIdsConfig = metadataIdsConfig }
     }
 
-    override fun getMetadataDownloadConfig(): Single<GetMetadataIdsConfig> {
-        return Single.fromCallable { metadataIdsConfig }
+    override suspend fun getMetadataDownloadConfig(): GetMetadataIdsConfig {
+        return metadataIdsConfig
     }
 
     override fun setModuleEnabled(enabled: Boolean): Completable {
@@ -163,12 +179,20 @@ class MockLocalDbRepository : LocalDbRepository {
         return Single.fromCallable { moduleEnabled }
     }
 
+    override suspend fun isModuleEnabledSuspend(): Boolean {
+        return moduleEnabled
+    }
+
     override fun setWaitingForResultEnabled(enabled: Boolean): Completable {
         return Completable.fromAction { waitingForResult = enabled }
     }
 
     override fun getWaitingForResultEnabled(): Single<Boolean> {
         return Single.fromCallable { waitingForResult }
+    }
+
+    override suspend fun getWaitingForResultEnabledSuspend(): Boolean {
+        return waitingForResult
     }
 
     override fun getOngoingSubmissions(): Single<Map<Int, SubmissionType>> {

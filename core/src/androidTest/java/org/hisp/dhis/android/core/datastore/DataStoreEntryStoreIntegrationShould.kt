@@ -29,15 +29,16 @@ package org.hisp.dhis.android.core.datastore
 
 import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.datastore.DataStoreEntrySamples
-import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.datastore.DataStoreStoreImpl
+import org.hisp.dhis.android.persistence.datastore.DataStoreTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class DataStoreEntryStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<DataStoreEntry>(
-    DataStoreEntryStoreImpl(TestDatabaseAdapterFactory.get()),
-    DataStoreEntryTableInfo.TABLE_INFO,
+    DataStoreStoreImpl(TestDatabaseAdapterFactory.get()),
+    DataStoreTableInfo.TABLE_INFO,
     TestDatabaseAdapterFactory.get(),
 ) {
     override fun buildObject(): DataStoreEntry {

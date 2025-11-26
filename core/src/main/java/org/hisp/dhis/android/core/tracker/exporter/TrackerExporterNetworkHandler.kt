@@ -50,9 +50,12 @@ internal interface TrackerExporterNetworkHandler {
         program: String?,
     ): Payload<TrackedEntityInstance>
 
-    suspend fun getEventQueryForOrgunit(
+    suspend fun getEventQueryCall(
         query: TrackedEntityInstanceQueryOnline,
-        orgunit: String?,
+    ): Payload<Event>
+
+    suspend fun getEventQueryForSearch(
+        query: TrackedEntityInstanceQueryOnline,
     ): List<Event>
 
     suspend fun getTrackedEntityQuery(

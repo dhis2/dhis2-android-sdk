@@ -28,18 +28,10 @@
 
 package org.hisp.dhis.android.core.visualization;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.TrackerVisualizationSortingListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.TrackerVisualizationOutputTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.TrackerVisualizationTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackerVisualizationDimensionListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -56,51 +48,37 @@ public abstract class TrackerVisualization extends BaseIdentifiableObject implem
     public abstract String displayDescription();
 
     @Nullable
-    @ColumnAdapter(TrackerVisualizationTypeColumnAdapter.class)
     public abstract TrackerVisualizationType type();
 
     @Nullable
-    @ColumnAdapter(TrackerVisualizationOutputTypeColumnAdapter.class)
     public abstract TrackerVisualizationOutputType outputType();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid program();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid programStage();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid trackedEntityType();
 
     @Nullable
-    @ColumnAdapter(IgnoreTrackerVisualizationDimensionListColumnAdapter.class)
     public abstract List<TrackerVisualizationDimension> columns();
 
     @Nullable
-    @ColumnAdapter(IgnoreTrackerVisualizationDimensionListColumnAdapter.class)
     public abstract List<TrackerVisualizationDimension> filters();
 
     @Nullable
-    @ColumnAdapter(TrackerVisualizationSortingListColumnAdapter.class)
     public abstract List<TrackerVisualizationSorting> sorting();
 
     public static Builder builder() {
-        return new $$AutoValue_TrackerVisualization.Builder();
-    }
-
-    public static TrackerVisualization create(Cursor cursor) {
-        return $AutoValue_TrackerVisualization.createFromCursor(cursor);
+        return new AutoValue_TrackerVisualization.Builder();
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
-
-        public abstract Builder id(Long id);
 
         public abstract Builder description(String description);
 

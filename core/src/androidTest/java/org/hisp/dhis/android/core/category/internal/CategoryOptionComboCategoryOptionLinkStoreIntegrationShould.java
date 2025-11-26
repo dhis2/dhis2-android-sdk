@@ -29,11 +29,12 @@
 package org.hisp.dhis.android.core.category.internal;
 
 import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLink;
-import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLinkTableInfo;
 import org.hisp.dhis.android.core.data.category.CategoryOptionComboCategoryOptionLinkSamples;
 import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.hisp.dhis.android.persistence.category.CategoryOptionComboCategoryOptionLinkStoreImpl;
+import org.hisp.dhis.android.persistence.category.CategoryOptionComboCategoryOptionLinkTableInfo;
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)

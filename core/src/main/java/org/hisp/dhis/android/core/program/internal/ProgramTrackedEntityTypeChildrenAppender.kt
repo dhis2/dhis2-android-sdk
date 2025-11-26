@@ -27,21 +27,26 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.program.Program
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStoreImpl
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStore
 
 internal class ProgramTrackedEntityTypeChildrenAppender(
-    databaseAdapter: DatabaseAdapter,
+    private val store: TrackedEntityTypeStore,
 ) : ChildrenAppender<Program>() {
-    private val store = TrackedEntityTypeStoreImpl(databaseAdapter)
-    override fun appendChildren(m: Program): Program {
+    override suspend fun appendChildren(m: Program): Program {
         val builder = m.toBuilder()
         val trackedEntityType = m.trackedEntityType()
         if (trackedEntityType != null) {
             builder.trackedEntityType(store.selectByUid(trackedEntityType.uid()))
         }
         return builder.build()
+    }
+
+    companion object {
+        fun create(): ChildrenAppender<Program> {
+            return ProgramTrackedEntityTypeChildrenAppender(koin.get())
+        }
     }
 }

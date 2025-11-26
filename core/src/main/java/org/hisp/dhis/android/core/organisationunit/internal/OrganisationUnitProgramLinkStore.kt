@@ -29,6 +29,9 @@
 package org.hisp.dhis.android.core.organisationunit.internal
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 
-internal interface OrganisationUnitProgramLinkStore : LinkStore<OrganisationUnitProgramLink>
+internal interface OrganisationUnitProgramLinkStore : LinkStore<OrganisationUnitProgramLink> {
+    suspend fun getForOrganisationUnit(organisationUnitUid: String): List<ObjectWithUid>
+}

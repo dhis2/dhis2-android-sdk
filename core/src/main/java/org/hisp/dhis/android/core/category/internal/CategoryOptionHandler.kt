@@ -32,6 +32,6 @@ import org.hisp.dhis.android.core.category.CategoryOption
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class CategoryOptionHandler constructor(
+internal class CategoryOptionHandler(
     categoryOptionStore: CategoryOptionStore,
 ) : IdentifiableHandlerImpl<CategoryOption>(categoryOptionStore)

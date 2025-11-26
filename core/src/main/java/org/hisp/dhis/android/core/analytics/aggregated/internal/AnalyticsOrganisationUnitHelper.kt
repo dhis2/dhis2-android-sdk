@@ -28,16 +28,16 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitOrganisationUnitGroupLinkStore
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -48,7 +48,7 @@ internal class AnalyticsOrganisationUnitHelper(
     private val organisationUnitOrganisationUnitGroupLinkStore: OrganisationUnitOrganisationUnitGroupLinkStore,
 ) {
 
-    fun getRelativeOrganisationUnitUids(relative: RelativeOrganisationUnit): List<String> {
+    suspend fun getRelativeOrganisationUnitUids(relative: RelativeOrganisationUnit): List<String> {
         val userOrganisationUnits = userOrganisationUnitStore
             .queryAssignedOrganisationUnitUidsByScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
 
@@ -73,7 +73,7 @@ internal class AnalyticsOrganisationUnitHelper(
         )
     }
 
-    fun getOrganisationUnitUidsByLevel(level: Int): List<String> {
+    suspend fun getOrganisationUnitUidsByLevel(level: Int): List<String> {
         val whereClause = WhereClauseBuilder()
             .appendKeyNumberValue(OrganisationUnitTableInfo.Columns.LEVEL, level)
             .build()
@@ -81,13 +81,13 @@ internal class AnalyticsOrganisationUnitHelper(
         return organisationUnitStore.selectUidsWhere(whereClause)
     }
 
-    fun getOrganisationUnitUidsByLevelUid(levelUid: String): List<String> {
+    suspend fun getOrganisationUnitUidsByLevelUid(levelUid: String): List<String> {
         val level = organisationUnitLevelStore.selectByUid(levelUid)
 
         return getOrganisationUnitUidsByLevel(level?.level()!!)
     }
 
-    fun getOrganisationUnitUidsByGroup(groupUid: String): List<String> {
+    suspend fun getOrganisationUnitUidsByGroup(groupUid: String): List<String> {
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(
                 OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT_GROUP,
@@ -100,15 +100,15 @@ internal class AnalyticsOrganisationUnitHelper(
         ).distinct()
     }
 
-    private fun queryChildrenOrganisationUnitUids(parentUids: List<String>): List<String> {
+    private suspend fun queryChildrenOrganisationUnitUids(parentUids: List<String>): List<String> {
         return getChildrenOrganisationUnitUids(parentUids)
     }
 
-    private fun queryGrandChildrenOrganisationUnitUids(parentUids: List<String>): List<String> {
+    private suspend fun queryGrandChildrenOrganisationUnitUids(parentUids: List<String>): List<String> {
         return getChildrenOrganisationUnitUids(queryChildrenOrganisationUnitUids(parentUids))
     }
 
-    private fun getChildrenOrganisationUnitUids(parentUids: List<String>): List<String> {
+    private suspend fun getChildrenOrganisationUnitUids(parentUids: List<String>): List<String> {
         val childrenClause = WhereClauseBuilder()
             .appendInKeyStringValues(OrganisationUnitTableInfo.Columns.PARENT, parentUids)
             .build()

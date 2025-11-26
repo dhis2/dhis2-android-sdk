@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
-import com.nhaarman.mockitokotlin2.*
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.settings.internal.AnalyticsDhisVisualizationCleaner
 import org.hisp.dhis.android.core.visualization.Visualization
@@ -36,6 +36,11 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
 class VisualizationHandlerShould {
@@ -51,7 +56,7 @@ class VisualizationHandlerShould {
     private lateinit var visualizationHandler: VisualizationHandler
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         visualizationHandler = VisualizationHandler(
             visualizationStore,
             visualizationCollectionCleaner,
@@ -62,18 +67,18 @@ class VisualizationHandlerShould {
         whenever(visualization.columns()).doReturn(listOf(visualizationDimension))
         whenever(visualization.rows()).doReturn(listOf(visualizationDimension))
         whenever(visualization.filters()).doReturn(listOf(visualizationDimension))
-        whenever(visualizationStore.updateOrInsert(any())).doReturn(HandleAction.Insert)
+        whenever(visualizationStore.updateOrInsert(any<List<Visualization>>())).doReturn(listOf(HandleAction.Insert))
         whenever(visualization.uid()).doReturn("visualization_uid")
     }
 
     @Test
-    fun call_items_handler() {
+    fun call_items_handler() = runTest {
         visualizationHandler.handleMany(listOf(visualization))
         verify(visualizationDimensionItemHandler).handleMany(any(), any())
     }
 
     @Test
-    fun call_collection_cleaner() {
+    fun call_collection_cleaner() = runTest {
         visualizationHandler.handleMany(listOf(visualization))
         verify(visualizationCollectionCleaner).deleteNotPresent(any())
     }

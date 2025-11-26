@@ -37,7 +37,10 @@ internal class DataSetCompleteRegistrationCallProcessor internal constructor(
     private val handler: DataSetCompleteRegistrationHandler,
 ) {
 
-    internal fun process(objectList: List<DataSetCompleteRegistration>, query: DataSetCompleteRegistrationQuery) {
+    internal suspend fun process(
+        objectList: List<DataSetCompleteRegistration>,
+        query: DataSetCompleteRegistrationQuery,
+    ) {
         if (objectList.isNotEmpty()) {
             removeExistingRegistersForQuery(query)
             val objectsToImport = objectList.filter {
@@ -52,7 +55,7 @@ internal class DataSetCompleteRegistrationCallProcessor internal constructor(
      Records deleted in the server are not returned in the API. The strategy here is to remove all the records
      linked to a particular query before storing the returned values. Only records in "SYNCED" state are removed.
      */
-    private fun removeExistingRegistersForQuery(query: DataSetCompleteRegistrationQuery) {
+    private suspend fun removeExistingRegistersForQuery(query: DataSetCompleteRegistrationQuery) {
         for (rootOrgUnitUid in query.rootOrgUnitUids) {
             dataSetCompleteRegistrationStore.removeNotPresentAndSynced(
                 query.dataSetUids,

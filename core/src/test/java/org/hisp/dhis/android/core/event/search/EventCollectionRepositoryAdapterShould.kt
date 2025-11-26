@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.event.search
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.*
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.event.EventCollectionRepository
@@ -39,6 +39,11 @@ import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 class EventCollectionRepositoryAdapterShould {
 
@@ -54,7 +59,7 @@ class EventCollectionRepositoryAdapterShould {
     private lateinit var adapter: EventCollectionRepositoryAdapter
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         adapter = EventCollectionRepositoryAdapter(
             eventRepository,
             ouRepository,
@@ -62,13 +67,13 @@ class EventCollectionRepositoryAdapterShould {
             dateFilterPeriodHelper,
         )
 
-        whenever(ouRepository.blockingGetUids()) doReturn orgunitDescendants
-        whenever(ouRepository.byPath().like(orgunit).blockingGetUids()) doReturn orgunitDescendants
-        whenever(ouRepository.byParentUid().like(orgunit).blockingGetUids()) doReturn orgunitChildren
+        whenever(ouRepository.getUidsInternal()) doReturn orgunitDescendants
+        whenever(ouRepository.byPath().like(orgunit).getUidsInternal()) doReturn orgunitDescendants
+        whenever(ouRepository.byParentUid().like(orgunit).getUidsInternal()) doReturn orgunitChildren
     }
 
     @Test
-    fun `Should get null if orgUnit is null and mode is SELECTED`() {
+    fun `Should get null if orgUnit is null and mode is SELECTED`() = runTest {
         val scope = EventQueryRepositoryScope.builder()
             .orgUnitMode(OrganisationUnitMode.SELECTED)
             .build()
@@ -78,7 +83,7 @@ class EventCollectionRepositoryAdapterShould {
     }
 
     @Test
-    fun `Should get selected orgunit`() {
+    fun `Should get selected orgunit`() = runTest {
         val scope = EventQueryRepositoryScope.builder()
             .orgUnits(listOf(orgunit))
             .orgUnitMode(OrganisationUnitMode.SELECTED)
@@ -89,7 +94,7 @@ class EventCollectionRepositoryAdapterShould {
     }
 
     @Test
-    fun `Should get all if ALL mode`() {
+    fun `Should get all if ALL mode`() = runTest {
         val scope = EventQueryRepositoryScope.builder()
             .orgUnitMode(OrganisationUnitMode.ALL)
             .build()
@@ -99,7 +104,7 @@ class EventCollectionRepositoryAdapterShould {
     }
 
     @Test
-    fun `Should get descendants if DESCENDANTS mode`() {
+    fun `Should get descendants if DESCENDANTS mode`() = runTest {
         val scope = EventQueryRepositoryScope.builder()
             .orgUnits(listOf(orgunit))
             .orgUnitMode(OrganisationUnitMode.DESCENDANTS)
@@ -110,7 +115,7 @@ class EventCollectionRepositoryAdapterShould {
     }
 
     @Test
-    fun `Should apply and concat sort orders`() {
+    fun `Should apply and concat sort orders`() = runTest {
         val scope = EventQueryRepositoryScope.builder()
             .order(
                 listOf(

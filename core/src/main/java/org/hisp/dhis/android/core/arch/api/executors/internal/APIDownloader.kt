@@ -60,8 +60,8 @@ internal interface APIDownloader {
     suspend fun <K, V> downloadPartitionedMap(
         uids: Set<String>,
         pageSize: Int,
-        handler: (Map<K, V>) -> Any,
-        pageDownloader: suspend(Set<String>) -> Map<K, V>,
+        handler: suspend (Map<K, V>) -> Any,
+        pageDownloader: suspend (Set<String>) -> Map<K, V>,
     ): Map<K, V>
 
     suspend fun <P, O : CoreObject> downloadLink(

@@ -31,36 +31,31 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.Date;
 
-public abstract class TrackerBaseSync extends BaseObject {
+public interface TrackerBaseSync extends CoreObject {
 
     @Nullable
-    public abstract String program();
+    String program();
 
     @NonNull
-    public abstract Integer organisationUnitIdsHash();
+    Integer organisationUnitIdsHash();
 
     @NonNull
-    public abstract Integer downloadLimit();
+    Integer downloadLimit();
 
     @NonNull
-    @ColumnAdapter(DbDateColumnAdapter.class)
-    public abstract Date lastUpdated();
+    Date lastUpdated();
 
-    public abstract static class Builder<T extends BaseObject.Builder> extends BaseObject.Builder<T> {
+    interface Builder<T> {
+        T program(String program);
 
-        public abstract T program(String program);
+        T organisationUnitIdsHash(Integer organisationUnitIdsHash);
 
-        public abstract T organisationUnitIdsHash(Integer organisationUnitIdsHash);
+        T downloadLimit(Integer limit);
 
-        public abstract T downloadLimit(Integer limit);
-
-        public abstract T lastUpdated(Date lastUpdated);
+        T lastUpdated(Date lastUpdated);
     }
 }

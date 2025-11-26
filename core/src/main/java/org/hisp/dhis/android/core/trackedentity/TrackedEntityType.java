@@ -28,16 +28,10 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.AccessColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.FeatureTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackedEntityTypeAttributeListColumnAdapter;
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
@@ -53,22 +47,15 @@ public abstract class TrackedEntityType extends BaseNameableObject implements Co
         ObjectWithStyle<TrackedEntityType, TrackedEntityType.Builder> {
 
     @Nullable
-    @ColumnAdapter(IgnoreTrackedEntityTypeAttributeListColumnAdapter.class)
     public abstract List<TrackedEntityTypeAttribute> trackedEntityTypeAttributes();
 
     @Nullable
-    @ColumnAdapter(FeatureTypeColumnAdapter.class)
     public abstract FeatureType featureType();
 
-    @ColumnAdapter(AccessColumnAdapter.class)
     public abstract Access access();
 
     public static Builder builder() {
-        return new $$AutoValue_TrackedEntityType.Builder();
-    }
-
-    public static TrackedEntityType create(Cursor cursor) {
-        return $AutoValue_TrackedEntityType.createFromCursor(cursor);
+        return new AutoValue_TrackedEntityType.Builder();
     }
 
     public abstract Builder toBuilder();
@@ -76,8 +63,6 @@ public abstract class TrackedEntityType extends BaseNameableObject implements Co
     @AutoValue.Builder
     public abstract static class Builder extends BaseNameableObject.Builder<Builder>
             implements ObjectWithStyle.Builder<TrackedEntityType, Builder> {
-
-        public abstract Builder id(Long id);
 
         public abstract Builder trackedEntityTypeAttributes(List<TrackedEntityTypeAttribute> trackedEntityAttributes);
 

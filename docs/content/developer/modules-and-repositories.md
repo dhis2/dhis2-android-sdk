@@ -68,6 +68,13 @@ d2.eventModule().events()
 
 Repositories expose the list of available filters prefixed by the keyword "by". The list of filter operators available for each filter is dependant on the filter value type: for example, a value type `Date` will offer operators like `after`, `before`, `inPeriods`, while a value type `Boolean` will offer `isFalse` or `isTrue`.
 
+Common filter operators include:
+- **Equality**: `eq()`, `notEq()`
+- **Comparison**: `gt()`, `lt()`, `ge()`, `le()`
+- **String matching**: `like()`, `notLike()`
+- **Collection**: `in()` - matches any value in the provided list
+- **Null checks**: `isNull()`, `isNotNull()`
+
 Several filters can be appended to the same query in any order. Filters are joined globally using the operator "AND". This means that a query like
 
 ```java
@@ -78,6 +85,16 @@ d2.eventModule().events()
 ```
 
 will return the events assigned to the orgunit "DiszpKrYNg8" **AND** whose eventDate is after "2019-05-05".
+
+The `in()` operator is particularly useful for querying multiple values at once:
+
+```java
+// Query tracked entity instances with specific data values
+d2.trackedEntityModule().trackedEntityInstanceQuery()
+    .byDataValue("dataElementUid").in("value1", "value2", "value3")
+    .onlineFirst()
+    .get();
+```
 
 ### Order by { #android_sdk_order_by }
 

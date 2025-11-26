@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.trackedentity;
 import android.content.ContentValues;
 
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo.Columns;
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceTableInfo.Columns;
 
 import androidx.annotation.NonNull;
 

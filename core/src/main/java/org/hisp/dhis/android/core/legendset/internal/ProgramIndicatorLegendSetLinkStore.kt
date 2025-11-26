@@ -29,6 +29,9 @@
 package org.hisp.dhis.android.core.legendset.internal
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink
 
-internal interface ProgramIndicatorLegendSetLinkStore : LinkStore<ProgramIndicatorLegendSetLink>
+internal interface ProgramIndicatorLegendSetLinkStore : LinkStore<ProgramIndicatorLegendSetLink> {
+    suspend fun getForProgramIndicator(programIndicatorUid: String): List<ObjectWithUid>
+}

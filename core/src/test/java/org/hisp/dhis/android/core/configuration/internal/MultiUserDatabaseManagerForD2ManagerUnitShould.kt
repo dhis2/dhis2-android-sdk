@@ -27,21 +27,21 @@
  */
 package org.hisp.dhis.android.core.configuration.internal
 
-import com.nhaarman.mockitokotlin2.*
-import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseAdapterFactory
+import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.common.BaseCallShould
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.kotlin.*
 
 @RunWith(JUnit4::class)
 class MultiUserDatabaseManagerForD2ManagerUnitShould : BaseCallShould() {
 
-    private val databaseAdapterFactory: DatabaseAdapterFactory = mock()
     private val migration: DatabaseConfigurationMigration = mock()
     private val databaseConfigurationStore: DatabaseConfigurationInsecureStore = mock()
+    private val databaseManager: DatabaseManager = mock()
 
     private val username = "username"
     private val serverUrl = "https://dhis2.org"
@@ -67,9 +67,8 @@ class MultiUserDatabaseManagerForD2ManagerUnitShould : BaseCallShould() {
     override fun setUp() {
         super.setUp()
         manager = MultiUserDatabaseManagerForD2Manager(
-            databaseAdapter,
             migration,
-            databaseAdapterFactory,
+            databaseManager,
             databaseConfigurationStore,
         )
         whenever(databaseConfigurationStore.get()).doReturn(databasesConfiguration)
@@ -78,13 +77,13 @@ class MultiUserDatabaseManagerForD2ManagerUnitShould : BaseCallShould() {
     @Test
     fun not_try_to_load_db_if_not_logged_when_calling_loadIfLogged() {
         manager.loadIfLogged(null)
-        verifyNoMoreInteractions(databaseAdapterFactory)
+        verifyNoMoreInteractions(databaseManager)
     }
 
     @Test
     fun load_db_if_logged_when_calling_loadIfLogged() {
         manager.loadIfLogged(credentials)
-        verify(databaseAdapterFactory).createOrOpenDatabase(databaseAdapter, accountUnencrypted)
+        verify(databaseManager).createOrOpenDatabase(accountUnencrypted)
     }
 
     companion object {

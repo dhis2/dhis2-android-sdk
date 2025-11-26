@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -48,7 +48,7 @@ internal class DataValuePostCall(
     private val dataValueImportHandler: DataValueImportHandler,
     private val fileResourcePostCall: DataValueFileResourcePostCall,
     private val dataValueStore: DataValueStore,
-    private val versionManager: DHISVersionManager,
+    private val versionManager: DHISVersionManagerImpl,
 ) {
     fun uploadDataValues(dataValues: List<DataValue>): Flow<D2Progress> = flow {
         if (dataValues.isEmpty()) {
@@ -80,16 +80,17 @@ internal class DataValuePostCall(
     }
 
     private suspend fun executePostCall(dataValueSet: DataValueSet): Result<DataValueImportSummary, D2Error> {
-        return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_38)) {
+        return if (versionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_38)) {
             networkHandler.postDataValuesWebResponse(dataValueSet).map { it.response }
         } else {
             networkHandler.postDataValues(dataValueSet)
         }
     }
 
-    private fun markObjectsAs(dataValues: Collection<DataValue>, forcedState: State?) {
-        for (dataValue in dataValues) {
-            dataValueStore.setState(dataValue, forcedOrOwn(dataValue, forcedState))
+    private suspend fun markObjectsAs(dataValues: Collection<DataValue>, forcedState: State?) {
+        val updatedDataValues = dataValues.map { dataValue ->
+            dataValue.toBuilder().syncState(forcedOrOwn(dataValue, forcedState)).build()
         }
+        dataValueStore.update(updatedDataValues)
     }
 }

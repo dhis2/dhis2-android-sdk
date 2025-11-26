@@ -29,4 +29,5 @@ package org.hisp.dhis.android.core.arch.storage.internal
 
 internal interface CredentialsSecureStore : ObjectKeyValueStore<Credentials> {
     fun setServerUrl(serverUrl: String)
+    fun getServerUrl(): String?
 }

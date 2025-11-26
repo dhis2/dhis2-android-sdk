@@ -30,14 +30,13 @@ package org.hisp.dhis.android.core.sms.data.localdbrepository.internal
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import kotlinx.coroutines.rx2.rxCompletable
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludingError
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationTableInfo
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationStore
-import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
@@ -57,6 +56,8 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAcc
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
+import org.hisp.dhis.android.persistence.dataset.DataSetCompleteRegistrationTableInfo
 import org.hisp.dhis.smscompression.models.SMSMetadata
 import org.koin.core.annotation.Singleton
 
@@ -86,51 +87,65 @@ internal class LocalDbRepositoryImpl(
     }
 
     override fun getGatewayNumber(): Single<String> {
-        return Single.fromCallable { smsConfigStore.get(SMSConfigKey.GATEWAY) ?: "" }
+        return rxSingle { getGatewayNumberSuspend() }
+    }
+
+    override suspend fun getGatewayNumberSuspend(): String {
+        return smsConfigStore.get(SMSConfigKey.GATEWAY) ?: ""
     }
 
     override fun setGatewayNumber(number: String): Completable {
-        return Completable.fromAction { smsConfigStore.set(SMSConfigKey.GATEWAY, number) }
+        return rxCompletable { setGatewayNumberSuspend(number) }
+    }
+
+    override suspend fun setGatewayNumberSuspend(number: String) {
+        smsConfigStore.set(SMSConfigKey.GATEWAY, number)
     }
 
     override fun deleteGatewayNumber(): Completable {
-        return Completable.fromAction { smsConfigStore.delete(SMSConfigKey.GATEWAY) }
+        return rxCompletable { smsConfigStore.delete(SMSConfigKey.GATEWAY) }
     }
 
     override fun getWaitingResultTimeout(): Single<Int> {
-        return Single.fromCallable {
-            smsConfigStore.get(SMSConfigKey.WAITING_RESULT_TIMEOUT)?.toInt() ?: DefaultWaitTimeout
-        }
+        return rxSingle { getWaitingResultTimeoutSuspend() }
+    }
+
+    override suspend fun getWaitingResultTimeoutSuspend(): Int {
+        return smsConfigStore.get(SMSConfigKey.WAITING_RESULT_TIMEOUT)?.toInt() ?: DEFAULT_WAIT_TIMEOUT
     }
 
     override fun setWaitingResultTimeout(timeoutSeconds: Int): Completable {
-        return Completable.fromAction {
+        return rxCompletable {
             smsConfigStore.set(SMSConfigKey.WAITING_RESULT_TIMEOUT, timeoutSeconds.toString())
         }
     }
 
     override fun deleteWaitingResultTimeout(): Completable {
-        return Completable.fromAction { smsConfigStore.delete(SMSConfigKey.WAITING_RESULT_TIMEOUT) }
+        return rxCompletable { smsConfigStore.delete(SMSConfigKey.WAITING_RESULT_TIMEOUT) }
     }
 
     override fun getConfirmationSenderNumber(): Single<String> {
-        return Single.fromCallable { smsConfigStore.get(SMSConfigKey.CONFIRMATION_SENDER) ?: "" }
+        return rxSingle { getConfirmationSenderNumberSuspend() }
+    }
+
+    override suspend fun getConfirmationSenderNumberSuspend(): String {
+        return smsConfigStore.get(SMSConfigKey.CONFIRMATION_SENDER) ?: ""
     }
 
     override fun setConfirmationSenderNumber(number: String): Completable {
-        return Completable.fromAction { smsConfigStore.set(SMSConfigKey.CONFIRMATION_SENDER, number) }
+        return rxCompletable { smsConfigStore.set(SMSConfigKey.CONFIRMATION_SENDER, number) }
     }
 
     override fun deleteConfirmationSenderNumber(): Completable {
-        return Completable.fromAction { smsConfigStore.delete(SMSConfigKey.CONFIRMATION_SENDER) }
+        return rxCompletable { smsConfigStore.delete(SMSConfigKey.CONFIRMATION_SENDER) }
     }
 
     override fun getMetadataIds(): Single<SMSMetadata> {
         return metadataIdsStore.getMetadataIds()
     }
 
-    override fun setMetadataIds(metadata: SMSMetadata): Completable {
-        return metadataIdsStore.setMetadataIds(metadata)
+    override suspend fun setMetadataIds(metadata: SMSMetadata) {
+        return metadataIdsStore.setMetadataIdsSuspend(metadata)
     }
 
     override fun getTrackerEventToSubmit(eventUid: String): Single<Event> {
@@ -179,7 +194,7 @@ internal class LocalDbRepositoryImpl(
     }
 
     override fun updateEventSubmissionState(eventUid: String, state: State): Completable {
-        return Completable.fromAction {
+        return rxCompletable {
             eventStore.setSyncState(eventUid, state)
             val event = eventStore.selectByUid(eventUid)
             dataStatePropagator.propagateEventUpdate(event)
@@ -187,7 +202,7 @@ internal class LocalDbRepositoryImpl(
     }
 
     override fun updateEnrollmentSubmissionState(tei: TrackedEntityInstance, state: State): Completable {
-        return Completable.fromAction {
+        return rxCompletable {
             val enrollment = TrackedEntityInstanceInternalAccessor.accessEnrollments(tei)[0]
             val events = EnrollmentInternalAccessor.accessEvents(enrollment)
             events?.forEach { event ->
@@ -202,7 +217,7 @@ internal class LocalDbRepositoryImpl(
     }
 
     override fun updateRelationshipSubmissionState(relationshipUid: String, state: State): Completable {
-        return Completable.fromAction {
+        return rxCompletable {
             relationshipStore.setSyncState(relationshipUid, state)
             val relationship = relationshipStore.selectByUid(relationshipUid)
 
@@ -222,34 +237,40 @@ internal class LocalDbRepositoryImpl(
     }
 
     override fun setMetadataDownloadConfig(config: GetMetadataIdsConfig): Completable {
-        return Completable.fromAction {
+        return rxCompletable {
             val value = KotlinxJsonParser.instance.encodeToString(GetMetadataIdsConfig.serializer(), config)
             smsConfigStore.set(SMSConfigKey.METADATA_CONFIG, value)
         }
     }
 
-    override fun getMetadataDownloadConfig(): Single<GetMetadataIdsConfig> {
-        return Single.fromCallable {
-            val stringVal = smsConfigStore.get(SMSConfigKey.METADATA_CONFIG)
-            stringVal?.let { KotlinxJsonParser.instance.decodeFromString<GetMetadataIdsConfig>(it) }
-                ?: GetMetadataIdsConfig()
-        }
+    override suspend fun getMetadataDownloadConfig(): GetMetadataIdsConfig {
+        return smsConfigStore.get(SMSConfigKey.METADATA_CONFIG)
+            ?.let { KotlinxJsonParser.instance.decodeFromString<GetMetadataIdsConfig>(it) }
+            ?: GetMetadataIdsConfig()
     }
 
     override fun setModuleEnabled(enabled: Boolean): Completable {
-        return Completable.fromAction { smsConfigStore.set(SMSConfigKey.MODULE_ENABLED, enabled.toString()) }
+        return rxCompletable { smsConfigStore.set(SMSConfigKey.MODULE_ENABLED, enabled.toString()) }
     }
 
     override fun isModuleEnabled(): Single<Boolean> {
-        return Single.fromCallable { smsConfigStore.get(SMSConfigKey.MODULE_ENABLED)?.toBoolean() ?: false }
+        return rxSingle { isModuleEnabledSuspend() }
+    }
+
+    override suspend fun isModuleEnabledSuspend(): Boolean {
+        return smsConfigStore.get(SMSConfigKey.MODULE_ENABLED)?.toBoolean() ?: false
     }
 
     override fun setWaitingForResultEnabled(enabled: Boolean): Completable {
-        return Completable.fromAction { smsConfigStore.set(SMSConfigKey.WAIT_FOR_RESULT, enabled.toString()) }
+        return rxCompletable { smsConfigStore.set(SMSConfigKey.WAIT_FOR_RESULT, enabled.toString()) }
     }
 
     override fun getWaitingForResultEnabled(): Single<Boolean> {
-        return Single.fromCallable { smsConfigStore.get(SMSConfigKey.WAIT_FOR_RESULT)?.toBoolean() ?: false }
+        return rxSingle { getWaitingForResultEnabledSuspend() }
+    }
+
+    override suspend fun getWaitingForResultEnabledSuspend(): Boolean {
+        return smsConfigStore.get(SMSConfigKey.WAIT_FOR_RESULT)?.toBoolean() ?: false
     }
 
     override fun getOngoingSubmissions(): Single<Map<Int, SubmissionType>> {
@@ -274,17 +295,18 @@ internal class LocalDbRepositoryImpl(
         period: String,
         attributeOptionComboUid: String,
     ): Single<SMSDataValueSet> {
-        return dataSetsStore.getDataValues(dataset, orgUnit, period, attributeOptionComboUid)
-            .map { values: List<DataValue?>? ->
-                val isCompleted = isDataValueSetCompleted(dataset, orgUnit, period, attributeOptionComboUid)
-                SMSDataValueSet.builder()
-                    .dataValues(values)
-                    .completed(isCompleted)
-                    .build()
-            }
+        return rxSingle {
+            val values = dataSetsStore.getDataValues(dataset, orgUnit, period, attributeOptionComboUid)
+            val isCompleted = isDataValueSetCompleted(dataset, orgUnit, period, attributeOptionComboUid)
+
+            SMSDataValueSet.builder()
+                .dataValues(values)
+                .completed(isCompleted)
+                .build()
+        }
     }
 
-    private fun isDataValueSetCompleted(
+    private suspend fun isDataValueSetCompleted(
         dataset: String,
         orgUnit: String,
         period: String,
@@ -311,28 +333,32 @@ internal class LocalDbRepositoryImpl(
         state: State,
     ): Completable {
         return Completable.mergeArray(
-            dataSetsStore.updateDataSetValuesState(
-                dataSetId,
-                orgUnit,
-                period,
-                attributeOptionComboUid,
-                state,
-            ),
-            dataSetsStore.updateDataSetCompleteRegistrationState(
-                dataSetId,
-                orgUnit,
-                period,
-                attributeOptionComboUid,
-                state,
-            ),
+            rxCompletable {
+                dataSetsStore.updateDataSetValuesState(
+                    dataSetId,
+                    orgUnit,
+                    period,
+                    attributeOptionComboUid,
+                    state,
+                )
+            },
+            rxCompletable {
+                dataSetsStore.updateDataSetCompleteRegistrationState(
+                    dataSetId,
+                    orgUnit,
+                    period,
+                    attributeOptionComboUid,
+                    state,
+                )
+            },
         )
     }
 
     override fun getRelationship(relationshipUid: String): Single<Relationship> {
-        return Single.fromCallable { relationshipStore.selectByUid(relationshipUid) }
+        return rxSingle { relationshipStore.selectByUid(relationshipUid)!! }
     }
 
     companion object {
-        const val DefaultWaitTimeout = 120
+        const val DEFAULT_WAIT_TIMEOUT = 120
     }
 }

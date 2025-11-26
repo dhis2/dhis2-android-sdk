@@ -28,15 +28,11 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
 import org.hisp.dhis.android.core.common.State;
 
@@ -54,26 +50,21 @@ public abstract class DataSetCompleteRegistration extends BaseDeletableDataObjec
     public abstract String attributeOptionCombo();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date date();
 
     @Nullable
     public abstract String storedBy();
 
-    @NonNull
-    public static DataSetCompleteRegistration create(Cursor cursor) {
-        return AutoValue_DataSetCompleteRegistration.createFromCursor(cursor);
-    }
-
     public abstract Builder toBuilder();
 
     public static Builder builder() {
-        return new $$AutoValue_DataSetCompleteRegistration.Builder();
+        return new AutoValue_DataSetCompleteRegistration.Builder();
     }
 
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseDeletableDataObject.Builder<DataSetCompleteRegistration.Builder> {
+    public abstract static class Builder
+            implements BaseDeletableDataObject.Builder<DataSetCompleteRegistration.Builder> {
 
         public Builder() {
             syncState(State.SYNCED);

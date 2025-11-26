@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.settings.internal
 
 import org.hisp.dhis.android.core.settings.AnalyticsSettingObjectRepository
 import org.hisp.dhis.android.core.settings.AppearanceSettingsObjectRepository
+import org.hisp.dhis.android.core.settings.CustomIntentCollectionRepository
+import org.hisp.dhis.android.core.settings.CustomIntentService
 import org.hisp.dhis.android.core.settings.DataSetSettingsObjectRepository
 import org.hisp.dhis.android.core.settings.GeneralSettingObjectRepository
 import org.hisp.dhis.android.core.settings.LatestAppVersionObjectRepository
@@ -40,6 +42,7 @@ import org.hisp.dhis.android.core.settings.UserSettingsObjectRepository
 import org.koin.core.annotation.Singleton
 
 @Singleton
+@Suppress("LongParameterList", "TooManyFunctions")
 internal class SettingModuleImpl(
     private val systemSetting: SystemSettingCollectionRepository,
     private val generalSetting: GeneralSettingObjectRepository,
@@ -50,6 +53,8 @@ internal class SettingModuleImpl(
     private val userSettings: UserSettingsObjectRepository,
     private val appearanceSettings: AppearanceSettingsObjectRepository,
     private val latestAppVersion: LatestAppVersionObjectRepository,
+    private val customIntents: CustomIntentCollectionRepository,
+    private val customIntentService: CustomIntentService,
 ) : SettingModule {
     override fun systemSetting(): SystemSettingCollectionRepository {
         return systemSetting
@@ -85,5 +90,13 @@ internal class SettingModuleImpl(
 
     override fun latestAppVersion(): LatestAppVersionObjectRepository {
         return latestAppVersion
+    }
+
+    override fun customIntents(): CustomIntentCollectionRepository {
+        return customIntents
+    }
+
+    override fun customIntentService(): CustomIntentService {
+        return customIntentService
     }
 }

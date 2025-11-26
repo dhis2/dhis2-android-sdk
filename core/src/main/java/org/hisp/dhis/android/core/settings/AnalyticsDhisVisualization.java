@@ -28,16 +28,11 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AnalyticsDhisVisualizationScopeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.AnalyticsDhisVisualizationTypeColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 
@@ -54,7 +49,6 @@ public abstract class AnalyticsDhisVisualization implements CoreObject, ObjectWi
     public abstract String groupName();
 
     @Nullable
-    @ColumnAdapter(AnalyticsDhisVisualizationScopeColumnAdapter.class)
     public abstract AnalyticsDhisVisualizationScope scope();
 
     @NonNull
@@ -67,12 +61,7 @@ public abstract class AnalyticsDhisVisualization implements CoreObject, ObjectWi
     public abstract String timestamp();
 
     @NonNull
-    @ColumnAdapter(AnalyticsDhisVisualizationTypeColumnAdapter.class)
     public abstract AnalyticsDhisVisualizationType type();
-
-    public static AnalyticsDhisVisualization create(Cursor cursor) {
-        return AutoValue_AnalyticsDhisVisualization.createFromCursor(cursor);
-    }
 
     public abstract Builder toBuilder();
 
@@ -82,8 +71,6 @@ public abstract class AnalyticsDhisVisualization implements CoreObject, ObjectWi
 
     @AutoValue.Builder
     public abstract static class Builder {
-
-        public abstract Builder id(Long id);
 
         public abstract Builder scopeUid(String scopeUid);
 

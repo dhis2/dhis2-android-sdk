@@ -30,9 +30,6 @@ package org.hisp.dhis.android.core.arch.repositories.paging.internal
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
 import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor
@@ -40,55 +37,41 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder
 import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.persistence.common.querybuilders.OrderByClauseBuilder
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import java.io.IOException
 
 internal class RepositoryPagingSourceWithTransformer<M : CoreObject, T : Any> internal constructor(
     private val store: ReadableStore<M>,
-    private val databaseAdapter: DatabaseAdapter,
     private val scope: RepositoryScope,
     private val childrenAppenders: ChildrenAppenderGetter<M>,
     private val transformer: TwoWayTransformer<M, T>,
-) : PagingSource<M, T>() {
-    override fun getRefreshKey(state: PagingState<M, T>): M? {
+) : PagingSource<Int, T>() {
+    override fun getRefreshKey(state: PagingState<Int, T>): Int? {
         return state.anchorPosition?.let { state.closestPageToPosition(it)?.prevKey }
     }
 
-    override suspend fun load(params: LoadParams<M>): LoadResult<M, T> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, T> {
         try {
-            val whereClauseBuilder = WhereClauseBuilder()
+            val offset = params.key
 
-            params.key?.let { key ->
-                val reverse = when (params) {
-                    is LoadParams.Prepend -> true
-                    else -> false
-                }
-
-                OrderByClauseBuilder.addSortingClauses(
-                    whereClauseBuilder,
-                    scope.orderBy(),
-                    key.toContentValues(),
-                    reverse,
-                    scope.pagingKey(),
-                )
-            }
-
-            val whereClause = WhereClauseFromScopeBuilder(whereClauseBuilder).getWhereClause(scope)
+            val whereClause = WhereClauseFromScopeBuilder(WhereClauseBuilder()).getWhereClause(scope)
             val withoutChildren = store.selectWhere(
                 whereClause,
-                OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()),
+                OrderByClauseBuilder.orderByFromItems(scope.orderBy()),
                 params.loadSize,
+                offset,
             )
             val items = ChildrenAppenderExecutor.appendInObjectCollection(
                 withoutChildren,
-                databaseAdapter,
                 childrenAppenders,
                 scope.children(),
             )
 
             return LoadResult.Page(
                 data = items.map { transformer.transform(it) },
-                prevKey = items.firstOrNull(),
-                nextKey = items.getOrNull(params.loadSize - 1),
+                prevKey = offset?.let { it - params.loadSize },
+                nextKey = (offset ?: 0) + params.loadSize,
             )
         } catch (e: IOException) {
             return LoadResult.Error(e)

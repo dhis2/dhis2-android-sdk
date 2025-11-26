@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.fileresource.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceRoutineSamples.dataset
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceRoutineSamples.event1
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceRoutineSamples.program
@@ -43,7 +44,7 @@ internal class FileResourceDownloadCallHelperIntegrationShould : BaseFileResourc
     private val fileResourceCallHelper by lazy { d2.d2DIComponent.fileResourceDownloadCallHelper }
 
     @Test
-    fun get_missing_attributes_by_tracked_entity() {
+    fun get_missing_attributes_by_tracked_entity() = runTest {
         val configs = listOf(
             TestConfig(
                 params = FileResourceDownloadParams(trackedEntityUids = listOf(trackedEntityInstance.uid())),
@@ -63,7 +64,7 @@ internal class FileResourceDownloadCallHelperIntegrationShould : BaseFileResourc
     }
 
     @Test
-    fun get_missing_attributes_by_program() {
+    fun get_missing_attributes_by_program() = runTest {
         val configs = listOf(
             TestConfig(
                 params = FileResourceDownloadParams(programUids = listOf(program.uid())),
@@ -83,7 +84,7 @@ internal class FileResourceDownloadCallHelperIntegrationShould : BaseFileResourc
     }
 
     @Test
-    fun get_missing_data_elements_by_tracked_entity() {
+    fun get_missing_data_elements_by_tracked_entity() = runTest {
         val configs = listOf(
             TestConfig(
                 params = FileResourceDownloadParams(trackedEntityUids = listOf(trackedEntityInstance.uid())),
@@ -103,7 +104,7 @@ internal class FileResourceDownloadCallHelperIntegrationShould : BaseFileResourc
     }
 
     @Test
-    fun get_missing_data_elements_by_program() {
+    fun get_missing_data_elements_by_program() = runTest {
         val configs = listOf(
             TestConfig(
                 params = FileResourceDownloadParams(programUids = listOf(program.uid())),
@@ -123,7 +124,7 @@ internal class FileResourceDownloadCallHelperIntegrationShould : BaseFileResourc
     }
 
     @Test
-    fun get_missing_data_elements_by_event() {
+    fun get_missing_data_elements_by_event() = runTest {
         val configs = listOf(
             TestConfig(
                 params = FileResourceDownloadParams(eventUids = listOf(event1.uid())),
@@ -143,7 +144,7 @@ internal class FileResourceDownloadCallHelperIntegrationShould : BaseFileResourc
     }
 
     @Test
-    fun get_missing_data_elements_by_combination() {
+    fun get_missing_data_elements_by_combination() = runTest {
         val configs = listOf(
             TestConfig(
                 params = FileResourceDownloadParams(
@@ -170,7 +171,7 @@ internal class FileResourceDownloadCallHelperIntegrationShould : BaseFileResourc
     }
 
     @Test
-    fun get_missing_aggregate_data_elements() {
+    fun get_missing_aggregate_data_elements() = runTest {
         val configs = listOf(
             TestConfig(
                 params = FileResourceDownloadParams(dataSetUids = listOf(dataset.uid())),

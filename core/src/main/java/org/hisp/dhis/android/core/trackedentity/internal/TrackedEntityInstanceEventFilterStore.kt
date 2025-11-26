@@ -31,4 +31,8 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
 
-internal interface TrackedEntityInstanceEventFilterStore : ObjectWithoutUidStore<TrackedEntityInstanceEventFilter>
+internal interface TrackedEntityInstanceEventFilterStore : ObjectWithoutUidStore<TrackedEntityInstanceEventFilter> {
+    suspend fun getForTrackedEntityInstanceFilter(
+        trackedEntityInstanceFilterUid: String,
+    ): List<TrackedEntityInstanceEventFilter>
+}

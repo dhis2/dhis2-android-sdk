@@ -28,7 +28,8 @@
 package org.hisp.dhis.android.core.datastore
 
 import io.reactivex.Completable
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxCompletable
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteValueObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
@@ -39,19 +40,16 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 
 class LocalDataStoreObjectRepository internal constructor(
     store: LocalDataStoreStore,
-    databaseAdapter: DatabaseAdapter,
     childrenAppenders: ChildrenAppenderGetter<KeyValuePair>,
     scope: RepositoryScope,
     private val key: String,
 ) : ReadWriteWithValueObjectRepositoryImpl<KeyValuePair, LocalDataStoreObjectRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     ObjectRepositoryFactory { s: RepositoryScope ->
         LocalDataStoreObjectRepository(
             store,
-            databaseAdapter,
             childrenAppenders,
             s,
             key,
@@ -60,11 +58,16 @@ class LocalDataStoreObjectRepository internal constructor(
 ),
     ReadWriteValueObjectRepository<KeyValuePair> {
     override fun set(value: String?): Completable {
-        return Completable.fromAction { blockingSet(value) }
+        return rxCompletable { setInternal(value) }
     }
 
     @Throws(D2Error::class)
     override fun blockingSet(value: String?) {
+        runBlocking { setInternal(value) }
+    }
+
+    @Throws(D2Error::class)
+    private suspend fun setInternal(value: String?) {
         val pair = KeyValuePair.builder()
             .key(key)
             .value(value)

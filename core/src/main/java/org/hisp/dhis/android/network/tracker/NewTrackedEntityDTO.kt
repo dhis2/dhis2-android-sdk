@@ -36,19 +36,20 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAcc
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor.insertRelationships
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
-import org.hisp.dhis.android.network.common.dto.DateStringDTO
 import org.hisp.dhis.android.network.common.dto.GeometryDTO
 import org.hisp.dhis.android.network.common.dto.PagerDTO
+import org.hisp.dhis.android.network.common.dto.ZonedDateDTO
 import org.hisp.dhis.android.network.common.dto.toDto
+import org.hisp.dhis.android.network.common.dto.toZonedDateDto
 
 @Serializable
 internal data class NewTrackedEntityDTO(
     override val deleted: Boolean?,
     val trackedEntity: String,
-    val createdAt: DateStringDTO?,
-    val updatedAt: DateStringDTO?,
-    val createdAtClient: DateStringDTO?,
-    val updatedAtClient: DateStringDTO?,
+    val createdAt: ZonedDateDTO?,
+    val updatedAt: ZonedDateDTO?,
+    val createdAtClient: ZonedDateDTO?,
+    val updatedAtClient: ZonedDateDTO?,
     val orgUnit: String?,
     val trackedEntityType: String?,
     val geometry: GeometryDTO?,
@@ -85,10 +86,10 @@ internal fun NewTrackerImporterTrackedEntity.toDto(): NewTrackedEntityDTO {
     return NewTrackedEntityDTO(
         deleted = deleted,
         trackedEntity = uid,
-        createdAt = createdAt?.toDto(),
-        updatedAt = updatedAt?.toDto(),
-        createdAtClient = createdAtClient?.toDto(),
-        updatedAtClient = updatedAtClient?.toDto(),
+        createdAt = createdAt?.toZonedDateDto(),
+        updatedAt = updatedAt?.toZonedDateDto(),
+        createdAtClient = createdAtClient?.toZonedDateDto(),
+        updatedAtClient = updatedAtClient?.toZonedDateDto(),
         orgUnit = organisationUnit,
         trackedEntityType = trackedEntityType,
         geometry = geometry?.let { it.toDto() },

@@ -28,16 +28,17 @@
 package org.hisp.dhis.android.core.user.internal
 
 import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class IsUserLoggedInCallableFactory constructor(
+internal class IsUserLoggedInCallableFactory(
     private val credentialsSecureStore: CredentialsSecureStore,
-    private val authenticatedUserStore: AuthenticatedUserStore,
+    private val databaseAdapter: DatabaseAdapter,
 ) {
     val isLogged: Single<Boolean>
         get() = Single.fromCallable {
-            credentialsSecureStore.get() != null && authenticatedUserStore.isReady
+            credentialsSecureStore.get() != null && databaseAdapter.isReady
         }
 }

@@ -28,17 +28,10 @@
 
 package org.hisp.dhis.android.core.settings;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.ChartTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.PeriodTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreAnalyticsTeiDataColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreAnalyticsTeiWHONutritionDataColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.period.PeriodType;
@@ -58,23 +51,15 @@ public abstract class AnalyticsTeiSetting implements CoreObject, ObjectWithUidIn
     public abstract String programStage();
 
     @Nullable
-    @ColumnAdapter(PeriodTypeColumnAdapter.class)
     public abstract PeriodType period();
 
-    @ColumnAdapter(ChartTypeColumnAdapter.class)
     public abstract ChartType type();
 
     @Nullable
-    @ColumnAdapter(IgnoreAnalyticsTeiDataColumnAdapter.class)
     public abstract AnalyticsTeiData data();
 
     @Nullable
-    @ColumnAdapter(IgnoreAnalyticsTeiWHONutritionDataColumnAdapter.class)
     public abstract AnalyticsTeiWHONutritionData whoNutritionData();
-
-    public static AnalyticsTeiSetting create(Cursor cursor) {
-        return AutoValue_AnalyticsTeiSetting.createFromCursor(cursor);
-    }
 
     public abstract Builder toBuilder();
 
@@ -84,8 +69,6 @@ public abstract class AnalyticsTeiSetting implements CoreObject, ObjectWithUidIn
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder id(Long id);
-
         public abstract Builder uid(String uid);
 
         public abstract Builder name(String name);

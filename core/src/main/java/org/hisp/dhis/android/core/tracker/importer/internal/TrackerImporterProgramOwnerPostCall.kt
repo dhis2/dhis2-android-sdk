@@ -31,13 +31,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerPostCall
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
-import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerTableInfo
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
+import org.hisp.dhis.android.persistence.trackedentity.ProgramOwnerTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -68,11 +68,11 @@ internal class TrackerImporterProgramOwnerPostCall(
         emit(progressManager.increaseProgress(ProgramOwner::class.java, false))
     }
 
-    private fun selectWhere(o: ProgramOwner): ProgramOwner? {
+    private suspend fun selectWhere(o: ProgramOwner): ProgramOwner? {
         val selectWhere = WhereClauseBuilder()
             .appendKeyStringValue(ProgramOwnerTableInfo.Columns.PROGRAM, o.program())
             .appendKeyStringValue(ProgramOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE, o.trackedEntityInstance())
-            .appendKeyStringValue(ProgramOwnerTableInfo.Columns.OWNER_ORGUNIT, o.ownerOrgUnit())
+            .appendKeyStringValue(ProgramOwnerTableInfo.Columns.OWNER_ORG_UNIT, o.ownerOrgUnit())
             .build()
 
         return programOwnerStore.selectOneWhere(selectWhere)

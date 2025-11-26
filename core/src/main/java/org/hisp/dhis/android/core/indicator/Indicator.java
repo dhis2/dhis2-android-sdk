@@ -28,15 +28,10 @@
 
 package org.hisp.dhis.android.core.indicator;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreObjectWithUidListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectStyle;
@@ -53,7 +48,6 @@ public abstract class Indicator extends BaseNameableObject
     public abstract Boolean annualized();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid indicatorType();
 
     @Nullable
@@ -75,15 +69,10 @@ public abstract class Indicator extends BaseNameableObject
     public abstract Integer decimals();
 
     @Nullable
-    @ColumnAdapter(IgnoreObjectWithUidListColumnAdapter.class)
     public abstract List<ObjectWithUid> legendSets();
 
     public static Builder builder() {
-        return new $$AutoValue_Indicator.Builder();
-    }
-
-    public static Indicator create(Cursor cursor) {
-        return $AutoValue_Indicator.createFromCursor(cursor);
+        return new AutoValue_Indicator.Builder();
     }
 
     public abstract Builder toBuilder();
@@ -91,8 +80,6 @@ public abstract class Indicator extends BaseNameableObject
     @AutoValue.Builder
     public abstract static class Builder extends BaseNameableObject.Builder<Builder>
             implements ObjectWithStyle.Builder<Indicator, Indicator.Builder> {
-        public abstract Builder id(Long id);
-
         public abstract Builder annualized(Boolean annualized);
 
         public abstract Builder indicatorType(ObjectWithUid indicatorType);

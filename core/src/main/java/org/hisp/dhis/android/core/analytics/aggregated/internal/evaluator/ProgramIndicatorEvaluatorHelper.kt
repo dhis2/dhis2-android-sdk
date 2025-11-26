@@ -33,24 +33,28 @@ import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toKtxInstant
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.AnalyticsType
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
-import org.hisp.dhis.android.core.event.EventTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
-import org.hisp.dhis.android.core.program.*
+import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
+import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryType
+import org.hisp.dhis.android.core.program.BoundaryTargetType
+import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.AnalyticsBoundaryParser
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.AnalyticsBoundaryTarget
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.EnrollmentAlias
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.EventAlias
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueTableInfo
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
-import java.util.*
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.persistence.event.EventTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramStageTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeValueTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityDataValueTableInfo
+import java.util.Date
 
 @Suppress("TooManyFunctions")
 internal object ProgramIndicatorEvaluatorHelper {

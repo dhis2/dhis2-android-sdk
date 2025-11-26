@@ -36,7 +36,7 @@ import java.util.Date
 
 internal interface DataValueImportConflictItem {
 
-    fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict>
+    suspend fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict>
 
     fun getConflictBuilder(
         dataValue: DataValue,

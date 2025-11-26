@@ -28,17 +28,10 @@
 
 package org.hisp.dhis.android.core.visualization;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.TrackerVisualizationDimensionRepetitionColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.LayoutPositionColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidListColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
@@ -51,7 +44,6 @@ public abstract class TrackerVisualizationDimension implements CoreObject {
     public abstract String trackerVisualization();
 
     @Nullable
-    @ColumnAdapter(LayoutPositionColumnAdapter.class)
     public abstract LayoutPosition position();
 
     @Nullable
@@ -61,39 +53,31 @@ public abstract class TrackerVisualizationDimension implements CoreObject {
     public abstract String dimensionType();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid program();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid programStage();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidListColumnAdapter.class)
     public abstract List<ObjectWithUid> items();
 
     @Nullable
     public abstract String filter();
 
     @Nullable
-    @ColumnAdapter(TrackerVisualizationDimensionRepetitionColumnAdapter.class)
     public abstract TrackerVisualizationDimensionRepetition repetition();
 
+    @Nullable
+    public abstract Integer sortOrder();
 
     public static Builder builder() {
         return new AutoValue_TrackerVisualizationDimension.Builder();
-    }
-
-    public static TrackerVisualizationDimension create(Cursor cursor) {
-        return $AutoValue_TrackerVisualizationDimension.createFromCursor(cursor);
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
     public abstract static class Builder {
-
-        public abstract Builder id(Long id);
 
         public abstract Builder trackerVisualization(String trackerVisualization);
 
@@ -112,6 +96,8 @@ public abstract class TrackerVisualizationDimension implements CoreObject {
         public abstract Builder filter(String filter);
 
         public abstract Builder repetition(TrackerVisualizationDimensionRepetition repetition);
+
+        public abstract Builder sortOrder(Integer sortOrder);
 
         public abstract TrackerVisualizationDimension build();
     }

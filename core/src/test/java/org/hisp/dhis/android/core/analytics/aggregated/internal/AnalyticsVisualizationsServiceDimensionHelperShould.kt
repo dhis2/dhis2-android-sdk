@@ -29,9 +29,7 @@
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.internal.CategoryCategoryOptionLinkStore
@@ -48,6 +46,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.ArgumentMatchers.anyString
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
 class AnalyticsVisualizationsServiceDimensionHelperShould {
@@ -69,7 +70,7 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
     )
 
     @Test
-    fun `Should parse dataElement dimension items`() {
+    fun `Should parse dataElement dimension items`() = runTest {
         val dataDimensions = listOf(
             VisualizationDimension.builder()
                 .id("dx")
@@ -97,7 +98,7 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
     }
 
     @Test
-    fun `Should parse dataElementOperand dimension items`() {
+    fun `Should parse dataElementOperand dimension items`() = runTest {
         val dataDimensions = listOf(
             VisualizationDimension.builder()
                 .id("dx")
@@ -127,7 +128,7 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
     }
 
     @Test
-    fun `Should parse indicator dimension items`() {
+    fun `Should parse indicator dimension items`() = runTest {
         val dataDimensions = listOf(
             VisualizationDimension.builder()
                 .id("dx")
@@ -155,7 +156,7 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
     }
 
     @Test
-    fun `Should parse programIndicator dimension items`() {
+    fun `Should parse programIndicator dimension items`() = runTest {
         val dataDimensions = listOf(
             VisualizationDimension.builder()
                 .id("dx")
@@ -183,7 +184,7 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
     }
 
     @Test
-    fun `Should parse event dataElements dimension items`() {
+    fun `Should parse event dataElements dimension items`() = runTest {
         val dataDimensions = listOf(
             VisualizationDimension.builder()
                 .id("dx")
@@ -213,7 +214,7 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
     }
 
     @Test
-    fun `Should parse event attribute dimension items`() {
+    fun `Should parse event attribute dimension items`() = runTest {
         val dataDimensions = listOf(
             VisualizationDimension.builder()
                 .id("dx")
@@ -243,7 +244,7 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
     }
 
     @Test
-    fun `Should parse event dataElements with options dimension items`() {
+    fun `Should parse event dataElements with options dimension items`() = runTest {
         val dataDimensions = listOf(
             VisualizationDimension.builder().id("dx").items(
                 listOf(
@@ -270,7 +271,7 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
     }
 
     @Test
-    fun `Should parse event attributes with options dimension items`() {
+    fun `Should parse event attributes with options dimension items`() = runTest {
         val dataDimensions = listOf(
             VisualizationDimension.builder().id("dx").items(
                 listOf(
@@ -297,7 +298,7 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
     }
 
     @Test
-    fun `Should parse expression dimension items`() {
+    fun `Should parse expression dimension items`() = runTest {
         val dataDimensions = listOf(
             VisualizationDimension.builder()
                 .id("dx")
@@ -326,7 +327,7 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
     }
 
     @Test
-    fun `Should parse organisation unit uids and levels`() {
+    fun `Should parse organisation unit uids and levels`() = runTest {
         val orgunitDimensions = listOf(
             VisualizationDimension.builder()
                 .id("ou")
@@ -363,7 +364,7 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
     }
 
     @Test
-    fun `Should parse relative organisation unit`() {
+    fun `Should parse relative organisation unit`() = runTest {
         val orgunitDimensions = listOf(
             VisualizationDimension.builder()
                 .id("ou")
@@ -396,7 +397,7 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
     }
 
     @Test
-    fun `Should parse period dimension items`() {
+    fun `Should parse period dimension items`() = runTest {
         val periodDimensions = listOf(
             VisualizationDimension.builder()
                 .id("pe")
@@ -435,7 +436,7 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
     }
 
     @Test
-    fun `Should parse category dimension items`() {
+    fun `Should parse category dimension items`() = runTest {
         val categoryDimensions = listOf(
             VisualizationDimension.builder()
                 .id(uid1)
@@ -467,7 +468,7 @@ class AnalyticsVisualizationsServiceDimensionHelperShould {
     }
 
     @Test
-    fun `Should combine dimensions items`() {
+    fun `Should combine dimensions items`() = runTest {
         val dimensions = listOf(
             VisualizationDimension.builder()
                 .id("pe")

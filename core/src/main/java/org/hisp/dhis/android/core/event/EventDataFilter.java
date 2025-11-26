@@ -28,8 +28,7 @@
 
 package org.hisp.dhis.android.core.event;
 
-import android.database.Cursor;
-
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -49,23 +48,17 @@ public abstract class EventDataFilter extends FilterOperators implements CoreObj
     /**
      * The data element id or data item
      */
-    @Nullable
+    @NonNull
     public abstract String dataItem();
 
     public static Builder builder() {
-        return new $$AutoValue_EventDataFilter.Builder();
-    }
-
-    public static EventDataFilter create(Cursor cursor) {
-        return $AutoValue_EventDataFilter.createFromCursor(cursor);
+        return new AutoValue_EventDataFilter.Builder();
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
     public abstract static class Builder extends FilterOperators.Builder<Builder> {
-        public abstract Builder id(Long id);
-
         public abstract Builder eventFilter(String eventFilter);
 
         public abstract Builder dataItem(String dataItem);

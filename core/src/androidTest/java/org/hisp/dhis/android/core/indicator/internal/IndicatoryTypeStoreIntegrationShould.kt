@@ -31,9 +31,10 @@ package org.hisp.dhis.android.core.indicator.internal
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.indicator.IndicatorTypeSamples
 import org.hisp.dhis.android.core.indicator.IndicatorType
-import org.hisp.dhis.android.core.indicator.IndicatorTypeTableInfo
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.indicator.IndicatorTypeStoreImpl
+import org.hisp.dhis.android.persistence.indicator.IndicatorTypeTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

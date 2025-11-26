@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.datavalue
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
@@ -41,17 +40,16 @@ import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper.operat
 import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper.whereClause
 import org.hisp.dhis.android.core.datavalue.internal.DataValueConflictStore
 import org.hisp.dhis.android.core.imports.ImportStatus
+import org.hisp.dhis.android.persistence.datavalue.DataValueConflictTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 @Suppress("TooManyFunctions")
 class DataValueConflictCollectionRepository internal constructor(
     store: DataValueConflictStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyCollectionRepositoryImpl<DataValueConflict, DataValueConflictCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -59,7 +57,6 @@ class DataValueConflictCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         DataValueConflictCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },

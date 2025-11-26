@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.fileresource.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.fileresource.FileResourceRoutine
 import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
@@ -54,10 +55,10 @@ internal class FileResourceRoutineShould : BaseFileResourceRoutineIntegrationSho
     }
 
     @Test
-    fun delete_outdated_file_resources_if_present() {
+    fun delete_outdated_file_resources_if_present() = runTest {
         trackedEntityDataValueStore.delete()
         trackedEntityAttributeValueStore.delete()
-        fileResourceRoutine.blockingDeleteOutdatedFileResources()
+        fileResourceRoutine.internalDeleteOutdatedFileResources()
         val fileResources = d2.fileResourceModule().fileResources().blockingGet()
         assertThat(fileResources.size).isEqualTo(2)
         assertThat(File(FileResourceRoutineSamples.fileResource1.path()!!).exists()).isTrue()

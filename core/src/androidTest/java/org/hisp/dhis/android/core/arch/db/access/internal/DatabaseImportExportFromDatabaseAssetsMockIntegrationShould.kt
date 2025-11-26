@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.arch.db.access.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.util.deleteIfExists
@@ -40,6 +41,7 @@ import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.time.Duration.Companion.seconds
 
 @RunWith(D2JunitRunner::class)
 class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockIntegrationTest() {
@@ -138,7 +140,7 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
     }
 
     @Test
-    fun export_fail_when_not_logged() {
+    fun export_fail_when_not_logged() = runTest {
         try {
             d2.maintenanceModule().databaseImportExport().exportLoggedUserDatabase()
             fail("It should throw an error")
@@ -148,12 +150,12 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
     }
 
     @Test
-    fun export_and_reimport() {
+    fun export_and_reimport() = runTest {
         test_export_and_reimport(beforeExport = {})
     }
 
     @Test
-    fun export_and_reimport_encrypted() {
+    fun export_and_reimport_encrypted() = runTest(timeout = 30.seconds) {
         test_export_and_reimport(beforeExport = {
             // Change encryption
             d2.d2DIComponent.multiUserDatabaseManager.changeEncryptionIfRequired(
@@ -163,7 +165,29 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
         })
     }
 
-    private fun test_export_and_reimport(beforeExport: () -> Unit) {
+    @Test
+    fun encrypt_and_decrypt() = runTest(timeout = 400.seconds) {
+        // Load unencrypted db
+        d2.userModule().blockingLogIn(username, password, serverUrl)
+        d2.metadataModule().blockingDownload()
+        assertThat(d2.programModule().programs().blockingCount()).isEqualTo(3)
+
+        // Encrypted db
+        d2.d2DIComponent.multiUserDatabaseManager.changeEncryptionIfRequired(
+            d2.d2DIComponent.credentialsSecureStore.get()!!,
+            encrypt = true,
+        )
+        assertThat(d2.programModule().programs().blockingCount()).isEqualTo(3)
+
+        // Decrypt db
+        d2.d2DIComponent.multiUserDatabaseManager.changeEncryptionIfRequired(
+            d2.d2DIComponent.credentialsSecureStore.get()!!,
+            encrypt = false,
+        )
+        assertThat(d2.programModule().programs().blockingCount()).isEqualTo(3)
+    }
+
+    private suspend fun test_export_and_reimport(beforeExport: suspend () -> Unit) {
         d2.userModule().blockingLogIn(username, password, serverUrl)
         d2.metadataModule().blockingDownload()
 
@@ -183,8 +207,8 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
         try {
             d2.userModule().blockingLogIn(username, "other-password", serverUrl)
             fail("It should throw an error")
-        } catch (e: RuntimeException) {
-            assertThat((e.cause as D2Error).errorCode()).isEqualTo(D2ErrorCode.BAD_CREDENTIALS)
+        } catch (e: D2Error) {
+            assertThat(e.errorCode()).isEqualTo(D2ErrorCode.BAD_CREDENTIALS)
         }
 
         d2.userModule().blockingLogIn(username, password, serverUrl)

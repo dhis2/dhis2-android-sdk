@@ -29,7 +29,8 @@ package org.hisp.dhis.android.core.dataset
 
 import android.util.Log
 import io.reactivex.Completable
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxCompletable
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
@@ -45,7 +46,6 @@ import java.util.Date
 
 class DataSetCompleteRegistrationObjectRepository internal constructor(
     private val dataSetCompleteRegistrationStore: DataSetCompleteRegistrationStore,
-    databaseAdapter: DatabaseAdapter,
     private val credentialsRepository: UserCredentialsObjectRepository,
     childrenAppenders: ChildrenAppenderGetter<DataSetCompleteRegistration>,
     scope: RepositoryScope,
@@ -55,13 +55,11 @@ class DataSetCompleteRegistrationObjectRepository internal constructor(
     private val attributeOptionCombo: String,
 ) : ReadOnlyOneObjectRepositoryImpl<DataSetCompleteRegistration, DataSetCompleteRegistrationObjectRepository>(
     dataSetCompleteRegistrationStore,
-    databaseAdapter,
     childrenAppenders,
     scope,
     ObjectRepositoryFactory { s: RepositoryScope ->
         DataSetCompleteRegistrationObjectRepository(
             dataSetCompleteRegistrationStore,
-            databaseAdapter,
             credentialsRepository,
             childrenAppenders,
             s,
@@ -74,13 +72,17 @@ class DataSetCompleteRegistrationObjectRepository internal constructor(
 ),
     ReadWriteObjectRepository<DataSetCompleteRegistration> {
     fun set(): Completable {
-        return Completable.fromAction { blockingSet() }
+        return rxCompletable { setInternal() }
     }
 
     fun blockingSet() {
-        val dataSetCompleteRegistration = blockingGetWithoutChildren()
+        runBlocking { setInternal() }
+    }
+
+    private suspend fun setInternal() {
+        val dataSetCompleteRegistration = getWithoutChildrenInternal()
         if (dataSetCompleteRegistration == null) {
-            val username = credentialsRepository.blockingGet()!!.username()
+            val username = credentialsRepository.getInternal()!!.username()
             dataSetCompleteRegistrationStore.insert(
                 DataSetCompleteRegistration.builder()
                     .period(period)
@@ -111,12 +113,17 @@ class DataSetCompleteRegistrationObjectRepository internal constructor(
     }
 
     override fun delete(): Completable {
-        return Completable.fromAction { blockingDelete() }
+        return rxCompletable { deleteInternal() }
     }
 
     @Throws(D2Error::class)
     override fun blockingDelete() {
-        val dataSetCompleteRegistration = blockingGetWithoutChildren()
+        runBlocking { deleteInternal() }
+    }
+
+    @Throws(D2Error::class)
+    private suspend fun deleteInternal() {
+        val dataSetCompleteRegistration = getWithoutChildrenInternal()
         if (dataSetCompleteRegistration == null) {
             throw D2Error
                 .builder()
@@ -140,12 +147,16 @@ class DataSetCompleteRegistrationObjectRepository internal constructor(
     }
 
     override fun deleteIfExist(): Completable {
-        return Completable.fromAction { blockingDeleteIfExist() }
+        return rxCompletable { deleteIfExistInternal() }
     }
 
     override fun blockingDeleteIfExist() {
+        runBlocking { deleteIfExistInternal() }
+    }
+
+    private suspend fun deleteIfExistInternal() {
         try {
-            blockingDelete()
+            deleteInternal()
         } catch (d2Error: D2Error) {
             Log.v(DataSetCompleteRegistrationObjectRepository::class.java.canonicalName, d2Error.errorDescription())
         }

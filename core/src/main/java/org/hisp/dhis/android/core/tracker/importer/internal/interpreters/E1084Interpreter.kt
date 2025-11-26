@@ -35,7 +35,7 @@ internal class E1084Interpreter internal constructor(
     override val regex: Regex,
 ) : ErrorCodeInterpreter {
     override val unformattedDescription = R.string.E1084
-    override fun companions(error: JobValidationError): List<String> {
+    override suspend fun companions(error: JobValidationError): List<String> {
         val fileResourceUid = regex.find(error.message)!!.groupValues.last()
         return listOf(fileResourceUid)
     }

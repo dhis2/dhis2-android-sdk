@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.program
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
@@ -39,23 +38,22 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLinkTableInfo
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.program.internal.ProgramAttributeChildrenAppender
 import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityTypeChildrenAppender
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLinkTableInfo
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitProgramLinkTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramTableInfo
+import org.hisp.dhis.android.persistence.user.UserOrganisationUnitTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 @Suppress("TooManyFunctions")
 class ProgramCollectionRepository internal constructor(
     store: ProgramStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<Program, ProgramCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -63,7 +61,6 @@ class ProgramCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         ProgramCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },
@@ -222,9 +219,9 @@ class ProgramCollectionRepository internal constructor(
             OrganisationUnitProgramLinkTableInfo.TABLE_INFO.name(),
             OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM,
             OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT,
-            UserOrganisationUnitLinkTableInfo.TABLE_INFO.name(),
-            UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT,
-            UserOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT_SCOPE,
+            UserOrganisationUnitTableInfo.TABLE_INFO.name(),
+            UserOrganisationUnitTableInfo.Columns.ORGANISATION_UNIT,
+            UserOrganisationUnitTableInfo.Columns.ORGANISATION_UNIT_SCOPE,
             listOf(scope.name),
         )
     }
@@ -241,7 +238,7 @@ class ProgramCollectionRepository internal constructor(
         private const val ATTRIBUTE_VALUES = "attributeValues"
 
         val childrenAppenders: ChildrenAppenderGetter<Program> = mapOf(
-            ProgramTableInfo.Columns.TRACKED_ENTITY_TYPE to ::ProgramTrackedEntityTypeChildrenAppender,
+            ProgramTableInfo.Columns.TRACKED_ENTITY_TYPE to ProgramTrackedEntityTypeChildrenAppender::create,
             ATTRIBUTE_VALUES to ProgramAttributeChildrenAppender::create,
         )
     }

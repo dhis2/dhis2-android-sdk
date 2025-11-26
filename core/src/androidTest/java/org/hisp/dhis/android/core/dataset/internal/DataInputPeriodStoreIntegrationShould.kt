@@ -32,9 +32,10 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.dataset.DataInputPeriodSamples
 import org.hisp.dhis.android.core.dataset.DataInputPeriod
-import org.hisp.dhis.android.core.dataset.DataInputPeriodTableInfo
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.dataset.DataInputPeriodStoreImpl
+import org.hisp.dhis.android.persistence.dataset.DataInputPeriodTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

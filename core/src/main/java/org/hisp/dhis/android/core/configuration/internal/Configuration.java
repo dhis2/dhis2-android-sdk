@@ -28,13 +28,10 @@
 
 package org.hisp.dhis.android.core.configuration.internal;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 /**
@@ -48,10 +45,6 @@ public abstract class Configuration implements CoreObject {
     @NonNull
     public abstract String serverUrl();
 
-    public static Configuration create(Cursor cursor) {
-        return $AutoValue_Configuration.createFromCursor(cursor);
-    }
-
     public abstract Builder toBuilder();
 
     public static Builder builder() {
@@ -59,9 +52,7 @@ public abstract class Configuration implements CoreObject {
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
+    public abstract static class Builder {
         public abstract Builder serverUrl(String serverUrl);
 
         public abstract Configuration build();

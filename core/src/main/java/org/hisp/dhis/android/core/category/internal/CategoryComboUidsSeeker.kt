@@ -28,24 +28,24 @@
 package org.hisp.dhis.android.core.category.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.MultipleTableQueryBuilder
 import org.hisp.dhis.android.core.arch.db.uidseeker.internal.BaseUidsSeeker
-import org.hisp.dhis.android.core.dataelement.DataElementTableInfo
-import org.hisp.dhis.android.core.dataset.DataSetElementLinkTableInfo
-import org.hisp.dhis.android.core.dataset.DataSetTableInfo
-import org.hisp.dhis.android.core.program.ProgramTableInfo
+import org.hisp.dhis.android.persistence.common.querybuilders.MultipleTableQueryBuilder
+import org.hisp.dhis.android.persistence.dataelement.DataElementTableInfo
+import org.hisp.dhis.android.persistence.dataset.DataSetDataElementLinkTableInfo
+import org.hisp.dhis.android.persistence.dataset.DataSetTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class CategoryComboUidsSeeker(
     databaseAdapter: DatabaseAdapter,
 ) : BaseUidsSeeker(databaseAdapter) {
-    fun seekUids(): Set<String> {
+    suspend fun seekUids(): Set<String> {
         val tableNames = listOf(
             ProgramTableInfo.TABLE_INFO.name(),
             DataSetTableInfo.TABLE_INFO.name(),
             DataElementTableInfo.TABLE_INFO.name(),
-            DataSetElementLinkTableInfo.TABLE_INFO.name(),
+            DataSetDataElementLinkTableInfo.TABLE_INFO.name(),
         )
         val query = MultipleTableQueryBuilder()
             .generateQuery(DataSetTableInfo.Columns.CATEGORY_COMBO, tableNames).build()

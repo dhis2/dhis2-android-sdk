@@ -46,6 +46,7 @@ interface UserModule {
     fun isLogged(): Single<Boolean>
     fun blockingIsLogged(): Boolean
     fun openIdHandler(): OpenIDConnectHandler
+    fun twoFactorAuthManager(): TwoFactorAuthManager
 
     @Deprecated(message = "Use user() instead.")
     fun userCredentials(): UserCredentialsObjectRepository

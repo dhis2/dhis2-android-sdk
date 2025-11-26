@@ -32,9 +32,10 @@ import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractInt
 import org.hisp.dhis.android.core.data.dataset.DataSetCompleteRegistrationSamples
 import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistrationTableInfo
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.dataset.DataSetCompleteRegistrationStoreImpl
+import org.hisp.dhis.android.persistence.dataset.DataSetCompleteRegistrationTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

@@ -33,17 +33,17 @@ import org.hisp.dhis.android.core.event.EventFilter
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class EventFilterHandler constructor(
+internal class EventFilterHandler(
     eventFilterStore: EventFilterStore,
     private val eventDataFilterHandler: EventDataFilterHandler,
 ) : IdentifiableHandlerImpl<EventFilter>(eventFilterStore) {
 
-    override fun beforeCollectionHandled(oCollection: Collection<EventFilter>): Collection<EventFilter> {
+    override suspend fun beforeCollectionHandled(oCollection: Collection<EventFilter>): Collection<EventFilter> {
         store.delete()
         return super.beforeCollectionHandled(oCollection)
     }
 
-    override fun afterObjectHandled(o: EventFilter, action: HandleAction) {
+    override suspend fun afterObjectHandled(o: EventFilter, action: HandleAction) {
         if (action !== HandleAction.Delete && o.eventQueryCriteria() != null) {
             eventDataFilterHandler.handleMany(o.eventQueryCriteria()!!.dataFilters())
         }

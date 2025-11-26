@@ -32,6 +32,7 @@ import android.app.ActivityManager
 import android.content.Context
 import android.util.Log
 import androidx.test.platform.app.InstrumentationRegistry
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.D2
 import org.hisp.dhis.android.core.D2Configuration
 import org.hisp.dhis.android.core.D2Manager
@@ -54,6 +55,7 @@ import java.time.Instant
 import java.util.Date
 import kotlin.random.Random
 import kotlin.system.measureNanoTime
+import kotlin.time.Duration.Companion.seconds
 
 class PerformanceBenchmark {
     lateinit var d2: D2
@@ -71,7 +73,6 @@ class PerformanceBenchmark {
                 config = KotlinxJsonParser.instance.decodeFromString<BenchmarkConfiguration>(json)
             }
         } catch (_: FileNotFoundException) {
-            print("")
             // Ignore if missing file
         }
     }
@@ -84,7 +85,7 @@ class PerformanceBenchmark {
     }
 
     @Test
-    fun benchmark_sdk() {
+    fun benchmark_sdk() = runTest(timeout = 600.seconds) {
         assumeNotNull(config)
 
         val initialMemory = getMemoryusage(context)
@@ -128,7 +129,7 @@ class PerformanceBenchmark {
         }
     }
 
-    private fun runWithTrace(name: String, block: () -> Unit) {
+    private suspend fun runWithTrace(name: String, block: suspend () -> Unit) {
         NetworkTimeTracker.totalNetworkTime = 0L
 
         val totalElapsedTime = measureNanoTime {
@@ -145,25 +146,25 @@ class PerformanceBenchmark {
         return memoryInfo.availMem / 1024 / 1024 // in MB
     }
 
-    private fun instantiateD2() {
+    private suspend fun instantiateD2() {
         runWithTrace("D2 Instantiation") {
             d2 = D2Manager.blockingInstantiateD2(d2Configuration(context))!!
         }
     }
 
-    private fun login(config: BenchmarkConfiguration) {
+    private suspend fun login(config: BenchmarkConfiguration) {
         runWithTrace("D2 Login") {
             d2.userModule().blockingLogIn(config.username, config.password, config.serverUrl)
         }
     }
 
-    private fun downloadMetadata() {
+    private suspend fun downloadMetadata() {
         runWithTrace("Download metadata") {
             d2.metadataModule().blockingDownload()
         }
     }
 
-    private fun downloadData() {
+    private suspend fun downloadData() {
         runWithTrace("Download data") {
             d2.trackedEntityModule().trackedEntityInstanceDownloader().blockingDownload()
             d2.eventModule().eventDownloader().blockingDownload()
@@ -173,7 +174,7 @@ class PerformanceBenchmark {
         }
     }
 
-    private fun doRandomTeiOperations(): List<String> {
+    private suspend fun doRandomTeiOperations(): List<String> {
         var createdTeis = mutableListOf<String>()
         runWithTrace("Random operations") {
             val childProgram =
@@ -248,7 +249,7 @@ class PerformanceBenchmark {
         return createdTeis
     }
 
-    private fun doRandomAggregationOperations(): List<Triple<Period, ObjectWithUid, CategoryOptionCombo>> {
+    private suspend fun doRandomAggregationOperations(): List<Triple<Period, ObjectWithUid, CategoryOptionCombo>> {
         var createdDV = mutableListOf<Triple<Period, ObjectWithUid, CategoryOptionCombo>>()
 
         runWithTrace("Random dataset operations") {
@@ -291,7 +292,7 @@ class PerformanceBenchmark {
         return createdDV
     }
 
-    private fun uploadData() {
+    private suspend fun uploadData() {
         runWithTrace("Upload data") {
             d2.trackedEntityModule().trackedEntityInstances().blockingUpload()
             d2.dataSetModule().dataSetCompleteRegistrations().blockingUpload()
@@ -300,7 +301,7 @@ class PerformanceBenchmark {
         }
     }
 
-    private fun performAnalytics(
+    private suspend fun performAnalytics(
         dataElementSet: Set<String>,
     ): DimensionalResponse? {
         var result: DimensionalResponse? = null
@@ -319,14 +320,14 @@ class PerformanceBenchmark {
         return result
     }
 
-    private fun wipeDataAndDowload() {
+    private suspend fun wipeDataAndDowload() {
         runWithTrace("Wipe data and dowload again") {
             d2.wipeModule().wipeData()
             downloadData()
         }
     }
 
-    private fun deleteData(
+    private suspend fun deleteData(
         createdTeis: List<String>,
         dataValues: List<Triple<Period, ObjectWithUid, CategoryOptionCombo>>,
     ) {

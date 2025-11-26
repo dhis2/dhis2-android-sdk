@@ -69,6 +69,13 @@ sealed class Result<out S, out F : Throwable> {
         }
     }
 
+    inline fun <G : Throwable> mapFailure(transform: (value: F) -> G): Result<S, G> {
+        return when (this) {
+            is Success -> Success(value)
+            is Failure -> Failure(transform(failure))
+        }
+    }
+
     override fun toString(): String {
         return when (this) {
             is Success -> "Success[value=$value]"

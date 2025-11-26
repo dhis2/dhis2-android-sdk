@@ -36,7 +36,7 @@ internal class TrackedEntityInstanceLastUpdatedManager(
     private val resourceHandler: ResourceHandler,
 ) : TrackerSyncLastUpdatedManager<TrackedEntityInstanceSync>(store) {
 
-    fun update(trackerQuery: TrackerQueryBundle) {
+    suspend fun update(trackerQuery: TrackerQueryBundle) {
         val sync = TrackedEntityInstanceSync.builder()
             .program(trackerQuery.commonParams().program)
             .organisationUnitIdsHash(trackerQuery.orgUnits().toSet().hashCode())

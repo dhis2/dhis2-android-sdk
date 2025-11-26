@@ -28,21 +28,22 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
+import androidx.sqlite.db.SimpleSQLiteQuery
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.AggregationType
-import org.hisp.dhis.android.core.datavalue.DataValueTableInfo
 import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
-import org.hisp.dhis.android.core.period.PeriodTableInfo
 import org.hisp.dhis.android.core.util.SqlAggregator
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
+import org.hisp.dhis.android.persistence.datavalue.DataValueTableInfo
+import org.hisp.dhis.android.persistence.period.PeriodTableInfo
 import org.koin.core.annotation.Singleton
-import org.hisp.dhis.android.core.datavalue.DataValueTableInfo.Columns as dvColumns
-import org.hisp.dhis.android.core.period.PeriodTableInfo.Columns as peColumns
+import org.hisp.dhis.android.persistence.datavalue.DataValueTableInfo.Columns as dvColumns
+import org.hisp.dhis.android.persistence.period.PeriodTableInfo.Columns as peColumns
 
 @Singleton
 @Suppress("TooManyFunctions")
@@ -50,21 +51,20 @@ internal class DataElementSQLEvaluator(
     private val databaseAdapter: DatabaseAdapter,
 ) : AnalyticsEvaluator {
 
-    override fun evaluate(
+    override suspend fun evaluate(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
         queryMods: QueryMods?,
     ): String? {
-        val sqlQuery = getSql(evaluationItem, metadata, queryMods)
+        val d2Dao = databaseAdapter.getCurrentDatabase().d2Dao()
+        val sqlQueryString = getSql(evaluationItem, metadata, queryMods)
+        val roomQuery = SimpleSQLiteQuery(sqlQueryString)
 
-        return databaseAdapter.rawQuery(sqlQuery)?.use { c ->
-            c.moveToFirst()
-            c.getString(0)
-        }
+        return d2Dao.queryStringValue(roomQuery)
     }
 
     @Suppress("ComplexMethod", "LongMethod")
-    override fun getSql(
+    override suspend fun getSql(
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
         queryMods: QueryMods?,
@@ -83,7 +83,7 @@ internal class DataElementSQLEvaluator(
                 }
             }
             appendDateQueryMods(queryMods, this)
-            appendKeyNumberValue(DataValueTableInfo.Columns.DELETED, 0)
+            appendKeyNumberValue(dvColumns.DELETED, 0)
         }.build()
 
         return when (aggregator) {
@@ -202,9 +202,9 @@ internal class DataElementSQLEvaluator(
                         innerBuilder.appendOrKeyStringValue(DataValueTableInfo.Columns.DATA_ELEMENT, item.uid)
                     is DimensionItem.DataItem.DataElementOperandItem -> {
                         val operandClause = WhereClauseBuilder()
-                            .appendKeyStringValue(DataValueTableInfo.Columns.DATA_ELEMENT, item.dataElement)
+                            .appendKeyStringValue(dvColumns.DATA_ELEMENT, item.dataElement)
                             .appendKeyStringValue(
-                                DataValueTableInfo.Columns.CATEGORY_OPTION_COMBO,
+                                dvColumns.CATEGORY_OPTION_COMBO,
                                 item.categoryOptionCombo,
                             )
                             .build()

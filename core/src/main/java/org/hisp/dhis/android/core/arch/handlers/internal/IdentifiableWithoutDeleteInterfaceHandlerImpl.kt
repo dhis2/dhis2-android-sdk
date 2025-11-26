@@ -32,10 +32,12 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
 internal open class IdentifiableWithoutDeleteInterfaceHandlerImpl<O : ObjectWithUidInterface>(
     val store: IdentifiableObjectStore<O>,
-) :
-    HandlerBaseImpl<O>() {
+) : HandlerBaseImpl<O>() {
 
-    override fun deleteOrPersist(o: O): HandleAction {
-        return store.updateOrInsert(o)
+    override suspend fun deleteOrPersist(oCollection: Collection<O>) {
+        val handleActions = store.updateOrInsert(oCollection)
+        oCollection.forEachIndexed { index, o ->
+            afterObjectHandled(o, handleActions[index])
+        }
     }
 }

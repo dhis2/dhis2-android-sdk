@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.user
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
@@ -42,7 +43,7 @@ import org.junit.runner.RunWith
 class UserDisabledRxAPIMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
 
     @Test
-    fun delete_database_when_user_disabled_on_rx_api_call_executor() {
+    fun delete_database_when_user_disabled_on_rx_api_call_executor() = runTest {
         dhis2MockServer.enqueueMockResponse(401, "user/user_disabled.json")
         assertThat(d2.userModule().accountManager().getAccounts().size).isEqualTo(1)
 

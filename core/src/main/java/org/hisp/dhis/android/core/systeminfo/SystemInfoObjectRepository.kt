@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.systeminfo
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyFirstObjectWithDownloadRepositoryImpl
@@ -39,19 +38,16 @@ import org.koin.core.annotation.Singleton
 @Singleton(binds = [SystemInfoObjectRepository::class])
 class SystemInfoObjectRepository internal constructor(
     store: SystemInfoStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
     systemInfoCall: SystemInfoCall,
 ) : ReadOnlyFirstObjectWithDownloadRepositoryImpl<SystemInfo, SystemInfoObjectRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     systemInfoCall,
     ObjectRepositoryFactory { cs: RepositoryScope ->
         SystemInfoObjectRepository(
             store,
-            databaseAdapter,
             cs,
             systemInfoCall,
         )

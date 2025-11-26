@@ -28,15 +28,16 @@
 package org.hisp.dhis.android.core.analytics.trackerlinelist
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.argumentCaptor
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.TrackerLineListParams
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.TrackerLineListRepositoryImpl
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.TrackerLineListService
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 
 @RunWith(JUnit4::class)
 class TrackerLineListRepositoryShould {
@@ -50,7 +51,7 @@ class TrackerLineListRepositoryShould {
     private val repository = TrackerLineListRepositoryImpl(initialParams, service)
 
     @Test
-    fun `Call service with overridden columns respecting initial order`() {
+    fun `Call service with overridden columns respecting initial order`() = runTest {
         val de1_1 = TrackerLineListItem.ProgramDataElement("dataElement1", "programStage", listOf(), null)
         val de2_1 = TrackerLineListItem.ProgramDataElement("dataElement2", "programStage", listOf(), null)
         val de1_2 = de1_1.copy(filters = listOf(DataFilter.EqualTo("value")))

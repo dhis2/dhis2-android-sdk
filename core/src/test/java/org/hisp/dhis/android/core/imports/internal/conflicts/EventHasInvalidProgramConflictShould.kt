@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 internal class EventHasInvalidProgramConflictShould : BaseConflictShould() {
@@ -45,7 +46,7 @@ internal class EventHasInvalidProgramConflictShould : BaseConflictShould() {
     }
 
     @Test
-    fun `Should create display description`() {
+    fun `Should create display description`() = runTest {
         val displayDescription = EventHasInvalidProgramConflict.getDisplayDescription(importConflict, context)
         assert(displayDescription == "Your event $eventUid has an invalid program")
     }

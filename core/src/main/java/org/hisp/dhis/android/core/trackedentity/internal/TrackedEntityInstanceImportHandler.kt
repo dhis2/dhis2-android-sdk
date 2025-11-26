@@ -40,8 +40,8 @@ import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceTableInfo
 import org.hisp.dhis.android.core.tracker.importer.internal.JobReportTrackedEntityHandler
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceTableInfo
 import org.koin.core.annotation.Singleton
 import java.util.Date
 
@@ -59,7 +59,7 @@ internal class TrackedEntityInstanceImportHandler internal constructor(
         Regex("Tracked entity instance (\\w{11}) cannot be deleted as it is not present in the system")
 
     @Suppress("NestedBlockDepth")
-    fun handleTrackedEntityInstanceImportSummaries(
+    suspend fun handleTrackedEntityInstanceImportSummaries(
         teiImportSummaries: List<TEIImportSummary?>?,
         instances: List<TrackedEntityInstance>,
     ): TEIWebResponseHandlerSummary {
@@ -108,7 +108,7 @@ internal class TrackedEntityInstanceImportHandler internal constructor(
         return summary
     }
 
-    private fun handleEnrollmentImportSummaries(
+    private suspend fun handleEnrollmentImportSummaries(
         teiImportSummary: TEIImportSummary,
         instances: List<TrackedEntityInstance>,
         teiState: State,
@@ -123,7 +123,7 @@ internal class TrackedEntityInstanceImportHandler internal constructor(
         } ?: TEIWebResponseHandlerSummary()
     }
 
-    private fun storeTEIImportConflicts(teiImportSummary: TEIImportSummary) {
+    private suspend fun storeTEIImportConflicts(teiImportSummary: TEIImportSummary) {
         val trackerImportConflicts: MutableList<TrackerImportConflict> = ArrayList()
         if (teiImportSummary.description() != null) {
             trackerImportConflicts.add(
@@ -141,10 +141,10 @@ internal class TrackedEntityInstanceImportHandler internal constructor(
             )
         }
 
-        trackerImportConflicts.forEach { trackerImportConflictStore.insert(it) }
+        trackerImportConflicts.forEach { trackerImportConflictStore.updateOrInsertWhere(it) }
     }
 
-    private fun processIgnoredTEIs(
+    private suspend fun processIgnoredTEIs(
         processedTEIs: List<String>,
         instances: List<TrackedEntityInstance>,
     ): List<TrackedEntityInstance> {
@@ -155,7 +155,7 @@ internal class TrackedEntityInstanceImportHandler internal constructor(
         }
     }
 
-    private fun resetNestedDataStates(instance: TrackedEntityInstance?) {
+    private suspend fun resetNestedDataStates(instance: TrackedEntityInstance?) {
         instance?.let {
             dataStatePropagator.resetUploadingEnrollmentAndEventStates(instance.uid())
         }
@@ -170,7 +170,7 @@ internal class TrackedEntityInstanceImportHandler internal constructor(
         } ?: listOf()
     }
 
-    private fun checkAlreadyDeletedInServer(summary: TEIImportSummary): String? {
+    private suspend fun checkAlreadyDeletedInServer(summary: TEIImportSummary): String? {
         val teiUid = summary.description()?.let {
             alreadyDeletedInServerRegex.find(it)?.groupValues?.get(1)
         }

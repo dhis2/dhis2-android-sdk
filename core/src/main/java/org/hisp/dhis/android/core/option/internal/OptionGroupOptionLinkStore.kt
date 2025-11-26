@@ -29,6 +29,9 @@
 package org.hisp.dhis.android.core.option.internal
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.option.OptionGroupOptionLink
 
-internal interface OptionGroupOptionLinkStore : LinkStore<OptionGroupOptionLink>
+internal interface OptionGroupOptionLinkStore : LinkStore<OptionGroupOptionLink> {
+    suspend fun getForOptionGroup(optionGroupUid: String): List<ObjectWithUid>
+}

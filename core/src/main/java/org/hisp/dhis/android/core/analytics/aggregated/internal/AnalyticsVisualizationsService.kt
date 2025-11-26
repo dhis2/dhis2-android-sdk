@@ -30,7 +30,13 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal
 
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
-import org.hisp.dhis.android.core.analytics.aggregated.*
+import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
+import org.hisp.dhis.android.core.analytics.aggregated.Dimension
+import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
+import org.hisp.dhis.android.core.analytics.aggregated.GridAnalyticsResponse
+import org.hisp.dhis.android.core.analytics.aggregated.GridHeader
+import org.hisp.dhis.android.core.analytics.aggregated.GridHeaderItem
+import org.hisp.dhis.android.core.analytics.aggregated.GridResponseValue
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.visualization.LegendStrategy
 import org.hisp.dhis.android.core.visualization.Visualization
@@ -44,7 +50,9 @@ internal class AnalyticsVisualizationsService(
     private val dimensionHelper: AnalyticsVisualizationsServiceDimensionHelper,
 ) {
 
-    fun evaluate(params: AnalyticsVisualizationsRepositoryParams): Result<GridAnalyticsResponse, AnalyticsException> {
+    suspend fun evaluate(
+        params: AnalyticsVisualizationsRepositoryParams,
+    ): Result<GridAnalyticsResponse, AnalyticsException> {
         return if (params.visualization == null) {
             Result.Failure(AnalyticsException.InvalidArguments("Null visualization id"))
         } else {
@@ -64,15 +72,15 @@ internal class AnalyticsVisualizationsService(
         }
     }
 
-    private fun getVisualization(visualizationId: String): Visualization? {
+    private suspend fun getVisualization(visualizationId: String): Visualization? {
         return visualizationCollectionRepository
             .withColumnsRowsAndFilters()
             .uid(visualizationId)
-            .blockingGet()
+            .getInternal()
     }
 
     @Suppress("ComplexMethod")
-    private fun getDimensionalResponse(
+    private suspend fun getDimensionalResponse(
         visualization: Visualization,
         params: AnalyticsVisualizationsRepositoryParams,
     ): Result<DimensionalResponse, AnalyticsException> {

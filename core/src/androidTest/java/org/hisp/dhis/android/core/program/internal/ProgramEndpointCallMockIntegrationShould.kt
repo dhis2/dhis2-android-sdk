@@ -28,53 +28,49 @@
 package org.hisp.dhis.android.core.program.internal
 
 import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.hisp.dhis.android.core.category.CategoryComboTableInfo
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
+import org.hisp.dhis.android.core.category.internal.CategoryComboStore
 import org.hisp.dhis.android.core.category.internal.CreateCategoryComboUtils
 import org.hisp.dhis.android.core.data.program.ProgramRuleVariableSamples
 import org.hisp.dhis.android.core.data.program.ProgramSamples
 import org.hisp.dhis.android.core.data.program.ProgramTrackedEntityAttributeSamples
 import org.hisp.dhis.android.core.dataelement.CreateDataElementUtils
-import org.hisp.dhis.android.core.dataelement.DataElementTableInfo
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.program.CreateProgramStageUtils
-import org.hisp.dhis.android.core.program.ProgramStageTableInfo
-import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStoreImpl
+import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStore
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityAttributeUtils
 import org.hisp.dhis.android.core.trackedentity.CreateTrackedEntityUtils
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeTableInfo
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeTableInfo
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.internal.util.collections.Sets
 
 @RunWith(D2JunitRunner::class)
-@OptIn(ExperimentalCoroutinesApi::class)
 class ProgramEndpointCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
 
     @Test
-    fun persist_program_when_call() {
-        val store = ProgramStoreImpl(databaseAdapter)
+    fun persist_program_when_call() = runTest {
+        val store: ProgramStore = koin.get()
 
         assertThat(store.count()).isEqualTo(3)
-        assertThat(store.selectByUid(programUid)!!.toBuilder().id(null).build())
-            .isEqualTo(ProgramSamples.getAntenatalProgram())
+        assertThat(store.selectByUid(PROGRAM_UID)!!).isEqualTo(ProgramSamples.getAntenatalProgram())
     }
 
     @Test
-    fun persist_program_rule_variables_on_call() {
-        val store = ProgramRuleVariableStoreImpl(databaseAdapter)
+    fun persist_program_rule_variables_on_call() = runTest {
+        val store: ProgramRuleVariableStore = koin.get()
 
         assertThat(store.count()).isEqualTo(2)
         assertThat(store.selectByUid("omrL0gtPpDL")).isEqualTo(ProgramRuleVariableSamples.getHemoglobin())
     }
 
     @Test
-    fun persist_program_tracker_entity_attributes_when_call() {
-        val store = ProgramTrackedEntityAttributeStoreImpl(databaseAdapter)
+    fun persist_program_tracker_entity_attributes_when_call() = runTest {
+        val store: ProgramTrackedEntityAttributeStore = koin.get()
 
         assertThat(store.count()).isEqualTo(2)
         assertThat(store.selectByUid("YhqgQ6Iy4c4"))
@@ -82,13 +78,13 @@ class ProgramEndpointCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnq
     }
 
     @Test
-    fun not_persist_relationship_type_when_call() {
-        val store = RelationshipTypeStoreImpl(databaseAdapter)
+    fun not_persist_relationship_type_when_call() = runTest {
+        val store: RelationshipTypeStore = koin.get()
         assertThat(store.count()).isEqualTo(0)
     }
 
     companion object {
-        private const val programUid = "lxAQ7Zs9VYR"
+        private const val PROGRAM_UID = "lxAQ7Zs9VYR"
 
         @BeforeClass
         @JvmStatic
@@ -96,29 +92,39 @@ class ProgramEndpointCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnq
             setUpClass()
 
             val executor = objects.d2DIComponent.coroutineApiCallExecutor
-            executor.wrapTransactionally {
+            executor.wrapTransactionallyRoom {
+                val categoryComboStore = koin.get<CategoryComboStore>()
                 val categoryComboUid = "m2jTvAj5kkm"
-                val categoryCombo = CreateCategoryComboUtils.create(1L, categoryComboUid)
-                databaseAdapter.insert(CategoryComboTableInfo.TABLE_INFO.name(), null, categoryCombo)
+                val categoryCombo = CreateCategoryComboUtils.create(categoryComboUid)
+                categoryComboStore.insert(categoryCombo)
 
                 // inserting tracked entity
-                val trackedEntityType = CreateTrackedEntityUtils.create(1L, "nEenWmSyUEp")
-                databaseAdapter.insert(TrackedEntityTypeTableInfo.TABLE_INFO.name(), null, trackedEntityType)
+                val trackedEntityType = CreateTrackedEntityUtils.create("nEenWmSyUEp")
+                val trackedEntityTypeStore = koin.get<TrackedEntityTypeStore>()
+                trackedEntityTypeStore.insert(trackedEntityType)
 
                 // inserting tracked entity attributes
-                val trackedEntityAttribute1 = CreateTrackedEntityAttributeUtils.create(1L, "aejWyOfXge6", null)
-                databaseAdapter.insert(TrackedEntityAttributeTableInfo.TABLE_INFO.name(), null, trackedEntityAttribute1)
-                val trackedEntityAttribute2 = CreateTrackedEntityAttributeUtils.create(2L, "cejWyOfXge6", null)
-                databaseAdapter.insert(TrackedEntityAttributeTableInfo.TABLE_INFO.name(), null, trackedEntityAttribute2)
-                val dataElement1 = CreateDataElementUtils.create(1L, "vANAXwtLwcT", categoryComboUid, null)
-                databaseAdapter.insert(DataElementTableInfo.TABLE_INFO.name(), null, dataElement1)
-                val dataElement2 = CreateDataElementUtils.create(2L, "sWoqcoByYmD", categoryComboUid, null)
-                databaseAdapter.insert(DataElementTableInfo.TABLE_INFO.name(), null, dataElement2)
-                val programStage = CreateProgramStageUtils.create(1L, "dBwrot7S420", programUid)
-                databaseAdapter.insert(ProgramStageTableInfo.TABLE_INFO.name(), null, programStage)
-                dhis2MockServer.enqueueMockResponse("program/programs.json")
+                val trackedEntityAttributeStore = koin.get<TrackedEntityAttributeStore>()
+                val trackedEntityAttribute1 = CreateTrackedEntityAttributeUtils.create("aejWyOfXge6", "VQ2lai3OfVG")
+                trackedEntityAttributeStore.insert(trackedEntityAttribute1)
+                val trackedEntityAttribute2 = CreateTrackedEntityAttributeUtils.create("cejWyOfXge6", "VQ2lai3OfVG")
+                trackedEntityAttributeStore.insert(trackedEntityAttribute2)
 
-                objects.d2DIComponent.programCall.download(Sets.newSet(programUid))
+                val dataElementStore = koin.get<DataElementStore>()
+                val dataElement1 = CreateDataElementUtils.create("vANAXwtLwcT", categoryComboUid, "VQ2lai3OfVG")
+                dataElementStore.insert(dataElement1)
+                val dataElement2 = CreateDataElementUtils.create("sWoqcoByYmD", categoryComboUid, "VQ2lai3OfVG")
+                dataElementStore.insert(dataElement2)
+
+                val programStageStore = koin.get<ProgramStageStore>()
+                val programStage = CreateProgramStageUtils.create("dBwrot7S420", PROGRAM_UID)
+                programStageStore.insert(programStage)
+
+                dhis2MockServer.enqueueMockResponse("program/programs.json")
+                objects.d2DIComponent.programCall.download(setOf(PROGRAM_UID))
+
+                dhis2MockServer.enqueueMockResponse("option/option_sets.json")
+                objects.d2DIComponent.optionSetCall.download(setOf("POc7DkGU3QU"))
             }
         }
     }

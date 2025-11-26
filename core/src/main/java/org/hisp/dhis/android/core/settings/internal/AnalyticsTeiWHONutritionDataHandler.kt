@@ -42,7 +42,7 @@ internal class AnalyticsTeiWHONutritionDataHandler(
     private val teiIndicatorHandler: AnalyticsTeiIndicatorHandler,
 ) : ChildElementHandlerImpl<AnalyticsTeiWHONutritionData>(store) {
 
-    override fun afterObjectHandled(o: AnalyticsTeiWHONutritionData) {
+    override suspend fun afterObjectHandled(o: AnalyticsTeiWHONutritionData) {
         val dataElementList =
             getDataElements(o.x(), WHONutritionComponent.X) + getDataElements(o.y(), WHONutritionComponent.Y)
 

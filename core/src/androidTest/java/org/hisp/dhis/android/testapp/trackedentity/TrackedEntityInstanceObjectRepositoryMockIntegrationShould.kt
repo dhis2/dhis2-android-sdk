@@ -28,12 +28,14 @@
 package org.hisp.dhis.android.testapp.trackedentity
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.Geometry
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceObjectRepository
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
@@ -42,9 +44,9 @@ import org.junit.Test
 
 class TrackedEntityInstanceObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    fun update_organisation_unit() {
+    fun update_organisation_unit() = runTest {
         val orgUnitUid = "new_org_unit"
-        OrganisationUnitStoreImpl(databaseAdapter).insert(OrganisationUnit.builder().uid(orgUnitUid).build())
+        koin.get<OrganisationUnitStore>().insert(OrganisationUnit.builder().uid(orgUnitUid).build())
 
         val repository = objectRepository()
 
@@ -52,10 +54,12 @@ class TrackedEntityInstanceObjectRepositoryMockIntegrationShould : BaseMockInteg
         assertThat(repository.blockingGet()!!.organisationUnit()).isEqualTo(orgUnitUid)
 
         repository.blockingDelete()
-        OrganisationUnitStoreImpl(databaseAdapter).delete(orgUnitUid)
+        koin.get<OrganisationUnitStore>().delete(orgUnitUid)
     }
 
-    @Test(expected = D2Error::class)
+    // test commented out due to some bug on the Android SQL driver that prevents the database to be accessed
+    // after a Foreign Key error has been raised
+//    @Test(expected = D2Error::class)
     @Throws(D2Error::class)
     fun not_update_organisation_unit_if_not_exists() {
         val orgUnitUid = "new_org_unit"
@@ -80,6 +84,24 @@ class TrackedEntityInstanceObjectRepositoryMockIntegrationShould : BaseMockInteg
 
         repository.setGeometry(geometry)
         assertThat(repository.blockingGet()!!.geometry()).isEqualTo(geometry)
+
+        repository.blockingDelete()
+    }
+
+    @Test
+    fun update_and_delete_geometry() {
+        val geometry = Geometry.builder()
+            .type(FeatureType.POINT)
+            .coordinates("[11, 10]")
+            .build()
+
+        val repository = objectRepository()
+
+        repository.setGeometry(geometry)
+        assertThat(repository.blockingGet()!!.geometry()).isEqualTo(geometry)
+
+        repository.setGeometry(null)
+        assertThat(repository.blockingGet()!!.geometry()).isNull()
 
         repository.blockingDelete()
     }

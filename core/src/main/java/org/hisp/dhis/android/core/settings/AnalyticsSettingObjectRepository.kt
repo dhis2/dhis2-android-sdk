@@ -39,9 +39,9 @@ class AnalyticsSettingObjectRepository internal constructor(
     private val analyticsDhisVisualizationsSettingObjectRepository: AnalyticsDhisVisualizationsSettingObjectRepository,
 ) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<AnalyticsSettings>(analyticsSettingCall),
     ReadOnlyWithDownloadObjectRepository<AnalyticsSettings> {
-    override fun blockingGet(): AnalyticsSettings? {
-        val analyticsTeiSettings = analyticsTeiSettingRepository.blockingGet()
-        val analyticsDhisVisualizationsSetting = analyticsDhisVisualizationsSettingObjectRepository.blockingGet()
+    override suspend fun getInternal(): AnalyticsSettings? {
+        val analyticsTeiSettings = analyticsTeiSettingRepository.getInternal()
+        val analyticsDhisVisualizationsSetting = analyticsDhisVisualizationsSettingObjectRepository.getInternal()
 
         return AnalyticsSettings.builder()
             .tei(analyticsTeiSettings)

@@ -31,8 +31,10 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.format.char
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat
@@ -43,8 +45,27 @@ import java.util.Date
 @Suppress("TooManyFunctions")
 object DateUtils {
 
+    private const val MILLISECOND_DIGITS = 3
+
     @JvmField
     val DATE_FORMAT = SafeDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
+
+    @JvmField
+    val KTX_DATE_FORMAT = LocalDateTime.Format {
+        year()
+        char('-')
+        monthNumber()
+        char('-')
+        dayOfMonth()
+        char('T')
+        hour()
+        char(':')
+        minute()
+        char(':')
+        second()
+        char('.')
+        secondFraction(MILLISECOND_DIGITS)
+    }
 
     @JvmField
     val SPACE_DATE_FORMAT = SafeDateFormat("yyyy-MM-dd HH:mm:ss.SSS")

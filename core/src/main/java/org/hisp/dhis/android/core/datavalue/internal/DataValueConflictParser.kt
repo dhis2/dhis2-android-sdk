@@ -39,15 +39,14 @@ import org.hisp.dhis.android.core.datavalue.internal.conflicts.PastExpiryDateCon
 import org.hisp.dhis.android.core.datavalue.internal.conflicts.PeriodAfterLatestOpenFutureConflict
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
 import org.koin.core.annotation.Singleton
-
 @Singleton
 internal class DataValueConflictParser(
-    dataElementStore: DataElementStore,
-    dataValueStore: DataValueStore,
-    dataSetStore: DataSetStore,
-    val versionManager: DHISVersionManager,
+    private val dataElementStore: DataElementStore,
+    private val dataValueStore: DataValueStore,
+    private val dataSetStore: DataSetStore,
+    private val versionManager: DHISVersionManagerImpl,
 ) {
 
     private val conflicts = listOf(
@@ -59,11 +58,11 @@ internal class DataValueConflictParser(
 
     private val indexedDataValueConflict = IndexedDataValueConflict()
 
-    fun getDataValueConflicts(
+    suspend fun getDataValueConflicts(
         conflict: ImportConflict,
         dataValues: List<DataValue>,
     ): List<DataValueConflict> {
-        return if (versionManager.isGreaterOrEqualThan(DHISVersion.V2_37)) {
+        return if (versionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_37)) {
             indexedDataValueConflict.getDataValues(conflict, dataValues)
         } else {
             conflicts.find {

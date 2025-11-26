@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleanerImpl
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.legendset.Legend
 import org.hisp.dhis.android.core.legendset.LegendSet
-import org.hisp.dhis.android.core.legendset.LegendTableInfo
+import org.hisp.dhis.android.persistence.legendset.LegendTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton

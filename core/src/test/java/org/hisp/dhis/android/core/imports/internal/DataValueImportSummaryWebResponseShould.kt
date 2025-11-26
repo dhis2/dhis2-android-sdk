@@ -28,8 +28,7 @@
 package org.hisp.dhis.android.core.imports.internal
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
-import org.hisp.dhis.android.core.common.ObjectShould
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.network.datavalue.DataValueImportSummaryWebResponseDTO
 import org.junit.Test
@@ -37,8 +36,9 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class DataValueImportSummaryWebResponseShould :
-    BaseObjectKotlinxShould("imports/data_value_import_summary_web_response.json"), ObjectShould {
+class DataValueImportSummaryWebResponseShould : CoreObjectShould(
+    "imports/data_value_import_summary_web_response.json",
+) {
 
     @Test
     override fun map_from_json_string() {

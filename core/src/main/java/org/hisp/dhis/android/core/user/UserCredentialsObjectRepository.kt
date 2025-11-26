@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.user
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
@@ -41,19 +40,28 @@ import org.koin.core.annotation.Singleton
 @Singleton(binds = [UserCredentialsObjectRepository::class])
 class UserCredentialsObjectRepository internal constructor(
     store: UserStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
     transformer: UserUserCredentialsTransformer,
 ) : ReadOnlyObjectRepository<UserCredentials> by ReadOnlyWithTransformerObjectRepositoryImpl(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     transformer,
 ) {
 
+    private val delegate = ReadOnlyWithTransformerObjectRepositoryImpl(
+        store,
+        childrenAppenders,
+        scope,
+        transformer,
+    )
+
     private val cf: FilterConnectorFactory<UserCredentialsObjectRepository> = FilterConnectorFactory(scope) { s ->
-        UserCredentialsObjectRepository(store, databaseAdapter, s, transformer)
+        UserCredentialsObjectRepository(store, s, transformer)
+    }
+
+    internal suspend fun getInternal(): UserCredentials? {
+        return delegate.getInternal()
     }
 
     fun withUserRoles(): UserCredentialsObjectRepository {
@@ -64,7 +72,7 @@ class UserCredentialsObjectRepository internal constructor(
         private const val USER_ROLES = "userRoles"
 
         val childrenAppenders: ChildrenAppenderGetter<User> = mapOf(
-            USER_ROLES to ::UserRoleChildrenAppender,
+            USER_ROLES to UserRoleChildrenAppender::create,
         )
     }
 }

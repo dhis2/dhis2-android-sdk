@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 interface OrphanCleaner<P : ObjectWithUidInterface, C : ObjectWithUidInterface> {
 
     @JvmSuppressWildcards
-    fun deleteOrphan(parent: P?, children: Collection<C>?): Boolean
+    suspend fun deleteOrphan(parent: P?, children: Collection<C>?): Boolean
 }

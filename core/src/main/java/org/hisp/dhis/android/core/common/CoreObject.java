@@ -28,16 +28,5 @@
 
 package org.hisp.dhis.android.core.common;
 
-import android.content.ContentValues;
-
-import androidx.annotation.Nullable;
-
-import com.gabrielittner.auto.value.cursor.ColumnName;
-
 public interface CoreObject {
-    @Nullable
-    @ColumnName(CoreColumns.ID)
-    Long id();
-
-    ContentValues toContentValues();
 }

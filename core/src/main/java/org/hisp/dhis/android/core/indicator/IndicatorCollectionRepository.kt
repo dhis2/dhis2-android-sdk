@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.indicator
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyNameableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
@@ -36,20 +35,20 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.NameableWithStyleColumns
-import org.hisp.dhis.android.core.dataset.SectionIndicatorLinkTableInfo
 import org.hisp.dhis.android.core.indicator.internal.IndicatorLegendSetChildrenAppender
 import org.hisp.dhis.android.core.indicator.internal.IndicatorStore
+import org.hisp.dhis.android.persistence.dataset.SectionIndicatorLinkTableInfo
+import org.hisp.dhis.android.persistence.indicator.DataSetIndicatorLinkTableInfo
+import org.hisp.dhis.android.persistence.indicator.IndicatorTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 @Suppress("TooManyFunctions")
 class IndicatorCollectionRepository internal constructor(
     store: IndicatorStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyNameableCollectionRepositoryImpl<Indicator, IndicatorCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -57,7 +56,6 @@ class IndicatorCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         IndicatorCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },

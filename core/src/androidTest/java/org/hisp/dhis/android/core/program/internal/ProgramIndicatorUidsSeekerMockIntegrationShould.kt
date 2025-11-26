@@ -29,12 +29,13 @@
 package org.hisp.dhis.android.core.program.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 
 class ProgramIndicatorUidsSeekerMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
-    fun seek_programIndicator_uids() {
+    fun seek_programIndicator_uids() = runTest {
         val programIndicatorsUids = ProgramIndicatorUidsSeeker(databaseAdapter).seekUids()
         assertThat(programIndicatorsUids.size).isEqualTo(3)
         assertThat(programIndicatorsUids.contains("p2Zxg0wcPQ3")).isTrue()

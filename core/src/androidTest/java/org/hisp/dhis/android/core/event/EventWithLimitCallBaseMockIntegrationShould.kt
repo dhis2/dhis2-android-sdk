@@ -28,9 +28,12 @@
 package org.hisp.dhis.android.core.event
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.event.internal.EventStoreImpl
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
+import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.settings.SynchronizationSettings
-import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStoreImpl
+import org.hisp.dhis.android.core.settings.internal.SynchronizationSettingStore
 import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
@@ -46,37 +49,41 @@ abstract class EventWithLimitCallBaseMockIntegrationShould : BaseMockIntegration
     abstract val downloadEventsByUidLimitedByOneFile: String
 
     private lateinit var initSyncParams: SynchronizationSettings
-    private val syncStore = SynchronizationSettingStoreImpl(databaseAdapter)
+    private val syncStore: SynchronizationSettingStore = koin.get()
 
     @Before
     fun setUp() {
-        initSyncParams = syncStore.selectFirst()!!
-        val testParams = initSyncParams.toBuilder().trackerImporterVersion(importerVersion)
-            .trackerExporterVersion(exporterVersion).build()
-        syncStore.delete()
-        syncStore.insert(testParams)
+        runBlocking {
+            initSyncParams = syncStore.selectFirst()!!
+            val testParams = initSyncParams.toBuilder().trackerImporterVersion(importerVersion)
+                .trackerExporterVersion(exporterVersion).build()
+            syncStore.delete()
+            syncStore.insert(testParams)
+        }
     }
 
     @After
     fun tearDown() {
-        d2.wipeModule().wipeData()
-        syncStore.delete()
-        syncStore.insert(initSyncParams)
+        runBlocking {
+            d2.wipeModule().wipeData()
+            syncStore.delete()
+            syncStore.insert(initSyncParams)
+        }
     }
 
     @Test
-    fun download_events() {
+    fun download_events() = runTest {
         val eventLimitByOrgUnit = 1
         dhis2MockServer.enqueueSystemInfoResponse()
         dhis2MockServer.enqueueMockResponse(downloadEventsFile)
         d2.eventModule().eventDownloader().limit(eventLimitByOrgUnit).blockingDownload()
-        val eventStore = EventStoreImpl(databaseAdapter)
+        val eventStore: EventStore = koin.get()
         val downloadedEvents = eventStore.querySingleEvents()
         assertThat(downloadedEvents.size).isEqualTo(eventLimitByOrgUnit)
     }
 
     // @Test TODO https://jira.dhis2.org/browse/ANDROSDK-1328
-    fun download_events_by_uid_limited_by_one() {
+    fun download_events_by_uid_limited_by_one() = runTest {
         val eventLimitByOrgUnit = 1
         dhis2MockServer.enqueueSystemInfoResponse()
         dhis2MockServer.enqueueMockResponse(downloadEventsByUidLimitedByOneFile)
@@ -85,7 +92,7 @@ abstract class EventWithLimitCallBaseMockIntegrationShould : BaseMockIntegration
             .`in`("wAiGPfJGMxt", "PpNGhvEYnXe")
             .limit(eventLimitByOrgUnit)
             .blockingDownload()
-        val eventStore = EventStoreImpl(databaseAdapter)
+        val eventStore: EventStore = koin.get()
         val downloadedEvents = eventStore.querySingleEvents()
         assertThat(downloadedEvents.size).isEqualTo(eventLimitByOrgUnit)
     }

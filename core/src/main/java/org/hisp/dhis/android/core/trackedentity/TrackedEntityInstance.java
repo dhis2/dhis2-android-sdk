@@ -28,26 +28,11 @@
 
 package org.hisp.dhis.android.core.trackedentity;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
-import com.gabrielittner.auto.value.cursor.ColumnName;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbDateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.DbGeometryColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.StateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreEnrollmentListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreProgramOwnerListAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreRelationshipListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStateColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreStringColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreTrackedEntityAttributeValueListColumnAdapter;
 import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
-import org.hisp.dhis.android.core.common.DataColumns;
-import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
 import org.hisp.dhis.android.core.common.State;
@@ -65,19 +50,15 @@ public abstract class TrackedEntityInstance extends BaseDeletableDataObject impl
     public abstract String uid();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date created();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdated();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date createdAtClient();
 
     @Nullable
-    @ColumnAdapter(DbDateColumnAdapter.class)
     public abstract Date lastUpdatedAtClient();
 
     @Nullable
@@ -86,37 +67,22 @@ public abstract class TrackedEntityInstance extends BaseDeletableDataObject impl
     @Nullable
     public abstract String trackedEntityType();
 
-    /**
-     * @deprecated since 2.30, replaced by {@link #geometry()}
-     */
     @Nullable
-    @Deprecated
-    @ColumnAdapter(IgnoreStringColumnAdapter.class)
-    abstract String coordinates();
-
-    @Nullable
-    @ColumnAdapter(DbGeometryColumnAdapter.class)
     public abstract Geometry geometry();
 
     @Nullable
-    @ColumnAdapter(IgnoreTrackedEntityAttributeValueListColumnAdapter.class)
     public abstract List<TrackedEntityAttributeValue> trackedEntityAttributeValues();
 
     @Nullable
-    @ColumnAdapter(IgnoreRelationshipListColumnAdapter.class)
     abstract List<Relationship> relationships();
 
     @Nullable
-    @ColumnAdapter(IgnoreEnrollmentListColumnAdapter.class)
     abstract List<Enrollment> enrollments();
 
     @Nullable
-    @ColumnAdapter(IgnoreProgramOwnerListAdapter.class)
     public abstract List<ProgramOwner> programOwners();
 
     @Nullable
-    @ColumnName(DataColumns.AGGREGATED_SYNC_STATE)
-    @ColumnAdapter(StateColumnAdapter.class)
     public abstract State aggregatedSyncState();
 
     /**
@@ -124,25 +90,18 @@ public abstract class TrackedEntityInstance extends BaseDeletableDataObject impl
      */
     @Deprecated
     @Nullable
-    @ColumnAdapter(IgnoreStateColumnAdapter.class)
     public State state() {
         return aggregatedSyncState();
     }
 
     public static Builder builder() {
-        return new $$AutoValue_TrackedEntityInstance.Builder();
-    }
-
-    public static TrackedEntityInstance create(Cursor cursor) {
-        return $AutoValue_TrackedEntityInstance.createFromCursor(cursor);
+        return new AutoValue_TrackedEntityInstance.Builder();
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseDeletableDataObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
+    public abstract static class Builder implements BaseDeletableDataObject.Builder<Builder> {
         public abstract Builder uid(String uid);
 
         public abstract Builder created(Date created);
@@ -156,12 +115,6 @@ public abstract class TrackedEntityInstance extends BaseDeletableDataObject impl
         public abstract Builder organisationUnit(String organisationUnit);
 
         public abstract Builder trackedEntityType(String trackedEntityType);
-
-        /**
-         * @deprecated since 2.30, replaced by {@link #geometry()}
-         */
-        @Deprecated
-        abstract Builder coordinates(String coordinates);
 
         public abstract Builder geometry(Geometry geometry);
 
@@ -183,24 +136,7 @@ public abstract class TrackedEntityInstance extends BaseDeletableDataObject impl
         abstract Builder relationships(List<Relationship> relationships);
 
         abstract Builder enrollments(List<Enrollment> enrollments);
-
-        abstract TrackedEntityInstance autoBuild();
-
-        // Auxiliary fields to access values
-        abstract String coordinates();
-        abstract Geometry geometry();
-        public TrackedEntityInstance build() {
-            if (geometry() == null) {
-                if (coordinates() != null) {
-                    geometry(Geometry.builder()
-                            .type(FeatureType.POINT)
-                            .coordinates(coordinates())
-                            .build());
-                }
-            } else {
-                coordinates(geometry().coordinates());
-            }
-            return autoBuild();
-        }
+        
+        public abstract TrackedEntityInstance build();
     }
 }

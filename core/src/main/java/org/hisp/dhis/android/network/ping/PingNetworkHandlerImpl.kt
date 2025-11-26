@@ -30,17 +30,22 @@ package org.hisp.dhis.android.network.ping
 
 import io.ktor.client.statement.HttpResponse
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
 import org.hisp.dhis.android.core.systeminfo.internal.PingNetworkHandler
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class PingNetworkHandlerImpl(
     httpServiceClient: HttpServiceClient,
-    dhisVersionManager: DHISVersionManager,
+    dhisVersionManager: DHISVersionManagerImpl,
 ) : PingNetworkHandler {
     private val service = PingService(httpServiceClient, dhisVersionManager)
+
     override suspend fun getPing(): HttpResponse {
         return service.getPing()
+    }
+
+    override suspend fun getPingFor(serverUrl: String): HttpResponse {
+        return service.getPingFor(serverUrl)
     }
 }

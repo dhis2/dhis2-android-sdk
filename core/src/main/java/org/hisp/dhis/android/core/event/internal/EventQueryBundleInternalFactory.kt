@@ -27,22 +27,24 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
+import org.hisp.dhis.android.core.event.EventFilterCollectionRepository
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryFactoryCommonHelper
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryInternalFactory
 
-internal class EventQueryBundleInternalFactory constructor(
+internal class EventQueryBundleInternalFactory(
     commonHelper: TrackerQueryFactoryCommonHelper,
     params: ProgramDataDownloadParams,
     programSettings: ProgramSettings?,
+    val eventFilterCollectionRepository: EventFilterCollectionRepository,
 ) : TrackerQueryInternalFactory<EventQueryBundle>(commonHelper, params, programSettings) {
 
-    override fun queryInternal(
+    override suspend fun queryInternal(
         programs: List<String>,
         programUid: String?,
-        orgUnitByLimitExtractor: () -> List<String>,
+        orgUnitByLimitExtractor: suspend () -> List<String>,
     ): List<EventQueryBundle> {
         val limit = commonHelper.getLimit(
             params,
@@ -61,10 +63,25 @@ internal class EventQueryBundleInternalFactory constructor(
             orgUnitByLimitExtractor,
         ) { it?.eventDateDownload() }
 
+        val eventFilters = (params.eventFilters()?.filter { it.program() == programUid } ?: emptyList())
+
+        val eventFilterSettings = programSettings?.specificSettings()?.get(programUid)?.filters()?.map { it.uid() }
+
+        val programSettingFilters = eventFilterSettings.takeIf { !it.isNullOrEmpty() }?.let {
+            eventFilterCollectionRepository
+                .byUid().`in`(it)
+                .withEventDataFilters()
+                .getInternal()
+        }
+
         val builder = EventQueryBundle.builder()
+            .eventFilters(eventFilters.takeIf { it.isNotEmpty() } ?: programSettingFilters)
             .commonParams(commonParams)
 
-        return commonHelper.divideByOrgUnits(commonParams.orgUnitsBeforeDivision, commonParams.hasLimitByOrgUnit) {
+        return commonHelper.divideByOrgUnits(
+            commonParams.orgUnitsBeforeDivision,
+            commonParams.hasLimitByOrgUnit,
+        ) {
             builder.orgUnits(it).build()
         }
     }

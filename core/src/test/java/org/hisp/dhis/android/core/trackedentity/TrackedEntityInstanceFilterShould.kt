@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.DateFilterPeriod
 import org.hisp.dhis.android.core.common.DatePeriodType
 import org.hisp.dhis.android.core.common.FilterPeriod
-import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
@@ -44,8 +43,7 @@ import org.junit.Test
 import org.mockito.internal.util.collections.Sets
 
 class TrackedEntityInstanceFilterShould :
-    TrackedEntityInstanceFilterCommonShould("trackedentity/tracked_entity_instance_filter.json"),
-    ObjectShould {
+    TrackedEntityInstanceFilterCommonShould("trackedentity/tracked_entity_instance_filter.json") {
     @Test
     override fun map_from_json_string() {
         val trackedEntityInstanceFilterDTO = deserialize(TrackedEntityInstanceFilterDTO.serializer())

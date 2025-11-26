@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.core.settings;
 
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -50,10 +48,6 @@ public abstract class DataSetConfigurationSetting implements CoreObject, ObjectW
     @Nullable
     public abstract Boolean disableManualLocation();
 
-    public static DataSetConfigurationSetting create(Cursor cursor) {
-        return AutoValue_DataSetConfigurationSetting.createFromCursor(cursor);
-    }
-
     public abstract Builder toBuilder();
 
     public static Builder builder() {
@@ -62,8 +56,6 @@ public abstract class DataSetConfigurationSetting implements CoreObject, ObjectW
 
     @AutoValue.Builder
     public abstract static class Builder {
-
-        public abstract Builder id(Long id);
 
         public abstract Builder uid(String uid);
 

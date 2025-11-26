@@ -32,14 +32,12 @@ import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
 internal object InternalStockUseCaseSamples {
     fun get(): InternalStockUseCase {
         return InternalStockUseCase.builder()
-            .id(1L)
             .uid("program_uid")
             .stockOnHand("stock_on_hand")
             .description("description")
             .programType("program_type")
             .itemCode("item_code")
             .itemDescription("item_description")
-            .transactions(listOf(InternalStockUseCaseTransactionSamples.get()))
             .build()
     }
 }

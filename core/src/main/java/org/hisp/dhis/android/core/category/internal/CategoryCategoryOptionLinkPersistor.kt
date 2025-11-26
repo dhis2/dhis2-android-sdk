@@ -37,12 +37,12 @@ internal class CategoryCategoryOptionLinkPersistor(
     private val categoryCategoryOptionLinkHandler: CategoryCategoryOptionLinkHandler,
 ) {
 
-    fun handleMany(categories: List<Category>, categoryOptions: List<CategoryOption>) {
-        val categoryOptionsMap = categoryOptions.map { it.uid() to it }.toMap()
+    suspend fun handleMany(categories: List<Category>, categoryOptions: List<CategoryOption>) {
+        val categoryOptionsMap = categoryOptions.associateBy { it.uid() }
         categories.forEach { handleCategory(it, categoryOptionsMap) }
     }
 
-    private fun handleCategory(category: Category, categoryOptions: Map<String, CategoryOption>) {
+    private suspend fun handleCategory(category: Category, categoryOptions: Map<String, CategoryOption>) {
         val categoryOptionsWithAccess = category.categoryOptions()!!.filter {
             categoryOptions.containsKey(it.uid())
         }

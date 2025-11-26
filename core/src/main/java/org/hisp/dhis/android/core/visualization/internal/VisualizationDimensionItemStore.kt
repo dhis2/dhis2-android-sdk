@@ -31,4 +31,8 @@ package org.hisp.dhis.android.core.visualization.internal
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
 
-internal interface VisualizationDimensionItemStore : LinkStore<VisualizationDimensionItem>
+internal interface VisualizationDimensionItemStore : LinkStore<VisualizationDimensionItem> {
+    suspend fun getVisualizationDimensionItemForVisualization(
+        visualizationId: String,
+    ): List<VisualizationDimensionItem>
+}

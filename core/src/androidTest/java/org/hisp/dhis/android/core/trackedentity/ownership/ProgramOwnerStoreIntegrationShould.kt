@@ -31,6 +31,8 @@ import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractInt
 import org.hisp.dhis.android.core.data.trackedentity.ownership.ProgramOwnerSamples
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.trackedentity.ProgramOwnerStoreImpl
+import org.hisp.dhis.android.persistence.trackedentity.ProgramOwnerTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

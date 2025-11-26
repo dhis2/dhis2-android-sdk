@@ -30,8 +30,9 @@ package org.hisp.dhis.android.core.event.internal
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.event.internal.EventCallFactory.create
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStoreImpl
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
 
 class EventEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
     // This test is commented because technically it is flaky.
@@ -64,21 +65,21 @@ class EventEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
         assertThat(verifyAtLeastOneEventWithOptionCombo()).isTrue()
     }
 
-    private fun verifyAtLeastOneEventWithOptionCombo(): Boolean {
-        val eventStore = EventStoreImpl(d2.databaseAdapter())
+    private suspend fun verifyAtLeastOneEventWithOptionCombo(): Boolean {
+        val eventStore = koin.get<EventStore>()
         val downloadedEvents = eventStore.querySingleEvents()
         return downloadedEvents.any { it.attributeOptionCombo() != null }
     }
 
-    private fun verifyNumberOfDownloadedEvents(numEvents: Int) {
-        val eventStore = EventStoreImpl(d2.databaseAdapter())
+    private suspend fun verifyNumberOfDownloadedEvents(numEvents: Int) {
+        val eventStore = koin.get<EventStore>()
         val downloadedEvents = eventStore.querySingleEvents()
 
         assertThat(downloadedEvents.size).isEqualTo(numEvents)
     }
 
-    private fun verifyNumberOfDownloadedTrackedEntityDataValue(num: Int) {
-        val trackedEntityDataValueStore = TrackedEntityDataValueStoreImpl(d2.databaseAdapter())
+    private suspend fun verifyNumberOfDownloadedTrackedEntityDataValue(num: Int) {
+        val trackedEntityDataValueStore = koin.get<TrackedEntityDataValueStore>()
         val numPersisted = trackedEntityDataValueStore.selectAll().size
 
         assertThat(numPersisted).isEqualTo(num)

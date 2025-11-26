@@ -30,10 +30,10 @@ package org.hisp.dhis.android.core.map.internal
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.maps.MapLayerSamples
 import org.hisp.dhis.android.core.map.layer.MapLayer
-import org.hisp.dhis.android.core.map.layer.MapLayerTableInfo
-import org.hisp.dhis.android.core.map.layer.internal.MapLayerStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.map.MapLayerStoreImpl
+import org.hisp.dhis.android.persistence.map.MapLayerTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

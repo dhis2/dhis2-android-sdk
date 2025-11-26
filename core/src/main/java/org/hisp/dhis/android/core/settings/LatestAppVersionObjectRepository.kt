@@ -40,7 +40,7 @@ class LatestAppVersionObjectRepository internal constructor(
 ) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<LatestAppVersion>(latestAppVersionCall),
     ReadOnlyWithDownloadObjectRepository<LatestAppVersion> {
 
-    override fun blockingGet(): LatestAppVersion? {
+    override suspend fun getInternal(): LatestAppVersion? {
         return store.selectAll().firstOrNull()
     }
 }

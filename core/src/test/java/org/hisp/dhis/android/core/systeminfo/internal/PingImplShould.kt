@@ -28,20 +28,16 @@
 package org.hisp.dhis.android.core.systeminfo.internal
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.network.ping.PingNetworkHandlerImpl
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
@@ -49,18 +45,23 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
 class PingImplShould {
-    private val dhisVersionManager: DHISVersionManager = mock()
+    private val dhisVersionManager: DHISVersionManagerImpl = mock()
 
     @Before
     fun setUp() {
-        whenever(dhisVersionManager.isGreaterThan(DHISVersion.V2_36)).doReturn(true)
+        runTest {
+            whenever(dhisVersionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_40)).doReturn(true)
+        }
     }
 
     @Test
-    fun get_should_return_success_when_ping_service_succeeds2() = runBlocking {
+    fun get_should_return_success_when_ping_service_succeeds2() = runTest {
         val expectedResponse = ""
         val mockEngine = MockEngine { respond(content = "") }
         val client = HttpClient(mockEngine)
@@ -73,7 +74,7 @@ class PingImplShould {
     }
 
     @Test
-    fun get_should_return_D2Error_when_ping_service_fails() = runBlocking {
+    fun get_should_return_D2Error_when_ping_service_fails() = runTest {
         val mockEngine = MockEngine {
             respond(
                 content = "Internal Server Error",

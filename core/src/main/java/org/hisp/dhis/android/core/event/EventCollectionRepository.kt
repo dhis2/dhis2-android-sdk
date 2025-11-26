@@ -28,8 +28,11 @@
 package org.hisp.dhis.android.core.event
 
 import io.reactivex.Observable
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadWithUidCollectionRepository
@@ -48,16 +51,18 @@ import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludingError
 import org.hisp.dhis.android.core.common.internal.TrackerDataManager
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.event.internal.EventPostParentCall
 import org.hisp.dhis.android.core.event.internal.EventProjectionTransformer
+import org.hisp.dhis.android.core.event.internal.EventStatusFilterConnector
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.note.internal.NoteForEventChildrenAppender
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTableInfo
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueChildrenAppender
 import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall
 import org.hisp.dhis.android.core.user.internal.UserStore
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.persistence.event.EventTableInfo
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityDataValueTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -65,7 +70,6 @@ import org.koin.core.annotation.Singleton
 class EventCollectionRepository internal constructor(
     private val eventStore: EventStore,
     private val userStore: UserStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
     private val postCall: EventPostParentCall,
     transformer: EventProjectionTransformer,
@@ -73,7 +77,6 @@ class EventCollectionRepository internal constructor(
     private val jobQueryCall: JobQueryCall,
 ) : ReadWriteWithUidCollectionRepositoryImpl<Event, EventCreateProjection, EventCollectionRepository>(
     eventStore,
-    databaseAdapter,
     childrenAppenders,
     scope,
     transformer,
@@ -81,7 +84,6 @@ class EventCollectionRepository internal constructor(
         EventCollectionRepository(
             eventStore,
             userStore,
-            databaseAdapter,
             s,
             postCall,
             transformer,
@@ -93,23 +95,20 @@ class EventCollectionRepository internal constructor(
     ReadWriteWithUploadWithUidCollectionRepository<Event, EventCreateProjection> {
 
     @Suppress("SpreadOperator")
-    override fun upload(): Observable<D2Progress> {
-        return Observable.concat(
-            jobQueryCall.queryPendingJobs(),
-            Observable.fromCallable {
-                byAggregatedSyncState().`in`(*uploadableStatesIncludingError())
-                    .byEnrollmentUid().isNull
-                    .blockingGetWithoutChildren()
-            }
-                .flatMap { events: List<Event> -> postCall.uploadEvents(events) },
-        )
-    }
+    override fun upload(): Observable<D2Progress> = flow {
+        emitAll(jobQueryCall.queryPendingJobs())
+        val events = byAggregatedSyncState()
+            .`in`(*uploadableStatesIncludingError())
+            .byEnrollmentUid().isNull
+            .getWithoutChildrenInternal()
+        emitAll(postCall.uploadEvents(events))
+    }.asObservable()
 
     override fun blockingUpload() {
         upload().blockingSubscribe()
     }
 
-    override fun propagateState(m: Event, action: HandleAction?) {
+    override suspend fun propagateState(m: Event, action: HandleAction?) {
         trackerDataManager.propagateEventUpdate(m, action!!)
     }
 
@@ -119,7 +118,6 @@ class EventCollectionRepository internal constructor(
             eventStore,
             userStore,
             uid,
-            databaseAdapter,
             childrenAppenders,
             updatedScope,
             trackerDataManager,
@@ -150,8 +148,19 @@ class EventCollectionRepository internal constructor(
         return cf.string(EventTableInfo.Columns.LAST_UPDATED_AT_CLIENT)
     }
 
-    fun byStatus(): EnumFilterConnector<EventCollectionRepository, EventStatus> {
-        return cf.enumC(EventTableInfo.Columns.STATUS)
+    fun byStatus(): EventStatusFilterConnector {
+        val repositoryFactory = { s: RepositoryScope ->
+            EventCollectionRepository(
+                eventStore,
+                userStore,
+                s,
+                postCall,
+                transformer as EventProjectionTransformer,
+                trackerDataManager,
+                jobQueryCall,
+            )
+        }
+        return EventStatusFilterConnector(repositoryFactory, scope, EventTableInfo.Columns.STATUS)
     }
 
     fun byGeometryType(): EnumFilterConnector<EventCollectionRepository, FeatureType> {
@@ -179,7 +188,7 @@ class EventCollectionRepository internal constructor(
     }
 
     fun byCompleteDate(): DateFilterConnector<EventCollectionRepository> {
-        return cf.simpleDate(EventTableInfo.Columns.COMPLETE_DATE)
+        return cf.simpleDate(EventTableInfo.Columns.COMPLETED_DATE)
     }
 
     fun byCompletedBy(): StringFilterConnector<EventCollectionRepository> {
@@ -238,7 +247,7 @@ class EventCollectionRepository internal constructor(
         return cf.subQuery(EventTableInfo.Columns.ENROLLMENT).inLinkTable(
             EnrollmentTableInfo.TABLE_INFO.name(),
             IdentifiableColumns.UID,
-            EnrollmentTableInfo.Columns.FOLLOW_UP,
+            EnrollmentTableInfo.Columns.FOLLOWUP,
             listOf(if (followUp) "1" else "0"),
         )
     }
@@ -264,7 +273,7 @@ class EventCollectionRepository internal constructor(
     }
 
     fun orderByCompleteDate(direction: OrderByDirection?): EventCollectionRepository {
-        return cf.withOrderBy(EventTableInfo.Columns.COMPLETE_DATE, direction)
+        return cf.withOrderBy(EventTableInfo.Columns.COMPLETED_DATE, direction)
     }
 
     fun orderByCreated(direction: OrderByDirection?): EventCollectionRepository {
@@ -318,6 +327,10 @@ class EventCollectionRepository internal constructor(
     }
 
     fun countTrackedEntityInstances(): Int {
+        return runBlocking { countTrackedEntityInstancesInternal() }
+    }
+
+    private suspend fun countTrackedEntityInstancesInternal(): Int {
         return eventStore.countTeisWhereEvents(whereClause)
     }
 

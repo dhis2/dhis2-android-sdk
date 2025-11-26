@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.systeminfo.internal
 
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
@@ -37,6 +38,7 @@ import org.hisp.dhis.android.core.systeminfo.SMSVersion
 import org.koin.core.annotation.Singleton
 
 @Singleton
+@Suppress("TooManyFunctions")
 internal class DHISVersionManagerImpl internal constructor(
     private val systemInfoStore: SystemInfoStore,
 ) : DHISVersionManager {
@@ -46,6 +48,10 @@ internal class DHISVersionManagerImpl internal constructor(
     private var bypassDHIS2Version: Boolean? = null
 
     override fun getVersion(): DHISVersion {
+        return runBlocking { getVersionInternal() }
+    }
+
+    internal suspend fun getVersionInternal(): DHISVersion {
         return version
             ?: systemInfoStore.selectFirst()?.let { systemInfo ->
                 systemInfo.version()?.let { DHISVersion.getValue(it, getBypassVersion()) }
@@ -59,14 +65,21 @@ internal class DHISVersionManagerImpl internal constructor(
     }
 
     override fun getPatchVersion(): DHISPatchVersion? {
-        return patchVersion
-            ?: systemInfoStore.selectFirst()?.let { systemInfo ->
-                systemInfo.version()?.let { DHISPatchVersion.getValue(it, getBypassVersion()) }
-                    .also { patch -> patchVersion = patch }
-            }
+        return runBlocking { getPatchVersionInternal() }
+    }
+
+    internal suspend fun getPatchVersionInternal(): DHISPatchVersion? {
+        return patchVersion ?: systemInfoStore.selectFirst()?.let { systemInfo ->
+            systemInfo.version()?.let { DHISPatchVersion.getValue(it, getBypassVersion()) }
+                .also { patch -> patchVersion = patch }
+        }
     }
 
     override fun getSmsVersion(): SMSVersion? {
+        return runBlocking { getSmsVersionInternal() }
+    }
+
+    internal suspend fun getSmsVersionInternal(): SMSVersion? {
         return smsVersion
             ?: systemInfoStore.selectFirst()?.let { systemInfo ->
                 systemInfo.version()?.let { SMSVersion.getValue(it, getBypassVersion()) }
@@ -79,15 +92,27 @@ internal class DHISVersionManagerImpl internal constructor(
     }
 
     override fun isVersion(version: DHISVersion): Boolean {
-        return version === getVersion()
+        return runBlocking { isVersionInternal(version) }
+    }
+
+    internal suspend fun isVersionInternal(version: DHISVersion): Boolean {
+        return version === getVersionInternal()
     }
 
     override fun isGreaterThan(version: DHISVersion): Boolean {
-        return version < getVersion()
+        return runBlocking { isGreaterThanInternal(version) }
+    }
+
+    internal suspend fun isGreaterThanInternal(version: DHISVersion): Boolean {
+        return version < getVersionInternal()
     }
 
     override fun isGreaterOrEqualThan(version: DHISVersion): Boolean {
-        return version <= getVersion()
+        return runBlocking { isGreaterOrEqualThanInternal(version) }
+    }
+
+    internal suspend fun isGreaterOrEqualThanInternal(version: DHISVersion): Boolean {
+        return version <= getVersionInternal()
     }
 
     internal fun setVersion(versionStr: String) {

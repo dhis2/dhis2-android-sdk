@@ -27,31 +27,21 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import android.database.Cursor
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.SingleParentChildStore
-import org.hisp.dhis.android.core.arch.db.stores.internal.StoreFactory.singleParentChildStore
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute
 
 internal class TrackedEntityTypeAttributeChildrenAppender private constructor(
-    private val childStore: SingleParentChildStore<TrackedEntityType, TrackedEntityTypeAttribute>,
+    private val childStore: TrackedEntityTypeAttributeStore,
 ) : ChildrenAppender<TrackedEntityType>() {
-    override fun appendChildren(m: TrackedEntityType): TrackedEntityType {
-        val builder = m.toBuilder()
-        builder.trackedEntityTypeAttributes(childStore.getChildren(m))
-        return builder.build()
+    override suspend fun appendChildren(m: TrackedEntityType): TrackedEntityType {
+        val children = childStore.getForTrackedEntityType(m.uid())
+        return m.toBuilder().trackedEntityTypeAttributes(children).build()
     }
 
     companion object {
-        fun create(databaseAdapter: DatabaseAdapter): ChildrenAppender<TrackedEntityType> {
-            return TrackedEntityTypeAttributeChildrenAppender(
-                singleParentChildStore(
-                    databaseAdapter,
-                    TrackedEntityTypeAttributeStoreImpl.CHILD_PROJECTION,
-                ) { cursor: Cursor -> TrackedEntityTypeAttribute.create(cursor) },
-            )
+        fun create(): ChildrenAppender<TrackedEntityType> {
+            return TrackedEntityTypeAttributeChildrenAppender(koin.get())
         }
     }
 }

@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.indicator.datasetindicatorengine
 
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByUid
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.constant.ConstantCollectionRepository
@@ -35,7 +37,6 @@ import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository
 import org.hisp.dhis.android.core.indicator.IndicatorCollectionRepository
 import org.hisp.dhis.android.core.indicator.IndicatorTypeCollectionRepository
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitOrganisationUnitGroupLinkStore
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.parser.internal.service.ExpressionServiceContext
@@ -43,6 +44,7 @@ import org.hisp.dhis.android.core.parser.internal.service.dataobject.Dimensional
 import org.hisp.dhis.android.core.parser.internal.service.utils.ExpressionHelper
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -63,9 +65,7 @@ internal class DataSetIndicatorEngineImpl(
         orgUnitUid: String,
         attributeOptionComboUid: String,
     ): Single<Double> {
-        return Single.fromCallable {
-            blockingEvaluate(indicatorUid, dataSetUid, periodId, orgUnitUid, attributeOptionComboUid)
-        }
+        return rxSingle { evaluateInternal(indicatorUid, dataSetUid, periodId, orgUnitUid, attributeOptionComboUid) }
     }
 
     override fun blockingEvaluate(
@@ -75,8 +75,18 @@ internal class DataSetIndicatorEngineImpl(
         orgUnitUid: String,
         attributeOptionComboUid: String,
     ): Double {
-        val indicator = indicatorRepository.uid(indicatorUid).blockingGet()
-        val indicatorType = indicatorTypeRepository.uid(indicator?.indicatorType()?.uid()).blockingGet()
+        return runBlocking { evaluateInternal(indicatorUid, dataSetUid, periodId, orgUnitUid, attributeOptionComboUid) }
+    }
+
+    private suspend fun evaluateInternal(
+        indicatorUid: String,
+        dataSetUid: String,
+        periodId: String,
+        orgUnitUid: String,
+        attributeOptionComboUid: String,
+    ): Double {
+        val indicator = indicatorRepository.uid(indicatorUid).getInternal()
+        val indicatorType = indicatorTypeRepository.uid(indicator?.indicatorType()?.uid()).getInternal()
 
         return if (indicator != null && indicatorType != null) {
             val context = ExpressionServiceContext(
@@ -113,12 +123,12 @@ internal class DataSetIndicatorEngineImpl(
         return ExpressionHelper.getValueMap(dataValues)
     }
 
-    private fun getConstantMap(): Map<String, Constant> {
-        val constants: List<Constant> = constantRepository.blockingGet()
+    private suspend fun getConstantMap(): Map<String, Constant> {
+        val constants: List<Constant> = constantRepository.getInternal()
         return mapByUid(constants)
     }
 
-    private fun getOrgunitGroupMap(): Map<String, Int> {
+    private suspend fun getOrgunitGroupMap(): Map<String, Int> {
         return orgunitGroupLinkStore.groupAndGetCountBy(
             OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT_GROUP,
         )

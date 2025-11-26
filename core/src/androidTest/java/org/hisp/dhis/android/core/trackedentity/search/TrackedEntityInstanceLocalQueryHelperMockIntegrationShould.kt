@@ -28,29 +28,35 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
-import org.hisp.dhis.android.core.common.*
+import org.hisp.dhis.android.core.common.AssignedUserMode
+import org.hisp.dhis.android.core.common.DateFilterPeriod
+import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
+import org.hisp.dhis.android.core.common.RelativePeriod
+import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl.Companion.create
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStoreImpl
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 
 class TrackedEntityInstanceLocalQueryHelperMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 
-    private val trackedEntityInstanceStore = TrackedEntityInstanceStoreImpl(databaseAdapter)
+    private val trackedEntityInstanceStore: TrackedEntityInstanceStore = koin.get()
 
     private val clockProvider = ClockProviderFactory.clockProvider
     private val periodHelper = DateFilterPeriodHelper(clockProvider, create(clockProvider))
     private val localQueryHelper = TrackedEntityInstanceLocalQueryHelper(periodHelper)
 
     @Test
-    fun should_generate_valid_sql_queries() {
+    fun should_generate_valid_sql_queries() = runTest {
         val scope = TrackedEntityInstanceQueryRepositoryScope.builder()
             .program("programUid")
             .programStage("programStageUid")

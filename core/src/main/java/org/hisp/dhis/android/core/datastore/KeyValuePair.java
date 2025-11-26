@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.datastore;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -45,10 +43,6 @@ public abstract class KeyValuePair implements CoreObject {
     @Nullable
     public abstract String value();
 
-    public static KeyValuePair create(Cursor cursor) {
-        return $AutoValue_KeyValuePair.createFromCursor(cursor);
-    }
-
     public abstract Builder toBuilder();
 
     public static Builder builder() {
@@ -57,8 +51,6 @@ public abstract class KeyValuePair implements CoreObject {
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder id(Long id);
-
         public abstract Builder key(String key);
 
         public abstract Builder value(String value);

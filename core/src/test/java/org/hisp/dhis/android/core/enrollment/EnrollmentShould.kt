@@ -28,15 +28,14 @@
 package org.hisp.dhis.android.core.enrollment
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseObjectKotlinxShould
 import org.hisp.dhis.android.core.common.Coordinates
+import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.core.common.FeatureType
-import org.hisp.dhis.android.core.common.ObjectShould
 import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.network.enrollment.EnrollmentDTO
 import org.junit.Test
 
-class EnrollmentShould : BaseObjectKotlinxShould("enrollment/enrollment.json"), ObjectShould {
+class EnrollmentShould : CoreObjectShould("enrollment/enrollment.json") {
     @Test
     override fun map_from_json_string() {
         val enrollmentDTO = deserialize(EnrollmentDTO.serializer())

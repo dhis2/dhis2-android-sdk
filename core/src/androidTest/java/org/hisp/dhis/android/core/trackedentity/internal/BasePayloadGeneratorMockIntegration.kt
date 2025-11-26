@@ -27,8 +27,9 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutor
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.data.relationship.RelationshipSamples
@@ -38,25 +39,22 @@ import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityInstanceSample
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStoreImpl
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventStore
-import org.hisp.dhis.android.core.event.internal.EventStoreImpl
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyCleanerImpl
-import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStoreImpl
-import org.hisp.dhis.android.core.program.internal.ProgramStageStoreImpl
+import org.hisp.dhis.android.core.maintenance.internal.ForeignKeyViolationStore
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
+import org.hisp.dhis.android.core.program.internal.ProgramStageStore
 import org.hisp.dhis.android.core.program.internal.ProgramStore
-import org.hisp.dhis.android.core.program.internal.ProgramStoreImpl
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.RelationshipItem
-import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStoreImpl
-import org.hisp.dhis.android.core.relationship.internal.RelationshipStoreImpl
-import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStoreImpl
+import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStore
+import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
+import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
 import org.junit.After
 import org.junit.BeforeClass
@@ -74,16 +72,15 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
     protected val unassignedDataElementId = "bx6fsa0t90x"
 
     @After
-    @Throws(D2Error::class)
     fun tearDown() {
-        d2.wipeModule().wipeData()
+        runBlocking { d2.wipeModule().wipeData() }
     }
 
-    protected fun storeTrackerData() {
-        val orgUnit = OrganisationUnitStoreImpl(databaseAdapter).selectFirst()!!
-        val teiType = TrackedEntityTypeStoreImpl(databaseAdapter).selectFirst()!!
+    protected suspend fun storeTrackerData() {
+        val orgUnit = koin.get<OrganisationUnitStore>().selectFirst()!!
+        val teiType = koin.get<TrackedEntityTypeStore>().selectFirst()!!
         val program = d2.programModule().programs().one().blockingGet()!!
-        val programStage = ProgramStageStoreImpl(databaseAdapter).selectFirst()!!
+        val programStage = koin.get<ProgramStageStore>().selectFirst()!!
 
         val dataValue1 = TrackedEntityDataValueSamples.get().toBuilder()
             .syncState(State.TO_UPDATE)
@@ -207,10 +204,10 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
         teiDataValueStore.insert(singleEventDataValue)
     }
 
-    protected fun storeSimpleTrackedEntityInstance(teiUid: String, state: State) {
-        val orgUnit = OrganisationUnitStoreImpl(databaseAdapter).selectFirst()
-        val teiType = TrackedEntityTypeStoreImpl(databaseAdapter).selectFirst()
-        TrackedEntityInstanceStoreImpl(databaseAdapter).insert(
+    protected suspend fun storeSimpleTrackedEntityInstance(teiUid: String, state: State) {
+        val orgUnit = koin.get<OrganisationUnitStore>().selectFirst()
+        val teiType = koin.get<TrackedEntityTypeStore>().selectFirst()
+        koin.get<TrackedEntityInstanceStore>().insert(
             TrackedEntityInstanceSamples.get().toBuilder()
                 .uid(teiUid)
                 .trackedEntityType(teiType!!.uid())
@@ -222,7 +219,7 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
     }
 
     @Throws(D2Error::class)
-    protected fun storeRelationship(
+    protected suspend fun storeRelationship(
         relationshipUid: String,
         from: String,
         to: String,
@@ -231,33 +228,34 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
     }
 
     @Throws(D2Error::class)
-    protected fun storeRelationship(
+    protected suspend fun storeRelationship(
         relationshipUid: String,
         from: RelationshipItem,
         to: RelationshipItem,
     ) {
-        val relationshipType = RelationshipTypeStoreImpl(databaseAdapter).selectFirst()
+        val relationshipType = koin.get<RelationshipTypeStore>().selectFirst()
         val executor = D2CallExecutor.create(databaseAdapter)
         executor.executeD2CallTransactionally<Unit> {
-            RelationshipStoreImpl(databaseAdapter).insert(
+            koin.get<RelationshipStore>().insert(
                 RelationshipSamples.get230(relationshipUid, from, to).toBuilder()
                     .relationshipType(relationshipType!!.uid())
                     .syncState(State.TO_POST)
                     .build(),
             )
-            RelationshipItemStoreImpl(databaseAdapter).insert(
+            koin.get<RelationshipItemStore>().insert(
                 from.toBuilder()
                     .relationship(ObjectWithUid.create(relationshipUid))
                     .relationshipItemType(RelationshipConstraintType.FROM)
                     .build(),
             )
-            RelationshipItemStoreImpl(databaseAdapter).insert(
+            koin.get<RelationshipItemStore>().insert(
                 to.toBuilder()
                     .relationship(ObjectWithUid.create(relationshipUid))
                     .relationshipItemType(RelationshipConstraintType.TO)
                     .build(),
             )
-            ForeignKeyCleanerImpl.create(databaseAdapter).cleanForeignKeyErrors()
+            ForeignKeyCleanerImpl(databaseAdapter, koin.get<ForeignKeyViolationStore>())
+                .cleanForeignKeyErrors()
         }
     }
 
@@ -275,7 +273,7 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
         internal lateinit var teiAttributeValueStore: TrackedEntityAttributeValueStore
         internal lateinit var eventStore: EventStore
         internal lateinit var enrollmentStore: EnrollmentStore
-        internal lateinit var trackedEntityTypeStore: IdentifiableObjectStore<TrackedEntityType>
+        internal lateinit var trackedEntityTypeStore: TrackedEntityTypeStore
         internal lateinit var programStore: ProgramStore
 
         @BeforeClass
@@ -283,13 +281,13 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
         @Throws(Exception::class)
         fun setUp() {
             setUpClass()
-            teiStore = TrackedEntityInstanceStoreImpl(databaseAdapter)
-            teiDataValueStore = TrackedEntityDataValueStoreImpl(databaseAdapter)
-            teiAttributeValueStore = TrackedEntityAttributeValueStoreImpl(databaseAdapter)
-            eventStore = EventStoreImpl(databaseAdapter)
-            enrollmentStore = EnrollmentStoreImpl(databaseAdapter)
-            trackedEntityTypeStore = TrackedEntityTypeStoreImpl(databaseAdapter)
-            programStore = ProgramStoreImpl(databaseAdapter)
+            teiStore = koin.get()
+            teiDataValueStore = koin.get()
+            teiAttributeValueStore = koin.get()
+            eventStore = koin.get()
+            enrollmentStore = koin.get()
+            trackedEntityTypeStore = koin.get()
+            programStore = koin.get()
         }
     }
 }

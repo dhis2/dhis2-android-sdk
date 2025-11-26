@@ -60,7 +60,7 @@ internal class RelationshipPostCall(
                     val status = webResponse.response()?.status()
 
                     if ((httpCode == HTTP_OK && status == ImportStatus.SUCCESS) || httpCode == HTTP_NOT_FOUND) {
-                        relationshipStore.delete(relationship.uid()!!)
+                        relationshipStore.deleteByEntity(relationship)
                     } else {
                         handleDeleteRelationshipError(relationship.uid()!!)
                     }
@@ -103,7 +103,7 @@ internal class RelationshipPostCall(
         }
     }
 
-    private fun handleDeleteRelationshipError(relationshipUid: String) {
+    private suspend fun handleDeleteRelationshipError(relationshipUid: String) {
         // TODO Implement better handling
         // The relationship is marked as error, but there is no handling in the TEI. The TEI is being posted
         relationshipStore.setSyncState(relationshipUid, State.ERROR)

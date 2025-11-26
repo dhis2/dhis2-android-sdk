@@ -66,14 +66,14 @@ internal class TrackerImporterPostCall internal constructor(
 ) {
     fun uploadTrackedEntityInstances(
         filteredTrackedEntityInstances: List<TrackedEntityInstance>,
-    ): Flow<D2Progress> {
-        return postPayloadWrapper(payloadGenerator.getTrackedEntityPayload(filteredTrackedEntityInstances))
+    ): Flow<D2Progress> = flow {
+        emitAll(postPayloadWrapper(payloadGenerator.getTrackedEntityPayload(filteredTrackedEntityInstances)))
     }
 
     fun uploadEvents(
         filteredEvents: List<Event>,
-    ): Flow<D2Progress> {
-        return postPayloadWrapper(payloadGenerator.getEventPayload(filteredEvents))
+    ): Flow<D2Progress> = flow {
+        emitAll(postPayloadWrapper(payloadGenerator.getEventPayload(filteredEvents)))
     }
 
     private fun postPayloadWrapper(

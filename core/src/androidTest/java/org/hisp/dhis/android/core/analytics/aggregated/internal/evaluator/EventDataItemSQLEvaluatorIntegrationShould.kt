@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
@@ -68,7 +70,7 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
 
     private val eventDataItemEvaluator = EventDataItemSQLEvaluator(databaseAdapter)
 
-    private val helper = BaseTrackerDataIntegrationHelper(databaseAdapter)
+    private val helper = BaseTrackerDataIntegrationHelper()
     private val event1 = generator.generate()
     private val enrollment1 = generator.generate()
     private val event2 = generator.generate()
@@ -76,20 +78,22 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
 
     @Before
     fun setUp() {
-        helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
-        helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
-        helper.createTrackerEvent(
-            event1,
-            enrollment1,
-            program.uid(),
-            programStage1.uid(),
-            orgunitChild1.uid(),
-            eventDate = day20191101,
-        )
+        runBlocking {
+            helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
+            helper.createEnrollment(trackedEntity1.uid(), enrollment1, program.uid(), orgunitChild1.uid())
+            helper.createTrackerEvent(
+                event1,
+                enrollment1,
+                program.uid(),
+                programStage1.uid(),
+                orgunitChild1.uid(),
+                eventDate = day20191101,
+            )
+        }
     }
 
     @Test
-    fun should_aggregate_data_from_multiple_teis() {
+    fun should_aggregate_data_from_multiple_teis() = runTest {
         helper.createTrackedEntity(trackedEntity2.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         helper.createEnrollment(trackedEntity2.uid(), enrollment2, program.uid(), orgunitChild1.uid())
         helper.createTrackerEvent(
@@ -113,7 +117,7 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
     }
 
     @Test
-    fun should_evaluate_event_data_values_aggregation_types() {
+    fun should_evaluate_event_data_values_aggregation_types() = runTest {
         helper.createTrackedEntity(trackedEntity2.uid(), orgunitChild2.uid(), trackedEntityType.uid())
         helper.createEnrollment(trackedEntity2.uid(), enrollment2, program.uid(), orgunitChild2.uid())
         helper.createTrackerEvent(
@@ -185,7 +189,7 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
     }
 
     @Test
-    fun should_evaluate_event_attribute_values_aggregation_types() {
+    fun should_evaluate_event_attribute_values_aggregation_types() = runTest {
         helper.createTrackedEntity(trackedEntity2.uid(), orgunitChild2.uid(), trackedEntityType.uid())
         helper.createEnrollment(trackedEntity2.uid(), enrollment2, program.uid(), orgunitChild2.uid())
         helper.createTrackerEvent(
@@ -259,7 +263,7 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
     }
 
     @Test
-    fun should_evaluate_event_data_values_with_option_aggregation_types() {
+    fun should_evaluate_event_data_values_with_option_aggregation_types() = runTest {
         helper.createTrackedEntity(trackedEntity2.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         helper.createEnrollment(trackedEntity2.uid(), enrollment2, program.uid(), orgunitChild1.uid())
         helper.createTrackerEvent(
@@ -326,7 +330,7 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
     }
 
     @Test
-    fun should_evaluate_event_attribute_with_option_aggregation_types() {
+    fun should_evaluate_event_attribute_with_option_aggregation_types() = runTest {
         helper.insertTrackedEntityAttributeValue(trackedEntity1.uid(), attribute3.uid(), option1.code()!!)
 
         assertThat(
@@ -359,7 +363,7 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
     }
 
     @Test
-    fun should_override_aggregation_type() {
+    fun should_override_aggregation_type() = runTest {
         helper.createTrackedEntity(trackedEntity2.uid(), orgunitChild1.uid(), trackedEntityType.uid())
         helper.createEnrollment(trackedEntity2.uid(), enrollment2, program.uid(), orgunitChild1.uid())
         helper.createTrackerEvent(
@@ -386,7 +390,7 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
             .isEqualTo("4")
     }
 
-    private fun evaluateEventDataElement(
+    private suspend fun evaluateEventDataElement(
         program: Program = BaseEvaluatorSamples.program,
         dataElement: DataElement = dataElement1,
         deAggregation: AggregationType = AggregationType.SUM,
@@ -413,7 +417,7 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
         )
     }
 
-    private fun evaluateEventAttribute(
+    private suspend fun evaluateEventAttribute(
         program: Program = BaseEvaluatorSamples.program,
         attribute: TrackedEntityAttribute = attribute1,
         atAggregation: AggregationType = AggregationType.SUM,
@@ -440,7 +444,7 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
         )
     }
 
-    private fun evaluateEventDataElementOption(
+    private suspend fun evaluateEventDataElementOption(
         program: Program = BaseEvaluatorSamples.program,
         dataElement: DataElement = dataElement5,
         option: Option = BaseEvaluatorSamples.option1,
@@ -468,7 +472,7 @@ internal class EventDataItemSQLEvaluatorIntegrationShould : BaseEvaluatorIntegra
         )
     }
 
-    private fun evaluateEventAttributeOption(
+    private suspend fun evaluateEventAttributeOption(
         program: Program = BaseEvaluatorSamples.program,
         attribute: TrackedEntityAttribute = attribute3,
         option: Option = BaseEvaluatorSamples.option1,

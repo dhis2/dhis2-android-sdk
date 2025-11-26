@@ -95,4 +95,11 @@ class ServerUrlParserShould {
         assertThat(removeTrailingApi("http://dhis2.org/demo/api")).isEqualTo(expectedUrl)
         assertThat(removeTrailingApi("http://dhis2.org/demo/api/")).isEqualTo(expectedUrl)
     }
+
+    @Test
+    fun normalize_backslashes_to_forward_slashes_in_trim() {
+        val expectedUrl = "http://dhis2.org/demo/path"
+        assertThat(trimAndRemoveTrailingSlash("http://dhis2.org\\demo\\path")).isEqualTo(expectedUrl)
+        assertThat(trimAndRemoveTrailingSlash("http://dhis2.org\\demo/path")).isEqualTo(expectedUrl)
+    }
 }

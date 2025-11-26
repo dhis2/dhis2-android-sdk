@@ -28,14 +28,11 @@
 
 package org.hisp.dhis.android.core.attribute;
 
-import android.database.Cursor;
+import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseObject;
 import org.hisp.dhis.android.core.common.CoreObject;
-
-import androidx.annotation.Nullable;
 
 @AutoValue
 public abstract class ProgramAttributeValueLink implements CoreObject {
@@ -49,19 +46,15 @@ public abstract class ProgramAttributeValueLink implements CoreObject {
     @Nullable
     public abstract String value();
 
-    public static ProgramAttributeValueLink create(Cursor cursor) {
-        return AutoValue_ProgramAttributeValueLink.createFromCursor(cursor);
-    }
-
     public static Builder builder() {
-        return new $$AutoValue_ProgramAttributeValueLink.Builder();
+        return new AutoValue_ProgramAttributeValueLink.Builder();
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
-        public abstract Builder id(Long id);
+    public abstract static class Builder {
+
 
         public abstract Builder program(String program);
 

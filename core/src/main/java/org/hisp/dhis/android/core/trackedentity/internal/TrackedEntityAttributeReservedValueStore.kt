@@ -33,8 +33,8 @@ import java.util.Date
 
 internal interface TrackedEntityAttributeReservedValueStore :
     ObjectWithoutUidStore<TrackedEntityAttributeReservedValue> {
-    fun deleteExpired(serverDate: Date)
-    fun deleteIfOutdatedPattern(ownerUid: String, pattern: String)
-    fun popOne(ownerUid: String, organisationUnitUid: String?): TrackedEntityAttributeReservedValue?
-    fun count(ownerUid: String, organisationUnitUid: String?, pattern: String?): Int
+    suspend fun deleteExpired(serverDate: Date)
+    suspend fun deleteIfOutdatedPattern(ownerUid: String, pattern: String)
+    suspend fun popOne(ownerUid: String, organisationUnitUid: String?): TrackedEntityAttributeReservedValue?
+    suspend fun count(ownerUid: String, organisationUnitUid: String?, pattern: String?): Int
 }

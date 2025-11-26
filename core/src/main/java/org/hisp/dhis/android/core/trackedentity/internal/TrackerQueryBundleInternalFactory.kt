@@ -29,19 +29,23 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingListCollectionRepository
 import org.hisp.dhis.android.core.settings.EnrollmentScope
 import org.hisp.dhis.android.core.settings.ProgramSettings
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterCollectionRepository
 
-internal class TrackerQueryBundleInternalFactory constructor(
+internal class TrackerQueryBundleInternalFactory(
     commonHelper: TrackerQueryFactoryCommonHelper,
     params: ProgramDataDownloadParams,
     programSettings: ProgramSettings?,
+    val programStageWorkingListObjectRepository: ProgramStageWorkingListCollectionRepository,
+    val trackedEntityInstanceFilterCollectionRepository: TrackedEntityInstanceFilterCollectionRepository,
 ) : TrackerQueryInternalFactory<TrackerQueryBundle>(commonHelper, params, programSettings) {
 
-    override fun queryInternal(
+    override suspend fun queryInternal(
         programs: List<String>,
         programUid: String?,
-        orgUnitByLimitExtractor: () -> List<String>,
+        orgUnitByLimitExtractor: suspend () -> List<String>,
     ): List<TrackerQueryBundle> {
         val limit = commonHelper.getLimit(
             params,
@@ -62,9 +66,41 @@ internal class TrackerQueryBundleInternalFactory constructor(
 
         val programStatus = getProgramStatus(params, programSettings, programUid)
 
+        val programStageWorkingLists =
+            (params.programStageWorkingLists()?.filter { it.program().uid() == programUid } ?: emptyList())
+
+        val trackedEntityInstanceFilters =
+            (params.trackedEntityInstanceFilters()?.filter { it.program()?.uid() == programUid } ?: emptyList())
+
+        val filters = programSettings?.specificSettings()?.get(programUid)?.filters()?.map { it.uid() }
+
+        val programStageWorkingListsSettings = filters.takeIf { !it.isNullOrEmpty() }?.let {
+            programStageWorkingListObjectRepository
+                .byUid().`in`(it)
+                .withAttributeValueFilters()
+                .withDataFilters()
+                .getInternal()
+        }
+
+        val trackedEntityInstanceFiltersSettings = filters.takeIf { !it.isNullOrEmpty() }?.let {
+            trackedEntityInstanceFilterCollectionRepository
+                .byUid().`in`(it)
+                .withTrackedEntityInstanceEventFilters()
+                .withAttributeValueFilters()
+                .getInternal()
+        }
+
         val builder = TrackerQueryBundle.builder()
             .commonParams(commonParams)
             .programStatus(programStatus)
+            .programStageWorkingLists(
+                programStageWorkingLists.takeIf { it.isNotEmpty() }
+                    ?: programStageWorkingListsSettings,
+            )
+            .trackedEntityInstanceFilters(
+                trackedEntityInstanceFilters.takeIf { it.isNotEmpty() }
+                    ?: trackedEntityInstanceFiltersSettings,
+            )
 
         return commonHelper.divideByOrgUnits(
             commonParams.orgUnitsBeforeDivision,

@@ -28,54 +28,36 @@
 
 package org.hisp.dhis.android.core.relationship;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.custom.internal.TrackerDataViewColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.RelationshipConstraintTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.RelationshipEntityTypeColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.common.BaseObject;
+import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 @AutoValue
-public abstract class RelationshipConstraint extends BaseObject {
+public abstract class RelationshipConstraint implements CoreObject {
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid relationshipType();
 
     @Nullable
-    @ColumnAdapter(RelationshipConstraintTypeColumnAdapter.class)
     public abstract RelationshipConstraintType constraintType();
 
     @Nullable
-    @ColumnAdapter(RelationshipEntityTypeColumnAdapter.class)
     public abstract RelationshipEntityType relationshipEntity();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid trackedEntityType();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid program();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid programStage();
 
     @Nullable
-    @ColumnAdapter(TrackerDataViewColumnAdapter.class)
     public abstract TrackerDataView trackerDataView();
-
-    public static RelationshipConstraint create(Cursor cursor) {
-        return AutoValue_RelationshipConstraint.createFromCursor(cursor);
-    }
 
     public static Builder builder() {
         return new AutoValue_RelationshipConstraint.Builder();
@@ -84,7 +66,7 @@ public abstract class RelationshipConstraint extends BaseObject {
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseObject.Builder<Builder> {
+    public abstract static class Builder {
 
         public abstract Builder relationshipType(ObjectWithUid relationshipType);
 

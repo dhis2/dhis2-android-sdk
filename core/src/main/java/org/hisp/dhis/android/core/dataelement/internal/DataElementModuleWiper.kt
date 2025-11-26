@@ -27,24 +27,24 @@
  */
 package org.hisp.dhis.android.core.dataelement.internal
 
-import org.hisp.dhis.android.core.dataelement.DataElementOperandTableInfo
-import org.hisp.dhis.android.core.dataelement.DataElementTableInfo
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import org.hisp.dhis.android.persistence.dataelement.DataElementOperandTableInfo
+import org.hisp.dhis.android.persistence.dataelement.DataElementTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DataElementModuleWiper(
     private val tableWiper: TableWiper,
 ) : ModuleWiper {
-    override fun wipeMetadata() {
+    override suspend fun wipeMetadata() {
         tableWiper.wipeTables(
             DataElementTableInfo.TABLE_INFO,
             DataElementOperandTableInfo.TABLE_INFO,
         )
     }
 
-    override fun wipeData() {
+    override suspend fun wipeData() {
         // No data to wipe
     }
 }

@@ -31,4 +31,6 @@ package org.hisp.dhis.android.core.program.internal
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.program.ProgramRuleAction
 
-internal interface ProgramRuleActionStore : IdentifiableObjectStore<ProgramRuleAction>
+internal interface ProgramRuleActionStore : IdentifiableObjectStore<ProgramRuleAction> {
+    suspend fun getForProgramRule(programRuleUid: String): List<ProgramRuleAction>
+}

@@ -29,8 +29,8 @@ package org.hisp.dhis.android.core.arch.handlers.internal
 
 import org.hisp.dhis.android.core.common.CoreObject
 
-interface LinkHandler<S, O : CoreObject> {
+internal interface LinkHandler<S, O : CoreObject> {
     @JvmSuppressWildcards
-    fun handleMany(masterUid: String, slaves: Collection<S>?, transformer: (S) -> O)
-    fun resetAllLinks()
+    suspend fun handleMany(masterUid: String, slaves: Collection<S>?, transformer: (S) -> O)
+    suspend fun resetAllLinks()
 }

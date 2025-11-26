@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine.internal.dataitem
 
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
@@ -37,8 +38,8 @@ import org.hisp.dhis.android.core.program.programindicatorengine.internal.Progra
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getDefaultValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueTableInfo
 import org.hisp.dhis.android.core.util.SqlUtils.getColumnValueCast
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityDataValueTableInfo
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal class ProgramItemStageElement : ProgramExpressionItem() {
@@ -123,7 +124,9 @@ internal class ProgramItemStageElement : ProgramExpressionItem() {
     }
 
     private fun getDataElement(visitor: CommonExpressionVisitor, uid: String): DataElement {
-        return visitor.dataElementStore!!.selectByUid(uid)
-            ?: throw IllegalArgumentException("DataElement $uid does not exist.")
+        return runBlocking {
+            visitor.dataElementStore!!.selectByUid(uid)
+                ?: throw IllegalArgumentException("DataElement $uid does not exist.")
+        }
     }
 }

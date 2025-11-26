@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.network.systeminfo
 
 import org.hisp.dhis.android.core.systeminfo.SystemInfo
-import org.hisp.dhis.android.core.systeminfo.SystemInfoTableInfo.Columns
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.persistence.systeminfo.SystemInfoTableInfo.Columns
 
 internal object SystemInfoFields : BaseFields<SystemInfo>() {
     val allFields = Fields.from(
@@ -39,5 +39,6 @@ internal object SystemInfoFields : BaseFields<SystemInfo>() {
         fh.field(Columns.VERSION),
         fh.field(Columns.CONTEXT_PATH),
         fh.field(Columns.SYSTEM_NAME),
+        fh.field(Columns.SERVER_TIME_ZONE_ID),
     )
 }

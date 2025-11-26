@@ -40,7 +40,6 @@ public class LegendSetSamples {
 
         fillIdentifiableProperties(legendSetBuilder);
         legendSetBuilder
-                .id(1L)
                 .symbolizer("color")
                 .legends(null);
         return legendSetBuilder.build();
@@ -48,7 +47,6 @@ public class LegendSetSamples {
 
     public static LegendSet getAge15yInterval() {
         return LegendSet.builder()
-                .id(1L)
                 .uid("TiOkbpGEud4")
                 .code("AGE15YINT")
                 .created(parseDate("2017-06-02T11:40:33.452"))

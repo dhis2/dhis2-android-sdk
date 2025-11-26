@@ -47,7 +47,10 @@ internal class TrackerHeaderEngine(
     private val programStageStore: ProgramStageStore,
     private val constantStore: ConstantStore,
 ) {
-    fun getTrackedEntityHeader(expression: String, attributeValues: List<TrackedEntityAttributeValue>): String? {
+    suspend fun getTrackedEntityHeader(
+        expression: String,
+        attributeValues: List<TrackedEntityAttributeValue>,
+    ): String? {
         val programIndicator: ProgramIndicator = ProgramIndicator.builder()
             .uid("mock_program_indicator")
             .expression(expression)
@@ -63,7 +66,7 @@ internal class TrackerHeaderEngine(
         )
 
         val executor = ProgramIndicatorExecutor(
-            constantMap,
+            constantMap(),
             context,
             dataElementStore,
             trackedEntityAttributeStore,
@@ -74,9 +77,8 @@ internal class TrackerHeaderEngine(
     }
 
     // TODO
-    private val constantMap: Map<String, Constant>
-        get() {
-            val constants = constantStore.selectAll()
-            return UidsHelper.mapByUid(constants)
-        }
+    private suspend fun constantMap(): Map<String, Constant> {
+        val constants = constantStore.selectAll()
+        return UidsHelper.mapByUid(constants)
+    }
 }

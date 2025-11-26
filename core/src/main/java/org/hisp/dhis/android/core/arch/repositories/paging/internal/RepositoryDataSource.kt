@@ -27,69 +27,58 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.paging.internal
 
-import androidx.paging.ItemKeyedDataSource
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.OrderByClauseBuilder
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import androidx.paging.PageKeyedDataSource
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor.appendInObjectCollection
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder
 import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.persistence.common.querybuilders.OrderByClauseBuilder
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 
 class RepositoryDataSource<M : CoreObject> internal constructor(
     private val store: ReadableStore<M>,
-    private val databaseAdapter: DatabaseAdapter,
     private val scope: RepositoryScope,
     private val childrenAppenders: ChildrenAppenderGetter<M>,
-) : ItemKeyedDataSource<M, M>() {
-    override fun loadInitial(params: LoadInitialParams<M>, callback: LoadInitialCallback<M>) {
+) : PageKeyedDataSource<Int, M>() {
+    override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, M>) {
         val whereClause = WhereClauseFromScopeBuilder(WhereClauseBuilder()).getWhereClause(
             scope,
         )
+        runBlocking {
+            val withoutChildren = store.selectWhere(
+                whereClause,
+                OrderByClauseBuilder.orderByFromItems(scope.orderBy()),
+                params.requestedLoadSize,
+            )
+            callback.onResult(appendChildren(withoutChildren), null, params.requestedLoadSize)
+        }
+    }
+
+    override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, M>) {
+        runBlocking { loadPages(params, callback, nextOffset = params.key + params.requestedLoadSize) }
+    }
+
+    override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, M>) {
+        runBlocking { loadPages(params, callback, nextOffset = params.key - params.requestedLoadSize) }
+    }
+
+    private suspend fun loadPages(params: LoadParams<Int>, callback: LoadCallback<Int, M>, nextOffset: Int) {
+        val offset = params.key
+
+        val whereClause = WhereClauseFromScopeBuilder(WhereClauseBuilder()).getWhereClause(scope)
         val withoutChildren = store.selectWhere(
             whereClause,
-            OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()),
+            OrderByClauseBuilder.orderByFromItems(scope.orderBy()),
             params.requestedLoadSize,
+            offset,
         )
-        callback.onResult(appendChildren(withoutChildren))
+        callback.onResult(appendChildren(withoutChildren), nextOffset)
     }
 
-    override fun loadAfter(params: LoadParams<M>, callback: LoadCallback<M>) {
-        loadPages(params, callback, false)
-    }
-
-    override fun loadBefore(params: LoadParams<M>, callback: LoadCallback<M>) {
-        loadPages(params, callback, true)
-    }
-
-    private fun loadPages(params: LoadParams<M>, callback: LoadCallback<M>, reversed: Boolean) {
-        val whereClauseBuilder = WhereClauseBuilder()
-
-        OrderByClauseBuilder.addSortingClauses(
-            whereClauseBuilder,
-            scope.orderBy(),
-            params.key.toContentValues(),
-            reversed,
-            scope.pagingKey(),
-        )
-        val whereClause = WhereClauseFromScopeBuilder(whereClauseBuilder).getWhereClause(
-            scope,
-        )
-        val withoutChildren = store.selectWhere(
-            whereClause,
-            OrderByClauseBuilder.orderByFromItems(scope.orderBy(), scope.pagingKey()),
-            params.requestedLoadSize,
-        )
-        callback.onResult(appendChildren(withoutChildren))
-    }
-
-    override fun getKey(item: M): M {
-        return item
-    }
-
-    private fun appendChildren(withoutChildren: List<M>): List<M> {
-        return appendInObjectCollection(withoutChildren, databaseAdapter, childrenAppenders, scope.children())
+    private suspend fun appendChildren(withoutChildren: List<M>): List<M> {
+        return appendInObjectCollection(withoutChildren, childrenAppenders, scope.children())
     }
 }

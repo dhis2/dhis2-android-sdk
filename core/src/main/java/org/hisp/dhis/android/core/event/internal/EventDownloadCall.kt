@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.event.search.EventQueryCollectionRepository
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndPersistCallFactory
@@ -53,6 +54,7 @@ internal class EventDownloadCall internal constructor(
     private val trackerParentCallFactory: TrackerParentCallFactory,
     private val persistenceCallFactory: EventPersistenceCallFactory,
     private val lastUpdatedManager: EventLastUpdatedManager,
+    private val eventQueryCollectionRepository: EventQueryCollectionRepository,
 ) : TrackerDownloadCall<Event, EventQueryBundle>(
     userOrganisationUnitLinkStore,
     systemInfoModuleDownloader,
@@ -60,7 +62,7 @@ internal class EventDownloadCall internal constructor(
     coroutineAPICallExecutor,
 ) {
 
-    override fun getBundles(params: ProgramDataDownloadParams): List<EventQueryBundle> {
+    override suspend fun getBundles(params: ProgramDataDownloadParams): List<EventQueryBundle> {
         return eventQueryBundleFactory.getQueries(params)
     }
 
@@ -78,7 +80,7 @@ internal class EventDownloadCall internal constructor(
         persistenceCallFactory.persistEvents(items, relatives)
     }
 
-    override fun updateLastUpdated(bundle: EventQueryBundle) {
+    override suspend fun updateLastUpdated(bundle: EventQueryBundle) {
         lastUpdatedManager.update(bundle)
     }
 
@@ -121,20 +123,43 @@ internal class EventDownloadCall internal constructor(
         return result
     }
 
-    override fun getQuery(
+    override suspend fun getQuery(
         bundle: EventQueryBundle,
         program: String?,
         orgunitUid: String?,
         limit: Int,
-    ): TrackerAPIQuery {
-        return TrackerAPIQuery(
-            commonParams = bundle.commonParams().copy(
-                program = program,
-                limit = limit,
-            ),
-            lastUpdatedStr = lastUpdatedManager.getLastUpdatedStr(bundle.commonParams()),
-            orgUnit = orgunitUid,
-            uids = bundle.commonParams().uids,
-        )
+    ): TrackerAPIQuery? {
+        val eventUids = if (bundle.eventFilters() != null) {
+            val filteredUids = getEventUidsByFilters(bundle, orgunitUid)
+
+            filteredUids.takeIf { it.isNotEmpty() }
+        } else {
+            emptyList()
+        }
+
+        return eventUids?.let {
+            TrackerAPIQuery(
+                commonParams = bundle.commonParams().copy(
+                    program = program,
+                    limit = limit,
+                ),
+                lastUpdatedStr = lastUpdatedManager.getLastUpdatedStr(bundle.commonParams()),
+                orgUnit = orgunitUid,
+                uids = eventUids.distinct(),
+            )
+        }
+    }
+
+    private suspend fun getEventUidsByFilters(
+        bundle: EventQueryBundle,
+        orgunitUid: String?,
+    ): List<String> {
+        return bundle.eventFilters()?.flatMap {
+            eventQueryCollectionRepository
+                .byOrgUnits().eq(orgunitUid)
+                .byOrgUnitMode().eq(bundle.commonParams().ouMode)
+                .byEventFilterObject().eq(it)
+                .onlineOnly().getDataFetcher().getUids()
+        } ?: emptyList()
     }
 }

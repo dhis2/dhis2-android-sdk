@@ -38,7 +38,7 @@ internal data class FilterSettingDTO(
     val sort: Boolean?,
     val filter: Boolean?,
 ) {
-    fun toDomain(uid: String? = null): FilterSetting {
+    fun toDomain(uid: String?): FilterSetting {
         return FilterSetting.builder()
             .scope(scope)
             .filterType(filterType)

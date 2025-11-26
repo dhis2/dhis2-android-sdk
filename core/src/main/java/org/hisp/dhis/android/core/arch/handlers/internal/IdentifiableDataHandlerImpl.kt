@@ -27,15 +27,19 @@
  */
 package org.hisp.dhis.android.core.arch.handlers.internal
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidsList
-import org.hisp.dhis.android.core.common.*
+import org.hisp.dhis.android.core.common.DataColumns
+import org.hisp.dhis.android.core.common.DeletableDataObject
+import org.hisp.dhis.android.core.common.IdentifiableColumns
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager
 import org.hisp.dhis.android.core.relationship.internal.RelationshipHandler
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 
 @Suppress("TooManyFunctions")
 internal abstract class IdentifiableDataHandlerImpl<O>(
@@ -45,9 +49,9 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
 ) : IdentifiableDataHandler<O> where O : DeletableDataObject, O : ObjectWithUidInterface {
 
     @JvmSuppressWildcards
-    protected fun handle(
+    protected suspend fun handle(
         o: O?,
-        transformer: (O) -> O,
+        transformer: suspend (O) -> O,
         oTransformedCollection: MutableList<O>,
         params: IdentifiableDataHandlerParams,
     ) {
@@ -59,9 +63,9 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
     }
 
     @JvmSuppressWildcards
-    protected fun handle(
+    protected suspend fun handle(
         o: O?,
-        transformer: (O) -> O,
+        transformer: suspend (O) -> O,
         oTransformedCollection: MutableList<O>,
         params: IdentifiableDataHandlerParams,
         relatives: RelationshipItemRelatives?,
@@ -73,7 +77,7 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         oTransformedCollection.add(oTransformed)
     }
 
-    private fun handleInternal(o: O, transformer: (O) -> O, params: IdentifiableDataHandlerParams): O {
+    private suspend fun handleInternal(o: O, transformer: suspend (O) -> O, params: IdentifiableDataHandlerParams): O {
         val o2 = beforeObjectHandled(o, params)
         val o3 = transformer(o2)
         val action = deleteOrPersist(o3)
@@ -81,9 +85,9 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         return o3
     }
 
-    private fun handleInternal(
+    private suspend fun handleInternal(
         o: O,
-        transformer: (O) -> O,
+        transformer: suspend (O) -> O,
         params: IdentifiableDataHandlerParams,
         relatives: RelationshipItemRelatives?,
     ): O {
@@ -95,7 +99,7 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
     }
 
     @JvmSuppressWildcards
-    override fun handleMany(
+    override suspend fun handleMany(
         oCollection: Collection<O>?,
         params: IdentifiableDataHandlerParams,
         relatives: RelationshipItemRelatives?,
@@ -103,12 +107,13 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         if (oCollection == null) {
             return
         }
-        val transformer =
+        val transformer: suspend (O) -> O =
             if (params.asRelationship) {
                 relationshipTransformer()
             } else {
                 { o: O -> addSyncedState(o) }
             }
+
         val preHandledCollection = beforeCollectionHandled(oCollection, params)
         val transformedCollection: MutableList<O> = ArrayList(preHandledCollection.size)
         for (o in preHandledCollection) {
@@ -117,7 +122,7 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         afterCollectionHandled(transformedCollection, params)
     }
 
-    private fun relationshipTransformer(): (O) -> O {
+    private fun relationshipTransformer(): suspend (O) -> O {
         return { o: O ->
             val currentState = store.getSyncState(o.uid())
             if (currentState == State.RELATIONSHIP || currentState == null) {
@@ -129,7 +134,7 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
     }
 
     @JvmSuppressWildcards
-    protected fun handleRelationships(
+    protected suspend fun handleRelationships(
         relationships: Collection<Relationship>,
         parent: ObjectWithUidInterface,
         relatives: RelationshipItemRelatives?,
@@ -153,13 +158,13 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         }
     }
 
-    protected fun deleteLinkedRelationships(o: O) {
+    private suspend fun deleteLinkedRelationships(o: O) {
         o.uid()?.let { relationshipHandler.deleteLinkedRelationships(it) }
     }
 
     protected abstract fun addRelationshipState(o: O): O
     protected abstract fun addSyncedState(o: O): O
-    protected fun deleteOrPersist(o: O): HandleAction {
+    protected suspend fun deleteOrPersist(o: O): HandleAction {
         val modelUid = o.uid()
         return if ((CollectionsHelper.isDeleted(o) || deleteIfCondition(o)) && modelUid != null) {
             deleteLinkedRelationships(o)
@@ -170,22 +175,22 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         }
     }
 
-    protected open fun deleteIfCondition(o: O): Boolean {
+    protected open suspend fun deleteIfCondition(o: O): Boolean {
         return false
     }
 
-    protected open fun beforeObjectHandled(o: O, params: IdentifiableDataHandlerParams): O {
+    protected open suspend fun beforeObjectHandled(o: O, params: IdentifiableDataHandlerParams): O {
         return o
     }
 
-    protected abstract fun afterObjectHandled(
+    protected abstract suspend fun afterObjectHandled(
         o: O,
         action: HandleAction?,
         params: IdentifiableDataHandlerParams,
         relatives: RelationshipItemRelatives?,
     )
 
-    protected open fun beforeCollectionHandled(
+    protected open suspend fun beforeCollectionHandled(
         oCollection: Collection<O>,
         params: IdentifiableDataHandlerParams,
     ): Collection<O> {
@@ -193,12 +198,14 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
             params.overwrite -> {
                 oCollection
             }
+
             params.asRelationship -> {
                 filterExistingObjectsByState(
                     oCollection,
                     listOf(State.RELATIONSHIP.name),
                 )
             }
+
             else -> {
                 filterExistingObjectsByState(
                     oCollection,
@@ -212,13 +219,16 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         }
     }
 
-    protected open fun afterCollectionHandled(oCollection: Collection<O>?, params: IdentifiableDataHandlerParams) {
+    protected open suspend fun afterCollectionHandled(
+        oCollection: Collection<O>?,
+        params: IdentifiableDataHandlerParams,
+    ) {
         /* Method is not abstract since empty action is the default action and we don't want it to
          * be unnecessarily written in every child.
          */
     }
 
-    private fun filterExistingObjectsByState(os: Collection<O>, allowedStates: List<String>): Collection<O> {
+    private suspend fun filterExistingObjectsByState(os: Collection<O>, allowedStates: List<String>): Collection<O> {
         val storedObjectUids = storedObjectUids(os)
         val allowedObjectUids = objectWithStatesUids(storedObjectUids, allowedStates)
 
@@ -229,14 +239,14 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
         }
     }
 
-    private fun storedObjectUids(os: Collection<O>): List<String> {
+    private suspend fun storedObjectUids(os: Collection<O>): List<String> {
         val objectUids = getUidsList(os)
         val storedObjectUidsWhereClause = WhereClauseBuilder()
             .appendInKeyStringValues(IdentifiableColumns.UID, objectUids).build()
         return store.selectUidsWhere(storedObjectUidsWhereClause)
     }
 
-    private fun objectWithStatesUids(storedObjectUids: List<String>, states: List<String>): List<String> {
+    private suspend fun objectWithStatesUids(storedObjectUids: List<String>, states: List<String>): List<String> {
         if (storedObjectUids.isNotEmpty()) {
             val syncedObjectUidsWhereClause2 = WhereClauseBuilder()
                 .appendInKeyStringValues(IdentifiableColumns.UID, storedObjectUids)

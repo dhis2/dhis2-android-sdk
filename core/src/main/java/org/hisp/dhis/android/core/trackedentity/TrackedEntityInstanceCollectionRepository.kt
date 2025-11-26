@@ -28,8 +28,10 @@
 package org.hisp.dhis.android.core.trackedentity
 
 import io.reactivex.Observable
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadWithUidCollectionRepository
@@ -46,20 +48,20 @@ import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludingError
 import org.hisp.dhis.android.core.common.internal.TrackerDataManager
-import org.hisp.dhis.android.core.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.core.trackedentity.internal.ProgramOwnerChildrenAppender
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueChildrenAppender
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePostParentCall
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceProjectionTransformer
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 @Suppress("TooManyFunctions")
 class TrackedEntityInstanceCollectionRepository internal constructor(
     private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
     transformer: TrackedEntityInstanceProjectionTransformer,
     private val trackerDataManager: TrackerDataManager,
@@ -71,7 +73,6 @@ class TrackedEntityInstanceCollectionRepository internal constructor(
     TrackedEntityInstanceCollectionRepository,
     >(
     trackedEntityInstanceStore,
-    databaseAdapter,
     childrenAppenders,
     scope,
     transformer,
@@ -80,7 +81,6 @@ class TrackedEntityInstanceCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         TrackedEntityInstanceCollectionRepository(
             trackedEntityInstanceStore,
-            databaseAdapter,
             s,
             transformer,
             trackerDataManager,
@@ -90,24 +90,18 @@ class TrackedEntityInstanceCollectionRepository internal constructor(
     },
 ),
     ReadWriteWithUploadWithUidCollectionRepository<TrackedEntityInstance, TrackedEntityInstanceCreateProjection> {
-    override fun propagateState(m: TrackedEntityInstance, action: HandleAction?) {
+    override suspend fun propagateState(m: TrackedEntityInstance, action: HandleAction?) {
         trackerDataManager.propagateTrackedEntityUpdate(m, action!!)
     }
 
     @Suppress("SpreadOperator")
-    override fun upload(): Observable<D2Progress> {
-        return Observable.concat(
-            jobQueryCall.queryPendingJobs(),
-            Observable.fromCallable {
-                byAggregatedSyncState().`in`(*uploadableStatesIncludingError()).blockingGetWithoutChildren()
-            }
-                .flatMap { trackedEntityInstances: List<TrackedEntityInstance> ->
-                    postCall.uploadTrackedEntityInstances(
-                        trackedEntityInstances,
-                    )
-                },
-        )
-    }
+    override fun upload(): Observable<D2Progress> = flow {
+        emitAll(jobQueryCall.queryPendingJobs())
+        val trackedEntityInstances = byAggregatedSyncState()
+            .`in`(*uploadableStatesIncludingError())
+            .getWithoutChildrenInternal()
+        emitAll(postCall.uploadTrackedEntityInstances(trackedEntityInstances))
+    }.asObservable()
 
     override fun blockingUpload() {
         upload().blockingSubscribe()
@@ -118,7 +112,6 @@ class TrackedEntityInstanceCollectionRepository internal constructor(
         return TrackedEntityInstanceObjectRepository(
             trackedEntityInstanceStore,
             uid,
-            databaseAdapter,
             childrenAppenders,
             updatedScope,
             trackerDataManager,
@@ -224,7 +217,7 @@ class TrackedEntityInstanceCollectionRepository internal constructor(
 
         val childrenAppenders: ChildrenAppenderGetter<TrackedEntityInstance> = mapOf(
             TRACKED_ENTITY_ATTRIBUTE_VALUES to TrackedEntityAttributeValueChildrenAppender::create,
-            PROGRAM_OWNERS to ::ProgramOwnerChildrenAppender,
+            PROGRAM_OWNERS to ProgramOwnerChildrenAppender::create,
         )
     }
 }

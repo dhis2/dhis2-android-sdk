@@ -96,28 +96,28 @@ internal class TrackerImportConflictParser(
         MissingDataElementConflict,
     )
 
-    fun getTrackedEntityInstanceConflict(
+    suspend fun getTrackedEntityInstanceConflict(
         conflict: ImportConflict,
         conflictBuilder: TrackerImportConflict.Builder,
     ): TrackerImportConflict {
         return evaluateConflicts(conflict, conflictBuilder, trackedEntityInstanceConflicts)
     }
 
-    fun getEnrollmentConflict(
+    suspend fun getEnrollmentConflict(
         conflict: ImportConflict,
         conflictBuilder: TrackerImportConflict.Builder,
     ): TrackerImportConflict {
         return evaluateConflicts(conflict, conflictBuilder, enrollmentConflicts)
     }
 
-    fun getEventConflict(
+    suspend fun getEventConflict(
         conflict: ImportConflict,
         conflictBuilder: TrackerImportConflict.Builder,
     ): TrackerImportConflict {
         return evaluateConflicts(conflict, conflictBuilder, eventConflicts)
     }
 
-    private fun evaluateConflicts(
+    private suspend fun evaluateConflicts(
         conflict: ImportConflict,
         conflictBuilder: TrackerImportConflict.Builder,
         conflictTypes: List<TrackerImportConflictItem>,
@@ -141,17 +141,17 @@ internal class TrackerImportConflictParser(
             .build()
     }
 
-    private fun getConflictValue(conflictBuilder: TrackerImportConflict.Builder): String? {
+    private suspend fun getConflictValue(conflictBuilder: TrackerImportConflict.Builder): String? {
         val auxConflict = conflictBuilder.build()
 
         return if (auxConflict.dataElement() != null && auxConflict.event() != null) {
             trackedEntityInstanceDataValueRepository
                 .value(auxConflict.event()!!, auxConflict.dataElement()!!)
-                .blockingGet()?.value()
+                .getInternal()?.value()
         } else if (auxConflict.trackedEntityAttribute() != null && auxConflict.trackedEntityInstance() != null) {
             trackedEntityAttributeValueRepository
                 .value(auxConflict.trackedEntityAttribute()!!, auxConflict.trackedEntityInstance()!!)
-                .blockingGet()?.value()
+                .getInternal()?.value()
         } else {
             null
         }

@@ -27,19 +27,18 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStoreImpl
-import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerTableInfo
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
+import org.hisp.dhis.android.persistence.trackedentity.ProgramOwnerTableInfo
 
-internal class ProgramOwnerChildrenAppender constructor(
-    databaseAdapter: DatabaseAdapter,
+internal class ProgramOwnerChildrenAppender private constructor(
+    private val childStore: ProgramOwnerStore,
 ) : ChildrenAppender<TrackedEntityInstance>() {
-    private val childStore = ProgramOwnerStoreImpl(databaseAdapter)
 
-    override fun appendChildren(tei: TrackedEntityInstance): TrackedEntityInstance {
+    override suspend fun appendChildren(tei: TrackedEntityInstance): TrackedEntityInstance {
         val builder = tei.toBuilder()
         val programOwners = childStore.selectWhere(
             WhereClauseBuilder()
@@ -47,5 +46,11 @@ internal class ProgramOwnerChildrenAppender constructor(
                 .build(),
         )
         return builder.programOwners(programOwners).build()
+    }
+
+    companion object {
+        fun create(): ChildrenAppender<TrackedEntityInstance> {
+            return ProgramOwnerChildrenAppender(koin.get())
+        }
     }
 }

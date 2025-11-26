@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.trackedentity.search
 
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.cache.internal.ExpirableCache
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -40,11 +40,11 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceSt
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
 import java.util.concurrent.TimeUnit
 
+@Suppress("TooManyFunctions")
 internal class TrackedEntitySearchDataFetcher(
     store: TrackedEntityInstanceStore,
-    databaseAdapter: DatabaseAdapter,
     trackerParentCallFactory: TrackerParentCallFactory,
-    scope: TrackedEntityInstanceQueryRepositoryScope,
+    val scope: TrackedEntityInstanceQueryRepositoryScope,
     childrenAppenders: ChildrenAppenderGetter<TrackedEntityInstance>,
     onlineCache: TrackedEntityInstanceOnlineCache,
     onlineHelper: TrackedEntityInstanceQueryOnlineHelper,
@@ -54,7 +54,6 @@ internal class TrackedEntitySearchDataFetcher(
 
     private val instanceFetcher = TrackedEntityInstanceQueryDataFetcher(
         store,
-        databaseAdapter,
         trackerParentCallFactory,
         scope,
         childrenAppenders,
@@ -63,12 +62,21 @@ internal class TrackedEntitySearchDataFetcher(
         localQueryHelper,
     )
 
-    private val attributes by lazy {
-        helper.getScopeAttributes(scope.program(), scope.trackedEntityType())
+    private var attributes: List<SimpleTrackedEntityAttribute>? = null
+    private var headerExpression: String? = null
+
+    private suspend fun getAttributes(): List<SimpleTrackedEntityAttribute> {
+        if (attributes == null) {
+            attributes = helper.getScopeAttributes(scope.program(), scope.trackedEntityType())
+        }
+        return attributes!!
     }
 
-    private val headerExpression by lazy {
-        helper.getHeaderExpression(scope.program())
+    private suspend fun getHeaderExpression(): String? {
+        if (headerExpression == null) {
+            headerExpression = helper.getHeaderExpression(scope.program())
+        }
+        return headerExpression
     }
 
     @Suppress("MagicNumber")
@@ -79,22 +87,26 @@ internal class TrackedEntitySearchDataFetcher(
     }
 
     fun loadPages(requestedLoadSize: Int): List<Result<TrackedEntitySearchItem, D2Error>> {
+        return runBlocking { loadPagesSuspend(requestedLoadSize) }
+    }
+
+    suspend fun loadPagesSuspend(requestedLoadSize: Int): List<Result<TrackedEntitySearchItem, D2Error>> {
         return transform(instanceFetcher.loadPages(requestedLoadSize))
     }
 
-    fun queryAllOffline(): List<Result<TrackedEntitySearchItem, D2Error>> {
+    suspend fun queryAllOffline(): List<Result<TrackedEntitySearchItem, D2Error>> {
         return transform(instanceFetcher.queryAllOffline())
     }
 
-    fun queryAllOfflineUids(): List<String> {
+    suspend fun queryAllOfflineUids(): List<String> {
         return instanceFetcher.queryAllOfflineUids()
     }
 
-    fun queryAllOnline(): List<Result<TrackedEntitySearchItem, D2Error>> {
+    suspend fun queryAllOnline(): List<Result<TrackedEntitySearchItem, D2Error>> {
         return transform(instanceFetcher.queryAllOnline())
     }
 
-    private fun transform(
+    private suspend fun transform(
         list: List<Result<TrackedEntityInstance, D2Error>>,
     ): List<Result<TrackedEntitySearchItem, D2Error>> {
         return list.map { itemResult ->
@@ -104,7 +116,7 @@ internal class TrackedEntitySearchDataFetcher(
                 if (teType != null) {
                     Result.Success(
                         TrackedEntitySearchItemHelper
-                            .from(instance, attributes, teType)
+                            .from(instance, getAttributes(), teType)
                             .copy(
                                 header = evaluateHeader(instance),
                             ),
@@ -121,7 +133,7 @@ internal class TrackedEntitySearchDataFetcher(
         }
     }
 
-    private fun getTrackedEntityType(uid: String?): TrackedEntityType? {
+    private suspend fun getTrackedEntityType(uid: String?): TrackedEntityType? {
         return if (uid != null) {
             teTypeCache[uid]
                 ?: helper.getTeType(uid)
@@ -131,8 +143,8 @@ internal class TrackedEntitySearchDataFetcher(
         }
     }
 
-    private fun evaluateHeader(item: TrackedEntityInstance): String? {
-        return headerExpression?.let {
+    private suspend fun evaluateHeader(item: TrackedEntityInstance): String? {
+        return getHeaderExpression()?.let {
             helper.evaluateHeaderExpression(it, item)
         }
     }

@@ -1,0 +1,405 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+      - "*-rc"
+      - "*-RC"
+      - "PR-*"
+      - "pr-*"
+      - "feature/*"
+  pull_request:
+    branches:
+      - master
+      - develop
+      - "*-rc"
+      - "*-RC"
+      - "PR-*"
+      - "pr-*"
+      - "feature/*"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GRADLE_OPTS: >-
+    -Dorg.gradle.daemon=false
+    -Dorg.gradle.parallel=true
+    -Dorg.gradle.caching=true
+    -Dorg.gradle.configuration-cache=true
+    -Dkotlin.incremental=true
+    -Dkotlin.compiler.execution.strategy=in-process
+
+jobs:
+  build-apks:
+    name: Build APKs for Testing
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+      
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+      
+      - name: Build test APKs
+        run: |
+          ./gradlew :core:assembleDebugAndroidTest -Pcoverage --stacktrace
+          ./gradlew :instrumented-test-app:assembleDebug --stacktrace
+      
+      - name: Upload test APKs
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-apks
+          path: |
+            core/build/outputs/apk/
+            instrumented-test-app/build/outputs/apk/
+          retention-days: 1
+
+  code-quality-checks:
+    name: Code Quality Checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+      
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+      
+      - name: Run code quality checks
+        run: ./gradlew ktlintCheck detekt checkstyleDebug pmdDebug lintDebug --project-dir core
+      
+      - name: Upload lint reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-reports
+          path: |
+            core/build/reports/
+          retention-days: 7
+
+  api-validation:
+    name: API Validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+      
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+      
+      - name: Run API validation
+        run: ./gradlew :core:apiCheck
+      
+      - name: Upload API dump
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-dump
+          path: core/api/
+          retention-days: 7
+
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+      
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+      
+      - name: Run unit tests
+        run: ./gradlew testDebugUnitTest --stacktrace --no-daemon
+      
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-reports
+          path: |
+            core/build/reports/tests/
+            core/build/test-results/
+          retention-days: 7
+      
+      - name: Upload unit test coverage data
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-coverage
+          path: |
+            core/build/jacoco/
+          retention-days: 7
+
+  instrumented-tests:
+    name: Instrumented Tests (BrowserStack)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs: [build-apks]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+      
+      - name: Download test APKs
+        uses: actions/download-artifact@v4
+        with:
+          name: test-apks
+      
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+      
+      - name: Make BrowserStack script executable
+        run: chmod +x ./scripts/browserstackGithub.sh
+      
+      - name: Run instrumented tests on BrowserStack
+        run: ./scripts/browserstackGithub.sh
+        env:
+          BROWSERSTACK_USR: ${{ secrets.BROWSERSTACK_USERNAME }}
+          BROWSERSTACK_PSW: ${{ secrets.BROWSERSTACK_PASSWORD }}
+          SKIP_BUILD: 'true'
+      
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: core/build/outputs/code_coverage/
+          retention-days: 7
+      
+      - name: Add BrowserStack link to summary
+        if: always()
+        run: |
+          echo "## BrowserStack Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "Check the test execution at BrowserStack dashboard" >> $GITHUB_STEP_SUMMARY
+
+  jacoco-report:
+    name: JaCoCo Coverage Report
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [instrumented-tests]
+    if: always() && needs.instrumented-tests.result == 'success'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+      
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+      
+      - name: Download unit test coverage
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: unit-test-coverage
+          path: core/build/jacoco/
+      
+      - name: Download instrumented test coverage
+        id: download_coverage
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: coverage-report
+          path: core/build/outputs/code_coverage/
+      
+      - name: Check downloaded coverage files
+        run: |
+          echo "📁 Checking unit test coverage:"
+          if [ -d "core/build/jacoco" ]; then
+            ls -la core/build/jacoco/ || echo "Directory exists but is empty"
+          else
+            echo "⚠️ No unit test coverage files found"
+          fi
+          
+          echo ""
+          echo "📁 Checking instrumented test coverage:"
+          if [ -d "core/build/outputs/code_coverage" ]; then
+            ls -la core/build/outputs/code_coverage/ || echo "Directory exists but is empty"
+          else
+            echo "⚠️ No instrumented test coverage files found"
+          fi
+      
+      - name: Generate JaCoCo report
+        id: jacoco_gen
+        run: |
+          echo "🔨 Generating JaCoCo report..."
+          ./gradlew jacocoReport --stacktrace --no-daemon
+        continue-on-error: true
+      
+      - name: Check if JaCoCo reports exist
+        id: check_reports
+        run: |
+          echo "🔍 Checking for JaCoCo reports..."
+          if [ -d "core/build/coverage-report" ]; then
+            echo "📁 JaCoCo directory exists, contents:"
+            ls -la core/build/coverage-report/
+            if [ "$(ls -A core/build/coverage-report)" ]; then
+              echo "exists=true" >> $GITHUB_OUTPUT
+              echo "✅ JaCoCo reports generated successfully"
+            else
+              echo "exists=false" >> $GITHUB_OUTPUT
+              echo "⚠️ JaCoCo directory exists but is empty"
+            fi
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "❌ JaCoCo reports directory not found"
+          fi
+      
+      - name: Check gradle task result
+        if: steps.jacoco_gen.outcome == 'failure'
+        run: |
+          echo "⚠️ Gradle jacocoReport task failed"
+          echo "This might be why reports are not available"
+      
+      - name: Upload JaCoCo reports
+        if: steps.check_reports.outputs.exists == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-reports
+          path: |
+            core/build/coverage-report/
+          retention-days: 7
+      
+      - name: Add coverage to summary
+        if: steps.check_reports.outputs.exists == 'true'
+        run: |
+          echo "## Code Coverage Report" >> $GITHUB_STEP_SUMMARY
+          echo "✅ JaCoCo coverage report generated successfully" >> $GITHUB_STEP_SUMMARY
+      
+      - name: Add coverage failure to summary
+        if: steps.check_reports.outputs.exists != 'true'
+        run: |
+          echo "## Code Coverage Report" >> $GITHUB_STEP_SUMMARY
+          echo "⚠️ JaCoCo coverage report could not be generated" >> $GITHUB_STEP_SUMMARY
+
+  sonarqube:
+    name: SonarQube Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [jacoco-report]
+    if: always() && !cancelled()
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+      
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+      
+      - name: Make SonarQube script executable
+        run: chmod +x ./scripts/sonarqube.sh
+      
+      - name: Download JaCoCo reports
+        id: download_jacoco
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: jacoco-reports
+          path: core/build/coverage-report/
+      
+      - name: Check JaCoCo reports availability
+        run: |
+          if [ -d "core/build/coverage-report" ] && [ "$(ls -A core/build/coverage-report 2>/dev/null)" ]; then
+            echo "✅ JaCoCo reports available for SonarQube analysis"
+          else
+            echo "⚠️ JaCoCo reports not available, SonarQube will run without coverage data"
+          fi
+      
+      - name: Check if SonarQube token exists
+        id: sonar_check
+        run: |
+          if [ -z "${{ secrets.SONAR_TOKEN }}" ]; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+            echo "⚠️ SONAR_TOKEN not configured, skipping SonarQube analysis"
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+            echo "✅ SONAR_TOKEN configured, running SonarQube analysis"
+          fi
+      
+      - name: Run SonarQube analysis
+        if: steps.sonar_check.outputs.skip != 'true'
+        run: ./scripts/sonarqube.sh
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GIT_BRANCH: ${{ github.ref_name }}
+          GIT_BRANCH_DEST: ${{ github.base_ref }}
+          PULL_REQUEST: ${{ github.event.pull_request.number }}
+
+  deploy:
+    name: Trigger Deployment
+    needs: [code-quality-checks, api-validation, unit-tests, instrumented-tests, jacoco-report, sonarqube]
+    if: |
+      success() &&
+      github.event_name == 'push' &&
+      github.event.pull_request == null &&
+      (github.ref_name == 'develop' || endsWith(github.ref_name, '-rc') || endsWith(github.ref_name, '-RC'))
+    uses: ./.github/workflows/deploy.yml
+    secrets:
+      SONATYPE_PORTAL_USERNAME: ${{ secrets.SONATYPE_PORTAL_USERNAME }}
+      SONATYPE_PORTAL_PASSWORD: ${{ secrets.SONATYPE_PORTAL_PASSWORD }}

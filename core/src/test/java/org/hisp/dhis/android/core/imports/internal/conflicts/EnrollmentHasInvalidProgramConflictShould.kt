@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.imports.internal.conflicts
 
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 internal class EnrollmentHasInvalidProgramConflictShould : BaseConflictShould() {
@@ -46,7 +47,7 @@ internal class EnrollmentHasInvalidProgramConflictShould : BaseConflictShould() 
     }
 
     @Test
-    fun `Should create display description`() {
+    fun `Should create display description`() = runTest {
         val displayDescription = EnrollmentHasInvalidProgramConflict.getDisplayDescription(importConflict, context)
         assert(displayDescription == "Your enrollment $enrollmentUid has an invalid program")
     }

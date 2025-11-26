@@ -39,16 +39,16 @@ import org.hisp.dhis.android.core.analytics.trackerlinelist.EnumFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.OrganisationUnitFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.internal.TrackerLineListSortingMapper.mapSorting
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevelTableInfo
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
 import org.hisp.dhis.android.core.visualization.TrackerVisualization
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationOutputType
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitLevelTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -56,7 +56,7 @@ import org.koin.core.annotation.Singleton
 internal class TrackerVisualizationMapper(
     private val organisationUnitLevelStore: OrganisationUnitLevelStore,
 ) {
-    fun toTrackerLineListParams(trackerVisualization: TrackerVisualization): TrackerLineListParams {
+    suspend fun toTrackerLineListParams(trackerVisualization: TrackerVisualization): TrackerLineListParams {
         val columns = mapDimensions(trackerVisualization.columns(), trackerVisualization)
         val filters = mapDimensions(trackerVisualization.filters(), trackerVisualization)
         val sorting = mapSorting(trackerVisualization.sorting(), columns + filters)
@@ -82,7 +82,7 @@ internal class TrackerVisualizationMapper(
         }
     }
 
-    private fun mapDimensions(
+    private suspend fun mapDimensions(
         dimensions: List<TrackerVisualizationDimension>?,
         trackerVisualization: TrackerVisualization,
     ): List<TrackerLineListItem> {
@@ -103,7 +103,7 @@ internal class TrackerVisualizationMapper(
         } ?: emptyList()
     }
 
-    private fun mapOrganisationUnit(item: TrackerVisualizationDimension): TrackerLineListItem? {
+    private suspend fun mapOrganisationUnit(item: TrackerVisualizationDimension): TrackerLineListItem? {
         return TrackerLineListItem.OrganisationUnitItem(
             programUid = item.program()?.uid(),
             filters = item.items()?.mapNotNull { it.uid() }?.mapNotNull { uid ->

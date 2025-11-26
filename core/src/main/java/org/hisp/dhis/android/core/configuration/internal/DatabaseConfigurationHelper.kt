@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.configuration.internal
 
+import org.hisp.dhis.android.core.server.LoginConfig
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -48,16 +49,18 @@ internal class DatabaseConfigurationHelper(
             .build()
     }
 
+    @Suppress("LongParameterList")
     fun addOrUpdateAccount(
         configuration: DatabasesConfiguration?,
         serverUrl: String,
         username: String,
         encrypt: Boolean,
+        loginConfig: LoginConfig? = null,
         importStatus: DatabaseAccountImportStatus? = null,
     ): DatabasesConfiguration {
         val dbName = databaseNameGenerator.getDatabaseName(serverUrl, username, encrypt)
         val importDb = importStatus?.let {
-            DatabaseAccountImportDB.builder()
+            DatabaseAccountImport.builder()
                 .status(importStatus)
                 .protectedDbName("$dbName.protected")
                 .build()
@@ -68,6 +71,7 @@ internal class DatabaseConfigurationHelper(
             .databaseName(dbName)
             .encrypted(encrypt)
             .databaseCreationDate(dateProvider.dateStr)
+            .loginConfig(loginConfig)
             .importDB(importDb)
             .build()
 
@@ -137,6 +141,7 @@ internal class DatabaseConfigurationHelper(
 
         private fun removeProtocol(s: String): String {
             return s.replace("https://", "").replace("http://", "")
+                .replace('\\', '/')
         }
     }
 }

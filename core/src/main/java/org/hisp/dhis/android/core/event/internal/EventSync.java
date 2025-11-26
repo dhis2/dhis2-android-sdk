@@ -28,30 +28,21 @@
 
 package org.hisp.dhis.android.core.event.internal;
 
-import android.database.Cursor;
-
-import androidx.annotation.NonNull;
-
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerBaseSync;
 
 @AutoValue
-abstract class EventSync extends TrackerBaseSync {
+public abstract class EventSync implements TrackerBaseSync {
 
-    @NonNull
-    static EventSync create(Cursor cursor) {
-        return AutoValue_EventSync.createFromCursor(cursor);
-    }
-
-    static Builder builder() {
+    public static Builder builder() {
         return new AutoValue_EventSync.Builder();
     }
 
-    abstract Builder toBuilder();
+    public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    abstract static class Builder extends TrackerBaseSync.Builder<Builder> {
-        abstract EventSync build();
+    public abstract static class Builder implements TrackerBaseSync.Builder<Builder> {
+        public abstract EventSync build();
     }
 }

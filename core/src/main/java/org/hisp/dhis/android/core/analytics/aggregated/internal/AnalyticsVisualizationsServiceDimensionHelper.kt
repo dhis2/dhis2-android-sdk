@@ -36,17 +36,17 @@ import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.composedUidO
 import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.orgunitLevelRegex
 import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.singleUidRegex
 import org.hisp.dhis.android.core.analytics.internal.AnalyticsRegex.tripleComposedUidOperandRegex
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.category.internal.CategoryCategoryOptionLinkStore
 import org.hisp.dhis.android.core.category.internal.CategoryStore
 import org.hisp.dhis.android.core.common.RelativeOrganisationUnit
 import org.hisp.dhis.android.core.common.RelativePeriod
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevelTableInfo
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
 import org.hisp.dhis.android.core.visualization.DataDimensionItemType
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationDimension
 import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitLevelTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -59,7 +59,7 @@ internal class AnalyticsVisualizationsServiceDimensionHelper(
     private val orgUnitDimension = "ou"
     private val periodDimension = "pe"
 
-    fun getDimensionItems(dimensions: List<VisualizationDimension>?): List<DimensionItem> {
+    suspend fun getDimensionItems(dimensions: List<VisualizationDimension>?): List<DimensionItem> {
         return dimensions?.map { dimension ->
             when (dimension.id()) {
                 dataDimension -> extractDataDimensionItems(dimension.items())
@@ -81,7 +81,7 @@ internal class AnalyticsVisualizationsServiceDimensionHelper(
     @Suppress("ComplexMethod")
     private fun extractDataDimensionItems(items: List<VisualizationDimensionItem>?): List<DimensionItem> {
         return items?.mapNotNull { item ->
-            val dataType = DataDimensionItemType.values().find { it.name == item.dimensionItemType() }
+            val dataType = DataDimensionItemType.entries.find { it.name == item.dimensionItemType() }
 
             when (dataType) {
                 DataDimensionItemType.INDICATOR ->
@@ -132,9 +132,9 @@ internal class AnalyticsVisualizationsServiceDimensionHelper(
         } ?: emptyList()
     }
 
-    private fun extractOrgunitDimensionItems(items: List<VisualizationDimensionItem>?): List<DimensionItem> {
+    private suspend fun extractOrgunitDimensionItems(items: List<VisualizationDimensionItem>?): List<DimensionItem> {
         return items?.mapNotNull { it.dimensionItem() }?.map { item ->
-            val relativeOrgUnit = RelativeOrganisationUnit.values().find { it.name == item }
+            val relativeOrgUnit = RelativeOrganisationUnit.entries.find { it.name == item }
 
             when {
                 relativeOrgUnit != null -> {
@@ -160,7 +160,7 @@ internal class AnalyticsVisualizationsServiceDimensionHelper(
 
     private fun extractPeriodDimensionItems(items: List<VisualizationDimensionItem>?): List<DimensionItem> {
         return items?.mapNotNull { it.dimensionItem() }?.map { item ->
-            val relativePeriod = RelativePeriod.values().find { it.name == item }
+            val relativePeriod = RelativePeriod.entries.find { it.name == item }
 
             if (relativePeriod != null) {
                 DimensionItem.PeriodItem.Relative(relativePeriod)
@@ -170,7 +170,10 @@ internal class AnalyticsVisualizationsServiceDimensionHelper(
         } ?: emptyList()
     }
 
-    private fun extractUidDimensionItems(items: List<VisualizationDimensionItem>?, uid: String): List<DimensionItem> {
+    private suspend fun extractUidDimensionItems(
+        items: List<VisualizationDimensionItem>?,
+        uid: String,
+    ): List<DimensionItem> {
         return categoryStore.selectByUid(uid)?.let { category ->
             val categoryOptions =
                 if (items.isNullOrEmpty()) {

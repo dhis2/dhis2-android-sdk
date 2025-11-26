@@ -28,23 +28,15 @@
 
 package org.hisp.dhis.android.core.dataset;
 
-import android.database.Cursor;
-
 import androidx.annotation.Nullable;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.identifiable.internal.ObjectWithUidColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreDataElementListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreDataElementOperandListColumnAdapter;
-import org.hisp.dhis.android.core.arch.db.adapters.ignore.internal.IgnoreIndicatorListAdapter;
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.dataelement.DataElementOperand;
-import org.hisp.dhis.android.core.dataset.internal.SectionDisplayOptionsColumnAdapter;
 import org.hisp.dhis.android.core.indicator.Indicator;
 
 import java.util.List;
@@ -65,42 +57,31 @@ public abstract class Section extends BaseIdentifiableObject implements CoreObje
     public abstract Boolean showColumnTotals();
 
     @Nullable
-    @ColumnAdapter(ObjectWithUidColumnAdapter.class)
     public abstract ObjectWithUid dataSet();
 
     @Nullable
-    @ColumnAdapter(IgnoreDataElementListColumnAdapter.class)
     public abstract List<DataElement> dataElements();
 
     @Nullable
-    @ColumnAdapter(IgnoreDataElementOperandListColumnAdapter.class)
     public abstract List<DataElementOperand> greyedFields();
 
     @Nullable
-    @ColumnAdapter(IgnoreIndicatorListAdapter.class)
     public abstract List<Indicator> indicators();
 
     @Nullable
     public abstract Boolean disableDataElementAutoGroup();
 
     @Nullable
-    @ColumnAdapter(SectionDisplayOptionsColumnAdapter.class)
     public abstract SectionDisplayOptions displayOptions();
 
     public static Builder builder() {
-        return new $$AutoValue_Section.Builder();
-    }
-
-    public static Section create(Cursor cursor) {
-        return $AutoValue_Section.createFromCursor(cursor);
+        return new AutoValue_Section.Builder();
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
     public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
-        public abstract Builder id(Long id);
-
         public abstract Builder description(String description);
 
         public abstract Builder sortOrder(Integer sortOrder);

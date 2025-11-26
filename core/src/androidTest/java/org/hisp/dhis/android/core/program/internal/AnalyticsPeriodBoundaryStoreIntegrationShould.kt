@@ -30,9 +30,10 @@ package org.hisp.dhis.android.core.program.internal
 import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.program.AnalyticsPeriodBoundarySamples
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
-import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryTableInfo
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.program.AnalyticsPeriodBoundaryStoreImpl
+import org.hisp.dhis.android.persistence.program.AnalyticsPeriodBoundaryTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)

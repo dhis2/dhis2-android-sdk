@@ -28,14 +28,10 @@
 
 package org.hisp.dhis.android.core.sms.data.localdbrepository.internal;
 
-import android.database.Cursor;
-
 import androidx.annotation.NonNull;
 
-import com.gabrielittner.auto.value.cursor.ColumnAdapter;
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.arch.db.adapters.enums.internal.SMSMetadataTypeColumnAdapter;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.smscompression.SMSConsts;
 
@@ -43,26 +39,19 @@ import org.hisp.dhis.smscompression.SMSConsts;
 public abstract class SMSMetadataId implements CoreObject {
 
     @NonNull
-    @ColumnAdapter(SMSMetadataTypeColumnAdapter.class)
     public abstract SMSConsts.MetadataType type();
 
     @NonNull
     public abstract String uid();
 
     public static Builder builder() {
-        return new $AutoValue_SMSMetadataId.Builder();
-    }
-
-    public static SMSMetadataId create(Cursor cursor) {
-        return $AutoValue_SMSMetadataId.createFromCursor(cursor);
+        return new AutoValue_SMSMetadataId.Builder();
     }
 
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder id(Long id);
-
         public abstract Builder type(SMSConsts.MetadataType smsMetadataIdType);
 
         public abstract Builder uid(String uid);

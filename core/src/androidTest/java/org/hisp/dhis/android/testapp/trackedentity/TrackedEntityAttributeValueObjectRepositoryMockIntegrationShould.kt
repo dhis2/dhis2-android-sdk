@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.testapp.trackedentity
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
@@ -35,7 +37,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueObjec
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceObjectRepository
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStoreImpl
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.After
 import org.junit.Before
@@ -78,7 +79,7 @@ class TrackedEntityAttributeValueObjectRepositoryMockIntegrationShould : BaseMoc
     }
 
     @Test
-    fun update_value() {
+    fun update_value() = runTest {
         val value1 = "new_value"
         val value2 = "other_value"
 
@@ -143,8 +144,8 @@ class TrackedEntityAttributeValueObjectRepositoryMockIntegrationShould : BaseMoc
     }
 
     companion object {
-        fun setDataValueState(value: TrackedEntityAttributeValue, syncState: State?) {
-            val store: TrackedEntityAttributeValueStore = TrackedEntityAttributeValueStoreImpl(databaseAdapter)
+        suspend fun setDataValueState(value: TrackedEntityAttributeValue, syncState: State?) {
+            val store: TrackedEntityAttributeValueStore = koin.get()
             store.updateWhere(value.toBuilder().syncState(syncState).build())
         }
     }

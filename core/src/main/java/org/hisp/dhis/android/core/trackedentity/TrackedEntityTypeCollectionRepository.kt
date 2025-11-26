@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyNameableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
@@ -37,16 +36,15 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeAttributeChildrenAppender
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeStore
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityTypeTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 class TrackedEntityTypeCollectionRepository internal constructor(
     store: TrackedEntityTypeStore,
-    databaseAdapter: DatabaseAdapter,
     scope: RepositoryScope,
 ) : ReadOnlyNameableCollectionRepositoryImpl<TrackedEntityType, TrackedEntityTypeCollectionRepository>(
     store,
-    databaseAdapter,
     childrenAppenders,
     scope,
     FilterConnectorFactory(
@@ -54,7 +52,6 @@ class TrackedEntityTypeCollectionRepository internal constructor(
     ) { s: RepositoryScope ->
         TrackedEntityTypeCollectionRepository(
             store,
-            databaseAdapter,
             s,
         )
     },

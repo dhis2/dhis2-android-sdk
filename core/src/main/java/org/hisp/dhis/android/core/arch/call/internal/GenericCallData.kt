@@ -38,7 +38,7 @@ internal data class GenericCallData(
     val versionManager: DHISVersionManager,
 ) {
 
-    fun handleResource(type: Resource.Type?) {
+    suspend fun handleResource(type: Resource.Type?) {
         resourceHandler.handleResource(type)
     }
 }

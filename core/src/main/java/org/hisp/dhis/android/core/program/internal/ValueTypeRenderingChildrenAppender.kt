@@ -27,19 +27,19 @@
  */
 package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.arch.db.querybuilders.internal.WhereClauseBuilder
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppender
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering
-import org.hisp.dhis.android.core.common.ValueTypeDeviceRenderingTableInfo
 import org.hisp.dhis.android.core.common.ValueTypeRendering
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
+import org.hisp.dhis.android.persistence.valuetypedevicerendering.ValueTypeDeviceRenderingTableInfo
 
 internal abstract class ValueTypeRenderingChildrenAppender<M : ObjectWithUidInterface>(
     private val store: ObjectWithoutUidStore<ValueTypeDeviceRendering>,
 ) : ChildrenAppender<M>() {
-    fun getValueTypeDeviceRendering(model: M): ValueTypeRendering {
+    suspend fun getValueTypeDeviceRendering(model: M): ValueTypeRendering {
         val desktopWhereClause = WhereClauseBuilder()
             .appendKeyStringValue(IdentifiableColumns.UID, model.uid())
             .appendKeyStringValue(ValueTypeDeviceRenderingTableInfo.Columns.DEVICE_TYPE, ValueTypeRendering.DESKTOP)

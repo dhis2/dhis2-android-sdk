@@ -31,9 +31,10 @@ package org.hisp.dhis.android.core.trackedentity.internal;
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.trackedentity.ReservedValueSettingSamples;
 import org.hisp.dhis.android.core.trackedentity.ReservedValueSetting;
-import org.hisp.dhis.android.core.trackedentity.ReservedValueSettingTableInfo;
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
+import org.hisp.dhis.android.persistence.trackedentity.ReservedValueSettingStoreImpl;
+import org.hisp.dhis.android.persistence.trackedentity.ReservedValueSettingTableInfo;
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)

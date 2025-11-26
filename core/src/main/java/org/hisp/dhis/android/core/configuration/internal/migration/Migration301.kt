@@ -138,9 +138,7 @@ internal class Migration301(
             }
             else -> {
                 val success = databaseRenamer.renameDatabase(oldDbName, newDbName)
-                if (!success) {
-                    throw IllegalStateException("Failed to rename database from $oldDbName to $newDbName")
-                }
+                require(success) { "Failed to rename database from $oldDbName to $newDbName" }
                 true
             }
         }
@@ -154,14 +152,16 @@ internal class Migration301(
         val newResourcesDir = File(context.filesDir, "sdk_resources/$newSubfolder")
 
         if (oldResourcesDir.exists()) {
-            oldResourcesDir.renameTo(newResourcesDir)
+            val success = oldResourcesDir.renameTo(newResourcesDir)
+            require(success) { "Failed to rename resources directory from $oldSubfolder to $newSubfolder" }
         }
 
         val oldCacheDir = File(context.cacheDir, "sdk_cache_resources/$oldSubfolder")
         val newCacheDir = File(context.cacheDir, "sdk_cache_resources/$newSubfolder")
 
         if (oldCacheDir.exists()) {
-            oldCacheDir.renameTo(newCacheDir)
+            val success = oldCacheDir.renameTo(newCacheDir)
+            require(success) { "Failed to rename cache directory from $oldSubfolder to $newSubfolder" }
         }
     }
 
@@ -185,7 +185,8 @@ internal class Migration301(
             val newProtectedFile = context.getDatabasePath(newProtectedName)
 
             if (oldProtectedFile.exists()) {
-                oldProtectedFile.renameTo(newProtectedFile)
+                val success = oldProtectedFile.renameTo(newProtectedFile)
+                require(success) { "Failed to rename protected database from $oldProtectedName to $newProtectedName" }
             }
 
             importDB.toBuilder()

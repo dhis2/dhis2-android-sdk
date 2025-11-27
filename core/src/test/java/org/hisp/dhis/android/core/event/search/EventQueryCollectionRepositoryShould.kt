@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.common.DatePeriodType
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.event.EventFilterCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
+import org.hisp.dhis.android.core.tracker.TrackerPostParentCallHelper
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.mock
@@ -45,6 +46,7 @@ class EventQueryCollectionRepositoryShould {
     private val onlineAdapter: EventQueryOnlineAdapter = mock()
     private val filterRepository: EventFilterCollectionRepository = mock()
     private val trackerCallFactory: TrackerParentCallFactory = mock()
+    private val trackerPostParentCallHelper: TrackerPostParentCallHelper = mock()
 
     private lateinit var queryRepository: EventQueryCollectionRepository
 
@@ -56,6 +58,7 @@ class EventQueryCollectionRepositoryShould {
             onlineAdapter,
             filterRepository,
             trackerCallFactory,
+            trackerPostParentCallHelper,
             emptyScope,
         )
     }

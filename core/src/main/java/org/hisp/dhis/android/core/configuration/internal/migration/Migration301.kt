@@ -31,6 +31,7 @@ import android.content.Context
 import android.util.Log
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
+import org.hisp.dhis.android.core.configuration.internal.DatabaseAccountImport
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccountImportStatus
 import org.hisp.dhis.android.core.configuration.internal.DatabaseNameGenerator
 import org.hisp.dhis.android.core.configuration.internal.DatabaseRenamer
@@ -172,7 +173,7 @@ internal class Migration301(
         account: DatabaseAccount,
         oldDbName: String,
         newDbName: String,
-    ): org.hisp.dhis.android.core.configuration.internal.DatabaseAccountImport? {
+    ): DatabaseAccountImport? {
         val importDB = account.importDB()
 
         return if (importDB == null || importDB.status() != DatabaseAccountImportStatus.PENDING_TO_IMPORT) {

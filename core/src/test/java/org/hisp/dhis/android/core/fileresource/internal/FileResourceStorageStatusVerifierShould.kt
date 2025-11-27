@@ -31,6 +31,8 @@ import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.FileResourceInternalAccessor
@@ -41,6 +43,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 
@@ -48,6 +51,16 @@ import org.mockito.kotlin.whenever
 class FileResourceStorageStatusVerifierShould {
 
     private val fileResourceNetworkHandler: FileResourceNetworkHandler = mock()
+
+    // Helper function to create a Payload for testing
+    private fun <T> createPayload(items: List<T>): Payload<T> {
+        return object : Payload<T> {
+            override val pager: Any? = null
+            override val items: List<T> = items
+            override fun pager(): Any? = pager
+            override fun items(): List<T> = items
+        }
+    }
 
     // Fake implementation that just executes the block
     private val coroutineAPICallExecutor = object : CoroutineAPICallExecutor {
@@ -104,8 +117,9 @@ class FileResourceStorageStatusVerifierShould {
             FileResourceStorageStatus.STORED,
         ).build()
 
-        whenever(fileResourceNetworkHandler.getFileResource(uid))
-            .thenReturn(fileResource)
+        val payload = createPayload(listOf(fileResource))
+        whenever(fileResourceNetworkHandler.getFileResources(any<UidsQuery>()))
+            .thenReturn(payload)
 
         val result = verifier.verifyStorageStatusBatch(listOf(uid), maxAttempts = 1)
 
@@ -136,9 +150,9 @@ class FileResourceStorageStatusVerifierShould {
             FileResourceStorageStatus.STORED,
         ).build()
 
-        whenever(fileResourceNetworkHandler.getFileResource(uid1)).thenReturn(fileResource1)
-        whenever(fileResourceNetworkHandler.getFileResource(uid2)).thenReturn(fileResource2)
-        whenever(fileResourceNetworkHandler.getFileResource(uid3)).thenReturn(fileResource3)
+        val payload = createPayload(listOf(fileResource1, fileResource2, fileResource3))
+        whenever(fileResourceNetworkHandler.getFileResources(any<UidsQuery>()))
+            .thenReturn(payload)
 
         val result = verifier.verifyStorageStatusBatch(listOf(uid1, uid2, uid3), maxAttempts = 1)
 
@@ -156,8 +170,9 @@ class FileResourceStorageStatusVerifierShould {
             FileResourceStorageStatus.FAILED,
         ).build()
 
-        whenever(fileResourceNetworkHandler.getFileResource(uid))
-            .thenReturn(fileResource)
+        val payload = createPayload(listOf(fileResource))
+        whenever(fileResourceNetworkHandler.getFileResources(any<UidsQuery>()))
+            .thenReturn(payload)
 
         val result = verifier.verifyStorageStatusBatch(listOf(uid), maxAttempts = 1)
 
@@ -175,8 +190,9 @@ class FileResourceStorageStatusVerifierShould {
             FileResourceStorageStatus.PENDING,
         ).build()
 
-        whenever(fileResourceNetworkHandler.getFileResource(uid))
-            .thenReturn(fileResource)
+        val payload = createPayload(listOf(fileResource))
+        whenever(fileResourceNetworkHandler.getFileResources(any<UidsQuery>()))
+            .thenReturn(payload)
 
         val result = verifier.verifyStorageStatusBatch(
             listOf(uid),
@@ -211,9 +227,9 @@ class FileResourceStorageStatusVerifierShould {
             FileResourceStorageStatus.PENDING,
         ).build()
 
-        whenever(fileResourceNetworkHandler.getFileResource(uidStored)).thenReturn(fileResourceStored)
-        whenever(fileResourceNetworkHandler.getFileResource(uidFailed)).thenReturn(fileResourceFailed)
-        whenever(fileResourceNetworkHandler.getFileResource(uidPending)).thenReturn(fileResourcePending)
+        val payload = createPayload(listOf(fileResourceStored, fileResourceFailed, fileResourcePending))
+        whenever(fileResourceNetworkHandler.getFileResources(any<UidsQuery>()))
+            .thenReturn(payload)
 
         val result = verifier.verifyStorageStatusBatch(
             listOf(uidStored, uidFailed, uidPending),
@@ -236,7 +252,7 @@ class FileResourceStorageStatusVerifierShould {
             .errorDescription("Network error")
             .build()
 
-        whenever(fileResourceNetworkHandler.getFileResource(uid))
+        whenever(fileResourceNetworkHandler.getFileResources(any<UidsQuery>()))
             .thenAnswer { throw error }
 
         val result = verifier.verifyStorageStatusBatch(listOf(uid), maxAttempts = 1)

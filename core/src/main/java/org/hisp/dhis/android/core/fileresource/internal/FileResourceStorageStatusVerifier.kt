@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.fileresource.internal
 import android.util.Log
 import kotlinx.coroutines.delay
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery
 import org.hisp.dhis.android.core.fileresource.FileResourceInternalAccessor
 import org.hisp.dhis.android.core.fileresource.FileResourceStorageStatus
 import org.hisp.dhis.android.core.fileresource.internal.FileResourcePostCall.Companion.TAG
@@ -108,7 +109,7 @@ internal class FileResourceStorageStatusVerifier(
 
             // If there are still pending files and we haven't reached max attempts, wait before next poll
             if (pendingUids.isNotEmpty() && attempt < maxAttempts) {
-                delay((delayMs * (2.0.pow(attempt) - 1)).toLong())
+                delay((delayMs * (2.0.pow(attempt))).toLong())
             }
         }
 
@@ -136,47 +137,61 @@ internal class FileResourceStorageStatusVerifier(
     }
 
     /**
-     * Verifies a single batch of file resources.
-     */
-    private suspend fun verifyBatch(uids: List<String>): Map<String, FileResourceVerificationResult> {
-        return uids.associateWith { uid ->
-            verifyFileResource(uid)
-        }
-    }
-
-    /**
-     * Verifies a single file resource by fetching its current status from the server.
+     * Verifies a batch of file resources using a single API call.
      */
     @Suppress("TooGenericExceptionCaught")
-    private suspend fun verifyFileResource(uid: String): FileResourceVerificationResult {
+    private suspend fun verifyBatch(uids: List<String>): Map<String, FileResourceVerificationResult> {
         return try {
-            val fileResource = coroutineAPICallExecutor.wrap(storeError = false) {
-                fileResourceNetworkHandler.getFileResource(uid)
+            val query = UidsQuery(uids = uids.toSet())
+            val payload = coroutineAPICallExecutor.wrap(storeError = false) {
+                fileResourceNetworkHandler.getFileResources(query)
             }.getOrThrow()
 
-            val status = FileResourceInternalAccessor.storageStatus(fileResource)
-            val isStored = FileResourceInternalAccessor.isStored(fileResource)
+            // Create results map from fetched file resources
+            val results = payload.items().associate { fileResource ->
+                val uid = fileResource.uid()!!
+                val status = FileResourceInternalAccessor.storageStatus(fileResource)
+                val isStored = FileResourceInternalAccessor.isStored(fileResource)
 
-            FileResourceVerificationResult(
-                uid = uid,
-                status = status,
-                isVerified = isStored,
-                timedOut = false,
-            )
+                uid to FileResourceVerificationResult(
+                    uid = uid,
+                    status = status,
+                    isVerified = isStored,
+                    timedOut = false,
+                )
+            }.toMutableMap()
+
+            // For UIDs that weren't returned, mark them as PENDING
+            uids.forEach { uid ->
+                if (!results.containsKey(uid)) {
+                    results[uid] = FileResourceVerificationResult(
+                        uid = uid,
+                        status = FileResourceStorageStatus.PENDING,
+                        isVerified = false,
+                        timedOut = false,
+                    )
+                    Log.d(TAG, "File resource $uid not found in response, treating as PENDING")
+                }
+            }
+
+            results
         } catch (e: Exception) {
-            Log.e(TAG, "Error verifying file resource $uid: ${e.message}", e)
-            FileResourceVerificationResult(
-                uid = uid,
-                status = FileResourceStorageStatus.FAILED,
-                isVerified = false,
-                timedOut = false,
-            )
+            Log.e(TAG, "Error verifying batch of file resources: ${e.message}", e)
+            // If batch call fails, mark all as FAILED
+            uids.associateWith { uid ->
+                FileResourceVerificationResult(
+                    uid = uid,
+                    status = FileResourceStorageStatus.FAILED,
+                    isVerified = false,
+                    timedOut = false,
+                )
+            }
         }
     }
 
     companion object {
-        private const val DEFAULT_MAX_ATTEMPTS = 30
-        private const val DEFAULT_DELAY_MS = 1000L
+        private const val DEFAULT_MAX_ATTEMPTS = 5
+        private const val DEFAULT_DELAY_MS = 500L
         private const val DEFAULT_BATCH_SIZE = 10
     }
 }

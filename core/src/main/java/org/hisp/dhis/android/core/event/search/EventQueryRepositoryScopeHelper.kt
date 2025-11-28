@@ -86,8 +86,22 @@ internal object EventQueryRepositoryScopeHelper {
     }
 
     private fun parseOrderColumn(orderColumn: String, version: TrackerExporterVersion): EventQueryScopeOrderColumn? {
-        val fixedColumn =
+        // First try to find with the specified version
+        var fixedColumn =
             EventQueryScopeOrderColumn.fixedOrderColumns.find { it.apiName()?.getApiName(version) == orderColumn }
+
+        // If not found, try with the other version for backward compatibility
+        // This handles cases where EventFilters have V1 names but server uses V2 (or vice versa)
+        if (fixedColumn == null) {
+            val alternateVersion = if (version == TrackerExporterVersion.V1) {
+                TrackerExporterVersion.V2
+            } else {
+                TrackerExporterVersion.V1
+            }
+            fixedColumn = EventQueryScopeOrderColumn.fixedOrderColumns.find { 
+                it.apiName()?.getApiName(alternateVersion) == orderColumn 
+            }
+        }
 
         return when {
             fixedColumn != null -> fixedColumn

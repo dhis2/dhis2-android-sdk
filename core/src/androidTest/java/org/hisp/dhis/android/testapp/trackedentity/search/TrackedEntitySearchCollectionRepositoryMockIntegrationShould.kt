@@ -102,16 +102,6 @@ class TrackedEntitySearchCollectionRepositoryMockIntegrationShould :
     }
 
     @Test
-    fun find_by_in_data_value() {
-        val trackedEntityInstances = d2.trackedEntityModule().trackedEntitySearch()
-            .byProgram().eq("IpHINAT79UW")
-            .byDataValue("g9eOBujte1U").`in`(listOf("false"))
-            .blockingGet()
-
-        assertThat(trackedEntityInstances.size).isEqualTo(1)
-    }
-
-    @Test
     fun should_return_program_owners() {
         val trackedEntity = d2.trackedEntityModule().trackedEntitySearch()
             .uid("nWrB0TfWlvh")
@@ -122,5 +112,15 @@ class TrackedEntitySearchCollectionRepositoryMockIntegrationShould :
         assertThat(trackedEntity.programOwners!!.size).isEqualTo(1)
         assertThat(trackedEntity.programOwners[0].program).isEqualTo("IpHINAT79UW")
         assertThat(trackedEntity.programOwners[0].ownerOrgUnit).isEqualTo("DiszpKrYNg8")
+    }
+
+    @Test
+    fun find_by_in_data_value() {
+        val trackedEntityInstances = d2.trackedEntityModule().trackedEntitySearch()
+            .byProgram().eq("IpHINAT79UW")
+            .byDataValue("g9eOBujte1U").`in`(listOf("false"))
+            .blockingGet()
+
+        assertThat(trackedEntityInstances.size).isEqualTo(1)
     }
 }

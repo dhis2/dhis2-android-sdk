@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.trackedentity.search
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
 
 object TrackedEntitySearchItemHelper {
     internal fun from(
@@ -47,6 +48,7 @@ object TrackedEntitySearchItemHelper {
             organisationUnit = i.organisationUnit(),
             geometry = i.geometry(),
             attributeValues = fromAttributes(attributes, i.trackedEntityAttributeValues()),
+            programOwners = fromProgramOwners(i.programOwners()),
             syncState = i.syncState(),
             aggregatedSyncState = i.aggregatedSyncState(),
             deleted = i.deleted() ?: false,
@@ -78,6 +80,17 @@ object TrackedEntitySearchItemHelper {
         return attributes.map { attribute ->
             from(attribute, attributeValues)
         }
+    }
+
+    private fun fromProgramOwners(
+        programOwners: List<ProgramOwner>?,
+    ): List<TrackedEntitySearchItemProgramOwner> {
+        return programOwners?.map { owner ->
+            TrackedEntitySearchItemProgramOwner(
+                program = owner.program(),
+                ownerOrgUnit = owner.ownerOrgUnit(),
+            )
+        } ?: emptyList()
     }
 
     private fun from(

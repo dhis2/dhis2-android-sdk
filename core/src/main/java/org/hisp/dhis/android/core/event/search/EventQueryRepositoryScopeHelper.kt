@@ -98,8 +98,8 @@ internal object EventQueryRepositoryScopeHelper {
             } else {
                 TrackerExporterVersion.V1
             }
-            fixedColumn = EventQueryScopeOrderColumn.fixedOrderColumns.find { 
-                it.apiName()?.getApiName(alternateVersion) == orderColumn 
+            fixedColumn = EventQueryScopeOrderColumn.fixedOrderColumns.find {
+                it.apiName()?.getApiName(alternateVersion) == orderColumn
             }
         }
 

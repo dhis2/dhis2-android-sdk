@@ -219,6 +219,7 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper(
         }
     }
 
+    @Suppress("ReturnCount")
     private fun parseOrderColumn(
         columnStr: String?,
         version: TrackerExporterVersion,

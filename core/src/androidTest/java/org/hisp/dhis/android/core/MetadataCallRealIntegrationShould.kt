@@ -33,7 +33,6 @@ import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.user.User
-import org.junit.Test
 
 class MetadataCallRealIntegrationShould : BaseRealIntegrationTest() {
     /**
@@ -72,7 +71,7 @@ class MetadataCallRealIntegrationShould : BaseRealIntegrationTest() {
         // adding a new program..etc.
     }
 
-    @Test
+    //    @Test
     fun test_event_filter_with_order_uses_correct_version() {
         val TAG = "EventFilterOrderTest"
         // Login and download metadata
@@ -99,7 +98,7 @@ class MetadataCallRealIntegrationShould : BaseRealIntegrationTest() {
             if (filterWithOrder != null) {
                 Log.i(
                     "EventFilterOrderTest",
-                    "Testing filter: ${filterWithOrder.uid()} - ${filterWithOrder.displayName()}"
+                    "Testing filter: ${filterWithOrder.uid()} - ${filterWithOrder.displayName()}",
                 )
                 val orderCriteria = filterWithOrder.eventQueryCriteria()?.order()
                 Log.i("EventFilterOrderTest", "Order criteria: $orderCriteria")
@@ -148,7 +147,7 @@ class MetadataCallRealIntegrationShould : BaseRealIntegrationTest() {
                             Log.w("EventFilterOrderTest", "⚠ WARNING: Filter has V1 field names but server uses V2!")
                             Log.w(
                                 "EventFilterOrderTest",
-                                "⚠ The fix should handle this by parsing with V2 and accepting both name formats"
+                                "⚠ The fix should handle this by parsing with V2 and accepting both name formats",
                             )
                         }
 
@@ -171,7 +170,7 @@ class MetadataCallRealIntegrationShould : BaseRealIntegrationTest() {
                                 }
                                 Log.i(
                                     "EventFilterOrderTest",
-                                    "OrgUnit: ${firstOrgUnit.displayName()} (${firstOrgUnit.uid()})"
+                                    "OrgUnit: ${firstOrgUnit.displayName()} (${firstOrgUnit.uid()})",
                                 )
                                 Log.i("EventFilterOrderTest", "======================================")
                             }
@@ -186,14 +185,14 @@ class MetadataCallRealIntegrationShould : BaseRealIntegrationTest() {
 
                                 Log.i(
                                     "EventFilterOrderTest",
-                                    "Events in program WITHOUT filter: ${eventsWithoutFilter.size}"
+                                    "Events in program WITHOUT filter: ${eventsWithoutFilter.size}",
                                 )
                                 if (eventsWithoutFilter.isNotEmpty()) {
                                     Log.i("EventFilterOrderTest", "Sample events (without order):")
                                     eventsWithoutFilter.take(3).forEach { event ->
                                         Log.i(
                                             "EventFilterOrderTest",
-                                            "  - ${event.uid()} - occurredAt: ${event.eventDate()}"
+                                            "  - ${event.uid()} - occurredAt: ${event.eventDate()}",
                                         )
                                     }
                                 }
@@ -214,17 +213,22 @@ class MetadataCallRealIntegrationShould : BaseRealIntegrationTest() {
                         if (events.isEmpty()) {
                             Log.w(
                                 "EventFilterOrderTest",
-                                "⚠ No events found with filter - this might be due to filter criteria (assignedUserMode, etc.)"
+                                "⚠ No events found with filter - this might be due to filter criteria " +
+                                    "(assignedUserMode, etc.)",
                             )
                         } else {
                             Log.i("EventFilterOrderTest", "✓ Successfully retrieved ${events.size} events")
 
                             // Verify the order is correct (should be descending by occurredAt)
-                            Log.i("EventFilterOrderTest", "Verifying order (should be desc by occurredAt):")
+                            Log.i(
+                                "EventFilterOrderTest",
+                                "Verifying order " +
+                                    "(should be desc by occurredAt):",
+                            )
                             events.take(5).forEachIndexed { index, event ->
                                 Log.i(
                                     "EventFilterOrderTest",
-                                    "  Event ${index + 1}: ${event.uid()} - occurredAt: ${event.eventDate()}"
+                                    "  Event ${index + 1}: ${event.uid()} - occurredAt: ${event.eventDate()}",
                                 )
                             }
 
@@ -237,7 +241,11 @@ class MetadataCallRealIntegrationShould : BaseRealIntegrationTest() {
                                 }
 
                                 if (isOrdered) {
-                                    Log.i("EventFilterOrderTest", "✓✓ Events are correctly ordered by occurredAt DESC!")
+                                    Log.i(
+                                        "EventFilterOrderTest",
+                                        "✓✓ Events are correctly ordered " +
+                                            "by occurredAt DESC!",
+                                    )
                                 } else {
                                     Log.w("EventFilterOrderTest", "⚠ Events are NOT in descending order")
                                 }
@@ -246,11 +254,12 @@ class MetadataCallRealIntegrationShould : BaseRealIntegrationTest() {
 
                         Log.i(
                             "EventFilterOrderTest",
-                            "✓ Query executed without errors - order parameter handling works"
+                            "✓ Query executed without errors - order parameter handling works",
                         )
                         Log.i(
                             "EventFilterOrderTest",
-                            "✓ The order field 'eventDate' (V1) was successfully converted and used in the V2 API call"
+                            "✓ The order field 'eventDate' (V1) was successfully converted and used " +
+                                "in the V2 API call",
                         )
                     } else {
                         Log.i("EventFilterOrderTest", "⚠ User has no org units assigned, skipping query")

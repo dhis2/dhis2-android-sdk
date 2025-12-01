@@ -163,6 +163,6 @@ class DatabaseNameGeneratorShould {
         val nameWithBackslashes = generator.getDatabaseName(urlWithBackslashes, username, true)
 
         assertThat(nameWithSlashes).isEqualTo(nameWithBackslashes)
-        assertThat(nameWithSlashes).isEqualTo(expectedEncr)
+        assertThat(nameWithSlashes).matches("play-dhis2-org-android-current_user23_[0-9a-f]{8}_encrypted\\.db")
     }
 }

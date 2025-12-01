@@ -193,14 +193,14 @@ class EventQueryCollectionRepository internal constructor(
     fun byEventFilter(): EqFilterConnector<EventQueryCollectionRepository, String> {
         return connectorFactory.eqConnector { id ->
             val filter: EventFilter = eventFilterRepository.withEventDataFilters().uid(id).blockingGet()!!
-            val version = getTrackerExporterVersion()
+            val version = trackerParentCallHelper.getTrackerExporterVersion()
             EventQueryRepositoryScopeHelper.addEventFilter(scope, filter, version)
         }
     }
 
     internal fun byEventFilterObject(): EqFilterConnector<EventQueryCollectionRepository, EventFilter> {
         return connectorFactory.eqConnector { eventFilter ->
-            val version = getTrackerExporterVersion()
+            val version = trackerParentCallHelper.getTrackerExporterVersion()
             EventQueryRepositoryScopeHelper.addEventFilter(scope, eventFilter!!, version)
         }
     }
@@ -337,15 +337,5 @@ class EventQueryCollectionRepository internal constructor(
             trackerCallFactory,
             eventQueryOnlineAdapter,
         )
-    }
-
-    private fun getTrackerExporterVersion(): TrackerExporterVersion {
-        return runBlocking {
-            if (trackerParentCallHelper.useNewTrackerExporter()) {
-                TrackerExporterVersion.V2
-            } else {
-                TrackerExporterVersion.V1
-            }
-        }
     }
 }

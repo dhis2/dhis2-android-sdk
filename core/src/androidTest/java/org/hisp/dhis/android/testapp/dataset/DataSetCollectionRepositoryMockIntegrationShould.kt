@@ -117,7 +117,7 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
     @Test
     fun filter_by_expiry_days() {
         val dataSets = d2.dataSetModule().dataSets()
-            .byExpiryDays().eq(1)
+            .byExpiryDays().eq(2.5)
             .blockingGet()
 
         assertThat(dataSets.size).isEqualTo(1)
@@ -126,7 +126,7 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
     @Test
     fun filter_by_timely_days() {
         val dataSets = d2.dataSetModule().dataSets()
-            .byTimelyDays().eq(3)
+            .byTimelyDays().eq(3.5)
             .blockingGet()
         assertThat(dataSets.size).isEqualTo(1)
     }

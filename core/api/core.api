@@ -4397,7 +4397,7 @@ public final class org/hisp/dhis/android/core/dataset/DataSetCollectionRepositor
 	public final fun byColor ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byCustomTextAlign ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
 	public final fun byDataElementDecoration ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
-	public final fun byExpiryDays ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/IntegerFilterConnector;
+	public final fun byExpiryDays ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/DoubleFilterConnector;
 	public final fun byFieldCombinationRequired ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
 	public final fun byHeader ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byIcon ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
@@ -4414,7 +4414,7 @@ public final class org/hisp/dhis/android/core/dataset/DataSetCollectionRepositor
 	public final fun bySkipOffline ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
 	public final fun bySubHeader ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byTabsDirection ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
-	public final fun byTimelyDays ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/IntegerFilterConnector;
+	public final fun byTimelyDays ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/DoubleFilterConnector;
 	public final fun byValidCompleteOnly ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
 	public final fun byVersion ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/IntegerFilterConnector;
 	public final fun withCompulsoryDataElementOperands ()Lorg/hisp/dhis/android/core/dataset/DataSetCollectionRepository;
@@ -5320,7 +5320,7 @@ public abstract class org/hisp/dhis/android/core/event/Event$Builder : org/hisp/
 	public abstract fun aggregatedSyncState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/event/Event$Builder;
 	public abstract fun assignedUser (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/Event$Builder;
 	public abstract fun attributeOptionCombo (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/Event$Builder;
-	public fun build ()Lorg/hisp/dhis/android/core/event/Event;
+	public abstract fun build ()Lorg/hisp/dhis/android/core/event/Event;
 	public abstract fun completedBy (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/Event$Builder;
 	public abstract fun completedDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/event/Event$Builder;
 	public abstract fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/event/Event$Builder;
@@ -10193,6 +10193,7 @@ public final class org/hisp/dhis/android/core/systeminfo/DHISPatchVersion : java
 	public static final field V2_41_0 Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion;
 	public static final field V2_42_0 Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion;
 	public static final field V2_42_1 Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion;
+	public static final field V2_43_0 Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public final fun getMajorVersion ()Lorg/hisp/dhis/android/core/systeminfo/DHISVersion;
 	public final fun getSmsVersion ()Lorg/hisp/dhis/android/core/systeminfo/SMSVersion;
@@ -10225,6 +10226,7 @@ public final class org/hisp/dhis/android/core/systeminfo/DHISVersion : java/lang
 	public static final field V2_40 Lorg/hisp/dhis/android/core/systeminfo/DHISVersion;
 	public static final field V2_41 Lorg/hisp/dhis/android/core/systeminfo/DHISVersion;
 	public static final field V2_42 Lorg/hisp/dhis/android/core/systeminfo/DHISVersion;
+	public static final field V2_43 Lorg/hisp/dhis/android/core/systeminfo/DHISVersion;
 	public static final fun allowedVersionsAsStr ()[Ljava/lang/String;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static final fun getValue (Ljava/lang/String;Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/systeminfo/DHISVersion;
@@ -10638,7 +10640,7 @@ public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityInst
 public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder : org/hisp/dhis/android/core/common/BaseDeletableDataObject$Builder {
 	public fun <init> ()V
 	public abstract fun aggregatedSyncState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
-	public fun build ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance;
+	public abstract fun build ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance;
 	public abstract fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
 	public abstract fun createdAtClient (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
 	public abstract fun geometry (Lorg/hisp/dhis/android/core/common/Geometry;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;

@@ -10,7 +10,7 @@
       "validCompleteOnly": false,
       "skipOffline": false,
       "version": 22,
-      "timelyDays": 3,
+      "timelyDays": 3.5,
       "dataElementDecoration": true,
       "displayName": "ART monthly summary",
       "notifyCompletingUser": false,
@@ -163,7 +163,7 @@
       "mobile": true,
       "periodType": "Monthly",
       "openFuturePeriods": 3,
-      "expiryDays": 2,
+      "expiryDays": 2.5,
       "categoryCombo": {
         "id": "m2jTvAj5kkm"
       },

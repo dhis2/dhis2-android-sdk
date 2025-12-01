@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
-import org.hisp.dhis.android.core.configuration.internal.DatabaseAccountImportStatus
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationInsecureStore
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
@@ -65,7 +64,8 @@ internal class AccountManagerImpl(
     }
 
     suspend fun getAccountsInternal(): List<DatabaseAccount> {
-        return databasesConfigurationStore.get()?.accounts()?.map { updateSyncState(it) } ?: emptyList()
+        val accounts = databasesConfigurationStore.get()?.accounts() ?: emptyList()
+        return accounts
     }
 
     override fun getCurrentAccount(): DatabaseAccount? {
@@ -75,7 +75,6 @@ internal class AccountManagerImpl(
     suspend fun getCurrentAccountInternal(): DatabaseAccount? {
         return credentialsSecureStore.get()
             ?.let { multiUserDatabaseManager.getAccount(it.serverUrl, it.username) }
-            ?.let { updateSyncState(it) }
     }
 
     override fun setMaxAccounts(maxAccounts: Int?) {
@@ -145,7 +144,7 @@ internal class AccountManagerImpl(
         }
     }
 
-    private suspend fun updateSyncState(account: DatabaseAccount): DatabaseAccount {
+    /*private suspend fun updateSyncState(account: DatabaseAccount): DatabaseAccount {
         return if (account.importDB()?.status() != DatabaseAccountImportStatus.PENDING_TO_IMPORT) {
             val databaseAdapter = databaseManager.createOrOpenDatabase(account)
             val syncState = AccountManagerHelper.getSyncState(databaseAdapter)
@@ -156,7 +155,7 @@ internal class AccountManagerImpl(
         } else {
             account
         }
-    }
+    }*/
 
     override fun accountDeletionObservable(): Observable<AccountDeletionReason> {
         return accountDeletionSubject

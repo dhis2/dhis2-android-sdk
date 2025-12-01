@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.dataset
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.DoubleFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector
@@ -82,12 +83,12 @@ class DataSetCollectionRepository internal constructor(
         return cf.integer(DataSetTableInfo.Columns.VERSION)
     }
 
-    fun byExpiryDays(): IntegerFilterConnector<DataSetCollectionRepository> {
-        return cf.integer(DataSetTableInfo.Columns.EXPIRY_DAYS)
+    fun byExpiryDays(): DoubleFilterConnector<DataSetCollectionRepository> {
+        return cf.doubleC(DataSetTableInfo.Columns.EXPIRY_DAYS)
     }
 
-    fun byTimelyDays(): IntegerFilterConnector<DataSetCollectionRepository> {
-        return cf.integer(DataSetTableInfo.Columns.TIMELY_DAYS)
+    fun byTimelyDays(): DoubleFilterConnector<DataSetCollectionRepository> {
+        return cf.doubleC(DataSetTableInfo.Columns.TIMELY_DAYS)
     }
 
     fun byNotifyCompletingUser(): BooleanFilterConnector<DataSetCollectionRepository> {

@@ -94,15 +94,11 @@ class RoomDatabaseAdapterShould {
     }
 
     @Test
-    fun `deactivate should close database and reset fields`() {
+    fun `deactivate should disable database and reset fields`() {
         roomDatabaseAdapter.activate(database, "testDb")
         Assert.assertTrue(roomDatabaseAdapter.isReady)
 
-        doNothing().`when`(database).close()
-
         roomDatabaseAdapter.deactivate()
-
-        verify(database, times(1)).close()
         Assert.assertFalse(roomDatabaseAdapter.isReady)
         Assert.assertEquals("", roomDatabaseAdapter.getDatabaseName())
     }

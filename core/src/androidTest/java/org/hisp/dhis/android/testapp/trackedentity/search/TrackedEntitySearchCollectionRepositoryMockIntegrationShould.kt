@@ -98,7 +98,7 @@ class TrackedEntitySearchCollectionRepositoryMockIntegrationShould :
 
         assertThat(trackedEntity).isNotNull()
         assertThat(trackedEntity!!.attributeValues!![0].attribute).isEqualTo("cejWyOfXge6")
-        assertThat(trackedEntity.attributeValues!![1].attribute).isEqualTo("aejWyOfXge6")
+        assertThat(trackedEntity.attributeValues[1].attribute).isEqualTo("aejWyOfXge6")
     }
 
     @Test
@@ -109,5 +109,18 @@ class TrackedEntitySearchCollectionRepositoryMockIntegrationShould :
             .blockingGet()
 
         assertThat(trackedEntityInstances.size).isEqualTo(1)
+    }
+
+    @Test
+    fun should_return_program_owners() {
+        val trackedEntity = d2.trackedEntityModule().trackedEntitySearch()
+            .uid("nWrB0TfWlvh")
+            .blockingGet()
+
+        assertThat(trackedEntity).isNotNull()
+        assertThat(trackedEntity!!.programOwners).isNotNull()
+        assertThat(trackedEntity.programOwners!!.size).isEqualTo(1)
+        assertThat(trackedEntity.programOwners[0].program).isEqualTo("IpHINAT79UW")
+        assertThat(trackedEntity.programOwners[0].ownerOrgUnit).isEqualTo("DiszpKrYNg8")
     }
 }

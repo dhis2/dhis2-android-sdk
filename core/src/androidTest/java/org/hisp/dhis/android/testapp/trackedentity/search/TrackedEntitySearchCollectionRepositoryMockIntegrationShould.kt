@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.testapp.trackedentity.search
 
-import android.util.Log
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test

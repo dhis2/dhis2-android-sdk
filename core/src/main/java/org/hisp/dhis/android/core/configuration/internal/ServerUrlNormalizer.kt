@@ -52,6 +52,7 @@ internal object ServerUrlNormalizer {
             .lowercase()
             .removePrefix("https://")
             .removePrefix("http://")
+            .replace('\\', '/')
             .trimEnd('/')
             .removeSuffix("/api")
     }

@@ -36,6 +36,7 @@ import org.junit.runners.JUnit4
 class DatabaseNameGeneratorShould {
     private val url = "https://play.dhis2.org/android-current"
     private val urlHttp = "http://play.dhis2.org/android-current"
+    private val urlWithBackslashes = "https://play.dhis2.org\\android-current"
     private val username = "user23"
     private val generator = DatabaseNameGenerator()
 
@@ -154,5 +155,14 @@ class DatabaseNameGeneratorShould {
         // Old format: <readable>_<username>_encrypted.db (no hash)
         assertThat(oldName).isEqualTo("play-dhis2-org-android-current_user23_encrypted.db")
         assertThat(oldName).doesNotMatch(".*_[0-9a-f]{8}_.*")
+    }
+
+    @Test
+    fun return_same_name_for_url_with_backslashes_and_forward_slashes() {
+        val nameWithSlashes = generator.getDatabaseName(url, username, true)
+        val nameWithBackslashes = generator.getDatabaseName(urlWithBackslashes, username, true)
+
+        assertThat(nameWithSlashes).isEqualTo(nameWithBackslashes)
+        assertThat(nameWithSlashes).isEqualTo(expectedEncr)
     }
 }

@@ -48,8 +48,8 @@ internal data class DataSetDB(
     val categoryCombo: String,
     val mobile: Boolean?,
     val version: Int?,
-    val expiryDays: Int?,
-    val timelyDays: Int?,
+    val expiryDays: Double?,
+    val timelyDays: Double?,
     val notifyCompletingUser: Boolean?,
     val openFuturePeriods: Int?,
     val fieldCombinationRequired: Boolean?,
@@ -77,8 +77,8 @@ internal data class DataSetDB(
             categoryCombo(ObjectWithUid.create(categoryCombo))
             mobile(mobile)
             version(version)
-            expiryDays(expiryDays?.toDouble())
-            timelyDays(timelyDays?.toDouble())
+            expiryDays(expiryDays)
+            timelyDays(timelyDays)
             notifyCompletingUser(notifyCompletingUser)
             openFuturePeriods(openFuturePeriods)
             fieldCombinationRequired(fieldCombinationRequired)
@@ -122,8 +122,8 @@ internal fun DataSet.toDB(): DataSetDB {
         categoryCombo = categoryCombo()!!.uid(),
         mobile = mobile(),
         version = version(),
-        expiryDays = expiryDays()?.toInt(),
-        timelyDays = timelyDays()?.toInt(),
+        expiryDays = expiryDays(),
+        timelyDays = timelyDays(),
         notifyCompletingUser = notifyCompletingUser(),
         openFuturePeriods = openFuturePeriods(),
         fieldCombinationRequired = fieldCombinationRequired(),

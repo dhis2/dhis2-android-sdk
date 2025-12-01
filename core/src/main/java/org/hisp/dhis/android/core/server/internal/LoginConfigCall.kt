@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.server.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.server.LoginConfig
@@ -45,11 +46,12 @@ internal class LoginConfigCall(
     private val networkHandler: LoginConfigNetworkHandler,
 ) {
     suspend fun checkServerUrl(serverUrl: String): Result<LoginConfig, D2Error> {
-        val loginConfig = tryLoginConfig(serverUrl)
+        val sanitizedUrl = ServerUrlParser.trimAndRemoveTrailingSlash(serverUrl)!!
+        val loginConfig = tryLoginConfig(sanitizedUrl)
 
         return when (loginConfig) {
             is Result.Success<LoginConfig, D2Error> -> loginConfig
-            is Result.Failure<LoginConfig, D2Error> -> tryPing(serverUrl)
+            is Result.Failure<LoginConfig, D2Error> -> tryPing(sanitizedUrl)
         }
     }
 

@@ -88,3 +88,34 @@ Analytics settings define the analytic elements (charts, tables,...) that must b
 
 
 These settings refer to visual components so they must be consumed by the app.
+
+### Custom intents { #android_sdk_custom_intents }
+
+```java
+d2.settingModule().customIntents()
+
+d2.settingModule().customIntentService()
+```
+
+Custom intents allow the Android Settings app to configure external integrations that can be triggered from within the app. These intents are downloaded during metadata synchronization and can be used to launch external applications or services with context-specific data.
+
+Each custom intent configuration includes:
+- **Trigger**: Defines when and where the intent should be available (e.g., in TEI dashboard, enrollment, event, dataSet).
+- **Action**: The type of action to perform (e.g., launch activity, send broadcast).
+- **Package name**: The target application package.
+- **Request**: Configuration for data to send to the external app, with key-value arguments that can use expression-based values.
+- **Response**: Configuration for data to receive back from the external app.
+
+The SDK provides a `CustomIntentService` to evaluate request parameters based on the current context:
+
+```java
+// Get custom intents
+List<CustomIntent> intents = d2.settingModule().customIntents()
+    .blockingGet();
+
+// Evaluate parameters for a specific context (optionally with orgunit)
+CustomIntentContext context = new CustomIntentContext("orgunitUid");
+
+Map<String, Object> params = d2.settingModule().customIntentService()
+    .blockingEvaluateRequestParams(customIntent, context);
+```

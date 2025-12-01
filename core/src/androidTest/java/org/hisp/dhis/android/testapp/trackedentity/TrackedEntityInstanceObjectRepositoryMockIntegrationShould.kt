@@ -89,6 +89,24 @@ class TrackedEntityInstanceObjectRepositoryMockIntegrationShould : BaseMockInteg
     }
 
     @Test
+    fun update_and_delete_geometry() {
+        val geometry = Geometry.builder()
+            .type(FeatureType.POINT)
+            .coordinates("[11, 10]")
+            .build()
+
+        val repository = objectRepository()
+
+        repository.setGeometry(geometry)
+        assertThat(repository.blockingGet()!!.geometry()).isEqualTo(geometry)
+
+        repository.setGeometry(null)
+        assertThat(repository.blockingGet()!!.geometry()).isNull()
+
+        repository.blockingDelete()
+    }
+
+    @Test
     fun update_invalid_geometry() {
         val geometry = Geometry.builder()
             .type(FeatureType.POINT)

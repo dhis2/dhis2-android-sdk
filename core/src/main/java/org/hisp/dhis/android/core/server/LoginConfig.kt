@@ -52,12 +52,12 @@ data class LoginConfig(
     val oidcProviders: List<LoginOidcProvider> = emptyList(),
 ) {
     fun isOauthEnabled(): Boolean {
-        return isAtLeast42dot2() && oidcProviders.any { it.id == DHIS2_OAUTH_CLIENT_ID }
+        return isAtLeast43() && oidcProviders.any { it.id == DHIS2_OAUTH_CLIENT_ID }
     }
 
-    private fun isAtLeast42dot2(): Boolean {
+    private fun isAtLeast43(): Boolean {
         return apiVersion?.let {
-            DHISPatchVersion.isGreaterThanPatch(apiVersion, DHISPatchVersion.V2_42_1)
+            DHISPatchVersion.isGreaterThanPatch(apiVersion, DHISPatchVersion.V2_43_0)
         } ?: false
     }
 

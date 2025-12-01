@@ -113,7 +113,7 @@ def main():
     app_apk_path = find_apk_path("instrumented-test-app", "debug")
     test_apk_path= find_apk_path("instrumented-test-app", "androidTest/debug")
 
-    config_file = os.path.join(script_dir, 'config_jenkins.init')
+    config_file = os.path.join(script_dir, 'config_github.init')
     config = parse_config_file(config_file)
 
     results = []

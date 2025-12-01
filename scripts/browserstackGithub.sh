@@ -29,7 +29,6 @@
 
 set -ex
 
-# GitHub Actions adaptation of browserstackJenkins.sh
 source "$(dirname $0)/config_github.init"
 source "$(dirname $0)/browserstackCommon.sh"
 

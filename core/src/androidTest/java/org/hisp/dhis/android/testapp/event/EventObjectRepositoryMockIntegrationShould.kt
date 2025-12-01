@@ -169,6 +169,24 @@ class EventObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDi
     }
 
     @Test
+    fun update_and_delete_geometry() = runTest {
+        val geometry = Geometry.builder()
+            .type(FeatureType.POINT)
+            .coordinates("[10.00, 11.00]")
+            .build()
+
+        val repository = objectRepository()
+
+        repository.setGeometry(geometry)
+        assertThat(repository.blockingGet()!!.geometry()).isEqualTo(geometry)
+
+        repository.setGeometryInternal(null)
+        assertThat(repository.blockingGet()!!.geometry()).isNull()
+
+        repository.blockingDelete()
+    }
+
+    @Test
     fun update_invalid_geometry() {
         val geometry = Geometry.builder()
             .type(FeatureType.POINT)

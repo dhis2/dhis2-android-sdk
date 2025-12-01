@@ -182,21 +182,6 @@ class Migration301IntegrationShould {
     }
 
     @Test
-    fun skip_migration_if_already_applied() = runTest {
-        val url = "https://play.dhis2.org/test"
-        val username = "test_user"
-
-        val newDbName = nameGenerator.getDatabaseName(url, username, false)
-        createDatabaseFile(newDbName)
-
-        runMigration(listOf(createAccount(url, username, newDbName)))
-
-        val configAfterMigration = databaseConfigurationStore.get()
-        assertThat(configAfterMigration!!.accounts()[0].databaseName()).isEqualTo(newDbName)
-        assertThat(context.getDatabasePath(newDbName).exists()).isTrue()
-    }
-
-    @Test
     fun handle_accounts_without_physical_database_file() = runTest {
         val url = "https://play.dhis2.org/no-db"
         val username = "test_user"

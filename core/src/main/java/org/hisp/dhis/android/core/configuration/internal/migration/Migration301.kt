@@ -63,15 +63,6 @@ internal class Migration301(
             return
         }
 
-        val alreadyMigrated = configuration.accounts().any { account ->
-            account.databaseName().matches(Regex(".*_[0-9a-f]{8}_(encrypted|unencrypted)\\.db"))
-        }
-
-        if (alreadyMigrated) {
-            Log.d(TAG, "Database name hash migration already applied")
-            return
-        }
-
         Log.i(TAG, "Starting database name hash migration for ${configuration.accounts().size} accounts")
 
         val migratedAccounts = configuration.accounts().mapNotNull { account ->

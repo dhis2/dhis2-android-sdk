@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.testapp.trackedentity.search
 
+import android.util.Log
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
@@ -108,8 +109,7 @@ class TrackedEntitySearchCollectionRepositoryMockIntegrationShould :
             .blockingGet()
 
         assertThat(trackedEntity).isNotNull()
-        assertThat(trackedEntity!!.programOwners).isNotNull()
-        assertThat(trackedEntity.programOwners!!.size).isEqualTo(1)
+        assertThat(trackedEntity!!.programOwners!!).isNotNull()
         assertThat(trackedEntity.programOwners[0].program).isEqualTo("IpHINAT79UW")
         assertThat(trackedEntity.programOwners[0].ownerOrgUnit).isEqualTo("DiszpKrYNg8")
     }

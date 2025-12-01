@@ -136,15 +136,7 @@ internal class DatabaseConfigurationHelper(
         }
 
         private fun equalsNormalized(s1: String, s2: String): Boolean {
-            return normalizeUrl(s1) == normalizeUrl(s2)
-        }
-
-        private fun normalizeUrl(url: String): String {
-            return url.lowercase()
-                .removePrefix("https://")
-                .removePrefix("http://")
-                .trimEnd('/')
-                .removeSuffix("/api")
+            return ServerUrlNormalizer.areEquivalent(s1, s2)
         }
     }
 }

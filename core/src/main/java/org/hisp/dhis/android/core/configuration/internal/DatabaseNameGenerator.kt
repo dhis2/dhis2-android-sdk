@@ -64,7 +64,7 @@ internal class DatabaseNameGenerator {
      * Generates an 8-character hex hash from the normalized serverUrl + username combination.
      */
     private fun generateHash(serverUrl: String, username: String): String {
-        val normalizedUrl = normalizeForHash(serverUrl)
+        val normalizedUrl = ServerUrlNormalizer.normalize(serverUrl)
         val input = "$normalizedUrl|$username"
         val md = MessageDigest.getInstance("SHA-256")
         val digest = md.digest(input.toByteArray())
@@ -72,14 +72,6 @@ internal class DatabaseNameGenerator {
         return digest.take(HASH_BYTE_COUNT).joinToString("") {
             it.toUByte().toString(HEX_RADIX).padStart(HEX_STRING_WIDTH, '0')
         }
-    }
-
-    private fun normalizeForHash(serverUrl: String): String {
-        return serverUrl
-            .removePrefix("https://")
-            .removePrefix("http://")
-            .trimEnd('/')
-            .removeSuffix("/api")
     }
 
     private fun processServerUrl(serverUrl: String): String {

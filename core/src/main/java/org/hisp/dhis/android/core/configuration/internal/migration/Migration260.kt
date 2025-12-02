@@ -130,4 +130,8 @@ internal class Migration260(
             smsPrefs.edit().clear().apply()
         }
     }
+
+    companion object {
+        const val VERSION = 260L
+    }
 }

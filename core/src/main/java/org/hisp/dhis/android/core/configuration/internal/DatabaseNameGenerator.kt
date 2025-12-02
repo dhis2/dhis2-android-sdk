@@ -28,12 +28,50 @@
 package org.hisp.dhis.android.core.configuration.internal
 
 import org.koin.core.annotation.Singleton
+import java.security.MessageDigest
 
 @Singleton
 internal class DatabaseNameGenerator {
+    /**
+     * Generates a unique database name based on serverUrl, username, and encryption.
+     *
+     * Format: <readable_part>_<username>_<hash>_<encrypted|unencrypted>.db
+     *
+     * Example:
+     * - Input: "https://play.dhis2.org/android-current", "admin", true
+     * - Output: "play-dhis2-org-android-current_admin_a3f5b821_encrypted.db"
+     */
     fun getDatabaseName(serverUrl: String, username: String, encrypt: Boolean): String {
         val encryptedStr = if (encrypt) "encrypted" else "unencrypted"
-        return processServerUrl(serverUrl) + "_" + username + "_" + encryptedStr + DbSuffix
+        val processedUrl = processServerUrl(serverUrl)
+        val hash = generateHash(serverUrl, username)
+        return "${processedUrl}_${username}_${hash}_${encryptedStr}${DB_SUFFIX}"
+    }
+
+    /**
+     * Generates database name using the OLD format (without hash).
+     * Used only for migration purposes to identify existing databases.
+     *
+     * @deprecated Only for migration. Use getDatabaseName() for new databases.
+     */
+    @Deprecated("Only for migration compatibility")
+    fun getOldDatabaseName(serverUrl: String, username: String, encrypt: Boolean): String {
+        val encryptedStr = if (encrypt) "encrypted" else "unencrypted"
+        return processServerUrl(serverUrl) + "_" + username + "_" + encryptedStr + DB_SUFFIX
+    }
+
+    /**
+     * Generates an 8-character hex hash from the normalized serverUrl + username combination.
+     */
+    private fun generateHash(serverUrl: String, username: String): String {
+        val normalizedUrl = ServerUrlNormalizer.normalize(serverUrl)
+        val input = "$normalizedUrl|$username"
+        val md = MessageDigest.getInstance("SHA-256")
+        val digest = md.digest(input.toByteArray())
+        // First 4 bytes = 8 hex characters
+        return digest.take(HASH_BYTE_COUNT).joinToString("") {
+            it.toUByte().toString(HEX_RADIX).padStart(HEX_STRING_WIDTH, '0')
+        }
     }
 
     private fun processServerUrl(serverUrl: String): String {
@@ -49,6 +87,9 @@ internal class DatabaseNameGenerator {
     }
 
     companion object {
-        const val DbSuffix = ".db"
+        const val DB_SUFFIX = ".db"
+        private const val HASH_BYTE_COUNT = 4
+        private const val HEX_STRING_WIDTH = 2
+        private const val HEX_RADIX = 16
     }
 }

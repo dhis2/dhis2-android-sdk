@@ -147,7 +147,7 @@ internal class TrackerExporterNetworkHandlerImpl(
             filterAttributes = toAPIFilterFormat(query.attributeFilter, upper = false),
             followUp = query.followUp,
             occurredAfter = query.eventStartDate.simpleDateFormat(),
-            occurredBefore = query.eventStartDate.simpleDateFormat(),
+            occurredBefore = query.eventEndDate.simpleDateFormat(),
             scheduledAfter = query.dueStartDate.simpleDateFormat(),
             scheduledBefore = query.dueEndDate.simpleDateFormat(),
             enrollmentEnrolledAfter = query.programStartDate.simpleDateFormat(),

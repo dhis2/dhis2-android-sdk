@@ -126,15 +126,15 @@ class DatabaseNameGeneratorShould {
     }
 
     @Test
-    fun return_different_names_for_case_sensitive_urls() {
+    fun return_same_hash_names_for_case_sensitive_urls() {
         val url1 = "https://PLAY.dhis2.org/android-current"
         val url2 = "https://play.dhis2.org/android-current"
 
         val name1 = generator.getDatabaseName(url1, username, true)
         val name2 = generator.getDatabaseName(url2, username, true)
 
-        // Different URLs (even by case) should have different hashes
-        assertThat(name1).isNotEqualTo(name2)
+        // Different URLs (by case) should have same hashes
+        assertThat(name1).isEqualTo(name2)
     }
 
     @Test

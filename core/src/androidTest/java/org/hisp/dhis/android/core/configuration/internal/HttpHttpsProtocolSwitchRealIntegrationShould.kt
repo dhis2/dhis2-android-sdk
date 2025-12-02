@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.configuration.internal
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.D2Factory
-import org.junit.Test
 
 /**
  * Integration test to verify that HTTP and HTTPS URLs for the same server

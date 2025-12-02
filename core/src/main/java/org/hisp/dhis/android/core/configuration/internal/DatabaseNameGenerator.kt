@@ -76,6 +76,7 @@ internal class DatabaseNameGenerator {
 
     private fun processServerUrl(serverUrl: String): String {
         return serverUrl
+            .lowercase()
             .removePrefix("https://")
             .removePrefix("http://")
             .removeSuffix("/")

@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMod
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCollectionRepository.Companion.PROGRAM_OWNERS
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCollectionRepository.Companion.TRACKED_ENTITY_ATTRIBUTE_VALUES
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
@@ -115,7 +116,7 @@ internal class TrackedEntityInstanceQueryDataFetcher(
         val instances = store.selectRawQuery(sqlQuery)
         returnedUidsOffline.addAll(instances.map { it.uid() })
 
-        return appendAttributes(instances).map {
+        return appendChildren(instances).map {
             Result.Success(it)
         }
     }
@@ -207,13 +208,14 @@ internal class TrackedEntityInstanceQueryDataFetcher(
         }
     }
 
-    private suspend fun appendAttributes(withoutChildren: List<TrackedEntityInstance>): List<TrackedEntityInstance> {
+    private suspend fun appendChildren(withoutChildren: List<TrackedEntityInstance>): List<TrackedEntityInstance> {
         return ChildrenAppenderExecutor.appendInObjectCollection(
             withoutChildren,
             childrenAppenders,
             ChildrenSelection(
                 setOf(
                     TRACKED_ENTITY_ATTRIBUTE_VALUES,
+                    PROGRAM_OWNERS,
                 ),
             ),
         )

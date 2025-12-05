@@ -56,7 +56,7 @@ class EventFilterShould : CoreObjectShould("event/event_filter.json") {
 
         assertThat(eventFilter.eventQueryCriteria()!!.assignedUserMode()).isEqualTo(AssignedUserMode.CURRENT)
         assertThat(eventFilter.eventQueryCriteria()!!.organisationUnit()).isEqualTo("orgUnitUid")
-        assertThat(eventFilter.eventQueryCriteria()!!.eventStatus()).isEqualTo(EventStatus.ACTIVE)
+        assertThat(eventFilter.eventQueryCriteria()!!.status()).isEqualTo(EventStatus.ACTIVE)
         assertThat(eventFilter.eventQueryCriteria()!!.order()).isEqualTo("dueDate:asc,createdDate:desc")
         assertThat(eventFilter.eventQueryCriteria()!!.followUp()).isFalse()
         assertThat(eventFilter.eventQueryCriteria()!!.ouMode()).isEqualTo(OrganisationUnitMode.ACCESSIBLE)

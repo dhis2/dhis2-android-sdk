@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,21 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.fileresource
+package org.hisp.dhis.android.core.fileresource.internal
 
-internal object FileResourceInternalAccessor {
-    fun isStored(fileResource: FileResource): Boolean {
-        return fileResource.storageStatus()?.let { it == FileResourceStorageStatus.STORED } ?: true
-    }
+import org.hisp.dhis.android.core.fileresource.FileResource
 
-    fun storageStatus(fileResource: FileResource): FileResourceStorageStatus {
-        return fileResource.storageStatus() ?: FileResourceStorageStatus.NONE
-    }
-
-    fun insertStorageStatus(
-        builder: FileResource.Builder,
-        storageStatus: FileResourceStorageStatus,
-    ): FileResource.Builder {
-        return builder.storageStatus(storageStatus)
-    }
-}
+/**
+ * Result of a file resource upload operation.
+ *
+ * @property originalFileResource The original file resource before upload
+ * @property uploadedUid The UID assigned by the server after upload (null if upload failed)
+ * @property value The associated value (DataValue, AttributeValue, or EventValue)
+ * @property success True if upload was successful
+ */
+internal data class FileResourceUploadResult(
+    val originalFileResource: FileResource,
+    val uploadedUid: String?,
+    val value: FileResourceValue,
+    val success: Boolean,
+)

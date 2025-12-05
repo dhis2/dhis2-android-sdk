@@ -38,8 +38,6 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallEx
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
 import org.hisp.dhis.android.core.fileresource.FileResource
-import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.systeminfo.internal.PingCall
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
@@ -49,9 +47,9 @@ import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeVal
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityDataValueTableInfo
 import org.koin.core.annotation.Singleton
 import java.io.File
-import java.io.IOException
 
 @Singleton
+@Suppress("TooManyFunctions")
 internal class FileResourcePostCall(
     private val fileResourceNetworkHandler: FileResourceNetworkHandler,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
@@ -66,7 +64,17 @@ internal class FileResourcePostCall(
 
     private var alreadyPinged = false
 
-    suspend fun uploadFileResource(fileResource: FileResource, value: FileResourceValue): String? {
+    /**
+     * Uploads a file resource without updating the associated value immediately.
+     * This allows for batch verification of storage status before updating values.
+     *
+     * @return FileResourceUploadResult containing upload information
+     */
+    @Suppress("TooGenericExceptionCaught")
+    suspend fun uploadFileResourceWithoutUpdate(
+        fileResource: FileResource,
+        value: FileResourceValue,
+    ): FileResourceUploadResult {
         // Workaround for ANDROSDK-1452 (see comments restricted to Contributors).
         if (!alreadyPinged) {
             pingCall.download(true)
@@ -76,16 +84,53 @@ internal class FileResourcePostCall(
         val file = FileResourceUtil.getFile(fileResource)
 
         return if (file != null) {
-            val fileName = fileResource.name() ?: file.name
-            val filePart = getFilePart(file, fileName)
-            val responseFileResource = coroutineAPICallExecutor.wrap(storeError = true) {
-                fileResourceNetworkHandler.uploadFile(filePart)
-            }.getOrThrow()
-            handleResponse(responseFileResource, fileResource, file, value)
+            try {
+                val fileName = fileResource.name() ?: file.name
+                val filePart = getFilePart(file, fileName)
+                val responseFileResource = coroutineAPICallExecutor.wrap(storeError = true) {
+                    fileResourceNetworkHandler.uploadFile(filePart)
+                }.getOrThrow()
+
+                val uploadedUid = responseFileResource.uid()!!
+                val downloadedFile = FileResourceUtil.renameFile(file, uploadedUid, context)
+                updateFileResource(fileResource, responseFileResource, downloadedFile)
+
+                FileResourceUploadResult(
+                    originalFileResource = fileResource,
+                    uploadedUid = uploadedUid,
+                    value = value,
+                    success = true,
+                )
+            } catch (e: Exception) {
+                Log.e(TAG, "Error uploading file resource: ${e.message}", e)
+                FileResourceUploadResult(
+                    originalFileResource = fileResource,
+                    uploadedUid = null,
+                    value = value,
+                    success = false,
+                )
+            }
         } else {
             handleMissingFile(fileResource, value)
-            null
+            FileResourceUploadResult(
+                originalFileResource = fileResource,
+                uploadedUid = null,
+                value = value,
+                success = false,
+            )
         }
+    }
+
+    /**
+     * Updates the value associated with a file resource after verification.
+     * This should be called after verifying that the file resource is stored.
+     */
+    suspend fun updateValueAfterVerification(
+        originalFileResource: FileResource,
+        verifiedUid: String,
+        value: FileResourceValue,
+    ) {
+        updateValue(originalFileResource, verifiedUid, value)
     }
 
     private fun getFilePart(file: File, fileName: String): MultiPartFormDataContent {
@@ -104,28 +149,6 @@ internal class FileResourcePostCall(
                 )
             },
         )
-    }
-
-    private suspend fun handleResponse(
-        downloadedFileResource: FileResource,
-        fileResource: FileResource,
-        file: File,
-        value: FileResourceValue,
-    ): String {
-        try {
-            updateValue(fileResource, downloadedFileResource.uid(), value)
-
-            val downloadedFile = FileResourceUtil.renameFile(file, downloadedFileResource.uid()!!, context)
-            updateFileResource(fileResource, downloadedFileResource, downloadedFile)
-
-            return downloadedFileResource.uid()!!
-        } catch (e: IOException) {
-            Log.v(FileResourcePostCall::class.java.canonicalName, e.message!!)
-            throw D2Error.builder()
-                .errorCode(D2ErrorCode.API_UNSUCCESSFUL_RESPONSE)
-                .errorDescription(e.message!!)
-                .build()
-        }
     }
 
     private suspend fun handleMissingFile(fileResource: FileResource, value: FileResourceValue) {
@@ -214,5 +237,9 @@ internal class FileResourcePostCall(
                 .path(file.absolutePath)
                 .build(),
         )
+    }
+
+    companion object {
+        internal const val TAG = "FileResourcePostCall"
     }
 }

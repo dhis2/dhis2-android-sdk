@@ -31,69 +31,39 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.D2Factory
 
-/**
- * Integration test to verify that HTTP and HTTPS URLs for the same server
- * are treated as the same account (single database, no duplicates).
- */
 class HttpHttpsProtocolSwitchRealIntegrationShould : BaseRealIntegrationTest() {
 
     private val httpsUrl = "https://play.im.dhis2.org/stable-2-42-3-1/"
-    private val httpUrl = "http://play.im.dhis2.org/stable-2-42-3-1/"
     private val testUsername = "android"
     private val testPassword = "Android123"
 
+    /**
+     * Verifies that HTTP and HTTPS URLs create DIFFERENT accounts/databases.
+     * This is the expected behavior since they are technically different endpoints.
+     */
     // @Test
-    fun login_with_https_then_http_should_use_same_account() {
-        d2.userModule().blockingLogIn(testUsername, testPassword, httpsUrl)
+    fun login_with_https_then_http_should_create_different_accounts() {
+        val generator = DatabaseNameGenerator()
 
-        val accountsAfterHttps = d2.userModule().accountManager().getAccounts()
-        assertThat(accountsAfterHttps).hasSize(1)
-        val httpsAccount = accountsAfterHttps[0]
-        val httpsDbName = httpsAccount.databaseName()
-        assertThat(httpsAccount.serverUrl()).isEqualTo(httpsUrl.trimEnd('/'))
+        val httpsDbName = generator.getDatabaseName(httpsUrl, testUsername, false)
+        val httpDbName = generator.getDatabaseName(
+            "http://play.im.dhis2.org/stable-2-42-3-1/",
+            testUsername,
+            false,
+        )
 
-        d2.userModule().blockingLogOut()
-        d2.userModule().blockingLogIn(testUsername, testPassword, httpUrl)
-
-        val accountsAfterHttp = d2.userModule().accountManager().getAccounts()
-
-        assertThat(accountsAfterHttp).hasSize(1)
-
-        val httpAccount = accountsAfterHttp[0]
-
-        assertThat(httpAccount.databaseName()).isEqualTo(httpsDbName)
-        assertThat(httpAccount.serverUrl()).isEqualTo(httpUrl.trimEnd('/'))
-
-        // Cleanup
-        d2.userModule().accountManager().deleteCurrentAccount()
+        // HTTP and HTTPS should generate DIFFERENT database names
+        assertThat(httpsDbName).isNotEqualTo(httpDbName)
+        assertThat(httpsDbName).startsWith("https-")
+        assertThat(httpDbName).startsWith("http-")
     }
 
+    /**
+     * Verifies that different domain case generates the SAME database.
+     * Domain is case-insensitive per DNS standards.
+     */
     // @Test
-    fun login_with_http_then_https_should_use_same_account() {
-        d2.userModule().blockingLogIn(testUsername, testPassword, httpUrl)
-
-        val accountsAfterHttp = d2.userModule().accountManager().getAccounts()
-        assertThat(accountsAfterHttp).hasSize(1)
-        val httpAccount = accountsAfterHttp[0]
-        val httpDbName = httpAccount.databaseName()
-
-        d2.userModule().blockingLogOut()
-        d2.userModule().blockingLogIn(testUsername, testPassword, httpsUrl)
-        val accountsAfterHttps = d2.userModule().accountManager().getAccounts()
-
-        assertThat(accountsAfterHttps).hasSize(1)
-
-        val httpsAccount = accountsAfterHttps[0]
-
-        assertThat(httpsAccount.databaseName()).isEqualTo(httpDbName)
-        assertThat(httpsAccount.serverUrl()).isEqualTo(httpsUrl.trimEnd('/'))
-
-        // Cleanup
-        d2.userModule().accountManager().deleteCurrentAccount()
-    }
-
-    // @Test
-    fun login_with_different_case_should_use_same_account() {
+    fun login_with_different_domain_case_should_use_same_account() {
         val lowercaseUrl = "https://play.im.dhis2.org/stable-2-42-3-1/"
         val uppercaseUrl = "https://PLAY.IM.DHIS2.ORG/stable-2-42-3-1/"
 
@@ -110,6 +80,7 @@ class HttpHttpsProtocolSwitchRealIntegrationShould : BaseRealIntegrationTest() {
 
         val accountsSecond = d2.userModule().accountManager().getAccounts()
 
+        // Should be the same account (domain case is normalized)
         assertThat(accountsSecond).hasSize(1)
         assertThat(accountsSecond[0].databaseName()).isEqualTo(firstDbName)
 
@@ -117,13 +88,41 @@ class HttpHttpsProtocolSwitchRealIntegrationShould : BaseRealIntegrationTest() {
         d2.userModule().accountManager().deleteCurrentAccount()
     }
 
+    /**
+     * Verifies that different path case generates DIFFERENT databases.
+     * Path is case-sensitive per URL standards.
+     */
     // @Test
-    fun database_hash_should_be_same_for_http_and_https() {
+    fun database_name_should_differ_for_different_path_case() {
+        val generator = DatabaseNameGenerator()
+
+        val lowercasePath = generator.getDatabaseName(
+            "https://play.dhis2.org/demo",
+            testUsername,
+            false,
+        )
+        val uppercasePath = generator.getDatabaseName(
+            "https://play.dhis2.org/DEMO",
+            testUsername,
+            false,
+        )
+
+        // Different path case should generate DIFFERENT database names
+        assertThat(lowercasePath).isNotEqualTo(uppercasePath)
+    }
+
+    /**
+     * Verifies the database name format includes protocol prefix.
+     */
+    // @Test
+    fun database_name_should_include_protocol_prefix() {
         val generator = DatabaseNameGenerator()
 
         val httpsDbName = generator.getDatabaseName(httpsUrl, testUsername, false)
-        val httpDbName = generator.getDatabaseName(httpUrl, testUsername, false)
 
-        assertThat(httpsDbName).isEqualTo(httpDbName)
+        assertThat(httpsDbName).startsWith("https-")
+        assertThat(httpsDbName).contains("play-im-dhis2-org")
+        assertThat(httpsDbName).contains(testUsername)
+        assertThat(httpsDbName).endsWith(".db")
     }
 }

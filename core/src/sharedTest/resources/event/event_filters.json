@@ -27,7 +27,7 @@
       "eventQueryCriteria": {
         "assignedUserMode": "CURRENT",
         "organisationUnit": "DiszpKrYNg8",
-        "eventStatus": "ACTIVE",
+        "status": "ACTIVE",
         "order": "dueDate:asc,createdDate:desc",
         "followUp": false,
         "programStatus": "ACTIVE",
@@ -120,7 +120,7 @@
       "favorite": false,
       "eventQueryCriteria": {
         "organisationUnit": "DiszpKrYNg8",
-        "eventStatus": "COMPLETED",
+        "status": "COMPLETED",
         "order": "dueDate:asc,createdDate:desc",
         "ouMode": "ACCESSIBLE",
         "eventDate": {

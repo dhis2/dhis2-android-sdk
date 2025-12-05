@@ -30,6 +30,7 @@ package org.hisp.dhis.android.network.trackedentityinstancefilter
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
+import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.trackedentity.EntityQueryCriteria
 import org.hisp.dhis.android.network.common.dto.DateFilterPeriodDTO
 import org.hisp.dhis.android.network.common.dto.FilterQueryCriteriaDTO
@@ -43,9 +44,9 @@ internal data class EntityQueryCriteriaDTO(
     override val assignedUserMode: String?,
     override val order: String?,
     override val displayColumnOrder: List<String>?,
-    override val eventStatus: String?,
     override val eventDate: DateFilterPeriodDTO?,
     override val lastUpdatedDate: DateFilterPeriodDTO?,
+    val eventStatus: String?,
     val programStage: String?,
     val trackedEntityInstances: List<String>?,
     val trackedEntityType: String?,
@@ -57,6 +58,7 @@ internal data class EntityQueryCriteriaDTO(
     internal fun toDomain(trackedEntityInstanceFilter: String): EntityQueryCriteria {
         return EntityQueryCriteria.builder()
             .applyFilterQueryCriteriaFields(this)
+            .eventStatus(eventStatus?.let { EventStatus.valueOf(it) })
             .programStage(programStage)
             .trackedEntityInstances(trackedEntityInstances)
             .trackedEntityType(trackedEntityType)

@@ -47,7 +47,7 @@ internal object EventQueryCriteriaFields : BaseFields<EventQueryCriteria>() {
         fh.field(ORDER),
         fh.field(Columns.DISPLAY_COLUMN_ORDER),
         fh.field(Columns.EVENTS),
-        fh.field(Columns.EVENT_STATUS),
+        fh.field(Columns.STATUS),
         fh.nestedField<EventDataFilter>(DATA_FILTERS).with(EventDataFilterFields.allFields),
         fh.nestedField<DateFilterPeriod>(Columns.EVENT_DATE).with(DateFilterPeriodFields.allFields),
         fh.nestedField<DateFilterPeriod>(Columns.DUE_DATE).with(DateFilterPeriodFields.allFields),

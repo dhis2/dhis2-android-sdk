@@ -36,11 +36,15 @@ import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.DateFilterPeriod;
 import org.hisp.dhis.android.core.common.FilterQueryCriteria;
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
+import org.hisp.dhis.android.core.event.EventStatus;
 
 import java.util.List;
 
 @AutoValue
 public abstract class EntityQueryCriteria extends FilterQueryCriteria implements CoreObject {
+
+    @Nullable
+    public abstract EventStatus eventStatus();
 
     @Nullable
     public abstract String programStage();
@@ -71,6 +75,8 @@ public abstract class EntityQueryCriteria extends FilterQueryCriteria implements
 
     @AutoValue.Builder
     public abstract static class Builder extends FilterQueryCriteria.Builder<Builder> {
+        public abstract Builder eventStatus(EventStatus eventStatus);
+
         public abstract Builder programStage(String programStage);
 
         public abstract Builder trackedEntityInstances(List<String> trackedEntityInstances);

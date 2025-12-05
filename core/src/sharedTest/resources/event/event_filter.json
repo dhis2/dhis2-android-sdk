@@ -19,7 +19,7 @@
   "eventQueryCriteria": {
     "assignedUserMode": "CURRENT",
     "organisationUnit": "orgUnitUid",
-    "eventStatus": "ACTIVE",
+    "status": "ACTIVE",
     "order": "dueDate:asc,createdDate:desc",
     "followUp": false,
     "programStatus": "ACTIVE",

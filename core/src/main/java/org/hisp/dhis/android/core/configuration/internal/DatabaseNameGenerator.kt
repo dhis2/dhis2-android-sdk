@@ -35,11 +35,13 @@ internal class DatabaseNameGenerator {
     /**
      * Generates a unique database name based on serverUrl, username, and encryption.
      *
-     * Format: <readable_part>_<username>_<hash>_<encrypted|unencrypted>.db
+     * Format: <protocol>-<domain>-<path>_<username>_<hash>_<encrypted|unencrypted>.db
      *
      * Example:
      * - Input: "https://play.dhis2.org/android-current", "admin", true
-     * - Output: "play-dhis2-org-android-current_admin_a3f5b821_encrypted.db"
+     * - Output: "https-play-dhis2-org-android-current_admin_a3f5b821_encrypted.db"
+     *
+     * @return A unique, filesystem-safe database name
      */
     fun getDatabaseName(serverUrl: String, username: String, encrypt: Boolean): String {
         val encryptedStr = if (encrypt) "encrypted" else "unencrypted"
@@ -75,12 +77,10 @@ internal class DatabaseNameGenerator {
     }
 
     private fun processServerUrl(serverUrl: String): String {
-        return serverUrl
-            .lowercase()
-            .removePrefix("https://")
-            .removePrefix("http://")
-            .removeSuffix("/")
-            .removeSuffix("/api")
+        val normalized = ServerUrlNormalizer.normalize(serverUrl)
+        return normalized
+            .replace("https://", "https-")
+            .replace("http://", "http-")
             .replace("[^a-zA-Z0-9]".toRegex(), "-")
             .replace("-+".toRegex(), "-")
             .removePrefix("-")

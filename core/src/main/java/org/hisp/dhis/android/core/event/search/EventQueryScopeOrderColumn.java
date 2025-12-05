@@ -49,55 +49,89 @@ abstract class EventQueryScopeOrderColumn {
     }
 
     public static final EventQueryScopeOrderColumn EVENT =
-            builder().type(Type.EVENT).apiName("event").build();
+            builder().type(Type.EVENT)
+                    .apiName(EventQueryScopeOrderApiName.Event.INSTANCE)
+                    .build();
 
     public static final EventQueryScopeOrderColumn PROGRAM =
-            builder().type(Type.PROGRAM).apiName("program").build();
+            builder().type(Type.PROGRAM)
+                    .apiName(EventQueryScopeOrderApiName.Program.INSTANCE)
+                    .build();
 
     public static final EventQueryScopeOrderColumn PROGRAM_STAGE =
-            builder().type(Type.PROGRAM_STAGE).apiName("programStage").build();
+            builder().type(Type.PROGRAM_STAGE)
+                    .apiName(EventQueryScopeOrderApiName.ProgramStage.INSTANCE)
+                    .build();
 
     public static final EventQueryScopeOrderColumn ENROLLMENT =
-            builder().type(Type.ENROLLMENT).apiName("enrollment").build();
+            builder().type(Type.ENROLLMENT)
+                    .apiName(EventQueryScopeOrderApiName.Enrollment.INSTANCE)
+                    .build();
 
     public static final EventQueryScopeOrderColumn ENROLLMENT_STATUS =
-            builder().type(Type.ENROLLMENT_STATUS).apiName("enrollmentStatus").build();
+            builder().type(Type.ENROLLMENT_STATUS)
+                    .apiName(EventQueryScopeOrderApiName.EnrollmentStatus.INSTANCE)
+                    .build();
 
     public static final EventQueryScopeOrderColumn ORGUNIT =
-            builder().type(Type.ORGUNIT).apiName("orgUnit").build();
+            builder().type(Type.ORGUNIT)
+                    .apiName(EventQueryScopeOrderApiName.OrgUnit.INSTANCE)
+                    .build();
 
     public static final EventQueryScopeOrderColumn ORGUNIT_NAME =
-            builder().type(Type.ORGUNIT_NAME).apiName("orgUnitName").build();
+            builder().type(Type.ORGUNIT_NAME)
+                    .apiName(EventQueryScopeOrderApiName.OrgUnitName.INSTANCE)
+                    .build();
 
     public static final EventQueryScopeOrderColumn TRACKED_ENTITY_INSTANCE =
-            builder().type(Type.TRACKED_ENTITY_INSTANCE).apiName("trackedEntityInstance").build();
+            builder().type(Type.TRACKED_ENTITY_INSTANCE)
+                    .apiName(EventQueryScopeOrderApiName.TrackedEntityInstance.INSTANCE)
+                    .build();
 
     public static final EventQueryScopeOrderColumn EVENT_DATE =
-            builder().type(Type.EVENT_DATE).apiName("eventDate").build();
+            builder().type(Type.EVENT_DATE)
+                    .apiName(EventQueryScopeOrderApiName.EventDate.INSTANCE)
+                    .build();
 
     public static final EventQueryScopeOrderColumn FOLLOW_UP =
-            builder().type(Type.FOLLOW_UP).apiName("followup").build();
+            builder().type(Type.FOLLOW_UP)
+                    .apiName(EventQueryScopeOrderApiName.FollowUp.INSTANCE)
+                    .build();
 
     public static final EventQueryScopeOrderColumn STATUS =
-            builder().type(Type.STATUS).apiName("status").build();
+            builder().type(Type.STATUS)
+                    .apiName(EventQueryScopeOrderApiName.Status.INSTANCE)
+                    .build();
 
     public static final EventQueryScopeOrderColumn DUE_DATE =
-            builder().type(Type.DUE_DATE).apiName("dueDate").build();
+            builder().type(Type.DUE_DATE)
+                    .apiName(EventQueryScopeOrderApiName.DueDate.INSTANCE)
+                    .build();
 
     public static final EventQueryScopeOrderColumn STORED_BY =
-            builder().type(Type.STORED_BY).apiName("storedBy").build();
+            builder().type(Type.STORED_BY)
+                    .apiName(EventQueryScopeOrderApiName.StoredBy.INSTANCE)
+                    .build();
 
     public static final EventQueryScopeOrderColumn CREATED =
-            builder().type(Type.CREATED).apiName("created").build();
+            builder().type(Type.CREATED)
+                    .apiName(EventQueryScopeOrderApiName.Created.INSTANCE)
+                    .build();
 
     public static final EventQueryScopeOrderColumn LAST_UPDATED =
-            builder().type(Type.LAST_UPDATED).apiName("lastUpdated").build();
+            builder().type(Type.LAST_UPDATED)
+                    .apiName(EventQueryScopeOrderApiName.LastUpdated.INSTANCE)
+                    .build();
 
     public static final EventQueryScopeOrderColumn COMPLETED_BY =
-            builder().type(Type.COMPLETED_BY).apiName("completedBy").build();
+            builder().type(Type.COMPLETED_BY)
+                    .apiName(EventQueryScopeOrderApiName.CompletedBy.INSTANCE)
+                    .build();
 
     public static final EventQueryScopeOrderColumn COMPLETED_DATE =
-            builder().type(Type.COMPLETED_DATE).apiName("completedDate").build();
+            builder().type(Type.COMPLETED_DATE)
+                    .apiName(EventQueryScopeOrderApiName.CompletedDate.INSTANCE)
+                    .build();
 
     public static final EventQueryScopeOrderColumn TIMELINE =
             builder().type(Type.TIMELINE).build();
@@ -111,14 +145,17 @@ abstract class EventQueryScopeOrderColumn {
             TIMELINE);
 
     public static EventQueryScopeOrderColumn dataElement(String dataElementUid) {
-        return builder().type(Type.DATA_ELEMENT).apiName(dataElementUid).value(dataElementUid).build();
+        return builder().type(Type.DATA_ELEMENT)
+                .apiName(new EventQueryScopeOrderApiName.DataElement(dataElementUid))
+                .value(dataElementUid)
+                .build();
     }
 
     @NonNull
     public abstract Type type();
 
     @Nullable
-    public abstract String apiName();
+    public abstract EventQueryScopeOrderApiName apiName();
 
     @Nullable
     public abstract String value();
@@ -136,7 +173,7 @@ abstract class EventQueryScopeOrderColumn {
 
         abstract Builder type(Type column);
 
-        abstract Builder apiName(String apiName);
+        abstract Builder apiName(EventQueryScopeOrderApiName apiName);
 
         abstract Builder value(String value);
 

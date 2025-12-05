@@ -31,6 +31,7 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.event.EventFilter
 import org.hisp.dhis.android.core.event.EventQueryCriteria
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -39,6 +40,7 @@ import org.junit.runners.JUnit4
 class EventQueryRepositoryScopeHelperShould {
 
     private val filterUid = "filterUid"
+    private val version = TrackerExporterVersion.V1
 
     @Test
     fun `Should parse order clause`() {
@@ -49,7 +51,7 @@ class EventQueryRepositoryScopeHelperShould {
             .build()
         val filter = EventFilter.builder().uid(filterUid).eventQueryCriteria(criteria).build()
 
-        val updatedScope = EventQueryRepositoryScopeHelper.addEventFilter(scope, filter)
+        val updatedScope = EventQueryRepositoryScopeHelper.addEventFilter(scope, filter, version)
 
         assertThat(updatedScope.order().size).isEqualTo(3)
         updatedScope.order().first().let {
@@ -76,7 +78,7 @@ class EventQueryRepositoryScopeHelperShould {
             .build()
         val filter = EventFilter.builder().uid(filterUid).eventQueryCriteria(criteria).build()
 
-        val updatedScope = EventQueryRepositoryScopeHelper.addEventFilter(scope, filter)
+        val updatedScope = EventQueryRepositoryScopeHelper.addEventFilter(scope, filter, version)
 
         assertThat(updatedScope.order().size).isEqualTo(1)
         updatedScope.order().first().let {
@@ -90,7 +92,7 @@ class EventQueryRepositoryScopeHelperShould {
         val scope = EventQueryRepositoryScope.builder().program("initial_program").build()
         val filter = EventFilter.builder().uid(filterUid).program("filter_program").build()
 
-        val updatedScope = EventQueryRepositoryScopeHelper.addEventFilter(scope, filter)
+        val updatedScope = EventQueryRepositoryScopeHelper.addEventFilter(scope, filter, version)
 
         assertThat(updatedScope.program()).isEqualTo("filter_program")
     }

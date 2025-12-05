@@ -5659,6 +5659,134 @@ public abstract class org/hisp/dhis/android/core/event/search/EventQueryReposito
 	public abstract fun trackedEntityInstance ()Ljava/lang/String;
 }
 
+public abstract class org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName {
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getApiName (Lorg/hisp/dhis/android/core/tracker/TrackerExporterVersion;)Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$CompletedBy : org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName {
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$CompletedBy;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$CompletedDate : org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName {
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$CompletedDate;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$Created : org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName {
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$Created;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$DataElement : org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName {
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public final class org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$DueDate : org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName {
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$DueDate;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$Enrollment : org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName {
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$Enrollment;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$EnrollmentStatus : org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName {
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$EnrollmentStatus;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$Event : org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName {
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$Event;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$EventDate : org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName {
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$EventDate;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$FollowUp : org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName {
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$FollowUp;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$LastUpdated : org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName {
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$LastUpdated;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$OrgUnit : org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName {
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$OrgUnit;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$OrgUnitName : org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName {
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$OrgUnitName;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$Program : org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName {
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$Program;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$ProgramStage : org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName {
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$ProgramStage;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$Status : org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName {
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$Status;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$StoredBy : org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName {
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$StoredBy;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$TrackedEntityInstance : org/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName {
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/event/search/EventQueryScopeOrderApiName$TrackedEntityInstance;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public abstract class org/hisp/dhis/android/core/event/search/EventQueryScopeOrderByItem : org/hisp/dhis/android/core/trackedentity/search/QueryScopeOrderByItem {
 	public fun <init> ()V
 	public abstract fun column ()Lorg/hisp/dhis/android/core/event/search/EventQueryScopeOrderColumn;

@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.common.DateFilterPeriod
@@ -40,12 +41,15 @@ import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
 import org.hisp.dhis.android.core.trackedentity.EntityQueryCriteria
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+import org.hisp.dhis.android.core.tracker.TrackerPostParentCallHelper
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
 class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
@@ -58,12 +62,17 @@ class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
     private val followUp = true
 
     private val dateFilterPeriodHelper: DateFilterPeriodHelper = mock()
+    private val trackerParentCallHelper: TrackerPostParentCallHelper = mock()
 
     private lateinit var scopeHelper: TrackedEntityInstanceQueryRepositoryScopeHelper
 
     @Before
-    fun setUp() {
-        scopeHelper = TrackedEntityInstanceQueryRepositoryScopeHelper(FilterOperatorHelper(dateFilterPeriodHelper))
+    fun setUp() = runTest {
+        whenever(trackerParentCallHelper.useNewTrackerExporter()) doReturn false
+        scopeHelper = TrackedEntityInstanceQueryRepositoryScopeHelper(
+            FilterOperatorHelper(dateFilterPeriodHelper),
+            trackerParentCallHelper,
+        )
     }
 
     @Test

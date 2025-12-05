@@ -57,6 +57,7 @@ import org.hisp.dhis.android.core.event.EventObjectRepository
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
+import org.hisp.dhis.android.core.tracker.TrackerPostParentCallHelper
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -66,6 +67,7 @@ class EventQueryCollectionRepository internal constructor(
     private val eventQueryOnlineAdapter: EventQueryOnlineAdapter,
     private val eventFilterRepository: EventFilterCollectionRepository,
     private val trackerCallFactory: TrackerParentCallFactory,
+    private val trackerParentCallHelper: TrackerPostParentCallHelper,
     @JvmField val scope: EventQueryRepositoryScope,
 ) : ReadOnlyWithUidCollectionRepository<Event> {
 
@@ -78,6 +80,7 @@ class EventQueryCollectionRepository internal constructor(
             eventQueryOnlineAdapter,
             eventFilterRepository,
             trackerCallFactory,
+            trackerParentCallHelper,
             s,
         )
     }
@@ -189,13 +192,15 @@ class EventQueryCollectionRepository internal constructor(
     fun byEventFilter(): EqFilterConnector<EventQueryCollectionRepository, String> {
         return connectorFactory.eqConnector { id ->
             val filter: EventFilter = eventFilterRepository.withEventDataFilters().uid(id).blockingGet()!!
-            EventQueryRepositoryScopeHelper.addEventFilter(scope, filter)
+            val version = trackerParentCallHelper.getTrackerExporterVersion()
+            EventQueryRepositoryScopeHelper.addEventFilter(scope, filter, version)
         }
     }
 
     internal fun byEventFilterObject(): EqFilterConnector<EventQueryCollectionRepository, EventFilter> {
         return connectorFactory.eqConnector { eventFilter ->
-            EventQueryRepositoryScopeHelper.addEventFilter(scope, eventFilter!!)
+            val version = trackerParentCallHelper.getTrackerExporterVersion()
+            EventQueryRepositoryScopeHelper.addEventFilter(scope, eventFilter!!, version)
         }
     }
 

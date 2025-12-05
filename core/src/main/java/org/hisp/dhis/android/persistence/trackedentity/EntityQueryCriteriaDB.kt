@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.persistence.trackedentity
 
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
+import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.trackedentity.EntityQueryCriteria
 import org.hisp.dhis.android.persistence.common.DateFilterPeriodDB
 import org.hisp.dhis.android.persistence.common.EntityDB
@@ -45,9 +46,9 @@ internal data class EntityQueryCriteriaDB(
     override val assignedUserMode: String?,
     override val orderProperty: String?,
     override val displayColumnOrder: StringListDB?,
-    override val eventStatus: String?,
     override val eventDate: DateFilterPeriodDB?,
     override val lastUpdatedDate: DateFilterPeriodDB?,
+    val eventStatus: String?,
     val programStage: String?,
     val trackedEntityInstances: StringListDB?,
     val enrollmentIncidentDate: DateFilterPeriodDB?,
@@ -58,6 +59,7 @@ internal data class EntityQueryCriteriaDB(
     override fun toDomain(): EntityQueryCriteria {
         return EntityQueryCriteria.builder().apply {
             applyFilterQueryCriteriaFields(this@EntityQueryCriteriaDB)
+            eventStatus(eventStatus?.let { EventStatus.valueOf(it) })
             enrollmentStatus(enrollmentStatus?.let { EnrollmentStatus.valueOf(it) })
             programStage(programStage)
             trackedEntityInstances(trackedEntityInstances?.toDomain())

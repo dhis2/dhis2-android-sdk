@@ -35,11 +35,15 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.DateFilterPeriod;
 import org.hisp.dhis.android.core.common.FilterQueryCriteria;
+import org.hisp.dhis.android.core.event.EventStatus;
 
 import java.util.List;
 
 @AutoValue
 public abstract class EventQueryCriteria extends FilterQueryCriteria implements CoreObject {
+
+    @Nullable
+    public abstract EventStatus status();
 
     @Nullable
     public abstract List<EventDataFilter> dataFilters();
@@ -61,6 +65,8 @@ public abstract class EventQueryCriteria extends FilterQueryCriteria implements 
 
     @AutoValue.Builder
     public abstract static class Builder extends FilterQueryCriteria.Builder<Builder> {
+        public abstract Builder status(EventStatus status);
+
         public abstract Builder dataFilters(List<EventDataFilter> dataFilters);
 
         public abstract Builder events(List<String> events);

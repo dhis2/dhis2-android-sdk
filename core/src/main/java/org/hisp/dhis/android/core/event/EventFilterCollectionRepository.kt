@@ -99,8 +99,8 @@ class EventFilterCollectionRepository internal constructor(
         return cf.string(EventFilterTableInfo.Columns.EVENTS)
     }
 
-    fun byEventStatus(): EnumFilterConnector<EventFilterCollectionRepository, EventStatus> {
-        return cf.enumC(EventFilterTableInfo.Columns.EVENT_STATUS)
+    fun byStatus(): EnumFilterConnector<EventFilterCollectionRepository, EventStatus> {
+        return cf.enumC(EventFilterTableInfo.Columns.STATUS)
     }
 
     fun byEventDate(): StringFilterConnector<EventFilterCollectionRepository> {

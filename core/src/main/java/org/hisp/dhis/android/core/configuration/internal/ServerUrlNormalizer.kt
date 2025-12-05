@@ -39,6 +39,9 @@ package org.hisp.dhis.android.core.configuration.internal
  */
 internal object ServerUrlNormalizer {
 
+    private const val HTTPS_PREFIX = "https://"
+    private const val HTTP_PREFIX = "http://"
+
     /**
      * Normalizes a server URL by:
      * 1. Lowercasing the protocol and domain (path remains case-sensitive)
@@ -62,8 +65,8 @@ internal object ServerUrlNormalizer {
      */
     private fun extractProtocol(url: String): Pair<String, String> {
         return when {
-            url.lowercase().startsWith("https://") -> "https://" to url.substring(8)
-            url.lowercase().startsWith("http://") -> "http://" to url.substring(7)
+            url.lowercase().startsWith(HTTPS_PREFIX) -> HTTPS_PREFIX to url.substring(HTTPS_PREFIX.length)
+            url.lowercase().startsWith(HTTP_PREFIX) -> HTTP_PREFIX to url.substring(HTTP_PREFIX.length)
             else -> "" to url
         }
     }

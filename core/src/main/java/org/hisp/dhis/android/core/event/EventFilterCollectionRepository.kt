@@ -103,6 +103,11 @@ class EventFilterCollectionRepository internal constructor(
         return cf.enumC(EventFilterTableInfo.Columns.STATUS)
     }
 
+    @Deprecated("Use byStatus() instead", ReplaceWith("byStatus()"))
+    fun byEventStatus(): EnumFilterConnector<EventFilterCollectionRepository, EventStatus> {
+        return byStatus()
+    }
+
     fun byEventDate(): StringFilterConnector<EventFilterCollectionRepository> {
         return cf.string(EventFilterTableInfo.Columns.EVENT_DATE)
     }

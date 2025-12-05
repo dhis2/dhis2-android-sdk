@@ -35,7 +35,6 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.DateFilterPeriod;
 import org.hisp.dhis.android.core.common.FilterQueryCriteria;
-import org.hisp.dhis.android.core.event.EventStatus;
 
 import java.util.List;
 

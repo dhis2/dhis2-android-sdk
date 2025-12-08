@@ -77,9 +77,9 @@ class TrackedEntityInstanceDownloadCallEnqueableMockIntegrationShould : BaseMock
                     .program(ObjectWithUid.create("IpHINAT79UW"))
                     .programStage(ObjectWithUid.create("dBwrot7S421"))
                     .programStageQueryCriteria(
-                        ProgramStageQueryCriteria.builder().eventStatus(EventStatus.OVERDUE).build()
+                        ProgramStageQueryCriteria.builder().eventStatus(EventStatus.OVERDUE).build(),
                     )
-                    .build()
+                    .build(),
             ).blockingDownload()
 
         val existingTeisInDB = d2.trackedEntityModule().trackedEntityInstances().blockingGet()

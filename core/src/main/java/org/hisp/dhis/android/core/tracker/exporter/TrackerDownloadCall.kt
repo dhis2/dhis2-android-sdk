@@ -195,7 +195,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                             relatives,
                         )
                     } else {
-                        ItemsWithPagingResult(0, true, null, false)
+                        ItemsWithPagingResult(0, true, null, true)
                     }
 
                     bundleResult.bundleCount += result.count

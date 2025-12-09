@@ -77,7 +77,7 @@ internal class EventQueryBundleInternalFactory(
 
         val finalFilters = eventFilters.takeIf { it.isNotEmpty() } ?: programSettingFilters
 
-        val workingListsHash = calculateWorkingListsHash(finalFilters)
+        val workingListsHash = WorkingListsHashHelper.calculateHashFromObjects(finalFilters)
         val commonParamsWithHash = commonParams.copy(workingListsHash = workingListsHash)
 
         val builder = EventQueryBundle.builder()
@@ -90,12 +90,5 @@ internal class EventQueryBundleInternalFactory(
         ) {
             builder.orgUnits(it).build()
         }
-    }
-
-    private fun calculateWorkingListsHash(
-        filters: List<org.hisp.dhis.android.core.event.EventFilter>?,
-    ): Int? {
-        val filterUids = filters?.map { it.uid() } ?: emptyList()
-        return WorkingListsHashHelper.calculateHash(filterUids)
     }
 }

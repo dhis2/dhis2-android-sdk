@@ -95,7 +95,7 @@ internal class TrackerQueryBundleInternalFactory(
         val finalFilters = trackedEntityInstanceFilters.takeIf { it.isNotEmpty() }
             ?: trackedEntityInstanceFiltersSettings
 
-        val workingListsHash = calculateWorkingListsHash(finalFilters, finalWorkingLists)
+        val workingListsHash = WorkingListsHashHelper.calculateHashFromObjects(finalFilters, finalWorkingLists)
         val commonParamsWithHash = commonParams.copy(workingListsHash = workingListsHash)
 
         val builder = TrackerQueryBundle.builder()
@@ -145,14 +145,5 @@ internal class TrackerQueryBundleInternalFactory(
         } else {
             null
         }
-    }
-
-    private fun calculateWorkingListsHash(
-        filters: List<org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter>?,
-        workingLists: List<org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList>?,
-    ): Int? {
-        val filterUids = filters?.map { it.uid() } ?: emptyList()
-        val workingListUids = workingLists?.map { it.uid() } ?: emptyList()
-        return WorkingListsHashHelper.calculateCombinedHash(filterUids, workingListUids)
     }
 }

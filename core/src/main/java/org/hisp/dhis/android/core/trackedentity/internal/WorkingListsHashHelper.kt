@@ -27,17 +27,15 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+
 internal object WorkingListsHashHelper {
 
-    fun calculateHash(uids: List<String>): Int? {
-        return if (uids.isEmpty()) null else uids.sorted().toSet().hashCode()
-    }
-
     /**
-     * Calculates a combined hash from multiple lists of UIDs.
+     * Calculates a combined hash from multiple lists of objects with UIDs.
      */
-    fun calculateCombinedHash(vararg uidLists: List<String>): Int? {
-        val allUids = uidLists.flatMap { it }
-        return calculateHash(allUids)
+    fun calculateHashFromObjects(vararg objectLists: List<ObjectWithUidInterface>?): Int? {
+        val allUids = objectLists.flatMap { it?.map { obj -> obj.uid() } ?: emptyList() }
+        return if (allUids.isEmpty()) null else allUids.sorted().toSet().hashCode()
     }
 }

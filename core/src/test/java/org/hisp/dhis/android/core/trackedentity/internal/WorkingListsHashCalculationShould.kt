@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -35,59 +36,84 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class WorkingListsHashCalculationShould {
 
+    private fun objectWithUid(uid: String): ObjectWithUidInterface = ObjectWithUidInterface { uid }
+
     @Test
-    fun return_null_hash_when_no_uids() {
-        val hash = WorkingListsHashHelper.calculateHash(emptyList())
+    fun return_null_hash_when_no_objects() {
+        val hash = WorkingListsHashHelper.calculateHashFromObjects(emptyList())
         assertThat(hash).isNull()
     }
 
     @Test
-    fun return_null_hash_when_no_combined_uids() {
-        val hash = WorkingListsHashHelper.calculateCombinedHash(emptyList(), emptyList())
+    fun return_null_hash_when_null_list() {
+        val hash = WorkingListsHashHelper.calculateHashFromObjects(null)
         assertThat(hash).isNull()
     }
 
     @Test
-    fun return_same_hash_for_same_uids() {
-        val uids = listOf("filter1", "filter2")
-        val hash1 = WorkingListsHashHelper.calculateHash(uids)
-        val hash2 = WorkingListsHashHelper.calculateHash(uids)
+    fun return_null_hash_when_multiple_empty_lists() {
+        val hash = WorkingListsHashHelper.calculateHashFromObjects(emptyList(), emptyList())
+        assertThat(hash).isNull()
+    }
+
+    @Test
+    fun return_same_hash_for_same_objects() {
+        val objects = listOf(objectWithUid("filter1"), objectWithUid("filter2"))
+        val hash1 = WorkingListsHashHelper.calculateHashFromObjects(objects)
+        val hash2 = WorkingListsHashHelper.calculateHashFromObjects(objects)
         assertThat(hash1).isEqualTo(hash2)
     }
 
     @Test
     fun return_same_hash_regardless_of_order() {
-        val hash1 = WorkingListsHashHelper.calculateHash(listOf("filter1", "filter2"))
-        val hash2 = WorkingListsHashHelper.calculateHash(listOf("filter2", "filter1"))
+        val hash1 = WorkingListsHashHelper.calculateHashFromObjects(
+            listOf(objectWithUid("filter1"), objectWithUid("filter2")),
+        )
+        val hash2 = WorkingListsHashHelper.calculateHashFromObjects(
+            listOf(objectWithUid("filter2"), objectWithUid("filter1")),
+        )
         assertThat(hash1).isEqualTo(hash2)
     }
 
     @Test
     fun return_different_hash_when_uids_change() {
-        val hash1 = WorkingListsHashHelper.calculateHash(listOf("filter1"))
-        val hash2 = WorkingListsHashHelper.calculateHash(listOf("filter2"))
+        val hash1 = WorkingListsHashHelper.calculateHashFromObjects(listOf(objectWithUid("filter1")))
+        val hash2 = WorkingListsHashHelper.calculateHashFromObjects(listOf(objectWithUid("filter2")))
         assertThat(hash1).isNotEqualTo(hash2)
     }
 
     @Test
-    fun return_different_hash_when_uid_added() {
-        val hash1 = WorkingListsHashHelper.calculateHash(listOf("filter1"))
-        val hash2 = WorkingListsHashHelper.calculateHash(listOf("filter1", "filter2"))
+    fun return_different_hash_when_object_added() {
+        val hash1 = WorkingListsHashHelper.calculateHashFromObjects(listOf(objectWithUid("filter1")))
+        val hash2 = WorkingListsHashHelper.calculateHashFromObjects(
+            listOf(objectWithUid("filter1"), objectWithUid("filter2")),
+        )
         assertThat(hash1).isNotEqualTo(hash2)
     }
 
     @Test
-    fun return_different_hash_when_uid_removed() {
-        val hash1 = WorkingListsHashHelper.calculateHash(listOf("filter1", "filter2"))
-        val hash2 = WorkingListsHashHelper.calculateHash(listOf("filter1"))
+    fun return_different_hash_when_object_removed() {
+        val hash1 = WorkingListsHashHelper.calculateHashFromObjects(
+            listOf(objectWithUid("filter1"), objectWithUid("filter2")),
+        )
+        val hash2 = WorkingListsHashHelper.calculateHashFromObjects(listOf(objectWithUid("filter1")))
         assertThat(hash1).isNotEqualTo(hash2)
     }
 
     @Test
-    fun combine_multiple_uid_lists_for_hash() {
-        val hashFiltersOnly = WorkingListsHashHelper.calculateCombinedHash(listOf("filter1"), emptyList())
-        val hashWorkingListsOnly = WorkingListsHashHelper.calculateCombinedHash(emptyList(), listOf("wl1"))
-        val hashBoth = WorkingListsHashHelper.calculateCombinedHash(listOf("filter1"), listOf("wl1"))
+    fun combine_multiple_object_lists_for_hash() {
+        val hashFiltersOnly = WorkingListsHashHelper.calculateHashFromObjects(
+            listOf(objectWithUid("filter1")),
+            emptyList(),
+        )
+        val hashWorkingListsOnly = WorkingListsHashHelper.calculateHashFromObjects(
+            emptyList(),
+            listOf(objectWithUid("wl1")),
+        )
+        val hashBoth = WorkingListsHashHelper.calculateHashFromObjects(
+            listOf(objectWithUid("filter1")),
+            listOf(objectWithUid("wl1")),
+        )
 
         assertThat(hashFiltersOnly).isNotEqualTo(hashWorkingListsOnly)
         assertThat(hashFiltersOnly).isNotEqualTo(hashBoth)
@@ -96,18 +122,29 @@ class WorkingListsHashCalculationShould {
 
     @Test
     fun return_same_hash_for_same_combination_regardless_of_order() {
-        val hash1 = WorkingListsHashHelper.calculateCombinedHash(listOf("filter1", "filter2"), listOf("wl1", "wl2"))
-        val hash2 = WorkingListsHashHelper.calculateCombinedHash(listOf("filter2", "filter1"), listOf("wl2", "wl1"))
+        val hash1 = WorkingListsHashHelper.calculateHashFromObjects(
+            listOf(objectWithUid("filter1"), objectWithUid("filter2")),
+            listOf(objectWithUid("wl1"), objectWithUid("wl2")),
+        )
+        val hash2 = WorkingListsHashHelper.calculateHashFromObjects(
+            listOf(objectWithUid("filter2"), objectWithUid("filter1")),
+            listOf(objectWithUid("wl2"), objectWithUid("wl1")),
+        )
         assertThat(hash1).isEqualTo(hash2)
     }
 
     @Test
     fun return_same_hash_for_equivalent_combinations() {
-        val allUids = listOf("filter1", "filter2", "wl1", "wl2")
-        val hashDirect = WorkingListsHashHelper.calculateHash(allUids)
-        val hashCombined = WorkingListsHashHelper.calculateCombinedHash(
-            listOf("filter1", "filter2"),
-            listOf("wl1", "wl2"),
+        val allObjects = listOf(
+            objectWithUid("filter1"),
+            objectWithUid("filter2"),
+            objectWithUid("wl1"),
+            objectWithUid("wl2"),
+        )
+        val hashDirect = WorkingListsHashHelper.calculateHashFromObjects(allObjects)
+        val hashCombined = WorkingListsHashHelper.calculateHashFromObjects(
+            listOf(objectWithUid("filter1"), objectWithUid("filter2")),
+            listOf(objectWithUid("wl1"), objectWithUid("wl2")),
         )
         assertThat(hashDirect).isEqualTo(hashCombined)
     }

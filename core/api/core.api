@@ -3293,7 +3293,6 @@ public abstract class org/hisp/dhis/android/core/common/FilterQueryCriteria {
 	public abstract fun assignedUserMode ()Lorg/hisp/dhis/android/core/common/AssignedUserMode;
 	public abstract fun displayColumnOrder ()Ljava/util/List;
 	public abstract fun eventDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
-	public abstract fun eventStatus ()Lorg/hisp/dhis/android/core/event/EventStatus;
 	public abstract fun followUp ()Ljava/lang/Boolean;
 	public abstract fun lastUpdatedDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
 	public abstract fun order ()Ljava/lang/String;
@@ -3306,7 +3305,6 @@ public abstract class org/hisp/dhis/android/core/common/FilterQueryCriteria$Buil
 	public abstract fun assignedUserMode (Lorg/hisp/dhis/android/core/common/AssignedUserMode;)Lorg/hisp/dhis/android/core/common/FilterQueryCriteria$Builder;
 	public abstract fun displayColumnOrder (Ljava/util/List;)Lorg/hisp/dhis/android/core/common/FilterQueryCriteria$Builder;
 	public abstract fun eventDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)Lorg/hisp/dhis/android/core/common/FilterQueryCriteria$Builder;
-	public abstract fun eventStatus (Lorg/hisp/dhis/android/core/event/EventStatus;)Lorg/hisp/dhis/android/core/common/FilterQueryCriteria$Builder;
 	public abstract fun followUp (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/FilterQueryCriteria$Builder;
 	public abstract fun lastUpdatedDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)Lorg/hisp/dhis/android/core/common/FilterQueryCriteria$Builder;
 	public abstract fun order (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/FilterQueryCriteria$Builder;
@@ -5486,6 +5484,7 @@ public final class org/hisp/dhis/android/core/event/EventFilterCollectionReposit
 	public final fun byOuMode ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
 	public final fun byProgram ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byProgramStage ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
+	public final fun byStatus ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
 	public final fun withEventDataFilters ()Lorg/hisp/dhis/android/core/event/EventFilterCollectionRepository;
 }
 
@@ -5530,7 +5529,9 @@ public abstract class org/hisp/dhis/android/core/event/EventQueryCriteria : org/
 	public abstract fun completedDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
 	public abstract fun dataFilters ()Ljava/util/List;
 	public abstract fun dueDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public fun eventStatus ()Lorg/hisp/dhis/android/core/event/EventStatus;
 	public abstract fun events ()Ljava/util/List;
+	public abstract fun status ()Lorg/hisp/dhis/android/core/event/EventStatus;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/event/EventQueryCriteria$Builder;
 }
 
@@ -5540,7 +5541,9 @@ public abstract class org/hisp/dhis/android/core/event/EventQueryCriteria$Builde
 	public abstract fun completedDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)Lorg/hisp/dhis/android/core/event/EventQueryCriteria$Builder;
 	public abstract fun dataFilters (Ljava/util/List;)Lorg/hisp/dhis/android/core/event/EventQueryCriteria$Builder;
 	public abstract fun dueDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)Lorg/hisp/dhis/android/core/event/EventQueryCriteria$Builder;
+	public fun eventStatus (Lorg/hisp/dhis/android/core/event/EventStatus;)Lorg/hisp/dhis/android/core/event/EventQueryCriteria$Builder;
 	public abstract fun events (Ljava/util/List;)Lorg/hisp/dhis/android/core/event/EventQueryCriteria$Builder;
+	public abstract fun status (Lorg/hisp/dhis/android/core/event/EventStatus;)Lorg/hisp/dhis/android/core/event/EventQueryCriteria$Builder;
 }
 
 public abstract interface class org/hisp/dhis/android/core/event/EventService {
@@ -10342,6 +10345,7 @@ public abstract class org/hisp/dhis/android/core/trackedentity/EntityQueryCriter
 	public abstract fun enrollmentCreatedDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
 	public abstract fun enrollmentIncidentDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
 	public abstract fun enrollmentStatus ()Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;
+	public abstract fun eventStatus ()Lorg/hisp/dhis/android/core/event/EventStatus;
 	public abstract fun programStage ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/EntityQueryCriteria$Builder;
 	public abstract fun trackedEntityInstances ()Ljava/util/List;
@@ -10355,6 +10359,7 @@ public abstract class org/hisp/dhis/android/core/trackedentity/EntityQueryCriter
 	public abstract fun enrollmentCreatedDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)Lorg/hisp/dhis/android/core/trackedentity/EntityQueryCriteria$Builder;
 	public abstract fun enrollmentIncidentDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)Lorg/hisp/dhis/android/core/trackedentity/EntityQueryCriteria$Builder;
 	public abstract fun enrollmentStatus (Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;)Lorg/hisp/dhis/android/core/trackedentity/EntityQueryCriteria$Builder;
+	public abstract fun eventStatus (Lorg/hisp/dhis/android/core/event/EventStatus;)Lorg/hisp/dhis/android/core/trackedentity/EntityQueryCriteria$Builder;
 	public abstract fun programStage (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/EntityQueryCriteria$Builder;
 	public abstract fun trackedEntityInstances (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/EntityQueryCriteria$Builder;
 	public abstract fun trackedEntityType (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/EntityQueryCriteria$Builder;
@@ -13294,7 +13299,6 @@ public final class org/hisp/dhis/android/persistence/event/EventFilterTableInfo$
 	public static final field DUE_DATE Ljava/lang/String;
 	public static final field EVENTS Ljava/lang/String;
 	public static final field EVENT_DATE Ljava/lang/String;
-	public static final field EVENT_STATUS Ljava/lang/String;
 	public static final field FOLLOW_UP Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field LAST_UPDATED_DATE Ljava/lang/String;
@@ -13304,6 +13308,7 @@ public final class org/hisp/dhis/android/persistence/event/EventFilterTableInfo$
 	public static final field OU_MODE Ljava/lang/String;
 	public static final field PROGRAM Ljava/lang/String;
 	public static final field PROGRAM_STAGE Ljava/lang/String;
+	public static final field STATUS Ljava/lang/String;
 	public static final field UID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;

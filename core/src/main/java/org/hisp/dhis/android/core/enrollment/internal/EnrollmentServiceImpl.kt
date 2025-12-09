@@ -146,7 +146,7 @@ internal class EnrollmentServiceImpl(
         return organisationUnitRepository
             .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
             .uid(ownerOrgUnit)
-            .blockingExists()
+            .existsInternal()
     }
 
     override fun blockingGetAllowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Boolean {

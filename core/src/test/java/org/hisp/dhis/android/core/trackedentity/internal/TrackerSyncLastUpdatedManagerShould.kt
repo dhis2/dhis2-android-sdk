@@ -133,7 +133,12 @@ class TrackerSyncLastUpdatedManagerShould {
         assertThat(result).isNotNull()
     }
 
-    private suspend fun prepareWithSync(storedHash: Int? = null, sync: TrackedEntityInstanceSync? = createSync(storedHash)) {
+    private suspend fun prepareWithSync(
+        storedHash: Int? = null,
+        sync: TrackedEntityInstanceSync? = createSync(
+            storedHash,
+        ),
+    ) {
         whenever(store.selectAll()).thenReturn(listOfNotNull(sync))
         manager.prepare(null, params)
     }

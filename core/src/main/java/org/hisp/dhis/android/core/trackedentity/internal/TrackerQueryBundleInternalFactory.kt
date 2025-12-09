@@ -153,7 +153,6 @@ internal class TrackerQueryBundleInternalFactory(
     ): Int? {
         val filterUids = filters?.map { it.uid() } ?: emptyList()
         val workingListUids = workingLists?.map { it.uid() } ?: emptyList()
-        val allUids = (filterUids + workingListUids).sorted()
-        return if (allUids.isEmpty()) null else allUids.toSet().hashCode()
+        return WorkingListsHashHelper.calculateCombinedHash(filterUids, workingListUids)
     }
 }

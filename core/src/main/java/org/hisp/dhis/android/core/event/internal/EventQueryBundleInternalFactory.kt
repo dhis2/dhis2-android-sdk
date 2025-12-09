@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryFactoryCommonHelper
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryInternalFactory
+import org.hisp.dhis.android.core.trackedentity.internal.WorkingListsHashHelper
 
 internal class EventQueryBundleInternalFactory(
     commonHelper: TrackerQueryFactoryCommonHelper,
@@ -95,6 +96,6 @@ internal class EventQueryBundleInternalFactory(
         filters: List<org.hisp.dhis.android.core.event.EventFilter>?,
     ): Int? {
         val filterUids = filters?.map { it.uid() } ?: emptyList()
-        return if (filterUids.isEmpty()) null else filterUids.sorted().toSet().hashCode()
+        return WorkingListsHashHelper.calculateHash(filterUids)
     }
 }

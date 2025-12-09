@@ -37,6 +37,7 @@ public class TrackerBaseSyncColumns extends CoreColumns {
     public static final String PROGRAM = "program";
     public static final String DOWNLOAD_LIMIT = "downloadLimit";
     public static final String ORGANISATION_UNIT_IDS_HASH = "organisationUnitIdsHash";
+    public static final String WORKING_LISTS_HASH = "workingListsHash";
 
     @Override
     public String[] all() {
@@ -44,6 +45,7 @@ public class TrackerBaseSyncColumns extends CoreColumns {
                 PROGRAM,
                 ORGANISATION_UNIT_IDS_HASH,
                 DOWNLOAD_LIMIT,
+                WORKING_LISTS_HASH,
                 LAST_UPDATED);
     }
 

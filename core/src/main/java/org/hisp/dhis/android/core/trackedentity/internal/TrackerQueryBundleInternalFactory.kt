@@ -90,17 +90,19 @@ internal class TrackerQueryBundleInternalFactory(
                 .getInternal()
         }
 
+        val finalWorkingLists = programStageWorkingLists.takeIf { it.isNotEmpty() }
+            ?: programStageWorkingListsSettings
+        val finalFilters = trackedEntityInstanceFilters.takeIf { it.isNotEmpty() }
+            ?: trackedEntityInstanceFiltersSettings
+
+        val workingListsHash = calculateWorkingListsHash(finalFilters, finalWorkingLists)
+        val commonParamsWithHash = commonParams.copy(workingListsHash = workingListsHash)
+
         val builder = TrackerQueryBundle.builder()
-            .commonParams(commonParams)
+            .commonParams(commonParamsWithHash)
             .programStatus(programStatus)
-            .programStageWorkingLists(
-                programStageWorkingLists.takeIf { it.isNotEmpty() }
-                    ?: programStageWorkingListsSettings,
-            )
-            .trackedEntityInstanceFilters(
-                trackedEntityInstanceFilters.takeIf { it.isNotEmpty() }
-                    ?: trackedEntityInstanceFiltersSettings,
-            )
+            .programStageWorkingLists(finalWorkingLists)
+            .trackedEntityInstanceFilters(finalFilters)
 
         return commonHelper.divideByOrgUnits(
             commonParams.orgUnitsBeforeDivision,
@@ -143,5 +145,15 @@ internal class TrackerQueryBundleInternalFactory(
         } else {
             null
         }
+    }
+
+    private fun calculateWorkingListsHash(
+        filters: List<org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter>?,
+        workingLists: List<org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList>?,
+    ): Int? {
+        val filterUids = filters?.map { it.uid() } ?: emptyList()
+        val workingListUids = workingLists?.map { it.uid() } ?: emptyList()
+        val allUids = (filterUids + workingListUids).sorted()
+        return if (allUids.isEmpty()) null else allUids.toSet().hashCode()
     }
 }

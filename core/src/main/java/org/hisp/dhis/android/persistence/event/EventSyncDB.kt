@@ -37,6 +37,7 @@ internal data class EventSyncDB(
     val program: String?,
     val organisationUnitIdsHash: Int,
     val downloadLimit: Int,
+    val workingListsHash: Int?,
     val lastUpdated: String,
 ) : EntityDB<EventSync> {
 
@@ -45,6 +46,7 @@ internal data class EventSyncDB(
             .program(program)
             .organisationUnitIdsHash(organisationUnitIdsHash)
             .downloadLimit(downloadLimit)
+            .workingListsHash(workingListsHash)
             .lastUpdated(lastUpdated.toJavaDate())
             .build()
     }
@@ -55,6 +57,7 @@ internal fun EventSync.toDB(): EventSyncDB {
         program = program(),
         organisationUnitIdsHash = organisationUnitIdsHash(),
         downloadLimit = downloadLimit(),
+        workingListsHash = workingListsHash(),
         lastUpdated = lastUpdated().dateFormat()!!,
     )
 }

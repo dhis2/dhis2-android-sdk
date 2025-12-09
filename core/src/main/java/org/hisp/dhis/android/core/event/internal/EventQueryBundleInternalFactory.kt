@@ -74,9 +74,14 @@ internal class EventQueryBundleInternalFactory(
                 .getInternal()
         }
 
+        val finalFilters = eventFilters.takeIf { it.isNotEmpty() } ?: programSettingFilters
+
+        val workingListsHash = calculateWorkingListsHash(finalFilters)
+        val commonParamsWithHash = commonParams.copy(workingListsHash = workingListsHash)
+
         val builder = EventQueryBundle.builder()
-            .eventFilters(eventFilters.takeIf { it.isNotEmpty() } ?: programSettingFilters)
-            .commonParams(commonParams)
+            .eventFilters(finalFilters)
+            .commonParams(commonParamsWithHash)
 
         return commonHelper.divideByOrgUnits(
             commonParams.orgUnitsBeforeDivision,
@@ -84,5 +89,12 @@ internal class EventQueryBundleInternalFactory(
         ) {
             builder.orgUnits(it).build()
         }
+    }
+
+    private fun calculateWorkingListsHash(
+        filters: List<org.hisp.dhis.android.core.event.EventFilter>?,
+    ): Int? {
+        val filterUids = filters?.map { it.uid() } ?: emptyList()
+        return if (filterUids.isEmpty()) null else filterUids.sorted().toSet().hashCode()
     }
 }

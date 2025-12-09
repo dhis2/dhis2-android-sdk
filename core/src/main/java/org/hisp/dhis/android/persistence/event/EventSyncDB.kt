@@ -37,8 +37,8 @@ internal data class EventSyncDB(
     val program: String?,
     val organisationUnitIdsHash: Int,
     val downloadLimit: Int,
-    val workingListsHash: Int?,
     val lastUpdated: String,
+    val workingListsHash: Int?,
 ) : EntityDB<EventSync> {
 
     override fun toDomain(): EventSync {

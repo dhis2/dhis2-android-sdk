@@ -10917,6 +10917,7 @@ public abstract interface class org/hisp/dhis/android/core/trackedentity/interna
 	public abstract fun lastUpdated ()Ljava/util/Date;
 	public abstract fun organisationUnitIdsHash ()Ljava/lang/Integer;
 	public abstract fun program ()Ljava/lang/String;
+	public abstract fun workingListsHash ()Ljava/lang/Integer;
 }
 
 public abstract interface class org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync$Builder {
@@ -10924,15 +10925,7 @@ public abstract interface class org/hisp/dhis/android/core/trackedentity/interna
 	public abstract fun lastUpdated (Ljava/util/Date;)Ljava/lang/Object;
 	public abstract fun organisationUnitIdsHash (Ljava/lang/Integer;)Ljava/lang/Object;
 	public abstract fun program (Ljava/lang/String;)Ljava/lang/Object;
-}
-
-public class org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSyncColumns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field DOWNLOAD_LIMIT Ljava/lang/String;
-	public static final field ORGANISATION_UNIT_IDS_HASH Ljava/lang/String;
-	public static final field PROGRAM Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-	public fun whereUpdate ()[Ljava/lang/String;
+	public abstract fun workingListsHash (Ljava/lang/Integer;)Ljava/lang/Object;
 }
 
 public abstract class org/hisp/dhis/android/core/trackedentity/internal/TrackerQueryBundle : org/hisp/dhis/android/core/tracker/exporter/BaseTrackerQueryBundle {
@@ -13331,6 +13324,7 @@ public final class org/hisp/dhis/android/persistence/event/EventSyncTableInfo$Co
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field ORGANISATION_UNIT_IDS_HASH Ljava/lang/String;
 	public static final field PROGRAM Ljava/lang/String;
+	public static final field WORKING_LISTS_HASH Ljava/lang/String;
 	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
@@ -15364,6 +15358,7 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 	public static final field LAST_UPDATED Ljava/lang/String;
 	public static final field ORGANISATION_UNIT_IDS_HASH Ljava/lang/String;
 	public static final field PROGRAM Ljava/lang/String;
+	public static final field WORKING_LISTS_HASH Ljava/lang/String;
 	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;

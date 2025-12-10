@@ -31,7 +31,6 @@ import android.util.Log
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.user.User
 
 class MetadataCallRealIntegrationShould : BaseRealIntegrationTest() {

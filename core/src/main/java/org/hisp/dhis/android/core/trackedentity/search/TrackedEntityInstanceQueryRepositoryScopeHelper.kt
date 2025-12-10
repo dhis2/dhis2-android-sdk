@@ -39,13 +39,11 @@ import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
-import org.hisp.dhis.android.core.tracker.TrackerPostParentCallHelper
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class TrackedEntityInstanceQueryRepositoryScopeHelper(
     private val filterOperatorHelper: FilterOperatorHelper,
-    private val trackerParentCallHelper: TrackerPostParentCallHelper,
 ) {
 
     @Suppress("ComplexMethod")
@@ -140,10 +138,7 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper(
             criteria.enrollmentStatus()?.let { builder.enrollmentStatus(listOf(it)) }
             criteria.enrolledAt()?.let { builder.programDate(it) }
             criteria.enrollmentOccurredAt()?.let { builder.incidentDate(it) }
-            criteria.order()?.let {
-                val version = trackerParentCallHelper.getTrackerExporterVersion()
-                applyOrder(builder, it, version)
-            }
+            criteria.order()?.let { applyOrder(builder, it) }
             criteria.orgUnit()?.let { builder.orgUnits(listOf(it)) }
             criteria.ouMode()?.let { builder.orgUnitMode(it) }
             criteria.assignedUserMode()?.let { builder.assignedUserMode(it) }
@@ -187,14 +182,13 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper(
     private fun applyOrder(
         builder: TrackedEntityInstanceQueryRepositoryScope.Builder,
         order: String,
-        version: TrackerExporterVersion,
     ) {
         val items = order.split(",").mapNotNull { orderItem ->
             val orderTokens = orderItem.split(":")
             val columnStr = orderTokens.getOrNull(0)
             val directionStr = orderTokens.getOrNull(1) ?: "desc"
 
-            val column = parseOrderColumn(columnStr, version)
+            val column = parseOrderColumn(columnStr)
 
             if (column != null) {
                 val direction =
@@ -222,7 +216,6 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper(
     @Suppress("ReturnCount")
     private fun parseOrderColumn(
         columnStr: String?,
-        version: TrackerExporterVersion,
     ): TrackedEntityInstanceQueryScopeOrderColumn? {
         if (columnStr == null) return null
 
@@ -238,21 +231,10 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper(
             TrackedEntityInstanceQueryScopeOrderColumn.ENROLLMENT_DATE,
         )
 
-        // First try to find with the specified version
-        var column = fixedColumns.find { it.apiName()?.getApiName(version) == columnStr }
-
-        // If not found, try with the other version for backward compatibility
-        // This handles cases where filters have V1 names but server uses V2 (or vice versa)
-        if (column == null) {
-            val alternateVersion = if (version == TrackerExporterVersion.V1) {
-                TrackerExporterVersion.V2
-            } else {
-                TrackerExporterVersion.V1
+        return sequenceOf(TrackerExporterVersion.V2, TrackerExporterVersion.V1)
+            .firstNotNullOfOrNull { version ->
+                fixedColumns.find { it.apiName()?.getApiName(version) == columnStr }
             }
-            column = fixedColumns.find { it.apiName()?.getApiName(alternateVersion) == columnStr }
-        }
-
-        return column
     }
 
     fun addFilter(

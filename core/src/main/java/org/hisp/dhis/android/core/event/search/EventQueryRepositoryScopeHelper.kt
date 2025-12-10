@@ -38,7 +38,6 @@ internal object EventQueryRepositoryScopeHelper {
     fun addEventFilter(
         scope: EventQueryRepositoryScope,
         filter: EventFilter,
-        version: TrackerExporterVersion,
     ): EventQueryRepositoryScope {
         val builder = scope.toBuilder()
 
@@ -49,7 +48,7 @@ internal object EventQueryRepositoryScopeHelper {
             criteria.organisationUnit()?.let { builder.orgUnits(listOf(it)) }
             criteria.ouMode()?.let { builder.orgUnitMode(it) }
             criteria.assignedUserMode()?.let { builder.assignedUserMode(it) }
-            criteria.order()?.let { builder.order(parseOrderString(it, version)) }
+            criteria.order()?.let { builder.order(parseOrderString(it)) }
             criteria.dataFilters()?.let { builder.dataFilters(it) }
             criteria.events()?.let { builder.events(it) }
             criteria.eventStatus()?.let { builder.eventStatus(listOf(it)) }
@@ -62,13 +61,13 @@ internal object EventQueryRepositoryScopeHelper {
         return builder.build()
     }
 
-    private fun parseOrderString(orderStr: String, version: TrackerExporterVersion): List<EventQueryScopeOrderByItem> {
+    private fun parseOrderString(orderStr: String): List<EventQueryScopeOrderByItem> {
         return orderStr.split(",").mapNotNull { token ->
             val tokens = token.split(":")
 
             when (tokens.size) {
                 2 -> {
-                    val column = parseOrderColumn(tokens[0], version)
+                    val column = parseOrderColumn(tokens[0])
                     val direction = RepositoryScope.OrderByDirection.values().find { it.api == tokens[1] }
 
                     if (column != null && direction != null) {
@@ -85,23 +84,13 @@ internal object EventQueryRepositoryScopeHelper {
         }
     }
 
-    private fun parseOrderColumn(orderColumn: String, version: TrackerExporterVersion): EventQueryScopeOrderColumn? {
-        // First try to find with the specified version
-        var fixedColumn =
-            EventQueryScopeOrderColumn.fixedOrderColumns.find { it.apiName()?.getApiName(version) == orderColumn }
-
-        // If not found, try with the other version for backward compatibility
-        // This handles cases where EventFilters have V1 names but server uses V2 (or vice versa)
-        if (fixedColumn == null) {
-            val alternateVersion = if (version == TrackerExporterVersion.V1) {
-                TrackerExporterVersion.V2
-            } else {
-                TrackerExporterVersion.V1
+    private fun parseOrderColumn(orderColumn: String): EventQueryScopeOrderColumn? {
+        val fixedColumn = sequenceOf(TrackerExporterVersion.V2, TrackerExporterVersion.V1)
+            .firstNotNullOfOrNull { version ->
+                EventQueryScopeOrderColumn.fixedOrderColumns.find {
+                    it.apiName()?.getApiName(version) == orderColumn
+                }
             }
-            fixedColumn = EventQueryScopeOrderColumn.fixedOrderColumns.find {
-                it.apiName()?.getApiName(alternateVersion) == orderColumn
-            }
-        }
 
         return when {
             fixedColumn != null -> fixedColumn

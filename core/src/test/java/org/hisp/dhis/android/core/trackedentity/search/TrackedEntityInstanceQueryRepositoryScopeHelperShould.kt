@@ -62,17 +62,12 @@ class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
     private val followUp = true
 
     private val dateFilterPeriodHelper: DateFilterPeriodHelper = mock()
-    private val trackerParentCallHelper: TrackerPostParentCallHelper = mock()
 
     private lateinit var scopeHelper: TrackedEntityInstanceQueryRepositoryScopeHelper
 
     @Before
     fun setUp() = runTest {
-        whenever(trackerParentCallHelper.useNewTrackerExporter()) doReturn false
-        scopeHelper = TrackedEntityInstanceQueryRepositoryScopeHelper(
-            FilterOperatorHelper(dateFilterPeriodHelper),
-            trackerParentCallHelper,
-        )
+        scopeHelper = TrackedEntityInstanceQueryRepositoryScopeHelper(FilterOperatorHelper(dateFilterPeriodHelper))
     }
 
     @Test

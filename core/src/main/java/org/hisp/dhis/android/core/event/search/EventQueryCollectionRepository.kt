@@ -192,15 +192,13 @@ class EventQueryCollectionRepository internal constructor(
     fun byEventFilter(): EqFilterConnector<EventQueryCollectionRepository, String> {
         return connectorFactory.eqConnector { id ->
             val filter: EventFilter = eventFilterRepository.withEventDataFilters().uid(id).blockingGet()!!
-            val version = trackerParentCallHelper.getTrackerExporterVersion()
-            EventQueryRepositoryScopeHelper.addEventFilter(scope, filter, version)
+            EventQueryRepositoryScopeHelper.addEventFilter(scope, filter)
         }
     }
 
     internal fun byEventFilterObject(): EqFilterConnector<EventQueryCollectionRepository, EventFilter> {
         return connectorFactory.eqConnector { eventFilter ->
-            val version = trackerParentCallHelper.getTrackerExporterVersion()
-            EventQueryRepositoryScopeHelper.addEventFilter(scope, eventFilter!!, version)
+            EventQueryRepositoryScopeHelper.addEventFilter(scope, eventFilter!!)
         }
     }
 

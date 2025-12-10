@@ -67,7 +67,6 @@ class EventQueryCollectionRepository internal constructor(
     private val eventQueryOnlineAdapter: EventQueryOnlineAdapter,
     private val eventFilterRepository: EventFilterCollectionRepository,
     private val trackerCallFactory: TrackerParentCallFactory,
-    private val trackerParentCallHelper: TrackerPostParentCallHelper,
     @JvmField val scope: EventQueryRepositoryScope,
 ) : ReadOnlyWithUidCollectionRepository<Event> {
 
@@ -80,7 +79,6 @@ class EventQueryCollectionRepository internal constructor(
             eventQueryOnlineAdapter,
             eventFilterRepository,
             trackerCallFactory,
-            trackerParentCallHelper,
             s,
         )
     }

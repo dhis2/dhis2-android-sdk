@@ -60,14 +60,4 @@ internal class TrackerPostParentCallHelper(
             else -> false
         }
     }
-
-    fun getTrackerExporterVersion(): TrackerExporterVersion {
-        return kotlinx.coroutines.runBlocking {
-            if (useNewTrackerExporter()) {
-                TrackerExporterVersion.V2
-            } else {
-                TrackerExporterVersion.V1
-            }
-        }
-    }
 }

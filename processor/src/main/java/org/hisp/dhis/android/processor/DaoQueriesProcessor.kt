@@ -215,47 +215,47 @@ class DaoQueriesProcessor(
 
     private fun getSignature(
         generatedInterfaceName: String,
-        originalDaoName: String,
+        originalDaoName: String
     ) = "internal interface $generatedInterfaceName : $originalDaoName {\n\n"
 
     private fun buildObjectDaoQueries(tableName: String): String {
-        return "    @Query(\"DELETE FROM ${'$'}{$tableName}\")\n" +
+        return "    @Query(\"DELETE FROM ${'$'}{${tableName}}\")\n" +
             "    override fun deleteAllRows(): Int\n\n"
     }
 
     private fun buildIdentifiableObjectDaoQueries(tableName: String): String {
         return buildObjectDaoQueries(tableName) +
-            "    @Query(\"DELETE FROM ${'$'}{$tableName} WHERE uid = :uid\")\n" +
+            "    @Query(\"DELETE FROM ${'$'}{${tableName}} WHERE uid = :uid\")\n" +
             "    override fun delete(uid: String): Int\n\n"
     }
 
     private fun buildLinkDaoQueries(tableName: String, parentColumnName: String): String {
         return buildObjectDaoQueries(tableName) +
-            "    @Query(\"DELETE FROM ${'$'}{$tableName} WHERE ${'$'}{$parentColumnName} = :parentUid\")\n" +
+            "    @Query(\"DELETE FROM ${'$'}{${tableName}} WHERE ${'$'}{${parentColumnName}} = :parentUid\")\n" +
             "    override fun deleteLinksForMasterUid(parentUid: String): Int\n\n" +
-            "    @Query(\"DELETE FROM ${'$'}{$tableName}\")" +
+            "    @Query(\"DELETE FROM ${'$'}{${tableName}}\")" +
             "    override fun deleteLinksForMasterUid(): Int"
     }
 
     private fun buildIdentifiableDataObjectDaoQueries(tableName: String): String {
         return buildIdentifiableObjectDaoQueries(tableName) +
-            "    @Query(\"UPDATE ${'$'}{$tableName} SET ${'$'}{DataColumns.SYNC_STATE} = :state WHERE " +
+            "    @Query(\"UPDATE ${'$'}{${tableName}} SET ${'$'}{DataColumns.SYNC_STATE} = :state WHERE " +
             "${'$'}{IdentifiableColumns.UID} = :uid\")\n" +
             "    override fun setSyncState(uid: String, state: State): Int\n\n" +
-            "    @Query(\"UPDATE ${'$'}{$tableName} SET ${'$'}{DataColumns.SYNC_STATE} = :state WHERE " +
+            "    @Query(\"UPDATE ${'$'}{${tableName}} SET ${'$'}{DataColumns.SYNC_STATE} = :state WHERE " +
             "${'$'}{IdentifiableColumns.UID} IN (:uids)\")\n" +
             "    override fun setSyncState(uids: List<String>, state: State): Int\n\n" +
-            "    @Query(\"UPDATE ${'$'}{$tableName} SET ${'$'}{DataColumns.SYNC_STATE} = :newstate WHERE " +
+            "    @Query(\"UPDATE ${'$'}{${tableName}} SET ${'$'}{DataColumns.SYNC_STATE} = :newstate WHERE " +
             "${'$'}{IdentifiableColumns.UID} = :uid AND ${'$'}{DataColumns.SYNC_STATE} = :updateState\")\n" +
             "    override fun setSyncStateIfUploading(uid: String, newstate: State, updateState: State): Int\n\n"
     }
 
     private fun buildIdentifiableDeletableDataObjectDaoQueries(tableName: String): String {
         return buildIdentifiableDataObjectDaoQueries(tableName) +
-            "    @Query(\"UPDATE ${'$'}{$tableName} SET ${'$'}{DeletableDataColumns.DELETED} = 1 " +
+            "    @Query(\"UPDATE ${'$'}{${tableName}} SET ${'$'}{DeletableDataColumns.DELETED} = 1 " +
             "WHERE ${'$'}{IdentifiableColumns.UID} = :uid\")\n" +
             "    override fun setDeleted(uid: String): Int\n\n" +
-            "    @Query(\"DELETE FROM ${'$'}{$tableName} WHERE ${'$'}{DataColumns.SYNC_STATE} = :state AND " +
+            "    @Query(\"DELETE FROM ${'$'}{${tableName}} WHERE ${'$'}{DataColumns.SYNC_STATE} = :state AND " +
             "${'$'}{IdentifiableColumns.UID} = :uid AND ${'$'}{DeletableDataColumns.DELETED} = :deleted\")\n" +
             "    override fun deleteWhere(uid: String, deleted: Boolean, state: State): Int\n\n"
     }

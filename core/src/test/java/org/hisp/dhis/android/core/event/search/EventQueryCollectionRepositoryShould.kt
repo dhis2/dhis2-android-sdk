@@ -46,7 +46,6 @@ class EventQueryCollectionRepositoryShould {
     private val onlineAdapter: EventQueryOnlineAdapter = mock()
     private val filterRepository: EventFilterCollectionRepository = mock()
     private val trackerCallFactory: TrackerParentCallFactory = mock()
-    private val trackerPostParentCallHelper: TrackerPostParentCallHelper = mock()
 
     private lateinit var queryRepository: EventQueryCollectionRepository
 
@@ -58,7 +57,6 @@ class EventQueryCollectionRepositoryShould {
             onlineAdapter,
             filterRepository,
             trackerCallFactory,
-            trackerPostParentCallHelper,
             emptyScope,
         )
     }

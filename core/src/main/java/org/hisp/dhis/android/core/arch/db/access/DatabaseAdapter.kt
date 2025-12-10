@@ -75,4 +75,10 @@ interface DatabaseAdapter {
     fun getCurrentDatabase(): AppDatabase
 
     fun getVersion(): Int
+
+    /**
+     * Forces a WAL checkpoint to consolidate pending changes to the main database file.
+     * This should be called before exporting the database to ensure all changes are included.
+     */
+    suspend fun checkpointWAL()
 }

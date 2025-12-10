@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.enrollment
 
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
@@ -161,10 +162,12 @@ class EnrollmentServiceShould {
         whenever(programOwner.ownerOrgUnit()) doReturn ownerOrganisationUnitId
         whenever(programOwnerStore.selectWhere(any())) doReturn listOf(programOwner)
         whenever(
-            organisationUnitRepository
-                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-                .uid(ownerOrganisationUnitId)
-                .blockingExists(),
+            runBlocking {
+                organisationUnitRepository
+                    .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+                    .uid(ownerOrganisationUnitId)
+                    .existsInternal()
+            },
         ) doReturn true
 
         val access = enrollmentService.blockingGetEnrollmentAccess(trackedEntityInstanceUid, programUid)
@@ -179,10 +182,12 @@ class EnrollmentServiceShould {
             whenever(programOwner.ownerOrgUnit()) doReturn ownerOrganisationUnitId
             whenever(programOwnerStore.selectWhere(any())) doReturn listOf(programOwner)
             whenever(
-                organisationUnitRepository
-                    .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-                    .uid(ownerOrganisationUnitId)
-                    .blockingExists(),
+                runBlocking {
+                    organisationUnitRepository
+                        .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+                        .uid(ownerOrganisationUnitId)
+                        .existsInternal()
+                },
             ) doReturn false
             whenever(programTempOwnerStore.selectWhere(any())) doReturn listOf(programTempOwner)
             whenever(programTempOwner.validUntil()) doReturn DateUtils.DATE_FORMAT.parse("1999-01-01T00:00:00.000")
@@ -199,10 +204,12 @@ class EnrollmentServiceShould {
             whenever(programOwner.ownerOrgUnit()) doReturn ownerOrganisationUnitId
             whenever(programOwnerStore.selectWhere(any())) doReturn listOf(programOwner)
             whenever(
-                organisationUnitRepository
-                    .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-                    .uid(ownerOrganisationUnitId)
-                    .blockingExists(),
+                runBlocking {
+                    organisationUnitRepository
+                        .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+                        .uid(ownerOrganisationUnitId)
+                        .existsInternal()
+                },
             ) doReturn false
             whenever(programTempOwnerStore.selectWhere(any())) doReturn listOf(programTempOwner)
             whenever(programTempOwner.validUntil()) doReturn DateUtils.DATE_FORMAT.parse("2999-01-01T00:00:00.000")
@@ -281,10 +288,12 @@ class EnrollmentServiceShould {
         whenever(programOwner.ownerOrgUnit()) doReturn ownerOrganisationUnitId
         whenever(programOwnerStore.selectWhere(any())) doReturn listOf(programOwner)
         whenever(
-            organisationUnitRepository
-                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-                .uid(ownerOrganisationUnitId)
-                .blockingExists(),
+            runBlocking {
+                organisationUnitRepository
+                    .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+                    .uid(ownerOrganisationUnitId)
+                    .existsInternal()
+            },
         ) doReturn true
 
         val access = enrollmentService.blockingGetEnrollmentAccess(trackedEntityInstanceUid, programUid)
@@ -298,10 +307,12 @@ class EnrollmentServiceShould {
         whenever(programOwner.ownerOrgUnit()) doReturn ownerOrganisationUnitId
         whenever(programOwnerStore.selectWhere(any())) doReturn listOf(programOwner)
         whenever(
-            organisationUnitRepository
-                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-                .uid(ownerOrganisationUnitId)
-                .blockingExists(),
+            runBlocking {
+                organisationUnitRepository
+                    .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+                    .uid(ownerOrganisationUnitId)
+                    .existsInternal()
+            },
         ) doReturn false
 
         val access = enrollmentService.blockingGetEnrollmentAccess(trackedEntityInstanceUid, programUid)

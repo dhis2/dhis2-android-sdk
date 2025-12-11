@@ -27,11 +27,13 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
+import io.ktor.http.HttpStatusCode
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndPersistCallFactory
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
@@ -40,10 +42,12 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerDownloadCall
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterBreakTheGlassHelper
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 import org.koin.core.annotation.Singleton
 
 @Singleton
+@Suppress("LongParameterList")
 internal class TrackedEntityInstanceDownloadCall(
     userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
     systemInfoModuleDownloader: SystemInfoModuleDownloader,
@@ -54,6 +58,7 @@ internal class TrackedEntityInstanceDownloadCall(
     private val persistenceCallFactory: TrackedEntityInstancePersistenceCallFactory,
     private val lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager,
     private val teiQueryCollectionRepository: TrackedEntityInstanceQueryCollectionRepository,
+    private val breakTheGlassHelper: TrackerImporterBreakTheGlassHelper,
 ) : TrackerDownloadCall<TrackedEntityInstance, TrackerQueryBundle>(
     userOrganisationUnitLinkStore,
     systemInfoModuleDownloader,
@@ -133,18 +138,67 @@ internal class TrackedEntityInstanceDownloadCall(
         useEntityEndpoint: Boolean,
         query: TrackerAPIQuery,
     ): Result<TrackedEntityInstance?, D2Error> {
-        return if (useEntityEndpoint) {
-            coroutineCallExecutor.wrap(
-                storeError = true,
-                errorCatcher = TrackedEntityInstanceCallErrorCatcher(),
-            ) {
-                trackerCallFactory.getTrackedEntityCall().getEntityCall(uid, query)
-            }
-        } else {
+        if (!useEntityEndpoint) {
             val collectionQuery = query.copy(uids = listOf(uid))
-            coroutineCallExecutor.wrap(storeError = true) {
+            return coroutineCallExecutor.wrap(storeError = true) {
                 trackerCallFactory.getTrackedEntityCall().getCollectionCall(collectionQuery)
             }.map { it.items.firstOrNull() }
+        }
+
+        val result = coroutineCallExecutor.wrap(
+            storeError = true,
+            errorCatcher = TrackedEntityInstanceCallErrorCatcher(),
+        ) {
+            trackerCallFactory.getTrackedEntityCall().getEntityCall(uid, query)
+        }
+
+        return when {
+            result is Result.Success -> result
+            result is Result.Failure &&
+                result.failure.errorCode() == D2ErrorCode.OWNERSHIP_ACCESS_DENIED -> result
+            result is Result.Failure &&
+                result.failure.errorCode() == D2ErrorCode.PROGRAM_ACCESS_CLOSED -> result
+            result is Result.Failure && result.failure.httpErrorCode() == HttpStatusCode.NotFound.value -> {
+                checkOwnershipOnNotFound(uid, query)
+            }
+            else -> result
+        }
+    }
+
+    private suspend fun checkOwnershipOnNotFound(
+        uid: String,
+        query: TrackerAPIQuery,
+    ): Result<TrackedEntityInstance?, D2Error> {
+        val program = query.commonParams.program ?: return Result.Success(null)
+
+        val queryWithoutProgram = TrackerAPIQuery(
+            commonParams = query.commonParams.copy(program = null),
+        )
+
+        val teiResult = coroutineCallExecutor.wrap(storeError = false) {
+            trackerCallFactory.getTrackedEntityCall().getEntityCall(uid, queryWithoutProgram)
+        }
+
+        return when (teiResult) {
+            is Result.Failure -> Result.Success(null)
+            is Result.Success -> {
+                val tei = teiResult.value
+                val programOwner = tei.programOwners()?.find { it.program() == program }
+
+                if (programOwner != null &&
+                    breakTheGlassHelper.isProtectedInSearchScope(program, programOwner.ownerOrgUnit())
+                ) {
+                    Result.Failure(
+                        D2Error.builder()
+                            .errorCode(D2ErrorCode.OWNERSHIP_ACCESS_DENIED)
+                            .errorDescription("OWNERSHIP_ACCESS_DENIED")
+                            .httpErrorCode(HttpStatusCode.NotFound.value)
+                            .build(),
+                    )
+                } else {
+                    Result.Success(null)
+                }
+            }
         }
     }
 

@@ -30,31 +30,60 @@ package org.hisp.dhis.android.core.configuration.internal
 /**
  * Normalizes server URLs for consistent comparison and hash generation.
  *
- * This ensures that URLs like:
- * - "https://server.com" and "http://server.com"
- * - "HTTPS://SERVER.COM" and "https://server.com"
- * - "https://server.com/" and "https://server.com"
- * - "https://server.com/api" and "https://server.com"
+ * Examples:
+ * - "HTTPS://SERVER.COM/Path" -> "https://server.com/Path"
+ * - "https://server.com/path/" -> "https://server.com/path"
+ * - "https://server.com/path/api" -> "https://server.com/path"
  *
- * Are all treated as equivalent.
+ * Note: http://server.com and https://server.com are NOT equivalent.
  */
 internal object ServerUrlNormalizer {
 
+    private const val HTTPS_PREFIX = "https://"
+    private const val HTTP_PREFIX = "http://"
+
     /**
      * Normalizes a server URL by:
-     * 1. Converting to lowercase
-     * 2. Removing protocol (http:// or https://)
+     * 1. Lowercasing the protocol and domain (path remains case-sensitive)
+     * 2. Converting backslashes to forward slashes
      * 3. Removing trailing slash
      * 4. Removing /api suffix
      */
     fun normalize(url: String): String {
-        return url
-            .lowercase()
-            .removePrefix("https://")
-            .removePrefix("http://")
-            .replace('\\', '/')
+        val normalized = url.replace('\\', '/')
+        val (protocol, rest) = extractProtocol(normalized)
+        val normalizedRest = lowercaseDomain(rest)
             .trimEnd('/')
             .removeSuffix("/api")
+
+        return protocol + normalizedRest
+    }
+
+    /**
+     * Extracts and lowercases the protocol from the URL.
+     * Returns a pair of (protocol, restOfUrl).
+     */
+    private fun extractProtocol(url: String): Pair<String, String> {
+        return when {
+            url.lowercase().startsWith(HTTPS_PREFIX) -> HTTPS_PREFIX to url.substring(HTTPS_PREFIX.length)
+            url.lowercase().startsWith(HTTP_PREFIX) -> HTTP_PREFIX to url.substring(HTTP_PREFIX.length)
+            else -> "" to url
+        }
+    }
+
+    /**
+     * Lowercases only the domain part of the URL, preserving the path case.
+     * Domain is everything before the first '/'.
+     */
+    private fun lowercaseDomain(urlWithoutProtocol: String): String {
+        val slashIndex = urlWithoutProtocol.indexOf('/')
+        return if (slashIndex == -1) {
+            urlWithoutProtocol.lowercase()
+        } else {
+            val domain = urlWithoutProtocol.take(slashIndex).lowercase()
+            val path = urlWithoutProtocol.substring(slashIndex)
+            domain + path
+        }
     }
 
     /**

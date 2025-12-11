@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,21 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.fileresource
+package org.hisp.dhis.android.core.fileresource.internal
 
-internal object FileResourceInternalAccessor {
-    fun isStored(fileResource: FileResource): Boolean {
-        return fileResource.storageStatus()?.let { it == FileResourceStorageStatus.STORED } ?: true
-    }
+import org.hisp.dhis.android.core.fileresource.FileResourceStorageStatus
 
-    fun storageStatus(fileResource: FileResource): FileResourceStorageStatus {
-        return fileResource.storageStatus() ?: FileResourceStorageStatus.NONE
-    }
-
-    fun insertStorageStatus(
-        builder: FileResource.Builder,
-        storageStatus: FileResourceStorageStatus,
-    ): FileResource.Builder {
-        return builder.storageStatus(storageStatus)
-    }
-}
+/**
+ * Result of file resource storage status verification.
+ *
+ * @property uid The file resource UID
+ * @property status The current storage status
+ * @property isVerified True if the file is stored and verified
+ * @property timedOut True if verification timed out
+ */
+internal data class FileResourceVerificationResult(
+    val uid: String,
+    val status: FileResourceStorageStatus,
+    val isVerified: Boolean,
+    val timedOut: Boolean,
+)

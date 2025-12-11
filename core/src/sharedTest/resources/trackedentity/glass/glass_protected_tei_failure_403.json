@@ -1,0 +1,7 @@
+{
+  "httpStatus": "Forbidden",
+  "httpStatusCode": 403,
+  "status": "ERROR",
+  "message": "User has no read access to organisation unit",
+  "errorCode": "E1006"
+}

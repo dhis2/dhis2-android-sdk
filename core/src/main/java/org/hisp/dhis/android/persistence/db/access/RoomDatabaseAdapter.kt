@@ -300,7 +300,6 @@ internal class RoomDatabaseAdapter(
 
     override suspend fun checkpointWAL() {
         checkReady()
-        // Execute checkpoint without a transaction to avoid blocking
         database!!.useWriterConnection { transactor ->
             transactor.usePrepared("PRAGMA wal_checkpoint(PASSIVE);") { statement ->
                 statement.step()

@@ -90,17 +90,19 @@ internal class TrackerQueryBundleInternalFactory(
                 .getInternal()
         }
 
+        val finalWorkingLists = programStageWorkingLists.takeIf { it.isNotEmpty() }
+            ?: programStageWorkingListsSettings
+        val finalFilters = trackedEntityInstanceFilters.takeIf { it.isNotEmpty() }
+            ?: trackedEntityInstanceFiltersSettings
+
+        val workingListsHash = WorkingListsHashHelper.calculateHashFromObjects(finalFilters, finalWorkingLists)
+        val commonParamsWithHash = commonParams.copy(workingListsHash = workingListsHash)
+
         val builder = TrackerQueryBundle.builder()
-            .commonParams(commonParams)
+            .commonParams(commonParamsWithHash)
             .programStatus(programStatus)
-            .programStageWorkingLists(
-                programStageWorkingLists.takeIf { it.isNotEmpty() }
-                    ?: programStageWorkingListsSettings,
-            )
-            .trackedEntityInstanceFilters(
-                trackedEntityInstanceFilters.takeIf { it.isNotEmpty() }
-                    ?: trackedEntityInstanceFiltersSettings,
-            )
+            .programStageWorkingLists(finalWorkingLists)
+            .trackedEntityInstanceFilters(finalFilters)
 
         return commonHelper.divideByOrgUnits(
             commonParams.orgUnitsBeforeDivision,

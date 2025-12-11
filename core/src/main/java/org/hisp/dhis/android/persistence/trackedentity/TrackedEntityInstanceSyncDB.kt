@@ -38,12 +38,14 @@ internal data class TrackedEntityInstanceSyncDB(
     val organisationUnitIdsHash: Int,
     val downloadLimit: Int,
     val lastUpdated: String,
+    val workingListsHash: Int?,
 ) : EntityDB<TrackedEntityInstanceSync> {
     override fun toDomain(): TrackedEntityInstanceSync {
         return TrackedEntityInstanceSync.builder()
             .program(program)
             .organisationUnitIdsHash(organisationUnitIdsHash)
             .downloadLimit(downloadLimit)
+            .workingListsHash(workingListsHash)
             .lastUpdated(lastUpdated.toJavaDate())
             .build()
     }
@@ -54,6 +56,7 @@ internal fun TrackedEntityInstanceSync.toDB(): TrackedEntityInstanceSyncDB {
         program = program(),
         organisationUnitIdsHash = organisationUnitIdsHash(),
         downloadLimit = downloadLimit(),
+        workingListsHash = workingListsHash(),
         lastUpdated = lastUpdated().dateFormat()!!,
     )
 }

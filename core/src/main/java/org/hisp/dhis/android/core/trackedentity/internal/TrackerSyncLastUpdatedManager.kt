@@ -54,25 +54,38 @@ internal open class TrackerSyncLastUpdatedManager<S : TrackerBaseSync>(private v
     }
 
     private fun getLastUpdated(commonParams: TrackerQueryCommonParams): Date? {
-        return getLastUpdated(commonParams.program, commonParams.orgUnitsBeforeDivision.toSet(), commonParams.limit)
+        return getLastUpdated(
+            commonParams.program,
+            commonParams.orgUnitsBeforeDivision.toSet(),
+            commonParams.limit,
+            commonParams.workingListsHash,
+        )
     }
 
-    private fun getLastUpdated(programId: String?, organisationUnits: Set<String>, limit: Int): Date? {
+    private fun getLastUpdated(
+        programId: String?,
+        organisationUnits: Set<String>,
+        limit: Int,
+        workingListsHash: Int?,
+    ): Date? {
         val orgUnitHashCode = organisationUnits.toSet().hashCode()
         return if (params.uids().isEmpty()) {
             val programSync = syncMap[Pair(programId, orgUnitHashCode)]
             val globalSync = syncMap[Pair(null, orgUnitHashCode)]
 
-            return getLastUpdatedIfValid(programSync, limit)
-                ?: getLastUpdatedIfValid(globalSync, limit)
+            return getLastUpdatedIfValid(programSync, limit, workingListsHash)
+                ?: getLastUpdatedIfValid(globalSync, limit, workingListsHash)
                 ?: getDefaultLastUpdated(programId)
         } else {
             null
         }
     }
 
-    private fun getLastUpdatedIfValid(sync: S?, limit: Int): Date? {
-        return if (sync == null || sync.downloadLimit() < limit) {
+    private fun getLastUpdatedIfValid(sync: S?, limit: Int, workingListsHash: Int?): Date? {
+        return if (sync == null ||
+            sync.downloadLimit() < limit ||
+            sync.workingListsHash() != workingListsHash
+        ) {
             null
         } else {
             sync.lastUpdated()

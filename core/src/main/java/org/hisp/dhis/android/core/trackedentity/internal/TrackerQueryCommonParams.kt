@@ -38,4 +38,5 @@ internal data class TrackerQueryCommonParams(
     val ouMode: OrganisationUnitMode,
     val orgUnitsBeforeDivision: List<String>,
     val limit: Int,
+    val workingListsHash: Int? = null,
 )

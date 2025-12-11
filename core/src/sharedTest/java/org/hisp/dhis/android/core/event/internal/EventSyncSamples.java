@@ -37,6 +37,7 @@ public class EventSyncSamples {
                 .program("program")
                 .organisationUnitIdsHash(865)
                 .downloadLimit(500)
+                .workingListsHash(12345)
                 .lastUpdated(parseDate("2017-11-29T11:27:46.935"))
                 .build();
     }

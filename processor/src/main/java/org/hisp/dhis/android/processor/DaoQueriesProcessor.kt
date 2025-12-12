@@ -39,7 +39,8 @@ class DaoQueriesProcessor(
             // Extract annotation parameters
             val annotation = symbol.annotations.firstOrNull { annotation ->
                 annotation.shortName.asString() == GenerateDaoQueries::class.simpleName &&
-                    annotation.annotationType.resolve().declaration.qualifiedName?.asString() == GenerateDaoQueries::class.qualifiedName
+                    annotation.annotationType.resolve()
+                        .declaration.qualifiedName?.asString() == GenerateDaoQueries::class.qualifiedName
             }
 
             val explicitTableName = annotation?.arguments
@@ -65,8 +66,9 @@ class DaoQueriesProcessor(
                 if (entityType == null) {
                     logger.error(
                         "Could not infer tableName for ${symbol.qualifiedName?.asString()}. " +
-                            "Either provide an explicit tableName parameter or ensure the DAO has a generic type parameter.",
-                        symbol
+                            "Either provide an explicit tableName parameter or ensure the DAO has " +
+                            "a generic type parameter.",
+                        symbol,
                     )
                     return@forEach
                 }
@@ -74,7 +76,9 @@ class DaoQueriesProcessor(
                 // Convert EntityDB -> EntityTableInfo.TABLE_NAME
                 val entityName = entityType.simpleName.asString().removeSuffix("DB")
                 val tableInfoName = "${entityName}TableInfo.TABLE_NAME"
-                logger.info("Inferred tableName: '$tableInfoName' from entity type: ${entityType.simpleName.asString()}")
+                logger.info(
+                    "Inferred tableName: '$tableInfoName' from entity type: ${entityType.simpleName.asString()}",
+                )
                 tableInfoName
             } else {
                 logger.info("Using explicit tableName: '$explicitTableName'")
@@ -97,7 +101,10 @@ class DaoQueriesProcessor(
                     // Convert EntityDB -> EntityTableInfo.PARENT_COLUMN
                     val entityName = entityType.simpleName.asString().removeSuffix("DB")
                     val parentColumnRef = "${entityName}TableInfo.PARENT_COLUMN"
-                    logger.info("Inferred parentColumnName: '$parentColumnRef' from entity type: ${entityType.simpleName.asString()}")
+                    logger.info(
+                        "Inferred parentColumnName: '$parentColumnRef' from entity type: " +
+                            "${entityType.simpleName.asString()}",
+                    )
                     parentColumnRef
                 } else {
                     null
@@ -117,12 +124,16 @@ class DaoQueriesProcessor(
                 }
                 .toList()
 
-            logger.info("DAO ${symbol.qualifiedName?.asString()} (resolved) super interface simple names: $superInterfaceSimpleNames")
+            logger.info(
+                "DAO ${symbol.qualifiedName?.asString()} (resolved) super interface simple names: " +
+                    "$superInterfaceSimpleNames",
+            )
 
             // or if there are deeper hierarchies you need to inspect.
             val baseInterfaceType: String? = when {
                 superInterfaceSimpleNames.any { it == "ObjectDao" } -> "ObjectDao"
-                superInterfaceSimpleNames.any { it == "IdentifiableDeletableDataObjectDao" } -> "IdentifiableDeletableDataObjectDao"
+                superInterfaceSimpleNames.any { it == "IdentifiableDeletableDataObjectDao" }
+                -> "IdentifiableDeletableDataObjectDao"
                 superInterfaceSimpleNames.any { it == "IdentifiableDataObjectDao" } -> "IdentifiableDataObjectDao"
                 superInterfaceSimpleNames.any { it == "IdentifiableObjectDao" } -> "IdentifiableObjectDao"
                 superInterfaceSimpleNames.any { it == "LinkDao" } -> "LinkDao"
@@ -139,14 +150,13 @@ class DaoQueriesProcessor(
             val fileOutputStream = codeGenerator.createNewFile(
                 dependencies = Dependencies(aggregating = false, symbol.containingFile!!),
                 packageName = originalPackageName,
-                fileName = generatedInterfaceName
+                fileName = generatedInterfaceName,
             )
 
             fileOutputStream.use { file ->
                 file += "package $originalPackageName\n\n"
                 file += "import androidx.room.Dao\n"
                 file += "import androidx.room.Query\n"
-
 
                 when (baseInterfaceType) {
                     "ObjectDao" -> {

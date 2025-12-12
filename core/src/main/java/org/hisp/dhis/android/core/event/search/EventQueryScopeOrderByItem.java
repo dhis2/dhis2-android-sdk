@@ -44,7 +44,8 @@ public abstract class EventQueryScopeOrderByItem implements QueryScopeOrderByIte
     public abstract RepositoryScope.OrderByDirection direction();
 
     public String toAPIString(@NonNull TrackerExporterVersion version) {
-        return column().hasApiName() ? column().apiName() + ":" + direction().getApi() : null;
+        String apiName = column().apiName() == null ? null : column().apiName().getApiName(version);
+        return apiName == null ? null : apiName + ":" + direction().getApi();
     }
 
     static Builder builder() {

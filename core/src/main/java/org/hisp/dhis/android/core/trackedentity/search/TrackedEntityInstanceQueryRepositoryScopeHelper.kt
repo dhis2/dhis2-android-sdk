@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.programstageworkinglist.internal.AttributeValu
 import org.hisp.dhis.android.core.trackedentity.AttributeValueFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -187,12 +188,7 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper(
             val columnStr = orderTokens.getOrNull(0)
             val directionStr = orderTokens.getOrNull(1) ?: "desc"
 
-            val column = when (columnStr) {
-                "created" -> TrackedEntityInstanceQueryScopeOrderColumn.CREATED
-                "lastupdated" -> TrackedEntityInstanceQueryScopeOrderColumn.LAST_UPDATED
-                "ouname" -> TrackedEntityInstanceQueryScopeOrderColumn.ORGUNIT_NAME
-                else -> null
-            }
+            val column = parseOrderColumn(columnStr)
 
             if (column != null) {
                 val direction =
@@ -215,6 +211,30 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper(
             val existingOrder = builder.build().order()
             builder.order(existingOrder + items)
         }
+    }
+
+    @Suppress("ReturnCount")
+    private fun parseOrderColumn(
+        columnStr: String?,
+    ): TrackedEntityInstanceQueryScopeOrderColumn? {
+        if (columnStr == null) return null
+
+        // Special case: orgunit name doesn't have version-specific names
+        if (columnStr == "ouname") {
+            return TrackedEntityInstanceQueryScopeOrderColumn.ORGUNIT_NAME
+        }
+
+        // List of fixed columns with API names
+        val fixedColumns = listOf(
+            TrackedEntityInstanceQueryScopeOrderColumn.CREATED,
+            TrackedEntityInstanceQueryScopeOrderColumn.LAST_UPDATED,
+            TrackedEntityInstanceQueryScopeOrderColumn.ENROLLMENT_DATE,
+        )
+
+        return sequenceOf(TrackerExporterVersion.V2, TrackerExporterVersion.V1)
+            .firstNotNullOfOrNull { version ->
+                fixedColumns.find { it.apiName()?.getApiName(version) == columnStr }
+            }
     }
 
     fun addFilter(

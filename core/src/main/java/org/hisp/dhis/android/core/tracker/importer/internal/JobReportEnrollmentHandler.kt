@@ -33,9 +33,11 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.core.note.internal.NoteStore
+import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeStore
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.persistence.note.NoteTableInfo
@@ -47,6 +49,8 @@ internal class JobReportEnrollmentHandler internal constructor(
     private val enrollmentStore: EnrollmentStore,
     private val conflictStore: TrackerImportConflictStore,
     private val conflictHelper: TrackerConflictHelper,
+    private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
+    private val programTrackedEntityAttributeStore: ProgramTrackedEntityAttributeStore,
     relationshipStore: RelationshipStore,
 ) : JobReportTypeHandler(relationshipStore) {
 
@@ -69,9 +73,26 @@ internal class JobReportEnrollmentHandler internal constructor(
 
         if (state == State.SYNCED && (handleAction == HandleAction.Update || handleAction == HandleAction.Insert)) {
             handleEnrollmentNotes(uid, state)
+            handleSyncedEnrollmentAttributes(uid)
         }
 
         return handleAction
+    }
+
+    private suspend fun handleSyncedEnrollmentAttributes(enrollmentUid: String) {
+        val enrollment = enrollmentStore.selectByUid(enrollmentUid)
+        val teiUid = enrollment?.trackedEntityInstance()
+        val programUid = enrollment?.program()
+
+        if (teiUid != null && programUid != null) {
+            val programAttributes = programTrackedEntityAttributeStore.selectAll()
+                .filter { it.program()?.uid() == programUid }
+                .mapNotNull { it.trackedEntityAttribute()?.uid() }
+
+            if (programAttributes.isNotEmpty()) {
+                trackedEntityAttributeValueStore.setSyncStateByAttributes(teiUid, programAttributes, State.SYNCED)
+            }
+        }
     }
 
     override suspend fun storeConflict(errorReport: JobValidationError) {

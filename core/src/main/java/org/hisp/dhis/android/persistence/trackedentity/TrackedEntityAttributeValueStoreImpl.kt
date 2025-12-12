@@ -124,4 +124,13 @@ internal class TrackedEntityAttributeValueStoreImpl(
         val dao = daoProvider() as TrackedEntityAttributeValueDao
         dao.setSyncStateByInstance(syncState.name, trackedEntityInstanceUid)
     }
+
+    override suspend fun setSyncStateByAttributes(
+        trackedEntityInstanceUid: String,
+        attributeUids: List<String>,
+        syncState: State,
+    ) {
+        val dao = daoProvider() as TrackedEntityAttributeValueDao
+        dao.setSyncStateByAttributes(syncState.name, trackedEntityInstanceUid, attributeUids)
+    }
 }

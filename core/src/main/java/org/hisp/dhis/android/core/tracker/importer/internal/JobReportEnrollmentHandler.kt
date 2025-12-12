@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeV
 import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.persistence.note.NoteTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramTrackedEntityAttributeTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -85,12 +86,17 @@ internal class JobReportEnrollmentHandler internal constructor(
         val programUid = enrollment?.program()
 
         if (teiUid != null && programUid != null) {
-            val programAttributes = programTrackedEntityAttributeStore.selectAll()
-                .filter { it.program()?.uid() == programUid }
-                .mapNotNull { it.trackedEntityAttribute()?.uid() }
+            val whereClause = WhereClauseBuilder()
+                .appendKeyStringValue(ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM, programUid)
+                .build()
+            
+            val programAttributeUids = programTrackedEntityAttributeStore.selectStringColumnsWhereClause(
+                ProgramTrackedEntityAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
+                whereClause,
+            )
 
-            if (programAttributes.isNotEmpty()) {
-                trackedEntityAttributeValueStore.setSyncStateByAttributes(teiUid, programAttributes, State.SYNCED)
+            if (programAttributeUids.isNotEmpty()) {
+                trackedEntityAttributeValueStore.setSyncStateByAttributes(teiUid, programAttributeUids, State.SYNCED)
             }
         }
     }

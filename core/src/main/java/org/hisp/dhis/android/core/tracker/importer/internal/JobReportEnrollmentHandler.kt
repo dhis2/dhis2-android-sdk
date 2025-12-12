@@ -89,7 +89,7 @@ internal class JobReportEnrollmentHandler internal constructor(
             val whereClause = WhereClauseBuilder()
                 .appendKeyStringValue(ProgramTrackedEntityAttributeTableInfo.Columns.PROGRAM, programUid)
                 .build()
-            
+
             val programAttributeUids = programTrackedEntityAttributeStore.selectStringColumnsWhereClause(
                 ProgramTrackedEntityAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
                 whereClause,

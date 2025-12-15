@@ -39,14 +39,16 @@ import org.hisp.dhis.android.core.settings.ProgramSettings
 import java.util.Date
 
 internal open class TrackerSyncLastUpdatedManager<S : TrackerBaseSync>(private val store: TrackerBaseSyncStore<S>) {
-    private lateinit var syncMap: Map<Pair<String?, Int>, S>
+    private lateinit var syncMap: Map<Triple<String?, Int, Int?>, S>
     private var programSettings: ProgramSettings? = null
     private lateinit var params: ProgramDataDownloadParams
 
     suspend fun prepare(programSettings: ProgramSettings?, params: ProgramDataDownloadParams) {
         this.programSettings = programSettings
         this.params = params
-        this.syncMap = store.selectAll().associateBy { Pair(it.program(), it.organisationUnitIdsHash()) }
+        this.syncMap = store.selectAll().associateBy {
+            Triple(it.program(), it.organisationUnitIdsHash(), it.workingListsHash())
+        }
     }
 
     fun getLastUpdatedStr(commonParams: TrackerQueryCommonParams): String? {
@@ -70,22 +72,19 @@ internal open class TrackerSyncLastUpdatedManager<S : TrackerBaseSync>(private v
     ): Date? {
         val orgUnitHashCode = organisationUnits.toSet().hashCode()
         return if (params.uids().isEmpty()) {
-            val programSync = syncMap[Pair(programId, orgUnitHashCode)]
-            val globalSync = syncMap[Pair(null, orgUnitHashCode)]
+            val programSync = syncMap[Triple(programId, orgUnitHashCode, workingListsHash)]
+            val globalSync = syncMap[Triple(null, orgUnitHashCode, workingListsHash)]
 
-            return getLastUpdatedIfValid(programSync, limit, workingListsHash)
-                ?: getLastUpdatedIfValid(globalSync, limit, workingListsHash)
+            return getLastUpdatedIfValid(programSync, limit)
+                ?: getLastUpdatedIfValid(globalSync, limit)
                 ?: getDefaultLastUpdated(programId)
         } else {
             null
         }
     }
 
-    private fun getLastUpdatedIfValid(sync: S?, limit: Int, workingListsHash: Int?): Date? {
-        return if (sync == null ||
-            sync.downloadLimit() < limit ||
-            sync.workingListsHash() != workingListsHash
-        ) {
+    private fun getLastUpdatedIfValid(sync: S?, limit: Int): Date? {
+        return if (sync == null || sync.downloadLimit() < limit) {
             null
         } else {
             sync.lastUpdated()
@@ -116,9 +115,9 @@ internal open class TrackerSyncLastUpdatedManager<S : TrackerBaseSync>(private v
 
     suspend fun update(sync: S) {
         sync.program()?.let {
-            store.deleteByProgram(it, sync.organisationUnitIdsHash())
+            store.deleteByProgram(it, sync.organisationUnitIdsHash(), sync.workingListsHash())
         } ?: run {
-            store.deleteByNullProgram(sync.organisationUnitIdsHash())
+            store.deleteByNullProgram(sync.organisationUnitIdsHash(), sync.workingListsHash())
         }
         store.insert(sync)
     }

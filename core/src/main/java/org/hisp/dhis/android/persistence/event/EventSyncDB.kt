@@ -24,8 +24,8 @@ import org.hisp.dhis.android.persistence.program.ProgramDB
     ],
     indices = [
         Index(
-            name = "eventsyncprogram_organisationunithash",
-            value = ["program", "organisationUnitIdsHash"],
+            name = "eventsync_program_orgunit_workinglists",
+            value = ["program", "organisationUnitIdsHash", "workingListsHash"],
             unique = true,
         ),
     ],

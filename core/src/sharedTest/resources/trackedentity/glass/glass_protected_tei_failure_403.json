@@ -2,6 +2,6 @@
   "httpStatus": "Forbidden",
   "httpStatusCode": 403,
   "status": "ERROR",
-  "message": "User has no read access to organisation unit",
+  "message": "OWNERSHIP_ACCESS_DENIED",
   "errorCode": "E1006"
 }

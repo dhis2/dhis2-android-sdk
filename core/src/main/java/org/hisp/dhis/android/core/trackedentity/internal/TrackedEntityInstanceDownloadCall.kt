@@ -152,24 +152,19 @@ internal class TrackedEntityInstanceDownloadCall(
             trackerCallFactory.getTrackedEntityCall().getEntityCall(uid, query)
         }
 
-        return when {
-            result is Result.Success -> result
-            result is Result.Failure &&
-                result.failure.errorCode() == D2ErrorCode.OWNERSHIP_ACCESS_DENIED -> result
-            result is Result.Failure &&
-                result.failure.errorCode() == D2ErrorCode.PROGRAM_ACCESS_CLOSED -> result
-            result is Result.Failure && result.failure.httpErrorCode() == HttpStatusCode.NotFound.value -> {
-                checkOwnershipOnNotFound(uid, query)
-            }
-            else -> result
+        return if (result is Result.Failure && result.failure.httpErrorCode() == HttpStatusCode.NotFound.value) {
+            checkOwnershipOnNotFound(uid, query, result.failure)
+        } else {
+            result
         }
     }
 
     private suspend fun checkOwnershipOnNotFound(
         uid: String,
         query: TrackerAPIQuery,
+        originalError: D2Error,
     ): Result<TrackedEntityInstance?, D2Error> {
-        val program = query.commonParams.program ?: return Result.Success(null)
+        val program = query.commonParams.program ?: return Result.Failure(originalError)
 
         val queryWithoutProgram = TrackerAPIQuery(
             commonParams = query.commonParams.copy(program = null),
@@ -180,7 +175,7 @@ internal class TrackedEntityInstanceDownloadCall(
         }
 
         return when (teiResult) {
-            is Result.Failure -> Result.Success(null)
+            is Result.Failure -> Result.Failure(originalError)
             is Result.Success -> {
                 val tei = teiResult.value
                 val programOwner = tei.programOwners()?.find { it.program() == program }
@@ -196,7 +191,7 @@ internal class TrackedEntityInstanceDownloadCall(
                             .build(),
                     )
                 } else {
-                    Result.Success(null)
+                    Result.Failure(originalError)
                 }
             }
         }

@@ -68,6 +68,7 @@ object TrackedEntitySearchItemHelper {
             .trackedEntityType(i.type.uid())
             .geometry(i.geometry)
             .trackedEntityAttributeValues(i.attributeValues?.map(::toTrackedEntityAttributeValue))
+            .programOwners(i.programOwners?.map { toProgramOwner(it, i.uid) })
             .syncState(i.syncState)
             .aggregatedSyncState(i.aggregatedSyncState)
             .build()
@@ -91,6 +92,17 @@ object TrackedEntitySearchItemHelper {
                 ownerOrgUnit = owner.ownerOrgUnit(),
             )
         } ?: emptyList()
+    }
+
+    private fun toProgramOwner(
+        p: TrackedEntitySearchItemProgramOwner,
+        trackedEntityInstance: String,
+    ): ProgramOwner {
+        return ProgramOwner.builder()
+            .program(p.program)
+            .ownerOrgUnit(p.ownerOrgUnit)
+            .trackedEntityInstance(trackedEntityInstance)
+            .build()
     }
 
     private fun from(

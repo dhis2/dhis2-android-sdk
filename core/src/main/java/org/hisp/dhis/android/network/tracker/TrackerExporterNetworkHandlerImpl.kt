@@ -171,7 +171,7 @@ internal class TrackerExporterNetworkHandlerImpl(
         query: TrackedEntityInstanceQueryOnline,
     ): Payload<TrackedEntityInstance> {
         val apiPayload = service.getTrackedEntityInstances(
-            fields = NewTrackedEntityInstanceFields.asRelationshipFields,
+            fields = NewTrackedEntityInstanceFields.asSearchFields,
             trackedEntityInstances = parameterManager.getTrackedEntitiesParameter(query.uids),
             orgUnits = parameterManager.getOrgunitsParameter(getOrgunits(query)),
             orgUnitMode = parameterManager.getOrgunitModeParameter(query.orgUnitMode),

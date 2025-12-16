@@ -96,7 +96,15 @@ internal class JobReportEnrollmentHandler internal constructor(
             )
 
             if (programAttributeUids.isNotEmpty()) {
-                trackedEntityAttributeValueStore.setSyncStateByAttributes(teiUid, programAttributeUids, State.SYNCED)
+                trackedEntityAttributeValueStore.setSyncStateByAttributes(
+                    teiUid,
+                    programAttributeUids,
+                    State.SYNCED,
+                )
+                trackedEntityAttributeValueStore.removeDeletedAttributeValuesByInstanceAndAttributes(
+                    teiUid,
+                    programAttributeUids,
+                )
             }
         }
     }

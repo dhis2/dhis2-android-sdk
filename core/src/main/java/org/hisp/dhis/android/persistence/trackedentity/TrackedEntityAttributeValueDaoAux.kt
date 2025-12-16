@@ -111,9 +111,11 @@ internal interface TrackedEntityAttributeValueDaoAux : ObjectDao<TrackedEntityAt
         DELETE FROM ${TrackedEntityAttributeValueTableInfo.TABLE_NAME}
         WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = :trackedEntityInstanceUid
           AND ${TrackedEntityAttributeValueTableInfo.Columns.VALUE} IS NULL
+          AND ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} IN (:attributeUids)
     """,
     )
-    fun removeDeletedAttributeValuesByInstance(
+    fun removeDeletedAttributeValuesByInstanceAndAttributes(
         trackedEntityInstanceUid: String,
+        attributeUids: List<String>,
     ): Int
 }

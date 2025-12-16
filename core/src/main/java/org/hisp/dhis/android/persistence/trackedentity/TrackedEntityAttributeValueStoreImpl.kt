@@ -115,9 +115,14 @@ internal class TrackedEntityAttributeValueStoreImpl(
         )
     }
 
-    override suspend fun removeDeletedAttributeValuesByInstance(trackedEntityInstanceUid: String) {
-        val dao = databaseAdapter.getCurrentDatabase().trackedEntityAttributeValueDao()
-        dao.removeDeletedAttributeValuesByInstance(trackedEntityInstanceUid)
+    override suspend fun removeDeletedAttributeValuesByInstanceAndAttributes(
+        trackedEntityInstanceUid: String,
+        attributeUids: List<String>,
+    ) {
+        if (attributeUids.isNotEmpty()) {
+            val dao = databaseAdapter.getCurrentDatabase().trackedEntityAttributeValueDao()
+            dao.removeDeletedAttributeValuesByInstanceAndAttributes(trackedEntityInstanceUid, attributeUids)
+        }
     }
 
     override suspend fun setSyncStateByInstance(trackedEntityInstanceUid: String, syncState: State) {

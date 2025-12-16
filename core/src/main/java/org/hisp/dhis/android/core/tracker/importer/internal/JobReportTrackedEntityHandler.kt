@@ -87,9 +87,8 @@ internal class JobReportTrackedEntityHandler internal constructor(
 
             if (tetAttributes.isNotEmpty()) {
                 trackedEntityAttributeValueStore.setSyncStateByAttributes(uid, tetAttributes, State.SYNCED)
+                trackedEntityAttributeValueStore.removeDeletedAttributeValuesByInstanceAndAttributes(uid, tetAttributes)
             }
         }
-
-        trackedEntityAttributeValueStore.removeDeletedAttributeValuesByInstance(uid)
     }
 }

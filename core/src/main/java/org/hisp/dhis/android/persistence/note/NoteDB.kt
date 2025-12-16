@@ -62,12 +62,12 @@ internal data class NoteDB(
 internal fun Note.toDB(): NoteDB {
     return NoteDB(
         uid = uid(),
-        noteType = noteType()?.name!!,
+        noteType = noteType()?.name,
         event = event(),
         enrollment = enrollment(),
-        value = value()!!,
-        storedBy = storedBy()!!,
-        storedDate = storedDate()!!,
+        value = value(),
+        storedBy = storedBy(),
+        storedDate = storedDate(),
         syncState = syncState()?.toDB(),
         deleted = deleted(),
     )

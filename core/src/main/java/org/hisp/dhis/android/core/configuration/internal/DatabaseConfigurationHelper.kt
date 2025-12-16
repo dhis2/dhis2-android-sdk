@@ -71,6 +71,7 @@ internal class DatabaseConfigurationHelper(
             .databaseName(dbName)
             .encrypted(encrypt)
             .databaseCreationDate(dateProvider.dateStr)
+            .lastAccessDate(dateProvider.dateStr)
             .loginConfig(loginConfig)
             .importDB(importDb)
             .build()
@@ -89,6 +90,20 @@ internal class DatabaseConfigurationHelper(
         return (configuration?.toBuilder() ?: DatabasesConfiguration.builder())
             .accounts(otherAccounts + account)
             .build()
+    }
+
+    fun updateLastAccessDate(
+        configuration: DatabasesConfiguration?,
+        serverUrl: String,
+        username: String,
+    ): DatabasesConfiguration? {
+        val account = getAccount(configuration, serverUrl, username) ?: return configuration
+
+        val updatedAccount = account.toBuilder()
+            .lastAccessDate(dateProvider.dateStr)
+            .build()
+
+        return addOrUpdateAccount(configuration, updatedAccount)
     }
 
     companion object {

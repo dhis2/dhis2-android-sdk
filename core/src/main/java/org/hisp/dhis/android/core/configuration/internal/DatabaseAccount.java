@@ -50,6 +50,9 @@ public abstract class DatabaseAccount {
     @NonNull
     public abstract String databaseCreationDate();
 
+    @Nullable
+    public abstract String lastAccessDate();
+
     @NonNull
     public abstract boolean encrypted();
 
@@ -80,6 +83,8 @@ public abstract class DatabaseAccount {
         public abstract Builder encrypted(boolean encrypted);
 
         public abstract Builder databaseCreationDate(String databaseCreationDate);
+
+        public abstract Builder lastAccessDate(String lastAccessDate);
 
         public abstract Builder importDB(DatabaseAccountImport importDB);
 

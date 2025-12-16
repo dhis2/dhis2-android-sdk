@@ -42,6 +42,7 @@ internal class EventLastUpdatedManager(
             .program(bundle.commonParams().program)
             .organisationUnitIdsHash(bundle.orgUnits().toSet().hashCode())
             .downloadLimit(bundle.commonParams().limit)
+            .workingListsHash(bundle.commonParams().workingListsHash)
             .lastUpdated(resourceHandler.serverDate)
             .build()
         super.update(sync)

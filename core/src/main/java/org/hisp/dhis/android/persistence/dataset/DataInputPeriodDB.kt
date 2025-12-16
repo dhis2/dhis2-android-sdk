@@ -1,7 +1,9 @@
 package org.hisp.dhis.android.persistence.dataset
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataset.DataInputPeriod
 import org.hisp.dhis.android.core.util.dateFormat
@@ -27,13 +29,15 @@ import org.hisp.dhis.android.persistence.period.PeriodDB
             deferred = true,
         ),
     ],
-    primaryKeys = ["dataSet", "period", "openingDate", "closingDate"],
 )
 internal data class DataInputPeriodDB(
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "_id")
+    val id: Int = 0,
     val dataSet: String,
     val period: String,
-    val openingDate: String,
-    val closingDate: String,
+    val openingDate: String?,
+    val closingDate: String?,
 ) : EntityDB<DataInputPeriod> {
 
     override fun toDomain(): DataInputPeriod {
@@ -50,7 +54,7 @@ internal fun DataInputPeriod.toDB(): DataInputPeriodDB {
     return DataInputPeriodDB(
         dataSet = dataSet()!!.uid(),
         period = period().uid(),
-        openingDate = openingDate().dateFormat()!!,
-        closingDate = closingDate().dateFormat()!!,
+        openingDate = openingDate().dateFormat(),
+        closingDate = closingDate().dateFormat(),
     )
 }

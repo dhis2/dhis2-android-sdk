@@ -12863,6 +12863,7 @@ public final class org/hisp/dhis/android/persistence/dataset/DataInputPeriodTabl
 	public static final field DATA_SET Ljava/lang/String;
 	public static final field OPENING_DATE Ljava/lang/String;
 	public static final field PERIOD Ljava/lang/String;
+	public static final field _ID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }

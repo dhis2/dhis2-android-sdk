@@ -36,35 +36,83 @@ class DaoQueriesProcessor(
         symbols.forEach { symbol ->
             logger.info("Processing DAO: ${symbol.qualifiedName?.asString()}")
 
-            val tableName = symbol.annotations.firstNotNullOfOrNull { annotation ->
-                if (annotation.shortName.asString() == GenerateDaoQueries::class.simpleName &&
-                    annotation.annotationType.resolve().declaration.qualifiedName?.asString() == GenerateDaoQueries::class.qualifiedName
-                ) {
-                    annotation.arguments.find { arg -> arg.name?.asString() == "tableName" }?.value as? String
-                } else {
-                    null
-                }
-            }?.takeIf { it.isNotBlank() }
-
-            val parentColumnName = symbol.annotations.firstNotNullOfOrNull { annotation ->
-                if (annotation.shortName.asString() == GenerateDaoQueries::class.simpleName &&
-                    annotation.annotationType.resolve().declaration.qualifiedName?.asString() == GenerateDaoQueries::class.qualifiedName
-                ) {
-                    annotation.arguments.find { arg -> arg.name?.asString() == "parentColumnName" }?.value as? String
-                } else {
-                    null
-                }
-            }?.takeIf { it.isNotBlank() }
-
-            if (tableName == null) {
-                logger.error(
-                    "Could not extract a valid, non-blank 'tableName' String from @GenerateDaoQueries for ${symbol.qualifiedName?.asString()}. ",
-                    symbol
-                )
-                return@forEach
+            // Extract annotation parameters
+            val annotation = symbol.annotations.firstOrNull { annotation ->
+                annotation.shortName.asString() == GenerateDaoQueries::class.simpleName &&
+                    annotation.annotationType.resolve()
+                        .declaration.qualifiedName?.asString() == GenerateDaoQueries::class.qualifiedName
             }
 
-            logger.info("Successfully extracted tableName: '$tableName' for ${symbol.qualifiedName?.asString()}")
+            val explicitTableName = annotation?.arguments
+                ?.find { arg -> arg.name?.asString() == "tableName" }
+                ?.value as? String
+
+            val explicitParentColumnName = annotation?.arguments
+                ?.find { arg -> arg.name?.asString() == "parentColumnName" }
+                ?.value as? String
+
+            // Infer table name if not explicitly provided
+            val tableName = if (explicitTableName.isNullOrBlank()) {
+                // Extract the entity type from the DAO's generic parameter
+                val entityType = symbol.superTypes
+                    .firstOrNull()
+                    ?.resolve()
+                    ?.arguments
+                    ?.firstOrNull()
+                    ?.type
+                    ?.resolve()
+                    ?.declaration as? KSClassDeclaration
+
+                if (entityType == null) {
+                    logger.error(
+                        "Could not infer tableName for ${symbol.qualifiedName?.asString()}. " +
+                            "Either provide an explicit tableName parameter or ensure the DAO has " +
+                            "a generic type parameter.",
+                        symbol,
+                    )
+                    return@forEach
+                }
+
+                // Convert EntityDB -> EntityTableInfo.TABLE_NAME
+                val entityName = entityType.simpleName.asString().removeSuffix("DB")
+                val tableInfoName = "${entityName}TableInfo.TABLE_NAME"
+                logger.info(
+                    "Inferred tableName: '$tableInfoName' from entity type: ${entityType.simpleName.asString()}",
+                )
+                tableInfoName
+            } else {
+                logger.info("Using explicit tableName: '$explicitTableName'")
+                explicitTableName
+            }
+
+            // Infer parent column name if not explicitly provided (for LinkDao)
+            val parentColumnName = if (explicitParentColumnName.isNullOrBlank()) {
+                // Extract the entity type from the DAO's generic parameter
+                val entityType = symbol.superTypes
+                    .firstOrNull()
+                    ?.resolve()
+                    ?.arguments
+                    ?.firstOrNull()
+                    ?.type
+                    ?.resolve()
+                    ?.declaration as? KSClassDeclaration
+
+                if (entityType != null) {
+                    // Convert EntityDB -> EntityTableInfo.PARENT_COLUMN
+                    val entityName = entityType.simpleName.asString().removeSuffix("DB")
+                    val parentColumnRef = "${entityName}TableInfo.PARENT_COLUMN"
+                    logger.info(
+                        "Inferred parentColumnName: '$parentColumnRef' from entity type: " +
+                            "${entityType.simpleName.asString()}",
+                    )
+                    parentColumnRef
+                } else {
+                    null
+                }
+            } else {
+                logger.info("Using explicit parentColumnName: '$explicitParentColumnName'")
+                explicitParentColumnName
+            }
 
             val superInterfaceSimpleNames = symbol.superTypes
                 .map { it.resolve() } // Resolves each KSTypeReference to KSType
@@ -76,12 +124,16 @@ class DaoQueriesProcessor(
                 }
                 .toList()
 
-            logger.info("DAO ${symbol.qualifiedName?.asString()} (resolved) super interface simple names: $superInterfaceSimpleNames")
+            logger.info(
+                "DAO ${symbol.qualifiedName?.asString()} (resolved) super interface simple names: " +
+                    "$superInterfaceSimpleNames",
+            )
 
             // or if there are deeper hierarchies you need to inspect.
             val baseInterfaceType: String? = when {
                 superInterfaceSimpleNames.any { it == "ObjectDao" } -> "ObjectDao"
-                superInterfaceSimpleNames.any { it == "IdentifiableDeletableDataObjectDao" } -> "IdentifiableDeletableDataObjectDao"
+                superInterfaceSimpleNames.any { it == "IdentifiableDeletableDataObjectDao" }
+                -> "IdentifiableDeletableDataObjectDao"
                 superInterfaceSimpleNames.any { it == "IdentifiableDataObjectDao" } -> "IdentifiableDataObjectDao"
                 superInterfaceSimpleNames.any { it == "IdentifiableObjectDao" } -> "IdentifiableObjectDao"
                 superInterfaceSimpleNames.any { it == "LinkDao" } -> "LinkDao"
@@ -98,14 +150,13 @@ class DaoQueriesProcessor(
             val fileOutputStream = codeGenerator.createNewFile(
                 dependencies = Dependencies(aggregating = false, symbol.containingFile!!),
                 packageName = originalPackageName,
-                fileName = generatedInterfaceName
+                fileName = generatedInterfaceName,
             )
 
             fileOutputStream.use { file ->
                 file += "package $originalPackageName\n\n"
                 file += "import androidx.room.Dao\n"
                 file += "import androidx.room.Query\n"
-
 
                 when (baseInterfaceType) {
                     "ObjectDao" -> {

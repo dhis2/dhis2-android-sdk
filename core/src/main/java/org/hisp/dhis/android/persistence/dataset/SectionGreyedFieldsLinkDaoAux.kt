@@ -32,10 +32,7 @@ import androidx.room.Query
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(
-    tableName = "SectionGreyedFieldsLinkTableInfo.TABLE_NAME",
-    parentColumnName = "SectionGreyedFieldsLinkTableInfo.Columns.SECTION",
-)
+@GenerateDaoQueries
 internal interface SectionGreyedFieldsLinkDaoAux : LinkDao<SectionGreyedFieldsLinkDB> {
 
     @Query(

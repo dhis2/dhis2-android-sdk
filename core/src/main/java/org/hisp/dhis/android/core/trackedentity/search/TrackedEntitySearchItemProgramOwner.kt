@@ -26,32 +26,9 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+package org.hisp.dhis.android.core.trackedentity.search
 
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
-import org.hisp.dhis.android.core.common.CoreColumns;
-
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.LAST_UPDATED;
-
-public class TrackerBaseSyncColumns extends CoreColumns {
-    public static final String PROGRAM = "program";
-    public static final String DOWNLOAD_LIMIT = "downloadLimit";
-    public static final String ORGANISATION_UNIT_IDS_HASH = "organisationUnitIdsHash";
-
-    @Override
-    public String[] all() {
-        return CollectionsHelper.appendInNewArray(super.all(),
-                PROGRAM,
-                ORGANISATION_UNIT_IDS_HASH,
-                DOWNLOAD_LIMIT,
-                LAST_UPDATED);
-    }
-
-    @Override
-    public String[] whereUpdate() {
-        return new String[]{
-                PROGRAM,
-                ORGANISATION_UNIT_IDS_HASH
-        };
-    }
-}
+data class TrackedEntitySearchItemProgramOwner(
+    val program: String,
+    val ownerOrgUnit: String,
+)

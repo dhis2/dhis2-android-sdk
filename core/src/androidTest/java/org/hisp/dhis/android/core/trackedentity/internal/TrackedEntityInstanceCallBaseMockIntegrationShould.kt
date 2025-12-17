@@ -66,6 +66,7 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
     abstract val teiWithRemovedDataFile: String
     abstract val teiWithRelationshipFile: String
     abstract val teiAsRelationshipFile: String
+    abstract val teiWithSearchOnlyOrgUnitFile: String
 
     private lateinit var initSyncParams: SynchronizationSettings
     private val syncStore: SynchronizationSettingStore = koin.get()
@@ -181,6 +182,49 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
         assertThat(relationships.size).isEqualTo(1)
         assertThat(relationships.first().from()).isNotNull()
         assertThat(relationships.first().to()).isNotNull()
+    }
+
+    @Test
+    fun download_glass_protected_tei_with_legacy_403_response() {
+        val teiUid = "PgmUFEQYZdt"
+        val program = "lxAQ7Zs9VYR"
+
+        dhis2MockServer.enqueueSystemInfoResponse()
+        // Old servers (< v42) return 403 with OWNERSHIP_ACCESS_DENIED message
+        dhis2MockServer.enqueueMockResponse(403, "trackedentity/glass/glass_protected_tei_failure_403.json")
+
+        try {
+            d2.trackedEntityModule().trackedEntityInstanceDownloader()
+                .byUid().eq(teiUid)
+                .byProgramUid(program)
+                .blockingDownload()
+            fail("It should throw ownership error")
+        } catch (e: RuntimeException) {
+            assertThat(e.cause is D2Error).isTrue()
+            assertThat((e.cause as D2Error).errorCode()).isEqualTo(D2ErrorCode.OWNERSHIP_ACCESS_DENIED)
+        }
+    }
+
+    @Test
+    fun download_glass_protected_tei_with_v42_not_found_response() {
+        val teiUid = "PgmUFEQYZdt"
+        val program = "lxAQ7Zs9VYR"
+
+        dhis2MockServer.enqueueSystemInfoResponse()
+        // v42+ servers return 404 to hide ownership information
+        dhis2MockServer.enqueueMockResponse(404, "trackedentity/glass/glass_v42_not_found.json")
+        dhis2MockServer.enqueueMockResponse(teiWithSearchOnlyOrgUnitFile)
+
+        try {
+            d2.trackedEntityModule().trackedEntityInstanceDownloader()
+                .byUid().eq(teiUid)
+                .byProgramUid(program)
+                .blockingDownload()
+            fail("It should throw ownership error")
+        } catch (e: RuntimeException) {
+            assertThat(e.cause is D2Error).isTrue()
+            assertThat((e.cause as D2Error).errorCode()).isEqualTo(D2ErrorCode.OWNERSHIP_ACCESS_DENIED)
+        }
     }
 
     private fun verifyDownloadedTrackedEntityInstanceSingle(file: String, teiUid: String) = runTest {

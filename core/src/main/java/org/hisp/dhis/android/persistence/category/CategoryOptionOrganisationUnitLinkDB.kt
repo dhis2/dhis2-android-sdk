@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.category.CategoryOptionOrganisationUnitLink
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitDB
+import org.hisp.dhis.android.processor.ParentColumn
 
 @Entity(
     tableName = "CategoryOptionOrganisationUnitLink",
@@ -31,7 +32,7 @@ internal data class CategoryOptionOrganisationUnitLinkDB(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "_id")
     val id: Int = 0,
-    val categoryOption: String,
+    @ParentColumn val categoryOption: String,
     val organisationUnit: String?,
     val restriction: String?,
 ) : EntityDB<CategoryOptionOrganisationUnitLink> {

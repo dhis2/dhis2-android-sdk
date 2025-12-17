@@ -63,7 +63,7 @@ class MigrationProcessor(
         val file = codeGenerator.createNewFile(
             dependencies = Dependencies(aggregating = false),
             packageName = outputPackage,
-            fileName = "RoomGeneratedMigrations"
+            fileName = "RoomGeneratedMigrations",
         )
 
         file += "package $outputPackage\n\n"
@@ -78,7 +78,7 @@ class MigrationProcessor(
         for (f in files) {
             val next = f.nameWithoutExtension.toIntOrNull() ?: continue
             val version = next - 1
-            val name = "MIGRATION_${version}_${next}"
+            val name = "MIGRATION_${version}_$next"
             migrationNames += name
 
             val lines = f.readLines()

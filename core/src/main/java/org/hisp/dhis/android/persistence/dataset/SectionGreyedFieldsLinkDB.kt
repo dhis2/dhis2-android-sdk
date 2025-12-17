@@ -6,6 +6,7 @@ import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLink
 import org.hisp.dhis.android.persistence.category.CategoryOptionComboDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.dataelement.DataElementOperandDB
+import org.hisp.dhis.android.processor.ParentColumn
 
 @Entity(
     tableName = "SectionGreyedFieldsLink",
@@ -35,7 +36,7 @@ import org.hisp.dhis.android.persistence.dataelement.DataElementOperandDB
     primaryKeys = ["section", "dataElementOperand", "categoryOptionCombo"],
 )
 internal data class SectionGreyedFieldsLinkDB(
-    val section: String,
+    @ParentColumn val section: String,
     val dataElementOperand: String,
     val categoryOptionCombo: String,
 ) : EntityDB<SectionGreyedFieldsLink> {

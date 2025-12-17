@@ -46,6 +46,9 @@ public interface TrackerBaseSync extends CoreObject {
     @NonNull
     Integer downloadLimit();
 
+    @Nullable
+    Integer workingListsHash();
+
     @NonNull
     Date lastUpdated();
 
@@ -55,6 +58,8 @@ public interface TrackerBaseSync extends CoreObject {
         T organisationUnitIdsHash(Integer organisationUnitIdsHash);
 
         T downloadLimit(Integer limit);
+
+        T workingListsHash(Integer workingListsHash);
 
         T lastUpdated(Date lastUpdated);
     }

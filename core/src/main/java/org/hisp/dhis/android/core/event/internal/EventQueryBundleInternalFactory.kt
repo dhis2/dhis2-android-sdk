@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryFactoryCommonHelper
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryInternalFactory
+import org.hisp.dhis.android.core.trackedentity.internal.WorkingListsHashHelper
 
 internal class EventQueryBundleInternalFactory(
     commonHelper: TrackerQueryFactoryCommonHelper,
@@ -74,9 +75,14 @@ internal class EventQueryBundleInternalFactory(
                 .getInternal()
         }
 
+        val finalFilters = eventFilters.takeIf { it.isNotEmpty() } ?: programSettingFilters
+
+        val workingListsHash = WorkingListsHashHelper.calculateHashFromObjects(finalFilters)
+        val commonParamsWithHash = commonParams.copy(workingListsHash = workingListsHash)
+
         val builder = EventQueryBundle.builder()
-            .eventFilters(eventFilters.takeIf { it.isNotEmpty() } ?: programSettingFilters)
-            .commonParams(commonParams)
+            .eventFilters(finalFilters)
+            .commonParams(commonParamsWithHash)
 
         return commonHelper.divideByOrgUnits(
             commonParams.orgUnitsBeforeDivision,

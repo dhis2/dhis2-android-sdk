@@ -5,6 +5,7 @@ import androidx.room.ForeignKey
 import org.hisp.dhis.android.core.dataset.internal.SectionIndicatorLink
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.indicator.IndicatorDB
+import org.hisp.dhis.android.processor.ParentColumn
 
 @Entity(
     tableName = "SectionIndicatorLink",
@@ -27,7 +28,7 @@ import org.hisp.dhis.android.persistence.indicator.IndicatorDB
     primaryKeys = ["section", "indicator"],
 )
 internal data class SectionIndicatorLinkDB(
-    val section: String,
+    @ParentColumn val section: String,
     val indicator: String,
 ) : EntityDB<SectionIndicatorLink> {
 

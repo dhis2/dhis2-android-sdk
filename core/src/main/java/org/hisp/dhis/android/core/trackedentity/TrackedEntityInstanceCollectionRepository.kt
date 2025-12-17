@@ -213,7 +213,7 @@ class TrackedEntityInstanceCollectionRepository internal constructor(
 
     internal companion object {
         internal const val TRACKED_ENTITY_ATTRIBUTE_VALUES = "attributes"
-        private const val PROGRAM_OWNERS = "programOwners"
+        internal const val PROGRAM_OWNERS = "programOwners"
 
         val childrenAppenders: ChildrenAppenderGetter<TrackedEntityInstance> = mapOf(
             TRACKED_ENTITY_ATTRIBUTE_VALUES to TrackedEntityAttributeValueChildrenAppender::create,

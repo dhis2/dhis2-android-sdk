@@ -1,33 +1,34 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
- *  All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions are met:
- *  Redistributions of source code must retain the above copyright notice, this
- *  list of conditions and the following disclaimer.
- *
- *  Redistributions in binary form must reproduce the above copyright notice,
- *  this list of conditions and the following disclaimer in the documentation
- *  and/or other materials provided with the distribution.
- *  Neither the name of the HISP project nor the names of its contributors may
- *  be used to endorse or promote products derived from this software without
- *  specific prior written permission.
- *
- *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+*  Copyright (c) 2004-2022, University of Oslo
+*  All rights reserved.
+*
+*  Redistribution and use in source and binary forms, with or without
+*  modification, are permitted provided that the following conditions are met:
+*  Redistributions of source code must retain the above copyright notice, this
+*  list of conditions and the following disclaimer.
+*
+*  Redistributions in binary form must reproduce the above copyright notice,
+*  this list of conditions and the following disclaimer in the documentation
+*  and/or other materials provided with the distribution.
+*  Neither the name of the HISP project nor the names of its contributors may
+*  be used to endorse or promote products derived from this software without
+*  specific prior written permission.
+*
+*  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+*  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+*  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+*  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+*  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+*  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+*  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+*  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+*  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+*  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
 package org.hisp.dhis.android.core.enrollment
 
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
@@ -45,6 +46,8 @@ import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCollectionRepository
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwner
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerStore
 import org.junit.Assert.assertFalse
@@ -63,11 +66,13 @@ class EnrollmentServiceShould {
     private val trackedEntityInstanceUid: String = "trackedEntityInstanceUid"
     private val programUid: String = "programUid"
     private val organisationUnitId: String = "organisationUnitId"
+    private val ownerOrganisationUnitId: String = "ownerOrganisationUnitId"
 
     private val enrollment: Enrollment = mock()
     private val trackedEntityInstance: TrackedEntityInstance = mock()
     private val program: Program = mock()
     private val programTempOwner: ProgramTempOwner = mock()
+    private val programOwner: ProgramOwner = mock()
 
     private val enrollmentRepository: EnrollmentCollectionRepository = mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val trackedEntityInstanceRepository: TrackedEntityInstanceCollectionRepository =
@@ -80,6 +85,7 @@ class EnrollmentServiceShould {
     private val programStageCollectionRepository: ProgramStageCollectionRepository =
         mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val programTempOwnerStore: ProgramTempOwnerStore = mock()
+    private val programOwnerStore: ProgramOwnerStore = mock()
 
     private lateinit var enrollmentService: EnrollmentService
 
@@ -103,6 +109,7 @@ class EnrollmentServiceShould {
             eventCollectionRepository,
             programStageCollectionRepository,
             programTempOwnerStore,
+            programOwnerStore,
         )
     }
 
@@ -149,54 +156,67 @@ class EnrollmentServiceShould {
     }
 
     @Test
-    fun `GetEnrollmentAccess should return data access if protected program in capture scope`() = runTest {
+    fun `GetEnrollmentAccess should return data access if protected program owner in capture scope`() = runTest {
         whenever(program.accessLevel()) doReturn AccessLevel.PROTECTED
         whenever(program.access()) doReturn AccessHelper.createForDataWrite(true)
+        whenever(programOwner.ownerOrgUnit()) doReturn ownerOrganisationUnitId
+        whenever(programOwnerStore.selectWhere(any())) doReturn listOf(programOwner)
         whenever(
-            organisationUnitRepository
-                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-                .uid(organisationUnitId)
-                .blockingExists(),
+            runBlocking {
+                organisationUnitRepository
+                    .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+                    .uid(ownerOrganisationUnitId)
+                    .existsInternal()
+            },
         ) doReturn true
-        whenever(programTempOwnerStore.selectWhere(any())) doReturn emptyList()
 
         val access = enrollmentService.blockingGetEnrollmentAccess(trackedEntityInstanceUid, programUid)
         assert(access == EnrollmentAccess.WRITE_ACCESS)
     }
 
     @Test
-    fun `GetEnrollmentAccess should return access denied if protected program not in capture scope`() = runTest {
-        whenever(program.accessLevel()) doReturn AccessLevel.PROTECTED
-        whenever(program.access()) doReturn AccessHelper.createForDataWrite(true)
-        whenever(
-            organisationUnitRepository
-                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-                .uid(organisationUnitId)
-                .blockingExists(),
-        ) doReturn false
-        whenever(programTempOwnerStore.selectWhere(any())) doReturn listOf(programTempOwner)
-        whenever(programTempOwner.validUntil()) doReturn DateUtils.DATE_FORMAT.parse("1999-01-01T00:00:00.000")
+    fun `GetEnrollmentAccess should return access denied`() =
+        runTest {
+            whenever(program.accessLevel()) doReturn AccessLevel.PROTECTED
+            whenever(program.access()) doReturn AccessHelper.createForDataWrite(true)
+            whenever(programOwner.ownerOrgUnit()) doReturn ownerOrganisationUnitId
+            whenever(programOwnerStore.selectWhere(any())) doReturn listOf(programOwner)
+            whenever(
+                runBlocking {
+                    organisationUnitRepository
+                        .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+                        .uid(ownerOrganisationUnitId)
+                        .existsInternal()
+                },
+            ) doReturn false
+            whenever(programTempOwnerStore.selectWhere(any())) doReturn listOf(programTempOwner)
+            whenever(programTempOwner.validUntil()) doReturn DateUtils.DATE_FORMAT.parse("1999-01-01T00:00:00.000")
 
-        val access = enrollmentService.blockingGetEnrollmentAccess(trackedEntityInstanceUid, programUid)
-        assert(access == EnrollmentAccess.PROTECTED_PROGRAM_DENIED)
-    }
+            val access = enrollmentService.blockingGetEnrollmentAccess(trackedEntityInstanceUid, programUid)
+            assert(access == EnrollmentAccess.PROTECTED_PROGRAM_DENIED)
+        }
 
     @Test
-    fun `GetEnrollmentAccess should return data access if protected program has broken glass`() = runTest {
-        whenever(program.accessLevel()) doReturn AccessLevel.PROTECTED
-        whenever(program.access()) doReturn AccessHelper.createForDataWrite(true)
-        whenever(
-            organisationUnitRepository
-                .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-                .uid(organisationUnitId)
-                .blockingExists(),
-        ) doReturn false
-        whenever(programTempOwnerStore.selectWhere(any())) doReturn listOf(programTempOwner)
-        whenever(programTempOwner.validUntil()) doReturn DateUtils.DATE_FORMAT.parse("2999-01-01T00:00:00.000")
+    fun `GetEnrollmentAccess should return data access`() =
+        runTest {
+            whenever(program.accessLevel()) doReturn AccessLevel.PROTECTED
+            whenever(program.access()) doReturn AccessHelper.createForDataWrite(true)
+            whenever(programOwner.ownerOrgUnit()) doReturn ownerOrganisationUnitId
+            whenever(programOwnerStore.selectWhere(any())) doReturn listOf(programOwner)
+            whenever(
+                runBlocking {
+                    organisationUnitRepository
+                        .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+                        .uid(ownerOrganisationUnitId)
+                        .existsInternal()
+                },
+            ) doReturn false
+            whenever(programTempOwnerStore.selectWhere(any())) doReturn listOf(programTempOwner)
+            whenever(programTempOwner.validUntil()) doReturn DateUtils.DATE_FORMAT.parse("2999-01-01T00:00:00.000")
 
-        val access = enrollmentService.blockingGetEnrollmentAccess(trackedEntityInstanceUid, programUid)
-        assert(access == EnrollmentAccess.WRITE_ACCESS)
-    }
+            val access = enrollmentService.blockingGetEnrollmentAccess(trackedEntityInstanceUid, programUid)
+            assert(access == EnrollmentAccess.WRITE_ACCESS)
+        }
 
     @Test
     fun `Enrollment has any events that allows events creation`() {
@@ -260,6 +280,54 @@ class EnrollmentServiceShould {
             .programStage("2")
             .build(),
     )
+
+    @Test
+    fun `GetEnrollmentAccess should return data access if closed program owner in capture scope`() = runTest {
+        whenever(program.accessLevel()) doReturn AccessLevel.CLOSED
+        whenever(program.access()) doReturn AccessHelper.createForDataWrite(true)
+        whenever(programOwner.ownerOrgUnit()) doReturn ownerOrganisationUnitId
+        whenever(programOwnerStore.selectWhere(any())) doReturn listOf(programOwner)
+        whenever(
+            runBlocking {
+                organisationUnitRepository
+                    .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+                    .uid(ownerOrganisationUnitId)
+                    .existsInternal()
+            },
+        ) doReturn true
+
+        val access = enrollmentService.blockingGetEnrollmentAccess(trackedEntityInstanceUid, programUid)
+        assert(access == EnrollmentAccess.WRITE_ACCESS)
+    }
+
+    @Test
+    fun `GetEnrollmentAccess should return access denied if closed program owner not in capture scope`() = runTest {
+        whenever(program.accessLevel()) doReturn AccessLevel.CLOSED
+        whenever(program.access()) doReturn AccessHelper.createForDataWrite(true)
+        whenever(programOwner.ownerOrgUnit()) doReturn ownerOrganisationUnitId
+        whenever(programOwnerStore.selectWhere(any())) doReturn listOf(programOwner)
+        whenever(
+            runBlocking {
+                organisationUnitRepository
+                    .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+                    .uid(ownerOrganisationUnitId)
+                    .existsInternal()
+            },
+        ) doReturn false
+
+        val access = enrollmentService.blockingGetEnrollmentAccess(trackedEntityInstanceUid, programUid)
+        assert(access == EnrollmentAccess.CLOSED_PROGRAM_DENIED)
+    }
+
+    @Test
+    fun `GetEnrollmentAccess should return access denied if closed program has no owner record`() = runTest {
+        whenever(program.accessLevel()) doReturn AccessLevel.CLOSED
+        whenever(program.access()) doReturn AccessHelper.createForDataWrite(true)
+        whenever(programOwnerStore.selectWhere(any())) doReturn emptyList()
+
+        val access = enrollmentService.blockingGetEnrollmentAccess(trackedEntityInstanceUid, programUid)
+        assert(access == EnrollmentAccess.CLOSED_PROGRAM_DENIED)
+    }
 
     private fun getProgramStages() = listOf(
         ProgramStage.builder()

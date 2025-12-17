@@ -42,6 +42,18 @@ import java.util.List;
 public abstract class EventQueryCriteria extends FilterQueryCriteria implements CoreObject {
 
     @Nullable
+    public abstract EventStatus status();
+
+    /**
+     * @deprecated Use {@link #status()} instead.
+     */
+    @Deprecated
+    @Nullable
+    public EventStatus eventStatus() {
+        return status();
+    }
+
+    @Nullable
     public abstract List<EventDataFilter> dataFilters();
 
     @Nullable
@@ -61,6 +73,16 @@ public abstract class EventQueryCriteria extends FilterQueryCriteria implements 
 
     @AutoValue.Builder
     public abstract static class Builder extends FilterQueryCriteria.Builder<Builder> {
+        public abstract Builder status(EventStatus status);
+
+        /**
+         * @deprecated Use {@link #status(EventStatus)} instead.
+         */
+        @Deprecated
+        public Builder eventStatus(EventStatus eventStatus) {
+            return status(eventStatus);
+        }
+
         public abstract Builder dataFilters(List<EventDataFilter> dataFilters);
 
         public abstract Builder events(List<String> events);

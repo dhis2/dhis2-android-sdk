@@ -7,6 +7,7 @@ import org.hisp.dhis.android.core.settings.WHONutritionComponent
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.program.ProgramIndicatorDB
 import org.hisp.dhis.android.persistence.program.ProgramStageDB
+import org.hisp.dhis.android.processor.ParentColumn
 
 @Entity(
     tableName = "AnalyticsTeiIndicator",
@@ -36,7 +37,7 @@ import org.hisp.dhis.android.persistence.program.ProgramStageDB
     primaryKeys = ["teiSetting", "indicator"],
 )
 internal data class AnalyticsTeiIndicatorDB(
-    val teiSetting: String,
+    @ParentColumn val teiSetting: String,
     val whoComponent: String?,
     val programStage: String?,
     val indicator: String,

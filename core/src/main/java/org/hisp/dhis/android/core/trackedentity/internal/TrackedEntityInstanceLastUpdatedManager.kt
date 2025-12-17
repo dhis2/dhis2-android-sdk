@@ -41,6 +41,7 @@ internal class TrackedEntityInstanceLastUpdatedManager(
             .program(trackerQuery.commonParams().program)
             .organisationUnitIdsHash(trackerQuery.orgUnits().toSet().hashCode())
             .downloadLimit(trackerQuery.commonParams().limit)
+            .workingListsHash(trackerQuery.commonParams().workingListsHash)
             .lastUpdated(resourceHandler.serverDate)
             .build()
         super.update(sync)

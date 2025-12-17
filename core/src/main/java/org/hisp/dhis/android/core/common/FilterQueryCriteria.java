@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.common;
 
 import androidx.annotation.Nullable;
 
-import org.hisp.dhis.android.core.event.EventStatus;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
 
 import java.util.List;
@@ -56,9 +55,6 @@ public abstract class FilterQueryCriteria {
     public abstract List<String> displayColumnOrder();
 
     @Nullable
-    public abstract EventStatus eventStatus();
-
-    @Nullable
     public abstract DateFilterPeriod eventDate();
 
     @Nullable
@@ -77,8 +73,6 @@ public abstract class FilterQueryCriteria {
         public abstract T order(String order);
 
         public abstract T displayColumnOrder(List<String> displayColumnOrder);
-
-        public abstract T eventStatus(EventStatus  eventStatus);
 
         public abstract T eventDate(DateFilterPeriod eventDate);
 

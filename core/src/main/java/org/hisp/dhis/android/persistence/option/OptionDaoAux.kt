@@ -31,5 +31,5 @@ package org.hisp.dhis.android.persistence.option
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "OptionTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface OptionDaoAux : IdentifiableObjectDao<OptionDB>

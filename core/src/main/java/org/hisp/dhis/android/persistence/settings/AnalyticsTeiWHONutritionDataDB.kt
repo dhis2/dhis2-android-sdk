@@ -8,6 +8,7 @@ import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionGenderValues
 import org.hisp.dhis.android.core.settings.WHONutritionChartType
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeDB
+import org.hisp.dhis.android.processor.ParentColumn
 
 @Entity(
     tableName = "AnalyticsTeiWHONutritionData",
@@ -30,7 +31,7 @@ import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeDB
     primaryKeys = ["teiSetting", "genderAttribute"],
 )
 internal data class AnalyticsTeiWHONutritionDataDB(
-    val teiSetting: String,
+    @ParentColumn val teiSetting: String,
     val chartType: String?,
     val genderAttribute: String,
     val genderFemale: String?,

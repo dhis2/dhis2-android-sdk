@@ -31,5 +31,5 @@ package org.hisp.dhis.android.persistence.program
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "ProgramSectionTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface ProgramSectionDaoAux : IdentifiableObjectDao<ProgramSectionDB>

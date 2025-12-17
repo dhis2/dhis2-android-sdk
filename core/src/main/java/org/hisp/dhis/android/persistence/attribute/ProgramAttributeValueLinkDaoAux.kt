@@ -31,8 +31,5 @@ package org.hisp.dhis.android.persistence.attribute
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(
-    tableName = "ProgramAttributeValueLinkTableInfo.TABLE_NAME",
-    parentColumnName = "ProgramAttributeValueLinkTableInfo.Columns.PROGRAM",
-)
+@GenerateDaoQueries
 internal interface ProgramAttributeValueLinkDaoAux : LinkDao<ProgramAttributeValueLinkDB>

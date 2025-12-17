@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.arch.db.access.internal
 
 import android.content.Context
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.DatabaseExportMetadata
 import org.hisp.dhis.android.core.arch.db.access.DatabaseImportExport
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.getCurrentTimeAndDate
@@ -54,6 +55,7 @@ internal class DatabaseImportExportImpl(
     private val userModule: UserModule,
     private val credentialsStore: CredentialsSecureStore,
     private val databaseExport: BaseDatabaseExport,
+    private val databaseAdapter: DatabaseAdapter,
 ) : DatabaseImportExport {
 
     companion object {
@@ -150,6 +152,9 @@ internal class DatabaseImportExportImpl(
 
         val databaseName = userConfiguration.databaseName()
         val databaseFile = getDatabaseFile(databaseName)
+
+        // Force WAL checkpoint to ensure all pending changes are written to the database file
+        databaseAdapter.checkpointWAL()
 
         if (userConfiguration.encrypted()) {
             databaseExport.decryptAndCopyTo(userConfiguration, copiedDatabase)

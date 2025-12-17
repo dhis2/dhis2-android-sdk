@@ -31,5 +31,5 @@ package org.hisp.dhis.android.persistence.maintenance
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "ForeignKeyViolationTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface ForeignKeyViolationDaoAux : ObjectDao<ForeignKeyViolationDB>

@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import org.hisp.dhis.android.core.option.OptionGroupOptionLink
 import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.processor.ParentColumn
 
 @Entity(
     tableName = "OptionGroupOptionLink",
@@ -26,7 +27,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
     primaryKeys = ["optionGroup", "option"],
 )
 internal data class OptionGroupOptionLinkDB(
-    val optionGroup: String,
+    @ParentColumn val optionGroup: String,
     val option: String,
 ) : EntityDB<OptionGroupOptionLink> {
 

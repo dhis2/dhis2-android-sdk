@@ -5,6 +5,7 @@ import androidx.room.ForeignKey
 import org.hisp.dhis.android.core.dataset.SectionDataElementLink
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.dataelement.DataElementDB
+import org.hisp.dhis.android.processor.ParentColumn
 
 @Entity(
     tableName = "SectionDataElementLink",
@@ -27,7 +28,7 @@ import org.hisp.dhis.android.persistence.dataelement.DataElementDB
     primaryKeys = ["section", "dataElement"],
 )
 internal data class SectionDataElementLinkDB(
-    val section: String,
+    @ParentColumn val section: String,
     val dataElement: String,
     val sortOrder: Int?,
 ) : EntityDB<SectionDataElementLink> {

@@ -176,7 +176,7 @@ class DatabasesConfigurationHelperShould {
     }
 
     @Test
-    fun find_account_with_normalized_url_different_protocol() {
+    fun not_find_account_with_different_protocol() {
         val account = DatabaseAccount.builder()
             .username("admin")
             .serverUrl("https://dhis2.org")
@@ -189,15 +189,14 @@ class DatabasesConfigurationHelperShould {
             .accounts(listOf(account))
             .build()
 
-        // Search with http instead of https
+        // Search with http instead of https - should NOT find (different servers)
         val found = DatabaseConfigurationHelper.getAccount(
             configuration,
             "http://dhis2.org",
             "admin",
         )
 
-        assertThat(found).isNotNull()
-        assertThat(found).isEqualTo(account)
+        assertThat(found).isNull()
     }
 
     @Test

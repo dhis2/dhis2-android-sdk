@@ -36,59 +36,81 @@ import org.junit.runners.JUnit4
 class ServerUrlNormalizerShould {
 
     @Test
-    fun normalize_removes_https_protocol() {
+    fun normalize_preserves_https_protocol() {
         val result = ServerUrlNormalizer.normalize("https://play.dhis2.org/demo")
-        assertThat(result).isEqualTo("play.dhis2.org/demo")
+        assertThat(result).isEqualTo("https://play.dhis2.org/demo")
     }
 
     @Test
-    fun normalize_removes_http_protocol() {
+    fun normalize_preserves_http_protocol() {
         val result = ServerUrlNormalizer.normalize("http://play.dhis2.org/demo")
-        assertThat(result).isEqualTo("play.dhis2.org/demo")
+        assertThat(result).isEqualTo("http://play.dhis2.org/demo")
     }
 
     @Test
-    fun normalize_converts_to_lowercase() {
-        val result = ServerUrlNormalizer.normalize("HTTPS://PLAY.DHIS2.ORG/DEMO")
-        assertThat(result).isEqualTo("play.dhis2.org/demo")
+    fun normalize_lowercases_domain_only() {
+        val result = ServerUrlNormalizer.normalize("HTTPS://PLAY.DHIS2.ORG/Demo")
+        assertThat(result).isEqualTo("https://play.dhis2.org/Demo")
+    }
+
+    @Test
+    fun normalize_preserves_path_case() {
+        val result = ServerUrlNormalizer.normalize("https://play.dhis2.org/DemoPath")
+        assertThat(result).isEqualTo("https://play.dhis2.org/DemoPath")
     }
 
     @Test
     fun normalize_removes_trailing_slash() {
         val result = ServerUrlNormalizer.normalize("https://play.dhis2.org/demo/")
-        assertThat(result).isEqualTo("play.dhis2.org/demo")
+        assertThat(result).isEqualTo("https://play.dhis2.org/demo")
     }
 
     @Test
     fun normalize_removes_api_suffix() {
         val result = ServerUrlNormalizer.normalize("https://play.dhis2.org/demo/api")
-        assertThat(result).isEqualTo("play.dhis2.org/demo")
+        assertThat(result).isEqualTo("https://play.dhis2.org/demo")
     }
 
     @Test
     fun normalize_removes_api_suffix_with_trailing_slash() {
         val result = ServerUrlNormalizer.normalize("https://play.dhis2.org/demo/api/")
-        assertThat(result).isEqualTo("play.dhis2.org/demo")
+        assertThat(result).isEqualTo("https://play.dhis2.org/demo")
     }
 
     @Test
-    fun areEquivalent_returns_true_for_http_and_https() {
+    fun normalize_converts_backslashes_to_forward_slashes() {
+        val result = ServerUrlNormalizer.normalize("https://play.dhis2.org\\demo")
+        assertThat(result).isEqualTo("https://play.dhis2.org/demo")
+    }
+
+    @Test
+    fun areEquivalent_returns_false_for_http_and_https() {
         assertThat(
             ServerUrlNormalizer.areEquivalent(
                 "https://play.dhis2.org/demo",
                 "http://play.dhis2.org/demo",
             ),
+        ).isFalse()
+    }
+
+    @Test
+    fun areEquivalent_returns_true_for_different_domain_case() {
+        assertThat(
+            ServerUrlNormalizer.areEquivalent(
+                "HTTPS://PLAY.DHIS2.ORG/demo",
+                "https://play.dhis2.org/demo",
+            ),
         ).isTrue()
     }
 
     @Test
-    fun areEquivalent_returns_true_for_different_case() {
+    fun areEquivalent_returns_false_for_different_path_case() {
         assertThat(
             ServerUrlNormalizer.areEquivalent(
-                "HTTPS://PLAY.DHIS2.ORG/DEMO",
+                "https://play.dhis2.org/DEMO",
                 "https://play.dhis2.org/demo",
             ),
-        ).isTrue()
+        ).isFalse()
     }
 
     @Test
@@ -122,12 +144,23 @@ class ServerUrlNormalizerShould {
     }
 
     @Test
-    fun areEquivalent_returns_true_for_complex_mixed_case() {
+    fun areEquivalent_returns_true_for_same_server_different_domain_case_with_api() {
         assertThat(
             ServerUrlNormalizer.areEquivalent(
-                "HTTP://Play.Dhis2.Org/Demo/API/",
+                "HTTPS://Play.Dhis2.Org/demo/api/",
                 "https://play.dhis2.org/demo",
             ),
         ).isTrue()
+    }
+
+    @Test
+    fun areEquivalent_returns_false_for_different_api_case_in_path() {
+        // /API/ is different from /api/ because path is case-sensitive
+        assertThat(
+            ServerUrlNormalizer.areEquivalent(
+                "https://play.dhis2.org/demo/API/",
+                "https://play.dhis2.org/demo/api/",
+            ),
+        ).isFalse()
     }
 }

@@ -44,8 +44,8 @@ class DatabaseNameGeneratorShould {
     fun return_name_with_server_username_hash_and_encryption_for_encrypted_db() {
         val name = generator.getDatabaseName(url, username, true)
 
-        // Should have format: <readable>_<username>_<hash>_encrypted.db
-        assertThat(name).matches("play-dhis2-org-android-current_user23_[0-9a-f]{8}_encrypted\\.db")
+        // Should have format: https-<readable>_<username>_<hash>_encrypted.db
+        assertThat(name).matches("https-play-dhis2-org-android-current_user23_[0-9a-f]{8}_encrypted\\.db")
         assertThat(name).contains("_user23_")
         assertThat(name).endsWith("_encrypted.db")
     }
@@ -54,16 +54,19 @@ class DatabaseNameGeneratorShould {
     fun return_name_with_server_username_hash_and_encryption_for_unencrypted_db() {
         val name = generator.getDatabaseName(url, username, false)
 
-        assertThat(name).matches("play-dhis2-org-android-current_user23_[0-9a-f]{8}_unencrypted\\.db")
+        assertThat(name).matches("https-play-dhis2-org-android-current_user23_[0-9a-f]{8}_unencrypted\\.db")
         assertThat(name).endsWith("_unencrypted.db")
     }
 
     @Test
-    fun return_same_name_for_http_and_https() {
+    fun return_different_name_for_http_and_https() {
         val nameHttps = generator.getDatabaseName(url, username, true)
         val nameHttp = generator.getDatabaseName(urlHttp, username, true)
 
-        assertThat(nameHttps).isEqualTo(nameHttp)
+        // HTTP and HTTPS are different servers, should have different database names
+        assertThat(nameHttps).isNotEqualTo(nameHttp)
+        assertThat(nameHttps).startsWith("https-")
+        assertThat(nameHttp).startsWith("http-")
     }
 
     @Test
@@ -98,11 +101,8 @@ class DatabaseNameGeneratorShould {
         val name1 = generator.getDatabaseName(url1, username, true)
         val name2 = generator.getDatabaseName(url2, username, true)
 
-        // These URLs should generate DIFFERENT database names
+        // These URLs should generate DIFFERENT database names (hash distinguishes them)
         assertThat(name1).isNotEqualTo(name2)
-
-        assertThat(name1).startsWith("play-dhis2-org-android-current_user23_")
-        assertThat(name2).startsWith("play-dhis2-org-android-current_user23_")
 
         val hash1 = name1.substringAfter("user23_").substringBefore("_encrypted")
         val hash2 = name2.substringAfter("user23_").substringBefore("_encrypted")
@@ -126,14 +126,26 @@ class DatabaseNameGeneratorShould {
     }
 
     @Test
-    fun return_different_names_for_case_sensitive_urls() {
+    fun return_same_name_for_different_domain_case() {
         val url1 = "https://PLAY.dhis2.org/android-current"
         val url2 = "https://play.dhis2.org/android-current"
 
         val name1 = generator.getDatabaseName(url1, username, true)
         val name2 = generator.getDatabaseName(url2, username, true)
 
-        // Different URLs (even by case) should have different hashes
+        // Domain case is normalized, so these should be equal
+        assertThat(name1).isEqualTo(name2)
+    }
+
+    @Test
+    fun return_different_name_for_different_path_case() {
+        val url1 = "https://play.dhis2.org/Android-Current"
+        val url2 = "https://play.dhis2.org/android-current"
+
+        val name1 = generator.getDatabaseName(url1, username, true)
+        val name2 = generator.getDatabaseName(url2, username, true)
+
+        // Path case is preserved, so these should be different
         assertThat(name1).isNotEqualTo(name2)
     }
 
@@ -152,8 +164,8 @@ class DatabaseNameGeneratorShould {
         @Suppress("DEPRECATION")
         val oldName = generator.getOldDatabaseName(url, username, true)
 
-        // Old format: <readable>_<username>_encrypted.db (no hash)
-        assertThat(oldName).isEqualTo("play-dhis2-org-android-current_user23_encrypted.db")
+        // Old format includes protocol prefix now but no hash
+        assertThat(oldName).isEqualTo("https-play-dhis2-org-android-current_user23_encrypted.db")
         assertThat(oldName).doesNotMatch(".*_[0-9a-f]{8}_.*")
     }
 
@@ -163,6 +175,6 @@ class DatabaseNameGeneratorShould {
         val nameWithBackslashes = generator.getDatabaseName(urlWithBackslashes, username, true)
 
         assertThat(nameWithSlashes).isEqualTo(nameWithBackslashes)
-        assertThat(nameWithSlashes).matches("play-dhis2-org-android-current_user23_[0-9a-f]{8}_encrypted\\.db")
+        assertThat(nameWithSlashes).matches("https-play-dhis2-org-android-current_user23_[0-9a-f]{8}_encrypted\\.db")
     }
 }

@@ -43,6 +43,14 @@ internal interface TrackedEntityAttributeValueDaoAux : ObjectDao<TrackedEntityAt
     fun setSyncStateByInstance(state: String, uid: String)
 
     @Query(
+        """UPDATE TrackedEntityAttributeValue 
+        SET ${TrackedEntityAttributeValueTableInfo.Columns.SYNC_STATE} = :state 
+        WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = :teiUid
+          AND ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} IN (:attributeUids)""",
+    )
+    fun setSyncStateByAttributes(state: String, teiUid: String, attributeUids: List<String>)
+
+    @Query(
         """
         DELETE FROM ${TrackedEntityAttributeValueTableInfo.TABLE_NAME}
         WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = :trackedEntityInstanceUid
@@ -103,9 +111,11 @@ internal interface TrackedEntityAttributeValueDaoAux : ObjectDao<TrackedEntityAt
         DELETE FROM ${TrackedEntityAttributeValueTableInfo.TABLE_NAME}
         WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = :trackedEntityInstanceUid
           AND ${TrackedEntityAttributeValueTableInfo.Columns.VALUE} IS NULL
+          AND ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} IN (:attributeUids)
     """,
     )
-    fun removeDeletedAttributeValuesByInstance(
+    fun removeDeletedAttributeValuesByInstanceAndAttributes(
         trackedEntityInstanceUid: String,
+        attributeUids: List<String>,
     ): Int
 }

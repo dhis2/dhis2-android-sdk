@@ -1,6 +1,6 @@
-# Rename eventStatus property to status on EventFilter class (ANDROSDK-2208)
+# Change DataInputPeriod primary key from composite (dataSet, period, openingDate, closingDate) to auto-incremental _id
 
-ALTER TABLE EventFilter RENAME TO EventFilter_Old;
-CREATE TABLE EventFilter(uid TEXT NOT NULL, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, program TEXT NOT NULL, programStage TEXT, description TEXT, followUp INTEGER, organisationUnit TEXT, ouMode TEXT, assignedUserMode TEXT, orderProperty TEXT, displayColumnOrder TEXT, events TEXT, status TEXT, eventDate TEXT, dueDate TEXT, lastUpdatedDate TEXT, completedDate TEXT, PRIMARY KEY(uid), FOREIGN KEY(program) REFERENCES Program(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(programStage) REFERENCES ProgramStage(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(organisationUnit) REFERENCES OrganisationUnit(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
-INSERT INTO EventFilter(uid, code, name, displayName, created, lastUpdated, program, programStage, description, followUp, organisationUnit, ouMode, assignedUserMode, orderProperty, displayColumnOrder, events, status, eventDate, dueDate, lastUpdatedDate, completedDate) SELECT uid, code, name, displayName, created, lastUpdated, program, programStage, description, followUp, organisationUnit, ouMode, assignedUserMode, orderProperty, displayColumnOrder, events, eventStatus, eventDate, dueDate, lastUpdatedDate, completedDate FROM EventFilter_Old;
-DROP TABLE EventFilter_Old;
+ALTER TABLE DataInputPeriod RENAME TO DataInputPeriod_Old;
+CREATE TABLE DataInputPeriod (_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, dataSet TEXT NOT NULL, period TEXT NOT NULL, openingDate TEXT, closingDate TEXT, FOREIGN KEY(dataSet) REFERENCES DataSet(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(period) REFERENCES Period(periodId) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO DataInputPeriod(_id, dataSet, period, openingDate, closingDate) SELECT NULL, dataSet, period, openingDate, closingDate FROM DataInputPeriod_Old;
+DROP TABLE IF EXISTS DataInputPeriod_Old;

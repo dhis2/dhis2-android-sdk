@@ -33,15 +33,20 @@ import org.hisp.dhis.android.core.datavalue.internal.DataValueSet
 
 @Serializable
 internal data class DataValueSetDTO(
+    val dataSet: String?,
     val dataValues: List<DataValueDTO> = emptyList(),
 ) {
     fun toDomain(): DataValueSet {
-        return DataValueSet(dataValues.map { it.toDomain() })
+        return DataValueSet(
+            dataValues = dataValues.map { it.toDomain() },
+            dataSet = dataSet,
+        )
     }
+}
 
-    companion object {
-        fun fromDomain(dataValueSet: DataValueSet): DataValueSetDTO {
-            return DataValueSetDTO(dataValueSet.dataValues.map { it.toDto() })
-        }
-    }
+internal fun DataValueSet.toDto(): DataValueSetDTO {
+    return DataValueSetDTO(
+        dataSet = this.dataSet,
+        dataValues = this.dataValues.map { it.toDto() },
+    )
 }

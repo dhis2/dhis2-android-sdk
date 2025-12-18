@@ -41,6 +41,7 @@ internal data class DataValueDTO(
     val orgUnit: String,
     val categoryOptionCombo: String,
     val attributeOptionCombo: String,
+    val dataSet: String?,
     val value: String?,
     val storedBy: String?,
     val created: String?,
@@ -49,14 +50,16 @@ internal data class DataValueDTO(
     val followup: Boolean?,
 ) : BaseDeletableDataObjectDTO {
 
+    @Suppress("ComplexMethod")
     fun toDomain(): DataValue {
         return DataValue.builder().apply {
             deleted?.let { deleted(it) }
-            dataElement.let { dataElement(it) }
-            period.let { period(it) }
-            orgUnit.let { organisationUnit(it) }
-            categoryOptionCombo.let { categoryOptionCombo(it) }
-            attributeOptionCombo.let { attributeOptionCombo(it) }
+            dataElement(dataElement)
+            period(period)
+            organisationUnit(orgUnit)
+            categoryOptionCombo(categoryOptionCombo)
+            attributeOptionCombo(attributeOptionCombo)
+            dataSet?.let { dataSet(it) }
             value?.let { value(it) }
             storedBy?.let { storedBy(it) }
             created?.let { created(DateUtils.DATE_FORMAT.parse(it)) }
@@ -75,6 +78,7 @@ internal fun DataValue.toDto(): DataValueDTO {
         orgUnit = this.organisationUnit()!!,
         categoryOptionCombo = this.categoryOptionCombo()!!,
         attributeOptionCombo = this.attributeOptionCombo()!!,
+        dataSet = this.dataSet(),
         value = this.value(),
         storedBy = this.storedBy(),
         created = null,

@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.datavalue.internal
 
+import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.hisp.dhis.android.core.arch.call.D2Progress
@@ -36,7 +37,9 @@ import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper.errorIfO
 import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper.forcedOrOwn
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
+import org.hisp.dhis.android.core.imports.internal.ImportCount
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
@@ -80,10 +83,80 @@ internal class DataValuePostCall(
     }
 
     private suspend fun executePostCall(dataValueSet: DataValueSet): Result<DataValueImportSummary, D2Error> {
-        return if (versionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_38)) {
+        return if (versionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_39)) {
+            uploadByDataSet(dataValueSet)
+        } else if (versionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_38)) {
             networkHandler.postDataValuesWebResponse(dataValueSet).map { it.response }
         } else {
             networkHandler.postDataValues(dataValueSet)
+        }
+    }
+
+    private suspend fun uploadByDataSet(dataValueSet: DataValueSet): Result<DataValueImportSummary, D2Error> {
+        val groupedByDataSet = dataValueSet.dataValues.groupBy { it.dataSet() }
+
+        // Handle values without dataSet (legacy data) - log warning but still attempt upload
+        val valuesWithoutDataSet = groupedByDataSet[null] ?: emptyList()
+        if (valuesWithoutDataSet.isNotEmpty()) {
+            Log.w("DataValuePostCall", "Found ${valuesWithoutDataSet.size} DataValue(s) without dataSet. " +
+                    "This may fail on DHIS2 v43+ servers.",
+                )
+        }
+
+        var combinedSummary: DataValueImportSummary? = null
+        for ((dataSetUid, values) in groupedByDataSet) {
+            val setWithDataSet = DataValueSet(
+                dataValues = values,
+                dataSet = dataSetUid,
+            )
+            val result = networkHandler.postDataValuesWithDataSet(setWithDataSet)
+
+            result.fold(
+                onSuccess = { webResponse ->
+                    combinedSummary = mergeSummaries(combinedSummary, webResponse.response)
+                },
+                onFailure = {
+                    return Result.Failure(it)
+                },
+            )
+        }
+
+        return Result.Success(combinedSummary ?: DataValueImportSummary.EMPTY)
+    }
+
+    @Suppress("ComplexMethod", "ReturnCount")
+    private fun mergeSummaries(
+        existing: DataValueImportSummary?,
+        newSummary: DataValueImportSummary?,
+    ): DataValueImportSummary {
+        if (existing == null) return newSummary ?: DataValueImportSummary.EMPTY
+        if (newSummary == null) return existing
+
+        val existingCounts = existing.importCount()
+        val newCounts = newSummary.importCount()
+
+        val mergedImportStatus = mergeImportStatus(existing.importStatus(), newSummary.importStatus())
+        val mergedImportCount = ImportCount.create(
+            existingCounts.imported() + newCounts.imported(),
+            existingCounts.updated() + newCounts.updated(),
+            existingCounts.ignored() + newCounts.ignored(),
+            existingCounts.deleted() + newCounts.deleted(),
+        )
+
+        return DataValueImportSummary.create(
+            mergedImportCount,
+            mergedImportStatus,
+            "ImportSummary",
+            null,
+            null,
+        )
+    }
+
+    private fun mergeImportStatus(status1: ImportStatus?, status2: ImportStatus?): ImportStatus {
+        return when {
+            status1 == ImportStatus.ERROR || status2 == ImportStatus.ERROR -> ImportStatus.ERROR
+            status1 == ImportStatus.WARNING || status2 == ImportStatus.WARNING -> ImportStatus.WARNING
+            else -> ImportStatus.SUCCESS
         }
     }
 

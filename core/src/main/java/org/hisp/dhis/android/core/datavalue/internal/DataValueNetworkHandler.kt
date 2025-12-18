@@ -41,4 +41,7 @@ internal interface DataValueNetworkHandler {
     suspend fun postDataValuesWebResponse(
         dataValueSet: DataValueSet,
     ): Result<DataValueImportSummaryWebResponse, D2Error>
+    suspend fun postDataValuesWithDataSet(
+        dataValueSet: DataValueSet,
+    ): Result<DataValueImportSummaryWebResponse, D2Error>
 }

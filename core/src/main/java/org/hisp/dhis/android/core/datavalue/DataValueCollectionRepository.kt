@@ -195,7 +195,7 @@ class DataValueCollectionRepository internal constructor(
     }
 
     fun bySyncState(): EnumFilterConnector<DataValueCollectionRepository, State> {
-        return cf.enumC<State>(DataValueTableInfo.Columns.SYNC_STATE)
+        return cf.enumC(DataValueTableInfo.Columns.SYNC_STATE)
     }
 
     fun byDeleted(): BooleanFilterConnector<DataValueCollectionRepository> {

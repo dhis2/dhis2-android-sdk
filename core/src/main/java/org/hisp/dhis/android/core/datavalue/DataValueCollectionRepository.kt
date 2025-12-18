@@ -82,6 +82,7 @@ class DataValueCollectionRepository internal constructor(
         dataElement: String,
         categoryOptionCombo: String,
         attributeOptionCombo: String,
+        dataSet: String,
     ): DataValueObjectRepository {
         val updatedScope = byPeriod().eq(period)
             .byOrganisationUnitUid().eq(organisationUnit)
@@ -97,6 +98,39 @@ class DataValueCollectionRepository internal constructor(
             dataElement,
             categoryOptionCombo,
             attributeOptionCombo,
+            dataSet,
+        )
+    }
+
+    @Deprecated(
+        message = "Use value(period, organisationUnit, dataElement, categoryOptionCombo, " +
+            "attributeOptionCombo, dataSet) instead. DataSet is required for DHIS2 v43+.",
+        replaceWith = ReplaceWith(
+            "value(period, organisationUnit, dataElement, categoryOptionCombo, attributeOptionCombo, dataSet)",
+        ),
+    )
+    fun value(
+        period: String,
+        organisationUnit: String,
+        dataElement: String,
+        categoryOptionCombo: String,
+        attributeOptionCombo: String,
+    ): DataValueObjectRepository {
+        val updatedScope = byPeriod().eq(period)
+            .byOrganisationUnitUid().eq(organisationUnit)
+            .byDataElementUid().eq(dataElement)
+            .byCategoryOptionComboUid().eq(categoryOptionCombo)
+            .byAttributeOptionComboUid().eq(attributeOptionCombo).scope
+        return DataValueObjectRepository(
+            store,
+            childrenAppenders,
+            updatedScope,
+            period,
+            organisationUnit,
+            dataElement,
+            categoryOptionCombo,
+            attributeOptionCombo,
+            null,
         )
     }
 

@@ -98,9 +98,11 @@ internal class DataValuePostCall(
         // Handle values without dataSet (legacy data) - log warning but still attempt upload
         val valuesWithoutDataSet = groupedByDataSet[null] ?: emptyList()
         if (valuesWithoutDataSet.isNotEmpty()) {
-            Log.w("DataValuePostCall", "Found ${valuesWithoutDataSet.size} DataValue(s) without dataSet. " +
+            Log.w(
+                "DataValuePostCall",
+                "Found ${valuesWithoutDataSet.size} DataValue(s) without dataSet. " +
                     "This may fail on DHIS2 v43+ servers.",
-                )
+            )
         }
 
         var combinedSummary: DataValueImportSummary? = null

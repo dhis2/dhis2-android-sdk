@@ -62,6 +62,7 @@ internal data class DataValueDB(
     val organisationUnit: String,
     val categoryOptionCombo: String,
     val attributeOptionCombo: String,
+    val dataSet: String?,
     val value: String?,
     val storedBy: String?,
     val created: String?,
@@ -79,6 +80,7 @@ internal data class DataValueDB(
             organisationUnit(organisationUnit)
             categoryOptionCombo(categoryOptionCombo)
             attributeOptionCombo(attributeOptionCombo)
+            dataSet(dataSet)
             value(value)
             storedBy(storedBy)
             created?.let { created(it.toJavaDate()!!) }
@@ -98,6 +100,7 @@ internal fun DataValue.toDB(): DataValueDB {
         organisationUnit = organisationUnit()!!,
         categoryOptionCombo = categoryOptionCombo()!!,
         attributeOptionCombo = attributeOptionCombo()!!,
+        dataSet = dataSet(),
         value = value(),
         storedBy = storedBy(),
         created = created().dateFormat(),

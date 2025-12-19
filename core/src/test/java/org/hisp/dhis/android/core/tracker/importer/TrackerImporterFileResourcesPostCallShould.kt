@@ -32,9 +32,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
 import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.fileresource.FileResourceStorageStatus
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceHelper
 import org.hisp.dhis.android.core.fileresource.internal.FileResourcePostCall
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceStorageStatusVerifier
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceUploadResult
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceValue
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceVerificationResult
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
@@ -52,6 +56,7 @@ class TrackerImporterFileResourcesPostCallShould {
 
     private val fileResourcesPostCall: FileResourcePostCall = mock()
     private val fileResourceHelper: FileResourceHelper = mock()
+    private val fileResourceStorageStatusVerifier: FileResourceStorageStatusVerifier = mock()
 
     private lateinit var fileResourcePostCall: TrackerImporterFileResourcesPostCall
 
@@ -123,14 +128,32 @@ class TrackerImporterFileResourcesPostCallShould {
         )
 
         val fValue = FileResourceValue.AttributeValue(attributeValue.trackedEntityAttribute!!)
+        val uploadedUid = Math.random().toString()
+        val uploadResult = FileResourceUploadResult(
+            originalFileResource = fileResource,
+            uploadedUid = uploadedUid,
+            value = fValue,
+            success = true,
+        )
+        val verificationResult = FileResourceVerificationResult(
+            uid = uploadedUid,
+            status = FileResourceStorageStatus.STORED,
+            isVerified = true,
+            timedOut = false,
+        )
+
         whenever(fileResourceHelper.getUploadableFileResources()).doReturn(fileResources)
         whenever(fileResourceHelper.findAttributeFileResource(attributeValue, fileResources)).doReturn(fileResource)
-        whenever(fileResourcesPostCall.uploadFileResource(fileResource, fValue))
-            .doReturn(Math.random().toString())
+        whenever(fileResourcesPostCall.uploadFileResourceWithoutUpdate(fileResource, fValue))
+            .doReturn(uploadResult)
+        whenever(fileResourceStorageStatusVerifier.verifyStorageStatusBatch(listOf(uploadedUid)))
+            .doReturn(mapOf(uploadedUid to verificationResult))
 
         val result = fileResourcePostCall.uploadFileResources(payloadWrapper)
 
-        verify(fileResourcesPostCall, times(1)).uploadFileResource(fileResource, fValue)
+        verify(fileResourcesPostCall, times(1)).uploadFileResourceWithoutUpdate(fileResource, fValue)
+        verify(fileResourceStorageStatusVerifier, times(1)).verifyStorageStatusBatch(listOf(uploadedUid))
+        verify(fileResourcesPostCall, times(1)).updateValueAfterVerification(fileResource, uploadedUid, fValue)
 
         val entityValue = result.updated.trackedEntities.first().trackedEntityAttributeValues!!.first().value!!
         val enrollmentValue = result.updated.enrollments.first().attributes!!.first().value!!
@@ -144,6 +167,7 @@ class TrackerImporterFileResourcesPostCallShould {
         fileResourcePostCall = TrackerImporterFileResourcesPostCall(
             fileResourcesPostCall,
             fileResourceHelper,
+            fileResourceStorageStatusVerifier,
         )
     }
 }

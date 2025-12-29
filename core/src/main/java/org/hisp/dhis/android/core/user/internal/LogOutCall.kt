@@ -31,6 +31,8 @@ import io.reactivex.Completable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
+import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper
+import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationInsecureStore
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
@@ -43,11 +45,14 @@ class LogOutCall internal constructor(
     private val credentialsSecureStore: CredentialsSecureStore,
     private val userIdStore: UserIdInMemoryStore,
     private val serverTimezoneManager: ServerTimezoneManager,
+    private val databaseConfigurationHelper: DatabaseConfigurationHelper,
+    private val databaseConfigurationStore: DatabaseConfigurationInsecureStore,
 ) {
 
     fun logOut(): Completable {
         return Completable.fromCallable {
-            if (credentialsSecureStore.get() == null) {
+            val credentials = credentialsSecureStore.get()
+            if (credentials == null) {
                 throw D2Error.builder()
                     .errorCode(D2ErrorCode.NO_AUTHENTICATED_USER)
                     .errorDescription("There is not any authenticated user")
@@ -55,10 +60,23 @@ class LogOutCall internal constructor(
                     .build()
             }
 
+            updateLastAccessDate(credentials.serverUrl, credentials.username)
             databaseManager.disableDatabase()
             credentialsSecureStore.remove()
             userIdStore.remove()
             serverTimezoneManager.clearCache()
+        }
+    }
+
+    private fun updateLastAccessDate(serverUrl: String, username: String) {
+        val configuration = databaseConfigurationStore.get()
+        val updatedConfiguration = databaseConfigurationHelper.updateLastAccessDate(
+            configuration,
+            serverUrl,
+            username,
+        )
+        if (updatedConfiguration != null) {
+            databaseConfigurationStore.set(updatedConfiguration)
         }
     }
 }

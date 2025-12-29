@@ -47,6 +47,7 @@ class DatabasesConfigurationHelperShould {
         .databaseName(dbName11)
         .encrypted(false)
         .databaseCreationDate(DATE)
+        .lastAccessDate(DATE)
         .build()
 
     private val userConfig12 = DatabaseAccount.builder()
@@ -55,6 +56,7 @@ class DatabasesConfigurationHelperShould {
         .databaseName(dbName12)
         .encrypted(false)
         .databaseCreationDate(DATE)
+        .lastAccessDate(DATE)
         .build()
 
     private val userConfig22 = DatabaseAccount.builder()
@@ -63,6 +65,7 @@ class DatabasesConfigurationHelperShould {
         .databaseName(dbName22)
         .encrypted(false)
         .databaseCreationDate(DATE)
+        .lastAccessDate(DATE)
         .build()
 
     private val singleServerSingleUserConfig = DatabasesConfiguration.builder()

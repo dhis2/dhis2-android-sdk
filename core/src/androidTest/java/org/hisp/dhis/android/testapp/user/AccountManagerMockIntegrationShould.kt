@@ -237,6 +237,55 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
         loginAndDeleteAccount(user2, pass2, server2)
     }
 
+    @Test
+    fun update_last_access_date_when_getting_accounts() {
+        if (d2.userModule().blockingIsLogged()) {
+            d2.userModule().blockingLogOut()
+        }
+
+        dhis2MockServer.enqueueLoginResponses()
+        d2.userModule().blockingLogIn(user1, pass1, dhis2MockServer.baseEndpoint)
+
+        val initialAccount = d2.userModule().accountManager().getCurrentAccount()
+        val initialLastAccessDate = initialAccount?.lastAccessDate()
+        assertThat(initialLastAccessDate).isNotNull()
+
+        Thread.sleep(1000)
+
+        val accounts = d2.userModule().accountManager().getAccounts()
+        val updatedAccount = accounts.find { it.username() == user1 }
+        val updatedLastAccessDate = updatedAccount?.lastAccessDate()
+
+        assertThat(updatedLastAccessDate).isNotNull()
+        assertThat(updatedLastAccessDate).isNotEqualTo(initialLastAccessDate)
+
+        loginAndDeleteAccount(user1, pass1, dhis2MockServer)
+    }
+
+    @Test
+    fun update_last_access_date_when_getting_current_account() {
+        if (d2.userModule().blockingIsLogged()) {
+            d2.userModule().blockingLogOut()
+        }
+
+        dhis2MockServer.enqueueLoginResponses()
+        d2.userModule().blockingLogIn(user1, pass1, dhis2MockServer.baseEndpoint)
+
+        val initialAccount = d2.userModule().accountManager().getCurrentAccount()
+        val initialLastAccessDate = initialAccount?.lastAccessDate()
+        assertThat(initialLastAccessDate).isNotNull()
+
+        Thread.sleep(1000)
+
+        val updatedAccount = d2.userModule().accountManager().getCurrentAccount()
+        val updatedLastAccessDate = updatedAccount?.lastAccessDate()
+
+        assertThat(updatedLastAccessDate).isNotNull()
+        assertThat(updatedLastAccessDate).isNotEqualTo(initialLastAccessDate)
+
+        loginAndDeleteAccount(user1, pass1, dhis2MockServer)
+    }
+
     private fun addDataValue() {
         val period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodTypeAndDate(PeriodType.Yearly, Date())
         val orgunit = d2.organisationUnitModule().organisationUnits().one().blockingGet()!!

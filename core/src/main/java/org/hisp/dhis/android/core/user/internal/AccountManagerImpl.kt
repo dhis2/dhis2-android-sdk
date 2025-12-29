@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationInsecureStore
+import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
@@ -56,6 +57,7 @@ internal class AccountManagerImpl(
     private val credentialsSecureStore: CredentialsSecureStore,
     private val logOutCall: LogOutCall,
     private val context: Context,
+    private val databaseConfigurationHelper: DatabaseConfigurationHelper,
 ) : AccountManager {
     private val accountDeletionSubject = PublishSubject.create<AccountDeletionReason>()
 
@@ -64,8 +66,8 @@ internal class AccountManagerImpl(
     }
 
     suspend fun getAccountsInternal(): List<DatabaseAccount> {
-        val accounts = databasesConfigurationStore.get()?.accounts() ?: emptyList()
-        return accounts
+        val configuration = updateCurrentAccountLastAccessDate()
+        return configuration?.accounts() ?: emptyList()
     }
 
     override fun getCurrentAccount(): DatabaseAccount? {
@@ -73,8 +75,9 @@ internal class AccountManagerImpl(
     }
 
     suspend fun getCurrentAccountInternal(): DatabaseAccount? {
-        return credentialsSecureStore.get()
-            ?.let { multiUserDatabaseManager.getAccount(it.serverUrl, it.username) }
+        val credentials = credentialsSecureStore.get() ?: return null
+        val configuration = updateCurrentAccountLastAccessDate()
+        return DatabaseConfigurationHelper.getAccount(configuration, credentials.serverUrl, credentials.username)
     }
 
     override fun setMaxAccounts(maxAccounts: Int?) {
@@ -159,5 +162,23 @@ internal class AccountManagerImpl(
 
     override fun accountDeletionObservable(): Observable<AccountDeletionReason> {
         return accountDeletionSubject
+    }
+
+    private fun updateCurrentAccountLastAccessDate(): DatabasesConfiguration? {
+        val credentials = credentialsSecureStore.get()
+        val configuration = databasesConfigurationStore.get()
+
+        if (credentials != null && configuration != null) {
+            val updatedConfiguration = databaseConfigurationHelper.updateLastAccessDate(
+                configuration,
+                credentials.serverUrl,
+                credentials.username,
+            )
+            if (updatedConfiguration != null) {
+                databasesConfigurationStore.set(updatedConfiguration)
+                return updatedConfiguration
+            }
+        }
+        return configuration
     }
 }

@@ -4081,6 +4081,7 @@ public abstract class org/hisp/dhis/android/core/configuration/internal/Database
 	public abstract fun databaseName ()Ljava/lang/String;
 	public abstract fun encrypted ()Z
 	public abstract fun importDB ()Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccountImport;
+	public abstract fun lastAccessDate ()Ljava/lang/String;
 	public abstract fun loginConfig ()Lorg/hisp/dhis/android/core/server/LoginConfig;
 	public abstract fun serverUrl ()Ljava/lang/String;
 	public abstract fun syncState ()Lorg/hisp/dhis/android/core/common/State;
@@ -4095,6 +4096,7 @@ public abstract class org/hisp/dhis/android/core/configuration/internal/Database
 	public abstract fun databaseName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount$Builder;
 	public abstract fun encrypted (Z)Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount$Builder;
 	public abstract fun importDB (Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccountImport;)Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount$Builder;
+	public abstract fun lastAccessDate (Ljava/lang/String;)Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount$Builder;
 	public abstract fun loginConfig (Lorg/hisp/dhis/android/core/server/LoginConfig;)Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount$Builder;
 	public abstract fun serverUrl (Ljava/lang/String;)Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount$Builder;
 	public abstract fun syncState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount$Builder;

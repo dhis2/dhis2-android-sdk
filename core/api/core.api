@@ -1725,7 +1725,6 @@ public synthetic class org/hisp/dhis/android/core/arch/db/access/DatabaseExportM
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lorg/hisp/dhis/android/core/arch/db/access/DatabaseExportMetadata;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class org/hisp/dhis/android/core/arch/db/access/DatabaseExportMetadata$Companion {
@@ -10211,7 +10210,6 @@ public synthetic class org/hisp/dhis/android/core/sms/domain/repository/WebApiRe
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lorg/hisp/dhis/android/core/sms/domain/repository/WebApiRepository$GetMetadataIdsConfig;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class org/hisp/dhis/android/core/sms/domain/repository/WebApiRepository$GetMetadataIdsConfig$Companion {

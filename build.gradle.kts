@@ -32,6 +32,7 @@ plugins {
     alias(libs.plugins.dokka)
     alias(libs.plugins.nexus.publish)
     alias(libs.plugins.cyclonedx)
+    alias(libs.plugins.room) apply false
 }
 
 allprojects {

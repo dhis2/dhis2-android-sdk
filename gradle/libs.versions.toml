@@ -22,7 +22,7 @@ libraryDesugaring = "2.1.4"
 # android
 annotation = "1.9.1"
 paging = "3.3.6"
-androidx-room = "2.7.2"
+androidx-room = "2.8.4"
 
 # java
 autoValue = "1.11.0"

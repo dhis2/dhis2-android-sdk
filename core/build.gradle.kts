@@ -35,6 +35,7 @@ plugins {
     id("kotlin-kapt")
     id("maven-publish-conventions")
     id("jacoco-conventions")
+    alias(libs.plugins.room)
     alias(libs.plugins.ksp)
     alias(libs.plugins.detekt)
     alias(libs.plugins.sonarqube)
@@ -68,6 +69,10 @@ tasks.configureEach {
     if (name.startsWith("pre") && name.endsWith("AndroidTestBuild")) {
         dependsOn(copySharedTestResourcesToAndroidTest)
     }
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 android {
@@ -227,7 +232,6 @@ dependencies {
 
 ksp {
     arg("migrationDir", "$rootDir/core/src/main/assets/migrations")
-    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 detekt {

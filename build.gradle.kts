@@ -100,7 +100,7 @@ subprojects {
     apply(plugin = "org.jetbrains.dokka")
 
     configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
-        version.set("1.5.0")
+        version.set("0.50.0")
         android.set(true)
         outputColorName.set("RED")
         reporters {

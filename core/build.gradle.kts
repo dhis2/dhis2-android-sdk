@@ -236,7 +236,7 @@ ksp {
 
 detekt {
     toolVersion = libs.versions.detekt.get()
-    config = files("config/detekt.yml")
+    config.setFrom(files("config/detekt.yml"))
     parallel = true
     buildUponDefaultConfig = false
 }

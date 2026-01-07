@@ -50,7 +50,7 @@ import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
 import org.hisp.dhis.android.persistence.datavalue.DataValueTableInfo
 import org.koin.core.annotation.Singleton
 
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions", "LongParameterList")
 @Singleton
 class DataValueCollectionRepository internal constructor(
     private val store: DataValueStore,

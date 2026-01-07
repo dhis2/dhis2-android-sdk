@@ -193,4 +193,46 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
         assertThat(objectRepository.blockingExists()).isTrue()
         assertThat(objectRepository.blockingGet()!!.value()).isEqualTo("10")
     }
+
+    @Test
+    fun return_data_value_object_repository_with_dataset() {
+        val objectRepository = d2.dataValueModule().dataValues()
+            .value(
+                "2018",
+                "DiszpKrYNg8",
+                "g9eOBujte1U",
+                "Gmbgme7z9BF",
+                "bRowv6yZOF2",
+                "lyLU2wR22tC",
+            )
+
+        assertThat(objectRepository.blockingExists()).isFalse()
+    }
+
+    @Test
+    fun create_data_value_with_dataset() {
+        val objectRepository = d2.dataValueModule().dataValues()
+            .value(
+                "202501",
+                "DiszpKrYNg8",
+                "g9eOBujte1U",
+                "Gmbgme7z9BF",
+                "bRowv6yZOF2",
+                "lyLU2wR22tC",
+            )
+
+        assertThat(objectRepository.blockingExists()).isFalse()
+
+        objectRepository.blockingSet("test_value")
+
+        assertThat(objectRepository.blockingExists()).isTrue()
+        val dataValue = objectRepository.blockingGet()!!
+        assertThat(dataValue.value()).isEqualTo("test_value")
+        assertThat(dataValue.dataSet()).isEqualTo("lyLU2wR22tC")
+        assertThat(dataValue.syncState()).isEqualTo(State.TO_POST)
+
+        // Cleanup
+        objectRepository.blockingDelete()
+        assertThat(objectRepository.blockingExists()).isFalse()
+    }
 }

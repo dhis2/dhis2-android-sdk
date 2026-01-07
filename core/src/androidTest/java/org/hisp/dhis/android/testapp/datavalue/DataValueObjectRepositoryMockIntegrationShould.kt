@@ -156,6 +156,21 @@ class DataValueObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
         assertThat(repository.blockingExists()).isFalse()
     }
 
+    @Test
+    fun preserve_dataset_when_updating_value() = runTest {
+        val repository = objectRepository()
+        repository.blockingSet("initial_value")
+
+        assertThat(repository.blockingGet()!!.value()).isEqualTo("initial_value")
+        assertThat(repository.blockingGet()!!.dataSet()).isEqualTo("lyLU2wR22tC")
+
+        repository.blockingSet("updated_value")
+
+        assertThat(repository.blockingGet()!!.value()).isEqualTo("updated_value")
+        assertThat(repository.blockingGet()!!.dataSet()).isEqualTo("lyLU2wR22tC")
+        repository.blockingDelete()
+    }
+
     private fun objectRepository(): DataValueObjectRepository {
         return d2.dataValueModule().dataValues()
             .value(
@@ -164,6 +179,7 @@ class DataValueObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
                 "g9eOBujte1U",
                 "Gmbgme7z9BF",
                 "bRowv6yZOF2",
+                "lyLU2wR22tC",
             )
     }
 

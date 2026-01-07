@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.configuration.internal
 
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.server.LoginConfig
 import org.koin.core.annotation.Singleton
 
@@ -93,6 +94,19 @@ internal class DatabaseConfigurationHelper(
     }
 
     fun updateLastAccessDate(
+        store: ObjectKeyValueStore<DatabasesConfiguration>,
+        serverUrl: String,
+        username: String,
+    ): DatabasesConfiguration? {
+        val configuration = store.get()
+        val updatedConfiguration = updateLastAccessDate(configuration, serverUrl, username)
+        if (updatedConfiguration != null) {
+            store.set(updatedConfiguration)
+        }
+        return updatedConfiguration
+    }
+
+    private fun updateLastAccessDate(
         configuration: DatabasesConfiguration?,
         serverUrl: String,
         username: String,

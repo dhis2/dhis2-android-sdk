@@ -265,15 +265,7 @@ internal class RoomMultiUserDatabaseManager(
     }
 
     private fun updateLastAccessDate(serverUrl: String, username: String) {
-        val configuration = databaseConfigurationSecureStore.get()
-        val updatedConfiguration = configurationHelper.updateLastAccessDate(
-            configuration,
-            serverUrl,
-            username,
-        )
-        if (updatedConfiguration != null) {
-            databaseConfigurationSecureStore.set(updatedConfiguration)
-        }
+        configurationHelper.updateLastAccessDate(databaseConfigurationSecureStore, serverUrl, username)
     }
 
     private fun removeExceedingAccounts() {

@@ -166,19 +166,14 @@ internal class AccountManagerImpl(
 
     private fun updateCurrentAccountLastAccessDate(): DatabasesConfiguration? {
         val credentials = credentialsSecureStore.get()
-        val configuration = databasesConfigurationStore.get()
-
-        if (credentials != null && configuration != null) {
-            val updatedConfiguration = databaseConfigurationHelper.updateLastAccessDate(
-                configuration,
+        return if (credentials != null) {
+            databaseConfigurationHelper.updateLastAccessDate(
+                databasesConfigurationStore,
                 credentials.serverUrl,
                 credentials.username,
-            )
-            if (updatedConfiguration != null) {
-                databasesConfigurationStore.set(updatedConfiguration)
-                return updatedConfiguration
-            }
+            ) ?: databasesConfigurationStore.get()
+        } else {
+            databasesConfigurationStore.get()
         }
-        return configuration
     }
 }

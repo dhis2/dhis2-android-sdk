@@ -69,14 +69,6 @@ class LogOutCall internal constructor(
     }
 
     private fun updateLastAccessDate(serverUrl: String, username: String) {
-        val configuration = databaseConfigurationStore.get()
-        val updatedConfiguration = databaseConfigurationHelper.updateLastAccessDate(
-            configuration,
-            serverUrl,
-            username,
-        )
-        if (updatedConfiguration != null) {
-            databaseConfigurationStore.set(updatedConfiguration)
-        }
+        databaseConfigurationHelper.updateLastAccessDate(databaseConfigurationStore, serverUrl, username)
     }
 }

@@ -99,14 +99,14 @@ internal class DatabaseConfigurationHelper(
         username: String,
     ): DatabasesConfiguration? {
         val configuration = store.get()
-        val updatedConfiguration = updateLastAccessDate(configuration, serverUrl, username)
+        val updatedConfiguration = updateAccountLastAccessDate(configuration, serverUrl, username)
         if (updatedConfiguration != null) {
             store.set(updatedConfiguration)
         }
         return updatedConfiguration
     }
 
-    private fun updateLastAccessDate(
+    private fun updateAccountLastAccessDate(
         configuration: DatabasesConfiguration?,
         serverUrl: String,
         username: String,

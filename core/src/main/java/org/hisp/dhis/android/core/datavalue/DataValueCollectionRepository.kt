@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.datavalue
 import io.reactivex.Observable
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
@@ -42,6 +43,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.dataset.internal.DataSetElementStore
 import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper.dataValueKey
 import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper.operator
 import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper.whereClause
@@ -56,12 +58,13 @@ class DataValueCollectionRepository internal constructor(
     private val store: DataValueStore,
     scope: RepositoryScope,
     private val postCall: DataValuePostCall,
+    private val dataSetElementStore: DataSetElementStore,
 ) : ReadOnlyCollectionRepositoryImpl<DataValue, DataValueCollectionRepository>(
     store,
     childrenAppenders,
     scope,
     FilterConnectorFactory(scope) { s: RepositoryScope ->
-        DataValueCollectionRepository(store, s, postCall)
+        DataValueCollectionRepository(store, s, postCall, dataSetElementStore)
     },
 ),
     ReadOnlyWithUploadCollectionRepository<DataValue> {
@@ -87,6 +90,7 @@ class DataValueCollectionRepository internal constructor(
         val updatedScope = byPeriod().eq(period)
             .byOrganisationUnitUid().eq(organisationUnit)
             .byDataElementUid().eq(dataElement)
+            .byDataSetUid(dataSet)
             .byCategoryOptionComboUid().eq(categoryOptionCombo)
             .byAttributeOptionComboUid().eq(attributeOptionCombo).scope
         return DataValueObjectRepository(
@@ -116,22 +120,26 @@ class DataValueCollectionRepository internal constructor(
         categoryOptionCombo: String,
         attributeOptionCombo: String,
     ): DataValueObjectRepository {
-        val updatedScope = byPeriod().eq(period)
-            .byOrganisationUnitUid().eq(organisationUnit)
-            .byDataElementUid().eq(dataElement)
-            .byCategoryOptionComboUid().eq(categoryOptionCombo)
-            .byAttributeOptionComboUid().eq(attributeOptionCombo).scope
-        return DataValueObjectRepository(
-            store,
-            childrenAppenders,
-            updatedScope,
-            period,
-            organisationUnit,
-            dataElement,
-            categoryOptionCombo,
-            attributeOptionCombo,
-            null,
-        )
+        return runBlocking {
+            val dataSet = dataSetElementStore.getFirstDataSetForDataElement(dataElement)
+            val updatedScope = byPeriod().eq(period)
+                .byOrganisationUnitUid().eq(organisationUnit)
+                .byDataElementUid().eq(dataElement)
+                .byDataSetUid(dataSet)
+                .byCategoryOptionComboUid().eq(categoryOptionCombo)
+                .byAttributeOptionComboUid().eq(attributeOptionCombo).scope
+            DataValueObjectRepository(
+                store,
+                childrenAppenders,
+                updatedScope,
+                period,
+                organisationUnit,
+                dataElement,
+                categoryOptionCombo,
+                attributeOptionCombo,
+                dataSet,
+            )
+        }
     }
 
     fun byDataElementUid(): StringFilterConnector<DataValueCollectionRepository> {

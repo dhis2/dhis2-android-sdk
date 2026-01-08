@@ -54,4 +54,13 @@ internal class DataSetDataElementLinkStoreImpl(
         val selectStatement = builder.selectWhere(whereClause)
         return selectRawQuery(selectStatement)
     }
+
+    override suspend fun getFirstDataSetForDataElement(dataElementUid: String): String? {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(DataSetDataElementLinkTableInfo.Columns.DATA_ELEMENT, dataElementUid)
+            .build()
+        val orderBy = "${DataSetDataElementLinkTableInfo.Columns.DATA_SET} ASC"
+        val selectStatement = builder.selectWhere(whereClause, orderBy, 1)
+        return selectRawQuery(selectStatement).firstOrNull()?.dataSet()?.uid()
+    }
 }

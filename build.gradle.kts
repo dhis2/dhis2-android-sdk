@@ -145,3 +145,10 @@ sonarqube {
         }
     }
 }
+
+// Ensure :annotations is built before SonarQube tries to resolve it
+subprojects {
+    tasks.matching { it.name == "sonarResolver" }.configureEach {
+        dependsOn(":annotations:build")
+    }
+}

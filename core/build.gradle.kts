@@ -151,14 +151,7 @@ dependencies {
     coreLibraryDesugaring(libs.desugaring)
 
     ksp(project(":processor"))
-    compileOnly(project(":annotations")) {
-        attributes {
-            attribute(
-                org.gradle.api.attributes.java.TargetJvmEnvironment.TARGET_JVM_ENVIRONMENT_ATTRIBUTE,
-                objects.named(org.gradle.api.attributes.java.TargetJvmEnvironment::class.java, "standard-jvm"),
-            )
-        }
-    }
+    compileOnly(project(":annotations"))
 
     // RxJava
     api(libs.rx.java)
@@ -277,6 +270,13 @@ tasks.withType<DokkaTask>().configureEach {
 
 tasks.dokkaJavadoc.configure {
     dependsOn("kaptReleaseKotlin")
+}
+
+// Workaround for SonarQube trying to resolve compileOnly dependencies
+configurations.configureEach {
+    if (name.contains("CompileClasspath") && name.contains("debug", ignoreCase = true)) {
+        exclude(group = "org.hisp.dhis", module = "annotations")
+    }
 }
 
 sonarqube {

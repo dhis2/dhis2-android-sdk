@@ -151,7 +151,14 @@ dependencies {
     coreLibraryDesugaring(libs.desugaring)
 
     ksp(project(":processor"))
-    compileOnly(project(":annotations"))
+    compileOnly(project(":annotations")) {
+        attributes {
+            attribute(
+                org.gradle.api.attributes.java.TargetJvmEnvironment.TARGET_JVM_ENVIRONMENT_ATTRIBUTE,
+                objects.named(org.gradle.api.attributes.java.TargetJvmEnvironment::class.java, "standard-jvm"),
+            )
+        }
+    }
 
     // RxJava
     api(libs.rx.java)

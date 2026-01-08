@@ -32,6 +32,7 @@ plugins {
     alias(libs.plugins.dokka)
     alias(libs.plugins.nexus.publish)
     alias(libs.plugins.cyclonedx)
+    alias(libs.plugins.sonarqube)
     alias(libs.plugins.room) apply false
 }
 
@@ -120,6 +121,27 @@ nexusPublishing {
             snapshotRepositoryUrl.set(uri("https://central.sonatype.com/repository/maven-snapshots/"))
             username.set(nexusUsername)
             password.set(nexusPassword)
+        }
+    }
+}
+
+sonarqube {
+    properties {
+        val branch = System.getenv("GIT_BRANCH")
+        val targetBranch = System.getenv("GIT_BRANCH_DEST")
+        val pullRequestId = System.getenv("PULL_REQUEST")
+
+        property("sonar.projectKey", "dhis2_dhis2-android-sdk")
+        property("sonar.organization", "dhis2")
+        property("sonar.host.url", "https://sonarcloud.io")
+        property("sonar.projectName", "dhis2-android-sdk")
+
+        if (pullRequestId == null) {
+            property("sonar.branch.name", branch)
+        } else {
+            property("sonar.pullrequest.base", targetBranch)
+            property("sonar.pullrequest.branch", branch)
+            property("sonar.pullrequest.key", pullRequestId)
         }
     }
 }

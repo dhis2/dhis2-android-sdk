@@ -147,9 +147,14 @@ sonarqube {
     }
 }
 
-// Ensure :annotations is built before SonarQube tries to resolve it
+// Ensure modules are built before SonarQube tries to resolve them
 subprojects {
     tasks.matching { it.name == "sonarResolver" }.configureEach {
         dependsOn(":annotations:build")
     }
+}
+
+// Ensure core is compiled before running sonarqube analysis
+tasks.named("sonarqube").configure {
+    dependsOn(":core:assembleDebug")
 }

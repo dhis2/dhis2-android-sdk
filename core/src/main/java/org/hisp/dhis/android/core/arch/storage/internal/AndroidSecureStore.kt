@@ -235,7 +235,7 @@ class AndroidSecureStore(context: Context) : SecureStore {
         return D2Error.builder()
             .errorComponent(D2ErrorComponent.SDK)
             .errorCode(d2ErrorCode)
-            .errorDescription(ex.message)
+            .errorDescription(ex.message ?: "KeyStore error")
             .originalException(ex)
             .created(Date())
             .build()

@@ -135,7 +135,7 @@ sonarqube {
         property("sonar.organization", "dhis2")
         property("sonar.host.url", "https://sonarcloud.io")
         property("sonar.projectName", "dhis2-android-sdk")
-        property("sonar.java.binaries", "core/build/intermediates/javac/debug/classes,annotations/build/classes/kotlin/main,processor/build/classes/kotlin/main")
+        property("sonar.java.binaries", "core/build/intermediates/javac/debug/classes")
 
         if (pullRequestId == null) {
             property("sonar.branch.name", branch)

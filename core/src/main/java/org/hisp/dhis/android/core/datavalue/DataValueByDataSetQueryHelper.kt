@@ -35,6 +35,7 @@ import org.hisp.dhis.android.persistence.dataset.DataSetOrganisationUnitLinkTabl
 import org.hisp.dhis.android.persistence.dataset.DataSetTableInfo
 import org.hisp.dhis.android.persistence.datavalue.DataValueConflictTableInfo
 import org.hisp.dhis.android.persistence.datavalue.DataValueTableInfo
+import org.hisp.dhis.android.persistence.period.PeriodTableInfo
 
 internal object DataValueByDataSetQueryHelper {
 
@@ -63,6 +64,11 @@ internal object DataValueByDataSetQueryHelper {
 
     private const val DSOU_DATASET = "$DSOU_ALIAS.${DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET}"
     private const val DSOU_ORGUNIT = "$DSOU_ALIAS.${DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT}"
+
+    private const val P_ALIAS = "p"
+    private const val P_PERIOD_ID = "$P_ALIAS.${PeriodTableInfo.Columns.PERIOD_ID}"
+    private const val P_PERIOD_TYPE = "$P_ALIAS.${PeriodTableInfo.Columns.PERIOD_TYPE}"
+    private const val DS_PERIOD_TYPE = "$DS_ALIAS.${DataSetTableInfo.Columns.PERIOD_TYPE}"
 
     val dataValueKey = buildKey(
         DataValueTableInfo.Columns.DATA_ELEMENT,
@@ -95,6 +101,45 @@ internal object DataValueByDataSetQueryHelper {
             INNER JOIN ${DataSetOrganisationUnitLinkTableInfo.TABLE_INFO.name()} $DSOU_ALIAS
                 ON $DS_UID = $DSOU_DATASET
             WHERE $DSE_DATASET = '$dataSetUid'
+        """.trimIndent().replace("\n", " ")
+
+    /**
+     * Finds the first valid DataSet (alphabetically by UID) for a DataValue.
+     * A DataSet is valid if:
+     * 1. The dataElement belongs to the DataSet (via DataSetDataElementLink)
+     * 2. The organisationUnit is assigned to the DataSet (via DataSetOrganisationUnitLink)
+     * 3. The attributeOptionCombo belongs to the DataSet's categoryCombo
+     * 4. The categoryOptionCombo belongs to the DataSetElement's categoryCombo (or DataElement's if null)
+     * 5. The period's periodType matches the DataSet's periodType
+     */
+    fun firstValidDataSetQuery(
+        dataElementUid: String,
+        periodId: String,
+        organisationUnitUid: String,
+        categoryOptionComboUid: String,
+        attributeOptionComboUid: String,
+    ): String =
+        """SELECT $DS_UID
+            FROM ${DataSetTableInfo.TABLE_INFO.name()} $DS_ALIAS
+            INNER JOIN ${DataSetDataElementLinkTableInfo.TABLE_INFO.name()} $DSE_ALIAS
+                ON $DSE_DATASET = $DS_UID
+            INNER JOIN ${DataElementTableInfo.TABLE_INFO.name()} $DE_ALIAS
+                ON $DE_UID = $DSE_DATAELEMENT
+            INNER JOIN ${DataSetOrganisationUnitLinkTableInfo.TABLE_INFO.name()} $DSOU_ALIAS
+                ON $DSOU_DATASET = $DS_UID
+            INNER JOIN ${CategoryOptionComboTableInfo.TABLE_INFO.name()} $AOC_ALIAS
+                ON ${CategoryOptionComboTableInfo.Columns.UID} = '$attributeOptionComboUid'
+            INNER JOIN ${CategoryOptionComboTableInfo.TABLE_INFO.name()} $COC_ALIAS
+                ON ${CategoryOptionComboTableInfo.Columns.UID} = '$categoryOptionComboUid'
+            INNER JOIN ${PeriodTableInfo.TABLE_INFO.name()} $P_ALIAS
+                ON $P_PERIOD_ID = '$periodId'
+            WHERE $DSE_DATAELEMENT = '$dataElementUid'
+              AND $DSOU_ORGUNIT = '$organisationUnitUid'
+              AND $AOC_CATEGORYCOMBO = $DS_CATEGORYCOMBO
+              AND $COC_CATEGORYCOMBO = COALESCE($DSE_CATEGORYCOMBO, $DE_CATEGORYCOMBO)
+              AND $P_PERIOD_TYPE = $DS_PERIOD_TYPE
+            ORDER BY $DS_UID ASC
+            LIMIT 1
         """.trimIndent().replace("\n", " ")
 
     /*

@@ -121,7 +121,13 @@ class DataValueCollectionRepository internal constructor(
         attributeOptionCombo: String,
     ): DataValueObjectRepository {
         return runBlocking {
-            val dataSet = dataSetElementStore.getFirstDataSetForDataElement(dataElement)
+            val dataSet = dataSetElementStore.getFirstValidDataSet(
+                dataElementUid = dataElement,
+                periodId = period,
+                organisationUnitUid = organisationUnit,
+                categoryOptionComboUid = categoryOptionCombo,
+                attributeOptionComboUid = attributeOptionCombo,
+            )
             var scopeBuilder = byPeriod().eq(period)
                 .byOrganisationUnitUid().eq(organisationUnit)
                 .byDataElementUid().eq(dataElement)

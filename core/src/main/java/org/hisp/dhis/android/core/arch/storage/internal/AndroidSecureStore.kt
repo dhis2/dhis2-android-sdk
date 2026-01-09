@@ -93,24 +93,11 @@ class AndroidSecureStore(context: Context) : SecureStore {
 
     @Suppress("MagicNumber", "ThrowsCount")
     private fun generateKeys(ks: KeyStore, context: Context) {
-        val spec = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            // Create a start and end time, for the validity range of the key pair that's about to be
-            // generated.
-            val start = ClockProviderFactory.clockProvider.clock.now()
-            val end = start.plus(10, DateTimeUnit.YEAR, TimeZone.currentSystemDefault())
+        val spec = KeyGenParameterSpec.Builder(ALIAS, KeyProperties.PURPOSE_DECRYPT or KeyProperties.PURPOSE_ENCRYPT)
+            .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
+            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
+            .build()
 
-            KeyPairGeneratorSpec.Builder(context)
-                .setAlias(ALIAS)
-                .setSubject(X500Principal("CN=$ALIAS"))
-                .setSerialNumber(BigInteger.valueOf(1337))
-                .setStartDate(start.toJavaDate()).setEndDate(end.toJavaDate())
-                .build()
-        } else {
-            KeyGenParameterSpec.Builder(ALIAS, KeyProperties.PURPOSE_DECRYPT or KeyProperties.PURPOSE_ENCRYPT)
-                .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
-                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
-                .build()
-        }
 
         try {
             val kpGenerator = KeyPairGenerator.getInstance(KEY_ALGORITHM_RSA, KEYSTORE_PROVIDER_ANDROID_KEYSTORE)

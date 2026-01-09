@@ -29,22 +29,14 @@ package org.hisp.dhis.android.core.arch.storage.internal
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Build
-import android.security.KeyPairGeneratorSpec
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
 import android.util.Log
-import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.plus
-import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
-import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 import java.io.IOException
-import java.math.BigInteger
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 import java.security.InvalidAlgorithmParameterException
@@ -64,7 +56,6 @@ import javax.crypto.BadPaddingException
 import javax.crypto.Cipher
 import javax.crypto.IllegalBlockSizeException
 import javax.crypto.NoSuchPaddingException
-import javax.security.auth.x500.X500Principal
 
 @Suppress("TooGenericExceptionThrown", "TooGenericExceptionCaught")
 class AndroidSecureStore(context: Context) : SecureStore {
@@ -250,11 +241,7 @@ class AndroidSecureStore(context: Context) : SecureStore {
         private val cipherInstance: Cipher
             get() {
                 try {
-                    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        Cipher.getInstance(RSA_ECB_PKCS1_PADDING, KEY_CIPHER_MARSHMALLOW_PROVIDER)
-                    } else {
-                        Cipher.getInstance(RSA_ECB_PKCS1_PADDING, KEY_CIPHER_JELLYBEAN_PROVIDER)
-                    }
+                    return Cipher.getInstance(RSA_ECB_PKCS1_PADDING, KEY_CIPHER_MARSHMALLOW_PROVIDER)
                 } catch (exception: Exception) {
                     throw RuntimeException("getCipher: Failed to get an instance of Cipher", exception)
                 }

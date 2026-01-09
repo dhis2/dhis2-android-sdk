@@ -19,24 +19,12 @@ CREATE UNIQUE INDEX teisync_program_orgunit_workinglists ON TrackedEntityInstanc
 CREATE UNIQUE INDEX eventsync_program_orgunit_workinglists ON EventSync(program, organisationUnitIdsHash, workingListsHash);
 
 
-# Add dataSet column to DataValue table (ANDROSDK-2219)
+# Add dataSet column with FK constraint to DataValue table (ANDROSDK-2219)
 
-ALTER TABLE DataValue ADD COLUMN dataSet TEXT;
-UPDATE DataValue SET dataSet = (
-    SELECT ds.uid
-    FROM DataSet ds
-    INNER JOIN DataSetDataElementLink dsdel ON dsdel.dataSet = ds.uid
-    INNER JOIN DataElement de ON de.uid = dsdel.dataElement
-    INNER JOIN DataSetOrganisationUnitLink dsoul ON dsoul.dataSet = ds.uid
-    INNER JOIN CategoryOptionCombo aoc ON aoc.uid = DataValue.attributeOptionCombo
-    INNER JOIN CategoryOptionCombo coc ON coc.uid = DataValue.categoryOptionCombo
-    INNER JOIN Period p ON p.periodId = DataValue.period
-    WHERE dsdel.dataElement = DataValue.dataElement
-      AND dsoul.organisationUnit = DataValue.organisationUnit
-      AND aoc.categoryCombo = ds.categoryCombo
-      AND coc.categoryCombo = COALESCE(dsdel.categoryCombo, de.categoryCombo)
-      AND p.periodType = ds.periodType
-    ORDER BY ds.uid ASC
-    LIMIT 1
-) WHERE dataSet IS NULL;
+ALTER TABLE DataValue RENAME TO DataValue_Old;
+CREATE TABLE DataValue(_id INTEGER PRIMARY KEY AUTOINCREMENT, dataElement TEXT NOT NULL, period TEXT NOT NULL, organisationUnit TEXT NOT NULL, categoryOptionCombo TEXT NOT NULL, attributeOptionCombo TEXT NOT NULL, dataSet TEXT, value TEXT, storedBy TEXT, created TEXT, lastUpdated TEXT, comment TEXT, followUp INTEGER, syncState TEXT, deleted INTEGER, FOREIGN KEY (dataElement) REFERENCES DataElement (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (period) REFERENCES Period (periodId) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (organisationUnit) REFERENCES OrganisationUnit (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (categoryOptionCombo) REFERENCES CategoryOptionCombo (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (attributeOptionCombo) REFERENCES CategoryOptionCombo (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY (dataSet) REFERENCES DataSet (uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, UNIQUE (dataElement, period, organisationUnit, categoryOptionCombo, attributeOptionCombo));
+INSERT INTO DataValue(_id, dataElement, period, organisationUnit, categoryOptionCombo, attributeOptionCombo, dataSet, value, storedBy, created, lastUpdated, comment, followUp, syncState, deleted) SELECT _id, dataElement, period, organisationUnit, categoryOptionCombo, attributeOptionCombo,
+    (SELECT ds.uid FROM DataSet ds INNER JOIN DataSetDataElementLink dsdel ON dsdel.dataSet = ds.uid INNER JOIN DataElement de ON de.uid = dsdel.dataElement INNER JOIN DataSetOrganisationUnitLink dsoul ON dsoul.dataSet = ds.uid INNER JOIN CategoryOptionCombo aoc ON aoc.uid = DataValue_Old.attributeOptionCombo INNER JOIN CategoryOptionCombo coc ON coc.uid = DataValue_Old.categoryOptionCombo INNER JOIN Period p ON p.periodId = DataValue_Old.period WHERE dsdel.dataElement = DataValue_Old.dataElement AND dsoul.organisationUnit = DataValue_Old.organisationUnit AND aoc.categoryCombo = ds.categoryCombo AND coc.categoryCombo = COALESCE(dsdel.categoryCombo, de.categoryCombo) AND p.periodType = ds.periodType ORDER BY ds.uid ASC LIMIT 1) AS dataSet,
+    value, storedBy, created, lastUpdated, comment, followUp, syncState, deleted FROM DataValue_Old;
+DROP TABLE IF EXISTS DataValue_Old;
 

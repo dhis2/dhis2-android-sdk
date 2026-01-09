@@ -12,6 +12,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.SyncStateDB
 import org.hisp.dhis.android.persistence.common.toDB
 import org.hisp.dhis.android.persistence.dataelement.DataElementDB
+import org.hisp.dhis.android.persistence.dataset.DataSetDB
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitDB
 import org.hisp.dhis.android.persistence.period.PeriodDB
 
@@ -50,6 +51,13 @@ import org.hisp.dhis.android.persistence.period.PeriodDB
             entity = CategoryOptionComboDB::class,
             parentColumns = ["uid"],
             childColumns = ["attributeOptionCombo"],
+            onDelete = ForeignKey.CASCADE,
+            deferred = true,
+        ),
+        ForeignKey(
+            entity = DataSetDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["dataSet"],
             onDelete = ForeignKey.CASCADE,
             deferred = true,
         ),

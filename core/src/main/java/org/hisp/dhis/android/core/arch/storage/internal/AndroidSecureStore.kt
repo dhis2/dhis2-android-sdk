@@ -89,7 +89,6 @@ class AndroidSecureStore(context: Context) : SecureStore {
             .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
             .build()
 
-
         try {
             val kpGenerator = KeyPairGenerator.getInstance(KEY_ALGORITHM_RSA, KEYSTORE_PROVIDER_ANDROID_KEYSTORE)
             kpGenerator.initialize(spec)

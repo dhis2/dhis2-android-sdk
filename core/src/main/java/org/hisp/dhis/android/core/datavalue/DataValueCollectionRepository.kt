@@ -90,9 +90,9 @@ class DataValueCollectionRepository internal constructor(
         val updatedScope = byPeriod().eq(period)
             .byOrganisationUnitUid().eq(organisationUnit)
             .byDataElementUid().eq(dataElement)
-            .byDataSetUid(dataSet)
             .byCategoryOptionComboUid().eq(categoryOptionCombo)
-            .byAttributeOptionComboUid().eq(attributeOptionCombo).scope
+            .byAttributeOptionComboUid().eq(attributeOptionCombo)
+            .byDataSetUid(dataSet).scope
         return DataValueObjectRepository(
             store,
             childrenAppenders,
@@ -122,12 +122,15 @@ class DataValueCollectionRepository internal constructor(
     ): DataValueObjectRepository {
         return runBlocking {
             val dataSet = dataSetElementStore.getFirstDataSetForDataElement(dataElement)
-            val updatedScope = byPeriod().eq(period)
+            var scopeBuilder = byPeriod().eq(period)
                 .byOrganisationUnitUid().eq(organisationUnit)
                 .byDataElementUid().eq(dataElement)
-                .byDataSetUid(dataSet)
                 .byCategoryOptionComboUid().eq(categoryOptionCombo)
-                .byAttributeOptionComboUid().eq(attributeOptionCombo).scope
+                .byAttributeOptionComboUid().eq(attributeOptionCombo)
+            if (dataSet != null) {
+                scopeBuilder = scopeBuilder.byDataSetUid(dataSet)
+            }
+            val updatedScope = scopeBuilder.scope
             DataValueObjectRepository(
                 store,
                 childrenAppenders,

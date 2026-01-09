@@ -188,6 +188,7 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
                 "g9eOBujte1U",
                 "Gmbgme7z9BF",
                 "bRowv6yZOF2",
+                "lyLU2wR22tC",
             )
 
         assertThat(objectRepository.blockingExists()).isTrue()
@@ -211,10 +212,11 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
 
     @Test
     fun create_data_value_with_dataset() {
+        // Use period "201908" with orgUnit "g8upMTyEZGZ" - this combination doesn't exist in mock data
         val objectRepository = d2.dataValueModule().dataValues()
             .value(
-                "202501",
-                "DiszpKrYNg8",
+                "201908",
+                "g8upMTyEZGZ",
                 "g9eOBujte1U",
                 "Gmbgme7z9BF",
                 "bRowv6yZOF2",
@@ -230,6 +232,35 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
         assertThat(dataValue.value()).isEqualTo("test_value")
         assertThat(dataValue.dataSet()).isEqualTo("lyLU2wR22tC")
         assertThat(dataValue.syncState()).isEqualTo(State.TO_POST)
+
+        // Cleanup
+        objectRepository.blockingDelete()
+        assertThat(objectRepository.blockingExists()).isFalse()
+    }
+
+    @Test
+    @Suppress("DEPRECATION")
+    fun deprecated_value_method_assigns_dataset_automatically() {
+        val objectRepository = d2.dataValueModule().dataValues()
+            .value(
+                "201906",
+                "DiszpKrYNg8",
+                "g9eOBujte1U",
+                "Gmbgme7z9BF",
+                "Gmbgme7z9BF",
+            )
+
+        assertThat(objectRepository.blockingExists()).isFalse()
+
+        objectRepository.blockingSet("auto_dataset_test")
+
+        assertThat(objectRepository.blockingExists()).isTrue()
+        val dataValue = objectRepository.blockingGet()!!
+        assertThat(dataValue.value()).isEqualTo("auto_dataset_test")
+
+        // First dataSet alphabetically: BfMAe6Itzgt
+        assertThat(dataValue.dataSet()).isNotNull()
+        assertThat(dataValue.dataSet()).isEqualTo("BfMAe6Itzgt")
 
         // Cleanup
         objectRepository.blockingDelete()

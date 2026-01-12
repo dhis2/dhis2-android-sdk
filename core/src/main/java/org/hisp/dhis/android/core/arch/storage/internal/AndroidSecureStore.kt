@@ -67,7 +67,7 @@ class AndroidSecureStore(context: Context) : SecureStore {
             val privateKey = ks.getKey(ALIAS, null) as PrivateKey?
 
             if (privateKey == null || ks.getCertificate(ALIAS)?.publicKey == null) {
-                generateKeys(ks, context)
+                generateKeys(ks)
             }
         } catch (ex: KeyStoreException) {
             throw keyStoreError(ex, D2ErrorCode.CANT_ACCESS_KEYSTORE)
@@ -83,7 +83,7 @@ class AndroidSecureStore(context: Context) : SecureStore {
     }
 
     @Suppress("MagicNumber", "ThrowsCount")
-    private fun generateKeys(ks: KeyStore, context: Context) {
+    private fun generateKeys(ks: KeyStore) {
         val spec = KeyGenParameterSpec.Builder(ALIAS, KeyProperties.PURPOSE_DECRYPT or KeyProperties.PURPOSE_ENCRYPT)
             .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
             .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
@@ -225,7 +225,6 @@ class AndroidSecureStore(context: Context) : SecureStore {
     }
 
     companion object {
-        private const val KEY_CIPHER_JELLYBEAN_PROVIDER = "AndroidOpenSSL"
         private const val KEY_CIPHER_MARSHMALLOW_PROVIDER = "AndroidKeyStoreBCWorkaround"
 
         private const val KEY_ALGORITHM_RSA = "RSA"

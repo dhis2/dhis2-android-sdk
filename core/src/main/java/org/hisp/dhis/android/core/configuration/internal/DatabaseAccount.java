@@ -35,6 +35,8 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.server.LoginConfig;
 
+import java.util.Date;
+
 @AutoValue
 public abstract class DatabaseAccount {
 
@@ -51,7 +53,7 @@ public abstract class DatabaseAccount {
     public abstract String databaseCreationDate();
 
     @Nullable
-    public abstract String lastAccessDate();
+    public abstract Date lastAccessDate();
 
     @NonNull
     public abstract boolean encrypted();
@@ -84,7 +86,7 @@ public abstract class DatabaseAccount {
 
         public abstract Builder databaseCreationDate(String databaseCreationDate);
 
-        public abstract Builder lastAccessDate(String lastAccessDate);
+        public abstract Builder lastAccessDate(Date lastAccessDate);
 
         public abstract Builder importDB(DatabaseAccountImport importDB);
 

@@ -27,9 +27,11 @@
  */
 package org.hisp.dhis.android.core.configuration.internal
 
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.server.LoginConfig
 import org.koin.core.annotation.Singleton
+import java.util.Date
 
 @Singleton
 internal class DatabaseConfigurationHelper(
@@ -72,7 +74,7 @@ internal class DatabaseConfigurationHelper(
             .databaseName(dbName)
             .encrypted(encrypt)
             .databaseCreationDate(dateProvider.dateStr)
-            .lastAccessDate(dateProvider.dateStr)
+            .lastAccessDate(DateUtils.DATE_FORMAT.parse(dateProvider.dateStr))
             .loginConfig(loginConfig)
             .importDB(importDb)
             .build()
@@ -114,7 +116,7 @@ internal class DatabaseConfigurationHelper(
         val account = getAccount(configuration, serverUrl, username) ?: return configuration
 
         val updatedAccount = account.toBuilder()
-            .lastAccessDate(dateProvider.dateStr)
+            .lastAccessDate(Date())
             .build()
 
         return addOrUpdateAccount(configuration, updatedAccount)

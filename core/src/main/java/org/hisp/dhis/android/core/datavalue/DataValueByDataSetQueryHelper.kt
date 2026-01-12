@@ -128,16 +128,16 @@ internal object DataValueByDataSetQueryHelper {
             INNER JOIN ${DataSetOrganisationUnitLinkTableInfo.TABLE_INFO.name()} $DSOU_ALIAS
                 ON $DSOU_DATASET = $DS_UID
             INNER JOIN ${CategoryOptionComboTableInfo.TABLE_INFO.name()} $AOC_ALIAS
-                ON ${CategoryOptionComboTableInfo.Columns.UID} = '$attributeOptionComboUid'
+                ON $AOC_CATEGORYCOMBO = $DS_CATEGORYCOMBO
             INNER JOIN ${CategoryOptionComboTableInfo.TABLE_INFO.name()} $COC_ALIAS
-                ON ${CategoryOptionComboTableInfo.Columns.UID} = '$categoryOptionComboUid'
+                ON $COC_CATEGORYCOMBO = COALESCE($DSE_CATEGORYCOMBO, $DE_CATEGORYCOMBO)
             INNER JOIN ${PeriodTableInfo.TABLE_INFO.name()} $P_ALIAS
-                ON $P_PERIOD_ID = '$periodId'
+                ON $P_PERIOD_TYPE = $DS_PERIOD_TYPE
             WHERE $DSE_DATAELEMENT = '$dataElementUid'
               AND $DSOU_ORGUNIT = '$organisationUnitUid'
-              AND $AOC_CATEGORYCOMBO = $DS_CATEGORYCOMBO
-              AND $COC_CATEGORYCOMBO = COALESCE($DSE_CATEGORYCOMBO, $DE_CATEGORYCOMBO)
-              AND $P_PERIOD_TYPE = $DS_PERIOD_TYPE
+              AND $AOC_UID = '$attributeOptionComboUid'
+              AND $COC_UID = '$categoryOptionComboUid'
+              AND $P_PERIOD_ID = '$periodId'
             ORDER BY $DS_UID ASC
             LIMIT 1
         """.trimIndent().replace("\n", " ")

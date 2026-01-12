@@ -230,7 +230,7 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
         assertThat(objectRepository.blockingExists()).isTrue()
         val dataValue = objectRepository.blockingGet()!!
         assertThat(dataValue.value()).isEqualTo("test_value")
-        assertThat(dataValue.dataSet()).isEqualTo("lyLU2wR22tC")
+        assertThat(dataValue.sourceDataSet()).isEqualTo("lyLU2wR22tC")
         assertThat(dataValue.syncState()).isEqualTo(State.TO_POST)
 
         // Cleanup
@@ -260,8 +260,8 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
         assertThat(dataValue.value()).isEqualTo("auto_dataset_test")
 
         // First dataSet alphabetically: BfMAe6Itzgt
-        assertThat(dataValue.dataSet()).isNotNull()
-        assertThat(dataValue.dataSet()).isEqualTo("BfMAe6Itzgt")
+        assertThat(dataValue.sourceDataSet()).isNotNull()
+        assertThat(dataValue.sourceDataSet()).isEqualTo("BfMAe6Itzgt")
 
         // Cleanup
         objectRepository.blockingDelete()

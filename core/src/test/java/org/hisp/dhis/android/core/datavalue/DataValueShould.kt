@@ -55,6 +55,6 @@ class DataValueShould : CoreObjectShould("datavalue/data_value.json") {
         assertThat(dataValue.comment()).isEqualTo("")
         assertThat(dataValue.followUp()).isFalse()
         assertThat(dataValue.deleted()).isFalse()
-        assertThat(dataValue.dataSet()).isEqualTo("lyLU2wR22tC")
+        assertThat(dataValue.sourceDataSet()).isEqualTo("lyLU2wR22tC")
     }
 }

@@ -64,7 +64,7 @@ internal class DataValueNetworkHandlerImpl(
             includeDeleted = true,
         )
         return apiResponse.dataValues.map { dto ->
-            dto.toDomain().toBuilder().dataSet(dataSetUid).build()
+            dto.toDomain().toBuilder().sourceDataSet(dataSetUid).build()
         }
     }
 

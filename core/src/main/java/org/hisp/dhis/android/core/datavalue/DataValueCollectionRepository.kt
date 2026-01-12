@@ -85,14 +85,14 @@ class DataValueCollectionRepository internal constructor(
         dataElement: String,
         categoryOptionCombo: String,
         attributeOptionCombo: String,
-        dataSet: String,
+        sourceDataSet: String,
     ): DataValueObjectRepository {
         val updatedScope = byPeriod().eq(period)
             .byOrganisationUnitUid().eq(organisationUnit)
             .byDataElementUid().eq(dataElement)
             .byCategoryOptionComboUid().eq(categoryOptionCombo)
             .byAttributeOptionComboUid().eq(attributeOptionCombo)
-            .byDataSetUid(dataSet).scope
+            .byDataSetUid(sourceDataSet).scope
         return DataValueObjectRepository(
             store,
             childrenAppenders,
@@ -102,16 +102,16 @@ class DataValueCollectionRepository internal constructor(
             dataElement,
             categoryOptionCombo,
             attributeOptionCombo,
-            dataSet,
+            sourceDataSet,
         )
     }
 
     @LegacyDataValueApi
     @Deprecated(
         message = "Use value(period, organisationUnit, dataElement, categoryOptionCombo, " +
-            "attributeOptionCombo, dataSet) instead. DataSet is required for DHIS2 v43+.",
+            "attributeOptionCombo, sourceDataSet) instead. DataSet is required for DHIS2 v43+.",
         replaceWith = ReplaceWith(
-            "value(period, organisationUnit, dataElement, categoryOptionCombo, attributeOptionCombo, dataSet)",
+            "value(period, organisationUnit, dataElement, categoryOptionCombo, attributeOptionCombo, sourceDataSet)",
         ),
     )
     fun value(

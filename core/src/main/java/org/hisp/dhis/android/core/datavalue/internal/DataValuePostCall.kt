@@ -93,7 +93,7 @@ internal class DataValuePostCall(
     }
 
     private suspend fun uploadByDataSet(dataValueSet: DataValueSet): Result<DataValueImportSummary, D2Error> {
-        val groupedByDataSet = dataValueSet.dataValues.groupBy { it.dataSet() }
+        val groupedByDataSet = dataValueSet.dataValues.groupBy { it.sourceDataSet() }
 
         // Handle values without dataSet (legacy data) - log warning but still attempt upload
         val valuesWithoutDataSet = groupedByDataSet[null] ?: emptyList()

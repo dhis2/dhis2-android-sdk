@@ -164,12 +164,12 @@ class DataValueObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
         repository.blockingSet("initial_value")
 
         assertThat(repository.blockingGet()!!.value()).isEqualTo("initial_value")
-        assertThat(repository.blockingGet()!!.dataSet()).isEqualTo("lyLU2wR22tC")
+        assertThat(repository.blockingGet()!!.sourceDataSet()).isEqualTo("lyLU2wR22tC")
 
         repository.blockingSet("updated_value")
 
         assertThat(repository.blockingGet()!!.value()).isEqualTo("updated_value")
-        assertThat(repository.blockingGet()!!.dataSet()).isEqualTo("lyLU2wR22tC")
+        assertThat(repository.blockingGet()!!.sourceDataSet()).isEqualTo("lyLU2wR22tC")
         repository.blockingDelete()
     }
 

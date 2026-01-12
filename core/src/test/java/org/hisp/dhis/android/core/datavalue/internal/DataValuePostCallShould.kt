@@ -182,7 +182,7 @@ class DataValuePostCallShould {
             .organisationUnit("orgUnit")
             .categoryOptionCombo("coc")
             .attributeOptionCombo("aoc")
-            .dataSet(dataSet)
+            .sourceDataSet(dataSet)
             .value(value)
             .syncState(State.TO_POST)
             .created(Date())

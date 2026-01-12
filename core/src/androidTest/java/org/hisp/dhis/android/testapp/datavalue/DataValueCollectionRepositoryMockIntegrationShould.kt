@@ -30,6 +30,7 @@ package org.hisp.dhis.android.testapp.datavalue
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.datavalue.LegacyDataValueApi
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 
@@ -212,7 +213,6 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
 
     @Test
     fun create_data_value_with_dataset() {
-        // Use period "201908" with orgUnit "g8upMTyEZGZ" - this combination doesn't exist in mock data
         val objectRepository = d2.dataValueModule().dataValues()
             .value(
                 "201908",
@@ -239,6 +239,7 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
     }
 
     @Test
+    @OptIn(LegacyDataValueApi::class)
     @Suppress("DEPRECATION")
     fun deprecated_value_method_assigns_dataset_automatically() {
         val objectRepository = d2.dataValueModule().dataValues()

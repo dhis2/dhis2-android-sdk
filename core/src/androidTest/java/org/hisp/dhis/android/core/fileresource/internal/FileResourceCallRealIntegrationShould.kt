@@ -205,6 +205,7 @@ class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
                 dataValue.dataElement()!!,
                 dataValue.categoryOptionCombo()!!,
                 dataValue.attributeOptionCombo()!!,
+                dataValue.dataSet()!!,
             )
             .blockingSet(uid)
 

@@ -283,6 +283,7 @@ class PerformanceBenchmark {
                                 dataSetElement.dataElement().uid(),
                                 coc.uid(),
                                 aoc.uid(),
+                                dataSet.uid(),
                             ).blockingSet(Random.nextInt(1, 12).toString())
                             createdDV.add(Triple(period, dataSetElement.dataElement(), coc))
                         }
@@ -355,6 +356,7 @@ class PerformanceBenchmark {
                     dataElement.uid(),
                     categoryOptionCombo.uid(),
                     aoc.uid(),
+                    dataSet!!.uid(),
                 ).blockingDelete()
             }
 

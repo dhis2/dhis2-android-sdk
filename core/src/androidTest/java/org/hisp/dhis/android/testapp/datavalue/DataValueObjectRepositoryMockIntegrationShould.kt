@@ -121,6 +121,7 @@ class DataValueObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
                     "no_data_element",
                     "no_category",
                     "no_attribute",
+                    "no_data_set,",
                 ).blockingExists(),
         ).isFalse()
 
@@ -132,6 +133,7 @@ class DataValueObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
                     "g9eOBujte1U",
                     "Gmbgme7z9BF",
                     "bRowv6yZOF2",
+                    "lyLU2wR22tC",
                 ).blockingExists(),
         ).isTrue()
     }

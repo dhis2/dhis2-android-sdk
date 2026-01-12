@@ -99,18 +99,20 @@ class DataValuePostCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
 
     private fun provideDataValues(value1: String, value2: String) {
         d2.dataValueModule().dataValues().value(
-            "20191021",
+            "201906",
             "DiszpKrYNg8",
-            "Ok9OQpitjQr",
-            "DwrQJzeChWp",
-            "DwrQJzeChWp",
+            "g9eOBujte1U",
+            "Gmbgme7z9BF",
+            "bRowv6yZOF2",
+            "lyLU2wR22tC",
         ).blockingSet(value1)
         d2.dataValueModule().dataValues().value(
-            "20191021",
+            "201906",
             "DiszpKrYNg8",
-            "vANAXwtLwcT",
+            "bx6fsa0t90x",
+            "Gmbgme7z9BF",
             "bRowv6yZOF2",
-            "bRowv6yZOF2",
+            "lyLU2wR22tC",
         ).blockingSet(value2)
     }
 }

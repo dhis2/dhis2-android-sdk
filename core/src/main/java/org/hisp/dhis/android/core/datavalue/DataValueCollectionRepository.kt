@@ -106,6 +106,7 @@ class DataValueCollectionRepository internal constructor(
         )
     }
 
+    @LegacyDataValueApi
     @Deprecated(
         message = "Use value(period, organisationUnit, dataElement, categoryOptionCombo, " +
             "attributeOptionCombo, dataSet) instead. DataSet is required for DHIS2 v43+.",

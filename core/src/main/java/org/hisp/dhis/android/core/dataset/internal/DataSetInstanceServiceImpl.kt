@@ -136,7 +136,7 @@ internal class DataSetInstanceServiceImpl(
     ): Single<List<DataElementOperand>> {
         return dataSetCollectionRepository.withCompulsoryDataElementOperands().uid(dataSetUid).get().map {
             it.compulsoryDataElementOperands()?.filter { dataElementOperand ->
-                !hasDataValue(dataElementOperand, periodId, organisationUnitUid, attributeOptionComboUid)
+                !hasDataValue(dataSetUid, dataElementOperand, periodId, organisationUnitUid, attributeOptionComboUid)
             } ?: emptyList()
         }
     }
@@ -156,6 +156,7 @@ internal class DataSetInstanceServiceImpl(
     }
 
     private fun hasDataValue(
+        dataSetUid: String,
         dataElementOperand: DataElementOperand,
         periodId: String,
         organisationUnitUid: String,
@@ -169,6 +170,7 @@ internal class DataSetInstanceServiceImpl(
                     dataElement.uid(),
                     categoryOptionCombo.uid(),
                     attributeOptionComboUid,
+                    dataSetUid,
                 ).blockingExists()
             }
         } ?: false

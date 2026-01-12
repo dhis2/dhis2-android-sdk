@@ -71,7 +71,7 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
             .eq("DiszpKrYNg8")
             .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(7)
+        assertThat(dataValues.size).isEqualTo(6)
     }
 
     @Test
@@ -81,7 +81,7 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
             .eq("Gmbgme7z9BF")
             .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(8)
+        assertThat(dataValues.size).isEqualTo(7)
     }
 
     @Test
@@ -177,7 +177,7 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
             .byDataSetUid("TaMAefItzgt")
             .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(1)
+        assertThat(dataValues.size).isEqualTo(2)
     }
 
     @Test
@@ -197,7 +197,8 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
     }
 
     @Test
-    fun return_data_value_object_repository_with_dataset() {
+    fun return_data_value_object_repository_with_wrong_dataset() {
+        // Same parameters as above but with different dataSet - should NOT exist
         val objectRepository = d2.dataValueModule().dataValues()
             .value(
                 "2018",
@@ -205,7 +206,7 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
                 "g9eOBujte1U",
                 "Gmbgme7z9BF",
                 "bRowv6yZOF2",
-                "lyLU2wR22tC",
+                "BfMAe6Itzgt", // DataValue exists in lyLU2wR22tC, not in BfMAe6Itzgt
             )
 
         assertThat(objectRepository.blockingExists()).isFalse()

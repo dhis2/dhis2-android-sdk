@@ -28,6 +28,9 @@
 package org.hisp.dhis.android.core.datavalue.internal
 
 import android.util.Log
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.hisp.dhis.android.core.arch.call.D2Progress
@@ -104,14 +107,20 @@ internal class DataValuePostCall(
             )
         }
 
-        var combinedSummary: DataValueImportSummary? = null
-        for ((dataSetUid, values) in groupedByDataSet) {
-            val setWithDataSet = DataValueSet(
-                dataValues = values,
-                dataSet = dataSetUid,
-            )
-            val result = networkHandler.postDataValuesWithDataSet(setWithDataSet)
+        val results = coroutineScope {
+            groupedByDataSet.map { (dataSetUid, values) ->
+                async {
+                    val setWithDataSet = DataValueSet(
+                        dataValues = values,
+                        dataSet = dataSetUid,
+                    )
+                    networkHandler.postDataValuesWithDataSet(setWithDataSet)
+                }
+            }.awaitAll()
+        }
 
+        var combinedSummary: DataValueImportSummary? = null
+        for (result in results) {
             result.fold(
                 onSuccess = { webResponse ->
                     combinedSummary = summaryMerger.merge(combinedSummary, webResponse.response)

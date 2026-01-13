@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.datavalue.internal
 
-import android.util.Log
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -97,16 +96,6 @@ internal class DataValuePostCall(
     private suspend fun uploadByDataSet(dataValueSet: DataValueSet): Result<DataValueImportSummary, D2Error> {
         val groupedByDataSet = dataValueSet.dataValues.groupBy { it.sourceDataSet() }
 
-        // Handle values without dataSet (legacy data) - log warning but still attempt upload
-        val valuesWithoutDataSet = groupedByDataSet[null] ?: emptyList()
-        if (valuesWithoutDataSet.isNotEmpty()) {
-            Log.w(
-                "DataValuePostCall",
-                "Found ${valuesWithoutDataSet.size} DataValue(s) without dataSet. " +
-                    "This may fail on DHIS2 v43+ servers.",
-            )
-        }
-
         val results = coroutineScope {
             groupedByDataSet.map { (dataSetUid, values) ->
                 async {
@@ -120,18 +109,23 @@ internal class DataValuePostCall(
         }
 
         var combinedSummary: DataValueImportSummary? = null
+        var firstError: D2Error? = null
+
         for (result in results) {
             result.fold(
                 onSuccess = { webResponse ->
                     combinedSummary = summaryMerger.merge(combinedSummary, webResponse.response)
                 },
-                onFailure = {
-                    return Result.Failure(it)
+                onFailure = { error ->
+                    if (firstError == null) {
+                        firstError = error
+                    }
                 },
             )
         }
 
-        return Result.Success(combinedSummary ?: DataValueImportSummary.EMPTY)
+        return firstError?.let { Result.Failure(it) }
+            ?: Result.Success(combinedSummary ?: DataValueImportSummary.EMPTY)
     }
 
     private suspend fun markObjectsAs(dataValues: Collection<DataValue>, forcedState: State?) {

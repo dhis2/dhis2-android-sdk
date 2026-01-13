@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.datavalue.internal
 
+import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.helpers.Result
@@ -36,8 +37,12 @@ import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResponse
 import org.hisp.dhis.android.core.imports.internal.ImportCount
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -164,6 +169,42 @@ class DataValuePostCallShould {
         dataValuePostCall.uploadDataValues(dataValues).first()
 
         verify(networkHandler, times(2)).postDataValuesWithDataSet(any())
+    }
+
+    @Test
+    fun process_all_uploads_before_returning_error_on_partial_failure() = runTest {
+        val dataValues = listOf(
+            createDataValue("dataSet1", "value1"),
+            createDataValue("dataSet2", "value2"),
+            createDataValue("dataSet3", "value3"),
+        )
+
+        val error = D2Error.builder()
+            .errorComponent(D2ErrorComponent.Server)
+            .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
+            .errorDescription("Upload failed for dataSet2")
+            .build()
+
+        givenVersion(isV39Plus = true, isV38Plus = true)
+        givenFileResourceReturns(dataValues)
+
+        // dataSet1 succeeds, dataSet2 fails, dataSet3 succeeds
+        whenever(networkHandler.postDataValuesWithDataSet(argThat { dataSet == "dataSet1" }))
+            .thenReturn(Result.Success(successWebResponse))
+        whenever(networkHandler.postDataValuesWithDataSet(argThat { dataSet == "dataSet2" }))
+            .thenReturn(Result.Failure(error))
+        whenever(networkHandler.postDataValuesWithDataSet(argThat { dataSet == "dataSet3" }))
+            .thenReturn(Result.Success(successWebResponse))
+
+        try {
+            dataValuePostCall.uploadDataValues(dataValues).first()
+            fail("Should have thrown D2Error")
+        } catch (e: D2Error) {
+            assertThat(e.errorDescription()).contains("dataSet2")
+        }
+
+        // Verify all three uploads were attempted
+        verify(networkHandler, times(3)).postDataValuesWithDataSet(any())
     }
 
     private suspend fun givenVersion(isV39Plus: Boolean, isV38Plus: Boolean) {

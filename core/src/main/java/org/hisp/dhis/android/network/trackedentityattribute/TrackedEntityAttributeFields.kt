@@ -70,5 +70,8 @@ internal object TrackedEntityAttributeFields : BaseFields<TrackedEntityAttribute
         fh.field(TrackedEntityAttributeTableInfo.Columns.FORM_NAME),
         fh.field(TrackedEntityAttributeTableInfo.Columns.DISPLAY_FORM_NAME),
         fh.field(TrackedEntityAttributeTableInfo.Columns.CONFIDENTIAL),
+        fh.field(TrackedEntityAttributeTableInfo.Columns.PREFERRED_SEARCH_OPERATOR),
+        fh.field(TrackedEntityAttributeTableInfo.Columns.BLOCKED_SEARCH_OPERATORS),
+        fh.field(TrackedEntityAttributeTableInfo.Columns.MIN_CHARACTERS_TO_SEARCH),
     )
 }

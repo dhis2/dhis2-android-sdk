@@ -11,8 +11,10 @@ import org.hisp.dhis.android.persistence.common.BaseNameableObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.ObjectWithStyleDB
 import org.hisp.dhis.android.persistence.common.ObjectWithUidDB
+import org.hisp.dhis.android.persistence.common.StringListDB
 import org.hisp.dhis.android.persistence.common.applyBaseNameableFields
 import org.hisp.dhis.android.persistence.common.applyStyleFields
+import org.hisp.dhis.android.persistence.common.toDB
 import org.hisp.dhis.android.persistence.option.OptionSetDB
 
 @Entity(
@@ -58,6 +60,9 @@ internal data class TrackedEntityAttributeDB(
     val displayFormName: String?,
     val aggregationType: String?,
     val confidential: Boolean?,
+    val preferredSearchOperator: String?,
+    val blockedSearchOperators: StringListDB?,
+    val minCharactersToSearch: Int?,
 ) : EntityDB<TrackedEntityAttribute>, BaseNameableObjectDB, ObjectWithStyleDB {
 
     override fun toDomain(): TrackedEntityAttribute {
@@ -81,6 +86,9 @@ internal data class TrackedEntityAttributeDB(
             displayFormName(displayFormName)
             aggregationType(aggregationType?.let { AggregationType.valueOf(it) })
             confidential(confidential)
+            preferredSearchOperator(preferredSearchOperator)
+            blockedSearchOperators(blockedSearchOperators?.toDomain())
+            minCharactersToSearch(minCharactersToSearch)
         }.build()
     }
 }
@@ -116,5 +124,8 @@ internal fun TrackedEntityAttribute.toDB(): TrackedEntityAttributeDB {
         displayFormName = displayFormName(),
         aggregationType = aggregationType()?.name,
         confidential = confidential(),
+        preferredSearchOperator = preferredSearchOperator(),
+        blockedSearchOperators = blockedSearchOperators()?.toDB(),
+        minCharactersToSearch = minCharactersToSearch(),
     )
 }

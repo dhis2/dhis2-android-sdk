@@ -104,6 +104,15 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
     @Nullable
     public abstract String displayFormName();
 
+    @Nullable
+    public abstract String preferredSearchOperator();
+
+    @Nullable
+    public abstract List<String> blockedSearchOperators();
+
+    @Nullable
+    public abstract Integer minCharactersToSearch();
+
     public static Builder builder() {
         return new AutoValue_TrackedEntityAttribute.Builder();
     }
@@ -153,6 +162,12 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
         public abstract Builder formName(String formName);
 
         public abstract Builder displayFormName(String displayFormName);
+
+        public abstract Builder preferredSearchOperator(String preferredSearchOperator);
+
+        public abstract Builder blockedSearchOperators(List<String> blockedSearchOperators);
+
+        public abstract Builder minCharactersToSearch(Integer minCharactersToSearch);
 
         abstract TrackedEntityAttribute autoBuild();
 

@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.common.ValueType;
 import java.util.List;
 
 @AutoValue
+@SuppressWarnings({"PMD.ExcessivePublicCount"})
 public abstract class TrackedEntityAttribute extends BaseNameableObject
         implements CoreObject, ObjectWithStyle<TrackedEntityAttribute, TrackedEntityAttribute.Builder> {
 

@@ -395,12 +395,18 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
 
     private fun createDataValuesResponse(path: String): MockResponse {
         val dataSetParam = path.substringAfter("dataSet=").substringBefore("&")
+        android.util.Log.d("Dhis2MockServer", "DataValues request - path: $path")
+        android.util.Log.d("Dhis2MockServer", "DataValues request - dataSetParam: '$dataSetParam'")
         val jsonFile = when (dataSetParam) {
             "lyLU2wR22tC" -> DATA_VALUES_LYLUWRTC_JSON
             "BfMAe6Itzgt" -> DATA_VALUES_BFMAEITZGT_JSON
             "TaMAefItzgt" -> DATA_VALUES_TAMEFITZGT_JSON
-            else -> DATA_VALUES_EMPTY_JSON
+            else -> {
+                android.util.Log.w("Dhis2MockServer", "Unknown dataSet: '$dataSetParam', returning empty JSON")
+                DATA_VALUES_EMPTY_JSON
+            }
         }
+        android.util.Log.d("Dhis2MockServer", "DataValues request - returning: $jsonFile")
         return createMockResponse(jsonFile)
     }
 

@@ -198,7 +198,7 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
 
     @Test
     fun return_data_value_object_repository_with_wrong_dataset() {
-        // Same parameters as above but with different dataSet - should NOT exist
+        // Same parameters as above but with dataSet different than sourceDataSet should exist
         val objectRepository = d2.dataValueModule().dataValues()
             .value(
                 "2018",
@@ -206,10 +206,10 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
                 "g9eOBujte1U",
                 "Gmbgme7z9BF",
                 "bRowv6yZOF2",
-                "BfMAe6Itzgt", // DataValue exists in lyLU2wR22tC, not in BfMAe6Itzgt
+                "BfMAe6Itzgt", // DataValue has lyLU2wR22tC as sourceDataSet, not BfMAe6Itzgt
             )
 
-        assertThat(objectRepository.blockingExists()).isFalse()
+        assertThat(objectRepository.blockingExists()).isTrue()
     }
 
     @Test

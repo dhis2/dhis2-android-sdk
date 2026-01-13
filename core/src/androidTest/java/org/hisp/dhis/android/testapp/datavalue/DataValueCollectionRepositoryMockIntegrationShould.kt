@@ -31,7 +31,10 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.LegacyDataValueApi
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Assert.fail
 import org.junit.Test
 
 class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
@@ -267,5 +270,25 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
         // Cleanup
         objectRepository.blockingDelete()
         assertThat(objectRepository.blockingExists()).isFalse()
+    }
+
+    @Test
+    @OptIn(LegacyDataValueApi::class)
+    @Suppress("DEPRECATION")
+    fun deprecated_value_method_throws_error_when_no_valid_dataset_found() {
+        try {
+            d2.dataValueModule().dataValues()
+                .value(
+                    "202001",
+                    "DiszpKrYNg8",
+                    "nonExistentDataElement",
+                    "Gmbgme7z9BF",
+                    "Gmbgme7z9BF",
+                )
+            fail("Should throw D2Error when no valid DataSet is found")
+        } catch (e: D2Error) {
+            assertThat(e.errorCode()).isEqualTo(D2ErrorCode.INVALID_CONFIGURATION)
+            assertThat(e.errorDescription()).contains("No valid DataSet found")
+        }
     }
 }

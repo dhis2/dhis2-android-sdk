@@ -40,20 +40,17 @@ internal class DataValueImportSummaryMerger {
         existing: DataValueImportSummary?,
         newSummary: DataValueImportSummary?,
     ): DataValueImportSummary {
-        if (existing == null) return newSummary ?: DataValueImportSummary.EMPTY
-        if (newSummary == null) return existing
-
-        val mergedImportCount = mergeImportCounts(existing.importCount(), newSummary.importCount())
-        val mergedImportStatus = mergeImportStatus(existing.importStatus(), newSummary.importStatus())
-        val mergedConflicts = mergeImportConflicts(existing.importConflicts(), newSummary.importConflicts())
-
-        return DataValueImportSummary.create(
-            mergedImportCount,
-            mergedImportStatus,
-            "ImportSummary",
-            null,
-            mergedConflicts,
-        )
+        return when {
+            existing == null -> newSummary ?: DataValueImportSummary.EMPTY
+            newSummary == null -> existing
+            else -> DataValueImportSummary.create(
+                mergeImportCounts(existing.importCount(), newSummary.importCount()),
+                mergeImportStatus(existing.importStatus(), newSummary.importStatus()),
+                "ImportSummary",
+                null,
+                mergeImportConflicts(existing.importConflicts(), newSummary.importConflicts()),
+            )
+        }
     }
 
     private fun mergeImportCounts(

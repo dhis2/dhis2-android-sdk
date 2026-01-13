@@ -50,7 +50,7 @@ class DataValueImportSummaryMergerShould {
 
     @Test
     fun return_new_summary_when_existing_is_null() {
-        val newSummary = createSummary(1, 2, 3, 4, ImportStatus.SUCCESS)
+        val newSummary = createSummary(ImportCount.create(1, 2, 3, 4))
 
         val result = merger.merge(null, newSummary)
 
@@ -59,7 +59,7 @@ class DataValueImportSummaryMergerShould {
 
     @Test
     fun return_existing_summary_when_new_is_null() {
-        val existingSummary = createSummary(1, 2, 3, 4, ImportStatus.SUCCESS)
+        val existingSummary = createSummary(ImportCount.create(1, 2, 3, 4))
 
         val result = merger.merge(existingSummary, null)
 
@@ -68,8 +68,8 @@ class DataValueImportSummaryMergerShould {
 
     @Test
     fun merge_import_counts_correctly() {
-        val existing = createSummary(1, 2, 3, 4, ImportStatus.SUCCESS)
-        val new = createSummary(5, 6, 7, 8, ImportStatus.SUCCESS)
+        val existing = createSummary(ImportCount.create(1, 2, 3, 4))
+        val new = createSummary(ImportCount.create(5, 6, 7, 8))
 
         val result = merger.merge(existing, new)
 
@@ -81,8 +81,8 @@ class DataValueImportSummaryMergerShould {
 
     @Test
     fun return_error_status_when_any_summary_has_error() {
-        val existing = createSummary(1, 0, 0, 0, ImportStatus.SUCCESS)
-        val new = createSummary(0, 1, 0, 0, ImportStatus.ERROR)
+        val existing = createSummary(ImportCount.create(1, 0, 0, 0))
+        val new = createSummary(ImportCount.create(0, 1, 0, 0), ImportStatus.ERROR)
 
         val result = merger.merge(existing, new)
 
@@ -91,8 +91,8 @@ class DataValueImportSummaryMergerShould {
 
     @Test
     fun return_error_status_when_existing_has_error() {
-        val existing = createSummary(1, 0, 0, 0, ImportStatus.ERROR)
-        val new = createSummary(0, 1, 0, 0, ImportStatus.SUCCESS)
+        val existing = createSummary(ImportCount.create(1, 0, 0, 0), ImportStatus.ERROR)
+        val new = createSummary(ImportCount.create(0, 1, 0, 0))
 
         val result = merger.merge(existing, new)
 
@@ -101,8 +101,8 @@ class DataValueImportSummaryMergerShould {
 
     @Test
     fun return_warning_status_when_any_summary_has_warning_and_no_errors() {
-        val existing = createSummary(1, 0, 0, 0, ImportStatus.SUCCESS)
-        val new = createSummary(0, 1, 0, 0, ImportStatus.WARNING)
+        val existing = createSummary(ImportCount.create(1, 0, 0, 0))
+        val new = createSummary(ImportCount.create(0, 1, 0, 0), ImportStatus.WARNING)
 
         val result = merger.merge(existing, new)
 
@@ -111,8 +111,8 @@ class DataValueImportSummaryMergerShould {
 
     @Test
     fun return_success_status_when_both_summaries_are_successful() {
-        val existing = createSummary(1, 0, 0, 0, ImportStatus.SUCCESS)
-        val new = createSummary(0, 1, 0, 0, ImportStatus.SUCCESS)
+        val existing = createSummary(ImportCount.create(1, 0, 0, 0))
+        val new = createSummary(ImportCount.create(0, 1, 0, 0))
 
         val result = merger.merge(existing, new)
 
@@ -121,8 +121,8 @@ class DataValueImportSummaryMergerShould {
 
     @Test
     fun prioritize_error_over_warning() {
-        val existing = createSummary(1, 0, 0, 0, ImportStatus.WARNING)
-        val new = createSummary(0, 1, 0, 0, ImportStatus.ERROR)
+        val existing = createSummary(ImportCount.create(1, 0, 0, 0), ImportStatus.WARNING)
+        val new = createSummary(ImportCount.create(0, 1, 0, 0), ImportStatus.ERROR)
 
         val result = merger.merge(existing, new)
 
@@ -131,8 +131,8 @@ class DataValueImportSummaryMergerShould {
 
     @Test
     fun return_null_conflicts_when_both_have_no_conflicts() {
-        val existing = createSummary(1, 0, 0, 0, ImportStatus.SUCCESS)
-        val new = createSummary(0, 1, 0, 0, ImportStatus.SUCCESS)
+        val existing = createSummary(ImportCount.create(1, 0, 0, 0))
+        val new = createSummary(ImportCount.create(0, 1, 0, 0))
 
         val result = merger.merge(existing, new)
 
@@ -143,8 +143,8 @@ class DataValueImportSummaryMergerShould {
     fun merge_conflicts_from_both_summaries() {
         val conflict1 = ImportConflict.create("object1", "value1")
         val conflict2 = ImportConflict.create("object2", "value2")
-        val existing = createSummary(imported = 1, status = ImportStatus.WARNING, conflicts = listOf(conflict1))
-        val new = createSummary(updated = 1, status = ImportStatus.WARNING, conflicts = listOf(conflict2))
+        val existing = createSummary(status = ImportStatus.WARNING, conflicts = listOf(conflict1))
+        val new = createSummary(status = ImportStatus.WARNING, conflicts = listOf(conflict2))
 
         val result = merger.merge(existing, new)
 
@@ -156,8 +156,8 @@ class DataValueImportSummaryMergerShould {
     @Test
     fun return_existing_conflicts_when_new_has_none() {
         val conflict = ImportConflict.create("object1", "value1")
-        val existing = createSummary(imported = 1, status = ImportStatus.WARNING, conflicts = listOf(conflict))
-        val new = createSummary(updated = 1)
+        val existing = createSummary(status = ImportStatus.WARNING, conflicts = listOf(conflict))
+        val new = createSummary()
 
         val result = merger.merge(existing, new)
 
@@ -168,8 +168,8 @@ class DataValueImportSummaryMergerShould {
     @Test
     fun return_new_conflicts_when_existing_has_none() {
         val conflict = ImportConflict.create("object1", "value1")
-        val existing = createSummary(imported = 1)
-        val new = createSummary(updated = 1, status = ImportStatus.WARNING, conflicts = listOf(conflict))
+        val existing = createSummary()
+        val new = createSummary(status = ImportStatus.WARNING, conflicts = listOf(conflict))
 
         val result = merger.merge(existing, new)
 
@@ -178,15 +178,12 @@ class DataValueImportSummaryMergerShould {
     }
 
     private fun createSummary(
-        imported: Int = 0,
-        updated: Int = 0,
-        ignored: Int = 0,
-        deleted: Int = 0,
+        importCount: ImportCount = ImportCount.EMPTY,
         status: ImportStatus = ImportStatus.SUCCESS,
         conflicts: List<ImportConflict>? = null,
     ): DataValueImportSummary {
         return DataValueImportSummary.create(
-            ImportCount.create(imported, updated, ignored, deleted),
+            importCount,
             status,
             "ImportSummary",
             null,

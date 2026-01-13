@@ -58,6 +58,7 @@ class DataValuePostCallShould {
     private val fileResourcePostCall: DataValueFileResourcePostCall = mock()
     private val dataValueStore: DataValueStore = mock()
     private val versionManager: DHISVersionManagerImpl = mock()
+    private val summaryMerger = DataValueImportSummaryMerger()
 
     private lateinit var dataValuePostCall: DataValuePostCall
 
@@ -83,6 +84,7 @@ class DataValuePostCallShould {
             fileResourcePostCall,
             dataValueStore,
             versionManager,
+            summaryMerger,
         )
     }
 

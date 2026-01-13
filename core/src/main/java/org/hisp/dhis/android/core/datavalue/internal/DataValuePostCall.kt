@@ -37,9 +37,7 @@ import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper.errorIfO
 import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper.forcedOrOwn
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
-import org.hisp.dhis.android.core.imports.internal.ImportCount
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
@@ -52,6 +50,7 @@ internal class DataValuePostCall(
     private val fileResourcePostCall: DataValueFileResourcePostCall,
     private val dataValueStore: DataValueStore,
     private val versionManager: DHISVersionManagerImpl,
+    private val summaryMerger: DataValueImportSummaryMerger,
 ) {
     fun uploadDataValues(dataValues: List<DataValue>): Flow<D2Progress> = flow {
         if (dataValues.isEmpty()) {
@@ -115,7 +114,7 @@ internal class DataValuePostCall(
 
             result.fold(
                 onSuccess = { webResponse ->
-                    combinedSummary = mergeSummaries(combinedSummary, webResponse.response)
+                    combinedSummary = summaryMerger.merge(combinedSummary, webResponse.response)
                 },
                 onFailure = {
                     return Result.Failure(it)
@@ -124,42 +123,6 @@ internal class DataValuePostCall(
         }
 
         return Result.Success(combinedSummary ?: DataValueImportSummary.EMPTY)
-    }
-
-    @Suppress("ComplexMethod", "ReturnCount")
-    private fun mergeSummaries(
-        existing: DataValueImportSummary?,
-        newSummary: DataValueImportSummary?,
-    ): DataValueImportSummary {
-        if (existing == null) return newSummary ?: DataValueImportSummary.EMPTY
-        if (newSummary == null) return existing
-
-        val existingCounts = existing.importCount()
-        val newCounts = newSummary.importCount()
-
-        val mergedImportStatus = mergeImportStatus(existing.importStatus(), newSummary.importStatus())
-        val mergedImportCount = ImportCount.create(
-            existingCounts.imported() + newCounts.imported(),
-            existingCounts.updated() + newCounts.updated(),
-            existingCounts.ignored() + newCounts.ignored(),
-            existingCounts.deleted() + newCounts.deleted(),
-        )
-
-        return DataValueImportSummary.create(
-            mergedImportCount,
-            mergedImportStatus,
-            "ImportSummary",
-            null,
-            null,
-        )
-    }
-
-    private fun mergeImportStatus(status1: ImportStatus?, status2: ImportStatus?): ImportStatus {
-        return when {
-            status1 == ImportStatus.ERROR || status2 == ImportStatus.ERROR -> ImportStatus.ERROR
-            status1 == ImportStatus.WARNING || status2 == ImportStatus.WARNING -> ImportStatus.WARNING
-            else -> ImportStatus.SUCCESS
-        }
     }
 
     private suspend fun markObjectsAs(dataValues: Collection<DataValue>, forcedState: State?) {

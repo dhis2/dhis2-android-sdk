@@ -92,7 +92,7 @@ class DataValueCollectionRepository internal constructor(
             .byDataElementUid().eq(dataElement)
             .byCategoryOptionComboUid().eq(categoryOptionCombo)
             .byAttributeOptionComboUid().eq(attributeOptionCombo)
-            .byDataSetUid(sourceDataSet).scope
+            .scope
         return DataValueObjectRepository(
             store,
             childrenAppenders,
@@ -129,26 +129,7 @@ class DataValueCollectionRepository internal constructor(
                 categoryOptionComboUid = categoryOptionCombo,
                 attributeOptionComboUid = attributeOptionCombo,
             )
-            var scopeBuilder = byPeriod().eq(period)
-                .byOrganisationUnitUid().eq(organisationUnit)
-                .byDataElementUid().eq(dataElement)
-                .byCategoryOptionComboUid().eq(categoryOptionCombo)
-                .byAttributeOptionComboUid().eq(attributeOptionCombo)
-            if (dataSet != null) {
-                scopeBuilder = scopeBuilder.byDataSetUid(dataSet)
-            }
-            val updatedScope = scopeBuilder.scope
-            DataValueObjectRepository(
-                store,
-                childrenAppenders,
-                updatedScope,
-                period,
-                organisationUnit,
-                dataElement,
-                categoryOptionCombo,
-                attributeOptionCombo,
-                dataSet,
-            )
+            value(period, organisationUnit, dataElement, categoryOptionCombo, attributeOptionCombo, dataSet!!)
         }
     }
 

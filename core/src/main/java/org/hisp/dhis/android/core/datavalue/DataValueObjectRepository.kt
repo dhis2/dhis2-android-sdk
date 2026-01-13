@@ -76,21 +76,21 @@ class DataValueObjectRepository internal constructor(
     @Throws(D2Error::class)
     override fun blockingSet(value: String?) {
         updateIfChanged(value, { it?.value() }) { dataValue: DataValue?, newValue ->
-            setBuilder(dataValue).value(newValue).deleted(false).build()
+            setBuilder(dataValue).value(newValue).sourceDataSet(sourceDataSet).deleted(false).build()
         }
     }
 
     @Throws(D2Error::class)
     fun setFollowUp(followUp: Boolean) {
         updateIfChanged(followUp, { it?.followUp() }) { dataValue: DataValue?, newValue ->
-            setBuilder(dataValue).followUp(newValue).deleted(false).build()
+            setBuilder(dataValue).followUp(newValue).sourceDataSet(sourceDataSet).deleted(false).build()
         }
     }
 
     @Throws(D2Error::class)
     fun setComment(comment: String?) {
         updateIfChanged(comment, { it?.comment() }) { dataValue: DataValue?, newValue ->
-            setBuilder(dataValue).comment(newValue).deleted(false).build()
+            setBuilder(dataValue).comment(newValue).sourceDataSet(sourceDataSet).deleted(false).build()
         }
     }
 

@@ -134,7 +134,6 @@ class DataValuePostCallShould {
         dataValuePostCall.uploadDataValues(dataValues).first()
 
         verify(networkHandler, times(1)).postDataValuesWebResponse(any())
-        verify(networkHandler, never()).postDataValuesWebResponse(any())
     }
 
     @Test

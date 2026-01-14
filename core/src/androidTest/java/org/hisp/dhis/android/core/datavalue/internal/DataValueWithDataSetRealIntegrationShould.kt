@@ -45,6 +45,11 @@ class DataValueWithDataSetRealIntegrationShould : BaseRealIntegrationTest() {
         uploadDataValuesForSharedDataElement(ServerConfig.V40_STABLE)
     }
 
+    // @Test
+    fun upload_datavalue_for_shared_dataelement_to_both_datasets_v37() {
+        uploadDataValuesForSharedDataElement(ServerConfig.V37_STABLE)
+    }
+
     private fun uploadDataValuesForSharedDataElement(config: ServerConfig) {
         loginAndDownloadMetadata(config)
 
@@ -158,9 +163,9 @@ class DataValueWithDataSetRealIntegrationShould : BaseRealIntegrationTest() {
         companion object {
             val V43_DEV = ServerConfig(
                 serverUrl = "https://play.im.dhis2.org/dev/",
-                username = "android",
-                password = "Android123",
-                sharedDataElementUid = "LtMRWceAq1g",
+                username = "android-m",
+                password = "Android123!",
+                sharedDataElementUid = "TjtWBnEtUxS",
                 dataElement1OnlyUid = "s46m5MS0hxu",
                 dataElement2OnlyUid = "N9vniUuCcqY",
                 dataSet1Uid = "BfMAe6Itzgt",
@@ -175,6 +180,20 @@ class DataValueWithDataSetRealIntegrationShould : BaseRealIntegrationTest() {
                 username = "android",
                 password = "Android123",
                 sharedDataElementUid = "KArt1uZah8R",
+                dataElement1OnlyUid = "s46m5MS0hxu",
+                dataElement2OnlyUid = "N9vniUuCcqY",
+                dataSet1Uid = "BfMAe6Itzgt",
+                dataSet2Uid = "EDzMBk0RRji",
+                cocUid = "HllvX50cXC0",
+                cocDataElement1OnlyUid = "Prlt0C1RF0s",
+                period = "202512",
+            )
+
+            val V37_STABLE = ServerConfig(
+                serverUrl = "https://android.im.dhis2.org/marcostest-multiple-dataset",
+                username = "android-m",
+                password = "Android123!",
+                sharedDataElementUid = "mEGtK3j4dEz",
                 dataElement1OnlyUid = "s46m5MS0hxu",
                 dataElement2OnlyUid = "N9vniUuCcqY",
                 dataSet1Uid = "BfMAe6Itzgt",

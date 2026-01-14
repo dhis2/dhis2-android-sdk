@@ -6600,6 +6600,7 @@ public final class org/hisp/dhis/android/core/maintenance/D2ErrorCode : java/lan
 	public static final field FILE_NOT_FOUND Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field IMPOSSIBLE_TO_GENERATE_COORDINATES Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field INVALID_CHARACTERS Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
+	public static final field INVALID_CONFIGURATION Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field INVALID_DHIS_VERSION Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field INVALID_GEOMETRY_VALUE Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field JOB_REPORT_NOT_AVAILABLE Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;

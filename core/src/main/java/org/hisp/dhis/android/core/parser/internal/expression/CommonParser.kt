@@ -27,19 +27,11 @@
  */
 package org.hisp.dhis.android.core.parser.internal.expression
 
-import android.os.Build
 import org.hisp.dhis.antlr.Parser
 
 internal object CommonParser {
 
     fun visit(expression: String?, visitor: CommonExpressionVisitor): Any? {
-        val sdkVersion = Build.VERSION.SDK_INT
-
-        // In unit test, sdk value is 0. Ignore it and use cache by default.
-        return if (sdkVersion > 0 && sdkVersion < Build.VERSION_CODES.LOLLIPOP) {
-            Parser.visit(expression, visitor, false)
-        } else {
-            Parser.visit(expression, visitor)
-        }
+        return Parser.visit(expression, visitor)
     }
 }

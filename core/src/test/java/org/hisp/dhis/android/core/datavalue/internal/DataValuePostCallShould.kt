@@ -104,16 +104,16 @@ class DataValuePostCallShould {
         givenVersion(isV39Plus = true, isV38Plus = true)
         givenFileResourceReturns(dataValues)
 
-        whenever(networkHandler.postDataValuesWithDataSet(any()))
+        whenever(networkHandler.postDataValuesWebResponse(any()))
             .thenReturn(Result.Success(successWebResponse))
 
         dataValuePostCall.uploadDataValues(dataValues).first()
 
-        verify(networkHandler, times(2)).postDataValuesWithDataSet(any())
-        verify(networkHandler).postDataValuesWithDataSet(
+        verify(networkHandler, times(2)).postDataValuesWebResponse(any())
+        verify(networkHandler).postDataValuesWebResponse(
             argThat { this.dataSet == "dataSet1" && this.dataValues.size == 2 },
         )
-        verify(networkHandler).postDataValuesWithDataSet(
+        verify(networkHandler).postDataValuesWebResponse(
             argThat { this.dataSet == "dataSet2" && this.dataValues.size == 1 },
         )
     }
@@ -134,7 +134,7 @@ class DataValuePostCallShould {
         dataValuePostCall.uploadDataValues(dataValues).first()
 
         verify(networkHandler, times(1)).postDataValuesWebResponse(any())
-        verify(networkHandler, never()).postDataValuesWithDataSet(any())
+        verify(networkHandler, never()).postDataValuesWebResponse(any())
     }
 
     @Test
@@ -150,7 +150,7 @@ class DataValuePostCallShould {
 
         verify(networkHandler, times(1)).postDataValues(any())
         verify(networkHandler, never()).postDataValuesWebResponse(any())
-        verify(networkHandler, never()).postDataValuesWithDataSet(any())
+        verify(networkHandler, never()).postDataValuesWebResponse(any())
     }
 
     @Test
@@ -163,12 +163,12 @@ class DataValuePostCallShould {
         givenVersion(isV39Plus = true, isV38Plus = true)
         givenFileResourceReturns(dataValues)
 
-        whenever(networkHandler.postDataValuesWithDataSet(any()))
+        whenever(networkHandler.postDataValuesWebResponse(any()))
             .thenReturn(Result.Success(successWebResponse))
 
         dataValuePostCall.uploadDataValues(dataValues).first()
 
-        verify(networkHandler, times(2)).postDataValuesWithDataSet(any())
+        verify(networkHandler, times(2)).postDataValuesWebResponse(any())
     }
 
     @Test
@@ -189,11 +189,11 @@ class DataValuePostCallShould {
         givenFileResourceReturns(dataValues)
 
         // dataSet1 succeeds, dataSet2 fails, dataSet3 succeeds
-        whenever(networkHandler.postDataValuesWithDataSet(argThat { dataSet == "dataSet1" }))
+        whenever(networkHandler.postDataValuesWebResponse(argThat { dataSet == "dataSet1" }))
             .thenReturn(Result.Success(successWebResponse))
-        whenever(networkHandler.postDataValuesWithDataSet(argThat { dataSet == "dataSet2" }))
+        whenever(networkHandler.postDataValuesWebResponse(argThat { dataSet == "dataSet2" }))
             .thenReturn(Result.Failure(error))
-        whenever(networkHandler.postDataValuesWithDataSet(argThat { dataSet == "dataSet3" }))
+        whenever(networkHandler.postDataValuesWebResponse(argThat { dataSet == "dataSet3" }))
             .thenReturn(Result.Success(successWebResponse))
 
         try {
@@ -204,7 +204,7 @@ class DataValuePostCallShould {
         }
 
         // Verify all three uploads were attempted
-        verify(networkHandler, times(3)).postDataValuesWithDataSet(any())
+        verify(networkHandler, times(3)).postDataValuesWebResponse(any())
     }
 
     private suspend fun givenVersion(isV39Plus: Boolean, isV38Plus: Boolean) {

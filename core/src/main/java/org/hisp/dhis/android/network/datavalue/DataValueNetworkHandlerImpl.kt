@@ -86,16 +86,4 @@ internal class DataValueNetworkHandlerImpl(
             service.postDataValuesWebResponse(apiPayload).toDomain()
         }
     }
-
-    override suspend fun postDataValuesWithDataSet(
-        dataValueSet: DataValueSet,
-    ): Result<DataValueImportSummaryWebResponse, D2Error> {
-        val apiPayload = dataValueSet.toDto()
-        return coroutineAPICallExecutor.wrap(
-            acceptedErrorCodes = listOf(HttpStatusCode.Conflict.value),
-            errorClassParser = DataValueImportSummaryWebResponseDTO::toErrorClass,
-        ) {
-            service.postDataValuesWebResponse(apiPayload).toDomain()
-        }
-    }
 }

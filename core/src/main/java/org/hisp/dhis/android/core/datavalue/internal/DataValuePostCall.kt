@@ -103,7 +103,7 @@ internal class DataValuePostCall(
                         dataValues = values,
                         dataSet = dataSetUid,
                     )
-                    networkHandler.postDataValuesWithDataSet(setWithDataSet)
+                    networkHandler.postDataValuesWebResponse(setWithDataSet)
                 }
             }.awaitAll()
         }

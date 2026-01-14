@@ -31,7 +31,6 @@ import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.server.LoginConfig
 import org.koin.core.annotation.Singleton
-import java.util.Date
 
 @Singleton
 internal class DatabaseConfigurationHelper(

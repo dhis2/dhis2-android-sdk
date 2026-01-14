@@ -30,6 +30,7 @@ package org.hisp.dhis.android.testapp.datavalue
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.datavalue.DataValueInternalAccessor
 import org.hisp.dhis.android.core.datavalue.LegacyDataValueApi
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
@@ -234,7 +235,7 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
         assertThat(objectRepository.blockingExists()).isTrue()
         val dataValue = objectRepository.blockingGet()!!
         assertThat(dataValue.value()).isEqualTo("test_value")
-        assertThat(dataValue.sourceDataSet()).isEqualTo("lyLU2wR22tC")
+        assertThat(DataValueInternalAccessor.accessSourceDataSet(dataValue)).isEqualTo("lyLU2wR22tC")
         assertThat(dataValue.syncState()).isEqualTo(State.TO_POST)
 
         // Cleanup
@@ -264,8 +265,8 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
         assertThat(dataValue.value()).isEqualTo("auto_dataset_test")
 
         // First dataSet alphabetically: BfMAe6Itzgt
-        assertThat(dataValue.sourceDataSet()).isNotNull()
-        assertThat(dataValue.sourceDataSet()).isEqualTo("BfMAe6Itzgt")
+        assertThat(DataValueInternalAccessor.accessSourceDataSet(dataValue)).isNotNull()
+        assertThat(DataValueInternalAccessor.accessSourceDataSet(dataValue)).isEqualTo("BfMAe6Itzgt")
 
         // Cleanup
         objectRepository.blockingDelete()

@@ -4915,7 +4915,6 @@ public abstract class org/hisp/dhis/android/core/datavalue/DataValue : org/hisp/
 	public abstract fun lastUpdated ()Ljava/util/Date;
 	public abstract fun organisationUnit ()Ljava/lang/String;
 	public abstract fun period ()Ljava/lang/String;
-	public abstract fun sourceDataSet ()Ljava/lang/String;
 	public abstract fun storedBy ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
 	public abstract fun value ()Ljava/lang/String;
@@ -4933,7 +4932,6 @@ public abstract class org/hisp/dhis/android/core/datavalue/DataValue$Builder : o
 	public abstract fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
 	public abstract fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
 	public abstract fun period (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
-	public abstract fun sourceDataSet (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
 	public abstract fun storedBy (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
 	public abstract fun value (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
 }

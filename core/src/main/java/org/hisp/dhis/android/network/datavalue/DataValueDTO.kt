@@ -31,6 +31,7 @@ package org.hisp.dhis.android.network.datavalue
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.datavalue.DataValueInternalAccessor
 import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
 
 @Serializable
@@ -52,21 +53,22 @@ internal data class DataValueDTO(
 
     @Suppress("ComplexMethod")
     fun toDomain(): DataValue {
-        return DataValue.builder().apply {
+        val builder = DataValue.builder().apply {
             deleted?.let { deleted(it) }
             dataElement(dataElement)
             period(period)
             organisationUnit(orgUnit)
             categoryOptionCombo(categoryOptionCombo)
             attributeOptionCombo(attributeOptionCombo)
-            dataSet?.let { sourceDataSet(it) }
             value?.let { value(it) }
             storedBy?.let { storedBy(it) }
             created?.let { created(DateUtils.DATE_FORMAT.parse(it)) }
             lastUpdated?.let { lastUpdated(DateUtils.DATE_FORMAT.parse(it)) }
             comment?.let { comment(it) }
             followup?.let { followUp(it) }
-        }.build()
+        }
+        dataSet?.let { DataValueInternalAccessor.insertSourceDataSet(builder, it) }
+        return builder.build()
     }
 }
 
@@ -78,7 +80,7 @@ internal fun DataValue.toDto(): DataValueDTO {
         orgUnit = this.organisationUnit()!!,
         categoryOptionCombo = this.categoryOptionCombo()!!,
         attributeOptionCombo = this.attributeOptionCombo()!!,
-        dataSet = this.sourceDataSet(),
+        dataSet = DataValueInternalAccessor.accessSourceDataSet(this),
         value = this.value(),
         storedBy = this.storedBy(),
         created = null,

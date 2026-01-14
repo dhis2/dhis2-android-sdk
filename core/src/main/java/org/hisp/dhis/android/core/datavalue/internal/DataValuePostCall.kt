@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper.errorIfO
 import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper.forcedOrOwn
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.datavalue.DataValueInternalAccessor
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
@@ -94,7 +95,7 @@ internal class DataValuePostCall(
     }
 
     private suspend fun uploadByDataSet(dataValueSet: DataValueSet): Result<DataValueImportSummary, D2Error> {
-        val groupedByDataSet = dataValueSet.dataValues.groupBy { it.sourceDataSet() }
+        val groupedByDataSet = dataValueSet.dataValues.groupBy { DataValueInternalAccessor.accessSourceDataSet(it) }
 
         val results = coroutineScope {
             groupedByDataSet.map { (dataSetUid, values) ->

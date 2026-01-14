@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallEx
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedCollectionValues
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.datavalue.DataValueInternalAccessor
 import org.hisp.dhis.android.core.datavalue.internal.DataValueNetworkHandler
 import org.hisp.dhis.android.core.datavalue.internal.DataValueSet
 import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataCallBundle
@@ -64,7 +65,7 @@ internal class DataValueNetworkHandlerImpl(
             includeDeleted = true,
         )
         return apiResponse.dataValues.map { dto ->
-            dto.toDomain().toBuilder().sourceDataSet(dataSetUid).build()
+            DataValueInternalAccessor.insertSourceDataSet(dto.toDomain().toBuilder(), dataSetUid).build()
         }
     }
 

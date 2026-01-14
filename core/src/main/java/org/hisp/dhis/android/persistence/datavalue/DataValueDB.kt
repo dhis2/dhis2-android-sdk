@@ -3,6 +3,7 @@ package org.hisp.dhis.android.persistence.datavalue
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.datavalue.DataValueInternalAccessor
 import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.persistence.category.CategoryOptionComboDB
@@ -82,13 +83,12 @@ internal data class DataValueDB(
 ) : EntityDB<DataValue>, DataObjectDB, DeletableObjectDB {
 
     override fun toDomain(): DataValue {
-        return DataValue.builder().apply {
+        val builder = DataValue.builder().apply {
             dataElement(dataElement)
             period(period)
             organisationUnit(organisationUnit)
             categoryOptionCombo(categoryOptionCombo)
             attributeOptionCombo(attributeOptionCombo)
-            sourceDataSet(sourceDataSet)
             value(value)
             storedBy(storedBy)
             created?.let { created(it.toJavaDate()!!) }
@@ -97,7 +97,9 @@ internal data class DataValueDB(
             followUp(followUp)
             syncState?.let { syncState(it.toDomain()) }
             deleted(deleted)
-        }.build()
+        }
+        DataValueInternalAccessor.insertSourceDataSet(builder, sourceDataSet)
+        return builder.build()
     }
 }
 
@@ -108,7 +110,7 @@ internal fun DataValue.toDB(): DataValueDB {
         organisationUnit = organisationUnit()!!,
         categoryOptionCombo = categoryOptionCombo()!!,
         attributeOptionCombo = attributeOptionCombo()!!,
-        sourceDataSet = sourceDataSet(),
+        sourceDataSet = DataValueInternalAccessor.accessSourceDataSet(this),
         value = value(),
         storedBy = storedBy(),
         created = created().dateFormat(),

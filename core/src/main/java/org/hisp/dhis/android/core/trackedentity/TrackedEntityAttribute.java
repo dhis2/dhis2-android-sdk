@@ -33,6 +33,7 @@ import androidx.annotation.Nullable;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.SearchOperator;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
@@ -106,10 +107,10 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
     public abstract String displayFormName();
 
     @Nullable
-    public abstract String preferredSearchOperator();
+    public abstract SearchOperator preferredSearchOperator();
 
     @Nullable
-    public abstract List<String> blockedSearchOperators();
+    public abstract List<SearchOperator> blockedSearchOperators();
 
     @Nullable
     public abstract Integer minCharactersToSearch();
@@ -164,9 +165,9 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
 
         public abstract Builder displayFormName(String displayFormName);
 
-        public abstract Builder preferredSearchOperator(String preferredSearchOperator);
+        public abstract Builder preferredSearchOperator(SearchOperator preferredSearchOperator);
 
-        public abstract Builder blockedSearchOperators(List<String> blockedSearchOperators);
+        public abstract Builder blockedSearchOperators(List<SearchOperator> blockedSearchOperators);
 
         public abstract Builder minCharactersToSearch(Integer minCharactersToSearch);
 

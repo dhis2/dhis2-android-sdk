@@ -4077,7 +4077,7 @@ public abstract class org/hisp/dhis/android/core/configuration/internal/Configur
 public abstract class org/hisp/dhis/android/core/configuration/internal/DatabaseAccount {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount$Builder;
-	public abstract fun databaseCreationDate ()Ljava/lang/String;
+	public abstract fun databaseCreationDate ()Ljava/util/Date;
 	public abstract fun databaseName ()Ljava/lang/String;
 	public abstract fun encrypted ()Z
 	public abstract fun importDB ()Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccountImport;
@@ -4092,7 +4092,7 @@ public abstract class org/hisp/dhis/android/core/configuration/internal/Database
 public abstract class org/hisp/dhis/android/core/configuration/internal/DatabaseAccount$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;
-	public abstract fun databaseCreationDate (Ljava/lang/String;)Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount$Builder;
+	public abstract fun databaseCreationDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount$Builder;
 	public abstract fun databaseName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount$Builder;
 	public abstract fun encrypted (Z)Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount$Builder;
 	public abstract fun importDB (Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccountImport;)Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount$Builder;

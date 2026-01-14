@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.configuration.internal
 
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+
 object DatabasesConfigurationUtil {
     fun buildUserConfiguration(
         username: String,
@@ -39,7 +41,8 @@ object DatabasesConfigurationUtil {
             .serverUrl(serverUrl)
             .databaseName("database$username")
             .encrypted(false)
-            .databaseCreationDate(creationDate)
+            .databaseCreationDate(DateUtils.DATE_FORMAT.parse(creationDate))
+            .lastAccessDate(DateUtils.DATE_FORMAT.parse(creationDate))
             .build()
     }
 }

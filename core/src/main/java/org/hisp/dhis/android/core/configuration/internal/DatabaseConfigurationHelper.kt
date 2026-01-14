@@ -73,7 +73,7 @@ internal class DatabaseConfigurationHelper(
             .serverUrl(serverUrl)
             .databaseName(dbName)
             .encrypted(encrypt)
-            .databaseCreationDate(dateProvider.dateStr)
+            .databaseCreationDate(DateUtils.DATE_FORMAT.parse(dateProvider.dateStr))
             .lastAccessDate(DateUtils.DATE_FORMAT.parse(dateProvider.dateStr))
             .loginConfig(loginConfig)
             .importDB(importDb)
@@ -105,7 +105,7 @@ internal class DatabaseConfigurationHelper(
         if (updatedConfiguration != null) {
             store.set(updatedConfiguration)
         }
-        return updatedConfiguration
+        return store.get()
     }
 
     private fun updateAccountLastAccessDate(

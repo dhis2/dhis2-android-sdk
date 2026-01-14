@@ -47,7 +47,7 @@ class DatabasesConfigurationHelperShould {
         .serverUrl(url1)
         .databaseName(dbName11)
         .encrypted(false)
-        .databaseCreationDate(DATE)
+        .databaseCreationDate(DateUtils.DATE_FORMAT.parse(DATE))
         .lastAccessDate(DateUtils.DATE_FORMAT.parse(DATE))
         .build()
 
@@ -56,7 +56,7 @@ class DatabasesConfigurationHelperShould {
         .serverUrl(url1)
         .databaseName(dbName12)
         .encrypted(false)
-        .databaseCreationDate(DATE)
+        .databaseCreationDate(DateUtils.DATE_FORMAT.parse(DATE))
         .lastAccessDate(DateUtils.DATE_FORMAT.parse(DATE))
         .build()
 
@@ -65,7 +65,7 @@ class DatabasesConfigurationHelperShould {
         .serverUrl(url2)
         .databaseName(dbName22)
         .encrypted(false)
-        .databaseCreationDate(DATE)
+        .databaseCreationDate(DateUtils.DATE_FORMAT.parse(DATE))
         .lastAccessDate(DateUtils.DATE_FORMAT.parse(DATE))
         .build()
 
@@ -186,7 +186,7 @@ class DatabasesConfigurationHelperShould {
             .serverUrl("https://dhis2.org")
             .databaseName("test.db")
             .encrypted(true)
-            .databaseCreationDate("2024-01-01")
+            .databaseCreationDate(SHORT_DATE)
             .build()
 
         val configuration = DatabasesConfiguration.builder()
@@ -210,7 +210,7 @@ class DatabasesConfigurationHelperShould {
             .serverUrl("https://dhis2.org")
             .databaseName("test.db")
             .encrypted(true)
-            .databaseCreationDate("2024-01-01")
+            .databaseCreationDate(SHORT_DATE)
             .build()
 
         val configuration = DatabasesConfiguration.builder()
@@ -235,7 +235,7 @@ class DatabasesConfigurationHelperShould {
             .serverUrl("https://dhis2.org")
             .databaseName("test.db")
             .encrypted(true)
-            .databaseCreationDate("2024-01-01")
+            .databaseCreationDate(SHORT_DATE)
             .build()
 
         val configuration = DatabasesConfiguration.builder()
@@ -260,7 +260,7 @@ class DatabasesConfigurationHelperShould {
             .serverUrl("https://DHIS2.org")
             .databaseName("test.db")
             .encrypted(true)
-            .databaseCreationDate("2024-01-01")
+            .databaseCreationDate(SHORT_DATE)
             .build()
 
         val configuration = DatabasesConfiguration.builder()
@@ -318,7 +318,7 @@ class DatabasesConfigurationHelperShould {
             .serverUrl(serverUrl)
             .databaseName(nameGenerator.getDatabaseName(serverUrl, username1, false))
             .encrypted(false)
-            .databaseCreationDate(DATE)
+            .databaseCreationDate(DateUtils.DATE_FORMAT.parse(DATE))
             .build()
 
         return DatabasesConfiguration.builder()
@@ -328,6 +328,7 @@ class DatabasesConfigurationHelperShould {
 
     companion object {
         private const val DATE = "2014-06-06T20:44:21.375"
+        private val SHORT_DATE = DateUtils.SIMPLE_DATE_FORMAT.parse("2024-01-01")
         private const val URL_WITH_SLASHES = "https://play.im.dhis2.org/stable-2-42-2"
         private const val URL_WITH_BACKSLASHES = "https://play.im.dhis2.org\\stable-2-42-2"
     }

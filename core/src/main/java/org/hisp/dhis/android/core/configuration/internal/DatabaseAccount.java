@@ -50,7 +50,7 @@ public abstract class DatabaseAccount {
     public abstract String databaseName();
 
     @NonNull
-    public abstract String databaseCreationDate();
+    public abstract Date databaseCreationDate();
 
     @Nullable
     public abstract Date lastAccessDate();
@@ -84,7 +84,7 @@ public abstract class DatabaseAccount {
 
         public abstract Builder encrypted(boolean encrypted);
 
-        public abstract Builder databaseCreationDate(String databaseCreationDate);
+        public abstract Builder databaseCreationDate(Date databaseCreationDate);
 
         public abstract Builder lastAccessDate(Date lastAccessDate);
 

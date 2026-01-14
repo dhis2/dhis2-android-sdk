@@ -29,8 +29,10 @@
 package org.hisp.dhis.android.persistence.configuration
 
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
+import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.server.LoginConfigDB
 import org.hisp.dhis.android.persistence.server.toDB
@@ -41,6 +43,7 @@ internal data class DatabaseAccountDB(
     val serverUrl: String,
     val databaseName: String,
     val databaseCreationDate: String,
+    val lastAccessDate: String?,
     val encrypted: Boolean,
     val syncState: String?,
     val importDB: DatabaseAccountImportDB?,
@@ -48,16 +51,17 @@ internal data class DatabaseAccountDB(
 ) : EntityDB<DatabaseAccount> {
 
     override fun toDomain(): DatabaseAccount {
-        return DatabaseAccount.builder()
-            .username(username)
-            .serverUrl(serverUrl)
-            .databaseName(databaseName)
-            .databaseCreationDate(databaseCreationDate)
-            .encrypted(encrypted)
-            .syncState(syncState?.let { State.valueOf(it) })
-            .importDB(importDB?.toDomain())
-            .loginConfig(loginConfig?.toDomain())
-            .build()
+        return DatabaseAccount.builder().apply {
+            username(username)
+            serverUrl(serverUrl)
+            databaseName(databaseName)
+            databaseCreationDate(DateUtils.DATE_FORMAT.parse(databaseCreationDate))
+            lastAccessDate?.let { lastAccessDate(DateUtils.DATE_FORMAT.parse(it)) }
+            encrypted(encrypted)
+            syncState(syncState?.let { State.valueOf(it) })
+            importDB(importDB?.toDomain())
+            loginConfig(loginConfig?.toDomain())
+        }.build()
     }
 }
 
@@ -66,7 +70,8 @@ internal fun DatabaseAccount.toDB(): DatabaseAccountDB {
         username = username(),
         serverUrl = serverUrl(),
         databaseName = databaseName(),
-        databaseCreationDate = databaseCreationDate(),
+        databaseCreationDate = databaseCreationDate().dateFormat()!!,
+        lastAccessDate = lastAccessDate().dateFormat(),
         encrypted = encrypted(),
         syncState = syncState()?.name,
         importDB = importDB()?.toDB(),

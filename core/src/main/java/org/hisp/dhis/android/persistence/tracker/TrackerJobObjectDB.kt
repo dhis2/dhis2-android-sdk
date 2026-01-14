@@ -3,7 +3,7 @@ package org.hisp.dhis.android.persistence.tracker
 import androidx.room.Entity
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObject
-import org.hisp.dhis.android.core.util.dateFormat
+import org.hisp.dhis.android.core.util.dateFormatNonNull
 import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.StringListDB
@@ -36,7 +36,7 @@ internal fun TrackerJobObject.toDB(): TrackerJobObjectDB {
         trackerType = trackerType().name,
         objectUid = objectUid(),
         jobUid = jobUid(),
-        lastUpdated = lastUpdated().dateFormat()!!,
+        lastUpdated = lastUpdated().dateFormatNonNull(),
         fileResources = fileResources().toDB(),
     )
 }

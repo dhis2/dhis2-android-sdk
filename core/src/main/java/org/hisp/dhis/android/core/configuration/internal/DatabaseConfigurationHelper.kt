@@ -116,7 +116,7 @@ internal class DatabaseConfigurationHelper(
         val account = getAccount(configuration, serverUrl, username) ?: return configuration
 
         val updatedAccount = account.toBuilder()
-            .lastAccessDate(Date())
+            .lastAccessDate(DateUtils.DATE_FORMAT.parse(dateProvider.dateStr))
             .build()
 
         return addOrUpdateAccount(configuration, updatedAccount)

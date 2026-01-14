@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.util.dateFormat
+import org.hisp.dhis.android.core.util.dateFormatNonNull
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.server.LoginConfigDB
 import org.hisp.dhis.android.persistence.server.toDB
@@ -70,7 +71,7 @@ internal fun DatabaseAccount.toDB(): DatabaseAccountDB {
         username = username(),
         serverUrl = serverUrl(),
         databaseName = databaseName(),
-        databaseCreationDate = databaseCreationDate().dateFormat()!!,
+        databaseCreationDate = databaseCreationDate().dateFormatNonNull(),
         lastAccessDate = lastAccessDate().dateFormat(),
         encrypted = encrypted(),
         syncState = syncState()?.name,

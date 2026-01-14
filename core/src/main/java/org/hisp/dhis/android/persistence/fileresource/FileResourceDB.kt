@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.FileResourceDomain
 import org.hisp.dhis.android.core.util.dateFormat
-import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.core.util.toJavaDateNonNull
 import org.hisp.dhis.android.persistence.common.DataObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.SyncStateDB
@@ -29,8 +29,8 @@ internal data class FileResourceDB(
         return FileResource.builder().apply {
             uid(uid)
             name?.let { name(it) }
-            created?.let { created(it.toJavaDate()!!) }
-            lastUpdated?.let { lastUpdated(it.toJavaDate()!!) }
+            created?.let { created(it.toJavaDateNonNull()) }
+            lastUpdated?.let { lastUpdated(it.toJavaDateNonNull()) }
             contentType?.let { contentType(it) }
             contentLength?.let { contentLength(it) }
             path?.let { path(it) }

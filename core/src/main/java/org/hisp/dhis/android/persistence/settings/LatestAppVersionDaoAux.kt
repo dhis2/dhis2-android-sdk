@@ -31,5 +31,5 @@ package org.hisp.dhis.android.persistence.settings
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "LatestAppVersionTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface LatestAppVersionDaoAux : ObjectDao<LatestAppVersionDB>

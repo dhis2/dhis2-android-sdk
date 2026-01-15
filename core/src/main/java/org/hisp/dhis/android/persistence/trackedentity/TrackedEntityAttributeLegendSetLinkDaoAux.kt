@@ -31,8 +31,5 @@ package org.hisp.dhis.android.persistence.trackedentity
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(
-    tableName = "TrackedEntityAttributeLegendSetLinkTableInfo.TABLE_NAME",
-    parentColumnName = "TrackedEntityAttributeLegendSetLinkTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE",
-)
+@GenerateDaoQueries
 internal interface TrackedEntityAttributeLegendSetLinkDaoAux : LinkDao<TrackedEntityAttributeLegendSetLinkDB>

@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLink
 import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.processor.ParentColumn
 
 @Entity(
     tableName = "CategoryCategoryComboLink",
@@ -27,7 +28,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 )
 internal data class CategoryCategoryComboLinkDB(
     val category: String,
-    val categoryCombo: String,
+    @ParentColumn val categoryCombo: String,
     val sortOrder: Int?,
 ) : EntityDB<CategoryCategoryComboLink> {
 

@@ -30,7 +30,6 @@ package org.hisp.dhis.android.network.common.dto
 
 import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.common.FilterQueryCriteria
-import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 
 internal interface FilterQueryCriteriaDTO {
@@ -40,7 +39,6 @@ internal interface FilterQueryCriteriaDTO {
     val assignedUserMode: String?
     val order: String?
     val displayColumnOrder: List<String>?
-    val eventStatus: String?
     val eventDate: DateFilterPeriodDTO?
     val lastUpdatedDate: DateFilterPeriodDTO?
 }
@@ -53,7 +51,6 @@ internal fun <T> T.applyFilterQueryCriteriaFields(item: FilterQueryCriteriaDTO):
     item.assignedUserMode?.let { assignedUserMode(AssignedUserMode.valueOf(it)) }
     order(item.order)
     displayColumnOrder(item.displayColumnOrder)
-    item.eventStatus?.let { eventStatus(EventStatus.valueOf(it)) }
     eventDate(item.eventDate?.toDomain())
     lastUpdatedDate(item.lastUpdatedDate?.toDomain())
     return this

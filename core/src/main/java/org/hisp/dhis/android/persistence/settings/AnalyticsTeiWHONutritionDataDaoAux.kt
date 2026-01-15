@@ -31,8 +31,5 @@ package org.hisp.dhis.android.persistence.settings
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(
-    tableName = "AnalyticsTeiWHONutritionDataTableInfo.TABLE_NAME",
-    parentColumnName = "AnalyticsTeiWHONutritionDataTableInfo.Columns.TEI_SETTING",
-)
+@GenerateDaoQueries
 internal interface AnalyticsTeiWHONutritionDataDaoAux : LinkDao<AnalyticsTeiWHONutritionDataDB>

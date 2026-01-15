@@ -5,6 +5,7 @@ import androidx.room.ForeignKey
 import org.hisp.dhis.android.core.attribute.ProgramStageAttributeValueLink
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.program.ProgramStageDB
+import org.hisp.dhis.android.processor.ParentColumn
 
 @Entity(
     tableName = "ProgramStageAttributeValueLink",
@@ -27,7 +28,7 @@ import org.hisp.dhis.android.persistence.program.ProgramStageDB
     primaryKeys = ["programStage", "attribute"],
 )
 internal data class ProgramStageAttributeValueLinkDB(
-    val programStage: String,
+    @ParentColumn val programStage: String,
     val attribute: String,
     val value: String?,
 ) : EntityDB<ProgramStageAttributeValueLink> {

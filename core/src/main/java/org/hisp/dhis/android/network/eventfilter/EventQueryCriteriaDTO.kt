@@ -30,6 +30,7 @@ package org.hisp.dhis.android.network.eventfilter
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.event.EventQueryCriteria
+import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.network.common.dto.DateFilterPeriodDTO
 import org.hisp.dhis.android.network.common.dto.FilterQueryCriteriaDTO
 import org.hisp.dhis.android.network.common.dto.applyFilterQueryCriteriaFields
@@ -42,9 +43,9 @@ internal data class EventQueryCriteriaDTO(
     override val assignedUserMode: String?,
     override val order: String?,
     override val displayColumnOrder: List<String>?,
-    override val eventStatus: String?,
     override val eventDate: DateFilterPeriodDTO?,
     override val lastUpdatedDate: DateFilterPeriodDTO?,
+    val status: String?,
     val dataFilters: List<EventDataFilterDTO>?,
     val events: List<String>?,
     val dueDate: DateFilterPeriodDTO?,
@@ -53,6 +54,7 @@ internal data class EventQueryCriteriaDTO(
     fun toDomain(eventFilter: String): EventQueryCriteria {
         return EventQueryCriteria.builder()
             .applyFilterQueryCriteriaFields(this)
+            .status(status?.let { EventStatus.valueOf(it) })
             .dataFilters(dataFilters?.map { it.toDomain(eventFilter) })
             .events(events)
             .dueDate(dueDate?.toDomain())

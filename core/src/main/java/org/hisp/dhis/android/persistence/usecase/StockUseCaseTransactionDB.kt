@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCaseTransaction
 import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.processor.ParentColumn
 
 @Entity(
     tableName = "StockUseCaseTransaction",
@@ -19,7 +20,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
     primaryKeys = ["programUid", "transactionType"],
 )
 internal data class StockUseCaseTransactionDB(
-    val programUid: String,
+    @ParentColumn val programUid: String,
     val sortOrder: Int?,
     val transactionType: String,
     val distributedTo: String?,

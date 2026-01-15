@@ -44,8 +44,10 @@ import org.hisp.dhis.android.core.program.ProgramCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCollectionRepository
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwnerStore
 import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
+import org.hisp.dhis.android.persistence.trackedentity.ProgramOwnerTableInfo
 import org.hisp.dhis.android.persistence.trackedentity.ProgramTempOwnerTableInfo
 import org.koin.core.annotation.Singleton
 import java.util.Date
@@ -59,6 +61,7 @@ internal class EnrollmentServiceImpl(
     private val eventCollectionRepository: EventCollectionRepository,
     private val programStagesCollectionRepository: ProgramStageCollectionRepository,
     private val programTempOwnerStore: ProgramTempOwnerStore,
+    private val programOwnerStore: ProgramOwnerStore,
 ) : EnrollmentService {
 
     override fun blockingIsOpen(enrollmentUid: String): Boolean {
@@ -94,14 +97,19 @@ internal class EnrollmentServiceImpl(
 
         return when (program.accessLevel()) {
             AccessLevel.PROTECTED ->
-                if (hasTempOwnership(trackedEntityInstanceUid, programUid)) {
+                if (isTeiInCaptureScope(trackedEntityInstanceUid) ||
+                    hasProgramOwnership(trackedEntityInstanceUid, programUid) ||
+                    hasTempOwnership(trackedEntityInstanceUid, programUid)
+                ) {
                     dataAccess
                 } else {
                     EnrollmentAccess.PROTECTED_PROGRAM_DENIED
                 }
 
             AccessLevel.CLOSED ->
-                if (isTeiInCaptureScope(trackedEntityInstanceUid)) {
+                if (isTeiInCaptureScope(trackedEntityInstanceUid) ||
+                    hasProgramOwnership(trackedEntityInstanceUid, programUid)
+                ) {
                     dataAccess
                 } else {
                     EnrollmentAccess.CLOSED_PROGRAM_DENIED
@@ -119,6 +127,26 @@ internal class EnrollmentServiceImpl(
             .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
             .uid(tei?.organisationUnit())
             .blockingExists()
+    }
+
+    private suspend fun hasProgramOwnership(trackedEntityInstanceUid: String, programUid: String): Boolean {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(ProgramOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE, trackedEntityInstanceUid)
+            .appendKeyStringValue(ProgramOwnerTableInfo.Columns.PROGRAM, programUid)
+            .build()
+
+        val programOwners = programOwnerStore.selectWhere(whereClause)
+
+        if (programOwners.isEmpty()) {
+            return false
+        }
+
+        val ownerOrgUnit = programOwners.first().ownerOrgUnit()
+
+        return organisationUnitRepository
+            .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+            .uid(ownerOrgUnit)
+            .existsInternal()
     }
 
     override fun blockingGetAllowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Boolean {

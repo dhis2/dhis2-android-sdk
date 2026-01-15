@@ -32,7 +32,7 @@ import androidx.room.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "AnalyticsDhisVisualizationTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface AnalyticsDhisVisualizationDaoAux : ObjectDao<AnalyticsDhisVisualizationDB> {
     @Query(
         """

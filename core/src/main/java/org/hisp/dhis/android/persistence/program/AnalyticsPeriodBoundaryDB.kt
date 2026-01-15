@@ -6,6 +6,7 @@ import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryType
 import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.processor.ParentColumn
 
 @Entity(
     tableName = "AnalyticsPeriodBoundary",
@@ -21,7 +22,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
     primaryKeys = ["programIndicator", "boundaryTarget", "analyticsPeriodBoundaryType"],
 )
 internal data class AnalyticsPeriodBoundaryDB(
-    val programIndicator: String,
+    @ParentColumn val programIndicator: String,
     val boundaryTarget: String,
     val analyticsPeriodBoundaryType: String,
     val offsetPeriods: Int?,

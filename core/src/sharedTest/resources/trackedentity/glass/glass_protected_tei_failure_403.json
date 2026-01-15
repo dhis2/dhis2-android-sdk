@@ -1,0 +1,7 @@
+{
+  "httpStatus": "Forbidden",
+  "httpStatusCode": 403,
+  "status": "ERROR",
+  "message": "OWNERSHIP_ACCESS_DENIED",
+  "errorCode": "E1006"
+}

@@ -24,8 +24,8 @@ import org.hisp.dhis.android.persistence.program.ProgramDB
     ],
     indices = [
         Index(
-            name = "teisyncprogram_organisationunithash",
-            value = ["program", "organisationUnitIdsHash"],
+            name = "teisync_program_orgunit_workinglists",
+            value = ["program", "organisationUnitIdsHash", "workingListsHash"],
             unique = true,
         ),
     ],
@@ -38,12 +38,14 @@ internal data class TrackedEntityInstanceSyncDB(
     val organisationUnitIdsHash: Int,
     val downloadLimit: Int,
     val lastUpdated: String,
+    val workingListsHash: Int?,
 ) : EntityDB<TrackedEntityInstanceSync> {
     override fun toDomain(): TrackedEntityInstanceSync {
         return TrackedEntityInstanceSync.builder()
             .program(program)
             .organisationUnitIdsHash(organisationUnitIdsHash)
             .downloadLimit(downloadLimit)
+            .workingListsHash(workingListsHash)
             .lastUpdated(lastUpdated.toJavaDate())
             .build()
     }
@@ -54,6 +56,7 @@ internal fun TrackedEntityInstanceSync.toDB(): TrackedEntityInstanceSyncDB {
         program = program(),
         organisationUnitIdsHash = organisationUnitIdsHash(),
         downloadLimit = downloadLimit(),
+        workingListsHash = workingListsHash(),
         lastUpdated = lastUpdated().dateFormat()!!,
     )
 }

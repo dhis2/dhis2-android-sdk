@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.event.search
 
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.event.EventFilter
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 
 internal object EventQueryRepositoryScopeHelper {
 
@@ -50,7 +51,7 @@ internal object EventQueryRepositoryScopeHelper {
             criteria.order()?.let { builder.order(parseOrderString(it)) }
             criteria.dataFilters()?.let { builder.dataFilters(it) }
             criteria.events()?.let { builder.events(it) }
-            criteria.eventStatus()?.let { builder.eventStatus(listOf(it)) }
+            criteria.status()?.let { builder.eventStatus(listOf(it)) }
             criteria.eventDate()?.let { builder.eventDate(it) }
             criteria.dueDate()?.let { builder.dueDate(it) }
             criteria.lastUpdatedDate()?.let { builder.lastUpdatedDate(it) }
@@ -84,7 +85,12 @@ internal object EventQueryRepositoryScopeHelper {
     }
 
     private fun parseOrderColumn(orderColumn: String): EventQueryScopeOrderColumn? {
-        val fixedColumn = EventQueryScopeOrderColumn.fixedOrderColumns.find { it.apiName() == orderColumn }
+        val fixedColumn = sequenceOf(TrackerExporterVersion.V2, TrackerExporterVersion.V1)
+            .firstNotNullOfOrNull { version ->
+                EventQueryScopeOrderColumn.fixedOrderColumns.find {
+                    it.apiName()?.getApiName(version) == orderColumn
+                }
+            }
 
         return when {
             fixedColumn != null -> fixedColumn

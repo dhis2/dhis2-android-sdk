@@ -31,5 +31,5 @@ package org.hisp.dhis.android.persistence.settings
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "CustomIntentTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface CustomIntentDaoAux : IdentifiableObjectDao<CustomIntentDB>

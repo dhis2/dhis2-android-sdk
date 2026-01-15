@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLink
 import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.processor.ParentColumn
 
 @Entity(
     tableName = "ProgramStageSectionProgramIndicatorLink",
@@ -26,7 +27,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
     primaryKeys = ["programStageSection", "programIndicator"],
 )
 internal data class ProgramStageSectionProgramIndicatorLinkDB(
-    val programStageSection: String,
+    @ParentColumn val programStageSection: String,
     val programIndicator: String,
 ) : EntityDB<ProgramStageSectionProgramIndicatorLink> {
 

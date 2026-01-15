@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeAttributeStore
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceTableInfo
 import org.koin.core.annotation.Singleton
 
@@ -43,6 +44,7 @@ internal class JobReportTrackedEntityHandler internal constructor(
     private val trackedEntityAttributeValueStore: TrackedEntityAttributeValueStore,
     private val conflictStore: TrackerImportConflictStore,
     private val trackedEntityStore: TrackedEntityInstanceStore,
+    private val trackedEntityTypeAttributeStore: TrackedEntityTypeAttributeStore,
     private val conflictHelper: TrackerConflictHelper,
     relationshipStore: RelationshipStore,
 ) : JobReportTypeHandler(relationshipStore) {
@@ -76,7 +78,17 @@ internal class JobReportTrackedEntityHandler internal constructor(
     }
 
     suspend fun handleSyncedEntity(uid: String) {
-        trackedEntityAttributeValueStore.setSyncStateByInstance(uid, State.SYNCED)
-        trackedEntityAttributeValueStore.removeDeletedAttributeValuesByInstance(uid)
+        val tei = trackedEntityStore.selectByUid(uid)
+        val teType = tei?.trackedEntityType()
+
+        if (teType != null) {
+            val tetAttributes = trackedEntityTypeAttributeStore.getForTrackedEntityType(teType)
+                .mapNotNull { it.trackedEntityAttribute()?.uid() }
+
+            if (tetAttributes.isNotEmpty()) {
+                trackedEntityAttributeValueStore.setSyncStateByAttributes(uid, tetAttributes, State.SYNCED)
+                trackedEntityAttributeValueStore.removeDeletedAttributeValuesByInstanceAndAttributes(uid, tetAttributes)
+            }
+        }
     }
 }

@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink
 import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.processor.ParentColumn
 
 @Entity(
     tableName = "CategoryCategoryOptionLink",
@@ -26,7 +27,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
     primaryKeys = ["category", "categoryOption"],
 )
 internal data class CategoryCategoryOptionLinkDB(
-    val category: String,
+    @ParentColumn val category: String,
     val categoryOption: String,
     val sortOrder: Int?,
 ) : EntityDB<CategoryCategoryOptionLink> {

@@ -31,5 +31,5 @@ package org.hisp.dhis.android.persistence.validation
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "ValidationRuleTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface ValidationRuleDaoAux : IdentifiableObjectDao<ValidationRuleDB>

@@ -32,7 +32,7 @@ import androidx.room.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "DataValueConflictTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface DataValueConflictDaoAux : ObjectDao<DataValueConflictDB> {
     @Query(
         """

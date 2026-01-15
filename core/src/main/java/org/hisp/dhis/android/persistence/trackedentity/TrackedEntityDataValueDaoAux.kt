@@ -34,7 +34,7 @@ import org.hisp.dhis.android.persistence.event.EventTableInfo
 import org.hisp.dhis.android.persistence.program.ProgramStageDataElementTableInfo
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "TrackedEntityDataValueTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface TrackedEntityDataValueDaoAux : ObjectDao<TrackedEntityDataValueDB> {
 
     @Query(

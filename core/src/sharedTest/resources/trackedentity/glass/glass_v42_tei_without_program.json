@@ -1,0 +1,28 @@
+{
+  "trackedEntity": "PgmUFEQYZdt",
+  "trackedEntityType": "nEenWmSyUEp",
+  "createdAt": "2014-06-06T20:44:21.375",
+  "createdAtClient": "2014-06-06T20:44:21.375",
+  "updatedAt": "2015-10-15T11:32:27.242",
+  "orgUnit": "SearchOnlyOrgUnit",
+  "inactive": false,
+  "deleted": false,
+  "potentialDuplicate": false,
+  "relationships": [],
+  "attributes": [
+    {
+      "attribute": "cejWyOfXge6",
+      "createdAt": "2017-12-12T07:35:11.366",
+      "updatedAt": "2017-12-12T07:35:12.904",
+      "value": "1972-11-08"
+    }
+  ],
+  "enrollments": [],
+  "programOwners": [
+    {
+      "orgUnit": "SearchOnlyOrgUnit",
+      "trackedEntity": "PgmUFEQYZdt",
+      "program": "lxAQ7Zs9VYR"
+    }
+  ]
+}

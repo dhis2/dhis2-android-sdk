@@ -5,6 +5,7 @@ import androidx.room.ForeignKey
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitDB
+import org.hisp.dhis.android.processor.ParentColumn
 
 @Entity(
     tableName = "DataSetOrganisationUnitLink",
@@ -28,7 +29,7 @@ import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitDB
 )
 internal data class DataSetOrganisationUnitLinkDB(
     val dataSet: String,
-    val organisationUnit: String,
+    @ParentColumn val organisationUnit: String,
 ) : EntityDB<DataSetOrganisationUnitLink> {
 
     override fun toDomain(): DataSetOrganisationUnitLink {

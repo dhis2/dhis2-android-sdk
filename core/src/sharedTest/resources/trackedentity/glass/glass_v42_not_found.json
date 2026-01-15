@@ -1,0 +1,7 @@
+{
+  "httpStatus": "Not Found",
+  "httpStatusCode": 404,
+  "status": "ERROR",
+  "message": "TrackedEntity with id PgmUFEQYZdt could not be found.",
+  "errorCode": "E1005"
+}

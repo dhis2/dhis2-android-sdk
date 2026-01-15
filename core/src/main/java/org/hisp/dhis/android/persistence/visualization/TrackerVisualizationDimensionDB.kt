@@ -10,6 +10,7 @@ import org.hisp.dhis.android.persistence.common.ObjectWithUidListDB
 import org.hisp.dhis.android.persistence.common.toDB
 import org.hisp.dhis.android.persistence.program.ProgramDB
 import org.hisp.dhis.android.persistence.program.ProgramStageDB
+import org.hisp.dhis.android.processor.ParentColumn
 
 @Entity(
     tableName = "TrackerVisualizationDimension",
@@ -39,7 +40,7 @@ import org.hisp.dhis.android.persistence.program.ProgramStageDB
     primaryKeys = ["trackerVisualization", "dimension"],
 )
 internal data class TrackerVisualizationDimensionDB(
-    val trackerVisualization: String,
+    @ParentColumn val trackerVisualization: String,
     val position: String,
     val dimension: String,
     val dimensionType: String?,

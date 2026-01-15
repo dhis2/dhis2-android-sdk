@@ -195,7 +195,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                             relatives,
                         )
                     } else {
-                        ItemsWithPagingResult(0, true, null, false)
+                        ItemsWithPagingResult(0, true, null, true)
                     }
 
                     bundleResult.bundleCount += result.count
@@ -211,7 +211,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
 
                     progressManager.updateProgramSyncStatus(bundleProgram.program, syncStatus)
 
-                    if (result.emptyProgram || !result.successfulSync) {
+                    if (result.exhaustedProgram || !result.successfulSync) {
                         bundleResult.bundleOrgUnitPrograms[orgUnitUid] = bundlePrograms
                             .filter { it.program != bundleProgram.program }
                             .toMutableList()
@@ -277,7 +277,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         relatives: RelationshipItemRelatives,
     ): ItemsWithPagingResult {
         var downloadedItemsForCombination = 0
-        var emptyProgram = false
+        var exhaustedProgram = false
 
         val callPages: List<TrackerDownloadCallPage<T>> =
             if (query.uids.isNotEmpty()) {
@@ -323,16 +323,16 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
             downloadedItemsForCombination += itemsToPersist.size
 
             if (items.size < callPage.query.pageSize) {
-                emptyProgram = true
+                exhaustedProgram = true
                 break
             }
         }
 
         if (downloadedItemsForCombination < combinationLimit) {
-            emptyProgram = true
+            exhaustedProgram = true
         }
 
-        return ItemsWithPagingResult(downloadedItemsForCombination, true, null, emptyProgram)
+        return ItemsWithPagingResult(downloadedItemsForCombination, true, null, exhaustedProgram)
     }
 
     private fun getItemsToPersist(paging: Paging, pageItems: List<T>): List<T> {
@@ -370,7 +370,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         var count: Int,
         var successfulSync: Boolean,
         var d2Error: D2Error?,
-        var emptyProgram: Boolean,
+        var exhaustedProgram: Boolean,
     )
 
     protected class ItemsByProgramCount(val program: String, var itemCount: Int)

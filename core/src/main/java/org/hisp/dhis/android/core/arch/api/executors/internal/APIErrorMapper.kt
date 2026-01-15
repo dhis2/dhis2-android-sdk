@@ -86,7 +86,6 @@ internal class APIErrorMapper {
 
     private fun sslException(errorBuilder: D2Error.Builder, sslException: SSLException): D2Error {
         return logAndAppendOriginal(errorBuilder, sslException)
-            .errorDescription(sslException.message)
             .errorCode(D2ErrorCode.SSL_ERROR)
             .errorDescription("API call threw SSLException")
             .build()

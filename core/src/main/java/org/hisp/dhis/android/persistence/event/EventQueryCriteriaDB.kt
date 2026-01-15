@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.persistence.event
 
 import org.hisp.dhis.android.core.event.EventQueryCriteria
+import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.persistence.common.DateFilterPeriodDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.FilterQueryCriteriaDB
@@ -43,17 +44,18 @@ internal data class EventQueryCriteriaDB(
     override val assignedUserMode: String?,
     override val orderProperty: String?,
     override val displayColumnOrder: StringListDB?,
-    override val eventStatus: String?,
-    override val eventDate: DateFilterPeriodDB?,
-    override val lastUpdatedDate: DateFilterPeriodDB?,
     val events: StringListDB?,
+    val status: String?,
+    override val eventDate: DateFilterPeriodDB?,
     val dueDate: DateFilterPeriodDB?,
+    override val lastUpdatedDate: DateFilterPeriodDB?,
     val completedDate: DateFilterPeriodDB?,
 ) : EntityDB<EventQueryCriteria>, FilterQueryCriteriaDB {
 
     override fun toDomain(): EventQueryCriteria {
         return EventQueryCriteria.builder().apply {
             applyFilterQueryCriteriaFields(this@EventQueryCriteriaDB)
+            status?.let { status(EventStatus.valueOf(it)) }
             events(events?.toDomain())
             dueDate(dueDate?.toDomain())
             completedDate(completedDate?.toDomain())
@@ -69,11 +71,11 @@ internal fun EventQueryCriteria.toDB(): EventQueryCriteriaDB {
         assignedUserMode = assignedUserMode()?.name,
         orderProperty = order(),
         displayColumnOrder = displayColumnOrder()?.toDB(),
-        eventStatus = eventStatus()?.name,
-        eventDate = eventDate()?.toDB(),
-        lastUpdatedDate = lastUpdatedDate()?.toDB(),
         events = events()?.toDB(),
+        status = status()?.name,
+        eventDate = eventDate()?.toDB(),
         dueDate = dueDate()?.toDB(),
+        lastUpdatedDate = lastUpdatedDate()?.toDB(),
         completedDate = completedDate()?.toDB(),
     )
 }

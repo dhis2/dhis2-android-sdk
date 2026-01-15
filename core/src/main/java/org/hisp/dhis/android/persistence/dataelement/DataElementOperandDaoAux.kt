@@ -31,5 +31,5 @@ package org.hisp.dhis.android.persistence.dataelement
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "DataElementOperandTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface DataElementOperandDaoAux : IdentifiableObjectDao<DataElementOperandDB>

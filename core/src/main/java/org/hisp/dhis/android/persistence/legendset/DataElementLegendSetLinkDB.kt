@@ -5,6 +5,7 @@ import androidx.room.ForeignKey
 import org.hisp.dhis.android.core.legendset.DataElementLegendSetLink
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.dataelement.DataElementDB
+import org.hisp.dhis.android.processor.ParentColumn
 
 @Entity(
     tableName = "DataElementLegendSetLink",
@@ -27,7 +28,7 @@ import org.hisp.dhis.android.persistence.dataelement.DataElementDB
     primaryKeys = ["dataElement", "legendSet"],
 )
 internal data class DataElementLegendSetLinkDB(
-    val dataElement: String,
+    @ParentColumn val dataElement: String,
     val legendSet: String,
     val sortOrder: Int?,
 ) : EntityDB<DataElementLegendSetLink> {

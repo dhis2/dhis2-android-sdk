@@ -5,6 +5,7 @@ import androidx.room.ForeignKey
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeLegendSetLink
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.legendset.LegendSetDB
+import org.hisp.dhis.android.processor.ParentColumn
 
 @Entity(
     tableName = "TrackedEntityAttributeLegendSetLink",
@@ -28,7 +29,7 @@ import org.hisp.dhis.android.persistence.legendset.LegendSetDB
 )
 internal data class TrackedEntityAttributeLegendSetLinkDB(
 
-    val trackedEntityAttribute: String,
+    @ParentColumn val trackedEntityAttribute: String,
     val legendSet: String,
     val sortOrder: Int?,
 ) : EntityDB<TrackedEntityAttributeLegendSetLink> {

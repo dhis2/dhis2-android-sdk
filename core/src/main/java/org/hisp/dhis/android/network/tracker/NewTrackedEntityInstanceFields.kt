@@ -52,6 +52,11 @@ internal object NewTrackedEntityInstanceFields : BaseFields<NewTrackerImporterTr
 
     val asRelationshipFields = Fields.from(commonFields())
 
+    val asSearchFields = Fields.from(
+        commonFields(),
+        fh.nestedField<ProgramOwner>(PROGRAM_OWNERS),
+    )
+
     val allFields = Fields.from(
         commonFields(),
         fh.nestedField<NewTrackerImporterRelationship>(RELATIONSHIPS).with(NewRelationshipFields.allFields),

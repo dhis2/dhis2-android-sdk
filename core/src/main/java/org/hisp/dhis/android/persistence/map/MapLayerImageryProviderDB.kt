@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
 import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.processor.ParentColumn
 
 @Entity(
     tableName = "MapLayerImageryProvider",
@@ -19,7 +20,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
     primaryKeys = ["mapLayer", "attribution"],
 )
 internal data class MapLayerImageryProviderDB(
-    val mapLayer: String,
+    @ParentColumn val mapLayer: String,
     val attribution: String,
     val coverageAreas: MapLayerImageryProviderAreaDB?,
 ) : EntityDB<MapLayerImageryProvider> {

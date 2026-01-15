@@ -33,7 +33,7 @@ import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "DataSetCompleteRegistrationTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface DataSetCompleteRegistrationDaoAux : ObjectDao<DataSetCompleteRegistrationDB> {
     @Query(
         """

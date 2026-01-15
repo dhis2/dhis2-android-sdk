@@ -31,8 +31,5 @@ package org.hisp.dhis.android.persistence.settings
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(
-    tableName = "CustomIntentDataElementTableInfo.TABLE_NAME",
-    parentColumnName = "CustomIntentDataElementTableInfo.Columns.CUSTOM_INTENT_UID",
-)
+@GenerateDaoQueries
 internal interface CustomIntentDataElementDaoAux : LinkDao<CustomIntentDataElementDB>

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,26 +26,8 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.database;
+package org.hisp.dhis.android.processor
 
-import java.util.Locale;
-
-import androidx.annotation.NonNull;
-
-public final class DbTestUtils {
-    private DbTestUtils() {
-        // no instances
-    }
-
-    @NonNull
-    public static String[] unambiguousProjection(@NonNull String table, @NonNull String[] projection) {
-        String[] unambiguousProjection = new String[projection.length];
-
-        for (int index = 0; index < projection.length; index++) {
-            unambiguousProjection[index] = String.format(Locale.US,
-                    "%s.%s", table, projection[index]);
-        }
-
-        return unambiguousProjection;
-    }
-}
+@Target(AnnotationTarget.PROPERTY)
+@Retention(AnnotationRetention.SOURCE)
+annotation class ParentColumn

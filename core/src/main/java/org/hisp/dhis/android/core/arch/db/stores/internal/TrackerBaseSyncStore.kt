@@ -29,6 +29,6 @@
 package org.hisp.dhis.android.core.arch.db.stores.internal
 
 internal interface TrackerBaseSyncStore<O> : ObjectWithoutUidStore<O> {
-    suspend fun deleteByProgram(programUid: String, organisationUnitIdsHash: Int): Boolean
-    suspend fun deleteByNullProgram(organisationUnitIdsHash: Int): Boolean
+    suspend fun deleteByProgram(programUid: String, organisationUnitIdsHash: Int, workingListsHash: Int?): Boolean
+    suspend fun deleteByNullProgram(organisationUnitIdsHash: Int, workingListsHash: Int?): Boolean
 }

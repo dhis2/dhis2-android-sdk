@@ -5,6 +5,7 @@ import androidx.room.ForeignKey
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLink
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.dataset.DataSetDB
+import org.hisp.dhis.android.processor.ParentColumn
 
 @Entity(
     tableName = "DataSetIndicatorLink",
@@ -27,7 +28,7 @@ import org.hisp.dhis.android.persistence.dataset.DataSetDB
     primaryKeys = ["dataSet", "indicator"],
 )
 internal data class DataSetIndicatorLinkDB(
-    val dataSet: String,
+    @ParentColumn val dataSet: String,
     val indicator: String,
 ) : EntityDB<DataSetIndicatorLink> {
 

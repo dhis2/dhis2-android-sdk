@@ -5,6 +5,7 @@ import androidx.room.ForeignKey
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute
 import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.processor.ParentColumn
 
 @Entity(
     tableName = "TrackedEntityTypeAttribute",
@@ -27,7 +28,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
     primaryKeys = ["trackedEntityType", "trackedEntityAttribute"],
 )
 internal data class TrackedEntityTypeAttributeDB(
-    val trackedEntityType: String,
+    @ParentColumn val trackedEntityType: String,
     val trackedEntityAttribute: String,
     val displayInList: Boolean?,
     val mandatory: Boolean?,

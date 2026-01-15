@@ -31,5 +31,5 @@ package org.hisp.dhis.android.persistence.period
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "PeriodTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface PeriodDaoAux : ObjectDao<PeriodDB>

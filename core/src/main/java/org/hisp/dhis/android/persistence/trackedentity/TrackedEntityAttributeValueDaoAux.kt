@@ -33,7 +33,7 @@ import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.persistence.program.ProgramTrackedEntityAttributeTableInfo
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "TrackedEntityAttributeValueTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface TrackedEntityAttributeValueDaoAux : ObjectDao<TrackedEntityAttributeValueDB> {
     @Query(
         """UPDATE TrackedEntityAttributeValue 
@@ -41,6 +41,14 @@ internal interface TrackedEntityAttributeValueDaoAux : ObjectDao<TrackedEntityAt
         WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = :uid""",
     )
     fun setSyncStateByInstance(state: String, uid: String)
+
+    @Query(
+        """UPDATE TrackedEntityAttributeValue 
+        SET ${TrackedEntityAttributeValueTableInfo.Columns.SYNC_STATE} = :state 
+        WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = :teiUid
+          AND ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} IN (:attributeUids)""",
+    )
+    fun setSyncStateByAttributes(state: String, teiUid: String, attributeUids: List<String>)
 
     @Query(
         """
@@ -103,9 +111,11 @@ internal interface TrackedEntityAttributeValueDaoAux : ObjectDao<TrackedEntityAt
         DELETE FROM ${TrackedEntityAttributeValueTableInfo.TABLE_NAME}
         WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = :trackedEntityInstanceUid
           AND ${TrackedEntityAttributeValueTableInfo.Columns.VALUE} IS NULL
+          AND ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} IN (:attributeUids)
     """,
     )
-    fun removeDeletedAttributeValuesByInstance(
+    fun removeDeletedAttributeValuesByInstanceAndAttributes(
         trackedEntityInstanceUid: String,
+        attributeUids: List<String>,
     ): Int
 }

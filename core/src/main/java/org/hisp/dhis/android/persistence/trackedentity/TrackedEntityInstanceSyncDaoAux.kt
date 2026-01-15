@@ -33,23 +33,27 @@ import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceSyncTableInfo.Columns
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "TrackedEntityInstanceSyncTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface TrackedEntityInstanceSyncDaoAux : ObjectDao<TrackedEntityInstanceSyncDB> {
     @Query(
         """
-        DELETE FROM ${TrackedEntityInstanceSyncTableInfo.TABLE_NAME} 
-        WHERE ${Columns.ORGANISATION_UNIT_IDS_HASH} = :organisationUnitIdsHash 
+        DELETE FROM ${TrackedEntityInstanceSyncTableInfo.TABLE_NAME}
+        WHERE ${Columns.ORGANISATION_UNIT_IDS_HASH} = :organisationUnitIdsHash
         AND ${Columns.PROGRAM} = :programUid
+        AND (${Columns.WORKING_LISTS_HASH} = :workingListsHash
+            OR (${Columns.WORKING_LISTS_HASH} IS NULL AND :workingListsHash IS NULL))
     """,
     )
-    fun deleteByProgram(programUid: String, organisationUnitIdsHash: Int): Int
+    fun deleteByProgram(programUid: String, organisationUnitIdsHash: Int, workingListsHash: Int?): Int
 
     @Query(
         """
-        DELETE FROM ${TrackedEntityInstanceSyncTableInfo.TABLE_NAME} 
-        WHERE ${Columns.ORGANISATION_UNIT_IDS_HASH} = :organisationUnitIdsHash 
+        DELETE FROM ${TrackedEntityInstanceSyncTableInfo.TABLE_NAME}
+        WHERE ${Columns.ORGANISATION_UNIT_IDS_HASH} = :organisationUnitIdsHash
         AND ${Columns.PROGRAM} IS NULL
+        AND (${Columns.WORKING_LISTS_HASH} = :workingListsHash
+            OR (${Columns.WORKING_LISTS_HASH} IS NULL AND :workingListsHash IS NULL))
     """,
     )
-    fun deleteByNullProgram(organisationUnitIdsHash: Int): Int
+    fun deleteByNullProgram(organisationUnitIdsHash: Int, workingListsHash: Int?): Int
 }

@@ -43,13 +43,17 @@ internal class EventSyncStoreImpl(
     EventSync::toDB,
     SQLStatementBuilderImpl(EventSyncTableInfo.TABLE_INFO),
 ) {
-    override suspend fun deleteByProgram(programUid: String, organisationUnitIdsHash: Int): Boolean {
+    override suspend fun deleteByProgram(
+        programUid: String,
+        organisationUnitIdsHash: Int,
+        workingListsHash: Int?,
+    ): Boolean {
         val dao = databaseAdapter.getCurrentDatabase().eventSyncDao()
-        return dao.deleteByProgram(programUid, organisationUnitIdsHash) > 0
+        return dao.deleteByProgram(programUid, organisationUnitIdsHash, workingListsHash) > 0
     }
 
-    override suspend fun deleteByNullProgram(organisationUnitIdsHash: Int): Boolean {
+    override suspend fun deleteByNullProgram(organisationUnitIdsHash: Int, workingListsHash: Int?): Boolean {
         val dao = databaseAdapter.getCurrentDatabase().eventSyncDao()
-        return dao.deleteByNullProgram(organisationUnitIdsHash) > 0
+        return dao.deleteByNullProgram(organisationUnitIdsHash, workingListsHash) > 0
     }
 }

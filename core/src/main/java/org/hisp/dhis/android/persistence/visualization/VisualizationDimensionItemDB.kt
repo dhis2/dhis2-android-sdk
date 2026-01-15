@@ -5,6 +5,7 @@ import androidx.room.ForeignKey
 import org.hisp.dhis.android.core.visualization.LayoutPosition
 import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
 import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.processor.ParentColumn
 
 @Entity(
     tableName = "VisualizationDimensionItem",
@@ -20,7 +21,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
     primaryKeys = ["visualization", "dimensionItem"],
 )
 internal data class VisualizationDimensionItemDB(
-    val visualization: String,
+    @ParentColumn val visualization: String,
     val position: String,
     val dimension: String,
     val dimensionItem: String,

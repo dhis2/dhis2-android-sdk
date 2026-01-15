@@ -32,7 +32,7 @@ import androidx.room.Query
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "NoteTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface NoteDaoAux : IdentifiableObjectDao<NoteDB> {
 
     @Query(

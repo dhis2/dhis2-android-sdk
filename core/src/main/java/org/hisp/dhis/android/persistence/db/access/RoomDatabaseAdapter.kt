@@ -297,4 +297,13 @@ internal class RoomDatabaseAdapter(
         checkReady()
         return database?.openHelper?.readableDatabase?.version!!
     }
+
+    override suspend fun checkpointWAL() {
+        checkReady()
+        database!!.useWriterConnection { transactor ->
+            transactor.usePrepared("PRAGMA wal_checkpoint(PASSIVE);") { statement ->
+                statement.step()
+            }
+        }
+    }
 }

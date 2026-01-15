@@ -31,8 +31,5 @@ package org.hisp.dhis.android.persistence.dataset
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(
-    tableName = "DataSetDataElementLinkTableInfo.TABLE_NAME",
-    parentColumnName = "DataSetDataElementLinkTableInfo.Columns.DATA_SET",
-)
+@GenerateDaoQueries
 internal interface DataSetDataElementLinkDaoAux : LinkDao<DataSetDataElementLinkDB>

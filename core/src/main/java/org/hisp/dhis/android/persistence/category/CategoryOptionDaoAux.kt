@@ -31,5 +31,5 @@ package org.hisp.dhis.android.persistence.category
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "CategoryOptionTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface CategoryOptionDaoAux : IdentifiableObjectDao<CategoryOptionDB>

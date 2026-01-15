@@ -31,5 +31,5 @@ package org.hisp.dhis.android.persistence.datastore
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "LocalDataStoreTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface LocalDataStoreDaoAux : ObjectDao<LocalDataStoreDB>

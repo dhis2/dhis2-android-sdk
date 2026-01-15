@@ -49,9 +49,10 @@ internal class TrackedEntityInstanceCallErrorCatcher : APICallErrorCatcher {
             parsed.httpStatusCode() == HttpsURLConnection.HTTP_CONFLICT ||
             parsed.httpStatusCode() == HttpsURLConnection.HTTP_FORBIDDEN
         ) {
-            when (parsed.message()) {
-                "OWNERSHIP_ACCESS_DENIED" -> D2ErrorCode.OWNERSHIP_ACCESS_DENIED
-                "PROGRAM_ACCESS_CLOSED" -> D2ErrorCode.PROGRAM_ACCESS_CLOSED
+            val message = parsed.message()
+            when {
+                message.contains("OWNERSHIP_ACCESS_DENIED") -> D2ErrorCode.OWNERSHIP_ACCESS_DENIED
+                message.contains("PROGRAM_ACCESS_CLOSED") -> D2ErrorCode.PROGRAM_ACCESS_CLOSED
                 else -> null
             }
         } else {

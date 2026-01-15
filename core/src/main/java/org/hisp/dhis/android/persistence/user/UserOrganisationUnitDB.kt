@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink
 import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.processor.ParentColumn
 
 @Entity(
     tableName = "UserOrganisationUnit",
@@ -21,7 +22,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 internal data class UserOrganisationUnitDB(
     val user: String,
     val organisationUnit: String,
-    val organisationUnitScope: String,
+    @ParentColumn val organisationUnitScope: String,
     val root: Boolean?,
     val userAssigned: Boolean?,
 ) : EntityDB<UserOrganisationUnitLink> {

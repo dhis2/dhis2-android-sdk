@@ -31,5 +31,5 @@ package org.hisp.dhis.android.persistence.valuetypedevicerendering
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "ValueTypeDeviceRenderingTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface ValueTypeDeviceRenderingDaoAux : ObjectDao<ValueTypeDeviceRenderingDB>

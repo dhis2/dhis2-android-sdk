@@ -31,5 +31,5 @@ package org.hisp.dhis.android.persistence.domain
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "AggregatedDataSyncTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface AggregatedDataSyncDaoAux : ObjectDao<AggregatedDataSyncDB>

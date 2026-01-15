@@ -31,5 +31,5 @@ package org.hisp.dhis.android.persistence.event
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "EventFilterTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface EventFilterDaoAux : IdentifiableObjectDao<EventFilterDB>

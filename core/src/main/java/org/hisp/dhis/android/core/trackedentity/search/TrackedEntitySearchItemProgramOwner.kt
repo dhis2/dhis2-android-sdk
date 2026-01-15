@@ -25,49 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.data.database
 
-import android.database.Cursor
-import com.google.common.truth.Truth
+package org.hisp.dhis.android.core.trackedentity.search
 
-class CursorAssert // set to first row by default
-private constructor(private val cursor: Cursor) {
-    private var row = 0
-
-    fun hasRow(vararg values: Any): CursorAssert {
-        Truth.assertThat(cursor.moveToNext()).isTrue()
-        row = row + 1
-
-        Truth.assertThat(cursor.columnCount).isEqualTo(values.size)
-        for (index in values.indices) {
-            Truth.assertThat(cursor.getString(index))
-                .isEqualTo(if (values[index] == null) values[index] else values[index].toString())
-        }
-
-        return this
-    }
-
-    val isExhausted: Unit
-        get() {
-            if (cursor.moveToNext()) {
-                val data = StringBuilder()
-                for (i in 0..<cursor.columnCount) {
-                    if (i > 0) {
-                        data.append(", ")
-                    }
-
-                    data.append(cursor.getString(i))
-                }
-
-                throw AssertionError("Expected no more rows but was: $data")
-            }
-
-            cursor.close()
-        }
-
-    companion object {
-        fun assertThatCursor(cursor: Cursor): CursorAssert {
-            return CursorAssert(cursor)
-        }
-    }
-}
+data class TrackedEntitySearchItemProgramOwner(
+    val program: String,
+    val ownerOrgUnit: String,
+)

@@ -31,5 +31,5 @@ package org.hisp.dhis.android.persistence.attribute
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "AttributeTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface AttributeDaoAux : IdentifiableObjectDao<AttributeDB>

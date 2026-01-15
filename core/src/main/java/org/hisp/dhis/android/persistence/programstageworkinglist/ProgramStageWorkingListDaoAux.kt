@@ -31,5 +31,5 @@ package org.hisp.dhis.android.persistence.programstageworkinglist
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "ProgramStageWorkingListTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface ProgramStageWorkingListDaoAux : IdentifiableObjectDao<ProgramStageWorkingListDB>

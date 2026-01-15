@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import org.hisp.dhis.android.core.settings.CustomIntentDataElement
 import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.processor.ParentColumn
 
 @Entity(
     tableName = "CustomIntentDataElement",
@@ -20,7 +21,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 )
 internal data class CustomIntentDataElementDB(
     val uid: String,
-    val customIntentUid: String,
+    @ParentColumn val customIntentUid: String,
 ) : EntityDB<CustomIntentDataElement> {
 
     override fun toDomain(): CustomIntentDataElement {

@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableDeletableDataObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
-@GenerateDaoQueries(tableName = "EventTableInfo.TABLE_NAME")
+@GenerateDaoQueries
 internal interface EventDaoAux : IdentifiableDeletableDataObjectDao<EventDB> {
     @Query(
         """UPDATE Event

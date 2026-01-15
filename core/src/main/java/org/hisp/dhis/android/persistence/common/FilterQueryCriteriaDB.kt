@@ -30,7 +30,6 @@ package org.hisp.dhis.android.persistence.common
 
 import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.common.FilterQueryCriteria
-import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 
 internal interface FilterQueryCriteriaDB {
@@ -40,7 +39,6 @@ internal interface FilterQueryCriteriaDB {
     val assignedUserMode: String?
     val orderProperty: String?
     val displayColumnOrder: StringListDB?
-    val eventStatus: String?
     val eventDate: DateFilterPeriodDB?
     val lastUpdatedDate: DateFilterPeriodDB?
 }
@@ -53,7 +51,6 @@ internal fun <T> T.applyFilterQueryCriteriaFields(item: FilterQueryCriteriaDB): 
     item.assignedUserMode?.let { assignedUserMode(AssignedUserMode.valueOf(it)) }
     order(item.orderProperty)
     item.displayColumnOrder?.let { displayColumnOrder(it.toDomain()) }
-    item.eventStatus?.let { eventStatus(EventStatus.valueOf(it)) }
     item.eventDate?.let { eventDate(it.toDomain()) }
     item.lastUpdatedDate?.let { lastUpdatedDate(it.toDomain()) }
     return this

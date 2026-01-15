@@ -53,7 +53,7 @@ internal abstract class JobReportTypeHandler(
         handleObject(jo.objectUid(), State.TO_UPDATE)
     }
 
-    protected abstract suspend fun handleObject(uid: String, state: State): HandleAction
+    internal abstract suspend fun handleObject(uid: String, state: State): HandleAction
     protected abstract suspend fun storeConflict(errorReport: JobValidationError)
     protected abstract suspend fun getRelatedRelationships(uid: String): List<Relationship>
 }

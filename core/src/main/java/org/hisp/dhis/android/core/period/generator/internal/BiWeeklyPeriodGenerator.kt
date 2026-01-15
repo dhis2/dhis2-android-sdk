@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.period.generator.internal
 
-import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
@@ -35,7 +34,10 @@ import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import org.hisp.dhis.android.core.period.PeriodType
 import kotlin.math.abs
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 internal class BiWeeklyPeriodGenerator(clock: Clock) :
     AbstractPeriodGenerator(clock, PeriodType.BiWeekly) {
 

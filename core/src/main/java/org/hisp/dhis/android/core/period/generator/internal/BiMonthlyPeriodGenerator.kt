@@ -27,12 +27,14 @@
  */
 package org.hisp.dhis.android.core.period.generator.internal
 
-import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.zeroPrefixed
 import org.hisp.dhis.android.core.period.PeriodType
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 internal class BiMonthlyPeriodGenerator(clock: Clock) :
     NMonthlyPeriodGenerator(clock, PeriodType.BiMonthly, 2, "B", Month.JANUARY) {
 

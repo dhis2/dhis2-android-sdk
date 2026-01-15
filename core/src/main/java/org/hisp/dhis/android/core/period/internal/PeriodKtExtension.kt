@@ -29,17 +29,18 @@
 package org.hisp.dhis.android.core.period.internal
 
 import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
-import kotlinx.datetime.toJavaInstant
 import kotlinx.datetime.toLocalDateTime
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.atStartOfDayInSystem
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.generator.internal.PeriodKt
 import org.hisp.dhis.android.core.util.toLocalDate
 import java.util.Date
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
+import kotlin.time.toJavaInstant
 
 internal fun List<PeriodKt>.toPeriods(): List<Period> {
     return this.map { it.toPeriods() }
@@ -54,6 +55,7 @@ internal fun PeriodKt.toPeriods(): Period {
         .build()
 }
 
+@OptIn(ExperimentalTime::class)
 private fun toStartDate(localDate: LocalDate): Date {
     return Date.from(localDate.atStartOfDayInSystem().toJavaInstant())
 }
@@ -63,6 +65,7 @@ private fun toEndDate(localDate: LocalDate): Date {
     return Date(nextDay.time - 1)
 }
 
+@OptIn(ExperimentalTime::class)
 internal fun Date.toLocalDate(): LocalDate {
     return Instant.fromEpochMilliseconds(this.time).toLocalDateTime(TimeZone.currentSystemDefault()).toLocalDate()
 }

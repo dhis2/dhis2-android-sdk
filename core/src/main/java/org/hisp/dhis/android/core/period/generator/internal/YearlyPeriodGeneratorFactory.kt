@@ -27,10 +27,12 @@
  */
 package org.hisp.dhis.android.core.period.generator.internal
 
-import kotlinx.datetime.Clock
 import kotlinx.datetime.Month
 import org.hisp.dhis.android.core.period.PeriodType
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 internal object YearlyPeriodGeneratorFactory {
     fun yearly(clock: Clock): YearlyPeriodGenerator {
         return YearlyPeriodGenerator(clock, PeriodType.Yearly, Month.JANUARY, "")

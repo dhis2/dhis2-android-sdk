@@ -1725,7 +1725,6 @@ public synthetic class org/hisp/dhis/android/core/arch/db/access/DatabaseExportM
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lorg/hisp/dhis/android/core/arch/db/access/DatabaseExportMetadata;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class org/hisp/dhis/android/core/arch/db/access/DatabaseExportMetadata$Companion {
@@ -10211,7 +10210,6 @@ public synthetic class org/hisp/dhis/android/core/sms/domain/repository/WebApiRe
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lorg/hisp/dhis/android/core/sms/domain/repository/WebApiRepository$GetMetadataIdsConfig;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class org/hisp/dhis/android/core/sms/domain/repository/WebApiRepository$GetMetadataIdsConfig$Companion {
@@ -10533,6 +10531,7 @@ public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttr
 	public fun <init> ()V
 	public abstract fun access ()Lorg/hisp/dhis/android/core/common/Access;
 	public abstract fun aggregationType ()Lorg/hisp/dhis/android/core/common/AggregationType;
+	public abstract fun blockedSearchOperators ()Ljava/util/List;
 	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttribute$Builder;
 	public abstract fun confidential ()Ljava/lang/Boolean;
 	public abstract fun displayFormName ()Ljava/lang/String;
@@ -10544,9 +10543,11 @@ public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttr
 	public abstract fun generated ()Ljava/lang/Boolean;
 	public abstract fun inherit ()Ljava/lang/Boolean;
 	public abstract fun legendSets ()Ljava/util/List;
+	public abstract fun minCharactersToSearch ()Ljava/lang/Integer;
 	public abstract fun optionSet ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun orgUnitScope ()Ljava/lang/Boolean;
 	public abstract fun pattern ()Ljava/lang/String;
+	public abstract fun preferredSearchOperator ()Ljava/lang/String;
 	public abstract fun programScope ()Ljava/lang/Boolean;
 	public abstract fun sortOrderInListNoProgram ()Ljava/lang/Integer;
 	public synthetic fun toBuilder ()Lorg/hisp/dhis/android/core/common/ObjectWithStyle$Builder;
@@ -10559,6 +10560,7 @@ public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttr
 	public fun <init> ()V
 	public abstract fun access (Lorg/hisp/dhis/android/core/common/Access;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttribute$Builder;
 	public abstract fun aggregationType (Lorg/hisp/dhis/android/core/common/AggregationType;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttribute$Builder;
+	public abstract fun blockedSearchOperators (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttribute$Builder;
 	public synthetic fun build ()Ljava/lang/Object;
 	public fun build ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttribute;
 	public abstract fun confidential (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttribute$Builder;
@@ -10571,9 +10573,11 @@ public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttr
 	public abstract fun generated (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttribute$Builder;
 	public abstract fun inherit (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttribute$Builder;
 	public abstract fun legendSets (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttribute$Builder;
+	public abstract fun minCharactersToSearch (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttribute$Builder;
 	public abstract fun optionSet (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttribute$Builder;
 	public abstract fun orgUnitScope (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttribute$Builder;
 	public abstract fun pattern (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttribute$Builder;
+	public abstract fun preferredSearchOperator (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttribute$Builder;
 	public abstract fun programScope (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttribute$Builder;
 	public abstract fun sortOrderInListNoProgram (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttribute$Builder;
 	public synthetic fun style (Lorg/hisp/dhis/android/core/common/ObjectStyle;)Lorg/hisp/dhis/android/core/common/ObjectWithStyle$Builder;
@@ -10583,6 +10587,7 @@ public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttr
 }
 
 public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyNameableCollectionRepositoryImpl {
+	public final fun byBlockedSearchOperators ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byColor ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byConfidential ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
 	public final fun byDisplayFormName ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
@@ -10594,9 +10599,11 @@ public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttribu
 	public final fun byGenerated ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
 	public final fun byIcon ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byInherit ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
+	public final fun byMinCharactersToSearch ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/IntegerFilterConnector;
 	public final fun byOptionSetUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byOrgUnitScope ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
 	public final fun byPattern ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
+	public final fun byPreferredSearchOperator ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byProgramScope ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
 	public final fun bySortOrderInListNoProgram ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/IntegerFilterConnector;
 	public final fun byUnique ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
@@ -15338,6 +15345,7 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 
 public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntityAttributeTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
 	public static final field AGGREGATION_TYPE Ljava/lang/String;
+	public static final field BLOCKED_SEARCH_OPERATORS Ljava/lang/String;
 	public static final field CODE Ljava/lang/String;
 	public static final field COLOR Ljava/lang/String;
 	public static final field CONFIDENTIAL Ljava/lang/String;
@@ -15357,10 +15365,12 @@ public final class org/hisp/dhis/android/persistence/trackedentity/TrackedEntity
 	public static final field ICON Ljava/lang/String;
 	public static final field INHERIT Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
+	public static final field MIN_CHARACTERS_TO_SEARCH Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
 	public static final field OPTION_SET Ljava/lang/String;
 	public static final field ORGUNIT_SCOPE Ljava/lang/String;
 	public static final field PATTERN Ljava/lang/String;
+	public static final field PREFERRED_SEARCH_OPERATOR Ljava/lang/String;
 	public static final field PROGRAM_SCOPE Ljava/lang/String;
 	public static final field SHORT_NAME Ljava/lang/String;
 	public static final field SORT_ORDER_IN_LIST_NO_PROGRAM Ljava/lang/String;

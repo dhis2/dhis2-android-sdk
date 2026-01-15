@@ -91,6 +91,11 @@
       "generated": false,
       "pattern": "",
       "orgunitScope": false,
+      "minCharactersToSearch": 2,
+      "preferredSearchOperator": "SW",
+      "blockedSearchOperators": [
+        "LIKE"
+      ],
       "displayName": "First name",
       "access": {
         "manage": true,

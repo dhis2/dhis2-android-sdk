@@ -74,6 +74,9 @@ internal data class TrackedEntityAttributeDTO(
     val legendSets: List<ObjectWithUidDTO>? = emptyList(),
     val formName: String?,
     val displayFormName: String?,
+    val preferredSearchOperator: String?,
+    val blockedSearchOperators: List<String>?,
+    val minCharactersToSearch: Int?,
 ) : BaseNameableObjectDTO {
     @Suppress("ComplexMethod")
     fun toDomain(): TrackedEntityAttribute {
@@ -99,6 +102,9 @@ internal data class TrackedEntityAttributeDTO(
             legendSets?.let { legendSets(it.map { it.toDomain() }) }
             formName?.let { formName(it) }
             displayFormName?.let { displayFormName(it) }
+            preferredSearchOperator?.let { preferredSearchOperator(it) }
+            blockedSearchOperators?.let { blockedSearchOperators(it) }
+            minCharactersToSearch?.let { minCharactersToSearch(it) }
         }.build()
     }
 }

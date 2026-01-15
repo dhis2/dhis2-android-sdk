@@ -18,6 +18,11 @@
   "valueType": "TEXT",
   "sortOrderInVisitSchedule": 0,
   "orgunitScope": false,
+  "minCharactersToSearch": 2,
+  "preferredSearchOperator": "SW",
+  "blockedSearchOperators": [
+    "LIKE"
+  ],
   "confidential": false,
   "displayDescription": "TB number",
   "dimensionItem": "ruQQnf6rswq",

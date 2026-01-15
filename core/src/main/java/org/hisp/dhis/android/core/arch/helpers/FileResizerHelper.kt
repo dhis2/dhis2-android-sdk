@@ -115,7 +115,7 @@ object FileResizerHelper {
         return D2Error.builder()
             .errorComponent(D2ErrorComponent.SDK)
             .errorCode(D2ErrorCode.FAIL_RESIZING_IMAGE)
-            .errorDescription(e.message)
+            .errorDescription(e.message ?: "Failed to resize image")
             .build()
     }
 

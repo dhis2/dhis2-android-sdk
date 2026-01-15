@@ -30,7 +30,7 @@ internal data class D2ErrorDB(
             url(url)
             errorComponent?.let { errorComponent(D2ErrorComponent.valueOf(it)) }
             errorCode?.let { errorCode(D2ErrorCode.valueOf(it)) }
-            errorDescription(errorDescription)
+            errorDescription(errorDescription ?: "Unknown error")
             httpErrorCode(httpErrorCode)
             created(created.toJavaDate())
         }.build()

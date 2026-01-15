@@ -26,7 +26,6 @@ androidx-room = "2.8.4"
 
 # java
 autoValue = "1.11.0"
-autoValueCursor = "2.0.1"
 okHttp = "4.12.0"
 ktor = "2.3.12"
 rxJava = "2.2.21"

@@ -45,7 +45,7 @@ internal open class NMonthlyPeriodGenerator(
     AbstractPeriodGenerator(clock, periodType) {
 
     override fun getStartOfPeriodFor(date: LocalDate): LocalDate {
-        val currentMonth = date.monthNumber
+        val currentMonth = date.month.number
         val monthsFromPeriodStart = (currentMonth - startMonth.number + MONTHS_IN_YEAR) % durationInMonths
         val currentPeriodStartMonth = (currentMonth - monthsFromPeriodStart + MONTHS_IN_YEAR) % MONTHS_IN_YEAR
         val year =
@@ -77,7 +77,7 @@ internal open class NMonthlyPeriodGenerator(
         val periodNumber = getPeriodNumber(startDate)
 
         var year = startDate.year
-        if (startDate.monthNumber < startMonth.number) {
+        if (startDate.month.number < startMonth.number) {
             year--
         }
         if (periodType == PeriodType.SixMonthlyNov || periodType == PeriodType.QuarterlyNov) {
@@ -88,7 +88,7 @@ internal open class NMonthlyPeriodGenerator(
     }
 
     protected fun getPeriodNumber(startDate: LocalDate): Int {
-        val monthsFromStart = (startDate.monthNumber - startMonth.number + MONTHS_IN_YEAR) % MONTHS_IN_YEAR
+        val monthsFromStart = (startDate.month.number - startMonth.number + MONTHS_IN_YEAR) % MONTHS_IN_YEAR
         return (monthsFromStart / durationInMonths) + 1
     }
 

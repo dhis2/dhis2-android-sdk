@@ -73,9 +73,9 @@ internal class TrackerQueryFactoryCommonHelper(
         byLimitExtractor: suspend () -> List<String>,
     ): Pair<OrganisationUnitMode, List<String>> {
         return when {
-            params.orgUnits().size > 0 ->
+            params.orgUnits().isNotEmpty() ->
                 Pair(OrganisationUnitMode.SELECTED, params.orgUnits())
-            params.uids().size > 0 ->
+            params.uids().isNotEmpty() ->
                 Pair(OrganisationUnitMode.ACCESSIBLE, emptyList())
             hasLimitByOrgUnit ->
                 Pair(OrganisationUnitMode.SELECTED, byLimitExtractor.invoke())
@@ -171,7 +171,7 @@ internal class TrackerQueryFactoryCommonHelper(
     ): Int {
         return programSettings?.specificSettings()?.map { settings ->
             val scope = settings.value.settingDownload()
-            val hasLimitByOrgUnit = if (scope != null) scope == LimitScope.PER_ORG_UNIT else false
+            val hasLimitByOrgUnit = scope == LimitScope.PER_ORG_UNIT
             val orgUnits = getOrganisationUnits(params, hasLimitByOrgUnit) {
                 getLinkedCaptureOrgUnitUids(settings.value.uid()!!)
             }.second

@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.parser.internal.expression
 
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.number
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.parser.internal.expression.function.*
 import org.hisp.dhis.android.core.parser.internal.expression.literal.NullLiteral
@@ -153,7 +154,7 @@ internal object ParserUtils {
 
     fun getMediumDateString(localDate: LocalDate?): String? {
         return localDate?.let {
-            "${it.year}-${it.monthNumber.toString().padStart(2, '0')}-${it.dayOfMonth.toString().padStart(2, '0')}"
+            "${it.year}-${it.month.number.toString().padStart(2, '0')}-${it.day.toString().padStart(2, '0')}"
         }
     }
 

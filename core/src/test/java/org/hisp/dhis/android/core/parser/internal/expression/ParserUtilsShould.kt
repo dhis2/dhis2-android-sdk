@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.parser.internal.expression
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.number
 import org.hisp.dhis.antlr.ParserExceptionWithoutContext
 import org.junit.Assert.assertThrows
 import org.junit.Test
@@ -43,8 +45,8 @@ class ParserUtilsShould {
         ).forEach { (str, tokens) ->
             val date = ParserUtils.parseExpressionDate(str)
             assertThat(date.year).isEqualTo(tokens[0])
-            assertThat(date.monthNumber).isEqualTo(tokens[1])
-            assertThat(date.dayOfMonth).isEqualTo(tokens[2])
+            assertThat(date.month.number).isEqualTo(tokens[1])
+            assertThat(date.day).isEqualTo(tokens[2])
             assertThat(date.toString()).isEqualTo(tokens[3])
         }
     }

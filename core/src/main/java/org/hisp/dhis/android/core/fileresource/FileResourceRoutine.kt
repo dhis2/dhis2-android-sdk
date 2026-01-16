@@ -51,7 +51,9 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCollection
 import org.koin.core.annotation.Singleton
 import java.io.File
 import java.util.Date
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 @Singleton
 internal class FileResourceRoutine(
     private val dataValueCollectionRepository: DataValueCollectionRepository,

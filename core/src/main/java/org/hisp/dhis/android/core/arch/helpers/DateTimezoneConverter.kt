@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toKtxInstant
 import org.hisp.dhis.android.core.systeminfo.internal.ServerTimezoneManager
 import java.util.Date
+import kotlin.time.ExperimentalTime
 
 /**
  * Utility object for converting dates between client and server timezones.
@@ -44,6 +45,7 @@ import java.util.Date
  * These conversions are applied only in the network layer (DTOs) to maintain
  * backward compatibility with domain and persistence layers.
  */
+@OptIn(ExperimentalTime::class)
 internal object DateTimezoneConverter {
     lateinit var serverTimezoneManager: ServerTimezoneManager
 

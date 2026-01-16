@@ -39,7 +39,9 @@ import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.event.EventTableInfo
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 @Suppress("TooManyFunctions")
 class EventStatusFilterConnector internal constructor(
     private val repositoryFactory: BaseRepositoryFactory<EventCollectionRepository>,

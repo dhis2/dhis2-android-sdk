@@ -36,7 +36,9 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 @RunWith(JUnit4::class)
 class TrackedEntityAttributeReservedValueValidatorHelperShould {
     private lateinit var helper: TrackedEntityAttributeReservedValueValidatorHelper

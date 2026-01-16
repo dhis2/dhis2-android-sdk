@@ -60,7 +60,9 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 import java.io.File
 import java.util.Date
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 object FileResourceRoutineSamples {
     private val generator = UidGeneratorImpl()
 

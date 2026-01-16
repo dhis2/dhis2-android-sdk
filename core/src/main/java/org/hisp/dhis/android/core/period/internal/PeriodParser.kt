@@ -1,13 +1,21 @@
 package org.hisp.dhis.android.core.period.internal
 
-import kotlinx.datetime.*
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.Month
+import kotlinx.datetime.number
+import kotlinx.datetime.plus
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.atStartOfDayInSystem
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.PeriodType.Companion.firstDayOfTheWeek
 import org.hisp.dhis.android.core.period.PeriodType.Companion.periodTypeFromPeriodId
 import org.hisp.dhis.android.core.period.generator.internal.WeeklyPeriodGeneratorHelper
 import org.koin.core.annotation.Singleton
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
+@OptIn(ExperimentalTime::class)
 @Singleton
 internal class PeriodParser {
     @Throws(IllegalArgumentException::class)
@@ -69,7 +77,7 @@ internal class PeriodParser {
         val firstDayOfWeekOfYear = weekHelper.getFirstDayOfWeekOfYear(year)
 
         val weekStart = firstDayOfWeekOfYear.plus((week - 1).toLong(), DateTimeUnit.WEEK)
-        return LocalDate(weekStart.year, weekStart.monthNumber, weekStart.dayOfMonth)
+        return LocalDate(weekStart.year, weekStart.month.number, weekStart.day)
     }
 
     private fun getDateFromMonthPattern(matchResult: MatchResult, year: Int, periodType: PeriodType): LocalDate {
@@ -81,15 +89,15 @@ internal class PeriodParser {
             PeriodType.QuarterlyNov -> getDateForQuarterlyNov(year, monthQuarterOrSemester)
             PeriodType.SixMonthly -> getDateFromMonth(
                 year,
-                monthQuarterOrSemester * SEMESTER_MONTHS - (SEMESTER_MONTHS - Month.JANUARY.value),
+                monthQuarterOrSemester * SEMESTER_MONTHS - (SEMESTER_MONTHS - Month.JANUARY.ordinal),
             )
             PeriodType.SixMonthlyApril -> getDateFromMonth(
                 year,
-                monthQuarterOrSemester * SEMESTER_MONTHS - (SEMESTER_MONTHS - Month.APRIL.value),
+                monthQuarterOrSemester * SEMESTER_MONTHS - (SEMESTER_MONTHS - Month.APRIL.ordinal),
             )
             PeriodType.SixMonthlyNov -> getDateFromMonth(
                 if (monthQuarterOrSemester == 1) year - 1 else year,
-                if (monthQuarterOrSemester == 1) Month.NOVEMBER.value else Month.MAY.value,
+                if (monthQuarterOrSemester == 1) Month.NOVEMBER.ordinal else Month.MAY.ordinal,
             )
             else -> throw IllegalArgumentException("Invalid period type")
         }
@@ -97,10 +105,10 @@ internal class PeriodParser {
 
     private fun getDateForQuarterlyNov(year: Int, quarter: Int): LocalDate {
         val quarterMap = mapOf(
-            Q1 to Month.NOVEMBER.value,
-            Q2 to Month.FEBRUARY.value,
-            Q3 to Month.MAY.value,
-            Q4 to Month.AUGUST.value,
+            Q1 to Month.NOVEMBER.ordinal,
+            Q2 to Month.FEBRUARY.ordinal,
+            Q3 to Month.MAY.ordinal,
+            Q4 to Month.AUGUST.ordinal,
         )
         return getDateFromMonth(
             if (quarter == 1) year - 1 else year,
@@ -110,17 +118,17 @@ internal class PeriodParser {
 
     private fun getDateFromYearPattern(year: Int, periodType: PeriodType): LocalDate {
         return when (periodType) {
-            PeriodType.Yearly -> getDateFromMonth(year, Month.JANUARY.value)
-            PeriodType.FinancialApril -> getDateFromMonth(year, Month.APRIL.value)
-            PeriodType.FinancialJuly -> getDateFromMonth(year, Month.JULY.value)
-            PeriodType.FinancialOct -> getDateFromMonth(year, Month.OCTOBER.value)
-            PeriodType.FinancialNov -> getDateFromMonth(year - 1, Month.NOVEMBER.value)
+            PeriodType.Yearly -> getDateFromMonth(year, Month.JANUARY.ordinal)
+            PeriodType.FinancialApril -> getDateFromMonth(year, Month.APRIL.ordinal)
+            PeriodType.FinancialJuly -> getDateFromMonth(year, Month.JULY.ordinal)
+            PeriodType.FinancialOct -> getDateFromMonth(year, Month.OCTOBER.ordinal)
+            PeriodType.FinancialNov -> getDateFromMonth(year - 1, Month.NOVEMBER.ordinal)
             else -> throw IllegalArgumentException("Invalid period type")
         }
     }
 
     private fun getDateFromMonth(year: Int, month: Int): LocalDate {
-        require(month in Month.JANUARY.value..Month.DECEMBER.value) {
+        require(month in Month.JANUARY.ordinal..Month.DECEMBER.ordinal) {
             "The periodId does not match a real date."
         }
         return LocalDate(year, month, 1)

@@ -44,7 +44,9 @@ import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import java.util.Date
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class EventDateUtilsShould {
 
     private val event: Event = mock()

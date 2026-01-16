@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
-import org.hisp.dhis.android.core.arch.helpers.DateUtils.toKtxInstant
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStore
@@ -42,7 +40,7 @@ import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitProgramLinkTableInfo
 import org.koin.core.annotation.Singleton
-import java.util.*
+import java.util.Date
 
 @Suppress("TooManyFunctions")
 @Singleton
@@ -233,7 +231,7 @@ internal class TrackerQueryFactoryCommonHelper(
         return if (period == null || period == DownloadPeriod.ANY) {
             null
         } else {
-            val startDate = DateUtils.addMonths(Date().toKtxInstant(), -period.months).toJavaDate()
+            val startDate = DateUtils.addMonths(Date(), -period.months)
             DateUtils.DATE_FORMAT.format(startDate)
         }
     }

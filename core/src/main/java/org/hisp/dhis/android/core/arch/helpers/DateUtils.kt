@@ -43,6 +43,7 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
+@OptIn(ExperimentalTime::class)
 @Suppress("TooManyFunctions")
 object DateUtils {
 
@@ -75,13 +76,11 @@ object DateUtils {
     val SIMPLE_DATE_FORMAT = SafeDateFormat("yyyy-MM-dd")
 
     @JvmStatic
-    @OptIn(ExperimentalTime::class)
     fun dateWithOffset(date: Date, periods: Int, periodType: PeriodType): Date {
         return dateWithOffset(date.toKtxInstant(), periods, periodType).toJavaDate()
     }
 
     @Suppress("MagicNumber")
-    @OptIn(ExperimentalTime::class)
     fun dateWithOffset(instant: Instant, periods: Int, periodType: PeriodType): Instant {
         val instantWithOffset = when (periodType) {
             PeriodType.Daily -> instant.plus(periods, DateTimeUnit.DAY, TimeZone.currentSystemDefault())
@@ -126,19 +125,16 @@ object DateUtils {
     }
 
     @JvmStatic
-    @OptIn(ExperimentalTime::class)
     fun addMonths(date: Date, amount: Int): Date {
         return addMonths(date.toKtxInstant(), amount).toJavaDate()
     }
 
-    @OptIn(ExperimentalTime::class)
     fun addMonths(instant: Instant, amount: Int): Instant {
         return instant.plus(amount, DateTimeUnit.MONTH, TimeZone.currentSystemDefault())
     }
 
     internal fun Int.zeroPrefixed(length: Int = 2): String = this.toString().padStart(length, '0')
 
-    @OptIn(ExperimentalTime::class)
     internal fun getCurrentTimeAndDate(): String {
         val dateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
 
@@ -152,17 +148,14 @@ object DateUtils {
         return "$year$month$day-$hour$minute$seconds"
     }
 
-    @OptIn(ExperimentalTime::class)
     internal fun LocalDate.atStartOfDayInSystem(): Instant {
         return this.atStartOfDayIn(TimeZone.currentSystemDefault())
     }
 
-    @OptIn(ExperimentalTime::class)
     internal fun Date.toKtxInstant(): Instant {
         return Instant.fromEpochMilliseconds(this.time)
     }
 
-    @OptIn(ExperimentalTime::class)
     internal fun Instant.toJavaDate(): Date {
         return Date(this.toEpochMilliseconds())
     }

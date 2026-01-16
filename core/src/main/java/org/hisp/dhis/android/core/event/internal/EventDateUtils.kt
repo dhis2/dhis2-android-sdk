@@ -27,8 +27,9 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import kotlinx.datetime.*
+import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.atStartOfDayInSystem
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventStatus
@@ -36,7 +37,12 @@ import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.clock.internal.ClockProvider
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.koin.core.annotation.Singleton
+import kotlin.time.Duration.Companion.days
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
+import kotlin.time.toDuration
 
+@OptIn(ExperimentalTime::class)
 @Singleton
 internal class EventDateUtils(
     private val periodHelper: PeriodHelper,
@@ -55,7 +61,7 @@ internal class EventDateUtils(
         val referenceDate = evaluationDate ?: currentDateInstant()
         return completeDate != null &&
             completeExpiryDays > 0 &&
-            completeDate.plus(completeExpiryDays, DateTimeUnit.DAY, TimeZone.currentSystemDefault()) < referenceDate
+            completeDate + completeExpiryDays.days < referenceDate
     }
 
     /**
@@ -109,6 +115,6 @@ internal class EventDateUtils(
     }
 
     private fun Instant.plusDays(days: Int): Instant {
-        return this.plus(days, DateTimeUnit.DAY, TimeZone.currentSystemDefault())
+        return this + days.days
     }
 }

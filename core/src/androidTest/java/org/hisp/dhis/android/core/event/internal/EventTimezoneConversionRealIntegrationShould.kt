@@ -35,7 +35,9 @@ import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koi
 import org.hisp.dhis.android.core.arch.helpers.DateTimezoneConverter
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toKtxInstant
 import org.hisp.dhis.android.core.systeminfo.internal.ServerTimezoneManager
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class EventTimezoneConversionRealIntegrationShould : BaseRealIntegrationTest() {
 
     // @Test

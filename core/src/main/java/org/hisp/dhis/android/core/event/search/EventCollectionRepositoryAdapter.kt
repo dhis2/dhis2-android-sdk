@@ -110,7 +110,7 @@ internal class EventCollectionRepositoryAdapter(
         filter: EventDataFilter,
     ): EventCollectionRepository {
         var filterRepo = repository
-        filter.dataItem()?.let { deId ->
+        filter.dataItem().let { deId ->
             filter.eq()?.let { filterRepo = filterRepo.byDataValue(deId).eq(it) }
             filter.ge()?.let { filterRepo = filterRepo.byDataValue(deId).ge(it) }
             filter.gt()?.let { filterRepo = filterRepo.byDataValue(deId).gt(it) }
@@ -185,7 +185,7 @@ internal class EventCollectionRepositoryAdapter(
             OrderColumnType.STATUS,
             OrderColumnType.STORED_BY,
             OrderColumnType.COMPLETED_BY,
-            -> repository
+                -> repository
         }
     }
 

@@ -33,9 +33,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.plus
 import org.hisp.dhis.android.core.period.PeriodType
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 internal class WeeklyPeriodGenerator(
     clock: Clock,
     periodType: PeriodType,

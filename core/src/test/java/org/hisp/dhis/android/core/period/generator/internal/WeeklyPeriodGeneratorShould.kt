@@ -34,9 +34,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 @RunWith(JUnit4::class)
 class WeeklyPeriodGeneratorShould {
 

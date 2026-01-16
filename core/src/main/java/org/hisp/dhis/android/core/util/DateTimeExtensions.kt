@@ -31,13 +31,11 @@ package org.hisp.dhis.android.core.util
 import kotlinx.datetime.*
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.number
-import kotlin.time.ExperimentalTime
 
 internal fun LocalDateTime.toLocalDate(): LocalDate {
     return LocalDate(this.year, month.number, day)
 }
 
-@OptIn(ExperimentalTime::class)
 internal fun LocalDateTime.Companion.parseDateStr(dateStr: String): LocalDateTime {
     return try {
         parse(dateStr)

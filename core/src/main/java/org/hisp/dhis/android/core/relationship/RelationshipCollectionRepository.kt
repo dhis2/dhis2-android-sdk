@@ -60,9 +60,7 @@ import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.relationship.RelationshipItemTableInfo
 import org.hisp.dhis.android.persistence.relationship.RelationshipTableInfo
 import org.koin.core.annotation.Singleton
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 @Singleton
 @Suppress("TooManyFunctions")
 class RelationshipCollectionRepository internal constructor(

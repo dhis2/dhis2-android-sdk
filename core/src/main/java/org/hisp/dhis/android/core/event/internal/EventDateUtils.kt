@@ -37,10 +37,8 @@ import org.hisp.dhis.android.core.period.clock.internal.ClockProvider
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
 import org.koin.core.annotation.Singleton
 import kotlin.time.Duration.Companion.days
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
-@OptIn(ExperimentalTime::class)
 @Singleton
 internal class EventDateUtils(
     private val periodHelper: PeriodHelper,

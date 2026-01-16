@@ -37,9 +37,7 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 class D2ErrorCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     @Test
     fun filter_d2_errors() {

@@ -39,9 +39,7 @@ import org.hisp.dhis.android.core.period.clock.internal.ClockProvider
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import org.koin.core.annotation.Singleton
 import java.util.Date
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 @Singleton
 internal class DateFilterPeriodHelper(
     private val clockProvider: ClockProvider,

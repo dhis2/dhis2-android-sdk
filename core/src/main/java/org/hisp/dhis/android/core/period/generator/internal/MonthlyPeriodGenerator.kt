@@ -34,9 +34,7 @@ import kotlinx.datetime.plus
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.zeroPrefixed
 import org.hisp.dhis.android.core.period.PeriodType
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 internal class MonthlyPeriodGenerator(clock: Clock) :
     AbstractPeriodGenerator(clock, PeriodType.Monthly) {
 

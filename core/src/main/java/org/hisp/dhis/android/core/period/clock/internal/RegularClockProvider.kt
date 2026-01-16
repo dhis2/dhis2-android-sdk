@@ -28,9 +28,7 @@
 package org.hisp.dhis.android.core.period.clock.internal
 
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 internal class RegularClockProvider : ClockProvider {
     override val clock = Clock.System
 }

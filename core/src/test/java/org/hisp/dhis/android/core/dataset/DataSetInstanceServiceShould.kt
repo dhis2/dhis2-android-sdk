@@ -60,9 +60,7 @@ import org.mockito.kotlin.whenever
 import java.util.Date
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.days
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 class DataSetInstanceServiceShould {
 
     private val dataSetUid: String = "dataSetUid"

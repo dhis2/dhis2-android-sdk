@@ -28,9 +28,7 @@
 package org.hisp.dhis.android.core.period.generator.internal
 
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 internal class WeeklyPeriodGenerators(clock: Clock) {
     val weekly = WeeklyPeriodGeneratorFactory.weekly(clock)
     val weeklyWednesday = WeeklyPeriodGeneratorFactory.wednesday(clock)

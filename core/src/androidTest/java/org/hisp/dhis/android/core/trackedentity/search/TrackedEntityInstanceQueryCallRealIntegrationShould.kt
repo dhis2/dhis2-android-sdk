@@ -37,9 +37,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 import org.junit.Assert
 import org.junit.Before
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 class TrackedEntityInstanceQueryCallRealIntegrationShould : BaseRealIntegrationTest() {
     private lateinit var repository: TrackedEntityInstanceQueryCollectionRepository
 

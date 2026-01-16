@@ -30,9 +30,7 @@ package org.hisp.dhis.android.core.period.generator.internal
 import kotlinx.datetime.DayOfWeek
 import org.hisp.dhis.android.core.period.PeriodType
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 internal object WeeklyPeriodGeneratorFactory {
     fun weekly(clock: Clock): WeeklyPeriodGenerator {
         return WeeklyPeriodGenerator(clock, PeriodType.Weekly, DayOfWeek.MONDAY, "W")

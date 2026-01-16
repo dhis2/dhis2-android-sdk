@@ -35,9 +35,7 @@ import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import org.hisp.dhis.android.core.period.PeriodType
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 internal abstract class AbstractPeriodGenerator(
     private val clock: Clock,
     protected val periodType: PeriodType,

@@ -28,9 +28,7 @@
 package org.hisp.dhis.android.core.period.generator.internal
 
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 internal class NMonthlyPeriodGenerators(clock: Clock) {
     val biMonthly = NMonthlyPeriodGeneratorFactory.biMonthly(clock)
     val quarterly = NMonthlyPeriodGeneratorFactory.quarterly(clock)

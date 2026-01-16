@@ -35,10 +35,8 @@ import org.hisp.dhis.android.core.arch.helpers.DateUtils.toKtxInstant
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.koin.core.annotation.Singleton
 import java.util.Date
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
-@OptIn(ExperimentalTime::class)
 @Singleton
 internal class AggregatedDataSyncLastUpdatedCalculator(
     private val hashHelper: AggregatedDataSyncHashHelper,

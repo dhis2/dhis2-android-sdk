@@ -38,11 +38,9 @@ import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTest
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Test
-import kotlin.time.ExperimentalTime
 
 class EventOverdueFilterIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 
-    @OptIn(ExperimentalTime::class)
     companion object {
 
         private var existingEventUids = setOf<String>()

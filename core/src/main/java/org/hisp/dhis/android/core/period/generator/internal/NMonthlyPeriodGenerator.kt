@@ -34,9 +34,7 @@ import kotlinx.datetime.number
 import kotlinx.datetime.plus
 import org.hisp.dhis.android.core.period.PeriodType
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 internal open class NMonthlyPeriodGenerator(
     clock: Clock,
     periodType: PeriodType,

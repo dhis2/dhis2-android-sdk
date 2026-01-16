@@ -35,9 +35,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue
 import java.util.Date
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 internal class TrackedEntityAttributeReservedValueCallProcessor(
     private val databaseAdapter: DatabaseAdapter,
     private val handler: Handler<TrackedEntityAttributeReservedValue>,

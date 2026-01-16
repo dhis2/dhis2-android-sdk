@@ -30,9 +30,7 @@ package org.hisp.dhis.android.core.period.generator.internal
 import kotlinx.datetime.Month
 import org.hisp.dhis.android.core.period.PeriodType
 import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 @Suppress("MagicNumber")
 internal object NMonthlyPeriodGeneratorFactory {
     fun biMonthly(clock: Clock): NMonthlyPeriodGenerator {

@@ -12,10 +12,8 @@ import org.hisp.dhis.android.core.period.PeriodType.Companion.firstDayOfTheWeek
 import org.hisp.dhis.android.core.period.PeriodType.Companion.periodTypeFromPeriodId
 import org.hisp.dhis.android.core.period.generator.internal.WeeklyPeriodGeneratorHelper
 import org.koin.core.annotation.Singleton
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
-@OptIn(ExperimentalTime::class)
 @Singleton
 internal class PeriodParser {
     @Throws(IllegalArgumentException::class)

@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.fileresource
 
-import io.reactivex.Completable
-import kotlinx.coroutines.rx2.rxCompletable
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
@@ -51,9 +49,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCollection
 import org.koin.core.annotation.Singleton
 import java.io.File
 import java.util.Date
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 @Singleton
 internal class FileResourceRoutine(
     private val dataValueCollectionRepository: DataValueCollectionRepository,

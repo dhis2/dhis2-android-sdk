@@ -42,11 +42,9 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRep
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository
 import org.koin.core.annotation.Singleton
-import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 import org.hisp.dhis.android.core.event.search.EventQueryScopeOrderColumn.Type as OrderColumnType
 
-@OptIn(ExperimentalTime::class)
 @Singleton
 internal class EventCollectionRepositoryAdapter(
     private val eventCollectionRepository: EventCollectionRepository,

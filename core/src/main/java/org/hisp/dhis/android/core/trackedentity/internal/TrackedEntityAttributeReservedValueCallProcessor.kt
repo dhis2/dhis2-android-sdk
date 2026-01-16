@@ -73,7 +73,7 @@ internal class TrackedEntityAttributeReservedValueCallProcessor(
             Date(
                 TrackedEntityAttributeReservedValueValidatorHelper().getExpiryDateCode(pattern).toEpochMilliseconds(),
             )
-        } catch (e: IllegalStateException) {
+        } catch (_: IllegalStateException) {
             null
         }
     }

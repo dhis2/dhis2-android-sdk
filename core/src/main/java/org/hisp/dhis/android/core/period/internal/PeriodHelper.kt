@@ -36,7 +36,9 @@ import org.hisp.dhis.android.core.period.PeriodType.Companion.periodTypeFromPeri
 import org.koin.core.annotation.Singleton
 import java.util.Date
 import kotlin.math.ceil
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 @Singleton
 class PeriodHelper internal constructor(
     private val periodStore: PeriodStore,

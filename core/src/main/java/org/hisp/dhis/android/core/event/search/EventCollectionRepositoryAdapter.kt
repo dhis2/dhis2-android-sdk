@@ -185,7 +185,7 @@ internal class EventCollectionRepositoryAdapter(
             OrderColumnType.STATUS,
             OrderColumnType.STORED_BY,
             OrderColumnType.COMPLETED_BY,
-                -> repository
+            -> repository
         }
     }
 

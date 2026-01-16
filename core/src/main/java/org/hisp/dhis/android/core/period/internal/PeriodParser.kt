@@ -89,15 +89,15 @@ internal class PeriodParser {
             PeriodType.QuarterlyNov -> getDateForQuarterlyNov(year, monthQuarterOrSemester)
             PeriodType.SixMonthly -> getDateFromMonth(
                 year,
-                monthQuarterOrSemester * SEMESTER_MONTHS - (SEMESTER_MONTHS - Month.JANUARY.ordinal),
+                monthQuarterOrSemester * SEMESTER_MONTHS - (SEMESTER_MONTHS - Month.JANUARY.number),
             )
             PeriodType.SixMonthlyApril -> getDateFromMonth(
                 year,
-                monthQuarterOrSemester * SEMESTER_MONTHS - (SEMESTER_MONTHS - Month.APRIL.ordinal),
+                monthQuarterOrSemester * SEMESTER_MONTHS - (SEMESTER_MONTHS - Month.APRIL.number),
             )
             PeriodType.SixMonthlyNov -> getDateFromMonth(
                 if (monthQuarterOrSemester == 1) year - 1 else year,
-                if (monthQuarterOrSemester == 1) Month.NOVEMBER.ordinal else Month.MAY.ordinal,
+                if (monthQuarterOrSemester == 1) Month.NOVEMBER.number else Month.MAY.number,
             )
             else -> throw IllegalArgumentException("Invalid period type")
         }
@@ -105,10 +105,10 @@ internal class PeriodParser {
 
     private fun getDateForQuarterlyNov(year: Int, quarter: Int): LocalDate {
         val quarterMap = mapOf(
-            Q1 to Month.NOVEMBER.ordinal,
-            Q2 to Month.FEBRUARY.ordinal,
-            Q3 to Month.MAY.ordinal,
-            Q4 to Month.AUGUST.ordinal,
+            Q1 to Month.NOVEMBER.number,
+            Q2 to Month.FEBRUARY.number,
+            Q3 to Month.MAY.number,
+            Q4 to Month.AUGUST.number,
         )
         return getDateFromMonth(
             if (quarter == 1) year - 1 else year,
@@ -118,17 +118,17 @@ internal class PeriodParser {
 
     private fun getDateFromYearPattern(year: Int, periodType: PeriodType): LocalDate {
         return when (periodType) {
-            PeriodType.Yearly -> getDateFromMonth(year, Month.JANUARY.ordinal)
-            PeriodType.FinancialApril -> getDateFromMonth(year, Month.APRIL.ordinal)
-            PeriodType.FinancialJuly -> getDateFromMonth(year, Month.JULY.ordinal)
-            PeriodType.FinancialOct -> getDateFromMonth(year, Month.OCTOBER.ordinal)
-            PeriodType.FinancialNov -> getDateFromMonth(year - 1, Month.NOVEMBER.ordinal)
+            PeriodType.Yearly -> getDateFromMonth(year, Month.JANUARY.number)
+            PeriodType.FinancialApril -> getDateFromMonth(year, Month.APRIL.number)
+            PeriodType.FinancialJuly -> getDateFromMonth(year, Month.JULY.number)
+            PeriodType.FinancialOct -> getDateFromMonth(year, Month.OCTOBER.number)
+            PeriodType.FinancialNov -> getDateFromMonth(year - 1, Month.NOVEMBER.number)
             else -> throw IllegalArgumentException("Invalid period type")
         }
     }
 
     private fun getDateFromMonth(year: Int, month: Int): LocalDate {
-        require(month in Month.JANUARY.ordinal..Month.DECEMBER.ordinal) {
+        require(month in Month.JANUARY.number..Month.DECEMBER.number) {
             "The periodId does not match a real date."
         }
         return LocalDate(year, month, 1)

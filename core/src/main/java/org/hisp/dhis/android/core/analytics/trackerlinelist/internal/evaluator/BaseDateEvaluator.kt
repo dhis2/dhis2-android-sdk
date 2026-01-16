@@ -36,7 +36,9 @@ import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl
 import org.hisp.dhis.android.core.period.internal.PeriodParser
 import java.util.Date
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 internal abstract class BaseDateEvaluator(
     private val item: DateItem,
 ) : TrackerLineListEvaluator() {

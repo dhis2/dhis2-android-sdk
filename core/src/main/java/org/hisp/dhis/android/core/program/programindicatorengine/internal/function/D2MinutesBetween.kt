@@ -30,7 +30,9 @@ package org.hisp.dhis.android.core.program.programindicatorengine.internal.funct
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 internal class D2MinutesBetween : ProgramBetweenDatesFunction() {
 
     override fun evaluate(startDate: LocalDateTime, endDate: LocalDateTime): Any {

@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.period.generator.internal.PeriodGenerator
 import org.hisp.dhis.android.core.period.generator.internal.WeeklyPeriodGenerators
 import org.hisp.dhis.android.core.period.generator.internal.YearlyPeriodGenerators
 import java.util.Date
+import kotlin.time.ExperimentalTime
 
 internal class ParentPeriodGeneratorImpl(
     private val daily: PeriodGenerator,
@@ -74,10 +75,13 @@ internal class ParentPeriodGeneratorImpl(
         return when {
             relativePeriod.start != null && relativePeriod.end != null ->
                 periodGenerator.generatePeriods(relativePeriod.start, relativePeriod.end).toPeriods()
+
             relativePeriod.periodsThisYear ->
                 periodGenerator.generatePeriodsInYear(0).toPeriods()
+
             relativePeriod.periodsLastYear ->
                 periodGenerator.generatePeriodsInYear(-1).toPeriods()
+
             else ->
                 emptyList()
         }
@@ -108,6 +112,7 @@ internal class ParentPeriodGeneratorImpl(
         }
     }
 
+    @OptIn(ExperimentalTime::class)
     companion object {
         fun create(clockProvider: ClockProvider): ParentPeriodGeneratorImpl {
             val clock = clockProvider.clock

@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.atStartOfDayInSystem
@@ -40,7 +39,6 @@ import org.koin.core.annotation.Singleton
 import kotlin.time.Duration.Companion.days
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
-import kotlin.time.toDuration
 
 @OptIn(ExperimentalTime::class)
 @Singleton

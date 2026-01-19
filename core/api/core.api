@@ -1885,9 +1885,9 @@ public final class org/hisp/dhis/android/core/arch/helpers/DateUtils {
 	public static final field SIMPLE_DATE_FORMAT Lorg/hisp/dhis/android/core/arch/dateformat/internal/SafeDateFormat;
 	public static final field SPACE_DATE_FORMAT Lorg/hisp/dhis/android/core/arch/dateformat/internal/SafeDateFormat;
 	public static final fun addMonths (Ljava/util/Date;I)Ljava/util/Date;
-	public final fun addMonths (Lkotlinx/datetime/Instant;I)Lkotlinx/datetime/Instant;
+	public final fun addMonths (Lkotlin/time/Instant;I)Lkotlin/time/Instant;
 	public static final fun dateWithOffset (Ljava/util/Date;ILorg/hisp/dhis/android/core/period/PeriodType;)Ljava/util/Date;
-	public final fun dateWithOffset (Lkotlinx/datetime/Instant;ILorg/hisp/dhis/android/core/period/PeriodType;)Lkotlinx/datetime/Instant;
+	public final fun dateWithOffset (Lkotlin/time/Instant;ILorg/hisp/dhis/android/core/period/PeriodType;)Lkotlin/time/Instant;
 	public static final fun getEndDate (Ljava/util/List;)Ljava/util/Date;
 	public static final fun getStartDate (Ljava/util/List;)Ljava/util/Date;
 }
@@ -7452,7 +7452,7 @@ public final class org/hisp/dhis/android/core/period/PeriodType : java/lang/Enum
 }
 
 public final class org/hisp/dhis/android/core/period/PeriodType$Companion {
-	public final fun firstDayOfTheWeek (Lorg/hisp/dhis/android/core/period/PeriodType;)Ljava/time/DayOfWeek;
+	public final fun firstDayOfTheWeek (Lorg/hisp/dhis/android/core/period/PeriodType;)Lkotlinx/datetime/DayOfWeek;
 	public final fun periodTypeFromPeriodId (Ljava/lang/String;)Lorg/hisp/dhis/android/core/period/PeriodType;
 }
 

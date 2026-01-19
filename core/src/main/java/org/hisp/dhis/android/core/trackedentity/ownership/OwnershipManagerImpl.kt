@@ -33,7 +33,6 @@ import io.reactivex.Completable
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxCompletable
 import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
@@ -51,6 +50,7 @@ import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.trackedentity.ProgramTempOwnerTableInfo
 import org.koin.core.annotation.Singleton
 import java.util.Date
+import kotlin.time.Instant
 
 @Singleton
 internal class OwnershipManagerImpl(

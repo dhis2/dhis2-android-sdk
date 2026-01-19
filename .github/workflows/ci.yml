@@ -388,8 +388,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GIT_BRANCH: ${{ github.ref_name }}
-          GIT_BRANCH_DEST: ${{ github.base_ref }}
-          PULL_REQUEST: ${{ github.event.pull_request.number }}
+          GIT_BRANCH_DEST: ${{ github.event_name == 'pull_request' && github.base_ref || '' }}
+          PULL_REQUEST: ${{ github.event_name == 'pull_request' && github.event.pull_request.number || '' }}
 
   deploy:
     name: Trigger Deployment

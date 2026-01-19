@@ -74,10 +74,13 @@ internal class ParentPeriodGeneratorImpl(
         return when {
             relativePeriod.start != null && relativePeriod.end != null ->
                 periodGenerator.generatePeriods(relativePeriod.start, relativePeriod.end).toPeriods()
+
             relativePeriod.periodsThisYear ->
                 periodGenerator.generatePeriodsInYear(0).toPeriods()
+
             relativePeriod.periodsLastYear ->
                 periodGenerator.generatePeriodsInYear(-1).toPeriods()
+
             else ->
                 emptyList()
         }

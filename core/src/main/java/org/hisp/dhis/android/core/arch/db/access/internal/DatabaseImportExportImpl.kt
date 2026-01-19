@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.user.UserModule
 import org.hisp.dhis.android.core.util.CipherUtil
 import org.hisp.dhis.android.core.util.FileUtils
 import org.hisp.dhis.android.core.util.deleteIfExists
-import org.hisp.dhis.android.core.util.simpleDateFormat
+import org.hisp.dhis.android.core.util.simpleDateFormatNonNull
 import org.koin.core.annotation.Singleton
 import java.io.File
 import java.util.Date
@@ -170,7 +170,7 @@ internal class DatabaseImportExportImpl(
 
         val metadata = DatabaseExportMetadata(
             version = AppDatabase.VERSION,
-            date = Date().simpleDateFormat()!!,
+            date = Date().simpleDateFormatNonNull(),
             serverUrl = userConfiguration.serverUrl(),
             username = userConfiguration.username(),
             encrypted = userConfiguration.encrypted(),

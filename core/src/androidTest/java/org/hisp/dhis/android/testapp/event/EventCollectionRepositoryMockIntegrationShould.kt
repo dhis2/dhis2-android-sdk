@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.core.util.toJavaDateNonNull
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 import java.text.ParseException
@@ -198,7 +199,7 @@ class EventCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
     fun filter_by_due_date() {
         val events = d2.eventModule().events()
             .byDueDate()
-            .afterOrEqual("2017-01-28T12:35:00.000".toJavaDate()!!)
+            .afterOrEqual("2017-01-28T12:35:00.000".toJavaDateNonNull())
             .blockingGet()
 
         assertThat(events.size).isEqualTo(2)

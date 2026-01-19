@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.testapp.maintenance
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.core.util.toJavaDateNonNull
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 
@@ -91,7 +91,7 @@ class ForeignKeyViolationCollectionRepositoryMockIntegrationShould : BaseMockInt
     @Test
     fun filter_by_created() {
         val foreignKeyViolations = d2.maintenanceModule().foreignKeyViolations()
-            .byCreated().after("2019-01-15T08:14:06.767".toJavaDate()!!).blockingGet()
+            .byCreated().after("2019-01-15T08:14:06.767".toJavaDateNonNull()).blockingGet()
         assertThat(foreignKeyViolations.size).isEqualTo(4)
     }
 }

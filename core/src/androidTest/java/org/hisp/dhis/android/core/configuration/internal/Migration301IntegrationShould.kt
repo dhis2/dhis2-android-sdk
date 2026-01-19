@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.configuration.internal
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.InMemoryUnsecureStore
 import org.hisp.dhis.android.core.configuration.internal.migration.Migration301
@@ -248,7 +249,8 @@ class Migration301IntegrationShould {
             .serverUrl(url)
             .databaseName(dbName)
             .encrypted(encrypted)
-            .databaseCreationDate(creationDate)
+            .databaseCreationDate(DateUtils.SIMPLE_DATE_FORMAT.parse(creationDate))
+            .lastAccessDate(DateUtils.SIMPLE_DATE_FORMAT.parse(creationDate))
             .importDB(importDB)
             .build()
     }

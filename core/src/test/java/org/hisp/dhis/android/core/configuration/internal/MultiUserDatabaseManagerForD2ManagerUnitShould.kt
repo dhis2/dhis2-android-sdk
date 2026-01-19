@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.configuration.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.common.BaseCallShould
 import org.junit.Before
@@ -53,7 +54,8 @@ class MultiUserDatabaseManagerForD2ManagerUnitShould : BaseCallShould() {
         .username(username)
         .serverUrl(serverUrl)
         .encrypted(false)
-        .databaseCreationDate(DATE)
+        .databaseCreationDate(DateUtils.DATE_FORMAT.parse(DATE))
+        .lastAccessDate(DateUtils.DATE_FORMAT.parse(DATE))
         .build()
 
     private val databasesConfiguration = DatabasesConfiguration.builder()

@@ -32,7 +32,6 @@ import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
-import org.hisp.dhis.android.core.category.CategoryCombo
 import org.hisp.dhis.android.core.category.internal.CreateCategoryComboUtils
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.AggregationType
@@ -109,7 +108,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
                 val trackedEntityType = TrackedEntityType.builder().uid(teiTypeUid).build()
                 koin.get<TrackedEntityTypeStore>().insert(trackedEntityType)
 
-                val categoryCombo = CreateCategoryComboUtils.create(CategoryCombo.DEFAULT_UID)
+                val categoryCombo = CreateCategoryComboUtils.create("p0KPaWEg3cf")
                 val store = CategoryComboStoreImpl(d2.databaseAdapter())
                 store.insert(categoryCombo)
 

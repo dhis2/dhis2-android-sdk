@@ -40,8 +40,6 @@ import java.util.List;
 @AutoValue
 public abstract class CategoryCombo extends BaseIdentifiableObject implements CoreObject {
 
-    public static final String DEFAULT_UID = "p0KPaWEg3cf";
-
     @Nullable
     public abstract Boolean isDefault();
 

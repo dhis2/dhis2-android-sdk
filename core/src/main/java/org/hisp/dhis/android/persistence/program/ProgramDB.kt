@@ -3,6 +3,7 @@ package org.hisp.dhis.android.persistence.program
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.category.internal.DefaultCategoryComboManager
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.ObjectWithUid
@@ -20,6 +21,7 @@ import org.hisp.dhis.android.persistence.common.ObjectWithUidDB
 import org.hisp.dhis.android.persistence.common.applyBaseNameableFields
 import org.hisp.dhis.android.persistence.common.toDB
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityTypeDB
+import org.koin.java.KoinJavaComponent.get
 
 @Entity(
     tableName = "Program",
@@ -156,7 +158,9 @@ internal fun Program.toDB(): ProgramDB {
         programType = programType()?.name,
         relatedProgram = relatedProgram()?.uid(),
         trackedEntityType = trackedEntityType()?.uid(),
-        categoryCombo = categoryCombo()?.uid() ?: CategoryComboDB.Companion.DEFAULT_UID,
+        categoryCombo = categoryCombo()?.uid()
+            ?: get<DefaultCategoryComboManager>(DefaultCategoryComboManager::class.java)
+                .getDefaultCategoryComboUid(),
         accessDataWrite = access().toDB(),
         expiryDays = expiryDays(),
         completeEventsExpiryDays = completeEventsExpiryDays(),

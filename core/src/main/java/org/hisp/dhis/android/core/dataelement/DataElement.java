@@ -33,7 +33,6 @@ import androidx.annotation.Nullable;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.attribute.AttributeValue;
-import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectStyle;
@@ -75,11 +74,6 @@ public abstract class DataElement extends BaseNameableObject
 
     @Nullable
     public abstract ObjectWithUid categoryCombo();
-
-    public String categoryComboUid() {
-        ObjectWithUid combo = categoryCombo();
-        return combo == null ? CategoryCombo.DEFAULT_UID : combo.uid();
-    }
 
     @Nullable
     public abstract List<ObjectWithUid> legendSets();

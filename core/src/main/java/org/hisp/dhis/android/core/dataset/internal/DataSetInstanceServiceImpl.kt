@@ -193,7 +193,8 @@ internal class DataSetInstanceServiceImpl(
                     ?: dataElementCollectionRepository
                         .uid(dataSetElement.dataElement().uid())
                         .blockingGet()
-                        ?.categoryComboUid()
+                        ?.categoryCombo()
+                        ?.uid()
 
                 categoryComboUid?.let { catComboUid ->
                     val categoryOptionCombos = getCachedCategoryComboUid(catComboUid, stringListCache) { uid ->

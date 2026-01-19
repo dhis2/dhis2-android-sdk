@@ -128,11 +128,6 @@ public abstract class Program extends BaseNameableObject
     @Nullable
     public abstract ObjectWithUid categoryCombo();
 
-    public String categoryComboUid() {
-        ObjectWithUid combo = categoryCombo();
-        return combo == null ? CategoryCombo.DEFAULT_UID : combo.uid();
-    }
-
     public abstract Access access();
 
     @Nullable

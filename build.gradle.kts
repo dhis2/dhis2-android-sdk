@@ -137,7 +137,7 @@ sonarqube {
         property("sonar.projectName", "dhis2-android-sdk")
         property("sonar.java.binaries", "core/build/intermediates/javac/debug/classes")
 
-        if (pullRequestId == null) {
+        if (pullRequestId.isNullOrEmpty()) {
             property("sonar.branch.name", branch)
         } else {
             property("sonar.pullrequest.base", targetBranch)

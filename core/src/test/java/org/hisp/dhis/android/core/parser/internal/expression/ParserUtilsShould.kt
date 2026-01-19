@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.parser.internal.expression
 
 import com.google.common.truth.Truth.assertThat
-import kotlinx.datetime.LocalDate
 import kotlinx.datetime.number
 import org.hisp.dhis.antlr.ParserExceptionWithoutContext
 import org.junit.Assert.assertThrows

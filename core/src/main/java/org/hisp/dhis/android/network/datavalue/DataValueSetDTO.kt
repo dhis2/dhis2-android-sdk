@@ -38,7 +38,7 @@ internal data class DataValueSetDTO(
 ) {
     fun toDomain(): DataValueSet {
         return DataValueSet(
-            dataValues = dataValues.map { it.toDomain() },
+            dataValues = dataValues.map { it.toDomain(dataSet) },
             dataSet = dataSet,
         )
     }

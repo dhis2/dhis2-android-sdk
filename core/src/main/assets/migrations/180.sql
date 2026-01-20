@@ -1,4 +1,4 @@
-# SDK 1.13.1 to 1.14.0 migrations
+# v1.14.0 migrations
 
 # Add new columns for operators on TrackedEntityAttribute table (ANDROSDK-2232)
 

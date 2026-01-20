@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.settings
 
 enum class MetadataSyncPeriod {
     EVERY_HOUR,
+    EVERY_6_HOURS,
     EVERY_12_HOURS,
     EVERY_24_HOURS,
     EVERY_7_DAYS,

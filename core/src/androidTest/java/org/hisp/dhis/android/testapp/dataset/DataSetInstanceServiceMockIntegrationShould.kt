@@ -103,4 +103,40 @@ class DataSetInstanceServiceMockIntegrationShould :
         assertThat(dataElementOperands[0].dataElement()?.uid()).isEqualTo("g9eOBujte1U")
         assertThat(dataElementOperands[0].categoryOptionCombo()?.uid()).isEqualTo("Gmbgme7z9BF")
     }
+
+    @Test
+    fun do_not_allow_edit_period_not_in_data_input_periods() {
+        val status = d2.dataSetModule().dataSetInstanceService()
+            .blockingGetEditableStatus(
+                "lyLU2wR22tC",
+                "201908",
+                "DiszpKrYNg8",
+                "bRowv6yZOF2",
+            )
+
+        assertThat(status).isInstanceOf(
+            DataSetEditableStatus.NonEditable(DataSetNonEditableReason.PERIOD_NOT_IN_DATA_INPUT_PERIODS)::class.java,
+        )
+    }
+
+    @Test
+    fun do_not_fail_with_data_input_periods_reason_when_dataset_has_empty_list() {
+        val currentPeriod = d2.periodModule().periodHelper().blockingGetPeriodForPeriodTypeAndDate(
+            PeriodType.Monthly,
+            Date(),
+            0,
+        )
+        
+        val status = d2.dataSetModule().dataSetInstanceService()
+            .blockingGetEditableStatus(
+                "BfMAe6Itzgt",
+                currentPeriod.periodId()!!,
+                "DiszpKrYNg8",
+                "bRowv6yZOF2",
+            )
+
+        if (status is DataSetEditableStatus.NonEditable) {
+            assertThat(status.reason).isNotEqualTo(DataSetNonEditableReason.PERIOD_NOT_IN_DATA_INPUT_PERIODS)
+        }
+    }
 }

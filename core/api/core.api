@@ -4659,6 +4659,7 @@ public final class org/hisp/dhis/android/core/dataset/DataSetNonEditableReason :
 	public static final field ORGUNIT_IS_NOT_IN_CAPTURE_SCOPE Lorg/hisp/dhis/android/core/dataset/DataSetNonEditableReason;
 	public static final field PERIOD_IS_NOT_IN_ATTRIBUTE_OPTION_RANGE Lorg/hisp/dhis/android/core/dataset/DataSetNonEditableReason;
 	public static final field PERIOD_IS_NOT_IN_ORGUNIT_RANGE Lorg/hisp/dhis/android/core/dataset/DataSetNonEditableReason;
+	public static final field PERIOD_NOT_IN_DATA_INPUT_PERIODS Lorg/hisp/dhis/android/core/dataset/DataSetNonEditableReason;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetNonEditableReason;
 	public static fun values ()[Lorg/hisp/dhis/android/core/dataset/DataSetNonEditableReason;

@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.testapp.dataset
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.util.toJavaSimpleDate
+import org.hisp.dhis.android.core.util.toJavaSimpleDateNonNull
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 import java.text.ParseException
@@ -86,7 +86,7 @@ class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShould : Bas
     fun filter_by_date_after() {
         val dataSetCompleteRegistrations = d2.dataSetModule().dataSetCompleteRegistrations()
             .byDate()
-            .after("2010-08-03".toJavaSimpleDate()!!)
+            .after("2010-08-03".toJavaSimpleDateNonNull())
             .blockingGet()
 
         assertThat(dataSetCompleteRegistrations.size).isEqualTo(1)
@@ -97,7 +97,7 @@ class DataSetCompleteRegistrationCollectionRepositoryMockIntegrationShould : Bas
     fun filter_by_date_before() {
         val dataSetCompleteRegistrations = d2.dataSetModule().dataSetCompleteRegistrations()
             .byDate()
-            .before("2010-08-03".toJavaSimpleDate()!!)
+            .before("2010-08-03".toJavaSimpleDateNonNull())
             .blockingGet()
 
         assertThat(dataSetCompleteRegistrations.size).isEqualTo(2)

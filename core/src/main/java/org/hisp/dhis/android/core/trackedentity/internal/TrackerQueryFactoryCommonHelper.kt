@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
-import org.hisp.dhis.android.core.arch.helpers.DateUtils.toKtxInstant
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStore
@@ -42,7 +40,7 @@ import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitProgramLinkTableInfo
 import org.koin.core.annotation.Singleton
-import java.util.*
+import java.util.Date
 
 @Suppress("TooManyFunctions")
 @Singleton
@@ -75,9 +73,9 @@ internal class TrackerQueryFactoryCommonHelper(
         byLimitExtractor: suspend () -> List<String>,
     ): Pair<OrganisationUnitMode, List<String>> {
         return when {
-            params.orgUnits().size > 0 ->
+            params.orgUnits().isNotEmpty() ->
                 Pair(OrganisationUnitMode.SELECTED, params.orgUnits())
-            params.uids().size > 0 ->
+            params.uids().isNotEmpty() ->
                 Pair(OrganisationUnitMode.ACCESSIBLE, emptyList())
             hasLimitByOrgUnit ->
                 Pair(OrganisationUnitMode.SELECTED, byLimitExtractor.invoke())
@@ -173,7 +171,7 @@ internal class TrackerQueryFactoryCommonHelper(
     ): Int {
         return programSettings?.specificSettings()?.map { settings ->
             val scope = settings.value.settingDownload()
-            val hasLimitByOrgUnit = if (scope != null) scope == LimitScope.PER_ORG_UNIT else false
+            val hasLimitByOrgUnit = scope == LimitScope.PER_ORG_UNIT
             val orgUnits = getOrganisationUnits(params, hasLimitByOrgUnit) {
                 getLinkedCaptureOrgUnitUids(settings.value.uid()!!)
             }.second
@@ -233,7 +231,7 @@ internal class TrackerQueryFactoryCommonHelper(
         return if (period == null || period == DownloadPeriod.ANY) {
             null
         } else {
-            val startDate = DateUtils.addMonths(Date().toKtxInstant(), -period.months).toJavaDate()
+            val startDate = DateUtils.addMonths(Date(), -period.months)
             DateUtils.DATE_FORMAT.format(startDate)
         }
     }

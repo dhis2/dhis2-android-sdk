@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
 import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
@@ -36,6 +35,7 @@ import org.hisp.dhis.android.core.arch.helpers.DateUtils.toKtxInstant
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.koin.core.annotation.Singleton
 import java.util.Date
+import kotlin.time.Instant
 
 @Singleton
 internal class AggregatedDataSyncLastUpdatedCalculator(

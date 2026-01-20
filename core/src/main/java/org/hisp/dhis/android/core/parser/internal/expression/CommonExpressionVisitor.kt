@@ -123,7 +123,7 @@ internal class CommonExpressionVisitor(
                 )
             return itemMethod.apply(item, ctx, this)
         }
-        return if (ctx.expr().size > 0) {
+        return if (ctx.expr().isNotEmpty()) {
             // If there's an expr, visit the expr
             visit(ctx.expr(0))
         } else {

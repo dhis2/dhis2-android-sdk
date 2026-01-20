@@ -259,6 +259,13 @@ internal class RoomMultiUserDatabaseManager(
         } else {
             error("Expected a RoomDatabaseAdapter, but got ${databaseAdapter::class.java}")
         }
+
+        // Update last access date when opening database
+        updateLastAccessDate(account.serverUrl(), account.username())
+    }
+
+    private fun updateLastAccessDate(serverUrl: String, username: String) {
+        configurationHelper.updateLastAccessDate(databaseConfigurationSecureStore, serverUrl, username)
     }
 
     private fun removeExceedingAccounts() {

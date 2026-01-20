@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.configuration.internal
 
 import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.persistence.configuration.DatabasesConfigurationDB
 import org.hisp.dhis.android.persistence.configuration.toDB
@@ -49,7 +50,7 @@ class DatabasesConfigurationShould : CoreObjectShould("configuration/databases_c
         assertThat(user1.serverUrl()).isEqualTo("server1")
         assertThat(user1.databaseName()).isEqualTo("dbname1.db")
         assertThat(user1.encrypted()).isTrue()
-        assertThat(user1.databaseCreationDate()).isEqualTo("2014-06-06T20:44:21.375")
+        assertThat(user1.databaseCreationDate()).isEqualTo(DateUtils.DATE_FORMAT.parse("2014-06-06T20:44:21.375"))
     }
 
     @Test

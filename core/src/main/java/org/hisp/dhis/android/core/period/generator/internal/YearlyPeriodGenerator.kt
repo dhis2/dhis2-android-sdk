@@ -27,13 +27,13 @@
  */
 package org.hisp.dhis.android.core.period.generator.internal
 
-import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month
 import kotlinx.datetime.number
 import kotlinx.datetime.plus
 import org.hisp.dhis.android.core.period.PeriodType
+import kotlin.time.Clock
 
 internal open class YearlyPeriodGenerator(
     clock: Clock,

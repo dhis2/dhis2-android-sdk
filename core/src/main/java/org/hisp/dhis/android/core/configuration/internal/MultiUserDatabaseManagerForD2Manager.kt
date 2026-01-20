@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.configuration.internal
 
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
 import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.koin.core.annotation.Singleton
 import java.util.Date
@@ -59,7 +58,7 @@ internal class MultiUserDatabaseManagerForD2Manager(
             .encrypted(encrypt)
             .username(username)
             .serverUrl(serverUrl)
-            .databaseCreationDate(DateUtils.DATE_FORMAT.format(Date()))
+            .databaseCreationDate(Date())
             .build()
         ServerURLWrapper.setServerUrl(serverUrl)
         databaseManager.createOrOpenDatabase(config)

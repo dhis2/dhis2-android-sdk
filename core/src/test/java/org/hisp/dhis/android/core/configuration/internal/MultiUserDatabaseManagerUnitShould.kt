@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.configuration.internal
 import android.content.Context
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.access.internal.BaseDatabaseExport
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.BaseCallShould
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfigurationUtil.buildUserConfiguration
 import org.hisp.dhis.android.persistence.db.access.RoomDatabaseManager
@@ -175,6 +176,6 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
     }
 
     companion object {
-        private const val DATE = "2014-06-06T20:44:21.375"
+        private val DATE = DateUtils.DATE_FORMAT.parse("2014-06-06T20:44:21.375")
     }
 }

@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.period.generator.internal
 
-import kotlinx.datetime.Clock
 import kotlinx.datetime.DayOfWeek
 import org.hisp.dhis.android.core.period.PeriodType
+import kotlin.time.Clock
 
 internal object WeeklyPeriodGeneratorFactory {
     fun weekly(clock: Clock): WeeklyPeriodGenerator {

@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.fileresource
 
-import io.reactivex.Completable
-import kotlinx.coroutines.rx2.rxCompletable
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
@@ -64,11 +62,6 @@ internal class FileResourceRoutine(
     private val trackedEntityAttributeValueCollectionRepository: TrackedEntityAttributeValueCollectionRepository,
     private val clockProvider: ClockProvider,
 ) {
-    fun deleteOutdatedFileResources(after: Date? = null): Completable {
-        return rxCompletable {
-            internalDeleteOutdatedFileResources(after)
-        }
-    }
 
     @SuppressWarnings("MagicNumber")
     suspend fun internalDeleteOutdatedFileResources(after: Date? = null) {

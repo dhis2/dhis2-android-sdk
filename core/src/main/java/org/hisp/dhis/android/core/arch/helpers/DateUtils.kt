@@ -27,20 +27,21 @@
  */
 package org.hisp.dhis.android.core.arch.helpers
 
-import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.format.char
+import kotlinx.datetime.number
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
 import java.util.Date
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 @Suppress("TooManyFunctions")
 object DateUtils {
@@ -56,7 +57,7 @@ object DateUtils {
         char('-')
         monthNumber()
         char('-')
-        dayOfMonth()
+        day()
         char('T')
         hour()
         char(':')
@@ -137,8 +138,8 @@ object DateUtils {
         val dateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
 
         val year = dateTime.year
-        val month = dateTime.monthNumber.zeroPrefixed()
-        val day = dateTime.dayOfMonth.zeroPrefixed()
+        val month = dateTime.month.number.zeroPrefixed()
+        val day = dateTime.day.zeroPrefixed()
         val hour = dateTime.hour.zeroPrefixed()
         val minute = dateTime.minute.zeroPrefixed()
         val seconds = dateTime.second.zeroPrefixed()

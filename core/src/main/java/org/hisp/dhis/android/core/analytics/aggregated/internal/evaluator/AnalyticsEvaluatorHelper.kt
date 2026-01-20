@@ -31,8 +31,6 @@ package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
-import org.hisp.dhis.android.core.arch.helpers.DateUtils.toKtxInstant
 import org.hisp.dhis.android.core.category.CategoryDataDimensionType
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
@@ -146,9 +144,7 @@ internal object AnalyticsEvaluatorHelper {
                 val startDate = DateUtils.getStartDate(periods)
                 val endDate = DateUtils.getEndDate(periods)
                 startDate?.let {
-                    val earliest = DateUtils.dateWithOffset(
-                        startDate.toKtxInstant(), firstLastAggrYearOffset, PeriodType.Yearly,
-                    ).toJavaDate()
+                    val earliest = DateUtils.dateWithOffset(startDate, firstLastAggrYearOffset, PeriodType.Yearly)
                     listOf(Period.builder().startDate(earliest).endDate(endDate).build())
                 } ?: periods
             }

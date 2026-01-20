@@ -29,17 +29,17 @@
 package org.hisp.dhis.android.core.period.internal
 
 import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
-import kotlinx.datetime.toJavaInstant
 import kotlinx.datetime.toLocalDateTime
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.atStartOfDayInSystem
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.generator.internal.PeriodKt
 import org.hisp.dhis.android.core.util.toLocalDate
 import java.util.Date
+import kotlin.time.Instant
+import kotlin.time.toJavaInstant
 
 internal fun List<PeriodKt>.toPeriods(): List<Period> {
     return this.map { it.toPeriods() }

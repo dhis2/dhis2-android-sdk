@@ -236,6 +236,99 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
         loginAndDeleteAccount(user2, pass2, server2)
     }
 
+    @Test
+    fun update_last_access_date_when_getting_accounts() {
+        if (d2.userModule().blockingIsLogged()) {
+            d2.userModule().blockingLogOut()
+        }
+
+        dhis2MockServer.enqueueLoginResponses()
+        d2.userModule().blockingLogIn(user1, pass1, dhis2MockServer.baseEndpoint)
+
+        val initialAccount = d2.userModule().accountManager().getCurrentAccount()
+        val initialLastAccessDate = initialAccount?.lastAccessDate()
+        assertThat(initialLastAccessDate).isNotNull()
+
+        Thread.sleep(1000)
+
+        val accounts = d2.userModule().accountManager().getAccounts()
+        val updatedAccount = accounts.find { it.username() == user1 }
+        val updatedLastAccessDate = updatedAccount?.lastAccessDate()
+
+        assertThat(updatedLastAccessDate).isNotNull()
+        assertThat(updatedLastAccessDate).isNotEqualTo(initialLastAccessDate)
+
+        loginAndDeleteAccount(user1, pass1, dhis2MockServer)
+    }
+
+    @Test
+    fun update_last_access_date_when_getting_current_account() {
+        if (d2.userModule().blockingIsLogged()) {
+            d2.userModule().blockingLogOut()
+        }
+
+        dhis2MockServer.enqueueLoginResponses()
+        d2.userModule().blockingLogIn(user1, pass1, dhis2MockServer.baseEndpoint)
+
+        val initialAccount = d2.userModule().accountManager().getCurrentAccount()
+        val initialLastAccessDate = initialAccount?.lastAccessDate()
+        assertThat(initialLastAccessDate).isNotNull()
+
+        Thread.sleep(1000)
+
+        val updatedAccount = d2.userModule().accountManager().getCurrentAccount()
+        val updatedLastAccessDate = updatedAccount?.lastAccessDate()
+
+        assertThat(updatedLastAccessDate).isNotNull()
+        assertThat(updatedLastAccessDate).isNotEqualTo(initialLastAccessDate)
+
+        loginAndDeleteAccount(user1, pass1, dhis2MockServer)
+    }
+
+    @Test
+    fun logged_account_has_more_recent_last_access_date_than_other_accounts() {
+        if (d2.userModule().blockingIsLogged()) {
+            d2.userModule().blockingLogOut()
+        }
+
+        // Login with user1 (older account by creation date)
+        dhis2MockServer.enqueueLoginResponses()
+        d2.userModule().blockingLogIn(user1, pass1, dhis2MockServer.baseEndpoint)
+        d2.userModule().blockingLogOut()
+
+        Thread.sleep(300)
+
+        // Login with user2 (newer account by creation date)
+        val server2 = Dhis2MockServer(0)
+        server2.enqueueLoginResponses()
+        d2.userModule().blockingLogIn(user2, pass2, server2.baseEndpoint)
+        d2.userModule().blockingLogOut()
+
+        Thread.sleep(300)
+
+        // Login again with user1 (should have most recent lastAccessDate now)
+        dhis2MockServer.enqueueLoginResponses()
+        d2.userModule().blockingLogIn(user1, pass1, dhis2MockServer.baseEndpoint)
+
+        Thread.sleep(300)
+
+        // Get accounts and verify user1 (logged) has more recent lastAccessDate than user2
+        // despite user1 being older by creation date
+        val accounts = d2.userModule().accountManager().getAccounts()
+        val account1 = accounts.find { it.username() == user1 }
+        val account2 = accounts.find { it.username() == user2 }
+
+        assertThat(account1).isNotNull()
+        assertThat(account2).isNotNull()
+        assertThat(account1?.lastAccessDate()).isNotNull()
+        assertThat(account2?.lastAccessDate()).isNotNull()
+        assertThat(account1?.lastAccessDate()).isGreaterThan(account2?.lastAccessDate())
+
+        d2.userModule().blockingLogOut()
+        loginAndDeleteAccount(user1, pass1, dhis2MockServer)
+        loginAndDeleteAccount(user2, pass2, server2)
+    }
+
     private fun addDataValue() {
         val dataSet = d2.dataSetModule().dataSets().withDataSetElements().one().blockingGet()!!
         val dataSetElement = dataSet.dataSetElements()!!.first()

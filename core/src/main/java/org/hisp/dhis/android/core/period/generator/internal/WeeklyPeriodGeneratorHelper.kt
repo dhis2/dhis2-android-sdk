@@ -58,7 +58,7 @@ internal class WeeklyPeriodGeneratorHelper(private val weekStartDay: DayOfWeek) 
         val year = getWeekYearForStartDate(startDate)
         val startOfTargetYear = getFirstDayOfWeekOfYear(year)
         val daysFromStartOfYear = startDate.toEpochDays() - startOfTargetYear.toEpochDays()
-        return Math.floorDiv(daysFromStartOfYear, WEEK_DAYS) + 1
+        return Math.floorDiv(daysFromStartOfYear, WEEK_DAYS).toInt() + 1
     }
 
     fun getWeekYearForStartDate(startDate: LocalDate): Int {
@@ -71,7 +71,7 @@ internal class WeeklyPeriodGeneratorHelper(private val weekStartDay: DayOfWeek) 
     }
 
     private fun daysFromWeekStart(date: LocalDate): Int {
-        val diff = date.dayOfWeek.value - weekStartDay.value
+        val diff = date.dayOfWeek.ordinal - weekStartDay.ordinal
         return if (diff >= 0) diff else diff + WEEK_DAYS
     }
 

@@ -29,22 +29,14 @@ package org.hisp.dhis.android.core.arch.storage.internal
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Build
-import android.security.KeyPairGeneratorSpec
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
 import android.util.Log
-import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.plus
-import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
-import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 import java.io.IOException
-import java.math.BigInteger
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 import java.security.InvalidAlgorithmParameterException
@@ -64,7 +56,6 @@ import javax.crypto.BadPaddingException
 import javax.crypto.Cipher
 import javax.crypto.IllegalBlockSizeException
 import javax.crypto.NoSuchPaddingException
-import javax.security.auth.x500.X500Principal
 
 @Suppress("TooGenericExceptionThrown", "TooGenericExceptionCaught")
 class AndroidSecureStore(context: Context) : SecureStore {
@@ -76,7 +67,7 @@ class AndroidSecureStore(context: Context) : SecureStore {
             val privateKey = ks.getKey(ALIAS, null) as PrivateKey?
 
             if (privateKey == null || ks.getCertificate(ALIAS)?.publicKey == null) {
-                generateKeys(ks, context)
+                generateKeys(ks)
             }
         } catch (ex: KeyStoreException) {
             throw keyStoreError(ex, D2ErrorCode.CANT_ACCESS_KEYSTORE)
@@ -92,25 +83,11 @@ class AndroidSecureStore(context: Context) : SecureStore {
     }
 
     @Suppress("MagicNumber", "ThrowsCount")
-    private fun generateKeys(ks: KeyStore, context: Context) {
-        val spec = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            // Create a start and end time, for the validity range of the key pair that's about to be
-            // generated.
-            val start = ClockProviderFactory.clockProvider.clock.now()
-            val end = start.plus(10, DateTimeUnit.YEAR, TimeZone.currentSystemDefault())
-
-            KeyPairGeneratorSpec.Builder(context)
-                .setAlias(ALIAS)
-                .setSubject(X500Principal("CN=$ALIAS"))
-                .setSerialNumber(BigInteger.valueOf(1337))
-                .setStartDate(start.toJavaDate()).setEndDate(end.toJavaDate())
-                .build()
-        } else {
-            KeyGenParameterSpec.Builder(ALIAS, KeyProperties.PURPOSE_DECRYPT or KeyProperties.PURPOSE_ENCRYPT)
-                .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
-                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
-                .build()
-        }
+    private fun generateKeys(ks: KeyStore) {
+        val spec = KeyGenParameterSpec.Builder(ALIAS, KeyProperties.PURPOSE_DECRYPT or KeyProperties.PURPOSE_ENCRYPT)
+            .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
+            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
+            .build()
 
         try {
             val kpGenerator = KeyPairGenerator.getInstance(KEY_ALGORITHM_RSA, KEYSTORE_PROVIDER_ANDROID_KEYSTORE)
@@ -235,7 +212,7 @@ class AndroidSecureStore(context: Context) : SecureStore {
         return D2Error.builder()
             .errorComponent(D2ErrorComponent.SDK)
             .errorCode(d2ErrorCode)
-            .errorDescription(ex.message)
+            .errorDescription(ex.message ?: "KeyStore error")
             .originalException(ex)
             .created(Date())
             .build()
@@ -248,7 +225,6 @@ class AndroidSecureStore(context: Context) : SecureStore {
     }
 
     companion object {
-        private const val KEY_CIPHER_JELLYBEAN_PROVIDER = "AndroidOpenSSL"
         private const val KEY_CIPHER_MARSHMALLOW_PROVIDER = "AndroidKeyStoreBCWorkaround"
 
         private const val KEY_ALGORITHM_RSA = "RSA"
@@ -263,11 +239,7 @@ class AndroidSecureStore(context: Context) : SecureStore {
         private val cipherInstance: Cipher
             get() {
                 try {
-                    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        Cipher.getInstance(RSA_ECB_PKCS1_PADDING, KEY_CIPHER_MARSHMALLOW_PROVIDER)
-                    } else {
-                        Cipher.getInstance(RSA_ECB_PKCS1_PADDING, KEY_CIPHER_JELLYBEAN_PROVIDER)
-                    }
+                    return Cipher.getInstance(RSA_ECB_PKCS1_PADDING, KEY_CIPHER_MARSHMALLOW_PROVIDER)
                 } catch (exception: Exception) {
                     throw RuntimeException("getCipher: Failed to get an instance of Cipher", exception)
                 }

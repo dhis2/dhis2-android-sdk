@@ -42,6 +42,8 @@ public class RealServerMother {
     public static String url2_39 = "https://play.dhis2.org/2.39/";
     public static String url2_40 = "https://play.dhis2.org/40/";
     public static String url2_41 = "https://play.dhis2.org/41/";
+    public static String url2_42 = "https://play.dhis2.org/42/";
+    public static String url2_43 = "https://play.dhis2.org/43/";
     public static String url_dev = "https://play.dhis2.org/dev/";
     public static String url_demo = "https://play.dhis2.org/demo/";
     public static String android_current = "https://play.dhis2.org/android-current/";

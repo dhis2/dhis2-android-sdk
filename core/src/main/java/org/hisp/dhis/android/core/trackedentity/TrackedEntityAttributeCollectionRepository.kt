@@ -131,6 +131,18 @@ class TrackedEntityAttributeCollectionRepository internal constructor(
         return cf.string(TrackedEntityAttributeTableInfo.Columns.ICON)
     }
 
+    fun byPreferredSearchOperator(): StringFilterConnector<TrackedEntityAttributeCollectionRepository> {
+        return cf.string(TrackedEntityAttributeTableInfo.Columns.PREFERRED_SEARCH_OPERATOR)
+    }
+
+    fun byBlockedSearchOperators(): StringFilterConnector<TrackedEntityAttributeCollectionRepository> {
+        return cf.string(TrackedEntityAttributeTableInfo.Columns.BLOCKED_SEARCH_OPERATORS)
+    }
+
+    fun byMinCharactersToSearch(): IntegerFilterConnector<TrackedEntityAttributeCollectionRepository> {
+        return cf.integer(TrackedEntityAttributeTableInfo.Columns.MIN_CHARACTERS_TO_SEARCH)
+    }
+
     fun withLegendSets(): TrackedEntityAttributeCollectionRepository {
         return cf.withChild(LEGEND_SETS)
     }

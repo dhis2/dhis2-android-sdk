@@ -5,7 +5,7 @@ import androidx.room.ForeignKey
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueInternalAccessor
 import org.hisp.dhis.android.core.util.dateFormat
-import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.core.util.toJavaDateNonNull
 import org.hisp.dhis.android.persistence.category.CategoryOptionComboDB
 import org.hisp.dhis.android.persistence.common.DataObjectDB
 import org.hisp.dhis.android.persistence.common.DeletableObjectDB
@@ -91,8 +91,8 @@ internal data class DataValueDB(
             attributeOptionCombo(attributeOptionCombo)
             value(value)
             storedBy(storedBy)
-            created?.let { created(it.toJavaDate()!!) }
-            lastUpdated?.let { lastUpdated(it.toJavaDate()!!) }
+            created?.let { created(it.toJavaDateNonNull()) }
+            lastUpdated?.let { lastUpdated(it.toJavaDateNonNull()) }
             comment(comment)
             followUp(followUp)
             syncState?.let { syncState(it.toDomain()) }

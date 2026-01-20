@@ -36,6 +36,10 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
 import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
 
+import com.google.common.collect.Lists;
+
+import java.util.List;
+
 public class TrackedEntityAttributeSamples {
 
     public static TrackedEntityAttribute get() {
@@ -61,6 +65,9 @@ public class TrackedEntityAttributeSamples {
                 .fieldMask("XXXXX")
                 .formName("form_name")
                 .displayFormName("display_form_name")
+                .preferredSearchOperator("SW")
+                .blockedSearchOperators(Lists.newArrayList("LIKE"))
+                .minCharactersToSearch(2)
                 .build();
     }
 

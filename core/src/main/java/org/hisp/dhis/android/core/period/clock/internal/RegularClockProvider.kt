@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.period.clock.internal
 
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 
 internal class RegularClockProvider : ClockProvider {
     override val clock = Clock.System

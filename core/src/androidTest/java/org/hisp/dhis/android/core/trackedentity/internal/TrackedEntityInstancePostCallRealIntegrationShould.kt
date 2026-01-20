@@ -400,7 +400,7 @@ class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTe
 
         val relationships =
             d2.relationshipModule().relationships().getByItem(RelationshipHelper.teiItem(teiA.uid()), true, false)
-        Truth.assertThat(relationships.size > 0).isTrue()
+        Truth.assertThat(relationships.isNotEmpty()).isTrue()
 
         var relationshipFound = false
         for (relationship in relationships) {

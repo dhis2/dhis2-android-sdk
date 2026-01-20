@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.dataset
 
 import com.google.common.truth.Truth.assertThat
 import io.reactivex.Single
-import kotlinx.datetime.Clock
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
@@ -59,6 +58,7 @@ import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import java.util.Date
+import kotlin.time.Clock
 import kotlin.time.Duration.Companion.days
 
 class DataSetInstanceServiceShould {

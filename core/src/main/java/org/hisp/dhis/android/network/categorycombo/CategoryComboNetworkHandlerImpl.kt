@@ -54,6 +54,6 @@ internal class CategoryComboNetworkHandlerImpl(
             CategoryComboFields.isDefault.eq(true),
             paging = false,
         )
-        return apiPayload.items.firstOrNull()?.toDomain()
+        return apiPayload.items.find { it.isDefault == true }?.toDomain()
     }
 }

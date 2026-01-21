@@ -45,13 +45,13 @@ internal class DefaultCategoryComboManager(
     private var defaultCategoryUid: String? = null
 
     fun getDefaultCategoryComboUid(): String? = defaultCategoryComboUid
-        ?: runBlocking { loadDefaultsFromDatabaseOrApi() }.let { defaultCategoryComboUid }
+        ?: runBlocking { loadDefaultsFromDatabase() }.let { defaultCategoryComboUid }
 
     fun getDefaultCategoryOptionComboUid(): String? = defaultCategoryOptionComboUid
-        ?: runBlocking { loadDefaultsFromDatabaseOrApi() }.let { defaultCategoryOptionComboUid }
+        ?: runBlocking { loadDefaultsFromDatabase() }.let { defaultCategoryOptionComboUid }
 
     fun getDefaultCategoryUid(): String? = defaultCategoryUid
-        ?: runBlocking { loadDefaultsFromDatabaseOrApi() }.let { defaultCategoryUid }
+        ?: runBlocking { loadDefaultsFromDatabase() }.let { defaultCategoryUid }
 
     fun setDefaults(categoryCombo: CategoryCombo) {
         defaultCategoryComboUid = categoryCombo.uid()
@@ -66,19 +66,20 @@ internal class DefaultCategoryComboManager(
         defaultCategoryUid = null
     }
 
-    private suspend fun loadDefaultsFromDatabaseOrApi() {
-        val whereClause = WhereClauseBuilder()
-            .appendKeyNumberValue(CategoryComboTableInfo.Columns.IS_DEFAULT, 1)
-            .build()
-
-        categoryComboStore.selectOneWhere(whereClause)?.let {
-            setDefaults(it)
-            return
-        }
-
+    suspend fun downloadDefaults() {
         runCatching { networkHandler.getDefaultCategoryCombo() }
             .getOrNull()
             ?.also { categoryComboHandler.handle(it) }
             ?.let { setDefaults(it) }
+    }
+
+    private suspend fun loadDefaultsFromDatabase() {
+        if (defaultCategoryComboUid != null) return
+
+        val whereClause = WhereClauseBuilder()
+            .appendKeyNumberValue(CategoryComboTableInfo.Columns.IS_DEFAULT, 1)
+            .build()
+
+        categoryComboStore.selectOneWhere(whereClause)?.let { setDefaults(it) }
     }
 }

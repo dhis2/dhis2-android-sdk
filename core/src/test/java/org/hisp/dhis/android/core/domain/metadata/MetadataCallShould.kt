@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.arch.call.BaseD2Progress
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.attribute.internal.AttributeModuleDownloader
 import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader
+import org.hisp.dhis.android.core.category.internal.DefaultCategoryComboManager
 import org.hisp.dhis.android.core.common.BaseCallShould
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleDownloader
@@ -81,6 +82,7 @@ class MetadataCallShould : BaseCallShould() {
     private val useCaseModuleDownloader: UseCaseModuleDownloader = mock()
     private val userDownloader: UserModuleDownloader = mock()
     private val categoryDownloader: CategoryModuleDownloader = mock()
+    private val defaultCategoryComboManager: DefaultCategoryComboManager = mock()
     private val programDownloader: ProgramModuleDownloader = mock()
     private val organisationUnitDownloader: OrganisationUnitModuleDownloader = mock()
     private val dataSetDownloader: DataSetModuleDownloader = mock()
@@ -185,6 +187,7 @@ class MetadataCallShould : BaseCallShould() {
             useCaseModuleDownloader,
             userDownloader,
             categoryDownloader,
+            defaultCategoryComboManager,
             programDownloader,
             organisationUnitDownloader,
             dataSetDownloader,

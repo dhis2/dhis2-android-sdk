@@ -108,14 +108,23 @@ class DefaultCategoryComboManagerShould {
     }
 
     @Test
-    fun make_api_call_when_not_in_database() = runTest {
+    fun return_null_when_not_in_database() = runTest {
         whenever(categoryComboStore.selectOneWhere(any())).doReturn(null)
-        whenever(networkHandler.getDefaultCategoryCombo()).doReturn(categoryCombo)
 
         val result = manager.getDefaultCategoryComboUid()
 
-        assertThat(result).isEqualTo(comboUid)
+        assertThat(result).isNull()
         verify(categoryComboStore).selectOneWhere(any())
+        verifyNoMoreInteractions(networkHandler)
+    }
+
+    @Test
+    fun download_defaults_makes_api_call_and_stores_result() = runTest {
+        whenever(networkHandler.getDefaultCategoryCombo()).doReturn(categoryCombo)
+
+        manager.downloadDefaults()
+
+        assertThat(manager.getDefaultCategoryComboUid()).isEqualTo(comboUid)
         verify(networkHandler).getDefaultCategoryCombo()
         verify(categoryComboHandler).handle(categoryCombo)
     }
@@ -138,7 +147,6 @@ class DefaultCategoryComboManagerShould {
         manager.clearCache()
 
         whenever(categoryComboStore.selectOneWhere(any())).doReturn(null)
-        whenever(networkHandler.getDefaultCategoryCombo()).doReturn(null)
 
         val result = manager.getDefaultCategoryComboUid()
 
@@ -147,14 +155,13 @@ class DefaultCategoryComboManagerShould {
     }
 
     @Test
-    fun handle_api_failure_gracefully() = runTest {
-        whenever(categoryComboStore.selectOneWhere(any())).doReturn(null)
+    fun download_defaults_handles_api_failure_gracefully() = runTest {
         whenever(networkHandler.getDefaultCategoryCombo()).thenThrow(RuntimeException("Network error"))
+        whenever(categoryComboStore.selectOneWhere(any())).doReturn(null)
 
-        val result = manager.getDefaultCategoryComboUid()
+        manager.downloadDefaults()
 
-        assertThat(result).isNull()
-        verify(categoryComboStore).selectOneWhere(any())
+        assertThat(manager.getDefaultCategoryComboUid()).isNull()
         verify(networkHandler).getDefaultCategoryCombo()
         verify(categoryComboHandler, never()).handle(any<CategoryCombo>())
     }

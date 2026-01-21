@@ -39,18 +39,11 @@ class CategoryModuleDownloader internal constructor(
     private val categoryComboUidsSeeker: CategoryComboUidsSeeker,
     private val categoryCategoryOptionLinkPersistor: CategoryCategoryOptionLinkPersistor,
     private val categoryOptionComboIntegrityChecker: CategoryOptionComboIntegrityChecker,
-    private val defaultCategoryComboManager: DefaultCategoryComboManager,
 ) : UntypedModuleDownloaderCoroutines {
 
     override suspend fun downloadMetadata() {
         val uids = categoryComboUidsSeeker.seekUids()
         val comboUids = categoryComboCall.download(uids)
-
-        // Set the default CategoryCombo UID in the manager
-        comboUids.find { it.isDefault() == true }?.let {
-            defaultCategoryComboManager.setDefaults(it)
-        }
-
         val categoryUids = CategoryParentUidsHelper.getCategoryUids(comboUids)
         val categories = categoryCall.download(categoryUids)
         val categoryOptions = categoryOptionCall.download(categoryUids)

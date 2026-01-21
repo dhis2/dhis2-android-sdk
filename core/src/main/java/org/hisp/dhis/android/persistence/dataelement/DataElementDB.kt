@@ -98,7 +98,9 @@ internal fun DataElement.toDB(): DataElementDB {
         displayFormName = displayFormName(),
         optionSet = optionSet()?.uid(),
         categoryCombo = categoryCombo()?.uid()
-            ?: get().get<DefaultCategoryComboManager>().getDefaultCategoryComboUid()!!,
+            ?: requireNotNull(get().get<DefaultCategoryComboManager>().getDefaultCategoryComboUid()) {
+                "Default CategoryCombo not loaded. Ensure metadata sync runs downloadDefaults() first."
+            },
         fieldMask = fieldMask(),
         color = style().color(),
         icon = style().icon(),

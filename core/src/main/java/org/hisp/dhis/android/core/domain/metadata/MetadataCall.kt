@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.attribute.Attribute
 import org.hisp.dhis.android.core.attribute.internal.AttributeModuleDownloader
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader
+import org.hisp.dhis.android.core.category.internal.DefaultCategoryComboManager
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.constant.internal.ConstantModuleDownloader
@@ -89,6 +90,7 @@ internal class MetadataCall(
     private val useCaseDownloader: UseCaseModuleDownloader,
     private val userModuleDownloader: UserModuleDownloader,
     private val categoryDownloader: CategoryModuleDownloader,
+    private val defaultCategoryComboManager: DefaultCategoryComboManager,
     private val programDownloader: ProgramModuleDownloader,
     private val organisationUnitModuleDownloader: OrganisationUnitModuleDownloader,
     private val dataSetDownloader: DataSetModuleDownloader,
@@ -158,6 +160,8 @@ internal class MetadataCall(
 
         organisationUnitModuleDownloader.downloadMetadata(user)
         emit(progressManager.increaseProgress(OrganisationUnit::class.java, false))
+
+        defaultCategoryComboManager.downloadDefaults()
 
         programDownloader.downloadMetadata()
         emit(progressManager.increaseProgress(Program::class.java, false))

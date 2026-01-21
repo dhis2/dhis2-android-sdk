@@ -21,7 +21,7 @@ import org.hisp.dhis.android.persistence.common.ObjectWithUidDB
 import org.hisp.dhis.android.persistence.common.applyBaseNameableFields
 import org.hisp.dhis.android.persistence.common.toDB
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityTypeDB
-import org.koin.java.KoinJavaComponent.get
+import org.koin.core.context.GlobalContext.get
 
 @Entity(
     tableName = "Program",
@@ -159,8 +159,7 @@ internal fun Program.toDB(): ProgramDB {
         relatedProgram = relatedProgram()?.uid(),
         trackedEntityType = trackedEntityType()?.uid(),
         categoryCombo = categoryCombo()?.uid()
-            ?: get<DefaultCategoryComboManager>(DefaultCategoryComboManager::class.java)
-                .getDefaultCategoryComboUid(),
+            ?: get().get<DefaultCategoryComboManager>().getDefaultCategoryComboUid(),
         accessDataWrite = access().toDB(),
         expiryDays = expiryDays(),
         completeEventsExpiryDays = completeEventsExpiryDays(),

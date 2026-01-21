@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
+import org.hisp.dhis.android.core.category.internal.DefaultCategoryComboManager
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationInsecureStore
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -53,6 +54,7 @@ class LogOutCallShould {
     private val credentials: Credentials = mock()
     private val databaseManager: DatabaseManager = mock()
     private val serverTimezoneManager: ServerTimezoneManager = mock()
+    private val defaultCategoryComboManager: DefaultCategoryComboManager = mock()
     private val databaseConfigurationHelper: DatabaseConfigurationHelper = mock()
     private val databaseConfigurationStore: DatabaseConfigurationInsecureStore = mock()
 
@@ -67,6 +69,7 @@ class LogOutCallShould {
             credentialsSecureStore,
             userIdStore,
             serverTimezoneManager,
+            defaultCategoryComboManager,
             databaseConfigurationHelper,
             databaseConfigurationStore,
         )
@@ -86,6 +89,13 @@ class LogOutCallShould {
         whenever(credentialsSecureStore.get()).thenReturn(credentials)
         logOutCall.logOut().blockingAwait()
         verify(serverTimezoneManager, times(1)).clearCache()
+    }
+
+    @Test
+    fun clear_default_category_combo_cache() {
+        whenever(credentialsSecureStore.get()).thenReturn(credentials)
+        logOutCall.logOut().blockingAwait()
+        verify(defaultCategoryComboManager, times(1)).clearCache()
     }
 
     @Test

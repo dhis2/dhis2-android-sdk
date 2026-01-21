@@ -15,7 +15,7 @@ import org.hisp.dhis.android.persistence.common.ObjectWithUidDB
 import org.hisp.dhis.android.persistence.common.applyBaseNameableFields
 import org.hisp.dhis.android.persistence.common.applyStyleFields
 import org.hisp.dhis.android.persistence.option.OptionSetDB
-import org.koin.java.KoinJavaComponent.get
+import org.koin.core.context.GlobalContext.get
 
 @Entity(
     tableName = "DataElement",
@@ -98,8 +98,7 @@ internal fun DataElement.toDB(): DataElementDB {
         displayFormName = displayFormName(),
         optionSet = optionSet()?.uid(),
         categoryCombo = categoryCombo()?.uid()
-            ?: get<DefaultCategoryComboManager>(DefaultCategoryComboManager::class.java)
-                .getDefaultCategoryComboUid()!!,
+            ?: get().get<DefaultCategoryComboManager>().getDefaultCategoryComboUid()!!,
         fieldMask = fieldMask(),
         color = style().color(),
         icon = style().icon(),

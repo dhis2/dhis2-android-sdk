@@ -2860,7 +2860,6 @@ public final class org/hisp/dhis/android/core/category/CategoryCollectionReposit
 }
 
 public abstract class org/hisp/dhis/android/core/category/CategoryCombo : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
-	public static final field DEFAULT_UID Ljava/lang/String;
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/category/CategoryCombo$Builder;
 	public abstract fun categories ()Ljava/util/List;
@@ -4229,7 +4228,6 @@ public abstract class org/hisp/dhis/android/core/dataelement/DataElement : org/h
 	public abstract fun attributeValues ()Ljava/util/List;
 	public static fun builder ()Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
 	public abstract fun categoryCombo ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public fun categoryComboUid ()Ljava/lang/String;
 	public abstract fun displayFormName ()Ljava/lang/String;
 	public abstract fun domainType ()Ljava/lang/String;
 	public abstract fun fieldMask ()Ljava/lang/String;
@@ -7564,7 +7562,6 @@ public abstract class org/hisp/dhis/android/core/program/Program : org/hisp/dhis
 	public abstract fun attributeValues ()Ljava/util/List;
 	public static fun builder ()Lorg/hisp/dhis/android/core/program/Program$Builder;
 	public abstract fun categoryCombo ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public fun categoryComboUid ()Ljava/lang/String;
 	public abstract fun completeEventsExpiryDays ()Ljava/lang/Integer;
 	public abstract fun dataEntryMethod ()Ljava/lang/Boolean;
 	public abstract fun displayEnrollmentDateLabel ()Ljava/lang/String;

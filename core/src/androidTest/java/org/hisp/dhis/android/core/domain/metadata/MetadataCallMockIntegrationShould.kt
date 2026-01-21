@@ -31,6 +31,7 @@ import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.attribute.Attribute
 import org.hisp.dhis.android.core.category.Category
+import org.hisp.dhis.android.core.category.CategoryCombo
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
@@ -68,7 +69,7 @@ class MetadataCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher
 
         testObserver.awaitTerminalEvent()
 
-        testObserver.assertValueCount(19)
+        testObserver.assertValueCount(20)
 
         val values = testObserver.values()
 
@@ -85,6 +86,7 @@ class MetadataCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher
                 SystemSetting::class,
                 StockUseCase::class,
                 Constant::class,
+                CategoryCombo::class,
                 SmsModule::class,
                 User::class,
                 OrganisationUnit::class,

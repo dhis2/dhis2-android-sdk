@@ -37,7 +37,6 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class DefaultCategoryComboManager(
     private val categoryComboStore: CategoryComboStore,
-    private val categoryComboHandler: CategoryComboHandler,
     private val networkHandler: CategoryComboNetworkHandler,
 ) {
     private var defaultCategoryComboUid: String? = null
@@ -66,11 +65,8 @@ internal class DefaultCategoryComboManager(
         defaultCategoryUid = null
     }
 
-    suspend fun downloadDefaults() {
-        runCatching { networkHandler.getDefaultCategoryCombo() }
-            .getOrNull()
-            ?.also { categoryComboHandler.handle(it) }
-            ?.let { setDefaults(it) }
+    suspend fun fetchDefaults() {
+        networkHandler.getDefaultCategoryCombo()?.let { setDefaults(it) }
     }
 
     private suspend fun loadDefaultsFromDatabase() {

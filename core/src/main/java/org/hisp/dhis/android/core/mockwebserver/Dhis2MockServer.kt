@@ -349,6 +349,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
         enqueueMockResponse(VERSIONS_JSON)
         enqueueMockResponse(STOCK_USE_CASES_JSON)
         enqueueMockResponse(CONSTANTS_JSON)
+        enqueueMockResponse(CATEGORY_COMBOS_JSON) // Default CategoryCombo fetch
         enqueueMockResponse(USER_JSON)
         enqueueMockResponse(AUTHORITIES_JSON)
         enqueueMockResponse(ORGANISATION_UNIT_LEVELS_JSON)

@@ -45,7 +45,6 @@ import org.mockito.kotlin.whenever
 
 class DefaultCategoryComboManagerShould {
     private val categoryComboStore: CategoryComboStore = mock()
-    private val categoryComboHandler: CategoryComboHandler = mock()
     private val networkHandler: CategoryComboNetworkHandler = mock()
 
     private val comboUid = "defaultComboUid"
@@ -68,7 +67,6 @@ class DefaultCategoryComboManagerShould {
 
         manager = DefaultCategoryComboManager(
             categoryComboStore,
-            categoryComboHandler,
             networkHandler,
         )
     }
@@ -119,14 +117,13 @@ class DefaultCategoryComboManagerShould {
     }
 
     @Test
-    fun download_defaults_makes_api_call_and_stores_result() = runTest {
+    fun fetch_defaults_makes_api_call_and_caches_result() = runTest {
         whenever(networkHandler.getDefaultCategoryCombo()).doReturn(categoryCombo)
 
-        manager.downloadDefaults()
+        manager.fetchDefaults()
 
         assertThat(manager.getDefaultCategoryComboUid()).isEqualTo(comboUid)
         verify(networkHandler).getDefaultCategoryCombo()
-        verify(categoryComboHandler).handle(categoryCombo)
     }
 
     @Test
@@ -152,18 +149,6 @@ class DefaultCategoryComboManagerShould {
 
         assertThat(result).isNull()
         verify(categoryComboStore).selectOneWhere(any())
-    }
-
-    @Test
-    fun download_defaults_handles_api_failure_gracefully() = runTest {
-        whenever(networkHandler.getDefaultCategoryCombo()).thenThrow(RuntimeException("Network error"))
-        whenever(categoryComboStore.selectOneWhere(any())).doReturn(null)
-
-        manager.downloadDefaults()
-
-        assertThat(manager.getDefaultCategoryComboUid()).isNull()
-        verify(networkHandler).getDefaultCategoryCombo()
-        verify(categoryComboHandler, never()).handle(any<CategoryCombo>())
     }
 
     @Test

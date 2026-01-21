@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.attribute.Attribute
 import org.hisp.dhis.android.core.attribute.internal.AttributeModuleDownloader
 import org.hisp.dhis.android.core.category.Category
+import org.hisp.dhis.android.core.category.CategoryCombo
 import org.hisp.dhis.android.core.category.internal.CategoryModuleDownloader
 import org.hisp.dhis.android.core.category.internal.DefaultCategoryComboManager
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
@@ -111,7 +112,7 @@ internal class MetadataCall(
 ) {
 
     companion object {
-        const val CALLS_COUNT = 18
+        const val CALLS_COUNT = 19
     }
 
     @Suppress("TooGenericExceptionCaught")
@@ -150,6 +151,9 @@ internal class MetadataCall(
         constantModuleDownloader.downloadMetadata()
         emit(progressManager.increaseProgress(Constant::class.java, false))
 
+        defaultCategoryComboManager.fetchDefaults()
+        emit(progressManager.increaseProgress(CategoryCombo::class.java, false))
+
         smsModule.configCase().refreshMetadataIdsCallable()
         emit(progressManager.increaseProgress(SmsModule::class.java, false))
     }
@@ -160,8 +164,6 @@ internal class MetadataCall(
 
         organisationUnitModuleDownloader.downloadMetadata(user)
         emit(progressManager.increaseProgress(OrganisationUnit::class.java, false))
-
-        defaultCategoryComboManager.downloadDefaults()
 
         programDownloader.downloadMetadata()
         emit(progressManager.increaseProgress(Program::class.java, false))

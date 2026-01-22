@@ -66,7 +66,11 @@ class HttpServiceClient(
             if (method == HttpMethod.Post || method == HttpMethod.Put) {
                 when (requestBuilder.body) {
                     is MultiPartFormDataContent -> contentType(ContentType.MultiPart.FormData)
-                    else -> contentType(ContentType.Application.Json)
+                    else -> if (requestBuilder.contentType == "x-www-form-urlencoded") {
+                        contentType(ContentType.Application.FormUrlEncoded)
+                    } else {
+                        contentType(ContentType.Application.Json)
+                    }
                 }
                 setBody(requestBuilder.body)
             }

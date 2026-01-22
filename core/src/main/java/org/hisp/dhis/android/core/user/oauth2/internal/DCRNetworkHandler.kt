@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,66 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user.oauth2.internal
 
-package org.hisp.dhis.android.core.arch.api
+import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.maintenance.D2Error
 
-class RequestBuilder(private val baseUrl: String) {
-    lateinit var url: String
-        private set
-
-    var isAbsoluteUrl: Boolean = false
-        private set
-
-    var isExternalRequest: Boolean = false
-        private set
-
-    var body: Any? = null
-        private set
-
-    var authorizationHeader: String? = null
-        private set
-
-    var parameters: MutableList<Pair<String, String>> = mutableListOf()
-        private set
-
-    var headers: MutableList<Pair<String, String>> = mutableListOf()
-
-    var contentType: String? = null
-        private set
-
-    private val parametersBuilder = ParametersBuilder(parameters)
-
-    fun url(url: String) {
-        this.url = baseUrl + url
-    }
-
-    fun absoluteUrl(url: String, isExternalRequest: Boolean = true) {
-        this.url = url
-        this.isAbsoluteUrl = true
-        this.isExternalRequest = isExternalRequest
-    }
-
-    fun contentType(contentType: String) {
-        this.contentType = contentType
-    }
-
-    fun excludeCredentials() {
-        this.isExternalRequest = true
-    }
-
-    fun authorizationHeader(header: String?) {
-        this.authorizationHeader = header
-    }
-
-    fun body(body: Any?) {
-        this.body = body
-    }
-
-    fun parameters(block: ParametersBuilder.() -> Unit) {
-        parametersBuilder.apply(block)
-    }
-
-    fun header(name: String, value: String) {
-        headers.add(name to value)
-    }
+internal interface DCRNetworkHandler {
+    suspend fun registerClient(
+        iat: String,
+        clientName: String,
+        redirectUri: String,
+        scope: String,
+        jwks: String,
+    ): Result<String, D2Error>
 }

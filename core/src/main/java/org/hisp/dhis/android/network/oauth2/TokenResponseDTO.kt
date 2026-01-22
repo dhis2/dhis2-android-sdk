@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,66 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.oauth2
 
-package org.hisp.dhis.android.core.arch.api
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-class RequestBuilder(private val baseUrl: String) {
-    lateinit var url: String
-        private set
+@Serializable
+internal data class TokenResponseDTO(
+    @SerialName("access_token")
+    val accessToken: String,
 
-    var isAbsoluteUrl: Boolean = false
-        private set
+    @SerialName("token_type")
+    val tokenType: String,
 
-    var isExternalRequest: Boolean = false
-        private set
+    @SerialName("expires_in")
+    val expiresIn: Long,
 
-    var body: Any? = null
-        private set
+    @SerialName("refresh_token")
+    val refreshToken: String?,
 
-    var authorizationHeader: String? = null
-        private set
-
-    var parameters: MutableList<Pair<String, String>> = mutableListOf()
-        private set
-
-    var headers: MutableList<Pair<String, String>> = mutableListOf()
-
-    var contentType: String? = null
-        private set
-
-    private val parametersBuilder = ParametersBuilder(parameters)
-
-    fun url(url: String) {
-        this.url = baseUrl + url
-    }
-
-    fun absoluteUrl(url: String, isExternalRequest: Boolean = true) {
-        this.url = url
-        this.isAbsoluteUrl = true
-        this.isExternalRequest = isExternalRequest
-    }
-
-    fun contentType(contentType: String) {
-        this.contentType = contentType
-    }
-
-    fun excludeCredentials() {
-        this.isExternalRequest = true
-    }
-
-    fun authorizationHeader(header: String?) {
-        this.authorizationHeader = header
-    }
-
-    fun body(body: Any?) {
-        this.body = body
-    }
-
-    fun parameters(block: ParametersBuilder.() -> Unit) {
-        parametersBuilder.apply(block)
-    }
-
-    fun header(name: String, value: String) {
-        headers.add(name to value)
-    }
-}
+    @SerialName("scope")
+    val scope: String?,
+)

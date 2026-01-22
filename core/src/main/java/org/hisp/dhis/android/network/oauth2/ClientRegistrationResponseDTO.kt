@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,66 +25,38 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.network.oauth2
 
-package org.hisp.dhis.android.core.arch.api
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
-class RequestBuilder(private val baseUrl: String) {
-    lateinit var url: String
-        private set
 
-    var isAbsoluteUrl: Boolean = false
-        private set
+@Serializable
+internal data class ClientRegistrationResponseDTO(
+    @SerialName("client_id")
+    val clientId: String,
 
-    var isExternalRequest: Boolean = false
-        private set
+    @SerialName("client_id_issued_at")
+    val clientIdIssuedAt: Long?,
 
-    var body: Any? = null
-        private set
+    @SerialName("client_name")
+    val clientName: String?,
 
-    var authorizationHeader: String? = null
-        private set
+    @SerialName("redirect_uris")
+    val redirectUris: List<String>?,
 
-    var parameters: MutableList<Pair<String, String>> = mutableListOf()
-        private set
+    @SerialName("grant_types")
+    val grantTypes: List<String>?,
 
-    var headers: MutableList<Pair<String, String>> = mutableListOf()
+    @SerialName("response_types")
+    val responseTypes: List<String>?,
 
-    var contentType: String? = null
-        private set
+    @SerialName("token_endpoint_auth_method")
+    val tokenEndpointAuthMethod: String?,
 
-    private val parametersBuilder = ParametersBuilder(parameters)
+    @SerialName("token_endpoint_auth_signing_alg")
+    val tokenEndpointAuthSigningAlg: String?,
 
-    fun url(url: String) {
-        this.url = baseUrl + url
-    }
-
-    fun absoluteUrl(url: String, isExternalRequest: Boolean = true) {
-        this.url = url
-        this.isAbsoluteUrl = true
-        this.isExternalRequest = isExternalRequest
-    }
-
-    fun contentType(contentType: String) {
-        this.contentType = contentType
-    }
-
-    fun excludeCredentials() {
-        this.isExternalRequest = true
-    }
-
-    fun authorizationHeader(header: String?) {
-        this.authorizationHeader = header
-    }
-
-    fun body(body: Any?) {
-        this.body = body
-    }
-
-    fun parameters(block: ParametersBuilder.() -> Unit) {
-        parametersBuilder.apply(block)
-    }
-
-    fun header(name: String, value: String) {
-        headers.add(name to value)
-    }
-}
+    @SerialName("scope")
+    val scope: String?,
+)

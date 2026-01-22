@@ -37,7 +37,7 @@ class DataValueShould : CoreObjectShould("datavalue/data_value.json") {
     @Test
     override fun map_from_json_string() {
         val dataValueDTO = deserialize(DataValueDTO.serializer())
-        val dataValue = dataValueDTO.toDomain()
+        val dataValue = dataValueDTO.toDomain("lyLU2wR22tC")
 
         assertThat(dataValue.dataElement()).isEqualTo("s46m5MS0hxu")
         assertThat(dataValue.period()).isEqualTo("201712")
@@ -55,5 +55,6 @@ class DataValueShould : CoreObjectShould("datavalue/data_value.json") {
         assertThat(dataValue.comment()).isEqualTo("")
         assertThat(dataValue.followUp()).isFalse()
         assertThat(dataValue.deleted()).isFalse()
+        assertThat(dataValue.sourceDataSet()).isEqualTo("lyLU2wR22tC")
     }
 }

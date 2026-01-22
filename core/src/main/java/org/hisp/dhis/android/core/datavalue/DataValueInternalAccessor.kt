@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,20 +25,15 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.datavalue
 
-package org.hisp.dhis.android.core.datavalue.internal
+internal object DataValueInternalAccessor {
 
-import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataCallBundle
-import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
-import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResponse
-import org.hisp.dhis.android.core.maintenance.D2Error
+    fun accessSourceDataSet(dataValue: DataValue): String? {
+        return dataValue.sourceDataSet()
+    }
 
-internal interface DataValueNetworkHandler {
-    suspend fun getDataValuesForDataSet(dataSetUid: String, bundle: AggregatedDataCallBundle): List<DataValue>
-    suspend fun postDataValues(dataValueSet: DataValueSet): Result<DataValueImportSummary, D2Error>
-    suspend fun postDataValuesWebResponse(
-        dataValueSet: DataValueSet,
-    ): Result<DataValueImportSummaryWebResponse, D2Error>
+    fun insertSourceDataSet(builder: DataValue.Builder, sourceDataSet: String?): DataValue.Builder {
+        return builder.sourceDataSet(sourceDataSet)
+    }
 }

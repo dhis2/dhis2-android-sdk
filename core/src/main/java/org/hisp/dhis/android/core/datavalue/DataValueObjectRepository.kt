@@ -49,6 +49,7 @@ class DataValueObjectRepository internal constructor(
     private val dataElement: String,
     private val categoryOptionCombo: String,
     private val attributeOptionCombo: String,
+    private val sourceDataSet: String? = null,
 ) : ReadWriteWithValueObjectRepositoryImpl<DataValue, DataValueObjectRepository>(
     store,
     childrenAppenders,
@@ -63,6 +64,7 @@ class DataValueObjectRepository internal constructor(
             dataElement,
             categoryOptionCombo,
             attributeOptionCombo,
+            sourceDataSet,
         )
     },
 ),
@@ -115,11 +117,11 @@ class DataValueObjectRepository internal constructor(
     private fun setBuilder(dataValue: DataValue? = null): DataValue.Builder {
         val date = Date()
         return if (dataValue != null) {
-            val state =
-                if (dataValue.syncState() === State.TO_POST) State.TO_POST else State.TO_UPDATE
+            val state = if (dataValue.syncState() === State.TO_POST) State.TO_POST else State.TO_UPDATE
             dataValue.toBuilder()
                 .syncState(state)
                 .lastUpdated(date)
+                .sourceDataSet(sourceDataSet ?: dataValue.sourceDataSet())
         } else {
             DataValue.builder()
                 .syncState(State.TO_POST)
@@ -131,6 +133,7 @@ class DataValueObjectRepository internal constructor(
                 .dataElement(dataElement)
                 .categoryOptionCombo(categoryOptionCombo)
                 .attributeOptionCombo(attributeOptionCombo)
+                .sourceDataSet(sourceDataSet)
                 .deleted(false)
         }
     }

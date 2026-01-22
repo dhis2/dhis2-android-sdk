@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.datavalue.DataValueSetDTO
 import org.junit.Test
 
-class DataValueSetShould : CoreObjectShould("datavalue/data_values.json") {
+class DataValueSetShould : CoreObjectShould("datavalue/data_values_lyLU2wR22tC.json") {
     @Test
     override fun map_from_json_string() {
         deserialize(DataValueSetDTO.serializer()).toDomain()

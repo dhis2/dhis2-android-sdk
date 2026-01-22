@@ -30,7 +30,12 @@ package org.hisp.dhis.android.testapp.datavalue
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.datavalue.DataValueInternalAccessor
+import org.hisp.dhis.android.core.datavalue.LegacyDataValueApi
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Assert.fail
 import org.junit.Test
 
 class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
@@ -70,7 +75,7 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
             .eq("DiszpKrYNg8")
             .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(7)
+        assertThat(dataValues.size).isEqualTo(6)
     }
 
     @Test
@@ -80,7 +85,7 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
             .eq("Gmbgme7z9BF")
             .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(8)
+        assertThat(dataValues.size).isEqualTo(7)
     }
 
     @Test
@@ -176,7 +181,7 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
             .byDataSetUid("TaMAefItzgt")
             .blockingGet()
 
-        assertThat(dataValues.size).isEqualTo(1)
+        assertThat(dataValues.size).isEqualTo(2)
     }
 
     @Test
@@ -188,9 +193,103 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
                 "g9eOBujte1U",
                 "Gmbgme7z9BF",
                 "bRowv6yZOF2",
+                "lyLU2wR22tC",
             )
 
         assertThat(objectRepository.blockingExists()).isTrue()
         assertThat(objectRepository.blockingGet()!!.value()).isEqualTo("10")
+    }
+
+    @Test
+    fun return_data_value_object_repository_with_wrong_dataset() {
+        // Same parameters as above but with dataSet different than sourceDataSet should exist
+        val objectRepository = d2.dataValueModule().dataValues()
+            .value(
+                "2018",
+                "DiszpKrYNg8",
+                "g9eOBujte1U",
+                "Gmbgme7z9BF",
+                "bRowv6yZOF2",
+                "BfMAe6Itzgt", // DataValue has lyLU2wR22tC as sourceDataSet, not BfMAe6Itzgt
+            )
+
+        assertThat(objectRepository.blockingExists()).isTrue()
+    }
+
+    @Test
+    fun create_data_value_with_dataset() {
+        val objectRepository = d2.dataValueModule().dataValues()
+            .value(
+                "201908",
+                "g8upMTyEZGZ",
+                "g9eOBujte1U",
+                "Gmbgme7z9BF",
+                "bRowv6yZOF2",
+                "lyLU2wR22tC",
+            )
+
+        assertThat(objectRepository.blockingExists()).isFalse()
+
+        objectRepository.blockingSet("test_value")
+
+        assertThat(objectRepository.blockingExists()).isTrue()
+        val dataValue = objectRepository.blockingGet()!!
+        assertThat(dataValue.value()).isEqualTo("test_value")
+        assertThat(DataValueInternalAccessor.accessSourceDataSet(dataValue)).isEqualTo("lyLU2wR22tC")
+        assertThat(dataValue.syncState()).isEqualTo(State.TO_POST)
+
+        // Cleanup
+        objectRepository.blockingDelete()
+        assertThat(objectRepository.blockingExists()).isFalse()
+    }
+
+    @Test
+    @OptIn(LegacyDataValueApi::class)
+    @Suppress("DEPRECATION")
+    fun deprecated_value_method_assigns_dataset_automatically() {
+        val objectRepository = d2.dataValueModule().dataValues()
+            .value(
+                "201906",
+                "DiszpKrYNg8",
+                "g9eOBujte1U",
+                "Gmbgme7z9BF",
+                "Gmbgme7z9BF",
+            )
+
+        assertThat(objectRepository.blockingExists()).isFalse()
+
+        objectRepository.blockingSet("auto_dataset_test")
+
+        assertThat(objectRepository.blockingExists()).isTrue()
+        val dataValue = objectRepository.blockingGet()!!
+        assertThat(dataValue.value()).isEqualTo("auto_dataset_test")
+
+        // First dataSet alphabetically: BfMAe6Itzgt
+        assertThat(DataValueInternalAccessor.accessSourceDataSet(dataValue)).isNotNull()
+        assertThat(DataValueInternalAccessor.accessSourceDataSet(dataValue)).isEqualTo("BfMAe6Itzgt")
+
+        // Cleanup
+        objectRepository.blockingDelete()
+        assertThat(objectRepository.blockingExists()).isFalse()
+    }
+
+    @Test
+    @OptIn(LegacyDataValueApi::class)
+    @Suppress("DEPRECATION")
+    fun deprecated_value_method_throws_error_when_no_valid_dataset_found() {
+        try {
+            d2.dataValueModule().dataValues()
+                .value(
+                    "202001",
+                    "DiszpKrYNg8",
+                    "nonExistentDataElement",
+                    "Gmbgme7z9BF",
+                    "Gmbgme7z9BF",
+                )
+            fail("Should throw D2Error when no valid DataSet is found")
+        } catch (e: D2Error) {
+            assertThat(e.errorCode()).isEqualTo(D2ErrorCode.INVALID_CONFIGURATION)
+            assertThat(e.errorDescription()).contains("No valid DataSet found")
+        }
     }
 }

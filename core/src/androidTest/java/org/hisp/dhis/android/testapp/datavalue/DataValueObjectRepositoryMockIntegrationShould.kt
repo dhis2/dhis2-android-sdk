@@ -31,6 +31,7 @@ import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.datavalue.DataValueInternalAccessor
 import org.hisp.dhis.android.core.datavalue.DataValueObjectRepository
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -121,6 +122,7 @@ class DataValueObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
                     "no_data_element",
                     "no_category",
                     "no_attribute",
+                    "no_data_set",
                 ).blockingExists(),
         ).isFalse()
 
@@ -132,6 +134,7 @@ class DataValueObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
                     "g9eOBujte1U",
                     "Gmbgme7z9BF",
                     "bRowv6yZOF2",
+                    "lyLU2wR22tC",
                 ).blockingExists(),
         ).isTrue()
     }
@@ -156,6 +159,21 @@ class DataValueObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
         assertThat(repository.blockingExists()).isFalse()
     }
 
+    @Test
+    fun preserve_dataset_when_updating_value() = runTest {
+        val repository = objectRepository()
+        repository.blockingSet("initial_value")
+
+        assertThat(repository.blockingGet()!!.value()).isEqualTo("initial_value")
+        assertThat(DataValueInternalAccessor.accessSourceDataSet(repository.blockingGet()!!)).isEqualTo("lyLU2wR22tC")
+
+        repository.blockingSet("updated_value")
+
+        assertThat(repository.blockingGet()!!.value()).isEqualTo("updated_value")
+        assertThat(DataValueInternalAccessor.accessSourceDataSet(repository.blockingGet()!!)).isEqualTo("lyLU2wR22tC")
+        repository.blockingDelete()
+    }
+
     private fun objectRepository(): DataValueObjectRepository {
         return d2.dataValueModule().dataValues()
             .value(
@@ -164,6 +182,7 @@ class DataValueObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
                 "g9eOBujte1U",
                 "Gmbgme7z9BF",
                 "bRowv6yZOF2",
+                "lyLU2wR22tC",
             )
     }
 

@@ -59,7 +59,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
     private fun start(port: Int) {
         try {
             server.start(port)
-        } catch (e: IOException) {
+        } catch (_: IOException) {
             Log.e(MOCKWEBSERVER, "Could not start server")
         }
     }
@@ -67,7 +67,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
     fun shutdown() {
         try {
             server.shutdown()
-        } catch (e: IOException) {
+        } catch (_: IOException) {
             Log.e(MOCKWEBSERVER, "Could not shutdown server")
         }
     }
@@ -271,7 +271,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
                         createMockResponse(NEW_EVENTS_JSON)
 
                     path.startsWith("/api/dataValueSets?") ->
-                        createMockResponse(DATA_VALUES_JSON)
+                        createDataValuesResponse(path)
 
                     path.startsWith("/api/completeDataSetRegistrations?") ->
                         createMockResponse(DATA_SET_COMPLETE_REGISTRATIONS_JSON)
@@ -393,6 +393,17 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
         return createMockResponse(fileName, HttpStatusCode.OK.value)
     }
 
+    private fun createDataValuesResponse(path: String): MockResponse {
+        val dataSetParam = path.substringAfter("dataSet=").substringBefore("&")
+        val jsonFile = when (dataSetParam) {
+            "lyLU2wR22tC" -> DATA_VALUES_LYLUWRTC_JSON
+            "BfMAe6Itzgt" -> DATA_VALUES_BFMAEITZGT_JSON
+            "TaMAefItzgt" -> DATA_VALUES_TAMEFITZGT_JSON
+            else -> DATA_VALUES_EMPTY_JSON
+        }
+        return createMockResponse(jsonFile)
+    }
+
     private fun createMockResponse(fileName: String, code: Int): MockResponse {
         try {
             val body = fileReader.getStringFromFile(fileName)
@@ -401,7 +412,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
             response.setBody(body!!)
             response.setHeader(CONTENT_TYPE, CONTENT_TYPE_JSON)
             return response
-        } catch (e: IOException) {
+        } catch (_: IOException) {
             return MockResponse().setResponseCode(HttpStatusCode.InternalServerError.value)
                 .setBody("Error reading JSON file for MockServer")
         }
@@ -508,7 +519,10 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
         private const val TRACKED_ENTITY_INSTANCES_JSON = "trackedentity/tracked_entity_instances.json"
         private const val NEW_TRACKED_ENTITY_INSTANCES_JSON =
             "trackedentity/new_tracker_importer_tracked_entities.json"
-        private const val DATA_VALUES_JSON = "datavalue/data_values.json"
+        private const val DATA_VALUES_LYLUWRTC_JSON = "datavalue/data_values_lyLU2wR22tC.json"
+        private const val DATA_VALUES_BFMAEITZGT_JSON = "datavalue/data_values_BfMAe6Itzgt.json"
+        private const val DATA_VALUES_TAMEFITZGT_JSON = "datavalue/data_values_TaMAefItzgt.json"
+        private const val DATA_VALUES_EMPTY_JSON = "datavalue/data_values_empty.json"
         private const val TRACKED_ENTITY_IMAGE = "trackedentity/tracked_entity_attribute_value_image.png"
         private const val FILE_RESOURCES =
             "trackedentity/tracked_entity_attribute_value_image_resources.json"

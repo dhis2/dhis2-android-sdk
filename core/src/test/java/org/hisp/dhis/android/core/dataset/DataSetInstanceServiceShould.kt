@@ -245,6 +245,7 @@ class DataSetInstanceServiceShould {
                 "de1",
                 "coc1",
                 attOptionComboUid,
+                dataSetUid,
             ),
         ).thenReturn(dataValueQuery)
 

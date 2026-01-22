@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,19 +26,22 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue.internal
+package org.hisp.dhis.android.core.datavalue
 
-import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataCallBundle
-import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
-import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResponse
-import org.hisp.dhis.android.core.maintenance.D2Error
-
-internal interface DataValueNetworkHandler {
-    suspend fun getDataValuesForDataSet(dataSetUid: String, bundle: AggregatedDataCallBundle): List<DataValue>
-    suspend fun postDataValues(dataValueSet: DataValueSet): Result<DataValueImportSummary, D2Error>
-    suspend fun postDataValuesWebResponse(
-        dataValueSet: DataValueSet,
-    ): Result<DataValueImportSummaryWebResponse, D2Error>
-}
+/**
+ * Marks a DataValue API that does not require an explicit dataSet parameter.
+ *
+ * Starting from DHIS2 v43, the dataSet parameter is mandatory for DataValue operations.
+ * Using APIs without explicit dataSet may cause issues on v43+ servers.
+ *
+ * To use these APIs, you must explicitly opt-in by adding @OptIn(LegacyDataValueApi::class)
+ * to your code, acknowledging that you understand the implications.
+ */
+@RequiresOptIn(
+    message = "This API does not require explicit dataSet. For DHIS2 v43+, use the version " +
+        "with dataSet parameter. Add @OptIn(LegacyDataValueApi::class) if you understand the implications.",
+    level = RequiresOptIn.Level.WARNING,
+)
+@Retention(AnnotationRetention.BINARY)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
+annotation class LegacyDataValueApi

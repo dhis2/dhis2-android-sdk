@@ -82,11 +82,12 @@ class UserDisabledMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueab
 
     private fun addDummyData() {
         d2.dataValueModule().dataValues().value(
-            "20191021",
+            "201906",
             "DiszpKrYNg8",
-            "Ok9OQpitjQr",
-            "DwrQJzeChWp",
-            "DwrQJzeChWp",
+            "g9eOBujte1U",
+            "Gmbgme7z9BF",
+            "bRowv6yZOF2",
+            "lyLU2wR22tC",
         ).blockingSet("30")
     }
 }

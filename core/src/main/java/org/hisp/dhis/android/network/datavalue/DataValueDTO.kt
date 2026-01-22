@@ -31,6 +31,7 @@ package org.hisp.dhis.android.network.datavalue
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.datavalue.DataValueInternalAccessor
 import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
 
 @Serializable
@@ -49,21 +50,24 @@ internal data class DataValueDTO(
     val followup: Boolean?,
 ) : BaseDeletableDataObjectDTO {
 
-    fun toDomain(): DataValue {
-        return DataValue.builder().apply {
+    @Suppress("ComplexMethod")
+    fun toDomain(sourceDataSet: String?): DataValue {
+        val builder = DataValue.builder().apply {
             deleted?.let { deleted(it) }
-            dataElement.let { dataElement(it) }
-            period.let { period(it) }
-            orgUnit.let { organisationUnit(it) }
-            categoryOptionCombo.let { categoryOptionCombo(it) }
-            attributeOptionCombo.let { attributeOptionCombo(it) }
+            dataElement(dataElement)
+            period(period)
+            organisationUnit(orgUnit)
+            categoryOptionCombo(categoryOptionCombo)
+            attributeOptionCombo(attributeOptionCombo)
             value?.let { value(it) }
             storedBy?.let { storedBy(it) }
             created?.let { created(DateUtils.DATE_FORMAT.parse(it)) }
             lastUpdated?.let { lastUpdated(DateUtils.DATE_FORMAT.parse(it)) }
             comment?.let { comment(it) }
             followup?.let { followUp(it) }
-        }.build()
+        }
+        sourceDataSet?.let { DataValueInternalAccessor.insertSourceDataSet(builder, it) }
+        return builder.build()
     }
 }
 

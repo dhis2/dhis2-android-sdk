@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManage
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.mockwebserver.Dhis2MockServer
-import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Assert
@@ -125,7 +124,7 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
             val accountList = d2.userModule().accountManager().getAccounts()
             val account = accountList.find { it.username() == user1 }
             assertThat(account).isNull()
-        } catch (e: D2Error) {
+        } catch (_: D2Error) {
             Assert.fail("Should not throw a D2Error")
         }
 
@@ -148,7 +147,7 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
             val accountList = d2.userModule().accountManager().getAccounts()
             val account = accountList.find { it.username() == user1 }
             assertThat(account).isNotNull()
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             Assert.fail("Should throw a D2Error")
         }
 
@@ -331,13 +330,26 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
     }
 
     private fun addDataValue() {
-        val period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodTypeAndDate(PeriodType.Yearly, Date())
+        val dataSet = d2.dataSetModule().dataSets().withDataSetElements().one().blockingGet()!!
+        val dataSetElement = dataSet.dataSetElements()!!.first()
+        val period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodTypeAndDate(
+            dataSet.periodType()!!,
+            Date(),
+        )
         val orgunit = d2.organisationUnitModule().organisationUnits().one().blockingGet()!!
-        val coc = d2.categoryModule().categoryOptionCombos().one().blockingGet()!!
-        val dataElement = d2.dataElementModule().dataElements().one().blockingGet()!!
+        val coc = d2.categoryModule().categoryOptionCombos()
+            .byCategoryComboUid().eq(dataSetElement.categoryCombo()!!.uid())
+            .one().blockingGet()!!
 
         d2.dataValueModule().dataValues()
-            .value(period.periodId()!!, orgunit.uid(), dataElement.uid(), coc.uid(), coc.uid())
+            .value(
+                period.periodId()!!,
+                orgunit.uid(),
+                dataSetElement.dataElement().uid(),
+                coc.uid(),
+                coc.uid(),
+                dataSet.uid(),
+            )
             .blockingSet("45")
     }
 

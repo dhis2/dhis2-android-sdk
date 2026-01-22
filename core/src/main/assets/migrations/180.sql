@@ -1,3 +1,16 @@
+# v1.14.0 migrations
+
+# Add new columns for operators on TrackedEntityAttribute table (ANDROSDK-2232)
+
 ALTER TABLE TrackedEntityAttribute ADD COLUMN preferredSearchOperator TEXT;
 ALTER TABLE TrackedEntityAttribute ADD COLUMN blockedSearchOperators TEXT;
 ALTER TABLE TrackedEntityAttribute ADD COLUMN minCharactersToSearch INTEGER;
+
+
+# Add and populate sourceDataSet column to DataValue table (ANDROSDK-2219)
+
+ALTER TABLE DataValue RENAME TO DataValue_Old;
+CREATE TABLE DataValue(dataElement TEXT NOT NULL, period TEXT NOT NULL, organisationUnit TEXT NOT NULL, categoryOptionCombo TEXT NOT NULL, attributeOptionCombo TEXT NOT NULL, sourceDataSet TEXT, value TEXT, storedBy TEXT, created TEXT, lastUpdated TEXT, comment TEXT, followUp INTEGER, syncState TEXT, deleted INTEGER, PRIMARY KEY(dataElement, period, organisationUnit, categoryOptionCombo, attributeOptionCombo), FOREIGN KEY(dataElement) REFERENCES DataElement(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(period) REFERENCES Period(periodId) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(organisationUnit) REFERENCES OrganisationUnit(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(categoryOptionCombo) REFERENCES CategoryOptionCombo(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(attributeOptionCombo) REFERENCES CategoryOptionCombo(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(sourceDataSet) REFERENCES DataSet(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO DataValue(dataElement, period, organisationUnit, categoryOptionCombo, attributeOptionCombo, sourceDataSet, value, storedBy, created, lastUpdated, comment, followUp, syncState, deleted) SELECT dataElement, period, organisationUnit, categoryOptionCombo, attributeOptionCombo, (SELECT ds.uid FROM DataSet ds INNER JOIN DataSetDataElementLink dsdel ON dsdel.dataSet = ds.uid INNER JOIN DataElement de ON de.uid = dsdel.dataElement INNER JOIN DataSetOrganisationUnitLink dsoul ON dsoul.dataSet = ds.uid INNER JOIN CategoryOptionCombo aoc ON aoc.categoryCombo = ds.categoryCombo INNER JOIN CategoryOptionCombo coc ON coc.categoryCombo = COALESCE(dsdel.categoryCombo, de.categoryCombo) INNER JOIN Period p ON p.periodType = ds.periodType WHERE dsdel.dataElement = DataValue_Old.dataElement AND dsoul.organisationUnit = DataValue_Old.organisationUnit AND aoc.uid = DataValue_Old.attributeOptionCombo AND coc.uid = DataValue_Old.categoryOptionCombo AND p.periodId = DataValue_Old.period ORDER BY ds.uid ASC LIMIT 1) AS sourceDataSet, value, storedBy, created, lastUpdated, comment, followUp, syncState, deleted FROM DataValue_Old;
+DROP TABLE IF EXISTS DataValue_Old;
+

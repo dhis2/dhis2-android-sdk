@@ -31,12 +31,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
-import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper.errorIfOnline
 import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper.forcedOrOwn
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
+import org.hisp.dhis.android.core.datavalue.DataValueInternalAccessor
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
@@ -59,32 +58,66 @@ internal class DataValuePostCall(
         val result = fileResourcePostCall.uploadFileResource(dataValues)
         val validDataValues = result.dataValues
 
-        markObjectsAs(validDataValues, State.UPLOADING)
         try {
-            val dataValueSet = DataValueSet(validDataValues)
-            executePostCall(dataValueSet).fold(
-                onSuccess = {
-                    dataValueImportHandler.handleImportSummary(dataValueSet, it)
-                },
-                onFailure = {
-                    throw it
-                },
-            )
-        } catch (e: D2Error) {
-            markObjectsAs(validDataValues, errorIfOnline(e))
-            throw e
+            if (versionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_39)) {
+                uploadByDataSet(validDataValues)
+            } else {
+                uploadLegacy(validDataValues)
+            }
         } finally {
             fileResourcePostCall.updateFileResourceStates(result.fileResources)
         }
         emit(progressManager.increaseProgress(DataValue::class.java, true))
     }
 
-    private suspend fun executePostCall(dataValueSet: DataValueSet): Result<DataValueImportSummary, D2Error> {
-        return if (versionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_38)) {
+    private suspend fun uploadByDataSet(dataValues: List<DataValue>) {
+        var lastError: D2Error? = null
+
+        dataValues
+            .groupBy { DataValueInternalAccessor.accessSourceDataSet(it) }
+            .forEach { (dataSetUid, values) ->
+                lastError = uploadDataValueSet(DataValueSet(dataValues = values, dataSet = dataSetUid)) ?: lastError
+            }
+
+        lastError?.let { throw it }
+    }
+
+    private suspend fun uploadDataValueSet(dataValueSet: DataValueSet): D2Error? {
+        return try {
+            markObjectsAs(dataValueSet.dataValues, State.UPLOADING)
+
+            var error: D2Error? = null
+            networkHandler.postDataValuesWebResponse(dataValueSet).fold(
+                onSuccess = { dataValueImportHandler.handleImportSummary(dataValueSet, it.response) },
+                onFailure = {
+                    markObjectsAs(dataValueSet.dataValues, errorIfOnline(it))
+                    error = it
+                },
+            )
+            error
+        } catch (e: D2Error) {
+            markObjectsAs(dataValueSet.dataValues, errorIfOnline(e))
+            e
+        }
+    }
+
+    private suspend fun uploadLegacy(dataValues: List<DataValue>) {
+        markObjectsAs(dataValues, State.UPLOADING)
+        val dataValueSet = DataValueSet(dataValues)
+
+        val result = if (versionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_38)) {
             networkHandler.postDataValuesWebResponse(dataValueSet).map { it.response }
         } else {
             networkHandler.postDataValues(dataValueSet)
         }
+
+        result.fold(
+            onSuccess = { dataValueImportHandler.handleImportSummary(dataValueSet, it) },
+            onFailure = {
+                markObjectsAs(dataValues, errorIfOnline(it))
+                throw it
+            },
+        )
     }
 
     private suspend fun markObjectsAs(dataValues: Collection<DataValue>, forcedState: State?) {

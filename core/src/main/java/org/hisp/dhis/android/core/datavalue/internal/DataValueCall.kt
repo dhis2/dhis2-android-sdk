@@ -40,8 +40,10 @@ internal class DataValueCall(
 ) : QueryCall<DataValue, DataValueQuery> {
 
     override suspend fun download(query: DataValueQuery): List<DataValue> {
-        return apiDownloader.downloadListAsCoroutine(handler) {
-            networkHandler.getDataValues(query.bundle)
+        return query.bundle.dataSets.mapNotNull { it.uid() }.flatMap { dataSetUid ->
+            apiDownloader.downloadListAsCoroutine(handler) {
+                networkHandler.getDataValuesForDataSet(dataSetUid, query.bundle)
+            }
         }
     }
 }

@@ -57,6 +57,9 @@ public abstract class DataValue extends BaseDeletableDataObject {
     public abstract String attributeOptionCombo();
 
     @Nullable
+    abstract String sourceDataSet();
+
+    @Nullable
     public abstract String value();
 
     @Nullable
@@ -97,6 +100,8 @@ public abstract class DataValue extends BaseDeletableDataObject {
         public abstract DataValue.Builder categoryOptionCombo(@NonNull String categoryOptionCombo);
 
         public abstract DataValue.Builder attributeOptionCombo(@NonNull String attributeOptionCombo);
+
+        abstract DataValue.Builder sourceDataSet(@Nullable String sourceDataSet);
 
         public abstract DataValue.Builder value(@Nullable String value);
 

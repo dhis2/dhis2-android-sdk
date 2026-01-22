@@ -30,7 +30,7 @@ package org.hisp.dhis.android.network.trackedentityattribute
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.SearchOperator
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.TrackerSearchOperator
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
@@ -103,8 +103,8 @@ internal data class TrackedEntityAttributeDTO(
             legendSets?.let { legendSets(it.map { it.toDomain() }) }
             formName?.let { formName(it) }
             displayFormName?.let { displayFormName(it) }
-            preferredSearchOperator?.let { preferredSearchOperator(SearchOperator.valueOf(it)) }
-            blockedSearchOperators?.let { blockedSearchOperators(it.map { op -> SearchOperator.valueOf(op) }) }
+            preferredSearchOperator?.let { preferredSearchOperator(TrackerSearchOperator.valueOf(it)) }
+            blockedSearchOperators?.let { blockedSearchOperators(it.map { op -> TrackerSearchOperator.valueOf(op) }) }
             minCharactersToSearch?.let { minCharactersToSearch(it) }
         }.build()
     }

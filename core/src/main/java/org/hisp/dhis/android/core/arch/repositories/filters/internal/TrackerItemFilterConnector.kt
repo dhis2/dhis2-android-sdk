@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOpe
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
 import org.hisp.dhis.android.core.common.FilterOperatorsHelper
 
-class ItemFilterConnector<R : BaseRepository> internal constructor(
+class TrackerItemFilterConnector<R : BaseRepository> internal constructor(
     private val key: String,
     private val repositoryFactory: ScopedRepositoryFilterFactory<R, RepositoryScopeFilterItem>,
 ) {

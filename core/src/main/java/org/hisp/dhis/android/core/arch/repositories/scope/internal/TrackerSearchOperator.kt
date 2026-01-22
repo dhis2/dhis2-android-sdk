@@ -28,6 +28,6 @@
 
 package org.hisp.dhis.android.core.arch.repositories.scope.internal
 
-enum class SearchOperator {
+enum class TrackerSearchOperator {
     LIKE, EQ, SW, EW
 }

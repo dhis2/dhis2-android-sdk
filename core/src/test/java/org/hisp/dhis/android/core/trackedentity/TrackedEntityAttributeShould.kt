@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.SearchOperator
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.TrackerSearchOperator
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.CoreObjectShould
@@ -60,8 +60,8 @@ class TrackedEntityAttributeShould : CoreObjectShould("trackedentity/tracked_ent
         assertThat(trackedEntityAttribute.displayInListNoProgram()).isFalse()
         assertThat(trackedEntityAttribute.displayOnVisitSchedule()).isFalse()
         assertThat(trackedEntityAttribute.minCharactersToSearch()).isEqualTo(2)
-        assertThat(trackedEntityAttribute.preferredSearchOperator()).isEqualTo(SearchOperator.SW)
-        assertThat(trackedEntityAttribute.blockedSearchOperators()).contains(SearchOperator.LIKE)
+        assertThat(trackedEntityAttribute.preferredSearchOperator()).isEqualTo(TrackerSearchOperator.SW)
+        assertThat(trackedEntityAttribute.blockedSearchOperators()).contains(TrackerSearchOperator.LIKE)
         assertThat(trackedEntityAttribute.confidential()).isFalse()
         assertThat(trackedEntityAttribute.generated()).isFalse()
         assertThat(trackedEntityAttribute.aggregationType()).isEqualTo(AggregationType.DEFAULT)

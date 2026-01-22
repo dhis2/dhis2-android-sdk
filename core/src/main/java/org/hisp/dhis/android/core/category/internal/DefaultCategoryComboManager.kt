@@ -29,14 +29,13 @@ package org.hisp.dhis.android.core.category.internal
 
 import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.category.CategoryCombo
+import org.hisp.dhis.android.core.category.CategoryComboCollectionRepository
 import org.hisp.dhis.android.core.category.CategoryComboInternalAccessor
-import org.hisp.dhis.android.persistence.category.CategoryComboTableInfo
-import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DefaultCategoryComboManager(
-    private val categoryComboStore: CategoryComboStore,
+    private val categoryComboCollectionRepository: CategoryComboCollectionRepository,
     private val networkHandler: CategoryComboNetworkHandler,
 ) {
     private var defaultCategoryComboUid: String? = null
@@ -69,13 +68,15 @@ internal class DefaultCategoryComboManager(
         networkHandler.getDefaultCategoryCombo()?.let { setDefaults(it) }
     }
 
-    private suspend fun loadDefaultsFromDatabase() {
+    private fun loadDefaultsFromDatabase() {
         if (defaultCategoryComboUid != null) return
 
-        val whereClause = WhereClauseBuilder()
-            .appendKeyNumberValue(CategoryComboTableInfo.Columns.IS_DEFAULT, 1)
-            .build()
-
-        categoryComboStore.selectOneWhere(whereClause)?.let { setDefaults(it) }
+        categoryComboCollectionRepository
+            .byIsDefault().eq(true)
+            .withCategories()
+            .withCategoryOptionCombos()
+            .one()
+            .blockingGet()
+            ?.let { setDefaults(it) }
     }
 }

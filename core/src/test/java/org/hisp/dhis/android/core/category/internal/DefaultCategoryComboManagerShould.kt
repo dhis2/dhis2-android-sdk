@@ -29,13 +29,15 @@ package org.hisp.dhis.android.core.category.internal
 
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyOneObjectRepositoryFinalImpl
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.CategoryCombo
+import org.hisp.dhis.android.core.category.CategoryComboCollectionRepository
 import org.hisp.dhis.android.core.category.CategoryComboInternalAccessor.accessCategoryOptionCombos
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
 import org.junit.Before
 import org.junit.Test
-import org.mockito.kotlin.any
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
@@ -44,7 +46,9 @@ import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
 
 class DefaultCategoryComboManagerShould {
-    private val categoryComboStore: CategoryComboStore = mock()
+    private val categoryComboCollectionRepository: CategoryComboCollectionRepository = mock()
+    private val categoryComboRepository: ReadOnlyOneObjectRepositoryFinalImpl<CategoryCombo> = mock()
+    private val filterConnector: BooleanFilterConnector<CategoryComboCollectionRepository> = mock()
     private val networkHandler: CategoryComboNetworkHandler = mock()
 
     private val comboUid = "defaultComboUid"
@@ -64,9 +68,16 @@ class DefaultCategoryComboManagerShould {
         whenever(category.uid()).doReturn(categoryUid)
         whenever(accessCategoryOptionCombos(categoryCombo)).doReturn(listOf(categoryOptionCombo))
         whenever(categoryCombo.categories()).doReturn(listOf(category))
+        whenever(categoryComboCollectionRepository.byIsDefault()).doReturn(filterConnector)
+        whenever(filterConnector.eq(true)).doReturn(categoryComboCollectionRepository)
+        whenever(categoryComboCollectionRepository.withCategories()).doReturn(categoryComboCollectionRepository)
+        whenever(categoryComboCollectionRepository.withCategoryOptionCombos())
+            .doReturn(categoryComboCollectionRepository)
+        whenever(categoryComboCollectionRepository.one()).doReturn(categoryComboRepository)
+        whenever(categoryComboRepository.blockingGet()).doReturn(categoryCombo)
 
         manager = DefaultCategoryComboManager(
-            categoryComboStore,
+            categoryComboCollectionRepository,
             networkHandler,
         )
     }
@@ -78,7 +89,7 @@ class DefaultCategoryComboManagerShould {
         val result = manager.getDefaultCategoryComboUid()
 
         assertThat(result).isEqualTo(comboUid)
-        verify(categoryComboStore, never()).selectOneWhere(any())
+        verify(categoryComboRepository, never()).blockingGet()
         verifyNoMoreInteractions(networkHandler)
     }
 
@@ -90,29 +101,29 @@ class DefaultCategoryComboManagerShould {
         assertThat(manager.getDefaultCategoryOptionComboUid()).isEqualTo(optionComboUid)
         assertThat(manager.getDefaultCategoryUid()).isEqualTo(categoryUid)
 
-        verify(categoryComboStore, never()).selectOneWhere(any())
+        verify(categoryComboRepository, never()).blockingGet()
         verifyNoMoreInteractions(networkHandler)
     }
 
     @Test
     fun query_database_when_cache_is_empty() = runTest {
-        whenever(categoryComboStore.selectOneWhere(any())).doReturn(categoryCombo)
+        whenever(categoryComboRepository.blockingGet()).doReturn(categoryCombo)
 
         val result = manager.getDefaultCategoryComboUid()
 
         assertThat(result).isEqualTo(comboUid)
-        verify(categoryComboStore).selectOneWhere(any())
+        verify(categoryComboRepository).blockingGet()
         verifyNoMoreInteractions(networkHandler)
     }
 
     @Test
     fun return_null_when_not_in_database() = runTest {
-        whenever(categoryComboStore.selectOneWhere(any())).doReturn(null)
+        whenever(categoryComboRepository.blockingGet()).doReturn(null)
 
         val result = manager.getDefaultCategoryComboUid()
 
         assertThat(result).isNull()
-        verify(categoryComboStore).selectOneWhere(any())
+        verify(categoryComboRepository).blockingGet()
         verifyNoMoreInteractions(networkHandler)
     }
 
@@ -143,12 +154,12 @@ class DefaultCategoryComboManagerShould {
 
         manager.clearCache()
 
-        whenever(categoryComboStore.selectOneWhere(any())).doReturn(null)
+        whenever(categoryComboRepository.blockingGet()).doReturn(null)
 
         val result = manager.getDefaultCategoryComboUid()
 
         assertThat(result).isNull()
-        verify(categoryComboStore).selectOneWhere(any())
+        verify(categoryComboRepository).blockingGet()
     }
 
     @Test

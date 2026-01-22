@@ -32,6 +32,14 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 
 internal interface OAuth2NetworkHandler {
+    fun buildAuthorizationUrl(
+        serverUrl: String,
+        clientId: String,
+        state: String,
+        codeChallenge: String,
+        scope: String,
+    ): String
+
     suspend fun exchangeCodeForToken(
         code: String,
         redirectUri: String,

@@ -27,11 +27,13 @@
  */
 package org.hisp.dhis.android.network.oauth2
 
+import android.os.Build
 import kotlinx.serialization.json.Json
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.user.oauth2.OAuth2Config
 import org.hisp.dhis.android.core.user.oauth2.internal.DCRNetworkHandler
 import org.koin.core.annotation.Singleton
 
@@ -43,6 +45,23 @@ internal class DCRNetworkHandlerImpl(
 
     private val service = DCRService(httpClient)
     private val json = Json { ignoreUnknownKeys = true }
+
+    override fun buildEnrollmentUrl(serverUrl: String, state: String): String {
+        val deviceVersion = Build.VERSION.RELEASE
+        val deviceType = "android"
+        val deviceAttestation = "android_sdk_${Build.VERSION.SDK_INT}"
+
+        return "$serverUrl/api/auth/enrollDevice" +
+                "?deviceVersion=$deviceVersion" +
+                "&deviceType=$deviceType" +
+                "&deviceAttestation=$deviceAttestation" +
+                "&redirectUri=${OAuth2Config.DEFAULT_REDIRECT_URI}" +
+                "&state=$state"
+    }
+
+    override fun getDeviceId(): String {
+        return Build.MANUFACTURER + "_" + Build.MODEL + "_" + Build.DEVICE
+    }
 
     override suspend fun registerClient(
         iat: String,

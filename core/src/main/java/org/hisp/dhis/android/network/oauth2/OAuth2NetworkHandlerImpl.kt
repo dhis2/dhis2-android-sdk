@@ -27,10 +27,12 @@
  */
 package org.hisp.dhis.android.network.oauth2
 
+import android.net.Uri
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.user.oauth2.OAuth2Config
 import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2NetworkHandler
 import org.koin.core.annotation.Singleton
@@ -42,6 +44,25 @@ internal class OAuth2NetworkHandlerImpl(
 ) : OAuth2NetworkHandler {
 
     private val service = OAuth2Service(httpClient)
+
+    override fun buildAuthorizationUrl(
+        serverUrl: String,
+        clientId: String,
+        state: String,
+        codeChallenge: String,
+        scope: String,
+    ): String {
+        return Uri.parse("$serverUrl/oauth2/authorize").buildUpon()
+            .appendQueryParameter("client_id", clientId)
+            .appendQueryParameter("redirect_uri", OAuth2Config.DEFAULT_REDIRECT_URI)
+            .appendQueryParameter("response_type", "code")
+            .appendQueryParameter("scope", scope)
+            .appendQueryParameter("state", state)
+            .appendQueryParameter("code_challenge", codeChallenge)
+            .appendQueryParameter("code_challenge_method", "S256")
+            .build()
+            .toString()
+    }
 
     override suspend fun exchangeCodeForToken(
         code: String,

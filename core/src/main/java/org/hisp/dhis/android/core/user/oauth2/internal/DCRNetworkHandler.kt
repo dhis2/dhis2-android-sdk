@@ -31,6 +31,10 @@ import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
 
 internal interface DCRNetworkHandler {
+    fun buildEnrollmentUrl(serverUrl: String, state: String): String
+
+    fun getDeviceId(): String
+
     suspend fun registerClient(
         iat: String,
         clientName: String,

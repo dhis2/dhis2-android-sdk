@@ -321,8 +321,7 @@ internal class DataSetInstanceServiceImpl(
                     val openingDate = dataInputPeriod.openingDate()
                     val closingDate = dataInputPeriod.closingDate()
 
-                    openingDate == null && closingDate == null ||
-                        (openingDate?.let { !currentDate.before(it) } ?: true) &&
+                    (openingDate?.let { !currentDate.before(it) } ?: true) &&
                         (closingDate?.let { !currentDate.after(it) } ?: true)
                 }
             } ?: false

@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoCall
 import org.hisp.dhis.android.core.user.AccountDeletionReason
 import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -193,5 +194,39 @@ internal class LogInCall(
     private fun getOpenIdConnectCredentials(user: User, serverUrl: String, openIDConnectState: AuthState): Credentials {
         val username = user.username()!!
         return Credentials(username, serverUrl, null, openIDConnectState)
+    }
+
+    @Throws(D2Error::class)
+    suspend fun logInOAuth2(serverUrl: String, oauth2State: OAuth2State): User {
+        val trimmedServerUrl = ServerUrlParser.trimAndRemoveTrailingSlash(serverUrl)
+
+        val parsedServerUrl = ServerUrlParser.parse(trimmedServerUrl)
+        ServerURLWrapper.setServerUrl(parsedServerUrl.toString())
+
+        var credentials: Credentials? = null
+        return try {
+            val user = coroutineAPICallExecutor.wrap(errorCatcher = apiCallErrorCatcher) {
+                networkHandler.authenticate(
+                    "Bearer ${oauth2State.accessToken}",
+                )
+            }.getOrThrow()
+            credentials = getOAuth2Credentials(user, trimmedServerUrl!!, oauth2State)
+            loginOnline(user, credentials)
+        } catch (d2Error: D2Error) {
+            throw handleOnlineException(d2Error, credentials)
+        }
+    }
+
+    private fun getOAuth2Credentials(
+        user: User,
+        serverUrl: String,
+        oauth2State: OAuth2State,
+    ): Credentials {
+        val username = user.username()!!
+        return Credentials(username, serverUrl, null, null, oauth2State)
+    }
+
+    fun isUserLoggedIn(): Boolean {
+        return credentialsSecureStore.get() != null
     }
 }

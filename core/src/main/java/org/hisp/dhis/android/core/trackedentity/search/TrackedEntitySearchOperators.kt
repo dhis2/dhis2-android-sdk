@@ -31,10 +31,10 @@ package org.hisp.dhis.android.core.trackedentity.search
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BoolFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.TrackerItemFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.PeriodFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.TrackerItemFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem

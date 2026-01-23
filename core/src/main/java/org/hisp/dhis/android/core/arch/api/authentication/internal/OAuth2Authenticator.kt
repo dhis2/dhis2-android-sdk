@@ -42,7 +42,7 @@ private const val UNAUTHORIZED = 401
 @Singleton
 internal class OAuth2Authenticator(
     private val credentialsSecureStore: CredentialsSecureStore,
-    private val tokenRefresher: OAuth2TokenRefresher,
+    private val tokenRefresher: Lazy<OAuth2TokenRefresher>,
     private val userIdHelper: UserIdAuthenticatorHelper,
     private val logoutHandler: OAuth2LogoutHandler,
 ) {
@@ -60,7 +60,7 @@ internal class OAuth2Authenticator(
         if (call.response.status.value == UNAUTHORIZED) {
             val state = credentials.oauth2State
             if (state != null) {
-                val refreshedState = tokenRefresher.refreshToken(state)
+                val refreshedState = tokenRefresher.value.refreshToken(state)
                 if (refreshedState != null) {
                     val updatedCredentials = credentials.copy(oauth2State = refreshedState)
                     credentialsSecureStore.set(updatedCredentials)
@@ -76,7 +76,7 @@ internal class OAuth2Authenticator(
     private suspend fun getUpdatedToken(credentials: Credentials): String {
         val state = credentials.oauth2State!!
         return if (state.needsTokenRefresh()) {
-            val newState = tokenRefresher.refreshToken(state)
+            val newState = tokenRefresher.value.refreshToken(state)
             if (newState != null) {
                 credentialsSecureStore.set(credentials.copy(oauth2State = newState))
                 newState.accessToken!!

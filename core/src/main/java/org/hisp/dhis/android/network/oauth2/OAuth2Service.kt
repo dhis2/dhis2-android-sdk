@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 internal class OAuth2Service(private val client: HttpServiceClient) {
 
     suspend fun exchangeCodeForToken(
+        url: String,
         grantType: String,
         code: String,
         redirectUri: String,
@@ -40,7 +41,7 @@ internal class OAuth2Service(private val client: HttpServiceClient) {
         clientAssertion: String,
     ): TokenResponseDTO {
         return client.post {
-            url("oauth2/token")
+            absoluteUrl(url + "/oauth2/token")
             contentType("x-www-form-urlencoded")
             body(
                 buildFormUrlEncoded(
@@ -59,13 +60,14 @@ internal class OAuth2Service(private val client: HttpServiceClient) {
     }
 
     suspend fun refreshToken(
+        url: String,
         grantType: String,
         refreshToken: String,
         clientId: String,
         clientAssertion: String,
     ): TokenResponseDTO {
         return client.post {
-            url("oauth2/token")
+            absoluteUrl(url + "/oauth2/token")
             contentType("x-www-form-urlencoded")
             body(
                 buildFormUrlEncoded(

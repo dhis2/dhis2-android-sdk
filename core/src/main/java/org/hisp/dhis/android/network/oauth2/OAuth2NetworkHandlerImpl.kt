@@ -65,6 +65,7 @@ internal class OAuth2NetworkHandlerImpl(
     }
 
     override suspend fun exchangeCodeForToken(
+        url: String,
         code: String,
         redirectUri: String,
         clientId: String,
@@ -73,6 +74,7 @@ internal class OAuth2NetworkHandlerImpl(
     ): Result<OAuth2State, D2Error> {
         return coroutineAPICallExecutor.wrap(storeError = false) {
             val response = service.exchangeCodeForToken(
+                url = url,
                 grantType = "authorization_code",
                 code = code,
                 redirectUri = redirectUri,
@@ -93,6 +95,7 @@ internal class OAuth2NetworkHandlerImpl(
     }
 
     override suspend fun refreshToken(
+        url: String,
         refreshToken: String,
         clientId: String,
         keyId: String,
@@ -100,6 +103,7 @@ internal class OAuth2NetworkHandlerImpl(
     ): Result<OAuth2State, D2Error> {
         return coroutineAPICallExecutor.wrap(storeError = false) {
             val response = service.refreshToken(
+                url = url,
                 grantType = "refresh_token",
                 refreshToken = refreshToken,
                 clientId = clientId,

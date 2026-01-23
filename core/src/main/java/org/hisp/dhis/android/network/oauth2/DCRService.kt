@@ -32,11 +32,12 @@ import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 internal class DCRService(private val client: HttpServiceClient) {
 
     suspend fun registerClient(
+        url: String,
         iat: String,
         request: ClientRegistrationRequestDTO,
     ): ClientRegistrationResponseDTO {
         return client.post {
-            url("connect/register")
+            absoluteUrl(url + "/connect/register")
             authorizationHeader("Bearer $iat")
             body(request)
         }

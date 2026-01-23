@@ -41,6 +41,7 @@ internal interface OAuth2NetworkHandler {
     ): String
 
     suspend fun exchangeCodeForToken(
+        url: String,
         code: String,
         redirectUri: String,
         clientId: String,
@@ -49,6 +50,7 @@ internal interface OAuth2NetworkHandler {
     ): Result<OAuth2State, D2Error>
 
     suspend fun refreshToken(
+        url: String,
         refreshToken: String,
         clientId: String,
         keyId: String,

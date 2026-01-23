@@ -36,6 +36,7 @@ internal interface DCRNetworkHandler {
     fun getDeviceId(): String
 
     suspend fun registerClient(
+        url: String,
         iat: String,
         clientName: String,
         redirectUri: String,

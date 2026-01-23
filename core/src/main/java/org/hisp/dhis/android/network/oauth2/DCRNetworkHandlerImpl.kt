@@ -64,6 +64,7 @@ internal class DCRNetworkHandlerImpl(
     }
 
     override suspend fun registerClient(
+        url: String,
         iat: String,
         clientName: String,
         redirectUri: String,
@@ -83,7 +84,7 @@ internal class DCRNetworkHandlerImpl(
                 jwks = json.parseToJsonElement(jwks),
             )
 
-            val response = service.registerClient(iat, request)
+            val response = service.registerClient(url, iat, request)
             response.clientId
         }
     }

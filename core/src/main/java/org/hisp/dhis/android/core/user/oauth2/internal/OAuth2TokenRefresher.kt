@@ -57,6 +57,7 @@ internal class OAuth2TokenRefresher(
             )
 
             val result = oauth2NetworkHandler.refreshToken(
+                url = serverUrl,
                 refreshToken = state.refreshToken,
                 clientId = state.clientId,
                 keyId = state.keyId,

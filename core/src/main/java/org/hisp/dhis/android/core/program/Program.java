@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.program;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -125,7 +126,7 @@ public abstract class Program extends BaseNameableObject
     @Nullable
     public abstract TrackedEntityType trackedEntityType();
 
-    @Nullable
+    @NonNull
     public abstract ObjectWithUid categoryCombo();
 
     public abstract Access access();
@@ -319,7 +320,7 @@ public abstract class Program extends BaseNameableObject
 
         public abstract Builder trackedEntityType(TrackedEntityType trackedEntityType);
 
-        public abstract Builder categoryCombo(ObjectWithUid categoryCombo);
+        public abstract Builder categoryCombo(@NonNull ObjectWithUid categoryCombo);
 
         public abstract Builder access(Access access);
 

@@ -30,7 +30,9 @@ package org.hisp.dhis.android.network.dataset
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
+import org.hisp.dhis.android.core.category.internal.DefaultCategoryComboManager
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.DataSetDisplayOptions
 import org.hisp.dhis.android.core.dataset.DataSetInternalAccessor
@@ -84,10 +86,14 @@ internal data class DataSetDTO(
     val style: ObjectWithStyleDTO?,
 ) : BaseNameableObjectDTO {
     fun toDomain(): DataSet {
+        val domainCategoryCombo = categoryCombo?.toDomain()
+            ?: ObjectWithUidDTO(requireNotNull(koin.get<DefaultCategoryComboManager>().defaultCategoryComboUid) {
+                "Default CategoryCombo not loaded."
+            }).toDomain()
         return DataSet.builder().apply {
             applyBaseNameableFields(this@DataSetDTO)
             periodType?.let { periodType(PeriodType.valueOf(periodType)) }
-            categoryCombo(categoryCombo?.toDomain())
+            categoryCombo(domainCategoryCombo)
             mobile(mobile)
             version(version)
             expiryDays(expiryDays)
@@ -104,7 +110,7 @@ internal data class DataSetDTO(
             workflow(workflow?.toDomain())
             dataSetElements(dataSetElements.map { it.toDomain() })
             indicators(indicators.map { Indicator.builder().uid(it.id).build() })
-            DataSetInternalAccessor.insertSections(this, sections.map { it.toDomain() })
+            DataSetInternalAccessor.insertSections(this, sections.map { it.toDomain(domainCategoryCombo) })
             compulsoryDataElementOperands(compulsoryDataElementOperands.map { it.toDomain() })
             dataInputPeriods(dataInputPeriods.map { it.toDomain(ObjectWithUidDTO(id)) })
             displayOptions(

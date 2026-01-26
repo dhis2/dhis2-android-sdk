@@ -30,6 +30,8 @@ package org.hisp.dhis.android.network.dataelement
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
+import org.hisp.dhis.android.core.category.internal.DefaultCategoryComboManager
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.network.attribute.AttributeValueDTO
@@ -76,7 +78,13 @@ internal data class DataElementDTO(
             domainType(domainType)
             displayFormName(displayFormName)
             optionSet(optionSet?.toDomain())
-            categoryCombo(categoryCombo?.toDomain())
+            categoryCombo(
+                categoryCombo?.toDomain() ?: ObjectWithUidDTO(
+                    requireNotNull(koin.get<DefaultCategoryComboManager>().defaultCategoryComboUid) {
+                        "Default CategoryCombo not loaded."
+                    },
+                ).toDomain(),
+            )
             legendSets(legendSets?.map { it.toDomain() })
             fieldMask(fieldMask)
             attributeValues(attributeValues?.map { it.toDomain() })

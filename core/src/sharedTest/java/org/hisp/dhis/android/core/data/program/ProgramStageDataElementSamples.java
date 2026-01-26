@@ -42,7 +42,10 @@ public class ProgramStageDataElementSamples {
         fillIdentifiableProperties(builder);
         builder
                 .displayInReports(true)
-                .dataElement(DataElement.builder().uid("data_element").build())
+                .dataElement(DataElement.builder()
+                        .uid("data_element")
+                        .categoryCombo(ObjectWithUid.create("category_combo"))
+                        .build())
                 .compulsory(false)
                 .allowProvidedElsewhere(true)
                 .sortOrder(0)

@@ -39,7 +39,7 @@ class DefaultCategoryComboManagerMockIntegrationShould : BaseMockIntegrationTest
         val manager: DefaultCategoryComboManager = koin.get()
         manager.clearCache()
 
-        val defaultCategoryComboUid = manager.getDefaultCategoryComboUid()
+        val defaultCategoryComboUid = manager.defaultCategoryComboUid
 
         assertThat(defaultCategoryComboUid).isEqualTo("p0KPaWEg3cf")
     }
@@ -49,7 +49,7 @@ class DefaultCategoryComboManagerMockIntegrationShould : BaseMockIntegrationTest
         val manager: DefaultCategoryComboManager = koin.get()
         manager.clearCache()
 
-        val defaultCategoryOptionComboUid = manager.getDefaultCategoryOptionComboUid()
+        val defaultCategoryOptionComboUid = manager.defaultCategoryOptionComboUid
 
         assertThat(defaultCategoryOptionComboUid).isEqualTo("bRowv6yZOF2")
     }
@@ -59,7 +59,7 @@ class DefaultCategoryComboManagerMockIntegrationShould : BaseMockIntegrationTest
         val manager: DefaultCategoryComboManager = koin.get()
         manager.clearCache()
 
-        val defaultCategoryUid = manager.getDefaultCategoryUid()
+        val defaultCategoryUid = manager.defaultCategoryUid
 
         assertThat(defaultCategoryUid).isEqualTo("vGs6omsRekv")
     }
@@ -70,8 +70,8 @@ class DefaultCategoryComboManagerMockIntegrationShould : BaseMockIntegrationTest
         manager.clearCache()
 
         // All values should be loaded from database when cache is empty
-        assertThat(manager.getDefaultCategoryComboUid()).isEqualTo("p0KPaWEg3cf")
-        assertThat(manager.getDefaultCategoryOptionComboUid()).isEqualTo("bRowv6yZOF2")
-        assertThat(manager.getDefaultCategoryUid()).isEqualTo("vGs6omsRekv")
+        assertThat(manager.defaultCategoryComboUid).isEqualTo("p0KPaWEg3cf")
+        assertThat(manager.defaultCategoryOptionComboUid).isEqualTo("bRowv6yZOF2")
+        assertThat(manager.defaultCategoryUid).isEqualTo("vGs6omsRekv")
     }
 }

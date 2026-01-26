@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.category.CategoryCombo
 import org.hisp.dhis.android.core.category.CategoryComboCollectionRepository
 import org.hisp.dhis.android.core.category.CategoryComboInternalAccessor
@@ -38,38 +37,39 @@ internal class DefaultCategoryComboManager(
     private val categoryComboCollectionRepository: CategoryComboCollectionRepository,
     private val networkHandler: CategoryComboNetworkHandler,
 ) {
-    private var defaultCategoryComboUid: String? = null
-    private var defaultCategoryOptionComboUid: String? = null
-    private var defaultCategoryUid: String? = null
+    private var _defaultCategoryComboUid: String? = null
+    private var _defaultCategoryOptionComboUid: String? = null
+    private var _defaultCategoryUid: String? = null
 
-    fun getDefaultCategoryComboUid(): String? = defaultCategoryComboUid
-        ?: runBlocking { loadDefaultsFromDatabase() }.let { defaultCategoryComboUid }
+    val defaultCategoryComboUid: String?
+        get() = _defaultCategoryComboUid ?: loadDefaultsFromDatabase().let { _defaultCategoryComboUid }
 
-    fun getDefaultCategoryOptionComboUid(): String? = defaultCategoryOptionComboUid
-        ?: runBlocking { loadDefaultsFromDatabase() }.let { defaultCategoryOptionComboUid }
+    val defaultCategoryOptionComboUid: String?
+        get() = _defaultCategoryOptionComboUid ?: loadDefaultsFromDatabase().let { _defaultCategoryOptionComboUid }
 
-    fun getDefaultCategoryUid(): String? = defaultCategoryUid
-        ?: runBlocking { loadDefaultsFromDatabase() }.let { defaultCategoryUid }
+    val defaultCategoryUid: String?
+        get() = _defaultCategoryUid ?: loadDefaultsFromDatabase().let { _defaultCategoryUid }
 
     fun setDefaults(categoryCombo: CategoryCombo) {
-        defaultCategoryComboUid = categoryCombo.uid()
-        defaultCategoryOptionComboUid = CategoryComboInternalAccessor.accessCategoryOptionCombos(categoryCombo)
+        _defaultCategoryComboUid = categoryCombo.uid()
+        _defaultCategoryOptionComboUid = CategoryComboInternalAccessor.accessCategoryOptionCombos(categoryCombo)
             ?.firstOrNull()?.uid()
-        defaultCategoryUid = categoryCombo.categories()?.firstOrNull()?.uid()
+        _defaultCategoryUid = categoryCombo.categories()?.firstOrNull()?.uid()
     }
 
     fun clearCache() {
-        defaultCategoryComboUid = null
-        defaultCategoryOptionComboUid = null
-        defaultCategoryUid = null
+        _defaultCategoryComboUid = null
+        _defaultCategoryOptionComboUid = null
+        _defaultCategoryUid = null
     }
 
     suspend fun fetchDefaults() {
+        if (_defaultCategoryComboUid != null) return
         networkHandler.getDefaultCategoryCombo()?.let { setDefaults(it) }
     }
 
     private fun loadDefaultsFromDatabase() {
-        if (defaultCategoryComboUid != null) return
+        if (_defaultCategoryComboUid != null) return
 
         categoryComboCollectionRepository
             .byIsDefault().eq(true)

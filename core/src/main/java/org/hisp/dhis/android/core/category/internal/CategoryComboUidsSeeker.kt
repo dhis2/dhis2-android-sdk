@@ -54,7 +54,7 @@ internal class CategoryComboUidsSeeker(
         val uids = readSingleColumnResults(query).toMutableSet()
 
         // Always include the default CategoryCombo UID to ensure it gets downloaded
-        defaultCategoryComboManager.getDefaultCategoryComboUid()?.let { uids.add(it) }
+        defaultCategoryComboManager.defaultCategoryComboUid?.let { uids.add(it) }
 
         return uids
     }

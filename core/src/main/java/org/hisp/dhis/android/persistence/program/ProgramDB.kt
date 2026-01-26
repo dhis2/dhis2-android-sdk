@@ -3,8 +3,6 @@ package org.hisp.dhis.android.persistence.program
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
-import org.hisp.dhis.android.core.category.internal.DefaultCategoryComboManager
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.ObjectWithUid
@@ -69,7 +67,7 @@ internal data class ProgramDB(
     val programType: String?,
     val relatedProgram: String?,
     val trackedEntityType: String?,
-    val categoryCombo: String?,
+    val categoryCombo: String,
     val accessDataWrite: AccessDB?,
     val expiryDays: Int?,
     val completeEventsExpiryDays: Int?,
@@ -109,7 +107,7 @@ internal data class ProgramDB(
             relatedProgram?.let { relatedProgram(ObjectWithUid.create(it)) }
             relatedProgram?.let { relatedProgram(ObjectWithUidDB(it).toDomain()) }
             trackedEntityType?.let { trackedEntityType(TrackedEntityType.builder().uid(it).build()) }
-            categoryCombo?.let { categoryCombo(ObjectWithUid.create(it)) }
+            categoryCombo(ObjectWithUid.create(categoryCombo))
             accessDataWrite?.let { access(it.toDomain()) }
             expiryDays(expiryDays)
             completeEventsExpiryDays(completeEventsExpiryDays)
@@ -158,8 +156,7 @@ internal fun Program.toDB(): ProgramDB {
         programType = programType()?.name,
         relatedProgram = relatedProgram()?.uid(),
         trackedEntityType = trackedEntityType()?.uid(),
-        categoryCombo = categoryCombo()?.uid()
-            ?: koin.get<DefaultCategoryComboManager>().getDefaultCategoryComboUid(),
+        categoryCombo = categoryCombo().uid(),
         accessDataWrite = access().toDB(),
         expiryDays = expiryDays(),
         completeEventsExpiryDays = completeEventsExpiryDays(),

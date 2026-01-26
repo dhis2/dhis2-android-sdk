@@ -30,6 +30,7 @@ package org.hisp.dhis.android.network.dataset
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataset.Section
 import org.hisp.dhis.android.core.indicator.Indicator
@@ -57,7 +58,7 @@ internal data class SectionDTO(
     val disableDataElementAutoGroup: Boolean?,
     val displayOptions: String?,
 ) : BaseIdentifiableObjectDTO {
-    fun toDomain(): Section {
+    fun toDomain(categoryCombo: ObjectWithUid): Section {
         return Section.builder().apply {
             applyBaseIdentifiableFields(this@SectionDTO)
             description(description)
@@ -65,7 +66,7 @@ internal data class SectionDTO(
             showRowTotals(showRowTotals)
             showColumnTotals(showColumnTotals)
             dataSet(dataSet?.toDomain())
-            dataElements(dataElements.map { DataElement.builder().uid(it.id).build() })
+            dataElements(dataElements.map { DataElement.builder().uid(it.id).categoryCombo(categoryCombo).build() })
             greyedFields(greyedFields.map { it.toDomain() })
             indicators(indicators.map { Indicator.builder().uid(it.id).build() })
             disableDataElementAutoGroup(disableDataElementAutoGroup)

@@ -63,7 +63,7 @@ class CategoryComboCollectionRepository internal constructor(
         return cf.withChild(CATEGORIES)
     }
 
-    fun withCategoryOptionCombos(): CategoryComboCollectionRepository {
+    internal fun withCategoryOptionCombos(): CategoryComboCollectionRepository {
         return cf.withChild(CATEGORY_OPTION_COMBOS)
     }
 

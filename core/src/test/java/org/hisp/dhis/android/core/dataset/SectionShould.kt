@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.dataset
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.CoreObjectShould
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.network.dataset.SectionDTO
 import org.junit.Test
 
@@ -37,7 +38,7 @@ class SectionShould : CoreObjectShould("dataset/section.json") {
     @Test
     override fun map_from_json_string() {
         val sectionDTO = deserialize(SectionDTO.serializer())
-        val section = sectionDTO.toDomain()
+        val section = sectionDTO.toDomain(ObjectWithUid.create("p0KPaWEg3cf"))
 
         assertThat(section.uid()).isEqualTo("Y2rk0vzgvAx")
         assertThat(section.code()).isEqualTo("Code123")
@@ -58,6 +59,7 @@ class SectionShould : CoreObjectShould("dataset/section.json") {
         assertThat(section.disableDataElementAutoGroup()).isTrue()
         assertThat(section.dataElements()!!.size).isEqualTo(15)
         assertThat(section.dataElements()!![0].uid()).isEqualTo("s46m5MS0hxu")
+        assertThat(section.dataElements()!![0].categoryCombo()).isEqualTo(ObjectWithUid.create("p0KPaWEg3cf"))
         assertThat(section.greyedFields()!!.size).isEqualTo(1)
         assertThat(section.greyedFields()!![0].uid()).isEqualTo("ca8lfO062zg.Gmbgme7z9BF")
 

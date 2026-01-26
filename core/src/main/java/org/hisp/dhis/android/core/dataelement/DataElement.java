@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -72,7 +73,7 @@ public abstract class DataElement extends BaseNameableObject
         return optionSet == null ? null : optionSet.uid();
     }
 
-    @Nullable
+    @NonNull
     public abstract ObjectWithUid categoryCombo();
 
     @Nullable
@@ -107,7 +108,7 @@ public abstract class DataElement extends BaseNameableObject
 
         public abstract DataElement.Builder optionSet(ObjectWithUid optionSet);
 
-        public abstract DataElement.Builder categoryCombo(ObjectWithUid categoryCombo);
+        public abstract DataElement.Builder categoryCombo(@NonNull ObjectWithUid categoryCombo);
 
         public abstract DataElement.Builder legendSets(List<ObjectWithUid> legendSets);
 

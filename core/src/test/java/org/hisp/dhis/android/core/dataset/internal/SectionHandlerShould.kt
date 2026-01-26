@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.dataset.internal
 
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandHandler
@@ -72,7 +73,10 @@ class SectionHandlerShould {
 
         whenever(section.uid()).thenReturn("section_uid")
 
-        dataElements = mutableListOf(DataElement.builder().uid("dataElement_uid").build())
+        dataElements = mutableListOf(DataElement.builder()
+            .uid("dataElement_uid")
+            .categoryCombo(ObjectWithUid.create("categoryCombo_uid"))
+            .build())
         whenever(section.dataElements()).thenReturn(dataElements)
 
         val greyedFields: List<DataElementOperand> = emptyList()

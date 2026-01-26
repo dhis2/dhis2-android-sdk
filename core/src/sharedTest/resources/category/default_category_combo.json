@@ -1,0 +1,33 @@
+{
+  "categoryCombos": [
+    {
+      "created": "2011-12-24T12:24:25.203",
+      "lastUpdated": "2016-04-12T20:37:49.126",
+      "code": "default",
+      "name": "default",
+      "categories": [
+        {
+          "id": "GLevLNI9wkl"
+        }
+      ],
+      "displayName": "default",
+      "id": "bjDvmb4bfuf",
+      "categoryOptionCombos": [
+        {
+          "code": "default",
+          "name": "default",
+          "created": "2011-12-24T12:24:25.319",
+          "lastUpdated": "2011-12-24T12:24:25.319",
+          "categoryOptions": [
+            {
+              "id": "xYerKDKCefk"
+            }
+          ],
+          "displayName": "default",
+          "id": "HllvX50cXC0"
+        }
+      ],
+      "isDefault": true
+    }
+  ]
+}

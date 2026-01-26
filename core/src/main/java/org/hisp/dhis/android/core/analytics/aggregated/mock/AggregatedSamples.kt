@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.analytics.aggregated.mock
 
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
@@ -41,11 +42,13 @@ object AggregatedSamples {
     val dataElement1 = DataElement.builder()
         .uid("fbfJHSPpUQD")
         .displayName("ANC 1st visit")
+        .categoryCombo(ObjectWithUid.create("p0KPaWEg3cf"))
         .build()
 
     val dataElement2 = DataElement.builder()
         .uid("cYeuwXTCPkU")
         .displayName("ANC 2nd visit")
+        .categoryCombo(ObjectWithUid.create("p0KPaWEg3cf"))
         .build()
 
     val programIndicator1 = ProgramIndicator.builder()

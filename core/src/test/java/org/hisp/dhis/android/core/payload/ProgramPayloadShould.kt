@@ -58,6 +58,7 @@ class ProgramPayloadShould : CoreObjectShould("program/program_payload.json") {
                 DataAccess.create(false, false),
             ),
         )
+        assertThat(program.categoryCombo().uid()).isEqualTo("default_cc_uid")
 
         val program1 = programs[1]
         assertThat(program1!!.uid()).isEqualTo("q04UBOqq3rp")

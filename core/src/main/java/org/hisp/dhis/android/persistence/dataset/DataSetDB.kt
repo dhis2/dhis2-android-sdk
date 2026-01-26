@@ -119,7 +119,7 @@ internal fun DataSet.toDB(): DataSetDB {
         description = description(),
         displayDescription = displayDescription(),
         periodType = periodType()?.name,
-        categoryCombo = categoryCombo()!!.uid(),
+        categoryCombo = categoryCombo().uid(),
         mobile = mobile(),
         version = version(),
         expiryDays = expiryDays(),

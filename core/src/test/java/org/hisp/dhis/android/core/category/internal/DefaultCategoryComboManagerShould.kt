@@ -86,7 +86,7 @@ class DefaultCategoryComboManagerShould {
     fun return_cached_value_when_available() = runTest {
         manager.setDefaults(categoryCombo)
 
-        val result = manager.getDefaultCategoryComboUid()
+        val result = manager.defaultCategoryComboUid
 
         assertThat(result).isEqualTo(comboUid)
         verify(categoryComboRepository, never()).blockingGet()
@@ -97,9 +97,9 @@ class DefaultCategoryComboManagerShould {
     fun return_all_cached_values_when_available() = runTest {
         manager.setDefaults(categoryCombo)
 
-        assertThat(manager.getDefaultCategoryComboUid()).isEqualTo(comboUid)
-        assertThat(manager.getDefaultCategoryOptionComboUid()).isEqualTo(optionComboUid)
-        assertThat(manager.getDefaultCategoryUid()).isEqualTo(categoryUid)
+        assertThat(manager.defaultCategoryComboUid).isEqualTo(comboUid)
+        assertThat(manager.defaultCategoryOptionComboUid).isEqualTo(optionComboUid)
+        assertThat(manager.defaultCategoryUid).isEqualTo(categoryUid)
 
         verify(categoryComboRepository, never()).blockingGet()
         verifyNoMoreInteractions(networkHandler)
@@ -109,7 +109,7 @@ class DefaultCategoryComboManagerShould {
     fun query_database_when_cache_is_empty() = runTest {
         whenever(categoryComboRepository.blockingGet()).doReturn(categoryCombo)
 
-        val result = manager.getDefaultCategoryComboUid()
+        val result = manager.defaultCategoryComboUid
 
         assertThat(result).isEqualTo(comboUid)
         verify(categoryComboRepository).blockingGet()
@@ -120,7 +120,7 @@ class DefaultCategoryComboManagerShould {
     fun return_null_when_not_in_database() = runTest {
         whenever(categoryComboRepository.blockingGet()).doReturn(null)
 
-        val result = manager.getDefaultCategoryComboUid()
+        val result = manager.defaultCategoryComboUid
 
         assertThat(result).isNull()
         verify(categoryComboRepository).blockingGet()
@@ -133,7 +133,7 @@ class DefaultCategoryComboManagerShould {
 
         manager.fetchDefaults()
 
-        assertThat(manager.getDefaultCategoryComboUid()).isEqualTo(comboUid)
+        assertThat(manager.defaultCategoryComboUid).isEqualTo(comboUid)
         verify(networkHandler).getDefaultCategoryCombo()
     }
 
@@ -141,22 +141,22 @@ class DefaultCategoryComboManagerShould {
     fun set_defaults_extracts_all_uids_correctly() {
         manager.setDefaults(categoryCombo)
 
-        assertThat(manager.getDefaultCategoryComboUid()).isEqualTo(comboUid)
-        assertThat(manager.getDefaultCategoryOptionComboUid()).isEqualTo(optionComboUid)
-        assertThat(manager.getDefaultCategoryUid()).isEqualTo(categoryUid)
+        assertThat(manager.defaultCategoryComboUid).isEqualTo(comboUid)
+        assertThat(manager.defaultCategoryOptionComboUid).isEqualTo(optionComboUid)
+        assertThat(manager.defaultCategoryUid).isEqualTo(categoryUid)
     }
 
     @Test
     fun clear_cache_clears_all_values() = runTest {
         manager.setDefaults(categoryCombo)
 
-        assertThat(manager.getDefaultCategoryComboUid()).isEqualTo(comboUid)
+        assertThat(manager.defaultCategoryComboUid).isEqualTo(comboUid)
 
         manager.clearCache()
 
         whenever(categoryComboRepository.blockingGet()).doReturn(null)
 
-        val result = manager.getDefaultCategoryComboUid()
+        val result = manager.defaultCategoryComboUid
 
         assertThat(result).isNull()
         verify(categoryComboRepository).blockingGet()
@@ -169,9 +169,9 @@ class DefaultCategoryComboManagerShould {
 
         manager.setDefaults(categoryCombo)
 
-        assertThat(manager.getDefaultCategoryComboUid()).isEqualTo(comboUid)
-        assertThat(manager.getDefaultCategoryOptionComboUid()).isNull()
-        assertThat(manager.getDefaultCategoryUid()).isEqualTo(categoryUid)
+        assertThat(manager.defaultCategoryComboUid).isEqualTo(comboUid)
+        assertThat(manager.defaultCategoryOptionComboUid).isNull()
+        assertThat(manager.defaultCategoryUid).isEqualTo(categoryUid)
     }
 
     @Test
@@ -181,9 +181,9 @@ class DefaultCategoryComboManagerShould {
 
         manager.setDefaults(categoryCombo)
 
-        assertThat(manager.getDefaultCategoryComboUid()).isEqualTo(comboUid)
-        assertThat(manager.getDefaultCategoryOptionComboUid()).isEqualTo(optionComboUid)
-        assertThat(manager.getDefaultCategoryUid()).isNull()
+        assertThat(manager.defaultCategoryComboUid).isEqualTo(comboUid)
+        assertThat(manager.defaultCategoryOptionComboUid).isEqualTo(optionComboUid)
+        assertThat(manager.defaultCategoryUid).isNull()
     }
 
     @Test
@@ -193,9 +193,9 @@ class DefaultCategoryComboManagerShould {
 
         manager.setDefaults(categoryCombo)
 
-        assertThat(manager.getDefaultCategoryComboUid()).isEqualTo(comboUid)
-        assertThat(manager.getDefaultCategoryOptionComboUid()).isNull()
-        assertThat(manager.getDefaultCategoryUid()).isEqualTo(categoryUid)
+        assertThat(manager.defaultCategoryComboUid).isEqualTo(comboUid)
+        assertThat(manager.defaultCategoryOptionComboUid).isNull()
+        assertThat(manager.defaultCategoryUid).isEqualTo(categoryUid)
     }
 
     @Test
@@ -205,8 +205,8 @@ class DefaultCategoryComboManagerShould {
 
         manager.setDefaults(categoryCombo)
 
-        assertThat(manager.getDefaultCategoryComboUid()).isEqualTo(comboUid)
-        assertThat(manager.getDefaultCategoryOptionComboUid()).isEqualTo(optionComboUid)
-        assertThat(manager.getDefaultCategoryUid()).isNull()
+        assertThat(manager.defaultCategoryComboUid).isEqualTo(comboUid)
+        assertThat(manager.defaultCategoryOptionComboUid).isEqualTo(optionComboUid)
+        assertThat(manager.defaultCategoryUid).isNull()
     }
 }

@@ -3,8 +3,6 @@ package org.hisp.dhis.android.persistence.dataelement
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
-import org.hisp.dhis.android.core.category.internal.DefaultCategoryComboManager
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.util.dateFormat
@@ -97,10 +95,7 @@ internal fun DataElement.toDB(): DataElementDB {
         domainType = domainType(),
         displayFormName = displayFormName(),
         optionSet = optionSet()?.uid(),
-        categoryCombo = categoryCombo()?.uid()
-            ?: requireNotNull(koin.get<DefaultCategoryComboManager>().getDefaultCategoryComboUid()) {
-                "Default CategoryCombo not loaded."
-            },
+        categoryCombo = categoryCombo().uid(),
         fieldMask = fieldMask(),
         color = style().color(),
         icon = style().icon(),

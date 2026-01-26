@@ -71,7 +71,7 @@ class DataSetShould : CoreObjectShould("dataset/data_set.json") {
         assertThat(dataSet.openFuturePeriods()).isEqualTo(0)
         assertThat(dataSet.expiryDays()).isEqualTo(0.0)
         assertThat(dataSet.workflow()?.uid()).isEqualTo("R22tClyLU2w")
-        assertThat(dataSet.categoryCombo()!!.uid()).isEqualTo("O4VaNks6tta")
+        assertThat(dataSet.categoryCombo().uid()).isEqualTo("O4VaNks6tta")
         assertThat(dataSet.dataSetElements()!!.size).isEqualTo(3)
         assertThat(dataSet.dataInputPeriods()!!.size).isEqualTo(1)
         assertThat(dataSet.dataInputPeriods()!![0].period()).isEqualTo(ObjectWithUid.create("201801"))

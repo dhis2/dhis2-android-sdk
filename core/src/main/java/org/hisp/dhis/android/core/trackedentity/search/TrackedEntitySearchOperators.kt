@@ -31,10 +31,10 @@ package org.hisp.dhis.android.core.trackedentity.search
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BoolFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqLikeInItemFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.PeriodFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.TrackerItemFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
@@ -112,7 +112,7 @@ abstract class TrackedEntitySearchOperators<R : BaseRepository> internal constru
     }
 
     @Deprecated(message = "Use byFilter()", replaceWith = ReplaceWith("byFilter(attributeId)"))
-    fun byAttribute(attributeId: String): EqLikeInItemFilterConnector<R> {
+    fun byAttribute(attributeId: String): TrackerItemFilterConnector<R> {
         return byFilter(attributeId)
     }
 
@@ -129,8 +129,8 @@ abstract class TrackedEntitySearchOperators<R : BaseRepository> internal constru
      * @param attributeId Attribute uid to use in the filter
      * @return Repository connector
      */
-    fun byFilter(attributeId: String): EqLikeInItemFilterConnector<R> {
-        return connectorFactory.eqLikeInItemC(attributeId) { filterItem: RepositoryScopeFilterItem ->
+    fun byFilter(attributeId: String): TrackerItemFilterConnector<R> {
+        return connectorFactory.trackerSearchItemC(attributeId) { filterItem: RepositoryScopeFilterItem ->
             scopeHelper.addFilter(scope, filterItem)
         }
     }
@@ -139,8 +139,8 @@ abstract class TrackedEntitySearchOperators<R : BaseRepository> internal constru
         message = "This property is ignored for online queries and will be ignored in offline queries soon. " +
             "Please use byFilter to achieve a similar functionality.",
     )
-    fun byQuery(): EqLikeInItemFilterConnector<R> {
-        return connectorFactory.eqLikeInItemC("") { filterItem: RepositoryScopeFilterItem ->
+    fun byQuery(): TrackerItemFilterConnector<R> {
+        return connectorFactory.trackerSearchItemC("") { filterItem: RepositoryScopeFilterItem ->
             scope.toBuilder().query(filterItem).build()
         }
     }
@@ -152,8 +152,8 @@ abstract class TrackedEntitySearchOperators<R : BaseRepository> internal constru
      * @param dataElement DataElement uid to use in the filter
      * @return Repository connector
      */
-    fun byDataValue(dataElement: String): EqLikeInItemFilterConnector<R> {
-        return connectorFactory.eqLikeInItemC(dataElement) { filterItem: RepositoryScopeFilterItem ->
+    fun byDataValue(dataElement: String): TrackerItemFilterConnector<R> {
+        return connectorFactory.trackerSearchItemC(dataElement) { filterItem: RepositoryScopeFilterItem ->
             scope.toBuilder().dataValue(scope.dataValue() + filterItem).build()
         }
     }

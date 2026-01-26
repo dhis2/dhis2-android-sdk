@@ -28,17 +28,16 @@
 
 package org.hisp.dhis.android.core.data.trackedentity;
 
+import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
+
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.TrackerSearchOperator;
 import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueType;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
-
-import com.google.common.collect.Lists;
-
-import java.util.List;
+import java.util.Arrays;
 
 public class TrackedEntityAttributeSamples {
 
@@ -65,8 +64,8 @@ public class TrackedEntityAttributeSamples {
                 .fieldMask("XXXXX")
                 .formName("form_name")
                 .displayFormName("display_form_name")
-                .preferredSearchOperator("SW")
-                .blockedSearchOperators(Lists.newArrayList("LIKE"))
+                .preferredSearchOperator(TrackerSearchOperator.SW)
+                .blockedSearchOperators(Arrays.asList(TrackerSearchOperator.LIKE))
                 .minCharactersToSearch(2)
                 .build();
     }

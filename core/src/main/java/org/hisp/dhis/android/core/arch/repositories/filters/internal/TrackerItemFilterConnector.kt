@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOpe
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
 import org.hisp.dhis.android.core.common.FilterOperatorsHelper
 
-class EqLikeInItemFilterConnector<R : BaseRepository> internal constructor(
+class TrackerItemFilterConnector<R : BaseRepository> internal constructor(
     private val key: String,
     private val repositoryFactory: ScopedRepositoryFilterFactory<R, RepositoryScopeFilterItem>,
 ) {
@@ -51,6 +51,18 @@ class EqLikeInItemFilterConnector<R : BaseRepository> internal constructor(
     fun `in`(values: Collection<String>): R {
         val item = RepositoryScopeFilterItem.builder()
             .key(key).operator(FilterItemOperator.IN).value(FilterOperatorsHelper.listToStr(values)).build()
+        return repositoryFactory.updated(item)
+    }
+
+    fun sw(value: String): R {
+        val item = RepositoryScopeFilterItem.builder()
+            .key(key).operator(FilterItemOperator.SW).value(value).build()
+        return repositoryFactory.updated(item)
+    }
+
+    fun ew(value: String): R {
+        val item = RepositoryScopeFilterItem.builder()
+            .key(key).operator(FilterItemOperator.EW).value(value).build()
         return repositoryFactory.updated(item)
     }
 }

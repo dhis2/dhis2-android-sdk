@@ -3,6 +3,7 @@ package org.hisp.dhis.android.persistence.trackedentity
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.TrackerSearchOperator
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
@@ -86,8 +87,8 @@ internal data class TrackedEntityAttributeDB(
             displayFormName(displayFormName)
             aggregationType(aggregationType?.let { AggregationType.valueOf(it) })
             confidential(confidential)
-            preferredSearchOperator(preferredSearchOperator)
-            blockedSearchOperators(blockedSearchOperators?.toDomain())
+            preferredSearchOperator(preferredSearchOperator?.let { TrackerSearchOperator.valueOf(it) })
+            blockedSearchOperators(blockedSearchOperators?.toDomain()?.map { TrackerSearchOperator.valueOf(it) })
             minCharactersToSearch(minCharactersToSearch)
         }.build()
     }
@@ -124,8 +125,8 @@ internal fun TrackedEntityAttribute.toDB(): TrackedEntityAttributeDB {
         displayFormName = displayFormName(),
         aggregationType = aggregationType()?.name,
         confidential = confidential(),
-        preferredSearchOperator = preferredSearchOperator(),
-        blockedSearchOperators = blockedSearchOperators()?.toDB(),
+        preferredSearchOperator = preferredSearchOperator()?.name,
+        blockedSearchOperators = blockedSearchOperators()?.map { it.name }?.toDB(),
         minCharactersToSearch = minCharactersToSearch(),
     )
 }

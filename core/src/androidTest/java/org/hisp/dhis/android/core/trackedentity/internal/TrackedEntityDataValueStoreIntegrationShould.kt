@@ -240,7 +240,7 @@ class TrackedEntityDataValueStoreIntegrationShould :
         ProgramStageDataElementInternalAccessor.insertFullDataElement(
             builder,
             DataElementSamples.getDataElement().toBuilder().uid(dataElement1).build(),
-            )
+        )
         psStore.insert(builder.build())
 
         (store as TrackedEntityDataValueStore).insert(

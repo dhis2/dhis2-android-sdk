@@ -40,7 +40,7 @@ internal data class CategoryComboWithFallbackDTO(
     fun toDomain(): ObjectWithUid {
         val uid = id ?: koin.get<DefaultCategoryComboManager>().defaultCategoryComboUid
         return ObjectWithUid.create(
-            requireNotNull(uid) { "Default CategoryCombo not loaded." }
+            requireNotNull(uid) { "Default CategoryCombo not loaded." },
         )
     }
 }

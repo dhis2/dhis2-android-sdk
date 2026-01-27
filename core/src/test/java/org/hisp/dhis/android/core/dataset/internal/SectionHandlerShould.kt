@@ -73,10 +73,12 @@ class SectionHandlerShould {
 
         whenever(section.uid()).thenReturn("section_uid")
 
-        dataElements = mutableListOf(DataElement.builder()
-            .uid("dataElement_uid")
-            .categoryCombo(ObjectWithUid.create("categoryCombo_uid"))
-            .build())
+        dataElements = mutableListOf(
+            DataElement.builder()
+                .uid("dataElement_uid")
+                .categoryCombo(ObjectWithUid.create("categoryCombo_uid"))
+                .build(),
+        )
         whenever(section.dataElements()).thenReturn(dataElements)
 
         val greyedFields: List<DataElementOperand> = emptyList()

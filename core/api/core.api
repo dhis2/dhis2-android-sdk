@@ -8074,7 +8074,7 @@ public abstract class org/hisp/dhis/android/core/program/ProgramStageDataElement
 	public abstract fun allowProvidedElsewhere ()Ljava/lang/Boolean;
 	public static fun builder ()Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
 	public abstract fun compulsory ()Ljava/lang/Boolean;
-	public abstract fun dataElement ()Lorg/hisp/dhis/android/core/dataelement/DataElement;
+	public abstract fun dataElement ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun displayInReports ()Ljava/lang/Boolean;
 	public abstract fun programStage ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun renderType ()Lorg/hisp/dhis/android/core/common/ValueTypeRendering;
@@ -8088,7 +8088,7 @@ public abstract class org/hisp/dhis/android/core/program/ProgramStageDataElement
 	public abstract fun allowProvidedElsewhere (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
 	public abstract fun build ()Lorg/hisp/dhis/android/core/program/ProgramStageDataElement;
 	public abstract fun compulsory (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
-	public abstract fun dataElement (Lorg/hisp/dhis/android/core/dataelement/DataElement;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
+	public abstract fun dataElement (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
 	public abstract fun displayInReports (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
 	public abstract fun programStage (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
 	public abstract fun renderType (Lorg/hisp/dhis/android/core/common/ValueTypeRendering;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;

@@ -116,6 +116,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
                 val program = Program.builder().uid(programUid)
                     .access(access)
                     .trackedEntityType(TrackedEntityType.builder().uid(teiTypeUid).build())
+                    .categoryCombo(ObjectWithUid.create("p0KPaWEg3cf"))
                     .build()
                 koin.get<ProgramStore>().insert(program)
 

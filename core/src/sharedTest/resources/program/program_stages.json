@@ -81,6 +81,9 @@
             },
             "access": {
               "read": true
+            },
+            "categoryCombo": {
+              "id": "p0KPaWEg3cf"
             }
           }
         },
@@ -114,6 +117,9 @@
             "valueType": "BOOLEAN",
             "access": {
               "read": true
+            },
+            "categoryCombo": {
+              "id": "p0KPaWEg3cf"
             }
           }
         },
@@ -147,6 +153,9 @@
             "valueType": "NUMBER",
             "access": {
               "read": true
+            },
+            "categoryCombo": {
+              "id": "p0KPaWEg3cf"
             }
           }
         },
@@ -285,6 +294,9 @@
             },
             "access": {
               "read": true
+            },
+            "categoryCombo": {
+              "id": "p0KPaWEg3cf"
             }
           }
         },
@@ -318,6 +330,9 @@
             "valueType": "BOOLEAN",
             "access": {
               "read": true
+            },
+            "categoryCombo": {
+              "id": "p0KPaWEg3cf"
             }
           }
         },
@@ -351,6 +366,9 @@
             "valueType": "NUMBER",
             "access": {
               "read": true
+            },
+            "categoryCombo": {
+              "id": "p0KPaWEg3cf"
             }
           },
           "renderType": {

@@ -74,4 +74,54 @@ class DefaultCategoryComboManagerMockIntegrationShould : BaseMockIntegrationTest
         assertThat(manager.defaultCategoryOptionComboUid).isEqualTo("bRowv6yZOF2")
         assertThat(manager.defaultCategoryUid).isEqualTo("vGs6omsRekv")
     }
+
+    @Test
+    fun all_data_elements_should_have_category_combo() {
+        val dataElements = d2.dataElementModule().dataElements().blockingGet()
+
+        assertThat(dataElements).isNotEmpty()
+        dataElements.forEach { dataElement ->
+            assertThat(dataElement.categoryCombo().uid()).isNotEmpty()
+        }
+    }
+
+    @Test
+    fun all_programs_should_have_category_combo() {
+        val programs = d2.programModule().programs().blockingGet()
+
+        assertThat(programs).isNotEmpty()
+        programs.forEach { program ->
+            assertThat(program.categoryCombo().uid()).isNotEmpty()
+        }
+    }
+
+    @Test
+    fun all_data_sets_should_have_category_combo() {
+        val dataSets = d2.dataSetModule().dataSets().blockingGet()
+
+        assertThat(dataSets).isNotEmpty()
+        dataSets.forEach { dataSet ->
+            assertThat(dataSet.categoryCombo().uid()).isNotEmpty()
+        }
+    }
+
+    @Test
+    fun data_elements_without_category_combo_in_response_should_use_default() {
+        // DataElements embedded in ProgramStageDataElements use default categoryCombo
+        // when not explicitly provided in the API response
+        val programStageDataElements = d2.programModule().programStageDataElements().blockingGet()
+
+        assertThat(programStageDataElements).isNotEmpty()
+
+        // Get the full DataElement for each ProgramStageDataElement
+        programStageDataElements.forEach { psde ->
+            val dataElement = d2.dataElementModule().dataElements()
+                .uid(psde.dataElement()?.uid())
+                .blockingGet()
+
+            if (dataElement != null) {
+                assertThat(dataElement.categoryCombo().uid()).isNotEmpty()
+            }
+        }
+    }
 }

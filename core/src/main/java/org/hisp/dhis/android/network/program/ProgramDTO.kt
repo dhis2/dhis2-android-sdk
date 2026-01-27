@@ -30,8 +30,6 @@ package org.hisp.dhis.android.network.program
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
-import org.hisp.dhis.android.core.category.internal.DefaultCategoryComboManager
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.program.AccessLevel
@@ -42,6 +40,7 @@ import org.hisp.dhis.android.network.attribute.AttributeValueDTO
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.AccessDTO
 import org.hisp.dhis.android.network.common.dto.BaseNameableObjectDTO
+import org.hisp.dhis.android.network.common.dto.CategoryComboWithFallbackDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithStyleDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 import org.hisp.dhis.android.network.common.dto.PagerDTO
@@ -80,7 +79,7 @@ internal data class ProgramDTO(
     val programTrackedEntityAttributes: List<ProgramTrackedEntityAttributeDTO>?,
     val relatedProgram: ObjectWithUidDTO?,
     val trackedEntityType: TrackedEntityTypeDTO?,
-    val categoryCombo: ObjectWithUidDTO?,
+    val categoryCombo: CategoryComboWithFallbackDTO = CategoryComboWithFallbackDTO(null),
     val access: AccessDTO?,
     val programRuleVariables: List<ProgramRuleVariableDTO>?,
     val expiryDays: Int?,
@@ -133,13 +132,7 @@ internal data class ProgramDTO(
             )
             relatedProgram(relatedProgram?.toDomain())
             trackedEntityType(trackedEntityType?.toDomain())
-            categoryCombo(
-                categoryCombo?.toDomain() ?: ObjectWithUidDTO(
-                    requireNotNull(koin.get<DefaultCategoryComboManager>().defaultCategoryComboUid) {
-                        "Default CategoryCombo not loaded."
-                    },
-                ).toDomain(),
-            )
+            categoryCombo(categoryCombo.toDomain())
             access?.let { access(it.toDomain()) }
             ProgramInternalAccessor.insertProgramRuleVariables(this, programRuleVariables?.map { it.toDomain() })
             expiryDays(expiryDays)

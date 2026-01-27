@@ -30,9 +30,7 @@ package org.hisp.dhis.android.network.dataset
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
-import org.hisp.dhis.android.core.category.internal.DefaultCategoryComboManager
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.DataSetDisplayOptions
 import org.hisp.dhis.android.core.dataset.DataSetInternalAccessor
@@ -42,6 +40,7 @@ import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.AccessDTO
 import org.hisp.dhis.android.network.common.dto.BaseNameableObjectDTO
+import org.hisp.dhis.android.network.common.dto.CategoryComboWithFallbackDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithStyleDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 import org.hisp.dhis.android.network.common.dto.PagerDTO
@@ -61,7 +60,7 @@ internal data class DataSetDTO(
     override val description: String?,
     override val displayDescription: String?,
     val periodType: String?,
-    val categoryCombo: ObjectWithUidDTO?,
+    val categoryCombo: CategoryComboWithFallbackDTO = CategoryComboWithFallbackDTO(null),
     val mobile: Boolean?,
     val version: Int?,
     val expiryDays: Double?,
@@ -86,14 +85,10 @@ internal data class DataSetDTO(
     val style: ObjectWithStyleDTO?,
 ) : BaseNameableObjectDTO {
     fun toDomain(): DataSet {
-        val domainCategoryCombo = categoryCombo?.toDomain()
-            ?: ObjectWithUidDTO(requireNotNull(koin.get<DefaultCategoryComboManager>().defaultCategoryComboUid) {
-                "Default CategoryCombo not loaded."
-            }).toDomain()
         return DataSet.builder().apply {
             applyBaseNameableFields(this@DataSetDTO)
             periodType?.let { periodType(PeriodType.valueOf(periodType)) }
-            categoryCombo(domainCategoryCombo)
+            categoryCombo(categoryCombo.toDomain())
             mobile(mobile)
             version(version)
             expiryDays(expiryDays)
@@ -110,7 +105,7 @@ internal data class DataSetDTO(
             workflow(workflow?.toDomain())
             dataSetElements(dataSetElements.map { it.toDomain() })
             indicators(indicators.map { Indicator.builder().uid(it.id).build() })
-            DataSetInternalAccessor.insertSections(this, sections.map { it.toDomain(domainCategoryCombo) })
+            DataSetInternalAccessor.insertSections(this, sections.map { it.toDomain(categoryCombo.toDomain()) })
             compulsoryDataElementOperands(compulsoryDataElementOperands.map { it.toDomain() })
             dataInputPeriods(dataInputPeriods.map { it.toDomain(ObjectWithUidDTO(id)) })
             displayOptions(

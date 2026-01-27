@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.common.valuetype.rendering.internal.ValueTypeR
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.internal.DataElementHandler
 import org.hisp.dhis.android.core.program.ProgramStageDataElement
+import org.hisp.dhis.android.core.program.ProgramStageDataElementInternalAccessor
 import org.hisp.dhis.android.persistence.program.ProgramStageDataElementTableInfo
 import org.junit.Before
 import org.junit.Test
@@ -62,7 +63,8 @@ class ProgramStageDataElementHandlerShould {
     fun setUp() = runTest {
         handler = ProgramStageDataElementHandler(programStageDataElementStore, dataElementHandler, renderTypeHandler)
         whenever(programStageDataElement.uid()).thenReturn("program_stage_data_element")
-        whenever(programStageDataElement.dataElement()).thenReturn(dataElement)
+        whenever(ProgramStageDataElementInternalAccessor.accessFullDataElement(programStageDataElement))
+            .thenReturn(dataElement)
         whenever(dataElement.uid()).thenReturn("test_data_element_uid")
         whenever(programStageDataElement.renderType()).thenReturn(valueTypeRendering)
         whenever(programStageDataElementStore.updateOrInsert(any<List<ProgramStageDataElement>>())).thenReturn(

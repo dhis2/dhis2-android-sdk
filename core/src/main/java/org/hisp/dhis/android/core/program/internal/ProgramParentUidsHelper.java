@@ -28,10 +28,12 @@
 
 package org.hisp.dhis.android.core.program.internal;
 
+import org.hisp.dhis.android.core.dataelement.DataElement;
 import org.hisp.dhis.android.core.program.Program;
 import org.hisp.dhis.android.core.program.ProgramInternalAccessor;
 import org.hisp.dhis.android.core.program.ProgramStage;
 import org.hisp.dhis.android.core.program.ProgramStageDataElement;
+import org.hisp.dhis.android.core.program.ProgramStageDataElementInternalAccessor;
 import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor;
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
@@ -71,10 +73,11 @@ final class ProgramParentUidsHelper {
 
             for (int k = 0; k < programStageDataElementSize; k++) {
                 ProgramStageDataElement programStageDataElement = programStageDataElements.get(k);
+                DataElement dataElement = ProgramStageDataElementInternalAccessor
+                        .accessFullDataElement(programStageDataElement);
 
-                if (programStageDataElement.dataElement() != null &&
-                        programStageDataElement.dataElement().optionSet() != null) {
-                    uids.add(programStageDataElement.dataElement().optionSet().uid());
+                if (dataElement != null && dataElement.optionSet() != null) {
+                    uids.add(dataElement.optionSet().uid());
                 }
             }
         }

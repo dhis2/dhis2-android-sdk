@@ -81,7 +81,8 @@ function get_device_logs() {
 
 function findApkPath() {
   local project=$1
-  find "$(dirname $0)"/../"$project"/build/outputs/apk/ -iname "*.apk"
+  local folder=$2
+  find "$(dirname $0)"/../"$project"/build/outputs/apk/"$folder" -iname "*.apk"
 }
 
 function waitForBuildFinish() {

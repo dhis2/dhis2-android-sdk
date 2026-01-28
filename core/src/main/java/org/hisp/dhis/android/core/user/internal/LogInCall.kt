@@ -172,32 +172,31 @@ internal class LogInCall(
 
     @Throws(D2Error::class)
     suspend fun blockingLogInOpenIDConnect(serverUrl: String, openIDConnectState: AuthState): User {
-        val trimmedServerUrl = ServerUrlParser.trimAndRemoveTrailingSlash(serverUrl)
-
-        val parsedServerUrl = ServerUrlParser.parse(trimmedServerUrl)
-        ServerURLWrapper.setServerUrl(parsedServerUrl.toString())
-
-        var credentials: Credentials? = null
-        return try {
-            val user = coroutineAPICallExecutor.wrap(errorCatcher = apiCallErrorCatcher) {
-                networkHandler.authenticate(
-                    "Bearer ${openIDConnectState.idToken}",
-                )
-            }.getOrThrow()
-            credentials = getOpenIdConnectCredentials(user, trimmedServerUrl!!, openIDConnectState)
-            loginOnline(user, credentials)
-        } catch (d2Error: D2Error) {
-            throw handleOnlineException(d2Error, credentials)
-        }
-    }
-
-    private fun getOpenIdConnectCredentials(user: User, serverUrl: String, openIDConnectState: AuthState): Credentials {
-        val username = user.username()!!
-        return Credentials(username, serverUrl, null, openIDConnectState)
+        return logInWithToken(
+            serverUrl = serverUrl,
+            token = openIDConnectState.idToken!!,
+            openIDConnectState = openIDConnectState,
+            oauth2State = null,
+        )
     }
 
     @Throws(D2Error::class)
     suspend fun logInOAuth2(serverUrl: String, oauth2State: OAuth2State): User {
+        return logInWithToken(
+            serverUrl = serverUrl,
+            token = oauth2State.accessToken!!,
+            openIDConnectState = null,
+            oauth2State = oauth2State,
+        )
+    }
+
+    @Throws(D2Error::class)
+    private suspend fun logInWithToken(
+        serverUrl: String,
+        token: String,
+        openIDConnectState: AuthState?,
+        oauth2State: OAuth2State?,
+    ): User {
         val trimmedServerUrl = ServerUrlParser.trimAndRemoveTrailingSlash(serverUrl)
 
         val parsedServerUrl = ServerUrlParser.parse(trimmedServerUrl)
@@ -206,24 +205,19 @@ internal class LogInCall(
         var credentials: Credentials? = null
         return try {
             val user = coroutineAPICallExecutor.wrap(errorCatcher = apiCallErrorCatcher) {
-                networkHandler.authenticate(
-                    "Bearer ${oauth2State.accessToken}",
-                )
+                networkHandler.authenticate("Bearer $token")
             }.getOrThrow()
-            credentials = getOAuth2Credentials(user, trimmedServerUrl!!, oauth2State)
+            credentials = Credentials(
+                username = user.username()!!,
+                serverUrl = trimmedServerUrl!!,
+                password = null,
+                openIDConnectState = openIDConnectState,
+                oauth2State = oauth2State,
+            )
             loginOnline(user, credentials)
         } catch (d2Error: D2Error) {
             throw handleOnlineException(d2Error, credentials)
         }
-    }
-
-    private fun getOAuth2Credentials(
-        user: User,
-        serverUrl: String,
-        oauth2State: OAuth2State,
-    ): Credentials {
-        val username = user.username()!!
-        return Credentials(username, serverUrl, null, null, oauth2State)
     }
 
     fun isUserLoggedIn(): Boolean {

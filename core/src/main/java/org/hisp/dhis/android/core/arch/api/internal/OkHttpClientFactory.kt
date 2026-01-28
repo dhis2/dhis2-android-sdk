@@ -50,7 +50,7 @@ internal object OkHttpClientFactory {
             client.addInterceptor(interceptor)
         }
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.N) {
             val (socketFactory, trustManager) = TrustFactory.getTrustFactoryManager(d2Configuration.context())
             client.sslSocketFactory(socketFactory, trustManager)
         }

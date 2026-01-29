@@ -36,23 +36,23 @@ import io.ktor.http.Headers
 import io.ktor.http.HeadersImpl
 import io.ktor.http.HttpProtocolVersion
 import io.ktor.http.HttpStatusCode
-import io.ktor.util.InternalAPI
 import io.ktor.util.date.GMTDate
 import io.ktor.utils.io.ByteReadChannel
+import io.ktor.utils.io.InternalAPI
 import org.junit.Test
 import org.mockito.kotlin.mock
 import kotlin.coroutines.CoroutineContext
 
 class CookieAuthenticatorShould {
 
-    @InternalAPI
+    @OptIn(InternalAPI::class)
     @Test
     fun store_multiple_cookies() {
         val cookieHelper = CookieAuthenticatorHelper()
 
         val response = object : HttpResponse() {
             override val call: HttpClientCall = mock()
-            override val content: ByteReadChannel = mock()
+            override val rawContent: ByteReadChannel = mock()
             override val coroutineContext: CoroutineContext = mock()
             override val requestTime: GMTDate = GMTDate.START
             override val responseTime: GMTDate = GMTDate.START

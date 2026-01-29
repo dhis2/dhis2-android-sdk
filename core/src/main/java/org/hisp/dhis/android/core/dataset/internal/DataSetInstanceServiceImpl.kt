@@ -88,7 +88,7 @@ internal class DataSetInstanceServiceImpl(
         organisationUnitUid: String,
         attributeOptionComboUid: String,
     ): DataSetEditableStatus {
-        val dataSet = dataSetCollectionRepository.uid(dataSetUid).blockingGet()
+        val dataSet = dataSetCollectionRepository.withDataInputPeriods().uid(dataSetUid).blockingGet()
         val period = periodHelper.getPeriodForPeriodId(periodId).blockingGet()
         return when {
             !blockingHasDataWriteAccess(dataSetUid) ->
@@ -114,6 +114,9 @@ internal class DataSetInstanceServiceImpl(
 
             dataSet?.let { blockingIsClosed(dataSet, period) } ?: false ->
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.CLOSED)
+
+            dataSet?.let { !blockingIsInDataInputPeriods(dataSet, period) } ?: false ->
+                DataSetEditableStatus.NonEditable(DataSetNonEditableReason.PERIOD_NOT_IN_DATA_INPUT_PERIODS)
 
             else -> DataSetEditableStatus.Editable
         }
@@ -306,6 +309,24 @@ internal class DataSetInstanceServiceImpl(
         return listOfNotNull(period.startDate(), period.endDate()).all { date ->
             organisationUnitService.blockingIsDateInOrgunitRange(orgUnitUid, date)
         }
+    }
+
+    internal fun blockingIsInDataInputPeriods(dataSet: DataSet, period: Period): Boolean {
+        val dataInputPeriods = dataSet.dataInputPeriods()
+
+        return dataInputPeriods.isNullOrEmpty() || dataInputPeriods
+            .filter { it.period().uid() == period.periodId() }
+            .takeIf { it.isNotEmpty() }
+            ?.let { matchingPeriods ->
+                val currentDate = Date()
+                matchingPeriods.any { dataInputPeriod ->
+                    val openingDate = dataInputPeriod.openingDate()
+                    val closingDate = dataInputPeriod.closingDate()
+
+                    (openingDate?.let { !currentDate.before(it) } ?: true) &&
+                        (closingDate?.let { !currentDate.after(it) } ?: true)
+                }
+            } ?: false
     }
 
     private fun getCategoryOptions(attributeOptionComboUid: String): List<CategoryOption> {

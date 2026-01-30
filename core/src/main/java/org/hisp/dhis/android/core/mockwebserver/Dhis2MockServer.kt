@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.mockwebserver
 
 import android.util.Log
 import io.ktor.http.HttpStatusCode
-import okhttp3.internal.UTC
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -41,6 +40,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 import java.util.concurrent.TimeUnit
 
 @Suppress("TooManyFunctions")
@@ -423,7 +423,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
 
         val rfc1123: DateFormat = SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US)
         rfc1123.isLenient = false
-        rfc1123.timeZone = UTC
+        rfc1123.timeZone = TimeZone.getTimeZone("UTC")
         val dateHeaderValue = rfc1123.format(dateHeader)
 
         response.setHeader("Date", dateHeaderValue)

@@ -1529,6 +1529,7 @@ public final class org/hisp/dhis/android/core/arch/call/BaseD2Progress : org/his
 	public fun getIsComplete ()Z
 	public fun getTotalCalls ()Ljava/lang/Integer;
 	public fun hashCode ()I
+	public synthetic fun isComplete ()Z
 	public final fun toBuilder ()Lorg/hisp/dhis/android/core/arch/call/BaseD2Progress$Builder;
 	public fun toString ()Ljava/lang/String;
 }
@@ -1556,9 +1557,8 @@ public class org/hisp/dhis/android/core/arch/call/D2Progress {
 	public fun <init> (ZLjava/lang/Integer;Ljava/util/List;)V
 	public final fun doneCalls ()Ljava/util/List;
 	public fun getDoneCalls ()Ljava/util/List;
-	public fun getIsComplete ()Z
 	public fun getTotalCalls ()Ljava/lang/Integer;
-	public final fun isComplete ()Z
+	public fun isComplete ()Z
 	public final fun lastCall ()Ljava/lang/String;
 	public final fun percentage ()Ljava/lang/Double;
 	public final fun totalCalls ()Ljava/lang/Integer;
@@ -1685,7 +1685,9 @@ public abstract interface class org/hisp/dhis/android/core/arch/db/access/Databa
 	public abstract fun getVersion ()I
 	public abstract fun isReady ()Z
 	public abstract fun rawQuery (Ljava/lang/String;[Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun rawQuery$default (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;Ljava/lang/String;[Ljava/lang/Object;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public abstract fun rawQueryWithTypedValues (Ljava/lang/String;[Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun rawQueryWithTypedValues$default (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;Ljava/lang/String;[Ljava/lang/Object;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public abstract fun runInTransaction (Ljava/lang/Runnable;)V
 	public abstract fun setForeignKeyConstraintsEnabled (ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun setTransactionSuccessful ()V
@@ -1717,7 +1719,7 @@ public final class org/hisp/dhis/android/core/arch/db/access/DatabaseExportMetad
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class org/hisp/dhis/android/core/arch/db/access/DatabaseExportMetadata$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class org/hisp/dhis/android/core/arch/db/access/DatabaseExportMetadata$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lorg/hisp/dhis/android/core/arch/db/access/DatabaseExportMetadata$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -1725,6 +1727,7 @@ public synthetic class org/hisp/dhis/android/core/arch/db/access/DatabaseExportM
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lorg/hisp/dhis/android/core/arch/db/access/DatabaseExportMetadata;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class org/hisp/dhis/android/core/arch/db/access/DatabaseExportMetadata$Companion {
@@ -5064,6 +5067,7 @@ public final class org/hisp/dhis/android/core/domain/aggregated/data/AggregatedD
 	public fun getIsComplete ()Z
 	public fun getTotalCalls ()Ljava/lang/Integer;
 	public fun hashCode ()I
+	public synthetic fun isComplete ()Z
 	public final fun toBuilder ()Lorg/hisp/dhis/android/core/domain/aggregated/data/AggregatedD2Progress$Builder;
 	public fun toString ()Ljava/lang/String;
 }
@@ -7078,7 +7082,9 @@ public abstract interface class org/hisp/dhis/android/core/option/OptionModule {
 
 public abstract interface class org/hisp/dhis/android/core/option/OptionService {
 	public abstract fun blockingSearchForOptions (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Ljava/util/List;
+	public static synthetic fun blockingSearchForOptions$default (Lorg/hisp/dhis/android/core/option/OptionService;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Ljava/util/List;
 	public abstract fun searchForOptions (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Lio/reactivex/Single;
+	public static synthetic fun searchForOptions$default (Lorg/hisp/dhis/android/core/option/OptionService;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lio/reactivex/Single;
 }
 
 public final class org/hisp/dhis/android/core/option/OptionService$DefaultImpls {
@@ -8650,6 +8656,7 @@ public abstract interface class org/hisp/dhis/android/core/relationship/Relation
 	public abstract fun getRelationshipTypesForEnrollments (Ljava/lang/String;)Ljava/util/List;
 	public abstract fun getRelationshipTypesForEvents (Ljava/lang/String;)Ljava/util/List;
 	public abstract fun getRelationshipTypesForTrackedEntities (Ljava/lang/String;Ljava/lang/String;)Ljava/util/List;
+	public static synthetic fun getRelationshipTypesForTrackedEntities$default (Lorg/hisp/dhis/android/core/relationship/RelationshipService;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ljava/util/List;
 	public abstract fun hasAccessPermission (Lorg/hisp/dhis/android/core/relationship/RelationshipType;)Z
 }
 
@@ -10223,7 +10230,7 @@ public final class org/hisp/dhis/android/core/sms/domain/repository/WebApiReposi
 	public fun toString ()Ljava/lang/String;
 }
 
-public synthetic class org/hisp/dhis/android/core/sms/domain/repository/WebApiRepository$GetMetadataIdsConfig$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+public final synthetic class org/hisp/dhis/android/core/sms/domain/repository/WebApiRepository$GetMetadataIdsConfig$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Lorg/hisp/dhis/android/core/sms/domain/repository/WebApiRepository$GetMetadataIdsConfig$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -10231,6 +10238,7 @@ public synthetic class org/hisp/dhis/android/core/sms/domain/repository/WebApiRe
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lorg/hisp/dhis/android/core/sms/domain/repository/WebApiRepository$GetMetadataIdsConfig;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
 public final class org/hisp/dhis/android/core/sms/domain/repository/WebApiRepository$GetMetadataIdsConfig$Companion {
@@ -11496,6 +11504,7 @@ public final class org/hisp/dhis/android/core/tracker/exporter/TrackerD2Progress
 	public final fun getPrograms ()Ljava/util/Map;
 	public fun getTotalCalls ()Ljava/lang/Integer;
 	public fun hashCode ()I
+	public synthetic fun isComplete ()Z
 	public final fun programs ()Ljava/util/Map;
 	public final fun toBuilder ()Lorg/hisp/dhis/android/core/tracker/exporter/TrackerD2Progress$Builder;
 	public fun toString ()Ljava/lang/String;

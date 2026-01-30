@@ -28,46 +28,34 @@
 
 import android.os.Build
 import io.ktor.client.*
-import io.ktor.client.plugins.*
+import io.ktor.client.plugins.api.*
 import io.ktor.client.request.*
 import io.ktor.http.HttpHeaders
 import io.ktor.util.*
 import org.hisp.dhis.android.BuildConfig
 import org.hisp.dhis.android.core.D2Configuration
 
-internal class UserAgentPlugin private constructor(public val agent: String) {
+internal val UserAgentPlugin = createClientPlugin("CustomUserAgent", ::UserAgentPluginConfig) {
+    val userAgent = pluginConfig.apply { generateUserAgent() }.userAgent ?: "Ktor http-client"
 
-    @KtorDsl
-    class Config {
-        public lateinit var d2Configuration: D2Configuration
-        var userAgent: String? = null
-            private set
-
-        internal fun generateUserAgent() {
-            userAgent = String.format(
-                "%s/%s/%s/Android_%s",
-                d2Configuration.appName(),
-                BuildConfig.VERSION_NAME, // SDK version
-                d2Configuration.appVersion(),
-                Build.VERSION.SDK_INT, // Android Version
-            )
-        }
+    onRequest { request, _ ->
+        request.headers.remove(HttpHeaders.UserAgent)
+        request.header(HttpHeaders.UserAgent, userAgent)
     }
+}
 
-    public companion object Plugin : HttpClientPlugin<Config, UserAgentPlugin> {
-        override val key: AttributeKey<UserAgentPlugin> = AttributeKey("CustomUserAgent")
+internal class UserAgentPluginConfig {
+    lateinit var d2Configuration: D2Configuration
+    var userAgent: String? = null
+        private set
 
-        override fun prepare(block: Config.() -> Unit): UserAgentPlugin {
-            val config = Config().apply(block)
-            config.generateUserAgent()
-            return UserAgentPlugin(config.userAgent ?: "Ktor http-client")
-        }
-
-        override fun install(plugin: UserAgentPlugin, scope: HttpClient) {
-            scope.requestPipeline.intercept(HttpRequestPipeline.State) {
-                context.headers.remove(HttpHeaders.UserAgent) // Remove any existing User-Agent header
-                context.header(HttpHeaders.UserAgent, plugin.agent)
-            }
-        }
+    fun generateUserAgent() {
+        userAgent = String.format(
+            "%s/%s/%s/Android_%s",
+            d2Configuration.appName(),
+            BuildConfig.VERSION_NAME, // SDK version
+            d2Configuration.appVersion(),
+            Build.VERSION.SDK_INT, // Android Version
+        )
     }
 }

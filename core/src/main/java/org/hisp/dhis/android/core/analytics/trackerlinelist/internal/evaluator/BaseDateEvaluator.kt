@@ -48,7 +48,8 @@ internal abstract class BaseDateEvaluator(
         return if (item.filters.isEmpty()) {
             "1"
         } else {
-            return item.filters.joinToString(" OR ") { "(${getFilterWhereClause(it)})" }
+            val orClause = item.filters.joinToString(" OR ") { "(${getFilterWhereClause(it)})" }
+            if (item.filters.size > 1) "($orClause)" else orClause
         }
     }
 

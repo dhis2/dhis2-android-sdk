@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,15 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset
 
-package org.hisp.dhis.android.core.dataset.internal
-
-import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandlerImpl
 import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.dataset.SectionDataElementLink
-import org.koin.core.annotation.Singleton
 
-@Singleton
-internal class SectionDataElementLinkHandler(
-    store: SectionDataElementLinkStore,
-) : OrderedLinkHandlerImpl<ObjectWithUid, SectionDataElementLink>(store)
+internal object SectionInternalAccessor {
+    @JvmStatic
+    fun accessDataElementUids(section: Section): List<ObjectWithUid>? {
+        return section.dataElementUids()
+    }
+
+    fun insertDataElementUids(
+        builder: Section.Builder,
+        dataElementUids: List<ObjectWithUid>?,
+    ): Section.Builder {
+        return builder.dataElementUids(dataElementUids)
+    }
+}

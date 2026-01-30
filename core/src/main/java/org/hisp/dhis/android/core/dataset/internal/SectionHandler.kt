@@ -30,12 +30,13 @@ package org.hisp.dhis.android.core.dataset.internal
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
-import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandHandler
 import org.hisp.dhis.android.core.dataset.Section
 import org.hisp.dhis.android.core.dataset.SectionDataElementLink
 import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLink
+import org.hisp.dhis.android.core.dataset.SectionInternalAccessor
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -51,8 +52,8 @@ internal class SectionHandler(
     override suspend fun afterObjectHandled(o: Section, action: HandleAction) {
         sectionDataElementLinkHandler.handleMany(
             o.uid(),
-            o.dataElements(),
-        ) { dataElement: DataElement, sortOrder: Int ->
+            SectionInternalAccessor.accessDataElementUids(o),
+        ) { dataElement: ObjectWithUid, sortOrder: Int ->
             SectionDataElementLink.builder()
                 .section(o.uid())
                 .dataElement(dataElement.uid())

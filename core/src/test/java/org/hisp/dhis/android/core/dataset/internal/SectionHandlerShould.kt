@@ -30,10 +30,10 @@ package org.hisp.dhis.android.core.dataset.internal
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandHandler
 import org.hisp.dhis.android.core.dataset.Section
+import org.hisp.dhis.android.core.dataset.SectionInternalAccessor
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -57,7 +57,7 @@ class SectionHandlerShould {
 
     // object to test
     private lateinit var sectionHandler: SectionHandler
-    private lateinit var dataElements: MutableList<DataElement>
+    private lateinit var dataElements: MutableList<ObjectWithUid>
 
     @Before
     @Throws(Exception::class)
@@ -74,12 +74,9 @@ class SectionHandlerShould {
         whenever(section.uid()).thenReturn("section_uid")
 
         dataElements = mutableListOf(
-            DataElement.builder()
-                .uid("dataElement_uid")
-                .categoryCombo(ObjectWithUid.create("categoryCombo_uid"))
-                .build(),
+            ObjectWithUid.create("dataElement_uid"),
         )
-        whenever(section.dataElements()).thenReturn(dataElements)
+        whenever(SectionInternalAccessor.accessDataElementUids(section)).thenReturn(dataElements)
 
         val greyedFields: List<DataElementOperand> = emptyList()
         whenever(section.greyedFields()).thenReturn(greyedFields)

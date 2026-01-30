@@ -60,6 +60,9 @@ public abstract class Section extends BaseIdentifiableObject implements CoreObje
     public abstract ObjectWithUid dataSet();
 
     @Nullable
+    abstract List<ObjectWithUid> dataElementUids();
+
+    @Nullable
     public abstract List<DataElement> dataElements();
 
     @Nullable
@@ -91,6 +94,8 @@ public abstract class Section extends BaseIdentifiableObject implements CoreObje
         public abstract Builder showColumnTotals(Boolean showColumnTotals);
 
         public abstract Builder dataSet(ObjectWithUid dataSet);
+
+        abstract Builder dataElementUids(List<ObjectWithUid> dataElementUids);
 
         public abstract Builder dataElements(List<DataElement> dataElements);
 

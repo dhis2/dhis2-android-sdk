@@ -105,7 +105,7 @@ internal data class DataSetDTO(
             workflow(workflow?.toDomain())
             dataSetElements(dataSetElements.map { it.toDomain() })
             indicators(indicators.map { Indicator.builder().uid(it.id).build() })
-            DataSetInternalAccessor.insertSections(this, sections.map { it.toDomain(categoryCombo.toDomain()) })
+            DataSetInternalAccessor.insertSections(this, sections.map { it.toDomain() })
             compulsoryDataElementOperands(compulsoryDataElementOperands.map { it.toDomain() })
             dataInputPeriods(dataInputPeriods.map { it.toDomain(ObjectWithUidDTO(id)) })
             displayOptions(

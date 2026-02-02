@@ -4,7 +4,6 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.program.ProgramStageDataElement
 import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.persistence.common.BaseIdentifiableObjectDB
@@ -56,7 +55,7 @@ internal data class ProgramStageDataElementDB(
             allowProvidedElsewhere(allowProvidedElsewhere)
             sortOrder(sortOrder)
             allowFutureDate(allowFutureDate)
-            dataElement(DataElement.builder().uid(dataElement).build())
+            dataElement(ObjectWithUid.create(dataElement))
             programStage(ObjectWithUid.create(programStage))
         }.build()
     }
@@ -75,7 +74,7 @@ internal fun ProgramStageDataElement.toDB(): ProgramStageDataElementDB {
         allowProvidedElsewhere = allowProvidedElsewhere(),
         sortOrder = sortOrder(),
         allowFutureDate = allowFutureDate(),
-        dataElement = dataElement()!!.uid()!!,
+        dataElement = dataElement()!!.uid(),
         programStage = programStage()!!.uid(),
     )
 }

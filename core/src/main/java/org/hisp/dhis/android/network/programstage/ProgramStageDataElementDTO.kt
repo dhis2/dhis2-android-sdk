@@ -30,6 +30,7 @@ package org.hisp.dhis.android.network.programstage
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.program.ProgramStageDataElement
+import org.hisp.dhis.android.core.program.ProgramStageDataElementInternalAccessor
 import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
@@ -54,16 +55,19 @@ internal data class ProgramStageDataElementDTO(
     val renderType: ValueTypeRenderingDTO?,
 ) : BaseIdentifiableObjectDTO {
     fun toDomain(): ProgramStageDataElement {
-        return ProgramStageDataElement.builder()
+        val builder = ProgramStageDataElement.builder()
             .applyBaseIdentifiableFields(this)
             .displayInReports(displayInReports)
             .compulsory(compulsory)
             .allowProvidedElsewhere(allowProvidedElsewhere)
             .sortOrder(sortOrder)
             .allowFutureDate(allowFutureDate)
-            .dataElement(dataElement?.toDomain())
+            .dataElement(dataElement?.let { ObjectWithUidDTO(it.id).toDomain() })
             .programStage(programStage?.toDomain())
             .renderType(renderType?.toDomain())
-            .build()
+
+        ProgramStageDataElementInternalAccessor.insertFullDataElement(builder, dataElement?.toDomain())
+
+        return builder.build()
     }
 }

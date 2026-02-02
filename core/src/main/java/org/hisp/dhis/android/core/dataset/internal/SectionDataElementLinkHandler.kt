@@ -29,11 +29,11 @@
 package org.hisp.dhis.android.core.dataset.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandlerImpl
-import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataset.SectionDataElementLink
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class SectionDataElementLinkHandler(
     store: SectionDataElementLinkStore,
-) : OrderedLinkHandlerImpl<DataElement, SectionDataElementLink>(store)
+) : OrderedLinkHandlerImpl<ObjectWithUid, SectionDataElementLink>(store)

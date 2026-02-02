@@ -73,7 +73,7 @@ class ProgramShould : CoreObjectShould("program/program.json") {
         assertThat(program.displayFrontPageList()).isFalse()
         assertThat(program.programType()).isEqualTo(ProgramType.WITH_REGISTRATION)
         assertThat(program.displayIncidentDate()).isFalse()
-        assertThat(program.categoryCombo()!!.uid()).isEqualTo("p0KPaWEg3cf")
+        assertThat(program.categoryCombo().uid()).isEqualTo("p0KPaWEg3cf")
         assertThat(program.trackedEntityType()!!.uid()).isEqualTo("nEenWmSyUEp")
         assertThat(program.relatedProgram()!!.uid()).isEqualTo("IpHINAT79UW")
         assertThat(program.programRuleVariables()!![0].uid()).isEqualTo("varonrw1032")

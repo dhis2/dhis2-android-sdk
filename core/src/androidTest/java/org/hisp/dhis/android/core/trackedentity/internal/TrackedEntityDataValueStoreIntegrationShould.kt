@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.ProgramStageDataElement
+import org.hisp.dhis.android.core.program.ProgramStageDataElementInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
@@ -232,13 +233,15 @@ class TrackedEntityDataValueStoreIntegrationShould :
         val dataElement2 = "data_element_2"
         val psStore: IdentifiableObjectStore<ProgramStageDataElement> =
             ProgramStageDataElementStoreImpl(TestDatabaseAdapterFactory.get())
-        psStore.insert(
-            ProgramStageDataElementSamples.getProgramStageDataElement().toBuilder()
-                .uid(dataElement1)
-                .dataElement(DataElementSamples.getDataElement().toBuilder().uid(dataElement1).build())
-                .programStage(ObjectWithUid.create(stage.uid()))
-                .build(),
+        val builder = ProgramStageDataElementSamples.getProgramStageDataElement().toBuilder()
+            .uid(dataElement1)
+            .dataElement(ObjectWithUid.create(dataElement1))
+            .programStage(ObjectWithUid.create(stage.uid()))
+        ProgramStageDataElementInternalAccessor.insertFullDataElement(
+            builder,
+            DataElementSamples.getDataElement().toBuilder().uid(dataElement1).build(),
         )
+        psStore.insert(builder.build())
 
         (store as TrackedEntityDataValueStore).insert(
             TrackedEntityDataValueSamples.get()

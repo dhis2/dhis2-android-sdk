@@ -1,0 +1,212 @@
+/*
+ *  Copyright (c) 2004-2025, University of Oslo
+ *  All rights reserved.
+ *
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
+ *
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+package org.hisp.dhis.android.core.category.internal
+
+import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
+import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyOneObjectRepositoryFinalImpl
+import org.hisp.dhis.android.core.category.Category
+import org.hisp.dhis.android.core.category.CategoryCombo
+import org.hisp.dhis.android.core.category.CategoryComboCollectionRepository
+import org.hisp.dhis.android.core.category.CategoryComboInternalAccessor.accessCategoryOptionCombos
+import org.hisp.dhis.android.core.category.CategoryOptionCombo
+import org.junit.Before
+import org.junit.Test
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
+import org.mockito.kotlin.whenever
+
+class DefaultCategoryComboManagerShould {
+    private val categoryComboCollectionRepository: CategoryComboCollectionRepository = mock()
+    private val categoryComboRepository: ReadOnlyOneObjectRepositoryFinalImpl<CategoryCombo> = mock()
+    private val filterConnector: BooleanFilterConnector<CategoryComboCollectionRepository> = mock()
+    private val networkHandler: CategoryComboNetworkHandler = mock()
+
+    private val comboUid = "defaultComboUid"
+    private val optionComboUid = "defaultOptionComboUid"
+    private val categoryUid = "defaultCategoryUid"
+
+    private val categoryCombo: CategoryCombo = mock()
+    private val categoryOptionCombo: CategoryOptionCombo = mock()
+    private val category: Category = mock()
+
+    private lateinit var manager: DefaultCategoryComboManager
+
+    @Before
+    fun setUp() {
+        whenever(categoryCombo.uid()).doReturn(comboUid)
+        whenever(categoryOptionCombo.uid()).doReturn(optionComboUid)
+        whenever(category.uid()).doReturn(categoryUid)
+        whenever(accessCategoryOptionCombos(categoryCombo)).doReturn(listOf(categoryOptionCombo))
+        whenever(categoryCombo.categories()).doReturn(listOf(category))
+        whenever(categoryComboCollectionRepository.byIsDefault()).doReturn(filterConnector)
+        whenever(filterConnector.eq(true)).doReturn(categoryComboCollectionRepository)
+        whenever(categoryComboCollectionRepository.withCategories()).doReturn(categoryComboCollectionRepository)
+        whenever(categoryComboCollectionRepository.withCategoryOptionCombos())
+            .doReturn(categoryComboCollectionRepository)
+        whenever(categoryComboCollectionRepository.one()).doReturn(categoryComboRepository)
+        whenever(categoryComboRepository.blockingGet()).doReturn(categoryCombo)
+
+        manager = DefaultCategoryComboManager(
+            categoryComboCollectionRepository,
+            networkHandler,
+        )
+    }
+
+    @Test
+    fun return_cached_value_when_available() = runTest {
+        manager.setDefaults(categoryCombo)
+
+        val result = manager.defaultCategoryComboUid
+
+        assertThat(result).isEqualTo(comboUid)
+        verify(categoryComboRepository, never()).blockingGet()
+        verifyNoMoreInteractions(networkHandler)
+    }
+
+    @Test
+    fun return_all_cached_values_when_available() = runTest {
+        manager.setDefaults(categoryCombo)
+
+        assertThat(manager.defaultCategoryComboUid).isEqualTo(comboUid)
+        assertThat(manager.defaultCategoryOptionComboUid).isEqualTo(optionComboUid)
+        assertThat(manager.defaultCategoryUid).isEqualTo(categoryUid)
+
+        verify(categoryComboRepository, never()).blockingGet()
+        verifyNoMoreInteractions(networkHandler)
+    }
+
+    @Test
+    fun query_database_when_cache_is_empty() = runTest {
+        whenever(categoryComboRepository.blockingGet()).doReturn(categoryCombo)
+
+        val result = manager.defaultCategoryComboUid
+
+        assertThat(result).isEqualTo(comboUid)
+        verify(categoryComboRepository).blockingGet()
+        verifyNoMoreInteractions(networkHandler)
+    }
+
+    @Test
+    fun return_null_when_not_in_database() = runTest {
+        whenever(categoryComboRepository.blockingGet()).doReturn(null)
+
+        val result = manager.defaultCategoryComboUid
+
+        assertThat(result).isNull()
+        verify(categoryComboRepository).blockingGet()
+        verifyNoMoreInteractions(networkHandler)
+    }
+
+    @Test
+    fun fetch_defaults_makes_api_call_and_caches_result() = runTest {
+        whenever(networkHandler.getDefaultCategoryCombo()).doReturn(categoryCombo)
+
+        manager.fetchDefaults()
+
+        assertThat(manager.defaultCategoryComboUid).isEqualTo(comboUid)
+        verify(networkHandler).getDefaultCategoryCombo()
+    }
+
+    @Test
+    fun set_defaults_extracts_all_uids_correctly() {
+        manager.setDefaults(categoryCombo)
+
+        assertThat(manager.defaultCategoryComboUid).isEqualTo(comboUid)
+        assertThat(manager.defaultCategoryOptionComboUid).isEqualTo(optionComboUid)
+        assertThat(manager.defaultCategoryUid).isEqualTo(categoryUid)
+    }
+
+    @Test
+    fun clear_cache_clears_all_values() = runTest {
+        manager.setDefaults(categoryCombo)
+
+        assertThat(manager.defaultCategoryComboUid).isEqualTo(comboUid)
+
+        manager.clearCache()
+
+        whenever(categoryComboRepository.blockingGet()).doReturn(null)
+
+        val result = manager.defaultCategoryComboUid
+
+        assertThat(result).isNull()
+        verify(categoryComboRepository).blockingGet()
+    }
+
+    @Test
+    fun handle_null_category_option_combos() {
+        whenever(accessCategoryOptionCombos(categoryCombo)).doReturn(null)
+        whenever(categoryCombo.categories()).doReturn(listOf(category))
+
+        manager.setDefaults(categoryCombo)
+
+        assertThat(manager.defaultCategoryComboUid).isEqualTo(comboUid)
+        assertThat(manager.defaultCategoryOptionComboUid).isNull()
+        assertThat(manager.defaultCategoryUid).isEqualTo(categoryUid)
+    }
+
+    @Test
+    fun handle_null_categories() {
+        whenever(accessCategoryOptionCombos(categoryCombo)).doReturn(listOf(categoryOptionCombo))
+        whenever(categoryCombo.categories()).doReturn(null)
+
+        manager.setDefaults(categoryCombo)
+
+        assertThat(manager.defaultCategoryComboUid).isEqualTo(comboUid)
+        assertThat(manager.defaultCategoryOptionComboUid).isEqualTo(optionComboUid)
+        assertThat(manager.defaultCategoryUid).isNull()
+    }
+
+    @Test
+    fun handle_empty_category_option_combos() {
+        whenever(accessCategoryOptionCombos(categoryCombo)).doReturn(emptyList())
+        whenever(categoryCombo.categories()).doReturn(listOf(category))
+
+        manager.setDefaults(categoryCombo)
+
+        assertThat(manager.defaultCategoryComboUid).isEqualTo(comboUid)
+        assertThat(manager.defaultCategoryOptionComboUid).isNull()
+        assertThat(manager.defaultCategoryUid).isEqualTo(categoryUid)
+    }
+
+    @Test
+    fun handle_empty_categories() {
+        whenever(accessCategoryOptionCombos(categoryCombo)).doReturn(listOf(categoryOptionCombo))
+        whenever(categoryCombo.categories()).doReturn(emptyList())
+
+        manager.setDefaults(categoryCombo)
+
+        assertThat(manager.defaultCategoryComboUid).isEqualTo(comboUid)
+        assertThat(manager.defaultCategoryOptionComboUid).isEqualTo(optionComboUid)
+        assertThat(manager.defaultCategoryUid).isNull()
+    }
+}

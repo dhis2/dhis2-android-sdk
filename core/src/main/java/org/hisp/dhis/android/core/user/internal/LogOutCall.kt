@@ -31,6 +31,7 @@ import io.reactivex.Completable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
+import org.hisp.dhis.android.core.category.internal.DefaultCategoryComboManager
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationInsecureStore
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -45,6 +46,7 @@ class LogOutCall internal constructor(
     private val credentialsSecureStore: CredentialsSecureStore,
     private val userIdStore: UserIdInMemoryStore,
     private val serverTimezoneManager: ServerTimezoneManager,
+    private val defaultCategoryComboManager: DefaultCategoryComboManager,
     private val databaseConfigurationHelper: DatabaseConfigurationHelper,
     private val databaseConfigurationStore: DatabaseConfigurationInsecureStore,
 ) {
@@ -65,6 +67,7 @@ class LogOutCall internal constructor(
             credentialsSecureStore.remove()
             userIdStore.remove()
             serverTimezoneManager.clearCache()
+            defaultCategoryComboManager.clearCache()
         }
     }
 

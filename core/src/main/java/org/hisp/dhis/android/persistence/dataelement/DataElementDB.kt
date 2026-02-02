@@ -95,7 +95,7 @@ internal fun DataElement.toDB(): DataElementDB {
         domainType = domainType(),
         displayFormName = displayFormName(),
         optionSet = optionSet()?.uid(),
-        categoryCombo = categoryCombo()?.uid() ?: CategoryComboDB.Companion.DEFAULT_UID,
+        categoryCombo = categoryCombo().uid(),
         fieldMask = fieldMask(),
         color = style().color(),
         icon = style().icon(),

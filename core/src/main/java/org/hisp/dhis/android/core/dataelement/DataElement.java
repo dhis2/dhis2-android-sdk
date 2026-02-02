@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.dataelement;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.attribute.AttributeValue;
-import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectStyle;
@@ -73,13 +73,8 @@ public abstract class DataElement extends BaseNameableObject
         return optionSet == null ? null : optionSet.uid();
     }
 
-    @Nullable
+    @NonNull
     public abstract ObjectWithUid categoryCombo();
-
-    public String categoryComboUid() {
-        ObjectWithUid combo = categoryCombo();
-        return combo == null ? CategoryCombo.DEFAULT_UID : combo.uid();
-    }
 
     @Nullable
     public abstract List<ObjectWithUid> legendSets();
@@ -113,7 +108,7 @@ public abstract class DataElement extends BaseNameableObject
 
         public abstract DataElement.Builder optionSet(ObjectWithUid optionSet);
 
-        public abstract DataElement.Builder categoryCombo(ObjectWithUid categoryCombo);
+        public abstract DataElement.Builder categoryCombo(@NonNull ObjectWithUid categoryCombo);
 
         public abstract DataElement.Builder legendSets(List<ObjectWithUid> legendSets);
 

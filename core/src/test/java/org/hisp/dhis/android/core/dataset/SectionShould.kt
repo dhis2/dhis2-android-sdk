@@ -56,8 +56,8 @@ class SectionShould : CoreObjectShould("dataset/section.json") {
         assertThat(section.showRowTotals()).isFalse()
         assertThat(section.showColumnTotals()).isFalse()
         assertThat(section.disableDataElementAutoGroup()).isTrue()
-        assertThat(section.dataElements()!!.size).isEqualTo(15)
-        assertThat(section.dataElements()!![0].uid()).isEqualTo("s46m5MS0hxu")
+        assertThat(section.dataElementUids()!!.size).isEqualTo(15)
+        assertThat(section.dataElementUids()!![0].uid()).isEqualTo("s46m5MS0hxu")
         assertThat(section.greyedFields()!!.size).isEqualTo(1)
         assertThat(section.greyedFields()!![0].uid()).isEqualTo("ca8lfO062zg.Gmbgme7z9BF")
 

@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.network.attribute.AttributeValueDTO
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.BaseNameableObjectDTO
+import org.hisp.dhis.android.network.common.dto.CategoryComboWithFallbackDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithStyleDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 import org.hisp.dhis.android.network.common.dto.PagerDTO
@@ -60,7 +61,7 @@ internal data class DataElementDTO(
     val domainType: String?,
     val displayFormName: String?,
     val optionSet: ObjectWithUidDTO?,
-    val categoryCombo: ObjectWithUidDTO?,
+    val categoryCombo: CategoryComboWithFallbackDTO = CategoryComboWithFallbackDTO(null),
     val legendSets: List<ObjectWithUidDTO>?,
     val fieldMask: String?,
     val attributeValues: List<AttributeValueDTO>?,
@@ -76,7 +77,7 @@ internal data class DataElementDTO(
             domainType(domainType)
             displayFormName(displayFormName)
             optionSet(optionSet?.toDomain())
-            categoryCombo(categoryCombo?.toDomain())
+            categoryCombo(categoryCombo.toDomain())
             legendSets(legendSets?.map { it.toDomain() })
             fieldMask(fieldMask)
             attributeValues(attributeValues?.map { it.toDomain() })

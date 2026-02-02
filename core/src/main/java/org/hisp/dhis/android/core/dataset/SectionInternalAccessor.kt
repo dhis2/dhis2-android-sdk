@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,29 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset
 
-package org.hisp.dhis.android.core.data.program;
+import org.hisp.dhis.android.core.common.ObjectWithUid
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.program.ProgramStageDataElement;
+internal object SectionInternalAccessor {
+    @JvmStatic
+    fun accessDataElementUids(section: Section): List<ObjectWithUid>? {
+        return section.dataElementUids()
+    }
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
-
-public class ProgramStageDataElementSamples {
-
-    public static ProgramStageDataElement getProgramStageDataElement() {
-        ProgramStageDataElement.Builder builder = ProgramStageDataElement.builder();
-
-        fillIdentifiableProperties(builder);
-        builder
-                .displayInReports(true)
-                .dataElement(ObjectWithUid.create("data_element"))
-                .compulsory(false)
-                .allowProvidedElsewhere(true)
-                .sortOrder(0)
-                .allowFutureDate(false)
-                .programStage(ObjectWithUid.create("program_stage"));
-        return builder.build();
+    fun insertDataElementUids(
+        builder: Section.Builder,
+        dataElementUids: List<ObjectWithUid>?,
+    ): Section.Builder {
+        return builder.dataElementUids(dataElementUids)
     }
 }

@@ -47,4 +47,13 @@ internal class CategoryComboNetworkHandlerImpl(
         )
         return apiPayload.mapItems(CategoryComboDTO::toDomain)
     }
+
+    override suspend fun getDefaultCategoryCombo(): CategoryCombo? {
+        val apiPayload = service.getCategoryCombos(
+            CategoryComboFields.allFields,
+            CategoryComboFields.isDefault.eq(true),
+            paging = false,
+        )
+        return apiPayload.items.find { it.isDefault == true }?.toDomain()
+    }
 }

@@ -21,7 +21,10 @@
     "manage": false
   },
   "dataElement": {
-    "id": "aei1xRjSU2l"
+    "id": "aei1xRjSU2l",
+    "categoryCombo": {
+      "id": "p0KPaWEg3cf"
+    }
   },
   "renderType": {
     "DESKTOP": {

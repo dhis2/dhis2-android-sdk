@@ -35,14 +35,14 @@ import org.hisp.dhis.android.network.common.filters.Filter
 internal class CategoryComboService(private val client: HttpServiceClient) {
     suspend fun getCategoryCombos(
         fields: Fields<CategoryCombo>,
-        uids: Filter<CategoryCombo>,
+        filter: Filter<CategoryCombo>,
         paging: Boolean,
     ): CategoryComboPayload {
         return client.get {
             url("categoryCombos")
             parameters {
                 fields(fields)
-                filter(uids)
+                filter(filter)
                 paging(paging)
             }
         }

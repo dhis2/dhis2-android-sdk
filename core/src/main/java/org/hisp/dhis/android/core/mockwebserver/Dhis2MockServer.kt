@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.mockwebserver
 
 import android.util.Log
 import io.ktor.http.HttpStatusCode
-import okhttp3.internal.UTC
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -41,6 +40,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 import java.util.concurrent.TimeUnit
 
 @Suppress("TooManyFunctions")
@@ -228,8 +228,13 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
                     path.startsWith("/api/indicatorTypes?") ->
                         createMockResponse(INDICATOR_TYPES_JSON)
 
-                    path.startsWith("/api/categoryCombos?") ->
-                        createMockResponse(CATEGORY_COMBOS_JSON)
+                    path.startsWith("/api/categoryCombos?") -> {
+                        if (path.contains("filter=isDefault:eq:true")) {
+                            createMockResponse(DEFAULT_CATEGORY_COMBO_JSON)
+                        } else {
+                            createMockResponse(CATEGORY_COMBOS_JSON)
+                        }
+                    }
 
                     path.startsWith("/api/categories?") ->
                         createMockResponse(CATEGORIES_JSON)
@@ -349,6 +354,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
         enqueueMockResponse(VERSIONS_JSON)
         enqueueMockResponse(STOCK_USE_CASES_JSON)
         enqueueMockResponse(CONSTANTS_JSON)
+        enqueueMockResponse(DEFAULT_CATEGORY_COMBO_JSON)
         enqueueMockResponse(USER_JSON)
         enqueueMockResponse(AUTHORITIES_JSON)
         enqueueMockResponse(ORGANISATION_UNIT_LEVELS_JSON)
@@ -423,7 +429,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
 
         val rfc1123: DateFormat = SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US)
         rfc1123.isLenient = false
-        rfc1123.timeZone = UTC
+        rfc1123.timeZone = TimeZone.getTimeZone("UTC")
         val dateHeaderValue = rfc1123.format(dateHeader)
 
         response.setHeader("Date", dateHeaderValue)
@@ -501,6 +507,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
         private const val INDICATORS_JSON = "indicators/indicators.json"
         private const val INDICATOR_TYPES_JSON = "indicators/indicator_types.json"
         private const val CATEGORY_COMBOS_JSON = "category/category_combos.json"
+        private const val DEFAULT_CATEGORY_COMBO_JSON = "category/default_category_combo.json"
         private const val CATEGORIES_JSON = "category/categories.json"
         private const val CATEGORY_OPTIONS_JSON = "category/category_options.json"
         private const val CATEGORY_OPTION_ORGUNITS_JSON = "category/category_option_orgunits.json"

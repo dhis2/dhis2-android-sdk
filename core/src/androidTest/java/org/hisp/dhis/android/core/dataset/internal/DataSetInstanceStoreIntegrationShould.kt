@@ -106,7 +106,7 @@ class DataSetInstanceStoreIntegrationShould : BaseMockIntegrationTestMetadataDis
             .one().blockingGet()!!
 
         val attributeOption = d2.categoryModule().categoryOptionCombos()
-            .byCategoryComboUid().eq(dataset.categoryCombo()?.uid())
+            .byCategoryComboUid().eq(dataset.categoryCombo().uid())
             .one().blockingGet()!!
 
         val baseBuilder = DataValue.builder()

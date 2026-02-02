@@ -39,6 +39,7 @@ internal object CategoryComboFields : BaseFields<CategoryCombo>() {
     private const val CATEGORY_OPTION_COMBOS = "categoryOptionCombos"
 
     val uid = fh.uid()
+    val isDefault = fh.field(Columns.IS_DEFAULT)
 
     val allFields = Fields.from(
         fh.getIdentifiableFields(),

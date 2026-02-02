@@ -390,7 +390,7 @@ class ProgramCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
     fun include_category_combo_as_object_with_uid() {
         val program = d2.programModule().programs()
             .one().blockingGet()
-        assertThat(program!!.categoryCombo()!!.uid()).isEqualTo("m2jTvAj5kkm")
+        assertThat(program!!.categoryCombo().uid()).isEqualTo("m2jTvAj5kkm")
     }
 
     @Test

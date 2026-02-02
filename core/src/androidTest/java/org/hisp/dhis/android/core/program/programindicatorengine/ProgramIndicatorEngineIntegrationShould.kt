@@ -32,7 +32,6 @@ import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
-import org.hisp.dhis.android.core.category.CategoryCombo
 import org.hisp.dhis.android.core.category.internal.CreateCategoryComboUtils
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.AggregationType
@@ -109,7 +108,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
                 val trackedEntityType = TrackedEntityType.builder().uid(teiTypeUid).build()
                 koin.get<TrackedEntityTypeStore>().insert(trackedEntityType)
 
-                val categoryCombo = CreateCategoryComboUtils.create(CategoryCombo.DEFAULT_UID)
+                val categoryCombo = CreateCategoryComboUtils.create("p0KPaWEg3cf")
                 val store = CategoryComboStoreImpl(d2.databaseAdapter())
                 store.insert(categoryCombo)
 
@@ -117,6 +116,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
                 val program = Program.builder().uid(programUid)
                     .access(access)
                     .trackedEntityType(TrackedEntityType.builder().uid(teiTypeUid).build())
+                    .categoryCombo(ObjectWithUid.create("p0KPaWEg3cf"))
                     .build()
                 koin.get<ProgramStore>().insert(program)
 
@@ -128,8 +128,16 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
                 programStageStore.insert(stage1)
                 programStageStore.insert(stage2)
 
-                val de1 = DataElement.builder().uid(dataElement1).valueType(ValueType.NUMBER).build()
-                val de2 = DataElement.builder().uid(dataElement2).valueType(ValueType.NUMBER).build()
+                val de1 = DataElement.builder()
+                    .uid(dataElement1)
+                    .valueType(ValueType.NUMBER)
+                    .categoryCombo(ObjectWithUid.fromIdentifiable(categoryCombo))
+                    .build()
+                val de2 = DataElement.builder()
+                    .uid(dataElement2)
+                    .valueType(ValueType.NUMBER)
+                    .categoryCombo(ObjectWithUid.fromIdentifiable(categoryCombo))
+                    .build()
                 val dataElementStore: DataElementStore = koin.get()
                 dataElementStore.insert(de1)
                 dataElementStore.insert(de2)

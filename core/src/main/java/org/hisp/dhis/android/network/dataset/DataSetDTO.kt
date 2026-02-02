@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.AccessDTO
 import org.hisp.dhis.android.network.common.dto.BaseNameableObjectDTO
+import org.hisp.dhis.android.network.common.dto.CategoryComboWithFallbackDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithStyleDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 import org.hisp.dhis.android.network.common.dto.PagerDTO
@@ -59,7 +60,7 @@ internal data class DataSetDTO(
     override val description: String?,
     override val displayDescription: String?,
     val periodType: String?,
-    val categoryCombo: ObjectWithUidDTO?,
+    val categoryCombo: CategoryComboWithFallbackDTO = CategoryComboWithFallbackDTO(null),
     val mobile: Boolean?,
     val version: Int?,
     val expiryDays: Double?,
@@ -87,7 +88,7 @@ internal data class DataSetDTO(
         return DataSet.builder().apply {
             applyBaseNameableFields(this@DataSetDTO)
             periodType?.let { periodType(PeriodType.valueOf(periodType)) }
-            categoryCombo(categoryCombo?.toDomain())
+            categoryCombo(categoryCombo.toDomain())
             mobile(mobile)
             version(version)
             expiryDays(expiryDays)

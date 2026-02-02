@@ -40,6 +40,7 @@ import org.hisp.dhis.android.network.attribute.AttributeValueDTO
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.AccessDTO
 import org.hisp.dhis.android.network.common.dto.BaseNameableObjectDTO
+import org.hisp.dhis.android.network.common.dto.CategoryComboWithFallbackDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithStyleDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 import org.hisp.dhis.android.network.common.dto.PagerDTO
@@ -78,7 +79,7 @@ internal data class ProgramDTO(
     val programTrackedEntityAttributes: List<ProgramTrackedEntityAttributeDTO>?,
     val relatedProgram: ObjectWithUidDTO?,
     val trackedEntityType: TrackedEntityTypeDTO?,
-    val categoryCombo: ObjectWithUidDTO?,
+    val categoryCombo: CategoryComboWithFallbackDTO = CategoryComboWithFallbackDTO(null),
     val access: AccessDTO?,
     val programRuleVariables: List<ProgramRuleVariableDTO>?,
     val expiryDays: Int?,
@@ -131,7 +132,7 @@ internal data class ProgramDTO(
             )
             relatedProgram(relatedProgram?.toDomain())
             trackedEntityType(trackedEntityType?.toDomain())
-            categoryCombo(categoryCombo?.toDomain())
+            categoryCombo(categoryCombo.toDomain())
             access?.let { access(it.toDomain()) }
             ProgramInternalAccessor.insertProgramRuleVariables(this, programRuleVariables?.map { it.toDomain() })
             expiryDays(expiryDays)

@@ -39,6 +39,7 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class CategoryComboUidsSeeker(
     databaseAdapter: DatabaseAdapter,
+    private val defaultCategoryComboManager: DefaultCategoryComboManager,
 ) : BaseUidsSeeker(databaseAdapter) {
     suspend fun seekUids(): Set<String> {
         val tableNames = listOf(
@@ -50,6 +51,11 @@ internal class CategoryComboUidsSeeker(
         val query = MultipleTableQueryBuilder()
             .generateQuery(DataSetTableInfo.Columns.CATEGORY_COMBO, tableNames).build()
 
-        return readSingleColumnResults(query)
+        val uids = readSingleColumnResults(query).toMutableSet()
+
+        // Always include the default CategoryCombo UID to ensure it gets downloaded
+        defaultCategoryComboManager.defaultCategoryComboUid?.let { uids.add(it) }
+
+        return uids
     }
 }

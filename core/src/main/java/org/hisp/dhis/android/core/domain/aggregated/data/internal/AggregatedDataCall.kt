@@ -152,7 +152,7 @@ internal class AggregatedDataCall(
         bundle: AggregatedDataCallBundle,
     ): List<DataApproval> {
         val dataSetsWithWorkflow = bundle.dataSets.filter { it.workflow() != null }
-        val workflowUids = dataSetsWithWorkflow.mapNotNull { it.workflow()?.uid() }
+        val workflowUids = dataSetsWithWorkflow.mapNotNull { it.workflow()?.uid() }.toSet()
 
         return if (workflowUids.isEmpty()) {
             emptyList()

@@ -41,6 +41,7 @@ class SystemSettingSplitterShould {
         keyStyle = "aStyle",
         keyDefaultBaseMap = "aDefaultBaseMap",
         keyBingMapsApiKey = null,
+        analyticsFinancialYearStart = null,
     )
 
     @Test

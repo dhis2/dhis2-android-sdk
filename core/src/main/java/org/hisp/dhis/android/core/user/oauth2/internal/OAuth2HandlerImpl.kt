@@ -27,11 +27,7 @@
  */
 package org.hisp.dhis.android.core.user.oauth2.internal
 
-import android.content.Intent
-import android.net.Uri
-import io.reactivex.Completable
 import io.reactivex.Observable
-import io.reactivex.Single
 import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.configuration.internal.ServerUrlNormalizer
@@ -41,10 +37,7 @@ import org.hisp.dhis.android.core.user.oauth2.OAuth2Config
 import org.hisp.dhis.android.core.user.oauth2.OAuth2Handler
 import org.hisp.dhis.android.core.user.oauth2.internal.jwt.JWTHelper
 import org.hisp.dhis.android.core.user.oauth2.internal.keystore.KeyStoreManager
-import org.hisp.dhis.android.core.user.openid.IntentWithRequestCode
 import org.koin.core.annotation.Singleton
-
-private const val RC_AUTH = 2022
 
 @Singleton
 internal class OAuth2HandlerImpl(
@@ -56,148 +49,130 @@ internal class OAuth2HandlerImpl(
     private val oauth2SecureStore: OAuth2SecureStore,
 ) : OAuth2Handler {
 
-    override fun buildEnrollmentUrl(serverUrl: String): Single<String> {
+    private suspend fun buildEnrollmentUrlInternal(serverUrl: String): String {
         val normalizedUrl = ServerUrlNormalizer.normalize(serverUrl)
-        return Single.fromCallable {
-            val state = JWTHelper.generateState()
-            oauth2SecureStore.tempState = state
-            dcrNetworkHandler.buildEnrollmentUrl(normalizedUrl, state)
-        }
+        val state = JWTHelper.generateState()
+        oauth2SecureStore.tempState = state
+        return dcrNetworkHandler.buildEnrollmentUrl(normalizedUrl, state)
     }
 
     override fun blockingBuildEnrollmentUrl(serverUrl: String): String {
-        val normalizedUrl = ServerUrlNormalizer.normalize(serverUrl)
-        return buildEnrollmentUrl(normalizedUrl).blockingGet()
+        return runBlocking { buildEnrollmentUrlInternal(serverUrl) }
     }
 
-    override fun handleEnrollmentResponse(serverUrl: String, iat: String): Single<Unit> {
+    private suspend fun handleEnrollmentResponseInternal(serverUrl: String, iat: String) {
         val normalizedUrl = ServerUrlNormalizer.normalize(serverUrl)
-        return Single.fromCallable {
-            runBlocking {
-                if (JWTHelper.validateJWT(iat) == null) {
-                    throw IllegalArgumentException("Invalid or expired IAT")
-                }
+        if (JWTHelper.validateJWT(iat) == null) {
+            throw IllegalArgumentException("Invalid or expired IAT")
+        }
 
-                val keyId = keyStoreManager.generateKeyPair()
+        val keyId = keyStoreManager.generateKeyPair()
 
-                val jwks = keyStoreManager.createJWKS(keyId)
+        val jwks = keyStoreManager.createJWKS(keyId)
 
-                val deviceId = dcrNetworkHandler.getDeviceId()
-                val clientName = "DHIS2 Android - $deviceId"
+        val deviceId = dcrNetworkHandler.getDeviceId()
+        val clientName = "DHIS2 Android - $deviceId"
 
-                val result = dcrNetworkHandler.registerClient(
-                    url = normalizedUrl,
-                    iat = iat,
-                    clientName = clientName,
-                    redirectUri = OAuth2Config.DEFAULT_REDIRECT_URI,
-                    scope = OAuth2Config.DEFAULT_SCOPE,
-                    jwks = jwks,
-                )
+        val result = dcrNetworkHandler.registerClient(
+            url = normalizedUrl,
+            iat = iat,
+            clientName = clientName,
+            redirectUri = OAuth2Config.DEFAULT_REDIRECT_URI,
+            scope = OAuth2Config.DEFAULT_SCOPE,
+            jwks = jwks,
+        )
 
-                when (result) {
-                    is Result.Success -> {
-                        oauth2SecureStore.clientId = result.value
-                        oauth2SecureStore.keyId = keyId
-                        oauth2SecureStore.serverUrl = normalizedUrl
-                        oauth2SecureStore.isRegistered = true
-                        oauth2SecureStore.registrationDate = System.currentTimeMillis()
-                        oauth2SecureStore.clearTemporaryData()
-                    }
-                    is Result.Failure -> {
-                        keyStoreManager.deleteKey(keyId)
-                        throw result.failure
-                    }
-                }
+        when (result) {
+            is Result.Success -> {
+                oauth2SecureStore.clientId = result.value
+                oauth2SecureStore.keyId = keyId
+                oauth2SecureStore.serverUrl = normalizedUrl
+                oauth2SecureStore.isRegistered = true
+                oauth2SecureStore.registrationDate = System.currentTimeMillis()
+                oauth2SecureStore.clearTemporaryData()
+            }
+            is Result.Failure -> {
+                keyStoreManager.deleteKey(keyId)
+                throw result.failure
             }
         }
     }
 
     override fun blockingHandleEnrollmentResponse(serverUrl: String, iat: String) {
-        val normalizedUrl = ServerUrlNormalizer.normalize(serverUrl)
-        handleEnrollmentResponse(normalizedUrl, iat).blockingGet()
+        runBlocking { handleEnrollmentResponseInternal(serverUrl, iat) }
     }
 
-    override fun logIn(config: OAuth2Config): Single<IntentWithRequestCode> {
-        return Single.fromCallable {
-            if (!isDeviceRegistered()) {
-                throw IllegalStateException("Device not registered. Call handleEnrollmentResponse first.")
-            }
-
-            val state = JWTHelper.generateState()
-            val codeVerifier = JWTHelper.generateCodeVerifier()
-            val codeChallenge = JWTHelper.generateCodeChallenge(codeVerifier)
-
-            oauth2SecureStore.tempState = state
-            oauth2SecureStore.tempCodeVerifier = codeVerifier
-
-            val clientId = oauth2SecureStore.clientId!!
-            val authUrl = oauth2NetworkHandler.buildAuthorizationUrl(
-                serverUrl = config.serverUrl,
-                clientId = clientId,
-                state = state,
-                codeChallenge = codeChallenge,
-                scope = config.scope,
-            )
-
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(authUrl))
-            IntentWithRequestCode(intent, RC_AUTH)
+    private suspend fun logInInternal(config: OAuth2Config): String {
+        if (!isDeviceRegistered()) {
+            throw IllegalStateException("Device not registered. Call handleEnrollmentResponse first.")
         }
+
+        val state = JWTHelper.generateState()
+        val codeVerifier = JWTHelper.generateCodeVerifier()
+        val codeChallenge = JWTHelper.generateCodeChallenge(codeVerifier)
+
+        oauth2SecureStore.tempState = state
+        oauth2SecureStore.tempCodeVerifier = codeVerifier
+
+        val clientId = oauth2SecureStore.clientId!!
+        return oauth2NetworkHandler.buildAuthorizationUrl(
+            serverUrl = config.serverUrl,
+            clientId = clientId,
+            state = state,
+            codeChallenge = codeChallenge,
+            scope = config.scope,
+        )
     }
 
-    override fun blockingLogIn(config: OAuth2Config): IntentWithRequestCode {
-        return logIn(config).blockingGet()
+    override fun blockingLogIn(config: OAuth2Config): String {
+        return runBlocking { logInInternal(config) }
     }
 
-    override fun handleLogInResponse(serverUrl: String, authorizationCode: String): Single<User> {
+    private suspend fun handleLogInResponseInternal(serverUrl: String, authorizationCode: String): User {
         val normalizedUrl = ServerUrlNormalizer.normalize(serverUrl)
-        return Single.fromCallable {
-            runBlocking {
-                val codeVerifier = oauth2SecureStore.tempCodeVerifier
-                    ?: throw IllegalStateException("Code verifier not found")
+        val codeVerifier = oauth2SecureStore.tempCodeVerifier
+            ?: throw IllegalStateException("Code verifier not found")
 
-                val clientId = oauth2SecureStore.clientId
-                    ?: throw IllegalStateException("Client ID not found")
+        val clientId = oauth2SecureStore.clientId
+            ?: throw IllegalStateException("Client ID not found")
 
-                val keyId = oauth2SecureStore.keyId
-                    ?: throw IllegalStateException("Key ID not found")
+        val keyId = oauth2SecureStore.keyId
+            ?: throw IllegalStateException("Key ID not found")
 
-                val privateKey = keyStoreManager.getPrivateKey(keyId)
-                    ?: throw IllegalStateException("Private key not found")
+        val privateKey = keyStoreManager.getPrivateKey(keyId)
+            ?: throw IllegalStateException("Private key not found")
 
-                val clientAssertion = JWTHelper.createClientAssertion(
-                    clientId = clientId,
-                    tokenEndpoint = "$normalizedUrl/oauth2/token",
-                    privateKey = privateKey,
-                    keyId = keyId,
-                )
+        val clientAssertion = JWTHelper.createClientAssertion(
+            clientId = clientId,
+            tokenEndpoint = "$normalizedUrl/oauth2/token",
+            privateKey = privateKey,
+            keyId = keyId,
+        )
 
-                val result = oauth2NetworkHandler.exchangeCodeForToken(
-                    url = normalizedUrl,
-                    code = authorizationCode,
-                    redirectUri = OAuth2Config.DEFAULT_REDIRECT_URI,
-                    clientId = clientId,
-                    codeVerifier = codeVerifier,
-                    clientAssertion = clientAssertion,
-                )
+        val result = oauth2NetworkHandler.exchangeCodeForToken(
+            url = normalizedUrl,
+            code = authorizationCode,
+            redirectUri = OAuth2Config.DEFAULT_REDIRECT_URI,
+            clientId = clientId,
+            codeVerifier = codeVerifier,
+            clientAssertion = clientAssertion,
+        )
 
-                when (result) {
-                    is Result.Success -> {
-                        val oauth2State = result.value.copy(keyId = keyId)
-                        oauth2SecureStore.clearTemporaryData()
-                        logInCall.logInOAuth2(normalizedUrl, oauth2State)
-                    }
-                    is Result.Failure -> {
-                        oauth2SecureStore.clearTemporaryData()
-                        throw result.failure
-                    }
-                }
+        return when (result) {
+            is Result.Success -> {
+                val oauth2State = result.value.copy(keyId = keyId)
+                oauth2SecureStore.clearTemporaryData()
+                logInCall.logInOAuth2(normalizedUrl, oauth2State)
+            }
+            is Result.Failure -> {
+                oauth2SecureStore.clearTemporaryData()
+                throw result.failure
             }
         }
     }
 
     override fun blockingHandleLogInResponse(serverUrl: String, authorizationCode: String): User {
-        val normalizedUrl = ServerUrlNormalizer.normalize(serverUrl)
-        return handleLogInResponse(normalizedUrl, authorizationCode).blockingGet()
+        return runBlocking { handleLogInResponseInternal(serverUrl, authorizationCode) }
     }
 
     override fun isDeviceRegistered(): Boolean {
@@ -214,14 +189,8 @@ internal class OAuth2HandlerImpl(
         return oauth2SecureStore.clientId
     }
 
-    override fun logOut(): Completable {
-        return Completable.fromAction {
-            logoutHandler.logOut()
-        }
-    }
-
     override fun blockingLogOut() {
-        logOut().blockingAwait()
+        logoutHandler.logOut()
     }
 
     override fun logOutObservable(): Observable<Unit> {

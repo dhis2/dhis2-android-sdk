@@ -27,27 +27,16 @@
  */
 package org.hisp.dhis.android.core.user.oauth2
 
-import io.reactivex.Completable
 import io.reactivex.Observable
-import io.reactivex.Single
 import org.hisp.dhis.android.core.user.User
-import org.hisp.dhis.android.core.user.openid.IntentWithRequestCode
 
 interface OAuth2Handler {
 
-    fun buildEnrollmentUrl(serverUrl: String): Single<String>
-
     fun blockingBuildEnrollmentUrl(serverUrl: String): String
-
-    fun handleEnrollmentResponse(serverUrl: String, iat: String): Single<Unit>
 
     fun blockingHandleEnrollmentResponse(serverUrl: String, iat: String)
 
-    fun logIn(config: OAuth2Config): Single<IntentWithRequestCode>
-
-    fun blockingLogIn(config: OAuth2Config): IntentWithRequestCode
-
-    fun handleLogInResponse(serverUrl: String, authorizationCode: String): Single<User>
+    fun blockingLogIn(config: OAuth2Config): String
 
     fun blockingHandleLogInResponse(serverUrl: String, authorizationCode: String): User
 
@@ -56,8 +45,6 @@ interface OAuth2Handler {
     fun isLoggedIn(): Boolean
 
     fun getClientId(): String?
-
-    fun logOut(): Completable
 
     fun blockingLogOut()
 

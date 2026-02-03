@@ -47,6 +47,7 @@ internal class ParentPeriodGeneratorImpl(
     private val monthly: PeriodGenerator,
     private val nMonthly: NMonthlyPeriodGenerators,
     private val yearly: YearlyPeriodGenerators,
+    private val financialYearPeriodHelper: FinancialYearPeriodHelper,
 ) : ParentPeriodGenerator {
 
     override fun generatePeriods(): List<Period> {
@@ -69,7 +70,13 @@ internal class ParentPeriodGeneratorImpl(
     }
 
     override fun generateRelativePeriods(relativePeriod: RelativePeriod): List<Period> {
-        val periodGenerator = getPeriodGenerator(relativePeriod.periodType)
+        val periodType = if (isFinancialYearRelativePeriod(relativePeriod)) {
+            financialYearPeriodHelper.getFinancialYearPeriodType()
+        } else {
+            relativePeriod.periodType
+        }
+
+        val periodGenerator = getPeriodGenerator(periodType)
 
         return when {
             relativePeriod.start != null && relativePeriod.end != null ->
@@ -84,6 +91,13 @@ internal class ParentPeriodGeneratorImpl(
             else ->
                 emptyList()
         }
+    }
+
+    private fun isFinancialYearRelativePeriod(relativePeriod: RelativePeriod): Boolean {
+        return relativePeriod == RelativePeriod.THIS_FINANCIAL_YEAR ||
+            relativePeriod == RelativePeriod.LAST_FINANCIAL_YEAR ||
+            relativePeriod == RelativePeriod.LAST_5_FINANCIAL_YEARS ||
+            relativePeriod == RelativePeriod.LAST_10_FINANCIAL_YEARS
     }
 
     @Suppress("ComplexMethod")
@@ -112,7 +126,10 @@ internal class ParentPeriodGeneratorImpl(
     }
 
     companion object {
-        fun create(clockProvider: ClockProvider): ParentPeriodGeneratorImpl {
+        fun create(
+            clockProvider: ClockProvider,
+            financialYearPeriodHelper: FinancialYearPeriodHelper,
+        ): ParentPeriodGeneratorImpl {
             val clock = clockProvider.clock
             return ParentPeriodGeneratorImpl(
                 DailyPeriodGenerator(clock),
@@ -121,6 +138,7 @@ internal class ParentPeriodGeneratorImpl(
                 MonthlyPeriodGenerator(clock),
                 NMonthlyPeriodGenerators(clock),
                 YearlyPeriodGenerators(clock),
+                financialYearPeriodHelper,
             )
         }
     }

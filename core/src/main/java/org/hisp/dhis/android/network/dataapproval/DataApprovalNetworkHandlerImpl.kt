@@ -54,6 +54,6 @@ internal class DataApprovalNetworkHandlerImpl(
             organisationUnit = commaSeparatedCollectionValues(dataApprovalPartition[2]),
             attributeOptionCombo = commaSeparatedCollectionValues(dataApprovalPartition[3]),
         )
-        return dataApprovalDtoList.map { it.toDomain() }
+        return dataApprovalDtoList.mapNotNull { it.toDomain() }
     }
 }

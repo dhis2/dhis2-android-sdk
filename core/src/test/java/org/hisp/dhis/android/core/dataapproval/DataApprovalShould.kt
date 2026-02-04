@@ -37,7 +37,7 @@ class DataApprovalShould : CoreObjectShould("dataapproval/data_approval.json") {
     @Test
     override fun map_from_json_string() {
         val dataApprovalDTO = deserialize(DataApprovalDTO.serializer())
-        val dataApproval = dataApprovalDTO.toDomain()
+        val dataApproval = dataApprovalDTO.toDomain()!!
 
         assertThat(dataApproval.period()).isEqualTo("2019")
         assertThat(dataApproval.workflow()).isEqualTo("SGPwZDBfBDT")

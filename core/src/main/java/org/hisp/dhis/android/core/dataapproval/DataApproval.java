@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.dataapproval;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
@@ -38,15 +37,19 @@ import org.hisp.dhis.android.core.common.CoreObject;
 @AutoValue
 public abstract class DataApproval implements CoreObject {
 
+    @NonNull
     public abstract String workflow();
 
+    @NonNull
     public abstract String organisationUnit();
 
+    @NonNull
     public abstract String period();
 
+    @NonNull
     public abstract String attributeOptionCombo();
 
-    @Nullable
+    @NonNull
     public abstract DataApprovalState state();
 
     public static DataApproval.Builder builder() {

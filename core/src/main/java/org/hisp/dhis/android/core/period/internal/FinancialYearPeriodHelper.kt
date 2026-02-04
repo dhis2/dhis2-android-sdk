@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.settings.SystemSettingCollectionRepository
 import org.koin.core.annotation.Singleton
 
-internal interface FinancialYearPeriodHelper {
+internal fun interface FinancialYearPeriodHelper {
     fun getFinancialYearPeriodType(): PeriodType
 }
 

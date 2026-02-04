@@ -59,7 +59,7 @@ class MetadataCallRealIntegrationShould : BaseRealIntegrationTest() {
 
 //    @Test
     fun response_successful_on_sync_meta_data_once() {
-        d2.userModule().logIn(username, password, "https://play.im.dhis2.org/stable-2-42-4").blockingGet()
+        d2.userModule().logIn(username, password, url).blockingGet()
 
         d2.metadataModule().blockingDownload()
 

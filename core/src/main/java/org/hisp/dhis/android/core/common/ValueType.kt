@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.common
 
+import org.hisp.dhis.android.annotations.DeprecatedInDHIS2
 import org.hisp.dhis.android.core.common.valuetype.validation.validators.*
 
 enum class ValueType(val validator: ValueTypeValidator<*>) {
@@ -47,6 +48,12 @@ enum class ValueType(val validator: ValueTypeValidator<*>) {
     INTEGER_POSITIVE(IntegerPositiveValidator),
     INTEGER_NEGATIVE(IntegerNegativeValidator),
     INTEGER_ZERO_OR_POSITIVE(IntegerZeroOrPositiveValidator),
+
+    @DeprecatedInDHIS2(
+        version = "2.43",
+        message = "TRACKER_ASSOCIATE has been removed in DHIS2 v43. " +
+            "This value type is kept for backward compatibility with v42 and older versions.",
+    )
     TRACKER_ASSOCIATE(UidValidator),
     USERNAME(TextValidator),
     COORDINATE(CoordinateValidator),

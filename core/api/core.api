@@ -5035,9 +5035,6 @@ public final class org/hisp/dhis/android/core/datavalue/DataValueObjectRepositor
 	public final fun setFollowUp (Z)V
 }
 
-public abstract interface annotation class org/hisp/dhis/android/core/datavalue/LegacyDataValueApi : java/lang/annotation/Annotation {
-}
-
 public final class org/hisp/dhis/android/core/datavalue/internal/DataValueModuleWiper : org/hisp/dhis/android/core/wipe/internal/ModuleWiper {
 	public fun wipeData (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun wipeMetadata (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;

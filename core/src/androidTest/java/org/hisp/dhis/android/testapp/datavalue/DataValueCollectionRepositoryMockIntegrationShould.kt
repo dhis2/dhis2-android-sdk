@@ -31,7 +31,6 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValueInternalAccessor
-import org.hisp.dhis.android.core.datavalue.LegacyDataValueApi
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
@@ -244,7 +243,6 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
     }
 
     @Test
-    @OptIn(LegacyDataValueApi::class)
     @Suppress("DEPRECATION")
     fun deprecated_value_method_assigns_dataset_automatically() {
         val objectRepository = d2.dataValueModule().dataValues()
@@ -274,7 +272,6 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
     }
 
     @Test
-    @OptIn(LegacyDataValueApi::class)
     @Suppress("DEPRECATION")
     fun deprecated_value_method_throws_error_when_no_valid_dataset_found() {
         try {

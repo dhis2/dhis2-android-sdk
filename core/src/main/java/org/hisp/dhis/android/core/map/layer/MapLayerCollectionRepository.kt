@@ -101,6 +101,10 @@ class MapLayerCollectionRepository internal constructor(
         return cf.string(MapLayerTableInfo.Columns.LAYERS)
     }
 
+    fun byLinkedLayerUid(): StringFilterConnector<MapLayerCollectionRepository> {
+        return cf.string(MapLayerTableInfo.Columns.LINKED_LAYER_UID)
+    }
+
     internal companion object {
         val childrenAppenders: ChildrenAppenderGetter<MapLayer> = mapOf(
             MapLayer.IMAGERY_PROVIDERS to MapLayerImagerProviderChildrenAppender::create,

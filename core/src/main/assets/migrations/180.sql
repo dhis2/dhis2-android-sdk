@@ -29,3 +29,9 @@ ALTER TABLE DataApproval RENAME TO DataApproval_Old;
 CREATE TABLE DataApproval(workflow TEXT NOT NULL, organisationUnit TEXT NOT NULL, period TEXT NOT NULL, attributeOptionCombo TEXT NOT NULL, state TEXT NOT NULL, PRIMARY KEY(workflow, attributeOptionCombo, period, organisationUnit), FOREIGN KEY(attributeOptionCombo) REFERENCES CategoryOptionCombo(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(period) REFERENCES Period(periodId) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(organisationUnit) REFERENCES OrganisationUnit(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
 INSERT OR IGNORE INTO DataApproval(workflow, organisationUnit, period, attributeOptionCombo, state) SELECT workflow, organisationUnit, period, attributeOptionCombo, state FROM DataApproval_Old WHERE state IS NOT NULL;
 DROP TABLE IF EXISTS DataApproval_Old;
+
+
+# Add linkedLayerUid for composite map layers (ANDROSDK-2191)
+
+ALTER TABLE MapLayer ADD COLUMN linkedLayerUid TEXT;
+

@@ -26,6 +26,7 @@ internal data class MapLayerDB(
     val mapService: String?,
     val imageFormat: String?,
     val layers: String?,
+    val linkedLayerUid: String?,
 ) : EntityDB<MapLayer> {
 
     override fun toDomain(): MapLayer {
@@ -43,6 +44,7 @@ internal data class MapLayerDB(
             mapService?.let { mapService(MapService.valueOf(it)) }
             imageFormat?.let { imageFormat(ImageFormat.valueOf(it)) }
             layers(layers)
+            linkedLayerUid(linkedLayerUid)
         }.build()
     }
 }
@@ -62,5 +64,6 @@ internal fun MapLayer.toDB(): MapLayerDB {
         mapService = mapService()?.name,
         imageFormat = imageFormat()?.name,
         layers = layers(),
+        linkedLayerUid = linkedLayerUid(),
     )
 }

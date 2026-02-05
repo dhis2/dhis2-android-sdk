@@ -28,27 +28,38 @@
 
 package org.hisp.dhis.android.core.map.layer.internal.microsoft
 
+import org.hisp.dhis.android.core.map.layer.MapLayerPosition
+
 internal object AzureBasemaps {
     val list: List<AzureBasemap> = listOf(
         AzureBasemap(
             id = "azureLight",
             name = "Azure Road",
-            style = "microsoft.base.road",
+            styles = listOf(
+                AzureBasemapStyle("microsoft.base.road", MapLayerPosition.BASEMAP),
+            ),
         ),
         AzureBasemap(
             id = "azureDark",
             name = "Azure Dark",
-            style = "microsoft.base.darkgrey",
+            styles = listOf(
+                AzureBasemapStyle("microsoft.base.darkgrey", MapLayerPosition.BASEMAP),
+            ),
         ),
         AzureBasemap(
             id = "azureAerial",
             name = "Azure Aerial",
-            style = "microsoft.imagery",
+            styles = listOf(
+                AzureBasemapStyle("microsoft.imagery", MapLayerPosition.BASEMAP),
+            ),
         ),
         AzureBasemap(
             id = "azureHybrid",
             name = "Azure Aerial Labels",
-            style = "microsoft.base.hybrid.road",
+            styles = listOf(
+                AzureBasemapStyle("microsoft.imagery", MapLayerPosition.BASEMAP, "_imagery"),
+                AzureBasemapStyle("microsoft.base.hybrid.road", MapLayerPosition.OVERLAY, "_labels"),
+            ),
         ),
     )
 }

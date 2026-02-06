@@ -26,55 +26,46 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.common
 
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class DataAccess {
-
-    public abstract Boolean read();
-
-    public abstract Boolean write();
-
-    public static DataAccess create(Boolean read,
-                                    Boolean write) {
-        return builder().read(read).write(write).build();
+data class DataAccess(
+    val read: Boolean = true,
+    val write: Boolean = true,
+) {
+    fun read(): Boolean = read
+    fun write(): Boolean = write
+    
+    fun toBuilder(): Builder = Builder().apply {
+        read(this@DataAccess.read)
+        write(this@DataAccess.write)
     }
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_DataAccess.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder read(Boolean read);
-
-        public abstract Builder write(Boolean write);
-
-        abstract DataAccess autoBuild();
-
-        // Auxiliary fields
-        abstract Boolean read();
-
-        abstract Boolean write();
-
-        public DataAccess build() {
-            try {
-                read();
-            } catch (IllegalStateException e) {
-                read(Boolean.TRUE);
-            }
-
-            try {
-                write();
-            } catch (IllegalStateException e) {
-                write(Boolean.TRUE);
-            }
-
-            return autoBuild();
+    
+    class Builder internal constructor() {
+        private var read: Boolean? = null
+        private var write: Boolean? = null
+        
+        fun read(read: Boolean) = apply { this.read = read }
+        fun write(write: Boolean) = apply { this.write = write }
+        
+        fun build(): DataAccess {
+            val defaults = DataAccess()
+            return DataAccess(
+                read = read ?: defaults.read,
+                write = write ?: defaults.write
+            )
         }
+    }
+    
+    companion object {
+        @JvmStatic
+        fun create(read: Boolean?, write: Boolean?): DataAccess {
+            return DataAccess(
+                read = read ?: true,
+                write = write ?: true,
+            )
+        }
+        
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

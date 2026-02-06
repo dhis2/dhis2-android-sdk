@@ -26,24 +26,43 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.common
 
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class Coordinates {
-
-    @Nullable
-    public abstract Double latitude();
-
-    @Nullable
-    public abstract Double longitude();
-
-    public static Coordinates create(
-            Double latitude,
-            Double longitude) {
-        return new AutoValue_Coordinates(latitude, longitude);
+data class Coordinates(
+    val latitude: Double? = null,
+    val longitude: Double? = null,
+) {
+    fun latitude(): Double? = latitude
+    fun longitude(): Double? = longitude
+    
+    fun toBuilder(): Builder = Builder().apply {
+        latitude(this@Coordinates.latitude)
+        longitude(this@Coordinates.longitude)
+    }
+    
+    class Builder internal constructor() {
+        private var latitude: Double? = null
+        private var longitude: Double? = null
+        
+        fun latitude(latitude: Double?) = apply { this.latitude = latitude }
+        fun longitude(longitude: Double?) = apply { this.longitude = longitude }
+        
+        fun build(): Coordinates {
+            val defaults = Coordinates()
+            return Coordinates(
+                latitude = latitude ?: defaults.latitude,
+                longitude = longitude ?: defaults.longitude
+            )
+        }
+    }
+    
+    companion object {
+        @JvmStatic
+        fun create(latitude: Double?, longitude: Double?): Coordinates {
+            return Coordinates(latitude, longitude)
+        }
+        
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

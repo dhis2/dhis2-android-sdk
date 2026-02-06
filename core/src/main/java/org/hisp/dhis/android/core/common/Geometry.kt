@@ -26,34 +26,38 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.common
 
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class Geometry {
-
-    @Nullable
-    public abstract FeatureType type();
-
-    @Nullable
-    public abstract String coordinates();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_Geometry.Builder();
+data class Geometry(
+    val type: FeatureType? = null,
+    val coordinates: String? = null,
+) {
+    fun type(): FeatureType? = type
+    fun coordinates(): String? = coordinates
+    
+    fun toBuilder(): Builder = Builder().apply {
+        type(this@Geometry.type)
+        coordinates(this@Geometry.coordinates)
     }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder type(FeatureType type);
-
-        public abstract Builder coordinates(String coordinates);
-
-        public abstract Geometry build();
+    
+    class Builder internal constructor() {
+        private var type: FeatureType? = null
+        private var coordinates: String? = null
+        
+        fun type(type: FeatureType?) = apply { this.type = type }
+        fun coordinates(coordinates: String?) = apply { this.coordinates = coordinates }
+        
+        fun build(): Geometry {
+            val defaults = Geometry()
+            return Geometry(
+                type = type ?: defaults.type,
+                coordinates = coordinates ?: defaults.coordinates
+            )
+        }
+    }
+    
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

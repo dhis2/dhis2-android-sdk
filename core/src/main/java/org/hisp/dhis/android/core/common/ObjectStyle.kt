@@ -26,33 +26,38 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.common
 
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class ObjectStyle {
-
-    @Nullable
-    public abstract String color();
-
-    @Nullable
-    public abstract String icon();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_ObjectStyle.Builder();
+data class ObjectStyle(
+    val color: String? = null,
+    val icon: String? = null,
+) {
+    fun color(): String? = color
+    fun icon(): String? = icon
+    
+    fun toBuilder(): Builder = Builder().apply {
+        color(this@ObjectStyle.color)
+        icon(this@ObjectStyle.icon)
     }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder color(String color);
-
-        public abstract Builder icon(String icon);
-
-        public abstract ObjectStyle build();
+    
+    class Builder internal constructor() {
+        private var color: String? = null
+        private var icon: String? = null
+        
+        fun color(color: String?) = apply { this.color = color }
+        fun icon(icon: String?) = apply { this.icon = icon }
+        
+        fun build(): ObjectStyle {
+            val defaults = ObjectStyle()
+            return ObjectStyle(
+                color = color ?: defaults.color,
+                icon = icon ?: defaults.icon
+            )
+        }
+    }
+    
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

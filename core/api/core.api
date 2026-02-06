@@ -10396,6 +10396,24 @@ public final class org/hisp/dhis/android/core/systeminfo/DHISVersion$Companion {
 	public static synthetic fun isAllowedVersion$default (Lorg/hisp/dhis/android/core/systeminfo/DHISVersion$Companion;Ljava/lang/String;Ljava/lang/Boolean;ILjava/lang/Object;)Z
 }
 
+public final class org/hisp/dhis/android/core/systeminfo/DHISVersionKt {
+	public static final field VERSION_2_29 Ljava/lang/String;
+	public static final field VERSION_2_30 Ljava/lang/String;
+	public static final field VERSION_2_31 Ljava/lang/String;
+	public static final field VERSION_2_32 Ljava/lang/String;
+	public static final field VERSION_2_33 Ljava/lang/String;
+	public static final field VERSION_2_34 Ljava/lang/String;
+	public static final field VERSION_2_35 Ljava/lang/String;
+	public static final field VERSION_2_36 Ljava/lang/String;
+	public static final field VERSION_2_37 Ljava/lang/String;
+	public static final field VERSION_2_38 Ljava/lang/String;
+	public static final field VERSION_2_39 Ljava/lang/String;
+	public static final field VERSION_2_40 Ljava/lang/String;
+	public static final field VERSION_2_41 Ljava/lang/String;
+	public static final field VERSION_2_42 Ljava/lang/String;
+	public static final field VERSION_2_43 Ljava/lang/String;
+}
+
 public abstract interface class org/hisp/dhis/android/core/systeminfo/DHISVersionManager {
 	public abstract fun getBypassVersion ()Ljava/lang/Boolean;
 	public abstract fun getPatchVersion ()Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion;

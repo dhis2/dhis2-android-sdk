@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.common
 
 import org.hisp.dhis.android.annotations.DeprecatedInDHIS2
 import org.hisp.dhis.android.core.common.valuetype.validation.validators.*
-import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.VERSION_2_43
 
 enum class ValueType(val validator: ValueTypeValidator<*>) {

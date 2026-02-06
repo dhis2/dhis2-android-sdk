@@ -152,6 +152,8 @@ dependencies {
 
     ksp(project(":processor"))
     compileOnly(project(":annotations"))
+    androidTestImplementation(project(":annotations"))
+    testImplementation(project(":annotations"))
 
     // RxJava
     api(libs.rx.java)

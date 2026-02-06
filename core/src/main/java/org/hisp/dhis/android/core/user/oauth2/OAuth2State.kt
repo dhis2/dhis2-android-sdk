@@ -62,7 +62,5 @@ data class OAuth2State(
         private const val KEY_EXPIRES_AT = "expires_at"
         private const val KEY_SCOPE = "scope"
         private const val BUFFER = 60
-
-
     }
 }

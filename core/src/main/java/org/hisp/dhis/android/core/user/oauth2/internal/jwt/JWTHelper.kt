@@ -45,7 +45,6 @@ internal object JWTHelper {
     private const val BYTEARRAYSIZE = 48
     private const val EXPIRESINSECONDS = 60L
 
-
     @Suppress("MagicNumber")
     fun createClientAssertion(
         clientId: String,

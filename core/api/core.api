@@ -3462,6 +3462,7 @@ public final class org/hisp/dhis/android/core/common/RelativeOrganisationUnit : 
 
 public final class org/hisp/dhis/android/core/common/RelativePeriod : java/lang/Enum {
 	public static final field BIMONTHS_THIS_YEAR Lorg/hisp/dhis/android/core/common/RelativePeriod;
+	public static final field Companion Lorg/hisp/dhis/android/core/common/RelativePeriod$Companion;
 	public static final field LAST_10_FINANCIAL_YEARS Lorg/hisp/dhis/android/core/common/RelativePeriod;
 	public static final field LAST_10_YEARS Lorg/hisp/dhis/android/core/common/RelativePeriod;
 	public static final field LAST_12_MONTHS Lorg/hisp/dhis/android/core/common/RelativePeriod;
@@ -3509,6 +3510,9 @@ public final class org/hisp/dhis/android/core/common/RelativePeriod : java/lang/
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/RelativePeriod;
 	public static fun values ()[Lorg/hisp/dhis/android/core/common/RelativePeriod;
+}
+
+public final class org/hisp/dhis/android/core/common/RelativePeriod$Companion {
 }
 
 public final class org/hisp/dhis/android/core/common/SortingDirection : java/lang/Enum {

@@ -47,7 +47,6 @@ internal class ParentPeriodGeneratorImpl(
     private val monthly: PeriodGenerator,
     private val nMonthly: NMonthlyPeriodGenerators,
     private val yearly: YearlyPeriodGenerators,
-    private val financialYearPeriodHelper: FinancialYearPeriodHelper,
 ) : ParentPeriodGenerator {
 
     override fun generatePeriods(): List<Period> {
@@ -70,12 +69,7 @@ internal class ParentPeriodGeneratorImpl(
     }
 
     override fun generateRelativePeriods(relativePeriod: RelativePeriod): List<Period> {
-        val periodType = if (isFinancialYearRelativePeriod(relativePeriod)) {
-            financialYearPeriodHelper.getFinancialYearPeriodType()
-        } else {
-            relativePeriod.periodType
-        }
-
+        val periodType = relativePeriod.getPeriodType(yearly.financialYearPeriodHelper)
         val periodGenerator = getPeriodGenerator(periodType)
 
         return when {
@@ -91,13 +85,6 @@ internal class ParentPeriodGeneratorImpl(
             else ->
                 emptyList()
         }
-    }
-
-    private fun isFinancialYearRelativePeriod(relativePeriod: RelativePeriod): Boolean {
-        return relativePeriod == RelativePeriod.THIS_FINANCIAL_YEAR ||
-            relativePeriod == RelativePeriod.LAST_FINANCIAL_YEAR ||
-            relativePeriod == RelativePeriod.LAST_5_FINANCIAL_YEARS ||
-            relativePeriod == RelativePeriod.LAST_10_FINANCIAL_YEARS
     }
 
     @Suppress("ComplexMethod")
@@ -137,8 +124,7 @@ internal class ParentPeriodGeneratorImpl(
                 BiWeeklyPeriodGenerator(clock),
                 MonthlyPeriodGenerator(clock),
                 NMonthlyPeriodGenerators(clock),
-                YearlyPeriodGenerators(clock),
-                financialYearPeriodHelper,
+                YearlyPeriodGenerators(clock, financialYearPeriodHelper),
             )
         }
     }

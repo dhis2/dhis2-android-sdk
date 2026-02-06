@@ -29,5 +29,6 @@
   },
   "translations": [],
   "userGroupAccesses": [],
-  "attributeValues": []
+  "attributeValues": [],
+  "priority": 1
 }

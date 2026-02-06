@@ -57,12 +57,12 @@ data class LoginConfig(
 
     private fun isAtLeast43(): Boolean {
         return apiVersion?.let {
-            DHISPatchVersion.isGreaterThanPatch(apiVersion, DHISPatchVersion.V2_43_0)
+            DHISPatchVersion.isGreaterThanPatch(apiVersion, DHISPatchVersion.V2_42_0)
         } ?: false
     }
 
     internal companion object {
-        const val DHIS2_OAUTH_CLIENT_ID = "dhis2-client"
+        const val DHIS2_OAUTH_CLIENT_ID = "dhis2"
 
         fun createDefault(serverUrl: String): LoginConfig {
             return LoginConfig(

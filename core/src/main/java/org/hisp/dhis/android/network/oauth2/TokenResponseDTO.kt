@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,37 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.storage.internal
+package org.hisp.dhis.android.network.oauth2
 
-import net.openid.appauth.AuthState
-import org.hisp.dhis.android.core.arch.helpers.UserHelper
-import org.hisp.dhis.android.core.user.oauth2.OAuth2State
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-data class Credentials(
-    val username: String,
-    val serverUrl: String,
-    val password: String?,
-    val openIDConnectState: AuthState?,
-    val oauth2State: OAuth2State? = null,
-) {
-    fun getHash(): String? {
-        return password?.let { UserHelper.md5(username, it) }
-    }
+@Serializable
+internal data class TokenResponseDTO(
+    @SerialName("access_token")
+    val accessToken: String,
 
-    override fun equals(other: Any?) =
-        (other is Credentials) &&
-            username == other.username &&
-            password == other.password &&
-            serverUrl == other.serverUrl &&
-            openIDConnectState?.jsonSerializeString() == other.openIDConnectState?.jsonSerializeString() &&
-            oauth2State?.jsonSerializeString() == other.oauth2State?.jsonSerializeString()
+    @SerialName("token_type")
+    val tokenType: String,
 
-    override fun hashCode(): Int {
-        var result = username.hashCode()
-        result = 31 * result + serverUrl.hashCode()
-        result = 31 * result + (password?.hashCode() ?: 0)
-        result = 31 * result + (openIDConnectState?.jsonSerializeString()?.hashCode() ?: 0)
-        result = 31 * result + (oauth2State?.jsonSerializeString()?.hashCode() ?: 0)
-        return result
-    }
-}
+    @SerialName("expires_in")
+    val expiresIn: Long,
+
+    @SerialName("refresh_token")
+    val refreshToken: String?,
+
+    @SerialName("scope")
+    val scope: String?,
+)

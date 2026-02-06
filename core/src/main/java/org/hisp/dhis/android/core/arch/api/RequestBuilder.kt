@@ -49,6 +49,9 @@ class RequestBuilder(private val baseUrl: String) {
 
     var headers: MutableList<Pair<String, String>> = mutableListOf()
 
+    var contentType: String? = null
+        private set
+
     private val parametersBuilder = ParametersBuilder(parameters)
 
     fun url(url: String) {
@@ -59,6 +62,10 @@ class RequestBuilder(private val baseUrl: String) {
         this.url = url
         this.isAbsoluteUrl = true
         this.isExternalRequest = isExternalRequest
+    }
+
+    fun contentType(contentType: String) {
+        this.contentType = contentType
     }
 
     fun excludeCredentials() {

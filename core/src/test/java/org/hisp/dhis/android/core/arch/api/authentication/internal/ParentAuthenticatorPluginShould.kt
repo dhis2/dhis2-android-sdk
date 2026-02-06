@@ -38,6 +38,8 @@ import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
+import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2LogoutHandler
+import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2TokenRefresher
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectLogoutHandler
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectTokenRefresher
 import org.junit.*
@@ -57,6 +59,12 @@ class ParentAuthenticatorPluginShould {
 
     @Mock
     private lateinit var tokenRefresher: OpenIDConnectTokenRefresher
+
+    @Mock
+    private lateinit var oauth2TokenRefresher: OAuth2TokenRefresher
+
+    @Mock
+    private lateinit var oauth2LogoutHandler: OAuth2LogoutHandler
 
     @Mock
     private lateinit var logoutHandler: OpenIDConnectLogoutHandler
@@ -87,6 +95,12 @@ class ParentAuthenticatorPluginShould {
                 tokenRefresher,
                 userIdHelper,
                 logoutHandler,
+            ),
+            OAuth2Authenticator(
+                credentialsSecureStore,
+                lazy { oauth2TokenRefresher },
+                userIdHelper,
+                oauth2LogoutHandler,
             ),
             cookieHelper,
         )

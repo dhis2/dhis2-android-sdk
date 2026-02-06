@@ -27,9 +27,8 @@
  */
 package org.hisp.dhis.android.network.oauth2
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
-
+import kotlinx.serialization.Serializable
 
 @Serializable
 internal data class ClientRegistrationResponseDTO(

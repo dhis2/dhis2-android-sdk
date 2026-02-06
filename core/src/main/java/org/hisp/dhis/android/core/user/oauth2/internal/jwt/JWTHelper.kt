@@ -28,11 +28,13 @@
 package org.hisp.dhis.android.core.user.oauth2.internal.jwt
 
 import android.util.Base64
+import android.util.Log
 import com.nimbusds.jose.JWSAlgorithm
 import com.nimbusds.jose.JWSHeader
 import com.nimbusds.jose.crypto.RSASSASigner
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
+import java.net.MalformedURLException
 import java.security.MessageDigest
 import java.security.PrivateKey
 import java.security.SecureRandom
@@ -40,13 +42,17 @@ import java.util.Date
 import java.util.UUID
 
 internal object JWTHelper {
+    private const val BYTEARRAYSIZE = 48
+    private const val EXPIRESINSECONDS = 60L
 
+
+    @Suppress("MagicNumber")
     fun createClientAssertion(
         clientId: String,
         tokenEndpoint: String,
         privateKey: PrivateKey,
         keyId: String,
-        expiresInSeconds: Long = 60,
+        expiresInSeconds: Long = EXPIRESINSECONDS,
     ): String {
         val now = Date()
         val expirationTime = Date(now.time + expiresInSeconds * 1000)
@@ -56,7 +62,8 @@ internal object JWTHelper {
             val pathParts = url.path.split("/").filter { it.isNotBlank() }
             val contextPath = if (pathParts.isNotEmpty()) "/${pathParts[0]}" else ""
             url.protocol + "://" + url.host + (if (url.port != -1) ":${url.port}" else "") + contextPath + "/"
-        } catch (e: Exception) {
+        } catch (e: MalformedURLException) {
+            Log.e("JWTHelper", "Invalid token endpoint URL: $tokenEndpoint", e)
             tokenEndpoint
         }
 
@@ -84,6 +91,7 @@ internal object JWTHelper {
         return UUID.randomUUID().toString()
     }
 
+    @Suppress("TooGenericExceptionCaught")
     fun validateJWT(jwtString: String): JWTClaimsSet? {
         return try {
             val signedJWT = SignedJWT.parse(jwtString)
@@ -96,13 +104,14 @@ internal object JWTHelper {
                 claims
             }
         } catch (e: Exception) {
+            Log.e("JWTHelper", "Invalid JWT: $jwtString", e)
             null
         }
     }
 
     fun generateCodeVerifier(): String {
         val secureRandom = SecureRandom()
-        val codeVerifierBytes = ByteArray(48)
+        val codeVerifierBytes = ByteArray(BYTEARRAYSIZE)
         secureRandom.nextBytes(codeVerifierBytes)
         return Base64.encodeToString(
             codeVerifierBytes,

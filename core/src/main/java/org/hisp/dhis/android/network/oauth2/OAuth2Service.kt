@@ -31,6 +31,7 @@ import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 
 internal class OAuth2Service(private val client: HttpServiceClient) {
 
+    @Suppress("LongParameterList")
     suspend fun exchangeCodeForToken(
         url: String,
         grantType: String,

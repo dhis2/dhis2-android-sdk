@@ -58,7 +58,7 @@ internal class KeyStoreManager {
             getKeyAlias(keyId),
             KeyProperties.PURPOSE_SIGN or KeyProperties.PURPOSE_VERIFY,
         )
-            .setKeySize(2048)
+            .setKeySize(KEY_SIZE)
             .setDigests(KeyProperties.DIGEST_SHA256)
             .setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1)
             .build()
@@ -104,5 +104,6 @@ internal class KeyStoreManager {
     companion object {
         private const val ANDROID_KEYSTORE = "AndroidKeyStore"
         private const val KEY_ALIAS_PREFIX = "dhis2_oauth_key_"
+        private const val KEY_SIZE = 2048
     }
 }

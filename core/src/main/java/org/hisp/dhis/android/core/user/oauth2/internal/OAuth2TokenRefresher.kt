@@ -39,6 +39,7 @@ internal class OAuth2TokenRefresher(
     private val oauth2SecureStore: OAuth2SecureStore,
     private val logoutHandler: OAuth2LogoutHandler,
 ) {
+    @Suppress("ReturnCount")
     suspend fun refreshToken(state: OAuth2State): OAuth2State? {
         return try {
             if (state.refreshToken == null) {

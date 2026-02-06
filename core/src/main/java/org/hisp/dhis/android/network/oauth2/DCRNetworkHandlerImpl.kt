@@ -52,11 +52,11 @@ internal class DCRNetworkHandlerImpl(
         val deviceAttestation = "android_sdk_${Build.VERSION.SDK_INT}"
 
         return "$serverUrl/api/auth/enrollDevice" +
-                "?deviceVersion=$deviceVersion" +
-                "&deviceType=$deviceType" +
-                "&deviceAttestation=$deviceAttestation" +
-                "&redirectUri=${OAuth2Config.DEFAULT_REDIRECT_URI}" +
-                "&state=$state"
+            "?deviceVersion=$deviceVersion" +
+            "&deviceType=$deviceType" +
+            "&deviceAttestation=$deviceAttestation" +
+            "&redirectUri=${OAuth2Config.DEFAULT_REDIRECT_URI}" +
+            "&state=$state"
     }
 
     override fun getDeviceId(): String {

@@ -40,6 +40,7 @@ internal interface OAuth2NetworkHandler {
         scope: String,
     ): String
 
+    @Suppress("LongParameterList")
     suspend fun exchangeCodeForToken(
         url: String,
         code: String,

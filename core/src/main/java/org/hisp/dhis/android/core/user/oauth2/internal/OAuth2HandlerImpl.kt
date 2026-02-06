@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.user.oauth2.internal.jwt.JWTHelper
 import org.hisp.dhis.android.core.user.oauth2.internal.keystore.KeyStoreManager
 import org.koin.core.annotation.Singleton
 
+@Suppress("LongParameterList", "TooManyFunctions")
 @Singleton
 internal class OAuth2HandlerImpl(
     private val logInCall: LogInCall,
@@ -128,6 +129,7 @@ internal class OAuth2HandlerImpl(
         return runBlocking { logInInternal(config) }
     }
 
+    @Suppress("ThrowsCount")
     private suspend fun handleLogInResponseInternal(serverUrl: String, authorizationCode: String): User {
         val normalizedUrl = ServerUrlNormalizer.normalize(serverUrl)
         val codeVerifier = oauth2SecureStore.tempCodeVerifier

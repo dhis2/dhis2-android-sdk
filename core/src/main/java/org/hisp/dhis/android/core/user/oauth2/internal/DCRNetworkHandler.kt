@@ -35,6 +35,7 @@ internal interface DCRNetworkHandler {
 
     fun getDeviceId(): String
 
+    @Suppress("LongParameterList")
     suspend fun registerClient(
         url: String,
         iat: String,

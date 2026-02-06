@@ -37,10 +37,10 @@ data class OAuth2State(
     val expiresAt: Long,
     val scope: String?,
 ) {
+    @Suppress("MagicNumber")
     fun needsTokenRefresh(): Boolean {
-        val buffer = 60
-        val currentTime = System.currentTimeMillis() / 1000
-        return (currentTime + buffer) >= expiresAt
+        val currentTime = System.currentTimeMillis().div(1000)
+        return (currentTime + BUFFER) >= expiresAt
     }
 
     fun jsonSerializeString(): String {
@@ -61,5 +61,8 @@ data class OAuth2State(
         private const val KEY_REFRESH_TOKEN = "refresh_token"
         private const val KEY_EXPIRES_AT = "expires_at"
         private const val KEY_SCOPE = "scope"
+        private const val BUFFER = 60
+
+
     }
 }

@@ -38,12 +38,6 @@ package org.hisp.dhis.android.annotations
  * @property version The DHIS2 version in which this feature was removed/deprecated (e.g., "2.43")
  * @property message Additional information about the deprecation
  */
-@RequiresOptIn(
-    message = "This feature has been removed in newer DHIS2 versions. " +
-        "It is kept for backward compatibility with older versions only. " +
-        "Add @OptIn(DeprecatedInDHIS2::class) if you need to use it.",
-    level = RequiresOptIn.Level.WARNING,
-)
 @Retention(AnnotationRetention.BINARY)
 @Target(
     AnnotationTarget.CLASS,

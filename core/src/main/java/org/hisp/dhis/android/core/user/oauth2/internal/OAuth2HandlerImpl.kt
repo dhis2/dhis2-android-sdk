@@ -63,9 +63,7 @@ internal class OAuth2HandlerImpl(
 
     private suspend fun handleEnrollmentResponseInternal(serverUrl: String, iat: String) {
         val normalizedUrl = ServerUrlNormalizer.normalize(serverUrl)
-        if (JWTHelper.validateJWT(iat) == null) {
-            throw IllegalArgumentException("Invalid or expired IAT")
-        }
+        requireNotNull(JWTHelper.validateJWT(iat)) { "Invalid or expired IAT" }
 
         val keyId = keyStoreManager.generateKeyPair()
 
@@ -104,9 +102,7 @@ internal class OAuth2HandlerImpl(
     }
 
     private suspend fun logInInternal(config: OAuth2Config): String {
-        if (!isDeviceRegistered()) {
-            throw IllegalStateException("Device not registered. Call handleEnrollmentResponse first.")
-        }
+        check(isDeviceRegistered()) { "Device not registered. Call handleEnrollmentResponse first." }
 
         val state = JWTHelper.generateState()
         val codeVerifier = JWTHelper.generateCodeVerifier()

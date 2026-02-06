@@ -34,28 +34,28 @@ data class DataAccess(
 ) {
     fun read(): Boolean = read
     fun write(): Boolean = write
-    
+
     fun toBuilder(): Builder = Builder().apply {
         read(this@DataAccess.read)
         write(this@DataAccess.write)
     }
-    
+
     class Builder internal constructor() {
         private var read: Boolean? = null
         private var write: Boolean? = null
-        
+
         fun read(read: Boolean) = apply { this.read = read }
         fun write(write: Boolean) = apply { this.write = write }
-        
+
         fun build(): DataAccess {
             val defaults = DataAccess()
             return DataAccess(
                 read = read ?: defaults.read,
-                write = write ?: defaults.write
+                write = write ?: defaults.write,
             )
         }
     }
-    
+
     companion object {
         @JvmStatic
         fun create(read: Boolean?, write: Boolean?): DataAccess {
@@ -64,7 +64,7 @@ data class DataAccess(
                 write = write ?: true,
             )
         }
-        
+
         @JvmStatic
         fun builder(): Builder = Builder()
     }

@@ -34,28 +34,28 @@ data class Geometry(
 ) {
     fun type(): FeatureType? = type
     fun coordinates(): String? = coordinates
-    
+
     fun toBuilder(): Builder = Builder().apply {
         type(this@Geometry.type)
         coordinates(this@Geometry.coordinates)
     }
-    
+
     class Builder internal constructor() {
         private var type: FeatureType? = null
         private var coordinates: String? = null
-        
+
         fun type(type: FeatureType?) = apply { this.type = type }
         fun coordinates(coordinates: String?) = apply { this.coordinates = coordinates }
-        
+
         fun build(): Geometry {
             val defaults = Geometry()
             return Geometry(
                 type = type ?: defaults.type,
-                coordinates = coordinates ?: defaults.coordinates
+                coordinates = coordinates ?: defaults.coordinates,
             )
         }
     }
-    
+
     companion object {
         @JvmStatic
         fun builder(): Builder = Builder()

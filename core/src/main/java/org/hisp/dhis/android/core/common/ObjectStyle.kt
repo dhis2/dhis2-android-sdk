@@ -34,28 +34,28 @@ data class ObjectStyle(
 ) {
     fun color(): String? = color
     fun icon(): String? = icon
-    
+
     fun toBuilder(): Builder = Builder().apply {
         color(this@ObjectStyle.color)
         icon(this@ObjectStyle.icon)
     }
-    
+
     class Builder internal constructor() {
         private var color: String? = null
         private var icon: String? = null
-        
+
         fun color(color: String?) = apply { this.color = color }
         fun icon(icon: String?) = apply { this.icon = icon }
-        
+
         fun build(): ObjectStyle {
             val defaults = ObjectStyle()
             return ObjectStyle(
                 color = color ?: defaults.color,
-                icon = icon ?: defaults.icon
+                icon = icon ?: defaults.icon,
             )
         }
     }
-    
+
     companion object {
         @JvmStatic
         fun builder(): Builder = Builder()

@@ -3007,21 +3007,40 @@ public final class org/hisp/dhis/android/core/category/internal/CategoryModuleDo
 	public fun downloadMetadata (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public abstract class org/hisp/dhis/android/core/common/Access {
+public final class org/hisp/dhis/android/core/common/Access {
+	public static final field Companion Lorg/hisp/dhis/android/core/common/Access$Companion;
 	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/common/Access$Builder;
-	public static fun create (Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/DataAccess;)Lorg/hisp/dhis/android/core/common/Access;
-	public abstract fun data ()Lorg/hisp/dhis/android/core/common/DataAccess;
-	public abstract fun read ()Ljava/lang/Boolean;
-	public abstract fun write ()Ljava/lang/Boolean;
+	public fun <init> (ZZLorg/hisp/dhis/android/core/common/DataAccess;)V
+	public synthetic fun <init> (ZZLorg/hisp/dhis/android/core/common/DataAccess;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/common/Access$Builder;
+	public final fun component1 ()Z
+	public final fun component2 ()Z
+	public final fun component3 ()Lorg/hisp/dhis/android/core/common/DataAccess;
+	public final fun copy (ZZLorg/hisp/dhis/android/core/common/DataAccess;)Lorg/hisp/dhis/android/core/common/Access;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/common/Access;ZZLorg/hisp/dhis/android/core/common/DataAccess;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/common/Access;
+	public static final fun create (Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/DataAccess;)Lorg/hisp/dhis/android/core/common/Access;
+	public final fun data ()Lorg/hisp/dhis/android/core/common/DataAccess;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getData ()Lorg/hisp/dhis/android/core/common/DataAccess;
+	public final fun getRead ()Z
+	public final fun getWrite ()Z
+	public fun hashCode ()I
+	public final fun read ()Z
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/common/Access$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun write ()Z
 }
 
-public abstract class org/hisp/dhis/android/core/common/Access$Builder {
-	public fun <init> ()V
-	public fun build ()Lorg/hisp/dhis/android/core/common/Access;
-	public abstract fun data (Lorg/hisp/dhis/android/core/common/DataAccess;)Lorg/hisp/dhis/android/core/common/Access$Builder;
-	public abstract fun read (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/Access$Builder;
-	public abstract fun write (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/Access$Builder;
+public final class org/hisp/dhis/android/core/common/Access$Builder {
+	public final fun build ()Lorg/hisp/dhis/android/core/common/Access;
+	public final fun data (Lorg/hisp/dhis/android/core/common/DataAccess;)Lorg/hisp/dhis/android/core/common/Access$Builder;
+	public final fun read (Z)Lorg/hisp/dhis/android/core/common/Access$Builder;
+	public final fun write (Z)Lorg/hisp/dhis/android/core/common/Access$Builder;
+}
+
+public final class org/hisp/dhis/android/core/common/Access$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/common/Access$Builder;
+	public final fun create (Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/DataAccess;)Lorg/hisp/dhis/android/core/common/Access;
 }
 
 public final class org/hisp/dhis/android/core/common/AggregationType : java/lang/Enum {
@@ -3147,11 +3166,36 @@ public abstract class org/hisp/dhis/android/core/common/BaseNameableObject$Build
 	public abstract fun shortName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseNameableObject$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/common/Coordinates {
+public final class org/hisp/dhis/android/core/common/Coordinates {
+	public static final field Companion Lorg/hisp/dhis/android/core/common/Coordinates$Companion;
 	public fun <init> ()V
-	public static fun create (Ljava/lang/Double;Ljava/lang/Double;)Lorg/hisp/dhis/android/core/common/Coordinates;
-	public abstract fun latitude ()Ljava/lang/Double;
-	public abstract fun longitude ()Ljava/lang/Double;
+	public fun <init> (Ljava/lang/Double;Ljava/lang/Double;)V
+	public synthetic fun <init> (Ljava/lang/Double;Ljava/lang/Double;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/common/Coordinates$Builder;
+	public final fun component1 ()Ljava/lang/Double;
+	public final fun component2 ()Ljava/lang/Double;
+	public final fun copy (Ljava/lang/Double;Ljava/lang/Double;)Lorg/hisp/dhis/android/core/common/Coordinates;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/common/Coordinates;Ljava/lang/Double;Ljava/lang/Double;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/common/Coordinates;
+	public static final fun create (Ljava/lang/Double;Ljava/lang/Double;)Lorg/hisp/dhis/android/core/common/Coordinates;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLatitude ()Ljava/lang/Double;
+	public final fun getLongitude ()Ljava/lang/Double;
+	public fun hashCode ()I
+	public final fun latitude ()Ljava/lang/Double;
+	public final fun longitude ()Ljava/lang/Double;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/common/Coordinates$Builder;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/common/Coordinates$Builder {
+	public final fun build ()Lorg/hisp/dhis/android/core/common/Coordinates;
+	public final fun latitude (Ljava/lang/Double;)Lorg/hisp/dhis/android/core/common/Coordinates$Builder;
+	public final fun longitude (Ljava/lang/Double;)Lorg/hisp/dhis/android/core/common/Coordinates$Builder;
+}
+
+public final class org/hisp/dhis/android/core/common/Coordinates$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/common/Coordinates$Builder;
+	public final fun create (Ljava/lang/Double;Ljava/lang/Double;)Lorg/hisp/dhis/android/core/common/Coordinates;
 }
 
 public class org/hisp/dhis/android/core/common/CoreColumns {
@@ -3163,20 +3207,36 @@ public class org/hisp/dhis/android/core/common/CoreColumns {
 public abstract interface class org/hisp/dhis/android/core/common/CoreObject {
 }
 
-public abstract class org/hisp/dhis/android/core/common/DataAccess {
+public final class org/hisp/dhis/android/core/common/DataAccess {
+	public static final field Companion Lorg/hisp/dhis/android/core/common/DataAccess$Companion;
 	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/common/DataAccess$Builder;
-	public static fun create (Ljava/lang/Boolean;Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/DataAccess;
-	public abstract fun read ()Ljava/lang/Boolean;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/common/DataAccess$Builder;
-	public abstract fun write ()Ljava/lang/Boolean;
+	public fun <init> (ZZ)V
+	public synthetic fun <init> (ZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/common/DataAccess$Builder;
+	public final fun component1 ()Z
+	public final fun component2 ()Z
+	public final fun copy (ZZ)Lorg/hisp/dhis/android/core/common/DataAccess;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/common/DataAccess;ZZILjava/lang/Object;)Lorg/hisp/dhis/android/core/common/DataAccess;
+	public static final fun create (Ljava/lang/Boolean;Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/DataAccess;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getRead ()Z
+	public final fun getWrite ()Z
+	public fun hashCode ()I
+	public final fun read ()Z
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/common/DataAccess$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun write ()Z
 }
 
-public abstract class org/hisp/dhis/android/core/common/DataAccess$Builder {
-	public fun <init> ()V
-	public fun build ()Lorg/hisp/dhis/android/core/common/DataAccess;
-	public abstract fun read (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/DataAccess$Builder;
-	public abstract fun write (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/DataAccess$Builder;
+public final class org/hisp/dhis/android/core/common/DataAccess$Builder {
+	public final fun build ()Lorg/hisp/dhis/android/core/common/DataAccess;
+	public final fun read (Z)Lorg/hisp/dhis/android/core/common/DataAccess$Builder;
+	public final fun write (Z)Lorg/hisp/dhis/android/core/common/DataAccess$Builder;
+}
+
+public final class org/hisp/dhis/android/core/common/DataAccess$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/common/DataAccess$Builder;
+	public final fun create (Ljava/lang/Boolean;Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/DataAccess;
 }
 
 public class org/hisp/dhis/android/core/common/DataColumns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -3338,19 +3398,34 @@ public final class org/hisp/dhis/android/core/common/FormType : java/lang/Enum {
 	public static fun values ()[Lorg/hisp/dhis/android/core/common/FormType;
 }
 
-public abstract class org/hisp/dhis/android/core/common/Geometry {
+public final class org/hisp/dhis/android/core/common/Geometry {
+	public static final field Companion Lorg/hisp/dhis/android/core/common/Geometry$Companion;
 	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/common/Geometry$Builder;
-	public abstract fun coordinates ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/common/Geometry$Builder;
-	public abstract fun type ()Lorg/hisp/dhis/android/core/common/FeatureType;
+	public fun <init> (Lorg/hisp/dhis/android/core/common/FeatureType;Ljava/lang/String;)V
+	public synthetic fun <init> (Lorg/hisp/dhis/android/core/common/FeatureType;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/common/Geometry$Builder;
+	public final fun component1 ()Lorg/hisp/dhis/android/core/common/FeatureType;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun coordinates ()Ljava/lang/String;
+	public final fun copy (Lorg/hisp/dhis/android/core/common/FeatureType;Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/Geometry;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/common/Geometry;Lorg/hisp/dhis/android/core/common/FeatureType;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/common/Geometry;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCoordinates ()Ljava/lang/String;
+	public final fun getType ()Lorg/hisp/dhis/android/core/common/FeatureType;
+	public fun hashCode ()I
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/common/Geometry$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun type ()Lorg/hisp/dhis/android/core/common/FeatureType;
 }
 
-public abstract class org/hisp/dhis/android/core/common/Geometry$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/common/Geometry;
-	public abstract fun coordinates (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/Geometry$Builder;
-	public abstract fun type (Lorg/hisp/dhis/android/core/common/FeatureType;)Lorg/hisp/dhis/android/core/common/Geometry$Builder;
+public final class org/hisp/dhis/android/core/common/Geometry$Builder {
+	public final fun build ()Lorg/hisp/dhis/android/core/common/Geometry;
+	public final fun coordinates (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/Geometry$Builder;
+	public final fun type (Lorg/hisp/dhis/android/core/common/FeatureType;)Lorg/hisp/dhis/android/core/common/Geometry$Builder;
+}
+
+public final class org/hisp/dhis/android/core/common/Geometry$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/common/Geometry$Builder;
 }
 
 public class org/hisp/dhis/android/core/common/IdentifiableColumns : org/hisp/dhis/android/core/common/CoreColumns {
@@ -3406,19 +3481,34 @@ public class org/hisp/dhis/android/core/common/NameableWithStyleColumns : org/hi
 	public fun all ()[Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/common/ObjectStyle {
+public final class org/hisp/dhis/android/core/common/ObjectStyle {
+	public static final field Companion Lorg/hisp/dhis/android/core/common/ObjectStyle$Companion;
 	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/common/ObjectStyle$Builder;
-	public abstract fun color ()Ljava/lang/String;
-	public abstract fun icon ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/common/ObjectStyle$Builder;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/common/ObjectStyle$Builder;
+	public final fun color ()Ljava/lang/String;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/ObjectStyle;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/common/ObjectStyle;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/common/ObjectStyle;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getColor ()Ljava/lang/String;
+	public final fun getIcon ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun icon ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/common/ObjectStyle$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/common/ObjectStyle$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/common/ObjectStyle;
-	public abstract fun color (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/ObjectStyle$Builder;
-	public abstract fun icon (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/ObjectStyle$Builder;
+public final class org/hisp/dhis/android/core/common/ObjectStyle$Builder {
+	public final fun build ()Lorg/hisp/dhis/android/core/common/ObjectStyle;
+	public final fun color (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/ObjectStyle$Builder;
+	public final fun icon (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/ObjectStyle$Builder;
+}
+
+public final class org/hisp/dhis/android/core/common/ObjectStyle$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/common/ObjectStyle$Builder;
 }
 
 public abstract interface class org/hisp/dhis/android/core/common/ObjectWithDeleteInterface {

@@ -34,34 +34,34 @@ data class Coordinates(
 ) {
     fun latitude(): Double? = latitude
     fun longitude(): Double? = longitude
-    
+
     fun toBuilder(): Builder = Builder().apply {
         latitude(this@Coordinates.latitude)
         longitude(this@Coordinates.longitude)
     }
-    
+
     class Builder internal constructor() {
         private var latitude: Double? = null
         private var longitude: Double? = null
-        
+
         fun latitude(latitude: Double?) = apply { this.latitude = latitude }
         fun longitude(longitude: Double?) = apply { this.longitude = longitude }
-        
+
         fun build(): Coordinates {
             val defaults = Coordinates()
             return Coordinates(
                 latitude = latitude ?: defaults.latitude,
-                longitude = longitude ?: defaults.longitude
+                longitude = longitude ?: defaults.longitude,
             )
         }
     }
-    
+
     companion object {
         @JvmStatic
         fun create(latitude: Double?, longitude: Double?): Coordinates {
             return Coordinates(latitude, longitude)
         }
-        
+
         @JvmStatic
         fun builder(): Builder = Builder()
     }

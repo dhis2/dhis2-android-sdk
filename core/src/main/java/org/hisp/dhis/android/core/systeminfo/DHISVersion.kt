@@ -27,22 +27,38 @@
  */
 package org.hisp.dhis.android.core.systeminfo
 
+const val VERSION_2_29 = "2.29"
+const val VERSION_2_30 = "2.30"
+const val VERSION_2_31 = "2.31"
+const val VERSION_2_32 = "2.32"
+const val VERSION_2_33 = "2.33"
+const val VERSION_2_34 = "2.34"
+const val VERSION_2_35 = "2.35"
+const val VERSION_2_36 = "2.36"
+const val VERSION_2_37 = "2.37"
+const val VERSION_2_38 = "2.38"
+const val VERSION_2_39 = "2.39"
+const val VERSION_2_40 = "2.40"
+const val VERSION_2_41 = "2.41"
+const val VERSION_2_42 = "2.42"
+const val VERSION_2_43 = "2.43"
+
 enum class DHISVersion(internal val prefix: String, internal val supported: Boolean = true) {
-    V2_29("2.29", false),
-    V2_30("2.30"),
-    V2_31("2.31"),
-    V2_32("2.32"),
-    V2_33("2.33"),
-    V2_34("2.34"),
-    V2_35("2.35"),
-    V2_36("2.36"),
-    V2_37("2.37"),
-    V2_38("2.38"),
-    V2_39("2.39"),
-    V2_40("2.40"),
-    V2_41("2.41"),
-    V2_42("2.42"),
-    V2_43("2.43"),
+    V2_29(VERSION_2_29, false),
+    V2_30(VERSION_2_30),
+    V2_31(VERSION_2_31),
+    V2_32(VERSION_2_32),
+    V2_33(VERSION_2_33),
+    V2_34(VERSION_2_34),
+    V2_35(VERSION_2_35),
+    V2_36(VERSION_2_36),
+    V2_37(VERSION_2_37),
+    V2_38(VERSION_2_38),
+    V2_39(VERSION_2_39),
+    V2_40(VERSION_2_40),
+    V2_41(VERSION_2_41),
+    V2_42(VERSION_2_42),
+    V2_43(VERSION_2_43),
     UNKNOWN("UNKNOWN", false),
     ;
 

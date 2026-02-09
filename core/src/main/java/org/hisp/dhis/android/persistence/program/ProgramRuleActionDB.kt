@@ -97,7 +97,7 @@ internal data class ProgramRuleActionDB(
     val option: String?,
     val optionGroup: String?,
     val displayContent: String?,
-    val priority: Int?
+    val priority: Int?,
 ) : EntityDB<ProgramRuleAction>, BaseIdentifiableObjectDB {
 
     override fun toDomain(): ProgramRuleAction {
@@ -142,6 +142,6 @@ internal fun ProgramRuleAction.toDB(): ProgramRuleActionDB {
         option = option()?.uid(),
         optionGroup = optionGroup()?.uid(),
         displayContent = displayContent(),
-        priority = priority()
+        priority = priority(),
     )
 }

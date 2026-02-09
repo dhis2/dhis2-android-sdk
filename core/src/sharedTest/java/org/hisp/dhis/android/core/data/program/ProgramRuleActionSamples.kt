@@ -53,6 +53,7 @@ internal object ProgramRuleActionSamples {
                 .option(ObjectWithUid.create("option"))
                 .optionGroup(ObjectWithUid.create("option_group"))
                 .displayContent("displayContent")
+                .priority(1)
                 .build()
             return builder.build()
         }

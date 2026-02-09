@@ -80,36 +80,39 @@ internal class FileResourceStorageStatusVerifier(
 
             Log.d(TAG, "Verification attempt $attempt/$maxAttempts for ${pendingUids.size} pending files")
 
-            // Process in batches to avoid overwhelming the server
-            val currentBatch = pendingUids.take(batchSize)
-            val batchResults = verifyBatch(currentBatch)
+            // Process all pending items in batches to avoid overwhelming the server
+            val batches = pendingUids.chunked(batchSize)
 
-            batchResults.forEach { (uid, result) ->
-                when (result.status) {
-                    FileResourceStorageStatus.STORED -> {
-                        results[uid] = result
-                        pendingUids.remove(uid)
-                        Log.d(TAG, "File resource $uid is STORED")
-                    }
-                    FileResourceStorageStatus.FAILED -> {
-                        results[uid] = result
-                        pendingUids.remove(uid)
-                        Log.w(TAG, "File resource $uid FAILED to store")
-                    }
-                    FileResourceStorageStatus.PENDING -> {
-                        // Keep in pending list for next attempt
-                        Log.d(TAG, "File resource $uid still PENDING")
-                    }
-                    FileResourceStorageStatus.NONE -> {
-                        // Treat as pending
-                        Log.d(TAG, "File resource $uid has status NONE")
+            batches.forEach { currentBatch ->
+                val batchResults = verifyBatch(currentBatch)
+
+                batchResults.forEach { (uid, result) ->
+                    when (result.status) {
+                        FileResourceStorageStatus.STORED -> {
+                            results[uid] = result
+                            pendingUids.remove(uid)
+                            Log.d(TAG, "File resource $uid is STORED")
+                        }
+                        FileResourceStorageStatus.FAILED -> {
+                            results[uid] = result
+                            pendingUids.remove(uid)
+                            Log.w(TAG, "File resource $uid FAILED to store")
+                        }
+                        FileResourceStorageStatus.PENDING -> {
+                            results[uid] = result
+                            Log.d(TAG, "File resource $uid still PENDING")
+                        }
+                        FileResourceStorageStatus.NONE -> {
+                            results[uid] = result
+                            Log.d(TAG, "File resource $uid has status NONE")
+                        }
                     }
                 }
             }
 
             // If there are still pending files and we haven't reached max attempts, wait before next poll
             if (pendingUids.isNotEmpty() && attempt < maxAttempts) {
-                delay((delayMs * (2.0.pow(attempt))).toLong())
+                delay((delayMs * (2.0.pow(attempt - 1))).toLong())
             }
         }
 

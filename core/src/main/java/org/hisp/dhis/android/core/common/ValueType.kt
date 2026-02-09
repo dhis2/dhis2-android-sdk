@@ -55,6 +55,10 @@ enum class ValueType(val validator: ValueTypeValidator<*>) {
         message = "TRACKER_ASSOCIATE has been removed in DHIS2 v43. " +
             "This value type is kept for backward compatibility with v42 and older versions.",
     )
+    @Deprecated(
+        "TRACKER_ASSOCIATE has been removed in DHIS2 v43. " +
+            "This value type is kept for backward compatibility with v42 and older versions.",
+    )
     TRACKER_ASSOCIATE(UidValidator),
     USERNAME(TextValidator),
     COORDINATE(CoordinateValidator),

@@ -28,10 +28,10 @@
 package org.hisp.dhis.android.testapp.datavalue
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.annotations.LegacyDataValueApi
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValueInternalAccessor
+import org.hisp.dhis.android.core.datavalue.LegacyDataValueApi
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher

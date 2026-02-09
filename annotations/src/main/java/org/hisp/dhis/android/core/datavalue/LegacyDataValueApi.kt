@@ -26,7 +26,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.annotations
+package org.hisp.dhis.android.core.datavalue
 
 /**
  * Marks a DataValue API that does not require an explicit dataSet parameter.

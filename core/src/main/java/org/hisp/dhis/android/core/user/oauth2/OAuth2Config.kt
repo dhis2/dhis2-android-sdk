@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,37 +25,15 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.storage.internal
+package org.hisp.dhis.android.core.user.oauth2
 
-import net.openid.appauth.AuthState
-import org.hisp.dhis.android.core.arch.helpers.UserHelper
-import org.hisp.dhis.android.core.user.oauth2.OAuth2State
-
-data class Credentials(
-    val username: String,
+data class OAuth2Config(
     val serverUrl: String,
-    val password: String?,
-    val openIDConnectState: AuthState?,
-    val oauth2State: OAuth2State? = null,
+    val redirectUri: String = DEFAULT_REDIRECT_URI,
+    val scope: String = DEFAULT_SCOPE,
 ) {
-    fun getHash(): String? {
-        return password?.let { UserHelper.md5(username, it) }
-    }
-
-    override fun equals(other: Any?) =
-        (other is Credentials) &&
-            username == other.username &&
-            password == other.password &&
-            serverUrl == other.serverUrl &&
-            openIDConnectState?.jsonSerializeString() == other.openIDConnectState?.jsonSerializeString() &&
-            oauth2State?.jsonSerializeString() == other.oauth2State?.jsonSerializeString()
-
-    override fun hashCode(): Int {
-        var result = username.hashCode()
-        result = 31 * result + serverUrl.hashCode()
-        result = 31 * result + (password?.hashCode() ?: 0)
-        result = 31 * result + (openIDConnectState?.jsonSerializeString()?.hashCode() ?: 0)
-        result = 31 * result + (oauth2State?.jsonSerializeString()?.hashCode() ?: 0)
-        return result
+    companion object {
+        const val DEFAULT_REDIRECT_URI = "dhis2oauth://oauth"
+        const val DEFAULT_SCOPE = "openid profile username"
     }
 }

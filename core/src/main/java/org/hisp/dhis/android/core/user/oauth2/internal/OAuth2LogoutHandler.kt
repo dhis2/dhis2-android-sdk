@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,37 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.storage.internal
+package org.hisp.dhis.android.core.user.oauth2.internal
 
-import net.openid.appauth.AuthState
-import org.hisp.dhis.android.core.arch.helpers.UserHelper
-import org.hisp.dhis.android.core.user.oauth2.OAuth2State
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
+import org.koin.core.annotation.Singleton
 
-data class Credentials(
-    val username: String,
-    val serverUrl: String,
-    val password: String?,
-    val openIDConnectState: AuthState?,
-    val oauth2State: OAuth2State? = null,
+@Singleton
+internal class OAuth2LogoutHandler(
+    private val credentialsSecureStore: CredentialsSecureStore,
 ) {
-    fun getHash(): String? {
-        return password?.let { UserHelper.md5(username, it) }
+    private val logoutSubject = PublishSubject.create<Unit>()
+
+    fun logOut() {
+        val credentials = credentialsSecureStore.get()
+        if (credentials?.oauth2State != null) {
+            credentialsSecureStore.remove()
+            logoutSubject.onNext(Unit)
+        }
     }
 
-    override fun equals(other: Any?) =
-        (other is Credentials) &&
-            username == other.username &&
-            password == other.password &&
-            serverUrl == other.serverUrl &&
-            openIDConnectState?.jsonSerializeString() == other.openIDConnectState?.jsonSerializeString() &&
-            oauth2State?.jsonSerializeString() == other.oauth2State?.jsonSerializeString()
-
-    override fun hashCode(): Int {
-        var result = username.hashCode()
-        result = 31 * result + serverUrl.hashCode()
-        result = 31 * result + (password?.hashCode() ?: 0)
-        result = 31 * result + (openIDConnectState?.jsonSerializeString()?.hashCode() ?: 0)
-        result = 31 * result + (oauth2State?.jsonSerializeString()?.hashCode() ?: 0)
-        return result
+    fun logOutObservable(): Observable<Unit> {
+        return logoutSubject
     }
 }

@@ -40,7 +40,7 @@ package org.hisp.dhis.android.annotations
 @RequiresOptIn(
     message = "This API does not require explicit dataSet. For DHIS2 v43+, use the version " +
         "with dataSet parameter. Add @OptIn(LegacyDataValueApi::class) if you understand the implications.",
-    level = RequiresOptIn.Level.WARNING,
+    level = RequiresOptIn.Level.ERROR,
 )
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,37 +25,42 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.storage.internal
+package org.hisp.dhis.android.core.user.oauth2
 
-import net.openid.appauth.AuthState
-import org.hisp.dhis.android.core.arch.helpers.UserHelper
-import org.hisp.dhis.android.core.user.oauth2.OAuth2State
+import org.json.JSONObject
 
-data class Credentials(
-    val username: String,
-    val serverUrl: String,
-    val password: String?,
-    val openIDConnectState: AuthState?,
-    val oauth2State: OAuth2State? = null,
+data class OAuth2State(
+    val clientId: String,
+    val keyId: String,
+    val accessToken: String?,
+    val refreshToken: String?,
+    val expiresAt: Long,
+    val scope: String?,
 ) {
-    fun getHash(): String? {
-        return password?.let { UserHelper.md5(username, it) }
+    @Suppress("MagicNumber")
+    fun needsTokenRefresh(): Boolean {
+        val currentTime = System.currentTimeMillis().div(1000)
+        return (currentTime + BUFFER) >= expiresAt
     }
 
-    override fun equals(other: Any?) =
-        (other is Credentials) &&
-            username == other.username &&
-            password == other.password &&
-            serverUrl == other.serverUrl &&
-            openIDConnectState?.jsonSerializeString() == other.openIDConnectState?.jsonSerializeString() &&
-            oauth2State?.jsonSerializeString() == other.oauth2State?.jsonSerializeString()
+    fun jsonSerializeString(): String {
+        return JSONObject().apply {
+            put(KEY_CLIENT_ID, clientId)
+            put(KEY_KEY_ID, keyId)
+            put(KEY_ACCESS_TOKEN, accessToken)
+            put(KEY_REFRESH_TOKEN, refreshToken)
+            put(KEY_EXPIRES_AT, expiresAt)
+            put(KEY_SCOPE, scope)
+        }.toString()
+    }
 
-    override fun hashCode(): Int {
-        var result = username.hashCode()
-        result = 31 * result + serverUrl.hashCode()
-        result = 31 * result + (password?.hashCode() ?: 0)
-        result = 31 * result + (openIDConnectState?.jsonSerializeString()?.hashCode() ?: 0)
-        result = 31 * result + (oauth2State?.jsonSerializeString()?.hashCode() ?: 0)
-        return result
+    companion object {
+        private const val KEY_CLIENT_ID = "client_id"
+        private const val KEY_KEY_ID = "key_id"
+        private const val KEY_ACCESS_TOKEN = "access_token"
+        private const val KEY_REFRESH_TOKEN = "refresh_token"
+        private const val KEY_EXPIRES_AT = "expires_at"
+        private const val KEY_SCOPE = "scope"
+        private const val BUFFER = 60
     }
 }

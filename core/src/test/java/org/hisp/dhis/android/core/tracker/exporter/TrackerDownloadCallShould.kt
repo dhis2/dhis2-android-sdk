@@ -36,18 +36,19 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallEx
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
-import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
-import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitNetworkHandler
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndPersistCallFactory
-import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryBundle
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceDownloadCall
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceLastUpdatedManager
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePersistenceCallFactory
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryBundleFactory
+import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository
+import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterBreakTheGlassHelper
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 import org.hisp.dhis.android.persistence.common.daos.D2Dao
 import org.junit.Before
@@ -74,16 +75,23 @@ class TrackerDownloadCallShould {
     private val databaseAdapter: DatabaseAdapter = mock()
     private val appDatabase: AppDatabase = mock()
     private val d2Dao: D2Dao = mock()
+    private val queryFactory: TrackerQueryBundleFactory = mock()
+    private val trackerCallFactory: TrackerParentCallFactory = mock()
+    private val persistenceCallFactory: TrackedEntityInstancePersistenceCallFactory = mock()
+    private val lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager = mock()
+    private val teiQueryCollectionRepository: TrackedEntityInstanceQueryCollectionRepository = mock()
+    private val breakTheGlassHelper: TrackerImporterBreakTheGlassHelper = mock()
 
-    private lateinit var call: TestTrackerDownloadCall
+    private lateinit var call: TrackedEntityInstanceDownloadCall
 
     @Before
     fun setUp() = runTest {
         whenever(databaseAdapter.getCurrentDatabase()).doReturn(appDatabase)
         whenever(appDatabase.d2Dao()).doReturn(d2Dao)
         whenever(userOrganisationUnitLinkStore.count()).doReturn(1)
+        whenever(queryFactory.getQueries(any())).doReturn(emptyList())
 
-        call = TestTrackerDownloadCall(
+        call = TrackedEntityInstanceDownloadCall(
             userOrganisationUnitLinkStore,
             systemInfoModuleDownloader,
             relationshipDownloadAndPersistCallFactory,
@@ -91,6 +99,12 @@ class TrackerDownloadCallShould {
             organisationUnitStore,
             organisationUnitNetworkHandler,
             databaseAdapter,
+            queryFactory,
+            trackerCallFactory,
+            persistenceCallFactory,
+            lastUpdatedManager,
+            teiQueryCollectionRepository,
+            breakTheGlassHelper,
         )
     }
 
@@ -155,61 +169,4 @@ class TrackerDownloadCallShould {
         assertThat(progressList).isNotEmpty()
         assertThat(progressList.last().isComplete).isTrue()
     }
-}
-
-private class TestTrackerDownloadCall(
-    userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
-    systemInfoModuleDownloader: SystemInfoModuleDownloader,
-    relationshipDownloadAndPersistCallFactory: RelationshipDownloadAndPersistCallFactory,
-    coroutineAPICallExecutor: CoroutineAPICallExecutorMock,
-    organisationUnitStore: OrganisationUnitStore,
-    organisationUnitNetworkHandler: OrganisationUnitNetworkHandler,
-    databaseAdapter: DatabaseAdapter,
-) : TrackerDownloadCall<TrackedEntityInstance, TrackerQueryBundle>(
-    userOrganisationUnitLinkStore,
-    systemInfoModuleDownloader,
-    relationshipDownloadAndPersistCallFactory,
-    coroutineAPICallExecutor,
-    organisationUnitStore,
-    organisationUnitNetworkHandler,
-    databaseAdapter,
-) {
-    override suspend fun getBundles(params: ProgramDataDownloadParams): List<TrackerQueryBundle> = emptyList()
-
-    override suspend fun getPayloadResult(
-        query: TrackerAPIQuery,
-    ): Result<Payload<TrackedEntityInstance>, D2Error> {
-        val emptyPayload: Payload<TrackedEntityInstance> = object : Payload<TrackedEntityInstance> {
-            override val pager: Any? = null
-            override val items: List<TrackedEntityInstance> = emptyList()
-
-            @Deprecated("Use pager attribute instead", replaceWith = ReplaceWith("pager"))
-            override fun pager(): Any? = null
-
-            @Deprecated("Use items attribute instead", replaceWith = ReplaceWith("items"))
-            override fun items(): List<TrackedEntityInstance> = emptyList()
-        }
-        return Result.Success(emptyPayload)
-    }
-
-    override suspend fun persistItems(
-        items: List<TrackedEntityInstance>,
-        params: IdentifiableDataHandlerParams,
-        relatives: RelationshipItemRelatives,
-    ) { }
-
-    override suspend fun updateLastUpdated(bundle: TrackerQueryBundle) { }
-
-    override suspend fun queryByUids(
-        bundle: TrackerQueryBundle,
-        overwrite: Boolean,
-        relatives: RelationshipItemRelatives,
-    ): ItemsWithPagingResult = ItemsWithPagingResult(0, true, null, true)
-
-    override suspend fun getQuery(
-        bundle: TrackerQueryBundle,
-        program: String?,
-        orgunitUid: String?,
-        limit: Int,
-    ): TrackerAPIQuery? = null
 }

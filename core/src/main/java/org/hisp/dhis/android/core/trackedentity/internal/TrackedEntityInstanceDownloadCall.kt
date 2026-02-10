@@ -31,9 +31,8 @@ import io.ktor.http.HttpStatusCode
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
-import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitNetworkHandler
@@ -59,9 +58,7 @@ internal class TrackedEntityInstanceDownloadCall(
     private val coroutineCallExecutor: CoroutineAPICallExecutor,
     organisationUnitStore: OrganisationUnitStore,
     organisationUnitNetworkHandler: OrganisationUnitNetworkHandler,
-    trackedEntityInstanceStore: TrackedEntityInstanceStore,
-    enrollmentStore: EnrollmentStore,
-    eventStore: EventStore,
+    databaseAdapter: DatabaseAdapter,
     private val queryFactory: TrackerQueryBundleFactory,
     private val trackerCallFactory: TrackerParentCallFactory,
     private val persistenceCallFactory: TrackedEntityInstancePersistenceCallFactory,
@@ -75,9 +72,7 @@ internal class TrackedEntityInstanceDownloadCall(
     coroutineCallExecutor,
     organisationUnitStore,
     organisationUnitNetworkHandler,
-    trackedEntityInstanceStore,
-    enrollmentStore,
-    eventStore,
+    databaseAdapter,
 ) {
     override suspend fun getBundles(params: ProgramDataDownloadParams): List<TrackerQueryBundle> {
         return queryFactory.getQueries(params)

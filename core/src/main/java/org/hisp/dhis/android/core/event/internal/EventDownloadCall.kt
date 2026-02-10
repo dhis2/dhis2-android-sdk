@@ -30,10 +30,10 @@ package org.hisp.dhis.android.core.event.internal
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.search.EventQueryCollectionRepository
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitNetworkHandler
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
@@ -41,7 +41,6 @@ import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndPersistCallFactory
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerDownloadCall
@@ -56,9 +55,7 @@ internal class EventDownloadCall internal constructor(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     organisationUnitStore: OrganisationUnitStore,
     organisationUnitNetworkHandler: OrganisationUnitNetworkHandler,
-    trackedEntityInstanceStore: TrackedEntityInstanceStore,
-    enrollmentStore: EnrollmentStore,
-    eventStore: EventStore,
+    databaseAdapter: DatabaseAdapter,
     private val eventQueryBundleFactory: EventQueryBundleFactory,
     private val trackerParentCallFactory: TrackerParentCallFactory,
     private val persistenceCallFactory: EventPersistenceCallFactory,
@@ -71,9 +68,7 @@ internal class EventDownloadCall internal constructor(
     coroutineAPICallExecutor,
     organisationUnitStore,
     organisationUnitNetworkHandler,
-    trackedEntityInstanceStore,
-    enrollmentStore,
-    eventStore,
+    databaseAdapter,
 ) {
 
     override suspend fun getBundles(params: ProgramDataDownloadParams): List<EventQueryBundle> {

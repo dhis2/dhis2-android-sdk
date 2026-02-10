@@ -35,10 +35,10 @@ import org.hisp.dhis.android.core.arch.api.paging.internal.ApiPagingEngine
 import org.hisp.dhis.android.core.arch.api.paging.internal.Paging
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.call.D2ProgressSyncStatus
+import androidx.sqlite.db.SimpleSQLiteQuery
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
-import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitNetworkHandler
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
@@ -47,10 +47,10 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndP
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.persistence.event.EventTableInfo
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceTableInfo
 import kotlin.math.ceil
 import kotlin.math.max
@@ -65,9 +65,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val organisationUnitStore: OrganisationUnitStore,
     private val organisationUnitNetworkHandler: OrganisationUnitNetworkHandler,
-    private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
-    private val enrollmentStore: EnrollmentStore,
-    private val eventStore: EventStore,
+    private val databaseAdapter: DatabaseAdapter,
 ) {
     fun download(params: ProgramDataDownloadParams): Flow<TrackerD2Progress> = channelFlow {
         val progressManager = TrackerD2ProgressManager(null)
@@ -439,16 +437,17 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
     ): TrackerAPIQuery?
 
     private suspend fun getMissingOrganisationUnitUids(): Set<String> {
-        val teiOrgUnits = trackedEntityInstanceStore
-            .selectStringColumnsWhereClause(TrackedEntityInstanceTableInfo.Columns.ORGANISATION_UNIT, "1")
-        val enrollmentOrgUnits = enrollmentStore
-            .selectStringColumnsWhereClause(EnrollmentTableInfo.Columns.ORGANISATION_UNIT, "1")
-        val eventOrgUnits = eventStore
-            .selectStringColumnsWhereClause(EventTableInfo.Columns.ORGANISATION_UNIT, "1")
-
-        val allReferencedOrgUnits = (teiOrgUnits + enrollmentOrgUnits + eventOrgUnits).toSet()
-        val existingOrgUnits = organisationUnitStore.selectUids().toSet()
-
-        return allReferencedOrgUnits - existingOrgUnits
+        val query = """
+            SELECT DISTINCT ${TrackedEntityInstanceTableInfo.Columns.ORGANISATION_UNIT} 
+            FROM ${TrackedEntityInstanceTableInfo.TABLE_NAME}
+            UNION SELECT DISTINCT ${EnrollmentTableInfo.Columns.ORGANISATION_UNIT} 
+            FROM ${EnrollmentTableInfo.TABLE_NAME}
+            UNION SELECT DISTINCT ${EventTableInfo.Columns.ORGANISATION_UNIT} 
+            FROM ${EventTableInfo.TABLE_NAME}
+            EXCEPT SELECT ${OrganisationUnitTableInfo.Columns.UID} 
+            FROM ${OrganisationUnitTableInfo.TABLE_NAME}
+        """.trimIndent()
+        val dao = databaseAdapter.getCurrentDatabase().d2Dao()
+        return dao.stringListRawQuery(SimpleSQLiteQuery(query)).toSet()
     }
 }

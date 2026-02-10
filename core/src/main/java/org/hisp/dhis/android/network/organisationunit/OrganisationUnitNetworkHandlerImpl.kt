@@ -51,4 +51,16 @@ internal class OrganisationUnitNetworkHandlerImpl(
         )
         return apiPayload.mapItems(OrganisationUnitDTO::toDomain)
     }
+
+    override suspend fun getOrganisationUnitsByUid(uids: Set<String>): Payload<OrganisationUnit> {
+        val apiPayload = service.getOrganisationUnits(
+            OrganisationUnitFields.allFields,
+            OrganisationUnitFields.uid.`in`(uids),
+            OrganisationUnitFields.ASC_ORDER,
+            false,
+            uids.size,
+            1,
+        )
+        return apiPayload.mapItems(OrganisationUnitDTO::toDomain)
+    }
 }

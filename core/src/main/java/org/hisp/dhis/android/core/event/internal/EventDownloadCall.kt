@@ -47,6 +47,7 @@ import org.hisp.dhis.android.core.tracker.exporter.TrackerDownloadCall
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 import org.koin.core.annotation.Singleton
 
+@Suppress("LongParameterList")
 @Singleton
 internal class EventDownloadCall internal constructor(
     userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,

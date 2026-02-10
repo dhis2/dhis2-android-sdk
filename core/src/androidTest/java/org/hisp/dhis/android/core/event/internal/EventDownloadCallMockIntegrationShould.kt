@@ -41,7 +41,7 @@ class EventDownloadCallMockIntegrationShould : BaseMockIntegrationTestMetadataDi
 
         testObserver.awaitTerminalEvent()
 
-        testObserver.assertValueCount(4)
+        testObserver.assertValueCount(5)
 
         testObserver.assertValueAt(0) { v: TrackerD2Progress ->
             !v.isComplete &&
@@ -55,7 +55,10 @@ class EventDownloadCallMockIntegrationShould : BaseMockIntegrationTestMetadataDi
             !v.isComplete && v.doneCalls().size == 3 && allProgramsSucceeded(v.programs())
         }
         testObserver.assertValueAt(3) { v ->
-            v.isComplete && v.doneCalls().size == 3 && allProgramsSucceeded(v.programs())
+            !v.isComplete && v.doneCalls().size == 4 && allProgramsSucceeded(v.programs())
+        }
+        testObserver.assertValueAt(4) { v ->
+            v.isComplete && v.doneCalls().size == 4 && allProgramsSucceeded(v.programs())
         }
 
         testObserver.dispose()

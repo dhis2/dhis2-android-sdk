@@ -41,7 +41,7 @@ class TrackedEntityInstanceDownloadCallMockIntegrationShould : BaseMockIntegrati
 
         testObserver.awaitTerminalEvent()
 
-        testObserver.assertValueCount(5)
+        testObserver.assertValueCount(6)
 
         testObserver.assertValueAt(0) { v: TrackerD2Progress ->
             !v.isComplete &&
@@ -58,7 +58,10 @@ class TrackedEntityInstanceDownloadCallMockIntegrationShould : BaseMockIntegrati
             !v.isComplete && v.doneCalls().size == 4 && allProgramsSucceeded(v.programs())
         }
         testObserver.assertValueAt(4) { v ->
-            v.isComplete && v.doneCalls().size == 4 && allProgramsSucceeded(v.programs())
+            !v.isComplete && v.doneCalls().size == 5 && allProgramsSucceeded(v.programs())
+        }
+        testObserver.assertValueAt(5) { v ->
+            v.isComplete && v.doneCalls().size == 5 && allProgramsSucceeded(v.programs())
         }
 
         testObserver.dispose()

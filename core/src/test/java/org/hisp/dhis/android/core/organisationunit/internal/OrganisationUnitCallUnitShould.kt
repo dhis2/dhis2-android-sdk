@@ -32,6 +32,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
+import org.hisp.dhis.android.core.event.internal.EventStore
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
@@ -61,6 +64,9 @@ class OrganisationUnitCallUnitShould {
     private val organisationUnitHandler: OrganisationUnitHandler = mock()
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore = mock()
     private val organisationUnitStore: OrganisationUnitStore = mock()
+    private val trackedEntityInstanceStore: TrackedEntityInstanceStore = mock()
+    private val enrollmentStore: EnrollmentStore = mock()
+    private val eventStore: EventStore = mock()
 
     // the call we are testing:
     private lateinit var lastUpdated: Date
@@ -118,6 +124,9 @@ class OrganisationUnitCallUnitShould {
                 userOrganisationUnitLinkStore,
                 organisationUnitStore,
                 collectionCleaner,
+                trackedEntityInstanceStore,
+                enrollmentStore,
+                eventStore,
             ).download(user)
         }
 

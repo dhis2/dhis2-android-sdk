@@ -31,9 +31,9 @@ import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.internal.EventStore
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
@@ -115,7 +115,15 @@ class OrganisationUnitCallUnitShould {
         whenever(user.phoneNumber()).doReturn("user_phone_number")
         whenever(user.nationality()).doReturn("user_nationality")
         whenever(userOrganisationUnitLinkStore.queryOrganisationUnitUidsByScope(any())).doReturn(listOf(orgUnitUid))
+        whenever(userOrganisationUnitLinkStore.selectStringColumnsWhereClause(any(), any()))
+            .doReturn(listOf(orgUnitUid))
         whenever(organisationUnitStore.selectByUids(any())).doReturn(listOf(organisationUnit))
+        whenever(trackedEntityInstanceStore.selectStringColumnsWhereClause(any(), any()))
+            .doReturn(emptyList())
+        whenever(enrollmentStore.selectStringColumnsWhereClause(any(), any()))
+            .doReturn(emptyList())
+        whenever(eventStore.selectStringColumnsWhereClause(any(), any()))
+            .doReturn(emptyList())
 
         organisationUnitCall = {
             OrganisationUnitCall(
@@ -169,5 +177,18 @@ class OrganisationUnitCallUnitShould {
         organisationUnitCall.invoke()
 
         verify(organisationUnitHandler, times(2)).handleMany(any())
+    }
+
+    @Test
+    fun include_tracker_data_org_units_in_cleaner_call() = runTest {
+        val trackerOrgUnit = "trackerOrgUnitUid"
+        whenever(trackedEntityInstanceStore.selectStringColumnsWhereClause(any(), any()))
+            .doReturn(listOf(trackerOrgUnit))
+
+        organisationUnitCall.invoke()
+
+        val cleanerCaptor = argumentCaptor<Collection<String>>()
+        verify(collectionCleaner).deleteNotPresentByUid(cleanerCaptor.capture())
+        assertThat(cleanerCaptor.firstValue).contains(trackerOrgUnit)
     }
 }

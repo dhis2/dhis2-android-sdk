@@ -37,13 +37,21 @@ import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.call.D2ProgressSyncStatus
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
+import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitNetworkHandler
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndPersistCallFactory
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.persistence.event.EventTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceTableInfo
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
@@ -55,6 +63,11 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
     private val systemInfoModuleDownloader: SystemInfoModuleDownloader,
     private val relationshipDownloadAndPersistCallFactory: RelationshipDownloadAndPersistCallFactory,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
+    private val organisationUnitStore: OrganisationUnitStore,
+    private val organisationUnitNetworkHandler: OrganisationUnitNetworkHandler,
+    private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
+    private val enrollmentStore: EnrollmentStore,
+    private val eventStore: EventStore,
 ) {
     fun download(params: ProgramDataDownloadParams): Flow<TrackerD2Progress> = channelFlow {
         val progressManager = TrackerD2ProgressManager(null)
@@ -67,6 +80,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
             coroutineAPICallExecutor.wrapTransactionallyRoom(cleanForeignKeyErrors = true) {
                 downloadInternal(params, progressManager, relatives).collect { v -> send(v) }
                 downloadRelationships(progressManager, relatives).collect { v -> send(v) }
+                downloadMissingOrgUnits(progressManager).collect { v -> send(v) }
                 send(progressManager.complete())
             }
         }
@@ -353,6 +367,15 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         emit(progressManager.increaseProgress(TrackedEntityInstance::class.java, false))
     }
 
+    private fun downloadMissingOrgUnits(progressManager: TrackerD2ProgressManager): Flow<TrackerD2Progress> = flow {
+        val missingUids = getMissingOrganisationUnitUids()
+        if (missingUids.isNotEmpty()) {
+            val payload = organisationUnitNetworkHandler.getOrganisationUnitsByUid(missingUids)
+            organisationUnitStore.updateOrInsert(payload.items)
+        }
+        emit(progressManager.increaseProgress(TrackedEntityInstance::class.java, false))
+    }
+
     @Suppress("TooGenericExceptionCaught")
     protected suspend fun getItems(query: TrackerAPIQuery): List<T> {
         return try {
@@ -414,4 +437,18 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         orgunitUid: String?,
         limit: Int,
     ): TrackerAPIQuery?
+
+    private suspend fun getMissingOrganisationUnitUids(): Set<String> {
+        val teiOrgUnits = trackedEntityInstanceStore
+            .selectStringColumnsWhereClause(TrackedEntityInstanceTableInfo.Columns.ORGANISATION_UNIT, "1")
+        val enrollmentOrgUnits = enrollmentStore
+            .selectStringColumnsWhereClause(EnrollmentTableInfo.Columns.ORGANISATION_UNIT, "1")
+        val eventOrgUnits = eventStore
+            .selectStringColumnsWhereClause(EventTableInfo.Columns.ORGANISATION_UNIT, "1")
+
+        val allReferencedOrgUnits = (teiOrgUnits + enrollmentOrgUnits + eventOrgUnits).toSet()
+        val existingOrgUnits = organisationUnitStore.selectUids().toSet()
+
+        return allReferencedOrgUnits - existingOrgUnits
+    }
 }

@@ -32,8 +32,12 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallEx
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
+import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitNetworkHandler
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndPersistCallFactory
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
@@ -53,6 +57,11 @@ internal class TrackedEntityInstanceDownloadCall(
     systemInfoModuleDownloader: SystemInfoModuleDownloader,
     relationshipDownloadAndPersistCallFactory: RelationshipDownloadAndPersistCallFactory,
     private val coroutineCallExecutor: CoroutineAPICallExecutor,
+    organisationUnitStore: OrganisationUnitStore,
+    organisationUnitNetworkHandler: OrganisationUnitNetworkHandler,
+    trackedEntityInstanceStore: TrackedEntityInstanceStore,
+    enrollmentStore: EnrollmentStore,
+    eventStore: EventStore,
     private val queryFactory: TrackerQueryBundleFactory,
     private val trackerCallFactory: TrackerParentCallFactory,
     private val persistenceCallFactory: TrackedEntityInstancePersistenceCallFactory,
@@ -64,6 +73,11 @@ internal class TrackedEntityInstanceDownloadCall(
     systemInfoModuleDownloader,
     relationshipDownloadAndPersistCallFactory,
     coroutineCallExecutor,
+    organisationUnitStore,
+    organisationUnitNetworkHandler,
+    trackedEntityInstanceStore,
+    enrollmentStore,
+    eventStore,
 ) {
     override suspend fun getBundles(params: ProgramDataDownloadParams): List<TrackerQueryBundle> {
         return queryFactory.getQueries(params)

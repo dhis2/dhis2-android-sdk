@@ -28,11 +28,17 @@
 package org.hisp.dhis.android.core.organisationunit.internal
 
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
+import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.persistence.event.EventTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceTableInfo
 import org.hisp.dhis.android.persistence.user.UserOrganisationUnitTableInfo
 import org.koin.core.annotation.Singleton
 import java.util.concurrent.atomic.AtomicInteger
@@ -44,6 +50,9 @@ internal class OrganisationUnitCall(
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
     private val organisationUnitStore: OrganisationUnitStore,
     private val collectionCleaner: OrganisationUnitCollectionCleaner,
+    private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
+    private val enrollmentStore: EnrollmentStore,
+    private val eventStore: EventStore,
 ) {
 
     companion object {
@@ -69,7 +78,8 @@ internal class OrganisationUnitCall(
                 UserOrganisationUnitTableInfo.Columns.ORGANISATION_UNIT,
                 "1",
             )
-        collectionCleaner.deleteNotPresentByUid(assignedOrgunitIds)
+        val trackerDataOrgUnitIds = getOrgUnitUidsReferencedByTrackerData()
+        collectionCleaner.deleteNotPresentByUid(assignedOrgunitIds + trackerDataOrgUnitIds)
     }
 
     private suspend fun downloadSearchOrgUnits(
@@ -138,5 +148,15 @@ internal class OrganisationUnitCall(
         handler.handleMany(orgunits)
 
         return orgunits.size
+    }
+
+    private suspend fun getOrgUnitUidsReferencedByTrackerData(): Set<String> {
+        val teiOrgUnits = trackedEntityInstanceStore
+            .selectStringColumnsWhereClause(TrackedEntityInstanceTableInfo.Columns.ORGANISATION_UNIT, "1")
+        val enrollmentOrgUnits = enrollmentStore
+            .selectStringColumnsWhereClause(EnrollmentTableInfo.Columns.ORGANISATION_UNIT, "1")
+        val eventOrgUnits = eventStore
+            .selectStringColumnsWhereClause(EventTableInfo.Columns.ORGANISATION_UNIT, "1")
+        return (teiOrgUnits + enrollmentOrgUnits + eventOrgUnits).toSet()
     }
 }

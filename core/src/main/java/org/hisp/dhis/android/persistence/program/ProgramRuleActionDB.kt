@@ -97,6 +97,7 @@ internal data class ProgramRuleActionDB(
     val option: String?,
     val optionGroup: String?,
     val displayContent: String?,
+    val priority: Int?,
 ) : EntityDB<ProgramRuleAction>, BaseIdentifiableObjectDB {
 
     override fun toDomain(): ProgramRuleAction {
@@ -115,6 +116,7 @@ internal data class ProgramRuleActionDB(
             option?.let { option(ObjectWithUid.create(it)) }
             optionGroup?.let { optionGroup(ObjectWithUid.create(it)) }
             displayContent(displayContent)
+            priority(priority)
         }.build()
     }
 }
@@ -140,5 +142,6 @@ internal fun ProgramRuleAction.toDB(): ProgramRuleActionDB {
         option = option()?.uid(),
         optionGroup = optionGroup()?.uid(),
         displayContent = displayContent(),
+        priority = priority(),
     )
 }

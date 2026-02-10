@@ -7811,6 +7811,7 @@ public abstract class org/hisp/dhis/android/core/program/ProgramRuleAction : org
 	public abstract fun location ()Ljava/lang/String;
 	public abstract fun option ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun optionGroup ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public abstract fun priority ()Ljava/lang/Integer;
 	public abstract fun programIndicator ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun programRule ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun programRuleActionType ()Lorg/hisp/dhis/android/core/program/ProgramRuleActionType;
@@ -7830,6 +7831,7 @@ public abstract class org/hisp/dhis/android/core/program/ProgramRuleAction$Build
 	public abstract fun location (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramRuleAction$Builder;
 	public abstract fun option (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/program/ProgramRuleAction$Builder;
 	public abstract fun optionGroup (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/program/ProgramRuleAction$Builder;
+	public abstract fun priority (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/program/ProgramRuleAction$Builder;
 	public abstract fun programIndicator (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/program/ProgramRuleAction$Builder;
 	public abstract fun programRule (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/program/ProgramRuleAction$Builder;
 	public abstract fun programRuleActionType (Lorg/hisp/dhis/android/core/program/ProgramRuleActionType;)Lorg/hisp/dhis/android/core/program/ProgramRuleAction$Builder;
@@ -7846,6 +7848,7 @@ public final class org/hisp/dhis/android/core/program/ProgramRuleActionCollectio
 	public final fun byLocation ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byOptionGroupUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byOptionUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
+	public final fun byPriority ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/IntegerFilterConnector;
 	public final fun byProgramIndicatorUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byProgramRuleActionType ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
 	public final fun byProgramRuleUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
@@ -14293,6 +14296,7 @@ public final class org/hisp/dhis/android/persistence/program/ProgramRuleActionTa
 	public static final field NAME Ljava/lang/String;
 	public static final field OPTION Ljava/lang/String;
 	public static final field OPTION_GROUP Ljava/lang/String;
+	public static final field PRIORITY Ljava/lang/String;
 	public static final field PROGRAM_INDICATOR Ljava/lang/String;
 	public static final field PROGRAM_RULE Ljava/lang/String;
 	public static final field PROGRAM_RULE_ACTION_TYPE Ljava/lang/String;

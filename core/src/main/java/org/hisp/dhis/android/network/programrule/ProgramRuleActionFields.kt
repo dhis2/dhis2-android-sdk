@@ -47,5 +47,6 @@ internal object ProgramRuleActionFields : BaseFields<ProgramRuleAction>() {
         fh.nestedFieldWithUid(Columns.OPTION),
         fh.nestedFieldWithUid(Columns.OPTION_GROUP),
         fh.field(Columns.DISPLAY_CONTENT),
+        fh.field(Columns.PRIORITY),
     )
 }

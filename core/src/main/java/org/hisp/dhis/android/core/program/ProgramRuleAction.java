@@ -78,6 +78,9 @@ public abstract class ProgramRuleAction extends BaseIdentifiableObject implement
     @Nullable
     public abstract String displayContent();
 
+    @Nullable
+    public abstract Integer priority();
+
     public static Builder builder() {
         return new AutoValue_ProgramRuleAction.Builder();
     }
@@ -111,6 +114,8 @@ public abstract class ProgramRuleAction extends BaseIdentifiableObject implement
         public abstract Builder optionGroup(ObjectWithUid optionGroup);
 
         public abstract Builder displayContent(String content);
+
+        public abstract Builder priority(Integer priority);
 
         public abstract ProgramRuleAction build();
     }

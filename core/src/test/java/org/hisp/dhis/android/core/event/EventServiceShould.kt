@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.event
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper
 import org.hisp.dhis.android.core.category.CategoryOptionComboService
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
@@ -41,12 +42,14 @@ import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
+import org.mockito.kotlin.any
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
@@ -74,6 +77,7 @@ class EventServiceShould {
     private val categoryOptionComboService: CategoryOptionComboService =
         mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val eventDateUtils: EventDateUtils = mock()
+    private val programOwnerStore: ProgramOwnerStore = mock()
 
     private val eventService: EventService = EventServiceImpl(
         enrollmentRepository,
@@ -84,6 +88,7 @@ class EventServiceShould {
         organisationUnitService,
         categoryOptionComboService,
         eventDateUtils,
+        programOwnerStore,
     )
 
     private val firstJanuary = BaseIdentifiableObject.DATE_FORMAT.parse("2020-01-01T00:00:00.000")
@@ -150,5 +155,47 @@ class EventServiceShould {
         assertThat(status is EventEditableStatus.NonEditable).isTrue()
         assertThat((status as EventEditableStatus.NonEditable).reason)
             .isEquivalentAccordingToCompareTo(EventNonEditableReason.NO_DATA_WRITE_ACCESS)
+    }
+
+    @Test
+    fun `Should return editable when owner orgunit is in capture scope after transfer`() = runTest {
+        whenever(programStage.access()) doReturn writeDataAccess
+        whenever(event.organisationUnit()) doReturn "OU2"
+        whenever(event.enrollment()) doReturn "enrollmentUid"
+        whenever(event.program()) doReturn "programUid"
+        whenever(enrollment.trackedEntityInstance()) doReturn "teiUid"
+        whenever(organisationUnitService.blockingIsDateInOrgunitRange(any(), any())) doReturn true
+        whenever(organisationUnitService.blockingIsInCaptureScope("OU2")) doReturn false
+        whenever(organisationUnitService.blockingIsInCaptureScope("OU1")) doReturn true
+        whenever(enrollmentService.blockingIsOpen(any())) doReturn true
+
+        val programOwner: ProgramOwner = mock()
+        whenever(programOwner.ownerOrgUnit()) doReturn "OU1"
+        whenever(programOwnerStore.selectWhere(any())) doReturn listOf(programOwner)
+
+        val status = eventService.blockingGetEditableStatus(event.uid())
+        assertThat(status is EventEditableStatus.Editable).isTrue()
+    }
+
+    @Test
+    fun `Should return not editable when neither event nor owner orgunit is in capture scope`() = runTest {
+        whenever(programStage.access()) doReturn writeDataAccess
+        whenever(event.organisationUnit()) doReturn "OU2"
+        whenever(event.enrollment()) doReturn "enrollmentUid"
+        whenever(event.program()) doReturn "programUid"
+        whenever(enrollment.trackedEntityInstance()) doReturn "teiUid"
+        whenever(organisationUnitService.blockingIsDateInOrgunitRange(any(), any())) doReturn true
+        whenever(organisationUnitService.blockingIsInCaptureScope("OU2")) doReturn false
+        whenever(organisationUnitService.blockingIsInCaptureScope("OU3")) doReturn false
+        whenever(enrollmentService.blockingIsOpen(any())) doReturn true
+
+        val programOwner: ProgramOwner = mock()
+        whenever(programOwner.ownerOrgUnit()) doReturn "OU3"
+        whenever(programOwnerStore.selectWhere(any())) doReturn listOf(programOwner)
+
+        val status = eventService.blockingGetEditableStatus(event.uid())
+        assertThat(status is EventEditableStatus.NonEditable).isTrue()
+        assertThat((status as EventEditableStatus.NonEditable).reason)
+            .isEquivalentAccordingToCompareTo(EventNonEditableReason.ORGUNIT_IS_NOT_IN_CAPTURE_SCOPE)
     }
 }

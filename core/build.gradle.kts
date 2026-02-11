@@ -206,7 +206,6 @@ dependencies {
     api(libs.sqlcipher)
 
     // Java test dependencies
-    testImplementation(project(":annotations"))
     testImplementation(libs.junit)
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.kotlin)
@@ -219,7 +218,6 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
 
     // Android test dependencies
-    androidTestImplementation(project(":annotations"))
     androidTestImplementation(libs.mockito.core)
     androidTestImplementation(libs.livedata.testing.ktx)
     androidTestImplementation(libs.androidx.arch.core.testing)

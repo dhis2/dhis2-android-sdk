@@ -7808,6 +7808,7 @@ public abstract class org/hisp/dhis/android/core/program/ProgramRuleAction : org
 	public abstract fun data ()Ljava/lang/String;
 	public abstract fun dataElement ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun displayContent ()Ljava/lang/String;
+	public abstract fun legendSet ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun location ()Ljava/lang/String;
 	public abstract fun option ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public abstract fun optionGroup ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
@@ -7828,6 +7829,7 @@ public abstract class org/hisp/dhis/android/core/program/ProgramRuleAction$Build
 	public abstract fun data (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramRuleAction$Builder;
 	public abstract fun dataElement (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/program/ProgramRuleAction$Builder;
 	public abstract fun displayContent (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramRuleAction$Builder;
+	public abstract fun legendSet (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/program/ProgramRuleAction$Builder;
 	public abstract fun location (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramRuleAction$Builder;
 	public abstract fun option (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/program/ProgramRuleAction$Builder;
 	public abstract fun optionGroup (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/program/ProgramRuleAction$Builder;
@@ -7845,6 +7847,7 @@ public final class org/hisp/dhis/android/core/program/ProgramRuleActionCollectio
 	public final fun byData ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byDataElementUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byDisplayContent ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
+	public final fun byLegendSetUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byLocation ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byOptionGroupUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byOptionUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
@@ -14292,6 +14295,7 @@ public final class org/hisp/dhis/android/persistence/program/ProgramRuleActionTa
 	public static final field DISPLAY_CONTENT Ljava/lang/String;
 	public static final field DISPLAY_NAME Ljava/lang/String;
 	public static final field LAST_UPDATED Ljava/lang/String;
+	public static final field LEGEND_SET Ljava/lang/String;
 	public static final field LOCATION Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
 	public static final field OPTION Ljava/lang/String;

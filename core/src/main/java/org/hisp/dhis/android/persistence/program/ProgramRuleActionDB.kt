@@ -11,6 +11,7 @@ import org.hisp.dhis.android.persistence.common.BaseIdentifiableObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.applyBaseIdentifiableFields
 import org.hisp.dhis.android.persistence.dataelement.DataElementDB
+import org.hisp.dhis.android.persistence.legendset.LegendSetDB
 import org.hisp.dhis.android.persistence.option.OptionDB
 import org.hisp.dhis.android.persistence.option.OptionGroupDB
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeDB
@@ -74,6 +75,13 @@ import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeDB
             onDelete = ForeignKey.CASCADE,
             deferred = true,
         ),
+        ForeignKey(
+            entity = LegendSetDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["legendSet"],
+            onDelete = ForeignKey.CASCADE,
+            deferred = true,
+        ),
     ],
 )
 internal data class ProgramRuleActionDB(
@@ -98,6 +106,7 @@ internal data class ProgramRuleActionDB(
     val optionGroup: String?,
     val displayContent: String?,
     val priority: Int?,
+    val legendSet: String?,
 ) : EntityDB<ProgramRuleAction>, BaseIdentifiableObjectDB {
 
     override fun toDomain(): ProgramRuleAction {
@@ -117,6 +126,7 @@ internal data class ProgramRuleActionDB(
             optionGroup?.let { optionGroup(ObjectWithUid.create(it)) }
             displayContent(displayContent)
             priority(priority)
+            legendSet?.let { legendSet(ObjectWithUid.create(it)) }
         }.build()
     }
 }
@@ -143,5 +153,6 @@ internal fun ProgramRuleAction.toDB(): ProgramRuleActionDB {
         optionGroup = optionGroup()?.uid(),
         displayContent = displayContent(),
         priority = priority(),
+        legendSet = legendSet()?.uid(),
     )
 }

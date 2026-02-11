@@ -58,6 +58,7 @@ internal data class ProgramRuleActionDTO(
     val optionGroup: ObjectWithUidDTO?,
     val displayContent: String?,
     val priority: Int?,
+    val legendSet: ObjectWithUidDTO?,
 ) : BaseIdentifiableObjectDTO {
     fun toDomain(programRuleId: String?): ProgramRuleAction {
         return ProgramRuleAction.builder()
@@ -76,6 +77,7 @@ internal data class ProgramRuleActionDTO(
             .optionGroup(optionGroup?.toDomain())
             .displayContent(displayContent)
             .priority(priority)
+            .legendSet(legendSet?.toDomain())
             .build()
     }
 }

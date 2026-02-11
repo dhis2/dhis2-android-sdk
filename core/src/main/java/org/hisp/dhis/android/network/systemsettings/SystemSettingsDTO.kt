@@ -37,6 +37,7 @@ internal data class SystemSettingsDTO(
     val keyStyle: String?,
     val keyDefaultBaseMap: String?,
     val keyBingMapsApiKey: String?,
+    val analyticsFinancialYearStart: String?,
 ) {
 
     fun toDomainSplitted(): List<SystemSetting> {
@@ -52,8 +53,12 @@ internal data class SystemSettingsDTO(
             .key(SystemSetting.SystemSettingKey.DEFAULT_BASE_MAP)
             .value(keyDefaultBaseMap)
             .build()
+        val analyticsFinancialYearStart = SystemSetting.builder()
+            .key(SystemSetting.SystemSettingKey.ANALYTICS_FINANCIAL_YEAR_START)
+            .value(analyticsFinancialYearStart)
+            .build()
 
-        return listOf(flag, style, keyDefaultBaseMap)
+        return listOf(flag, style, keyDefaultBaseMap, analyticsFinancialYearStart)
     }
 
     fun toDomainBingMapsApiKey(): SystemSetting {

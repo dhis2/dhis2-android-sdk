@@ -36,7 +36,7 @@ class SettingsModuleMockIntegrationShould : BaseMockIntegrationTestFullDispatche
     @Test
     fun allow_access_to_system_setting() {
         val systemSettings: List<SystemSetting?> = d2.settingModule().systemSetting().blockingGet()
-        Truth.assertThat(systemSettings.size).isEqualTo(3)
+        Truth.assertThat(systemSettings.size).isEqualTo(4)
     }
 
     @Test

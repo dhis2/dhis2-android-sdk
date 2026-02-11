@@ -137,6 +137,12 @@ android {
     buildFeatures {
         buildConfig = true
     }
+
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+        }
+    }
 }
 
 kotlin {

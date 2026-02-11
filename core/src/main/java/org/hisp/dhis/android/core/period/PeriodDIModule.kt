@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.period
 
 import org.hisp.dhis.android.core.period.clock.internal.ClockProvider
 import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
+import org.hisp.dhis.android.core.period.internal.FinancialYearPeriodHelper
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl
 import org.koin.core.annotation.ComponentScan
@@ -41,8 +42,11 @@ import org.koin.core.annotation.Singleton
 internal class PeriodDIModule {
 
     @Singleton
-    fun parentPeriodGenerator(clockProvider: ClockProvider): ParentPeriodGenerator {
-        return ParentPeriodGeneratorImpl.create(clockProvider)
+    fun parentPeriodGenerator(
+        clockProvider: ClockProvider,
+        financialYearPeriodHelper: FinancialYearPeriodHelper,
+    ): ParentPeriodGenerator {
+        return ParentPeriodGeneratorImpl.create(clockProvider, financialYearPeriodHelper)
     }
 
     @Singleton

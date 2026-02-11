@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,16 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.period.generator.internal
+package org.hisp.dhis.android.core.period.internal
 
-import org.hisp.dhis.android.core.period.internal.FinancialYearPeriodHelper
-import kotlin.time.Clock
+import org.hisp.dhis.android.core.period.PeriodType
 
-internal class YearlyPeriodGenerators(clock: Clock, financialYearPeriodHelper: FinancialYearPeriodHelper) {
-    val yearly = YearlyPeriodGeneratorFactory.yearly(clock)
-    val financialApril = YearlyPeriodGeneratorFactory.financialApril(clock)
-    val financialJuly = YearlyPeriodGeneratorFactory.financialJuly(clock)
-    val financialOct = YearlyPeriodGeneratorFactory.financialOct(clock)
-    val financialNov = YearlyPeriodGeneratorFactory.financialNov(clock)
-    val financialYearPeriodHelper: FinancialYearPeriodHelper = financialYearPeriodHelper
+internal class FinancialYearPeriodHelperMock(
+    private val periodType: PeriodType = PeriodType.FinancialApril,
+) : FinancialYearPeriodHelper {
+    override fun getFinancialYearPeriodType(): PeriodType {
+        return periodType
+    }
 }

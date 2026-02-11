@@ -30,9 +30,11 @@ package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 
 import org.hisp.dhis.android.core.analytics.trackerlinelist.DateFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.DateItem
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
+import org.hisp.dhis.android.core.period.internal.FinancialYearPeriodHelper
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl
 import org.hisp.dhis.android.core.period.internal.PeriodParser
 import java.util.Date
@@ -41,7 +43,11 @@ internal abstract class BaseDateEvaluator(
     private val item: DateItem,
 ) : TrackerLineListEvaluator() {
 
-    private val parentPeriodGenerator = ParentPeriodGeneratorImpl.create(ClockProviderFactory.clockProvider)
+    private val financialYearPeriodHelper: FinancialYearPeriodHelper = koin.get()
+    private val parentPeriodGenerator = ParentPeriodGeneratorImpl.create(
+        ClockProviderFactory.clockProvider,
+        financialYearPeriodHelper,
+    )
     private val periodParser = PeriodParser()
 
     fun getDateWhereClause(): String {

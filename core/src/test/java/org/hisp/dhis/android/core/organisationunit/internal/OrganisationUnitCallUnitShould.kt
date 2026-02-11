@@ -27,17 +27,18 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal
 
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
-import org.hisp.dhis.android.core.event.internal.EventStore
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import org.hisp.dhis.android.persistence.common.daos.D2Dao
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -64,9 +65,9 @@ class OrganisationUnitCallUnitShould {
     private val organisationUnitHandler: OrganisationUnitHandler = mock()
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore = mock()
     private val organisationUnitStore: OrganisationUnitStore = mock()
-    private val trackedEntityInstanceStore: TrackedEntityInstanceStore = mock()
-    private val enrollmentStore: EnrollmentStore = mock()
-    private val eventStore: EventStore = mock()
+    private val databaseAdapter: DatabaseAdapter = mock()
+    private val appDatabase: AppDatabase = mock()
+    private val d2Dao: D2Dao = mock()
 
     // the call we are testing:
     private lateinit var lastUpdated: Date
@@ -118,11 +119,9 @@ class OrganisationUnitCallUnitShould {
         whenever(userOrganisationUnitLinkStore.selectStringColumnsWhereClause(any(), any()))
             .doReturn(listOf(orgUnitUid))
         whenever(organisationUnitStore.selectByUids(any())).doReturn(listOf(organisationUnit))
-        whenever(trackedEntityInstanceStore.selectStringColumnsWhereClause(any(), any()))
-            .doReturn(emptyList())
-        whenever(enrollmentStore.selectStringColumnsWhereClause(any(), any()))
-            .doReturn(emptyList())
-        whenever(eventStore.selectStringColumnsWhereClause(any(), any()))
+        whenever(databaseAdapter.getCurrentDatabase()).doReturn(appDatabase)
+        whenever(appDatabase.d2Dao()).doReturn(d2Dao)
+        whenever(d2Dao.stringListRawQuery(any<SupportSQLiteQuery>()))
             .doReturn(emptyList())
 
         organisationUnitCall = {
@@ -132,9 +131,7 @@ class OrganisationUnitCallUnitShould {
                 userOrganisationUnitLinkStore,
                 organisationUnitStore,
                 collectionCleaner,
-                trackedEntityInstanceStore,
-                enrollmentStore,
-                eventStore,
+                databaseAdapter,
             ).download(user)
         }
 
@@ -182,7 +179,7 @@ class OrganisationUnitCallUnitShould {
     @Test
     fun include_tracker_data_org_units_in_cleaner_call() = runTest {
         val trackerOrgUnit = "trackerOrgUnitUid"
-        whenever(trackedEntityInstanceStore.selectStringColumnsWhereClause(any(), any()))
+        whenever(d2Dao.stringListRawQuery(any<SupportSQLiteQuery>()))
             .doReturn(listOf(trackerOrgUnit))
 
         organisationUnitCall.invoke()

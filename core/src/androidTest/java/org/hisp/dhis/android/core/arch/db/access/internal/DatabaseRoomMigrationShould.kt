@@ -76,7 +76,6 @@ class DatabaseRoomMigrationShould {
             row.copy(sql = normalizedSql)
         }.sortedBy { it.name }
     }
-
     private suspend fun getRoomSchema(db: AppDatabase): List<SchemaRow> {
         val schemaFromDao = withContext(Dispatchers.IO) {
             db.d2Dao().getSchemaRows()

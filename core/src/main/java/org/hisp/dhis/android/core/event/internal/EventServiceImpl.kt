@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.event.internal
 
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.category.CategoryOptionComboService
 import org.hisp.dhis.android.core.enrollment.EnrollmentCollectionRepository
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
@@ -37,6 +38,9 @@ import org.hisp.dhis.android.core.event.EventService
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService
 import org.hisp.dhis.android.core.program.ProgramCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
+import org.hisp.dhis.android.persistence.trackedentity.ProgramOwnerTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -50,6 +54,7 @@ internal class EventServiceImpl(
     private val organisationUnitService: OrganisationUnitService,
     private val categoryOptionComboService: CategoryOptionComboService,
     private val eventDateUtils: EventDateUtils,
+    private val programOwnerStore: ProgramOwnerStore,
 ) : EventService {
 
     override fun blockingHasDataWriteAccess(eventUid: String): Boolean {
@@ -122,7 +127,7 @@ internal class EventServiceImpl(
             event.enrollment()?.let { !enrollmentService.blockingIsOpen(it) } ?: false ->
                 EventEditableStatus.NonEditable(EventNonEditableReason.ENROLLMENT_IS_NOT_OPEN)
 
-            event.organisationUnit()?.let { !organisationUnitService.blockingIsInCaptureScope(it) } ?: false ->
+            !isInCaptureScope(event) ->
                 EventEditableStatus.NonEditable(EventNonEditableReason.ORGUNIT_IS_NOT_IN_CAPTURE_SCOPE)
 
             else ->
@@ -156,6 +161,32 @@ internal class EventServiceImpl(
 
     override fun canAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Single<Boolean> {
         return Single.just(blockingCanAddEventToEnrollment(enrollmentUid, programStageUid))
+    }
+
+    private fun isInCaptureScope(event: Event): Boolean {
+        return if (isEventInCaptureScope(event)) {
+            true
+        } else {
+            val ownerOrgUnits = runBlocking { getEventOwnerOrgUid(event) }
+            ownerOrgUnits.any { organisationUnitService.blockingIsInCaptureScope(it) }
+        }
+    }
+
+    private fun isEventInCaptureScope(event: Event): Boolean {
+        return event.organisationUnit()?.let { organisationUnitService.blockingIsInCaptureScope(it) } ?: false
+    }
+
+    private suspend fun getEventOwnerOrgUid(event: Event): List<String> {
+        val program = event.program()
+        val tei = event.enrollment()?.let { enrollmentRepository.uid(it).blockingGet() }?.trackedEntityInstance()
+        if (program == null || tei == null) {
+            return emptyList()
+        }
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(ProgramOwnerTableInfo.Columns.PROGRAM, program)
+            .appendKeyStringValue(ProgramOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE, tei)
+            .build()
+        return programOwnerStore.selectWhere(whereClause).map { it.ownerOrgUnit() }
     }
 
     private fun getEventCount(enrollmentUid: String, programStageUid: String): Int {

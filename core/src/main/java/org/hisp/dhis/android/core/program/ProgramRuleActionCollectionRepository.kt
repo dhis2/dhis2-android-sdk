@@ -31,6 +31,7 @@ import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAp
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
+import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.program.internal.ProgramRuleActionStore
@@ -105,6 +106,14 @@ class ProgramRuleActionCollectionRepository internal constructor(
 
     fun byDisplayContent(): StringFilterConnector<ProgramRuleActionCollectionRepository> {
         return cf.string(ProgramRuleActionTableInfo.Columns.DISPLAY_CONTENT)
+    }
+
+    fun byPriority(): IntegerFilterConnector<ProgramRuleActionCollectionRepository> {
+        return cf.integer(ProgramRuleActionTableInfo.Columns.PRIORITY)
+    }
+
+    fun byLegendSetUid(): StringFilterConnector<ProgramRuleActionCollectionRepository> {
+        return cf.string(ProgramRuleActionTableInfo.Columns.LEGEND_SET)
     }
 
     internal companion object {

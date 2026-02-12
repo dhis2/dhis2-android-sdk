@@ -65,7 +65,11 @@ class PeriodStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationSho
 
     @Test
     fun select_correct_period_passing_period_type_and_a_date() = runTest {
-        PeriodHandler(periodStore, create(ClockProviderFactory.createFixed())).generateAndPersist()
+        val financialYearPeriodHelper = FinancialYearPeriodHelperMock()
+        PeriodHandler(
+            periodStore,
+            create(ClockProviderFactory.createFixed(), financialYearPeriodHelper),
+        ).generateAndPersist()
         val period = periodStore.selectPeriodByTypeAndDate(
             PeriodType.SixMonthly,
             DateUtils.DATE_FORMAT.parse("2019-03-02T12:24:25.319"),

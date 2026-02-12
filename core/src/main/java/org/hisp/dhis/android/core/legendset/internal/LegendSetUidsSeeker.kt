@@ -34,6 +34,7 @@ import org.hisp.dhis.android.persistence.common.querybuilders.MultipleTableQuery
 import org.hisp.dhis.android.persistence.legendset.DataElementLegendSetLinkTableInfo
 import org.hisp.dhis.android.persistence.legendset.IndicatorLegendSetLinkTableInfo
 import org.hisp.dhis.android.persistence.legendset.ProgramIndicatorLegendSetLinkTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramRuleActionTableInfo
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeLegendSetLinkTableInfo
 import org.hisp.dhis.android.persistence.visualization.VisualizationTableInfo
 import org.koin.core.annotation.Singleton
@@ -49,6 +50,7 @@ internal class LegendSetUidsSeeker(
             IndicatorLegendSetLinkTableInfo.TABLE_INFO.name(),
             DataElementLegendSetLinkTableInfo.TABLE_INFO.name(),
             TrackedEntityAttributeLegendSetLinkTableInfo.TABLE_INFO.name(),
+            ProgramRuleActionTableInfo.TABLE_INFO.name(),
         )
         val query = MultipleTableQueryBuilder()
             .generateQuery(ProgramIndicatorLegendSetLinkTableInfo.Columns.LEGEND_SET, tableNames)

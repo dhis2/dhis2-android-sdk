@@ -41,6 +41,8 @@ import org.hisp.dhis.android.core.user.UserGroupCollectionRepository
 import org.hisp.dhis.android.core.user.UserModule
 import org.hisp.dhis.android.core.user.UserObjectRepository
 import org.hisp.dhis.android.core.user.UserRoleCollectionRepository
+import org.hisp.dhis.android.core.user.oauth2.OAuth2Handler
+import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2HandlerImpl
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectHandler
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectHandlerImpl
 import org.koin.core.annotation.Singleton
@@ -59,6 +61,7 @@ internal class UserModuleImpl(
     private val user: UserObjectRepository,
     private val accountManager: AccountManagerImpl,
     private val openIDConnectHandler: OpenIDConnectHandlerImpl,
+    private val oauth2Handler: OAuth2HandlerImpl,
     private val twoFactorAuthManager: TwoFactorAuthManagerImpl,
 ) : UserModule {
 
@@ -117,6 +120,10 @@ internal class UserModuleImpl(
 
     override fun openIdHandler(): OpenIDConnectHandler {
         return openIDConnectHandler
+    }
+
+    override fun oauth2Handler(): OAuth2Handler {
+        return oauth2Handler
     }
 
     override fun twoFactorAuthManager(): TwoFactorAuthManager {

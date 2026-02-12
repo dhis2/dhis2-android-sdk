@@ -76,6 +76,10 @@ class SystemSettingCollectionRepository internal constructor(
         return byKey().eq(SystemSettingKey.DEFAULT_BASE_MAP).one()
     }
 
+    fun analyticsFinancialYearStart(): ReadOnlyOneObjectRepositoryFinalImpl<SystemSetting> {
+        return byKey().eq(SystemSettingKey.ANALYTICS_FINANCIAL_YEAR_START).one()
+    }
+
     internal companion object {
         val childrenAppenders: ChildrenAppenderGetter<SystemSetting> = emptyMap()
     }

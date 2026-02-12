@@ -137,6 +137,12 @@ android {
     buildFeatures {
         buildConfig = true
     }
+
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+        }
+    }
 }
 
 kotlin {
@@ -196,6 +202,7 @@ dependencies {
 
     implementation(libs.openid.appauth)
     implementation(libs.listenablefuture.empty)
+    implementation(libs.nimbus.jose.jwt)
 
     // Database
     implementation(libs.androidx.room.runtime)

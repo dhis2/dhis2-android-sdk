@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoCall
 import org.hisp.dhis.android.core.user.AccountDeletionReason
 import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -171,6 +172,31 @@ internal class LogInCall(
 
     @Throws(D2Error::class)
     suspend fun blockingLogInOpenIDConnect(serverUrl: String, openIDConnectState: AuthState): User {
+        return logInWithToken(
+            serverUrl = serverUrl,
+            token = openIDConnectState.idToken!!,
+            openIDConnectState = openIDConnectState,
+            oauth2State = null,
+        )
+    }
+
+    @Throws(D2Error::class)
+    suspend fun logInOAuth2(serverUrl: String, oauth2State: OAuth2State): User {
+        return logInWithToken(
+            serverUrl = serverUrl,
+            token = oauth2State.accessToken!!,
+            openIDConnectState = null,
+            oauth2State = oauth2State,
+        )
+    }
+
+    @Throws(D2Error::class)
+    private suspend fun logInWithToken(
+        serverUrl: String,
+        token: String,
+        openIDConnectState: AuthState?,
+        oauth2State: OAuth2State?,
+    ): User {
         val trimmedServerUrl = ServerUrlParser.trimAndRemoveTrailingSlash(serverUrl)
 
         val parsedServerUrl = ServerUrlParser.parse(trimmedServerUrl)
@@ -179,19 +205,22 @@ internal class LogInCall(
         var credentials: Credentials? = null
         return try {
             val user = coroutineAPICallExecutor.wrap(errorCatcher = apiCallErrorCatcher) {
-                networkHandler.authenticate(
-                    "Bearer ${openIDConnectState.idToken}",
-                )
+                networkHandler.authenticate("Bearer $token")
             }.getOrThrow()
-            credentials = getOpenIdConnectCredentials(user, trimmedServerUrl!!, openIDConnectState)
+            credentials = Credentials(
+                username = user.username()!!,
+                serverUrl = trimmedServerUrl!!,
+                password = null,
+                openIDConnectState = openIDConnectState,
+                oauth2State = oauth2State,
+            )
             loginOnline(user, credentials)
         } catch (d2Error: D2Error) {
             throw handleOnlineException(d2Error, credentials)
         }
     }
 
-    private fun getOpenIdConnectCredentials(user: User, serverUrl: String, openIDConnectState: AuthState): Credentials {
-        val username = user.username()!!
-        return Credentials(username, serverUrl, null, openIDConnectState)
+    fun isUserLoggedIn(): Boolean {
+        return credentialsSecureStore.get() != null
     }
 }

@@ -2,5 +2,6 @@
   "keyFlag": "sierra_leone",
   "keyStyle": "light_blue/light_blue.css",
   "keyDefaultBaseMap": "keyDefaultBaseMap",
-  "keyBingMapsApiKey": "keyBingMapsApiKey"
+  "keyBingMapsApiKey": "keyBingMapsApiKey",
+  "analyticsFinancialYearStart": "FINANCIAL_YEAR_JULY"
 }

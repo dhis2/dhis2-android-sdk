@@ -20,6 +20,10 @@
           "displayContent": "La valeur d'hémoglobine ne peut pas être supérieure à 99",
           "dataElement": {
             "id": "vANAXwtLwcT"
+          },
+          "priority": 1,
+          "legendSet": {
+            "id": "TiOkbpGEud4"
           }
         }
       ]
@@ -66,6 +70,10 @@
           "optionGroup":
           {
             "id": "j3JYGVCIEdz"
+          },
+          "priority": 1,
+          "legendSet": {
+            "id": "TiOkbpGEud4"
           }
         }
       ]

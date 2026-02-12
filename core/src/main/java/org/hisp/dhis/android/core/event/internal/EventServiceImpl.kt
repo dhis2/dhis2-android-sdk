@@ -164,29 +164,24 @@ internal class EventServiceImpl(
     }
 
     private fun isInCaptureScope(event: Event): Boolean {
-        return if (isEventInCaptureScope(event)) {
-            true
-        } else {
-            val ownerOrgUnits = runBlocking { getEventOwnerOrgUid(event) }
-            ownerOrgUnits.any { organisationUnitService.blockingIsInCaptureScope(it) }
-        }
-    }
-
-    private fun isEventInCaptureScope(event: Event): Boolean {
-        return event.organisationUnit()?.let { organisationUnitService.blockingIsInCaptureScope(it) } ?: false
+        val ownerOrgUnits = runBlocking { getEventOwnerOrgUid(event) }
+        return ownerOrgUnits.any { organisationUnitService.blockingIsInCaptureScope(it) }
     }
 
     private suspend fun getEventOwnerOrgUid(event: Event): List<String> {
         val program = event.program()
         val tei = event.enrollment()?.let { enrollmentRepository.uid(it).blockingGet() }?.trackedEntityInstance()
         if (program == null || tei == null) {
-            return emptyList()
+            return event.organisationUnit()?.let { listOf(it) } ?: emptyList()
         }
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(ProgramOwnerTableInfo.Columns.PROGRAM, program)
             .appendKeyStringValue(ProgramOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE, tei)
             .build()
-        return programOwnerStore.selectWhere(whereClause).map { it.ownerOrgUnit() }
+        val ownerOrgUnits = programOwnerStore.selectWhere(whereClause).map { it.ownerOrgUnit() }
+        return if (ownerOrgUnits.isNotEmpty()) ownerOrgUnits else event.organisationUnit()?.let { listOf(it) }
+            ?: emptyList()
+
     }
 
     private fun getEventCount(enrollmentUid: String, programStageUid: String): Int {

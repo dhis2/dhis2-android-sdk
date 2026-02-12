@@ -59,5 +59,6 @@ class ProgramRuleActionShould : CoreObjectShould("program/program_rule_action.js
         assertThat(programRuleAction.option()!!.uid()).isEqualTo("Y1ILwhy5VDY")
         assertThat(programRuleAction.optionGroup()!!.uid()).isEqualTo("j3JYGVCIEdz")
         assertThat(programRuleAction.priority()).isEqualTo(1)
+        assertThat(programRuleAction.legendSet()!!.uid()).isEqualTo("TiOkbpGEud4")
     }
 }

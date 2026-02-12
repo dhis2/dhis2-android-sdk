@@ -30,5 +30,8 @@
   "translations": [],
   "userGroupAccesses": [],
   "attributeValues": [],
-  "priority": 1
+  "priority": 1,
+  "legendSet": {
+    "id": "TiOkbpGEud4"
+  }
 }

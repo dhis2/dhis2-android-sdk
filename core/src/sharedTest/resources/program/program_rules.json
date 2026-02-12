@@ -21,7 +21,10 @@
           "dataElement": {
             "id": "vANAXwtLwcT"
           },
-          "priority": 1
+          "priority": 1,
+          "legendSet": {
+            "id": "TiOkbpGEud4"
+          }
         }
       ]
     },
@@ -68,7 +71,10 @@
           {
             "id": "j3JYGVCIEdz"
           },
-          "priority": 1
+          "priority": 1,
+          "legendSet": {
+            "id": "TiOkbpGEud4"
+          }
         }
       ]
     },

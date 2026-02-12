@@ -112,6 +112,10 @@ class ProgramRuleActionCollectionRepository internal constructor(
         return cf.integer(ProgramRuleActionTableInfo.Columns.PRIORITY)
     }
 
+    fun byLegendSetUid(): StringFilterConnector<ProgramRuleActionCollectionRepository> {
+        return cf.string(ProgramRuleActionTableInfo.Columns.LEGEND_SET)
+    }
+
     internal companion object {
         val childrenAppenders: ChildrenAppenderGetter<ProgramRuleAction> = emptyMap()
     }

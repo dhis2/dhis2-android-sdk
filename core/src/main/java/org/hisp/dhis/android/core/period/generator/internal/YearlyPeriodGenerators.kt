@@ -36,5 +36,8 @@ internal class YearlyPeriodGenerators(clock: Clock, financialYearPeriodHelper: F
     val financialJuly = YearlyPeriodGeneratorFactory.financialJuly(clock)
     val financialOct = YearlyPeriodGeneratorFactory.financialOct(clock)
     val financialNov = YearlyPeriodGeneratorFactory.financialNov(clock)
+    val financialFeb = YearlyPeriodGeneratorFactory.financialFeb(clock)
+    val financialAug = YearlyPeriodGeneratorFactory.financialAug(clock)
+    val financialSep = YearlyPeriodGeneratorFactory.financialSep(clock)
     val financialYearPeriodHelper: FinancialYearPeriodHelper = financialYearPeriodHelper
 }

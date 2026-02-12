@@ -84,10 +84,11 @@ object DateUtils {
         val instantWithOffset = when (periodType) {
             PeriodType.Daily -> instant.plus(periods, DateTimeUnit.DAY, TimeZone.currentSystemDefault())
             PeriodType.Weekly,
+            PeriodType.WeeklyWednesday,
+            PeriodType.WeeklyThursday,
+            PeriodType.WeeklyFriday,
             PeriodType.WeeklySaturday,
             PeriodType.WeeklySunday,
-            PeriodType.WeeklyThursday,
-            PeriodType.WeeklyWednesday,
             -> instant.plus(periods, DateTimeUnit.WEEK, TimeZone.currentSystemDefault())
 
             PeriodType.BiWeekly -> instant.plus(periods * 2, DateTimeUnit.WEEK, TimeZone.currentSystemDefault())
@@ -103,8 +104,11 @@ object DateUtils {
             -> instant.plus(periods * 6, DateTimeUnit.MONTH, TimeZone.currentSystemDefault())
 
             PeriodType.Yearly,
+            PeriodType.FinancialFeb,
             PeriodType.FinancialApril,
             PeriodType.FinancialJuly,
+            PeriodType.FinancialAug,
+            PeriodType.FinancialSep,
             PeriodType.FinancialOct,
             PeriodType.FinancialNov,
             -> instant.plus(periods, DateTimeUnit.YEAR, TimeZone.currentSystemDefault())

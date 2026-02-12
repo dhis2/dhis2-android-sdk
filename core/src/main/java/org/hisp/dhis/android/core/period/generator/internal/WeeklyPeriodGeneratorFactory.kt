@@ -48,6 +48,10 @@ internal object WeeklyPeriodGeneratorFactory {
         return WeeklyPeriodGenerator(clock, PeriodType.WeeklySaturday, DayOfWeek.SATURDAY, "SatW")
     }
 
+    fun friday(clock: Clock): WeeklyPeriodGenerator {
+        return WeeklyPeriodGenerator(clock, PeriodType.WeeklyFriday, DayOfWeek.FRIDAY, "FriW")
+    }
+
     fun sunday(clock: Clock): WeeklyPeriodGenerator {
         return WeeklyPeriodGenerator(clock, PeriodType.WeeklySunday, DayOfWeek.SUNDAY, "SunW")
     }

@@ -51,4 +51,16 @@ internal object YearlyPeriodGeneratorFactory {
     fun financialNov(clock: Clock): YearlyPeriodGenerator {
         return YearlyPeriodGenerator(clock, PeriodType.FinancialNov, Month.NOVEMBER, "Nov")
     }
+
+    fun financialFeb(clock: Clock): YearlyPeriodGenerator {
+        return YearlyPeriodGenerator(clock, PeriodType.FinancialFeb, Month.FEBRUARY, "Feb")
+    }
+
+    fun financialAug(clock: Clock): YearlyPeriodGenerator {
+        return YearlyPeriodGenerator(clock, PeriodType.FinancialAug, Month.AUGUST, "Aug")
+    }
+
+    fun financialSep(clock: Clock): YearlyPeriodGenerator {
+        return YearlyPeriodGenerator(clock, PeriodType.FinancialSep, Month.SEPTEMBER, "Sep")
+    }
 }

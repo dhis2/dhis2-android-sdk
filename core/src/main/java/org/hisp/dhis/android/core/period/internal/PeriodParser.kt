@@ -38,7 +38,7 @@ internal class PeriodParser {
         return when (periodType) {
             PeriodType.Daily -> getDateForDaily(matchResult, year)
             PeriodType.Weekly, PeriodType.WeeklyWednesday, PeriodType.WeeklyThursday,
-            PeriodType.WeeklySaturday, PeriodType.WeeklySunday,
+            PeriodType.WeeklyFriday, PeriodType.WeeklySaturday, PeriodType.WeeklySunday,
             PeriodType.BiWeekly,
             -> getDateForWeeklyOrBiWeekly(matchResult, year, periodType)
 
@@ -49,6 +49,7 @@ internal class PeriodParser {
 
             PeriodType.Yearly, PeriodType.FinancialApril, PeriodType.FinancialJuly,
             PeriodType.FinancialOct, PeriodType.FinancialNov,
+            PeriodType.FinancialFeb, PeriodType.FinancialAug, PeriodType.FinancialSep,
             -> getDateFromYearPattern(year, periodType)
         }
     }
@@ -121,6 +122,9 @@ internal class PeriodParser {
             PeriodType.FinancialJuly -> getDateFromMonth(year, Month.JULY.number)
             PeriodType.FinancialOct -> getDateFromMonth(year, Month.OCTOBER.number)
             PeriodType.FinancialNov -> getDateFromMonth(year - 1, Month.NOVEMBER.number)
+            PeriodType.FinancialFeb -> getDateFromMonth(year, Month.FEBRUARY.number)
+            PeriodType.FinancialAug -> getDateFromMonth(year, Month.AUGUST.number)
+            PeriodType.FinancialSep -> getDateFromMonth(year, Month.SEPTEMBER.number)
             else -> throw IllegalArgumentException("Invalid period type")
         }
     }

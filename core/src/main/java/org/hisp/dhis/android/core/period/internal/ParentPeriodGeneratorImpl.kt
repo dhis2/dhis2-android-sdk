@@ -95,6 +95,7 @@ internal class ParentPeriodGeneratorImpl(
             PeriodType.WeeklyWednesday -> weekly.weeklyWednesday
             PeriodType.WeeklyThursday -> weekly.weeklyThursday
             PeriodType.WeeklySaturday -> weekly.weeklySaturday
+            PeriodType.WeeklyFriday -> weekly.weeklyFriday
             PeriodType.WeeklySunday -> weekly.weeklySunday
             PeriodType.BiWeekly -> biWeekly
             PeriodType.Monthly -> monthly
@@ -109,6 +110,9 @@ internal class ParentPeriodGeneratorImpl(
             PeriodType.FinancialJuly -> yearly.financialJuly
             PeriodType.FinancialOct -> yearly.financialOct
             PeriodType.FinancialNov -> yearly.financialNov
+            PeriodType.FinancialFeb -> yearly.financialFeb
+            PeriodType.FinancialAug -> yearly.financialAug
+            PeriodType.FinancialSep -> yearly.financialSep
         }
     }
 

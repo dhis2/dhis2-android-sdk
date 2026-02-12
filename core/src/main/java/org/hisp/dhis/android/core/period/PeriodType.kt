@@ -44,19 +44,23 @@ enum class PeriodType(
     WeeklySunday(-12, 1, "\\b(\\d{4})SunW(\\d[\\d]?)\\b", 4),
     WeeklyThursday(-12, 1, "\\b(\\d{4})ThuW(\\d[\\d]?)\\b", 5),
     WeeklyWednesday(-12, 1, "\\b(\\d{4})WedW(\\d[\\d]?)\\b", 6),
-    BiWeekly(-12, 1, "\\b(\\d{4})BiW(\\d[\\d]?)\\b", 7),
-    Monthly(-11, 1, "\\b(\\d{4})[-]?(\\d{2})\\b", 8),
-    BiMonthly(-5, 1, "\\b(\\d{4})(\\d{2})B\\b", 9),
-    Quarterly(-4, 1, "\\b(\\d{4})Q(\\d)\\b", 10),
-    QuarterlyNov(-4, 1, "\\b(\\d{4})NovQ(\\d)\\b", 11),
-    SixMonthly(-4, 1, "\\b(\\d{4})S(\\d)\\b", 12),
-    SixMonthlyApril(-4, 1, "\\b(\\d{4})AprilS(\\d)\\b", 13),
-    SixMonthlyNov(-4, 1, "\\b(\\d{4})NovS(\\d)\\b", 14),
-    Yearly(-4, 1, "\\b(\\d{4})\\b", 15),
-    FinancialApril(-4, 1, "\\b(\\d{4})April\\b", 16),
-    FinancialJuly(-4, 1, "\\b(\\d{4})July\\b", 17),
-    FinancialOct(-4, 1, "\\b(\\d{4})Oct\\b", 18),
-    FinancialNov(-4, 1, "\\b(\\d{4})Nov\\b", 19),
+    WeeklyFriday(-12, 1, "\\b(\\d{4})FriW(\\d[\\d]?)\\b", 7),
+    BiWeekly(-12, 1, "\\b(\\d{4})BiW(\\d[\\d]?)\\b", 8),
+    Monthly(-11, 1, "\\b(\\d{4})[-]?(\\d{2})\\b", 9),
+    BiMonthly(-5, 1, "\\b(\\d{4})(\\d{2})B\\b", 10),
+    Quarterly(-4, 1, "\\b(\\d{4})Q(\\d)\\b", 11),
+    QuarterlyNov(-4, 1, "\\b(\\d{4})NovQ(\\d)\\b", 12),
+    SixMonthly(-4, 1, "\\b(\\d{4})S(\\d)\\b", 13),
+    SixMonthlyApril(-4, 1, "\\b(\\d{4})AprilS(\\d)\\b", 14),
+    SixMonthlyNov(-4, 1, "\\b(\\d{4})NovS(\\d)\\b", 15),
+    Yearly(-4, 1, "\\b(\\d{4})\\b", 16),
+    FinancialApril(-4, 1, "\\b(\\d{4})April\\b", 17),
+    FinancialJuly(-4, 1, "\\b(\\d{4})July\\b", 18),
+    FinancialOct(-4, 1, "\\b(\\d{4})Oct\\b", 19),
+    FinancialNov(-4, 1, "\\b(\\d{4})Nov\\b", 20),
+    FinancialFeb(-4, 1, "\\b(\\d{4})Feb\\b", 21),
+    FinancialAug(-4, 1, "\\b(\\d{4})Aug\\b", 22),
+    FinancialSep(-4, 1, "\\b(\\d{4})Sep\\b", 23),
     ;
 
     companion object {
@@ -73,6 +77,7 @@ enum class PeriodType(
                 WeeklySunday -> DayOfWeek.SUNDAY
                 WeeklyWednesday -> DayOfWeek.WEDNESDAY
                 WeeklyThursday -> DayOfWeek.THURSDAY
+                WeeklyFriday -> DayOfWeek.FRIDAY
                 WeeklySaturday -> DayOfWeek.SATURDAY
                 else -> DayOfWeek.MONDAY
             }

@@ -50,7 +50,7 @@ internal class LegendSetUidsSeeker(
             IndicatorLegendSetLinkTableInfo.TABLE_INFO.name(),
             DataElementLegendSetLinkTableInfo.TABLE_INFO.name(),
             TrackedEntityAttributeLegendSetLinkTableInfo.TABLE_INFO.name(),
-            ProgramRuleActionTableInfo.TABLE_INFO.name()
+            ProgramRuleActionTableInfo.TABLE_INFO.name(),
         )
         val query = MultipleTableQueryBuilder()
             .generateQuery(ProgramIndicatorLegendSetLinkTableInfo.Columns.LEGEND_SET, tableNames)

@@ -179,9 +179,12 @@ internal class EventServiceImpl(
             .appendKeyStringValue(ProgramOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE, tei)
             .build()
         val ownerOrgUnits = programOwnerStore.selectWhere(whereClause).map { it.ownerOrgUnit() }
-        return if (ownerOrgUnits.isNotEmpty()) ownerOrgUnits else event.organisationUnit()?.let { listOf(it) }
-            ?: emptyList()
-
+        return if (ownerOrgUnits.isNotEmpty()) {
+            ownerOrgUnits
+        } else {
+            event.organisationUnit()?.let { listOf(it) }
+                ?: emptyList()
+        }
     }
 
     private fun getEventCount(enrollmentUid: String, programStageUid: String): Int {

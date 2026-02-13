@@ -72,7 +72,7 @@ class PeriodMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 
     @Test
     fun get_periods() {
-        Truth.assertThat(d2.periodModule().periods().blockingCount()).isEqualTo(230)
+        Truth.assertThat(d2.periodModule().periods().blockingCount()).isEqualTo(258)
     }
 
     @Test

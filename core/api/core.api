@@ -6765,6 +6765,7 @@ public abstract class org/hisp/dhis/android/core/map/layer/MapLayer : org/hisp/d
 	public abstract fun imageUrl ()Ljava/lang/String;
 	public abstract fun imageryProviders ()Ljava/util/List;
 	public abstract fun layers ()Ljava/lang/String;
+	public abstract fun linkedLayerUid ()Ljava/lang/String;
 	public abstract fun mapLayerPosition ()Lorg/hisp/dhis/android/core/map/layer/MapLayerPosition;
 	public abstract fun mapService ()Lorg/hisp/dhis/android/core/map/layer/MapService;
 	public abstract fun name ()Ljava/lang/String;
@@ -6785,6 +6786,7 @@ public abstract class org/hisp/dhis/android/core/map/layer/MapLayer$Builder {
 	public abstract fun imageUrl (Ljava/lang/String;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
 	public abstract fun imageryProviders (Ljava/util/List;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
 	public abstract fun layers (Ljava/lang/String;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
+	public abstract fun linkedLayerUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
 	public abstract fun mapLayerPosition (Lorg/hisp/dhis/android/core/map/layer/MapLayerPosition;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
 	public abstract fun mapService (Lorg/hisp/dhis/android/core/map/layer/MapService;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
 	public abstract fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
@@ -6801,6 +6803,7 @@ public final class org/hisp/dhis/android/core/map/layer/MapLayerCollectionReposi
 	public final fun byImageFormat ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
 	public final fun byImageUrl ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byLayers ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
+	public final fun byLinkedLayerUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byMapLayerPosition ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
 	public final fun byMapService ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
 	public final fun byName ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
@@ -13972,6 +13975,7 @@ public final class org/hisp/dhis/android/persistence/map/MapLayerTableInfo$Colum
 	public static final field IMAGE_FORMAT Ljava/lang/String;
 	public static final field IMAGE_URL Ljava/lang/String;
 	public static final field LAYERS Ljava/lang/String;
+	public static final field LINKED_LAYER_UID Ljava/lang/String;
 	public static final field MAP_LAYER_POSITION Ljava/lang/String;
 	public static final field MAP_SERVICE Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;

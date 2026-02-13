@@ -33,9 +33,9 @@ import org.hisp.dhis.android.core.map.layer.ImageFormat
 import org.hisp.dhis.android.core.map.layer.MapLayer
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProvider
 import org.hisp.dhis.android.core.map.layer.MapLayerImageryProviderArea
-import org.hisp.dhis.android.core.map.layer.MapLayerPosition
 import org.hisp.dhis.android.core.map.layer.MapService
 import org.hisp.dhis.android.core.map.layer.internal.microsoft.AzureBasemap
+import org.hisp.dhis.android.core.map.layer.internal.microsoft.AzureBasemapStyle
 import java.util.Locale
 
 @Serializable
@@ -50,7 +50,13 @@ internal data class AzureServerResponseDTO(
     val attribution: String? = null,
     val scheme: String? = null,
 ) {
-    fun toDomain(basemap: AzureBasemap, key: String): List<MapLayer> {
+    fun toDomain(
+        basemap: AzureBasemap,
+        style: AzureBasemapStyle,
+        key: String,
+        linkedLayerUid: String?,
+    ): List<MapLayer> {
+        val layerUid = basemap.id + style.idSuffix
         return tiles.map { tileTemplate ->
             val coverageAreas = listOf(
                 MapLayerImageryProviderArea.builder()
@@ -62,7 +68,7 @@ internal data class AzureServerResponseDTO(
             val providers = attribution?.takeIf { it.isNotBlank() }?.let {
                 listOf(
                     MapLayerImageryProvider.builder()
-                        .mapLayer(basemap.id)
+                        .mapLayer(layerUid)
                         .attribution(it)
                         .coverageAreas(coverageAreas)
                         .build(),
@@ -70,17 +76,18 @@ internal data class AzureServerResponseDTO(
             }.orEmpty()
 
             MapLayer.builder()
-                .uid(basemap.id)
+                .uid(layerUid)
                 .name(basemap.name)
                 .displayName(basemap.name)
-                .style(basemap.style)
+                .style(style.tilesetId)
                 .external(false)
-                .mapLayerPosition(MapLayerPosition.BASEMAP)
+                .mapLayerPosition(style.position)
                 .imageUrl("$tileTemplate&subscription-key=$key")
                 .subdomains(emptyList())
                 .imageryProviders(providers)
                 .mapService(scheme?.uppercase(Locale.ROOT)?.let { MapService.valueOf(it) })
                 .imageFormat(ImageFormat.PNG)
+                .linkedLayerUid(linkedLayerUid)
                 .build()
         }
     }

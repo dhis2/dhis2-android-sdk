@@ -86,6 +86,9 @@ public abstract class MapLayer implements CoreObject, ObjectWithUidInterface {
     @Nullable
     public abstract String layers();
 
+    @Nullable
+    public abstract String linkedLayerUid();
+
     public abstract Builder toBuilder();
 
     public static Builder builder() {
@@ -122,6 +125,8 @@ public abstract class MapLayer implements CoreObject, ObjectWithUidInterface {
         public abstract Builder imageFormat(ImageFormat imageFormat);
 
         public abstract Builder layers(String layers);
+
+        public abstract Builder linkedLayerUid(String linkedLayerUid);
 
         public abstract MapLayer build();
     }

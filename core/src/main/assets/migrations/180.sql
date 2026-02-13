@@ -30,6 +30,10 @@ CREATE TABLE DataApproval(workflow TEXT NOT NULL, organisationUnit TEXT NOT NULL
 INSERT OR IGNORE INTO DataApproval(workflow, organisationUnit, period, attributeOptionCombo, state) SELECT workflow, organisationUnit, period, attributeOptionCombo, state FROM DataApproval_Old WHERE state IS NOT NULL;
 DROP TABLE IF EXISTS DataApproval_Old;
 
+# Add linkedLayerUid for composite map layers (ANDROSDK-2191)
+
+ALTER TABLE MapLayer ADD COLUMN linkedLayerUid TEXT;
+
 # Add priority property to ProgramRuleAction (ANDROSDK-2222)
 # Add legendSet property to ProgramRuleAction (ANDROSDK-2234)
 

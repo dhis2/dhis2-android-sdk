@@ -28,8 +28,16 @@
 
 package org.hisp.dhis.android.core.map.layer.internal.microsoft
 
+import org.hisp.dhis.android.core.map.layer.MapLayerPosition
+
 internal data class AzureBasemap(
     val id: String,
     val name: String,
-    val style: String,
+    val styles: List<AzureBasemapStyle>,
+)
+
+internal data class AzureBasemapStyle(
+    val tilesetId: String,
+    val position: MapLayerPosition,
+    val idSuffix: String = "",
 )

@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.organisationunit.internal
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 
-internal fun interface OrganisationUnitNetworkHandler {
+internal interface OrganisationUnitNetworkHandler {
     suspend fun getOrganisationUnits(parentUid: String, pageSize: Int, page: Int): Payload<OrganisationUnit>
+    suspend fun getOrganisationUnitsByUid(uids: Set<String>): Payload<OrganisationUnit>
 }

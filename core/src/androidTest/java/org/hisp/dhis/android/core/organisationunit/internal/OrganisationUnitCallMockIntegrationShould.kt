@@ -100,6 +100,7 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
                     koin.get(),
                     koin.get(),
                     koin.get(),
+                    koin.get(),
                 ).download(user)
             }
         }

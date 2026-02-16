@@ -34,14 +34,14 @@ import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
-import org.hisp.dhis.android.core.period.internal.FinancialYearPeriodHelper
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl
+import org.hisp.dhis.android.core.period.internal.RelativePeriodHelper
 
 object AnalyticsPeriodHelper {
-    private val financialYearPeriodHelper: FinancialYearPeriodHelper = koin.get()
+    private val relativePeriodHelper: RelativePeriodHelper = koin.get()
     private val periodGenerator = ParentPeriodGeneratorImpl.create(
         ClockProviderFactory.clockProvider,
-        financialYearPeriodHelper,
+        relativePeriodHelper,
     )
 
     fun shiftPeriod(period: Period, offset: Int): Period {

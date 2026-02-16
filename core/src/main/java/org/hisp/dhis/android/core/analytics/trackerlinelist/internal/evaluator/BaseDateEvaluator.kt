@@ -34,19 +34,19 @@ import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koi
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
-import org.hisp.dhis.android.core.period.internal.FinancialYearPeriodHelper
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl
 import org.hisp.dhis.android.core.period.internal.PeriodParser
+import org.hisp.dhis.android.core.period.internal.RelativePeriodHelper
 import java.util.Date
 
 internal abstract class BaseDateEvaluator(
     private val item: DateItem,
 ) : TrackerLineListEvaluator() {
 
-    private val financialYearPeriodHelper: FinancialYearPeriodHelper = koin.get()
+    private val relativePeriodHelper: RelativePeriodHelper = koin.get()
     private val parentPeriodGenerator = ParentPeriodGeneratorImpl.create(
         ClockProviderFactory.clockProvider,
-        financialYearPeriodHelper,
+        relativePeriodHelper,
     )
     private val periodParser = PeriodParser()
 

@@ -69,7 +69,7 @@ internal class ParentPeriodGeneratorImpl(
     }
 
     override fun generateRelativePeriods(relativePeriod: RelativePeriod): List<Period> {
-        val periodType = relativePeriod.getPeriodType(yearly.financialYearPeriodHelper)
+        val periodType = relativePeriod.getPeriodType(yearly.relativePeriodHelper)
         val periodGenerator = getPeriodGenerator(periodType)
 
         return when {
@@ -119,16 +119,16 @@ internal class ParentPeriodGeneratorImpl(
     companion object {
         fun create(
             clockProvider: ClockProvider,
-            financialYearPeriodHelper: FinancialYearPeriodHelper,
+            relativePeriodHelper: RelativePeriodHelper,
         ): ParentPeriodGeneratorImpl {
             val clock = clockProvider.clock
             return ParentPeriodGeneratorImpl(
                 DailyPeriodGenerator(clock),
-                WeeklyPeriodGenerators(clock),
+                WeeklyPeriodGenerators(clock, relativePeriodHelper),
                 BiWeeklyPeriodGenerator(clock),
                 MonthlyPeriodGenerator(clock),
                 NMonthlyPeriodGenerators(clock),
-                YearlyPeriodGenerators(clock, financialYearPeriodHelper),
+                YearlyPeriodGenerators(clock, relativePeriodHelper),
             )
         }
     }

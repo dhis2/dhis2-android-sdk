@@ -31,14 +31,15 @@ import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.settings.SystemSettingCollectionRepository
 import org.koin.core.annotation.Singleton
 
-internal fun interface FinancialYearPeriodHelper {
+internal interface RelativePeriodHelper {
     fun getFinancialYearPeriodType(): PeriodType
+    fun getWeekStart(): PeriodType
 }
 
 @Singleton
-internal class FinancialYearPeriodHelperImpl(
+internal class RelativePeriodHelperImpl(
     private val systemSettingRepository: SystemSettingCollectionRepository,
-) : FinancialYearPeriodHelper {
+) : RelativePeriodHelper {
     override fun getFinancialYearPeriodType(): PeriodType {
         val setting = systemSettingRepository.analyticsFinancialYearStart().blockingGet()
         return setting?.value()?.let { mapFinancialYearSetting(it) } ?: PeriodType.FinancialApril
@@ -54,6 +55,22 @@ internal class FinancialYearPeriodHelperImpl(
             "FINANCIAL_YEAR_OCTOBER" -> PeriodType.FinancialOct
             "FINANCIAL_YEAR_NOVEMBER" -> PeriodType.FinancialNov
             else -> PeriodType.FinancialApril
+        }
+    }
+
+    override fun getWeekStart(): PeriodType {
+        val setting = systemSettingRepository.analyticsWeekStart().blockingGet()
+        return setting?.value()?.let { mapWeekStartSetting(it) } ?: PeriodType.Weekly
+    }
+
+    private fun mapWeekStartSetting(value: String): PeriodType {
+        return when (value) {
+            "SUNDAY" -> PeriodType.WeeklySunday
+            "WEDNESDAY" -> PeriodType.WeeklyWednesday
+            "THURSDAY" -> PeriodType.WeeklyThursday
+            "FRIDAY" -> PeriodType.WeeklyFriday
+            "SATURDAY" -> PeriodType.WeeklySunday
+            else -> PeriodType.Weekly
         }
     }
 }

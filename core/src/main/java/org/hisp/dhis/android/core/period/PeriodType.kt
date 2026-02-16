@@ -40,11 +40,11 @@ enum class PeriodType(
 ) {
     Daily(-59, 1, "\\b(\\d{4})(\\d{2})(\\d{2})\\b", 1),
     Weekly(-12, 1, "\\b(\\d{4})W(\\d[\\d]?)\\b", 2),
-    WeeklySaturday(-12, 1, "\\b(\\d{4})SatW(\\d[\\d]?)\\b", 3),
-    WeeklySunday(-12, 1, "\\b(\\d{4})SunW(\\d[\\d]?)\\b", 4),
-    WeeklyThursday(-12, 1, "\\b(\\d{4})ThuW(\\d[\\d]?)\\b", 5),
-    WeeklyWednesday(-12, 1, "\\b(\\d{4})WedW(\\d[\\d]?)\\b", 6),
-    WeeklyFriday(-12, 1, "\\b(\\d{4})FriW(\\d[\\d]?)\\b", 7),
+    WeeklyWednesday(-12, 1, "\\b(\\d{4})WedW(\\d[\\d]?)\\b", 3),
+    WeeklyThursday(-12, 1, "\\b(\\d{4})ThuW(\\d[\\d]?)\\b", 4),
+    WeeklyFriday(-12, 1, "\\b(\\d{4})FriW(\\d[\\d]?)\\b", 5),
+    WeeklySaturday(-12, 1, "\\b(\\d{4})SatW(\\d[\\d]?)\\b", 6),
+    WeeklySunday(-12, 1, "\\b(\\d{4})SunW(\\d[\\d]?)\\b", 7),
     BiWeekly(-12, 1, "\\b(\\d{4})BiW(\\d[\\d]?)\\b", 8),
     Monthly(-11, 1, "\\b(\\d{4})[-]?(\\d{2})\\b", 9),
     BiMonthly(-5, 1, "\\b(\\d{4})(\\d{2})B\\b", 10),
@@ -54,13 +54,13 @@ enum class PeriodType(
     SixMonthlyApril(-4, 1, "\\b(\\d{4})AprilS(\\d)\\b", 14),
     SixMonthlyNov(-4, 1, "\\b(\\d{4})NovS(\\d)\\b", 15),
     Yearly(-4, 1, "\\b(\\d{4})\\b", 16),
-    FinancialApril(-4, 1, "\\b(\\d{4})April\\b", 17),
-    FinancialJuly(-4, 1, "\\b(\\d{4})July\\b", 18),
-    FinancialOct(-4, 1, "\\b(\\d{4})Oct\\b", 19),
-    FinancialNov(-4, 1, "\\b(\\d{4})Nov\\b", 20),
-    FinancialFeb(-4, 1, "\\b(\\d{4})Feb\\b", 21),
-    FinancialAug(-4, 1, "\\b(\\d{4})Aug\\b", 22),
-    FinancialSep(-4, 1, "\\b(\\d{4})Sep\\b", 23),
+    FinancialFeb(-4, 1, "\\b(\\d{4})Feb\\b", 17),
+    FinancialApril(-4, 1, "\\b(\\d{4})April\\b", 18),
+    FinancialJuly(-4, 1, "\\b(\\d{4})July\\b", 19),
+    FinancialAug(-4, 1, "\\b(\\d{4})Aug\\b", 20),
+    FinancialSep(-4, 1, "\\b(\\d{4})Sep\\b", 21),
+    FinancialOct(-4, 1, "\\b(\\d{4})Oct\\b", 22),
+    FinancialNov(-4, 1, "\\b(\\d{4})Nov\\b", 23),
     ;
 
     companion object {
@@ -74,11 +74,11 @@ enum class PeriodType(
 
         fun firstDayOfTheWeek(periodType: PeriodType?): DayOfWeek {
             return when (periodType) {
-                WeeklySunday -> DayOfWeek.SUNDAY
                 WeeklyWednesday -> DayOfWeek.WEDNESDAY
                 WeeklyThursday -> DayOfWeek.THURSDAY
                 WeeklyFriday -> DayOfWeek.FRIDAY
                 WeeklySaturday -> DayOfWeek.SATURDAY
+                WeeklySunday -> DayOfWeek.SUNDAY
                 else -> DayOfWeek.MONDAY
             }
         }

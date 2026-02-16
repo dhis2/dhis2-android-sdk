@@ -36,6 +36,10 @@ internal object YearlyPeriodGeneratorFactory {
         return YearlyPeriodGenerator(clock, PeriodType.Yearly, Month.JANUARY, "")
     }
 
+    fun financialFeb(clock: Clock): YearlyPeriodGenerator {
+        return YearlyPeriodGenerator(clock, PeriodType.FinancialFeb, Month.FEBRUARY, "Feb")
+    }
+
     fun financialApril(clock: Clock): YearlyPeriodGenerator {
         return YearlyPeriodGenerator(clock, PeriodType.FinancialApril, Month.APRIL, "April")
     }
@@ -44,23 +48,19 @@ internal object YearlyPeriodGeneratorFactory {
         return YearlyPeriodGenerator(clock, PeriodType.FinancialJuly, Month.JULY, "July")
     }
 
-    fun financialOct(clock: Clock): YearlyPeriodGenerator {
-        return YearlyPeriodGenerator(clock, PeriodType.FinancialOct, Month.OCTOBER, "Oct")
-    }
-
-    fun financialNov(clock: Clock): YearlyPeriodGenerator {
-        return YearlyPeriodGenerator(clock, PeriodType.FinancialNov, Month.NOVEMBER, "Nov")
-    }
-
-    fun financialFeb(clock: Clock): YearlyPeriodGenerator {
-        return YearlyPeriodGenerator(clock, PeriodType.FinancialFeb, Month.FEBRUARY, "Feb")
-    }
-
     fun financialAug(clock: Clock): YearlyPeriodGenerator {
         return YearlyPeriodGenerator(clock, PeriodType.FinancialAug, Month.AUGUST, "Aug")
     }
 
     fun financialSep(clock: Clock): YearlyPeriodGenerator {
         return YearlyPeriodGenerator(clock, PeriodType.FinancialSep, Month.SEPTEMBER, "Sep")
+    }
+
+    fun financialOct(clock: Clock): YearlyPeriodGenerator {
+        return YearlyPeriodGenerator(clock, PeriodType.FinancialOct, Month.OCTOBER, "Oct")
+    }
+
+    fun financialNov(clock: Clock): YearlyPeriodGenerator {
+        return YearlyPeriodGenerator(clock, PeriodType.FinancialNov, Month.NOVEMBER, "Nov")
     }
 }

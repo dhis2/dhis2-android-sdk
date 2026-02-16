@@ -33,7 +33,7 @@ internal class WeeklyPeriodGenerators(clock: Clock) {
     val weekly = WeeklyPeriodGeneratorFactory.weekly(clock)
     val weeklyWednesday = WeeklyPeriodGeneratorFactory.wednesday(clock)
     val weeklyThursday = WeeklyPeriodGeneratorFactory.thursday(clock)
-    val weeklySaturday = WeeklyPeriodGeneratorFactory.saturday(clock)
     val weeklyFriday = WeeklyPeriodGeneratorFactory.friday(clock)
+    val weeklySaturday = WeeklyPeriodGeneratorFactory.saturday(clock)
     val weeklySunday = WeeklyPeriodGeneratorFactory.sunday(clock)
 }

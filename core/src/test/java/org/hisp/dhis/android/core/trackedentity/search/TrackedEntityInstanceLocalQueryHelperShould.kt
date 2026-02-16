@@ -34,8 +34,8 @@ import org.hisp.dhis.android.core.common.*
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
-import org.hisp.dhis.android.core.period.internal.FinancialYearPeriodHelperMock
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl.Companion.create
+import org.hisp.dhis.android.core.period.internal.RelativePeriodHelperMock
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -54,7 +54,7 @@ class TrackedEntityInstanceLocalQueryHelperShould {
     fun setUp() {
         queryBuilder = TrackedEntityInstanceQueryRepositoryScope.builder()
         val clockProvider = ClockProviderFactory.clockProvider
-        val financialYearPeriodHelper = FinancialYearPeriodHelperMock()
+        val financialYearPeriodHelper = RelativePeriodHelperMock()
         val periodHelper = DateFilterPeriodHelper(clockProvider, create(clockProvider, financialYearPeriodHelper))
         localQueryHelper = TrackedEntityInstanceLocalQueryHelper(periodHelper)
     }

@@ -42,8 +42,8 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
-import org.hisp.dhis.android.core.period.internal.FinancialYearPeriodHelperMock
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl.Companion.create
+import org.hisp.dhis.android.core.period.internal.RelativePeriodHelperMock
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
@@ -53,7 +53,7 @@ class TrackedEntityInstanceLocalQueryHelperMockIntegrationShould : BaseMockInteg
     private val trackedEntityInstanceStore: TrackedEntityInstanceStore = koin.get()
 
     private val clockProvider = ClockProviderFactory.clockProvider
-    private val financialYearPeriodHelper = FinancialYearPeriodHelperMock()
+    private val financialYearPeriodHelper = RelativePeriodHelperMock()
     private val periodHelper = DateFilterPeriodHelper(clockProvider, create(clockProvider, financialYearPeriodHelper))
     private val localQueryHelper = TrackedEntityInstanceLocalQueryHelper(periodHelper)
 

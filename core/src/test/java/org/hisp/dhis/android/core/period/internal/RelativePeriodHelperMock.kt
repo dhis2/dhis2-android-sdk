@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -29,10 +29,15 @@ package org.hisp.dhis.android.core.period.internal
 
 import org.hisp.dhis.android.core.period.PeriodType
 
-internal class FinancialYearPeriodHelperMock(
+internal class RelativePeriodHelperMock(
     private val periodType: PeriodType = PeriodType.FinancialApril,
-) : FinancialYearPeriodHelper {
+    private val weekStart: PeriodType = PeriodType.Weekly,
+) : RelativePeriodHelper {
     override fun getFinancialYearPeriodType(): PeriodType {
         return periodType
+    }
+
+    override fun getWeekStart(): PeriodType {
+        return weekStart
     }
 }

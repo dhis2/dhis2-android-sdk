@@ -40,16 +40,17 @@ internal class PeriodParser {
             PeriodType.Weekly, PeriodType.WeeklyWednesday, PeriodType.WeeklyThursday,
             PeriodType.WeeklyFriday, PeriodType.WeeklySaturday, PeriodType.WeeklySunday,
             PeriodType.BiWeekly,
-                -> getDateForWeeklyOrBiWeekly(matchResult, year, periodType)
+            -> getDateForWeeklyOrBiWeekly(matchResult, year, periodType)
 
             PeriodType.Monthly, PeriodType.BiMonthly,
             PeriodType.Quarterly, PeriodType.QuarterlyNov,
             PeriodType.SixMonthly, PeriodType.SixMonthlyApril, PeriodType.SixMonthlyNov,
-                -> getDateFromMonthPattern(matchResult, year, periodType)
+            -> getDateFromMonthPattern(matchResult, year, periodType)
 
             PeriodType.Yearly, PeriodType.FinancialFeb, PeriodType.FinancialApril,
             PeriodType.FinancialJuly, PeriodType.FinancialAug, PeriodType.FinancialSep,
-            PeriodType.FinancialOct, PeriodType.FinancialNov -> getDateFromYearPattern(year, periodType)
+            PeriodType.FinancialOct, PeriodType.FinancialNov,
+            -> getDateFromYearPattern(year, periodType)
         }
     }
 

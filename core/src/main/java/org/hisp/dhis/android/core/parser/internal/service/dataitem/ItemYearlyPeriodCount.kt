@@ -43,7 +43,7 @@ internal class ItemYearlyPeriodCount : ItemPeriodBase() {
             PeriodType.WeeklySaturday,
             PeriodType.WeeklySunday,
             PeriodType.BiWeekly,
-                -> evaluateWeeklyOrBiWeekly(period)
+            -> evaluateWeeklyOrBiWeekly(period)
             PeriodType.Monthly -> 12
             PeriodType.BiMonthly -> 6
             PeriodType.Quarterly,

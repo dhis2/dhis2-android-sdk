@@ -63,7 +63,6 @@ enum class PeriodType(
     FinancialNov(-4, 1, "\\b(\\d{4})Nov\\b", 23),
     ;
 
-
     companion object {
         @JvmStatic
         @Throws(IllegalArgumentException::class)

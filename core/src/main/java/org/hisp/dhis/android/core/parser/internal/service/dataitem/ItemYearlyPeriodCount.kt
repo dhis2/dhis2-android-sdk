@@ -39,6 +39,7 @@ internal class ItemYearlyPeriodCount : ItemPeriodBase() {
             PeriodType.Weekly,
             PeriodType.WeeklyWednesday,
             PeriodType.WeeklyThursday,
+            PeriodType.WeeklyFriday,
             PeriodType.WeeklySaturday,
             PeriodType.WeeklySunday,
             PeriodType.BiWeekly,
@@ -53,8 +54,11 @@ internal class ItemYearlyPeriodCount : ItemPeriodBase() {
             PeriodType.SixMonthlyNov,
             -> 2
             PeriodType.Yearly,
+            PeriodType.FinancialFeb,
             PeriodType.FinancialApril,
             PeriodType.FinancialJuly,
+            PeriodType.FinancialAug,
+            PeriodType.FinancialSep,
             PeriodType.FinancialOct,
             PeriodType.FinancialNov,
             -> 1

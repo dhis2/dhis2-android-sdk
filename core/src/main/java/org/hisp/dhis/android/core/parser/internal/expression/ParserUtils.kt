@@ -183,10 +183,13 @@ internal object ParserUtils {
             PeriodType.BiMonthly,
             -> period.periodId()!!.substring(4, 6).toInt()
             PeriodType.Yearly,
+            PeriodType.FinancialFeb,
             PeriodType.FinancialApril,
             PeriodType.FinancialJuly,
-            PeriodType.FinancialNov,
+            PeriodType.FinancialAug,
+            PeriodType.FinancialSep,
             PeriodType.FinancialOct,
+            PeriodType.FinancialNov,
             -> 1
             else -> getTrailingDigits(period.periodId()!!) ?: 0
         }

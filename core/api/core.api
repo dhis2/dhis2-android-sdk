@@ -7460,9 +7460,12 @@ public final class org/hisp/dhis/android/core/period/PeriodType : java/lang/Enum
 	public static final field Companion Lorg/hisp/dhis/android/core/period/PeriodType$Companion;
 	public static final field Daily Lorg/hisp/dhis/android/core/period/PeriodType;
 	public static final field FinancialApril Lorg/hisp/dhis/android/core/period/PeriodType;
+	public static final field FinancialAug Lorg/hisp/dhis/android/core/period/PeriodType;
+	public static final field FinancialFeb Lorg/hisp/dhis/android/core/period/PeriodType;
 	public static final field FinancialJuly Lorg/hisp/dhis/android/core/period/PeriodType;
 	public static final field FinancialNov Lorg/hisp/dhis/android/core/period/PeriodType;
 	public static final field FinancialOct Lorg/hisp/dhis/android/core/period/PeriodType;
+	public static final field FinancialSep Lorg/hisp/dhis/android/core/period/PeriodType;
 	public static final field Monthly Lorg/hisp/dhis/android/core/period/PeriodType;
 	public static final field Quarterly Lorg/hisp/dhis/android/core/period/PeriodType;
 	public static final field QuarterlyNov Lorg/hisp/dhis/android/core/period/PeriodType;
@@ -7470,6 +7473,7 @@ public final class org/hisp/dhis/android/core/period/PeriodType : java/lang/Enum
 	public static final field SixMonthlyApril Lorg/hisp/dhis/android/core/period/PeriodType;
 	public static final field SixMonthlyNov Lorg/hisp/dhis/android/core/period/PeriodType;
 	public static final field Weekly Lorg/hisp/dhis/android/core/period/PeriodType;
+	public static final field WeeklyFriday Lorg/hisp/dhis/android/core/period/PeriodType;
 	public static final field WeeklySaturday Lorg/hisp/dhis/android/core/period/PeriodType;
 	public static final field WeeklySunday Lorg/hisp/dhis/android/core/period/PeriodType;
 	public static final field WeeklyThursday Lorg/hisp/dhis/android/core/period/PeriodType;

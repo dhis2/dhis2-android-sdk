@@ -46,8 +46,11 @@ internal class FinancialYearPeriodHelperImpl(
 
     private fun mapFinancialYearSetting(value: String): PeriodType {
         return when (value) {
+            "FINANCIAL_YEAR_FEBRUARY" -> PeriodType.FinancialFeb
             "FINANCIAL_YEAR_APRIL" -> PeriodType.FinancialApril
             "FINANCIAL_YEAR_JULY" -> PeriodType.FinancialJuly
+            "FINANCIAL_YEAR_AUGUST" -> PeriodType.FinancialAug
+            "FINANCIAL_YEAR_SEPTEMBER" -> PeriodType.FinancialSep
             "FINANCIAL_YEAR_OCTOBER" -> PeriodType.FinancialOct
             "FINANCIAL_YEAR_NOVEMBER" -> PeriodType.FinancialNov
             else -> PeriodType.FinancialApril

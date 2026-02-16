@@ -38,7 +38,7 @@ internal class PeriodParser {
         return when (periodType) {
             PeriodType.Daily -> getDateForDaily(matchResult, year)
             PeriodType.Weekly, PeriodType.WeeklyWednesday, PeriodType.WeeklyThursday,
-            PeriodType.WeeklySaturday, PeriodType.WeeklySunday,
+            PeriodType.WeeklyFriday, PeriodType.WeeklySaturday, PeriodType.WeeklySunday,
             PeriodType.BiWeekly,
             -> getDateForWeeklyOrBiWeekly(matchResult, year, periodType)
 
@@ -47,7 +47,8 @@ internal class PeriodParser {
             PeriodType.SixMonthly, PeriodType.SixMonthlyApril, PeriodType.SixMonthlyNov,
             -> getDateFromMonthPattern(matchResult, year, periodType)
 
-            PeriodType.Yearly, PeriodType.FinancialApril, PeriodType.FinancialJuly,
+            PeriodType.Yearly, PeriodType.FinancialFeb, PeriodType.FinancialApril,
+            PeriodType.FinancialJuly, PeriodType.FinancialAug, PeriodType.FinancialSep,
             PeriodType.FinancialOct, PeriodType.FinancialNov,
             -> getDateFromYearPattern(year, periodType)
         }
@@ -89,14 +90,17 @@ internal class PeriodParser {
                 year,
                 monthQuarterOrSemester * SEMESTER_MONTHS - (SEMESTER_MONTHS - Month.JANUARY.number),
             )
+
             PeriodType.SixMonthlyApril -> getDateFromMonth(
                 year,
                 monthQuarterOrSemester * SEMESTER_MONTHS - (SEMESTER_MONTHS - Month.APRIL.number),
             )
+
             PeriodType.SixMonthlyNov -> getDateFromMonth(
                 if (monthQuarterOrSemester == 1) year - 1 else year,
                 if (monthQuarterOrSemester == 1) Month.NOVEMBER.number else Month.MAY.number,
             )
+
             else -> throw IllegalArgumentException("Invalid period type")
         }
     }
@@ -117,8 +121,11 @@ internal class PeriodParser {
     private fun getDateFromYearPattern(year: Int, periodType: PeriodType): LocalDate {
         return when (periodType) {
             PeriodType.Yearly -> getDateFromMonth(year, Month.JANUARY.number)
+            PeriodType.FinancialFeb -> getDateFromMonth(year, Month.FEBRUARY.number)
             PeriodType.FinancialApril -> getDateFromMonth(year, Month.APRIL.number)
             PeriodType.FinancialJuly -> getDateFromMonth(year, Month.JULY.number)
+            PeriodType.FinancialAug -> getDateFromMonth(year, Month.AUGUST.number)
+            PeriodType.FinancialSep -> getDateFromMonth(year, Month.SEPTEMBER.number)
             PeriodType.FinancialOct -> getDateFromMonth(year, Month.OCTOBER.number)
             PeriodType.FinancialNov -> getDateFromMonth(year - 1, Month.NOVEMBER.number)
             else -> throw IllegalArgumentException("Invalid period type")

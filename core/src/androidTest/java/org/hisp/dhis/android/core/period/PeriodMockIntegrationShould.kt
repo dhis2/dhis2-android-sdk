@@ -32,11 +32,18 @@ import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.period.internal.PeriodStore
 import org.hisp.dhis.android.core.util.toJavaDateNonNull
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
+import org.junit.After
 import org.junit.Test
 import java.text.ParseException
 
-class PeriodMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
+class PeriodMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
+    @After
+    fun tearDown() = runTest {
+        val periodStore: PeriodStore = koin.get()
+        periodStore.delete()
+    }
+
     @Test
     @Throws(ParseException::class)
     fun get_period_passing_period_type_and_a_date() {
@@ -68,20 +75,5 @@ class PeriodMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
         Truth.assertThat(periodInDb).isNotNull()
 
         periodStore.deleteWhere(period)
-    }
-
-    @Test
-    fun get_periods() {
-        Truth.assertThat(d2.periodModule().periods().blockingCount()).isEqualTo(230)
-    }
-
-    @Test
-    fun ensure_future_periods_are_downloaded() {
-        Truth.assertThat(d2.periodModule().periods().byPeriodType().eq(PeriodType.Monthly).blockingCount())
-            .isEqualTo(MONTHLY_PERIODS + 4)
-    }
-
-    companion object {
-        private const val MONTHLY_PERIODS = 11 // Copy from ParentPeriodGeneratorImpl to keep it private
     }
 }

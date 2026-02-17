@@ -226,6 +226,10 @@ class ProgramCollectionRepository internal constructor(
         )
     }
 
+    fun byEnrollmentCategoryCombo(): StringFilterConnector<ProgramCollectionRepository> {
+        return cf.string(ProgramTableInfo.Columns.ENROLLMENT_CATEGORY_COMBO)
+    }
+
     fun withTrackedEntityType(): ProgramCollectionRepository {
         return cf.withChild(ProgramTableInfo.Columns.TRACKED_ENTITY_TYPE)
     }

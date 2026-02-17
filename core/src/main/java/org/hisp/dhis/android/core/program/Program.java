@@ -256,6 +256,9 @@ public abstract class Program extends BaseNameableObject
     @Nullable
     public abstract List<AttributeValue> attributeValues();
 
+    @NonNull
+    public abstract ObjectWithUid enrollmentCategoryCombo();
+
     public static Builder builder() {
         return new AutoValue_Program.Builder();
     }
@@ -428,6 +431,8 @@ public abstract class Program extends BaseNameableObject
         abstract AccessLevel accessLevel();
 
         abstract ObjectStyle style();
+
+        public abstract Builder enrollmentCategoryCombo(@NonNull ObjectWithUid enrollmentCategoryCombo);
 
         public Program build() {
             if (featureType() == null) {

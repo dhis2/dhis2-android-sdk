@@ -421,4 +421,11 @@ class ProgramCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         assertThat(attributeValues[1].attribute().uid()).isEqualTo("qXS2NDUEAOS")
         assertThat(attributeValues[1].value()).isEqualTo("Direct")
     }
+
+    @Test
+    fun include_enrollment_category_combo_as_object_with_uid() {
+        val program = d2.programModule().programs()
+            .one().blockingGet()
+        assertThat(program!!.enrollmentCategoryCombo().uid()).isEqualTo("p0KPaWEg3cf")
+    }
 }

@@ -141,9 +141,10 @@ class RelativePeriodHelperShould {
         assertThat(periods[0].periodId()).isEqualTo("2014July")
         assertThat(periods[4].periodId()).isEqualTo("2018July")
     }
+
     @Test
     fun `Should generate correct THIS_WEEK with different settings`() {
-        val relativePeriodHelper = RelativePeriodHelperMock(weekStart=PeriodType.WeeklyFriday)
+        val relativePeriodHelper = RelativePeriodHelperMock(weekStart = PeriodType.WeeklyFriday)
         val periodGenerator = ParentPeriodGeneratorImpl.create(clockProvider, relativePeriodHelper)
 
         val periods = periodGenerator.generateRelativePeriods(RelativePeriod.THIS_WEEK)
@@ -151,9 +152,10 @@ class RelativePeriodHelperShould {
         assertThat(periods.size).isEqualTo(1)
         assertThat(periods[0].periodId()).isEqualTo("2019FriW49")
     }
+
     @Test
     fun `Should generate correct LAST_12_WEEKS with different settings`() {
-        val relativePeriodHelper = RelativePeriodHelperMock(weekStart=PeriodType.WeeklySaturday)
+        val relativePeriodHelper = RelativePeriodHelperMock(weekStart = PeriodType.WeeklySaturday)
         val periodGenerator = ParentPeriodGeneratorImpl.create(clockProvider, relativePeriodHelper)
 
         val periods = periodGenerator.generateRelativePeriods(RelativePeriod.LAST_12_WEEKS)

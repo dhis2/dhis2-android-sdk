@@ -7611,6 +7611,7 @@ public abstract class org/hisp/dhis/android/core/program/Program : org/hisp/dhis
 	public abstract fun displayProgramStageLabel ()Ljava/lang/String;
 	public abstract fun displayRelationshipLabel ()Ljava/lang/String;
 	public abstract fun displayTrackedEntityAttributeLabel ()Ljava/lang/String;
+	public abstract fun enrollmentCategoryCombo ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public fun enrollmentDateLabel ()Ljava/lang/String;
 	public fun enrollmentLabel ()Ljava/lang/String;
 	public fun eventLabel ()Ljava/lang/String;
@@ -7663,6 +7664,7 @@ public abstract class org/hisp/dhis/android/core/program/Program$Builder : org/h
 	public abstract fun displayProgramStageLabel (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/Program$Builder;
 	public abstract fun displayRelationshipLabel (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/Program$Builder;
 	public abstract fun displayTrackedEntityAttributeLabel (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/Program$Builder;
+	public abstract fun enrollmentCategoryCombo (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/program/Program$Builder;
 	public fun enrollmentDateLabel (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/Program$Builder;
 	public fun enrollmentLabel (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/Program$Builder;
 	public fun eventLabel (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/Program$Builder;
@@ -7699,6 +7701,7 @@ public final class org/hisp/dhis/android/core/program/ProgramCollectionRepositor
 	public final fun byDataEntryMethod ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
 	public final fun byDisplayFrontPageList ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
 	public final fun byDisplayIncidentDate ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
+	public final fun byEnrollmentCategoryCombo ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byEnrollmentDateLabel ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byEnrollmentLabel ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byEventLabel ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
@@ -14603,6 +14606,7 @@ public final class org/hisp/dhis/android/persistence/program/ProgramTableInfo$Co
 	public static final field DISPLAY_RELATIONSHIP_LABEL Ljava/lang/String;
 	public static final field DISPLAY_SHORT_NAME Ljava/lang/String;
 	public static final field DISPLAY_TRACKED_ENTITY_ATTRIBUTE_LABEL Ljava/lang/String;
+	public static final field ENROLLMENT_CATEGORY_COMBO Ljava/lang/String;
 	public static final field EXPIRY_DAYS Ljava/lang/String;
 	public static final field EXPIRY_PERIOD_TYPE Ljava/lang/String;
 	public static final field FEATURE_TYPE Ljava/lang/String;

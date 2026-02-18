@@ -131,6 +131,7 @@ object FileResourceRoutineSamples {
         .uid(generator.generate())
         .trackedEntityType(trackedEntityType)
         .categoryCombo(ObjectWithUid.create(categoryCombo.uid()))
+        .enrollmentCategoryCombo(ObjectWithUid.create(categoryCombo.uid()))
         .build()
 
     val programStage1: ProgramStage = ProgramStage.builder()

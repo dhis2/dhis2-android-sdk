@@ -102,6 +102,7 @@ object EventLineListSamples {
         .displayName("Program 1")
         .trackedEntityType(trackedEntityType)
         .categoryCombo(ObjectWithUid.fromIdentifiable(categoryCombo))
+        .enrollmentCategoryCombo(ObjectWithUid.fromIdentifiable(categoryCombo))
         .build()
 
     val program1Stage1: ProgramStage = ProgramStage.builder()

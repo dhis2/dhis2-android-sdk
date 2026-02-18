@@ -117,6 +117,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
                     .access(access)
                     .trackedEntityType(TrackedEntityType.builder().uid(teiTypeUid).build())
                     .categoryCombo(ObjectWithUid.create("p0KPaWEg3cf"))
+                    .enrollmentCategoryCombo(ObjectWithUid.create("p0KPaWEg3cf"))
                     .build()
                 koin.get<ProgramStore>().insert(program)
 

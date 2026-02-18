@@ -71,6 +71,7 @@ internal class TrackerEntityInstanceLineListRepositoryEvaluatorShould : BaseEval
         .displayName("Other tracker program")
         .trackedEntityType(trackedEntityType)
         .categoryCombo(ObjectWithUid.create(categoryCombo.uid()))
+        .enrollmentCategoryCombo(ObjectWithUid.create(categoryCombo.uid()))
         .build()
 
     val attributeOther = TrackedEntityAttribute.builder()

@@ -124,6 +124,7 @@ internal class TrackedEntityAttributeReservedValueManagerRealIntegrationShould :
             store.insert(categoryCombo)
             val program = Program.builder().uid(programUid)
                 .categoryCombo(ObjectWithUid.create(categoryCombo.uid()))
+                .enrollmentCategoryCombo(ObjectWithUid.create(categoryCombo.uid()))
                 .access(Access.create(null, null, DataAccess.create(true, true))).build()
             koin.get<ProgramStore>().insert(program)
             val programTrackedEntityAttribute = ProgramTrackedEntityAttribute.builder()

@@ -95,6 +95,7 @@ internal object ProgramFields : BaseFields<Program>() {
         fh.field(Columns.DISPLAY_TRACKED_ENTITY_ATTRIBUTE_LABEL),
         fh.field(Columns.DISPLAY_PROGRAM_STAGE_LABEL),
         fh.field(Columns.DISPLAY_EVENT_LABEL),
+        fh.nestedFieldWithUid(Columns.ENROLLMENT_CATEGORY_COMBO),
     )
 
     val allFields = Fields.from(

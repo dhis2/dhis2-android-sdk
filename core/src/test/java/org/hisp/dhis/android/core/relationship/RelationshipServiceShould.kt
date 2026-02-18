@@ -139,9 +139,11 @@ class RelationshipServiceShould {
             programRepository.uid(any()).blockingGet(),
         ) doReturnConsecutively listOf(
             Program.builder().uid("from").access(accessData(fromAccess))
-                .categoryCombo(ObjectWithUid.create("categoryCombo")).build(),
+                .categoryCombo(ObjectWithUid.create("categoryCombo"))
+                .enrollmentCategoryCombo(ObjectWithUid.create("categoryCombo")).build(),
             Program.builder().uid("to").access(accessData(toAccess))
-                .categoryCombo(ObjectWithUid.create("categoryCombo")).build(),
+                .categoryCombo(ObjectWithUid.create("categoryCombo"))
+                .enrollmentCategoryCombo(ObjectWithUid.create("categoryCombo")).build(),
         )
     }
 

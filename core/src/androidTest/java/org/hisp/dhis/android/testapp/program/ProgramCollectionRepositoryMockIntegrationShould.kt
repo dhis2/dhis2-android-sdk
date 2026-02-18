@@ -424,8 +424,15 @@ class ProgramCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
 
     @Test
     fun include_enrollment_category_combo_as_object_with_uid() {
-        val program = d2.programModule().programs()
-            .one().blockingGet()
-        assertThat(program!!.enrollmentCategoryCombo().uid()).isEqualTo("m2jTvAj5kkm")
+        val programs = d2.programModule().programs().blockingGet()
+        val expectedEntollmentCO = mapOf<String, String>(
+            "lxAQ7Zs9VYR" to "p0KPaWEg3cf", // missing on program, should fallback to default category combo
+            "IpHINAT79UW" to "m2jTvAj5kkm",
+            "TpRIN3TE9UW" to "m2jTvAj5kkm"
+        )
+        programs.map { program ->
+            assertThat(program.uid()).isIn(expectedEntollmentCO.keys)
+            assertThat(program.enrollmentCategoryCombo().uid()).isEqualTo(expectedEntollmentCO[program.uid()])
+        }
     }
 }

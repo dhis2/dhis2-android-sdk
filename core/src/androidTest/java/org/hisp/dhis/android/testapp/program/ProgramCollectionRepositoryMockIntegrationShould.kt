@@ -428,7 +428,7 @@ class ProgramCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val expectedEntollmentCO = mapOf<String, String>(
             "lxAQ7Zs9VYR" to "p0KPaWEg3cf", // missing on program, should fallback to default category combo
             "IpHINAT79UW" to "m2jTvAj5kkm",
-            "TpRIN3TE9UW" to "m2jTvAj5kkm"
+            "TpRIN3TE9UW" to "m2jTvAj5kkm",
         )
         programs.map { program ->
             assertThat(program.uid()).isIn(expectedEntollmentCO.keys)

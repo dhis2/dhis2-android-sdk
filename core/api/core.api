@@ -7995,6 +7995,7 @@ public final class org/hisp/dhis/android/core/program/ProgramSectionCollectionRe
 	public final fun byMobileRenderType ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byProgramUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun bySortOrder ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/IntegerFilterConnector;
+	public final fun orderBySortOrder (Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;)Lorg/hisp/dhis/android/core/program/ProgramSectionCollectionRepository;
 	public final fun withAttributes ()Lorg/hisp/dhis/android/core/program/ProgramSectionCollectionRepository;
 }
 
@@ -8212,6 +8213,7 @@ public final class org/hisp/dhis/android/core/program/ProgramStageSectionsCollec
 	public final fun byMobileRenderType ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byProgramStageUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun bySortOrder ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/IntegerFilterConnector;
+	public final fun orderBySortOrder (Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;)Lorg/hisp/dhis/android/core/program/ProgramStageSectionsCollectionRepository;
 	public final fun withDataElements ()Lorg/hisp/dhis/android/core/program/ProgramStageSectionsCollectionRepository;
 	public final fun withProgramIndicators ()Lorg/hisp/dhis/android/core/program/ProgramStageSectionsCollectionRepository;
 }

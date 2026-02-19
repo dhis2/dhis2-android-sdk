@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
 import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
+import org.hisp.dhis.android.network.common.dto.CategoryOptionComboWithFallbackDTO
 import org.hisp.dhis.android.network.common.dto.DateStringDTO
 import org.hisp.dhis.android.network.common.dto.GeometryDTO
 import org.hisp.dhis.android.network.common.dto.ZonedDateDTO
@@ -57,6 +58,7 @@ internal data class NewEnrollmentDTO(
     val status: String?,
     val trackedEntity: String?,
     val geometry: GeometryDTO?,
+    val attributeOptionCombo: CategoryOptionComboWithFallbackDTO = CategoryOptionComboWithFallbackDTO(null),
     val attributes: List<NewTrackedEntityAttributeValueDTO> = emptyList(),
     val events: List<NewEventDTO>?,
     val notes: List<NewNoteDTO>?,
@@ -79,6 +81,7 @@ internal data class NewEnrollmentDTO(
             status(status?.let { EnrollmentStatus.valueOf(it) })
             trackedEntityInstance(trackedEntity)
             geometry(geometry?.toDomain())
+            attributeOptionCombo(attributeOptionCombo.toDomain())
             notes(notes?.map { it.toDomain(enrollment = enrollment) })
             EnrollmentInternalAccessor.insertEvents(this, events?.map { it.toDomain() })
             relationships(relationships?.map { it.toDomain() })
@@ -102,7 +105,8 @@ internal fun NewTrackerImporterEnrollment.toDto(): NewEnrollmentDTO {
         followUp = followUp,
         status = status?.name,
         trackedEntity = trackedEntity,
-        geometry = geometry?.let { it.toDto() },
+        geometry = geometry?.toDto(),
+        attributeOptionCombo = CategoryOptionComboWithFallbackDTO(attributeOptionCombo),
         attributes = attributes?.map { it.toDto() } ?: emptyList(),
         events = events?.map { it.toDto() },
         notes = notes?.map { it.toDto() },

@@ -52,6 +52,7 @@ internal object NewEnrollmentFields : BaseFields<NewTrackerImporterEnrollment>()
     private const val EVENTS = "events"
     private const val NOTES = "notes"
     private const val GEOMETRY = "geometry"
+    private const val ATTRIBUTE_OPTION_COMBO = "attributeOptionCombo"
     private const val RELATIONSHIPS = "relationships"
 
     val allFields = Fields.from(
@@ -79,5 +80,6 @@ internal object NewEnrollmentFields : BaseFields<NewTrackerImporterEnrollment>()
         fh.field(DELETED),
         fh.field(TRACKED_ENTITY),
         fh.field(GEOMETRY),
+        fh.field(ATTRIBUTE_OPTION_COMBO),
     )
 }

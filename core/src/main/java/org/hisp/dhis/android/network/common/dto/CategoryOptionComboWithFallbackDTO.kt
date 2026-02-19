@@ -28,16 +28,35 @@
 
 package org.hisp.dhis.android.network.common.dto
 
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.category.internal.DefaultCategoryComboManager
 
-@Serializable
+@Serializable(with = CategoryOptionComboWithFallbackDTOSerializer::class)
 internal data class CategoryOptionComboWithFallbackDTO(
     val id: String?,
 ) {
     fun toDomain(): String {
         val uid = id ?: koin.get<DefaultCategoryComboManager>().defaultCategoryOptionComboUid
         return requireNotNull(uid) { "Default CategoryOptionCombo not loaded." }
+    }
+}
+
+internal object CategoryOptionComboWithFallbackDTOSerializer : KSerializer<CategoryOptionComboWithFallbackDTO> {
+    override val descriptor: SerialDescriptor =
+        PrimitiveSerialDescriptor("CategoryOptionComboWithFallbackDTO", PrimitiveKind.STRING)
+
+    override fun serialize(encoder: Encoder, value: CategoryOptionComboWithFallbackDTO) {
+        value.id?.let { encoder.encodeString(it) }
+    }
+
+    override fun deserialize(decoder: Decoder): CategoryOptionComboWithFallbackDTO {
+        return CategoryOptionComboWithFallbackDTO(decoder.decodeString())
     }
 }

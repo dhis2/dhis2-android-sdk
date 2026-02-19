@@ -5171,6 +5171,7 @@ public abstract class org/hisp/dhis/android/core/domain/aggregated/data/internal
 public abstract class org/hisp/dhis/android/core/enrollment/Enrollment : org/hisp/dhis/android/core/common/BaseDeletableDataObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
 	public fun <init> ()V
 	public abstract fun aggregatedSyncState ()Lorg/hisp/dhis/android/core/common/State;
+	public abstract fun attributeOptionCombo ()Ljava/lang/String;
 	public static fun builder ()Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
 	public abstract fun completedDate ()Ljava/util/Date;
 	public abstract fun created ()Ljava/util/Date;
@@ -5194,6 +5195,7 @@ public abstract class org/hisp/dhis/android/core/enrollment/Enrollment : org/his
 public abstract class org/hisp/dhis/android/core/enrollment/Enrollment$Builder : org/hisp/dhis/android/core/common/BaseDeletableDataObject$Builder {
 	public fun <init> ()V
 	public abstract fun aggregatedSyncState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
+	public abstract fun attributeOptionCombo (Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
 	public fun build ()Lorg/hisp/dhis/android/core/enrollment/Enrollment;
 	public abstract fun completedDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
 	public abstract fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
@@ -5228,6 +5230,7 @@ public final class org/hisp/dhis/android/core/enrollment/EnrollmentAccess : java
 
 public final class org/hisp/dhis/android/core/enrollment/EnrollmentCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadWriteWithUidCollectionRepositoryImpl {
 	public final fun byAggregatedSyncState ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
+	public final fun byAttributeOptionComboUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byCreated ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/DateFilterConnector;
 	public final fun byCreatedAtClient ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byDeleted ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
@@ -5259,8 +5262,10 @@ public final class org/hisp/dhis/android/core/enrollment/EnrollmentCollectionRep
 
 public abstract class org/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection {
 	public fun <init> ()V
+	public abstract fun attributeOptionCombo ()Ljava/lang/String;
 	public static fun builder ()Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection$Builder;
 	public static fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection;
+	public static fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection;
 	public abstract fun organisationUnit ()Ljava/lang/String;
 	public abstract fun program ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection$Builder;
@@ -5269,6 +5274,7 @@ public abstract class org/hisp/dhis/android/core/enrollment/EnrollmentCreateProj
 
 public abstract class org/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection$Builder {
 	public fun <init> ()V
+	public abstract fun attributeOptionCombo (Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection$Builder;
 	public abstract fun build ()Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection;
 	public abstract fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection$Builder;
 	public abstract fun program (Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection$Builder;
@@ -5290,6 +5296,7 @@ public abstract interface class org/hisp/dhis/android/core/enrollment/Enrollment
 public final class org/hisp/dhis/android/core/enrollment/EnrollmentObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadWriteWithUidDataObjectRepositoryImpl {
 	public synthetic fun deleteObject (Lorg/hisp/dhis/android/core/common/CoreObject;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lorg/hisp/dhis/android/core/arch/handlers/internal/HandleAction;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun setAttributeOptionComboUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/Unit;
 	public final fun setCompletedDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/Unit;
 	public final fun setEnrollmentDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/Unit;
 	public final fun setFollowUp (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/Unit;
@@ -13488,6 +13495,7 @@ public final class org/hisp/dhis/android/persistence/enrollment/EnrollmentTableI
 
 public final class org/hisp/dhis/android/persistence/enrollment/EnrollmentTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
 	public static final field AGGREGATED_SYNC_STATE Ljava/lang/String;
+	public static final field ATTRIBUTE_OPTION_COMBO Ljava/lang/String;
 	public static final field COMPLETED_DATE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field CREATED_AT_CLIENT Ljava/lang/String;

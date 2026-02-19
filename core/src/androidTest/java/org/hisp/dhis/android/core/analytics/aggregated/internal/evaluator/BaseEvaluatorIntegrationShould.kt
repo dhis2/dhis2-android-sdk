@@ -376,6 +376,7 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
             .organisationUnit(orgunitChild1.uid())
             .program(program.uid())
             .deleted(false)
+            .attributeOptionCombo("default_aoc_uid")
             .build()
 
         enrollmentStore.insert(enrollment)

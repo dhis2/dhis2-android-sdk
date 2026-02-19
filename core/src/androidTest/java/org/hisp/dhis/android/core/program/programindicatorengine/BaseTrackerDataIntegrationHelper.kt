@@ -78,7 +78,7 @@ open class BaseTrackerDataIntegrationHelper() {
     ) {
         val enrollment = Enrollment.builder().uid(enrollmentUid).organisationUnit(orgunitUid).program(programUid)
             .enrollmentDate(enrollmentDate).incidentDate(incidentDate).trackedEntityInstance(teiUid)
-            .created(created).lastUpdated(lastUpdated).status(status).build()
+            .created(created).lastUpdated(lastUpdated).status(status).attributeOptionCombo("default_aoc_uid").build()
         koin.get<EnrollmentStore>().insert(enrollment)
     }
 

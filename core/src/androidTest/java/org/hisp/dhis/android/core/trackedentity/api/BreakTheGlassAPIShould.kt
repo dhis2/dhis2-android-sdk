@@ -218,6 +218,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
             .organisationUnit(captureOrgunit)
             .program(program)
             .status(EnrollmentStatus.ACTIVE)
+            .attributeOptionCombo("default_aoc_uid")
             .build()
     }
 

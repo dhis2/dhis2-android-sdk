@@ -113,6 +113,7 @@ class TrackerImporterFileResourcesPostCallShould {
                         status = null,
                         trackedEntity = null,
                         geometry = null,
+                        attributeOptionCombo = null,
                         aggregatedSyncState = null,
                         events = null,
                         notes = null,

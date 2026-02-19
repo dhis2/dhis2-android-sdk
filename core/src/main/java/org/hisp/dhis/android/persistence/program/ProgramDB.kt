@@ -38,6 +38,13 @@ import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityTypeDB
             onDelete = ForeignKey.CASCADE,
             deferred = true,
         ),
+        ForeignKey(
+            entity = CategoryComboDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["enrollmentCategoryCombo"],
+            onDelete = ForeignKey.CASCADE,
+            deferred = true,
+        ),
     ],
 )
 internal data class ProgramDB(
@@ -86,6 +93,7 @@ internal data class ProgramDB(
     val displayTrackedEntityAttributeLabel: String?,
     val displayProgramStageLabel: String?,
     val displayEventLabel: String?,
+    val enrollmentCategoryCombo: String,
 ) : EntityDB<Program>, BaseNameableObjectDB {
 
     override fun toDomain(): Program {
@@ -125,6 +133,7 @@ internal data class ProgramDB(
             displayTrackedEntityAttributeLabel(displayTrackedEntityAttributeLabel)
             displayProgramStageLabel(displayProgramStageLabel)
             displayEventLabel(displayEventLabel)
+            enrollmentCategoryCombo(ObjectWithUid.create(enrollmentCategoryCombo))
         }.build()
     }
 }
@@ -175,5 +184,6 @@ internal fun Program.toDB(): ProgramDB {
         displayTrackedEntityAttributeLabel = displayTrackedEntityAttributeLabel(),
         displayProgramStageLabel = displayProgramStageLabel(),
         displayEventLabel = displayEventLabel(),
+        enrollmentCategoryCombo = enrollmentCategoryCombo().uid(),
     )
 }

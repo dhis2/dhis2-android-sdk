@@ -82,6 +82,7 @@ public class ProgramSamples {
                 .displayTrackedEntityAttributeLabel("trackedEntityAttributeLabel")
                 .displayProgramStageLabel("programStageLabel")
                 .displayEventLabel("eventLabel")
+                .enrollmentCategoryCombo(ObjectWithUid.create("category_combo_uid"))
                 .build();
         return builder.build();
     }
@@ -128,6 +129,7 @@ public class ProgramSamples {
                 .displayTrackedEntityAttributeLabel("TrackedEntityAttribute Label")
                 .displayProgramStageLabel("ProgramStage Label")
                 .displayEventLabel("Event Label")
+                .enrollmentCategoryCombo(ObjectWithUid.create("m2jTvAj5kkm"))
                 .build();
     }
 

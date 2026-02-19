@@ -55,6 +55,7 @@ internal data class NewTrackerImporterEnrollment(
     val status: EnrollmentStatus?,
     val trackedEntity: String?,
     val geometry: Geometry?,
+    val attributeOptionCombo: String?,
     val aggregatedSyncState: State?,
     val attributes: List<NewTrackerImporterTrackedEntityAttributeValue>? = emptyList(),
     val events: List<NewTrackerImporterEvent>? = emptyList(),

@@ -132,6 +132,10 @@ class EnrollmentCollectionRepository internal constructor(
         return cf.string(EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE)
     }
 
+    fun byAttributeOptionComboUid(): StringFilterConnector<EnrollmentCollectionRepository> {
+        return cf.string(EnrollmentTableInfo.Columns.ATTRIBUTE_OPTION_COMBO)
+    }
+
     fun byGeometryType(): EnumFilterConnector<EnrollmentCollectionRepository, FeatureType> {
         return cf.enumC(EnrollmentTableInfo.Columns.GEOMETRY_TYPE)
     }

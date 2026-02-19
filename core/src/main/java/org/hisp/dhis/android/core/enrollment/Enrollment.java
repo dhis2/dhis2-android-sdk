@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.enrollment;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -87,6 +88,9 @@ public abstract class Enrollment extends BaseDeletableDataObject implements Obje
 
     @Nullable
     public abstract String trackedEntityInstance();
+
+    @NonNull
+    public abstract String attributeOptionCombo();
 
     /**
      * @deprecated since 2.30, replaced by {@link #geometry()}
@@ -152,6 +156,8 @@ public abstract class Enrollment extends BaseDeletableDataObject implements Obje
         public abstract Builder status(EnrollmentStatus status);
 
         public abstract Builder trackedEntityInstance(String trackedEntityInstance);
+
+        public abstract Builder attributeOptionCombo(String attributeOptionCombo);
 
         /**
          * @deprecated since 2.30, replaced by {@link #geometry(Geometry geometry)}

@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope.OrderByDirection
 import org.hisp.dhis.android.core.program.internal.ProgramStageSectionDataElementChildrenAppender
 import org.hisp.dhis.android.core.program.internal.ProgramStageSectionProgramIndicatorChildrenAppender
 import org.hisp.dhis.android.core.program.internal.ProgramStageSectionStore
@@ -86,6 +87,10 @@ class ProgramStageSectionsCollectionRepository internal constructor(
 
     fun withDataElements(): ProgramStageSectionsCollectionRepository {
         return cf.withChild(DATA_ELEMENTS)
+    }
+
+    fun orderBySortOrder(direction: OrderByDirection?): ProgramStageSectionsCollectionRepository {
+        return cf.withOrderBy(ProgramStageSectionTableInfo.Columns.SORT_ORDER, direction)
     }
 
     internal companion object {

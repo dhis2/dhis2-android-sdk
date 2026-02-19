@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope.OrderByDirection
 import org.hisp.dhis.android.core.program.internal.ProgramSectionAttributeChildrenAppender
 import org.hisp.dhis.android.core.program.internal.ProgramSectionStore
 import org.hisp.dhis.android.persistence.program.ProgramSectionTableInfo
@@ -89,6 +90,10 @@ class ProgramSectionCollectionRepository internal constructor(
 
     fun withAttributes(): ProgramSectionCollectionRepository {
         return cf.withChild(TRACKED_ENTITY_ATTRIBUTES)
+    }
+
+    fun orderBySortOrder(direction: OrderByDirection?): ProgramSectionCollectionRepository {
+        return cf.withOrderBy(ProgramSectionTableInfo.Columns.SORT_ORDER, direction)
     }
 
     internal companion object {

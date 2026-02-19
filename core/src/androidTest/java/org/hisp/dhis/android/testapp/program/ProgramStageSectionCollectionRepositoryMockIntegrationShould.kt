@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.testapp.program
 
 import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 
@@ -116,5 +117,21 @@ class ProgramStageSectionCollectionRepositoryMockIntegrationShould : BaseMockInt
             .blockingGet()
 
         assertThat(stageSections.size).isEqualTo(1)
+    }
+
+    @Test
+    fun order_by_sort_order() {
+        val programStageSections = d2.programModule().programStageSections()
+            .orderBySortOrder(RepositoryScope.OrderByDirection.ASC)
+            .blockingGet()
+
+        assertThat(programStageSections.size).isEqualTo(2)
+        assertThat(programStageSections[0].sortOrder()).isLessThan(programStageSections[1].sortOrder())
+
+        val reversedSections = d2.programModule().programStageSections()
+            .orderBySortOrder(RepositoryScope.OrderByDirection.DESC)
+            .blockingGet()
+
+        assertThat(reversedSections[0].sortOrder()).isGreaterThan(reversedSections[1].sortOrder())
     }
 }

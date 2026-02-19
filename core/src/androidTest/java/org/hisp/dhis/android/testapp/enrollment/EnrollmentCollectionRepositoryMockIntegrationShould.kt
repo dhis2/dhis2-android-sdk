@@ -206,6 +206,15 @@ class EnrollmentCollectionRepositoryMockIntegrationShould : BaseMockIntegrationT
     }
 
     @Test
+    fun filter_by_attribute_option_combo() {
+        val enrollments = d2.enrollmentModule().enrollments()
+            .byAttributeOptionComboUid().eq("bRowv6yZOF2")
+            .blockingGet()
+
+        assertThat(enrollments.size).isEqualTo(2)
+    }
+
+    @Test
     fun filter_by_geometry_type() {
         val enrollments = d2.enrollmentModule().enrollments()
             .byGeometryType().eq(FeatureType.POLYGON)

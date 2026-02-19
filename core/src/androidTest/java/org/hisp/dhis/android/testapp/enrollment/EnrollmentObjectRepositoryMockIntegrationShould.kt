@@ -30,6 +30,8 @@ package org.hisp.dhis.android.testapp.enrollment
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
+import org.hisp.dhis.android.core.category.CategoryOptionCombo
+import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.Geometry
 import org.hisp.dhis.android.core.common.IdentifiableColumns
@@ -183,6 +185,19 @@ class EnrollmentObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestF
         repository.setStatus(enrollmentStatus)
         assertThat(repository.blockingGet()!!.status()).isEqualTo(enrollmentStatus)
         assertThat(repository.blockingGet()!!.completedDate()).isNull()
+
+        repository.blockingDelete()
+    }
+
+    @Test
+    fun update_attribute_option_combo() = runTest {
+        val repository = objectRepository()
+
+        assertThat(repository.blockingGet()!!.attributeOptionCombo())
+            .isNotEqualTo("Gmbgme7z9BF")
+        repository.setAttributeOptionComboUid("Gmbgme7z9BF")
+        assertThat(repository.blockingGet()!!.attributeOptionCombo())
+            .isEqualTo("Gmbgme7z9BF")
 
         repository.blockingDelete()
     }

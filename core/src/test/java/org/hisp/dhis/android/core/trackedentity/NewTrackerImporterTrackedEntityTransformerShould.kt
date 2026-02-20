@@ -28,16 +28,55 @@
 package org.hisp.dhis.android.core.trackedentity
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.datetime.TimeZone
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext
+import org.hisp.dhis.android.core.arch.helpers.DateTimezoneConverter
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
+import org.hisp.dhis.android.core.category.internal.DefaultCategoryComboManager
+import org.hisp.dhis.android.core.systeminfo.internal.ServerTimezoneManager
 import org.hisp.dhis.android.network.trackedentityinstance.TrackedEntityInstanceDTO
 import org.hisp.dhis.android.network.tracker.NewTrackedEntityDTO
+import org.junit.Before
 import org.junit.Test
+import org.koin.core.context.startKoin
+import org.koin.dsl.module
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
 
 class NewTrackerImporterTrackedEntityTransformerShould {
 
     private val jsonParser: Json = KotlinxJsonParser.instance
+
+    @Before
+    fun setUpKoin() {
+        try {
+            DhisAndroidSdkKoinContext.koin
+        } catch (_: Exception) {
+            val neutralMock: ServerTimezoneManager = mock {
+                on { getServerTimeZone() } doReturn TimeZone.currentSystemDefault()
+            }
+            val koinApp = startKoin {
+                modules(
+                    module {
+                        single { neutralMock }
+                    },
+                )
+            }
+            DhisAndroidSdkKoinContext.koin = koinApp.koin
+            DateTimezoneConverter.serverTimezoneManager = neutralMock
+        }
+
+        if (DhisAndroidSdkKoinContext.koin.getOrNull<DefaultCategoryComboManager>() == null) {
+            val defaultCategoryComboManager: DefaultCategoryComboManager = mock {
+                on { defaultCategoryOptionComboUid } doReturn "HllvX50cXC0"
+            }
+            DhisAndroidSdkKoinContext.koin.loadModules(
+                listOf(module { single { defaultCategoryComboManager } }),
+            )
+        }
+    }
 
     @Test
     fun detransform_tracked_entity() {

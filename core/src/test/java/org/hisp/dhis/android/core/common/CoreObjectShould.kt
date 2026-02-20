@@ -32,6 +32,7 @@ import kotlinx.datetime.TimeZone
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext
 import org.hisp.dhis.android.core.arch.helpers.DateTimezoneConverter
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
+import org.hisp.dhis.android.core.category.internal.DefaultCategoryComboManager
 import org.hisp.dhis.android.core.systeminfo.internal.ServerTimezoneManager
 import org.junit.Before
 import org.koin.core.context.startKoin
@@ -63,6 +64,16 @@ abstract class CoreObjectShould(private val jsonPath: String) {
             }
             DhisAndroidSdkKoinContext.koin = koinApp.koin
             DateTimezoneConverter.serverTimezoneManager = neutralMock
+        }
+
+        // Ensure DefaultCategoryComboManager is registered regardless of initialization order
+        if (DhisAndroidSdkKoinContext.koin.getOrNull<DefaultCategoryComboManager>() == null) {
+            val defaultCategoryComboManager: DefaultCategoryComboManager = mock {
+                on { defaultCategoryOptionComboUid } doReturn "HllvX50cXC0"
+            }
+            DhisAndroidSdkKoinContext.koin.loadModules(
+                listOf(module { single { defaultCategoryComboManager } }),
+            )
         }
     }
 

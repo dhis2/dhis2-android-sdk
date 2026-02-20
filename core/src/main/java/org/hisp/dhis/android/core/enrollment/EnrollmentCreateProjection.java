@@ -33,8 +33,6 @@ import com.google.auto.value.AutoValue;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.hisp.dhis.android.core.note.Note;
-
 @AutoValue
 public abstract class EnrollmentCreateProjection {
 

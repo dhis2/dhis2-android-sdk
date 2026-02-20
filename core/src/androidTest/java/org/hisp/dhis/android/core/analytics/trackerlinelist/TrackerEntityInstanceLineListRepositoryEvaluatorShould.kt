@@ -32,6 +32,7 @@ import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorIntegrationShould
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute1
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOptionCombo
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attributeOptionCombo
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryCombo
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement1
@@ -63,7 +64,7 @@ import java.util.Date
 @RunWith(D2JunitRunner::class)
 internal class TrackerEntityInstanceLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrationShould() {
 
-    private val helper = BaseTrackerDataIntegrationHelper()
+    private val helper = BaseTrackerDataIntegrationHelper(categoryOptionCombo.uid())
 
     val programOther: Program = Program.builder()
         .uid(generator.generate())

@@ -151,7 +151,7 @@ object FileResourceRoutineSamples {
         .program(program.uid())
         .trackedEntityInstance(trackedEntityInstance.uid())
         .organisationUnit(orgUnit1.uid())
-        .attributeOptionCombo("default_aoc_uid")
+        .attributeOptionCombo("bRowv6yZOF2")
         .build()
 
     val event1: Event = Event.builder()

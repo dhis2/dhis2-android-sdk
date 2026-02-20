@@ -186,7 +186,7 @@ class TrackedEntityDataValueStoreIntegrationShould :
         val enrollmentStore: EnrollmentStore = EnrollmentStoreImpl(TestDatabaseAdapterFactory.get())
         val enrollment = Enrollment.builder().uid("enrollment").organisationUnit("organisation_unit")
             .program("program").trackedEntityInstance("tei_uid")
-            .aggregatedSyncState(State.TO_POST).syncState(State.TO_POST).attributeOptionCombo("default_aoc_uid").build()
+            .aggregatedSyncState(State.TO_POST).syncState(State.TO_POST).attributeOptionCombo("bRowv6yZOF2").build()
         enrollmentStore.insert(enrollment)
 
         val eventStore: EventStore = EventStoreImpl(TestDatabaseAdapterFactory.get())

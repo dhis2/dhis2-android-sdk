@@ -288,7 +288,7 @@ class TrackedEntityInstanceUtils {
                 .trackedEntityInstance(teiUid)
                 .deleted(false)
                 .notes(Collections.emptyList())
-                .attributeOptionCombo("default_aoc_uid")
+                .attributeOptionCombo("bRowv6yZOF2")
                 .build();
     }
 

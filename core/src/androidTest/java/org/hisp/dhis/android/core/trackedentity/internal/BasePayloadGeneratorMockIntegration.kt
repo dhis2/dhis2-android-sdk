@@ -105,7 +105,7 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
             .syncState(State.TO_POST)
             .aggregatedSyncState(State.TO_POST)
             .trackedEntityInstance(teiId)
-            .attributeOptionCombo("default_aoc_uid")
+            .attributeOptionCombo("bRowv6yZOF2")
             .build()
 
         val dataValue2 = TrackedEntityDataValueSamples.get().toBuilder()
@@ -131,7 +131,7 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
             .syncState(State.TO_POST)
             .aggregatedSyncState(State.TO_POST)
             .trackedEntityInstance(teiId)
-            .attributeOptionCombo("default_aoc_uid")
+            .attributeOptionCombo("bRowv6yZOF2")
             .build()
 
         val dataValue3 = TrackedEntityDataValueSamples.get().toBuilder()
@@ -157,7 +157,7 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
             .syncState(State.TO_POST)
             .aggregatedSyncState(State.SYNCED)
             .trackedEntityInstance(teiId)
-            .attributeOptionCombo("default_aoc_uid")
+            .attributeOptionCombo("bRowv6yZOF2")
             .build()
 
         val attributeValue = TrackedEntityAttributeValueSamples.get().toBuilder()

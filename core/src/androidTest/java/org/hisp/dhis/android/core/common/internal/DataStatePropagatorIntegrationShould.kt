@@ -191,7 +191,7 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
             Enrollment.builder()
                 .uid("uid")
                 .trackedEntityInstance(teiUid)
-                .attributeOptionCombo("default_aoc_uid")
+                .attributeOptionCombo("bRowv6yZOF2")
                 .build(),
         )
 
@@ -210,7 +210,7 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
             Enrollment.builder()
                 .uid("uid")
                 .trackedEntityInstance(teiUid)
-                .attributeOptionCombo("default_aoc_uid")
+                .attributeOptionCombo("bRowv6yZOF2")
                 .build(),
         )
 

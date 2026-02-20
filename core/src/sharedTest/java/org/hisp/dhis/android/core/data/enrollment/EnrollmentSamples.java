@@ -61,7 +61,7 @@ public class EnrollmentSamples {
                 .followUp(Boolean.FALSE)
                 .status(EnrollmentStatus.ACTIVE)
                 .trackedEntityInstance(tei)
-                .attributeOptionCombo("default_aoc_uid")
+                .attributeOptionCombo("bRowv6yZOF2")
                 .geometry(Geometry.builder()
                         .type(FeatureType.POINT)
                         .coordinates("[21.21, 23.23]").build())

@@ -51,7 +51,9 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueS
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import java.util.Date
 
-open class BaseTrackerDataIntegrationHelper() {
+open class BaseTrackerDataIntegrationHelper(
+    private val defaultAttributeOptionCombo: String = "bRowv6yZOF2",
+) {
 
     suspend fun createTrackedEntity(teiUid: String, orgunitUid: String, teiTypeUid: String) {
         val teiStore: TrackedEntityInstanceStore = koin.get()
@@ -78,7 +80,8 @@ open class BaseTrackerDataIntegrationHelper() {
     ) {
         val enrollment = Enrollment.builder().uid(enrollmentUid).organisationUnit(orgunitUid).program(programUid)
             .enrollmentDate(enrollmentDate).incidentDate(incidentDate).trackedEntityInstance(teiUid)
-            .created(created).lastUpdated(lastUpdated).status(status).attributeOptionCombo("default_aoc_uid").build()
+            .created(created).lastUpdated(lastUpdated).status(status)
+            .attributeOptionCombo(defaultAttributeOptionCombo).build()
         koin.get<EnrollmentStore>().insert(enrollment)
     }
 

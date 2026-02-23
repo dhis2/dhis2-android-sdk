@@ -65,11 +65,11 @@ internal class RelativePeriodHelperImpl(
 
     private fun mapWeekStartSetting(value: String): PeriodType {
         return when (value) {
-            "SUNDAY" -> PeriodType.WeeklySunday
-            "WEDNESDAY" -> PeriodType.WeeklyWednesday
-            "THURSDAY" -> PeriodType.WeeklyThursday
-            "FRIDAY" -> PeriodType.WeeklyFriday
-            "SATURDAY" -> PeriodType.WeeklySunday
+            "WEEKLY_WEDNESDAY" -> PeriodType.WeeklyWednesday
+            "WEEKLY_THURSDAY" -> PeriodType.WeeklyThursday
+            "WEEKLY_FRIDAY" -> PeriodType.WeeklyFriday
+            "WEEKLY_SATURDAY" -> PeriodType.WeeklySunday
+            "WEEKLY_SUNDAY" -> PeriodType.WeeklySunday
             else -> PeriodType.Weekly
         }
     }

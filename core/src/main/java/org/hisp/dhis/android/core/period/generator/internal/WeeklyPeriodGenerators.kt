@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.period.generator.internal
 
-import org.hisp.dhis.android.core.period.internal.RelativePeriodHelper
 import kotlin.time.Clock
 
 internal class WeeklyPeriodGenerators(clock: Clock) {

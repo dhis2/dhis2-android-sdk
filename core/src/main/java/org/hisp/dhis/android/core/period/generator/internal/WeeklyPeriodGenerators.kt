@@ -30,12 +30,11 @@ package org.hisp.dhis.android.core.period.generator.internal
 import org.hisp.dhis.android.core.period.internal.RelativePeriodHelper
 import kotlin.time.Clock
 
-internal class WeeklyPeriodGenerators(clock: Clock, relativePeriodHelper: RelativePeriodHelper) {
+internal class WeeklyPeriodGenerators(clock: Clock) {
     val weekly = WeeklyPeriodGeneratorFactory.weekly(clock)
     val weeklyWednesday = WeeklyPeriodGeneratorFactory.wednesday(clock)
     val weeklyThursday = WeeklyPeriodGeneratorFactory.thursday(clock)
     val weeklyFriday = WeeklyPeriodGeneratorFactory.friday(clock)
     val weeklySaturday = WeeklyPeriodGeneratorFactory.saturday(clock)
     val weeklySunday = WeeklyPeriodGeneratorFactory.sunday(clock)
-    val relativePeriodHelper: RelativePeriodHelper = relativePeriodHelper
 }

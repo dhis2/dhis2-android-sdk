@@ -43,7 +43,7 @@ import org.junit.Test
 class FinancialYearPeriodIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 
     private val systemSettingRepository: SystemSettingCollectionRepository = d2.settingModule().systemSetting()
-    private val financialYearPeriodHelper: FinancialYearPeriodHelper = koin.get()
+    private val relativePeriodHelper: RelativePeriodHelper = koin.get()
     private val parentPeriodGenerator: ParentPeriodGenerator = koin.get()
 
     @Test
@@ -54,7 +54,7 @@ class FinancialYearPeriodIntegrationShould : BaseMockIntegrationTestFullDispatch
         assertThat(setting?.value()).isEqualTo("FINANCIAL_YEAR_JULY")
 
         // Verify that the helper returns the correct PeriodType
-        val periodType = financialYearPeriodHelper.getFinancialYearPeriodType()
+        val periodType = relativePeriodHelper.getFinancialYearPeriodType()
         assertThat(periodType).isEqualTo(PeriodType.FinancialJuly)
     }
 

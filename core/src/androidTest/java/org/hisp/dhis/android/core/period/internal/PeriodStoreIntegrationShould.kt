@@ -65,10 +65,10 @@ class PeriodStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationSho
 
     @Test
     fun select_correct_period_passing_period_type_and_a_date() = runTest {
-        val financialYearPeriodHelper = FinancialYearPeriodHelperMock()
+        val relativePeriodHelper = RelativePeriodHelperMock()
         PeriodHandler(
             periodStore,
-            create(ClockProviderFactory.createFixed(), financialYearPeriodHelper),
+            create(ClockProviderFactory.createFixed(), relativePeriodHelper),
         ).generateAndPersist()
         val period = periodStore.selectPeriodByTypeAndDate(
             PeriodType.SixMonthly,

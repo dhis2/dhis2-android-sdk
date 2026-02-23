@@ -37,15 +37,15 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class FinancialYearPeriodHelperShould {
+class RelativePeriodHelperShould {
 
     private val fixedDate = LocalDateTime(2019, 12, 10, 0, 0)
     private val clockProvider = FixedClockProvider(fixedDate)
 
     @Test
     fun `Should use FinancialApril when setting is FINANCIAL_YEAR_APRIL`() {
-        val financialYearHelper = FinancialYearPeriodHelperMock(PeriodType.FinancialApril)
-        val periodGenerator = ParentPeriodGeneratorImpl.create(clockProvider, financialYearHelper)
+        val relativePeriodHelper = RelativePeriodHelperMock(PeriodType.FinancialApril)
+        val periodGenerator = ParentPeriodGeneratorImpl.create(clockProvider, relativePeriodHelper)
 
         val periods = periodGenerator.generateRelativePeriods(RelativePeriod.THIS_FINANCIAL_YEAR)
 
@@ -55,8 +55,8 @@ class FinancialYearPeriodHelperShould {
 
     @Test
     fun `Should use FinancialJuly when setting is FINANCIAL_YEAR_JULY`() {
-        val financialYearHelper = FinancialYearPeriodHelperMock(PeriodType.FinancialJuly)
-        val periodGenerator = ParentPeriodGeneratorImpl.create(clockProvider, financialYearHelper)
+        val relativePeriodHelper = RelativePeriodHelperMock(PeriodType.FinancialJuly)
+        val periodGenerator = ParentPeriodGeneratorImpl.create(clockProvider, relativePeriodHelper)
 
         val periods = periodGenerator.generateRelativePeriods(RelativePeriod.THIS_FINANCIAL_YEAR)
 
@@ -66,8 +66,8 @@ class FinancialYearPeriodHelperShould {
 
     @Test
     fun `Should use FinancialOct when setting is FINANCIAL_YEAR_OCTOBER`() {
-        val financialYearHelper = FinancialYearPeriodHelperMock(PeriodType.FinancialOct)
-        val periodGenerator = ParentPeriodGeneratorImpl.create(clockProvider, financialYearHelper)
+        val relativePeriodHelper = RelativePeriodHelperMock(PeriodType.FinancialOct)
+        val periodGenerator = ParentPeriodGeneratorImpl.create(clockProvider, relativePeriodHelper)
 
         val periods = periodGenerator.generateRelativePeriods(RelativePeriod.THIS_FINANCIAL_YEAR)
 
@@ -77,8 +77,8 @@ class FinancialYearPeriodHelperShould {
 
     @Test
     fun `Should use FinancialNov when setting is FINANCIAL_YEAR_NOVEMBER`() {
-        val financialYearHelper = FinancialYearPeriodHelperMock(PeriodType.FinancialNov)
-        val periodGenerator = ParentPeriodGeneratorImpl.create(clockProvider, financialYearHelper)
+        val relativePeriodHelper = RelativePeriodHelperMock(PeriodType.FinancialNov)
+        val periodGenerator = ParentPeriodGeneratorImpl.create(clockProvider, relativePeriodHelper)
 
         val periods = periodGenerator.generateRelativePeriods(RelativePeriod.THIS_FINANCIAL_YEAR)
 
@@ -88,8 +88,8 @@ class FinancialYearPeriodHelperShould {
 
     @Test
     fun `Should use FinancialFeb when setting is FINANCIAL_YEAR_FEBRUARY`() {
-        val financialYearHelper = FinancialYearPeriodHelperMock(PeriodType.FinancialFeb)
-        val periodGenerator = ParentPeriodGeneratorImpl.create(clockProvider, financialYearHelper)
+        val relativePeriodHelper = RelativePeriodHelperMock(PeriodType.FinancialFeb)
+        val periodGenerator = ParentPeriodGeneratorImpl.create(clockProvider, relativePeriodHelper)
 
         val periods = periodGenerator.generateRelativePeriods(RelativePeriod.THIS_FINANCIAL_YEAR)
 
@@ -99,8 +99,8 @@ class FinancialYearPeriodHelperShould {
 
     @Test
     fun `Should use FinancialAug when setting is FINANCIAL_YEAR_AUGUST`() {
-        val financialYearHelper = FinancialYearPeriodHelperMock(PeriodType.FinancialAug)
-        val periodGenerator = ParentPeriodGeneratorImpl.create(clockProvider, financialYearHelper)
+        val relativePeriodHelper = RelativePeriodHelperMock(PeriodType.FinancialAug)
+        val periodGenerator = ParentPeriodGeneratorImpl.create(clockProvider, relativePeriodHelper)
 
         val periods = periodGenerator.generateRelativePeriods(RelativePeriod.THIS_FINANCIAL_YEAR)
 
@@ -110,8 +110,8 @@ class FinancialYearPeriodHelperShould {
 
     @Test
     fun `Should use FinancialSep when setting is FINANCIAL_YEAR_SEPTEMBER`() {
-        val financialYearHelper = FinancialYearPeriodHelperMock(PeriodType.FinancialSep)
-        val periodGenerator = ParentPeriodGeneratorImpl.create(clockProvider, financialYearHelper)
+        val relativePeriodHelper = RelativePeriodHelperMock(PeriodType.FinancialSep)
+        val periodGenerator = ParentPeriodGeneratorImpl.create(clockProvider, relativePeriodHelper)
 
         val periods = periodGenerator.generateRelativePeriods(RelativePeriod.THIS_FINANCIAL_YEAR)
 
@@ -121,8 +121,8 @@ class FinancialYearPeriodHelperShould {
 
     @Test
     fun `Should generate correct LAST_FINANCIAL_YEAR with different settings`() {
-        val financialYearHelperOct = FinancialYearPeriodHelperMock(PeriodType.FinancialOct)
-        val periodGeneratorOct = ParentPeriodGeneratorImpl.create(clockProvider, financialYearHelperOct)
+        val relativePeriodHelperOct = RelativePeriodHelperMock(PeriodType.FinancialOct)
+        val periodGeneratorOct = ParentPeriodGeneratorImpl.create(clockProvider, relativePeriodHelperOct)
 
         val periodsOct = periodGeneratorOct.generateRelativePeriods(RelativePeriod.LAST_FINANCIAL_YEAR)
 
@@ -132,13 +132,35 @@ class FinancialYearPeriodHelperShould {
 
     @Test
     fun `Should generate correct LAST_5_FINANCIAL_YEARS with different settings`() {
-        val financialYearHelper = FinancialYearPeriodHelperMock(PeriodType.FinancialJuly)
-        val periodGenerator = ParentPeriodGeneratorImpl.create(clockProvider, financialYearHelper)
+        val relativePeriodHelper = RelativePeriodHelperMock(PeriodType.FinancialJuly)
+        val periodGenerator = ParentPeriodGeneratorImpl.create(clockProvider, relativePeriodHelper)
 
         val periods = periodGenerator.generateRelativePeriods(RelativePeriod.LAST_5_FINANCIAL_YEARS)
 
         assertThat(periods.size).isEqualTo(5)
         assertThat(periods[0].periodId()).isEqualTo("2014July")
         assertThat(periods[4].periodId()).isEqualTo("2018July")
+    }
+
+    @Test
+    fun `Should generate correct THIS_WEEK with different settings`() {
+        val relativePeriodHelper = RelativePeriodHelperMock(weekStart = PeriodType.WeeklyFriday)
+        val periodGenerator = ParentPeriodGeneratorImpl.create(clockProvider, relativePeriodHelper)
+
+        val periods = periodGenerator.generateRelativePeriods(RelativePeriod.THIS_WEEK)
+
+        assertThat(periods.size).isEqualTo(1)
+        assertThat(periods[0].periodId()).isEqualTo("2019FriW49")
+    }
+
+    @Test
+    fun `Should generate correct LAST_12_WEEKS with different settings`() {
+        val relativePeriodHelper = RelativePeriodHelperMock(weekStart = PeriodType.WeeklySaturday)
+        val periodGenerator = ParentPeriodGeneratorImpl.create(clockProvider, relativePeriodHelper)
+
+        val periods = periodGenerator.generateRelativePeriods(RelativePeriod.LAST_12_WEEKS)
+
+        assertThat(periods.size).isEqualTo(12)
+        assertThat(periods.last().periodId()).isEqualTo("2019SatW49")
     }
 }

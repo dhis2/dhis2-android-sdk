@@ -1,0 +1,76 @@
+/*
+ *  Copyright (c) 2004-2026, University of Oslo
+ *  All rights reserved.
+ *
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
+ *
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+package org.hisp.dhis.android.core.period.internal
+
+import org.hisp.dhis.android.core.period.PeriodType
+import org.hisp.dhis.android.core.settings.SystemSettingCollectionRepository
+import org.koin.core.annotation.Singleton
+
+internal interface RelativePeriodHelper {
+    fun getFinancialYearPeriodType(): PeriodType
+    fun getWeeklyPeriodType(): PeriodType
+}
+
+@Singleton
+internal class RelativePeriodHelperImpl(
+    private val systemSettingRepository: SystemSettingCollectionRepository,
+) : RelativePeriodHelper {
+    override fun getFinancialYearPeriodType(): PeriodType {
+        val setting = systemSettingRepository.analyticsFinancialYearStart().blockingGet()
+        return setting?.value()?.let { mapFinancialYearSetting(it) } ?: PeriodType.FinancialApril
+    }
+
+    private fun mapFinancialYearSetting(value: String): PeriodType {
+        return when (value) {
+            "FINANCIAL_YEAR_FEBRUARY" -> PeriodType.FinancialFeb
+            "FINANCIAL_YEAR_APRIL" -> PeriodType.FinancialApril
+            "FINANCIAL_YEAR_JULY" -> PeriodType.FinancialJuly
+            "FINANCIAL_YEAR_AUGUST" -> PeriodType.FinancialAug
+            "FINANCIAL_YEAR_SEPTEMBER" -> PeriodType.FinancialSep
+            "FINANCIAL_YEAR_OCTOBER" -> PeriodType.FinancialOct
+            "FINANCIAL_YEAR_NOVEMBER" -> PeriodType.FinancialNov
+            else -> PeriodType.FinancialApril
+        }
+    }
+
+    override fun getWeeklyPeriodType(): PeriodType {
+        val setting = systemSettingRepository.analyticsWeekStart().blockingGet()
+        return setting?.value()?.let { mapWeekStartSetting(it) } ?: PeriodType.Weekly
+    }
+
+    private fun mapWeekStartSetting(value: String): PeriodType {
+        return when (value) {
+            "WEEKLY_WEDNESDAY" -> PeriodType.WeeklyWednesday
+            "WEEKLY_THURSDAY" -> PeriodType.WeeklyThursday
+            "WEEKLY_FRIDAY" -> PeriodType.WeeklyFriday
+            "WEEKLY_SATURDAY" -> PeriodType.WeeklySunday
+            "WEEKLY_SUNDAY" -> PeriodType.WeeklySunday
+            else -> PeriodType.Weekly
+        }
+    }
+}

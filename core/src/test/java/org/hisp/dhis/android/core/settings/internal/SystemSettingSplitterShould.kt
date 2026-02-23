@@ -42,6 +42,7 @@ class SystemSettingSplitterShould {
         keyDefaultBaseMap = "aDefaultBaseMap",
         keyBingMapsApiKey = null,
         analyticsFinancialYearStart = null,
+        analyticsWeekStart = null,
     )
 
     @Test

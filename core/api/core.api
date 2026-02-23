@@ -9956,6 +9956,7 @@ public abstract class org/hisp/dhis/android/core/settings/SystemSetting$Builder 
 
 public final class org/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey : java/lang/Enum {
 	public static final field ANALYTICS_FINANCIAL_YEAR_START Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;
+	public static final field ANALYTICS_WEEK_START Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;
 	public static final field BING_BASE_MAP Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;
 	public static final field DEFAULT_BASE_MAP Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;
 	public static final field FLAG Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;
@@ -9966,6 +9967,7 @@ public final class org/hisp/dhis/android/core/settings/SystemSetting$SystemSetti
 
 public final class org/hisp/dhis/android/core/settings/SystemSettingCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyCollectionRepositoryImpl {
 	public final fun analyticsFinancialYearStart ()Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyOneObjectRepositoryFinalImpl;
+	public final fun analyticsWeekStart ()Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyOneObjectRepositoryFinalImpl;
 	public final fun byKey ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
 	public final fun byValue ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun defaultBaseMap ()Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyOneObjectRepositoryFinalImpl;

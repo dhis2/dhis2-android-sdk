@@ -33,8 +33,8 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositorySco
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.common.FilterOperatorsHelper.listToStr
 import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory.clockProvider
-import org.hisp.dhis.android.core.period.internal.FinancialYearPeriodHelperMock
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl.Companion.create
+import org.hisp.dhis.android.core.period.internal.RelativePeriodHelperMock
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnlineHelper.Companion.toAPIFilterFormat
 import org.junit.Before
 import org.junit.Test
@@ -50,8 +50,8 @@ class TrackedEntityInstanceQueryOnlineHelperShould {
     fun setUp() {
         queryBuilder = TrackedEntityInstanceQueryRepositoryScope.builder()
             .orgUnits(listOf("uid"))
-        val financialYearPeriodHelper = FinancialYearPeriodHelperMock()
-        val periodHelper = DateFilterPeriodHelper(clockProvider, create(clockProvider, financialYearPeriodHelper))
+        val relativePeriodHelper = RelativePeriodHelperMock()
+        val periodHelper = DateFilterPeriodHelper(clockProvider, create(clockProvider, relativePeriodHelper))
         onlineHelper = TrackedEntityInstanceQueryOnlineHelper(periodHelper)
     }
 

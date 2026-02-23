@@ -40,8 +40,8 @@ class RelativePeriodGeneratorImplShould {
 
     private val fixedDate = LocalDateTime(2019, 12, 10, 0, 0)
     private val clockProvider = FixedClockProvider(fixedDate)
-    private val financialYearPeriodHelper = FinancialYearPeriodHelperMock()
-    private val periodGenerator = ParentPeriodGeneratorImpl.create(clockProvider, financialYearPeriodHelper)
+    private val relativePeriodHelper = RelativePeriodHelperMock()
+    private val periodGenerator = ParentPeriodGeneratorImpl.create(clockProvider, relativePeriodHelper)
 
     @Test
     @Suppress("ComplexMethod", "LongMethod")

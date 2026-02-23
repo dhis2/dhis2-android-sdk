@@ -43,6 +43,7 @@ public abstract class SystemSetting implements CoreObject {
         DEFAULT_BASE_MAP,
         BING_BASE_MAP,
         ANALYTICS_FINANCIAL_YEAR_START,
+        ANALYTICS_WEEK_START,
     }
 
     @Nullable

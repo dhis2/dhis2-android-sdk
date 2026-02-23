@@ -81,8 +81,8 @@ class TrackedEntityInstanceQueryDataSourceShould {
 
     private val initialCallback: ItemKeyedDataSource.LoadInitialCallback<TrackedEntityInstance> = mock()
     private val clockProvider = ClockProviderFactory.clockProvider
-    private val financialYearPeriodHelper = RelativePeriodHelperMock()
-    private val periodHelper = DateFilterPeriodHelper(clockProvider, create(clockProvider, financialYearPeriodHelper))
+    private val relativePeriodHelper = RelativePeriodHelperMock()
+    private val periodHelper = DateFilterPeriodHelper(clockProvider, create(clockProvider, relativePeriodHelper))
     private val onlineHelper = TrackedEntityInstanceQueryOnlineHelper(periodHelper)
     private val localQueryHelper = TrackedEntityInstanceLocalQueryHelper(periodHelper)
     private val onlineCache: TrackedEntityInstanceOnlineCache =

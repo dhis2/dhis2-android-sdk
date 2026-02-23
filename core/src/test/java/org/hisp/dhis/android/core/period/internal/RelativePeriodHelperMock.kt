@@ -37,7 +37,7 @@ internal class RelativePeriodHelperMock(
         return periodType
     }
 
-    override fun getWeekStart(): PeriodType {
+    override fun getWeeklyPeriodType(): PeriodType {
         return weekStart
     }
 }

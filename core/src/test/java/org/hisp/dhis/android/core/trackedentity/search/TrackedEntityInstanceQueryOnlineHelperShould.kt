@@ -50,8 +50,8 @@ class TrackedEntityInstanceQueryOnlineHelperShould {
     fun setUp() {
         queryBuilder = TrackedEntityInstanceQueryRepositoryScope.builder()
             .orgUnits(listOf("uid"))
-        val financialYearPeriodHelper = RelativePeriodHelperMock()
-        val periodHelper = DateFilterPeriodHelper(clockProvider, create(clockProvider, financialYearPeriodHelper))
+        val relativePeriodHelper = RelativePeriodHelperMock()
+        val periodHelper = DateFilterPeriodHelper(clockProvider, create(clockProvider, relativePeriodHelper))
         onlineHelper = TrackedEntityInstanceQueryOnlineHelper(periodHelper)
     }
 

@@ -53,8 +53,8 @@ class TrackedEntityInstanceLocalQueryHelperMockIntegrationShould : BaseMockInteg
     private val trackedEntityInstanceStore: TrackedEntityInstanceStore = koin.get()
 
     private val clockProvider = ClockProviderFactory.clockProvider
-    private val financialYearPeriodHelper = RelativePeriodHelperMock()
-    private val periodHelper = DateFilterPeriodHelper(clockProvider, create(clockProvider, financialYearPeriodHelper))
+    private val relativePeriodHelper = RelativePeriodHelperMock()
+    private val periodHelper = DateFilterPeriodHelper(clockProvider, create(clockProvider, relativePeriodHelper))
     private val localQueryHelper = TrackedEntityInstanceLocalQueryHelper(periodHelper)
 
     @Test

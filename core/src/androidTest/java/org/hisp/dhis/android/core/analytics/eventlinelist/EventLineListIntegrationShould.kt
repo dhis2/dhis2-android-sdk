@@ -121,11 +121,11 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
     private val legendSetStore: LegendSetStore = koin.get()
     private val legendStore: LegendStore = koin.get()
     private val clockProvider = ClockProviderFactory.createFixed()
-    private val financialYearPeriodHelper = RelativePeriodHelperMock()
+    private val relativePeriodHelper = RelativePeriodHelperMock()
     private val dateFilterPeriodHelper =
         DateFilterPeriodHelper(
             clockProvider,
-            ParentPeriodGeneratorImpl.create(clockProvider, financialYearPeriodHelper),
+            ParentPeriodGeneratorImpl.create(clockProvider, relativePeriodHelper),
         )
     private val organisationUnitHelper = AnalyticsOrganisationUnitHelper(
         userOrganisationUnitStore,

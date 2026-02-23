@@ -54,8 +54,8 @@ class TrackedEntityInstanceLocalQueryHelperShould {
     fun setUp() {
         queryBuilder = TrackedEntityInstanceQueryRepositoryScope.builder()
         val clockProvider = ClockProviderFactory.clockProvider
-        val financialYearPeriodHelper = RelativePeriodHelperMock()
-        val periodHelper = DateFilterPeriodHelper(clockProvider, create(clockProvider, financialYearPeriodHelper))
+        val relativePeriodHelper = RelativePeriodHelperMock()
+        val periodHelper = DateFilterPeriodHelper(clockProvider, create(clockProvider, relativePeriodHelper))
         localQueryHelper = TrackedEntityInstanceLocalQueryHelper(periodHelper)
     }
 

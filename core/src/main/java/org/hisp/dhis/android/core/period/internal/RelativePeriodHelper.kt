@@ -33,7 +33,7 @@ import org.koin.core.annotation.Singleton
 
 internal interface RelativePeriodHelper {
     fun getFinancialYearPeriodType(): PeriodType
-    fun getWeekStart(): PeriodType
+    fun getWeeklyPeriodType(): PeriodType
 }
 
 @Singleton
@@ -58,7 +58,7 @@ internal class RelativePeriodHelperImpl(
         }
     }
 
-    override fun getWeekStart(): PeriodType {
+    override fun getWeeklyPeriodType(): PeriodType {
         val setting = systemSettingRepository.analyticsWeekStart().blockingGet()
         return setting?.value()?.let { mapWeekStartSetting(it) } ?: PeriodType.Weekly
     }

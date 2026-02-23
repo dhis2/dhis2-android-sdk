@@ -44,14 +44,14 @@ class DateFilterPeriodHelperShould {
     fun setUp() {
         val fixedDate = LocalDateTime(2019, 12, 10, 10, 30)
         val clockProvider = FixedClockProvider(fixedDate)
-        val financialYearPeriodHelper = RelativePeriodHelperMock()
+        val relativePeriodHelper = RelativePeriodHelperMock()
 
         dateFilterPeriodHelper =
             DateFilterPeriodHelper(
                 clockProvider,
                 ParentPeriodGeneratorImpl.create(
                     clockProvider,
-                    financialYearPeriodHelper,
+                    relativePeriodHelper,
                 ),
             )
     }

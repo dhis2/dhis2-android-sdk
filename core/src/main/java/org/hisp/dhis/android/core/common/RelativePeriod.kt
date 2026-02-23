@@ -89,7 +89,7 @@ enum class RelativePeriod constructor(
         return if (isFinancialYearRelativePeriod()) {
             relativePeriodHelper.getFinancialYearPeriodType()
         } else if (isWeeklyRelativePeriod()) {
-            relativePeriodHelper.getWeekStart()
+            relativePeriodHelper.getWeeklyPeriodType()
         } else {
             periodType
         }

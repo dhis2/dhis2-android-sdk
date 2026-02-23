@@ -109,6 +109,13 @@ subprojects {
             reporter(ReporterType.CHECKSTYLE)
         }
     }
+
+    configurations.named("ktlint") {
+        resolutionStrategy {
+            force("ch.qos.logback:logback-classic:1.3.14")
+            force("ch.qos.logback:logback-core:1.3.14")
+        }
+    }
 }
 
 val nexusUsername: String? = System.getenv("NEXUS_USERNAME")

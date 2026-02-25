@@ -105,28 +105,35 @@ internal class FileResourceNetworkHandlerImpl(
         }
     }
 
-    override suspend fun getFileFromEventValue(
-        v: TrackedEntityDataValue,
-        dimension: String,
-    ): ByteArray {
+    override suspend fun getImageFromEventValue(v: TrackedEntityDataValue, dimension: String): ByteArray {
         return if (dhis2VersionManager.isGreaterThan(DHISVersion.V2_41)) {
-            if (dimension == DimensionSize.ORIGIANL_NAME) {
-                service.getFileFromEventValue(
-                    v.event()!!,
-                    v.dataElement()!!,
-                )
-            } else {
-                service.getImageFromEventValue(
-                    v.event()!!,
-                    v.dataElement()!!,
-                    dimension,
-                )
-            }
+            service.getImageFromEventValue(
+                v.event()!!,
+                v.dataElement()!!,
+                dimension,
+            )
         } else {
             service.getFileFromEventValue41(
                 v.event()!!,
                 v.dataElement()!!,
                 dimension,
+            )
+        }
+    }
+
+    override suspend fun getFileFromEventValue(
+        v: TrackedEntityDataValue,
+    ): ByteArray {
+        return if (dhis2VersionManager.isGreaterThan(DHISVersion.V2_41)) {
+            service.getFileFromEventValue(
+                v.event()!!,
+                v.dataElement()!!,
+            )
+        } else {
+            service.getFileFromEventValue41(
+                v.event()!!,
+                v.dataElement()!!,
+                DimensionSize.ORIGIANL_NAME
             )
         }
     }

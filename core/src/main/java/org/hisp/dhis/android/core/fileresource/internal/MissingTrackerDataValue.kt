@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,45 +28,10 @@
 
 package org.hisp.dhis.android.core.fileresource.internal
 
-import io.ktor.client.request.forms.MultiPartFormDataContent
-import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery
-import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.core.fileresource.FileResource
-import org.hisp.dhis.android.core.icon.CustomIcon
+import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 
-internal interface FileResourceNetworkHandler {
-
-    suspend fun uploadFile(filePart: MultiPartFormDataContent): FileResource
-
-    suspend fun getFileResource(fileResource: String): FileResource
-
-    suspend fun getFileResources(
-        query: UidsQuery,
-    ): Payload<FileResource>
-
-    suspend fun getImageFromTrackedEntityAttribute(
-        v: MissingTrackerAttributeValue,
-        dimension: String,
-    ): ByteArray
-
-    suspend fun getFileFromTrackedEntityAttribute(
-        v: MissingTrackerAttributeValue,
-    ): ByteArray
-
-    suspend fun getImageFromEventValue(
-        v: TrackedEntityDataValue,
-        dimension: String,
-    ): ByteArray
-
-    suspend fun getFileFromEventValue(
-        v: TrackedEntityDataValue,
-    ): ByteArray
-
-    suspend fun getCustomIcon(
-        v: CustomIcon,
-    ): ByteArray
-
-    suspend fun getFileFromDataValue(v: DataValue, dimension: String): ByteArray
-}
+internal data class MissingTrackerDataValue(
+    val value: TrackedEntityDataValue,
+    val valueType: ValueType,
+)

@@ -107,8 +107,8 @@ internal class FileResourceDownloadCallHelper(
     suspend fun getMissingTrackerDataValues(
         params: FileResourceDownloadParams,
         existingFileResources: List<String>,
-    ): List<TrackedEntityDataValue> {
-        val dataElementUids = dataElementStore.selectUidsWhere(
+    ): List<MissingTrackerDataValue> {
+        val dataElements = dataElementStore.selectWhere(
             WhereClauseBuilder()
                 .appendInKeyEnumValues(DataElementTableInfo.Columns.VALUE_TYPE, params.valueTypes.map { it.valueType })
                 .appendKeyStringValue(DataElementTableInfo.Columns.DOMAIN_TYPE, "TRACKER")
@@ -116,6 +116,7 @@ internal class FileResourceDownloadCallHelper(
         )
 
         val dataValuesWhereClause = WhereClauseBuilder().apply {
+            val dataElementUids = dataElements.map { it.uid() }
             appendInKeyStringValues(TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT, dataElementUids)
             appendNotInKeyStringValues(TrackedEntityDataValueTableInfo.Columns.VALUE, existingFileResources)
 
@@ -128,6 +129,10 @@ internal class FileResourceDownloadCallHelper(
         }.build()
 
         return trackedEntityDataValueStore.selectWhere(dataValuesWhereClause)
+            .map { dv ->
+                val type = dataElements.find { it.uid() == dv.dataElement() }!!.valueType()!!
+                MissingTrackerDataValue(dv, type)
+            }
     }
 
     suspend fun getMissingAggregatedDataValues(

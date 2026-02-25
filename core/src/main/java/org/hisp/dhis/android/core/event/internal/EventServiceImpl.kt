@@ -127,8 +127,8 @@ internal class EventServiceImpl(
             event.enrollment()?.let { !enrollmentService.blockingIsOpen(it) } ?: false ->
                 EventEditableStatus.NonEditable(EventNonEditableReason.ENROLLMENT_IS_NOT_OPEN)
 
-            !isInCaptureScope(event) ->
-                EventEditableStatus.NonEditable(EventNonEditableReason.ORGUNIT_IS_NOT_IN_CAPTURE_SCOPE)
+            !isOwnedByUser(event) ->
+                EventEditableStatus.NonEditable(EventNonEditableReason.ORGUNIT_IS_NOT_IN_USER_SCOPE)
 
             else ->
                 EventEditableStatus.Editable()
@@ -163,9 +163,9 @@ internal class EventServiceImpl(
         return Single.just(blockingCanAddEventToEnrollment(enrollmentUid, programStageUid))
     }
 
-    private fun isInCaptureScope(event: Event): Boolean {
+    private fun isOwnedByUser(event: Event): Boolean {
         val ownerOrgUnits = runBlocking { getEventOwnerOrgUid(event) }
-        return ownerOrgUnits.any { organisationUnitService.blockingIsInCaptureScope(it) }
+        return ownerOrgUnits.any { organisationUnitService.blockingIsInSearchScope(it) }
     }
 
     private suspend fun getEventOwnerOrgUid(event: Event): List<String> {

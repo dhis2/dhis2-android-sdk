@@ -57,4 +57,11 @@ class OrganisationUnitService(
     fun isInCaptureScope(organisationUnitUid: String): Single<Boolean> {
         return Single.just(blockingIsInCaptureScope(organisationUnitUid))
     }
+
+    internal fun blockingIsInSearchScope(organisationUnitUid: String): Boolean {
+        return organisationUnitRepository
+            .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
+            .byUid().eq(organisationUnitUid)
+            .blockingGet().isNotEmpty()
+    }
 }

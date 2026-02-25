@@ -133,7 +133,7 @@ internal class FileResourceNetworkHandlerImpl(
             service.getFileFromEventValue41(
                 v.event()!!,
                 v.dataElement()!!,
-                DimensionSize.ORIGIANL_NAME
+                DimensionSize.ORIGIANL_NAME,
             )
         }
     }

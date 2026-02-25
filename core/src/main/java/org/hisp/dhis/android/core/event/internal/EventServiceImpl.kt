@@ -164,27 +164,26 @@ internal class EventServiceImpl(
     }
 
     private fun isOwnedByUser(event: Event): Boolean {
-        val ownerOrgUnits = runBlocking { getEventOwnerOrgUid(event) }
-        return ownerOrgUnits.any { organisationUnitService.blockingIsInSearchScope(it) }
+        val ownerOrgUnit = runBlocking { getOwnerOrgUnit(event) } ?: return false
+        return organisationUnitService.blockingIsInSearchScope(ownerOrgUnit)
     }
 
-    private suspend fun getEventOwnerOrgUid(event: Event): List<String> {
+    private suspend fun getOwnerOrgUnit(event: Event): String? {
         val program = event.program()
-        val tei = event.enrollment()?.let { enrollmentRepository.uid(it).blockingGet() }?.trackedEntityInstance()
-        if (program == null || tei == null) {
-            return event.organisationUnit()?.let { listOf(it) } ?: emptyList()
-        }
+        val tei = event.enrollment()
+            ?.let { enrollmentRepository.uid(it).blockingGet() }
+            ?.trackedEntityInstance()
+
+        if (program == null || tei == null) return event.organisationUnit()
+
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(ProgramOwnerTableInfo.Columns.PROGRAM, program)
             .appendKeyStringValue(ProgramOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE, tei)
             .build()
-        val ownerOrgUnits = programOwnerStore.selectWhere(whereClause).map { it.ownerOrgUnit() }
-        return if (ownerOrgUnits.isNotEmpty()) {
-            ownerOrgUnits
-        } else {
-            event.organisationUnit()?.let { listOf(it) }
-                ?: emptyList()
-        }
+
+        return programOwnerStore.selectWhere(whereClause)
+            .firstOrNull()?.ownerOrgUnit()
+            ?: event.organisationUnit()
     }
 
     private fun getEventCount(enrollmentUid: String, programStageUid: String): Int {

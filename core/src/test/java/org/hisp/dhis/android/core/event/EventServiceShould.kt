@@ -165,8 +165,8 @@ class EventServiceShould {
         whenever(event.program()) doReturn "programUid"
         whenever(enrollment.trackedEntityInstance()) doReturn "teiUid"
         whenever(organisationUnitService.blockingIsDateInOrgunitRange(any(), any())) doReturn true
-        whenever(organisationUnitService.blockingIsInCaptureScope("OU2")) doReturn false
-        whenever(organisationUnitService.blockingIsInCaptureScope("OU1")) doReturn true
+        whenever(organisationUnitService.blockingIsInSearchScope("OU2")) doReturn false
+        whenever(organisationUnitService.blockingIsInSearchScope("OU1")) doReturn true
         whenever(enrollmentService.blockingIsOpen(any())) doReturn true
 
         val programOwner: ProgramOwner = mock()
@@ -185,8 +185,8 @@ class EventServiceShould {
         whenever(event.program()) doReturn "programUid"
         whenever(enrollment.trackedEntityInstance()) doReturn "teiUid"
         whenever(organisationUnitService.blockingIsDateInOrgunitRange(any(), any())) doReturn true
-        whenever(organisationUnitService.blockingIsInCaptureScope("OU2")) doReturn false
-        whenever(organisationUnitService.blockingIsInCaptureScope("OU3")) doReturn false
+        whenever(organisationUnitService.blockingIsInSearchScope("OU2")) doReturn false
+        whenever(organisationUnitService.blockingIsInSearchScope("OU3")) doReturn false
         whenever(enrollmentService.blockingIsOpen(any())) doReturn true
 
         val programOwner: ProgramOwner = mock()
@@ -196,6 +196,6 @@ class EventServiceShould {
         val status = eventService.blockingGetEditableStatus(event.uid())
         assertThat(status is EventEditableStatus.NonEditable).isTrue()
         assertThat((status as EventEditableStatus.NonEditable).reason)
-            .isEquivalentAccordingToCompareTo(EventNonEditableReason.ORGUNIT_IS_NOT_IN_CAPTURE_SCOPE)
+            .isEquivalentAccordingToCompareTo(EventNonEditableReason.ORGUNIT_IS_NOT_IN_USER_SCOPE)
     }
 }

@@ -30,9 +30,11 @@ CREATE TABLE DataApproval(workflow TEXT NOT NULL, organisationUnit TEXT NOT NULL
 INSERT OR IGNORE INTO DataApproval(workflow, organisationUnit, period, attributeOptionCombo, state) SELECT workflow, organisationUnit, period, attributeOptionCombo, state FROM DataApproval_Old WHERE state IS NOT NULL;
 DROP TABLE IF EXISTS DataApproval_Old;
 
+
 # Add linkedLayerUid for composite map layers (ANDROSDK-2191)
 
 ALTER TABLE MapLayer ADD COLUMN linkedLayerUid TEXT;
+
 
 # Add priority property to ProgramRuleAction (ANDROSDK-2222)
 # Add legendSet property to ProgramRuleAction (ANDROSDK-2234)
@@ -42,13 +44,28 @@ CREATE TABLE ProgramRuleAction(uid TEXT NOT NULL, code TEXT, name TEXT, displayN
 INSERT OR IGNORE INTO ProgramRuleAction(uid, code, name, displayName, created, lastUpdated, data, content, location, trackedEntityAttribute, programIndicator, programStageSection, programRuleActionType, programStage, dataElement, programRule, option, optionGroup, displayContent) SELECT uid, code, name, displayName, created, lastUpdated, data, content, location, trackedEntityAttribute, programIndicator, programStageSection, programRuleActionType, programStage, dataElement, programRule, option, optionGroup, displayContent FROM ProgramRuleAction_Old;
 DROP TABLE IF EXISTS ProgramRuleAction_Old;
 
+
+# Add default category, categoryCombo, categoryOption and categoryOptionCombo if not there (ANDROSDK-2246 and ANDROSDK-2253)
+
+INSERT OR IGNORE INTO CategoryOption(uid, code, name, displayName) SELECT 'xYerKDKCefk', 'default', 'default', 'default' WHERE NOT EXISTS (SELECT 1 FROM CategoryCombo WHERE isDefault = 1);
+INSERT OR IGNORE INTO Category(uid, code, name, displayName, dataDimensionType) SELECT 'GLevLNI9wkl', 'default', 'default', 'default', 'DISAGGREGATION' WHERE NOT EXISTS (SELECT 1 FROM CategoryCombo WHERE isDefault = 1);
+INSERT OR IGNORE INTO CategoryCombo(uid, code, name, displayName, isDefault) SELECT 'bjDvmb4bfuf', 'default', 'default', 'default', 1 WHERE NOT EXISTS (SELECT 1 FROM CategoryCombo WHERE isDefault = 1);
+INSERT OR IGNORE INTO CategoryOptionCombo(uid, code, name, displayName, categoryCombo) SELECT 'HllvX50cXC0', 'default', 'default', 'default', 'bjDvmb4bfuf' WHERE NOT EXISTS (SELECT 1 FROM CategoryCombo WHERE isDefault = 1);
+INSERT OR IGNORE INTO CategoryCategoryComboLink(category, categoryCombo, sortOrder) SELECT 'GLevLNI9wkl', 'bjDvmb4bfuf', 0 WHERE NOT EXISTS (SELECT 1 FROM CategoryCombo WHERE isDefault = 1);
+INSERT OR IGNORE INTO CategoryCategoryOptionLink(category, categoryOption, sortOrder) SELECT 'GLevLNI9wkl', 'xYerKDKCefk', 0 WHERE NOT EXISTS (SELECT 1 FROM CategoryCombo WHERE isDefault = 1);
+INSERT OR IGNORE INTO CategoryOptionComboCategoryOptionLink(categoryOptionCombo, categoryOption) SELECT 'HllvX50cXC0', 'xYerKDKCefk' WHERE NOT EXISTS (SELECT 1 FROM CategoryCombo WHERE isDefault = 1);
+
+
 # Add enrollmentCategoryCombo to Program (ANDROSDK-2246)
+
 ALTER TABLE Program RENAME TO Program_Old;
 CREATE TABLE Program(uid TEXT NOT NULL, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, shortName TEXT, displayShortName TEXT, description TEXT, displayDescription TEXT, version INTEGER, onlyEnrollOnce INTEGER, displayEnrollmentDateLabel TEXT, displayIncidentDate INTEGER, displayIncidentDateLabel TEXT, registration INTEGER, selectEnrollmentDatesInFuture INTEGER, dataEntryMethod INTEGER, ignoreOverdueEvents INTEGER, selectIncidentDatesInFuture INTEGER, useFirstStageDuringRegistration INTEGER, displayFrontPageList INTEGER, programType TEXT, relatedProgram TEXT, trackedEntityType TEXT, categoryCombo TEXT NOT NULL, accessDataWrite INTEGER, expiryDays INTEGER, completeEventsExpiryDays INTEGER, expiryPeriodType TEXT, minAttributesRequiredToSearch INTEGER, maxTeiCountToReturn INTEGER, featureType TEXT, accessLevel TEXT, color TEXT, icon TEXT, displayEnrollmentLabel TEXT, displayFollowUpLabel TEXT, displayOrgUnitLabel TEXT, displayRelationshipLabel TEXT, displayNoteLabel TEXT, displayTrackedEntityAttributeLabel TEXT, displayProgramStageLabel TEXT, displayEventLabel TEXT, enrollmentCategoryCombo TEXT NOT NULL, PRIMARY KEY(uid), FOREIGN KEY(trackedEntityType) REFERENCES TrackedEntityType(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(categoryCombo) REFERENCES CategoryCombo(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(enrollmentCategoryCombo) REFERENCES CategoryCombo(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
 INSERT INTO Program(uid, code, name, displayName, created, lastUpdated, shortName, displayShortName, description, displayDescription, version, onlyEnrollOnce, displayEnrollmentDateLabel, displayIncidentDate, displayIncidentDateLabel, registration, selectEnrollmentDatesInFuture, dataEntryMethod, ignoreOverdueEvents, selectIncidentDatesInFuture, useFirstStageDuringRegistration, displayFrontPageList, programType, relatedProgram, trackedEntityType, categoryCombo, accessDataWrite, expiryDays, completeEventsExpiryDays, expiryPeriodType, minAttributesRequiredToSearch, maxTeiCountToReturn, featureType, accessLevel, color, icon, displayEnrollmentLabel, displayFollowUpLabel, displayOrgUnitLabel, displayRelationshipLabel, displayNoteLabel, displayTrackedEntityAttributeLabel, displayProgramStageLabel, displayEventLabel, enrollmentCategoryCombo) SELECT uid, code, name, displayName, created, lastUpdated, shortName, displayShortName, description, displayDescription, version, onlyEnrollOnce, displayEnrollmentDateLabel, displayIncidentDate, displayIncidentDateLabel, registration, selectEnrollmentDatesInFuture, dataEntryMethod, ignoreOverdueEvents, selectIncidentDatesInFuture, useFirstStageDuringRegistration, displayFrontPageList, programType, relatedProgram, trackedEntityType, categoryCombo, accessDataWrite, expiryDays, completeEventsExpiryDays, expiryPeriodType, minAttributesRequiredToSearch, maxTeiCountToReturn, featureType, accessLevel, color, icon, displayEnrollmentLabel, displayFollowUpLabel, displayOrgUnitLabel, displayRelationshipLabel, displayNoteLabel, displayTrackedEntityAttributeLabel, displayProgramStageLabel, displayEventLabel, (SELECT uid FROM CategoryCombo WHERE isDefault = 1 LIMIT 1) FROM Program_Old;
 DROP TABLE IF EXISTS Program_Old;
 
+
 # Add attributeOptionCombo to Enrollment (ANDROSDK-2253)
+
 ALTER TABLE Enrollment RENAME TO Enrollment_Old;
 CREATE TABLE Enrollment(uid TEXT NOT NULL, created TEXT, lastUpdated TEXT, createdAtClient TEXT, lastUpdatedAtClient TEXT, organisationUnit TEXT NOT NULL, program TEXT NOT NULL, enrollmentDate TEXT, incidentDate TEXT, followup INTEGER, status TEXT, trackedEntityInstance TEXT NOT NULL, syncState TEXT, aggregatedSyncState TEXT, geometryType TEXT, geometryCoordinates TEXT, deleted INTEGER, completedDate TEXT, attributeOptionCombo TEXT NOT NULL, PRIMARY KEY(uid), FOREIGN KEY(organisationUnit) REFERENCES OrganisationUnit(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(program) REFERENCES Program(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(trackedEntityInstance) REFERENCES TrackedEntityInstance(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(attributeOptionCombo) REFERENCES CategoryOptionCombo(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
 INSERT INTO Enrollment(uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient, organisationUnit, program, enrollmentDate, incidentDate, followup, status, trackedEntityInstance, syncState, aggregatedSyncState, geometryType, geometryCoordinates, deleted, completedDate, attributeOptionCombo) SELECT uid, created, lastUpdated, createdAtClient, lastUpdatedAtClient, organisationUnit, program, enrollmentDate, incidentDate, followup, status, trackedEntityInstance, syncState, aggregatedSyncState, geometryType, geometryCoordinates, deleted, completedDate, (SELECT uid FROM CategoryOptionCombo WHERE categoryCombo = (SELECT uid FROM CategoryCombo WHERE isDefault = 1 LIMIT 1) LIMIT 1) FROM Enrollment_Old;

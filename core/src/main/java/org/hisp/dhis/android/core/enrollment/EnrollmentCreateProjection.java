@@ -48,10 +48,6 @@ public abstract class EnrollmentCreateProjection {
     @Nullable
     public abstract String attributeOptionCombo();
 
-    /**
-     * @deprecated replaced by {@link #create(String, String, String, String)}
-     */
-    @Deprecated
     public static EnrollmentCreateProjection create(
             String organisationUnit, String program, String trackedEntityInstance) {
         return builder()

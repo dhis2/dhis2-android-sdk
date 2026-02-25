@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.enrollment.internal.EnrollmentServiceImpl
 import org.hisp.dhis.android.core.event.*
 import org.hisp.dhis.android.core.event.EventService
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService
+import org.hisp.dhis.android.core.program.AccessLevel
 import org.hisp.dhis.android.core.program.ProgramCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
@@ -127,7 +128,7 @@ internal class EventServiceImpl(
             event.enrollment()?.let { !enrollmentService.blockingIsOpen(it) } ?: false ->
                 EventEditableStatus.NonEditable(EventNonEditableReason.ENROLLMENT_IS_NOT_OPEN)
 
-            !isOwnedByUser(event) ->
+            !isOwnedByUser(event, program?.accessLevel()) ->
                 EventEditableStatus.NonEditable(EventNonEditableReason.ORGUNIT_IS_NOT_IN_USER_SCOPE)
 
             else ->
@@ -163,9 +164,14 @@ internal class EventServiceImpl(
         return Single.just(blockingCanAddEventToEnrollment(enrollmentUid, programStageUid))
     }
 
-    private fun isOwnedByUser(event: Event): Boolean {
+    @Suppress("ReturnCount")
+    private fun isOwnedByUser(event: Event, accessLevel: AccessLevel?): Boolean {
         val ownerOrgUnit = runBlocking { getOwnerOrgUnit(event) } ?: return false
-        return organisationUnitService.blockingIsInSearchScope(ownerOrgUnit)
+
+        if (organisationUnitService.blockingIsInCaptureScope(ownerOrgUnit)) return true
+
+        val allowsSearchScope = (accessLevel ?: AccessLevel.OPEN) in listOf(AccessLevel.OPEN, AccessLevel.AUDITED)
+        return allowsSearchScope && organisationUnitService.blockingIsInSearchScope(ownerOrgUnit)
     }
 
     private suspend fun getOwnerOrgUnit(event: Event): String? {

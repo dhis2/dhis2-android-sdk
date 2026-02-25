@@ -5533,7 +5533,7 @@ public final class org/hisp/dhis/android/core/event/EventNonEditableReason : jav
 	public static final field EXPIRED Lorg/hisp/dhis/android/core/event/EventNonEditableReason;
 	public static final field NO_CATEGORY_COMBO_ACCESS Lorg/hisp/dhis/android/core/event/EventNonEditableReason;
 	public static final field NO_DATA_WRITE_ACCESS Lorg/hisp/dhis/android/core/event/EventNonEditableReason;
-	public static final field ORGUNIT_IS_NOT_IN_CAPTURE_SCOPE Lorg/hisp/dhis/android/core/event/EventNonEditableReason;
+	public static final field ORGUNIT_IS_NOT_IN_USER_SCOPE Lorg/hisp/dhis/android/core/event/EventNonEditableReason;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/EventNonEditableReason;
 	public static fun values ()[Lorg/hisp/dhis/android/core/event/EventNonEditableReason;

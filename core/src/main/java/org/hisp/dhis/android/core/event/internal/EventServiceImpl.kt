@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.event.internal
 
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.category.CategoryOptionComboService
 import org.hisp.dhis.android.core.enrollment.EnrollmentCollectionRepository
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
@@ -35,8 +36,12 @@ import org.hisp.dhis.android.core.enrollment.internal.EnrollmentServiceImpl
 import org.hisp.dhis.android.core.event.*
 import org.hisp.dhis.android.core.event.EventService
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService
+import org.hisp.dhis.android.core.program.AccessLevel
 import org.hisp.dhis.android.core.program.ProgramCollectionRepository
 import org.hisp.dhis.android.core.program.ProgramStageCollectionRepository
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
+import org.hisp.dhis.android.persistence.trackedentity.ProgramOwnerTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -50,6 +55,7 @@ internal class EventServiceImpl(
     private val organisationUnitService: OrganisationUnitService,
     private val categoryOptionComboService: CategoryOptionComboService,
     private val eventDateUtils: EventDateUtils,
+    private val programOwnerStore: ProgramOwnerStore,
 ) : EventService {
 
     override fun blockingHasDataWriteAccess(eventUid: String): Boolean {
@@ -122,8 +128,8 @@ internal class EventServiceImpl(
             event.enrollment()?.let { !enrollmentService.blockingIsOpen(it) } ?: false ->
                 EventEditableStatus.NonEditable(EventNonEditableReason.ENROLLMENT_IS_NOT_OPEN)
 
-            event.organisationUnit()?.let { !organisationUnitService.blockingIsInCaptureScope(it) } ?: false ->
-                EventEditableStatus.NonEditable(EventNonEditableReason.ORGUNIT_IS_NOT_IN_CAPTURE_SCOPE)
+            !isOwnedByUser(event, program?.accessLevel()) ->
+                EventEditableStatus.NonEditable(EventNonEditableReason.ORGUNIT_IS_NOT_IN_USER_SCOPE)
 
             else ->
                 EventEditableStatus.Editable()
@@ -156,6 +162,34 @@ internal class EventServiceImpl(
 
     override fun canAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Single<Boolean> {
         return Single.just(blockingCanAddEventToEnrollment(enrollmentUid, programStageUid))
+    }
+
+    @Suppress("ReturnCount")
+    private fun isOwnedByUser(event: Event, accessLevel: AccessLevel?): Boolean {
+        val ownerOrgUnit = runBlocking { getOwnerOrgUnit(event) } ?: return false
+
+        if (organisationUnitService.blockingIsInCaptureScope(ownerOrgUnit)) return true
+
+        val allowsSearchScope = (accessLevel ?: AccessLevel.OPEN) in listOf(AccessLevel.OPEN, AccessLevel.AUDITED)
+        return allowsSearchScope && organisationUnitService.blockingIsInSearchScope(ownerOrgUnit)
+    }
+
+    private suspend fun getOwnerOrgUnit(event: Event): String? {
+        val program = event.program()
+        val tei = event.enrollment()
+            ?.let { enrollmentRepository.uid(it).blockingGet() }
+            ?.trackedEntityInstance()
+
+        if (program == null || tei == null) return event.organisationUnit()
+
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(ProgramOwnerTableInfo.Columns.PROGRAM, program)
+            .appendKeyStringValue(ProgramOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE, tei)
+            .build()
+
+        return programOwnerStore.selectWhere(whereClause)
+            .firstOrNull()?.ownerOrgUnit()
+            ?: event.organisationUnit()
     }
 
     private fun getEventCount(enrollmentUid: String, programStageUid: String): Int {

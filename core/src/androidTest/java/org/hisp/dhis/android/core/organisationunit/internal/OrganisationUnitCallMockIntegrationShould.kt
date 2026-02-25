@@ -77,7 +77,7 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
 
             val categoryComboUid = "category_combo_uid"
             val categoryComboStore = koin.get<CategoryComboStore>()
-            categoryComboStore.insert(CategoryCombo.builder().uid(categoryComboUid).build())
+            categoryComboStore.insert(CategoryCombo.builder().uid(categoryComboUid).isDefault(true).build())
 
             // inserting programs for creating OrgUnitProgramLinks
             val programUid = "lxAQ7Zs9VYR"

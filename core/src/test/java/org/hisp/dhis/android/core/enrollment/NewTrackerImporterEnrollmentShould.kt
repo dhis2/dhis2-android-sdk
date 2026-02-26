@@ -54,5 +54,6 @@ class NewTrackerImporterEnrollmentShould : CoreObjectShould("enrollment/new_trac
         assertThat(enrollment.status()).isEqualTo(EnrollmentStatus.COMPLETED)
         assertThat(enrollment.trackedEntityInstance()).isEqualTo("vOxUH373fy5")
         assertThat(enrollment.deleted()).isEqualTo(false)
+        assertThat(enrollment.attributeOptionCombo()).isEqualTo("HllvX50cXC0")
     }
 }

@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.enrollment;
 import com.google.auto.value.AutoValue;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 @AutoValue
 public abstract class EnrollmentCreateProjection {
@@ -44,12 +45,26 @@ public abstract class EnrollmentCreateProjection {
     @NonNull
     public abstract String trackedEntityInstance();
 
+    @Nullable
+    public abstract String attributeOptionCombo();
+
     public static EnrollmentCreateProjection create(
             String organisationUnit, String program, String trackedEntityInstance) {
         return builder()
                 .organisationUnit(organisationUnit)
                 .program(program)
                 .trackedEntityInstance(trackedEntityInstance)
+                .build();
+    }
+
+    public static EnrollmentCreateProjection create(
+            String organisationUnit, String program, String trackedEntityInstance,
+            @NonNull String attributeOptionCombo) {
+        return builder()
+                .organisationUnit(organisationUnit)
+                .program(program)
+                .trackedEntityInstance(trackedEntityInstance)
+                .attributeOptionCombo(attributeOptionCombo)
                 .build();
     }
 
@@ -66,6 +81,8 @@ public abstract class EnrollmentCreateProjection {
         public abstract Builder program(String program);
 
         public abstract Builder trackedEntityInstance(String trackedEntityInstance);
+
+        public abstract Builder attributeOptionCombo(String attributeOptionCombo);
 
         public abstract EnrollmentCreateProjection build();
     }

@@ -62,6 +62,7 @@ internal object NewTrackerImporterEnrollmentTransformer {
             status = o.status(),
             trackedEntity = o.trackedEntityInstance(),
             geometry = o.geometry(),
+            attributeOptionCombo = o.attributeOptionCombo(),
             syncState = o.syncState(),
             aggregatedSyncState = o.aggregatedSyncState(),
             notes = o.notes()?.map { NewTrackerImporterNoteTransformer.transform(it) },

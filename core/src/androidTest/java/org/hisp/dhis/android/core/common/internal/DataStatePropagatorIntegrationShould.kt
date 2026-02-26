@@ -187,7 +187,13 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
         val oldDate = BaseIdentifiableObject.DATE_FORMAT.parse("1990-09-20T08:36:46.552")
         val teiUid = createTEIWithLastUpdated(oldDate)
 
-        propagator.propagateEnrollmentUpdate(Enrollment.builder().uid("uid").trackedEntityInstance(teiUid).build())
+        propagator.propagateEnrollmentUpdate(
+            Enrollment.builder()
+                .uid("uid")
+                .trackedEntityInstance(teiUid)
+                .attributeOptionCombo("bRowv6yZOF2")
+                .build(),
+        )
 
         assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.lastUpdated()).isGreaterThan(oldDate)
 
@@ -200,7 +206,13 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
         val newerDate = BaseIdentifiableObject.DATE_FORMAT.parse("2990-09-20T08:36:46.552")
         val teiUid = createTEIWithLastUpdated(newerDate)
 
-        propagator.propagateEnrollmentUpdate(Enrollment.builder().uid("uid").trackedEntityInstance(teiUid).build())
+        propagator.propagateEnrollmentUpdate(
+            Enrollment.builder()
+                .uid("uid")
+                .trackedEntityInstance(teiUid)
+                .attributeOptionCombo("bRowv6yZOF2")
+                .build(),
+        )
 
         assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.lastUpdated()).isEqualTo(newerDate)
 

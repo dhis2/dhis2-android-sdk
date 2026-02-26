@@ -144,6 +144,7 @@ object EventLineListSamples {
         .program(program1.uid())
         .trackedEntityInstance(trackedEntityInstance.uid())
         .organisationUnit(organisationUnit1.uid())
+        .attributeOptionCombo(categoryOptionCombo.uid())
         .build()
 
     val dataElement1: DataElement = DataElement.builder()

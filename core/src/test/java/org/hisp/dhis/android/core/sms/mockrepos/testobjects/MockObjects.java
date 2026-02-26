@@ -49,7 +49,7 @@ import java.util.Collections;
 import java.util.Date;
 
 public class MockObjects {
-    private static Date sampleDate = new Date(1585041172000L);
+    private static final Date sampleDate = new Date(1585041172000L);
 
     public static String user = "AIK2aQOJIbj";
 
@@ -95,7 +95,8 @@ public class MockObjects {
                 .incidentDate(incidentDate)
                 .completedDate(completedDate)
                 .status(enrollmentStatus)
-                .trackedEntityInstance(teiUid);
+                .trackedEntityInstance(teiUid)
+                .attributeOptionCombo(attributeOptionCombo);
     }
 
     private static TrackedEntityInstance getTestTEIEnrollment(Enrollment enrollment) {
@@ -111,7 +112,7 @@ public class MockObjects {
         Enrollment enrollment = EnrollmentInternalAccessor
                 .insertEvents(getEnrollmentBuilder(), Collections.singletonList(getTrackerEvent()))
                 .uid(enrollmentUid)
-                .geometry(GeometryHelper.createPointGeometry((double) longitude, (double) latitude))
+                .geometry(GeometryHelper.createPointGeometry(longitude, latitude))
                 .build();
         return getTestTEIEnrollment(enrollment);
     }
@@ -168,7 +169,7 @@ public class MockObjects {
                 .eventDate(eventDate)
                 .dueDate(dueDate)
                 .status(eventStatus)
-                .geometry(GeometryHelper.createPointGeometry((double) longitude, (double) latitude))
+                .geometry(GeometryHelper.createPointGeometry(longitude, latitude))
                 .build();
     }
 

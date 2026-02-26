@@ -188,6 +188,19 @@ class EnrollmentObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestF
     }
 
     @Test
+    fun update_attribute_option_combo() = runTest {
+        val repository = objectRepository()
+
+        assertThat(repository.blockingGet()!!.attributeOptionCombo())
+            .isNotEqualTo("Gmbgme7z9BF")
+        repository.setAttributeOptionComboUid("Gmbgme7z9BF")
+        assertThat(repository.blockingGet()!!.attributeOptionCombo())
+            .isEqualTo("Gmbgme7z9BF")
+
+        repository.blockingDelete()
+    }
+
+    @Test
     fun update_geometry() {
         val geometry = Geometry.builder()
             .type(FeatureType.POINT)

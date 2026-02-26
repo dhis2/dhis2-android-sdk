@@ -170,6 +170,7 @@ class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTe
                 .organisationUnit(organisationUnit?.uid())
                 .program(program?.uid())
                 .trackedEntityInstance(teiUid)
+                .attributeOptionCombo(null)
                 .build(),
         )
 
@@ -547,7 +548,7 @@ class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTe
             .followUp(java.lang.Boolean.FALSE).status(EnrollmentStatus.ACTIVE)
             .trackedEntityInstance(trackedEntityInstanceUid)
             .geometry(Geometry.builder().type(FeatureType.POINT).coordinates("[10.33, 12.231]").build())
-            .syncState(State.TO_POST).aggregatedSyncState(State.TO_POST).build()
+            .syncState(State.TO_POST).aggregatedSyncState(State.TO_POST).attributeOptionCombo("bRowv6yZOF2").build()
 
         enrollmentStore.insert(enrollment)
 

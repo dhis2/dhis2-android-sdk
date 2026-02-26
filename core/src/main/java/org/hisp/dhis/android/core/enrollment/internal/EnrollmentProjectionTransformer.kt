@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.enrollment.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
+import org.hisp.dhis.android.core.category.internal.DefaultCategoryComboManager
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection
@@ -37,11 +38,14 @@ import org.koin.core.annotation.Singleton
 import java.util.Date
 
 @Singleton
-internal class EnrollmentProjectionTransformer :
-    Transformer<EnrollmentCreateProjection, Enrollment> {
+internal class EnrollmentProjectionTransformer(
+    private val defaultCategoryComboManager: DefaultCategoryComboManager,
+) : Transformer<EnrollmentCreateProjection, Enrollment> {
     override fun transform(o: EnrollmentCreateProjection): Enrollment {
         val generatedUid = UidGeneratorImpl().generate()
         val creationDate = Date()
+        val aoc = o.attributeOptionCombo()
+            ?: defaultCategoryComboManager.defaultCategoryOptionComboUid
         return Enrollment.builder()
             .uid(generatedUid)
             .aggregatedSyncState(State.TO_POST)
@@ -53,6 +57,7 @@ internal class EnrollmentProjectionTransformer :
             .organisationUnit(o.organisationUnit())
             .program(o.program())
             .trackedEntityInstance(o.trackedEntityInstance())
+            .attributeOptionCombo(requireNotNull(aoc) { "Default CategoryOptionCombo not loaded." })
             .status(EnrollmentStatus.ACTIVE)
             .deleted(false)
             .build()

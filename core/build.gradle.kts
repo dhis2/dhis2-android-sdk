@@ -197,6 +197,11 @@ dependencies {
     api(libs.dhis2.compression)
     api(libs.dhis2.antlr.parser)
     implementation(libs.dhis2.peg.parser)
+    constraints {
+        api("org.apache.commons:commons-text:1.12.0") {
+            because("CVE-2022-42889: commons-text < 1.10.0 is vulnerable to RCE via StringSubstitutor")
+        }
+    }
 
     implementation(libs.zip4j)
 

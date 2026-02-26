@@ -68,8 +68,14 @@ class SystemSettingCollectionRepository internal constructor(
         return byKey().eq(SystemSettingKey.FLAG).one()
     }
 
+    @Deprecated("Use customColor() instead", replaceWith = ReplaceWith("customColor()"))
     fun style(): ReadOnlyOneObjectRepositoryFinalImpl<SystemSetting> {
+        @Suppress("DEPRECATION")
         return byKey().eq(SystemSettingKey.STYLE).one()
+    }
+
+    fun customColor(): ReadOnlyOneObjectRepositoryFinalImpl<SystemSetting> {
+        return byKey().eq(SystemSettingKey.CUSTOM_COLOR).one()
     }
 
     fun defaultBaseMap(): ReadOnlyOneObjectRepositoryFinalImpl<SystemSetting> {

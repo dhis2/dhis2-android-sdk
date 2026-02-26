@@ -73,7 +73,7 @@ internal class FileResourceService(private val client: HttpServiceClient) {
         return client.get {
             url("$TRACKED_ENTITY_INSTANCES/$trackedEntityInstanceUid/$trackedEntityAttributeUid/image")
             parameters {
-                dimension.takeIf { it != DimensionSize.ORIGIANL_NAME }?.let { attribute("dimension", dimension) }
+                dimension.takeIf { it != DimensionSize.ORIGINAL_NAME }?.let { attribute("dimension", dimension) }
             }
         }
     }
@@ -95,7 +95,7 @@ internal class FileResourceService(private val client: HttpServiceClient) {
         return client.get {
             url("$TRACKER/$TRACKED_ENTIES/$trackedEntityInstanceUid/$ATTRIBUTES/$trackedEntityAttributeUid/image")
             parameters {
-                dimension.takeIf { it != DimensionSize.ORIGIANL_NAME }?.let { attribute("dimension", dimension) }
+                dimension.takeIf { it != DimensionSize.ORIGINAL_NAME }?.let { attribute("dimension", dimension) }
             }
         }
     }
@@ -119,7 +119,7 @@ internal class FileResourceService(private val client: HttpServiceClient) {
             parameters {
                 attribute("eventUid", eventUid)
                 attribute("dataElementUid", dataElementUid)
-                dimension.takeIf { it != DimensionSize.ORIGIANL_NAME }?.let { attribute("dimension", dimension) }
+                dimension.takeIf { it != DimensionSize.ORIGINAL_NAME }?.let { attribute("dimension", dimension) }
             }
         }
     }
@@ -141,7 +141,7 @@ internal class FileResourceService(private val client: HttpServiceClient) {
         return client.get {
             url("$TRACKER/$EVENTS/$eventUid/$DATA_VALUES/$dataElementUid/image")
             parameters {
-                dimension.takeIf { it != DimensionSize.ORIGIANL_NAME }?.let { attribute("dimension", dimension) }
+                dimension.takeIf { it != DimensionSize.ORIGINAL_NAME }?.let { attribute("dimension", dimension) }
             }
         }
     }
@@ -168,7 +168,7 @@ internal class FileResourceService(private val client: HttpServiceClient) {
                 attribute("pe", period)
                 attribute("ou", organisationUnit)
                 attribute("co", categoryOptionCombo)
-                dimension.takeIf { it != DimensionSize.ORIGIANL_NAME }?.let { attribute("dimension", dimension) }
+                dimension.takeIf { it != DimensionSize.ORIGINAL_NAME }?.let { attribute("dimension", dimension) }
             }
         }
     }

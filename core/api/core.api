@@ -9965,6 +9965,7 @@ public final class org/hisp/dhis/android/core/settings/SystemSetting$SystemSetti
 	public static final field ANALYTICS_FINANCIAL_YEAR_START Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;
 	public static final field ANALYTICS_WEEK_START Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;
 	public static final field BING_BASE_MAP Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;
+	public static final field CUSTOM_COLOR Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;
 	public static final field DEFAULT_BASE_MAP Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;
 	public static final field FLAG Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;
 	public static final field STYLE Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;
@@ -9977,6 +9978,7 @@ public final class org/hisp/dhis/android/core/settings/SystemSettingCollectionRe
 	public final fun analyticsWeekStart ()Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyOneObjectRepositoryFinalImpl;
 	public final fun byKey ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
 	public final fun byValue ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
+	public final fun customColor ()Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyOneObjectRepositoryFinalImpl;
 	public final fun defaultBaseMap ()Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyOneObjectRepositoryFinalImpl;
 	public final fun flag ()Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyOneObjectRepositoryFinalImpl;
 	public final fun style ()Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyOneObjectRepositoryFinalImpl;

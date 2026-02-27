@@ -39,7 +39,7 @@ class SystemSettingSplitterShould {
     private val settings: SystemSettingsDTO = SystemSettingsDTO(
         keyFlag = "aFlag",
         keyStyle = "aStyle",
-        keyUiCustomColorMobile = null,
+        keyCustomColorMobile = null,
         keyDefaultBaseMap = "aDefaultBaseMap",
         keyBingMapsApiKey = null,
         analyticsFinancialYearStart = null,

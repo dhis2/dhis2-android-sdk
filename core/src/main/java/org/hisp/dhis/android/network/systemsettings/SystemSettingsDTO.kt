@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.settings.SystemSetting.SystemSettingKey
 internal data class SystemSettingsDTO(
     val keyFlag: String?,
     val keyStyle: String?,
-    val keyUiCustomColorMobile: String?,
+    val keyCustomColorMobile: String?,
     val keyDefaultBaseMap: String?,
     val keyBingMapsApiKey: String?,
     val analyticsFinancialYearStart: String?,
@@ -56,15 +56,15 @@ internal data class SystemSettingsDTO(
     fun toDomainBingMapsApiKey(): SystemSetting = buildSetting(SystemSettingKey.BING_BASE_MAP, keyBingMapsApiKey)
 
     private fun resolveStyle(): String? = when {
-        keyUiCustomColorMobile == null -> keyStyle
-        keyUiCustomColorMobile.isEmpty() -> DEFAULT_STYLE
-        else -> colorToStyle(keyUiCustomColorMobile)
+        keyCustomColorMobile == null -> keyStyle
+        keyCustomColorMobile.isEmpty() -> DEFAULT_STYLE
+        else -> colorToStyle(keyCustomColorMobile)
     }
 
     private fun resolveCustomColor(): String? = when {
-        keyUiCustomColorMobile == null -> styleToColor(keyStyle)
-        keyUiCustomColorMobile.isEmpty() -> null
-        else -> keyUiCustomColorMobile
+        keyCustomColorMobile == null -> styleToColor(keyStyle)
+        keyCustomColorMobile.isEmpty() -> null
+        else -> keyCustomColorMobile
     }
 
     internal enum class Theme(val keyword: String, val style: String, val color: String) {

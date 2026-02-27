@@ -36,11 +36,11 @@ class SystemSettingsDTOMappingShould {
 
     private fun buildDTO(
         keyStyle: String? = null,
-        keyUiCustomColorMobile: String? = null,
+        keyCustomColorMobile: String? = null,
     ) = SystemSettingsDTO(
         keyFlag = null,
         keyStyle = keyStyle,
-        keyUiCustomColorMobile = keyUiCustomColorMobile,
+        keyCustomColorMobile = keyCustomColorMobile,
         keyDefaultBaseMap = null,
         keyBingMapsApiKey = null,
         analyticsFinancialYearStart = null,
@@ -91,7 +91,7 @@ class SystemSettingsDTOMappingShould {
 
     @Test
     fun map_unknown_color_to_default_style() {
-        val settings = buildDTO(keyUiCustomColorMobile = "#FF0000").toDomainSplitted()
+        val settings = buildDTO(keyCustomColorMobile = "#FF0000").toDomainSplitted()
         assertThat(settings.customColor().value()).isEqualTo("#FF0000")
         assertThat(settings.style().value()).isEqualTo("light_blue/light_blue.css")
     }

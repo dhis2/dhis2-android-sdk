@@ -140,8 +140,18 @@ internal class FileResourceDownloadCall(
                 downloadAndPersistFiles(
                     values = trackerDataValues,
                     maxContentLength = params.maxContentLength,
-                    download = fileResourceNetworkHandlder::getFileFromEventValue,
-                    getUid = { v -> v.value() },
+                    download = { v, dimension ->
+                        when (v.valueType) {
+                            ValueType.IMAGE ->
+                                fileResourceNetworkHandlder.getImageFromEventValue(v.value, dimension)
+
+                            ValueType.FILE_RESOURCE ->
+                                fileResourceNetworkHandlder.getFileFromEventValue(v.value)
+
+                            else -> null
+                        }
+                    },
+                    getUid = { v -> v.value.value() },
                 )
             }
         }

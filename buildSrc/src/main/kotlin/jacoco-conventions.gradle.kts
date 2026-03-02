@@ -65,10 +65,14 @@ jacoco {
 }
 
 tasks.register("jacocoReport", JacocoReport::class) {
+    dependsOn("assembleDebug")
     group = "Coverage"
     description = "Generate XML/HTML code coverage reports for coverage.ec"
 
-    sourceDirectories.setFrom("${project.projectDir}/src/main/java")
+    sourceDirectories.setFrom(
+        "${project.projectDir}/src/main/java",
+        "${project.projectDir}/src/main/kotlin"
+    )
 
     val excludes = mutableSetOf(
         // data binding

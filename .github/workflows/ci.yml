@@ -226,7 +226,7 @@ jobs:
     name: JaCoCo Coverage Report
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [instrumented-tests]
+    needs: [unit-tests, instrumented-tests]
     if: always() && needs.instrumented-tests.result == 'success'
     
     steps:

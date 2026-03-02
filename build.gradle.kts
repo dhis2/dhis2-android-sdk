@@ -143,6 +143,10 @@ sonarqube {
         property("sonar.host.url", "https://sonarcloud.io")
         property("sonar.projectName", "dhis2-android-sdk")
         property("sonar.java.binaries", "core/build/intermediates/javac/debug/classes")
+        property(
+            "sonar.coverage.jacoco.xmlReportPaths",
+            "${rootProject.projectDir}/core/build/coverage-report/jacocoTestReport.xml",
+        )
 
         if (pullRequestId.isNullOrEmpty()) {
             property("sonar.branch.name", branch)

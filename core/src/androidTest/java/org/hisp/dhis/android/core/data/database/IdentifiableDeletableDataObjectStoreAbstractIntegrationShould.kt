@@ -28,87 +28,68 @@
 package org.hisp.dhis.android.core.data.database
 
 import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.CoreObject
-import org.junit.After
+import org.hisp.dhis.android.core.common.DeletableDataObject
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import org.hisp.dhis.android.core.common.State
 import org.junit.Before
 import org.junit.Test
 import java.io.IOException
 
-abstract class ObjectStoreAbstractIntegrationShould<M : CoreObject> internal constructor(
-    private val store: ObjectStore<M>,
+abstract class IdentifiableDeletableDataObjectStoreAbstractIntegrationShould<M> internal constructor(
+    private val deletableStore: IdentifiableDeletableDataObjectStore<M>,
     tableInfo: TableInfo,
     databaseAdapter: DatabaseAdapter,
-) {
-    val `object`: M
-    private val tableInfo: TableInfo
-    private val databaseAdapter: DatabaseAdapter
+) : IdentifiableDataObjectStoreAbstractIntegrationShould<M>(
+    deletableStore,
+    tableInfo,
+    databaseAdapter,
+) where M : ObjectWithUidInterface, M : CoreObject, M : DeletableDataObject {
 
-    protected abstract fun buildObject(): M
+    protected abstract fun buildObjectWithUploadingState(): M
 
     @Before
     @Throws(IOException::class)
-    open fun setUp() {
-        runBlocking { store.delete() }
-    }
-
-    @After
-    open fun tearDown() {
-        runBlocking {
-            store.delete()
-            databaseAdapter.close()
-        }
+    override fun setUp() {
+        super.setUp()
     }
 
     @Test
-    fun insert_and_select_first_object() = runTest {
-        store.insert(`object`)
-        val objectFromDb = store.selectFirst()
-        assertEqualsIgnoreId(objectFromDb)
+    fun set_deleted_marks_object_as_deleted() = runTest {
+        deletableStore.insert(`object`)
+        deletableStore.setDeleted(`object`.uid())
+        val obj = deletableStore.selectByUid(`object`.uid())
+        assertThat(obj!!.deleted()).isTrue()
     }
 
     @Test
-    fun insert_object_and_select_first_object() = runTest {
-        store.insert(`object`)
-        val objectFromDb = store.selectFirst()
-        assertEqualsIgnoreId(objectFromDb)
+    fun set_sync_state_or_delete_updates_state_when_not_synced() = runTest {
+        val uploadingObj = buildObjectWithUploadingState()
+        deletableStore.insert(uploadingObj)
+        val action = deletableStore.setSyncStateOrDelete(uploadingObj.uid(), State.ERROR)
+        assertThat(action).isEqualTo(HandleAction.Update)
     }
 
     @Test
-    fun insert_and_select_all_objects() = runTest {
-        store.insert(`object`)
-        val objectsFromDb = store.selectAll()
-        assertEqualsIgnoreId(objectsFromDb.iterator().next())
+    fun set_sync_state_or_delete_deletes_when_synced_and_deleted() = runTest {
+        val uploadingObj = buildObjectWithUploadingState()
+        deletableStore.insert(uploadingObj)
+        deletableStore.setDeleted(uploadingObj.uid())
+        val action = deletableStore.setSyncStateOrDelete(uploadingObj.uid(), State.SYNCED)
+        assertThat(action).isEqualTo(HandleAction.Delete)
+        val obj = deletableStore.selectByUid(uploadingObj.uid())
+        assertThat(obj).isNull()
     }
 
     @Test
-    fun count_returns_zero_for_empty_table() = runTest {
-        val count = store.count()
-        assertThat(count).isEqualTo(0)
-    }
-
-    @Test
-    fun count_returns_one_after_insert() = runTest {
-        store.insert(`object`)
-        val count = store.count()
-        assertThat(count).isEqualTo(1)
-    }
-
-    fun assertEqualsIgnoreId(localObject: M?) {
-        assertEqualsIgnoreId(localObject, `object`)
-    }
-
-    fun assertEqualsIgnoreId(m1: M?, m2: M) {
-        assertThat(m1).isEqualTo(m2)
-    }
-
-    init {
-        `object` = buildObject()
-        this.tableInfo = tableInfo
-        this.databaseAdapter = databaseAdapter
+    fun select_sync_state_where_returns_states() = runTest {
+        deletableStore.insert(`object`)
+        val states = deletableStore.selectSyncStateWhere("uid = '${`object`.uid()}'")
+        assertThat(states).isNotEmpty()
     }
 }

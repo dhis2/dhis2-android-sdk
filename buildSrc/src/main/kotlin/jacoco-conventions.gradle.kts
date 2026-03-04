@@ -121,7 +121,9 @@ tasks.register("jacocoReport", JacocoReport::class) {
         "**/*\$Result.*",
         "**/*\$Result$*.*",
         // DHIS2 Android SDK fields
-        "**/*AutoValue_*.*"
+        "**/*AutoValue_*.*",
+        // Room-generated DAO inner classes (EntityInsertionAdapter/EntityDeletionOrUpdateAdapter bind methods)
+        "**/*Dao_Impl\$*.*"
     )
 
     val javaClasses = fileTree(layout.buildDirectory.file("intermediates/javac/debug")) {

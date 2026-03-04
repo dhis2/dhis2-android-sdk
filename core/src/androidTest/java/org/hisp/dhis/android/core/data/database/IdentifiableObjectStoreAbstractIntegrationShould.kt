@@ -143,6 +143,14 @@ abstract class IdentifiableObjectStoreAbstractIntegrationShould<M> internal cons
         // TODO Implement test for store.selectUidsWhere() method
     }
 
+    @Test
+    fun group_and_get_count_by_uid_returns_correct_counts() = runTest {
+        store.insert(`object`)
+        val result = store.groupAndGetCountBy("uid")
+        assertThat(result).isNotEmpty()
+        assertThat(result[`object`.uid()]).isEqualTo(1)
+    }
+
     init {
         objectToUpdate = buildObjectToUpdate()
     }

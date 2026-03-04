@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.event.internal;
 
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.IdentifiableDataObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.database.IdentifiableDeletableDataObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.trackedentity.EventSamples;
 import org.hisp.dhis.android.core.event.Event;
 import org.hisp.dhis.android.core.event.EventStatus;
@@ -40,7 +40,7 @@ import org.hisp.dhis.android.persistence.event.EventTableInfo;
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)
-public class EventStoreIntegrationShould extends IdentifiableDataObjectStoreAbstractIntegrationShould<Event> {
+public class EventStoreIntegrationShould extends IdentifiableDeletableDataObjectStoreAbstractIntegrationShould<Event> {
 
     public EventStoreIntegrationShould() {
         super(new EventStoreImpl(TestDatabaseAdapterFactory.get()),
@@ -73,6 +73,15 @@ public class EventStoreIntegrationShould extends IdentifiableDataObjectStoreAbst
         return EventSamples.get().toBuilder()
                 .syncState(State.SYNCED)
                 .aggregatedSyncState(State.SYNCED)
+                .build();
+    }
+
+    @Override
+    protected Event buildObjectWithUploadingState() {
+        return EventSamples.get().toBuilder()
+                .syncState(State.UPLOADING)
+                .aggregatedSyncState(State.UPLOADING)
+                .deleted(false)
                 .build();
     }
 }

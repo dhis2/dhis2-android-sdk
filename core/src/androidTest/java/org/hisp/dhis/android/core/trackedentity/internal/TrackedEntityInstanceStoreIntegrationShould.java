@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal;
 
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.IdentifiableDataObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.database.IdentifiableDeletableDataObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityInstanceSamples;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
@@ -40,7 +40,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)
 public class TrackedEntityInstanceStoreIntegrationShould extends
-        IdentifiableDataObjectStoreAbstractIntegrationShould<TrackedEntityInstance> {
+        IdentifiableDeletableDataObjectStoreAbstractIntegrationShould<TrackedEntityInstance> {
 
     public TrackedEntityInstanceStoreIntegrationShould() {
         super(new TrackedEntityInstanceStoreImpl(TestDatabaseAdapterFactory.get()),
@@ -73,6 +73,15 @@ public class TrackedEntityInstanceStoreIntegrationShould extends
         return TrackedEntityInstanceSamples.get().toBuilder()
                 .syncState(State.SYNCED)
                 .aggregatedSyncState(State.SYNCED)
+                .build();
+    }
+
+    @Override
+    protected TrackedEntityInstance buildObjectWithUploadingState() {
+        return TrackedEntityInstanceSamples.get().toBuilder()
+                .syncState(State.UPLOADING)
+                .aggregatedSyncState(State.UPLOADING)
+                .deleted(false)
                 .build();
     }
 }

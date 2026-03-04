@@ -44,7 +44,7 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 
-class DatabaseRoomMigrationShould {
+class DatabaseMigrationSchemaIntegrationShould {
 
     private lateinit var context: Context
     private val MIGRATED_DB_NAME = "manual_room_migrated.db"

@@ -151,6 +151,14 @@ abstract class IdentifiableObjectStoreAbstractIntegrationShould<M> internal cons
         assertThat(result[`object`.uid()]).isEqualTo(1)
     }
 
+    @Test
+    fun delete_by_entity() = runTest {
+        store.insert(`object`)
+        val deleted = store.deleteByEntity(`object`)
+        assertThat(deleted).isTrue()
+        assertThat(store.selectFirst()).isNull()
+    }
+
     init {
         objectToUpdate = buildObjectToUpdate()
     }

@@ -98,6 +98,30 @@ abstract class ObjectStoreAbstractIntegrationShould<M : CoreObject> internal con
         assertThat(count).isEqualTo(1)
     }
 
+    @Test
+    fun insert_collection_and_select_all() = runTest {
+        store.insert(listOf(`object`))
+        val objectsFromDb = store.selectAll()
+        assertThat(objectsFromDb.size).isEqualTo(1)
+        assertEqualsIgnoreId(objectsFromDb[0])
+    }
+
+    @Test
+    fun update_collection() = runTest {
+        store.insert(`object`)
+        store.update(listOf(`object`))
+        val objectFromDb = store.selectFirst()
+        assertEqualsIgnoreId(objectFromDb)
+    }
+
+    @Test
+    fun update_or_insert_collection() = runTest {
+        val actions = store.updateOrInsert(listOf(`object`))
+        assertThat(actions).hasSize(1)
+        val objectFromDb = store.selectFirst()
+        assertEqualsIgnoreId(objectFromDb)
+    }
+
     fun assertEqualsIgnoreId(localObject: M?) {
         assertEqualsIgnoreId(localObject, `object`)
     }

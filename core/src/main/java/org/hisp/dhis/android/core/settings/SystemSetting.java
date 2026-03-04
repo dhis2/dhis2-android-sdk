@@ -39,11 +39,13 @@ public abstract class SystemSetting implements CoreObject {
 
     public enum SystemSettingKey {
         FLAG,
+        @Deprecated
         STYLE,
         DEFAULT_BASE_MAP,
         BING_BASE_MAP,
         ANALYTICS_FINANCIAL_YEAR_START,
         ANALYTICS_WEEK_START,
+        CUSTOM_COLOR,
     }
 
     @Nullable

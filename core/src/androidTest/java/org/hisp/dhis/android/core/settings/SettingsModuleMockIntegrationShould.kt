@@ -36,7 +36,7 @@ class SettingsModuleMockIntegrationShould : BaseMockIntegrationTestFullDispatche
     @Test
     fun allow_access_to_system_setting() {
         val systemSettings: List<SystemSetting?> = d2.settingModule().systemSetting().blockingGet()
-        Truth.assertThat(systemSettings.size).isEqualTo(5)
+        Truth.assertThat(systemSettings.size).isEqualTo(6)
     }
 
     @Test
@@ -79,6 +79,7 @@ class SettingsModuleMockIntegrationShould : BaseMockIntegrationTestFullDispatche
         Truth.assertThat(systemSetting.value()).isEqualTo("sierra_leone")
     }
 
+    @Suppress("DEPRECATION")
     @Test
     fun allow_access_to_style_settings() {
         val systemSetting = d2.settingModule().systemSetting().style().blockingGet()
@@ -91,5 +92,12 @@ class SettingsModuleMockIntegrationShould : BaseMockIntegrationTestFullDispatche
         val systemSetting = d2.settingModule().systemSetting().defaultBaseMap().blockingGet()
         Truth.assertThat(systemSetting!!.key()).isEqualTo(SystemSettingKey.DEFAULT_BASE_MAP)
         Truth.assertThat(systemSetting.value()).isEqualTo("keyDefaultBaseMap")
+    }
+
+    @Test
+    fun allow_access_to_custom_color_settings() {
+        val systemSetting = d2.settingModule().systemSetting().customColor().blockingGet()
+        Truth.assertThat(systemSetting!!.key()).isEqualTo(SystemSettingKey.CUSTOM_COLOR)
+        Truth.assertThat(systemSetting.value()).isEqualTo("#007DEB")
     }
 }

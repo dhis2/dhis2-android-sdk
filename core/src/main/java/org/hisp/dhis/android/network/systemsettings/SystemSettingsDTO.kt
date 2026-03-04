@@ -30,46 +30,62 @@ package org.hisp.dhis.android.network.systemsettings
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.settings.SystemSetting
+import org.hisp.dhis.android.core.settings.SystemSetting.SystemSettingKey
 
 @Serializable
 internal data class SystemSettingsDTO(
     val keyFlag: String?,
     val keyStyle: String?,
+    val keyCustomColorMobile: String?,
     val keyDefaultBaseMap: String?,
     val keyBingMapsApiKey: String?,
     val analyticsFinancialYearStart: String?,
     val analyticsWeekStart: String?,
 ) {
 
-    fun toDomainSplitted(): List<SystemSetting> {
-        val flag = SystemSetting.builder()
-            .key(SystemSetting.SystemSettingKey.FLAG)
-            .value(keyFlag)
-            .build()
-        val style = SystemSetting.builder()
-            .key(SystemSetting.SystemSettingKey.STYLE)
-            .value(keyStyle)
-            .build()
-        val keyDefaultBaseMap = SystemSetting.builder()
-            .key(SystemSetting.SystemSettingKey.DEFAULT_BASE_MAP)
-            .value(keyDefaultBaseMap)
-            .build()
-        val analyticsFinancialYearStart = SystemSetting.builder()
-            .key(SystemSetting.SystemSettingKey.ANALYTICS_FINANCIAL_YEAR_START)
-            .value(analyticsFinancialYearStart)
-            .build()
-        val analyticsWeekStart = SystemSetting.builder()
-            .key(SystemSetting.SystemSettingKey.ANALYTICS_WEEK_START)
-            .value(analyticsWeekStart)
-            .build()
+    @Suppress("DEPRECATION")
+    fun toDomainSplitted(): List<SystemSetting> = listOf(
+        buildSetting(SystemSettingKey.FLAG, keyFlag),
+        buildSetting(SystemSettingKey.STYLE, resolveStyle()),
+        buildSetting(SystemSettingKey.CUSTOM_COLOR, resolveCustomColor()),
+        buildSetting(SystemSettingKey.DEFAULT_BASE_MAP, keyDefaultBaseMap),
+        buildSetting(SystemSettingKey.ANALYTICS_FINANCIAL_YEAR_START, analyticsFinancialYearStart),
+        buildSetting(SystemSettingKey.ANALYTICS_WEEK_START, analyticsWeekStart),
+    )
 
-        return listOf(flag, style, keyDefaultBaseMap, analyticsFinancialYearStart, analyticsWeekStart)
+    fun toDomainBingMapsApiKey(): SystemSetting = buildSetting(SystemSettingKey.BING_BASE_MAP, keyBingMapsApiKey)
+
+    private fun resolveStyle(): String? = when {
+        keyCustomColorMobile == null -> keyStyle
+        keyCustomColorMobile.isEmpty() -> DEFAULT_STYLE
+        else -> colorToStyle(keyCustomColorMobile)
     }
 
-    fun toDomainBingMapsApiKey(): SystemSetting {
-        return SystemSetting.builder()
-            .key(SystemSetting.SystemSettingKey.BING_BASE_MAP)
-            .value(keyBingMapsApiKey)
-            .build()
+    private fun resolveCustomColor(): String? = when {
+        keyCustomColorMobile == null -> styleToColor(keyStyle)
+        keyCustomColorMobile.isEmpty() -> null
+        else -> keyCustomColorMobile
+    }
+
+    internal enum class Theme(val keyword: String, val style: String, val color: String) {
+        GREEN("green", "green/green.css", "#218C51"),
+        INDIA("india", "india/india.css", "#EA5911"),
+        MYANMAR("myanmar", "myanmar/myanmar.css", "#8C2121"),
+    }
+
+    companion object {
+        private const val DEFAULT_STYLE = "light_blue/light_blue.css"
+        private const val DEFAULT_COLOR = "#007DEB"
+
+        internal fun styleToColor(style: String?): String? {
+            if (style.isNullOrEmpty()) return null
+            return Theme.entries.firstOrNull { style.contains(it.keyword) }?.color ?: DEFAULT_COLOR
+        }
+
+        internal fun colorToStyle(color: String): String =
+            Theme.entries.firstOrNull { it.color.equals(color, ignoreCase = true) }?.style ?: DEFAULT_STYLE
+
+        private fun buildSetting(key: SystemSettingKey, value: String?): SystemSetting =
+            SystemSetting.builder().key(key).value(value).build()
     }
 }

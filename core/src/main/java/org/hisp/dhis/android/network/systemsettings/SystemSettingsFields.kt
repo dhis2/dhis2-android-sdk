@@ -33,6 +33,7 @@ import org.hisp.dhis.android.network.common.fields.Fields
 internal object SystemSettingsFields : BaseFields<SystemSettingsDTO>() {
     private const val KEY_FLAG = "keyFlag"
     private const val KEY_STYLE = "keyStyle"
+    private const val KEY_CUSTOM_COLOR_MOBILE = "keyCustomColorMobile"
     private const val KEY_DEFAULT_BASE_MAP = "keyDefaultBaseMap"
     private const val KEY_BING_MAPS_API_KEY = "keyBingMapsApiKey"
     private const val ANALYTICS_FINANCIAL_YEAR_START = "analyticsFinancialYearStart"
@@ -40,6 +41,7 @@ internal object SystemSettingsFields : BaseFields<SystemSettingsDTO>() {
     val allFields = Fields.from(
         fh.field(KEY_FLAG),
         fh.field(KEY_STYLE),
+        fh.field(KEY_CUSTOM_COLOR_MOBILE),
         fh.field(KEY_DEFAULT_BASE_MAP),
         fh.field(ANALYTICS_FINANCIAL_YEAR_START),
     )

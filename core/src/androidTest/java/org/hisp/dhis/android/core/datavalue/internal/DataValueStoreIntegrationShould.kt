@@ -53,4 +53,14 @@ class DataValueStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegration
             .value("updatedValue")
             .build()
     }
+
+    override fun buildObjectWithNullableFields(): DataValue {
+        return buildObject().toBuilder()
+            .value(null)
+            .storedBy(null)
+            .comment(null)
+            .followUp(null)
+            .deleted(null)
+            .build()
+    }
 }

@@ -35,6 +35,8 @@ import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFact
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityTypeStoreImpl;
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityTypeTableInfo;
+import java.util.Date;
+
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)
@@ -55,6 +57,21 @@ public class TrackedEntityTypeStoreIntegrationShould
     protected TrackedEntityType buildObjectToUpdate() {
         return TrackedEntityTypeSamples.get().toBuilder()
                 .description("new_description")
+                .build();
+    }
+
+    @Override
+    protected TrackedEntityType buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .code(null)
+                .name(null)
+                .displayName(null)
+                .created((Date) null)
+                .lastUpdated((Date) null)
+                .shortName(null)
+                .displayShortName(null)
+                .description(null)
+                .displayDescription(null)
                 .build();
     }
 }

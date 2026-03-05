@@ -53,4 +53,17 @@ class RelationshipTypeStoreIntegrationShould : IdentifiableObjectStoreAbstractIn
             .fromToName("updatedFromToName")
             .build()
     }
+
+    override fun buildObjectWithNullableFields(): RelationshipType {
+        return buildObject().toBuilder()
+            .code(null)
+            .name(null)
+            .displayName(null)
+            .created(null)
+            .lastUpdated(null)
+            .fromToName(null)
+            .toFromName(null)
+            .bidirectional(null)
+            .build()
+    }
 }

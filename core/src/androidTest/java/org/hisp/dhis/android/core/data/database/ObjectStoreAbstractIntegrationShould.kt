@@ -49,6 +49,7 @@ abstract class ObjectStoreAbstractIntegrationShould<M : CoreObject> internal con
     private val databaseAdapter: DatabaseAdapter
 
     protected abstract fun buildObject(): M
+    protected open fun buildObjectWithNullableFields(): M? = null
 
     @Before
     @Throws(IOException::class)
@@ -120,6 +121,31 @@ abstract class ObjectStoreAbstractIntegrationShould<M : CoreObject> internal con
         assertThat(actions).hasSize(1)
         val objectFromDb = store.selectFirst()
         assertEqualsIgnoreId(objectFromDb)
+    }
+
+    @Test
+    fun insert_and_select_object_with_nullable_fields() = runTest {
+        val nullableObject = buildObjectWithNullableFields() ?: return@runTest
+        store.insert(nullableObject)
+        val objectFromDb = store.selectFirst()
+        assertThat(objectFromDb).isEqualTo(nullableObject)
+    }
+
+    @Test
+    fun update_object_with_nullable_fields() = runTest {
+        val nullableObject = buildObjectWithNullableFields() ?: return@runTest
+        store.insert(nullableObject)
+        store.update(listOf(nullableObject))
+        val objectFromDb = store.selectFirst()
+        assertThat(objectFromDb).isEqualTo(nullableObject)
+    }
+
+    @Test
+    fun upsert_object_with_nullable_fields() = runTest {
+        val nullableObject = buildObjectWithNullableFields() ?: return@runTest
+        store.updateOrInsert(nullableObject)
+        val objectFromDb = store.selectFirst()
+        assertThat(objectFromDb).isEqualTo(nullableObject)
     }
 
     fun assertEqualsIgnoreId(localObject: M?) {

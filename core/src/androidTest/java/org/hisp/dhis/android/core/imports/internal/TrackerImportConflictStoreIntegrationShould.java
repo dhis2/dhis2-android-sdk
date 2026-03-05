@@ -50,4 +50,20 @@ public class TrackerImportConflictStoreIntegrationShould
     protected TrackerImportConflict buildObject() {
         return TrackerImportConflictSamples.get();
     }
+
+    @Override
+    protected TrackerImportConflict buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .conflict(null)
+                .value(null)
+                .trackedEntityInstance(null)
+                .enrollment(null)
+                .event(null)
+                .tableReference(null)
+                .errorCode(null)
+                .status(null)
+                .created(null)
+                .displayDescription(null)
+                .build();
+    }
 }

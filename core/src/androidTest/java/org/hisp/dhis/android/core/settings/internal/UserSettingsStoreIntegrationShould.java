@@ -50,4 +50,11 @@ public class UserSettingsStoreIntegrationShould
     protected UserSettings buildObject() {
         return UserSettingsSamples.getUserSettings();
     }
+
+    @Override
+    protected UserSettings buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .keyDbLocale(null)
+                .build();
+    }
 }

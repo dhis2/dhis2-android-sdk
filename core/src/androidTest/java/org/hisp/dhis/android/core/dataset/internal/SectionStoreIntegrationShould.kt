@@ -53,4 +53,16 @@ class SectionStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegration
             .description("new description")
             .build()
     }
+
+    override fun buildObjectWithNullableFields(): Section {
+        return buildObject().toBuilder()
+            .code(null)
+            .name(null)
+            .displayName(null)
+            .created(null)
+            .lastUpdated(null)
+            .description(null)
+            .sortOrder(null)
+            .build()
+    }
 }

@@ -45,4 +45,8 @@ class LatestAppVersionStoreIntegrationShould : ObjectStoreAbstractIntegrationSho
     override fun buildObject(): LatestAppVersion {
         return latestAppVersion
     }
+
+    override fun buildObjectWithNullableFields(): LatestAppVersion {
+        return buildObject().toBuilder().downloadURL(null).build()
+    }
 }

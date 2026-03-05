@@ -83,4 +83,19 @@ public class EnrollmentStoreIntegrationShould extends IdentifiableDeletableDataO
                 .deleted(false)
                 .build();
     }
+
+    @Override
+    protected Enrollment buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .created(null)
+                .lastUpdated(null)
+                .createdAtClient(null)
+                .lastUpdatedAtClient(null)
+                .enrollmentDate(null)
+                .incidentDate(null)
+                .status(null)
+                .deleted(null)
+                .completedDate(null)
+                .build();
+    }
 }

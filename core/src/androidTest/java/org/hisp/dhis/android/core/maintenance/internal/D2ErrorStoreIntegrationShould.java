@@ -49,4 +49,14 @@ public class D2ErrorStoreIntegrationShould extends ObjectStoreAbstractIntegratio
     protected D2Error buildObject() {
         return D2ErrorSamples.get();
     }
+
+    @Override
+    protected D2Error buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .url(null)
+                .errorComponent(null)
+                .httpErrorCode(null)
+                .created(null)
+                .build();
+    }
 }

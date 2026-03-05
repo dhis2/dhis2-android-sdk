@@ -51,4 +51,14 @@ class UserRoleStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegratio
             .name("new_name")
             .build()
     }
+
+    override fun buildObjectWithNullableFields(): UserRole {
+        return buildObject().toBuilder()
+            .code(null)
+            .name(null)
+            .displayName(null)
+            .created(null)
+            .lastUpdated(null)
+            .build()
+    }
 }

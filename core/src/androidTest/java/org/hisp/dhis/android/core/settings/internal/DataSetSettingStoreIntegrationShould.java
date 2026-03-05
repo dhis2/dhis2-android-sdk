@@ -50,4 +50,15 @@ public class DataSetSettingStoreIntegrationShould
     protected DataSetSetting buildObject() {
         return DataSetSettingSamples.getDataSetSetting();
     }
+
+    @Override
+    protected DataSetSetting buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .uid(null)
+                .name(null)
+                .lastUpdated(null)
+                .periodDSDownload(null)
+                .periodDSDBTrimming(null)
+                .build();
+    }
 }

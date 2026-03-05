@@ -51,4 +51,14 @@ class UserGroupStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrati
             .name("new_name")
             .build()
     }
+
+    override fun buildObjectWithNullableFields(): UserGroup {
+        return buildObject().toBuilder()
+            .code(null)
+            .name(null)
+            .displayName(null)
+            .created(null)
+            .lastUpdated(null)
+            .build()
+    }
 }

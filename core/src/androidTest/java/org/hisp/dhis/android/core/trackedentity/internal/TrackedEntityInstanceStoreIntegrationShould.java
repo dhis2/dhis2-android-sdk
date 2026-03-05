@@ -84,4 +84,17 @@ public class TrackedEntityInstanceStoreIntegrationShould extends
                 .deleted(false)
                 .build();
     }
+
+    @Override
+    protected TrackedEntityInstance buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .created(null)
+                .lastUpdated(null)
+                .createdAtClient(null)
+                .lastUpdatedAtClient(null)
+                .organisationUnit(null)
+                .trackedEntityType(null)
+                .deleted(null)
+                .build();
+    }
 }

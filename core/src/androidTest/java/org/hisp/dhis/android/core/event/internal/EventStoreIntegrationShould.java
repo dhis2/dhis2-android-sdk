@@ -84,4 +84,22 @@ public class EventStoreIntegrationShould extends IdentifiableDeletableDataObject
                 .deleted(false)
                 .build();
     }
+
+    @Override
+    protected Event buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .enrollment(null)
+                .created(null)
+                .lastUpdated(null)
+                .createdAtClient(null)
+                .lastUpdatedAtClient(null)
+                .status(null)
+                .eventDate(null)
+                .completedDate(null)
+                .dueDate(null)
+                .deleted(null)
+                .assignedUser(null)
+                .completedBy(null)
+                .build();
+    }
 }

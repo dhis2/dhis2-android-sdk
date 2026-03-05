@@ -52,4 +52,5 @@ class SMSOngoingSubmissionStoreIntegrationShould : ObjectWithoutUidStoreAbstract
             .type(SubmissionType.ENROLLMENT)
             .build()
     }
+
 }

@@ -45,4 +45,18 @@ class GeneralSettingsStoreIntegrationShould : ObjectStoreAbstractIntegrationShou
     override fun buildObject(): GeneralSettings {
         return GeneralSettingsSamples.getGeneralSettings()
     }
+
+    override fun buildObjectWithNullableFields(): GeneralSettings {
+        return buildObject().toBuilder()
+            .lastUpdated(null)
+            .reservedValues(null)
+            .smsGateway(null)
+            .smsResultSender(null)
+            .matomoID(null)
+            .matomoURL(null)
+            .allowScreenCapture(null)
+            .messageOfTheDay(null)
+            .experimentalFeatures(null)
+            .build()
+    }
 }

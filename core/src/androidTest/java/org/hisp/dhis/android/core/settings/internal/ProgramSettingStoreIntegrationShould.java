@@ -50,4 +50,27 @@ public class ProgramSettingStoreIntegrationShould
     protected ProgramSetting buildObject() {
         return ProgramSettingSamples.getProgramSetting();
     }
+
+    @Override
+    protected ProgramSetting buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .uid(null)
+                .name(null)
+                .lastUpdated(null)
+                .teiDownload(null)
+                .teiDBTrimming(null)
+                .eventsDownload(null)
+                .eventsDBTrimming(null)
+                .updateDownload(null)
+                .updateDBTrimming(null)
+                .settingDownload(null)
+                .settingDBTrimming(null)
+                .enrollmentDownload(null)
+                .enrollmentDBTrimming(null)
+                .eventDateDownload(null)
+                .eventDateDBTrimming(null)
+                .enrollmentDateDownload(null)
+                .enrollmentDateDBTrimming(null)
+                .build();
+    }
 }

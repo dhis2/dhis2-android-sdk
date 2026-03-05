@@ -54,4 +54,15 @@ class OptionStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationS
             .optionSet(ObjectWithUid.create("updatedOptionSet"))
             .build()
     }
+
+    override fun buildObjectWithNullableFields(): Option {
+        return buildObject().toBuilder()
+            .code(null)
+            .name(null)
+            .displayName(null)
+            .created(null)
+            .lastUpdated(null)
+            .sortOrder(null)
+            .build()
+    }
 }

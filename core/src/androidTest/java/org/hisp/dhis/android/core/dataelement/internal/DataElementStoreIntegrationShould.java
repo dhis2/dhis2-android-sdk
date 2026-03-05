@@ -35,6 +35,8 @@ import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFact
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.hisp.dhis.android.persistence.dataelement.DataElementStoreImpl;
 import org.hisp.dhis.android.persistence.dataelement.DataElementTableInfo;
+import java.util.Date;
+
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)
@@ -54,6 +56,26 @@ public class DataElementStoreIntegrationShould extends IdentifiableObjectStoreAb
     protected DataElement buildObjectToUpdate() {
         return DataElementSamples.getDataElement().toBuilder()
                 .formName("new-form-name")
+                .build();
+    }
+
+    @Override
+    protected DataElement buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .code(null)
+                .name(null)
+                .displayName(null)
+                .created((Date) null)
+                .lastUpdated((Date) null)
+                .shortName(null)
+                .displayShortName(null)
+                .description(null)
+                .displayDescription(null)
+                .valueType(null)
+                .aggregationType(null)
+                .formName(null)
+                .domainType(null)
+                .optionSet(null)
                 .build();
     }
 }

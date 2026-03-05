@@ -36,6 +36,8 @@ import org.hisp.dhis.android.core.validation.ValidationRule;
 import org.hisp.dhis.android.core.validation.ValidationRuleImportance;
 import org.hisp.dhis.android.persistence.validation.ValidationRuleStoreImpl;
 import org.hisp.dhis.android.persistence.validation.ValidationRuleTableInfo;
+import java.util.Date;
+
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)
@@ -55,6 +57,22 @@ public class ValidationRuleStoreIntegrationShould extends IdentifiableObjectStor
     protected ValidationRule buildObjectToUpdate() {
         return ValidationRuleSamples.get().toBuilder()
                 .importance(ValidationRuleImportance.MEDIUM)
+                .build();
+    }
+
+    @Override
+    protected ValidationRule buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .code(null)
+                .name(null)
+                .displayName(null)
+                .created((Date) null)
+                .lastUpdated((Date) null)
+                .shortName(null)
+                .displayShortName(null)
+                .description(null)
+                .displayDescription(null)
+                .instruction(null)
                 .build();
     }
 }

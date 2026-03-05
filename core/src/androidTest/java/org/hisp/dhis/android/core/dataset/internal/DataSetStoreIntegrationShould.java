@@ -35,6 +35,8 @@ import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFact
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.hisp.dhis.android.persistence.dataset.DataSetStoreImpl;
 import org.hisp.dhis.android.persistence.dataset.DataSetTableInfo;
+import java.util.Date;
+
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)
@@ -54,6 +56,25 @@ public class DataSetStoreIntegrationShould extends IdentifiableObjectStoreAbstra
     protected DataSet buildObjectToUpdate() {
         return DataSetSamples.getDataSet().toBuilder()
                 .version(66)
+                .build();
+    }
+
+    @Override
+    protected DataSet buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .code(null)
+                .name(null)
+                .displayName(null)
+                .created((Date) null)
+                .lastUpdated((Date) null)
+                .shortName(null)
+                .displayShortName(null)
+                .description(null)
+                .displayDescription(null)
+                .periodType(null)
+                .version(null)
+                .expiryDays(null)
+                .workflow(null)
                 .build();
     }
 }

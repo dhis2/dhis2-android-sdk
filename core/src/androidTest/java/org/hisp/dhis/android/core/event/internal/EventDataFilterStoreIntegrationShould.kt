@@ -45,4 +45,16 @@ class EventDataFilterStoreIntegrationShould : ObjectStoreAbstractIntegrationShou
     override fun buildObject(): EventDataFilter {
         return EventDataFilterSamples.get()
     }
+
+    override fun buildObjectWithNullableFields(): EventDataFilter {
+        return buildObject().toBuilder()
+            .le(null)
+            .ge(null)
+            .gt(null)
+            .lt(null)
+            .eq(null)
+            .like(null)
+            .dateFilter(null)
+            .build()
+    }
 }

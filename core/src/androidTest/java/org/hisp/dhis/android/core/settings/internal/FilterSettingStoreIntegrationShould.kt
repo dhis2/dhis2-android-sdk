@@ -46,4 +46,14 @@ class FilterSettingStoreIntegrationShould : ObjectStoreAbstractIntegrationShould
     override fun buildObject(): FilterSetting {
         return FilterSettingSamples.getFilterSetting()
     }
+
+    override fun buildObjectWithNullableFields(): FilterSetting {
+        return buildObject().toBuilder()
+            .scope(null)
+            .filterType(null)
+            .uid(null)
+            .sort(null)
+            .filter(null)
+            .build()
+    }
 }

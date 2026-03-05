@@ -35,6 +35,8 @@ import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFact
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.hisp.dhis.android.persistence.legendset.LegendSetStoreImpl;
 import org.hisp.dhis.android.persistence.legendset.LegendSetTableInfo;
+import java.util.Date;
+
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)
@@ -54,6 +56,18 @@ public class LegendSetStoreIntegrationShould extends IdentifiableObjectStoreAbst
     protected LegendSet buildObjectToUpdate() {
         return LegendSetSamples.getLegendSet().toBuilder()
                 .symbolizer("new_color")
+                .build();
+    }
+
+    @Override
+    protected LegendSet buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .code(null)
+                .name(null)
+                .displayName(null)
+                .created((Date) null)
+                .lastUpdated((Date) null)
+                .symbolizer(null)
                 .build();
     }
 }

@@ -50,4 +50,14 @@ public class TrackedEntityInstanceEventFilterStoreIntegrationShould
     protected TrackedEntityInstanceEventFilter buildObject() {
         return TrackedEntityInstanceEventFilterSamples.get();
     }
+
+    @Override
+    protected TrackedEntityInstanceEventFilter buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .programStage(null)
+                .eventStatus(null)
+                .eventCreatedPeriod(null)
+                .assignedUserMode(null)
+                .build();
+    }
 }

@@ -45,4 +45,13 @@ class SynchronizationSettingsStoreIntegrationShould : ObjectStoreAbstractIntegra
     override fun buildObject(): SynchronizationSettings {
         return SynchronizationSettingsSamples.getSynchronizationSettings()
     }
+
+    override fun buildObjectWithNullableFields(): SynchronizationSettings {
+        return buildObject().toBuilder()
+            .metadataSync(null)
+            .trackerImporterVersion(null)
+            .trackerExporterVersion(null)
+            .fileMaxLengthBytes(null)
+            .build()
+    }
 }

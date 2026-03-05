@@ -44,7 +44,7 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 
-class DatabaseRoomMigrationShould {
+class DatabaseMigrationSchemaIntegrationShould {
 
     private lateinit var context: Context
     private val MIGRATED_DB_NAME = "manual_room_migrated.db"
@@ -88,27 +88,6 @@ class DatabaseRoomMigrationShould {
         }
 
         return normalizeAndSortSchema(filteredSchema)
-    }
-
-    private fun getRawSchemaFromSupportDB(supportDb: SupportSQLiteDatabase): List<SchemaRow> {
-        val schemaRows = mutableListOf<SchemaRow>()
-        val query =
-            "SELECT name, sql FROM sqlite_master WHERE name NOT LIKE 'android_%' AND name NOT LIKE 'sqlite_%' " +
-                "AND name NOT LIKE 'room_%' AND sql IS NOT NULL ORDER BY name"
-        val cursor = supportDb.query(query)
-        cursor.use {
-            while (it.moveToNext()) {
-                val nameIndex = it.getColumnIndex("name")
-                val sqlIndex = it.getColumnIndex("sql")
-
-                val name = if (nameIndex != -1) it.getString(nameIndex) else "ERROR_NO_NAME_COLUMN"
-                val sql =
-                    if (sqlIndex != -1) it.getString(sqlIndex) else null
-
-                schemaRows.add(SchemaRow(name = name, sql = sql))
-            }
-        }
-        return normalizeAndSortSchema(schemaRows)
     }
 
     private fun applyMigrationsManually(db: SupportSQLiteDatabase) {

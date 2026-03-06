@@ -242,18 +242,19 @@ dependencies {
     androidTestImplementation(libs.androidx.paging.testing)
 }
 
+val migrationDirPath = "$rootDir/core/src/main/assets/migrations"
 afterEvaluate {
     tasks.named("kspDebugKotlin").configure {
         (this as com.google.devtools.ksp.gradle.KspTask).commandLineArgumentProviders.add(
             CommandLineArgumentProvider {
-                listOf("migrationDir=$rootDir/core/src/main/assets/migrations")
+                listOf("migrationDir=$migrationDirPath")
             },
         )
     }
     tasks.named("kspReleaseKotlin").configure {
         (this as com.google.devtools.ksp.gradle.KspTask).commandLineArgumentProviders.add(
             CommandLineArgumentProvider {
-                listOf("migrationDir=$rootDir/core/src/main/assets/migrations")
+                listOf("migrationDir=$migrationDirPath")
             },
         )
     }

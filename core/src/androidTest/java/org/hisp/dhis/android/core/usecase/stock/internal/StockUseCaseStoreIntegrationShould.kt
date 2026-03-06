@@ -51,5 +51,4 @@ class StockUseCaseStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegr
             .stockOnHand("new_stock_on_hand")
             .build()
     }
-
 }

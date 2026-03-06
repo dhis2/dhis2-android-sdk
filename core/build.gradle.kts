@@ -242,23 +242,19 @@ dependencies {
     androidTestImplementation(libs.androidx.paging.testing)
 }
 
-// Pass migrationDir only to the main debug KSP task via CommandLineArgumentProvider.
-// Test KSP variants (debugAndroidTest, debugUnitTest) must NOT generate migrations,
-// otherwise their non-instrumented classes shadow the JaCoCo-instrumented library
-// classes in the test APK, causing 0% coverage for migrations.
 afterEvaluate {
     tasks.named("kspDebugKotlin").configure {
         (this as com.google.devtools.ksp.gradle.KspTask).commandLineArgumentProviders.add(
-            org.gradle.process.CommandLineArgumentProvider {
+            CommandLineArgumentProvider {
                 listOf("migrationDir=$rootDir/core/src/main/assets/migrations")
-            }
+            },
         )
     }
     tasks.named("kspReleaseKotlin").configure {
         (this as com.google.devtools.ksp.gradle.KspTask).commandLineArgumentProviders.add(
-            org.gradle.process.CommandLineArgumentProvider {
+            CommandLineArgumentProvider {
                 listOf("migrationDir=$rootDir/core/src/main/assets/migrations")
-            }
+            },
         )
     }
 }

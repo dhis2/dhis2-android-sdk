@@ -51,5 +51,4 @@ class TrackerJobObjectStoreIntegrationShould : ObjectWithoutUidStoreAbstractInte
             .fileResources(listOf("file_resource_uid"))
             .build()
     }
-
 }

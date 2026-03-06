@@ -31,6 +31,7 @@ import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.common.CoreObject
@@ -146,6 +147,66 @@ abstract class ObjectStoreAbstractIntegrationShould<M : CoreObject> internal con
         store.updateOrInsert(nullableObject)
         val objectFromDb = store.selectFirst()
         assertThat(objectFromDb).isEqualTo(nullableObject)
+    }
+
+    @Test
+    fun select_where_returns_matching_objects() = runTest {
+        store.insert(`object`)
+        val result = store.selectWhere("1")
+        assertThat(result).hasSize(1)
+        assertEqualsIgnoreId(result[0])
+    }
+
+    @Test
+    fun select_where_with_order_returns_objects() = runTest {
+        store.insert(`object`)
+        val result = store.selectWhere("1", null)
+        assertThat(result).hasSize(1)
+    }
+
+    @Test
+    fun select_where_with_limit_returns_limited_objects() = runTest {
+        store.insert(`object`)
+        val result = store.selectWhere("1", null, 1)
+        assertThat(result).hasSize(1)
+    }
+
+    @Test
+    fun select_one_where_returns_matching_object() = runTest {
+        store.insert(`object`)
+        val result = store.selectOneWhere("1")
+        assertEqualsIgnoreId(result)
+    }
+
+    @Test
+    fun count_where_returns_matching_count() = runTest {
+        store.insert(`object`)
+        val count = store.countWhere("1")
+        assertThat(count).isEqualTo(1)
+    }
+
+    @Test
+    fun select_string_columns_where_returns_values() = runTest {
+        val columns = tableInfo.columns().whereUpdate()
+        if (columns.isEmpty()) return@runTest
+        store.insert(`object`)
+        val result = store.selectStringColumnsWhereClause(columns.first(), "1")
+        assertThat(result).isNotEmpty()
+    }
+
+    @Test
+    fun select_raw_query_returns_objects() = runTest {
+        store.insert(`object`)
+        val result = store.selectRawQuery("SELECT * FROM ${tableInfo.name()}")
+        assertThat(result).hasSize(1)
+    }
+
+    @Test
+    fun select_one_ordered_by_returns_object() = runTest {
+        store.insert(`object`)
+        val firstColumn = tableInfo.columns().all().first()
+        val result = store.selectOneOrderedBy(firstColumn, SQLOrderType.ASC)
+        assertEqualsIgnoreId(result)
     }
 
     fun assertEqualsIgnoreId(localObject: M?) {

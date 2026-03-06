@@ -127,6 +127,14 @@ abstract class IdentifiableDataObjectStoreAbstractIntegrationShould<M> internal 
         assertThat(exists).isFalse()
     }
 
+    @Test
+    fun get_uploadable_sync_states_including_error_returns_objects() = runTest {
+        dataObjectStore.insert(`object`)
+        dataObjectStore.setSyncState(`object`.uid(), State.TO_POST)
+        val uploadable = dataObjectStore.getUploadableSyncStatesIncludingError()
+        assertThat(uploadable).isNotEmpty()
+    }
+
     init {
         objectWithToDeleteState = buildObjectWithToDeleteState()
         objectWithSyncedState = buildObjectWithSyncedState()

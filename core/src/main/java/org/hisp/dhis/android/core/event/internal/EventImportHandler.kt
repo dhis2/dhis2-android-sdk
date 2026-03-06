@@ -62,11 +62,11 @@ internal class EventImportHandler(
         val summary = TEIWebResponseHandlerSummary()
 
         eventImportSummaries?.filterNotNull()?.forEach { eventImportSummary ->
-            eventImportSummary.reference()?.let { eventUid ->
+            eventImportSummary.reference?.let { eventUid ->
                 val enrollmentUid = events.find { it.uid() == eventUid }?.enrollment()
 
                 val event = events.find { it.uid() == eventUid }
-                val state = getSyncState(eventImportSummary.status())
+                val state = getSyncState(eventImportSummary.status)
                 trackerImportConflictStore.deleteEventConflicts(eventUid)
 
                 val handleAction = eventStore.setSyncStateOrDelete(eventUid, state)
@@ -127,17 +127,17 @@ internal class EventImportHandler(
     ) {
         val trackerImportConflicts: MutableList<TrackerImportConflict> = ArrayList()
 
-        if (importSummary.description() != null) {
+        if (importSummary.description != null) {
             trackerImportConflicts.add(
                 getConflictBuilder(enrollmentUid, importSummary)
-                    .conflict(importSummary.description())
-                    .displayDescription(importSummary.description())
-                    .value(importSummary.reference())
+                    .conflict(importSummary.description)
+                    .displayDescription(importSummary.description)
+                    .value(importSummary.reference)
                     .build(),
             )
         }
 
-        importSummary.conflicts()?.forEach { importConflict ->
+        importSummary.conflicts?.forEach { importConflict ->
             trackerImportConflicts.add(
                 trackerImportConflictParser
                     .getEventConflict(importConflict, getConflictBuilder(enrollmentUid, importSummary)),
@@ -158,9 +158,9 @@ internal class EventImportHandler(
         return TrackerImportConflict.builder()
             .trackedEntityInstance(trackedEntityInstanceUid)
             .enrollment(enrollmentUid)
-            .event(eventImportSummary.reference())
+            .event(eventImportSummary.reference)
             .tableReference(EventTableInfo.TABLE_INFO.name())
-            .status(eventImportSummary.status())
+            .status(eventImportSummary.status)
             .created(Date())
     }
 }

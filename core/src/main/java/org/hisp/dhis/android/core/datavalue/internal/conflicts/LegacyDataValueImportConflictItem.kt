@@ -34,6 +34,6 @@ internal interface LegacyDataValueImportConflictItem : DataValueImportConflictIt
     val regex: Regex
 
     fun matches(conflict: ImportConflict): Boolean {
-        return regex.matches(conflict.value())
+        return regex.matches(conflict.value)
     }
 }

@@ -74,7 +74,7 @@ internal class OwnershipManagerImpl(
         postBreakGlass(trackedEntityInstance, program, reason)
             .fold(
                 onSuccess = { breakGlassResponse ->
-                    if (breakGlassResponse.httpStatusCode() == HttpStatusCode.OK.value) {
+                    if (breakGlassResponse.httpStatusCode == HttpStatusCode.OK.value) {
                         programTempOwnerStore.updateOrInsertWhere(
                             ProgramTempOwner.builder()
                                 .program(program)
@@ -88,8 +88,8 @@ internal class OwnershipManagerImpl(
                         throw D2Error.builder()
                             .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
                             .errorComponent(D2ErrorComponent.Server)
-                            .errorDescription(breakGlassResponse.message())
-                            .httpErrorCode(breakGlassResponse.httpStatusCode())
+                            .errorDescription(breakGlassResponse.message)
+                            .httpErrorCode(breakGlassResponse.httpStatusCode)
                             .build()
                     }
                 },

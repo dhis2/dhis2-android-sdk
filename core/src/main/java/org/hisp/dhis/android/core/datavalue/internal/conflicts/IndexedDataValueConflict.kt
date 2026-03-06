@@ -35,11 +35,11 @@ import org.hisp.dhis.android.core.imports.internal.ImportConflict
 internal class IndexedDataValueConflict : DataValueImportConflictItem {
 
     override suspend fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict> {
-        return conflict.indexes()?.map {
+        return conflict.indexes?.map {
             getConflictBuilder(
                 dataValue = dataValues[it],
                 conflict = conflict,
-                displayDescription = conflict.value(), // TODO Add interpreters for translations
+                displayDescription = conflict.value, // TODO Add interpreters for translations
             ).build()
         }.orEmpty()
     }

@@ -43,8 +43,8 @@ internal open class InvalidDataElementTypeConflict(
 
     override suspend fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict> {
         val foundDataValuesConflicts: MutableList<DataValueConflict> = ArrayList()
-        val value = conflict.`object`()
-        val dataElementUid = regex.find(conflict.value())?.groupValues?.get(1)
+        val value = conflict.`object`
+        val dataElementUid = regex.find(conflict.value)?.groupValues?.get(1)
         dataValues.forEach { dataValue ->
             if (dataValue.value() == value && dataValue.dataElement() == dataElementUid) {
                 foundDataValuesConflicts.add(
@@ -64,5 +64,5 @@ internal open class InvalidDataElementTypeConflict(
         dataElementUid?.let {
             val dataElementType = dataElementStore.selectByUid(it)?.valueType().toString()
             "DataValue $value must match with data element type $dataElementType"
-        } ?: conflict.value()
+        } ?: conflict.value
 }

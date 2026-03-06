@@ -82,7 +82,7 @@ internal class DataStorePostCall(
         val result = when (entry.syncState()) {
             State.TO_POST ->
                 networkHandler.postNamespaceKeyValue(entry).flatMap { r ->
-                    when (r.httpStatusCode()) {
+                    when (r.httpStatusCode) {
                         HttpStatusCode.Conflict.value -> networkHandler.putNamespaceKeyValue(entry)
                         else -> Result.Success(r)
                     }
@@ -90,7 +90,7 @@ internal class DataStorePostCall(
 
             else ->
                 networkHandler.putNamespaceKeyValue(entry).flatMap { r ->
-                    when (r.httpStatusCode()) {
+                    when (r.httpStatusCode) {
                         HttpStatusCode.NotFound.value -> networkHandler.postNamespaceKeyValue(entry)
                         else -> Result.Success(r)
                     }

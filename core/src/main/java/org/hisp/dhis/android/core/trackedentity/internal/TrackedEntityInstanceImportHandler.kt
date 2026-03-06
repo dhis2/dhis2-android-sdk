@@ -67,13 +67,13 @@ internal class TrackedEntityInstanceImportHandler internal constructor(
         val processedTeis = mutableListOf<String>()
 
         teiImportSummaries?.filterNotNull()?.forEach { teiImportSummary ->
-            val teiUid = teiImportSummary.reference() ?: checkAlreadyDeletedInServer(teiImportSummary)
+            val teiUid = teiImportSummary.reference ?: checkAlreadyDeletedInServer(teiImportSummary)
 
             if (teiUid != null) {
                 processedTeis.add(teiUid)
 
                 val instance = instances.find { it.uid() == teiUid }
-                val state = getSyncState(teiImportSummary.status())
+                val state = getSyncState(teiImportSummary.status)
                 trackerImportConflictStore.deleteTrackedEntityConflicts(teiUid)
 
                 val handleAction = trackedEntityInstanceStore.setSyncStateOrDelete(teiUid, state)
@@ -113,8 +113,8 @@ internal class TrackedEntityInstanceImportHandler internal constructor(
         instances: List<TrackedEntityInstance>,
         teiState: State,
     ): TEIWebResponseHandlerSummary {
-        return teiImportSummary.enrollments()?.importSummaries()?.let { importSummaries ->
-            val teiUid = teiImportSummary.reference()
+        return teiImportSummary.enrollments?.importSummaries?.let { importSummaries ->
+            val teiUid = teiImportSummary.reference
             enrollmentImportHandler.handleEnrollmentImportSummary(
                 importSummaries,
                 getEnrollments(teiUid, instances),
@@ -125,16 +125,16 @@ internal class TrackedEntityInstanceImportHandler internal constructor(
 
     private suspend fun storeTEIImportConflicts(teiImportSummary: TEIImportSummary) {
         val trackerImportConflicts: MutableList<TrackerImportConflict> = ArrayList()
-        if (teiImportSummary.description() != null) {
+        if (teiImportSummary.description != null) {
             trackerImportConflicts.add(
                 getConflictBuilder(teiImportSummary)
-                    .conflict(teiImportSummary.description())
-                    .displayDescription(teiImportSummary.description())
-                    .value(teiImportSummary.reference())
+                    .conflict(teiImportSummary.description)
+                    .displayDescription(teiImportSummary.description)
+                    .value(teiImportSummary.reference)
                     .build(),
             )
         }
-        teiImportSummary.conflicts()?.forEach { importConflict ->
+        teiImportSummary.conflicts?.forEach { importConflict ->
             trackerImportConflicts.add(
                 trackerImportConflictParser
                     .getTrackedEntityInstanceConflict(importConflict, getConflictBuilder(teiImportSummary)),
@@ -171,7 +171,7 @@ internal class TrackedEntityInstanceImportHandler internal constructor(
     }
 
     private suspend fun checkAlreadyDeletedInServer(summary: TEIImportSummary): String? {
-        val teiUid = summary.description()?.let {
+        val teiUid = summary.description?.let {
             alreadyDeletedInServerRegex.find(it)?.groupValues?.get(1)
         }
 
@@ -184,9 +184,9 @@ internal class TrackedEntityInstanceImportHandler internal constructor(
 
     private fun getConflictBuilder(teiImportSummary: TEIImportSummary): TrackerImportConflict.Builder {
         return TrackerImportConflict.builder()
-            .trackedEntityInstance(teiImportSummary.reference())
+            .trackedEntityInstance(teiImportSummary.reference)
             .tableReference(TrackedEntityInstanceTableInfo.TABLE_INFO.name())
-            .status(teiImportSummary.status())
+            .status(teiImportSummary.status)
             .created(Date())
     }
 }

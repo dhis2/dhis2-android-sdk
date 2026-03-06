@@ -71,7 +71,8 @@ tasks.register("jacocoReport", JacocoReport::class) {
 
     sourceDirectories.setFrom(
         "${project.projectDir}/src/main/java",
-        "${project.projectDir}/src/main/kotlin"
+        "${project.projectDir}/src/main/kotlin",
+        layout.buildDirectory.file("generated/ksp/debug/kotlin")
     )
 
     val excludes = mutableSetOf(

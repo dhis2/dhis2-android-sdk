@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,27 +26,16 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.core.imports.internal
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.core.imports.ImportStatus
 
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class EnrollmentImportSummary extends BaseImportSummary {
-
-    @Nullable
-    public abstract EventImportSummaries events();
-
-    public static Builder builder() {
-        return new AutoValue_EnrollmentImportSummary.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseImportSummary.Builder<EnrollmentImportSummary.Builder> {
-
-        public abstract Builder events(EventImportSummaries events);
-
-        public abstract EnrollmentImportSummary build();
-    }
-}
+internal data class EnrollmentImportSummary(
+    override val importCount: ImportCount,
+    override val status: ImportStatus,
+    override val responseType: String,
+    override val reference: String?,
+    override val conflicts: List<ImportConflict>?,
+    override val description: String?,
+    val events: EventImportSummaries?,
+) : BaseImportSummary

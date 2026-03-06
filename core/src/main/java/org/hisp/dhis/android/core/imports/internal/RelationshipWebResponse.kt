@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,35 +26,22 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.core.imports.internal
 
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class RelationshipWebResponse extends WebResponse {
-
-    @Nullable
-    public abstract RelationshipImportSummaries response();
-
-    public static Builder builder() {
-        return new AutoValue_RelationshipWebResponse.Builder();
-    }
-
-    public static RelationshipWebResponse empty() {
-        return builder()
-                .httpStatus("SUCCESS")
-                .httpStatusCode(200)
-                .message("Emtpy response")
-                .status("OK")
-                .build();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder extends WebResponse.Builder<Builder> {
-        public abstract Builder response(RelationshipImportSummaries response);
-
-        public abstract RelationshipWebResponse build();
+internal data class RelationshipWebResponse(
+    override val httpStatus: String,
+    override val httpStatusCode: Int,
+    override val status: String,
+    override val message: String,
+    val response: RelationshipImportSummaries?,
+) : WebResponse {
+    companion object {
+        fun empty() = RelationshipWebResponse(
+            httpStatus = "SUCCESS",
+            httpStatusCode = 200,
+            message = "Emtpy response",
+            status = "OK",
+            response = null,
+        )
     }
 }

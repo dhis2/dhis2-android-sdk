@@ -26,44 +26,15 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.core.imports.internal
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.core.imports.ImportStatus
 
-import org.hisp.dhis.android.core.imports.ImportStatus;
-
-public abstract class BaseImportSummaries {
-
-    @NonNull
-    public abstract ImportStatus status();
-
-    @NonNull
-    public abstract String responseType();
-
-    @NonNull
-    public abstract Integer imported();
-
-    @NonNull
-    public abstract Integer updated();
-
-    @NonNull
-    public abstract Integer deleted();
-
-    @NonNull
-    public abstract Integer ignored();
-
-    public abstract static class Builder<T extends Builder> {
-
-        public abstract T status(ImportStatus status);
-
-        public abstract T responseType(String responseType);
-
-        public abstract T imported(Integer imported);
-
-        public abstract T updated(Integer updated);
-
-        public abstract T deleted(Integer deleted);
-
-        public abstract T ignored(Integer ignored);
-    }
+internal interface BaseImportSummaries {
+    val status: ImportStatus
+    val responseType: String
+    val imported: Int
+    val updated: Int
+    val deleted: Int
+    val ignored: Int
 }

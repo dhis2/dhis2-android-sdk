@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,48 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.core.imports.internal
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.core.imports.ImportStatus
 
-import org.hisp.dhis.android.core.imports.ImportStatus;
+internal interface BaseImportSummary : ImportSummary {
+    val importCount: ImportCount
+    override val status: ImportStatus
+    val responseType: String
 
-import java.util.List;
-
-public abstract class BaseImportSummary implements ImportSummary {
-
-    @NonNull
-    public abstract ImportCount importCount();
-
-    @NonNull
-    public abstract ImportStatus status();
-
-    @NonNull
-    public abstract String responseType();
-
-    //TODO: Reference SHOULD be annotated with NotNull. This is just a bug in ImportSummary response from server.
-    @Nullable
-    public abstract String reference();
-
-    @Nullable
-    public abstract List<ImportConflict> conflicts();
-
-    @Nullable
-    public abstract String description();
-
-    public abstract static class Builder<T extends Builder> {
-
-        public abstract T importCount(ImportCount importCount);
-
-        public abstract T status(ImportStatus status);
-
-        public abstract T responseType(String responseType);
-
-        public abstract T reference(String reference);
-
-        public abstract T conflicts(List<ImportConflict> conflicts);
-
-        public abstract T description(String description);
-    }
+    // Reference SHOULD be annotated with NotNull. This is just a bug in ImportSummary response from server.
+    override val reference: String?
+    val conflicts: List<ImportConflict>?
+    val description: String?
 }

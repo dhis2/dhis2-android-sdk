@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,30 +26,16 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.core.imports.internal
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.core.imports.ImportStatus
 
-import com.google.auto.value.AutoValue;
-
-import java.util.List;
-
-@AutoValue
-public abstract class EventImportSummaries extends BaseImportSummaries implements ImportSummaries {
-
-    @Override
-    @Nullable
-    public abstract List<EventImportSummary> importSummaries();
-
-    public static Builder builder() {
-        return new AutoValue_EventImportSummaries.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseImportSummaries.Builder<EventImportSummaries.Builder> {
-
-        public abstract Builder importSummaries(List<EventImportSummary> importSummaries);
-
-        public abstract EventImportSummaries build();
-    }
-}
+internal data class EventImportSummaries(
+    override val status: ImportStatus,
+    override val responseType: String,
+    override val imported: Int,
+    override val updated: Int,
+    override val deleted: Int,
+    override val ignored: Int,
+    override val importSummaries: List<EventImportSummary>?,
+) : BaseImportSummaries, ImportSummaries<EventImportSummary>

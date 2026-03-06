@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,20 +26,15 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.core.imports.internal
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.imports.ImportStatus
 
-@AutoValue
-public abstract class EventImportSummary extends BaseImportSummary {
-
-    public static Builder builder() {
-        return new AutoValue_EventImportSummary.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseImportSummary.Builder<EventImportSummary.Builder> {
-
-        public abstract EventImportSummary build();
-    }
-}
+internal data class EventImportSummary(
+    override val importCount: ImportCount,
+    override val status: ImportStatus,
+    override val responseType: String,
+    override val reference: String?,
+    override val conflicts: List<ImportConflict>?,
+    override val description: String?,
+) : BaseImportSummary

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,74 +26,12 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.core.imports.internal
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-import java.util.List;
-
-@AutoValue
-public abstract class ImportConflict {
-    @NonNull
-    public abstract String object();
-
-    @NonNull
-    public abstract String value();
-
-    @Nullable
-    public abstract String errorCode();
-
-    @Nullable
-    public abstract String property();
-
-    @Nullable
-    public abstract List<Integer> indexes();
-
-    public static ImportConflict create(
-            String object,
-            String value) {
-        return builder()
-                .object(object)
-                .value(value)
-                .build();
-    }
-
-    public static ImportConflict create(
-            String object,
-            String value,
-            String errorCode,
-            String property,
-            List<Integer> indexes) {
-        return builder()
-                .object(object)
-                .value(value)
-                .errorCode(errorCode)
-                .property(property)
-                .indexes(indexes)
-                .build();
-    }
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_ImportConflict.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder object(String object);
-
-        public abstract Builder value(String value);
-
-        public abstract Builder errorCode(String errorCode);
-
-        public abstract Builder property(String property);
-
-        public abstract Builder indexes(List<Integer> indexes);
-
-        public abstract ImportConflict build();
-    }
-}
+internal data class ImportConflict(
+    val `object`: String,
+    val value: String,
+    val errorCode: String? = null,
+    val property: String? = null,
+    val indexes: List<Int>? = null,
+)

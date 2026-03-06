@@ -26,33 +26,15 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.core.imports.internal
 
-import androidx.annotation.NonNull;
-
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class ImportCount {
-    public static final ImportCount EMPTY = ImportCount.create(0, 0, 0, 0);
-
-    @NonNull
-    public abstract Integer imported();
-
-    @NonNull
-    public abstract Integer updated();
-
-    @NonNull
-    public abstract Integer deleted();
-
-    @NonNull
-    public abstract Integer ignored();
-
-    public static ImportCount create(
-            Integer imported,
-            Integer updated,
-            Integer deleted,
-            Integer ignored) {
-        return new AutoValue_ImportCount(imported, updated, deleted, ignored);
+internal data class ImportCount(
+    val imported: Int,
+    val updated: Int,
+    val deleted: Int,
+    val ignored: Int,
+) {
+    companion object {
+        val EMPTY = ImportCount(0, 0, 0, 0)
     }
 }

@@ -32,7 +32,6 @@ import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.trackedentity.internal.ObjectWithUidWebResponse
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 import org.hisp.dhis.android.network.common.dto.WebResponseDTO
-import org.hisp.dhis.android.network.common.dto.applyWebResponseFields
 
 @Serializable
 internal data class ObjectWithUidWebResponseDTO(
@@ -43,9 +42,12 @@ internal data class ObjectWithUidWebResponseDTO(
     val response: ObjectWithUidDTO,
 ) : WebResponseDTO {
     fun toDomain(): ObjectWithUidWebResponse {
-        return ObjectWithUidWebResponse.builder()
-            .applyWebResponseFields(this)
-            .response(response.toDomain())
-            .build()
+        return ObjectWithUidWebResponse(
+            httpStatus = httpStatus,
+            httpStatusCode = httpStatusCode,
+            status = status,
+            message = message,
+            response = response.toDomain(),
+        )
     }
 }

@@ -29,11 +29,11 @@
 package org.hisp.dhis.android.network.trackedentityinstance
 
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.TEIImportSummary
 import org.hisp.dhis.android.network.common.dto.BaseImportSummaryDTO
 import org.hisp.dhis.android.network.common.dto.ImportConflictDTO
 import org.hisp.dhis.android.network.common.dto.ImportCountDTO
-import org.hisp.dhis.android.network.common.dto.applyImportSummaryFields
 import org.hisp.dhis.android.network.enrollment.EnrollmentImportSummariesDTO
 
 @Serializable
@@ -47,9 +47,14 @@ internal data class TEIImportSummaryDTO(
     val enrollments: EnrollmentImportSummariesDTO?,
 ) : BaseImportSummaryDTO {
     fun toDomain(): TEIImportSummary {
-        return TEIImportSummary.builder()
-            .applyImportSummaryFields(this)
-            .enrollments(enrollments?.toDomain())
-            .build()
+        return TEIImportSummary(
+            importCount = importCount.toDomain(),
+            status = ImportStatus.valueOf(status),
+            responseType = responseType,
+            reference = reference,
+            conflicts = conflicts?.map { it.toDomain() },
+            description = description,
+            enrollments = enrollments?.toDomain(),
+        )
     }
 }

@@ -29,11 +29,11 @@
 package org.hisp.dhis.android.network.enrollment
 
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummary
 import org.hisp.dhis.android.network.common.dto.BaseImportSummaryDTO
 import org.hisp.dhis.android.network.common.dto.ImportConflictDTO
 import org.hisp.dhis.android.network.common.dto.ImportCountDTO
-import org.hisp.dhis.android.network.common.dto.applyImportSummaryFields
 import org.hisp.dhis.android.network.event.EventImportSummariesDTO
 
 @Serializable
@@ -47,9 +47,14 @@ internal data class EnrollmentImportSummaryDTO(
     val events: EventImportSummariesDTO?,
 ) : BaseImportSummaryDTO {
     fun toDomain(): EnrollmentImportSummary {
-        return EnrollmentImportSummary.builder()
-            .applyImportSummaryFields(this)
-            .events(events?.toDomain())
-            .build()
+        return EnrollmentImportSummary(
+            importCount = importCount.toDomain(),
+            status = ImportStatus.valueOf(status),
+            responseType = responseType,
+            reference = reference,
+            conflicts = conflicts?.map { it.toDomain() },
+            description = description,
+            events = events?.toDomain(),
+        )
     }
 }

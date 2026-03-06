@@ -40,9 +40,12 @@ internal data class HttpMessageResponseDTO(
     override val message: String,
 ) : WebResponseDTO {
     fun toDomain(): HttpMessageResponse {
-        return HttpMessageResponse.builder()
-            .applyWebResponseFields(this)
-            .build()
+        return HttpMessageResponse(
+            httpStatus = httpStatus,
+            httpStatusCode = httpStatusCode,
+            status = status,
+            message = message,
+        )
     }
 
     companion object {

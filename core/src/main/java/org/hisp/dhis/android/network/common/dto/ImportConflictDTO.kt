@@ -41,6 +41,6 @@ internal data class ImportConflictDTO(
     val indexes: List<Int>?,
 ) {
     fun toDomain(): ImportConflict {
-        return ImportConflict.create(objectName, value, errorCode, property, indexes)
+        return ImportConflict(objectName, value, errorCode, property, indexes)
     }
 }

@@ -28,9 +28,6 @@
 
 package org.hisp.dhis.android.network.common.dto
 
-import org.hisp.dhis.android.core.imports.ImportStatus
-import org.hisp.dhis.android.core.imports.internal.BaseImportSummary
-
 internal interface BaseImportSummaryDTO {
     val importCount: ImportCountDTO
     val status: String
@@ -38,15 +35,4 @@ internal interface BaseImportSummaryDTO {
     val reference: String?
     val conflicts: List<ImportConflictDTO>?
     val description: String?
-}
-
-internal fun <T> T.applyImportSummaryFields(item: BaseImportSummaryDTO): T where
-      T : BaseImportSummary.Builder<T> {
-    importCount(item.importCount.toDomain())
-    status(ImportStatus.valueOf(item.status))
-    responseType(item.responseType)
-    reference(item.reference)
-    conflicts(item.conflicts?.map { it.toDomain() })
-    description(item.description)
-    return this
 }

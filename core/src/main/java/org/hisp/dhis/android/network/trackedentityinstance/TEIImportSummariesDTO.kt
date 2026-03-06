@@ -29,9 +29,9 @@
 package org.hisp.dhis.android.network.trackedentityinstance
 
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.TEIImportSummaries
 import org.hisp.dhis.android.network.common.dto.BaseImportSummariesDTO
-import org.hisp.dhis.android.network.common.dto.applyImportSummariesFields
 
 @Serializable
 internal data class TEIImportSummariesDTO(
@@ -44,9 +44,14 @@ internal data class TEIImportSummariesDTO(
     val importSummaries: List<TEIImportSummaryDTO>?,
 ) : BaseImportSummariesDTO {
     fun toDomain(): TEIImportSummaries {
-        return TEIImportSummaries.builder()
-            .applyImportSummariesFields(this)
-            .importSummaries(importSummaries?.map { it.toDomain() })
-            .build()
+        return TEIImportSummaries(
+            status = ImportStatus.valueOf(status),
+            responseType = responseType,
+            imported = imported,
+            updated = updated,
+            deleted = deleted,
+            ignored = ignored,
+            importSummaries = importSummaries?.map { it.toDomain() },
+        )
     }
 }

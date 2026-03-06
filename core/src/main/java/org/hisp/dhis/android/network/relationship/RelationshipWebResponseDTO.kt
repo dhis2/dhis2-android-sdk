@@ -32,7 +32,6 @@ import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.imports.internal.RelationshipWebResponse
 import org.hisp.dhis.android.network.common.dto.WebResponseDTO
-import org.hisp.dhis.android.network.common.dto.applyWebResponseFields
 
 @Serializable
 internal data class RelationshipWebResponseDTO(
@@ -43,10 +42,13 @@ internal data class RelationshipWebResponseDTO(
     val response: RelationshipImportSummariesDTO?,
 ) : WebResponseDTO {
     fun toDomain(): RelationshipWebResponse {
-        return RelationshipWebResponse.builder()
-            .applyWebResponseFields(this)
-            .response(response?.toDomain())
-            .build()
+        return RelationshipWebResponse(
+            httpStatus = httpStatus,
+            httpStatusCode = httpStatusCode,
+            status = status,
+            message = message,
+            response = response?.toDomain(),
+        )
     }
 
     companion object {

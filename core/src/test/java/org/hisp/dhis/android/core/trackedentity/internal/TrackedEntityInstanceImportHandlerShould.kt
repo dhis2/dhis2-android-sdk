@@ -52,12 +52,6 @@ class TrackedEntityInstanceImportHandlerShould {
 
     private val enrollmentImportHandler: EnrollmentImportHandler = mock()
 
-    private val importSummary: TEIImportSummary = mock()
-
-    private val enrollmentSummary: EnrollmentImportSummary = mock()
-
-    private val importEnrollment: EnrollmentImportSummaries = mock()
-
     private val trackerImportConflictStore: TrackerImportConflictStore = mock()
 
     private val trackerImportConflictParser: TrackerImportConflictParser = mock()
@@ -85,6 +79,21 @@ class TrackedEntityInstanceImportHandlerShould {
         whenever(trackedEntityInstanceStore.setSyncStateOrDelete(any(), any())).doReturn(HandleAction.Update)
     }
 
+    private fun createSummary(
+        status: ImportStatus,
+        reference: String?,
+        enrollments: EnrollmentImportSummaries? = null,
+        description: String? = null,
+    ) = TEIImportSummary(
+        importCount = ImportCount.EMPTY,
+        status = status,
+        responseType = "ImportSummary",
+        reference = reference,
+        conflicts = null,
+        description = description,
+        enrollments = enrollments,
+    )
+
     @Test
     fun do_nothing_when_passing_null_argument() = runTest {
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(null, instances)
@@ -93,11 +102,10 @@ class TrackedEntityInstanceImportHandlerShould {
 
     @Test
     fun setStatus_shouldUpdateTrackedEntityInstanceStatusSuccess() = runTest {
-        whenever(importSummary.status()).doReturn(ImportStatus.SUCCESS)
-        whenever(importSummary.reference()).doReturn(sampleTeiUid)
+        val summary = createSummary(ImportStatus.SUCCESS, sampleTeiUid)
 
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-            listOf(importSummary),
+            listOf(summary),
             instances,
         )
 
@@ -107,11 +115,10 @@ class TrackedEntityInstanceImportHandlerShould {
 
     @Test
     fun setStatus_shouldUpdateTrackedEntityInstanceStatusError() = runTest {
-        whenever(importSummary.status()).doReturn(ImportStatus.ERROR)
-        whenever(importSummary.reference()).doReturn(sampleTeiUid)
+        val summary = createSummary(ImportStatus.ERROR, sampleTeiUid)
 
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-            listOf(importSummary),
+            listOf(summary),
             instances,
         )
 
@@ -122,15 +129,29 @@ class TrackedEntityInstanceImportHandlerShould {
     @Test
     fun update_tracker_entity_instance_status_success_status_and_handle_import_enrollment_on_import_success() =
         runTest {
-            whenever(importSummary.status()).doReturn(ImportStatus.SUCCESS)
-            whenever(importSummary.reference()).doReturn(sampleTeiUid)
-            whenever(importSummary.enrollments()).thenReturn(importEnrollment)
-
+            val enrollmentSummary = EnrollmentImportSummary(
+                importCount = ImportCount.EMPTY,
+                status = ImportStatus.SUCCESS,
+                responseType = "ImportSummary",
+                reference = null,
+                conflicts = null,
+                description = null,
+                events = null,
+            )
             val enrollmentSummaries = listOf(enrollmentSummary)
-            whenever(importEnrollment.importSummaries()).doReturn(enrollmentSummaries)
+            val importEnrollment = EnrollmentImportSummaries(
+                status = ImportStatus.SUCCESS,
+                responseType = "ImportSummaries",
+                imported = 0,
+                updated = 0,
+                deleted = 0,
+                ignored = 0,
+                importSummaries = enrollmentSummaries,
+            )
+            val summary = createSummary(ImportStatus.SUCCESS, sampleTeiUid, enrollments = importEnrollment)
 
             trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-                listOf(importSummary),
+                listOf(summary),
                 instances,
             )
 
@@ -144,14 +165,13 @@ class TrackedEntityInstanceImportHandlerShould {
 
     @Test
     fun mark_as_to_update_tracked_entity_instances_not_present_in_the_response() = runTest {
-        whenever(importSummary.status()).doReturn(ImportStatus.SUCCESS)
-        whenever(importSummary.reference()).doReturn(sampleTeiUid)
+        val summary = createSummary(ImportStatus.SUCCESS, sampleTeiUid)
 
         val instances = listOf(trackedEntityInstance)
         whenever(trackedEntityInstance.uid()).thenReturn("missing_tei_uid")
 
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-            listOf(importSummary),
+            listOf(summary),
             instances,
         )
 
@@ -161,14 +181,13 @@ class TrackedEntityInstanceImportHandlerShould {
 
     @Test
     fun return_tracked_entity_instances_not_present_in_the_response() = runTest {
-        whenever(importSummary.status()).doReturn(ImportStatus.SUCCESS)
-        whenever(importSummary.reference()).doReturn(sampleTeiUid)
+        val summary = createSummary(ImportStatus.SUCCESS, sampleTeiUid)
 
         val instances = listOf(trackedEntityInstance)
         whenever(trackedEntityInstance.uid()).thenReturn("missing_tei_uid")
 
         val response = trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-            listOf(importSummary),
+            listOf(summary),
             instances,
         )
 
@@ -178,10 +197,11 @@ class TrackedEntityInstanceImportHandlerShould {
 
     @Test
     fun deleted_tei_if_not_present_in_server_and_is_deleted_locally() = runTest {
-        whenever(importSummary.status()).doReturn(ImportStatus.SUCCESS)
-        whenever(importSummary.reference()).doReturn(null)
-        whenever(importSummary.description())
-            .doReturn("Tracked entity instance $sampleTeiUid cannot be deleted as it is not present in the system")
+        val summary = createSummary(
+            ImportStatus.SUCCESS,
+            null,
+            description = "Tracked entity instance $sampleTeiUid cannot be deleted as it is not present in the system",
+        )
 
         whenever(trackedEntityInstanceStore.selectByUid(sampleTeiUid)).doReturn(trackedEntityInstance)
         whenever(trackedEntityInstance.deleted()).doReturn(true)
@@ -189,7 +209,7 @@ class TrackedEntityInstanceImportHandlerShould {
         val teis = listOf(sampleTei(sampleTeiUid, emptyList()))
 
         trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-            listOf(importSummary),
+            listOf(summary),
             teis,
         )
 

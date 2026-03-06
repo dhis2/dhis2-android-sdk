@@ -39,9 +39,9 @@ class HttpMessageOwnershipDeniedShould : CoreObjectShould("trackedentity/glass/g
         val responseDTO = deserialize(HttpMessageResponseDTO.serializer())
         val response = responseDTO.toDomain()
 
-        assertThat(response.httpStatus()).isEqualTo("Unauthorized")
-        assertThat(response.httpStatusCode()).isEqualTo(401)
-        assertThat(response.status()).isEqualTo("ERROR")
-        assertThat(response.message()).isEqualTo("OWNERSHIP_ACCESS_DENIED")
+        assertThat(response.httpStatus).isEqualTo("Unauthorized")
+        assertThat(response.httpStatusCode).isEqualTo(401)
+        assertThat(response.status).isEqualTo("ERROR")
+        assertThat(response.message).isEqualTo("OWNERSHIP_ACCESS_DENIED")
     }
 }

@@ -41,12 +41,12 @@ class ImportConflictShould : CoreObjectShould("imports/import_conflict.json") {
         val importConflictDTO = deserialize(ImportConflictDTO.serializer())
         val importConflict = importConflictDTO.toDomain()
 
-        assertThat(importConflict.`object`()).isEqualTo("UOlfIjgN8X6")
-        assertThat(importConflict.value())
+        assertThat(importConflict.`object`).isEqualTo("UOlfIjgN8X6")
+        assertThat(importConflict.value)
             .isEqualTo("Value must match data element's `UOlfIjgN8X6` type constraints: Data value is not numeric")
-        assertThat(importConflict.errorCode()).isEqualTo("E7619")
-        assertThat(importConflict.property()).isEqualTo("value")
-        assertThat(importConflict.indexes()!![0]).isEqualTo(2)
-        assertThat(importConflict.indexes()!![1]).isEqualTo(7)
+        assertThat(importConflict.errorCode).isEqualTo("E7619")
+        assertThat(importConflict.property).isEqualTo("value")
+        assertThat(importConflict.indexes!![0]).isEqualTo(2)
+        assertThat(importConflict.indexes!![1]).isEqualTo(7)
     }
 }

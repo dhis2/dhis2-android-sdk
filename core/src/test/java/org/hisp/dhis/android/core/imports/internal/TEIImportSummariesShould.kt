@@ -42,11 +42,11 @@ class TEIImportSummariesShould : CoreObjectShould("imports/import_summaries.json
         val importSummariesDTO = deserialize(TEIImportSummariesDTO.serializer())
         val importSummaries = importSummariesDTO.toDomain()
 
-        assertThat(importSummaries.responseType()).isEqualTo("ImportSummaries")
-        assertThat(importSummaries.status()).isEqualTo(ImportStatus.SUCCESS)
-        assertThat(importSummaries.imported()).isEqualTo(1)
-        assertThat(importSummaries.updated()).isEqualTo(2)
-        assertThat(importSummaries.deleted()).isEqualTo(3)
-        assertThat(importSummaries.ignored()).isEqualTo(4)
+        assertThat(importSummaries.responseType).isEqualTo("ImportSummaries")
+        assertThat(importSummaries.status).isEqualTo(ImportStatus.SUCCESS)
+        assertThat(importSummaries.imported).isEqualTo(1)
+        assertThat(importSummaries.updated).isEqualTo(2)
+        assertThat(importSummaries.deleted).isEqualTo(3)
+        assertThat(importSummaries.ignored).isEqualTo(4)
     }
 }

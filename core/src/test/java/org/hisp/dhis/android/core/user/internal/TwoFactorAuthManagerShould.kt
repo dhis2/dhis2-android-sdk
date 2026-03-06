@@ -117,12 +117,12 @@ class TwoFactorAuthManagerShould {
             .thenReturn(Result.Success("NEW_SECRET"))
         whenever(networkHandler.enrollTOTP2FA()).thenReturn(
             Result.Success(
-                HttpMessageResponse.builder()
-                    .httpStatus(HttpStatusCode.OK.description)
-                    .httpStatusCode(HttpStatusCode.OK.value)
-                    .status(HttpStatusCode.OK.description)
-                    .message("Two factor authentication was enabled successfully")
-                    .build(),
+                HttpMessageResponse(
+                    httpStatus = HttpStatusCode.OK.description,
+                    httpStatusCode = HttpStatusCode.OK.value,
+                    status = HttpStatusCode.OK.description,
+                    message = "Two factor authentication was enabled successfully",
+                ),
             ),
         )
 
@@ -149,7 +149,12 @@ class TwoFactorAuthManagerShould {
     @Test
     fun enable2fa_delegates_to_network_handler_and_persists_on_success() = runTest {
         val code = "123456"
-        val response: HttpMessageResponse = mock()
+        val response = HttpMessageResponse(
+            httpStatus = "OK",
+            httpStatusCode = 200,
+            status = "OK",
+            message = "2FA enabled",
+        )
         whenever(networkHandler.enable2fa(code)).thenReturn(Result.Success(response))
 
         val result = authManager.enable2fa(code)
@@ -162,7 +167,12 @@ class TwoFactorAuthManagerShould {
     @Test
     fun disable2fa_delegates_to_network_handler_and_persists_on_success() = runTest {
         val code = "098765"
-        val response: HttpMessageResponse = mock()
+        val response = HttpMessageResponse(
+            httpStatus = "OK",
+            httpStatusCode = 200,
+            status = "OK",
+            message = "2FA disabled",
+        )
         whenever(networkHandler.disable2fa(code)).thenReturn(Result.Success(response))
 
         val result = authManager.disable2fa(code)

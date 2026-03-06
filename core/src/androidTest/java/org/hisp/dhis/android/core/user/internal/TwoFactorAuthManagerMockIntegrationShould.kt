@@ -117,7 +117,7 @@ class TwoFactorAuthManagerMockIntegrationShould : BaseMockIntegrationTestMetadat
 
         val response: HttpMessageResponse = runBlocking { authManager.enable2fa("123456").getOrThrow() }
 
-        assertThat(response.message()).isEqualTo("2FA was enabled successfully")
+        assertThat(response.message).isEqualTo("2FA was enabled successfully")
 
         dhis2MockServer.enqueueMockResponse(HttpStatusCode.InternalServerError.value, "user/server-error.json")
         val postEnable = runBlocking { authManager.is2faEnabled() }
@@ -130,7 +130,7 @@ class TwoFactorAuthManagerMockIntegrationShould : BaseMockIntegrationTestMetadat
 
         val response: HttpMessageResponse = runBlocking { authManager.disable2fa("098765").getOrThrow() }
 
-        assertThat(response.message()).isEqualTo("2FA was disabled successfully")
+        assertThat(response.message).isEqualTo("2FA was disabled successfully")
 
         dhis2MockServer.enqueueMockResponse(HttpStatusCode.InternalServerError.value, "user/server-error.json")
         val postDisable = runBlocking { authManager.is2faEnabled() }

@@ -42,21 +42,21 @@ class EnrollmentImportEnrollmentShould : CoreObjectShould("imports/import_enroll
         val importEnrollmentDTO = deserialize(EnrollmentImportSummariesDTO.serializer())
         val importEnrollment = importEnrollmentDTO.toDomain()
 
-        assertThat(importEnrollment.imported()).isEqualTo(0)
-        assertThat(importEnrollment.updated()).isEqualTo(1)
-        assertThat(importEnrollment.ignored()).isEqualTo(0)
-        assertThat(importEnrollment.deleted()).isEqualTo(0)
+        assertThat(importEnrollment.imported).isEqualTo(0)
+        assertThat(importEnrollment.updated).isEqualTo(1)
+        assertThat(importEnrollment.ignored).isEqualTo(0)
+        assertThat(importEnrollment.deleted).isEqualTo(0)
 
-        assertThat(importEnrollment.responseType()).isEqualTo("ImportSummaries")
-        assertThat(importEnrollment.status()).isEqualTo(ImportStatus.SUCCESS)
-        assertThat(importEnrollment.importSummaries()).isNotNull()
+        assertThat(importEnrollment.responseType).isEqualTo("ImportSummaries")
+        assertThat(importEnrollment.status).isEqualTo(ImportStatus.SUCCESS)
+        assertThat(importEnrollment.importSummaries).isNotNull()
 
-        assertThat(importEnrollment.importSummaries()!!.size).isEqualTo(1)
+        assertThat(importEnrollment.importSummaries!!.size).isEqualTo(1)
 
-        val importSummary = importEnrollment.importSummaries()!![0]
+        val importSummary = importEnrollment.importSummaries!![0]
 
         assertThat(importSummary).isNotNull()
-        assertThat(importSummary.events()).isNotNull()
-        assertThat(importSummary.reference()).isEqualTo("XaBZwKbHVxS")
+        assertThat(importSummary.events).isNotNull()
+        assertThat(importSummary.reference).isEqualTo("XaBZwKbHVxS")
     }
 }

@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.EventImportSummary
+import org.hisp.dhis.android.core.imports.internal.ImportCount
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.core.tracker.importer.internal.JobReportEventHandler
@@ -46,8 +47,6 @@ import org.mockito.kotlin.*
 
 @RunWith(JUnit4::class)
 class EventImportHandlerShould {
-    private val importSummary: EventImportSummary = mock()
-
     private val eventStore: EventStore = mock()
 
     private val enrollmentStore: EnrollmentStore = mock()
@@ -70,8 +69,6 @@ class EventImportHandlerShould {
     @Before
     @Throws(Exception::class)
     fun setUp() {
-        whenever(importSummary.status()).thenReturn(ImportStatus.SUCCESS)
-
         eventImportHandler = EventImportHandler(
             eventStore,
             enrollmentStore,
@@ -91,35 +88,44 @@ class EventImportHandlerShould {
 
     @Test
     fun invoke_set_state_after_handle_event_import_summaries_with_success_status_and_reference() = runTest {
-        whenever(importSummary.status()).thenReturn(ImportStatus.SUCCESS)
-        whenever(importSummary.reference()).thenReturn("test_event_uid")
+        val summary = createSummary(ImportStatus.SUCCESS, "test_event_uid")
 
-        eventImportHandler.handleEventImportSummaries(listOf(importSummary), events)
+        eventImportHandler.handleEventImportSummaries(listOf(summary), events)
 
         verify(eventStore, times(1)).setSyncStateOrDelete("test_event_uid", State.SYNCED)
     }
 
     @Test
     fun invoke_set_state_after_handle_event_import_summaries_with_error_status_and_reference() = runTest {
-        whenever(importSummary.status()).thenReturn(ImportStatus.ERROR)
-        whenever(importSummary.reference()).thenReturn("test_event_uid")
+        val summary = createSummary(ImportStatus.ERROR, "test_event_uid")
 
-        eventImportHandler.handleEventImportSummaries(listOf(importSummary), events)
+        eventImportHandler.handleEventImportSummaries(listOf(summary), events)
 
         verify(eventStore, times(1)).setSyncStateOrDelete("test_event_uid", State.ERROR)
     }
 
     @Test
     fun mark_as_to_update_events_not_present_in_the_response() = runTest {
-        whenever(importSummary.status()).thenReturn(ImportStatus.SUCCESS)
-        whenever(importSummary.reference()).thenReturn("test_event_uid")
+        val summary = createSummary(ImportStatus.SUCCESS, "test_event_uid")
 
         val events = listOf(event)
         whenever(event.uid()).thenReturn("missing_event_uid")
 
-        eventImportHandler.handleEventImportSummaries(listOf(importSummary), events)
+        eventImportHandler.handleEventImportSummaries(listOf(summary), events)
 
         verify(eventStore, times(1)).setSyncStateOrDelete("test_event_uid", State.SYNCED)
         verify(eventStore, times(1)).setSyncStateOrDelete("missing_event_uid", State.TO_UPDATE)
     }
+
+    private fun createSummary(
+        status: ImportStatus,
+        reference: String?,
+    ) = EventImportSummary(
+        importCount = ImportCount.EMPTY,
+        status = status,
+        responseType = "ImportSummary",
+        reference = reference,
+        conflicts = null,
+        description = null,
+    )
 }

@@ -41,7 +41,7 @@ class TEIWebResponseShould : CoreObjectShould("imports/web_response.json") {
         val webResponseDto = deserialize(TEIWebResponseDTO.serializer())
         val webResponse = webResponseDto.toDomain()
 
-        assertThat(webResponse.message()).isEqualTo("Import was successful.")
-        assertThat(webResponse.response()).isNotNull()
+        assertThat(webResponse.message).isEqualTo("Import was successful.")
+        assertThat(webResponse.response).isNotNull()
     }
 }

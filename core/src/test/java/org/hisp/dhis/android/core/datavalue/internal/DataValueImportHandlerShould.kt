@@ -31,6 +31,7 @@ import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
+import org.hisp.dhis.android.core.imports.internal.ImportCount
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -47,7 +48,6 @@ class DataValueImportHandlerShould {
     private val dataValueStore: DataValueStore = mock()
     private val dataValueConflictParser: DataValueConflictParser = mock()
     private val dataValueConflictStore: DataValueConflictStore = mock()
-    private val dataValueImportSummary: DataValueImportSummary = mock()
     private val dataValue: DataValue = mock()
     private val builder: DataValue.Builder = mock()
 
@@ -75,9 +75,17 @@ class DataValueImportHandlerShould {
         )
     }
 
+    private fun createImportSummary(status: ImportStatus) = DataValueImportSummary(
+        importCount = ImportCount.EMPTY,
+        importStatus = status,
+        responseType = "ImportSummary",
+        reference = null,
+        importConflicts = null,
+    )
+
     @Test
     fun passingNullDataValueSet_shouldNotPerformAnyAction() = runTest {
-        dataValueImportHandler.handleImportSummary(null, dataValueImportSummary)
+        dataValueImportHandler.handleImportSummary(null, createImportSummary(ImportStatus.SUCCESS))
 
         verify(dataValueStore, never()).update(any<Collection<DataValue>>())
     }
@@ -91,22 +99,20 @@ class DataValueImportHandlerShould {
 
     @Test
     fun successfullyImportedDataValues_shouldBeMarkedAsSynced() = runTest {
-        whenever(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.SUCCESS)
         whenever(dataValueStore.isDataValueBeingUpload(any<DataValue>())).thenReturn(true)
         whenever(dataValueStore.isDeleted(any<DataValue>())).thenReturn(false)
 
-        dataValueImportHandler.handleImportSummary(dataValueSet, dataValueImportSummary)
+        dataValueImportHandler.handleImportSummary(dataValueSet, createImportSummary(ImportStatus.SUCCESS))
 
         verify(dataValueStore, times(1)).update(any<Collection<DataValue>>())
     }
 
     @Test
     fun successfullyImportedAndDeletedDataValues_shouldBeDeleted() = runTest {
-        whenever(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.SUCCESS)
         whenever(dataValueStore.isDataValueBeingUpload(any())).thenReturn(true)
         whenever(dataValueStore.isDeleted(any())).thenReturn(true)
 
-        dataValueImportHandler.handleImportSummary(dataValueSet, dataValueImportSummary)
+        dataValueImportHandler.handleImportSummary(dataValueSet, createImportSummary(ImportStatus.SUCCESS))
 
         verify(dataValueStore, never()).update(any<Collection<DataValue>>())
         verify(dataValueStore, times(1)).deleteWhere(dataValue)
@@ -114,10 +120,9 @@ class DataValueImportHandlerShould {
 
     @Test
     fun unsuccessfullyImportedDataValues_shouldBeMarkedAsError() = runTest {
-        whenever(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.ERROR)
         whenever(dataValueStore.isDataValueBeingUpload(any())).thenReturn(true)
 
-        dataValueImportHandler.handleImportSummary(dataValueSet, dataValueImportSummary)
+        dataValueImportHandler.handleImportSummary(dataValueSet, createImportSummary(ImportStatus.ERROR))
 
         verify(dataValueStore, times(1)).update(any<Collection<DataValue>>())
     }

@@ -37,11 +37,11 @@ internal object MissingAttributeConflict : TrackerImportConflictItem {
     override val errorCode: String = "E1018"
 
     override fun matches(conflict: ImportConflict): Boolean {
-        return regex.matches(conflict.value())
+        return regex.matches(conflict.value)
     }
 
     override fun getTrackedEntityAttribute(conflict: ImportConflict): String? {
-        return regex.find(conflict.value())?.groupValues?.get(1)
+        return regex.find(conflict.value)?.groupValues?.get(1)
     }
 
     override suspend fun getDisplayDescription(
@@ -54,6 +54,6 @@ internal object MissingAttributeConflict : TrackerImportConflictItem {
                 description(name)
             }
         }
-            ?: conflict.value()
+            ?: conflict.value
     }
 }

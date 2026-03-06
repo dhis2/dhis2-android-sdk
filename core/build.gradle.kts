@@ -1,3 +1,4 @@
+import com.google.devtools.ksp.gradle.KspTask
 import org.gradle.api.tasks.Sync
 import org.jetbrains.dokka.gradle.DokkaTask
 
@@ -242,20 +243,21 @@ dependencies {
     androidTestImplementation(libs.androidx.paging.testing)
 }
 
-val migrationDirPath = "$rootDir/core/src/main/assets/migrations"
+class MigrationDirProvider(private val path: String) : CommandLineArgumentProvider {
+    override fun asArguments() = listOf("migrationDir=$path")
+}
+
+val migrationDirPath: String = layout.projectDirectory.dir("src/main/assets/migrations")
+    .asFile.absolutePath
 afterEvaluate {
     tasks.named("kspDebugKotlin").configure {
-        (this as com.google.devtools.ksp.gradle.KspTask).commandLineArgumentProviders.add(
-            CommandLineArgumentProvider {
-                listOf("migrationDir=$migrationDirPath")
-            },
+        (this as KspTask).commandLineArgumentProviders.add(
+            MigrationDirProvider(migrationDirPath),
         )
     }
     tasks.named("kspReleaseKotlin").configure {
-        (this as com.google.devtools.ksp.gradle.KspTask).commandLineArgumentProviders.add(
-            CommandLineArgumentProvider {
-                listOf("migrationDir=$migrationDirPath")
-            },
+        (this as KspTask).commandLineArgumentProviders.add(
+            MigrationDirProvider(migrationDirPath),
         )
     }
 }

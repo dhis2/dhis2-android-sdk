@@ -47,9 +47,4 @@ class AnalyticsTeiWHONutritionDataStoreIntegrationShould :
         return AnalyticsSettingsSamples.analyticsTeiWHONutritionData
     }
 
-    override fun buildObjectWithNullableFields(): AnalyticsTeiWHONutritionData {
-        return buildObject().toBuilder()
-            .chartType(null)
-            .build()
-    }
 }

@@ -57,7 +57,6 @@ class ProgramStageWorkingListStoreIntegrationShould :
     override fun buildObjectWithNullableFields(): ProgramStageWorkingList {
         return buildObject().toBuilder()
             .description(null)
-            .programStageQueryCriteria(null)
             .build()
     }
 }

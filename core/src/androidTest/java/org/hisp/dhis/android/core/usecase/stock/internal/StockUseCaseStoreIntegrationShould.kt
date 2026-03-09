@@ -54,9 +54,7 @@ class StockUseCaseStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegr
 
     override fun buildObjectWithNullableFields(): InternalStockUseCase {
         return buildObject().toBuilder()
-            .itemDescription(null)
-            .description(null)
-            .stockOnHand(null)
+            .transactions(null)
             .build()
     }
 }

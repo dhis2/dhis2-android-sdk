@@ -57,7 +57,6 @@ class TrackedEntityInstanceFilterStoreIntegrationShould :
         return buildObject().toBuilder()
             .description(null)
             .sortOrder(null)
-            .entityQueryCriteria(null)
             .eventFilters(null)
             .build()
     }

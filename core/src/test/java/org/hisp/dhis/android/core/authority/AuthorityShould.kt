@@ -35,6 +35,8 @@ import org.junit.Test
 
 class AuthorityShould : CoreObjectShould("authority/authorities.json") {
 
+    override fun roundTripSerializer() = ListSerializer(AuthorityDTO.serializer())
+
     @Test
     override fun map_from_json_string() {
         val authorityDTOList: List<AuthorityDTO> = deserialize(ListSerializer(AuthorityDTO.serializer()))

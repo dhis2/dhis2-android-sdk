@@ -37,6 +37,8 @@ import org.hisp.dhis.android.network.programstage.ProgramStageDataElementDTO
 import org.junit.Test
 
 class ProgramStageDataElementShould : CoreObjectShould("program/program_stage_data_element.json") {
+    override fun roundTripSerializer() = ProgramStageDataElementDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val programStageDataElementDTO = deserialize(ProgramStageDataElementDTO.serializer())

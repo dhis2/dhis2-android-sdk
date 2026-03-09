@@ -34,6 +34,8 @@ import org.junit.Test
 
 class NewTrackerImporterNoteShould : CoreObjectShould("note/new_tracker_importer_note.json") {
 
+    override fun roundTripSerializer() = NewNoteDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val noteDTO = deserialize(NewNoteDTO.serializer())

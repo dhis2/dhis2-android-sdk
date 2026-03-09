@@ -33,6 +33,8 @@ import org.junit.Test
 
 class AnalyticsSettingV1Should : CoreObjectShould("settings/analytics_settings.json") {
 
+    override fun roundTripSerializer() = AnalyticsSettingsDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val analyticsSettingsDTO = deserialize(AnalyticsSettingsDTO.serializer())

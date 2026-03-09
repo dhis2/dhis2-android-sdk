@@ -35,6 +35,8 @@ import org.junit.Test
 
 class SystemInfoShould : CoreObjectShould("systeminfo/system_info.json") {
 
+    override fun roundTripSerializer() = SystemInfoDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val systemInfoDTO = deserialize(SystemInfoDTO.serializer())

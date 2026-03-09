@@ -34,6 +34,8 @@ import org.hisp.dhis.android.network.settings.ProgramSettingsDTO
 import org.junit.Test
 
 class ProgramSettingsShould : CoreObjectShould("settings/program_settings.json") {
+    override fun roundTripSerializer() = ProgramSettingsDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val programSettingsDTO = deserialize(ProgramSettingsDTO.serializer())

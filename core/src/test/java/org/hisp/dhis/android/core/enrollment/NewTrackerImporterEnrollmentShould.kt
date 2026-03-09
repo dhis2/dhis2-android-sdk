@@ -35,6 +35,8 @@ import org.junit.Test
 
 class NewTrackerImporterEnrollmentShould : CoreObjectShould("enrollment/new_tracker_importer_enrollment.json") {
 
+    override fun roundTripSerializer() = NewEnrollmentDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val enrollmentDTO = deserialize(NewEnrollmentDTO.serializer())

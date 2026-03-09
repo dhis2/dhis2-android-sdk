@@ -39,6 +39,8 @@ import org.junit.Test
 
 class EventFilterShould : CoreObjectShould("event/event_filter.json") {
 
+    override fun roundTripSerializer() = EventFilterDTO.serializer()
+
     @Test
     @Suppress("LongMethod")
     override fun map_from_json_string() {

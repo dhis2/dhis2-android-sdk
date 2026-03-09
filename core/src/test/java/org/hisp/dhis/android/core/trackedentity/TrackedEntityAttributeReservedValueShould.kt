@@ -37,6 +37,8 @@ class TrackedEntityAttributeReservedValueShould : CoreObjectShould(
     "trackedentity/tracked_entity_attribute_reserved_value.json",
 ) {
 
+    override fun roundTripSerializer() = TrackedEntityAttributeReservedValueDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val reservedValueDTO = deserialize(TrackedEntityAttributeReservedValueDTO.serializer())

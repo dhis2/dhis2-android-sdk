@@ -32,6 +32,8 @@ import org.hisp.dhis.android.network.datavalue.DataValueSetDTO
 import org.junit.Test
 
 class DataValueSetEmptyShould : CoreObjectShould("common/empty_object.json") {
+    override fun roundTripSerializer() = DataValueSetDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         deserialize(DataValueSetDTO.serializer()).toDomain()

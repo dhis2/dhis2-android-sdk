@@ -36,6 +36,8 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class ImportCountShould : CoreObjectShould("imports/import_count.json") {
+    override fun roundTripSerializer() = ImportCountDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val importCountDTO = deserialize(ImportCountDTO.serializer())

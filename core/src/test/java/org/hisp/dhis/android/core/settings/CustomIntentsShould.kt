@@ -34,6 +34,8 @@ import org.hisp.dhis.android.network.settings.CustomIntentsDTO
 import org.junit.Test
 
 class CustomIntentsShould : CoreObjectShould("settings/custom_intents.json") {
+    override fun roundTripSerializer() = CustomIntentsDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val customIntentsDTO = deserialize(CustomIntentsDTO.serializer())

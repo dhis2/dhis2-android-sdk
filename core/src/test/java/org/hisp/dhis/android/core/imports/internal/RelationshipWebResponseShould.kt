@@ -36,6 +36,8 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class RelationshipWebResponseShould : CoreObjectShould("imports/relationship_web_response.json") {
+    override fun roundTripSerializer() = RelationshipWebResponseDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val webResponse = deserialize(RelationshipWebResponseDTO.serializer()).toDomain()

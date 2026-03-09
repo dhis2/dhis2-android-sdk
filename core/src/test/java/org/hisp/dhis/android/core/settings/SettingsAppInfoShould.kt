@@ -34,6 +34,8 @@ import org.hisp.dhis.android.network.settings.SettingsAppInfoDTO
 import org.junit.Test
 
 class SettingsAppInfoShould : CoreObjectShould("settings/app_info.json") {
+    override fun roundTripSerializer() = SettingsAppInfoDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val appInfoDTO = deserialize(SettingsAppInfoDTO.serializer())

@@ -37,6 +37,8 @@ class DataSetCompleteRegistrationWithCompletedShould : CoreObjectShould(
     "dataset/data_set_complete_registration_with_completed.json",
 ) {
 
+    override fun roundTripSerializer() = DataSetCompleteRegistrationDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val dataSetCompleteRegistrationDTO = deserialize(DataSetCompleteRegistrationDTO.serializer())

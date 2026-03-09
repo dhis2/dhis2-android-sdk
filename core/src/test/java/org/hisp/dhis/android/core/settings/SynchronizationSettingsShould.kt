@@ -35,6 +35,8 @@ import org.hisp.dhis.android.network.settings.SynchronizationSettingsDTO
 import org.junit.Test
 
 class SynchronizationSettingsShould : CoreObjectShould("settings/synchronization_settings.json") {
+    override fun roundTripSerializer() = SynchronizationSettingsDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val syncSettingsDTO = deserialize(SynchronizationSettingsDTO.serializer())

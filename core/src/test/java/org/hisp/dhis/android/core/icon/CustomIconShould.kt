@@ -34,6 +34,8 @@ import org.junit.Test
 
 class CustomIconShould : CoreObjectShould("icon/custom_icon.json") {
 
+    override fun roundTripSerializer() = CustomIconDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val iconDTO = deserialize(CustomIconDTO.serializer())

@@ -38,6 +38,8 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class TEIImportSummaryShouldwithTeiConflicts : CoreObjectShould("imports/import_summary_with_tei_conflicts.json") {
 
+    override fun roundTripSerializer() = TEIImportSummaryDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val importSummaryDTO = deserialize(TEIImportSummaryDTO.serializer())

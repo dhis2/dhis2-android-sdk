@@ -37,6 +37,8 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class EventImportEventShould : CoreObjectShould("imports/import_event.json") {
+    override fun roundTripSerializer() = EventImportSummariesDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val importEventDTO = deserialize(EventImportSummariesDTO.serializer())

@@ -35,6 +35,8 @@ import org.junit.Test
 
 class NewTrackerImporterRelationshipShould : CoreObjectShould("relationship/new_relationship.json") {
 
+    override fun roundTripSerializer() = NewRelationshipDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val relationshipDTO = deserialize(NewRelationshipDTO.serializer())

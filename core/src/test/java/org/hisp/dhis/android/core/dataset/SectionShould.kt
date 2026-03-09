@@ -34,6 +34,8 @@ import org.hisp.dhis.android.network.dataset.SectionDTO
 import org.junit.Test
 
 class SectionShould : CoreObjectShould("dataset/section.json") {
+    override fun roundTripSerializer() = SectionDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val sectionDTO = deserialize(SectionDTO.serializer())

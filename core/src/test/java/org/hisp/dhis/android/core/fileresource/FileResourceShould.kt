@@ -35,6 +35,8 @@ import org.junit.Test
 
 class FileResourceShould : CoreObjectShould("fileresource/file_resource.json") {
 
+    override fun roundTripSerializer() = FileResourceDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val fileResourceDTO = deserialize(FileResourceDTO.serializer())

@@ -39,6 +39,8 @@ import org.junit.Test
 
 class ProgramStageWorkingListShould : CoreObjectShould("programstageworkinglist/program_stage_working_list.json") {
 
+    override fun roundTripSerializer() = ProgramStageWorkingListDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val workingListDTO = deserialize(ProgramStageWorkingListDTO.serializer())

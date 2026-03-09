@@ -33,6 +33,8 @@ import org.hisp.dhis.android.network.settings.GeneralSettingsDTO
 import org.junit.Test
 
 class GeneralSettingsV2Should : CoreObjectShould("settings/general_settings_v2.json") {
+    override fun roundTripSerializer() = GeneralSettingsDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val generalSettingsDTO = deserialize(GeneralSettingsDTO.serializer())

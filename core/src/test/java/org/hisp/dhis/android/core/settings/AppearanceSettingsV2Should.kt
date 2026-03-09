@@ -33,6 +33,9 @@ import org.hisp.dhis.android.network.settings.AppearanceSettingsDTO
 import org.junit.Test
 
 class AppearanceSettingsV2Should : CoreObjectShould("settings/appearance_settings_v2.json") {
+
+    override fun roundTripSerializer() = AppearanceSettingsDTO.serializer()
+
     @Test
     @Suppress("LongMethod")
     override fun map_from_json_string() {

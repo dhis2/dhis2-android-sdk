@@ -36,6 +36,8 @@ import org.hisp.dhis.android.network.enrollment.EnrollmentDTO
 import org.junit.Test
 
 class EnrollmentShould : CoreObjectShould("enrollment/enrollment.json") {
+    override fun roundTripSerializer() = EnrollmentDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val enrollmentDTO = deserialize(EnrollmentDTO.serializer())

@@ -34,6 +34,8 @@ import org.junit.Test
 
 class InternalStockUseCaseShould : CoreObjectShould("usecase.stock/stock_use_case.json") {
 
+    override fun roundTripSerializer() = StockUseCaseDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val stockUseCaseDTO = deserialize(StockUseCaseDTO.serializer())

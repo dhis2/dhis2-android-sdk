@@ -33,6 +33,8 @@ import org.hisp.dhis.android.network.note.NoteDTO
 import org.junit.Test
 
 class NoteShould : CoreObjectShould("note/note_30.json") {
+    override fun roundTripSerializer() = NoteDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val noteDTO = deserialize(NoteDTO.serializer())

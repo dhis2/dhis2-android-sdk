@@ -34,6 +34,8 @@ import org.junit.Test
 
 class HttpMessageClosedProgramShould : CoreObjectShould("trackedentity/glass/closed_program_failure.json") {
 
+    override fun roundTripSerializer() = HttpMessageResponseDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val responseDTO = deserialize(HttpMessageResponseDTO.serializer())

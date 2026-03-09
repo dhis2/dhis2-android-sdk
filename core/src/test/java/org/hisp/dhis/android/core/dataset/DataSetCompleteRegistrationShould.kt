@@ -34,6 +34,8 @@ import org.hisp.dhis.android.network.datasetcompleteregistration.DataSetComplete
 import org.junit.Test
 
 class DataSetCompleteRegistrationShould : CoreObjectShould("dataset/data_set_complete_registration.json") {
+    override fun roundTripSerializer() = DataSetCompleteRegistrationDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val dataSetCompleteRegistrationDTO = deserialize(DataSetCompleteRegistrationDTO.serializer())

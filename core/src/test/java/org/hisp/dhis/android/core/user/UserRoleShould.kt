@@ -35,6 +35,8 @@ import org.junit.Test
 
 class UserRoleShould : CoreObjectShould("user/user_role.json") {
 
+    override fun roundTripSerializer() = UserRoleDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val userRoleDTO = deserialize(UserRoleDTO.serializer())

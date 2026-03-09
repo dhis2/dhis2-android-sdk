@@ -36,6 +36,8 @@ import org.hisp.dhis.android.network.program.ProgramTrackedEntityAttributeDTO
 import org.junit.Test
 
 class ProgramTrackedEntityAttributeShould : CoreObjectShould("program/program_tracked_entity_attribute.json") {
+    override fun roundTripSerializer() = ProgramTrackedEntityAttributeDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val programTrackedEntityAttributeDTO = deserialize(ProgramTrackedEntityAttributeDTO.serializer())

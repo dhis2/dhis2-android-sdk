@@ -35,6 +35,8 @@ import org.junit.Test
 
 class User37Should : CoreObjectShould("user/user37.json") {
 
+    override fun roundTripSerializer() = UserDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val userDTO = deserialize(UserDTO.serializer())

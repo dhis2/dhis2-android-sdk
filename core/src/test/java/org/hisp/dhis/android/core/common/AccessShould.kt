@@ -32,6 +32,8 @@ import org.hisp.dhis.android.network.common.dto.AccessDTO
 import org.junit.Test
 
 class AccessShould : CoreObjectShould("common/access.json") {
+    override fun roundTripSerializer() = AccessDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val accessDTO = deserialize(AccessDTO.serializer())

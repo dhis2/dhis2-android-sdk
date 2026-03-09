@@ -36,6 +36,8 @@ import org.hisp.dhis.android.network.program.ProgramSectionDTO
 import org.junit.Test
 
 class ProgramSection32Should : CoreObjectShould("program/program_section_32_and_previous.json") {
+    override fun roundTripSerializer() = ProgramSectionDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val programSectionDTO = deserialize(ProgramSectionDTO.serializer())

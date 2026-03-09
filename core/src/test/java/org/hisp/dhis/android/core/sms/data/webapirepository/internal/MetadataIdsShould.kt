@@ -35,6 +35,8 @@ import org.junit.Test
 
 class MetadataIdsShould : CoreObjectShould("sms/metadata_ids.json") {
 
+    override fun roundTripSerializer() = MetadataIdsDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val metadataIdsDTO = deserialize(MetadataIdsDTO.serializer())

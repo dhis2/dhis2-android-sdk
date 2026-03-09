@@ -35,6 +35,8 @@ import org.junit.Test
 
 class ExpressionDimensionItemShould : CoreObjectShould("expressiondimensionitem/expression_dimension_item.json") {
 
+    override fun roundTripSerializer() = ExpressionDimensionItemDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val itemDTO = deserialize(ExpressionDimensionItemDTO.serializer())

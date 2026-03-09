@@ -34,6 +34,8 @@ import org.junit.Test
 
 class TrackedEntityTypeAttributeShould : CoreObjectShould("trackedentity/tracked_entity_type_attribute.json") {
 
+    override fun roundTripSerializer() = TrackedEntityTypeAttributeDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val typeAttributeDTO = deserialize(TrackedEntityTypeAttributeDTO.serializer())

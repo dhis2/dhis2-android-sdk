@@ -37,6 +37,8 @@ import org.junit.Test
 
 class JobReportErrorShould : CoreObjectShould("tracker/importer/jobreport-error.json") {
 
+    override fun roundTripSerializer() = JobReportDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val jobReportDTO = deserialize(JobReportDTO.serializer())

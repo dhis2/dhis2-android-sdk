@@ -34,6 +34,8 @@ import org.junit.Test
 
 class HttpMessageBreakGlassSuccessfulShould : CoreObjectShould("trackedentity/glass/break_glass_successful.json") {
 
+    override fun roundTripSerializer() = HttpMessageResponseDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val responseDTO = deserialize(HttpMessageResponseDTO.serializer())

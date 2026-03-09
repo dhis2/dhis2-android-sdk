@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.common
 
+import com.google.common.truth.Truth.assertThat
 import kotlinx.datetime.TimeZone
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext
 import org.hisp.dhis.android.core.arch.helpers.DateTimezoneConverter
@@ -35,6 +36,7 @@ import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.category.internal.DefaultCategoryComboManager
 import org.hisp.dhis.android.core.systeminfo.internal.ServerTimezoneManager
 import org.junit.Before
+import org.junit.Test
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import org.mockito.kotlin.doReturn
@@ -78,6 +80,21 @@ abstract class CoreObjectShould(private val jsonPath: String) {
     }
 
     abstract fun map_from_json_string()
+
+    internal open fun roundTripSerializer(): kotlinx.serialization.KSerializer<out Any>? = null
+
+    @Test
+    open fun round_trip_json_serialization() {
+        val serializer = roundTripSerializer() ?: return
+
+        @Suppress("UNCHECKED_CAST")
+        val typedSerializer = serializer as kotlinx.serialization.KSerializer<Any>
+        val original = deserialize(typedSerializer)
+        val serialized = serialize(original, typedSerializer)
+        val deserialized = deserialize(serialized, typedSerializer)
+        val reserialized = serialize(deserialized, typedSerializer)
+        assertThat(reserialized).isEqualTo(serialized)
+    }
 
     protected fun <T> deserialize(serializer: kotlinx.serialization.KSerializer<T>): T {
         return deserializePath(jsonPath, serializer)

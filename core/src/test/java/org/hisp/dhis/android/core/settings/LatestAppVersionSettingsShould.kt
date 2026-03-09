@@ -34,6 +34,8 @@ import org.junit.Test
 
 class LatestAppVersionSettingsShould : CoreObjectShould("settings/latest_app_version.json") {
 
+    override fun roundTripSerializer() = LatestAppVersionDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val latestAppVersioDTO = deserialize(LatestAppVersionDTO.serializer())

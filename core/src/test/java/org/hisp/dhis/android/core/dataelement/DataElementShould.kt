@@ -35,6 +35,8 @@ import org.hisp.dhis.android.network.dataelement.DataElementDTO
 import org.junit.Test
 
 class DataElementShould : CoreObjectShould("dataelement/data_element.json") {
+    override fun roundTripSerializer() = DataElementDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val dataElementDTO = deserialize(DataElementDTO.serializer())

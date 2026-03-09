@@ -35,6 +35,8 @@ import org.junit.Test
 
 class LoginConfigShould : CoreObjectShould("server/login_config.json") {
 
+    override fun roundTripSerializer() = LoginConfigDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val loginConfigDTO = deserialize(LoginConfigDTO.serializer())

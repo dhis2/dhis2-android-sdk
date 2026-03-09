@@ -35,6 +35,8 @@ import org.junit.Test
 
 class ValidationRuleBrokenShould : CoreObjectShould("validation/validation_rule_broken.json") {
 
+    override fun roundTripSerializer() = ValidationRuleDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val validationRule = deserialize(ValidationRuleDTO.serializer()).toDomain()

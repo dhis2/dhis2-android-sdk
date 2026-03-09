@@ -36,6 +36,8 @@ import org.junit.Test
 
 class DatabasesConfigurationShould : CoreObjectShould("configuration/databases_configuration.json") {
 
+    override fun roundTripSerializer() = DatabasesConfigurationDB.serializer()
+
     @Test
     override fun map_from_json_string() {
         val configurationDao = deserialize(DatabasesConfigurationDB.serializer())

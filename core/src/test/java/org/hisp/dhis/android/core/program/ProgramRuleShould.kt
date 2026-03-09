@@ -35,6 +35,8 @@ import org.junit.Test
 
 class ProgramRuleShould : CoreObjectShould("program/program_rule.json") {
 
+    override fun roundTripSerializer() = ProgramRuleDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val programRuleDTO = deserialize(ProgramRuleDTO.serializer())

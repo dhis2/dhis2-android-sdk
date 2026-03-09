@@ -40,6 +40,8 @@ class DataValueImportSummaryWebResponseShould : CoreObjectShould(
     "imports/data_value_import_summary_web_response.json",
 ) {
 
+    override fun roundTripSerializer() = DataValueImportSummaryWebResponseDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val webResponseDTO = deserialize(DataValueImportSummaryWebResponseDTO.serializer())

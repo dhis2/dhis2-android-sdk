@@ -35,6 +35,8 @@ import org.junit.Test
 import java.io.IOException
 
 class GeneralSettingsV1Should : CoreObjectShould("settings/general_settings_v1.json") {
+    override fun roundTripSerializer() = GeneralSettingsDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val generalSettingsDTO = deserialize(GeneralSettingsDTO.serializer())

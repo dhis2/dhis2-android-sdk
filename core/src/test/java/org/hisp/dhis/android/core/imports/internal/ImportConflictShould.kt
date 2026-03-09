@@ -36,6 +36,8 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class ImportConflictShould : CoreObjectShould("imports/import_conflict.json") {
+    override fun roundTripSerializer() = ImportConflictDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val importConflictDTO = deserialize(ImportConflictDTO.serializer())

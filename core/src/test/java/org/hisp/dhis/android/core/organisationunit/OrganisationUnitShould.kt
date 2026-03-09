@@ -39,6 +39,8 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class OrganisationUnitShould : CoreObjectShould("organisationunit/organisation_unit.json") {
 
+    override fun roundTripSerializer() = OrganisationUnitDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val organisationUnitDTO = deserialize(OrganisationUnitDTO.serializer())

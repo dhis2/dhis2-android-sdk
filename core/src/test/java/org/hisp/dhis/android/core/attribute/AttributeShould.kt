@@ -36,6 +36,8 @@ import org.junit.Test
 
 class AttributeShould : CoreObjectShould("attribute/attribute.json") {
 
+    override fun roundTripSerializer() = AttributeDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val attributeDTO = deserialize(AttributeDTO.serializer())

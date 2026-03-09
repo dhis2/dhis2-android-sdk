@@ -40,6 +40,8 @@ import org.hisp.dhis.android.network.dataset.DataSetDTO
 import org.junit.Test
 
 class DataSetShould : CoreObjectShould("dataset/data_set.json") {
+    override fun roundTripSerializer() = DataSetDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val dataSetDTO = deserialize(DataSetDTO.serializer())

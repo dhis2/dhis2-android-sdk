@@ -35,6 +35,8 @@ import org.hisp.dhis.android.network.dataset.DataInputPeriodDTO
 import org.junit.Test
 
 class DataInputPeriodShould : CoreObjectShould("dataset/data_input_period.json") {
+    override fun roundTripSerializer() = DataInputPeriodDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val dataInputPeriodDTO = deserialize(DataInputPeriodDTO.serializer())

@@ -37,6 +37,8 @@ import org.junit.Test
 
 class NewTrackerImporterEventShould : CoreObjectShould("event/new_tracker_importer_event.json") {
 
+    override fun roundTripSerializer() = NewEventDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val eventDTO = deserialize(NewEventDTO.serializer())

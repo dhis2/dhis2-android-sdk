@@ -36,6 +36,8 @@ class NewTrackerImporterEventPayloadLowerV41Should : CoreObjectShould(
     "event/new_tracker_importer_events_lower_v41.json",
 ) {
 
+    override fun roundTripSerializer() = NewEventPayload.serializer()
+
     @Test
     override fun map_from_json_string() {
         val eventPayloadDTO = deserialize(NewEventPayload.serializer())

@@ -35,6 +35,8 @@ import org.junit.Test
 
 class CategoryOptionComboShould : CoreObjectShould("category/category_option_combo.json") {
 
+    override fun roundTripSerializer() = CategoryOptionComboDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val categoryOptionComboDTO = deserialize(CategoryOptionComboDTO.serializer())

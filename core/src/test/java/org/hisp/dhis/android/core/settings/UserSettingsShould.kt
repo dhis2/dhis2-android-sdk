@@ -33,6 +33,8 @@ import org.hisp.dhis.android.network.usersettings.UserSettingsDTO
 import org.junit.Test
 
 class UserSettingsShould : CoreObjectShould("settings/user_settings.json") {
+    override fun roundTripSerializer() = UserSettingsDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val userSettingsDTO = deserialize(UserSettingsDTO.serializer())

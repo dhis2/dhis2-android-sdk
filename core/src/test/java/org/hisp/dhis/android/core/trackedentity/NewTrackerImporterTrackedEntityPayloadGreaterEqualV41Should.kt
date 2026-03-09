@@ -36,6 +36,8 @@ class NewTrackerImporterTrackedEntityPayloadGreaterEqualV41Should : CoreObjectSh
     "trackedentity/new_tracker_importer_tracked_entities_greater_equal_v41.json",
 ) {
 
+    override fun roundTripSerializer() = NewTrackedEntityPayload.serializer()
+
     @Test
     override fun map_from_json_string() {
         val trackedEntityPayloadDTO = deserialize(NewTrackedEntityPayload.serializer())

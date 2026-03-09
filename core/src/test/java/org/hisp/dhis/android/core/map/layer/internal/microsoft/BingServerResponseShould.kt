@@ -34,6 +34,8 @@ import org.hisp.dhis.android.network.bing.BingServerResponseDTO
 import org.junit.Test
 
 class BingServerResponseShould : CoreObjectShould("map/layer/microsoft/bing_server_response.json") {
+    override fun roundTripSerializer() = BingServerResponseDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val bingServerResponseDTO = deserialize(BingServerResponseDTO.serializer())

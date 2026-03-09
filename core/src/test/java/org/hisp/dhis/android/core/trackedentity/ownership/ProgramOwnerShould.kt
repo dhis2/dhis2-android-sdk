@@ -34,6 +34,8 @@ import org.junit.Test
 
 class ProgramOwnerShould : CoreObjectShould("trackedentity/ownership/program_owner.json") {
 
+    override fun roundTripSerializer() = ProgramOwnerDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val programOwnerDTO = deserialize(ProgramOwnerDTO.serializer())

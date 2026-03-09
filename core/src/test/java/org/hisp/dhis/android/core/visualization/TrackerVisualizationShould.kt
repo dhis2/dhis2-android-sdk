@@ -36,6 +36,8 @@ import org.junit.Test
 
 class TrackerVisualizationShould : CoreObjectShould("visualization/tracker_visualization.json") {
 
+    override fun roundTripSerializer() = TrackerVisualizationDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val visualizationDTO = deserialize(TrackerVisualizationDTO.serializer())

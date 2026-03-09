@@ -37,6 +37,8 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class TEIImportSummariesShould : CoreObjectShould("imports/import_summaries.json") {
+    override fun roundTripSerializer() = TEIImportSummariesDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val importSummariesDTO = deserialize(TEIImportSummariesDTO.serializer())

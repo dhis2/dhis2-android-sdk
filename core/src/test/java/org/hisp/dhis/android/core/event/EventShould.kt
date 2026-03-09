@@ -35,6 +35,8 @@ import org.hisp.dhis.android.network.event.EventDTO
 import org.junit.Test
 
 class EventShould : CoreObjectShould("event/event.json") {
+    override fun roundTripSerializer() = EventDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val eventDTO = deserialize(EventDTO.serializer())

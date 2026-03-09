@@ -34,6 +34,8 @@ import org.hisp.dhis.android.network.datavalue.DataValueDTO
 import org.junit.Test
 
 class DataValueShould : CoreObjectShould("datavalue/data_value.json") {
+    override fun roundTripSerializer() = DataValueDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val dataValueDTO = deserialize(DataValueDTO.serializer())

@@ -37,6 +37,8 @@ class NewTrackerImporterTrackedEntityAttributeValueShould : CoreObjectShould(
     "trackedentity/new_tracker_importer_tracked_entity_attribute_value.json",
 ) {
 
+    override fun roundTripSerializer() = NewTrackedEntityAttributeValueDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val dataValueDTO = deserialize(NewTrackedEntityAttributeValueDTO.serializer())

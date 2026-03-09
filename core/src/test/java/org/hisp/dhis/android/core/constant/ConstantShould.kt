@@ -35,6 +35,8 @@ import org.junit.Test
 
 class ConstantShould : CoreObjectShould("constant/constant.json") {
 
+    override fun roundTripSerializer() = ConstantDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val constantDTO = deserialize(ConstantDTO.serializer())

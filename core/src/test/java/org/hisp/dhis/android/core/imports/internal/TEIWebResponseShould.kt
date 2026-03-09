@@ -36,6 +36,8 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class TEIWebResponseShould : CoreObjectShould("imports/web_response.json") {
+    override fun roundTripSerializer() = TEIWebResponseDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val webResponseDto = deserialize(TEIWebResponseDTO.serializer())

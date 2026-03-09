@@ -33,6 +33,8 @@ import org.hisp.dhis.android.network.attribute.AttributeValueDTO
 import org.junit.Test
 
 class AttributeValueShould : CoreObjectShould("attribute/attributeValue.json") {
+    override fun roundTripSerializer() = AttributeValueDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val attributeValueDTO = deserialize(AttributeValueDTO.serializer())

@@ -34,6 +34,8 @@ import org.junit.Test
 
 class DataApprovalShould : CoreObjectShould("dataapproval/data_approval.json") {
 
+    override fun roundTripSerializer() = DataApprovalDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val dataApprovalDTO = deserialize(DataApprovalDTO.serializer())

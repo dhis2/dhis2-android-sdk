@@ -34,6 +34,8 @@ import org.junit.Test
 
 class QrCodeJsonShould : CoreObjectShould("user/qr-code.json") {
 
+    override fun roundTripSerializer() = QrCodeJsonDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val qrCodeJsonDTO = deserialize(QrCodeJsonDTO.serializer())

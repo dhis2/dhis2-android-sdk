@@ -33,6 +33,8 @@ import org.hisp.dhis.android.network.trackedentityinstance.SearchGridDTO
 import org.junit.Test
 
 class SearchGridShould : CoreObjectShould("trackedentity/search_grid.json") {
+    override fun roundTripSerializer() = SearchGridDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val searchGrid = deserialize(SearchGridDTO.serializer())

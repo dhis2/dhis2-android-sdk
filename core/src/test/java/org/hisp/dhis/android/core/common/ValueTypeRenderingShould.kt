@@ -32,6 +32,8 @@ import org.hisp.dhis.android.network.programstage.ValueTypeRenderingDTO
 import org.junit.Test
 
 class ValueTypeRenderingShould : CoreObjectShould("common/value_type_rendering.json") {
+    override fun roundTripSerializer() = ValueTypeRenderingDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val valueTypeRenderingDTO = deserialize(ValueTypeRenderingDTO.serializer())

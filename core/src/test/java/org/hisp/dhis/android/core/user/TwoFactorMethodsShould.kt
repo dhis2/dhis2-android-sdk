@@ -34,6 +34,8 @@ import org.junit.Test
 
 class TwoFactorMethodsShould : CoreObjectShould("user/two-factor-methods.json") {
 
+    override fun roundTripSerializer() = TwoFactorMethodsDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val twoFactorMethodsDTO = deserialize(TwoFactorMethodsDTO.serializer())

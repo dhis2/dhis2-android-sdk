@@ -35,6 +35,8 @@ import org.junit.Test
 
 class LegendSetShould : CoreObjectShould("legendset/legend_set.json") {
 
+    override fun roundTripSerializer() = LegendSetDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val legendSetDTO = deserialize(LegendSetDTO.serializer())

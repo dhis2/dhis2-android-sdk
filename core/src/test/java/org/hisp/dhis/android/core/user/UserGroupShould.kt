@@ -35,6 +35,8 @@ import org.junit.Test
 
 class UserGroupShould : CoreObjectShould("user/user_group.json") {
 
+    override fun roundTripSerializer() = UserGroupDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val userGroupDTO = deserialize(UserGroupDTO.serializer())

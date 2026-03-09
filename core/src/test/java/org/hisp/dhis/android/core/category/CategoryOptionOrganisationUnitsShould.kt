@@ -34,6 +34,8 @@ import org.junit.Test
 
 class CategoryOptionOrganisationUnitsShould : CoreObjectShould("category/category_option_orgunits.json") {
 
+    override fun roundTripSerializer() = CategoryOptionOrganisationUnitsDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val categoryOptionOrganisationUnitsDTO = deserialize(CategoryOptionOrganisationUnitsDTO.serializer())

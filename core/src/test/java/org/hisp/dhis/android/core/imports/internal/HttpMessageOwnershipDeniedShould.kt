@@ -34,6 +34,8 @@ import org.junit.Test
 
 class HttpMessageOwnershipDeniedShould : CoreObjectShould("trackedentity/glass/glass_protected_tei_failure.json") {
 
+    override fun roundTripSerializer() = HttpMessageResponseDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val responseDTO = deserialize(HttpMessageResponseDTO.serializer())

@@ -33,6 +33,8 @@ import org.junit.Test
 class TrackedEntityInstanceFilter37Should :
     TrackedEntityInstanceFilterCommonShould("trackedentity/tracked_entity_instance_filter_v_37.json") {
 
+    override fun roundTripSerializer() = TrackedEntityInstanceFilter37DTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val trackedEntityInstanceFilter37DTO = deserialize(TrackedEntityInstanceFilter37DTO.serializer())

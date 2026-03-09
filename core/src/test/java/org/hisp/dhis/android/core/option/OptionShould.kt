@@ -35,6 +35,8 @@ import org.junit.Test
 
 class OptionShould : CoreObjectShould("option/option.json") {
 
+    override fun roundTripSerializer() = OptionDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val optionDTO = deserialize(OptionDTO.serializer())

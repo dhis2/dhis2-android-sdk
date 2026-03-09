@@ -37,6 +37,8 @@ import org.junit.Test
 
 class ProgramIndicatorShould : CoreObjectShould("program/program_indicator.json") {
 
+    override fun roundTripSerializer() = ProgramIndicatorDTO.serializer()
+
     @Test
     override fun map_from_json_string() {
         val programIndicatorDTO = deserialize(ProgramIndicatorDTO.serializer())

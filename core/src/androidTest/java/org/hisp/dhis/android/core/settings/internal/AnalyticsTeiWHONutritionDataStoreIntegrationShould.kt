@@ -46,5 +46,4 @@ class AnalyticsTeiWHONutritionDataStoreIntegrationShould :
     override fun buildObject(): AnalyticsTeiWHONutritionData {
         return AnalyticsSettingsSamples.analyticsTeiWHONutritionData
     }
-
 }

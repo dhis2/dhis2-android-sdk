@@ -42,6 +42,7 @@ class SystemSettingSplitterShould {
         keyCustomColorMobile = null,
         keyDefaultBaseMap = "aDefaultBaseMap",
         keyBingMapsApiKey = null,
+        keyAzureMapsApiKey = null,
         analyticsFinancialYearStart = null,
         analyticsWeekStart = null,
     )

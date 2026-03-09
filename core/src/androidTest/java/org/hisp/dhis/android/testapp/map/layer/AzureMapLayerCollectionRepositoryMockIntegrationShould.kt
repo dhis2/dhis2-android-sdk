@@ -214,7 +214,8 @@ class AzureMapLayerCollectionRepositoryMockIntegrationShould : BaseMockIntegrati
         fun setUp() {
             setUpClass()
 
-            dhis2MockServer.enqueueMockResponse("settings/system_settings.json")
+            // Azure API key request (keyAzureMapsApiKey in response -> uses Azure path)
+            dhis2MockServer.enqueueMockResponse("settings/system_settings_azure.json")
             // azureLight (1 style - success)
             dhis2MockServer.enqueueMockResponse("map/layer/microsoft/azure_server_response.json")
             // azureDark (1 style - fails with 401, but not first so continues without Bing fallback)
@@ -224,6 +225,7 @@ class AzureMapLayerCollectionRepositoryMockIntegrationShould : BaseMockIntegrati
             // azureHybrid (2 styles: imagery + hybrid.road - both success)
             dhis2MockServer.enqueueMockResponse("map/layer/microsoft/azure_server_response.json")
             dhis2MockServer.enqueueMockResponse("map/layer/microsoft/azure_server_response.json")
+            // Azure layers non-empty -> returns early, no Bing key fetch needed
             // external map layers
             dhis2MockServer.enqueueMockResponse("map/layer/externalmap/external_map_layers.json")
 

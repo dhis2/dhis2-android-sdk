@@ -52,4 +52,14 @@ internal class ProgramRuleActionStoreIntegrationShould :
             .data("newData")
             .build()
     }
+
+    override fun buildObjectWithNullableFields(): ProgramRuleAction {
+        return buildObject().toBuilder()
+            .data(null)
+            .content(null)
+            .location(null)
+            .trackedEntityAttribute(null)
+            .programIndicator(null)
+            .build()
+    }
 }

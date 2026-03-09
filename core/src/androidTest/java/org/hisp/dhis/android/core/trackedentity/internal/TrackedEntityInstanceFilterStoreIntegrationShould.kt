@@ -52,4 +52,13 @@ class TrackedEntityInstanceFilterStoreIntegrationShould :
             .description("new_description")
             .build()
     }
+
+    override fun buildObjectWithNullableFields(): TrackedEntityInstanceFilter {
+        return buildObject().toBuilder()
+            .description(null)
+            .sortOrder(null)
+            .entityQueryCriteria(null)
+            .eventFilters(null)
+            .build()
+    }
 }

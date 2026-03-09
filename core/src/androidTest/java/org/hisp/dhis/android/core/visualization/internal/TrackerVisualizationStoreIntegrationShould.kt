@@ -53,4 +53,13 @@ class TrackerVisualizationStoreIntegrationShould :
             .type(TrackerVisualizationType.LINE)
             .build()
     }
+
+    override fun buildObjectWithNullableFields(): TrackerVisualization {
+        return buildObject().toBuilder()
+            .description(null)
+            .displayDescription(null)
+            .type(null)
+            .outputType(null)
+            .build()
+    }
 }

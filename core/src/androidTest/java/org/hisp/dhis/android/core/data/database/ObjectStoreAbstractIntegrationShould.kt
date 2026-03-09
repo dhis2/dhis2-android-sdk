@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.common.CoreObject
 import org.junit.After
+import org.junit.Assume
 import org.junit.Before
 import org.junit.Test
 import java.io.IOException
@@ -126,7 +127,9 @@ abstract class ObjectStoreAbstractIntegrationShould<M : CoreObject> internal con
 
     @Test
     fun insert_and_select_object_with_nullable_fields() = runTest {
-        val nullableObject = buildObjectWithNullableFields() ?: return@runTest
+        val nullableObject = buildObjectWithNullableFields()
+        Assume.assumeNotNull(nullableObject)
+        nullableObject!!
         store.insert(nullableObject)
         val objectFromDb = store.selectFirst()
         assertThat(objectFromDb).isEqualTo(nullableObject)
@@ -134,7 +137,9 @@ abstract class ObjectStoreAbstractIntegrationShould<M : CoreObject> internal con
 
     @Test
     fun update_object_with_nullable_fields() = runTest {
-        val nullableObject = buildObjectWithNullableFields() ?: return@runTest
+        val nullableObject = buildObjectWithNullableFields()
+        Assume.assumeNotNull(nullableObject)
+        nullableObject!!
         store.insert(nullableObject)
         store.update(listOf(nullableObject))
         val objectFromDb = store.selectFirst()
@@ -143,7 +148,9 @@ abstract class ObjectStoreAbstractIntegrationShould<M : CoreObject> internal con
 
     @Test
     fun upsert_object_with_nullable_fields() = runTest {
-        val nullableObject = buildObjectWithNullableFields() ?: return@runTest
+        val nullableObject = buildObjectWithNullableFields()
+        Assume.assumeNotNull(nullableObject)
+        nullableObject!!
         store.updateOrInsert(nullableObject)
         val objectFromDb = store.selectFirst()
         assertThat(objectFromDb).isEqualTo(nullableObject)

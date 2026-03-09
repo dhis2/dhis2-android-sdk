@@ -52,4 +52,10 @@ class ExpressionDimensionItemStoreIntegrationShould :
             .expression("#{fbfJHSPpUQD}")
             .build()
     }
+
+    override fun buildObjectWithNullableFields(): ExpressionDimensionItem {
+        return buildObject().toBuilder()
+            .expression(null)
+            .build()
+    }
 }

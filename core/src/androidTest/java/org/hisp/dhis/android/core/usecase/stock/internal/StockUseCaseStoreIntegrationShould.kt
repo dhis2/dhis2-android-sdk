@@ -51,4 +51,12 @@ class StockUseCaseStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegr
             .stockOnHand("new_stock_on_hand")
             .build()
     }
+
+    override fun buildObjectWithNullableFields(): InternalStockUseCase {
+        return buildObject().toBuilder()
+            .itemDescription(null)
+            .description(null)
+            .stockOnHand(null)
+            .build()
+    }
 }

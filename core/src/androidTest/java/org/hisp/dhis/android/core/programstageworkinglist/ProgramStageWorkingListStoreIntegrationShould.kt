@@ -53,4 +53,11 @@ class ProgramStageWorkingListStoreIntegrationShould :
             .programStage(ObjectWithUid.create("other_program_stage"))
             .build()
     }
+
+    override fun buildObjectWithNullableFields(): ProgramStageWorkingList {
+        return buildObject().toBuilder()
+            .description(null)
+            .programStageQueryCriteria(null)
+            .build()
+    }
 }

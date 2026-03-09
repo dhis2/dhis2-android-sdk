@@ -45,4 +45,15 @@ class ProgramStageWorkingListEventDataFilterStoreIntegrationShould :
     override fun buildObject(): ProgramStageWorkingListEventDataFilter {
         return ProgramStageWorkingListEventDataFilterSamples.get()
     }
+
+    override fun buildObjectWithNullableFields(): ProgramStageWorkingListEventDataFilter {
+        return buildObject().toBuilder()
+            .le(null)
+            .ge(null)
+            .gt(null)
+            .lt(null)
+            .like(null)
+            .dateFilter(null)
+            .build()
+    }
 }

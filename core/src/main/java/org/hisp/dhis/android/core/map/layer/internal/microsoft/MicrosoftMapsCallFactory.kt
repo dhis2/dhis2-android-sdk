@@ -62,13 +62,24 @@ internal class MicrosoftMapsCallFactory(
         if (!versionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_34)) return emptyList()
 
         return runCatching {
-            val key = coroutineExecutor.wrap(storeError = true) { networkHandler.getBingApiKey() }
+            val azureKey = coroutineExecutor.wrap(storeError = true) { networkHandler.getAzureApiKey() }
                 .getOrNull()?.value()
-            if (key.isNullOrBlank()) return@runCatching emptyList()
 
-            val azureLayers = downloadWithTimeout(key, AzureBasemaps.list, ::downloadAzureBasemap, true)
+            if (!azureKey.isNullOrBlank()) {
+                val azureLayers = downloadWithTimeout(azureKey, AzureBasemaps.list, ::downloadAzureBasemap, true)
+                if (azureLayers.isNotEmpty()) {
+                    mapLayerHandler.handleMany(azureLayers)
+                    return@runCatching azureLayers
+                }
+            }
+
+            val bingKey = coroutineExecutor.wrap(storeError = true) { networkHandler.getBingApiKey() }
+                .getOrNull()?.value()
+            if (bingKey.isNullOrBlank()) return@runCatching emptyList()
+
+            val azureLayers = downloadWithTimeout(bingKey, AzureBasemaps.list, ::downloadAzureBasemap, true)
             val resultLayers = azureLayers.takeIf { it.isNotEmpty() }
-                ?: downloadWithTimeout(key, BingBasemaps.list, ::downloadBingBasemap)
+                ?: downloadWithTimeout(bingKey, BingBasemaps.list, ::downloadBingBasemap)
 
             mapLayerHandler.handleMany(resultLayers)
             resultLayers

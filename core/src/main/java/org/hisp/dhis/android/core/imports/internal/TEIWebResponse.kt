@@ -26,48 +26,22 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.core.imports.internal
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import org.hisp.dhis.android.core.imports.ImportStatus;
-
-import java.util.List;
-
-public abstract class BaseImportSummary implements ImportSummary {
-
-    @NonNull
-    public abstract ImportCount importCount();
-
-    @NonNull
-    public abstract ImportStatus status();
-
-    @NonNull
-    public abstract String responseType();
-
-    //TODO: Reference SHOULD be annotated with NotNull. This is just a bug in ImportSummary response from server.
-    @Nullable
-    public abstract String reference();
-
-    @Nullable
-    public abstract List<ImportConflict> conflicts();
-
-    @Nullable
-    public abstract String description();
-
-    public abstract static class Builder<T extends Builder> {
-
-        public abstract T importCount(ImportCount importCount);
-
-        public abstract T status(ImportStatus status);
-
-        public abstract T responseType(String responseType);
-
-        public abstract T reference(String reference);
-
-        public abstract T conflicts(List<ImportConflict> conflicts);
-
-        public abstract T description(String description);
+internal data class TEIWebResponse(
+    override val httpStatus: String,
+    override val httpStatusCode: Int,
+    override val status: String,
+    override val message: String,
+    val response: TEIImportSummaries?,
+) : WebResponse {
+    companion object {
+        fun empty() = TEIWebResponse(
+            httpStatus = "SUCCESS",
+            httpStatusCode = 200,
+            message = "Emtpy response",
+            status = "OK",
+            response = null,
+        )
     }
 }

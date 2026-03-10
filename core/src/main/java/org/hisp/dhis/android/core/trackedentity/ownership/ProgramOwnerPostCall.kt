@@ -52,7 +52,7 @@ internal class ProgramOwnerPostCall(
         response.fold(
             onSuccess = { messageResponse ->
                 @Suppress("MagicNumber")
-                if (messageResponse.httpStatusCode() == 200) {
+                if (messageResponse.httpStatusCode == 200) {
                     val syncedProgramOwner = programOwner.toBuilder().syncState(State.SYNCED).build()
                     programOwnerStore.updateOrInsertWhere(syncedProgramOwner)
                     dataStatePropagator.refreshTrackedEntityInstanceAggregatedSyncState(

@@ -53,11 +53,11 @@ internal object InvalidDataValueConflict : TrackerImportConflictItem {
     override val errorCode: String = ""
 
     override fun matches(conflict: ImportConflict): Boolean {
-        return errorList.contains(conflict.value())
+        return errorList.contains(conflict.value)
     }
 
     override fun getDataElement(conflict: ImportConflict): String? {
-        return conflict.`object`()
+        return conflict.`object`
     }
 
     override suspend fun getDisplayDescription(
@@ -70,6 +70,6 @@ internal object InvalidDataValueConflict : TrackerImportConflictItem {
                 description(name)
             }
         }
-            ?: conflict.value()
+            ?: conflict.value
     }
 }

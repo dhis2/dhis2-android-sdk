@@ -46,8 +46,8 @@ internal class PastExpiryDateConflict(
 
     override suspend fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict> {
         val foundDataValuesConflicts: MutableList<DataValueConflict> = ArrayList()
-        val period = conflict.`object`()
-        val dataSetUid = regex.find(conflict.value())?.groupValues?.get(2)
+        val period = conflict.`object`
+        val dataSetUid = regex.find(conflict.value)?.groupValues?.get(2)
         dataValues.forEach { dataValue ->
             if (dataValue.period() == period &&
                 dataSetUid?.let { dataValueStore.existsInDataSet(dataValue, it) } == true
@@ -68,5 +68,5 @@ internal class PastExpiryDateConflict(
     private suspend fun getDisplayDescription(conflict: ImportConflict, dataValue: DataValue, dataSetUid: String) =
         dataSetStore.selectByUid(dataSetUid)?.let { dataSet ->
             "Current date is past expiry days for period ${dataValue.period()} and data set: ${dataSet.displayName()}"
-        } ?: conflict.value()
+        } ?: conflict.value
 }

@@ -39,9 +39,9 @@ class HttpMessageClosedProgramShould : CoreObjectShould("trackedentity/glass/clo
         val responseDTO = deserialize(HttpMessageResponseDTO.serializer())
         val response = responseDTO.toDomain()
 
-        assertThat(response.httpStatus()).isEqualTo("Unauthorized")
-        assertThat(response.httpStatusCode()).isEqualTo(401)
-        assertThat(response.status()).isEqualTo("ERROR")
-        assertThat(response.message()).isEqualTo("PROGRAM_ACCESS_CLOSED")
+        assertThat(response.httpStatus).isEqualTo("Unauthorized")
+        assertThat(response.httpStatusCode).isEqualTo(401)
+        assertThat(response.status).isEqualTo("ERROR")
+        assertThat(response.message).isEqualTo("PROGRAM_ACCESS_CLOSED")
     }
 }

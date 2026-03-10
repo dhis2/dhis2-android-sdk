@@ -40,11 +40,11 @@ internal object FileResourceAlreadyAssignedConflict : TrackerImportConflictItem 
     override val errorCode: String = "E1009"
 
     override fun matches(conflict: ImportConflict): Boolean {
-        return regex.matches(conflict.value())
+        return regex.matches(conflict.value)
     }
 
     override fun getFileResource(conflict: ImportConflict): String? {
-        return regex.find(conflict.value())?.groupValues?.get(1)
+        return regex.find(conflict.value)?.groupValues?.get(1)
     }
 
     override suspend fun getDisplayDescription(
@@ -54,6 +54,6 @@ internal object FileResourceAlreadyAssignedConflict : TrackerImportConflictItem 
         return getFileResource(conflict)?.let { fileResourceUid ->
             description(fileResourceUid)
         }
-            ?: conflict.value()
+            ?: conflict.value
     }
 }

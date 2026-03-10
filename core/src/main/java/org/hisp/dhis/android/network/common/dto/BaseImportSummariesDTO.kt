@@ -28,9 +28,6 @@
 
 package org.hisp.dhis.android.network.common.dto
 
-import org.hisp.dhis.android.core.imports.ImportStatus
-import org.hisp.dhis.android.core.imports.internal.BaseImportSummaries
-
 internal interface BaseImportSummariesDTO {
     val status: String
     val responseType: String
@@ -38,15 +35,4 @@ internal interface BaseImportSummariesDTO {
     val updated: Int
     val deleted: Int
     val ignored: Int
-}
-
-internal fun <T> T.applyImportSummariesFields(item: BaseImportSummariesDTO): T where
-      T : BaseImportSummaries.Builder<T> {
-    status(ImportStatus.valueOf(item.status))
-    responseType(item.responseType)
-    imported(item.imported)
-    updated(item.updated)
-    deleted(item.deleted)
-    ignored(item.ignored)
-    return this
 }

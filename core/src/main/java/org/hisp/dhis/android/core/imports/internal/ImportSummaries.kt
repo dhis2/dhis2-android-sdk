@@ -26,12 +26,8 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.core.imports.internal
 
-import java.util.List;
-
-interface ImportSummaries<M extends ImportSummary> {
-
-    List<M> importSummaries();
-
+internal interface ImportSummaries<M : ImportSummary> {
+    val importSummaries: List<M>?
 }

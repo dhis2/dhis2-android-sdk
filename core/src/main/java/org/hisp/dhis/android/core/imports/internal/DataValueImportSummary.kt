@@ -26,35 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.core.imports.internal
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.core.imports.ImportStatus
 
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class EventWebResponse extends WebResponse {
-
-    @Nullable
-    public abstract EventImportSummaries response();
-
-    public static Builder builder() {
-        return new AutoValue_EventWebResponse.Builder();
-    }
-
-    public static EventWebResponse empty() {
-        return builder()
-                .httpStatus("SUCCESS")
-                .httpStatusCode(200)
-                .message("Emtpy response")
-                .status("OK")
-                .build();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder extends WebResponse.Builder<Builder> {
-        public abstract Builder response(EventImportSummaries response);
-
-        public abstract EventWebResponse build();
+internal data class DataValueImportSummary(
+    val importCount: ImportCount,
+    val importStatus: ImportStatus,
+    val responseType: String,
+    // Reference SHOULD be annotated with NotNull. This is just a bug in ImportSummary response from server.
+    val reference: String?,
+    val importConflicts: List<ImportConflict>?,
+) {
+    companion object {
+        val EMPTY = DataValueImportSummary(
+            importCount = ImportCount.EMPTY,
+            importStatus = ImportStatus.SUCCESS,
+            responseType = "ImportSummary",
+            reference = null,
+            importConflicts = null,
+        )
     }
 }

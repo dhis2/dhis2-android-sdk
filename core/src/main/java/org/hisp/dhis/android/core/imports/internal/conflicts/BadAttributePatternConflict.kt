@@ -36,13 +36,13 @@ internal object BadAttributePatternConflict : TrackerImportConflictItem {
     override val errorCode: String = "E1008"
 
     override fun matches(conflict: ImportConflict): Boolean {
-        return error == conflict.value()
+        return error == conflict.value
     }
 
     override suspend fun getDisplayDescription(
         conflict: ImportConflict,
         context: TrackerImportConflictItemContext,
     ): String {
-        return conflict.value()
+        return conflict.value
     }
 }

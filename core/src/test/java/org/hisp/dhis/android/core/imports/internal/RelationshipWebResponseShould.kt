@@ -40,8 +40,8 @@ class RelationshipWebResponseShould : CoreObjectShould("imports/relationship_web
     override fun map_from_json_string() {
         val webResponse = deserialize(RelationshipWebResponseDTO.serializer()).toDomain()
 
-        assertThat(webResponse.message()).isEqualTo("Import was successful.")
-        assertThat(webResponse.response()).isNotNull()
+        assertThat(webResponse.message).isEqualTo("Import was successful.")
+        assertThat(webResponse.response).isNotNull()
     }
 
     @Test
@@ -51,7 +51,7 @@ class RelationshipWebResponseShould : CoreObjectShould("imports/relationship_web
             RelationshipWebResponseDTO.serializer(),
         ).toDomain()
 
-        assertThat(webResponse.message()).isEqualTo("An error occurred, please check import summary.")
-        assertThat(webResponse.response()).isNotNull()
+        assertThat(webResponse.message).isEqualTo("An error occurred, please check import summary.")
+        assertThat(webResponse.response).isNotNull()
     }
 }

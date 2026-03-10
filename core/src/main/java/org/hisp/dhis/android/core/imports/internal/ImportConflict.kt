@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,20 +26,12 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.core.imports.internal
 
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class RelationshipImportSummary extends BaseImportSummary {
-
-    public static Builder builder() {
-        return new AutoValue_RelationshipImportSummary.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseImportSummary.Builder<RelationshipImportSummary.Builder> {
-
-        public abstract RelationshipImportSummary build();
-    }
-}
+internal data class ImportConflict(
+    val `object`: String,
+    val value: String,
+    val errorCode: String? = null,
+    val property: String? = null,
+    val indexes: List<Int>? = null,
+)

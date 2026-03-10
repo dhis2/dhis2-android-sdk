@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
+import org.hisp.dhis.android.core.imports.internal.ImportCount
 import org.hisp.dhis.android.core.imports.internal.RelationshipImportSummary
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
@@ -56,8 +57,6 @@ class RelationshipImportHandlerShould {
         mock(defaultAnswer = Answers.RETURNS_DEEP_STUBS)
 
     private val relationshipObjectRepository: RelationshipObjectRepository = mock()
-
-    private val importSummary: RelationshipImportSummary = mock()
 
     private val relationship: Relationship = mock()
     private val relationshipItem: RelationshipItem = mock()
@@ -88,11 +87,10 @@ class RelationshipImportHandlerShould {
 
     @Test
     fun setStatus_shouldUpdateRelationshipStatusSuccess() = runTest {
-        whenever(importSummary.status()).doReturn(ImportStatus.SUCCESS)
-        whenever(importSummary.reference()).doReturn("test_uid")
+        val summary = createSummary(ImportStatus.SUCCESS, "test_uid")
 
         relationshipImportHandler.handleRelationshipImportSummaries(
-            listOf(importSummary),
+            listOf(summary),
             relationships,
         )
 
@@ -102,11 +100,10 @@ class RelationshipImportHandlerShould {
 
     @Test
     fun setStatus_shouldUpdateRelationshipStatusError() = runTest {
-        whenever(importSummary.status()).doReturn(ImportStatus.ERROR)
-        whenever(importSummary.reference()).doReturn("test_uid")
+        val summary = createSummary(ImportStatus.ERROR, "test_uid")
 
         relationshipImportHandler.handleRelationshipImportSummaries(
-            listOf(importSummary),
+            listOf(summary),
             relationships,
         )
 
@@ -116,14 +113,13 @@ class RelationshipImportHandlerShould {
 
     @Test
     fun mark_as_to_update_relationships_not_present_in_the_response() = runTest {
-        whenever(importSummary.status()).doReturn(ImportStatus.SUCCESS)
-        whenever(importSummary.reference()).doReturn("test_uid")
+        val summary = createSummary(ImportStatus.SUCCESS, "test_uid")
 
         val relationships = listOf(relationship)
         whenever(relationship.uid()).doReturn("missing_uid")
 
         relationshipImportHandler.handleRelationshipImportSummaries(
-            listOf(importSummary),
+            listOf(summary),
             relationships,
         )
 
@@ -136,19 +132,20 @@ class RelationshipImportHandlerShould {
     @Test
     fun delete_relationship_when_not_found_on_server_from_conflicts() = runTest {
         val testUid = "test_uid000"
-        val relationshipNotFoundConflict = ImportConflict.create(
+        val relationshipNotFoundConflict = ImportConflict(
             testUid,
             "Relationship '$testUid' not found.",
         )
 
-        whenever(importSummary.status()).thenReturn(ImportStatus.ERROR)
-        whenever(importSummary.reference()).thenReturn(testUid)
-        whenever(importSummary.conflicts()).thenReturn(listOf(relationshipNotFoundConflict))
-        whenever(importSummary.description()).thenReturn(null)
+        val summary = createSummary(
+            ImportStatus.ERROR,
+            testUid,
+            conflicts = listOf(relationshipNotFoundConflict),
+        )
         whenever(relationshipStore.deleteByEntity(any())).thenReturn(true)
 
         relationshipImportHandler.handleRelationshipImportSummaries(
-            listOf(importSummary),
+            listOf(summary),
             relationships,
         )
 
@@ -160,16 +157,15 @@ class RelationshipImportHandlerShould {
     @Test
     fun delete_relationship_when_already_deleted_on_server_from_description() = runTest {
         val testUid = "test_uid000"
-        whenever(importSummary.status()).thenReturn(ImportStatus.ERROR)
-        whenever(importSummary.reference()).thenReturn(testUid)
-        whenever(importSummary.description()).thenReturn(
-            "Relationship '$testUid' is already deleted and cannot be modified.",
+        val summary = createSummary(
+            ImportStatus.ERROR,
+            testUid,
+            description = "Relationship '$testUid' is already deleted and cannot be modified.",
         )
-        whenever(importSummary.conflicts()).thenReturn(emptyList())
         whenever(relationshipStore.deleteByEntity(any())).thenReturn(true)
 
         relationshipImportHandler.handleRelationshipImportSummaries(
-            listOf(importSummary),
+            listOf(summary),
             relationships,
         )
 
@@ -177,4 +173,18 @@ class RelationshipImportHandlerShould {
         verify(relationshipStore, never()).setSyncStateOrDelete(anyString(), any())
         verify(dataStatePropagator, times(1)).propagateRelationshipUpdate(any())
     }
+
+    private fun createSummary(
+        status: ImportStatus,
+        reference: String,
+        conflicts: List<ImportConflict>? = null,
+        description: String? = null,
+    ) = RelationshipImportSummary(
+        importCount = ImportCount.EMPTY,
+        status = status,
+        responseType = "ImportSummary",
+        reference = reference,
+        conflicts = conflicts,
+        description = description,
+    )
 }

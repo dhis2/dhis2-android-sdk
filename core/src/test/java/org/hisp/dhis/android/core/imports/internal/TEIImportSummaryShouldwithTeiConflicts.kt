@@ -43,23 +43,23 @@ class TEIImportSummaryShouldwithTeiConflicts : CoreObjectShould("imports/import_
         val importSummaryDTO = deserialize(TEIImportSummaryDTO.serializer())
         val importSummary = importSummaryDTO.toDomain()
 
-        assertThat(importSummary.status()).isEqualTo(ImportStatus.ERROR)
-        assertThat(importSummary.responseType()).isEqualTo("ImportSummary")
-        assertThat(importSummary.importCount()).isNotNull()
-        assertThat(importSummary.importCount().imported()).isEqualTo(0)
-        assertThat(importSummary.importCount().updated()).isEqualTo(0)
-        assertThat(importSummary.importCount().ignored()).isEqualTo(1)
-        assertThat(importSummary.importCount().deleted()).isEqualTo(0)
+        assertThat(importSummary.status).isEqualTo(ImportStatus.ERROR)
+        assertThat(importSummary.responseType).isEqualTo("ImportSummary")
+        assertThat(importSummary.importCount).isNotNull()
+        assertThat(importSummary.importCount.imported).isEqualTo(0)
+        assertThat(importSummary.importCount.updated).isEqualTo(0)
+        assertThat(importSummary.importCount.ignored).isEqualTo(1)
+        assertThat(importSummary.importCount.deleted).isEqualTo(0)
 
-        assertThat(importSummary.conflicts()).isNotNull()
-        assertThat(importSummary.conflicts()!!.size).isEqualTo(1)
+        assertThat(importSummary.conflicts).isNotNull()
+        assertThat(importSummary.conflicts!!.size).isEqualTo(1)
 
-        val importConflict = importSummary.conflicts()!![0]
+        val importConflict = importSummary.conflicts!![0]
 
         assertThat(importConflict).isNotNull()
-        assertThat(importConflict.value())
+        assertThat(importConflict.value)
             .isEqualTo("Value '201921212' is not a valid date for attribute iESIqZ0R0R0")
-        assertThat(importConflict.`object`()).isEqualTo("Attribute.value")
+        assertThat(importConflict.`object`).isEqualTo("Attribute.value")
     }
 
     @Test

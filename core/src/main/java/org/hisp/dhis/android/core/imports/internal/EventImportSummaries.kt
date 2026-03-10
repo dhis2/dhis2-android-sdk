@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,44 +26,16 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.core.imports.internal
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.core.imports.ImportStatus
 
-import org.hisp.dhis.android.core.imports.ImportStatus;
-
-public abstract class BaseImportSummaries {
-
-    @NonNull
-    public abstract ImportStatus status();
-
-    @NonNull
-    public abstract String responseType();
-
-    @NonNull
-    public abstract Integer imported();
-
-    @NonNull
-    public abstract Integer updated();
-
-    @NonNull
-    public abstract Integer deleted();
-
-    @NonNull
-    public abstract Integer ignored();
-
-    public abstract static class Builder<T extends Builder> {
-
-        public abstract T status(ImportStatus status);
-
-        public abstract T responseType(String responseType);
-
-        public abstract T imported(Integer imported);
-
-        public abstract T updated(Integer updated);
-
-        public abstract T deleted(Integer deleted);
-
-        public abstract T ignored(Integer ignored);
-    }
-}
+internal data class EventImportSummaries(
+    override val status: ImportStatus,
+    override val responseType: String,
+    override val imported: Int,
+    override val updated: Int,
+    override val deleted: Int,
+    override val ignored: Int,
+    override val importSummaries: List<EventImportSummary>?,
+) : BaseImportSummaries, ImportSummaries<EventImportSummary>

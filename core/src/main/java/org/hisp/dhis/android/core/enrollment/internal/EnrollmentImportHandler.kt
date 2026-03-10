@@ -65,11 +65,11 @@ internal class EnrollmentImportHandler(
         val summary = TEIWebResponseHandlerSummary()
 
         enrollmentImportSummaries?.filterNotNull()?.forEach { enrollmentImportSummary ->
-            enrollmentImportSummary.reference()?.let { enrollmentUid ->
+            enrollmentImportSummary.reference?.let { enrollmentUid ->
                 val teiUid = enrollments.find { it.uid() == enrollmentUid }!!.trackedEntityInstance()!!
 
                 val enrollment = enrollments.find { it.uid() == enrollmentUid }
-                val syncState = getSyncState(enrollmentImportSummary.status())
+                val syncState = getSyncState(enrollmentImportSummary.status)
                 trackerImportConflictStore.deleteEnrollmentConflicts(enrollmentUid)
 
                 val handleAction = enrollmentStore.setSyncStateOrDelete(enrollmentUid, syncState)
@@ -112,8 +112,8 @@ internal class EnrollmentImportHandler(
         enrollmentImportSummary: EnrollmentImportSummary,
         enrollments: List<Enrollment>,
     ): TEIWebResponseHandlerSummary {
-        return enrollmentImportSummary.events()?.importSummaries()?.let { importSummaries ->
-            val enrollmentUid = enrollmentImportSummary.reference()!!
+        return enrollmentImportSummary.events?.importSummaries?.let { importSummaries ->
+            val enrollmentUid = enrollmentImportSummary.reference!!
             eventImportHandler.handleEventImportSummaries(
                 importSummaries,
                 getEvents(enrollmentUid, enrollments),
@@ -127,17 +127,17 @@ internal class EnrollmentImportHandler(
     ) {
         val trackerImportConflicts: MutableList<TrackerImportConflict> = ArrayList()
 
-        if (enrollmentImportSummary.description() != null) {
+        if (enrollmentImportSummary.description != null) {
             trackerImportConflicts.add(
                 getConflictBuilder(teiUid, enrollmentImportSummary)
-                    .conflict(enrollmentImportSummary.description())
-                    .displayDescription(enrollmentImportSummary.description())
-                    .value(enrollmentImportSummary.reference())
+                    .conflict(enrollmentImportSummary.description)
+                    .displayDescription(enrollmentImportSummary.description)
+                    .value(enrollmentImportSummary.reference)
                     .build(),
             )
         }
 
-        enrollmentImportSummary.conflicts()?.forEach { importConflict ->
+        enrollmentImportSummary.conflicts?.forEach { importConflict ->
             trackerImportConflicts.add(
                 trackerImportConflictParser
                     .getEnrollmentConflict(importConflict, getConflictBuilder(teiUid, enrollmentImportSummary)),
@@ -197,9 +197,9 @@ internal class EnrollmentImportHandler(
     ): TrackerImportConflict.Builder {
         return TrackerImportConflict.builder()
             .trackedEntityInstance(trackedEntityInstanceUid)
-            .enrollment(enrollmentImportSummary.reference())
+            .enrollment(enrollmentImportSummary.reference)
             .tableReference(EnrollmentTableInfo.TABLE_INFO.name())
-            .status(enrollmentImportSummary.status())
+            .status(enrollmentImportSummary.status)
             .created(Date())
     }
 }

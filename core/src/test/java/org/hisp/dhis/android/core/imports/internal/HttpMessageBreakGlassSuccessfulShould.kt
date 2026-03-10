@@ -39,9 +39,9 @@ class HttpMessageBreakGlassSuccessfulShould : CoreObjectShould("trackedentity/gl
         val responseDTO = deserialize(HttpMessageResponseDTO.serializer())
         val response = responseDTO.toDomain()
 
-        assertThat(response.httpStatus()).isEqualTo("OK")
-        assertThat(response.httpStatusCode()).isEqualTo(200)
-        assertThat(response.status()).isEqualTo("OK")
-        assertThat(response.message()).isEqualTo("Temporary Ownership granted")
+        assertThat(response.httpStatus).isEqualTo("OK")
+        assertThat(response.httpStatusCode).isEqualTo(200)
+        assertThat(response.status).isEqualTo("OK")
+        assertThat(response.message).isEqualTo("Temporary Ownership granted")
     }
 }

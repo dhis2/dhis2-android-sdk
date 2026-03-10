@@ -56,8 +56,8 @@ internal class RelationshipPostCall(
 
             response.fold(
                 onSuccess = { webResponse ->
-                    val httpCode = webResponse.httpStatusCode()
-                    val status = webResponse.response()?.status()
+                    val httpCode = webResponse.httpStatusCode
+                    val status = webResponse.response?.status
 
                     if ((httpCode == HTTP_OK && status == ImportStatus.SUCCESS) || httpCode == HTTP_NOT_FOUND) {
                         relationshipStore.deleteByEntity(relationship)
@@ -91,7 +91,7 @@ internal class RelationshipPostCall(
                 val httpResponse = relationshipNetworkHandler.postRelationship(relationships).getOrThrow()
 
                 relationshipImportHandler.handleRelationshipImportSummaries(
-                    importSummaries = httpResponse.response()?.importSummaries(),
+                    importSummaries = httpResponse.response?.importSummaries,
                     relationships = relationships,
                 )
                 emit(progressManager.increaseProgress(Relationship::class.java, false))

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,35 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.core.imports.internal
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.core.imports.ImportStatus
 
-import com.google.auto.value.AutoValue;
+internal interface BaseImportSummary : ImportSummary {
+    val importCount: ImportCount
+    override val status: ImportStatus
+    val responseType: String
 
-@AutoValue
-public abstract class RelationshipDeleteWebResponse extends WebResponse {
-
-    @Nullable
-    public abstract RelationshipImportSummary response();
-
-    public static Builder builder() {
-        return new AutoValue_RelationshipDeleteWebResponse.Builder();
-    }
-
-    public static RelationshipDeleteWebResponse empty() {
-        return builder()
-                .httpStatus("SUCCESS")
-                .httpStatusCode(200)
-                .message("Emtpy response")
-                .status("OK")
-                .build();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder extends WebResponse.Builder<Builder> {
-        public abstract Builder response(RelationshipImportSummary response);
-
-        public abstract RelationshipDeleteWebResponse build();
-    }
+    // Reference SHOULD be annotated with NotNull. This is just a bug in ImportSummary response from server.
+    override val reference: String?
+    val conflicts: List<ImportConflict>?
+    val description: String?
 }

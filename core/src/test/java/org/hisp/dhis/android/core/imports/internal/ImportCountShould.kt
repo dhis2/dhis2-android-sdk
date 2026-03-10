@@ -41,9 +41,9 @@ class ImportCountShould : CoreObjectShould("imports/import_count.json") {
         val importCountDTO = deserialize(ImportCountDTO.serializer())
         val importCount = importCountDTO.toDomain()
 
-        assertThat(importCount.imported()).isEqualTo(0)
-        assertThat(importCount.updated()).isEqualTo(0)
-        assertThat(importCount.ignored()).isEqualTo(1)
-        assertThat(importCount.deleted()).isEqualTo(0)
+        assertThat(importCount.imported).isEqualTo(0)
+        assertThat(importCount.updated).isEqualTo(0)
+        assertThat(importCount.ignored).isEqualTo(1)
+        assertThat(importCount.deleted).isEqualTo(0)
     }
 }

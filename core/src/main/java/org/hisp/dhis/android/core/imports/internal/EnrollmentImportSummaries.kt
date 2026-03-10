@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,29 +26,16 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+package org.hisp.dhis.android.core.imports.internal
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.core.imports.ImportStatus
 
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.imports.internal.WebResponse;
-
-@AutoValue
-public abstract class ObjectWithUidWebResponse extends WebResponse {
-
-    @NonNull
-    public abstract ObjectWithUid response();
-
-    public static Builder builder() {
-        return new AutoValue_ObjectWithUidWebResponse.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder extends WebResponse.Builder<Builder> {
-        public abstract Builder response(ObjectWithUid response);
-
-        public abstract ObjectWithUidWebResponse build();
-    }
-}
+internal data class EnrollmentImportSummaries(
+    override val status: ImportStatus,
+    override val responseType: String,
+    override val imported: Int,
+    override val updated: Int,
+    override val deleted: Int,
+    override val ignored: Int,
+    override val importSummaries: List<EnrollmentImportSummary>?,
+) : BaseImportSummaries, ImportSummaries<EnrollmentImportSummary>

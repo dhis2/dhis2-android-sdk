@@ -29,11 +29,11 @@
 package org.hisp.dhis.android.network.event
 
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.EventImportSummary
 import org.hisp.dhis.android.network.common.dto.BaseImportSummaryDTO
 import org.hisp.dhis.android.network.common.dto.ImportConflictDTO
 import org.hisp.dhis.android.network.common.dto.ImportCountDTO
-import org.hisp.dhis.android.network.common.dto.applyImportSummaryFields
 
 @Serializable
 internal data class EventImportSummaryDTO(
@@ -45,8 +45,13 @@ internal data class EventImportSummaryDTO(
     override val description: String?,
 ) : BaseImportSummaryDTO {
     fun toDomain(): EventImportSummary {
-        return EventImportSummary.builder()
-            .applyImportSummaryFields(this)
-            .build()
+        return EventImportSummary(
+            importCount = importCount.toDomain(),
+            status = ImportStatus.valueOf(status),
+            responseType = responseType,
+            reference = reference,
+            conflicts = conflicts?.map { it.toDomain() },
+            description = description,
+        )
     }
 }

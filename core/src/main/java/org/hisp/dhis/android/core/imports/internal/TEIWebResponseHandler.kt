@@ -40,9 +40,9 @@ internal class TEIWebResponseHandler(
         webResponse: TEIWebResponse?,
         instances: List<TrackedEntityInstance>,
     ): TEIWebResponseHandlerSummary {
-        return webResponse?.response()?.let { response ->
+        return webResponse?.response?.let { response ->
             trackedEntityInstanceImportHandler.handleTrackedEntityInstanceImportSummaries(
-                response.importSummaries(),
+                response.importSummaries,
                 instances,
             )
         } ?: TEIWebResponseHandlerSummary()

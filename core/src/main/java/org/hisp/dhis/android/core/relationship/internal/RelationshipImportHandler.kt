@@ -51,7 +51,7 @@ internal class RelationshipImportHandler internal constructor(
         relationships: List<Relationship>,
     ) {
         importSummaries?.filterNotNull()?.forEach { importSummary ->
-            importSummary.reference()?.let { relationshipUid ->
+            importSummary.reference?.let { relationshipUid ->
                 handleSingleRelationship(importSummary, relationshipUid)
             }
         }
@@ -85,7 +85,7 @@ internal class RelationshipImportHandler internal constructor(
         importSummary: RelationshipImportSummary,
         relationshipUid: String,
     ): HandleAction {
-        val state = getSyncState(importSummary.status())
+        val state = getSyncState(importSummary.status)
         val handledState = if (state == State.ERROR || state == State.WARNING) {
             State.TO_UPDATE
         } else {
@@ -96,11 +96,11 @@ internal class RelationshipImportHandler internal constructor(
     }
 
     private fun checkRelationshipNotFoundOnServer(importSummary: RelationshipImportSummary): Boolean {
-        val hasConflict = importSummary.conflicts()?.any { conflict ->
+        val hasConflict = importSummary.conflicts?.any { conflict ->
             RelationshipNotFoundConflict.matches(conflict)
         } ?: false
 
-        val hasDescriptionError = importSummary.description()?.let { description ->
+        val hasDescriptionError = importSummary.description?.let { description ->
             RelationshipNotFoundConflict.matchesString(description)
         } ?: false
 

@@ -40,7 +40,7 @@ class RelationshipDeleteWebResponseShould : CoreObjectShould("imports/relationsh
     override fun map_from_json_string() {
         val webResponse = deserialize(RelationshipDeleteWebResponseDTO.serializer()).toDomain()
 
-        assertThat(webResponse.message()).isEqualTo("Import was successful.")
-        assertThat(webResponse.response()).isNotNull()
+        assertThat(webResponse.message).isEqualTo("Import was successful.")
+        assertThat(webResponse.response).isNotNull()
     }
 }

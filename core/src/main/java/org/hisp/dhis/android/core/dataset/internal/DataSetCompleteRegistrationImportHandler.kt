@@ -45,7 +45,7 @@ internal class DataSetCompleteRegistrationImportHandler(
         deletedDataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
         withErrorDataSetCompleteRegistrations: List<DataSetCompleteRegistration>,
     ): DataValueImportSummary {
-        val newState = if (dataValueImportSummary.importStatus() == ImportStatus.ERROR) State.ERROR else State.SYNCED
+        val newState = if (dataValueImportSummary.importStatus == ImportStatus.ERROR) State.ERROR else State.SYNCED
         val toUpdate = toPostDataSetCompleteRegistrations.filter {
             dataSetCompleteRegistrationStore.isBeingUpload(it)
         }
@@ -57,7 +57,7 @@ internal class DataSetCompleteRegistrationImportHandler(
             deletedDataSetCompleteRegistrations,
             withErrorDataSetCompleteRegistrations,
         )
-        val importConflicts = dataValueImportSummary.importConflicts() ?: emptyList()
+        val importConflicts = dataValueImportSummary.importConflicts ?: emptyList()
 
         val allConflicts = deletedDatasetConflicts + importConflicts
 
@@ -81,7 +81,7 @@ internal class DataSetCompleteRegistrationImportHandler(
         }
 
         val conflicts = withError.map {
-            ImportConflict.create(
+            ImportConflict(
                 it.toString(),
                 "Error marking as incomplete",
             )
@@ -99,18 +99,18 @@ internal class DataSetCompleteRegistrationImportHandler(
         conflicts: List<ImportConflict>,
         deletedDataSetCompleteRegistrationsSize: Int,
     ): DataValueImportSummary {
-        val ic = dataValueImportSummary.importCount()
-        return DataValueImportSummary.create(
-            ImportCount.create(
-                ic.imported(),
-                ic.updated(),
-                ic.deleted() + deletedDataSetCompleteRegistrationsSize,
-                ic.ignored(),
+        val ic = dataValueImportSummary.importCount
+        return DataValueImportSummary(
+            importCount = ImportCount(
+                ic.imported,
+                ic.updated,
+                ic.deleted + deletedDataSetCompleteRegistrationsSize,
+                ic.ignored,
             ),
-            dataValueImportSummary.importStatus(),
-            dataValueImportSummary.responseType(),
-            dataValueImportSummary.reference(),
-            conflicts.ifEmpty { null },
+            importStatus = dataValueImportSummary.importStatus,
+            responseType = dataValueImportSummary.responseType,
+            reference = dataValueImportSummary.reference,
+            importConflicts = conflicts.ifEmpty { null },
         )
     }
 }

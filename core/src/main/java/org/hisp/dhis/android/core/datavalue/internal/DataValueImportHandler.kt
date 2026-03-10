@@ -53,7 +53,7 @@ internal class DataValueImportHandler(
             return
         }
 
-        val state = when (dataValueImportSummary.importStatus()) {
+        val state = when (dataValueImportSummary.importStatus) {
             ImportStatus.ERROR -> ERROR
             ImportStatus.WARNING -> WARNING
             else -> SYNCED
@@ -80,7 +80,7 @@ internal class DataValueImportHandler(
     ) {
         getValuesWithConflicts(
             dataValues,
-            dataValueImportSummary.importConflicts(),
+            dataValueImportSummary.importConflicts,
         )?.let { dataValueConflicts ->
             setDataValueStates(dataValues, dataValueConflicts)
         } ?: setStateToDataValues(WARNING, dataValues)

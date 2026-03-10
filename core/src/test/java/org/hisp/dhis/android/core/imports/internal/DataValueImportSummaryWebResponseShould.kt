@@ -45,6 +45,6 @@ class DataValueImportSummaryWebResponseShould : CoreObjectShould(
         val webResponseDTO = deserialize(DataValueImportSummaryWebResponseDTO.serializer())
         val webResponse = webResponseDTO.toDomain()
 
-        assertThat(webResponse.response.importStatus()).isEqualTo(ImportStatus.SUCCESS)
+        assertThat(webResponse.response.importStatus).isEqualTo(ImportStatus.SUCCESS)
     }
 }

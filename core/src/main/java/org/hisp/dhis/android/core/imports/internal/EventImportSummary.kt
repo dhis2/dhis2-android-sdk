@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,19 +26,15 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.common.dto
+package org.hisp.dhis.android.core.imports.internal
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.imports.internal.ImportCount
+import org.hisp.dhis.android.core.imports.ImportStatus
 
-@Serializable
-internal data class ImportCountDTO(
-    val imported: Int,
-    val updated: Int,
-    val deleted: Int,
-    val ignored: Int,
-) {
-    fun toDomain(): ImportCount {
-        return ImportCount(imported, updated, deleted, ignored)
-    }
-}
+internal data class EventImportSummary(
+    override val importCount: ImportCount,
+    override val status: ImportStatus,
+    override val responseType: String,
+    override val reference: String?,
+    override val conflicts: List<ImportConflict>?,
+    override val description: String?,
+) : BaseImportSummary

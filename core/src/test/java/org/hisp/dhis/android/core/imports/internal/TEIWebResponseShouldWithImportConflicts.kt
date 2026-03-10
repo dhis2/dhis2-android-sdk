@@ -42,13 +42,13 @@ class TEIWebResponseShouldWithImportConflicts : CoreObjectShould("imports/web_re
         val webResponseDto = deserialize(TEIWebResponseDTO.serializer())
         val webResponse = webResponseDto.toDomain()
 
-        assertThat(webResponse.message()).isEqualTo("Import was successful.")
+        assertThat(webResponse.message).isEqualTo("Import was successful.")
         assertThat(
-            webResponse.response()
-                ?.importSummaries()?.get(1)
-                ?.enrollments()?.importSummaries()?.get(0)
-                ?.events()?.importSummaries()?.get(0)
-                ?.conflicts(),
+            webResponse.response
+                ?.importSummaries?.get(1)
+                ?.enrollments?.importSummaries?.get(0)
+                ?.events?.importSummaries?.get(0)
+                ?.conflicts,
         )
             .isNotEmpty()
     }

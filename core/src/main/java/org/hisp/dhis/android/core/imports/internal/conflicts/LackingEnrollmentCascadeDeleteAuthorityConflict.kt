@@ -40,11 +40,11 @@ internal object LackingEnrollmentCascadeDeleteAuthorityConflict : TrackerImportC
     override val errorCode: String = "E1103"
 
     override fun matches(conflict: ImportConflict): Boolean {
-        return regex.matches(conflict.value())
+        return regex.matches(conflict.value)
     }
 
     override fun getEnrollment(conflict: ImportConflict): String? {
-        return regex.find(conflict.value())?.groupValues?.get(1)
+        return regex.find(conflict.value)?.groupValues?.get(1)
     }
 
     override suspend fun getDisplayDescription(
@@ -54,6 +54,6 @@ internal object LackingEnrollmentCascadeDeleteAuthorityConflict : TrackerImportC
         return getEnrollment(conflict)?.let { enrollmentUid ->
             description(enrollmentUid)
         }
-            ?: conflict.value()
+            ?: conflict.value
     }
 }

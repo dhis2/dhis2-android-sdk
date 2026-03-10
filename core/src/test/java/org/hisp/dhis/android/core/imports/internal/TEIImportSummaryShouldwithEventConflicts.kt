@@ -41,17 +41,17 @@ class TEIImportSummaryShouldwithEventConflicts : CoreObjectShould("imports/impor
         val importSummaryDTO = deserialize(TEIImportSummaryDTO.serializer())
         val importSummary = importSummaryDTO.toDomain()
 
-        assertThat(importSummary.responseType()).isEqualTo("ImportSummary")
-        assertThat(importSummary.status()).isEqualTo(ImportStatus.SUCCESS)
-        assertThat(importSummary.importCount()).isNotNull()
+        assertThat(importSummary.responseType).isEqualTo("ImportSummary")
+        assertThat(importSummary.status).isEqualTo(ImportStatus.SUCCESS)
+        assertThat(importSummary.importCount).isNotNull()
 
-        assertThat(importSummary.importCount().imported()).isEqualTo(0)
-        assertThat(importSummary.importCount().updated()).isEqualTo(1)
-        assertThat(importSummary.importCount().ignored()).isEqualTo(0)
-        assertThat(importSummary.importCount().deleted()).isEqualTo(0)
+        assertThat(importSummary.importCount.imported).isEqualTo(0)
+        assertThat(importSummary.importCount.updated).isEqualTo(1)
+        assertThat(importSummary.importCount.ignored).isEqualTo(0)
+        assertThat(importSummary.importCount.deleted).isEqualTo(0)
 
-        assertThat(importSummary.reference()).isEqualTo("Rmp5T1vmZ74")
+        assertThat(importSummary.reference).isEqualTo("Rmp5T1vmZ74")
 
-        assertThat(importSummary.enrollments()).isNotNull()
+        assertThat(importSummary.enrollments).isNotNull()
     }
 }

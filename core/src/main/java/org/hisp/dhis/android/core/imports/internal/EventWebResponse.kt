@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,27 +26,22 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.core.imports.internal
 
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class EnrollmentImportSummary extends BaseImportSummary {
-
-    @Nullable
-    public abstract EventImportSummaries events();
-
-    public static Builder builder() {
-        return new AutoValue_EnrollmentImportSummary.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseImportSummary.Builder<EnrollmentImportSummary.Builder> {
-
-        public abstract Builder events(EventImportSummaries events);
-
-        public abstract EnrollmentImportSummary build();
+internal data class EventWebResponse(
+    override val httpStatus: String,
+    override val httpStatusCode: Int,
+    override val status: String,
+    override val message: String,
+    val response: EventImportSummaries?,
+) : WebResponse {
+    companion object {
+        fun empty() = EventWebResponse(
+            httpStatus = "SUCCESS",
+            httpStatusCode = 200,
+            message = "Emtpy response",
+            status = "OK",
+            response = null,
+        )
     }
 }

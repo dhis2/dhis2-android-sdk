@@ -43,12 +43,12 @@ internal data class DataValueImportSummaryDTO(
     val conflicts: List<ImportConflictDTO>? = emptyList(),
 ) {
     fun toDomain(): DataValueImportSummary {
-        return DataValueImportSummary.create(
-            importCount.toDomain(),
-            ImportStatus.valueOf(status),
-            responseType,
-            reference,
-            conflicts?.map { it.toDomain() },
+        return DataValueImportSummary(
+            importCount = importCount.toDomain(),
+            importStatus = ImportStatus.valueOf(status),
+            responseType = responseType,
+            reference = reference,
+            importConflicts = conflicts?.map { it.toDomain() },
         )
     }
 }

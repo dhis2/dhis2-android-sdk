@@ -32,7 +32,6 @@ import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponse
 import org.hisp.dhis.android.network.common.dto.WebResponseDTO
-import org.hisp.dhis.android.network.common.dto.applyWebResponseFields
 
 @Serializable
 internal data class TEIWebResponseDTO(
@@ -43,10 +42,13 @@ internal data class TEIWebResponseDTO(
     val response: TEIImportSummariesDTO?,
 ) : WebResponseDTO {
     fun toDomain(): TEIWebResponse {
-        return TEIWebResponse.builder()
-            .applyWebResponseFields(this)
-            .response(response?.toDomain())
-            .build()
+        return TEIWebResponse(
+            httpStatus = httpStatus,
+            httpStatusCode = httpStatusCode,
+            status = status,
+            message = message,
+            response = response?.toDomain(),
+        )
     }
 
     companion object {

@@ -46,7 +46,6 @@ import org.mockito.kotlin.whenever
 @RunWith(JUnit4::class)
 class DataSetCompleteRegistrationImportHandlerShould {
     private val dataSetCompleteRegistrationStore: DataSetCompleteRegistrationStore = mock()
-    private val dataValueImportSummary: DataValueImportSummary = mock()
     private val dataSetCompleteRegistration: DataSetCompleteRegistration = mock()
     private val builder: DataSetCompleteRegistration.Builder = mock()
 
@@ -56,8 +55,6 @@ class DataSetCompleteRegistrationImportHandlerShould {
     fun setUp() {
         dataSetCompleteRegistrationImportHandler =
             DataSetCompleteRegistrationImportHandler(dataSetCompleteRegistrationStore)
-        whenever(dataValueImportSummary.importCount()).thenReturn(ImportCount.EMPTY)
-        whenever(dataValueImportSummary.responseType()).thenReturn("ImportSummary")
 
         // Mock builder chain
         whenever(dataSetCompleteRegistration.toBuilder()).thenReturn(builder)
@@ -65,12 +62,19 @@ class DataSetCompleteRegistrationImportHandlerShould {
         whenever(builder.build()).thenReturn(dataSetCompleteRegistration)
     }
 
+    private fun createImportSummary(status: ImportStatus) = DataValueImportSummary(
+        importCount = ImportCount.EMPTY,
+        importStatus = status,
+        responseType = "ImportSummary",
+        reference = null,
+        importConflicts = null,
+    )
+
     @Test
     fun not_perform_any_action_passing_empty_data_value_set() = runTest {
-        whenever(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.SUCCESS)
         dataSetCompleteRegistrationImportHandler.handleImportSummary(
             emptyList(),
-            dataValueImportSummary,
+            createImportSummary(ImportStatus.SUCCESS),
             emptyList(),
             emptyList(),
         )
@@ -84,12 +88,11 @@ class DataSetCompleteRegistrationImportHandlerShould {
     fun mark_as_synced_when_successfully_imported_data_values() = runTest {
         val dataSetCompleteRegistrations = mutableListOf(dataSetCompleteRegistration)
 
-        whenever(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.SUCCESS)
         whenever(dataSetCompleteRegistrationStore.isBeingUpload(any<DataSetCompleteRegistration>())).thenReturn(true)
 
         dataSetCompleteRegistrationImportHandler.handleImportSummary(
             dataSetCompleteRegistrations,
-            dataValueImportSummary,
+            createImportSummary(ImportStatus.SUCCESS),
             emptyList(),
             emptyList(),
         )
@@ -102,12 +105,11 @@ class DataSetCompleteRegistrationImportHandlerShould {
     fun mark_as_error_when_unsuccessfully_imported_data_values() = runTest {
         val dataValueCollection = mutableListOf(dataSetCompleteRegistration)
 
-        whenever(dataValueImportSummary.importStatus()).thenReturn(ImportStatus.ERROR)
         whenever(dataSetCompleteRegistrationStore.isBeingUpload(any<DataSetCompleteRegistration>())).thenReturn(true)
 
         dataSetCompleteRegistrationImportHandler.handleImportSummary(
             dataValueCollection,
-            dataValueImportSummary,
+            createImportSummary(ImportStatus.ERROR),
             emptyList(),
             emptyList(),
         )

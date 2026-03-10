@@ -162,7 +162,7 @@ internal class OldTrackerImporterPostCall internal constructor(
                 val webResponse = eventNetworkHandler.postEvents(validEvents.items, strategy).getOrThrow()
 
                 eventImportHandler.handleEventImportSummaries(
-                    eventImportSummaries = webResponse.response()?.importSummaries(),
+                    eventImportSummaries = webResponse.response?.importSummaries,
                     events = validEvents.items,
                 )
 

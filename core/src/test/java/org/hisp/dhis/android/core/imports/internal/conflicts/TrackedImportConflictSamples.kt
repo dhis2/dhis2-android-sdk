@@ -29,87 +29,87 @@ package org.hisp.dhis.android.core.imports.internal.conflicts
 
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
-object TrackedImportConflictSamples {
+internal object TrackedImportConflictSamples {
 
     fun missingMandatoryAttribute(attributeUid: String): ImportConflict {
-        return ImportConflict.create(
+        return ImportConflict(
             "Attribute.attribute",
             "Missing mandatory attribute $attributeUid",
         )
     }
 
     fun badAttributePattern(): ImportConflict {
-        return ImportConflict.create(
+        return ImportConflict(
             "Attribute.value",
             "Value does not match the attribute pattern",
         )
     }
 
     fun invalidNumericAttribute(attributeUid: String, value: String): ImportConflict {
-        return ImportConflict.create(
+        return ImportConflict(
             "Attribute.value",
             "Value '$value' is not a valid numeric type for attribute $attributeUid",
         )
     }
 
     fun invalidBooleanAttribute(attributeUid: String, value: String): ImportConflict {
-        return ImportConflict.create(
+        return ImportConflict(
             "Attribute.value",
             "Value '$value' is not a valid boolean type for attribute $attributeUid",
         )
     }
 
     fun invalidTrueOnlyAttribute(attributeUid: String, value: String): ImportConflict {
-        return ImportConflict.create(
+        return ImportConflict(
             "Attribute.value",
             "Value '$value' is not true (true-only type) for attribute $attributeUid",
         )
     }
 
     fun invalidDateAttribute(attributeUid: String, value: String): ImportConflict {
-        return ImportConflict.create(
+        return ImportConflict(
             "Attribute.value",
             "Value '$value' is not a valid date for attribute $attributeUid",
         )
     }
 
     fun invalidDatetimeAttribute(attributeUid: String, value: String): ImportConflict {
-        return ImportConflict.create(
+        return ImportConflict(
             "Attribute.value",
             "Value '$value' is not a valid datetime for attribute $attributeUid",
         )
     }
 
     fun invalidUsernameAttribute(attributeUid: String, value: String): ImportConflict {
-        return ImportConflict.create(
+        return ImportConflict(
             "Attribute.value",
             "Value '$value' is not a valid username for attribute $attributeUid",
         )
     }
 
     fun invalidFileAttribute(value: String): ImportConflict {
-        return ImportConflict.create(
+        return ImportConflict(
             "Attribute.value",
             "Value '$value' is not the uid of a file",
         )
     }
 
     fun invalidAttributeOption(attributeUid: String, value: String, optionSetUid: String): ImportConflict {
-        return ImportConflict.create(
+        return ImportConflict(
             "Attribute.value",
             "Value '$value' is not a valid option for attribute $attributeUid and option set $optionSetUid",
         )
     }
 
     fun nonUniqueAttribute(attributeUid: String, value: String): ImportConflict {
-        return ImportConflict.create(
+        return ImportConflict(
             "Attribute.value",
             "Non-unique attribute value '$value' for attribute $attributeUid",
         )
     }
 
     fun userIsLackingTEICascadeDeleteAuthority(teiUid: String): ImportConflict {
-        return ImportConflict.create(
+        return ImportConflict(
             teiUid,
             "Tracked entity instance $teiUid cannot be deleted as it has associated enrollments and user does" +
                 " not have authority F_TEI_CASCADE_DELETE",
@@ -117,7 +117,7 @@ object TrackedImportConflictSamples {
     }
 
     fun userIsLackingEnrollmentCascadeDeleteAuthority(enrollmentUid: String): ImportConflict {
-        return ImportConflict.create(
+        return ImportConflict(
             enrollmentUid,
             "Enrollment $enrollmentUid cannot be deleted as it has associated events and user does not" +
                 " have authority: F_ENROLLMENT_CASCADE_DELETE",
@@ -125,53 +125,53 @@ object TrackedImportConflictSamples {
     }
 
     fun fileResourceAlreadyAssigned(fileResourceUid: String): ImportConflict {
-        return ImportConflict.create(
+        return ImportConflict(
             "Attribute.value",
             "File resource with uid '$fileResourceUid' has already been assigned to a different object",
         )
     }
 
     fun fileResourceReferenceNotFound(fileResourceUid: String): ImportConflict {
-        return ImportConflict.create("Attribute.value", "Value '$fileResourceUid' is not the uid of a file")
+        return ImportConflict("Attribute.value", "Value '$fileResourceUid' is not the uid of a file")
     }
 
     fun eventNotFound(eventUid: String, relationshipUid: String): ImportConflict {
-        return ImportConflict.create(relationshipUid, "ProgramStageInstance '$eventUid' not found.")
+        return ImportConflict(relationshipUid, "ProgramStageInstance '$eventUid' not found.")
     }
 
     fun eventHasInvalidProgram(eventUid: String, relationshipUid: String): ImportConflict {
-        return ImportConflict.create(relationshipUid, "ProgramStageInstance '$eventUid' has invalid Program.")
+        return ImportConflict(relationshipUid, "ProgramStageInstance '$eventUid' has invalid Program.")
     }
 
     fun eventHasInvalidProgramStage(eventUid: String, relationshipUid: String): ImportConflict {
-        return ImportConflict.create(relationshipUid, "ProgramStageInstance '$eventUid' has invalid ProgramStage.")
+        return ImportConflict(relationshipUid, "ProgramStageInstance '$eventUid' has invalid ProgramStage.")
     }
 
     fun enrollmentNotFound(enrollmentUid: String, relationshipUid: String): ImportConflict {
-        return ImportConflict.create(relationshipUid, "ProgramInstance '$enrollmentUid' not found.")
+        return ImportConflict(relationshipUid, "ProgramInstance '$enrollmentUid' not found.")
     }
 
     fun enrollmentHasInvalidProgram(enrollmentUid: String, relationshipUid: String): ImportConflict {
-        return ImportConflict.create(relationshipUid, "ProgramInstance '$enrollmentUid' has invalid Program.")
+        return ImportConflict(relationshipUid, "ProgramInstance '$enrollmentUid' has invalid Program.")
     }
 
     fun teiNotFound(teiUid: String, relationshipUid: String): ImportConflict {
-        return ImportConflict.create(relationshipUid, "TrackedEntityInstance '$teiUid' not found.")
+        return ImportConflict(relationshipUid, "TrackedEntityInstance '$teiUid' not found.")
     }
 
     fun teiHasInvalidType(teiUid: String, relationshipUid: String): ImportConflict {
-        return ImportConflict.create(
+        return ImportConflict(
             relationshipUid,
             "TrackedEntityInstance '$teiUid' has invalid TrackedEntityType.",
         )
     }
 
     fun relationshipNotFound(relationshipUid: String): ImportConflict {
-        return ImportConflict.create(relationshipUid, "Relationship '$relationshipUid' not found.")
+        return ImportConflict(relationshipUid, "Relationship '$relationshipUid' not found.")
     }
 
     fun relationshipAlreadyDeleted(relationshipUid: String): ImportConflict {
-        return ImportConflict.create(
+        return ImportConflict(
             relationshipUid,
             "Relationship '$relationshipUid' is already deleted and cannot be modified.",
         )
@@ -180,64 +180,64 @@ object TrackedImportConflictSamples {
     // Data value types
 
     fun valueNotNumeric(dataElementId: String): ImportConflict {
-        return ImportConflict.create(dataElementId, "value_not_numeric")
+        return ImportConflict(dataElementId, "value_not_numeric")
     }
 
     fun valueNotUnitInterval(dataElementId: String): ImportConflict {
-        return ImportConflict.create(dataElementId, "value_not_unit_interval")
+        return ImportConflict(dataElementId, "value_not_unit_interval")
     }
 
     fun valueNotPercentage(dataElementId: String): ImportConflict {
-        return ImportConflict.create(dataElementId, "value_not_percentage")
+        return ImportConflict(dataElementId, "value_not_percentage")
     }
 
     fun valueNotInteger(dataElementId: String): ImportConflict {
-        return ImportConflict.create(dataElementId, "value_not_integer")
+        return ImportConflict(dataElementId, "value_not_integer")
     }
 
     fun valueNotPositiveInteger(dataElementId: String): ImportConflict {
-        return ImportConflict.create(dataElementId, "value_not_positive_integer")
+        return ImportConflict(dataElementId, "value_not_positive_integer")
     }
 
     fun valueNotNegativeInteger(dataElementId: String): ImportConflict {
-        return ImportConflict.create(dataElementId, "value_not_negative_integer")
+        return ImportConflict(dataElementId, "value_not_negative_integer")
     }
 
     fun valueNotZeroOrPositiveInteger(dataElementId: String): ImportConflict {
-        return ImportConflict.create(dataElementId, "value_not_zero_or_positive_integer")
+        return ImportConflict(dataElementId, "value_not_zero_or_positive_integer")
     }
 
     fun valueNotBoolean(dataElementId: String): ImportConflict {
-        return ImportConflict.create(dataElementId, "value_not_bool")
+        return ImportConflict(dataElementId, "value_not_bool")
     }
 
     fun valueNotTrueOnly(dataElementId: String): ImportConflict {
-        return ImportConflict.create(dataElementId, "value_not_true_only")
+        return ImportConflict(dataElementId, "value_not_true_only")
     }
 
     fun valueNotValidDate(dataElementId: String): ImportConflict {
-        return ImportConflict.create(dataElementId, "value_not_valid_date")
+        return ImportConflict(dataElementId, "value_not_valid_date")
     }
 
     fun valueNotValidDatetime(dataElementId: String): ImportConflict {
-        return ImportConflict.create(dataElementId, "value_not_valid_datetime")
+        return ImportConflict(dataElementId, "value_not_valid_datetime")
     }
 
     fun valueNotCoordinate(dataElementId: String): ImportConflict {
-        return ImportConflict.create(dataElementId, "value_not_coordinate")
+        return ImportConflict(dataElementId, "value_not_coordinate")
     }
 
     fun valueNotUrl(dataElementId: String): ImportConflict {
-        return ImportConflict.create(dataElementId, "value_not_url")
+        return ImportConflict(dataElementId, "value_not_url")
     }
 
     fun valueNotFileResourceUid(dataElementId: String): ImportConflict {
-        return ImportConflict.create(dataElementId, "value_not_valid_file_resource_uid")
+        return ImportConflict(dataElementId, "value_not_valid_file_resource_uid")
     }
 
     //
 
     fun missingRequiredDataElement(dataElementId: String): ImportConflict {
-        return ImportConflict.create(dataElementId, "value_required_but_not_provided")
+        return ImportConflict(dataElementId, "value_required_but_not_provided")
     }
 }

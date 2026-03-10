@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,20 +26,15 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.core.trackedentity.internal
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.imports.internal.WebResponse
 
-@AutoValue
-public abstract class EventImportSummary extends BaseImportSummary {
-
-    public static Builder builder() {
-        return new AutoValue_EventImportSummary.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseImportSummary.Builder<EventImportSummary.Builder> {
-
-        public abstract EventImportSummary build();
-    }
-}
+internal data class ObjectWithUidWebResponse(
+    override val httpStatus: String,
+    override val httpStatusCode: Int,
+    override val status: String,
+    override val message: String,
+    val response: ObjectWithUid,
+) : WebResponse

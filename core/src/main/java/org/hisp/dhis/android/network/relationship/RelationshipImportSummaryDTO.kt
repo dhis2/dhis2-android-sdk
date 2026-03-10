@@ -29,11 +29,11 @@
 package org.hisp.dhis.android.network.relationship
 
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.RelationshipImportSummary
 import org.hisp.dhis.android.network.common.dto.BaseImportSummaryDTO
 import org.hisp.dhis.android.network.common.dto.ImportConflictDTO
 import org.hisp.dhis.android.network.common.dto.ImportCountDTO
-import org.hisp.dhis.android.network.common.dto.applyImportSummaryFields
 
 @Serializable
 internal data class RelationshipImportSummaryDTO(
@@ -45,8 +45,13 @@ internal data class RelationshipImportSummaryDTO(
     override val description: String?,
 ) : BaseImportSummaryDTO {
     fun toDomain(): RelationshipImportSummary {
-        return RelationshipImportSummary.builder()
-            .applyImportSummaryFields(this)
-            .build()
+        return RelationshipImportSummary(
+            importCount = importCount.toDomain(),
+            status = ImportStatus.valueOf(status),
+            responseType = responseType,
+            reference = reference,
+            conflicts = conflicts?.map { it.toDomain() },
+            description = description,
+        )
     }
 }

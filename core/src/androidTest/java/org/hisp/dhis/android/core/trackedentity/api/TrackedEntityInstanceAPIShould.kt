@@ -76,12 +76,12 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         val invalidTEI = TrackedEntityInstanceUtils.createTrackedEntityInstanceWithInvalidAttribute()
         val response = executePostCall(listOf(validTEI, invalidTEI))
 
-        assertThat(response.response()!!.status()).isEqualTo(ImportStatus.ERROR)
+        assertThat(response.response!!.status).isEqualTo(ImportStatus.ERROR)
 
-        for (importSummary in response.response()!!.importSummaries()!!) {
-            if (validTEI.uid() == importSummary.reference()) {
+        for (importSummary in response.response!!.importSummaries!!) {
+            if (validTEI.uid() == importSummary.reference) {
                 TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
-            } else if (invalidTEI.uid() == importSummary.reference()) {
+            } else if (invalidTEI.uid() == importSummary.reference) {
                 TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.ERROR)
             }
         }
@@ -105,12 +105,12 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         val invalidTEI = TrackedEntityInstanceUtils.createTrackedEntityInstanceWithInvalidOrgunit()
         val response = executePostCall(listOf(validTEI, invalidTEI))
 
-        assertThat(response.response()!!.status()).isEqualTo(ImportStatus.ERROR)
+        assertThat(response.response!!.status).isEqualTo(ImportStatus.ERROR)
 
-        for (importSummary in response.response()!!.importSummaries()!!) {
-            if (validTEI.uid() == importSummary.reference()) {
+        for (importSummary in response.response!!.importSummaries!!) {
+            if (validTEI.uid() == importSummary.reference) {
                 TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
-            } else if (invalidTEI.uid() == importSummary.reference()) {
+            } else if (invalidTEI.uid() == importSummary.reference) {
                 TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.ERROR)
             }
         }
@@ -133,11 +133,11 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         val validTEI = TrackedEntityInstanceUtils.createValidTrackedEntityInstance()
         val invalidTEI = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceAndEnrollment()
         val response = executePostCall(listOf(validTEI, invalidTEI))
-        assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
-        for (importSummary in response.response()!!.importSummaries()!!) {
-            if (validTEI.uid() == importSummary.reference()) {
+        assertThat(response.response!!.status).isEqualTo(ImportStatus.SUCCESS)
+        for (importSummary in response.response!!.importSummaries!!) {
+            if (validTEI.uid() == importSummary.reference) {
                 TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
-            } else if (invalidTEI.uid() == importSummary.reference()) {
+            } else if (invalidTEI.uid() == importSummary.reference) {
                 TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
             }
         }
@@ -154,12 +154,12 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         val validTEI = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceAndEnrollment()
         val invalidTEI = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceWithFutureEnrollment()
         val response = executePostCall(listOf(validTEI, invalidTEI))
-        assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
-        for (importSummary in response.response()!!.importSummaries()!!) {
-            if (validTEI.uid() == importSummary.reference()) {
+        assertThat(response.response!!.status).isEqualTo(ImportStatus.SUCCESS)
+        for (importSummary in response.response!!.importSummaries!!) {
+            if (validTEI.uid() == importSummary.reference) {
                 TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
                 TrackedEntityInstanceUtils.assertEnrollments(importSummary, ImportStatus.SUCCESS)
-            } else if (invalidTEI.uid() == importSummary.reference()) {
+            } else if (invalidTEI.uid() == importSummary.reference) {
                 TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
                 TrackedEntityInstanceUtils.assertEnrollments(importSummary, ImportStatus.ERROR)
             }
@@ -177,16 +177,16 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         val validTEI = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceAndEnrollment()
         val invalidTEI = TrackedEntityInstanceUtils.createTrackedEntityInstanceAndTwoActiveEnrollment()
         val response = executePostCall(listOf(validTEI, invalidTEI))
-        assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
-        for (importSummary in response.response()!!.importSummaries()!!) {
-            if (validTEI.uid() == importSummary.reference()) {
+        assertThat(response.response!!.status).isEqualTo(ImportStatus.SUCCESS)
+        for (importSummary in response.response!!.importSummaries!!) {
+            if (validTEI.uid() == importSummary.reference) {
                 TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
                 TrackedEntityInstanceUtils.assertEnrollments(importSummary, ImportStatus.SUCCESS)
-            } else if (invalidTEI.uid() == importSummary.reference()) {
+            } else if (invalidTEI.uid() == importSummary.reference) {
                 TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
                 TrackedEntityInstanceUtils.assertEnrollments(importSummary, ImportStatus.ERROR)
-                assertThat(importSummary.enrollments()!!.imported()).isEqualTo(1)
-                assertThat(importSummary.enrollments()!!.ignored()).isEqualTo(1)
+                assertThat(importSummary.enrollments!!.imported).isEqualTo(1)
+                assertThat(importSummary.enrollments!!.ignored).isEqualTo(1)
             }
         }
         val serverValidTEI = getTrackedEntity(validTEI.uid())
@@ -202,12 +202,12 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         val validTEI1 = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceAndEnrollment()
         val validTEI2 = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceWithEnrollmentAndEvent()
         val response = executePostCall(listOf(validTEI1, validTEI2))
-        assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
-        for (importSummary in response.response()!!.importSummaries()!!) {
-            if (validTEI1.uid() == importSummary.reference()) {
+        assertThat(response.response!!.status).isEqualTo(ImportStatus.SUCCESS)
+        for (importSummary in response.response!!.importSummaries!!) {
+            if (validTEI1.uid() == importSummary.reference) {
                 TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
                 TrackedEntityInstanceUtils.assertEnrollments(importSummary, ImportStatus.SUCCESS)
-            } else if (validTEI2.uid() == importSummary.reference()) {
+            } else if (validTEI2.uid() == importSummary.reference) {
                 TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
                 TrackedEntityInstanceUtils.assertEnrollments(importSummary, ImportStatus.SUCCESS)
                 TrackedEntityInstanceUtils.assertEvents(importSummary, ImportStatus.SUCCESS)
@@ -228,12 +228,12 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         val validTEI1 = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceAndEnrollment()
         val validTEI2 = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceWithEnrollmentAndEvent()
         val response = executePostCall(listOf(validTEI1, validTEI2))
-        assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
-        for (importSummary in response.response()!!.importSummaries()!!) {
-            if (validTEI1.uid() == importSummary.reference()) {
+        assertThat(response.response!!.status).isEqualTo(ImportStatus.SUCCESS)
+        for (importSummary in response.response!!.importSummaries!!) {
+            if (validTEI1.uid() == importSummary.reference) {
                 TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
                 TrackedEntityInstanceUtils.assertEnrollments(importSummary, ImportStatus.SUCCESS)
-            } else if (validTEI2.uid() == importSummary.reference()) {
+            } else if (validTEI2.uid() == importSummary.reference) {
                 TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
                 TrackedEntityInstanceUtils.assertEnrollments(importSummary, ImportStatus.SUCCESS)
                 TrackedEntityInstanceUtils.assertEvents(importSummary, ImportStatus.ERROR)
@@ -254,13 +254,13 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         val validTEI = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceWithEnrollmentAndEvent()
         val invalidTEI = TrackedEntityInstanceUtils.createTrackedEntityInstanceWithEnrollmentAndFutureEvent()
         val response = executePostCall(listOf(validTEI, invalidTEI))
-        assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
-        for (importSummary in response.response()!!.importSummaries()!!) {
-            if (validTEI.uid() == importSummary.reference()) {
+        assertThat(response.response!!.status).isEqualTo(ImportStatus.SUCCESS)
+        for (importSummary in response.response!!.importSummaries!!) {
+            if (validTEI.uid() == importSummary.reference) {
                 TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
                 TrackedEntityInstanceUtils.assertEnrollments(importSummary, ImportStatus.SUCCESS)
                 TrackedEntityInstanceUtils.assertEvents(importSummary, ImportStatus.SUCCESS)
-            } else if (invalidTEI.uid() == importSummary.reference()) {
+            } else if (invalidTEI.uid() == importSummary.reference) {
                 TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
                 TrackedEntityInstanceUtils.assertEnrollments(importSummary, ImportStatus.SUCCESS)
                 TrackedEntityInstanceUtils.assertEvents(importSummary, ImportStatus.SUCCESS)
@@ -281,13 +281,13 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         val validTEI = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceWithEnrollmentAndEvent()
         val invalidTEI = TrackedEntityInstanceUtils.createTrackedEntityInstanceWithInvalidDataElement()
         val response = executePostCall(listOf(validTEI, invalidTEI))
-        assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
-        for (importSummary in response.response()!!.importSummaries()!!) {
-            if (validTEI.uid() == importSummary.reference()) {
+        assertThat(response.response!!.status).isEqualTo(ImportStatus.SUCCESS)
+        for (importSummary in response.response!!.importSummaries!!) {
+            if (validTEI.uid() == importSummary.reference) {
                 TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
                 TrackedEntityInstanceUtils.assertEnrollments(importSummary, ImportStatus.SUCCESS)
                 TrackedEntityInstanceUtils.assertEvents(importSummary, ImportStatus.SUCCESS)
-            } else if (invalidTEI.uid() == importSummary.reference()) {
+            } else if (invalidTEI.uid() == importSummary.reference) {
                 TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
                 TrackedEntityInstanceUtils.assertEnrollments(importSummary, ImportStatus.SUCCESS)
                 TrackedEntityInstanceUtils.assertEvents(importSummary, ImportStatus.WARNING)
@@ -316,13 +316,13 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         val validTEI = TrackedEntityInstanceUtils.createValidTrackedEntityInstanceWithEnrollmentAndEvent()
         val invalidTEI = TrackedEntityInstanceUtils.createTrackedEntityInstanceWithValidAndInvalidDataValue()
         val response = executePostCall(listOf(validTEI, invalidTEI))
-        assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
-        for (importSummary in response.response()!!.importSummaries()!!) {
-            if (validTEI.uid() == importSummary.reference()) {
+        assertThat(response.response!!.status).isEqualTo(ImportStatus.SUCCESS)
+        for (importSummary in response.response!!.importSummaries!!) {
+            if (validTEI.uid() == importSummary.reference) {
                 TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
                 TrackedEntityInstanceUtils.assertEnrollments(importSummary, ImportStatus.SUCCESS)
                 TrackedEntityInstanceUtils.assertEvents(importSummary, ImportStatus.SUCCESS)
-            } else if (invalidTEI.uid() == importSummary.reference()) {
+            } else if (invalidTEI.uid() == importSummary.reference) {
                 TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
                 TrackedEntityInstanceUtils.assertEnrollments(importSummary, ImportStatus.SUCCESS)
                 TrackedEntityInstanceUtils.assertEvents(importSummary, ImportStatus.WARNING)
@@ -352,9 +352,9 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         val completedEnrollment =
             TrackedEntityInstanceUtils.createTrackedEntityInstanceWithCompletedEnrollmentAndEvent()
         val response = executePostCall(listOf(completedEnrollment))
-        assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
-        for (importSummary in response.response()!!.importSummaries()!!) {
-            if (completedEnrollment.uid() == importSummary.reference()) {
+        assertThat(response.response!!.status).isEqualTo(ImportStatus.SUCCESS)
+        for (importSummary in response.response!!.importSummaries!!) {
+            if (completedEnrollment.uid() == importSummary.reference) {
                 TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
                 TrackedEntityInstanceUtils.assertEnrollments(importSummary, ImportStatus.SUCCESS)
                 TrackedEntityInstanceUtils.assertEvents(importSummary, ImportStatus.SUCCESS)
@@ -387,16 +387,16 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
         val instance = instanceWithOneEnrollmentAndOneEvent
         val deletedEvents = setEventsToDelete(instance)
         val deletedEventsResponse = executePostCall(listOf(deletedEvents))
-        assertThat(deletedEventsResponse.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
-        for (teiImportSummaries in deletedEventsResponse.response()!!.importSummaries()!!) {
-            assertThat(teiImportSummaries.importCount().updated()).isEqualTo(1)
+        assertThat(deletedEventsResponse.response!!.status).isEqualTo(ImportStatus.SUCCESS)
+        for (teiImportSummaries in deletedEventsResponse.response!!.importSummaries!!) {
+            assertThat(teiImportSummaries.importCount.updated).isEqualTo(1)
             for (
-            enrollmentImportSummary in teiImportSummaries.enrollments()!!
-                .importSummaries()!!
+            enrollmentImportSummary in teiImportSummaries.enrollments!!
+                .importSummaries!!
             ) {
-                assertThat(enrollmentImportSummary.importCount().updated()).isEqualTo(1)
-                for (eventImportSummary in enrollmentImportSummary.events()!!.importSummaries()!!) {
-                    assertThat(eventImportSummary.importCount().deleted()).isEqualTo(1)
+                assertThat(enrollmentImportSummary.importCount.updated).isEqualTo(1)
+                for (eventImportSummary in enrollmentImportSummary.events!!.importSummaries!!) {
+                    assertThat(eventImportSummary.importCount.deleted).isEqualTo(1)
                 }
             }
         }

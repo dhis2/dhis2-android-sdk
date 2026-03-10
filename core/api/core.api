@@ -6097,181 +6097,21 @@ public final class org/hisp/dhis/android/core/imports/TrackerJobManager {
 	public final fun resumePendingJobs ()Lio/reactivex/Observable;
 }
 
-public abstract class org/hisp/dhis/android/core/imports/internal/BaseImportSummaries {
-	public fun <init> ()V
-	public abstract fun deleted ()Ljava/lang/Integer;
-	public abstract fun ignored ()Ljava/lang/Integer;
-	public abstract fun imported ()Ljava/lang/Integer;
-	public abstract fun responseType ()Ljava/lang/String;
-	public abstract fun status ()Lorg/hisp/dhis/android/core/imports/ImportStatus;
-	public abstract fun updated ()Ljava/lang/Integer;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/BaseImportSummaries$Builder {
-	public fun <init> ()V
-	public abstract fun deleted (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/imports/internal/BaseImportSummaries$Builder;
-	public abstract fun ignored (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/imports/internal/BaseImportSummaries$Builder;
-	public abstract fun imported (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/imports/internal/BaseImportSummaries$Builder;
-	public abstract fun responseType (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/internal/BaseImportSummaries$Builder;
-	public abstract fun status (Lorg/hisp/dhis/android/core/imports/ImportStatus;)Lorg/hisp/dhis/android/core/imports/internal/BaseImportSummaries$Builder;
-	public abstract fun updated (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/imports/internal/BaseImportSummaries$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/BaseImportSummary : org/hisp/dhis/android/core/imports/internal/ImportSummary {
-	public fun <init> ()V
-	public abstract fun conflicts ()Ljava/util/List;
-	public abstract fun description ()Ljava/lang/String;
-	public abstract fun importCount ()Lorg/hisp/dhis/android/core/imports/internal/ImportCount;
-	public abstract fun reference ()Ljava/lang/String;
-	public abstract fun responseType ()Ljava/lang/String;
-	public abstract fun status ()Lorg/hisp/dhis/android/core/imports/ImportStatus;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/BaseImportSummary$Builder {
-	public fun <init> ()V
-	public abstract fun conflicts (Ljava/util/List;)Lorg/hisp/dhis/android/core/imports/internal/BaseImportSummary$Builder;
-	public abstract fun description (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/internal/BaseImportSummary$Builder;
-	public abstract fun importCount (Lorg/hisp/dhis/android/core/imports/internal/ImportCount;)Lorg/hisp/dhis/android/core/imports/internal/BaseImportSummary$Builder;
-	public abstract fun reference (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/internal/BaseImportSummary$Builder;
-	public abstract fun responseType (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/internal/BaseImportSummary$Builder;
-	public abstract fun status (Lorg/hisp/dhis/android/core/imports/ImportStatus;)Lorg/hisp/dhis/android/core/imports/internal/BaseImportSummary$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/DataValueImportSummary {
-	public static final field EMPTY Lorg/hisp/dhis/android/core/imports/internal/DataValueImportSummary;
-	public fun <init> ()V
-	public static fun create (Lorg/hisp/dhis/android/core/imports/internal/ImportCount;Lorg/hisp/dhis/android/core/imports/ImportStatus;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)Lorg/hisp/dhis/android/core/imports/internal/DataValueImportSummary;
-	public abstract fun importConflicts ()Ljava/util/List;
-	public abstract fun importCount ()Lorg/hisp/dhis/android/core/imports/internal/ImportCount;
-	public abstract fun importStatus ()Lorg/hisp/dhis/android/core/imports/ImportStatus;
-	public abstract fun reference ()Ljava/lang/String;
-	public abstract fun responseType ()Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/imports/internal/DataValueImportSummaryWebResponse : org/hisp/dhis/android/core/imports/internal/WebResponse {
-	public fun <init> (Lorg/hisp/dhis/android/core/imports/internal/DataValueImportSummary;Ljava/lang/String;ILjava/lang/String;Ljava/lang/String;)V
-	public final fun component1 ()Lorg/hisp/dhis/android/core/imports/internal/DataValueImportSummary;
-	public final fun component2 ()Ljava/lang/String;
-	public final fun component3 ()I
+public final class org/hisp/dhis/android/core/imports/internal/HttpMessageResponse : org/hisp/dhis/android/core/imports/internal/WebResponse {
+	public fun <init> (Ljava/lang/String;ILjava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()I
+	public final fun component3 ()Ljava/lang/String;
 	public final fun component4 ()Ljava/lang/String;
-	public final fun component5 ()Ljava/lang/String;
-	public final fun copy (Lorg/hisp/dhis/android/core/imports/internal/DataValueImportSummary;Ljava/lang/String;ILjava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/internal/DataValueImportSummaryWebResponse;
-	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/imports/internal/DataValueImportSummaryWebResponse;Lorg/hisp/dhis/android/core/imports/internal/DataValueImportSummary;Ljava/lang/String;ILjava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/imports/internal/DataValueImportSummaryWebResponse;
+	public final fun copy (Ljava/lang/String;ILjava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/internal/HttpMessageResponse;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/imports/internal/HttpMessageResponse;Ljava/lang/String;ILjava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/imports/internal/HttpMessageResponse;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getHttpStatus ()Ljava/lang/String;
-	public final fun getHttpStatusCode ()I
-	public final fun getMessage ()Ljava/lang/String;
-	public final fun getResponse ()Lorg/hisp/dhis/android/core/imports/internal/DataValueImportSummary;
-	public final fun getStatus ()Ljava/lang/String;
+	public fun getHttpStatus ()Ljava/lang/String;
+	public fun getHttpStatusCode ()I
+	public fun getMessage ()Ljava/lang/String;
+	public fun getStatus ()Ljava/lang/String;
 	public fun hashCode ()I
-	public fun httpStatus ()Ljava/lang/String;
-	public fun httpStatusCode ()I
-	public synthetic fun httpStatusCode ()Ljava/lang/Integer;
-	public fun message ()Ljava/lang/String;
-	public fun status ()Ljava/lang/String;
 	public fun toString ()Ljava/lang/String;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/EnrollmentImportSummaries : org/hisp/dhis/android/core/imports/internal/BaseImportSummaries, org/hisp/dhis/android/core/imports/internal/ImportSummaries {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/imports/internal/EnrollmentImportSummaries$Builder;
-	public abstract fun importSummaries ()Ljava/util/List;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/EnrollmentImportSummaries$Builder : org/hisp/dhis/android/core/imports/internal/BaseImportSummaries$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/imports/internal/EnrollmentImportSummaries;
-	public abstract fun importSummaries (Ljava/util/List;)Lorg/hisp/dhis/android/core/imports/internal/EnrollmentImportSummaries$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/EnrollmentImportSummary : org/hisp/dhis/android/core/imports/internal/BaseImportSummary {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/imports/internal/EnrollmentImportSummary$Builder;
-	public abstract fun events ()Lorg/hisp/dhis/android/core/imports/internal/EventImportSummaries;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/EnrollmentImportSummary$Builder : org/hisp/dhis/android/core/imports/internal/BaseImportSummary$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/imports/internal/EnrollmentImportSummary;
-	public abstract fun events (Lorg/hisp/dhis/android/core/imports/internal/EventImportSummaries;)Lorg/hisp/dhis/android/core/imports/internal/EnrollmentImportSummary$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/EventImportSummaries : org/hisp/dhis/android/core/imports/internal/BaseImportSummaries, org/hisp/dhis/android/core/imports/internal/ImportSummaries {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/imports/internal/EventImportSummaries$Builder;
-	public abstract fun importSummaries ()Ljava/util/List;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/EventImportSummaries$Builder : org/hisp/dhis/android/core/imports/internal/BaseImportSummaries$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/imports/internal/EventImportSummaries;
-	public abstract fun importSummaries (Ljava/util/List;)Lorg/hisp/dhis/android/core/imports/internal/EventImportSummaries$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/EventImportSummary : org/hisp/dhis/android/core/imports/internal/BaseImportSummary {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/imports/internal/EventImportSummary$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/EventImportSummary$Builder : org/hisp/dhis/android/core/imports/internal/BaseImportSummary$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/imports/internal/EventImportSummary;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/EventWebResponse : org/hisp/dhis/android/core/imports/internal/WebResponse {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/imports/internal/EventWebResponse$Builder;
-	public static fun empty ()Lorg/hisp/dhis/android/core/imports/internal/EventWebResponse;
-	public abstract fun response ()Lorg/hisp/dhis/android/core/imports/internal/EventImportSummaries;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/EventWebResponse$Builder : org/hisp/dhis/android/core/imports/internal/WebResponse$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/imports/internal/EventWebResponse;
-	public abstract fun response (Lorg/hisp/dhis/android/core/imports/internal/EventImportSummaries;)Lorg/hisp/dhis/android/core/imports/internal/EventWebResponse$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/HttpMessageResponse : org/hisp/dhis/android/core/imports/internal/WebResponse {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/imports/internal/HttpMessageResponse$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/HttpMessageResponse$Builder : org/hisp/dhis/android/core/imports/internal/WebResponse$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/imports/internal/HttpMessageResponse;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/ImportConflict {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/imports/internal/ImportConflict$Builder;
-	public static fun create (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/internal/ImportConflict;
-	public static fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)Lorg/hisp/dhis/android/core/imports/internal/ImportConflict;
-	public abstract fun errorCode ()Ljava/lang/String;
-	public abstract fun indexes ()Ljava/util/List;
-	public abstract fun object ()Ljava/lang/String;
-	public abstract fun property ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/imports/internal/ImportConflict$Builder;
-	public abstract fun value ()Ljava/lang/String;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/ImportConflict$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/imports/internal/ImportConflict;
-	public abstract fun errorCode (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/internal/ImportConflict$Builder;
-	public abstract fun indexes (Ljava/util/List;)Lorg/hisp/dhis/android/core/imports/internal/ImportConflict$Builder;
-	public abstract fun object (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/internal/ImportConflict$Builder;
-	public abstract fun property (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/internal/ImportConflict$Builder;
-	public abstract fun value (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/internal/ImportConflict$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/ImportCount {
-	public static final field EMPTY Lorg/hisp/dhis/android/core/imports/internal/ImportCount;
-	public fun <init> ()V
-	public static fun create (Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/imports/internal/ImportCount;
-	public abstract fun deleted ()Ljava/lang/Integer;
-	public abstract fun ignored ()Ljava/lang/Integer;
-	public abstract fun imported ()Ljava/lang/Integer;
-	public abstract fun updated ()Ljava/lang/Integer;
 }
 
 public abstract interface class org/hisp/dhis/android/core/imports/internal/ImportModule {
@@ -6279,105 +6119,11 @@ public abstract interface class org/hisp/dhis/android/core/imports/internal/Impo
 	public abstract fun trackerImportConflicts ()Lorg/hisp/dhis/android/core/imports/TrackerImportConflictCollectionRepository;
 }
 
-public abstract class org/hisp/dhis/android/core/imports/internal/RelationshipDeleteWebResponse : org/hisp/dhis/android/core/imports/internal/WebResponse {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/imports/internal/RelationshipDeleteWebResponse$Builder;
-	public static fun empty ()Lorg/hisp/dhis/android/core/imports/internal/RelationshipDeleteWebResponse;
-	public abstract fun response ()Lorg/hisp/dhis/android/core/imports/internal/RelationshipImportSummary;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/RelationshipDeleteWebResponse$Builder : org/hisp/dhis/android/core/imports/internal/WebResponse$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/imports/internal/RelationshipDeleteWebResponse;
-	public abstract fun response (Lorg/hisp/dhis/android/core/imports/internal/RelationshipImportSummary;)Lorg/hisp/dhis/android/core/imports/internal/RelationshipDeleteWebResponse$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/RelationshipImportSummaries : org/hisp/dhis/android/core/imports/internal/BaseImportSummaries, org/hisp/dhis/android/core/imports/internal/ImportSummaries {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/imports/internal/RelationshipImportSummaries$Builder;
-	public abstract fun importSummaries ()Ljava/util/List;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/RelationshipImportSummaries$Builder : org/hisp/dhis/android/core/imports/internal/BaseImportSummaries$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/imports/internal/RelationshipImportSummaries;
-	public abstract fun importSummaries (Ljava/util/List;)Lorg/hisp/dhis/android/core/imports/internal/RelationshipImportSummaries$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/RelationshipImportSummary : org/hisp/dhis/android/core/imports/internal/BaseImportSummary {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/imports/internal/RelationshipImportSummary$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/RelationshipImportSummary$Builder : org/hisp/dhis/android/core/imports/internal/BaseImportSummary$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/imports/internal/RelationshipImportSummary;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/RelationshipWebResponse : org/hisp/dhis/android/core/imports/internal/WebResponse {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/imports/internal/RelationshipWebResponse$Builder;
-	public static fun empty ()Lorg/hisp/dhis/android/core/imports/internal/RelationshipWebResponse;
-	public abstract fun response ()Lorg/hisp/dhis/android/core/imports/internal/RelationshipImportSummaries;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/RelationshipWebResponse$Builder : org/hisp/dhis/android/core/imports/internal/WebResponse$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/imports/internal/RelationshipWebResponse;
-	public abstract fun response (Lorg/hisp/dhis/android/core/imports/internal/RelationshipImportSummaries;)Lorg/hisp/dhis/android/core/imports/internal/RelationshipWebResponse$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/TEIImportSummaries : org/hisp/dhis/android/core/imports/internal/BaseImportSummaries, org/hisp/dhis/android/core/imports/internal/ImportSummaries {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/imports/internal/TEIImportSummaries$Builder;
-	public abstract fun importSummaries ()Ljava/util/List;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/TEIImportSummaries$Builder : org/hisp/dhis/android/core/imports/internal/BaseImportSummaries$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/imports/internal/TEIImportSummaries;
-	public abstract fun importSummaries (Ljava/util/List;)Lorg/hisp/dhis/android/core/imports/internal/TEIImportSummaries$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/TEIImportSummary : org/hisp/dhis/android/core/imports/internal/BaseImportSummary {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/imports/internal/TEIImportSummary$Builder;
-	public abstract fun enrollments ()Lorg/hisp/dhis/android/core/imports/internal/EnrollmentImportSummaries;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/TEIImportSummary$Builder : org/hisp/dhis/android/core/imports/internal/BaseImportSummary$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/imports/internal/TEIImportSummary;
-	public abstract fun enrollments (Lorg/hisp/dhis/android/core/imports/internal/EnrollmentImportSummaries;)Lorg/hisp/dhis/android/core/imports/internal/TEIImportSummary$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/TEIWebResponse : org/hisp/dhis/android/core/imports/internal/WebResponse {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/imports/internal/TEIWebResponse$Builder;
-	public static fun empty ()Lorg/hisp/dhis/android/core/imports/internal/TEIWebResponse;
-	public abstract fun response ()Lorg/hisp/dhis/android/core/imports/internal/TEIImportSummaries;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/TEIWebResponse$Builder : org/hisp/dhis/android/core/imports/internal/WebResponse$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/imports/internal/TEIWebResponse;
-	public abstract fun response (Lorg/hisp/dhis/android/core/imports/internal/TEIImportSummaries;)Lorg/hisp/dhis/android/core/imports/internal/TEIWebResponse$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/WebResponse {
-	public fun <init> ()V
-	public abstract fun httpStatus ()Ljava/lang/String;
-	public abstract fun httpStatusCode ()Ljava/lang/Integer;
-	public abstract fun message ()Ljava/lang/String;
-	public abstract fun status ()Ljava/lang/String;
-}
-
-public abstract class org/hisp/dhis/android/core/imports/internal/WebResponse$Builder {
-	public fun <init> ()V
-	public abstract fun httpStatus (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/internal/WebResponse$Builder;
-	public abstract fun httpStatusCode (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/imports/internal/WebResponse$Builder;
-	public abstract fun message (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/internal/WebResponse$Builder;
-	public abstract fun status (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/internal/WebResponse$Builder;
+public abstract interface class org/hisp/dhis/android/core/imports/internal/WebResponse {
+	public abstract fun getHttpStatus ()Ljava/lang/String;
+	public abstract fun getHttpStatusCode ()I
+	public abstract fun getMessage ()Ljava/lang/String;
+	public abstract fun getStatus ()Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/indicator/DataSetIndicatorLink : org/hisp/dhis/android/core/common/CoreObject {
@@ -11069,18 +10815,6 @@ public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityTypeCol
 	public final fun byFeatureType ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
 	public final fun byIcon ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun withTrackedEntityTypeAttributes ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeCollectionRepository;
-}
-
-public abstract class org/hisp/dhis/android/core/trackedentity/internal/ObjectWithUidWebResponse : org/hisp/dhis/android/core/imports/internal/WebResponse {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/internal/ObjectWithUidWebResponse$Builder;
-	public abstract fun response ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-}
-
-public abstract class org/hisp/dhis/android/core/trackedentity/internal/ObjectWithUidWebResponse$Builder : org/hisp/dhis/android/core/imports/internal/WebResponse$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/trackedentity/internal/ObjectWithUidWebResponse;
-	public abstract fun response (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/trackedentity/internal/ObjectWithUidWebResponse$Builder;
 }
 
 public final class org/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceDownloader : org/hisp/dhis/android/core/arch/repositories/collection/BaseRepository {

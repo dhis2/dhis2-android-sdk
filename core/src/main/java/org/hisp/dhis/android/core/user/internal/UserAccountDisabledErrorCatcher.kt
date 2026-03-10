@@ -58,7 +58,7 @@ internal class UserAccountDisabledErrorCatcher(
         return try {
             val isUnauthorized = response.statusCode == HttpURLConnection.HTTP_UNAUTHORIZED
             val responseErrorBody = HttpMessageResponseDTO.toErrorClass(response.errorBody)
-            isUnauthorized && responseErrorBody.message().contains("Account disabled")
+            isUnauthorized && responseErrorBody.message.contains("Account disabled")
         } catch (e: Exception) {
             false
         }

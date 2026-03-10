@@ -66,7 +66,7 @@ internal class InvalidAttributeValueTypeConflictShould : BaseConflictShould() {
 
         val fileConflictDescription = InvalidAttributeValueTypeConflict
             .getDisplayDescription(TrackedImportConflictSamples.invalidFileAttribute(value), context)
-        assertThat(fileConflictDescription == TrackedImportConflictSamples.invalidFileAttribute(value).value()).isTrue()
+        assertThat(fileConflictDescription == TrackedImportConflictSamples.invalidFileAttribute(value).value).isTrue()
     }
 
     private fun checkMatchAndAttribute(conflict: ImportConflict) {

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,35 +26,16 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.core.imports.internal
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.core.imports.ImportStatus
 
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class RelationshipWebResponse extends WebResponse {
-
-    @Nullable
-    public abstract RelationshipImportSummaries response();
-
-    public static Builder builder() {
-        return new AutoValue_RelationshipWebResponse.Builder();
-    }
-
-    public static RelationshipWebResponse empty() {
-        return builder()
-                .httpStatus("SUCCESS")
-                .httpStatusCode(200)
-                .message("Emtpy response")
-                .status("OK")
-                .build();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder extends WebResponse.Builder<Builder> {
-        public abstract Builder response(RelationshipImportSummaries response);
-
-        public abstract RelationshipWebResponse build();
-    }
-}
+internal data class TEIImportSummaries(
+    override val status: ImportStatus,
+    override val responseType: String,
+    override val imported: Int,
+    override val updated: Int,
+    override val deleted: Int,
+    override val ignored: Int,
+    override val importSummaries: List<TEIImportSummary>?,
+) : BaseImportSummaries, ImportSummaries<TEIImportSummary>

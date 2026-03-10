@@ -26,27 +26,11 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.core.imports.internal
 
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class TEIImportSummary extends BaseImportSummary {
-
-    @Nullable
-    public abstract EnrollmentImportSummaries enrollments();
-
-    public static Builder builder() {
-        return new AutoValue_TEIImportSummary.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseImportSummary.Builder<TEIImportSummary.Builder> {
-
-        public abstract Builder enrollments(EnrollmentImportSummaries enrollments);
-
-        public abstract TEIImportSummary build();
-    }
+interface WebResponse {
+    val httpStatus: String
+    val httpStatusCode: Int
+    val status: String
+    val message: String
 }

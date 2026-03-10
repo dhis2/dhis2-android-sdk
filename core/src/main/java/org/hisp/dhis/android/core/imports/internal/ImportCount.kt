@@ -26,31 +26,15 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.core.imports.internal
 
-import androidx.annotation.NonNull;
-
-public abstract class WebResponse {
-
-    @NonNull
-    public abstract String httpStatus();
-
-    @NonNull
-    public abstract Integer httpStatusCode();
-
-    @NonNull
-    public abstract String status();
-
-    @NonNull
-    public abstract String message();
-
-    public abstract static class Builder<T extends Builder> {
-        public abstract T httpStatus(String httpStatus);
-
-        public abstract T httpStatusCode(Integer httpStatusCode);
-
-        public abstract T status(String status);
-
-        public abstract T message(String message);
+internal data class ImportCount(
+    val imported: Int,
+    val updated: Int,
+    val deleted: Int,
+    val ignored: Int,
+) {
+    companion object {
+        val EMPTY = ImportCount(0, 0, 0, 0)
     }
 }

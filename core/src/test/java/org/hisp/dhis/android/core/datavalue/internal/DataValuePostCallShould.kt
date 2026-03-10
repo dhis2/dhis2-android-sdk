@@ -68,12 +68,12 @@ class DataValuePostCallShould {
     private lateinit var dataValuePostCall: DataValuePostCall
 
     private val successWebResponse = DataValueImportSummaryWebResponse(
-        response = DataValueImportSummary.create(
-            ImportCount.create(1, 0, 0, 0),
-            ImportStatus.SUCCESS,
-            "ImportSummary",
-            null,
-            null,
+        response = DataValueImportSummary(
+            importCount = ImportCount(1, 0, 0, 0),
+            importStatus = ImportStatus.SUCCESS,
+            responseType = "ImportSummary",
+            reference = null,
+            importConflicts = null,
         ),
         httpStatus = "OK",
         httpStatusCode = 200,

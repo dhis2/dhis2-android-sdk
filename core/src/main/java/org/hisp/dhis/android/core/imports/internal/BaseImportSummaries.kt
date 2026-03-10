@@ -26,30 +26,15 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.core.imports.internal
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.core.imports.ImportStatus
 
-import com.google.auto.value.AutoValue;
-
-import java.util.List;
-
-@AutoValue
-public abstract class EnrollmentImportSummaries extends BaseImportSummaries implements ImportSummaries {
-
-    @Override
-    @Nullable
-    public abstract List<EnrollmentImportSummary> importSummaries();
-
-    public static Builder builder() {
-        return new AutoValue_EnrollmentImportSummaries.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseImportSummaries.Builder<EnrollmentImportSummaries.Builder> {
-
-        public abstract Builder importSummaries(List<EnrollmentImportSummary> importSummaries);
-
-        public abstract EnrollmentImportSummaries build();
-    }
+internal interface BaseImportSummaries {
+    val status: ImportStatus
+    val responseType: String
+    val imported: Int
+    val updated: Int
+    val deleted: Int
+    val ignored: Int
 }

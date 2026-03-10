@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,53 +26,22 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports.internal;
+package org.hisp.dhis.android.core.imports.internal
 
-import static org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.safeUnmodifiableList;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.imports.ImportStatus;
-
-import java.util.List;
-
-@AutoValue
-public abstract class DataValueImportSummary {
-
-    public static final DataValueImportSummary EMPTY = DataValueImportSummary.create(
-            ImportCount.EMPTY,
-            ImportStatus.SUCCESS,
-            "ImportSummary",
-            null, null
-    );
-
-    public static DataValueImportSummary create(
-            ImportCount importCount,
-            ImportStatus importStatus,
-            String responseType,
-            String reference,
-            List<ImportConflict> importConflicts) {
-        return new AutoValue_DataValueImportSummary(importCount, importStatus,
-                responseType, reference,
-                safeUnmodifiableList(importConflicts));
+internal data class RelationshipWebResponse(
+    override val httpStatus: String,
+    override val httpStatusCode: Int,
+    override val status: String,
+    override val message: String,
+    val response: RelationshipImportSummaries?,
+) : WebResponse {
+    companion object {
+        fun empty() = RelationshipWebResponse(
+            httpStatus = "SUCCESS",
+            httpStatusCode = 200,
+            message = "Emtpy response",
+            status = "OK",
+            response = null,
+        )
     }
-
-    @NonNull
-    public abstract ImportCount importCount();
-
-    @NonNull
-    public abstract ImportStatus importStatus();
-
-    @NonNull
-    public abstract String responseType();
-
-    //TODO: Reference SHOULD be annotated with NotNull. This is just a bug in ImportSummary response from server.
-    @Nullable
-    public abstract String reference();
-
-    @Nullable
-    public abstract List<ImportConflict> importConflicts();
 }

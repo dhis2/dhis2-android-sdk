@@ -48,4 +48,9 @@ internal class SystemSettingsNetworkHandlerImpl(
         val apiPayload = service.getSystemSettings(SystemSettingsFields.bingApiKey)
         return apiPayload.toDomainBingMapsApiKey()
     }
+
+    override suspend fun getAzureApiKey(): SystemSetting {
+        val apiPayload = service.getSystemSettings(SystemSettingsFields.azureApiKey)
+        return apiPayload.toDomainAzureMapsApiKey()
+    }
 }

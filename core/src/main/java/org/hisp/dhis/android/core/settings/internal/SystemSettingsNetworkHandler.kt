@@ -33,4 +33,5 @@ import org.hisp.dhis.android.core.settings.SystemSetting
 internal interface SystemSettingsNetworkHandler {
     suspend fun getSystemSettings(): List<SystemSetting>
     suspend fun getBingApiKey(): SystemSetting
+    suspend fun getAzureApiKey(): SystemSetting
 }

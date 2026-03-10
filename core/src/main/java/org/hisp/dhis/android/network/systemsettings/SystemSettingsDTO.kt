@@ -39,6 +39,7 @@ internal data class SystemSettingsDTO(
     val keyCustomColorMobile: String?,
     val keyDefaultBaseMap: String?,
     val keyBingMapsApiKey: String?,
+    val keyAzureMapsApiKey: String?,
     val analyticsFinancialYearStart: String?,
     val analyticsWeekStart: String?,
 ) {
@@ -54,6 +55,8 @@ internal data class SystemSettingsDTO(
     )
 
     fun toDomainBingMapsApiKey(): SystemSetting = buildSetting(SystemSettingKey.BING_BASE_MAP, keyBingMapsApiKey)
+
+    fun toDomainAzureMapsApiKey(): SystemSetting = buildSetting(SystemSettingKey.BING_BASE_MAP, keyAzureMapsApiKey)
 
     private fun resolveStyle(): String? = when {
         keyCustomColorMobile == null -> keyStyle

@@ -34,12 +34,14 @@ import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.network.dataelement.DataElementDTO
 import org.junit.Test
 
-class DataElementShould : CoreObjectShould("dataelement/data_element.json") {
-    override fun roundTripSerializer() = DataElementDTO.serializer()
+internal class DataElementShould : CoreObjectShould<DataElementDTO>(
+    "dataelement/data_element.json",
+    DataElementDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val dataElementDTO = deserialize(DataElementDTO.serializer())
+        val dataElementDTO = deserialize()
         val dataElement = dataElementDTO.toDomain()
 
         // basic properties

@@ -33,13 +33,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.organisationunit.OrganisationUnitGroupDTO
 import org.junit.Test
 
-class OrganisationUnitGroupShould : CoreObjectShould("organisationunit/organisation_unit_group.json") {
-
-    override fun roundTripSerializer() = OrganisationUnitGroupDTO.serializer()
+internal class OrganisationUnitGroupShould : CoreObjectShould<OrganisationUnitGroupDTO>(
+    "organisationunit/organisation_unit_group.json",
+    OrganisationUnitGroupDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val organisationUnitGroupDTO = deserialize(OrganisationUnitGroupDTO.serializer())
+        val organisationUnitGroupDTO = deserialize()
         val organisationUnitGroup = organisationUnitGroupDTO.toDomain()
 
         assertThat(organisationUnitGroup.uid()).isEqualTo("CXw2yu5fodb")

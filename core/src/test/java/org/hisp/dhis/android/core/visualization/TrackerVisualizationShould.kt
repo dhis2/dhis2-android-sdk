@@ -34,13 +34,14 @@ import org.hisp.dhis.android.core.common.SortingDirection
 import org.hisp.dhis.android.network.trackervisualization.TrackerVisualizationDTO
 import org.junit.Test
 
-class TrackerVisualizationShould : CoreObjectShould("visualization/tracker_visualization.json") {
-
-    override fun roundTripSerializer() = TrackerVisualizationDTO.serializer()
+internal class TrackerVisualizationShould : CoreObjectShould<TrackerVisualizationDTO>(
+    "visualization/tracker_visualization.json",
+    TrackerVisualizationDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val visualizationDTO = deserialize(TrackerVisualizationDTO.serializer())
+        val visualizationDTO = deserialize()
         val visualization = visualizationDTO.toDomain()
 
         assertThat(visualization.uid()).isEqualTo("s85urBIkN0z")

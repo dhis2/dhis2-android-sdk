@@ -32,13 +32,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.categoryoption.CategoryOptionOrganisationUnitsDTO
 import org.junit.Test
 
-class CategoryOptionOrganisationUnitsShould : CoreObjectShould("category/category_option_orgunits.json") {
-
-    override fun roundTripSerializer() = CategoryOptionOrganisationUnitsDTO.serializer()
+internal class CategoryOptionOrganisationUnitsShould : CoreObjectShould<CategoryOptionOrganisationUnitsDTO>(
+    "category/category_option_orgunits.json",
+    CategoryOptionOrganisationUnitsDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val categoryOptionOrganisationUnitsDTO = deserialize(CategoryOptionOrganisationUnitsDTO.serializer())
+        val categoryOptionOrganisationUnitsDTO = deserialize()
         val linksMap = categoryOptionOrganisationUnitsDTO.toDomain()
 
         assertThat(linksMap.size).isEqualTo(3)

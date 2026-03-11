@@ -35,13 +35,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.programindicator.ProgramIndicatorDTO
 import org.junit.Test
 
-class ProgramIndicatorShould : CoreObjectShould("program/program_indicator.json") {
-
-    override fun roundTripSerializer() = ProgramIndicatorDTO.serializer()
+internal class ProgramIndicatorShould : CoreObjectShould<ProgramIndicatorDTO>(
+    "program/program_indicator.json",
+    ProgramIndicatorDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val programIndicatorDTO = deserialize(ProgramIndicatorDTO.serializer())
+        val programIndicatorDTO = deserialize()
         val programIndicator = programIndicatorDTO.toDomain()
 
         assertThat(programIndicator.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2015-09-21T23:35:50.945"))

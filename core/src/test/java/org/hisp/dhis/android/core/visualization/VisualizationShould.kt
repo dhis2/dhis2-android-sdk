@@ -33,13 +33,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.visualization.VisualizationDTO
 import org.junit.Test
 
-class VisualizationShould : CoreObjectShould("visualization/visualization.json") {
-
-    override fun roundTripSerializer() = VisualizationDTO.serializer()
+internal class VisualizationShould : CoreObjectShould<VisualizationDTO>(
+    "visualization/visualization.json",
+    VisualizationDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val visualizationDTO = deserialize(VisualizationDTO.serializer())
+        val visualizationDTO = deserialize()
         val visualization = visualizationDTO.toDomain()
 
         assertThat(visualization.uid()).isEqualTo("PYBH8ZaAQnC")

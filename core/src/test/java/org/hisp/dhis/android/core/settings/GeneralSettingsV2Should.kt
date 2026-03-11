@@ -32,12 +32,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.settings.GeneralSettingsDTO
 import org.junit.Test
 
-class GeneralSettingsV2Should : CoreObjectShould("settings/general_settings_v2.json") {
-    override fun roundTripSerializer() = GeneralSettingsDTO.serializer()
+internal class GeneralSettingsV2Should : CoreObjectShould<GeneralSettingsDTO>(
+    "settings/general_settings_v2.json",
+    GeneralSettingsDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val generalSettingsDTO = deserialize(GeneralSettingsDTO.serializer())
+        val generalSettingsDTO = deserialize()
         val generalSettings = generalSettingsDTO.toDomain()
 
         assertThat(generalSettings.dataSync()).isNull()

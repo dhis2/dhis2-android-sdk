@@ -34,13 +34,14 @@ import org.hisp.dhis.android.persistence.configuration.DatabasesConfigurationDB
 import org.hisp.dhis.android.persistence.configuration.toDB
 import org.junit.Test
 
-class DatabasesConfigurationShould : CoreObjectShould("configuration/databases_configuration.json") {
-
-    override fun roundTripSerializer() = DatabasesConfigurationDB.serializer()
+internal class DatabasesConfigurationShould : CoreObjectShould<DatabasesConfigurationDB>(
+    "configuration/databases_configuration.json",
+    DatabasesConfigurationDB.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val configurationDao = deserialize(DatabasesConfigurationDB.serializer())
+        val configurationDao = deserialize()
         val configuration = configurationDao.toDomain()
 
         assertThat(configuration.versionCode()).isEqualTo(260)
@@ -57,7 +58,7 @@ class DatabasesConfigurationShould : CoreObjectShould("configuration/databases_c
 
     @Test
     fun equal_when_deserialize_serialize_deserialize() {
-        val configurationDao = deserialize(DatabasesConfigurationDB.serializer())
+        val configurationDao = deserialize()
         val configuration = configurationDao.toDomain()
 
         val serialized = serialize(configuration.toDB(), DatabasesConfigurationDB.serializer())

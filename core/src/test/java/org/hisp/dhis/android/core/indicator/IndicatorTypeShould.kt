@@ -33,12 +33,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.indicatortype.IndicatorTypeDTO
 import org.junit.Test
 
-class IndicatorTypeShould : CoreObjectShould("indicators/indicator_type.json") {
-    override fun roundTripSerializer() = IndicatorTypeDTO.serializer()
+internal class IndicatorTypeShould : CoreObjectShould<IndicatorTypeDTO>(
+    "indicators/indicator_type.json",
+    IndicatorTypeDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val typeDTO = deserialize(IndicatorTypeDTO.serializer())
+        val typeDTO = deserialize()
         val type = typeDTO.toDomain()
 
         assertThat(type.code()).isNull()

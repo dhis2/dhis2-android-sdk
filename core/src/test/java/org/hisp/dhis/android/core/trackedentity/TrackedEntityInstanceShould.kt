@@ -34,13 +34,14 @@ import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.network.trackedentityinstance.TrackedEntityInstanceDTO
 import org.junit.Test
 
-class TrackedEntityInstanceShould : CoreObjectShould("trackedentity/tracked_entity_instance.json") {
-
-    override fun roundTripSerializer() = TrackedEntityInstanceDTO.serializer()
+internal class TrackedEntityInstanceShould : CoreObjectShould<TrackedEntityInstanceDTO>(
+    "trackedentity/tracked_entity_instance.json",
+    TrackedEntityInstanceDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val trackedEntityInstanceDTO = deserialize(TrackedEntityInstanceDTO.serializer())
+        val trackedEntityInstanceDTO = deserialize()
         val trackedEntityInstance = trackedEntityInstanceDTO.toDomain()
 
         assertThat(trackedEntityInstance.lastUpdated()).isEqualTo("2015-10-15T11:32:27.242".toJavaDate())

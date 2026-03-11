@@ -33,13 +33,11 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.constant.ConstantDTO
 import org.junit.Test
 
-class ConstantShould : CoreObjectShould("constant/constant.json") {
-
-    override fun roundTripSerializer() = ConstantDTO.serializer()
+internal class ConstantShould : CoreObjectShould<ConstantDTO>("constant/constant.json", ConstantDTO.serializer()) {
 
     @Test
     override fun map_from_json_string() {
-        val constantDTO = deserialize(ConstantDTO.serializer())
+        val constantDTO = deserialize()
         val constant = constantDTO.toDomain()
 
         assertThat(constant.created())

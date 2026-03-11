@@ -32,13 +32,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.dataapproval.DataApprovalDTO
 import org.junit.Test
 
-class DataApprovalShould : CoreObjectShould("dataapproval/data_approval.json") {
-
-    override fun roundTripSerializer() = DataApprovalDTO.serializer()
+internal class DataApprovalShould : CoreObjectShould<DataApprovalDTO>(
+    "dataapproval/data_approval.json",
+    DataApprovalDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val dataApprovalDTO = deserialize(DataApprovalDTO.serializer())
+        val dataApprovalDTO = deserialize()
         val dataApproval = dataApprovalDTO.toDomain()!!
 
         assertThat(dataApproval.period()).isEqualTo("2019")

@@ -31,13 +31,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.settings.AnalyticsSettingsDTO
 import org.junit.Test
 
-class AnalyticsSettingV1Should : CoreObjectShould("settings/analytics_settings.json") {
-
-    override fun roundTripSerializer() = AnalyticsSettingsDTO.serializer()
+internal class AnalyticsSettingV1Should : CoreObjectShould<AnalyticsSettingsDTO>(
+    "settings/analytics_settings.json",
+    AnalyticsSettingsDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val analyticsSettingsDTO = deserialize(AnalyticsSettingsDTO.serializer())
+        val analyticsSettingsDTO = deserialize()
         val analyticsSettings = analyticsSettingsDTO.toDomain()
 
         AnalyticsSettingAsserts.assertTeiAnalytics(analyticsSettings.tei())

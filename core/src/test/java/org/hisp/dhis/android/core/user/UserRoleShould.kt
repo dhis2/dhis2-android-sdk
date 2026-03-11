@@ -33,13 +33,11 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.user.UserRoleDTO
 import org.junit.Test
 
-class UserRoleShould : CoreObjectShould("user/user_role.json") {
-
-    override fun roundTripSerializer() = UserRoleDTO.serializer()
+internal class UserRoleShould : CoreObjectShould<UserRoleDTO>("user/user_role.json", UserRoleDTO.serializer()) {
 
     @Test
     override fun map_from_json_string() {
-        val userRoleDTO = deserialize(UserRoleDTO.serializer())
+        val userRoleDTO = deserialize()
         val userRole = userRoleDTO.toDomain()
 
         assertThat(userRole.lastUpdated()).isEqualTo(

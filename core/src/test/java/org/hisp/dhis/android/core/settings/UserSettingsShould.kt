@@ -32,12 +32,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.usersettings.UserSettingsDTO
 import org.junit.Test
 
-class UserSettingsShould : CoreObjectShould("settings/user_settings.json") {
-    override fun roundTripSerializer() = UserSettingsDTO.serializer()
+internal class UserSettingsShould : CoreObjectShould<UserSettingsDTO>(
+    "settings/user_settings.json",
+    UserSettingsDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val userSettingsDTO = deserialize(UserSettingsDTO.serializer())
+        val userSettingsDTO = deserialize()
         val userSettings = userSettingsDTO.toDomain()
 
         assertThat(userSettings.keyUiLocale()).isEqualTo("es")

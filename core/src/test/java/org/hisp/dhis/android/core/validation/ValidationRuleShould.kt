@@ -34,13 +34,14 @@ import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.network.validationrule.ValidationRuleDTO
 import org.junit.Test
 
-class ValidationRuleShould : CoreObjectShould("validation/validation_rule.json") {
-
-    override fun roundTripSerializer() = ValidationRuleDTO.serializer()
+internal class ValidationRuleShould : CoreObjectShould<ValidationRuleDTO>(
+    "validation/validation_rule.json",
+    ValidationRuleDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val validationRuleDTO = deserialize(ValidationRuleDTO.serializer())
+        val validationRuleDTO = deserialize()
         val validationRule = validationRuleDTO.toDomain()!!
 
         assertThat(validationRule.code()).isEqualTo("Malaria outbreak")

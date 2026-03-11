@@ -33,12 +33,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.settings.ProgramSettingsDTO
 import org.junit.Test
 
-class ProgramSettingsShould : CoreObjectShould("settings/program_settings.json") {
-    override fun roundTripSerializer() = ProgramSettingsDTO.serializer()
+internal class ProgramSettingsShould : CoreObjectShould<ProgramSettingsDTO>(
+    "settings/program_settings.json",
+    ProgramSettingsDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val programSettingsDTO = deserialize(ProgramSettingsDTO.serializer())
+        val programSettingsDTO = deserialize()
         val programSettings = programSettingsDTO.toDomain()
 
         val global = programSettings.globalSettings()

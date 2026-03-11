@@ -32,13 +32,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.twofactorauth.TwoFactorMethodsDTO
 import org.junit.Test
 
-class TwoFactorMethodsShould : CoreObjectShould("user/two-factor-methods.json") {
-
-    override fun roundTripSerializer() = TwoFactorMethodsDTO.serializer()
+internal class TwoFactorMethodsShould : CoreObjectShould<TwoFactorMethodsDTO>(
+    "user/two-factor-methods.json",
+    TwoFactorMethodsDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val twoFactorMethodsDTO = deserialize(TwoFactorMethodsDTO.serializer())
+        val twoFactorMethodsDTO = deserialize()
         val totp2faEnabled = twoFactorMethodsDTO.toDomain()
 
         assertThat(totp2faEnabled).isEqualTo(true)

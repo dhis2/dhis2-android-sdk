@@ -33,13 +33,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.expressiondimensionitem.ExpressionDimensionItemDTO
 import org.junit.Test
 
-class ExpressionDimensionItemShould : CoreObjectShould("expressiondimensionitem/expression_dimension_item.json") {
-
-    override fun roundTripSerializer() = ExpressionDimensionItemDTO.serializer()
+internal class ExpressionDimensionItemShould : CoreObjectShould<ExpressionDimensionItemDTO>(
+    "expressiondimensionitem/expression_dimension_item.json",
+    ExpressionDimensionItemDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val itemDTO = deserialize(ExpressionDimensionItemDTO.serializer())
+        val itemDTO = deserialize()
         val item = itemDTO.toDomain()
 
         assertThat(item.uid()).isEqualTo("MUcDTQTYanb")

@@ -33,13 +33,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.loginconfig.LoginConfigDTO
 import org.junit.Test
 
-class LoginConfigShould : CoreObjectShould("server/login_config.json") {
-
-    override fun roundTripSerializer() = LoginConfigDTO.serializer()
+internal class LoginConfigShould : CoreObjectShould<LoginConfigDTO>(
+    "server/login_config.json",
+    LoginConfigDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val loginConfigDTO = deserialize(LoginConfigDTO.serializer())
+        val loginConfigDTO = deserialize()
         val loginConfig = loginConfigDTO.toDomain()
 
         assertThat(loginConfig.apiVersion).isEqualTo("2.41.3")

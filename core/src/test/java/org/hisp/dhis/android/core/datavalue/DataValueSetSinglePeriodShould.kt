@@ -31,11 +31,13 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.datavalue.DataValueSetDTO
 import org.junit.Test
 
-class DataValueSetSinglePeriodShould : CoreObjectShould("datavalue/data_values_single_period.json") {
-    override fun roundTripSerializer() = DataValueSetDTO.serializer()
+internal class DataValueSetSinglePeriodShould : CoreObjectShould<DataValueSetDTO>(
+    "datavalue/data_values_single_period.json",
+    DataValueSetDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        deserialize(DataValueSetDTO.serializer()).toDomain()
+        deserialize().toDomain()
     }
 }

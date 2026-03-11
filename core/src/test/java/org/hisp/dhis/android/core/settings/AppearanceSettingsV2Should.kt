@@ -32,14 +32,15 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.settings.AppearanceSettingsDTO
 import org.junit.Test
 
-class AppearanceSettingsV2Should : CoreObjectShould("settings/appearance_settings_v2.json") {
-
-    override fun roundTripSerializer() = AppearanceSettingsDTO.serializer()
+internal class AppearanceSettingsV2Should : CoreObjectShould<AppearanceSettingsDTO>(
+    "settings/appearance_settings_v2.json",
+    AppearanceSettingsDTO.serializer(),
+) {
 
     @Test
     @Suppress("LongMethod")
     override fun map_from_json_string() {
-        val appearanceSettingsDTO = deserialize(AppearanceSettingsDTO.serializer())
+        val appearanceSettingsDTO = deserialize()
         val appearanceSettings = appearanceSettingsDTO.toDomain()
 
         val filterSorting = appearanceSettings.filterSorting()

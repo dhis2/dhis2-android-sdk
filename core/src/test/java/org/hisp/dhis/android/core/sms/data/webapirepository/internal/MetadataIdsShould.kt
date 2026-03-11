@@ -33,13 +33,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.metadata.MetadataIdsDTO
 import org.junit.Test
 
-class MetadataIdsShould : CoreObjectShould("sms/metadata_ids.json") {
-
-    override fun roundTripSerializer() = MetadataIdsDTO.serializer()
+internal class MetadataIdsShould : CoreObjectShould<MetadataIdsDTO>(
+    "sms/metadata_ids.json",
+    MetadataIdsDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val metadataIdsDTO = deserialize(MetadataIdsDTO.serializer())
+        val metadataIdsDTO = deserialize()
         val metadataIds = metadataIdsDTO.toDomain()
 
         assertThat(metadataIds.system).isEqualTo(

@@ -32,13 +32,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.user.UserCredentialsDTO
 import org.junit.Test
 
-class UserCredentialShould : CoreObjectShould("user/user_credentials.json") {
-
-    override fun roundTripSerializer() = UserCredentialsDTO.serializer()
+internal class UserCredentialShould : CoreObjectShould<UserCredentialsDTO>(
+    "user/user_credentials.json",
+    UserCredentialsDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val userCredentialsDTO = deserialize(UserCredentialsDTO.serializer())
+        val userCredentialsDTO = deserialize()
 
         assertThat(userCredentialsDTO.username).isEqualTo("admin")
 

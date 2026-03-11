@@ -32,13 +32,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.common.dto.HttpMessageResponseDTO
 import org.junit.Test
 
-class HttpMessageOwnershipDeniedShould : CoreObjectShould("trackedentity/glass/glass_protected_tei_failure.json") {
-
-    override fun roundTripSerializer() = HttpMessageResponseDTO.serializer()
+internal class HttpMessageOwnershipDeniedShould : CoreObjectShould<HttpMessageResponseDTO>(
+    "trackedentity/glass/glass_protected_tei_failure.json",
+    HttpMessageResponseDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val responseDTO = deserialize(HttpMessageResponseDTO.serializer())
+        val responseDTO = deserialize()
         val response = responseDTO.toDomain()
 
         assertThat(response.httpStatus()).isEqualTo("Unauthorized")

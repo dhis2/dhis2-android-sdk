@@ -33,13 +33,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.authority.AuthorityDTO
 import org.junit.Test
 
-class AuthorityShould : CoreObjectShould("authority/authorities.json") {
-
-    override fun roundTripSerializer() = ListSerializer(AuthorityDTO.serializer())
+internal class AuthorityShould : CoreObjectShould<List<AuthorityDTO>>(
+    "authority/authorities.json",
+    ListSerializer(AuthorityDTO.serializer()),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val authorityDTOList: List<AuthorityDTO> = deserialize(ListSerializer(AuthorityDTO.serializer()))
+        val authorityDTOList = deserialize()
         val authorities = authorityDTOList.map { it.toDomain() }
 
         assertThat(authorities.size).isEqualTo(2)

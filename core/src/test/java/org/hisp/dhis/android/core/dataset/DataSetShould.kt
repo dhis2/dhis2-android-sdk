@@ -39,12 +39,11 @@ import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.network.dataset.DataSetDTO
 import org.junit.Test
 
-class DataSetShould : CoreObjectShould("dataset/data_set.json") {
-    override fun roundTripSerializer() = DataSetDTO.serializer()
+internal class DataSetShould : CoreObjectShould<DataSetDTO>("dataset/data_set.json", DataSetDTO.serializer()) {
 
     @Test
     override fun map_from_json_string() {
-        val dataSetDTO = deserialize(DataSetDTO.serializer())
+        val dataSetDTO = deserialize()
         val dataSet = dataSetDTO.toDomain()
 
         assertThat(dataSet.code()).isEqualTo("DS_394131")

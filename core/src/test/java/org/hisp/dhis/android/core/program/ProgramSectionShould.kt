@@ -35,12 +35,14 @@ import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.network.program.ProgramSectionDTO
 import org.junit.Test
 
-class ProgramSectionShould : CoreObjectShould("program/program_section.json") {
-    override fun roundTripSerializer() = ProgramSectionDTO.serializer()
+internal class ProgramSectionShould : CoreObjectShould<ProgramSectionDTO>(
+    "program/program_section.json",
+    ProgramSectionDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val programSectionDTO = deserialize(ProgramSectionDTO.serializer())
+        val programSectionDTO = deserialize()
         val programSection = programSectionDTO.toDomain()
 
         assertThat(programSection.uid()).isEqualTo("Nc8OxbNuVH3")

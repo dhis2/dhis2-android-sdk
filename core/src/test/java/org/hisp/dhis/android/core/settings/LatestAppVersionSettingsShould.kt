@@ -32,13 +32,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.apkdistribution.LatestAppVersionDTO
 import org.junit.Test
 
-class LatestAppVersionSettingsShould : CoreObjectShould("settings/latest_app_version.json") {
-
-    override fun roundTripSerializer() = LatestAppVersionDTO.serializer()
+internal class LatestAppVersionSettingsShould : CoreObjectShould<LatestAppVersionDTO>(
+    "settings/latest_app_version.json",
+    LatestAppVersionDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val latestAppVersioDTO = deserialize(LatestAppVersionDTO.serializer())
+        val latestAppVersioDTO = deserialize()
         val latestAppVersion = latestAppVersioDTO.toDomain()
 
         Truth.assertThat(latestAppVersion.version()).isEqualTo("v2.7.1.1")

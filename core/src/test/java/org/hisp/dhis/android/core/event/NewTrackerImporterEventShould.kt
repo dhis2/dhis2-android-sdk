@@ -35,13 +35,14 @@ import org.hisp.dhis.android.core.event.EventInternalAccessor.accessTrackedEntit
 import org.hisp.dhis.android.network.tracker.NewEventDTO
 import org.junit.Test
 
-class NewTrackerImporterEventShould : CoreObjectShould("event/new_tracker_importer_event.json") {
-
-    override fun roundTripSerializer() = NewEventDTO.serializer()
+internal class NewTrackerImporterEventShould : CoreObjectShould<NewEventDTO>(
+    "event/new_tracker_importer_event.json",
+    NewEventDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val eventDTO = deserialize(NewEventDTO.serializer())
+        val eventDTO = deserialize()
         val event = eventDTO.toDomain()
 
         assertThat(event.uid()).isEqualTo("EsHa0edW6uY")

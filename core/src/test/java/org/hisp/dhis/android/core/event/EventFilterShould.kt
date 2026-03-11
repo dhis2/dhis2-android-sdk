@@ -37,14 +37,15 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.network.eventfilter.EventFilterDTO
 import org.junit.Test
 
-class EventFilterShould : CoreObjectShould("event/event_filter.json") {
-
-    override fun roundTripSerializer() = EventFilterDTO.serializer()
+internal class EventFilterShould : CoreObjectShould<EventFilterDTO>(
+    "event/event_filter.json",
+    EventFilterDTO.serializer(),
+) {
 
     @Test
     @Suppress("LongMethod")
     override fun map_from_json_string() {
-        val eventFilterDTO = deserialize(EventFilterDTO.serializer())
+        val eventFilterDTO = deserialize()
         val eventFilter = eventFilterDTO.toDomain()
 
         assertThat(eventFilter.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2019-09-27T00:19:06.590"))

@@ -43,7 +43,10 @@ import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import java.io.InputStream
 
-abstract class CoreObjectShould(private val jsonPath: String) {
+abstract class CoreObjectShould<T>(
+    private val jsonPath: String,
+    private val serializer: kotlinx.serialization.KSerializer<T>,
+) {
 
     private val jsonParser = KotlinxJsonParser.instance
 
@@ -81,22 +84,16 @@ abstract class CoreObjectShould(private val jsonPath: String) {
 
     abstract fun map_from_json_string()
 
-    internal open fun roundTripSerializer(): kotlinx.serialization.KSerializer<out Any>? = null
-
     @Test
     open fun round_trip_json_serialization() {
-        val serializer = roundTripSerializer() ?: return
-
-        @Suppress("UNCHECKED_CAST")
-        val typedSerializer = serializer as kotlinx.serialization.KSerializer<Any>
-        val original = deserialize(typedSerializer)
-        val serialized = serialize(original, typedSerializer)
-        val deserialized = deserialize(serialized, typedSerializer)
-        val reserialized = serialize(deserialized, typedSerializer)
+        val original = deserialize()
+        val serialized = serialize(original, serializer)
+        val deserialized = deserialize(serialized, serializer)
+        val reserialized = serialize(deserialized, serializer)
         assertThat(reserialized).isEqualTo(serialized)
     }
 
-    protected fun <T> deserialize(serializer: kotlinx.serialization.KSerializer<T>): T {
+    protected fun deserialize(): T {
         return deserializePath(jsonPath, serializer)
     }
 
@@ -111,10 +108,6 @@ abstract class CoreObjectShould(private val jsonPath: String) {
 
     protected fun <T> serialize(value: T, serializer: kotlinx.serialization.KSerializer<T>): String {
         return jsonParser.encodeToString(serializer, value)
-    }
-
-    protected fun getStringValueFromFile(): String {
-        return getStringValueFromFile(jsonPath)
     }
 
     private fun getStringValueFromFile(path: String): String {

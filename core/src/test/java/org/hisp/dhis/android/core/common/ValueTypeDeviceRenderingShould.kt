@@ -31,12 +31,14 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.network.programstage.ValueTypeDeviceRenderingDTO
 import org.junit.Test
 
-class ValueTypeDeviceRenderingShould : CoreObjectShould("common/value_type_device_rendering.json") {
-    override fun roundTripSerializer() = ValueTypeDeviceRenderingDTO.serializer()
+internal class ValueTypeDeviceRenderingShould : CoreObjectShould<ValueTypeDeviceRenderingDTO>(
+    "common/value_type_device_rendering.json",
+    ValueTypeDeviceRenderingDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val valueTypeDeviceRenderingDTO = deserialize(ValueTypeDeviceRenderingDTO.serializer())
+        val valueTypeDeviceRenderingDTO = deserialize()
         val valueTypeDeviceRendering = valueTypeDeviceRenderingDTO.toDomain()
 
         assertThat(valueTypeDeviceRendering.type())

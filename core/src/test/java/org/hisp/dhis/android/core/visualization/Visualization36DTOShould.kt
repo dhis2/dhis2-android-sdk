@@ -33,13 +33,14 @@ import org.hisp.dhis.android.network.visualization.Visualization36DTO
 import org.hisp.dhis.android.network.visualization.VisualizationDTO
 import org.junit.Test
 
-class Visualization36DTOShould : CoreObjectShould("visualization/visualization_api_36.json") {
-
-    override fun roundTripSerializer() = Visualization36DTO.serializer()
+internal class Visualization36DTOShould : CoreObjectShould<Visualization36DTO>(
+    "visualization/visualization_api_36.json",
+    Visualization36DTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val visualization36 = deserialize(Visualization36DTO.serializer())
+        val visualization36 = deserialize()
 
         assertThat(visualization36.id).isEqualTo("PYBH8ZaAQnC")
         assertThat(visualization36.type).isEqualTo(VisualizationType.PIVOT_TABLE.name)
@@ -50,7 +51,7 @@ class Visualization36DTOShould : CoreObjectShould("visualization/visualization_a
 
     @Test
     fun convert_to_visualization() {
-        val visualization36 = deserialize(Visualization36DTO.serializer())
+        val visualization36 = deserialize()
         val visualization = deserializePath("visualization/visualization.json", VisualizationDTO.serializer())
 
         assertThat(visualization36.toDomain()).isEqualTo(visualization.toDomain())

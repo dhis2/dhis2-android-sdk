@@ -30,14 +30,15 @@ package org.hisp.dhis.android.core.trackedentity
 import org.hisp.dhis.android.network.trackedentityinstancefilter.TrackedEntityInstanceFilter37DTO
 import org.junit.Test
 
-class TrackedEntityInstanceFilter37Should :
-    TrackedEntityInstanceFilterCommonShould("trackedentity/tracked_entity_instance_filter_v_37.json") {
-
-    override fun roundTripSerializer() = TrackedEntityInstanceFilter37DTO.serializer()
+internal class TrackedEntityInstanceFilter37Should :
+    TrackedEntityInstanceFilterCommonShould<TrackedEntityInstanceFilter37DTO>(
+        "trackedentity/tracked_entity_instance_filter_v_37.json",
+        TrackedEntityInstanceFilter37DTO.serializer(),
+    ) {
 
     @Test
     override fun map_from_json_string() {
-        val trackedEntityInstanceFilter37DTO = deserialize(TrackedEntityInstanceFilter37DTO.serializer())
+        val trackedEntityInstanceFilter37DTO = deserialize()
         val trackedEntityInstanceFilter37 = trackedEntityInstanceFilter37DTO.toDomain()
 
         teiFilterCommonAsserts(trackedEntityInstanceFilter37)

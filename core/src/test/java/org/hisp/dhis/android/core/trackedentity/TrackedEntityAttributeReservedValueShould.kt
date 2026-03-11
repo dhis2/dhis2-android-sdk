@@ -33,15 +33,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.trackedentityattributereservedvalue.TrackedEntityAttributeReservedValueDTO
 import org.junit.Test
 
-class TrackedEntityAttributeReservedValueShould : CoreObjectShould(
+internal class TrackedEntityAttributeReservedValueShould : CoreObjectShould<TrackedEntityAttributeReservedValueDTO>(
     "trackedentity/tracked_entity_attribute_reserved_value.json",
+    TrackedEntityAttributeReservedValueDTO.serializer(),
 ) {
-
-    override fun roundTripSerializer() = TrackedEntityAttributeReservedValueDTO.serializer()
 
     @Test
     override fun map_from_json_string() {
-        val reservedValueDTO = deserialize(TrackedEntityAttributeReservedValueDTO.serializer())
+        val reservedValueDTO = deserialize()
         val reservedValue = reservedValueDTO.toDomain()
 
         assertThat(reservedValue.ownerObject()).isEqualTo("TRACKEDENTITYATTRIBUTE")

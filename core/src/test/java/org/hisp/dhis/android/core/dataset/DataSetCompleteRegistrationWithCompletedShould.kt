@@ -33,15 +33,14 @@ import org.hisp.dhis.android.core.util.toJavaSimpleDate
 import org.hisp.dhis.android.network.datasetcompleteregistration.DataSetCompleteRegistrationDTO
 import org.junit.Test
 
-class DataSetCompleteRegistrationWithCompletedShould : CoreObjectShould(
+internal class DataSetCompleteRegistrationWithCompletedShould : CoreObjectShould<DataSetCompleteRegistrationDTO>(
     "dataset/data_set_complete_registration_with_completed.json",
+    DataSetCompleteRegistrationDTO.serializer(),
 ) {
-
-    override fun roundTripSerializer() = DataSetCompleteRegistrationDTO.serializer()
 
     @Test
     override fun map_from_json_string() {
-        val dataSetCompleteRegistrationDTO = deserialize(DataSetCompleteRegistrationDTO.serializer())
+        val dataSetCompleteRegistrationDTO = deserialize()
         val dataSetCompleteRegistration = dataSetCompleteRegistrationDTO.toDomain()
 
         assertThat(dataSetCompleteRegistration.period()).isEqualTo("201703")

@@ -33,12 +33,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.relationshiptype.RelationshipTypeDTO
 import org.junit.Test
 
-class RelationshipType30Should : CoreObjectShould("relationship/relationship_type_30.json") {
-    override fun roundTripSerializer() = RelationshipTypeDTO.serializer()
+internal class RelationshipType30Should : CoreObjectShould<RelationshipTypeDTO>(
+    "relationship/relationship_type_30.json",
+    RelationshipTypeDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val relationshipTypeDTO = deserialize(RelationshipTypeDTO.serializer())
+        val relationshipTypeDTO = deserialize()
         val relationshipType = relationshipTypeDTO.toDomain()
 
         assertThat(relationshipType.uid()).isEqualTo("V2kkHafqs8G")

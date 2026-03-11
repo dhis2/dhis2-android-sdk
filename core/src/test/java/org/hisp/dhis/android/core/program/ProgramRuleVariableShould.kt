@@ -33,12 +33,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.program.ProgramRuleVariableDTO
 import org.junit.Test
 
-class ProgramRuleVariableShould : CoreObjectShould("program/program_rule_variable.json") {
-    override fun roundTripSerializer() = ProgramRuleVariableDTO.serializer()
+internal class ProgramRuleVariableShould : CoreObjectShould<ProgramRuleVariableDTO>(
+    "program/program_rule_variable.json",
+    ProgramRuleVariableDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val programRuleVariableDTO = deserialize(ProgramRuleVariableDTO.serializer())
+        val programRuleVariableDTO = deserialize()
         val programRuleVariable = programRuleVariableDTO.toDomain()
 
         assertThat(programRuleVariable.created()).isEqualTo(

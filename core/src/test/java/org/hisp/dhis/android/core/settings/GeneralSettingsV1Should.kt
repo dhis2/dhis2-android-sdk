@@ -34,12 +34,14 @@ import org.hisp.dhis.android.network.settings.GeneralSettingsDTO
 import org.junit.Test
 import java.io.IOException
 
-class GeneralSettingsV1Should : CoreObjectShould("settings/general_settings_v1.json") {
-    override fun roundTripSerializer() = GeneralSettingsDTO.serializer()
+internal class GeneralSettingsV1Should : CoreObjectShould<GeneralSettingsDTO>(
+    "settings/general_settings_v1.json",
+    GeneralSettingsDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val generalSettingsDTO = deserialize(GeneralSettingsDTO.serializer())
+        val generalSettingsDTO = deserialize()
         val generalSettings = generalSettingsDTO.toDomain()
 
         Truth.assertThat(generalSettings.dataSync()).isEqualTo(DataSyncPeriod.EVERY_24_HOURS)

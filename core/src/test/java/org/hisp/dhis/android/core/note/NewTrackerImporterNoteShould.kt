@@ -32,13 +32,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.tracker.NewNoteDTO
 import org.junit.Test
 
-class NewTrackerImporterNoteShould : CoreObjectShould("note/new_tracker_importer_note.json") {
-
-    override fun roundTripSerializer() = NewNoteDTO.serializer()
+internal class NewTrackerImporterNoteShould : CoreObjectShould<NewNoteDTO>(
+    "note/new_tracker_importer_note.json",
+    NewNoteDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val noteDTO = deserialize(NewNoteDTO.serializer())
+        val noteDTO = deserialize()
         val note = noteDTO.toDomain()
 
         assertThat(note.uid()).isEqualTo("zCBxfBfjnQZ")

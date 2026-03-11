@@ -36,12 +36,14 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.network.indicator.IndicatorDTO
 import org.junit.Test
 
-class IndicatorShould : CoreObjectShould("indicators/indicator.json") {
-    override fun roundTripSerializer() = IndicatorDTO.serializer()
+internal class IndicatorShould : CoreObjectShould<IndicatorDTO>(
+    "indicators/indicator.json",
+    IndicatorDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val indicatorDTO = deserialize(IndicatorDTO.serializer())
+        val indicatorDTO = deserialize()
         val indicator = indicatorDTO.toDomain()
 
         assertThat(indicator.code()).isEqualTo("IN_52462")

@@ -30,23 +30,23 @@ package org.hisp.dhis.android.core.data.database
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDataObjectStore
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.DataObject
 import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import org.hisp.dhis.android.core.common.State
 import org.junit.Before
 import org.junit.Test
 import java.io.IOException
-import kotlin.Throws
 
 abstract class IdentifiableDataObjectStoreAbstractIntegrationShould<M> internal constructor(
-    store: IdentifiableObjectStore<M>,
+    internal val dataObjectStore: IdentifiableDataObjectStore<M>,
     tableInfo: TableInfo,
     databaseAdapter: DatabaseAdapter,
 ) : IdentifiableObjectStoreAbstractIntegrationShould<M>(
-    store,
+    dataObjectStore,
     tableInfo,
     databaseAdapter,
 ) where M : ObjectWithUidInterface, M : CoreObject, M : DataObject, M : ObjectWithDeleteInterface {
@@ -75,6 +75,64 @@ abstract class IdentifiableDataObjectStoreAbstractIntegrationShould<M> internal 
         store.insert(objectWithSyncedState)
         val obj = store.selectFirst()
         assertThat(obj!!.deleted()).isEqualTo(false)
+    }
+
+    @Test
+    fun set_and_get_sync_state() = runTest {
+        dataObjectStore.insert(`object`)
+        dataObjectStore.setSyncState(`object`.uid(), State.TO_UPDATE)
+        val state = dataObjectStore.getSyncState(`object`.uid())
+        assertThat(state).isEqualTo(State.TO_UPDATE)
+    }
+
+    @Test
+    fun set_sync_state_for_multiple_uids() = runTest {
+        dataObjectStore.insert(`object`)
+        val result = dataObjectStore.setSyncState(listOf(`object`.uid()), State.ERROR)
+        assertThat(result).isEqualTo(1)
+        val state = dataObjectStore.getSyncState(`object`.uid())
+        assertThat(state).isEqualTo(State.ERROR)
+    }
+
+    @Test
+    fun set_sync_state_if_uploading_updates_when_uploading() = runTest {
+        dataObjectStore.insert(`object`)
+        dataObjectStore.setSyncState(`object`.uid(), State.UPLOADING)
+        val result = dataObjectStore.setSyncStateIfUploading(`object`.uid(), State.SYNCED)
+        assertThat(result).isEqualTo(1)
+        val state = dataObjectStore.getSyncState(`object`.uid())
+        assertThat(state).isEqualTo(State.SYNCED)
+    }
+
+    @Test
+    fun set_sync_state_if_uploading_does_nothing_when_not_uploading() = runTest {
+        dataObjectStore.insert(`object`)
+        dataObjectStore.setSyncState(`object`.uid(), State.TO_POST)
+        val result = dataObjectStore.setSyncStateIfUploading(`object`.uid(), State.SYNCED)
+        assertThat(result).isEqualTo(0)
+        val state = dataObjectStore.getSyncState(`object`.uid())
+        assertThat(state).isEqualTo(State.TO_POST)
+    }
+
+    @Test
+    fun exists_returns_true_for_existing_object() = runTest {
+        dataObjectStore.insert(`object`)
+        val exists = dataObjectStore.exists(`object`.uid())
+        assertThat(exists).isTrue()
+    }
+
+    @Test
+    fun exists_returns_false_for_non_existing_object() = runTest {
+        val exists = dataObjectStore.exists("non_existing_uid")
+        assertThat(exists).isFalse()
+    }
+
+    @Test
+    fun get_uploadable_sync_states_including_error_returns_objects() = runTest {
+        dataObjectStore.insert(`object`)
+        dataObjectStore.setSyncState(`object`.uid(), State.TO_POST)
+        val uploadable = dataObjectStore.getUploadableSyncStatesIncludingError()
+        assertThat(uploadable).isNotEmpty()
     }
 
     init {

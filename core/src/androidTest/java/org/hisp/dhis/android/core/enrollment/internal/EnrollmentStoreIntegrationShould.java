@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.enrollment.internal;
 
 import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.IdentifiableDataObjectStoreAbstractIntegrationShould;
+import org.hisp.dhis.android.core.data.database.IdentifiableDeletableDataObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.enrollment.EnrollmentSamples;
 import org.hisp.dhis.android.core.enrollment.Enrollment;
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
@@ -39,7 +39,7 @@ import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo;
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)
-public class EnrollmentStoreIntegrationShould extends IdentifiableDataObjectStoreAbstractIntegrationShould<Enrollment> {
+public class EnrollmentStoreIntegrationShould extends IdentifiableDeletableDataObjectStoreAbstractIntegrationShould<Enrollment> {
 
     public EnrollmentStoreIntegrationShould() {
         super(new EnrollmentStoreImpl(TestDatabaseAdapterFactory.get()),
@@ -72,6 +72,30 @@ public class EnrollmentStoreIntegrationShould extends IdentifiableDataObjectStor
         return EnrollmentSamples.get().toBuilder()
                 .syncState(State.SYNCED)
                 .aggregatedSyncState(State.SYNCED)
+                .build();
+    }
+
+    @Override
+    protected Enrollment buildObjectWithUploadingState() {
+        return EnrollmentSamples.get().toBuilder()
+                .syncState(State.UPLOADING)
+                .aggregatedSyncState(State.UPLOADING)
+                .deleted(false)
+                .build();
+    }
+
+    @Override
+    protected Enrollment buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .created(null)
+                .lastUpdated(null)
+                .createdAtClient(null)
+                .lastUpdatedAtClient(null)
+                .enrollmentDate(null)
+                .incidentDate(null)
+                .status(null)
+                .deleted(null)
+                .completedDate(null)
                 .build();
     }
 }

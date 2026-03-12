@@ -36,10 +36,14 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class EventImportEventShould : CoreObjectShould("imports/import_event.json") {
+internal class EventImportEventShould : CoreObjectShould<EventImportSummariesDTO>(
+    "imports/import_event.json",
+    EventImportSummariesDTO.serializer(),
+) {
+
     @Test
     override fun map_from_json_string() {
-        val importEventDTO = deserialize(EventImportSummariesDTO.serializer())
+        val importEventDTO = deserialize()
         val importEvent = importEventDTO.toDomain()
 
         assertThat(importEvent.imported).isEqualTo(1)

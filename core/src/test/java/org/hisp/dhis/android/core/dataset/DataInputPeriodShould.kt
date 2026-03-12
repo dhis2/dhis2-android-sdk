@@ -34,10 +34,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.dataset.DataInputPeriodDTO
 import org.junit.Test
 
-class DataInputPeriodShould : CoreObjectShould("dataset/data_input_period.json") {
+internal class DataInputPeriodShould : CoreObjectShould<DataInputPeriodDTO>(
+    "dataset/data_input_period.json",
+    DataInputPeriodDTO.serializer(),
+) {
+
     @Test
     override fun map_from_json_string() {
-        val dataInputPeriodDTO = deserialize(DataInputPeriodDTO.serializer())
+        val dataInputPeriodDTO = deserialize()
         val dataInputPeriod = dataInputPeriodDTO.toDomain(null)
 
         assertThat(getUidOrNull(dataInputPeriod.period())).isEqualTo("201801")

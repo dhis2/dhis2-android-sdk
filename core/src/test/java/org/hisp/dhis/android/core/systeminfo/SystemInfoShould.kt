@@ -33,11 +33,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.systeminfo.SystemInfoDTO
 import org.junit.Test
 
-class SystemInfoShould : CoreObjectShould("systeminfo/system_info.json") {
+internal class SystemInfoShould : CoreObjectShould<SystemInfoDTO>(
+    "systeminfo/system_info.json",
+    SystemInfoDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val systemInfoDTO = deserialize(SystemInfoDTO.serializer())
+        val systemInfoDTO = deserialize()
         val systemInfo = systemInfoDTO.toDomain()
 
         assertThat(systemInfo.serverDate()).isEqualTo(DateUtils.DATE_FORMAT.parse("2017-11-29T11:27:46.935"))

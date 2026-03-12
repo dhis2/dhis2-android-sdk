@@ -54,4 +54,16 @@ class OptionSetStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrati
             .valueType(ValueType.NUMBER)
             .build()
     }
+
+    override fun buildObjectWithNullableFields(): OptionSet {
+        return buildObject().toBuilder()
+            .code(null)
+            .name(null)
+            .displayName(null)
+            .created(null)
+            .lastUpdated(null)
+            .version(null)
+            .valueType(null)
+            .build()
+    }
 }

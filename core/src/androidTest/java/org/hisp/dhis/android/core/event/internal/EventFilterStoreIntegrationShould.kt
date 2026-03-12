@@ -51,4 +51,16 @@ internal class EventFilterStoreIntegrationShould : IdentifiableObjectStoreAbstra
             .description("new_description")
             .build()
     }
+
+    override fun buildObjectWithNullableFields(): EventFilter {
+        return buildObject().toBuilder()
+            .code(null)
+            .name(null)
+            .displayName(null)
+            .created(null)
+            .lastUpdated(null)
+            .programStage(null)
+            .description(null)
+            .build()
+    }
 }

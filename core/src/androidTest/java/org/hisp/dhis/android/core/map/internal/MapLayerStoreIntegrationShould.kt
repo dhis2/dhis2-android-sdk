@@ -51,4 +51,13 @@ class MapLayerStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegratio
             .name("new_name")
             .build()
     }
+
+    override fun buildObjectWithNullableFields(): MapLayer {
+        return buildObject().toBuilder()
+            .code(null)
+            .mapService(null)
+            .imageFormat(null)
+            .layers(null)
+            .build()
+    }
 }

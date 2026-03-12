@@ -57,4 +57,13 @@ public class TrackedEntityAttributeValueStoreIntegrationShould
                 .value("new_value")
                 .build();
     }
+
+    @Override
+    protected TrackedEntityAttributeValue buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .created(null)
+                .lastUpdated(null)
+                .value(null)
+                .build();
+    }
 }

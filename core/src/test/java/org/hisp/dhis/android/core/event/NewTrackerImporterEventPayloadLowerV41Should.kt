@@ -32,13 +32,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.tracker.NewEventPayload
 import org.junit.Test
 
-class NewTrackerImporterEventPayloadLowerV41Should : CoreObjectShould(
+internal class NewTrackerImporterEventPayloadLowerV41Should : CoreObjectShould<NewEventPayload>(
     "event/new_tracker_importer_events_lower_v41.json",
+    NewEventPayload.serializer(),
 ) {
 
     @Test
     override fun map_from_json_string() {
-        val eventPayloadDTO = deserialize(NewEventPayload.serializer())
+        val eventPayloadDTO = deserialize()
         val eventPayload = eventPayloadDTO
 
         assertThat(eventPayload.pager().page).isEqualTo(1)

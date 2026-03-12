@@ -33,11 +33,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.tracker.NewRelationshipDTO
 import org.junit.Test
 
-class NewTrackerImporterRelationshipShould : CoreObjectShould("relationship/new_relationship.json") {
+internal class NewTrackerImporterRelationshipShould : CoreObjectShould<NewRelationshipDTO>(
+    "relationship/new_relationship.json",
+    NewRelationshipDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val relationshipDTO = deserialize(NewRelationshipDTO.serializer())
+        val relationshipDTO = deserialize()
         val relationship = relationshipDTO.toDomain()
 
         assertThat(relationship.uid()).isEqualTo("VdjOfugUb9y")

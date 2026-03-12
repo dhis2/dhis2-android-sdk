@@ -53,4 +53,15 @@ class CategoryComboStoreIntegrationShould : IdentifiableObjectStoreAbstractInteg
             .displayName("UpdatedCategoryCombo")
             .build()
     }
+
+    override fun buildObjectWithNullableFields(): CategoryCombo {
+        return buildObject().toBuilder()
+            .code(null)
+            .name(null)
+            .displayName(null)
+            .created(null)
+            .lastUpdated(null)
+            .isDefault(null)
+            .build()
+    }
 }

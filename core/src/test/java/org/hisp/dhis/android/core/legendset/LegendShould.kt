@@ -33,11 +33,11 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.legendset.LegendDTO
 import org.junit.Test
 
-class LegendShould : CoreObjectShould("legendset/legend.json") {
+internal class LegendShould : CoreObjectShould<LegendDTO>("legendset/legend.json", LegendDTO.serializer()) {
 
     @Test
     override fun map_from_json_string() {
-        val legendDTO = deserialize(LegendDTO.serializer())
+        val legendDTO = deserialize()
         val legend = legendDTO.toDomain("legendSetUid")
 
         assertThat(legend.uid()).isEqualTo("ZUUGJnvX40X")

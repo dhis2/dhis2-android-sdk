@@ -33,10 +33,14 @@ import org.hisp.dhis.android.core.settings.SystemSetting.SystemSettingKey
 import org.hisp.dhis.android.network.systemsettings.SystemSettingsDTO
 import org.junit.Test
 
-class SystemSettingsShould : CoreObjectShould("settings/system_settings.json") {
+internal class SystemSettingsShould : CoreObjectShould<SystemSettingsDTO>(
+    "settings/system_settings.json",
+    SystemSettingsDTO.serializer(),
+) {
+
     @Test
     override fun map_from_json_string() {
-        val settingsDTO = deserialize(SystemSettingsDTO.serializer())
+        val settingsDTO = deserialize()
         val settingsSplitted = settingsDTO.toDomainSplitted()
         assertThat(settingsSplitted).hasSize(6)
         assertThat(settingsSplitted[0].key()).isEqualTo(SystemSettingKey.FLAG)

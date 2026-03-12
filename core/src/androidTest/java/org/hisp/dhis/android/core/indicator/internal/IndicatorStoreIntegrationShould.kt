@@ -50,4 +50,20 @@ class IndicatorStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrati
             .indicatorType(ObjectWithUid.create("new_indicator_type_uid"))
             .build()
     }
+
+    override fun buildObjectWithNullableFields(): Indicator {
+        return buildObject().toBuilder()
+            .code(null)
+            .name(null)
+            .displayName(null)
+            .created(null)
+            .lastUpdated(null)
+            .shortName(null)
+            .displayShortName(null)
+            .description(null)
+            .displayDescription(null)
+            .numerator(null)
+            .denominator(null)
+            .build()
+    }
 }

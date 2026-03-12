@@ -32,10 +32,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.attribute.AttributeValueDTO
 import org.junit.Test
 
-class AttributeValueShould : CoreObjectShould("attribute/attributeValue.json") {
+internal class AttributeValueShould : CoreObjectShould<AttributeValueDTO>(
+    "attribute/attributeValue.json",
+    AttributeValueDTO.serializer(),
+) {
+
     @Test
     override fun map_from_json_string() {
-        val attributeValueDTO = deserialize(AttributeValueDTO.serializer())
+        val attributeValueDTO = deserialize()
         val attributeValue = attributeValueDTO.toDomain()
 
         assertThat(attributeValue.value()).isEqualTo("value_test")

@@ -33,13 +33,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.tracker.NewTrackedEntityDataValueDTO
 import org.junit.Test
 
-class NewTrackerImporterTrackedEntityDataValueShould : CoreObjectShould(
+internal class NewTrackerImporterTrackedEntityDataValueShould : CoreObjectShould<NewTrackedEntityDataValueDTO>(
     "trackedentity/new_tracker_importer_tracked_entity_data_value.json",
+    NewTrackedEntityDataValueDTO.serializer(),
 ) {
 
     @Test
     override fun map_from_json_string() {
-        val dataValueDTO = deserialize(NewTrackedEntityDataValueDTO.serializer())
+        val dataValueDTO = deserialize()
         val dataValue = dataValueDTO.toDomain("xE7jOejl9FI")
 
         assertThat(dataValue.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2017-01-20T10:44:03.231"))

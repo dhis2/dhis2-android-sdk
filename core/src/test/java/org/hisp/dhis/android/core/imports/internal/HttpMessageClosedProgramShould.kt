@@ -32,11 +32,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.common.dto.HttpMessageResponseDTO
 import org.junit.Test
 
-class HttpMessageClosedProgramShould : CoreObjectShould("trackedentity/glass/closed_program_failure.json") {
+internal class HttpMessageClosedProgramShould : CoreObjectShould<HttpMessageResponseDTO>(
+    "trackedentity/glass/closed_program_failure.json",
+    HttpMessageResponseDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val responseDTO = deserialize(HttpMessageResponseDTO.serializer())
+        val responseDTO = deserialize()
         val response = responseDTO.toDomain()
 
         assertThat(response.httpStatus).isEqualTo("Unauthorized")

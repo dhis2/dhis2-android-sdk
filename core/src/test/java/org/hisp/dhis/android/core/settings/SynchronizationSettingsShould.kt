@@ -34,10 +34,14 @@ import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 import org.hisp.dhis.android.network.settings.SynchronizationSettingsDTO
 import org.junit.Test
 
-class SynchronizationSettingsShould : CoreObjectShould("settings/synchronization_settings.json") {
+internal class SynchronizationSettingsShould : CoreObjectShould<SynchronizationSettingsDTO>(
+    "settings/synchronization_settings.json",
+    SynchronizationSettingsDTO.serializer(),
+) {
+
     @Test
     override fun map_from_json_string() {
-        val syncSettingsDTO = deserialize(SynchronizationSettingsDTO.serializer())
+        val syncSettingsDTO = deserialize()
         val syncSettings = syncSettingsDTO.toDomain()
 
         assertThat(syncSettings.dataSync()).isEqualTo(DataSyncPeriod.EVERY_24_HOURS)

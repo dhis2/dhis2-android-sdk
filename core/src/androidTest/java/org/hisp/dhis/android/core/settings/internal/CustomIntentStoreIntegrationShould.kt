@@ -46,4 +46,13 @@ class CustomIntentStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<
     override fun buildObject(): CustomIntent {
         return CustomIntentSamples.getCustomIntent()
     }
+
+    override fun buildObjectWithNullableFields(): CustomIntent {
+        return buildObject().toBuilder()
+            .name(null)
+            .packageName(null)
+            .request(null)
+            .response(null)
+            .build()
+    }
 }

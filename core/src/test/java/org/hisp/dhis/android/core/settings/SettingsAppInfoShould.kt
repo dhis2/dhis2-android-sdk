@@ -33,10 +33,14 @@ import org.hisp.dhis.android.core.settings.internal.SettingsAppDataStoreVersion
 import org.hisp.dhis.android.network.settings.SettingsAppInfoDTO
 import org.junit.Test
 
-class SettingsAppInfoShould : CoreObjectShould("settings/app_info.json") {
+internal class SettingsAppInfoShould : CoreObjectShould<SettingsAppInfoDTO>(
+    "settings/app_info.json",
+    SettingsAppInfoDTO.serializer(),
+) {
+
     @Test
     override fun map_from_json_string() {
-        val appInfoDTO = deserialize(SettingsAppInfoDTO.serializer())
+        val appInfoDTO = deserialize()
         val appInfo = appInfoDTO.toDomain()
 
         assertThat(appInfo.dataStoreVersion()).isEqualTo(SettingsAppDataStoreVersion.V2_0)

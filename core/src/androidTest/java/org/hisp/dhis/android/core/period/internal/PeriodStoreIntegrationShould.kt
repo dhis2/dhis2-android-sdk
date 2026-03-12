@@ -63,6 +63,14 @@ class PeriodStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationSho
             .build()
     }
 
+    override fun buildObjectWithNullableFields(): Period {
+        return buildObject().toBuilder()
+            .periodType(null)
+            .startDate(null)
+            .endDate(null)
+            .build()
+    }
+
     @Test
     fun select_correct_period_passing_period_type_and_a_date() = runTest {
         val relativePeriodHelper = RelativePeriodHelperMock()

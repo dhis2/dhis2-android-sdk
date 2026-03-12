@@ -32,11 +32,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.trackedentitytype.TrackedEntityTypeAttributeDTO
 import org.junit.Test
 
-class TrackedEntityTypeAttributeShould : CoreObjectShould("trackedentity/tracked_entity_type_attribute.json") {
+internal class TrackedEntityTypeAttributeShould : CoreObjectShould<TrackedEntityTypeAttributeDTO>(
+    "trackedentity/tracked_entity_type_attribute.json",
+    TrackedEntityTypeAttributeDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val typeAttributeDTO = deserialize(TrackedEntityTypeAttributeDTO.serializer())
+        val typeAttributeDTO = deserialize()
         val typeAttribute = typeAttributeDTO.toDomain()
 
         assertThat(typeAttribute.displayInList()).isTrue()

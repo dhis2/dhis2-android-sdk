@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,47 +25,44 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user.internal
 
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
-import org.hisp.dhis.android.core.data.user.UserSamples
-import org.hisp.dhis.android.core.user.User
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.hisp.dhis.android.persistence.user.UserStoreImpl
-import org.hisp.dhis.android.persistence.user.UserTableInfo
-import org.junit.runner.RunWith
+package org.hisp.dhis.android.core.arch.db.access.internal
 
-@RunWith(D2JunitRunner::class)
-class UserStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<User>(
-    UserStoreImpl(TestDatabaseAdapterFactory.get()),
-    UserTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get(),
-) {
-    override fun buildObject(): User {
-        return UserSamples.getUser()
-    }
+import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import androidx.sqlite.execSQL
+import org.hisp.dhis.android.persistence.db.migrations.RoomGeneratedMigrations.ALL_MIGRATIONS
+import org.junit.Assert
+import org.junit.Test
 
-    override fun buildObjectToUpdate(): User {
-        return UserSamples.getUser().toBuilder()
-            .name("new_name")
-            .build()
-    }
+class DatabaseSQLiteConnectionMigrationShould {
 
-    override fun buildObjectWithNullableFields(): User {
-        return buildObject().toBuilder()
-            .code(null)
-            .name(null)
-            .displayName(null)
-            .created(null)
-            .lastUpdated(null)
-            .birthday(null)
-            .education(null)
-            .gender(null)
-            .surname(null)
-            .firstName(null)
-            .email(null)
-            .username(null)
-            .build()
+    @Test
+    fun apply_all_migrations_using_SQLiteConnection() {
+        val driver = BundledSQLiteDriver()
+        val connection = driver.open(":memory:")
+
+        connection.use { conn ->
+            if (ALL_MIGRATIONS.isEmpty()) return
+
+            var currentVersion = ALL_MIGRATIONS.first().startVersion
+            conn.execSQL("PRAGMA user_version = $currentVersion;")
+
+            for (migration in ALL_MIGRATIONS) {
+                Assert.assertEquals(
+                    "Migration order mismatch at version $currentVersion",
+                    migration.startVersion,
+                    currentVersion,
+                )
+                migration.migrate(conn)
+                currentVersion = migration.endVersion
+                conn.execSQL("PRAGMA user_version = $currentVersion;")
+            }
+
+            Assert.assertEquals(
+                "Final DB version after all migrations",
+                AppDatabase.VERSION,
+                currentVersion,
+            )
+        }
     }
 }

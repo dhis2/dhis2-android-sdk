@@ -47,4 +47,12 @@ public class TrackedEntityInstanceSyncStoreIntegrationShould extends ObjectStore
     protected TrackedEntityInstanceSync buildObject() {
         return TrackedEntityInstanceSyncSamples.get1();
     }
+
+    @Override
+    protected TrackedEntityInstanceSync buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .program(null)
+                .workingListsHash(null)
+                .build();
+    }
 }

@@ -34,7 +34,10 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
 
-abstract class TrackedEntityInstanceFilterCommonShould(jsonPath: String) : CoreObjectShould(jsonPath) {
+abstract class TrackedEntityInstanceFilterCommonShould<T>(
+    jsonPath: String,
+    serializer: kotlinx.serialization.KSerializer<T>,
+) : CoreObjectShould<T>(jsonPath, serializer) {
     protected fun teiFilterCommonAsserts(trackedEntityInstanceFilter: TrackedEntityInstanceFilter) {
         assertThat(trackedEntityInstanceFilter.lastUpdated())
             .isEqualTo(BaseIdentifiableObject.parseDate("2019-09-27T00:19:06.590"))

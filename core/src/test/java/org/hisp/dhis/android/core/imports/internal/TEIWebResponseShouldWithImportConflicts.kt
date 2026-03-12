@@ -36,10 +36,14 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class TEIWebResponseShouldWithImportConflicts : CoreObjectShould("imports/web_response_with_import_conflicts.json") {
+internal class TEIWebResponseShouldWithImportConflicts : CoreObjectShould<TEIWebResponseDTO>(
+    "imports/web_response_with_import_conflicts.json",
+    TEIWebResponseDTO.serializer(),
+) {
+
     @Test
     override fun map_from_json_string() {
-        val webResponseDto = deserialize(TEIWebResponseDTO.serializer())
+        val webResponseDto = deserialize()
         val webResponse = webResponseDto.toDomain()
 
         assertThat(webResponse.message).isEqualTo("Import was successful.")

@@ -57,6 +57,12 @@ class ResourceStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationS
             .build()
     }
 
+    override fun buildObjectWithNullableFields(): Resource {
+        return buildObject().toBuilder()
+            .lastSynced(null)
+            .build()
+    }
+
     @Test
     fun return_last_updated() = runTest {
         store.insert(ResourceSamples.getResource())

@@ -36,10 +36,14 @@ import org.hisp.dhis.android.core.common.ValueTypeRenderingType
 import org.hisp.dhis.android.network.programstage.ProgramStageDataElementDTO
 import org.junit.Test
 
-class ProgramStageDataElementShould : CoreObjectShould("program/program_stage_data_element.json") {
+internal class ProgramStageDataElementShould : CoreObjectShould<ProgramStageDataElementDTO>(
+    "program/program_stage_data_element.json",
+    ProgramStageDataElementDTO.serializer(),
+) {
+
     @Test
     override fun map_from_json_string() {
-        val programStageDataElementDTO = deserialize(ProgramStageDataElementDTO.serializer())
+        val programStageDataElementDTO = deserialize()
         val programStageDataElement = programStageDataElementDTO.toDomain()
 
         Truth.assertThat(programStageDataElement.lastUpdated()).isEqualTo(

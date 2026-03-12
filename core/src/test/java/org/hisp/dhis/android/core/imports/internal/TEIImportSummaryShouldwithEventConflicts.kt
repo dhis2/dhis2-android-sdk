@@ -34,11 +34,15 @@ import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.network.trackedentityinstance.TEIImportSummaryDTO
 import org.junit.Test
 
-class TEIImportSummaryShouldwithEventConflicts : CoreObjectShould("imports/import_summary_with_event_conflicts.json") {
+internal class TEIImportSummaryShouldwithEventConflicts : CoreObjectShould<TEIImportSummaryDTO>(
+    "imports/import_summary_with_event_conflicts.json",
+    TEIImportSummaryDTO.serializer(),
+) {
+
     @Test
     @Throws(Exception::class)
     override fun map_from_json_string() {
-        val importSummaryDTO = deserialize(TEIImportSummaryDTO.serializer())
+        val importSummaryDTO = deserialize()
         val importSummary = importSummaryDTO.toDomain()
 
         assertThat(importSummary.responseType).isEqualTo("ImportSummary")

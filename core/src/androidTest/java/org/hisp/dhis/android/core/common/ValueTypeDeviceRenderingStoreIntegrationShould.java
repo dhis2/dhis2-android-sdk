@@ -56,4 +56,16 @@ public class ValueTypeDeviceRenderingStoreIntegrationShould
                 .step(20)
                 .build();
     }
+
+    @Override
+    protected ValueTypeDeviceRendering buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .objectTable(null)
+                .type(null)
+                .min(null)
+                .max(null)
+                .step(null)
+                .decimalPoints(null)
+                .build();
+    }
 }

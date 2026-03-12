@@ -53,4 +53,16 @@ class IndicatoryTypeStoreIntegrationShould : IdentifiableObjectStoreAbstractInte
             .factor(2)
             .build()
     }
+
+    override fun buildObjectWithNullableFields(): IndicatorType {
+        return buildObject().toBuilder()
+            .code(null)
+            .name(null)
+            .displayName(null)
+            .created(null)
+            .lastUpdated(null)
+            .number(null)
+            .factor(null)
+            .build()
+    }
 }

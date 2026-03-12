@@ -71,7 +71,8 @@ tasks.register("jacocoReport", JacocoReport::class) {
 
     sourceDirectories.setFrom(
         "${project.projectDir}/src/main/java",
-        "${project.projectDir}/src/main/kotlin"
+        "${project.projectDir}/src/main/kotlin",
+        layout.buildDirectory.file("generated/ksp/debug/kotlin")
     )
 
     val excludes = mutableSetOf(
@@ -121,7 +122,9 @@ tasks.register("jacocoReport", JacocoReport::class) {
         "**/*\$Result.*",
         "**/*\$Result$*.*",
         // DHIS2 Android SDK fields
-        "**/*AutoValue_*.*"
+        "**/*AutoValue_*.*",
+        // Room-generated DAO classes (generated code not meaningful to cover)
+        "**/*Dao_Impl*.*"
     )
 
     val javaClasses = fileTree(layout.buildDirectory.file("intermediates/javac/debug")) {

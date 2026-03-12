@@ -31,10 +31,11 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.network.common.dto.AccessDTO
 import org.junit.Test
 
-class AccessShould : CoreObjectShould("common/access.json") {
+internal class AccessShould : CoreObjectShould<AccessDTO>("common/access.json", AccessDTO.serializer()) {
+
     @Test
     override fun map_from_json_string() {
-        val accessDTO = deserialize(AccessDTO.serializer())
+        val accessDTO = deserialize()
         val access = accessDTO.toDomain()
 
         assertThat(access.read()).isTrue()

@@ -46,4 +46,17 @@ class ProgramConfigurationSettingStoreIntegrationShould :
     override fun buildObject(): ProgramConfigurationSetting {
         return ProgramConfigurationSettingSamples.get()
     }
+
+    override fun buildObjectWithNullableFields(): ProgramConfigurationSetting {
+        return buildObject().toBuilder()
+            .uid(null)
+            .completionSpinner(null)
+            .optionalSearch(null)
+            .disableReferrals(null)
+            .disableCollapsibleSections(null)
+            .itemHeader(null)
+            .minimumLocationAccuracy(null)
+            .disableManualLocation(null)
+            .build()
+    }
 }

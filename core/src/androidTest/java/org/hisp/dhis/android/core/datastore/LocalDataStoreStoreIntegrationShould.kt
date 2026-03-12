@@ -51,4 +51,10 @@ class LocalDataStoreStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegr
             .value("value2")
             .build()
     }
+
+    override fun buildObjectWithNullableFields(): KeyValuePair {
+        return buildObject().toBuilder()
+            .value(null)
+            .build()
+    }
 }

@@ -57,4 +57,11 @@ public class AuthenticatedUserStoreIntegrationShould
                 .hash("new_hash")
                 .build();
     }
+
+    @Override
+    protected AuthenticatedUser buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .hash(null)
+                .build();
+    }
 }

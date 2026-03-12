@@ -35,11 +35,14 @@ import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.network.trackedentitytype.TrackedEntityTypeDTO
 import org.junit.Test
 
-class TrackedEntityTypeShould : CoreObjectShould("trackedentity/tracked_entity_type.json") {
+internal class TrackedEntityTypeShould : CoreObjectShould<TrackedEntityTypeDTO>(
+    "trackedentity/tracked_entity_type.json",
+    TrackedEntityTypeDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val entityTypeDTO = deserialize(TrackedEntityTypeDTO.serializer())
+        val entityTypeDTO = deserialize()
         val entityType = entityTypeDTO.toDomain()
 
         assertThat(entityType.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2014-08-20T12:28:56.409"))

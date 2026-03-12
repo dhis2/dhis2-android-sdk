@@ -36,10 +36,14 @@ import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.network.trackedentityattribute.TrackedEntityAttributeDTO
 import org.junit.Test
 
-class TrackedEntityAttributeShould : CoreObjectShould("trackedentity/tracked_entity_attribute.json") {
+internal class TrackedEntityAttributeShould : CoreObjectShould<TrackedEntityAttributeDTO>(
+    "trackedentity/tracked_entity_attribute.json",
+    TrackedEntityAttributeDTO.serializer(),
+) {
+
     @Test
     override fun map_from_json_string() {
-        val trackedEntityAttributeDTO = deserialize(TrackedEntityAttributeDTO.serializer())
+        val trackedEntityAttributeDTO = deserialize()
         val trackedEntityAttribute = trackedEntityAttributeDTO.toDomain()
 
         assertThat(trackedEntityAttribute.lastUpdated()).isEqualTo(

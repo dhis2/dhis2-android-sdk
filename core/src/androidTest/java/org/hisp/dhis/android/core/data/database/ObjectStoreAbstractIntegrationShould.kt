@@ -31,10 +31,12 @@ import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.db.sqlorder.internal.SQLOrderType
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.common.CoreObject
 import org.junit.After
+import org.junit.Assume
 import org.junit.Before
 import org.junit.Test
 import java.io.IOException
@@ -49,6 +51,7 @@ abstract class ObjectStoreAbstractIntegrationShould<M : CoreObject> internal con
     private val databaseAdapter: DatabaseAdapter
 
     protected abstract fun buildObject(): M
+    protected open fun buildObjectWithNullableFields(): M? = null
 
     @Before
     @Throws(IOException::class)
@@ -83,6 +86,134 @@ abstract class ObjectStoreAbstractIntegrationShould<M : CoreObject> internal con
         store.insert(`object`)
         val objectsFromDb = store.selectAll()
         assertEqualsIgnoreId(objectsFromDb.iterator().next())
+    }
+
+    @Test
+    fun count_returns_zero_for_empty_table() = runTest {
+        val count = store.count()
+        assertThat(count).isEqualTo(0)
+    }
+
+    @Test
+    fun count_returns_one_after_insert() = runTest {
+        store.insert(`object`)
+        val count = store.count()
+        assertThat(count).isEqualTo(1)
+    }
+
+    @Test
+    fun insert_collection_and_select_all() = runTest {
+        store.insert(listOf(`object`))
+        val objectsFromDb = store.selectAll()
+        assertThat(objectsFromDb.size).isEqualTo(1)
+        assertEqualsIgnoreId(objectsFromDb[0])
+    }
+
+    @Test
+    fun update_collection() = runTest {
+        store.insert(`object`)
+        store.update(listOf(`object`))
+        val objectFromDb = store.selectFirst()
+        assertEqualsIgnoreId(objectFromDb)
+    }
+
+    @Test
+    fun update_or_insert_collection() = runTest {
+        val actions = store.updateOrInsert(listOf(`object`))
+        assertThat(actions).hasSize(1)
+        val objectFromDb = store.selectFirst()
+        assertEqualsIgnoreId(objectFromDb)
+    }
+
+    @Test
+    fun insert_and_select_object_with_nullable_fields() = runTest {
+        val nullableObject = buildObjectWithNullableFields()
+        Assume.assumeNotNull(nullableObject)
+        nullableObject!!
+        store.insert(nullableObject)
+        val objectFromDb = store.selectFirst()
+        assertThat(objectFromDb).isEqualTo(nullableObject)
+    }
+
+    @Test
+    fun update_object_with_nullable_fields() = runTest {
+        val nullableObject = buildObjectWithNullableFields()
+        Assume.assumeNotNull(nullableObject)
+        nullableObject!!
+        store.insert(nullableObject)
+        store.update(listOf(nullableObject))
+        val objectFromDb = store.selectFirst()
+        assertThat(objectFromDb).isEqualTo(nullableObject)
+    }
+
+    @Test
+    fun upsert_object_with_nullable_fields() = runTest {
+        val nullableObject = buildObjectWithNullableFields()
+        Assume.assumeNotNull(nullableObject)
+        nullableObject!!
+        store.updateOrInsert(nullableObject)
+        val objectFromDb = store.selectFirst()
+        assertThat(objectFromDb).isEqualTo(nullableObject)
+    }
+
+    @Test
+    fun select_where_returns_matching_objects() = runTest {
+        store.insert(`object`)
+        val result = store.selectWhere("1")
+        assertThat(result).hasSize(1)
+        assertEqualsIgnoreId(result[0])
+    }
+
+    @Test
+    fun select_where_with_order_returns_objects() = runTest {
+        store.insert(`object`)
+        val result = store.selectWhere("1", null)
+        assertThat(result).hasSize(1)
+    }
+
+    @Test
+    fun select_where_with_limit_returns_limited_objects() = runTest {
+        store.insert(`object`)
+        val result = store.selectWhere("1", null, 1)
+        assertThat(result).hasSize(1)
+    }
+
+    @Test
+    fun select_one_where_returns_matching_object() = runTest {
+        store.insert(`object`)
+        val result = store.selectOneWhere("1")
+        assertEqualsIgnoreId(result)
+    }
+
+    @Test
+    fun count_where_returns_matching_count() = runTest {
+        store.insert(`object`)
+        val count = store.countWhere("1")
+        assertThat(count).isEqualTo(1)
+    }
+
+    @Test
+    fun select_string_columns_where_returns_values() = runTest {
+        val columns = tableInfo.columns().whereUpdate()
+        if (columns.isEmpty()) return@runTest
+        store.insert(`object`)
+        val result = store.selectStringColumnsWhereClause(columns.first(), "1")
+        assertThat(result).isNotEmpty()
+    }
+
+    @Test
+    fun select_raw_query_returns_objects() = runTest {
+        store.insert(`object`)
+        val result = store.selectRawQuery("SELECT * FROM ${tableInfo.name()}")
+        assertThat(result).hasSize(1)
+    }
+
+    @Test
+    fun select_one_ordered_by_returns_object() = runTest {
+        store.insert(`object`)
+        val firstColumn = tableInfo.columns().all().first()
+        val result = store.selectOneOrderedBy(firstColumn, SQLOrderType.ASC)
+        assertEqualsIgnoreId(result)
     }
 
     fun assertEqualsIgnoreId(localObject: M?) {

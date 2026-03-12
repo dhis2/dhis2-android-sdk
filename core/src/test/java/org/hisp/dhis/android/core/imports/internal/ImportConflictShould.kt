@@ -35,10 +35,14 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class ImportConflictShould : CoreObjectShould("imports/import_conflict.json") {
+internal class ImportConflictShould : CoreObjectShould<ImportConflictDTO>(
+    "imports/import_conflict.json",
+    ImportConflictDTO.serializer(),
+) {
+
     @Test
     override fun map_from_json_string() {
-        val importConflictDTO = deserialize(ImportConflictDTO.serializer())
+        val importConflictDTO = deserialize()
         val importConflict = importConflictDTO.toDomain()
 
         assertThat(importConflict.`object`).isEqualTo("UOlfIjgN8X6")

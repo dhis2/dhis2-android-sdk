@@ -45,4 +45,10 @@ class AnalyticsTeiAttributeStoreIntegrationShould : ObjectStoreAbstractIntegrati
     override fun buildObject(): AnalyticsTeiAttribute {
         return AnalyticsSettingsSamples.analyticsTeiAttribute
     }
+
+    override fun buildObjectWithNullableFields(): AnalyticsTeiAttribute {
+        return buildObject().toBuilder()
+            .whoComponent(null)
+            .build()
+    }
 }

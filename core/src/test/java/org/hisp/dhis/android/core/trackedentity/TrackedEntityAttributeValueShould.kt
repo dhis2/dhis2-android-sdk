@@ -34,11 +34,14 @@ import org.hisp.dhis.android.network.trackedentityinstance.TrackedEntityAttribut
 import org.hisp.dhis.android.network.trackedentityinstance.toDto
 import org.junit.Test
 
-class TrackedEntityAttributeValueShould : CoreObjectShould("trackedentity/tracked_entity_attribute_value.json") {
+internal class TrackedEntityAttributeValueShould : CoreObjectShould<TrackedEntityAttributeValueDTO>(
+    "trackedentity/tracked_entity_attribute_value.json",
+    TrackedEntityAttributeValueDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val trackedEntityAttributeValueDTO = deserialize(TrackedEntityAttributeValueDTO.serializer())
+        val trackedEntityAttributeValueDTO = deserialize()
         val trackedEntityAttributeValue = trackedEntityAttributeValueDTO.toDomain("event")
 
         assertThat(trackedEntityAttributeValue.created()).isEqualTo("2019-12-12T07:35:11.366".toJavaDate())

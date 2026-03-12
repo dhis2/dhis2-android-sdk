@@ -33,11 +33,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.programrule.ProgramRuleActionDTO
 import org.junit.Test
 
-class ProgramRuleActionShould : CoreObjectShould("program/program_rule_action.json") {
+internal class ProgramRuleActionShould : CoreObjectShould<ProgramRuleActionDTO>(
+    "program/program_rule_action.json",
+    ProgramRuleActionDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val programRuleActionDTO = deserialize(ProgramRuleActionDTO.serializer())
+        val programRuleActionDTO = deserialize()
         val programRuleAction = programRuleActionDTO.toDomain("NAgjOfWMXg6")
 
         assertThat(programRuleAction.lastUpdated()).isEqualTo(DateUtils.DATE_FORMAT.parse("2015-09-14T22:22:15.458"))

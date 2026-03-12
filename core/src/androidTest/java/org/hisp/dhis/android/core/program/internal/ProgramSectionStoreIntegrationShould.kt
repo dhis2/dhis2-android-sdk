@@ -51,4 +51,17 @@ class ProgramSectionStoreIntegrationShould : IdentifiableObjectStoreAbstractInte
             .sortOrder(2)
             .build()
     }
+
+    override fun buildObjectWithNullableFields(): ProgramSection {
+        return buildObject().toBuilder()
+            .code(null)
+            .name(null)
+            .displayName(null)
+            .created(null)
+            .lastUpdated(null)
+            .description(null)
+            .sortOrder(null)
+            .formName(null)
+            .build()
+    }
 }

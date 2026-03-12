@@ -32,10 +32,11 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.note.NoteDTO
 import org.junit.Test
 
-class NoteShould : CoreObjectShould("note/note_30.json") {
+internal class NoteShould : CoreObjectShould<NoteDTO>("note/note_30.json", NoteDTO.serializer()) {
+
     @Test
     override fun map_from_json_string() {
-        val noteDTO = deserialize(NoteDTO.serializer())
+        val noteDTO = deserialize()
         val note = noteDTO.toDomain()
 
         assertThat(note.uid()).isEqualTo("noteUid")

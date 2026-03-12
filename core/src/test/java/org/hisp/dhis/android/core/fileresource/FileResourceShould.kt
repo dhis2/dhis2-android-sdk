@@ -33,11 +33,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.fileresource.FileResourceDTO
 import org.junit.Test
 
-class FileResourceShould : CoreObjectShould("fileresource/file_resource.json") {
+internal class FileResourceShould : CoreObjectShould<FileResourceDTO>(
+    "fileresource/file_resource.json",
+    FileResourceDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val fileResourceDTO = deserialize(FileResourceDTO.serializer())
+        val fileResourceDTO = deserialize()
         val fileResource = fileResourceDTO.toDomain()
 
         assertThat(fileResource.uid()).isEqualTo("SyPJ9weHqBM")

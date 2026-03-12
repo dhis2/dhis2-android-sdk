@@ -36,10 +36,14 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class EnrollmentImportEnrollmentShould : CoreObjectShould("imports/import_enrollment.json") {
+internal class EnrollmentImportEnrollmentShould : CoreObjectShould<EnrollmentImportSummariesDTO>(
+    "imports/import_enrollment.json",
+    EnrollmentImportSummariesDTO.serializer(),
+) {
+
     @Test
     override fun map_from_json_string() {
-        val importEnrollmentDTO = deserialize(EnrollmentImportSummariesDTO.serializer())
+        val importEnrollmentDTO = deserialize()
         val importEnrollment = importEnrollmentDTO.toDomain()
 
         assertThat(importEnrollment.imported).isEqualTo(0)

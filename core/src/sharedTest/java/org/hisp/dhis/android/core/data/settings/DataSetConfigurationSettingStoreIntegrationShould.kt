@@ -46,4 +46,12 @@ class DataSetConfigurationSettingStoreIntegrationShould :
     override fun buildObject(): DataSetConfigurationSetting {
         return DataSetConfigurationSettingSamples.get()
     }
+
+    override fun buildObjectWithNullableFields(): DataSetConfigurationSetting {
+        return buildObject().toBuilder()
+            .uid(null)
+            .minimumLocationAccuracy(null)
+            .disableManualLocation(null)
+            .build()
+    }
 }

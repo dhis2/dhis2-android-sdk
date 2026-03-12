@@ -32,11 +32,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.persistence.configuration.migration.DatabasesConfigurationOldDB
 import org.junit.Test
 
-class DatabasesConfigurationOldShould : CoreObjectShould("configuration/databases_configuration_old.json") {
+internal class DatabasesConfigurationOldShould : CoreObjectShould<DatabasesConfigurationOldDB>(
+    "configuration/databases_configuration_old.json",
+    DatabasesConfigurationOldDB.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val configuration = deserialize(DatabasesConfigurationOldDB.serializer())
+        val configuration = deserialize()
 
         assertThat(configuration.loggedServerUrl).isEqualTo("https://dhis2.org")
         assertThat(configuration.servers.size).isEqualTo(1)
@@ -53,7 +56,7 @@ class DatabasesConfigurationOldShould : CoreObjectShould("configuration/database
 
     @Test
     fun equal_when_deserialize_serialize_deserialize() {
-        val configuration = deserialize(DatabasesConfigurationOldDB.serializer())
+        val configuration = deserialize()
 
         val serialized = serialize(configuration, DatabasesConfigurationOldDB.serializer())
         val deserialized = deserialize(serialized, DatabasesConfigurationOldDB.serializer())

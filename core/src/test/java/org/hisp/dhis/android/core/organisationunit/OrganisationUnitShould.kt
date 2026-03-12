@@ -37,11 +37,14 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class OrganisationUnitShould : CoreObjectShould("organisationunit/organisation_unit.json") {
+internal class OrganisationUnitShould : CoreObjectShould<OrganisationUnitDTO>(
+    "organisationunit/organisation_unit.json",
+    OrganisationUnitDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val organisationUnitDTO = deserialize(OrganisationUnitDTO.serializer())
+        val organisationUnitDTO = deserialize()
         val organisationUnit = organisationUnitDTO.toDomain()
 
         assertThat(organisationUnit.uid()).isEqualTo("FLjwMPWLrL2")

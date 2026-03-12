@@ -52,4 +52,19 @@ class AttributeStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrati
             .valueType(ValueType.AGE)
             .build()
     }
+
+    override fun buildObjectWithNullableFields(): Attribute {
+        return buildObject().toBuilder()
+            .code(null)
+            .name(null)
+            .displayName(null)
+            .created(null)
+            .lastUpdated(null)
+            .shortName(null)
+            .displayShortName(null)
+            .description(null)
+            .displayDescription(null)
+            .valueType(null)
+            .build()
+    }
 }

@@ -50,4 +50,18 @@ public class ForeignKeyViolationStoreIntegrationShould
     protected ForeignKeyViolation buildObject() {
         return ForeignKeyViolationSamples.get();
     }
+
+    @Override
+    protected ForeignKeyViolation buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .fromTable(null)
+                .fromColumn(null)
+                .toTable(null)
+                .toColumn(null)
+                .notFoundValue(null)
+                .fromObjectUid(null)
+                .fromObjectRow(null)
+                .created(null)
+                .build();
+    }
 }

@@ -35,6 +35,8 @@ import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFact
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.hisp.dhis.android.persistence.program.ProgramIndicatorStoreImpl;
 import org.hisp.dhis.android.persistence.program.ProgramIndicatorTableInfo;
+import java.util.Date;
+
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)
@@ -53,6 +55,24 @@ public class ProgramIndicatorStoreIntegrationShould extends IdentifiableObjectSt
     protected ProgramIndicator buildObjectToUpdate() {
         return ProgramIndicatorSamples.getProgramIndicator().toBuilder()
                 .decimals(413)
+                .build();
+    }
+
+    @Override
+    protected ProgramIndicator buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .code(null)
+                .name(null)
+                .displayName(null)
+                .created((Date) null)
+                .lastUpdated((Date) null)
+                .shortName(null)
+                .displayShortName(null)
+                .description(null)
+                .displayDescription(null)
+                .expression(null)
+                .filter(null)
+                .decimals(null)
                 .build();
     }
 }

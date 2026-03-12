@@ -36,10 +36,14 @@ import org.hisp.dhis.android.network.program.ProgramDTO
 import org.hisp.dhis.android.network.program.ProgramPayload
 import org.junit.Test
 
-class ProgramPayloadShould : CoreObjectShould("program/program_payload.json") {
+internal class ProgramPayloadShould : CoreObjectShould<ProgramPayload>(
+    "program/program_payload.json",
+    ProgramPayload.serializer(),
+) {
+
     @Test
     override fun map_from_json_string() {
-        val payloadDTO: ProgramPayload = deserialize(ProgramPayload.serializer())
+        val payloadDTO = deserialize()
         val payload = payloadDTO.mapItems(ProgramDTO::toDomain)
 
         val programs: List<Program?> = payload.items()

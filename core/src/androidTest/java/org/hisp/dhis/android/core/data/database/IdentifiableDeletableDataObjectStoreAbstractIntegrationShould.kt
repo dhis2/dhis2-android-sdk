@@ -30,25 +30,28 @@ package org.hisp.dhis.android.core.data.database
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
+import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.DeletableDataObject
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import org.hisp.dhis.android.core.common.State
 import org.junit.Before
 import org.junit.Test
 import java.io.IOException
 
-abstract class LinkStoreAbstractIntegrationShould<M : CoreObject> internal constructor(
-    internal var store: LinkStore<M>,
+abstract class IdentifiableDeletableDataObjectStoreAbstractIntegrationShould<M> internal constructor(
+    private val deletableStore: IdentifiableDeletableDataObjectStore<M>,
     tableInfo: TableInfo,
     databaseAdapter: DatabaseAdapter,
-) : ObjectStoreAbstractIntegrationShould<M>(store, tableInfo, databaseAdapter) {
+) : IdentifiableDataObjectStoreAbstractIntegrationShould<M>(
+    deletableStore,
+    tableInfo,
+    databaseAdapter,
+) where M : ObjectWithUidInterface, M : CoreObject, M : DeletableDataObject {
 
-    private val objectWithOtherMasterUid: M
-    private val masterUid: String
-
-    protected abstract fun buildObjectWithOtherMasterUid(): M
-    protected abstract fun addMasterUid(): String
+    protected abstract fun buildObjectWithUploadingState(): M
 
     @Before
     @Throws(IOException::class)
@@ -57,56 +60,36 @@ abstract class LinkStoreAbstractIntegrationShould<M : CoreObject> internal const
     }
 
     @Test
-    fun delete_link_for_master_uid() = runTest {
-        store.insert(`object`)
-        store.deleteLinksForMasterUid(masterUid)
-        val objectFromDb = store.selectFirst()
-        assertThat(objectFromDb).isEqualTo(null)
+    fun set_deleted_marks_object_as_deleted() = runTest {
+        deletableStore.insert(`object`)
+        deletableStore.setDeleted(`object`.uid())
+        val obj = deletableStore.selectByUid(`object`.uid())
+        assertThat(obj!!.deleted()).isTrue()
     }
 
     @Test
-    fun delete_links_for_master_should_delete_only_objects_with_the_master_key() = runTest {
-        store.insert(`object`)
-        store.insert(objectWithOtherMasterUid)
-        store.deleteLinksForMasterUid(masterUid)
-        val objectFromDb = store.selectFirst()
-        assertEqualsIgnoreId(objectFromDb, objectWithOtherMasterUid)
+    fun set_sync_state_or_delete_updates_state_when_not_synced() = runTest {
+        val uploadingObj = buildObjectWithUploadingState()
+        deletableStore.insert(uploadingObj)
+        val action = deletableStore.setSyncStateOrDelete(uploadingObj.uid(), State.ERROR)
+        assertThat(action).isEqualTo(HandleAction.Update)
     }
 
     @Test
-    fun select_links_for_master_should_select_only_objects_with_the_master_key() = runTest {
-        store.insert(`object`)
-        store.insert(objectWithOtherMasterUid)
-        val links = store.selectLinksForMasterUid(masterUid)
-        assertThat(links.size).isEqualTo(1)
-        assertEqualsIgnoreId(links.first(), `object`)
+    fun set_sync_state_or_delete_deletes_when_synced_and_deleted() = runTest {
+        val uploadingObj = buildObjectWithUploadingState()
+        deletableStore.insert(uploadingObj)
+        deletableStore.setDeleted(uploadingObj.uid())
+        val action = deletableStore.setSyncStateOrDelete(uploadingObj.uid(), State.SYNCED)
+        assertThat(action).isEqualTo(HandleAction.Delete)
+        val obj = deletableStore.selectByUid(uploadingObj.uid())
+        assertThat(obj).isNull()
     }
 
     @Test
-    fun insert_if_not_exists_inserts_new_object() = runTest {
-        val action = store.insertIfNotExists(`object`)
-        assertThat(action).isEqualTo(HandleAction.Insert)
-        assertThat(store.selectFirst()).isNotNull()
-    }
-
-    @Test
-    fun insert_if_not_exists_does_not_duplicate_or_crash() = runTest {
-        store.insert(`object`)
-        val action = store.insertIfNotExists(`object`)
-        assertThat(action).isAnyOf(HandleAction.NoAction, HandleAction.Insert)
-    }
-
-    @Test
-    fun delete_all_links_removes_everything() = runTest {
-        store.insert(`object`)
-        store.insert(objectWithOtherMasterUid)
-        val deleted = store.deleteAllLinks()
-        assertThat(deleted).isEqualTo(2)
-        assertThat(store.count()).isEqualTo(0)
-    }
-
-    init {
-        objectWithOtherMasterUid = buildObjectWithOtherMasterUid()
-        masterUid = addMasterUid()
+    fun select_sync_state_where_returns_states() = runTest {
+        deletableStore.insert(`object`)
+        val states = deletableStore.selectSyncStateWhere("uid = '${`object`.uid()}'")
+        assertThat(states).isNotEmpty()
     }
 }

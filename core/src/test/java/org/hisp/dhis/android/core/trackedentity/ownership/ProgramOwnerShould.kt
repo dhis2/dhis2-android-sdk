@@ -32,11 +32,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.trackedentityinstance.ProgramOwnerDTO
 import org.junit.Test
 
-class ProgramOwnerShould : CoreObjectShould("trackedentity/ownership/program_owner.json") {
+internal class ProgramOwnerShould : CoreObjectShould<ProgramOwnerDTO>(
+    "trackedentity/ownership/program_owner.json",
+    ProgramOwnerDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val programOwnerDTO = deserialize(ProgramOwnerDTO.serializer())
+        val programOwnerDTO = deserialize()
         val programOwner = programOwnerDTO.toDomain()
 
         assertThat(programOwner.program()).isEqualTo("lxAQ7Zs9VYR")

@@ -32,10 +32,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.dataset.DataElementOperandDTO
 import org.junit.Test
 
-class DataElementOperandShould : CoreObjectShould("dataelement/data_element_operand.json") {
+internal class DataElementOperandShould : CoreObjectShould<DataElementOperandDTO>(
+    "dataelement/data_element_operand.json",
+    DataElementOperandDTO.serializer(),
+) {
+
     @Test
     override fun map_from_json_string() {
-        val dataElementOperandDTO = deserialize(DataElementOperandDTO.serializer())
+        val dataElementOperandDTO = deserialize()
         val dataElementOperand = dataElementOperandDTO.toDomain()
 
         assertThat(dataElementOperand.uid()).isEqualTo("ca8lfO062zg.Gmbgme7z9BF")

@@ -58,4 +58,12 @@ public class DataElementOperandStoreIntegrationShould
                 .categoryOptionCombo(ObjectWithUid.create("newCombo"))
                 .build();
     }
+
+    @Override
+    protected DataElementOperand buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .dataElement(null)
+                .categoryOptionCombo(null)
+                .build();
+    }
 }

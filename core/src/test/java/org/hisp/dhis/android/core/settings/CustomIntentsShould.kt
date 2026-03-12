@@ -33,10 +33,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.settings.CustomIntentsDTO
 import org.junit.Test
 
-class CustomIntentsShould : CoreObjectShould("settings/custom_intents.json") {
+internal class CustomIntentsShould : CoreObjectShould<CustomIntentsDTO>(
+    "settings/custom_intents.json",
+    CustomIntentsDTO.serializer(),
+) {
+
     @Test
     override fun map_from_json_string() {
-        val customIntentsDTO = deserialize(CustomIntentsDTO.serializer())
+        val customIntentsDTO = deserialize()
         val customIntents = customIntentsDTO.toDomain()
 
         assertThat(customIntents.customIntents()?.size).isEqualTo(2)

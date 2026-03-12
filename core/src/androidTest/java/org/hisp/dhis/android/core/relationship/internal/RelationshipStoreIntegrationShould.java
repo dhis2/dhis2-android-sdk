@@ -56,4 +56,14 @@ public class RelationshipStoreIntegrationShould extends IdentifiableObjectStoreA
                 .name("new_name")
                 .build();
     }
+
+    @Override
+    protected Relationship buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .name(null)
+                .created(null)
+                .lastUpdated(null)
+                .deleted(null)
+                .build();
+    }
 }

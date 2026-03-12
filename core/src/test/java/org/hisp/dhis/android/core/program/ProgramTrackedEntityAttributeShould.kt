@@ -35,10 +35,14 @@ import org.hisp.dhis.android.core.common.ValueTypeRenderingType
 import org.hisp.dhis.android.network.program.ProgramTrackedEntityAttributeDTO
 import org.junit.Test
 
-class ProgramTrackedEntityAttributeShould : CoreObjectShould("program/program_tracked_entity_attribute.json") {
+internal class ProgramTrackedEntityAttributeShould : CoreObjectShould<ProgramTrackedEntityAttributeDTO>(
+    "program/program_tracked_entity_attribute.json",
+    ProgramTrackedEntityAttributeDTO.serializer(),
+) {
+
     @Test
     override fun map_from_json_string() {
-        val programTrackedEntityAttributeDTO = deserialize(ProgramTrackedEntityAttributeDTO.serializer())
+        val programTrackedEntityAttributeDTO = deserialize()
         val programTrackedEntityAttribute = programTrackedEntityAttributeDTO.toDomain()
 
         assertThat(programTrackedEntityAttribute.created()).isEqualTo(

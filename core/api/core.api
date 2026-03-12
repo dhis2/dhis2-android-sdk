@@ -9721,7 +9721,7 @@ public final class org/hisp/dhis/android/core/settings/SystemSetting$SystemSetti
 
 public final class org/hisp/dhis/android/core/settings/SystemSettingCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyCollectionRepositoryImpl {
 	public final fun analyticsFinancialYearStart ()Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyOneObjectRepositoryFinalImpl;
-	public final fun analyticsWeekStart ()Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyOneObjectRepositoryFinalImpl;
+	public final fun analyticsWeeklyStart ()Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyOneObjectRepositoryFinalImpl;
 	public final fun byKey ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
 	public final fun byValue ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun customColor ()Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyOneObjectRepositoryFinalImpl;

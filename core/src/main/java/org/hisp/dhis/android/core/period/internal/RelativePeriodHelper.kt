@@ -59,7 +59,7 @@ internal class RelativePeriodHelperImpl(
     }
 
     override fun getWeeklyPeriodType(): PeriodType {
-        val setting = systemSettingRepository.analyticsWeekStart().blockingGet()
+        val setting = systemSettingRepository.analyticsWeeklyStart().blockingGet()
         return setting?.value()?.let { mapWeekStartSetting(it) } ?: PeriodType.Weekly
     }
 

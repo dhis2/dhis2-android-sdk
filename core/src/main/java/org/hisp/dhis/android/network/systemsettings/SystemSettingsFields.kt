@@ -38,6 +38,7 @@ internal object SystemSettingsFields : BaseFields<SystemSettingsDTO>() {
     private const val KEY_BING_MAPS_API_KEY = "keyBingMapsApiKey"
     private const val KEY_AZURE_MAPS_API_KEY = "keyAzureMapsApiKey"
     private const val ANALYTICS_FINANCIAL_YEAR_START = "analyticsFinancialYearStart"
+    private const val ANALYTICS_WEEK_START = "analyticsWeeklyStart"
 
     val allFields = Fields.from(
         fh.field(KEY_FLAG),
@@ -45,6 +46,7 @@ internal object SystemSettingsFields : BaseFields<SystemSettingsDTO>() {
         fh.field(KEY_CUSTOM_COLOR_MOBILE),
         fh.field(KEY_DEFAULT_BASE_MAP),
         fh.field(ANALYTICS_FINANCIAL_YEAR_START),
+        fh.field(ANALYTICS_WEEK_START),
     )
 
     val bingApiKey = Fields.from(

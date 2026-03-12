@@ -52,18 +52,10 @@ data class LoginConfig(
     val oidcProviders: List<LoginOidcProvider> = emptyList(),
 ) {
     fun isOauthEnabled(): Boolean {
-        return isAtLeast43() && oidcProviders.any { it.id == DHIS2_OAUTH_CLIENT_ID }
-    }
-
-    private fun isAtLeast43(): Boolean {
-        return apiVersion?.let {
-            DHISPatchVersion.isGreaterThanPatch(apiVersion, DHISPatchVersion.V2_42_0)
-        } ?: false
+        return false // return false for SDK release 1.14.0 to prevent issues until fully implemented
     }
 
     internal companion object {
-        const val DHIS2_OAUTH_CLIENT_ID = "dhis2"
-
         fun createDefault(serverUrl: String): LoginConfig {
             return LoginConfig(
                 applicationTitle = serverUrl,

@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.server
 
-import org.hisp.dhis.android.core.systeminfo.DHISPatchVersion
-
 data class LoginConfig(
     val apiVersion: String? = null,
     val applicationTitle: String? = null,

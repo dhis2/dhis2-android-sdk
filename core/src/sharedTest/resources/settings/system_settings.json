@@ -3,5 +3,6 @@
   "keyCustomColorMobile": "#007DEB",
   "keyDefaultBaseMap": "keyDefaultBaseMap",
   "keyBingMapsApiKey": "keyBingMapsApiKey",
-  "analyticsFinancialYearStart": "FINANCIAL_YEAR_JULY"
+  "analyticsFinancialYearStart": "FINANCIAL_YEAR_JULY",
+  "analyticsWeeklyStart": "WEEKLY_FRIDAY"
 }

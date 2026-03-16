@@ -41,7 +41,7 @@ internal data class SystemSettingsDTO(
     val keyBingMapsApiKey: String?,
     val keyAzureMapsApiKey: String?,
     val analyticsFinancialYearStart: String?,
-    val analyticsWeekStart: String?,
+    val analyticsWeeklyStart: String?,
 ) {
 
     @Suppress("DEPRECATION")
@@ -51,7 +51,7 @@ internal data class SystemSettingsDTO(
         buildSetting(SystemSettingKey.CUSTOM_COLOR, resolveCustomColor()),
         buildSetting(SystemSettingKey.DEFAULT_BASE_MAP, keyDefaultBaseMap),
         buildSetting(SystemSettingKey.ANALYTICS_FINANCIAL_YEAR_START, analyticsFinancialYearStart),
-        buildSetting(SystemSettingKey.ANALYTICS_WEEK_START, analyticsWeekStart),
+        buildSetting(SystemSettingKey.ANALYTICS_WEEK_START, analyticsWeeklyStart),
     )
 
     fun toDomainBingMapsApiKey(): SystemSetting = buildSetting(SystemSettingKey.BING_BASE_MAP, keyBingMapsApiKey)

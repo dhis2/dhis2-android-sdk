@@ -45,7 +45,7 @@ class SystemSettingsDTOMappingShould {
         keyBingMapsApiKey = null,
         keyAzureMapsApiKey = null,
         analyticsFinancialYearStart = null,
-        analyticsWeekStart = null,
+        analyticsWeeklyStart = null,
     )
 
     private fun List<SystemSetting>.customColor(): SystemSetting =

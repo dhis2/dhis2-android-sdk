@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.period.internal
 
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
-import kotlinx.datetime.Month
+import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
@@ -41,99 +41,113 @@ import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTest
 import org.junit.Test
 
 /**
- * Integration test to verify that financial year periods are generated correctly
- * based on the analyticsFinancialYearStart system setting.
+ * Integration test to verify that weekly periods are generated correctly
+ * based on the analyticsWeekStart system setting.
  */
-class FinancialYearPeriodIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
+class WeekStartPeriodIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 
     private val systemSettingRepository: SystemSettingCollectionRepository = d2.settingModule().systemSetting()
     private val relativePeriodHelper: RelativePeriodHelper = koin.get()
     private val parentPeriodGenerator: ParentPeriodGenerator = koin.get()
 
     @Test
-    fun use_financial_year_from_system_setting() = runTest {
+    fun use_week_start_from_system_setting() = runTest {
         // Verify that the system setting is loaded (from system_settings.json in test resources)
-        val setting = systemSettingRepository.analyticsFinancialYearStart().blockingGet()
+        val setting = systemSettingRepository.analyticsWeeklyStart().blockingGet()
         assertThat(setting).isNotNull()
-        assertThat(setting?.value()).isEqualTo("FINANCIAL_YEAR_JULY")
+        assertThat(setting?.value()).isEqualTo("WEEKLY_FRIDAY")
 
         // Verify that the helper returns the correct PeriodType
-        val periodType = relativePeriodHelper.getFinancialYearPeriodType()
-        assertThat(periodType).isEqualTo(PeriodType.FinancialJuly)
+        val periodType = relativePeriodHelper.getWeeklyPeriodType()
+        assertThat(periodType).isEqualTo(PeriodType.WeeklyFriday)
     }
 
     @Test
-    fun generate_this_financial_year_with_july_start() = runTest {
-        // The mock data has FINANCIAL_YEAR_JULY configured
-        val periods = parentPeriodGenerator.generateRelativePeriods(RelativePeriod.THIS_FINANCIAL_YEAR)
+    fun generate_this_week_with_friday_start() = runTest {
+        // The mock data has WEEKLY_FRIDAY configured
+        val periods = parentPeriodGenerator.generateRelativePeriods(RelativePeriod.THIS_WEEK)
 
         assertThat(periods).isNotEmpty()
         assertThat(periods.size).isEqualTo(1)
 
-        // Verify the period ID contains "July" suffix
+        // Verify the period ID contains "FriW" suffix
         val periodId = periods[0].periodId()
-        assertThat(periodId).contains("July")
+        assertThat(periodId).contains("FriW")
 
-        // Verify the period type is FinancialJuly
-        assertThat(periods[0].periodType()).isEqualTo(PeriodType.FinancialJuly)
+        // Verify the period type is WeeklyFriday
+        assertThat(periods[0].periodType()).isEqualTo(PeriodType.WeeklyFriday)
     }
 
     @Test
-    fun generate_last_financial_year_with_july_start() = runTest {
-        val periods = parentPeriodGenerator.generateRelativePeriods(RelativePeriod.LAST_FINANCIAL_YEAR)
+    fun generate_last_week_with_friday_start() = runTest {
+        val periods = parentPeriodGenerator.generateRelativePeriods(RelativePeriod.LAST_WEEK)
 
         assertThat(periods).isNotEmpty()
         assertThat(periods.size).isEqualTo(1)
 
-        // Verify the period ID contains "July" suffix
+        // Verify the period ID contains "FriW" suffix
         val periodId = periods[0].periodId()
-        assertThat(periodId).contains("July")
+        assertThat(periodId).contains("FriW")
 
-        // Verify the period type is FinancialJuly
-        assertThat(periods[0].periodType()).isEqualTo(PeriodType.FinancialJuly)
+        // Verify the period type is WeeklyFriday
+        assertThat(periods[0].periodType()).isEqualTo(PeriodType.WeeklyFriday)
     }
 
     @Test
-    fun generate_last_5_financial_years_with_july_start() = runTest {
-        val periods = parentPeriodGenerator.generateRelativePeriods(RelativePeriod.LAST_5_FINANCIAL_YEARS)
+    fun generate_last_4_weeks_with_friday_start() = runTest {
+        val periods = parentPeriodGenerator.generateRelativePeriods(RelativePeriod.LAST_4_WEEKS)
 
         assertThat(periods).isNotEmpty()
-        assertThat(periods.size).isEqualTo(5)
+        assertThat(periods.size).isEqualTo(4)
 
-        // Verify all periods have "July" suffix
+        // Verify all periods have "FriW" suffix
         periods.forEach { period ->
-            assertThat(period.periodId()).contains("July")
-            assertThat(period.periodType()).isEqualTo(PeriodType.FinancialJuly)
+            assertThat(period.periodId()).contains("FriW")
+            assertThat(period.periodType()).isEqualTo(PeriodType.WeeklyFriday)
         }
     }
 
     @Test
-    fun generate_last_10_financial_years_with_july_start() = runTest {
-        val periods = parentPeriodGenerator.generateRelativePeriods(RelativePeriod.LAST_10_FINANCIAL_YEARS)
+    fun generate_last_12_weeks_with_friday_start() = runTest {
+        val periods = parentPeriodGenerator.generateRelativePeriods(RelativePeriod.LAST_12_WEEKS)
 
         assertThat(periods).isNotEmpty()
-        assertThat(periods.size).isEqualTo(10)
+        assertThat(periods.size).isEqualTo(12)
 
-        // Verify all periods have "July" suffix
+        // Verify all periods have "FriW" suffix
         periods.forEach { period ->
-            assertThat(period.periodId()).contains("July")
-            assertThat(period.periodType()).isEqualTo(PeriodType.FinancialJuly)
+            assertThat(period.periodId()).contains("FriW")
+            assertThat(period.periodType()).isEqualTo(PeriodType.WeeklyFriday)
         }
     }
 
     @Test
-    fun verify_financial_july_period_starts_in_july() = runTest {
-        val periods = parentPeriodGenerator.generateRelativePeriods(RelativePeriod.THIS_FINANCIAL_YEAR)
+    fun generate_last_52_weeks_with_friday_start() = runTest {
+        val periods = parentPeriodGenerator.generateRelativePeriods(RelativePeriod.LAST_52_WEEKS)
+
+        assertThat(periods).isNotEmpty()
+        assertThat(periods.size).isEqualTo(52)
+
+        // Verify all periods have "FriW" suffix
+        periods.forEach { period ->
+            assertThat(period.periodId()).contains("FriW")
+            assertThat(period.periodType()).isEqualTo(PeriodType.WeeklyFriday)
+        }
+    }
+
+    @Test
+    fun verify_weekly_friday_period_starts_on_friday() = runTest {
+        val periods = parentPeriodGenerator.generateRelativePeriods(RelativePeriod.THIS_WEEK)
 
         assertThat(periods).isNotEmpty()
         val period = periods[0]
 
-        // For FinancialJuly, the period should start in July
+        // For WeeklyFriday, the period should start on Friday
         val startDate = period.startDate()
         assertThat(startDate).isNotNull()
 
-        val localDate = startDate!!.toKtxInstant().toLocalDateTime(TimeZone.currentSystemDefault()).date
+        val localDate = startDate!!.toKtxInstant().toLocalDateTime(TimeZone.currentSystemDefault())
 
-        assertThat(localDate.month).isEqualTo(Month.JULY)
+        assertThat(localDate.dayOfWeek).isEqualTo(DayOfWeek.FRIDAY)
     }
 }

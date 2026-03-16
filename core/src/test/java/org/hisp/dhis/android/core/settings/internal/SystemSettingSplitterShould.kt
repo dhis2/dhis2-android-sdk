@@ -44,7 +44,7 @@ class SystemSettingSplitterShould {
         keyBingMapsApiKey = null,
         keyAzureMapsApiKey = null,
         analyticsFinancialYearStart = null,
-        analyticsWeekStart = null,
+        analyticsWeeklyStart = null,
     )
 
     @Test

@@ -86,7 +86,7 @@ class SystemSettingCollectionRepository internal constructor(
         return byKey().eq(SystemSettingKey.ANALYTICS_FINANCIAL_YEAR_START).one()
     }
 
-    fun analyticsWeekStart(): ReadOnlyOneObjectRepositoryFinalImpl<SystemSetting> {
+    fun analyticsWeeklyStart(): ReadOnlyOneObjectRepositoryFinalImpl<SystemSetting> {
         return byKey().eq(SystemSettingKey.ANALYTICS_WEEK_START).one()
     }
 

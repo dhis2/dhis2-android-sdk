@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.settings.SystemSettingCollectionRepository
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
-import kotlin.time.toKotlinInstant
 
 /**
  * Integration test to verify that weekly periods are generated correctly

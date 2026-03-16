@@ -29,12 +29,17 @@ package org.hisp.dhis.android.core.period.internal
 
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.Month
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
+import org.hisp.dhis.android.core.arch.helpers.DateUtils.toKtxInstant
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.settings.SystemSettingCollectionRepository
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
+import kotlin.time.toKotlinInstant
 
 /**
  * Integration test to verify that financial year periods are generated correctly
@@ -124,14 +129,12 @@ class FinancialYearPeriodIntegrationShould : BaseMockIntegrationTestFullDispatch
         assertThat(periods).isNotEmpty()
         val period = periods[0]
 
-        // For FinancialJuly, the period should start in July (month 7)
+        // For FinancialJuly, the period should start in July
         val startDate = period.startDate()
         assertThat(startDate).isNotNull()
 
-        val calendar = java.util.Calendar.getInstance()
-        calendar.time = startDate
-        val startMonth = calendar.get(java.util.Calendar.MONTH) + 1 // Calendar.MONTH is 0-based
+        val localDate = startDate!!.toKtxInstant().toLocalDateTime(TimeZone.currentSystemDefault()).date
 
-        assertThat(startMonth).isEqualTo(7) // July
+        assertThat(localDate.month).isEqualTo(Month.JULY)
     }
 }

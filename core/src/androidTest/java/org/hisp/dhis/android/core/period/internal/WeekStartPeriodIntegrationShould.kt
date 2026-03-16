@@ -29,12 +29,17 @@ package org.hisp.dhis.android.core.period.internal
 
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
+import org.hisp.dhis.android.core.arch.helpers.DateUtils.toKtxInstant
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.settings.SystemSettingCollectionRepository
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
+import kotlin.time.toKotlinInstant
 
 /**
  * Integration test to verify that weekly periods are generated correctly
@@ -138,14 +143,12 @@ class WeekStartPeriodIntegrationShould : BaseMockIntegrationTestFullDispatcher()
         assertThat(periods).isNotEmpty()
         val period = periods[0]
 
-        // For WeeklyFriday, the period should start on Friday (day 6 in Calendar, FRIDAY)
+        // For WeeklyFriday, the period should start on Friday
         val startDate = period.startDate()
         assertThat(startDate).isNotNull()
 
-        val calendar = java.util.Calendar.getInstance()
-        calendar.time = startDate
-        val dayOfWeek = calendar.get(java.util.Calendar.DAY_OF_WEEK)
+        val localDate = startDate!!.toKtxInstant().toLocalDateTime(TimeZone.currentSystemDefault())
 
-        assertThat(dayOfWeek).isEqualTo(java.util.Calendar.FRIDAY)
+        assertThat(localDate.dayOfWeek).isEqualTo(DayOfWeek.FRIDAY)
     }
 }

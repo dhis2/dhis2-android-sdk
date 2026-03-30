@@ -6,6 +6,7 @@ By default, DHIS2 has some basemaps:
 
 - OpenStreetMaps
 - Bing: it is required to setup a bing api key in the server to make them work.
+- Azure: it is required to setup an Azure Maps API key in the server to make them work.
 
 Additionally, it is possible to define custom basemaps in the Maintenance app.
 
@@ -33,6 +34,7 @@ These map layers contain useful information to display them using a SDK for maps
 - imageUrl: it might look like `https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png`.
 - subdomains: map providers usually offer a list of subdomains, for example `["a", "b", "c", "d"]`.
 - subdomainPlaceholder: the token that must be replaced in the imageUrl, in this case `{s}`.
-- external: whether the map is user-defined (external) or built-in (bing, openstreetmaps).
+- external: whether the map is user-defined (external) or built-in (bing, azure, openstreetmaps).
+- linkedLayerUid: some layers (like Azure Hybrid) are composed of multiple map layers. In that case, this field contains the UID of the base layer that this layer should be rendered on top of.
 
 It is straightforward to get the list of imageUrls by iterating the subdomain list and using the placeholder to replace it in the url.

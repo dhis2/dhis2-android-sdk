@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,32 +26,8 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.constant;
+package org.hisp.dhis.android.processor
 
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.CoreObject;
-
-@AutoValue
-public abstract class Constant extends BaseIdentifiableObject implements CoreObject {
-
-    @Nullable
-    public abstract Double value();
-
-    public static Builder builder() {
-        return new AutoValue_Constant.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
-
-        public abstract Builder value(Double value);
-
-        public abstract Constant build();
-    }
-}
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.SOURCE)
+annotation class ModelBuilder

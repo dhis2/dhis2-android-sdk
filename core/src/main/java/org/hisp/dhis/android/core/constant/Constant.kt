@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.constant
 
-import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.processor.ModelBuilder
 import java.util.Date
 

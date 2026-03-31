@@ -25,33 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.constant
+package org.hisp.dhis.android.core.common
 
-import org.hisp.dhis.android.core.common.CoreObject
-import org.hisp.dhis.android.core.common.IdentifiableObjectKt
-import org.hisp.dhis.android.core.common.ObjectWithDeleteInterfaceKt
-import org.hisp.dhis.android.processor.ModelBuilder
-import java.util.Date
+interface NameableObjectKt : NameableObject, IdentifiableObjectKt {
+    val shortName: String?
+    val displayShortName: String?
+    val description: String?
+    val displayDescription: String?
 
-@ModelBuilder
-data class Constant(
-    override val uid: String,
-    override val code: String?,
-    override val name: String?,
-    override val displayName: String?,
-    override val created: Date?,
-    override val lastUpdated: Date?,
-    override val deleted: Boolean?,
-    val value: Double?,
-) : IdentifiableObjectKt, ObjectWithDeleteInterfaceKt, CoreObject {
-    fun value(): Double? = value
-
-    fun toBuilder(): Builder = ConstantBuilder.from(this)
-
-    class Builder : ConstantBuilder()
-
-    companion object {
-        @JvmStatic
-        fun builder(): Builder = Builder()
-    }
+    override fun shortName(): String? = shortName
+    override fun displayShortName(): String? = displayShortName
+    override fun description(): String? = description
+    override fun displayDescription(): String? = displayDescription
 }

@@ -38,7 +38,6 @@ import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
-import com.google.devtools.ksp.symbol.Nullability
 import com.google.devtools.ksp.validate
 import org.hisp.dhis.android.processor.ModelBuilder
 import java.io.OutputStream
@@ -63,6 +62,7 @@ class ModelBuilderProcessor(
             val packageName = symbol.packageName.asString()
             val className = symbol.simpleName.asString()
             val builderName = "${className}Builder"
+            val innerBuilderName = "$className.Builder"
 
             val file = codeGenerator.createNewFile(
                 // Make sure to associate the generated file with sources to keep/maintain it across incremental builds.
@@ -74,31 +74,37 @@ class ModelBuilderProcessor(
             )
 
             val baseClass = baseClasses.find { baseClass ->
-                symbol.getAllSuperTypes().any { it.declaration.simpleName.asString() == baseClass.name}
+                symbol.getAllSuperTypes().any { it.declaration.simpleName.asString() == baseClass.name }
             }
-            val implementationClass = baseClass?.let { ": ${baseClass.name}.Builder<${builderName}>() " } ?: ""
+            val implementationClass = baseClass?.let { ": ${baseClass.builder}.Builder<$builderName>() " } ?: ""
             val overridenFields = baseClass?.fields ?: emptyList()
 
             val fields = symbol.declarations.filterIsInstance<KSPropertyDeclaration>()
 
-            val nonPrimitiveTypes = fields.filter { it.type.resolve().nullability != Nullability.PLATFORM }
+            val typeImports = fields.flatMap { field ->
+                val fieldType = field.type.resolve()
+                val arguments = fieldType.arguments.mapNotNull {
+                    it.type?.resolve()?.declaration?.qualifiedName?.asString()
+                }
+                arguments + fieldType.declaration.qualifiedName?.asString()
+            }.filterNotNull().distinct().sorted()
 
             file += """
             package $packageName
             
             ${
-                nonPrimitiveTypes.map { type ->
-                    "import ${type.type.resolve().declaration.qualifiedName?.asString()}"
-                }.distinct().joinToString("\n            ")
+                typeImports.joinToString("\n            ") { typeImport ->
+                    "import $typeImport"
+                }
             }
-            ${baseClass?.import ?: ""}
+            ${baseClass?.builderImport ?: ""}
                
             open class $builderName $implementationClass{
                 ${
                 fields.joinToString("\n                ") { field ->
                     when (field.type.resolve().isMarkedNullable) {
-                        true -> "var ${field.simpleName.asString()}: ${field.type.resolve().toString()} = null"
-                        false -> "lateinit var ${field.simpleName.asString()}: ${field.type.resolve().toString()}"
+                        true -> "private var ${field.simpleName.asString()}: ${field.type.resolve()} = null"
+                        false -> "private lateinit var ${field.simpleName.asString()}: ${field.type.resolve()}"
                     }
                 }}
                 
@@ -107,18 +113,19 @@ class ModelBuilderProcessor(
                     val name = field.simpleName.asString()
                     val type = field.type.resolve().toString()
                     val optOverride = if (overridenFields.contains(name)) "override " else ""
-                    
-                    "${optOverride}fun $name ($name: $type): $builderName = this.also { this.$name = $name }"
-                }    
+
+                    "${optOverride}fun $name ($name: $type): $innerBuilderName = " +
+                        "this.also { this.$name = $name } as $innerBuilderName"
                 }
+            }
                 
                 fun build(): $className {
                     return $className(
                         ${
-                        fields.joinToString("\n                        ") { field ->
-                            field.simpleName.asString() + ","
-                        }    
-                        }
+                fields.joinToString("\n                        ") { field ->
+                    field.simpleName.asString() + ","
+                }
+            }
                     )
                 }
                 
@@ -126,11 +133,11 @@ class ModelBuilderProcessor(
                     fun from(item: $className): $className.Builder {
                         return $className.Builder().apply {
                             ${
-                            fields.joinToString("\n                            ") { field ->
-                                val name = field.simpleName.asString()
-                                "$name(item.$name)"
-                            }
-                            }
+                fields.joinToString("\n                            ") { field ->
+                    val name = field.simpleName.asString()
+                    "$name(item.$name)"
+                }
+            }
                         }
                     }
                 }
@@ -142,20 +149,22 @@ class ModelBuilderProcessor(
         }
 
         val unableToProcess = symbols.filterNot { it.validate() }.toList()
-        //return symbols.filterNot { it.validate() }.toList()
+        // return symbols.filterNot { it.validate() }.toList()
         return emptyList()
     }
 
     companion object {
         val identifiable = BaseClass(
+            "IdentifiableObject",
             "BaseIdentifiableObject",
             "import org.hisp.dhis.android.core.common.BaseIdentifiableObject",
-            listOf("uid", "code", "name", "displayName", "created", "lastUpdated", "deleted")
+            listOf("uid", "code", "name", "displayName", "created", "lastUpdated", "deleted"),
         )
         val nameable = BaseClass(
+            "NameableObject",
             "BaseNameableObject",
             "import org.hisp.dhis.android.core.common.BaseNameableObject",
-            identifiable.fields + listOf("shortName", "displayShortName", "description", "displayDescription")
+            identifiable.fields + listOf("shortName", "displayShortName", "description", "displayDescription"),
         )
 
         // The order here matters. The first matching base class is used for the builder
@@ -168,6 +177,7 @@ class ModelBuilderProcessor(
 
 data class BaseClass(
     val name: String,
-    val import: String,
+    val builder: String,
+    val builderImport: String,
     val fields: List<String>,
 )

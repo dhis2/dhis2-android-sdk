@@ -29,14 +29,13 @@ package org.hisp.dhis.android.core.common
 
 import java.util.Date
 
-abstract class BaseIdentifiableObjectKt : BaseIdentifiableObject() {
-    abstract val uid: String
-    abstract val code: String?
-    abstract val name: String?
-    abstract val displayName: String?
-    abstract val created: Date?
-    abstract val lastUpdated: Date?
-    abstract val deleted: Boolean?
+interface IdentifiableObjectKt : IdentifiableObject {
+    val uid: String
+    val code: String?
+    val name: String?
+    val displayName: String?
+    val created: Date?
+    val lastUpdated: Date?
 
     override fun uid(): String = uid
     override fun code(): String? = code
@@ -44,5 +43,4 @@ abstract class BaseIdentifiableObjectKt : BaseIdentifiableObject() {
     override fun displayName(): String? = displayName
     override fun created(): Date? = created
     override fun lastUpdated(): Date? = lastUpdated
-    override fun deleted(): Boolean? = deleted
 }

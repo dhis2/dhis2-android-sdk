@@ -38,6 +38,7 @@ import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
+import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.validate
 import org.hisp.dhis.android.processor.ModelBuilder
 import java.io.OutputStream
@@ -79,14 +80,18 @@ class ModelBuilderProcessor(
             val implementationClass = baseClass?.let { ": ${baseClass.builder}.Builder<$builderName>() " } ?: ""
             val overridenFields = baseClass?.fields ?: emptyList()
 
-            val fields = symbol.declarations.filterIsInstance<KSPropertyDeclaration>()
+            val fields = symbol.declarations.filterIsInstance<KSPropertyDeclaration>().map { field ->
+                ClassField(
+                    name = field.simpleName.asString(),
+                    type = field.type.resolve(),
+                )
+            }
 
             val typeImports = fields.flatMap { field ->
-                val fieldType = field.type.resolve()
-                val arguments = fieldType.arguments.mapNotNull {
+                val arguments = field.type.arguments.mapNotNull {
                     it.type?.resolve()?.declaration?.qualifiedName?.asString()
                 }
-                arguments + fieldType.declaration.qualifiedName?.asString()
+                arguments + field.type.declaration.qualifiedName?.asString()
             }.filterNotNull().distinct().sorted()
 
             file += """
@@ -98,20 +103,18 @@ class ModelBuilderProcessor(
                 }
             }
             ${baseClass?.builderImport ?: ""}
+            import kotlin.properties.Delegates
                
             open class $builderName $implementationClass{
                 ${
                 fields.joinToString("\n                ") { field ->
-                    when (field.type.resolve().isMarkedNullable) {
-                        true -> "private var ${field.simpleName.asString()}: ${field.type.resolve()} = null"
-                        false -> "private lateinit var ${field.simpleName.asString()}: ${field.type.resolve()}"
-                    }
+                    getBuilderInternalProperty(field)
                 }}
                 
                 ${
                 fields.joinToString("\n                ") { field ->
-                    val name = field.simpleName.asString()
-                    val type = field.type.resolve().toString()
+                    val name = field.name
+                    val type = field.type.toString()
                     val optOverride = if (overridenFields.contains(name)) "override " else ""
 
                     "${optOverride}fun $name ($name: $type): $innerBuilderName = " +
@@ -123,7 +126,7 @@ class ModelBuilderProcessor(
                     return $className(
                         ${
                 fields.joinToString("\n                        ") { field ->
-                    field.simpleName.asString() + ","
+                    field.name + ","
                 }
             }
                     )
@@ -134,7 +137,7 @@ class ModelBuilderProcessor(
                         return $className.Builder().apply {
                             ${
                 fields.joinToString("\n                            ") { field ->
-                    val name = field.simpleName.asString()
+                    val name = field.name
                     "$name(item.$name)"
                 }
             }
@@ -151,6 +154,17 @@ class ModelBuilderProcessor(
         val unableToProcess = symbols.filterNot { it.validate() }.toList()
         // return symbols.filterNot { it.validate() }.toList()
         return emptyList()
+    }
+
+    private fun getBuilderInternalProperty(field: ClassField): String {
+        val isPrimitive = listOf("Int", "Double", "Boolean").contains(field.type.toString())
+        val isNotNull = !field.type.isMarkedNullable
+
+        return when {
+            isNotNull && isPrimitive -> "private var ${field.name} by Delegates.notNull<${field.type}>()"
+            isNotNull -> "private lateinit var ${field.name}: ${field.type}"
+            else -> "private var ${field.name}: ${field.type} = null"
+        }
     }
 
     companion object {
@@ -180,4 +194,9 @@ data class BaseClass(
     val builder: String,
     val builderImport: String,
     val fields: List<String>,
+)
+
+data class ClassField(
+    val name: String,
+    val type: KSType,
 )

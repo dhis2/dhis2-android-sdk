@@ -3095,21 +3095,49 @@ public final class org/hisp/dhis/android/core/category/internal/CategoryModuleDo
 	public fun downloadMetadata (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public abstract class org/hisp/dhis/android/core/common/Access {
+public final class org/hisp/dhis/android/core/common/Access {
+	public static final field Companion Lorg/hisp/dhis/android/core/common/Access$Companion;
 	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/common/Access$Builder;
-	public static fun create (Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/DataAccess;)Lorg/hisp/dhis/android/core/common/Access;
-	public abstract fun data ()Lorg/hisp/dhis/android/core/common/DataAccess;
-	public abstract fun read ()Ljava/lang/Boolean;
-	public abstract fun write ()Ljava/lang/Boolean;
+	public fun <init> (ZZLorg/hisp/dhis/android/core/common/DataAccess;)V
+	public synthetic fun <init> (ZZLorg/hisp/dhis/android/core/common/DataAccess;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/common/Access$Builder;
+	public final fun component1 ()Z
+	public final fun component2 ()Z
+	public final fun component3 ()Lorg/hisp/dhis/android/core/common/DataAccess;
+	public final fun copy (ZZLorg/hisp/dhis/android/core/common/DataAccess;)Lorg/hisp/dhis/android/core/common/Access;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/common/Access;ZZLorg/hisp/dhis/android/core/common/DataAccess;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/common/Access;
+	public final fun data ()Lorg/hisp/dhis/android/core/common/DataAccess;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getData ()Lorg/hisp/dhis/android/core/common/DataAccess;
+	public final fun getRead ()Z
+	public final fun getWrite ()Z
+	public fun hashCode ()I
+	public final fun read ()Z
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/common/Access$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun write ()Z
 }
 
-public abstract class org/hisp/dhis/android/core/common/Access$Builder {
+public final class org/hisp/dhis/android/core/common/Access$Builder : org/hisp/dhis/android/core/common/AccessBuilder {
 	public fun <init> ()V
-	public fun build ()Lorg/hisp/dhis/android/core/common/Access;
-	public abstract fun data (Lorg/hisp/dhis/android/core/common/DataAccess;)Lorg/hisp/dhis/android/core/common/Access$Builder;
-	public abstract fun read (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/Access$Builder;
-	public abstract fun write (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/Access$Builder;
+}
+
+public final class org/hisp/dhis/android/core/common/Access$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/common/Access$Builder;
+	public final fun create (ZZLorg/hisp/dhis/android/core/common/DataAccess;)Lorg/hisp/dhis/android/core/common/Access;
+}
+
+public class org/hisp/dhis/android/core/common/AccessBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/common/AccessBuilder$Companion;
+	public fun <init> ()V
+	public final fun build ()Lorg/hisp/dhis/android/core/common/Access;
+	public final fun data (Lorg/hisp/dhis/android/core/common/DataAccess;)Lorg/hisp/dhis/android/core/common/Access$Builder;
+	public final fun read (Z)Lorg/hisp/dhis/android/core/common/Access$Builder;
+	public final fun write (Z)Lorg/hisp/dhis/android/core/common/Access$Builder;
+}
+
+public final class org/hisp/dhis/android/core/common/AccessBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/common/Access;)Lorg/hisp/dhis/android/core/common/Access$Builder;
 }
 
 public final class org/hisp/dhis/android/core/common/AggregationType : java/lang/Enum {

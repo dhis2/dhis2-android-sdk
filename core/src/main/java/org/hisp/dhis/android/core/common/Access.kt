@@ -25,69 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
+import org.hisp.dhis.android.processor.ModelBuilder
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class Access(
+    val read: Boolean = true,
+    val write: Boolean = true,
+    val data: DataAccess = DataAccess.create(true, true),
+) {
+    fun read(): Boolean = read
+    fun write(): Boolean = write
+    fun data(): DataAccess = data
 
-@AutoValue
-public abstract class Access {
+    class Builder : AccessBuilder()
 
-    public abstract Boolean read();
+    fun toBuilder() = AccessBuilder.from(this)
 
-    public abstract Boolean write();
+    companion object {
+        @JvmStatic
+        fun builder() = Builder()
+            .read(true)
+            .write(true)
+            .data(DataAccess.create(true, true))
 
-    public abstract DataAccess data();
-
-    public static Access create(Boolean read, Boolean write, DataAccess data) {
-        return builder()
-                .read(read)
-                .write(write)
-                .data(data)
-                .build();
-    }
-
-    public static Builder builder() {
-        return new AutoValue_Access.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder read(Boolean read);
-
-        public abstract Builder write(Boolean write);
-
-        public abstract Builder data(DataAccess data);
-
-        abstract Access autoBuild();
-
-        // Auxiliary fields
-        abstract Boolean read();
-
-        abstract Boolean write();
-
-        abstract DataAccess data();
-
-        public Access build() {
-            try {
-                read();
-            } catch (IllegalStateException e) {
-                read(Boolean.TRUE);
-            }
-
-            try {
-                write();
-            } catch (IllegalStateException e) {
-                write(Boolean.TRUE);
-            }
-
-            try {
-                data();
-            } catch (IllegalStateException e) {
-                data(DataAccess.create(Boolean.TRUE, Boolean.TRUE));
-            }
-
-            return autoBuild();
+        fun create(read: Boolean, write: Boolean, data: DataAccess): Access {
+            return Access(read, write, data)
         }
     }
 }

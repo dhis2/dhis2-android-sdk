@@ -48,6 +48,8 @@ interface OAuth2Handler {
 
     fun blockingLogOut()
 
+    suspend fun suspendLogOut()
+
     fun logOutObservable(): Observable<Unit>
 
     fun resetRegistration()

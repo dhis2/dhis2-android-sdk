@@ -42,10 +42,13 @@ interface UserModule {
     fun accountManager(): AccountManager
     fun logIn(username: String, password: String, serverUrl: String): Single<User>
     fun blockingLogIn(username: String, password: String, serverUrl: String): User
+    suspend fun suspendLogIn(username: String, password: String, serverUrl: String): User
     fun logOut(): Completable
     fun blockingLogOut()
+    suspend fun suspendLogOut()
     fun isLogged(): Single<Boolean>
     fun blockingIsLogged(): Boolean
+    suspend fun suspendIsLogged(): Boolean
     fun openIdHandler(): OpenIDConnectHandler
     fun oauth2Handler(): OAuth2Handler
     fun twoFactorAuthManager(): TwoFactorAuthManager

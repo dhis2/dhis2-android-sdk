@@ -98,12 +98,20 @@ internal class UserModuleImpl(
         return runBlocking { logInCall.logIn(username, password, serverUrl) }
     }
 
+    override suspend fun suspendLogIn(username: String, password: String, serverUrl: String): User {
+        return logInCall.logIn(username, password, serverUrl)
+    }
+
     override fun logOut(): Completable {
         return logoutCallCallFactory.logOut()
     }
 
     override fun blockingLogOut() {
-        logOut().blockingAwait()
+        runBlocking { logoutCallCallFactory.intenralLogOut() }
+    }
+
+    override suspend fun suspendLogOut() {
+        logoutCallCallFactory.intenralLogOut()
     }
 
     override fun isLogged(): Single<Boolean> {
@@ -111,7 +119,11 @@ internal class UserModuleImpl(
     }
 
     override fun blockingIsLogged(): Boolean {
-        return isLogged().blockingGet()
+        return runBlocking { isUserLoggedInCallFactory.suspendIsLogged() }
+    }
+
+    override suspend fun suspendIsLogged(): Boolean {
+        return isUserLoggedInCallFactory.suspendIsLogged()
     }
 
     override fun accountManager(): AccountManager {

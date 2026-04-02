@@ -191,6 +191,10 @@ internal class OAuth2HandlerImpl(
         logoutHandler.logOut()
     }
 
+    override suspend fun suspendLogOut() {
+        logoutHandler.logOut()
+    }
+
     override fun logOutObservable(): Observable<Unit> {
         return logoutHandler.logOutObservable()
     }

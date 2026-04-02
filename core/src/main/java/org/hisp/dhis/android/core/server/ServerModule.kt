@@ -34,4 +34,5 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 interface ServerModule {
     fun checkServerUrl(serverUrl: String): Single<Result<LoginConfig, D2Error>>
     fun blockingCheckServerUrl(serverUrl: String): Result<LoginConfig, D2Error>
+    suspend fun suspendCheckServerUrl(serverUrl: String): Result<LoginConfig, D2Error>
 }

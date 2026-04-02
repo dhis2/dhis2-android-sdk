@@ -90,7 +90,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
      */
     fun blockingGetValue(attributeUid: String, organisationUnitUid: String): String {
         return runBlocking {
-            getValueCoroutines(attributeUid, organisationUnitUid)
+            suspendGetValue(attributeUid, organisationUnitUid)
         }
     }
 
@@ -104,10 +104,10 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
      */
 
     fun getValue(attributeUid: String, organisationUnitUid: String): Single<String> {
-        return rxSingle { getValueCoroutines(attributeUid, organisationUnitUid) }
+        return rxSingle { suspendGetValue(attributeUid, organisationUnitUid) }
     }
 
-    private suspend fun getValueCoroutines(attributeUid: String, organisationUnitUid: String): String {
+    suspend fun suspendGetValue(attributeUid: String, organisationUnitUid: String): String {
         downloadValuesIfBelowThreshold(attributeUid, getOrganisationUnit(organisationUnitUid), null, false)
 
         val pattern = trackedEntityAttributeStore.selectByUid(attributeUid)!!.pattern()
@@ -211,6 +211,9 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
         return runBlocking { countInternal(attributeUid, organisationUnitUid) }
     }
 
+    suspend fun suspendCount(attributeUid: String, organisationUnitUid: String?): Int =
+        countInternal(attributeUid, organisationUnitUid)
+
     internal suspend fun countInternal(attributeUid: String, organisationUnitUid: String?): Int {
         return store.count(attributeUid, organisationUnitUid, null)
     }
@@ -231,6 +234,9 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
     fun blockingGetReservedValueSummaries(): List<ReservedValueSummary> {
         return runBlocking { getReservedValueSummariesInternal() }
     }
+
+    suspend fun suspendGetReservedValueSummaries(): List<ReservedValueSummary> =
+        getReservedValueSummariesInternal()
 
     private suspend fun getReservedValueSummariesInternal(): List<ReservedValueSummary> {
         val whereClause =

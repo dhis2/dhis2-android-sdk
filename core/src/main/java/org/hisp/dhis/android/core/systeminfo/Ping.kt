@@ -36,4 +36,6 @@ interface Ping {
 
     @Throws(D2Error::class)
     fun blockingGet(): String
+
+    suspend fun suspendGet(): String
 }

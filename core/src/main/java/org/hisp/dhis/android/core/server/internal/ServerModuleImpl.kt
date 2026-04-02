@@ -47,4 +47,8 @@ internal class ServerModuleImpl(
     override fun blockingCheckServerUrl(serverUrl: String): Result<LoginConfig, D2Error> {
         return runBlocking { loginConfigCall.checkServerUrl(serverUrl) }
     }
+
+    override suspend fun suspendCheckServerUrl(serverUrl: String): Result<LoginConfig, D2Error> {
+        return loginConfigCall.checkServerUrl(serverUrl)
+    }
 }

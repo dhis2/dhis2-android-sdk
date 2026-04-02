@@ -51,17 +51,17 @@ internal class CustomIntentServiceImpl(
         customIntent: CustomIntent,
         context: CustomIntentContext,
     ): Single<Map<String, Any?>> {
-        return rxSingle { evaluateRequestParamsInternal(customIntent, context) }
+        return rxSingle { suspendEvaluateRequestParams(customIntent, context) }
     }
 
     override fun blockingEvaluateRequestParams(
         customIntent: CustomIntent,
         context: CustomIntentContext,
     ): Map<String, Any?> {
-        return runBlocking { evaluateRequestParamsInternal(customIntent, context) }
+        return runBlocking { suspendEvaluateRequestParams(customIntent, context) }
     }
 
-    private suspend fun evaluateRequestParamsInternal(
+    override suspend fun suspendEvaluateRequestParams(
         customIntent: CustomIntent,
         context: CustomIntentContext,
     ): Map<String, Any?> {

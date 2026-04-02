@@ -187,6 +187,7 @@ class EventServiceShould {
         whenever(organisationUnitService.suspendIsDateInOrgunitRange(any(), any())) doReturn true
         whenever(organisationUnitService.isInSearchScope("OU2")) doReturn false
         whenever(organisationUnitService.isInSearchScope("OU3")) doReturn false
+        whenever(organisationUnitService.suspendIsInCaptureScope(any())) doReturn false
         whenever(enrollmentService.suspendIsOpen(any())) doReturn true
 
         val programOwner: ProgramOwner = mock()

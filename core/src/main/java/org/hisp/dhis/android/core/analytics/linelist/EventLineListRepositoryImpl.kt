@@ -102,4 +102,8 @@ internal class EventLineListRepositoryImpl(
     override fun blockingEvaluate(): List<LineListResponse> {
         return runBlocking { eventLineListService.evaluate(eventLineListParams) }
     }
+
+    override suspend fun suspendEvaluate(): List<LineListResponse> {
+        return eventLineListService.evaluate(eventLineListParams)
+    }
 }

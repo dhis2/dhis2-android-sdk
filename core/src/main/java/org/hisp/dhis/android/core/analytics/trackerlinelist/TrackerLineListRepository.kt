@@ -54,4 +54,6 @@ interface TrackerLineListRepository {
     fun evaluate(): Single<Result<TrackerLineListResponse, AnalyticsException>>
 
     fun blockingEvaluate(): Result<TrackerLineListResponse, AnalyticsException>
+
+    suspend fun suspendEvaluate(): Result<TrackerLineListResponse, AnalyticsException>
 }

@@ -43,4 +43,6 @@ interface AnalyticsVisualizationsRepository {
     fun evaluate(): Single<Result<GridAnalyticsResponse, AnalyticsException>>
 
     fun blockingEvaluate(): Result<GridAnalyticsResponse, AnalyticsException>
+
+    suspend fun suspendEvaluate(): Result<GridAnalyticsResponse, AnalyticsException>
 }

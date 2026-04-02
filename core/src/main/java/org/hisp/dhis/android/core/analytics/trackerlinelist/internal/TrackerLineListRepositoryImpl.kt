@@ -102,6 +102,10 @@ internal class TrackerLineListRepositoryImpl(
         return runBlocking { service.evaluate(params) }
     }
 
+    override suspend fun suspendEvaluate(): Result<TrackerLineListResponse, AnalyticsException> {
+        return service.evaluate(params)
+    }
+
     private fun updateParams(
         func: (params: TrackerLineListParams) -> TrackerLineListParams,
     ): TrackerLineListRepositoryImpl {

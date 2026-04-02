@@ -66,6 +66,10 @@ internal class AnalyticsVisualizationsRepositoryImpl(
         return runBlocking { service.evaluate(params) }
     }
 
+    override suspend fun suspendEvaluate(): Result<GridAnalyticsResponse, AnalyticsException> {
+        return service.evaluate(params)
+    }
+
     private fun updateParams(
         func: (params: AnalyticsVisualizationsRepositoryParams) -> AnalyticsVisualizationsRepositoryParams,
     ): AnalyticsVisualizationsRepositoryImpl {

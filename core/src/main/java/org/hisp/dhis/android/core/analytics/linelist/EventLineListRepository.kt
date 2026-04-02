@@ -86,4 +86,6 @@ interface EventLineListRepository : BaseRepository {
      * @see evaluate
      */
     fun blockingEvaluate(): List<LineListResponse>
+
+    suspend fun suspendEvaluate(): List<LineListResponse>
 }

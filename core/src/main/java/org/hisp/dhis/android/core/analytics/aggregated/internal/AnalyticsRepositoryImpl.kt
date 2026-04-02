@@ -70,6 +70,10 @@ internal class AnalyticsRepositoryImpl(
         return runBlocking { analyticsService.evaluate(params) }
     }
 
+    override suspend fun suspendEvaluate(): Result<DimensionalResponse, AnalyticsException> {
+        return analyticsService.evaluate(params)
+    }
+
     private fun updateParams(
         func: (params: AnalyticsRepositoryParams) -> AnalyticsRepositoryParams,
     ): AnalyticsRepositoryImpl {

@@ -43,26 +43,26 @@ class AnalyticsDhisVisualizationsSettingObjectRepository internal constructor(
 ) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<AnalyticsDhisVisualizationsSetting>(analyticsSettingCall),
     ReadOnlyWithDownloadObjectRepository<AnalyticsDhisVisualizationsSetting> {
     fun getByProgram(program: String?): Single<List<AnalyticsDhisVisualizationsGroup>> {
-        return rxSingle { getByProgramInternal(program)!! }
+        return rxSingle { suspendGetByProgram(program)!! }
     }
 
     fun blockingGetByProgram(program: String?): List<AnalyticsDhisVisualizationsGroup>? {
-        return runBlocking { getByProgramInternal(program) }
+        return runBlocking { suspendGetByProgram(program) }
     }
 
-    private suspend fun getByProgramInternal(program: String?): List<AnalyticsDhisVisualizationsGroup>? {
+    suspend fun suspendGetByProgram(program: String?): List<AnalyticsDhisVisualizationsGroup>? {
         return generateGroups(analyticsDhisVisualizationStore.selectAll()).program()[program]
     }
 
     fun getByDataSet(dataSet: String?): Single<List<AnalyticsDhisVisualizationsGroup>> {
-        return rxSingle { byDataSetInternal(dataSet)!! }
+        return rxSingle { suspendGetByDataSet(dataSet)!! }
     }
 
     fun blockingByDataSet(dataSet: String?): List<AnalyticsDhisVisualizationsGroup>? {
-        return runBlocking { byDataSetInternal(dataSet) }
+        return runBlocking { suspendGetByDataSet(dataSet) }
     }
 
-    private suspend fun byDataSetInternal(dataSet: String?): List<AnalyticsDhisVisualizationsGroup>? {
+    suspend fun suspendGetByDataSet(dataSet: String?): List<AnalyticsDhisVisualizationsGroup>? {
         return generateGroups(analyticsDhisVisualizationStore.selectAll()).dataSet()[dataSet]
     }
 

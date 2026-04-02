@@ -47,4 +47,6 @@ interface AnalyticsRepository {
     fun evaluate(): Single<Result<DimensionalResponse, AnalyticsException>>
 
     fun blockingEvaluate(): Result<DimensionalResponse, AnalyticsException>
+
+    suspend fun suspendEvaluate(): Result<DimensionalResponse, AnalyticsException>
 }

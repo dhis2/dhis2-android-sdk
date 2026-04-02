@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.organisationunit
 
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -54,8 +55,8 @@ class OrganisationUnitServiceShould {
     private val thirdJanuary = BaseIdentifiableObject.DATE_FORMAT.parse("2020-01-03T00:00:00.000")
 
     @Before
-    fun setUp() {
-        whenever(organisationUnitRepository.uid(organisationUnitUid).blockingGet()) doReturn organisationUnit
+    fun setUp() = runTest {
+        whenever(organisationUnitRepository.uid(organisationUnitUid).getInternal()) doReturn organisationUnit
 
         whenever(organisationUnit.uid()) doReturn organisationUnitUid
     }

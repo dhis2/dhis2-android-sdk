@@ -94,11 +94,11 @@ class EventServiceShould {
     private val firstJanuary = BaseIdentifiableObject.DATE_FORMAT.parse("2020-01-01T00:00:00.000")
 
     @Before
-    fun setUp() {
-        whenever(eventRepository.uid(any()).blockingGet()) doReturn event
-        whenever(enrollmentRepository.uid(any()).blockingGet()) doReturn enrollment
-        whenever(programRepository.uid(any()).blockingGet()) doReturn program
-        whenever(programStageRepository.uid(any()).blockingGet()) doReturn programStage
+    fun setUp() = runTest {
+        whenever(eventRepository.uid(any()).getInternal()) doReturn event
+        whenever(enrollmentRepository.uid(any()).getInternal()) doReturn enrollment
+        whenever(programRepository.uid(any()).getInternal()) doReturn program
+        whenever(programStageRepository.uid(any()).getInternal()) doReturn programStage
 
         whenever(event.uid()) doReturn eventUid
         whenever(event.eventDate()) doReturn firstJanuary

@@ -29,6 +29,8 @@
 package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
 import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedD2Progress
 import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedDataDownloader
@@ -39,11 +41,15 @@ internal class AggregatedDataDownloaderImpl(
     private val dataCall: AggregatedDataCall,
 ) : AggregatedDataDownloader {
 
+    override fun suspendDownload(): Flow<AggregatedD2Progress> {
+        return dataCall.download()
+    }
+
     override fun download(): Observable<AggregatedD2Progress> {
-        return dataCall.download().asObservable()
+        return suspendDownload().asObservable()
     }
 
     override fun blockingDownload() {
-        download().blockingSubscribe()
+        runBlocking { suspendDownload().collect {} }
     }
 }

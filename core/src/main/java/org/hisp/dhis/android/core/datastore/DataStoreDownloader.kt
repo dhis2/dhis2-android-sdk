@@ -29,6 +29,9 @@
 package org.hisp.dhis.android.core.datastore
 
 import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterConnector
@@ -50,12 +53,16 @@ class DataStoreDownloader internal constructor(
     /**
      * Download and persist the content in the dataStore according to the filters specified.
      */
-    fun download(): Observable<D2Progress> {
+    fun suspendDownload(): Flow<D2Progress> {
         return call.download(params)
     }
 
+    fun download(): Observable<D2Progress> {
+        return suspendDownload().asObservable()
+    }
+
     fun blockingDownload() {
-        download().blockingSubscribe()
+        runBlocking { suspendDownload().collect {} }
     }
 
     fun byNamespace(): ListFilterConnector<DataStoreDownloader, String> {

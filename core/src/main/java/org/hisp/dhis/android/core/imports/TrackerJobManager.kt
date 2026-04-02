@@ -29,6 +29,8 @@
 package org.hisp.dhis.android.core.imports
 
 import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall
@@ -38,11 +40,15 @@ import org.koin.core.annotation.Singleton
 class TrackerJobManager internal constructor(
     private val jobQueryCall: JobQueryCall,
 ) {
+    fun suspendResumePendingJobs(): Flow<D2Progress> {
+        return jobQueryCall.queryPendingJobs()
+    }
+
     fun resumePendingJobs(): Observable<D2Progress> {
-        return jobQueryCall.queryPendingJobs().asObservable()
+        return suspendResumePendingJobs().asObservable()
     }
 
     fun blockingResumePendingJobs() {
-        resumePendingJobs().blockingSubscribe()
+        runBlocking { suspendResumePendingJobs().collect {} }
     }
 }

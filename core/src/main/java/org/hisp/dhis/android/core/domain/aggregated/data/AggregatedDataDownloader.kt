@@ -29,8 +29,11 @@
 package org.hisp.dhis.android.core.domain.aggregated.data
 
 import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
 
 interface AggregatedDataDownloader {
+
+    fun suspendDownload(): Flow<AggregatedD2Progress>
 
     fun download(): Observable<AggregatedD2Progress>
 

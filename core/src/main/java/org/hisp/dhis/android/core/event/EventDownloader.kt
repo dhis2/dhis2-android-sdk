@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.event
 
 import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterConnector
@@ -58,12 +60,16 @@ class EventDownloader internal constructor(
      *
      * @return -
      */
+    fun suspendDownload(): Flow<TrackerD2Progress> {
+        return call.download(params)
+    }
+
     fun download(): Observable<TrackerD2Progress> {
-        return call.download(params).asObservable()
+        return suspendDownload().asObservable()
     }
 
     fun blockingDownload() {
-        download().blockingSubscribe()
+        runBlocking { suspendDownload().collect {} }
     }
 
     fun byUid(): ListFilterConnector<EventDownloader, String> =

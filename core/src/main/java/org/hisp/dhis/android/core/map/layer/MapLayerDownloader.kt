@@ -38,7 +38,11 @@ class MapLayerDownloader internal constructor(
     private val mapLayerCallFactory: MapLayerCallFactory,
 ) : UntypedModuleDownloader {
 
+    suspend fun suspendDownloadMetadata() {
+        mapLayerCallFactory.downloadMetadata()
+    }
+
     override fun downloadMetadata(): Completable {
-        return rxCompletable { mapLayerCallFactory.downloadMetadata() }
+        return rxCompletable { suspendDownloadMetadata() }
     }
 }

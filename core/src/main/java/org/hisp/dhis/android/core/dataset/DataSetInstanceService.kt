@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.dataset
 import io.reactivex.Single
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
 
+@Suppress("TooManyFunctions")
 interface DataSetInstanceService {
 
     fun getEditableStatus(

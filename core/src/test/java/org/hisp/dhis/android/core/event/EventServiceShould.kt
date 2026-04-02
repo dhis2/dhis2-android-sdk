@@ -165,8 +165,7 @@ class EventServiceShould {
         whenever(event.program()) doReturn "programUid"
         whenever(enrollment.trackedEntityInstance()) doReturn "teiUid"
         whenever(organisationUnitService.suspendIsDateInOrgunitRange(any(), any())) doReturn true
-        whenever(organisationUnitService.isInSearchScope("OU2")) doReturn false
-        whenever(organisationUnitService.isInSearchScope("OU1")) doReturn true
+        whenever(organisationUnitService.suspendIsInCaptureScope("OU1")) doReturn true
         whenever(enrollmentService.suspendIsOpen(any())) doReturn true
 
         val programOwner: ProgramOwner = mock()

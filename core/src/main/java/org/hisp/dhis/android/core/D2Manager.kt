@@ -102,7 +102,7 @@ object D2Manager {
      * @return the D2 instance wrapped in a RxJava Single
      */
     @JvmStatic
-    fun RxInstantiateD2(d2Config: D2Configuration): Single<D2> {
+    fun rxInstantiateD2(d2Config: D2Configuration): Single<D2> {
         return rxSingle {
             suspendInstantiateD2(d2Config)
         }
@@ -111,7 +111,7 @@ object D2Manager {
     /**
      * Instantiates D2 with the provided configuration. This is a blocking method. If you are using RxJava,
      * use [D2Manager.instantiateD2] instead.
- * @param d2Config the configuration
+     * @param d2Config the configuration
      * @return the D2 instance
      */
     @JvmStatic

@@ -201,7 +201,7 @@ internal class EventServiceImpl(
     private suspend fun getOwnerOrgUnit(event: Event): String? {
         val program = event.program()
         val tei = event.enrollment()
-            ?.let { enrollmentRepository.uid(it).blockingGet() }
+            ?.let { enrollmentRepository.uid(it).getInternal() }
             ?.trackedEntityInstance()
 
         if (program == null || tei == null) return event.organisationUnit()

@@ -151,7 +151,10 @@ internal class DataSetInstanceServiceImpl(
     ): Single<List<DataElementOperand>> {
         return rxSingle {
             suspendGetMissingMandatoryDataElementOperands(
-                dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid,
+                dataSetUid,
+                periodId,
+                organisationUnitUid,
+                attributeOptionComboUid,
             )
         }
     }
@@ -164,7 +167,10 @@ internal class DataSetInstanceServiceImpl(
     ): List<DataElementOperand> {
         return runBlocking {
             suspendGetMissingMandatoryDataElementOperands(
-                dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid,
+                dataSetUid,
+                periodId,
+                organisationUnitUid,
+                attributeOptionComboUid,
             )
         }
     }
@@ -212,7 +218,10 @@ internal class DataSetInstanceServiceImpl(
     ): Single<List<DataElementOperand>> {
         return rxSingle {
             suspendGetMissingMandatoryFieldsCombination(
-                dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid,
+                dataSetUid,
+                periodId,
+                organisationUnitUid,
+                attributeOptionComboUid,
             )
         }
     }
@@ -225,7 +234,10 @@ internal class DataSetInstanceServiceImpl(
     ): List<DataElementOperand> {
         return runBlocking {
             suspendGetMissingMandatoryFieldsCombination(
-                dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid,
+                dataSetUid,
+                periodId,
+                organisationUnitUid,
+                attributeOptionComboUid,
             )
         }
     }

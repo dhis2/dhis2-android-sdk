@@ -38,7 +38,7 @@ class OrganisationUnitService(
     private val organisationUnitRepository: OrganisationUnitCollectionRepository,
 ) {
 
-    fun blockingIsDateInOrgunitRange(organisationUnitUid: String, date: Date): Boolean  {
+    fun blockingIsDateInOrgunitRange(organisationUnitUid: String, date: Date): Boolean {
         return runBlocking { suspendIsDateInOrgunitRange(organisationUnitUid, date) }
     }
 

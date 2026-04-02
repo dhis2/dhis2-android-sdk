@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.dataset
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
@@ -235,11 +236,14 @@ class DataSetInstanceServiceShould {
         whenever(dataSetCollectionRepository.withCompulsoryDataElementOperands().uid(dataSetUid).getInternal())
             .thenReturn(dataSetWithCompulsory)
 
-        val dataValueQuery = mock<DataValueObjectRepository> {
-            on { blockingExists() } doReturn false
-        }
+        val dataValueQuery = mock<DataValueObjectRepository>(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
         whenever(
-            dataValueCollectionRepository.value(
+            runBlocking {
+                dataValueQuery.existsInternal()
+            },
+        ) doReturn false
+        whenever(
+            dataValueCollectionRepository.byDeleted().isFalse.value(
                 firstPeriodId,
                 orgUnitUid,
                 "de1",
@@ -249,16 +253,13 @@ class DataSetInstanceServiceShould {
             ),
         ).thenReturn(dataValueQuery)
 
-        dataSetInstanceService.getMissingMandatoryDataElementOperands(
+        val result = dataSetInstanceService.suspendGetMissingMandatoryDataElementOperands(
             dataSetUid,
             firstPeriodId,
             orgUnitUid,
             attOptionComboUid,
         )
-            .test()
-            .assertValue { missingOperands ->
-                missingOperands.size == 1 && missingOperands.first() == operand
-            }
+        assert(result.size == 1 && result.first() == operand)
     }
 
     @Test
@@ -318,18 +319,17 @@ class DataSetInstanceServiceShould {
 
         whenever(finalRepo.getInternal()).thenReturn(listOf(dataValue))
 
-        dataSetInstanceService.getMissingMandatoryFieldsCombination(
+        val result = dataSetInstanceService.suspendGetMissingMandatoryFieldsCombination(
             dataSetUid,
             firstPeriodId,
             orgUnitUid,
             attOptionComboUid,
         )
-            .test()
-            .assertValue { missingFields ->
-                missingFields.size == 1 &&
-                    missingFields.first().dataElement()?.uid() == "de1" &&
-                    missingFields.first().categoryOptionCombo()?.uid() == "coc1" &&
-                    missingFields.first().uid() == "de1.coc1"
-            }
+        assert(
+            result.size == 1 &&
+                result.first().dataElement()?.uid() == "de1" &&
+                result.first().categoryOptionCombo()?.uid() == "coc1" &&
+                result.first().uid() == "de1.coc1",
+        )
     }
 }

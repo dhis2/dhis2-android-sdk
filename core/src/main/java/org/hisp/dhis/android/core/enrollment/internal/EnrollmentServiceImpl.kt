@@ -52,6 +52,7 @@ import org.hisp.dhis.android.persistence.trackedentity.ProgramTempOwnerTableInfo
 import org.koin.core.annotation.Singleton
 import java.util.Date
 
+@Suppress("TooManyFunctions")
 @Singleton
 internal class EnrollmentServiceImpl(
     private val enrollmentRepository: EnrollmentCollectionRepository,
@@ -64,7 +65,7 @@ internal class EnrollmentServiceImpl(
     private val programOwnerStore: ProgramOwnerStore,
 ) : EnrollmentService {
 
-    override fun blockingIsOpen(enrollmentUid: String): Boolean  {
+    override fun blockingIsOpen(enrollmentUid: String): Boolean {
         return runBlocking { suspendIsOpen(enrollmentUid) }
     }
 
@@ -158,7 +159,7 @@ internal class EnrollmentServiceImpl(
     }
 
     override fun allowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Single<Boolean> {
-        return  rxSingle { suspendGetAllowEventCreation(enrollmentUid, stagesToHide) }
+        return rxSingle { suspendGetAllowEventCreation(enrollmentUid, stagesToHide) }
     }
 
     override suspend fun suspendGetAllowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Boolean {

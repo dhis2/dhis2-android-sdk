@@ -71,7 +71,7 @@ class GeneralSettingObjectRepository internal constructor(
     }
 
     fun blockingHasExperimentalFeature(featureName: String): Boolean {
-        return runBlocking {suspendHasExperimentalFeature(featureName)}
+        return runBlocking { suspendHasExperimentalFeature(featureName) }
     }
 
     fun hasExperimentalFeature(featureName: String): Single<Boolean> {

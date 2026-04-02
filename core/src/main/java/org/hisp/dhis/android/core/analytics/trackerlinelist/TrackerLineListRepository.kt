@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.repositories.paging.PageConfig
 
+@Suppress("TooManyFunctions")
 interface TrackerLineListRepository {
 
     fun withEventOutput(programStageId: String): TrackerLineListRepository

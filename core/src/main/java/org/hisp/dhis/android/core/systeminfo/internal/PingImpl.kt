@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.systeminfo.internal
 
 import io.ktor.http.isSuccess
 import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode

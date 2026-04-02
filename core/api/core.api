@@ -80,6 +80,7 @@ public abstract class org/hisp/dhis/android/core/D2Configuration$Builder {
 
 public final class org/hisp/dhis/android/core/D2Manager {
 	public static final field INSTANCE Lorg/hisp/dhis/android/core/D2Manager;
+	public static final fun RxInstantiateD2 (Lorg/hisp/dhis/android/core/D2Configuration;)Lio/reactivex/Single;
 	public static final fun blockingInstantiateD2 (Lorg/hisp/dhis/android/core/D2Configuration;)Lorg/hisp/dhis/android/core/D2;
 	public static final fun clear ()V
 	public static final fun getD2 ()Lorg/hisp/dhis/android/core/D2;
@@ -90,6 +91,7 @@ public final class org/hisp/dhis/android/core/D2Manager {
 	public static final fun setTestingDatabase (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
 	public static final fun setTestingInsecureStore (Lorg/hisp/dhis/android/core/arch/storage/internal/InsecureStore;)V
 	public static final fun setTestingSecureStore (Lorg/hisp/dhis/android/core/arch/storage/internal/SecureStore;)V
+	public final fun suspendInstantiateD2 (Lorg/hisp/dhis/android/core/D2Configuration;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract class org/hisp/dhis/android/core/analytics/AnalyticsException : java/lang/Throwable {
@@ -225,6 +227,7 @@ public abstract interface class org/hisp/dhis/android/core/analytics/AnalyticsMo
 public abstract interface class org/hisp/dhis/android/core/analytics/aggregated/AnalyticsRepository {
 	public abstract fun blockingEvaluate ()Lorg/hisp/dhis/android/core/arch/helpers/Result;
 	public abstract fun evaluate ()Lio/reactivex/Single;
+	public abstract fun suspendEvaluate (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun withAggregationType (Lorg/hisp/dhis/android/core/common/AggregationType;)Lorg/hisp/dhis/android/core/analytics/aggregated/AnalyticsRepository;
 	public abstract fun withDimension (Lorg/hisp/dhis/android/core/analytics/aggregated/DimensionItem;)Lorg/hisp/dhis/android/core/analytics/aggregated/AnalyticsRepository;
 	public abstract fun withFilter (Lorg/hisp/dhis/android/core/analytics/aggregated/DimensionItem;)Lorg/hisp/dhis/android/core/analytics/aggregated/AnalyticsRepository;
@@ -234,6 +237,7 @@ public abstract interface class org/hisp/dhis/android/core/analytics/aggregated/
 public abstract interface class org/hisp/dhis/android/core/analytics/aggregated/AnalyticsVisualizationsRepository {
 	public abstract fun blockingEvaluate ()Lorg/hisp/dhis/android/core/arch/helpers/Result;
 	public abstract fun evaluate ()Lio/reactivex/Single;
+	public abstract fun suspendEvaluate (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun withOrganisationUnits (Ljava/util/List;)Lorg/hisp/dhis/android/core/analytics/aggregated/AnalyticsVisualizationsRepository;
 	public abstract fun withPeriods (Ljava/util/List;)Lorg/hisp/dhis/android/core/analytics/aggregated/AnalyticsVisualizationsRepository;
 	public abstract fun withVisualization (Ljava/lang/String;)Lorg/hisp/dhis/android/core/analytics/aggregated/AnalyticsVisualizationsRepository;
@@ -751,6 +755,7 @@ public abstract interface class org/hisp/dhis/android/core/analytics/linelist/Ev
 	public abstract fun byProgramStage ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EqFilterConnector;
 	public abstract fun byTrackedEntityInstance ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EqFilterConnector;
 	public abstract fun evaluate ()Lio/reactivex/Single;
+	public abstract fun suspendEvaluate (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun withDataElement (Ljava/lang/String;)Lorg/hisp/dhis/android/core/analytics/linelist/EventLineListRepository;
 	public abstract fun withLegendStrategy (Lorg/hisp/dhis/android/core/analytics/AnalyticsLegendStrategy;)Lorg/hisp/dhis/android/core/analytics/linelist/EventLineListRepository;
 	public abstract fun withProgramIndicator (Ljava/lang/String;)Lorg/hisp/dhis/android/core/analytics/linelist/EventLineListRepository;
@@ -1372,6 +1377,7 @@ public final class org/hisp/dhis/android/core/analytics/trackerlinelist/TrackerL
 public abstract interface class org/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListRepository {
 	public abstract fun blockingEvaluate ()Lorg/hisp/dhis/android/core/arch/helpers/Result;
 	public abstract fun evaluate ()Lio/reactivex/Single;
+	public abstract fun suspendEvaluate (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun withColumn (Lorg/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListItem;)Lorg/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListRepository;
 	public abstract fun withEnrollmentOutput (Ljava/lang/String;)Lorg/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListRepository;
 	public abstract fun withEventOutput (Ljava/lang/String;)Lorg/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListRepository;
@@ -2988,7 +2994,11 @@ public final class org/hisp/dhis/android/core/category/CategoryOptionComboServic
 	public final fun blockingHasWriteAccess (Ljava/util/List;)Z
 	public final fun blockingIsAssignedToOrgUnit (Ljava/lang/String;Ljava/lang/String;)Z
 	public final fun hasAccess (Ljava/lang/String;Ljava/util/Date;)Lio/reactivex/Single;
+	public final fun hasWriteAccess (Ljava/util/List;)Z
 	public final fun isInOptionRange (Ljava/util/List;Ljava/util/Date;)Z
+	public final fun suspendHasAccess (Ljava/lang/String;Ljava/util/Date;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun suspendHasAccess$default (Lorg/hisp/dhis/android/core/category/CategoryOptionComboService;Ljava/lang/String;Ljava/util/Date;Ljava/lang/String;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public final fun suspendIsAssignedToOrgUnit (Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract class org/hisp/dhis/android/core/category/CategoryOptionOrganisationUnitLink : org/hisp/dhis/android/core/common/CoreObject {
@@ -4614,6 +4624,10 @@ public abstract interface class org/hisp/dhis/android/core/dataset/DataSetInstan
 	public abstract fun getMissingMandatoryDataElementOperands (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
 	public abstract fun getMissingMandatoryFieldsCombination (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
 	public abstract fun hasDataWriteAccess (Ljava/lang/String;)Lio/reactivex/Single;
+	public abstract fun suspendGetEditableStatus (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendGetMissingMandatoryDataElementOperands (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendGetMissingMandatoryFieldsCombination (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendHasDataWriteAccess (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract class org/hisp/dhis/android/core/dataset/DataSetInstanceSummary : org/hisp/dhis/android/core/common/CoreObject {
@@ -4864,6 +4878,7 @@ public final class org/hisp/dhis/android/core/datastore/DataStoreDownloader : or
 	public final fun blockingDownload ()V
 	public final fun byNamespace ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/ListFilterConnector;
 	public final fun download ()Lio/reactivex/Observable;
+	public final fun suspendDownload ()Lkotlinx/coroutines/flow/Flow;
 }
 
 public abstract class org/hisp/dhis/android/core/datastore/DataStoreEntry : org/hisp/dhis/android/core/common/BaseDeletableDataObject {
@@ -5104,6 +5119,7 @@ public final class org/hisp/dhis/android/core/domain/aggregated/data/AggregatedD
 public abstract interface class org/hisp/dhis/android/core/domain/aggregated/data/AggregatedDataDownloader {
 	public abstract fun blockingDownload ()V
 	public abstract fun download ()Lio/reactivex/Observable;
+	public abstract fun suspendDownload ()Lkotlinx/coroutines/flow/Flow;
 }
 
 public final class org/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataCallBundle {
@@ -5313,6 +5329,9 @@ public abstract interface class org/hisp/dhis/android/core/enrollment/Enrollment
 	public abstract fun blockingIsOpen (Ljava/lang/String;)Z
 	public abstract fun getEnrollmentAccess (Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
 	public abstract fun isOpen (Ljava/lang/String;)Lio/reactivex/Single;
+	public abstract fun suspendGetAllowEventCreation (Ljava/lang/String;Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendGetEnrollmentAccess (Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendIsOpen (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/enrollment/EnrollmentStatus : java/lang/Enum {
@@ -5472,6 +5491,7 @@ public final class org/hisp/dhis/android/core/event/EventDownloader : org/hisp/d
 	public final fun limit (I)Lorg/hisp/dhis/android/core/event/EventDownloader;
 	public final fun limitByOrgunit (Z)Lorg/hisp/dhis/android/core/event/EventDownloader;
 	public final fun limitByProgram (Z)Lorg/hisp/dhis/android/core/event/EventDownloader;
+	public final fun suspendDownload ()Lkotlinx/coroutines/flow/Flow;
 }
 
 public abstract class org/hisp/dhis/android/core/event/EventEditableStatus {
@@ -5596,6 +5616,12 @@ public abstract interface class org/hisp/dhis/android/core/event/EventService {
 	public abstract fun hasDataWriteAccess (Ljava/lang/String;)Lio/reactivex/Single;
 	public abstract fun isEditable (Ljava/lang/String;)Lio/reactivex/Single;
 	public abstract fun isInOrgunitRange (Lorg/hisp/dhis/android/core/event/Event;)Lio/reactivex/Single;
+	public abstract fun suspendCanAddEventToEnrollment (Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendGetEditableStatus (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendHasCategoryComboAccess (Lorg/hisp/dhis/android/core/event/Event;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendHasDataWriteAccess (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendIsEditable (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendIsInOrgunitRange (Lorg/hisp/dhis/android/core/event/Event;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/event/EventStatus : java/lang/Enum {
@@ -5945,6 +5971,7 @@ public final class org/hisp/dhis/android/core/fileresource/FileResourceDownloade
 	public final fun byTrackedEntityUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/ListFilterConnector;
 	public final fun byValueType ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/ListFilterConnector;
 	public final fun download ()Lio/reactivex/Observable;
+	public final fun suspendDownload ()Lkotlinx/coroutines/flow/Flow;
 }
 
 public final class org/hisp/dhis/android/core/fileresource/FileResourceElementType : java/lang/Enum {
@@ -6095,6 +6122,7 @@ public final class org/hisp/dhis/android/core/imports/TrackerImportConflictColle
 public final class org/hisp/dhis/android/core/imports/TrackerJobManager {
 	public final fun blockingResumePendingJobs ()V
 	public final fun resumePendingJobs ()Lio/reactivex/Observable;
+	public final fun suspendResumePendingJobs ()Lkotlinx/coroutines/flow/Flow;
 }
 
 public final class org/hisp/dhis/android/core/imports/internal/HttpMessageResponse : org/hisp/dhis/android/core/imports/internal/WebResponse {
@@ -6567,6 +6595,7 @@ public final class org/hisp/dhis/android/core/map/layer/MapLayerCollectionReposi
 
 public final class org/hisp/dhis/android/core/map/layer/MapLayerDownloader : org/hisp/dhis/android/core/arch/modules/internal/UntypedModuleDownloader {
 	public fun downloadMetadata ()Lio/reactivex/Completable;
+	public final fun suspendDownloadMetadata (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract class org/hisp/dhis/android/core/map/layer/MapLayerImageryProvider : org/hisp/dhis/android/core/common/CoreObject {
@@ -7045,6 +7074,8 @@ public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitS
 	public final fun blockingIsInCaptureScope (Ljava/lang/String;)Z
 	public final fun isDateInOrgunitRange (Ljava/lang/String;Ljava/util/Date;)Lio/reactivex/Single;
 	public final fun isInCaptureScope (Ljava/lang/String;)Lio/reactivex/Single;
+	public final fun suspendIsDateInOrgunitRange (Ljava/lang/String;Ljava/util/Date;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendIsInCaptureScope (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitTree {
@@ -7255,10 +7286,10 @@ public final class org/hisp/dhis/android/core/period/internal/PeriodHelper {
 	public static synthetic fun blockingGetPeriodForPeriodTypeAndDate$default (Lorg/hisp/dhis/android/core/period/internal/PeriodHelper;Lorg/hisp/dhis/android/core/period/PeriodType;Ljava/util/Date;IILjava/lang/Object;)Lorg/hisp/dhis/android/core/period/Period;
 	public final fun blockingGetPeriodsForDataSet (Ljava/lang/String;)Ljava/util/List;
 	public final fun getPeriod (Lorg/hisp/dhis/android/core/period/PeriodType;Ljava/util/Date;)Lorg/hisp/dhis/android/core/period/Period;
-	public final fun getPeriodForPeriodId (Ljava/lang/String;)Lio/reactivex/Single;
 	public final fun getPeriodForPeriodTypeAndDate (Lorg/hisp/dhis/android/core/period/PeriodType;Ljava/util/Date;)Lio/reactivex/Single;
 	public final fun getPeriodForPeriodTypeAndDate (Lorg/hisp/dhis/android/core/period/PeriodType;Ljava/util/Date;I)Lio/reactivex/Single;
 	public final fun getPeriodsForDataSet (Ljava/lang/String;)Lio/reactivex/Single;
+	public final fun suspendGetPeriodForPeriodId (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/period/internal/PeriodHelper$Companion {
@@ -8628,6 +8659,7 @@ public final class org/hisp/dhis/android/core/server/LoginPageLayout : java/lang
 public abstract interface class org/hisp/dhis/android/core/server/ServerModule {
 	public abstract fun blockingCheckServerUrl (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
 	public abstract fun checkServerUrl (Ljava/lang/String;)Lio/reactivex/Single;
+	public abstract fun suspendCheckServerUrl (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualization : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
@@ -8717,6 +8749,8 @@ public final class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualizatio
 	public final fun blockingGetByProgram (Ljava/lang/String;)Ljava/util/List;
 	public final fun getByDataSet (Ljava/lang/String;)Lio/reactivex/Single;
 	public final fun getByProgram (Ljava/lang/String;)Lio/reactivex/Single;
+	public final fun suspendGetByDataSet (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendGetByProgram (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/settings/AnalyticsSettingObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyAnyObjectWithDownloadRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository {
@@ -9149,6 +9183,7 @@ public final class org/hisp/dhis/android/core/settings/CustomIntentResponseExtra
 public abstract interface class org/hisp/dhis/android/core/settings/CustomIntentService {
 	public abstract fun blockingEvaluateRequestParams (Lorg/hisp/dhis/android/core/settings/CustomIntent;Lorg/hisp/dhis/android/core/settings/CustomIntentContext;)Ljava/util/Map;
 	public abstract fun evaluateRequestParams (Lorg/hisp/dhis/android/core/settings/CustomIntent;Lorg/hisp/dhis/android/core/settings/CustomIntentContext;)Lio/reactivex/Single;
+	public abstract fun suspendEvaluateRequestParams (Lorg/hisp/dhis/android/core/settings/CustomIntent;Lorg/hisp/dhis/android/core/settings/CustomIntentContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract class org/hisp/dhis/android/core/settings/CustomIntentTrigger {
@@ -9364,6 +9399,8 @@ public final class org/hisp/dhis/android/core/settings/GeneralSettingObjectRepos
 	public final fun blockingHasExperimentalFeature (Lorg/hisp/dhis/android/core/settings/ExperimentalFeature;)Z
 	public final fun hasExperimentalFeature (Ljava/lang/String;)Lio/reactivex/Single;
 	public final fun hasExperimentalFeature (Lorg/hisp/dhis/android/core/settings/ExperimentalFeature;)Lio/reactivex/Single;
+	public final fun suspendHasExperimentalFeature (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendHasExperimentalFeature (Lorg/hisp/dhis/android/core/settings/ExperimentalFeature;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract class org/hisp/dhis/android/core/settings/GeneralSettings : org/hisp/dhis/android/core/common/CoreObject {
@@ -10198,6 +10235,7 @@ public abstract interface class org/hisp/dhis/android/core/systeminfo/DHISVersio
 public abstract interface class org/hisp/dhis/android/core/systeminfo/Ping {
 	public abstract fun blockingGet ()Ljava/lang/String;
 	public abstract fun get ()Lio/reactivex/Single;
+	public abstract fun suspendGet (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/systeminfo/SMSVersion : java/lang/Enum {
@@ -10251,6 +10289,7 @@ public final class org/hisp/dhis/android/core/systeminfo/SystemInfoObjectReposit
 public final class org/hisp/dhis/android/core/systeminfo/internal/PingImpl : org/hisp/dhis/android/core/systeminfo/Ping {
 	public fun blockingGet ()Ljava/lang/String;
 	public fun get ()Lio/reactivex/Single;
+	public fun suspendGet (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/systeminfo/internal/SystemInfoCall : org/hisp/dhis/android/core/arch/call/internal/DownloadProvider {
@@ -10480,6 +10519,11 @@ public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttribu
 	public final fun downloadReservedValues (Ljava/lang/String;Ljava/lang/Integer;)Lio/reactivex/Observable;
 	public final fun getReservedValueSummaries ()Lio/reactivex/Single;
 	public final fun getValue (Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public final fun suspendCount (Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendDownloadAllReservedValues (Ljava/lang/Integer;)Lkotlinx/coroutines/flow/Flow;
+	public final fun suspendDownloadReservedValues (Ljava/lang/String;Ljava/lang/Integer;)Lkotlinx/coroutines/flow/Flow;
+	public final fun suspendGetReservedValueSummaries (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendGetValue (Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValueManager$Companion {
@@ -11660,6 +11704,9 @@ public abstract interface class org/hisp/dhis/android/core/user/UserModule {
 	public abstract fun logOut ()Lio/reactivex/Completable;
 	public abstract fun oauth2Handler ()Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Handler;
 	public abstract fun openIdHandler ()Lorg/hisp/dhis/android/core/user/openid/OpenIDConnectHandler;
+	public abstract fun suspendIsLogged (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendLogIn (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendLogOut (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun twoFactorAuthManager ()Lorg/hisp/dhis/android/core/user/TwoFactorAuthManager;
 	public abstract fun user ()Lorg/hisp/dhis/android/core/user/UserObjectRepository;
 	public abstract fun userCredentials ()Lorg/hisp/dhis/android/core/user/UserCredentialsObjectRepository;
@@ -11706,10 +11753,6 @@ public abstract class org/hisp/dhis/android/core/user/UserRole$Builder : org/his
 public final class org/hisp/dhis/android/core/user/UserRoleCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
 }
 
-public final class org/hisp/dhis/android/core/user/internal/LogOutCall {
-	public final fun logOut ()Lio/reactivex/Completable;
-}
-
 public final class org/hisp/dhis/android/core/user/internal/UserOrganisationUnitLinkHelper {
 	public static fun isRoot (Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit$Scope;Lorg/hisp/dhis/android/core/user/User;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit;)Z
 	public static fun userIsAssigned (Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit$Scope;Lorg/hisp/dhis/android/core/user/User;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit;)Z
@@ -11748,6 +11791,7 @@ public abstract interface class org/hisp/dhis/android/core/user/oauth2/OAuth2Han
 	public abstract fun isLoggedIn ()Z
 	public abstract fun logOutObservable ()Lio/reactivex/Observable;
 	public abstract fun resetRegistration ()V
+	public abstract fun suspendLogOut (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/user/oauth2/OAuth2State {

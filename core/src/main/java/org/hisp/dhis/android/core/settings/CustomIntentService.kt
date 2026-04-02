@@ -33,5 +33,8 @@ import io.reactivex.Single
 interface CustomIntentService {
     fun evaluateRequestParams(customIntent: CustomIntent, context: CustomIntentContext): Single<Map<String, Any?>>
     fun blockingEvaluateRequestParams(customIntent: CustomIntent, context: CustomIntentContext): Map<String, Any?>
-    suspend fun suspendEvaluateRequestParams(customIntent: CustomIntent, context: CustomIntentContext): Map<String, Any?>
+    suspend fun suspendEvaluateRequestParams(
+        customIntent: CustomIntent,
+        context: CustomIntentContext,
+    ): Map<String, Any?>
 }

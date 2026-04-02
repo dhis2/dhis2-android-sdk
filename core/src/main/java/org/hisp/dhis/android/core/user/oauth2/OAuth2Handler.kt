@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.user.oauth2
 import io.reactivex.Observable
 import org.hisp.dhis.android.core.user.User
 
+@Suppress("TooManyFunctions")
 interface OAuth2Handler {
 
     fun blockingBuildEnrollmentUrl(serverUrl: String): String

@@ -195,7 +195,7 @@ internal class EventServiceImpl(
         if (organisationUnitService.suspendIsInCaptureScope(ownerOrgUnit)) return true
 
         val allowsSearchScope = (accessLevel ?: AccessLevel.OPEN) in listOf(AccessLevel.OPEN, AccessLevel.AUDITED)
-        return allowsSearchScope && organisationUnitService.blockingIsInSearchScope(ownerOrgUnit)
+        return allowsSearchScope && organisationUnitService.isInSearchScope(ownerOrgUnit)
     }
 
     private suspend fun getOwnerOrgUnit(event: Event): String? {

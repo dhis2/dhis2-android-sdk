@@ -68,10 +68,10 @@ class OrganisationUnitService(
             .getInternal().isNotEmpty()
     }
 
-    internal fun blockingIsInSearchScope(organisationUnitUid: String): Boolean {
+    internal suspend fun isInSearchScope(organisationUnitUid: String): Boolean {
         return organisationUnitRepository
             .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
             .byUid().eq(organisationUnitUid)
-            .blockingGet().isNotEmpty()
+            .getInternal().isNotEmpty()
     }
 }

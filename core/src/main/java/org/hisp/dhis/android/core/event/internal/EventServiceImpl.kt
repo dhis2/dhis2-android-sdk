@@ -59,13 +59,17 @@ internal class EventServiceImpl(
 ) : EventService {
 
     override fun blockingHasDataWriteAccess(eventUid: String): Boolean {
-        val event = eventRepository.uid(eventUid).blockingGet() ?: return false
-
-        return programStageRepository.uid(event.programStage()).blockingGet()?.access()?.data()?.write() ?: false
+        return runBlocking { suspendHasDataWriteAccess(eventUid) }
     }
 
     override fun hasDataWriteAccess(eventUid: String): Single<Boolean> {
         return Single.just(blockingHasDataWriteAccess(eventUid))
+    }
+
+    override suspend fun suspendHasDataWriteAccess(eventUid: String): Boolean {
+        val event = eventRepository.uid(eventUid).getInternal() ?: return false
+
+        return programStageRepository.uid(event.programStage()).getInternal()?.access()?.data()?.write() ?: false
     }
 
     override fun blockingIsInOrgunitRange(event: Event): Boolean {
@@ -80,6 +84,8 @@ internal class EventServiceImpl(
         return Single.just(blockingIsInOrgunitRange(event))
     }
 
+    override suspend fun suspendIsInOrgunitRange(event: Event): Boolean = blockingIsInOrgunitRange(event)
+
     override fun blockingHasCategoryComboAccess(event: Event): Boolean {
         return event.attributeOptionCombo()?.let {
             categoryOptionComboService.blockingHasAccess(it, event.eventDate())
@@ -90,6 +96,8 @@ internal class EventServiceImpl(
         return Single.just(blockingHasCategoryComboAccess(event))
     }
 
+    override suspend fun suspendHasCategoryComboAccess(event: Event): Boolean = blockingHasCategoryComboAccess(event)
+
     override fun blockingIsEditable(eventUid: String): Boolean {
         return blockingGetEditableStatus(eventUid) is EventEditableStatus.Editable
     }
@@ -97,6 +105,8 @@ internal class EventServiceImpl(
     override fun isEditable(eventUid: String): Single<Boolean> {
         return Single.just(blockingIsEditable(eventUid))
     }
+
+    override suspend fun suspendIsEditable(eventUid: String): Boolean = blockingIsEditable(eventUid)
 
     @Suppress("ComplexMethod")
     override fun blockingGetEditableStatus(eventUid: String): EventEditableStatus {
@@ -140,6 +150,8 @@ internal class EventServiceImpl(
         return Single.just(blockingGetEditableStatus(eventUid))
     }
 
+    override suspend fun suspendGetEditableStatus(eventUid: String): EventEditableStatus = blockingGetEditableStatus(eventUid)
+
     override fun blockingCanAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Boolean {
         val enrollment = enrollmentRepository.uid(enrollmentUid).blockingGet()
         val programStage = programStageRepository.uid(programStageUid).blockingGet()
@@ -163,6 +175,9 @@ internal class EventServiceImpl(
     override fun canAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Single<Boolean> {
         return Single.just(blockingCanAddEventToEnrollment(enrollmentUid, programStageUid))
     }
+
+    override suspend fun suspendCanAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Boolean =
+        blockingCanAddEventToEnrollment(enrollmentUid, programStageUid)
 
     @Suppress("ReturnCount")
     private fun isOwnedByUser(event: Event, accessLevel: AccessLevel?): Boolean {

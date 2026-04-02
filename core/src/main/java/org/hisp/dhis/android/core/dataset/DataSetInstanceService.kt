@@ -47,9 +47,18 @@ interface DataSetInstanceService {
         attributeOptionComboUid: String,
     ): DataSetEditableStatus
 
+    suspend fun suspendGetEditableStatus(
+        dataSetUid: String,
+        periodId: String,
+        organisationUnitUid: String,
+        attributeOptionComboUid: String,
+    ): DataSetEditableStatus
+
     fun hasDataWriteAccess(dataSetUid: String): Single<Boolean>
 
     fun blockingHasDataWriteAccess(dataSetUid: String): Boolean
+
+    suspend fun suspendHasDataWriteAccess(dataSetUid: String): Boolean
 
     fun getMissingMandatoryDataElementOperands(
         dataSetUid: String,
@@ -65,6 +74,13 @@ interface DataSetInstanceService {
         attributeOptionComboUid: String,
     ): List<DataElementOperand>
 
+    suspend fun suspendGetMissingMandatoryDataElementOperands(
+        dataSetUid: String,
+        periodId: String,
+        organisationUnitUid: String,
+        attributeOptionComboUid: String,
+    ): List<DataElementOperand>
+
     fun getMissingMandatoryFieldsCombination(
         dataSetUid: String,
         periodId: String,
@@ -73,6 +89,13 @@ interface DataSetInstanceService {
     ): Single<List<DataElementOperand>>
 
     fun blockingGetMissingMandatoryFieldsCombination(
+        dataSetUid: String,
+        periodId: String,
+        organisationUnitUid: String,
+        attributeOptionComboUid: String,
+    ): List<DataElementOperand>
+
+    suspend fun suspendGetMissingMandatoryFieldsCombination(
         dataSetUid: String,
         periodId: String,
         organisationUnitUid: String,

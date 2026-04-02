@@ -43,6 +43,8 @@ interface EnrollmentService {
      */
     fun isOpen(enrollmentUid: String): Single<Boolean>
 
+    suspend fun suspendIsOpen(enrollmentUid: String): Boolean
+
     /**
      * Blocking version of [getEnrollmentAccess].
      *
@@ -58,7 +60,11 @@ interface EnrollmentService {
      */
     fun getEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): Single<EnrollmentAccess>
 
+    suspend fun suspendGetEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): EnrollmentAccess
+
     fun blockingGetAllowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Boolean
 
     fun allowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Single<Boolean>
+
+    suspend fun suspendGetAllowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Boolean
 }

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.dataset
 
 import com.google.common.truth.Truth.assertThat
 import io.reactivex.Single
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
@@ -112,11 +113,11 @@ class DataSetInstanceServiceShould {
     )
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         whenever(dataSet.uid()) doReturn dataSetUid
         whenever(categoryOptionRepository.byCategoryOptionComboUid(any()).blockingGet()) doReturn categories
         whenever(dataSetCollectionRepository.uid(any()).blockingGet()) doReturn dataSet
-        whenever(periodHelper.getPeriodForPeriodId(firstPeriodId).blockingGet()) doReturn firstPeriod
+        whenever(periodHelper.suspendGetPeriodForPeriodId(firstPeriodId)) doReturn firstPeriod
         whenever(firstPeriod.startDate()) doReturn firstJanuary
         whenever(firstPeriod.endDate()) doReturn thirdJanuary
         whenever(secondPeriod.startDate()) doReturn firstFebruary
@@ -130,19 +131,19 @@ class DataSetInstanceServiceShould {
     }
 
     @Test
-    fun `Should return true if is in OrgUnit capture scope`() {
+    fun `Should return true if is in OrgUnit capture scope`() = runTest {
         whenever(organisationUnitService.blockingIsInCaptureScope(orgUnitUid)) doReturn true
-        assertThat(dataSetInstanceService.blockingIsOrgUnitInCaptureScope(orgUnitUid)).isTrue()
+        assertThat(dataSetInstanceService.suspendIsOrgUnitInCaptureScope(orgUnitUid)).isTrue()
     }
 
     @Test
-    fun `Should return true if period is in OrgUnit`() {
+    fun `Should return true if period is in OrgUnit`() = runTest {
         val end = firstPeriod.endDate()!!
         val start = firstPeriod.startDate()!!
         whenever(organisationUnitService.blockingIsDateInOrgunitRange(orgUnitUid, end)) doReturn true
         whenever(organisationUnitService.blockingIsDateInOrgunitRange(orgUnitUid, start)) doReturn true
 
-        val isPeriodInOrgUnitRange = dataSetInstanceService.blockingIsPeriodInOrgUnitRange(
+        val isPeriodInOrgUnitRange = dataSetInstanceService.suspendIsPeriodInOrgUnitRange(
             period = firstPeriod,
             orgUnitUid = orgUnitUid,
         )
@@ -150,25 +151,25 @@ class DataSetInstanceServiceShould {
     }
 
     @Test
-    fun `Should return true if CategoryOption Has data write access`() {
+    fun `Should return true if CategoryOption Has data write access`() = runTest {
         whenever(categoryOptionComboService.blockingHasWriteAccess(categories)) doReturn true
-        assertThat(dataSetInstanceService.blockingIsCategoryOptionHasDataWriteAccess(attOptionComboUid)).isTrue()
+        assertThat(dataSetInstanceService.suspendIsCategoryOptionHasDataWriteAccess(attOptionComboUid)).isTrue()
     }
 
     @Test
-    fun `Should return true if Period is in Category Option Range`() {
+    fun `Should return true if Period is in Category Option Range`() = runTest {
         whenever(categoryOptionComboService.isInOptionRange(categories, firstPeriod.startDate())) doReturn true
         whenever(categoryOptionComboService.isInOptionRange(categories, firstPeriod.endDate())) doReturn true
         assertThat(
-            dataSetInstanceService.blockingIsPeriodInCategoryOptionRange(firstPeriod, attOptionComboUid),
+            dataSetInstanceService.suspendIsPeriodInCategoryOptionRange(firstPeriod, attOptionComboUid),
         ).isTrue()
     }
 
     @Test
-    fun `Should return true if attributeOptionCombo Assign To OrgUnit`() {
+    fun `Should return true if attributeOptionCombo Assign To OrgUnit`() = runTest {
         whenever(categoryOptionComboService.blockingIsAssignedToOrgUnit(attOptionComboUid, orgUnitUid)).doReturn(true)
         assertThat(
-            dataSetInstanceService.blockingIsAttributeOptionComboAssignToOrgUnit(attOptionComboUid, orgUnitUid),
+            dataSetInstanceService.suspendIsAttributeOptionComboAssignToOrgUnit(attOptionComboUid, orgUnitUid),
         ).isTrue()
     }
 
@@ -177,7 +178,7 @@ class DataSetInstanceServiceShould {
         whenever(dataSet.periodType()) doReturn PeriodType.Monthly
         whenever(periodGenerator.generatePeriod(any(), any(), any())) doReturn firstPeriod
 
-        assertThat(dataSetInstanceService.blockingIsClosed(dataSet, firstPeriod)).isFalse()
+        assertThat(dataSetInstanceService.isClosed(dataSet, firstPeriod)).isFalse()
     }
 
     @Test
@@ -185,40 +186,40 @@ class DataSetInstanceServiceShould {
         whenever(dataSet.periodType()) doReturn PeriodType.Monthly
         whenever(periodGenerator.generatePeriod(any(), any(), any())) doReturn firstPeriod
 
-        assertThat(dataSetInstanceService.blockingIsClosed(dataSet, secondPeriod)).isTrue()
+        assertThat(dataSetInstanceService.isClosed(dataSet, secondPeriod)).isTrue()
     }
 
     @Test
-    fun `Should return true if dataSet is expired`() {
+    fun `Should return true if dataSet is expired`() = runTest {
         whenever(dataSet.periodType()) doReturn PeriodType.Daily
         whenever(dataSet.openFuturePeriods()) doReturn 20
         whenever(dataSet.expiryDays()) doReturn 5.0
-        whenever(periodHelper.getPeriodForPeriodId(any()).blockingGet()) doReturn firstPeriod
+        whenever(periodHelper.suspendGetPeriodForPeriodId(any())) doReturn firstPeriod
         whenever(periodGenerator.generatePeriod(any(), any(), any())) doReturn firstPeriod
 
-        assertThat(dataSetInstanceService.blockingIsExpired(dataSet, firstPeriod)).isTrue()
+        assertThat(dataSetInstanceService.isExpired(dataSet, firstPeriod)).isTrue()
     }
 
     @Test
-    fun `Should return false if dataSet is not expired`() {
+    fun `Should return false if dataSet is not expired`() = runTest {
         val now = Clock.System.now()
         val monthLater = now.plus(30.days)
 
-        whenever(periodHelper.getPeriodForPeriodId(secondPeriodId).blockingGet()) doReturn secondPeriod
+        whenever(periodHelper.suspendGetPeriodForPeriodId(secondPeriodId)) doReturn secondPeriod
         whenever(secondPeriod.endDate()) doReturn Date(monthLater.toEpochMilliseconds())
         whenever(dataSet.periodType()) doReturn PeriodType.Daily
         whenever(periodGenerator.generatePeriod(any(), any(), any())) doReturn secondPeriod
 
-        assertThat(dataSetInstanceService.blockingIsExpired(dataSet, firstPeriod)).isFalse()
+        assertThat(dataSetInstanceService.isExpired(dataSet, firstPeriod)).isFalse()
     }
 
     @Test
     fun `Should return false if expiry days is 0 or negative`() {
         whenever(dataSet.expiryDays()) doReturn 0.0
-        assertThat(dataSetInstanceService.blockingIsExpired(dataSet, firstPeriod)).isFalse()
+        assertThat(dataSetInstanceService.isExpired(dataSet, firstPeriod)).isFalse()
 
         whenever(dataSet.expiryDays()) doReturn -15.0
-        assertThat(dataSetInstanceService.blockingIsExpired(dataSet, firstPeriod)).isFalse()
+        assertThat(dataSetInstanceService.isExpired(dataSet, firstPeriod)).isFalse()
     }
 
     @Test

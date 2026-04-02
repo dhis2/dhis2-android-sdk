@@ -47,6 +47,8 @@ interface EventService {
      */
     fun hasDataWriteAccess(eventUid: String): Single<Boolean>
 
+    suspend fun suspendHasDataWriteAccess(eventUid: String): Boolean
+
     /**
      * Blocking version of [isInOrgunitRange].
      *
@@ -58,6 +60,8 @@ interface EventService {
      * Check if the event has the event date within the opening period of the assigned organisation unit.
      */
     fun isInOrgunitRange(event: Event): Single<Boolean>
+
+    suspend fun suspendIsInOrgunitRange(event: Event): Boolean
 
     /**
      * Blocking version of [hasCategoryComboAccess].
@@ -72,6 +76,8 @@ interface EventService {
      */
     fun hasCategoryComboAccess(event: Event): Single<Boolean>
 
+    suspend fun suspendHasCategoryComboAccess(event: Event): Boolean
+
     /**
      * Blocking version of [isEditable].
      *
@@ -84,6 +90,8 @@ interface EventService {
      * the method [getEditableStatus] for a richer description of the status.
      */
     fun isEditable(eventUid: String): Single<Boolean>
+
+    suspend fun suspendIsEditable(eventUid: String): Boolean
 
     /**
      * Blocking version of [getEditableStatus].
@@ -98,6 +106,8 @@ interface EventService {
      */
     fun getEditableStatus(eventUid: String): Single<EventEditableStatus>
 
+    suspend fun suspendGetEditableStatus(eventUid: String): EventEditableStatus
+
     /**
      * Blocking version of [canAddEventToEnrollment].
      *
@@ -111,4 +121,6 @@ interface EventService {
      * It takes into account the enrollment status and if the program stage is repeatable or not.
      */
     fun canAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Single<Boolean>
+
+    suspend fun suspendCanAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Boolean
 }

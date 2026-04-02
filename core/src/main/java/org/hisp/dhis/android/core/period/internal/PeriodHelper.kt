@@ -120,23 +120,15 @@ class PeriodHelper internal constructor(
      */
     @Throws(IllegalArgumentException::class)
     fun blockingGetPeriodForPeriodId(periodId: String): Period {
+        return runBlocking { suspendGetPeriodForPeriodId(periodId) }
+    }
+
+    @Throws(IllegalArgumentException::class)
+    suspend fun suspendGetPeriodForPeriodId(periodId: String): Period {
         val periodType = periodTypeFromPeriodId(periodId)
         val date = Date(periodParser.parse(periodId, periodType).toEpochMilliseconds())
 
-        return blockingGetPeriodForPeriodTypeAndDate(periodType, date)
-    }
-
-    /**
-     * Get a period object specifying a periodId.
-     * If the periodId does not exist in the database, it is inserted.
-     *
-     * @param periodId Period id.
-     * @return `Single` with the generated period.
-     * @throws IllegalArgumentException if the periodId does not match any period
-     */
-    @Throws(IllegalArgumentException::class)
-    fun getPeriodForPeriodId(periodId: String): Single<Period> {
-        return Single.just(blockingGetPeriodForPeriodId(periodId))
+        return getPeriodForPeriodTypeAndDateInternal(periodType, date)
     }
 
     fun getPeriodsForDataSet(dataSetUid: String): Single<List<Period>> {

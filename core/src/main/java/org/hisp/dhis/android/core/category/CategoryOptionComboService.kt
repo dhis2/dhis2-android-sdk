@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.category
 
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.koin.core.annotation.Singleton
 import java.util.Date
 
@@ -37,16 +39,30 @@ class CategoryOptionComboService(
 ) {
 
     fun blockingHasAccess(categoryOptionComboUid: String, date: Date?, orgUnitUid: String? = null): Boolean {
+        return runBlocking { suspendHasAccess(categoryOptionComboUid, date, orgUnitUid) }
+    }
+
+    fun hasAccess(categoryOptionComboUid: String, date: Date?): Single<Boolean> {
+        return rxSingle { suspendHasAccess(categoryOptionComboUid, date) }
+    }
+
+    suspend fun suspendHasAccess(categoryOptionComboUid: String, date: Date?, orgUnitUid: String? = null): Boolean {
         val categoryOptions = categoryOptionRepository
             .byCategoryOptionComboUid(categoryOptionComboUid)
-            .blockingGet()
+            .getInternal()
 
-        return blockingIsAssignedToOrgUnit(categoryOptionComboUid, orgUnitUid) &&
-            blockingHasWriteAccess(categoryOptions) &&
+        return suspendIsAssignedToOrgUnit(categoryOptionComboUid, orgUnitUid) &&
+            hasWriteAccess(categoryOptions) &&
             isInOptionRange(categoryOptions, date)
     }
 
     fun blockingHasWriteAccess(
+        categoryOptions: List<CategoryOption>,
+    ): Boolean {
+        return hasWriteAccess(categoryOptions)
+    }
+
+    fun hasWriteAccess(
         categoryOptions: List<CategoryOption>,
     ): Boolean {
         return categoryOptions.none { it.access().data().write() == false }
@@ -56,11 +72,18 @@ class CategoryOptionComboService(
         categoryOptionComboUid: String,
         orgUnitUid: String?,
     ): Boolean {
+        return runBlocking { suspendIsAssignedToOrgUnit(categoryOptionComboUid, orgUnitUid) }
+    }
+
+    suspend fun suspendIsAssignedToOrgUnit(
+        categoryOptionComboUid: String,
+        orgUnitUid: String?,
+    ): Boolean {
         return orgUnitUid?.let {
             val categoryOptions = categoryOptionRepository
                 .byCategoryOptionComboUid(categoryOptionComboUid)
                 .withOrganisationUnits()
-                .blockingGet()
+                .getInternal()
 
             categoryOptions.all { categoryOption ->
                 categoryOption.organisationUnits()?.any {
@@ -68,10 +91,6 @@ class CategoryOptionComboService(
                 } ?: true
             }
         } ?: true
-    }
-
-    fun hasAccess(categoryOptionComboUid: String, date: Date?): Single<Boolean> {
-        return Single.fromCallable { blockingHasAccess(categoryOptionComboUid, date) }
     }
 
     fun isInOptionRange(options: List<CategoryOption>, date: Date?): Boolean {

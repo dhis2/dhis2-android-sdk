@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.organisationunit
 
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.koin.core.annotation.Singleton
 import java.util.*
 
@@ -36,26 +38,34 @@ class OrganisationUnitService(
     private val organisationUnitRepository: OrganisationUnitCollectionRepository,
 ) {
 
-    fun blockingIsDateInOrgunitRange(organisationUnitUid: String, date: Date): Boolean {
-        val organisationUnit = organisationUnitRepository.uid(organisationUnitUid).blockingGet() ?: return true
+    fun blockingIsDateInOrgunitRange(organisationUnitUid: String, date: Date): Boolean = runBlocking {
+        suspendIsDateInOrgunitRange(organisationUnitUid, date)
+    }
+
+    fun isDateInOrgunitRange(organisationUnitUid: String, date: Date): Single<Boolean> {
+        return rxSingle { suspendIsDateInOrgunitRange(organisationUnitUid, date) }
+    }
+
+    suspend fun suspendIsDateInOrgunitRange(organisationUnitUid: String, date: Date): Boolean {
+        val organisationUnit = organisationUnitRepository.uid(organisationUnitUid).getInternal() ?: return true
 
         return organisationUnit.openingDate()?.before(date) ?: true &&
             organisationUnit.closedDate()?.after(date) ?: true
     }
 
-    fun isDateInOrgunitRange(organisationUnitUid: String, date: Date): Single<Boolean> {
-        return Single.just(blockingIsDateInOrgunitRange(organisationUnitUid, date))
-    }
-
-    fun blockingIsInCaptureScope(organisationUnitUid: String): Boolean {
-        return organisationUnitRepository
-            .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-            .byUid().eq(organisationUnitUid)
-            .blockingGet().isNotEmpty()
+    fun blockingIsInCaptureScope(organisationUnitUid: String): Boolean = runBlocking {
+        suspendIsInCaptureScope(organisationUnitUid)
     }
 
     fun isInCaptureScope(organisationUnitUid: String): Single<Boolean> {
-        return Single.just(blockingIsInCaptureScope(organisationUnitUid))
+        return rxSingle { suspendIsInCaptureScope(organisationUnitUid) }
+    }
+
+    suspend fun suspendIsInCaptureScope(organisationUnitUid: String): Boolean {
+        return organisationUnitRepository
+            .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
+            .byUid().eq(organisationUnitUid)
+            .getInternal().isNotEmpty()
     }
 
     internal fun blockingIsInSearchScope(organisationUnitUid: String): Boolean {

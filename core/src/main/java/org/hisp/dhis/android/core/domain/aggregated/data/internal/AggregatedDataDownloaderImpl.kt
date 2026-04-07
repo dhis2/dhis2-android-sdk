@@ -41,20 +41,20 @@ internal class AggregatedDataDownloaderImpl(
     private val dataCall: AggregatedDataCall,
 ) : AggregatedDataDownloader {
 
-    override fun suspendDownload(): Flow<AggregatedD2Progress> {
+    override fun flowDownload(): Flow<AggregatedD2Progress> {
         return dataCall.download()
     }
 
     @Deprecated(message = "Use rxDownload instead", ReplaceWith("rxDownload()"))
     override fun download(): Observable<AggregatedD2Progress> {
-        return suspendDownload().asObservable()
+        return flowDownload().asObservable()
     }
 
     override fun rxDownload(): Observable<AggregatedD2Progress> {
-        return suspendDownload().asObservable()
+        return flowDownload().asObservable()
     }
 
     override fun blockingDownload() {
-        runBlocking { suspendDownload().collect {} }
+        rxDownload().blockingSubscribe()
     }
 }

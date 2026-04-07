@@ -40,15 +40,20 @@ import org.koin.core.annotation.Singleton
 class TrackerJobManager internal constructor(
     private val jobQueryCall: JobQueryCall,
 ) {
-    fun suspendResumePendingJobs(): Flow<D2Progress> {
+    fun flowResumePendingJobs(): Flow<D2Progress> {
         return jobQueryCall.queryPendingJobs()
     }
 
+    @Deprecated(message = "Use rxResumePendingJobs instead", ReplaceWith("rxResumePendingJobs()"))
     fun resumePendingJobs(): Observable<D2Progress> {
-        return suspendResumePendingJobs().asObservable()
+        return flowResumePendingJobs().asObservable()
+    }
+
+    fun rxResumePendingJobs(): Observable<D2Progress> {
+        return flowResumePendingJobs().asObservable()
     }
 
     fun blockingResumePendingJobs() {
-        runBlocking { suspendResumePendingJobs().collect {} }
+        rxResumePendingJobs().blockingSubscribe()
     }
 }

@@ -33,7 +33,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface AggregatedDataDownloader {
 
-    fun suspendDownload(): Flow<AggregatedD2Progress>
+    fun flowDownload(): Flow<AggregatedD2Progress>
 
     @Deprecated(message = "Use rxDownload instead", ReplaceWith("rxDownload()"))
     fun download(): Observable<AggregatedD2Progress>

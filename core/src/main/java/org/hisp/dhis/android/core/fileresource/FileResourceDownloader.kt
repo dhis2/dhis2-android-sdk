@@ -58,16 +58,21 @@ class FileResourceDownloader internal constructor(
      *
      * @return -
      */
-    fun suspendDownload(): Flow<D2Progress> {
+    fun flowDownload(): Flow<D2Progress> {
         return call.download(params)
     }
 
+    @Deprecated(message = "Use rxDownload instead", ReplaceWith("rxDownload()"))
     fun download(): Observable<D2Progress> {
-        return suspendDownload().asObservable()
+        return flowDownload().asObservable()
+    }
+
+    fun rxDownload(): Observable<D2Progress> {
+        return flowDownload().asObservable()
     }
 
     fun blockingDownload() {
-        runBlocking { suspendDownload().collect {} }
+        rxDownload().blockingSubscribe()
     }
 
     fun byTrackedEntityUid(): ListFilterConnector<FileResourceDownloader, String> {

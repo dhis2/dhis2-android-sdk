@@ -60,21 +60,25 @@ class EventDownloader internal constructor(
      *
      * @return -
      */
-    fun suspendDownload(): Flow<TrackerD2Progress> {
+    fun flowDownload(): Flow<TrackerD2Progress> {
         return call.download(params)
+    }
+
+    suspend fun suspendDownload() {
+        flowDownload().collect {}
     }
 
     @Deprecated(message = "Use rxDownload instead", ReplaceWith("rxDownload()"))
     fun download(): Observable<TrackerD2Progress> {
-        return suspendDownload().asObservable()
+        return flowDownload().asObservable()
     }
 
     fun rxDownload(): Observable<TrackerD2Progress> {
-        return suspendDownload().asObservable()
+        return flowDownload().asObservable()
     }
 
     fun blockingDownload() {
-        runBlocking { suspendDownload().collect {} }
+        rxDownload().blockingSubscribe()
     }
 
     fun byUid(): ListFilterConnector<EventDownloader, String> =

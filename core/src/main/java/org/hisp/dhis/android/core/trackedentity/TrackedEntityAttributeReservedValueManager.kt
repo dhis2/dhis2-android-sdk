@@ -132,7 +132,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
         attributeUid: String,
         numberOfValuesToFillUp: Int?,
     ) {
-        runBlocking { suspendDownloadReservedValues(attributeUid, numberOfValuesToFillUp).collect() }
+        rxDownloadReservedValues(attributeUid, numberOfValuesToFillUp).blockingSubscribe()
     }
 
     /**
@@ -150,7 +150,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
      * @return An Observable that notifies about the progress.
      */
 
-    fun suspendDownloadReservedValues(
+    fun flowDownloadReservedValues(
         attributeUid: String,
         numberOfValuesToFillUp: Int?,
     ): Flow<D2Progress> = flow {
@@ -162,14 +162,14 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
         attributeUid: String,
         numberOfValuesToFillUp: Int?,
     ): Observable<D2Progress> {
-        return suspendDownloadReservedValues(attributeUid, numberOfValuesToFillUp).asObservable()
+        return flowDownloadReservedValues(attributeUid, numberOfValuesToFillUp).asObservable()
     }
 
     fun rxDownloadReservedValues(
         attributeUid: String,
         numberOfValuesToFillUp: Int?,
     ): Observable<D2Progress> {
-        return suspendDownloadReservedValues(attributeUid, numberOfValuesToFillUp).asObservable()
+        return flowDownloadReservedValues(attributeUid, numberOfValuesToFillUp).asObservable()
     }
 
     /**
@@ -177,9 +177,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
      * @see .downloadAllReservedValues
      */
     fun blockingDownloadAllReservedValues(numberOfValuesToFillUp: Int?) {
-        runBlocking {
-            suspendDownloadAllReservedValues(numberOfValuesToFillUp).collect()
-        }
+        rxDownloadAllReservedValues(numberOfValuesToFillUp).blockingSubscribe()
     }
 
     /**
@@ -190,7 +188,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
      * @return An Observable that notifies about the progress.
      */
 
-    fun suspendDownloadAllReservedValues(numberOfValuesToFillUp: Int?): Flow<D2Progress> = flow {
+    fun flowDownloadAllReservedValues(numberOfValuesToFillUp: Int?): Flow<D2Progress> = flow {
         val flows = generatedAttributes().map { attribute ->
             downloadValuesForOrgUnits(attribute.uid(), numberOfValuesToFillUp)
         }
@@ -199,11 +197,11 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
 
     @Deprecated(message = "Use rxDownloadAllReservedValues instead", ReplaceWith("rxDownloadAllReservedValues(numberOfValuesToFillUp)"))
     fun downloadAllReservedValues(numberOfValuesToFillUp: Int?): Observable<D2Progress> {
-        return suspendDownloadAllReservedValues(numberOfValuesToFillUp).asObservable()
+        return flowDownloadAllReservedValues(numberOfValuesToFillUp).asObservable()
     }
 
     fun rxDownloadAllReservedValues(numberOfValuesToFillUp: Int?): Observable<D2Progress> {
-        return suspendDownloadAllReservedValues(numberOfValuesToFillUp).asObservable()
+        return flowDownloadAllReservedValues(numberOfValuesToFillUp).asObservable()
     }
 
     /**

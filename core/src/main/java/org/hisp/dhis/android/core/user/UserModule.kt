@@ -40,13 +40,19 @@ interface UserModule {
     fun authorities(): AuthorityCollectionRepository
     fun user(): UserObjectRepository
     fun accountManager(): AccountManager
+    @Deprecated(message = "Use rxLogIn instead", ReplaceWith("rxLogIn(username, password, serverUrl)"))
     fun logIn(username: String, password: String, serverUrl: String): Single<User>
+    fun rxLogIn(username: String, password: String, serverUrl: String): Single<User>
     fun blockingLogIn(username: String, password: String, serverUrl: String): User
     suspend fun suspendLogIn(username: String, password: String, serverUrl: String): User
+    @Deprecated(message = "Use rxLogOut instead", ReplaceWith("rxLogOut()"))
     fun logOut(): Completable
+    fun rxLogOut(): Completable
     fun blockingLogOut()
     suspend fun suspendLogOut()
+    @Deprecated(message = "Use rxIsLogged instead", ReplaceWith("rxIsLogged()"))
     fun isLogged(): Single<Boolean>
+    fun rxIsLogged(): Single<Boolean>
     fun blockingIsLogged(): Boolean
     suspend fun suspendIsLogged(): Boolean
     fun openIdHandler(): OpenIDConnectHandler

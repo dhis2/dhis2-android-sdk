@@ -42,7 +42,12 @@ class CategoryOptionComboService(
         return runBlocking { suspendHasAccess(categoryOptionComboUid, date, orgUnitUid) }
     }
 
+    @Deprecated(message = "Use rxHasAccess instead", ReplaceWith("rxHasAccess(categoryOptionComboUid, date)"))
     fun hasAccess(categoryOptionComboUid: String, date: Date?): Single<Boolean> {
+        return rxSingle { suspendHasAccess(categoryOptionComboUid, date) }
+    }
+
+    fun rxHasAccess(categoryOptionComboUid: String, date: Date?): Single<Boolean> {
         return rxSingle { suspendHasAccess(categoryOptionComboUid, date) }
     }
 

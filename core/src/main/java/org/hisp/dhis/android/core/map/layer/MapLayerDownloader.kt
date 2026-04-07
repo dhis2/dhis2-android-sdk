@@ -42,7 +42,12 @@ class MapLayerDownloader internal constructor(
         mapLayerCallFactory.downloadMetadata()
     }
 
+    @Deprecated(message = "Use rxDownloadMetadata instead", ReplaceWith("rxDownloadMetadata()"))
     override fun downloadMetadata(): Completable {
+        return rxCompletable { suspendDownloadMetadata() }
+    }
+
+    fun rxDownloadMetadata(): Completable {
         return rxCompletable { suspendDownloadMetadata() }
     }
 }

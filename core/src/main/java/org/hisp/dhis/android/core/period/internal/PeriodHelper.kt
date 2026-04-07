@@ -68,8 +68,13 @@ class PeriodHelper internal constructor(
      * @param date       Date contained in the period
      * @return `Single` with the generated period.
      */
+    @Deprecated(message = "Use rxGetPeriodForPeriodTypeAndDate instead", ReplaceWith("rxGetPeriodForPeriodTypeAndDate(periodType, date)"))
     fun getPeriodForPeriodTypeAndDate(periodType: PeriodType, date: Date): Single<Period> {
-        return Single.just(blockingGetPeriodForPeriodTypeAndDate(periodType, date))
+        return rxSingle { getPeriodForPeriodTypeAndDateInternal(periodType, date) }
+    }
+
+    fun rxGetPeriodForPeriodTypeAndDate(periodType: PeriodType, date: Date): Single<Period> {
+        return rxSingle { getPeriodForPeriodTypeAndDateInternal(periodType, date) }
     }
 
     /**
@@ -81,7 +86,12 @@ class PeriodHelper internal constructor(
      * @param periodOffset Number of periods backwards or forwards relative to 'date'
      * @return `Single` with the generated period.
      */
+    @Deprecated(message = "Use rxGetPeriodForPeriodTypeAndDate instead", ReplaceWith("rxGetPeriodForPeriodTypeAndDate(periodType, date, periodOffset)"))
     fun getPeriodForPeriodTypeAndDate(periodType: PeriodType, date: Date, periodOffset: Int): Single<Period> {
+        return rxSingle { getPeriodForPeriodTypeAndDateInternal(periodType, date, periodOffset) }
+    }
+
+    fun rxGetPeriodForPeriodTypeAndDate(periodType: PeriodType, date: Date, periodOffset: Int): Single<Period> {
         return rxSingle { getPeriodForPeriodTypeAndDateInternal(periodType, date, periodOffset) }
     }
 
@@ -131,7 +141,12 @@ class PeriodHelper internal constructor(
         return getPeriodForPeriodTypeAndDateInternal(periodType, date)
     }
 
+    @Deprecated(message = "Use rxGetPeriodsForDataSet instead", ReplaceWith("rxGetPeriodsForDataSet(dataSetUid)"))
     fun getPeriodsForDataSet(dataSetUid: String): Single<List<Period>> {
+        return periodForDataSetManager.getPeriodsForDataSet(dataSetUid)
+    }
+
+    fun rxGetPeriodsForDataSet(dataSetUid: String): Single<List<Period>> {
         return periodForDataSetManager.getPeriodsForDataSet(dataSetUid)
     }
 

@@ -34,7 +34,15 @@ import org.hisp.dhis.android.core.dataelement.DataElementOperand
 @Suppress("TooManyFunctions")
 interface DataSetInstanceService {
 
+    @Deprecated(message = "Use rxGetEditableStatus instead", ReplaceWith("rxGetEditableStatus(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)"))
     fun getEditableStatus(
+        dataSetUid: String,
+        periodId: String,
+        organisationUnitUid: String,
+        attributeOptionComboUid: String,
+    ): Single<DataSetEditableStatus>
+
+    fun rxGetEditableStatus(
         dataSetUid: String,
         periodId: String,
         organisationUnitUid: String,
@@ -55,13 +63,24 @@ interface DataSetInstanceService {
         attributeOptionComboUid: String,
     ): DataSetEditableStatus
 
+    @Deprecated(message = "Use rxHasDataWriteAccess instead", ReplaceWith("rxHasDataWriteAccess(dataSetUid)"))
     fun hasDataWriteAccess(dataSetUid: String): Single<Boolean>
+
+    fun rxHasDataWriteAccess(dataSetUid: String): Single<Boolean>
 
     fun blockingHasDataWriteAccess(dataSetUid: String): Boolean
 
     suspend fun suspendHasDataWriteAccess(dataSetUid: String): Boolean
 
+    @Deprecated(message = "Use rxGetMissingMandatoryDataElementOperands instead", ReplaceWith("rxGetMissingMandatoryDataElementOperands(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)"))
     fun getMissingMandatoryDataElementOperands(
+        dataSetUid: String,
+        periodId: String,
+        organisationUnitUid: String,
+        attributeOptionComboUid: String,
+    ): Single<List<DataElementOperand>>
+
+    fun rxGetMissingMandatoryDataElementOperands(
         dataSetUid: String,
         periodId: String,
         organisationUnitUid: String,
@@ -82,7 +101,15 @@ interface DataSetInstanceService {
         attributeOptionComboUid: String,
     ): List<DataElementOperand>
 
+    @Deprecated(message = "Use rxGetMissingMandatoryFieldsCombination instead", ReplaceWith("rxGetMissingMandatoryFieldsCombination(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)"))
     fun getMissingMandatoryFieldsCombination(
+        dataSetUid: String,
+        periodId: String,
+        organisationUnitUid: String,
+        attributeOptionComboUid: String,
+    ): Single<List<DataElementOperand>>
+
+    fun rxGetMissingMandatoryFieldsCombination(
         dataSetUid: String,
         periodId: String,
         organisationUnitUid: String,

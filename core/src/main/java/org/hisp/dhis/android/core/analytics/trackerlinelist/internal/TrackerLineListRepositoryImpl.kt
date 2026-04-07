@@ -94,7 +94,12 @@ internal class TrackerLineListRepositoryImpl(
         return updateParams { params.copy(sorting = listOf(sorting)) }
     }
 
+    @Deprecated(message = "Use rxEvaluate instead", ReplaceWith("rxEvaluate()"))
     override fun evaluate(): Single<Result<TrackerLineListResponse, AnalyticsException>> {
+        return rxSingle { service.evaluate(params) }
+    }
+
+    override fun rxEvaluate(): Single<Result<TrackerLineListResponse, AnalyticsException>> {
         return rxSingle { service.evaluate(params) }
     }
 

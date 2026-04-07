@@ -42,7 +42,12 @@ class PingImpl internal constructor(
     private val pingNetworkHandler: PingNetworkHandler,
 ) : Ping {
 
+    @Deprecated(message = "Use rxGet instead", ReplaceWith("rxGet()"))
     override fun get(): Single<String> {
+        return rxSingle { suspendGet() }
+    }
+
+    override fun rxGet(): Single<String> {
         return rxSingle { suspendGet() }
     }
 

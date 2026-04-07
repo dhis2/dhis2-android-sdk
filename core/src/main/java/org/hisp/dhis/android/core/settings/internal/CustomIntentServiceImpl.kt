@@ -47,7 +47,15 @@ internal class CustomIntentServiceImpl(
     private val userStore: UserStore,
     private val orgunitStore: OrganisationUnitStore,
 ) : CustomIntentService {
+    @Deprecated(message = "Use rxEvaluateRequestParams instead", ReplaceWith("rxEvaluateRequestParams(customIntent, context)"))
     override fun evaluateRequestParams(
+        customIntent: CustomIntent,
+        context: CustomIntentContext,
+    ): Single<Map<String, Any?>> {
+        return rxSingle { suspendEvaluateRequestParams(customIntent, context) }
+    }
+
+    override fun rxEvaluateRequestParams(
         customIntent: CustomIntent,
         context: CustomIntentContext,
     ): Single<Map<String, Any?>> {

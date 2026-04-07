@@ -67,7 +67,19 @@ internal class DataSetInstanceServiceImpl(
     private val periodGenerator: ParentPeriodGenerator,
 ) : DataSetInstanceService {
 
+    @Deprecated(message = "Use rxGetEditableStatus instead", ReplaceWith("rxGetEditableStatus(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)"))
     override fun getEditableStatus(
+        dataSetUid: String,
+        periodId: String,
+        organisationUnitUid: String,
+        attributeOptionComboUid: String,
+    ): Single<DataSetEditableStatus> {
+        return rxSingle {
+            suspendGetEditableStatus(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)
+        }
+    }
+
+    override fun rxGetEditableStatus(
         dataSetUid: String,
         periodId: String,
         organisationUnitUid: String,
@@ -130,7 +142,12 @@ internal class DataSetInstanceServiceImpl(
         }
     }
 
+    @Deprecated(message = "Use rxHasDataWriteAccess instead", ReplaceWith("rxHasDataWriteAccess(dataSetUid)"))
     override fun hasDataWriteAccess(dataSetUid: String): Single<Boolean> {
+        return rxSingle { suspendHasDataWriteAccess(dataSetUid) }
+    }
+
+    override fun rxHasDataWriteAccess(dataSetUid: String): Single<Boolean> {
         return rxSingle { suspendHasDataWriteAccess(dataSetUid) }
     }
 
@@ -143,7 +160,24 @@ internal class DataSetInstanceServiceImpl(
         return dataSet.access().write() ?: false
     }
 
+    @Deprecated(message = "Use rxGetMissingMandatoryDataElementOperands instead", ReplaceWith("rxGetMissingMandatoryDataElementOperands(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)"))
     override fun getMissingMandatoryDataElementOperands(
+        dataSetUid: String,
+        periodId: String,
+        organisationUnitUid: String,
+        attributeOptionComboUid: String,
+    ): Single<List<DataElementOperand>> {
+        return rxSingle {
+            suspendGetMissingMandatoryDataElementOperands(
+                dataSetUid,
+                periodId,
+                organisationUnitUid,
+                attributeOptionComboUid,
+            )
+        }
+    }
+
+    override fun rxGetMissingMandatoryDataElementOperands(
         dataSetUid: String,
         periodId: String,
         organisationUnitUid: String,
@@ -210,7 +244,24 @@ internal class DataSetInstanceServiceImpl(
         } ?: false
     }
 
+    @Deprecated(message = "Use rxGetMissingMandatoryFieldsCombination instead", ReplaceWith("rxGetMissingMandatoryFieldsCombination(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)"))
     override fun getMissingMandatoryFieldsCombination(
+        dataSetUid: String,
+        periodId: String,
+        organisationUnitUid: String,
+        attributeOptionComboUid: String,
+    ): Single<List<DataElementOperand>> {
+        return rxSingle {
+            suspendGetMissingMandatoryFieldsCombination(
+                dataSetUid,
+                periodId,
+                organisationUnitUid,
+                attributeOptionComboUid,
+            )
+        }
+    }
+
+    override fun rxGetMissingMandatoryFieldsCombination(
         dataSetUid: String,
         periodId: String,
         organisationUnitUid: String,
@@ -252,9 +303,9 @@ internal class DataSetInstanceServiceImpl(
         val stringListCache = ExpirableCache<String, List<String>>(TimeUnit.SECONDS.toMillis(120))
 
         val dataSet = dataSetCollectionRepository.withDataSetElements()
-            .uid(dataSetUid).getInternal() ?: return emptyList()
-
-        if (dataSet.fieldCombinationRequired() != true) return emptyList()
+            .uid(dataSetUid).getInternal()
+            ?.takeIf { it.fieldCombinationRequired() == true }
+            ?: return emptyList()
 
         return dataSet.dataSetElements().orEmpty().flatMap { dataSetElement ->
             val categoryComboUid = dataSetElement.categoryCombo()?.uid()

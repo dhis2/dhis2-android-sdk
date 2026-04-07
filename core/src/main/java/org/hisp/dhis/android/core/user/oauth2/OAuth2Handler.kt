@@ -51,7 +51,10 @@ interface OAuth2Handler {
 
     suspend fun suspendLogOut()
 
+    @Deprecated(message = "Use rxLogOutObservable instead", ReplaceWith("rxLogOutObservable()"))
     fun logOutObservable(): Observable<Unit>
+
+    fun rxLogOutObservable(): Observable<Unit>
 
     fun resetRegistration()
 }

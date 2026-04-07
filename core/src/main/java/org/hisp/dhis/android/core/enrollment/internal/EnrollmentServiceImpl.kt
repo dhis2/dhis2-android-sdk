@@ -69,7 +69,12 @@ internal class EnrollmentServiceImpl(
         return runBlocking { suspendIsOpen(enrollmentUid) }
     }
 
+    @Deprecated(message = "Use rxIsOpen instead", ReplaceWith("rxIsOpen(enrollmentUid)"))
     override fun isOpen(enrollmentUid: String): Single<Boolean> {
+        return rxSingle { suspendIsOpen(enrollmentUid) }
+    }
+
+    override fun rxIsOpen(enrollmentUid: String): Single<Boolean> {
         return rxSingle { suspendIsOpen(enrollmentUid) }
     }
 
@@ -83,7 +88,12 @@ internal class EnrollmentServiceImpl(
         return runBlocking { suspendGetEnrollmentAccess(trackedEntityInstanceUid, programUid) }
     }
 
+    @Deprecated(message = "Use rxGetEnrollmentAccess instead", ReplaceWith("rxGetEnrollmentAccess(trackedEntityInstanceUid, programUid)"))
     override fun getEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): Single<EnrollmentAccess> {
+        return rxSingle { suspendGetEnrollmentAccess(trackedEntityInstanceUid, programUid) }
+    }
+
+    override fun rxGetEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): Single<EnrollmentAccess> {
         return rxSingle { suspendGetEnrollmentAccess(trackedEntityInstanceUid, programUid) }
     }
 
@@ -158,7 +168,12 @@ internal class EnrollmentServiceImpl(
         return runBlocking { suspendGetAllowEventCreation(enrollmentUid, stagesToHide) }
     }
 
+    @Deprecated(message = "Use rxAllowEventCreation instead", ReplaceWith("rxAllowEventCreation(enrollmentUid, stagesToHide)"))
     override fun allowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Single<Boolean> {
+        return rxSingle { suspendGetAllowEventCreation(enrollmentUid, stagesToHide) }
+    }
+
+    override fun rxAllowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Single<Boolean> {
         return rxSingle { suspendGetAllowEventCreation(enrollmentUid, stagesToHide) }
     }
 

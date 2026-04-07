@@ -41,7 +41,10 @@ interface EnrollmentService {
     /**
      * Checks if the enrollment status is ACTIVE.
      */
+    @Deprecated(message = "Use rxIsOpen instead", ReplaceWith("rxIsOpen(enrollmentUid)"))
     fun isOpen(enrollmentUid: String): Single<Boolean>
+
+    fun rxIsOpen(enrollmentUid: String): Single<Boolean>
 
     suspend fun suspendIsOpen(enrollmentUid: String): Boolean
 
@@ -58,13 +61,19 @@ interface EnrollmentService {
      * It checks the data access level to the program, the program access level (OPEN, PROTECTED,...)
      * and the enrollment orgunit scope (SEARCH or CAPTURE).
      */
+    @Deprecated(message = "Use rxGetEnrollmentAccess instead", ReplaceWith("rxGetEnrollmentAccess(trackedEntityInstanceUid, programUid)"))
     fun getEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): Single<EnrollmentAccess>
+
+    fun rxGetEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): Single<EnrollmentAccess>
 
     suspend fun suspendGetEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): EnrollmentAccess
 
     fun blockingGetAllowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Boolean
 
+    @Deprecated(message = "Use rxAllowEventCreation instead", ReplaceWith("rxAllowEventCreation(enrollmentUid, stagesToHide)"))
     fun allowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Single<Boolean>
+
+    fun rxAllowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Single<Boolean>
 
     suspend fun suspendGetAllowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Boolean
 }

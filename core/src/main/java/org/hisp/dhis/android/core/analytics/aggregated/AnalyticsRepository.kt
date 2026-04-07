@@ -44,7 +44,10 @@ interface AnalyticsRepository {
 
     fun withAggregationType(aggregationType: AggregationType): AnalyticsRepository
 
+    @Deprecated(message = "Use rxEvaluate instead", ReplaceWith("rxEvaluate()"))
     fun evaluate(): Single<Result<DimensionalResponse, AnalyticsException>>
+
+    fun rxEvaluate(): Single<Result<DimensionalResponse, AnalyticsException>>
 
     fun blockingEvaluate(): Result<DimensionalResponse, AnalyticsException>
 

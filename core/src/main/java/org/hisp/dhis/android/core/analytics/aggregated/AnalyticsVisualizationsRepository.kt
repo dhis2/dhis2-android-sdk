@@ -40,7 +40,10 @@ interface AnalyticsVisualizationsRepository {
 
     fun withOrganisationUnits(orgUnits: List<DimensionItem.OrganisationUnitItem>): AnalyticsVisualizationsRepository
 
+    @Deprecated(message = "Use rxEvaluate instead", ReplaceWith("rxEvaluate()"))
     fun evaluate(): Single<Result<GridAnalyticsResponse, AnalyticsException>>
+
+    fun rxEvaluate(): Single<Result<GridAnalyticsResponse, AnalyticsException>>
 
     fun blockingEvaluate(): Result<GridAnalyticsResponse, AnalyticsException>
 

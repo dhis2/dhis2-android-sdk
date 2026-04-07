@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.event.internal
 
 import io.reactivex.Single
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.category.CategoryOptionComboService
 import org.hisp.dhis.android.core.enrollment.EnrollmentCollectionRepository
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
@@ -62,8 +63,13 @@ internal class EventServiceImpl(
         return runBlocking { suspendHasDataWriteAccess(eventUid) }
     }
 
+    @Deprecated(message = "Use rxHasDataWriteAccess instead", ReplaceWith("rxHasDataWriteAccess(eventUid)"))
     override fun hasDataWriteAccess(eventUid: String): Single<Boolean> {
-        return Single.just(blockingHasDataWriteAccess(eventUid))
+        return rxSingle { suspendHasDataWriteAccess(eventUid) }
+    }
+
+    override fun rxHasDataWriteAccess(eventUid: String): Single<Boolean> {
+        return rxSingle { suspendHasDataWriteAccess(eventUid) }
     }
 
     override suspend fun suspendHasDataWriteAccess(eventUid: String): Boolean {
@@ -76,8 +82,13 @@ internal class EventServiceImpl(
         return runBlocking { suspendIsInOrgunitRange(event) }
     }
 
+    @Deprecated(message = "Use rxIsInOrgunitRange instead", ReplaceWith("rxIsInOrgunitRange(event)"))
     override fun isInOrgunitRange(event: Event): Single<Boolean> {
-        return Single.just(blockingIsInOrgunitRange(event))
+        return rxSingle { suspendIsInOrgunitRange(event) }
+    }
+
+    override fun rxIsInOrgunitRange(event: Event): Single<Boolean> {
+        return rxSingle { suspendIsInOrgunitRange(event) }
     }
 
     override suspend fun suspendIsInOrgunitRange(event: Event): Boolean {
@@ -92,8 +103,13 @@ internal class EventServiceImpl(
         return runBlocking { suspendHasCategoryComboAccess(event) }
     }
 
+    @Deprecated(message = "Use rxHasCategoryComboAccess instead", ReplaceWith("rxHasCategoryComboAccess(event)"))
     override fun hasCategoryComboAccess(event: Event): Single<Boolean> {
-        return Single.just(blockingHasCategoryComboAccess(event))
+        return rxSingle { suspendHasCategoryComboAccess(event) }
+    }
+
+    override fun rxHasCategoryComboAccess(event: Event): Single<Boolean> {
+        return rxSingle { suspendHasCategoryComboAccess(event) }
     }
 
     override suspend fun suspendHasCategoryComboAccess(event: Event): Boolean {
@@ -106,8 +122,13 @@ internal class EventServiceImpl(
         return runBlocking { suspendIsEditable(eventUid) }
     }
 
+    @Deprecated(message = "Use rxIsEditable instead", ReplaceWith("rxIsEditable(eventUid)"))
     override fun isEditable(eventUid: String): Single<Boolean> {
-        return Single.just(blockingIsEditable(eventUid))
+        return rxSingle { suspendIsEditable(eventUid) }
+    }
+
+    override fun rxIsEditable(eventUid: String): Single<Boolean> {
+        return rxSingle { suspendIsEditable(eventUid) }
     }
 
     override suspend fun suspendIsEditable(eventUid: String): Boolean {
@@ -119,8 +140,13 @@ internal class EventServiceImpl(
         return runBlocking { suspendGetEditableStatus(eventUid) }
     }
 
+    @Deprecated(message = "Use rxGetEditableStatus instead", ReplaceWith("rxGetEditableStatus(eventUid)"))
     override fun getEditableStatus(eventUid: String): Single<EventEditableStatus> {
-        return Single.just(blockingGetEditableStatus(eventUid))
+        return rxSingle { suspendGetEditableStatus(eventUid) }
+    }
+
+    override fun rxGetEditableStatus(eventUid: String): Single<EventEditableStatus> {
+        return rxSingle { suspendGetEditableStatus(eventUid) }
     }
 
     override suspend fun suspendGetEditableStatus(eventUid: String): EventEditableStatus {
@@ -164,8 +190,13 @@ internal class EventServiceImpl(
         return runBlocking { suspendCanAddEventToEnrollment(enrollmentUid, programStageUid) }
     }
 
+    @Deprecated(message = "Use rxCanAddEventToEnrollment instead", ReplaceWith("rxCanAddEventToEnrollment(enrollmentUid, programStageUid)"))
     override fun canAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Single<Boolean> {
-        return Single.just(blockingCanAddEventToEnrollment(enrollmentUid, programStageUid))
+        return rxSingle { suspendCanAddEventToEnrollment(enrollmentUid, programStageUid) }
+    }
+
+    override fun rxCanAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Single<Boolean> {
+        return rxSingle { suspendCanAddEventToEnrollment(enrollmentUid, programStageUid) }
     }
 
     override suspend fun suspendCanAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Boolean {

@@ -95,7 +95,12 @@ internal class EventLineListRepositoryImpl(
         )
     }
 
+    @Deprecated(message = "Use rxEvaluate instead", ReplaceWith("rxEvaluate()"))
     override fun evaluate(): Single<List<LineListResponse>> {
+        return rxSingle { eventLineListService.evaluate(eventLineListParams) }
+    }
+
+    override fun rxEvaluate(): Single<List<LineListResponse>> {
         return rxSingle { eventLineListService.evaluate(eventLineListParams) }
     }
 

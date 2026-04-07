@@ -32,7 +32,10 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 
 interface Ping {
 
+    @Deprecated(message = "Use rxGet instead", ReplaceWith("rxGet()"))
     fun get(): Single<String>
+
+    fun rxGet(): Single<String>
 
     @Throws(D2Error::class)
     fun blockingGet(): String

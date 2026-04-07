@@ -45,7 +45,10 @@ interface EventService {
      * It returns true if the user has data write access to both the program and the program stage.
      * If the event does not exist, returns null
      */
+    @Deprecated(message = "Use rxHasDataWriteAccess instead", ReplaceWith("rxHasDataWriteAccess(eventUid)"))
     fun hasDataWriteAccess(eventUid: String): Single<Boolean>
+
+    fun rxHasDataWriteAccess(eventUid: String): Single<Boolean>
 
     suspend fun suspendHasDataWriteAccess(eventUid: String): Boolean
 
@@ -59,7 +62,10 @@ interface EventService {
     /**
      * Check if the event has the event date within the opening period of the assigned organisation unit.
      */
+    @Deprecated(message = "Use rxIsInOrgunitRange instead", ReplaceWith("rxIsInOrgunitRange(event)"))
     fun isInOrgunitRange(event: Event): Single<Boolean>
+
+    fun rxIsInOrgunitRange(event: Event): Single<Boolean>
 
     suspend fun suspendIsInOrgunitRange(event: Event): Boolean
 
@@ -74,7 +80,10 @@ interface EventService {
      * Check if user has access to the categoryCombo linked to the event and also if the categoryCombo is active
      * in the event date.
      */
+    @Deprecated(message = "Use rxHasCategoryComboAccess instead", ReplaceWith("rxHasCategoryComboAccess(event)"))
     fun hasCategoryComboAccess(event: Event): Single<Boolean>
+
+    fun rxHasCategoryComboAccess(event: Event): Single<Boolean>
 
     suspend fun suspendHasCategoryComboAccess(event: Event): Boolean
 
@@ -89,7 +98,10 @@ interface EventService {
      * Check if the event can be edited or not. If you want to know the reason why the event is not editable, check
      * the method [getEditableStatus] for a richer description of the status.
      */
+    @Deprecated(message = "Use rxIsEditable instead", ReplaceWith("rxIsEditable(eventUid)"))
     fun isEditable(eventUid: String): Single<Boolean>
+
+    fun rxIsEditable(eventUid: String): Single<Boolean>
 
     suspend fun suspendIsEditable(eventUid: String): Boolean
 
@@ -104,7 +116,10 @@ interface EventService {
      * Returns the editable status of an event. In case the event is not editable, the result also includes the
      * reason why it is not editable.
      */
+    @Deprecated(message = "Use rxGetEditableStatus instead", ReplaceWith("rxGetEditableStatus(eventUid)"))
     fun getEditableStatus(eventUid: String): Single<EventEditableStatus>
+
+    fun rxGetEditableStatus(eventUid: String): Single<EventEditableStatus>
 
     suspend fun suspendGetEditableStatus(eventUid: String): EventEditableStatus
 
@@ -120,7 +135,10 @@ interface EventService {
      *
      * It takes into account the enrollment status and if the program stage is repeatable or not.
      */
+    @Deprecated(message = "Use rxCanAddEventToEnrollment instead", ReplaceWith("rxCanAddEventToEnrollment(enrollmentUid, programStageUid)"))
     fun canAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Single<Boolean>
+
+    fun rxCanAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Single<Boolean>
 
     suspend fun suspendCanAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Boolean
 }

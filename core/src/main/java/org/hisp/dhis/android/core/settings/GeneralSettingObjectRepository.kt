@@ -74,7 +74,12 @@ class GeneralSettingObjectRepository internal constructor(
         return runBlocking { suspendHasExperimentalFeature(featureName) }
     }
 
+    @Deprecated(message = "Use rxHasExperimentalFeature instead", ReplaceWith("rxHasExperimentalFeature(featureName)"))
     fun hasExperimentalFeature(featureName: String): Single<Boolean> {
+        return rxSingle { suspendHasExperimentalFeature(featureName) }
+    }
+
+    fun rxHasExperimentalFeature(featureName: String): Single<Boolean> {
         return rxSingle { suspendHasExperimentalFeature(featureName) }
     }
 
@@ -85,7 +90,12 @@ class GeneralSettingObjectRepository internal constructor(
         return runBlocking { suspendHasExperimentalFeature(feature) }
     }
 
+    @Deprecated(message = "Use rxHasExperimentalFeature instead", ReplaceWith("rxHasExperimentalFeature(feature)"))
     fun hasExperimentalFeature(feature: ExperimentalFeature): Single<Boolean> {
+        return rxSingle { suspendHasExperimentalFeature(feature) }
+    }
+
+    fun rxHasExperimentalFeature(feature: ExperimentalFeature): Single<Boolean> {
         return rxSingle { suspendHasExperimentalFeature(feature) }
     }
 

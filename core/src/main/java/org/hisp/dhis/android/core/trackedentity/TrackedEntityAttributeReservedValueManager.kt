@@ -103,7 +103,12 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
      * @return Single with value of tracked entity attribute
      */
 
+    @Deprecated(message = "Use rxGetValue instead", ReplaceWith("rxGetValue(attributeUid, organisationUnitUid)"))
     fun getValue(attributeUid: String, organisationUnitUid: String): Single<String> {
+        return rxSingle { suspendGetValue(attributeUid, organisationUnitUid) }
+    }
+
+    fun rxGetValue(attributeUid: String, organisationUnitUid: String): Single<String> {
         return rxSingle { suspendGetValue(attributeUid, organisationUnitUid) }
     }
 
@@ -152,7 +157,15 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
         emitAll(downloadValuesForOrgUnits(attributeUid, numberOfValuesToFillUp))
     }
 
+    @Deprecated(message = "Use rxDownloadReservedValues instead", ReplaceWith("rxDownloadReservedValues(attributeUid, numberOfValuesToFillUp)"))
     fun downloadReservedValues(
+        attributeUid: String,
+        numberOfValuesToFillUp: Int?,
+    ): Observable<D2Progress> {
+        return suspendDownloadReservedValues(attributeUid, numberOfValuesToFillUp).asObservable()
+    }
+
+    fun rxDownloadReservedValues(
         attributeUid: String,
         numberOfValuesToFillUp: Int?,
     ): Observable<D2Progress> {
@@ -184,7 +197,12 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
         emitAll(flows.merge())
     }
 
+    @Deprecated(message = "Use rxDownloadAllReservedValues instead", ReplaceWith("rxDownloadAllReservedValues(numberOfValuesToFillUp)"))
     fun downloadAllReservedValues(numberOfValuesToFillUp: Int?): Observable<D2Progress> {
+        return suspendDownloadAllReservedValues(numberOfValuesToFillUp).asObservable()
+    }
+
+    fun rxDownloadAllReservedValues(numberOfValuesToFillUp: Int?): Observable<D2Progress> {
         return suspendDownloadAllReservedValues(numberOfValuesToFillUp).asObservable()
     }
 
@@ -196,7 +214,11 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
      * @param organisationUnitUid An optional organisation unit uid
      * @return Single with the reserved value count by attribute or by attribute and organisation unit.
      */
+    @Deprecated(message = "Use rxCount instead", ReplaceWith("rxCount(attributeUid, organisationUnitUid)"))
     fun count(attributeUid: String, organisationUnitUid: String?): Single<Int> =
+        rxSingle { countInternal(attributeUid, organisationUnitUid) }
+
+    fun rxCount(attributeUid: String, organisationUnitUid: String?): Single<Int> =
         rxSingle { countInternal(attributeUid, organisationUnitUid) }
 
     /**
@@ -221,7 +243,12 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
      *
      * @return Single with a list of the reserved value summaries
      */
+    @Deprecated(message = "Use rxGetReservedValueSummaries instead", ReplaceWith("rxGetReservedValueSummaries()"))
     fun getReservedValueSummaries(): Single<List<ReservedValueSummary>> {
+        return rxSingle { getReservedValueSummariesInternal() }
+    }
+
+    fun rxGetReservedValueSummaries(): Single<List<ReservedValueSummary>> {
         return rxSingle { getReservedValueSummariesInternal() }
     }
 

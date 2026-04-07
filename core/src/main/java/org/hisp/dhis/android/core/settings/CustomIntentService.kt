@@ -31,7 +31,9 @@ package org.hisp.dhis.android.core.settings
 import io.reactivex.Single
 
 interface CustomIntentService {
+    @Deprecated(message = "Use rxEvaluateRequestParams instead", ReplaceWith("rxEvaluateRequestParams(customIntent, context)"))
     fun evaluateRequestParams(customIntent: CustomIntent, context: CustomIntentContext): Single<Map<String, Any?>>
+    fun rxEvaluateRequestParams(customIntent: CustomIntent, context: CustomIntentContext): Single<Map<String, Any?>>
     fun blockingEvaluateRequestParams(customIntent: CustomIntent, context: CustomIntentContext): Map<String, Any?>
     suspend fun suspendEvaluateRequestParams(
         customIntent: CustomIntent,

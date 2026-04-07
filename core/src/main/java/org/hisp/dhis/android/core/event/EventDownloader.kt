@@ -64,7 +64,12 @@ class EventDownloader internal constructor(
         return call.download(params)
     }
 
+    @Deprecated(message = "Use rxDownload instead", ReplaceWith("rxDownload()"))
     fun download(): Observable<TrackerD2Progress> {
+        return suspendDownload().asObservable()
+    }
+
+    fun rxDownload(): Observable<TrackerD2Progress> {
         return suspendDownload().asObservable()
     }
 

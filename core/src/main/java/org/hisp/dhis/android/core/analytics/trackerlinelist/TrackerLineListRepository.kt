@@ -52,7 +52,10 @@ interface TrackerLineListRepository {
 
     fun withSorting(sorting: TrackerLineListSortingItem): TrackerLineListRepository
 
+    @Deprecated(message = "Use rxEvaluate instead", ReplaceWith("rxEvaluate()"))
     fun evaluate(): Single<Result<TrackerLineListResponse, AnalyticsException>>
+
+    fun rxEvaluate(): Single<Result<TrackerLineListResponse, AnalyticsException>>
 
     fun blockingEvaluate(): Result<TrackerLineListResponse, AnalyticsException>
 

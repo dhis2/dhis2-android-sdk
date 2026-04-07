@@ -42,7 +42,12 @@ class OrganisationUnitService(
         return runBlocking { suspendIsDateInOrgunitRange(organisationUnitUid, date) }
     }
 
+    @Deprecated(message = "Use rxIsDateInOrgunitRange instead", ReplaceWith("rxIsDateInOrgunitRange(organisationUnitUid, date)"))
     fun isDateInOrgunitRange(organisationUnitUid: String, date: Date): Single<Boolean> {
+        return rxSingle { suspendIsDateInOrgunitRange(organisationUnitUid, date) }
+    }
+
+    fun rxIsDateInOrgunitRange(organisationUnitUid: String, date: Date): Single<Boolean> {
         return rxSingle { suspendIsDateInOrgunitRange(organisationUnitUid, date) }
     }
 
@@ -57,7 +62,12 @@ class OrganisationUnitService(
         suspendIsInCaptureScope(organisationUnitUid)
     }
 
+    @Deprecated(message = "Use rxIsInCaptureScope instead", ReplaceWith("rxIsInCaptureScope(organisationUnitUid)"))
     fun isInCaptureScope(organisationUnitUid: String): Single<Boolean> {
+        return rxSingle { suspendIsInCaptureScope(organisationUnitUid) }
+    }
+
+    fun rxIsInCaptureScope(organisationUnitUid: String): Single<Boolean> {
         return rxSingle { suspendIsInCaptureScope(organisationUnitUid) }
     }
 

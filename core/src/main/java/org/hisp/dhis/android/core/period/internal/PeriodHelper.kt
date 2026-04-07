@@ -38,6 +38,7 @@ import java.util.Date
 import kotlin.math.ceil
 
 @Singleton
+@Suppress("TooManyFunctions")
 class PeriodHelper internal constructor(
     private val periodStore: PeriodStore,
     private val periodForDataSetManager: PeriodForDataSetManager,
@@ -68,7 +69,10 @@ class PeriodHelper internal constructor(
      * @param date       Date contained in the period
      * @return `Single` with the generated period.
      */
-    @Deprecated(message = "Use rxGetPeriodForPeriodTypeAndDate instead", ReplaceWith("rxGetPeriodForPeriodTypeAndDate(periodType, date)"))
+    @Deprecated(
+        message = "Use rxGetPeriodForPeriodTypeAndDate instead",
+        ReplaceWith("rxGetPeriodForPeriodTypeAndDate(periodType, date)"),
+    )
     fun getPeriodForPeriodTypeAndDate(periodType: PeriodType, date: Date): Single<Period> {
         return rxSingle { getPeriodForPeriodTypeAndDateInternal(periodType, date) }
     }
@@ -86,7 +90,10 @@ class PeriodHelper internal constructor(
      * @param periodOffset Number of periods backwards or forwards relative to 'date'
      * @return `Single` with the generated period.
      */
-    @Deprecated(message = "Use rxGetPeriodForPeriodTypeAndDate instead", ReplaceWith("rxGetPeriodForPeriodTypeAndDate(periodType, date, periodOffset)"))
+    @Deprecated(
+        message = "Use rxGetPeriodForPeriodTypeAndDate instead",
+        ReplaceWith("rxGetPeriodForPeriodTypeAndDate(periodType, date, periodOffset)"),
+    )
     fun getPeriodForPeriodTypeAndDate(periodType: PeriodType, date: Date, periodOffset: Int): Single<Period> {
         return rxSingle { getPeriodForPeriodTypeAndDateInternal(periodType, date, periodOffset) }
     }

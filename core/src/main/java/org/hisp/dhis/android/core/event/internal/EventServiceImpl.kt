@@ -190,7 +190,10 @@ internal class EventServiceImpl(
         return runBlocking { suspendCanAddEventToEnrollment(enrollmentUid, programStageUid) }
     }
 
-    @Deprecated(message = "Use rxCanAddEventToEnrollment instead", ReplaceWith("rxCanAddEventToEnrollment(enrollmentUid, programStageUid)"))
+    @Deprecated(
+        message = "Use rxCanAddEventToEnrollment instead",
+        ReplaceWith("rxCanAddEventToEnrollment(enrollmentUid, programStageUid)"),
+    )
     override fun canAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Single<Boolean> {
         return rxSingle { suspendCanAddEventToEnrollment(enrollmentUid, programStageUid) }
     }

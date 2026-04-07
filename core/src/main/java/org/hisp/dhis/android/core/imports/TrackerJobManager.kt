@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.imports
 
 import io.reactivex.Observable
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall

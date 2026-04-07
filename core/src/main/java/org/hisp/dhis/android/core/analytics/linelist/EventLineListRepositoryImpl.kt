@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilte
 import org.koin.core.annotation.Singleton
 
 @Singleton
+@Suppress("TooManyFunctions")
 internal class EventLineListRepositoryImpl(
     private val eventLineListService: EventLineListService,
     private val eventLineListParams: EventLineListParams,

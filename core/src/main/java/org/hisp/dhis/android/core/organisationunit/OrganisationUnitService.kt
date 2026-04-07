@@ -42,7 +42,10 @@ class OrganisationUnitService(
         return runBlocking { suspendIsDateInOrgunitRange(organisationUnitUid, date) }
     }
 
-    @Deprecated(message = "Use rxIsDateInOrgunitRange instead", ReplaceWith("rxIsDateInOrgunitRange(organisationUnitUid, date)"))
+    @Deprecated(
+        message = "Use rxIsDateInOrgunitRange instead",
+        ReplaceWith("rxIsDateInOrgunitRange(organisationUnitUid, date)"),
+    )
     fun isDateInOrgunitRange(organisationUnitUid: String, date: Date): Single<Boolean> {
         return rxSingle { suspendIsDateInOrgunitRange(organisationUnitUid, date) }
     }

@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterCon
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.OrganisationUnitFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.PeriodsFilterConnector
 
+@Suppress("TooManyFunctions")
 interface EventLineListRepository : BaseRepository {
 
     /**

@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.user.internal
 import io.reactivex.Completable
 import io.reactivex.Single
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.rx2.rxCompletable
 import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.user.AccountManager
 import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository

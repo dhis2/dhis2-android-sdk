@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.enrollment
 
 import io.reactivex.Single
 
+@Suppress("TooManyFunctions")
 interface EnrollmentService {
 
     /**
@@ -61,7 +62,10 @@ interface EnrollmentService {
      * It checks the data access level to the program, the program access level (OPEN, PROTECTED,...)
      * and the enrollment orgunit scope (SEARCH or CAPTURE).
      */
-    @Deprecated(message = "Use rxGetEnrollmentAccess instead", ReplaceWith("rxGetEnrollmentAccess(trackedEntityInstanceUid, programUid)"))
+    @Deprecated(
+        message = "Use rxGetEnrollmentAccess instead",
+        ReplaceWith("rxGetEnrollmentAccess(trackedEntityInstanceUid, programUid)"),
+    )
     fun getEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): Single<EnrollmentAccess>
 
     fun rxGetEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): Single<EnrollmentAccess>
@@ -70,7 +74,10 @@ interface EnrollmentService {
 
     fun blockingGetAllowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Boolean
 
-    @Deprecated(message = "Use rxAllowEventCreation instead", ReplaceWith("rxAllowEventCreation(enrollmentUid, stagesToHide)"))
+    @Deprecated(
+        message = "Use rxAllowEventCreation instead",
+        ReplaceWith("rxAllowEventCreation(enrollmentUid, stagesToHide)"),
+    )
     fun allowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Single<Boolean>
 
     fun rxAllowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Single<Boolean>

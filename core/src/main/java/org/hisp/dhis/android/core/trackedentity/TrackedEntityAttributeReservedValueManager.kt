@@ -32,7 +32,6 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.merge
@@ -157,7 +156,10 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
         emitAll(downloadValuesForOrgUnits(attributeUid, numberOfValuesToFillUp))
     }
 
-    @Deprecated(message = "Use rxDownloadReservedValues instead", ReplaceWith("rxDownloadReservedValues(attributeUid, numberOfValuesToFillUp)"))
+    @Deprecated(
+        message = "Use rxDownloadReservedValues instead",
+        ReplaceWith("rxDownloadReservedValues(attributeUid, numberOfValuesToFillUp)"),
+    )
     fun downloadReservedValues(
         attributeUid: String,
         numberOfValuesToFillUp: Int?,
@@ -195,7 +197,10 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
         emitAll(flows.merge())
     }
 
-    @Deprecated(message = "Use rxDownloadAllReservedValues instead", ReplaceWith("rxDownloadAllReservedValues(numberOfValuesToFillUp)"))
+    @Deprecated(
+        message = "Use rxDownloadAllReservedValues instead",
+        ReplaceWith("rxDownloadAllReservedValues(numberOfValuesToFillUp)"),
+    )
     fun downloadAllReservedValues(numberOfValuesToFillUp: Int?): Observable<D2Progress> {
         return flowDownloadAllReservedValues(numberOfValuesToFillUp).asObservable()
     }

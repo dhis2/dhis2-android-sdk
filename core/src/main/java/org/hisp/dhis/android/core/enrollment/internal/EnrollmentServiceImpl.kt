@@ -88,7 +88,10 @@ internal class EnrollmentServiceImpl(
         return runBlocking { suspendGetEnrollmentAccess(trackedEntityInstanceUid, programUid) }
     }
 
-    @Deprecated(message = "Use rxGetEnrollmentAccess instead", ReplaceWith("rxGetEnrollmentAccess(trackedEntityInstanceUid, programUid)"))
+    @Deprecated(
+        message = "Use rxGetEnrollmentAccess instead",
+        ReplaceWith("rxGetEnrollmentAccess(trackedEntityInstanceUid, programUid)"),
+    )
     override fun getEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): Single<EnrollmentAccess> {
         return rxSingle { suspendGetEnrollmentAccess(trackedEntityInstanceUid, programUid) }
     }
@@ -168,7 +171,10 @@ internal class EnrollmentServiceImpl(
         return runBlocking { suspendGetAllowEventCreation(enrollmentUid, stagesToHide) }
     }
 
-    @Deprecated(message = "Use rxAllowEventCreation instead", ReplaceWith("rxAllowEventCreation(enrollmentUid, stagesToHide)"))
+    @Deprecated(
+        message = "Use rxAllowEventCreation instead",
+        ReplaceWith("rxAllowEventCreation(enrollmentUid, stagesToHide)"),
+    )
     override fun allowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Single<Boolean> {
         return rxSingle { suspendGetAllowEventCreation(enrollmentUid, stagesToHide) }
     }

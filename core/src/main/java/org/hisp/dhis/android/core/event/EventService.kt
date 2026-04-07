@@ -135,7 +135,10 @@ interface EventService {
      *
      * It takes into account the enrollment status and if the program stage is repeatable or not.
      */
-    @Deprecated(message = "Use rxCanAddEventToEnrollment instead", ReplaceWith("rxCanAddEventToEnrollment(enrollmentUid, programStageUid)"))
+    @Deprecated(
+        message = "Use rxCanAddEventToEnrollment instead",
+        ReplaceWith("rxCanAddEventToEnrollment(enrollmentUid, programStageUid)"),
+    )
     fun canAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Single<Boolean>
 
     fun rxCanAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Single<Boolean>

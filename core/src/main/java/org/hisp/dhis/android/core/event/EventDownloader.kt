@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.event
 
 import io.reactivex.Observable
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterConnector
@@ -40,6 +39,7 @@ import org.hisp.dhis.android.core.tracker.exporter.TrackerD2Progress
 import org.koin.core.annotation.Singleton
 
 @Singleton
+@Suppress("TooManyFunctions")
 class EventDownloader internal constructor(
     private val call: EventDownloadCall,
     private val params: ProgramDataDownloadParams,

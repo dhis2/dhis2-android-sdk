@@ -34,7 +34,12 @@ import org.hisp.dhis.android.core.dataelement.DataElementOperand
 @Suppress("TooManyFunctions")
 interface DataSetInstanceService {
 
-    @Deprecated(message = "Use rxGetEditableStatus instead", ReplaceWith("rxGetEditableStatus(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)"))
+    @Deprecated(
+        message = "Use rxGetEditableStatus instead",
+        ReplaceWith(
+            "rxGetEditableStatus(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)",
+        ),
+    )
     fun getEditableStatus(
         dataSetUid: String,
         periodId: String,
@@ -63,7 +68,10 @@ interface DataSetInstanceService {
         attributeOptionComboUid: String,
     ): DataSetEditableStatus
 
-    @Deprecated(message = "Use rxHasDataWriteAccess instead", ReplaceWith("rxHasDataWriteAccess(dataSetUid)"))
+    @Deprecated(
+        message = "Use rxHasDataWriteAccess instead",
+        ReplaceWith("rxHasDataWriteAccess(dataSetUid)"),
+    )
     fun hasDataWriteAccess(dataSetUid: String): Single<Boolean>
 
     fun rxHasDataWriteAccess(dataSetUid: String): Single<Boolean>
@@ -72,7 +80,13 @@ interface DataSetInstanceService {
 
     suspend fun suspendHasDataWriteAccess(dataSetUid: String): Boolean
 
-    @Deprecated(message = "Use rxGetMissingMandatoryDataElementOperands instead", ReplaceWith("rxGetMissingMandatoryDataElementOperands(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)"))
+    @Deprecated(
+        message = "Use rxGetMissingMandatoryDataElementOperands instead",
+        ReplaceWith(
+            "rxGetMissingMandatoryDataElementOperands(dataSetUid, periodId, " +
+                "organisationUnitUid, attributeOptionComboUid)",
+        ),
+    )
     fun getMissingMandatoryDataElementOperands(
         dataSetUid: String,
         periodId: String,
@@ -101,7 +115,13 @@ interface DataSetInstanceService {
         attributeOptionComboUid: String,
     ): List<DataElementOperand>
 
-    @Deprecated(message = "Use rxGetMissingMandatoryFieldsCombination instead", ReplaceWith("rxGetMissingMandatoryFieldsCombination(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)"))
+    @Deprecated(
+        message = "Use rxGetMissingMandatoryFieldsCombination instead",
+        ReplaceWith(
+            "rxGetMissingMandatoryFieldsCombination(dataSetUid, periodId, organisationUnitUid, " +
+                "attributeOptionComboUid)",
+        ),
+    )
     fun getMissingMandatoryFieldsCombination(
         dataSetUid: String,
         periodId: String,

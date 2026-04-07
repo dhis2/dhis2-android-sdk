@@ -67,7 +67,13 @@ internal class DataSetInstanceServiceImpl(
     private val periodGenerator: ParentPeriodGenerator,
 ) : DataSetInstanceService {
 
-    @Deprecated(message = "Use rxGetEditableStatus instead", ReplaceWith("rxGetEditableStatus(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)"))
+    @Deprecated(
+        message = "Use rxGetEditableStatus instead",
+        ReplaceWith(
+            "rxGetEditableStatus(dataSetUid, periodId, organisationUnitUid, " +
+                "attributeOptionComboUid)",
+        ),
+    )
     override fun getEditableStatus(
         dataSetUid: String,
         periodId: String,
@@ -160,7 +166,13 @@ internal class DataSetInstanceServiceImpl(
         return dataSet.access().write() ?: false
     }
 
-    @Deprecated(message = "Use rxGetMissingMandatoryDataElementOperands instead", ReplaceWith("rxGetMissingMandatoryDataElementOperands(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)"))
+    @Deprecated(
+        message = "Use rxGetMissingMandatoryDataElementOperands instead",
+        ReplaceWith(
+            "rxGetMissingMandatoryDataElementOperands(dataSetUid, periodId, organisationUnitUid, " +
+                "attributeOptionComboUid)",
+        ),
+    )
     override fun getMissingMandatoryDataElementOperands(
         dataSetUid: String,
         periodId: String,
@@ -244,7 +256,13 @@ internal class DataSetInstanceServiceImpl(
         } ?: false
     }
 
-    @Deprecated(message = "Use rxGetMissingMandatoryFieldsCombination instead", ReplaceWith("rxGetMissingMandatoryFieldsCombination(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)"))
+    @Deprecated(
+        message = "Use rxGetMissingMandatoryFieldsCombination instead",
+        ReplaceWith(
+            "rxGetMissingMandatoryFieldsCombination(dataSetUid, periodId, organisationUnitUid, " +
+                "attributeOptionComboUid)",
+        ),
+    )
     override fun getMissingMandatoryFieldsCombination(
         dataSetUid: String,
         periodId: String,

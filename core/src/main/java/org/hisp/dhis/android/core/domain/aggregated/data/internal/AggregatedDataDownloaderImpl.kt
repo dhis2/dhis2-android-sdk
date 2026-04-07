@@ -45,7 +45,12 @@ internal class AggregatedDataDownloaderImpl(
         return dataCall.download()
     }
 
+    @Deprecated(message = "Use rxDownload instead", ReplaceWith("rxDownload()"))
     override fun download(): Observable<AggregatedD2Progress> {
+        return suspendDownload().asObservable()
+    }
+
+    override fun rxDownload(): Observable<AggregatedD2Progress> {
         return suspendDownload().asObservable()
     }
 

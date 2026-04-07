@@ -35,7 +35,10 @@ interface AggregatedDataDownloader {
 
     fun suspendDownload(): Flow<AggregatedD2Progress>
 
+    @Deprecated(message = "Use rxDownload instead", ReplaceWith("rxDownload()"))
     fun download(): Observable<AggregatedD2Progress>
+
+    fun rxDownload(): Observable<AggregatedD2Progress>
 
     fun blockingDownload()
 }

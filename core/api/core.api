@@ -10912,12 +10912,14 @@ public final class org/hisp/dhis/android/core/trackedentity/internal/TrackedEnti
 	public final fun byTrackedEntityInstanceFilter ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/ListFilterConnector;
 	public final fun byUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/ListFilterConnector;
 	public final fun download ()Lio/reactivex/Observable;
+	public final fun flowDownload ()Lkotlinx/coroutines/flow/Flow;
 	public final fun getProgramStageWorkingListObjectRepository ()Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListCollectionRepository;
 	public final fun getTrackedEntityInstanceFilterCollectionRepository ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceFilterCollectionRepository;
 	public final fun limit (I)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceDownloader;
 	public final fun limitByOrgunit (Z)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceDownloader;
 	public final fun limitByProgram (Z)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceDownloader;
 	public final fun overwrite (Z)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceDownloader;
+	public final fun rxDownload ()Lio/reactivex/Observable;
 }
 
 public final class org/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceFilterCall : org/hisp/dhis/android/core/arch/call/factories/internal/UidsCallCoroutines {
@@ -10975,6 +10977,10 @@ public abstract interface class org/hisp/dhis/android/core/trackedentity/ownersh
 	public abstract fun blockingBreakGlass (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
 	public abstract fun blockingTransfer (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
 	public abstract fun breakGlass (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Completable;
+	public abstract fun rxBreakGlass (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Completable;
+	public abstract fun rxTransfer (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Completable;
+	public abstract fun suspendBreakGlass (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendTransfer (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun transfer (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Completable;
 }
 

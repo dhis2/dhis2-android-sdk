@@ -73,9 +73,9 @@ internal class EventServiceImpl(
     }
 
     override suspend fun suspendHasDataWriteAccess(eventUid: String): Boolean {
-        val event = eventRepository.uid(eventUid).getInternal() ?: return false
+        val event = eventRepository.uid(eventUid).suspendGet() ?: return false
 
-        return programStageRepository.uid(event.programStage()).getInternal()?.access()?.data()?.write() ?: false
+        return programStageRepository.uid(event.programStage()).suspendGet()?.access()?.data()?.write() ?: false
     }
 
     override fun blockingIsInOrgunitRange(event: Event): Boolean {
@@ -150,9 +150,9 @@ internal class EventServiceImpl(
     }
 
     override suspend fun suspendGetEditableStatus(eventUid: String): EventEditableStatus {
-        val event = eventRepository.uid(eventUid).getInternal()!!
-        val program = programRepository.uid(event.program()).getInternal()
-        val programStage = programStageRepository.uid(event.programStage()).getInternal()
+        val event = eventRepository.uid(eventUid).suspendGet()!!
+        val program = programRepository.uid(event.program()).suspendGet()
+        val programStage = programStageRepository.uid(event.programStage()).suspendGet()
 
         return when {
             event.status() == EventStatus.COMPLETED && programStage?.blockEntryForm() == true ->
@@ -203,8 +203,8 @@ internal class EventServiceImpl(
     }
 
     override suspend fun suspendCanAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Boolean {
-        val enrollment = enrollmentRepository.uid(enrollmentUid).getInternal()
-        val programStage = programStageRepository.uid(programStageUid).getInternal()
+        val enrollment = enrollmentRepository.uid(enrollmentUid).suspendGet()
+        val programStage = programStageRepository.uid(programStageUid).suspendGet()
 
         if (enrollment == null || programStage == null) {
             return false
@@ -235,7 +235,7 @@ internal class EventServiceImpl(
     private suspend fun getOwnerOrgUnit(event: Event): String? {
         val program = event.program()
         val tei = event.enrollment()
-            ?.let { enrollmentRepository.uid(it).getInternal() }
+            ?.let { enrollmentRepository.uid(it).suspendGet() }
             ?.trackedEntityInstance()
 
         if (program == null || tei == null) return event.organisationUnit()

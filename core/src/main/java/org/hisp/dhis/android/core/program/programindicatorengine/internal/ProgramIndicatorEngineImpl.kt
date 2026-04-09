@@ -110,7 +110,7 @@ internal class ProgramIndicatorEngineImpl(
             .withTrackedEntityDataValues()
             .byDeleted().isFalse
             .uid(eventUid)
-            .getInternal() ?: throw NoSuchElementException("Event $eventUid does not exist or is deleted.")
+            .suspendGet() ?: throw NoSuchElementException("Event $eventUid does not exist or is deleted.")
 
         val enrollment = event.enrollment()?.let {
             enrollmentStore.selectByUid(it)

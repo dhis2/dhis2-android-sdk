@@ -139,7 +139,7 @@ internal class NewTrackedEntityEndpointCallFactory(
         val relationshipType = relationshipTypeRepository
             .withConstraints()
             .uid(item.relationshipTypeUid)
-            .getInternal()
+            .suspendGet()
 
         val constraint = when (item.constraintType) {
             RelationshipConstraintType.FROM -> relationshipType?.fromConstraint()

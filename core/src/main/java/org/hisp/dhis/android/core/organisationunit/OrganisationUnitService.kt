@@ -55,7 +55,7 @@ class OrganisationUnitService(
     }
 
     suspend fun suspendIsDateInOrgunitRange(organisationUnitUid: String, date: Date): Boolean {
-        val organisationUnit = organisationUnitRepository.uid(organisationUnitUid).getInternal() ?: return true
+        val organisationUnit = organisationUnitRepository.uid(organisationUnitUid).suspendGet() ?: return true
 
         return organisationUnit.openingDate()?.before(date) ?: true &&
             organisationUnit.closedDate()?.after(date) ?: true

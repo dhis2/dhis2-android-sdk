@@ -133,16 +133,8 @@ class TrackedEntitySearchCollectionRepository internal constructor(
     val resultDataSource: DataSource<TrackedEntitySearchItem, Result<TrackedEntitySearchItem, D2Error>>
         get() = TrackedEntitySearchDataSourceResult(getDataFetcher())
 
-    override suspend fun suspendGet(): List<TrackedEntitySearchItem> {
-        return getInternal()
-    }
-
-    override fun blockingGet(): List<TrackedEntitySearchItem> {
-        return runBlocking { getInternal() }
-    }
-
     @Suppress("TooGenericExceptionCaught", "TooGenericExceptionThrown")
-    private suspend fun getInternal(): List<TrackedEntitySearchItem> {
+    override suspend fun suspendGet(): List<TrackedEntitySearchItem> {
         val dataFetcher = getDataFetcher()
         val searchResult =
             if (scope.mode() == RepositoryMode.OFFLINE_ONLY || scope.mode() == RepositoryMode.OFFLINE_FIRST) {
@@ -159,47 +151,12 @@ class TrackedEntitySearchCollectionRepository internal constructor(
         }
     }
 
-    @Deprecated("Use rxGet instead", replaceWith = ReplaceWith("rxGet()"))
-    override fun get(): Single<List<TrackedEntitySearchItem>> {
-        return rxSingle { suspendGet() }
-    }
-
-    override fun rxGet(): Single<List<TrackedEntitySearchItem>> {
-        return rxSingle { suspendGet() }
-    }
-
     override suspend fun suspendCount(): Int {
-        return getInternal().size
-    }
-
-    @Deprecated("Use rxCount instead", replaceWith = ReplaceWith("rxCount()"))
-    override fun count(): Single<Int> {
-        return rxSingle { suspendCount() }
-    }
-
-    override fun rxCount(): Single<Int> {
-        return rxSingle { suspendCount() }
-    }
-
-    override fun blockingCount(): Int {
-        return blockingGet().size
+        return suspendGet().size
     }
 
     override suspend fun suspendIsEmpty(): Boolean {
         return suspendCount() == 0
-    }
-
-    @Deprecated("Use rxIsEmpty instead", replaceWith = ReplaceWith("rxIsEmpty()"))
-    override fun isEmpty(): Single<Boolean> {
-        return rxSingle { suspendIsEmpty() }
-    }
-
-    override fun rxIsEmpty(): Single<Boolean> {
-        return rxSingle { suspendIsEmpty() }
-    }
-
-    override fun blockingIsEmpty(): Boolean {
-        return blockingCount() == 0
     }
 
     override fun one(): ReadOnlyObjectRepository<TrackedEntitySearchItem> {
@@ -244,7 +201,7 @@ class TrackedEntitySearchCollectionRepository internal constructor(
         return if (scope.mode() == RepositoryMode.OFFLINE_ONLY || scope.mode() == RepositoryMode.OFFLINE_FIRST) {
             getDataFetcher().queryAllOfflineUids()
         } else {
-            UidsHelper.getUids(getInternal()).toList()
+            UidsHelper.getUids(suspendGet()).toList()
         }
     }
 
@@ -262,7 +219,7 @@ class TrackedEntitySearchCollectionRepository internal constructor(
             }
 
             override suspend fun suspendGet(): TrackedEntitySearchItem? {
-                val list = this@TrackedEntitySearchCollectionRepository.getInternal()
+                val list = this@TrackedEntitySearchCollectionRepository.suspendGet()
                 return transformer.transform(list)
             }
 

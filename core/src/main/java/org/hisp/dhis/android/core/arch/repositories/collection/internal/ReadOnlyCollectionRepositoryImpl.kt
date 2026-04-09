@@ -139,36 +139,11 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
         return store.countWhere(whereClause)
     }
 
+    /**
+     * Check if selection of objects in current scope with applied filters is empty in a suspend way.
+     * @return If selection is empty
+     */
     override suspend fun suspendIsEmpty(): Boolean {
-        return isEmptyInternal()
-    }
-
-    /**
-     * Check if selection of objects in current scope with applied filters is empty in an asynchronous way,
-     * returning a `Single`.
-     * @return If selection is empty
-     */
-    @Deprecated("Use rxIsEmpty instead", replaceWith = ReplaceWith("rxIsEmpty()"))
-    override fun isEmpty(): Single<Boolean> {
-        return rxSingle { isEmptyInternal() }
-    }
-
-    override fun rxIsEmpty(): Single<Boolean> {
-        return rxSingle { isEmptyInternal() }
-    }
-
-    /**
-     * Check if selection of objects with applied filters is empty in a synchronous way.
-     * Important: this is a blocking method and it should not be executed in the main thread.
-     * Consider the asynchronous version [.isEmpty].
-     *
-     * @return If selection is empty
-     */
-    override fun blockingIsEmpty(): Boolean {
-        return runBlocking { isEmptyInternal() }
-    }
-
-    internal suspend fun isEmptyInternal(): Boolean {
         return !one().existsInternal()
     }
 

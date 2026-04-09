@@ -167,15 +167,6 @@ class TrackedEntityInstanceQueryCollectionRepository internal constructor(
         get() = TrackedEntityInstanceQueryDataSourceResult(getDataFetcher())
 
     override suspend fun suspendGet(): List<TrackedEntityInstance> {
-        return getProtected()
-    }
-
-    @Suppress("TooGenericExceptionCaught", "TooGenericExceptionThrown")
-    override fun blockingGet(): List<TrackedEntityInstance> {
-        return runBlocking { getProtected() }
-    }
-
-    private suspend fun getProtected(): List<TrackedEntityInstance> {
         val dataFetcher = getDataFetcher()
         val searchResult =
             if (scope.mode() == RepositoryMode.OFFLINE_ONLY || scope.mode() == RepositoryMode.OFFLINE_FIRST) {
@@ -192,55 +183,12 @@ class TrackedEntityInstanceQueryCollectionRepository internal constructor(
         }
     }
 
-    @Deprecated("Use rxGet instead", replaceWith = ReplaceWith("rxGet()"))
-    override fun get(): Single<List<TrackedEntityInstance>> {
-        return rxSingle { getProtected() }
-    }
-
-    override fun rxGet(): Single<List<TrackedEntityInstance>> {
-        return rxSingle { getProtected() }
-    }
-
-    @Deprecated("Use rxCount instead", replaceWith = ReplaceWith("rxCount()"))
-    override fun count(): Single<Int> {
-        return rxSingle { countProtected() }
-    }
-
-    override fun rxCount(): Single<Int> {
-        return rxSingle { countProtected() }
-    }
-
     override suspend fun suspendCount(): Int {
-        return countProtected()
-    }
-
-    override fun blockingCount(): Int {
-        return blockingGet().size
-    }
-
-    private suspend fun countProtected(): Int {
-        return getProtected().size
-    }
-
-    @Deprecated("Use rxIsEmpty instead", replaceWith = ReplaceWith("rxIsEmpty()"))
-    override fun isEmpty(): Single<Boolean> {
-        return rxSingle { isEmptyProtected() }
-    }
-
-    override fun rxIsEmpty(): Single<Boolean> {
-        return rxSingle { isEmptyProtected() }
+        return suspendGet().size
     }
 
     override suspend fun suspendIsEmpty(): Boolean {
-        return isEmptyProtected()
-    }
-
-    override fun blockingIsEmpty(): Boolean {
-        return runBlocking { isEmptyProtected() }
-    }
-
-    private suspend fun isEmptyProtected(): Boolean {
-        return countProtected() == 0
+        return suspendCount() == 0
     }
 
     override fun one(): ReadOnlyObjectRepository<TrackedEntityInstance> {
@@ -284,7 +232,7 @@ class TrackedEntityInstanceQueryCollectionRepository internal constructor(
         return if (scope.mode() == RepositoryMode.OFFLINE_ONLY || scope.mode() == RepositoryMode.OFFLINE_FIRST) {
             getDataFetcher().queryAllOfflineUids()
         } else {
-            getUids(getProtected()).toList()
+            getUids(suspendGet()).toList()
         }
     }
 
@@ -294,7 +242,7 @@ class TrackedEntityInstanceQueryCollectionRepository internal constructor(
         return object : ReadOnlyObjectRepository<TrackedEntityInstance> {
 
             override suspend fun suspendGet(): TrackedEntityInstance? {
-                val list = this@TrackedEntityInstanceQueryCollectionRepository.getProtected()
+                val list = this@TrackedEntityInstanceQueryCollectionRepository.suspendGet()
                 return transformer.transform(list)
             }
 

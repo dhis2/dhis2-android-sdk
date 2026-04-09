@@ -96,25 +96,11 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
     }
 
     /**
-     * Get the list of objects in a synchronous way. Important: this is a blocking method and it should not be
-     * executed in the main thread. Consider the asynchronous version [.get].
+     * Get the objects in scope in a suspend way.
      *
-     * @return List of objects
+     * @return The list of objects.
      */
-    override fun blockingGet(): List<T> {
-        return runBlocking { getInternal() }
-    }
-
-    /**
-     * Get the objects in scope in an asynchronous way, returning a `Single<List>`.
-     *
-     * @return A `Single` object with the list of objects.
-     */
-    override fun get(): Single<List<T>> {
-        return rxSingle { getInternal() }
-    }
-
-    private suspend fun getInternal(): List<T> {
+    override suspend fun suspendGet(): List<T> {
         return ChildrenAppenderExecutor.appendInObjectCollection(
             getWithoutChildrenInternal(),
             childrenAppenders,
@@ -161,49 +147,19 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
         get() = RepositoryPagingSourceWithTransformer(store, scope, childrenAppenders, transformer)
 
     /**
-     * Get the count of elements in an asynchronous way, returning a `Single`.
-     * @return A `Single` object with the element count
+     * Get the count of elements in a suspend way.
+     * @return The element count
      */
-    override fun count(): Single<Int> {
-        return rxSingle { countInternal() }
-    }
-
-    /**
-     * Get the count of elements. Important: this is a blocking method and it should not be
-     * executed in the main thread. Consider the asynchronous version [.count].
-     *
-     * @return Element count
-     */
-    override fun blockingCount(): Int {
-        return runBlocking { countInternal() }
-    }
-
-    suspend fun countInternal(): Int {
+    override suspend fun suspendCount(): Int {
         return store.countWhere(whereClause)
     }
 
     /**
-     * Check if selection of objects in current scope with applied filters is empty in an asynchronous way,
-     * returning a `Single`.
+     * Check if selection of objects in current scope with applied filters is empty in a suspend way.
      * @return If selection is empty
      */
-    override fun isEmpty(): Single<Boolean> {
-        return Single.fromCallable { blockingIsEmpty() }
-    }
-
-    /**
-     * Check if selection of objects with applied filters is empty in a synchronous way.
-     * Important: this is a blocking method and it should not be executed in the main thread.
-     * Consider the asynchronous version [.isEmpty].
-     *
-     * @return If selection is empty
-     */
-    override fun blockingIsEmpty(): Boolean {
-        return !one().blockingExists()
-    }
-
-    suspend fun isEmptyInternal(): Boolean {
-        return !one().blockingExists()
+    override suspend fun suspendIsEmpty(): Boolean {
+        return !one().suspendExists()
     }
 
     val whereClause: String

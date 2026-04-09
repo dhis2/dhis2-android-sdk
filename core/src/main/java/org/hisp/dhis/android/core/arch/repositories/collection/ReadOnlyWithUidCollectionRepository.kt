@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.arch.repositories.collection
 
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
@@ -41,17 +43,32 @@ interface ReadOnlyWithUidCollectionRepository<M : ObjectWithUidInterface> : Read
     fun uid(uid: String?): ReadOnlyObjectRepository<M>
 
     /**
+     * Get the list of uids of objects in scope in a suspend way.
+     *
+     * @return The list of uids.
+     */
+    suspend fun suspendGetUids(): List<String>
+
+    /**
      * Get the list of uids of objects in scope in an asynchronous way, returning a `Single<List<String>>`.
      *
      * @return A `Single` object with the list of uids.
      */
-    fun getUids(): Single<List<String>>
+    @Deprecated(message = "Use rxGetUids instead", ReplaceWith("rxGetUids()"))
+    fun getUids(): Single<List<String>> = rxGetUids()
+
+    /**
+     * Get the list of uids of objects in scope in an asynchronous way, returning a `Single<List<String>>`.
+     *
+     * @return A `Single` object with the list of uids.
+     */
+    fun rxGetUids(): Single<List<String>> = rxSingle { suspendGetUids() }
 
     /**
      * Get the list of uids of objects in scope in a synchronous way. Important: this is a blocking method and it should
-     * not be executed in the main thread. Consider the asynchronous version [.getUids].
+     * not be executed in the main thread. Consider the asynchronous version [.rxGetUids].
      *
      * @return List of uids
      */
-    fun blockingGetUids(): List<String>
+    fun blockingGetUids(): List<String> = runBlocking { suspendGetUids() }
 }

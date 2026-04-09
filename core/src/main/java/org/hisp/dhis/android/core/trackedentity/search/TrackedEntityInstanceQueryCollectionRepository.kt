@@ -211,24 +211,7 @@ class TrackedEntityInstanceQueryCollectionRepository internal constructor(
         return byTrackedEntities().eq(uid).objectRepository { o -> o.find { uid == it.uid() } }
     }
 
-    @Deprecated("Use rxGetUids instead", replaceWith = ReplaceWith("rxGetUids()"))
-    override fun getUids(): Single<List<String>> {
-        return rxSingle { getUidsInternal() }
-    }
-
-    override fun rxGetUids(): Single<List<String>> {
-        return rxSingle { getUidsInternal() }
-    }
-
     override suspend fun suspendGetUids(): List<String> {
-        return getUidsInternal()
-    }
-
-    override fun blockingGetUids(): List<String> {
-        return runBlocking { getUidsInternal() }
-    }
-
-    internal suspend fun getUidsInternal(): List<String> {
         return if (scope.mode() == RepositoryMode.OFFLINE_ONLY || scope.mode() == RepositoryMode.OFFLINE_FIRST) {
             getDataFetcher().queryAllOfflineUids()
         } else {

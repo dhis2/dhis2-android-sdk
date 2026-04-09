@@ -280,7 +280,7 @@ class DataSetInstanceServiceShould {
         val eqRepo = mock<CategoryOptionComboCollectionRepository>()
         whenever(categoryOptionComboCollectionRepository.byCategoryComboUid()).thenReturn(byCatComboUidConnector)
         whenever(byCatComboUidConnector.eq("ccUid")).thenReturn(eqRepo)
-        whenever(eqRepo.getUidsInternal()).thenReturn(listOf("coc1", "coc2"))
+        whenever(eqRepo.suspendGetUids()).thenReturn(listOf("coc1", "coc2"))
 
         val dataValue = mock<DataValue> {
             on { dataElement() } doReturn "de1"

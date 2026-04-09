@@ -51,10 +51,10 @@ internal class AggregatedDataCallBundleFactory(
         val rootOrganisationUnitUids = organisationUnitRepository
             .byRootOrganisationUnit(true)
             .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-            .getUidsInternal()
+            .suspendGetUids()
         val allOrganisationUnitUids = organisationUnitRepository
             .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
-            .getUidsInternal()
+            .suspendGetUids()
         return getBundlesInternal(
             getDataSets(),
             dataSetSettingsObjectRepository.getInternal(),

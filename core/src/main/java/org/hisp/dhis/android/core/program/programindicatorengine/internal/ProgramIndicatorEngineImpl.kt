@@ -158,7 +158,7 @@ internal class ProgramIndicatorEngineImpl(
     }
 
     private suspend fun getEnrollmentEvents(enrollment: Enrollment): Map<String, List<Event>> {
-        val programStageUids = programRepository.byProgramUid().eq(enrollment.program()).getUidsInternal()
+        val programStageUids = programRepository.byProgramUid().eq(enrollment.program()).suspendGetUids()
 
         return programStageUids.associateWith { programStageUid ->
             val programStageEvents = eventRepository

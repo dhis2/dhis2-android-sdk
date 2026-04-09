@@ -27,9 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection.internal
 
-import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
@@ -63,26 +60,13 @@ internal class ReadOnlyWithUidAndTransformerCollectionRepositoryImpl<
 ),
     ReadOnlyWithUidCollectionRepository<T>
     where M : CoreObject, M : ObjectWithUidInterface, T : ObjectWithUidInterface {
-    /**
-     * Get the list of uids of objects in scope in an asynchronous way, returning a `Single<List<String>>`.
-     *
-     * @return A `Single` object with the list of uids.
-     */
-    override fun getUids(): Single<List<String>> {
-        return rxSingle { getUidsInternal() }
-    }
 
     /**
-     * Get the list of uids of objects in scope in a synchronous way. Important: this is a blocking method and it should
-     * not be executed in the main thread. Consider the asynchronous version [.getUids].
+     * Get the list of uids of objects in scope in a suspend way.
      *
-     * @return List of uids
+     * @return The list of uids.
      */
-    override fun blockingGetUids(): List<String> {
-        return runBlocking { getUidsInternal() }
-    }
-
-    suspend fun getUidsInternal(): List<String> {
+    override suspend fun suspendGetUids(): List<String> {
         return store.selectUidsWhere(
             whereClause,
             OrderByClauseBuilder.orderByFromItems(

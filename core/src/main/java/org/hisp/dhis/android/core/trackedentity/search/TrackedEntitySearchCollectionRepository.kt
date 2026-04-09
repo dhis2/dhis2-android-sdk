@@ -181,23 +181,6 @@ class TrackedEntitySearchCollectionRepository internal constructor(
     }
 
     override suspend fun suspendGetUids(): List<String> {
-        return getUidsInternal()
-    }
-
-    @Deprecated("Use rxGetUids instead", replaceWith = ReplaceWith("rxGetUids()"))
-    override fun getUids(): Single<List<String>> {
-        return rxSingle { suspendGetUids() }
-    }
-
-    override fun rxGetUids(): Single<List<String>> {
-        return rxSingle { suspendGetUids() }
-    }
-
-    override fun blockingGetUids(): List<String> {
-        return runBlocking { getUidsInternal() }
-    }
-
-    private suspend fun getUidsInternal(): List<String> {
         return if (scope.mode() == RepositoryMode.OFFLINE_ONLY || scope.mode() == RepositoryMode.OFFLINE_FIRST) {
             getDataFetcher().queryAllOfflineUids()
         } else {

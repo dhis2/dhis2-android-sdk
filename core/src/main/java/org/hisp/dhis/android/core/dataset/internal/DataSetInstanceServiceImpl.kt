@@ -335,7 +335,7 @@ internal class DataSetInstanceServiceImpl(
 
             categoryComboUid?.let { catComboUid ->
                 val categoryOptionCombos = getCachedCategoryComboUid(catComboUid, stringListCache) { uid ->
-                    categoryOptionComboCollectionRepository.byCategoryComboUid().eq(uid).getUidsInternal()
+                    categoryOptionComboCollectionRepository.byCategoryComboUid().eq(uid).suspendGetUids()
                 }
 
                 val dataValues = dataValueCollectionRepository

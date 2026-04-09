@@ -82,7 +82,7 @@ class LatestAppVersionCallShould {
 
     private fun mockUserGroups(userGroupUids: List<String>) = runTest {
         whenever(userModule.userGroups()).thenReturn(userGroupCollectionRepository)
-        whenever(userGroupCollectionRepository.getUidsInternal()).thenReturn(userGroupUids)
+        whenever(userGroupCollectionRepository.suspendGetUids()).thenReturn(userGroupUids)
     }
 
     private suspend fun mockVersions(versions: List<ApkDistributionVersion>) {

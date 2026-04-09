@@ -49,25 +49,11 @@ abstract class BaseReadOnlyWithUidCollectionRepositoryImpl<M, R : ReadOnlyCollec
     ReadOnlyWithUidCollectionRepository<M> where M : CoreObject, M : ObjectWithUidInterface {
 
     /**
-     * Get the list of uids of objects in scope in an asynchronous way, returning a `Single<List<String>>`.
+     * Get the list of uids of objects in scope in a suspend way.
      *
-     * @return A `Single` object with the list of uids.
+     * @return The list of uids.
      */
-    override fun getUids(): Single<List<String>> {
-        return rxSingle { getUidsInternal() }
-    }
-
-    /**
-     * Get the list of uids of objects in scope in a synchronous way. Important: this is a blocking method and it should
-     * not be executed in the main thread. Consider the asynchronous version [.getUids].
-     *
-     * @return List of uids
-     */
-    override fun blockingGetUids(): List<String> {
-        return runBlocking { getUidsInternal() }
-    }
-
-    internal suspend fun getUidsInternal(): List<String> {
+    override suspend fun suspendGetUids(): List<String> {
         return store.selectUidsWhere(
             whereClause,
             OrderByClauseBuilder.orderByFromItems(

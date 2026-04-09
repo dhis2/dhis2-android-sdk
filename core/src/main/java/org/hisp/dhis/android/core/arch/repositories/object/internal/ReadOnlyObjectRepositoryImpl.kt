@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 
-abstract class ReadOnlyObjectRepositoryImpl<M, R : ReadOnlyObjectRepository<M>> internal constructor(
+abstract class ReadOnlyObjectRepositoryImpl<M: Any, R : ReadOnlyObjectRepository<M>> internal constructor(
     private val childrenAppenderGetter: ChildrenAppenderGetter<M>,
     protected val scope: RepositoryScope,
     repositoryFactory: ObjectRepositoryFactory<R>,

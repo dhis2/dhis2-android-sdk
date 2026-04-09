@@ -32,7 +32,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxCompletable
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 
-interface ReadOnlyWithDownloadObjectRepository<M> : ReadOnlyObjectRepository<M> {
+interface ReadOnlyWithDownloadObjectRepository<M: Any> : ReadOnlyObjectRepository<M> {
     /**
      * Downloads the resource in scope in a suspend way. The coroutine will complete when the
      * download and processing is finished.

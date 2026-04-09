@@ -32,7 +32,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 
-interface ReadOnlyObjectRepository<M> : BaseRepository {
+ interface ReadOnlyObjectRepository<M: Any> : BaseRepository {
     /**
      * Returns the object in a suspend way.
      * @return the object
@@ -44,13 +44,13 @@ interface ReadOnlyObjectRepository<M> : BaseRepository {
      * @return A `Single` object with the object
      */
     @Deprecated(message = "Use rxGet instead", ReplaceWith("rxGet()"))
-    fun get(): Single<M?> = rxGet()
+    fun get(): Single<M> = rxGet()
 
     /**
      * Returns the object in an asynchronous way, returning a `Single<M>`.
      * @return A `Single` object with the object
      */
-    fun rxGet(): Single<M?> = Single.fromCallable { blockingGet() }
+    fun rxGet(): Single<M> = rxSingle { suspendGet() ?: throw NullPointerException("The callable returned a null value") }
 
     /**
      * Returns the object in a synchronous way. Important: this is a blocking method and it should not be

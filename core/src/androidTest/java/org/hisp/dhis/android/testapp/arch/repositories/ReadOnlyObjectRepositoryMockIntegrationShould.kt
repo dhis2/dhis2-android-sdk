@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,21 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 
-import org.hisp.dhis.android.core.arch.call.internal.DownloadProvider
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
+package org.hisp.dhis.android.testapp.arch.repositories
 
-abstract class ReadOnlyAnyObjectWithDownloadRepositoryImpl<M: Any> internal constructor(
-    private val downloadProvider: DownloadProvider,
-) : ReadOnlyWithDownloadObjectRepository<M> {
-    override suspend fun suspendGet(): M? = getInternal()
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Test
 
-    override suspend fun suspendExists(): Boolean = getInternal() != null
+class ReadOnlyObjectRepositoryMockIntegrationShould: BaseMockIntegrationTestFullDispatcher() {
 
-    override suspend fun suspendDownload() {
-        downloadProvider.download(false)
+    @Test
+    fun should_return_null_if_object_does_not_exist() {
+        val result = d2.dataElementModule().dataElements()
+            .uid("nonExistent")
+            .rxGet()
+            .test()
+
+        val dataElement = result.await()
+
+        assertThat(dataElement.errors().size).isEqualTo(1)
+        assertThat(dataElement.errors().first()).isInstanceOf(NullPointerException::class.java)
+        assertThat(dataElement.errors().first().toString()).isEqualTo("java.lang.NullPointerException: The callable returned a null value")
     }
-
-    internal abstract suspend fun getInternal(): M?
 }

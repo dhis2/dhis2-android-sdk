@@ -101,16 +101,7 @@ class FileResourceCollectionRepository internal constructor(
         upload().blockingSubscribe()
     }
 
-    override fun add(o: File): Single<String> {
-        return rxSingle { addInternal(o) }
-    }
-
-    @Throws(D2Error::class)
-    override fun blockingAdd(o: File): String {
-        return runBlocking { addInternal(o) }
-    }
-
-    override suspend fun addInternal(o: File): String = withContext(Dispatchers.IO) {
+    override suspend fun suspendAdd(o: File): String = withContext(Dispatchers.IO) {
         try {
             val generatedUid = UidGeneratorImpl().generate()
             val dstFile = saveFile(o, generatedUid, context)

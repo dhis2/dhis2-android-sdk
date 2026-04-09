@@ -88,18 +88,9 @@ class RelationshipCollectionRepository internal constructor(
     },
 ),
     ReadWriteWithUidCollectionRepository<Relationship, Relationship> {
-    override fun add(o: Relationship): Single<String> {
-        return rxSingle { addInternal(o) }
-    }
-
-    @Throws(D2Error::class)
-    override fun blockingAdd(o: Relationship): String {
-        return runBlocking { addInternal(o) }
-    }
-
     @Suppress("ThrowsCount")
     @Throws(D2Error::class)
-    private suspend fun addInternal(o: Relationship): String {
+    override suspend fun suspendAdd(o: Relationship): String {
         val relationshipWithUid: Relationship
         if (relationshipHandler.doesRelationshipExist(o)) {
             throw D2Error

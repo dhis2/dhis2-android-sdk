@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.icon.internal.CustomIconStore
 import org.koin.core.annotation.Singleton
 
 @Singleton
-@Suppress("TooManyFunctions")
 class IconCollectionRepository internal constructor(
     private val customIconStore: CustomIconStore,
     private val fileResourceStore: FileResourceStore,

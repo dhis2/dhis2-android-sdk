@@ -51,7 +51,6 @@ import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.persistence.common.querybuilders.OrderByClauseBuilder
 import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 
-@Suppress("TooManyFunctions")
 open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollectionRepository<M>> internal constructor(
     private val store: ReadableStore<M>,
     internal val childrenAppenders: ChildrenAppenderGetter<M>,

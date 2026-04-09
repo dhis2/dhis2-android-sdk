@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryStore
 
-@Suppress("TooManyFunctions")
 class DataStoreObjectRepository internal constructor(
     store: DataStoreEntryStore,
     childrenAppenders: ChildrenAppenderGetter<DataStoreEntry>,

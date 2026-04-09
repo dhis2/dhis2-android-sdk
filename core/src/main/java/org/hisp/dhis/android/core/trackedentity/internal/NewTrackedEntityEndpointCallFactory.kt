@@ -43,7 +43,6 @@ import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterNetworkHandler
 import org.koin.core.annotation.Singleton
 
 @Singleton
-@Suppress("TooManyFunctions")
 internal class NewTrackedEntityEndpointCallFactory(
     private val networkHandler: TrackerExporterNetworkHandler,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,

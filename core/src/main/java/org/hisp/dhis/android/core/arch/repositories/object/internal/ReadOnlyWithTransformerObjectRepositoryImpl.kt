@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder
 import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 
-@Suppress("TooManyFunctions")
 internal class ReadOnlyWithTransformerObjectRepositoryImpl<M, T>
 internal constructor(
     private val store: ReadableStore<M>,

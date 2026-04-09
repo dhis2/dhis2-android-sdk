@@ -29,10 +29,7 @@ package org.hisp.dhis.android.core.fileresource
 
 import android.content.Context
 import io.reactivex.Observable
-import io.reactivex.Single
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.rx2.rxSingle
 import kotlinx.coroutines.withContext
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl

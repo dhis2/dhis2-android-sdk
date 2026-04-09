@@ -27,9 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection.internal
 
-import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer

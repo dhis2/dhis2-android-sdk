@@ -32,8 +32,8 @@ import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownl
 
 abstract class ReadOnlyAnyObjectWithDownloadRepositoryImpl<M> internal constructor(
     private val downloadProvider: DownloadProvider,
-): ReadOnlyWithDownloadObjectRepository<M> {
-    override suspend fun suspendGet(): M? =  getInternal()
+) : ReadOnlyWithDownloadObjectRepository<M> {
+    override suspend fun suspendGet(): M? = getInternal()
 
     override suspend fun suspendExists(): Boolean = getInternal() != null
 
@@ -42,5 +42,4 @@ abstract class ReadOnlyAnyObjectWithDownloadRepositoryImpl<M> internal construct
     }
 
     internal abstract suspend fun getInternal(): M?
-
 }

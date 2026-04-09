@@ -28,9 +28,6 @@
 
 package org.hisp.dhis.android.core.datastore
 
-import io.reactivex.Completable
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.rx2.rxCompletable
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteValueObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory

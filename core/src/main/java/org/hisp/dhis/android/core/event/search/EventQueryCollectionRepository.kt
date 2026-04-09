@@ -32,10 +32,7 @@ import androidx.paging.DataSource
 import androidx.paging.PagedList
 import androidx.paging.Pager
 import androidx.paging.PagingData
-import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EventDataFilterConnector

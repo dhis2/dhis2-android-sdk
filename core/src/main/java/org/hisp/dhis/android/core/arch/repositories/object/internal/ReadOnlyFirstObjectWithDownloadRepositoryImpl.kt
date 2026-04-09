@@ -49,24 +49,10 @@ internal constructor(
     ReadOnlyWithDownloadObjectRepository<M> {
 
     /**
-     * Downloads the resource in scope in an asynchronous way. As soon as it's downloaded and processed, the
-     * `Completable` is completed.
-     * @return a `Completable` that completes when the download and processing is finished
+     * Downloads the resource in scope in a suspend way. The coroutine will complete when the
+     * download and processing is finished.
      */
-    override fun download(): Completable {
-        return rxCompletable { downloadInternal() }
-    }
-
-    /**
-     * Downloads the resource in scope in a synchronous way. The method will finish
-     * as soon as the whole download and processing is finished. Important: this is a blocking method and it should
-     * not be executed in the main thread. Consider the asynchronous version [.download].
-     */
-    override fun blockingDownload() {
-        runBlocking { downloadInternal() }
-    }
-
-    private suspend fun downloadInternal() {
+    override suspend fun suspendDownload() {
         downloadProvider.download(true)
     }
 }

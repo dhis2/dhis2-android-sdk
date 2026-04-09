@@ -27,47 +27,20 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 
-import io.reactivex.Completable
-import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.rx2.rxCompletable
-import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.call.internal.DownloadProvider
+import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 
 abstract class ReadOnlyAnyObjectWithDownloadRepositoryImpl<M> internal constructor(
     private val downloadProvider: DownloadProvider,
-) {
-    fun get(): Single<M?> {
-        return Single.fromCallable { blockingGet() }
-    }
+): ReadOnlyWithDownloadObjectRepository<M> {
+    override suspend fun suspendGet(): M? =  getInternal()
 
-    fun blockingGet(): M? {
-        return runBlocking { getInternal() }
+    override suspend fun suspendExists(): Boolean = getInternal() != null
+
+    override suspend fun suspendDownload() {
+        downloadProvider.download(false)
     }
 
     internal abstract suspend fun getInternal(): M?
 
-    fun exists(): Single<Boolean> {
-        return rxSingle { existsInternal() }
-    }
-
-    fun blockingExists(): Boolean {
-        return runBlocking { existsInternal() }
-    }
-
-    private suspend fun existsInternal(): Boolean {
-        return getInternal() != null
-    }
-
-    fun download(): Completable {
-        return rxCompletable { downloadInternal() }
-    }
-
-    fun blockingDownload() {
-        runBlocking { downloadInternal() }
-    }
-
-    private suspend fun downloadInternal() {
-        downloadProvider.download(false)
-    }
 }

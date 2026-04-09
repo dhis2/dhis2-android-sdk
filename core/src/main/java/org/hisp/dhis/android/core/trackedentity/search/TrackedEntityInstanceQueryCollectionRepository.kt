@@ -223,37 +223,14 @@ class TrackedEntityInstanceQueryCollectionRepository internal constructor(
         transformer: Transformer<List<TrackedEntityInstance>, TrackedEntityInstance?>,
     ): ReadOnlyObjectRepository<TrackedEntityInstance> {
         return object : ReadOnlyObjectRepository<TrackedEntityInstance> {
-
             override suspend fun suspendGet(): TrackedEntityInstance? {
                 val list = this@TrackedEntityInstanceQueryCollectionRepository.suspendGet()
                 return transformer.transform(list)
             }
 
-            @Deprecated("Use rxGet instead", replaceWith = ReplaceWith("rxGet()"))
-            override fun get(): Single<TrackedEntityInstance?> {
-                return Single.fromCallable { this.blockingGet() }
-            }
-
-            override fun rxGet(): Single<TrackedEntityInstance?> {
-                return Single.fromCallable { this.blockingGet() }
-            }
-
-            override fun blockingGet(): TrackedEntityInstance? = runBlocking { suspendGet() }
-
-            @Deprecated("Use rxExists instead", replaceWith = ReplaceWith("rxExists()"))
-            override fun exists(): Single<Boolean> {
-                return Single.fromCallable { blockingExists() }
-            }
-
-            override fun rxExists(): Single<Boolean> {
-                return Single.fromCallable { blockingExists() }
-            }
-
             override suspend fun suspendExists(): Boolean {
                 return suspendGet() != null
             }
-
-            override fun blockingExists(): Boolean = runBlocking { suspendExists() }
         }
     }
 

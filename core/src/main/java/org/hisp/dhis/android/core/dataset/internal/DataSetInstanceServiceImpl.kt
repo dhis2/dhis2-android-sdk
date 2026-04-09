@@ -251,7 +251,7 @@ internal class DataSetInstanceServiceImpl(
                     categoryOptionCombo.uid(),
                     attributeOptionComboUid,
                     dataSetUid,
-                ).existsInternal()
+                ).suspendExists()
             }
         } ?: false
     }

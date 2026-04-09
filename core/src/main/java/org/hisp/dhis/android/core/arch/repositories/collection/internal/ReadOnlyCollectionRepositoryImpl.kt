@@ -144,7 +144,7 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
      * @return If selection is empty
      */
     override suspend fun suspendIsEmpty(): Boolean {
-        return !one().existsInternal()
+        return !one().suspendExists()
     }
 
     protected val whereClause: String

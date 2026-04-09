@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity
 
 import io.reactivex.Completable
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteValueObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
@@ -62,13 +63,27 @@ class TrackedEntityAttributeValueObjectRepository internal constructor(
     },
 ),
     ReadWriteValueObjectRepository<TrackedEntityAttributeValue> {
+
+    @Deprecated("Use rxSet instead", replaceWith = ReplaceWith("rxSet(value)"))
     override fun set(value: String?): Completable {
         return Completable.fromAction { blockingSet(value) }
     }
 
+    override fun rxSet(value: String?): Completable {
+        return Completable.fromAction { blockingSet(value) }
+    }
+
+    override suspend fun suspendSet(value: String?) {
+        updateIfChangedInternal(value, { it?.value() }) {
+                trackedEntityAttributeValue: TrackedEntityAttributeValue?, newValue ->
+            setBuilder(trackedEntityAttributeValue).value(newValue).build()
+        }
+    }
+
     @Throws(D2Error::class)
     override fun blockingSet(value: String?) {
-        updateIfChanged(value, { it?.value() }) { trackedEntityAttributeValue: TrackedEntityAttributeValue?, newValue ->
+        updateIfChanged(value, { it?.value() }) {
+                trackedEntityAttributeValue: TrackedEntityAttributeValue?, newValue ->
             setBuilder(trackedEntityAttributeValue).value(newValue).build()
         }
     }
@@ -82,9 +97,13 @@ class TrackedEntityAttributeValueObjectRepository internal constructor(
         }
     }
 
-    override fun blockingExists(): Boolean {
-        val value = blockingGetWithoutChildren()
+    override suspend fun suspendExists(): Boolean {
+        val value = getWithoutChildrenInternal()
         return if (value == null) false else value.deleted() == null || !value.deleted()
+    }
+
+    override fun blockingExists(): Boolean {
+        return runBlocking { suspendExists() }
     }
 
     private fun setBuilder(value: TrackedEntityAttributeValue?): TrackedEntityAttributeValue.Builder {

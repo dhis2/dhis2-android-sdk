@@ -239,7 +239,7 @@ class DataSetInstanceServiceShould {
         val dataValueQuery = mock<DataValueObjectRepository>(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
         whenever(
             runBlocking {
-                dataValueQuery.existsInternal()
+                dataValueQuery.suspendExists()
             },
         ) doReturn false
         whenever(

@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity
 
 import io.reactivex.Completable
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteValueObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
@@ -62,13 +63,28 @@ class TrackedEntityDataValueObjectRepository internal constructor(
     },
 ),
     ReadWriteValueObjectRepository<TrackedEntityDataValue> {
+
+    @Deprecated("Use rxSet instead", replaceWith = ReplaceWith("rxSet(value)"))
     override fun set(value: String?): Completable {
         return Completable.fromAction { blockingSet(value) }
     }
 
+    override fun rxSet(value: String?): Completable {
+        return Completable.fromAction { blockingSet(value) }
+    }
+
+    @Throws(D2Error::class)
+    override suspend fun suspendSet(value: String?) {
+        updateIfChangedInternal(value, { it?.value() }) {
+                trackedEntityDataValue: TrackedEntityDataValue?, newValue ->
+            setBuilder(trackedEntityDataValue).value(newValue).build()
+        }
+    }
+
     @Throws(D2Error::class)
     override fun blockingSet(value: String?) {
-        updateIfChanged(value, { it?.value() }) { trackedEntityDataValue: TrackedEntityDataValue?, newValue ->
+        updateIfChanged(value, { it?.value() }) {
+                trackedEntityDataValue: TrackedEntityDataValue?, newValue ->
             setBuilder(trackedEntityDataValue).value(newValue).build()
         }
     }
@@ -82,8 +98,8 @@ class TrackedEntityDataValueObjectRepository internal constructor(
         }
     }
 
-    override fun blockingExists(): Boolean {
-        val value = blockingGetWithoutChildren()
+    override suspend fun suspendExists(): Boolean {
+        val value = getWithoutChildrenInternal()
         return if (value == null) false else value.deleted() == null || !value.deleted()
     }
 

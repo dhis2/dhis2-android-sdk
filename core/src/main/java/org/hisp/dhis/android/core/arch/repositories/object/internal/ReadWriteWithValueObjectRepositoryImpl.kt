@@ -59,8 +59,31 @@ internal constructor(
      * The `Completable` fails if the object doesn't exist.
      * @return the `Completable` which notifies the completion
      */
+    @Deprecated("Use rxDelete instead", replaceWith = ReplaceWith("rxDelete()"))
     override fun delete(): Completable {
         return rxCompletable { deleteInternal() }
+    }
+
+    /**
+     * Removes the object in scope in an asynchronous way. It removes the value in the database and propagates
+     * the changes to modify the [DataObject.syncState] of the parent, so it's updated in the server in
+     * the next upload.
+     * It returns a `Completable` that completes as soon as the object is deleted in the database.
+     * The `Completable` fails if the object doesn't exist.
+     * @return the `Completable` which notifies the completion
+     */
+    override fun rxDelete(): Completable {
+        return rxCompletable { deleteInternal() }
+    }
+
+    /**
+     * Removes the object in scope in a suspend way. See the implementation JavaDoc for details on how deletion
+     * is performed. It throws an exception if the object doesn't exist.
+     * @throws D2Error if any errors occur, including when the object doesn't exist.
+     */
+    @Throws(D2Error::class)
+    override suspend fun suspendDelete() {
+        deleteInternal()
     }
 
     /**
@@ -95,6 +118,27 @@ internal constructor(
      */
     override fun deleteIfExist(): Completable {
         return rxCompletable { deleteIfExistInternal() }
+    }
+
+    /**
+     * Removes the object in scope in an asynchronous way. It removes the value in the database and propagates
+     * the changes to modify the [DataObject.syncState] of the parent, so it's updated in the server in
+     * the next upload.
+     * It returns a `Completable` that completes as soon as the object is deleted in the database.
+     * Unlike [.delete], it doesn't throw an exception if the object doesn't exist.
+     * It returns a `Completable` that completes as soon as the object is deleted in the database.
+     * @return the `Completable` which notifies the completion
+     */
+    override fun rxDeleteIfExist(): Completable {
+        return rxCompletable { deleteIfExistInternal() }
+    }
+
+    /**
+     * Removes the object in scope in a suspend way. See the implementation JavaDoc for details on how deletion
+     * is performed. Unlike [.suspendDelete], it doesn't throw an exception if the object doesn't exist.
+     */
+    override suspend fun suspendDeleteIfExist() {
+        deleteIfExistInternal()
     }
 
     /**

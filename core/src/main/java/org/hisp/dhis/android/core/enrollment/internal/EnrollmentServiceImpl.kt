@@ -144,7 +144,7 @@ internal class EnrollmentServiceImpl(
         return organisationUnitRepository
             .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
             .uid(tei?.organisationUnit())
-            .existsInternal()
+            .suspendExists()
     }
 
     private suspend fun hasProgramOwnership(trackedEntityInstanceUid: String, programUid: String): Boolean {
@@ -164,7 +164,7 @@ internal class EnrollmentServiceImpl(
         return organisationUnitRepository
             .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
             .uid(ownerOrgUnit)
-            .existsInternal()
+            .suspendExists()
     }
 
     override fun blockingGetAllowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Boolean {

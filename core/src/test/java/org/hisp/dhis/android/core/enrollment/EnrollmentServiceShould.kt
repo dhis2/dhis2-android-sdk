@@ -104,7 +104,7 @@ class EnrollmentServiceShould {
                 organisationUnitRepository
                     .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
                     .uid(organisationUnitId)
-                    .existsInternal()
+                    .suspendExists()
             },
         ) doReturn false
 
@@ -173,7 +173,7 @@ class EnrollmentServiceShould {
                 organisationUnitRepository
                     .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
                     .uid(ownerOrganisationUnitId)
-                    .existsInternal()
+                    .suspendExists()
             },
         ) doReturn true
 
@@ -193,7 +193,7 @@ class EnrollmentServiceShould {
                     organisationUnitRepository
                         .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
                         .uid(ownerOrganisationUnitId)
-                        .existsInternal()
+                        .suspendExists()
                 },
             ) doReturn false
             whenever(programTempOwnerStore.selectWhere(any())) doReturn listOf(programTempOwner)
@@ -215,7 +215,7 @@ class EnrollmentServiceShould {
                     organisationUnitRepository
                         .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
                         .uid(ownerOrganisationUnitId)
-                        .existsInternal()
+                        .suspendExists()
                 },
             ) doReturn false
             whenever(programTempOwnerStore.selectWhere(any())) doReturn listOf(programTempOwner)
@@ -299,7 +299,7 @@ class EnrollmentServiceShould {
                 organisationUnitRepository
                     .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
                     .uid(ownerOrganisationUnitId)
-                    .existsInternal()
+                    .suspendExists()
             },
         ) doReturn true
 
@@ -318,7 +318,7 @@ class EnrollmentServiceShould {
                 organisationUnitRepository
                     .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
                     .uid(ownerOrganisationUnitId)
-                    .existsInternal()
+                    .suspendExists()
             },
         ) doReturn false
 

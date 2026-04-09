@@ -273,21 +273,8 @@ class EventQueryCollectionRepository internal constructor(
         return getDataFetcher().uid(uid)
     }
 
-    @Deprecated("Use rxGetUids instead", replaceWith = ReplaceWith("rxGetUids()"))
-    override fun getUids(): Single<List<String>> {
-        return rxSingle { getDataFetcher().getUids() }
-    }
-
-    override fun rxGetUids(): Single<List<String>> {
-        return rxSingle { getDataFetcher().getUids() }
-    }
-
     override suspend fun suspendGetUids(): List<String> {
         return getDataFetcher().getUids()
-    }
-
-    override fun blockingGetUids(): List<String> {
-        return runBlocking { getDataFetcher().getUids() }
     }
 
     override suspend fun suspendGet(): List<Event> {

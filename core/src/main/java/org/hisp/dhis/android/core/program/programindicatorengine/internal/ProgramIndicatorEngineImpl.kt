@@ -168,7 +168,7 @@ internal class ProgramIndicatorEngineImpl(
                 .orderByEventDate(RepositoryScope.OrderByDirection.ASC)
                 .orderByLastUpdated(RepositoryScope.OrderByDirection.ASC)
                 .withTrackedEntityDataValues()
-                .getInternal()
+                .suspendGet()
 
             programStageEvents
         }

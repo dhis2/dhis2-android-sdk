@@ -53,7 +53,7 @@ class PingImpl internal constructor(
 
     @Throws(D2Error::class)
     override fun blockingGet(): String {
-        return get().blockingGet()
+        return rxGet().blockingGet()
     }
 
     @Suppress("TooGenericExceptionCaught")

@@ -54,7 +54,7 @@ internal class EventQueryDataFetcher(
         return if (isOnline()) {
             trackerCallFatory.getEventCall().getQueryCall(getOnlineQuery()).items
         } else {
-            getOfflineRepositoryInternal().getInternal()
+            getOfflineRepositoryInternal().suspendGet()
         }
     }
 
@@ -70,7 +70,7 @@ internal class EventQueryDataFetcher(
         return if (isOnline()) {
             getUids().size
         } else {
-            getOfflineRepositoryInternal().countInternal()
+            getOfflineRepositoryInternal().suspendCount()
         }
     }
 
@@ -78,7 +78,7 @@ internal class EventQueryDataFetcher(
         return if (isOnline()) {
             count() > 0
         } else {
-            getOfflineRepositoryInternal().isEmptyProtected()
+            getOfflineRepositoryInternal().isEmptyInternal()
         }
     }
 

@@ -273,22 +273,41 @@ class EventQueryCollectionRepository internal constructor(
         return getDataFetcher().uid(uid)
     }
 
+    @Deprecated("Use rxGetUids instead", replaceWith = ReplaceWith("rxGetUids()"))
     override fun getUids(): Single<List<String>> {
         return rxSingle { getDataFetcher().getUids() }
+    }
+
+    override fun rxGetUids(): Single<List<String>> {
+        return rxSingle { getDataFetcher().getUids() }
+    }
+
+    override suspend fun suspendGetUids(): List<String> {
+        return getDataFetcher().getUids()
     }
 
     override fun blockingGetUids(): List<String> {
         return runBlocking { getDataFetcher().getUids() }
     }
 
+    @Deprecated("Use rxGet instead", replaceWith = ReplaceWith("rxGet()"))
     override fun get(): Single<List<Event>> {
         return rxSingle { getDataFetcher().get() }
+    }
+
+    override fun rxGet(): Single<List<Event>> {
+        return rxSingle { getDataFetcher().get() }
+    }
+
+    override suspend fun suspendGet(): List<Event> {
+        return getDataFetcher().get()
     }
 
     override fun blockingGet(): List<Event> {
         return runBlocking { getDataFetcher().get() }
     }
 
+    @Deprecated("Use {@link #getPagingData()} instead}", replaceWith = ReplaceWith("getPagingData()"))
     override fun getPaged(pageSize: Int): LiveData<PagedList<Event>> {
         return getDataFetcher().getPaged(pageSize)
     }
@@ -304,16 +323,34 @@ class EventQueryCollectionRepository internal constructor(
     val dataSource: DataSource<Int, Event>
         get() = getDataFetcher().dataSource
 
+    @Deprecated("Use rxCount instead", replaceWith = ReplaceWith("rxCount()"))
     override fun count(): Single<Int> {
         return rxSingle { getDataFetcher().count() }
+    }
+
+    override fun rxCount(): Single<Int> {
+        return rxSingle { getDataFetcher().count() }
+    }
+
+    override suspend fun suspendCount(): Int {
+        return getDataFetcher().count()
     }
 
     override fun blockingCount(): Int {
         return runBlocking { getDataFetcher().count() }
     }
 
+    @Deprecated("Use rxIsEmpty instead", replaceWith = ReplaceWith("rxIsEmpty()"))
     override fun isEmpty(): Single<Boolean> {
         return rxSingle { getDataFetcher().isEmpty() }
+    }
+
+    override fun rxIsEmpty(): Single<Boolean> {
+        return rxSingle { getDataFetcher().isEmpty() }
+    }
+
+    override suspend fun suspendIsEmpty(): Boolean {
+        return getDataFetcher().isEmpty()
     }
 
     override fun blockingIsEmpty(): Boolean {

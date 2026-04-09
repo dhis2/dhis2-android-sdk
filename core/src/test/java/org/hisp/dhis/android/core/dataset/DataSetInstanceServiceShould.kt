@@ -115,7 +115,7 @@ class DataSetInstanceServiceShould {
     @Before
     fun setUp() = runTest {
         whenever(dataSet.uid()) doReturn dataSetUid
-        whenever(categoryOptionRepository.byCategoryOptionComboUid(any()).getInternal()) doReturn categories
+        whenever(categoryOptionRepository.byCategoryOptionComboUid(any()).suspendGet()) doReturn categories
         whenever(dataSetCollectionRepository.uid(any()).getInternal()) doReturn dataSet
         whenever(periodHelper.suspendGetPeriodForPeriodId(firstPeriodId)) doReturn firstPeriod
         whenever(firstPeriod.startDate()) doReturn firstJanuary
@@ -317,7 +317,7 @@ class DataSetInstanceServiceShould {
         whenever(repoAfterDE.byCategoryOptionComboUid()).thenReturn(cocConnector)
         whenever(cocConnector.`in`(listOf("coc1", "coc2"))).thenReturn(finalRepo)
 
-        whenever(finalRepo.getInternal()).thenReturn(listOf(dataValue))
+        whenever(finalRepo.suspendGet()).thenReturn(listOf(dataValue))
 
         val result = dataSetInstanceService.suspendGetMissingMandatoryFieldsCombination(
             dataSetUid,

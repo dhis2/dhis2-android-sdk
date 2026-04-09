@@ -346,7 +346,7 @@ internal class DataSetInstanceServiceImpl(
                     .byDataElementUid().eq(dataSetElement.dataElement().uid())
                     .byCategoryOptionComboUid()
                     .`in`(categoryOptionCombos)
-                    .getInternal()
+                    .suspendGet()
 
                 dataValues.takeIf { it.isNotEmpty() && it.size != categoryOptionCombos.size }
                     ?.map { dataValue ->
@@ -456,6 +456,6 @@ internal class DataSetInstanceServiceImpl(
     private suspend fun suspendGetCategoryOptions(attributeOptionComboUid: String): List<CategoryOption> {
         return categoryOptionRepository
             .byCategoryOptionComboUid(attributeOptionComboUid)
-            .getInternal()
+            .suspendGet()
     }
 }

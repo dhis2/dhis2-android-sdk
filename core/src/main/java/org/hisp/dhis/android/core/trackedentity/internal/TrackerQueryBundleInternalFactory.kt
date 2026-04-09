@@ -79,7 +79,7 @@ internal class TrackerQueryBundleInternalFactory(
                 .byUid().`in`(it)
                 .withAttributeValueFilters()
                 .withDataFilters()
-                .getInternal()
+                .suspendGet()
         }
 
         val trackedEntityInstanceFiltersSettings = filters.takeIf { !it.isNullOrEmpty() }?.let {
@@ -87,7 +87,7 @@ internal class TrackerQueryBundleInternalFactory(
                 .byUid().`in`(it)
                 .withTrackedEntityInstanceEventFilters()
                 .withAttributeValueFilters()
-                .getInternal()
+                .suspendGet()
         }
 
         val finalWorkingLists = programStageWorkingLists.takeIf { it.isNotEmpty() }

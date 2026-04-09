@@ -185,14 +185,14 @@ internal class EnrollmentServiceImpl(
 
     override suspend fun suspendGetAllowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Boolean {
         val currentProgramStagesUids = eventCollectionRepository.byEnrollmentUid().eq(enrollmentUid)
-            .byDeleted().isFalse.getInternal()
+            .byDeleted().isFalse.suspendGet()
             .map { event: Event -> event.programStage() }
 
-        val enrollment = enrollmentRepository.uid(enrollmentUid).getInternal()
+        val enrollment = enrollmentRepository.uid(enrollmentUid).suspendGet()
         val programStages = programStagesCollectionRepository.byProgramUid().eq(
             enrollment?.program(),
         ).byAccessDataWrite().isTrue
-            .getInternal()
+            .suspendGet()
             .filter { programStage: ProgramStage ->
                 !currentProgramStagesUids.contains(programStage.uid()) ||
                     programStage.repeatable()!!

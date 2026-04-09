@@ -39,6 +39,7 @@ import androidx.paging.PagingSource
 import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper
@@ -132,6 +133,10 @@ class TrackedEntitySearchCollectionRepository internal constructor(
     val resultDataSource: DataSource<TrackedEntitySearchItem, Result<TrackedEntitySearchItem, D2Error>>
         get() = TrackedEntitySearchDataSourceResult(getDataFetcher())
 
+    override suspend fun suspendGet(): List<TrackedEntitySearchItem> {
+        return getInternal()
+    }
+
     override fun blockingGet(): List<TrackedEntitySearchItem> {
         return runBlocking { getInternal() }
     }
@@ -154,20 +159,43 @@ class TrackedEntitySearchCollectionRepository internal constructor(
         }
     }
 
+    @Deprecated("Use rxGet instead", replaceWith = ReplaceWith("rxGet()"))
     override fun get(): Single<List<TrackedEntitySearchItem>> {
-        return Single.fromCallable { blockingGet() }
+        return rxSingle { suspendGet() }
     }
 
+    override fun rxGet(): Single<List<TrackedEntitySearchItem>> {
+        return rxSingle { suspendGet() }
+    }
+
+    override suspend fun suspendCount(): Int {
+        return getInternal().size
+    }
+
+    @Deprecated("Use rxCount instead", replaceWith = ReplaceWith("rxCount()"))
     override fun count(): Single<Int> {
-        return Single.fromCallable { blockingCount() }
+        return rxSingle { suspendCount() }
+    }
+
+    override fun rxCount(): Single<Int> {
+        return rxSingle { suspendCount() }
     }
 
     override fun blockingCount(): Int {
         return blockingGet().size
     }
 
+    override suspend fun suspendIsEmpty(): Boolean {
+        return suspendCount() == 0
+    }
+
+    @Deprecated("Use rxIsEmpty instead", replaceWith = ReplaceWith("rxIsEmpty()"))
     override fun isEmpty(): Single<Boolean> {
-        return Single.fromCallable { blockingIsEmpty() }
+        return rxSingle { suspendIsEmpty() }
+    }
+
+    override fun rxIsEmpty(): Single<Boolean> {
+        return rxSingle { suspendIsEmpty() }
     }
 
     override fun blockingIsEmpty(): Boolean {
@@ -195,8 +223,17 @@ class TrackedEntitySearchCollectionRepository internal constructor(
         return byTrackedEntities().eq(uid).objectRepository { o -> o.find { uid == it.uid() } }
     }
 
+    override suspend fun suspendGetUids(): List<String> {
+        return getUidsInternal()
+    }
+
+    @Deprecated("Use rxGetUids instead", replaceWith = ReplaceWith("rxGetUids()"))
     override fun getUids(): Single<List<String>> {
-        return Single.fromCallable { blockingGetUids() }
+        return rxSingle { suspendGetUids() }
+    }
+
+    override fun rxGetUids(): Single<List<String>> {
+        return rxSingle { suspendGetUids() }
     }
 
     override fun blockingGetUids(): List<String> {
@@ -215,16 +252,32 @@ class TrackedEntitySearchCollectionRepository internal constructor(
         transformer: Transformer<List<TrackedEntitySearchItem>, TrackedEntitySearchItem?>,
     ): ReadOnlyObjectRepository<TrackedEntitySearchItem> {
         return object : ReadOnlyObjectRepository<TrackedEntitySearchItem> {
+            @Deprecated("Use rxGet instead", replaceWith = ReplaceWith("rxGet()"))
             override fun get(): Single<TrackedEntitySearchItem?> {
                 return Single.fromCallable { this.blockingGet() }
             }
 
-            override fun blockingGet(): TrackedEntitySearchItem? {
-                val list = this@TrackedEntitySearchCollectionRepository.blockingGet()
+            override fun rxGet(): Single<TrackedEntitySearchItem?> {
+                return Single.fromCallable { this.blockingGet() }
+            }
+
+            override suspend fun suspendGet(): TrackedEntitySearchItem? {
+                val list = this@TrackedEntitySearchCollectionRepository.getInternal()
                 return transformer.transform(list)
             }
 
+            override fun blockingGet(): TrackedEntitySearchItem? = runBlocking { suspendGet() }
+
+            override suspend fun suspendExists(): Boolean {
+                return suspendGet() != null
+            }
+
+            @Deprecated("Use rxExists instead", replaceWith = ReplaceWith("rxExists()"))
             override fun exists(): Single<Boolean> {
+                return Single.fromCallable { blockingExists() }
+            }
+
+            override fun rxExists(): Single<Boolean> {
                 return Single.fromCallable { blockingExists() }
             }
 

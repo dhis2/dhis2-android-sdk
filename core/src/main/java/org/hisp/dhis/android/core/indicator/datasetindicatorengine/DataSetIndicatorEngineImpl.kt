@@ -124,7 +124,7 @@ internal class DataSetIndicatorEngineImpl(
     }
 
     private suspend fun getConstantMap(): Map<String, Constant> {
-        val constants: List<Constant> = constantRepository.getInternal()
+        val constants: List<Constant> = constantRepository.suspendGet()
         return mapByUid(constants)
     }
 

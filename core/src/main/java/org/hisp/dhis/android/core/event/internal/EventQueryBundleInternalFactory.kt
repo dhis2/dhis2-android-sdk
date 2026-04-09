@@ -72,7 +72,7 @@ internal class EventQueryBundleInternalFactory(
             eventFilterCollectionRepository
                 .byUid().`in`(it)
                 .withEventDataFilters()
-                .getInternal()
+                .suspendGet()
         }
 
         val finalFilters = eventFilters.takeIf { it.isNotEmpty() } ?: programSettingFilters

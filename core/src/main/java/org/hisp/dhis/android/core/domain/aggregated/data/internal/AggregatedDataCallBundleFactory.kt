@@ -149,6 +149,6 @@ internal class AggregatedDataCallBundleFactory(
     private suspend fun getDataSets(): List<DataSet> {
         return dataSetRepository
             .withDataSetElements()
-            .getInternal()
+            .suspendGet()
     }
 }

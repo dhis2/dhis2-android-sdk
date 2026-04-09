@@ -255,6 +255,6 @@ internal class EventServiceImpl(
             .byEnrollmentUid().eq(enrollmentUid)
             .byProgramStageUid().eq(programStageUid)
             .byDeleted().isFalse
-            .countInternal()
+            .suspendCount()
     }
 }

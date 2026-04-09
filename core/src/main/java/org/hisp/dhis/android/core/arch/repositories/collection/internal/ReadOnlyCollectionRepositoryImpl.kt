@@ -84,27 +84,11 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
     }
 
     /**
-     * Get the list of objects in a synchronous way. Important: this is a blocking method and it should not be
-     * executed in the main thread. Consider the asynchronous version [.get].
+     * Get the objects in scope in a suspend way.
      *
-     * @return List of objects
+     * @return The list of objects.
      */
-    override fun blockingGet(): List<M> {
-        return runBlocking {
-            getInternal()
-        }
-    }
-
-    /**
-     * Get the objects in scope in an asynchronous way, returning a `Single<List>`.
-     *
-     * @return A `Single` object with the list of objects.
-     */
-    override fun get(): Single<List<M>> {
-        return rxSingle { getInternal() }
-    }
-
-    internal suspend fun getInternal(): List<M> {
+    override suspend fun suspendGet(): List<M> {
         return ChildrenAppenderExecutor.appendInObjectCollection(
             getWithoutChildrenInternal(),
             childrenAppenders,
@@ -148,25 +132,15 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
         get() = RepositoryPagingSource(store, scope, childrenAppenders)
 
     /**
-     * Get the count of elements in an asynchronous way, returning a `Single`.
-     * @return A `Single` object with the element count
+     * Get the count of elements in a suspend way.
+     * @return The element count
      */
-    override fun count(): Single<Int> {
-        return rxSingle { countInternal() }
-    }
-
-    /**
-     * Get the count of elements. Important: this is a blocking method and it should not be
-     * executed in the main thread. Consider the asynchronous version [.count].
-     *
-     * @return Element count
-     */
-    override fun blockingCount(): Int {
-        return runBlocking { countInternal() }
-    }
-
-    internal suspend fun countInternal(): Int {
+    override suspend fun suspendCount(): Int {
         return store.countWhere(whereClause)
+    }
+
+    override suspend fun suspendIsEmpty(): Boolean {
+        return isEmptyInternal()
     }
 
     /**
@@ -174,8 +148,13 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
      * returning a `Single`.
      * @return If selection is empty
      */
+    @Deprecated("Use rxIsEmpty instead", replaceWith = ReplaceWith("rxIsEmpty()"))
     override fun isEmpty(): Single<Boolean> {
-        return rxSingle { isEmptyProtected() }
+        return rxSingle { isEmptyInternal() }
+    }
+
+    override fun rxIsEmpty(): Single<Boolean> {
+        return rxSingle { isEmptyInternal() }
     }
 
     /**
@@ -186,10 +165,10 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
      * @return If selection is empty
      */
     override fun blockingIsEmpty(): Boolean {
-        return runBlocking { isEmptyProtected() }
+        return runBlocking { isEmptyInternal() }
     }
 
-    internal suspend fun isEmptyProtected(): Boolean {
+    internal suspend fun isEmptyInternal(): Boolean {
         return !one().existsInternal()
     }
 

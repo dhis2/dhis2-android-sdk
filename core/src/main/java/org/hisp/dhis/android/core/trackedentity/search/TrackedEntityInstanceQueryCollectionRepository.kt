@@ -166,6 +166,10 @@ class TrackedEntityInstanceQueryCollectionRepository internal constructor(
     val resultDataSource: DataSource<TrackedEntityInstance, Result<TrackedEntityInstance, D2Error>>
         get() = TrackedEntityInstanceQueryDataSourceResult(getDataFetcher())
 
+    override suspend fun suspendGet(): List<TrackedEntityInstance> {
+        return getProtected()
+    }
+
     @Suppress("TooGenericExceptionCaught", "TooGenericExceptionThrown")
     override fun blockingGet(): List<TrackedEntityInstance> {
         return runBlocking { getProtected() }
@@ -188,12 +192,26 @@ class TrackedEntityInstanceQueryCollectionRepository internal constructor(
         }
     }
 
+    @Deprecated("Use rxGet instead", replaceWith = ReplaceWith("rxGet()"))
     override fun get(): Single<List<TrackedEntityInstance>> {
-        return Single.fromCallable { blockingGet() }
+        return rxSingle { getProtected() }
     }
 
+    override fun rxGet(): Single<List<TrackedEntityInstance>> {
+        return rxSingle { getProtected() }
+    }
+
+    @Deprecated("Use rxCount instead", replaceWith = ReplaceWith("rxCount()"))
     override fun count(): Single<Int> {
-        return Single.fromCallable { blockingCount() }
+        return rxSingle { countProtected() }
+    }
+
+    override fun rxCount(): Single<Int> {
+        return rxSingle { countProtected() }
+    }
+
+    override suspend fun suspendCount(): Int {
+        return countProtected()
     }
 
     override fun blockingCount(): Int {
@@ -204,8 +222,17 @@ class TrackedEntityInstanceQueryCollectionRepository internal constructor(
         return getProtected().size
     }
 
+    @Deprecated("Use rxIsEmpty instead", replaceWith = ReplaceWith("rxIsEmpty()"))
     override fun isEmpty(): Single<Boolean> {
         return rxSingle { isEmptyProtected() }
+    }
+
+    override fun rxIsEmpty(): Single<Boolean> {
+        return rxSingle { isEmptyProtected() }
+    }
+
+    override suspend fun suspendIsEmpty(): Boolean {
+        return isEmptyProtected()
     }
 
     override fun blockingIsEmpty(): Boolean {
@@ -236,8 +263,17 @@ class TrackedEntityInstanceQueryCollectionRepository internal constructor(
         return byTrackedEntities().eq(uid).objectRepository { o -> o.find { uid == it.uid() } }
     }
 
+    @Deprecated("Use rxGetUids instead", replaceWith = ReplaceWith("rxGetUids()"))
     override fun getUids(): Single<List<String>> {
-        return Single.fromCallable { blockingGetUids() }
+        return rxSingle { getUidsInternal() }
+    }
+
+    override fun rxGetUids(): Single<List<String>> {
+        return rxSingle { getUidsInternal() }
+    }
+
+    override suspend fun suspendGetUids(): List<String> {
+        return getUidsInternal()
     }
 
     override fun blockingGetUids(): List<String> {
@@ -256,22 +292,37 @@ class TrackedEntityInstanceQueryCollectionRepository internal constructor(
         transformer: Transformer<List<TrackedEntityInstance>, TrackedEntityInstance?>,
     ): ReadOnlyObjectRepository<TrackedEntityInstance> {
         return object : ReadOnlyObjectRepository<TrackedEntityInstance> {
+
+            override suspend fun suspendGet(): TrackedEntityInstance? {
+                val list = this@TrackedEntityInstanceQueryCollectionRepository.getProtected()
+                return transformer.transform(list)
+            }
+
+            @Deprecated("Use rxGet instead", replaceWith = ReplaceWith("rxGet()"))
             override fun get(): Single<TrackedEntityInstance?> {
                 return Single.fromCallable { this.blockingGet() }
             }
 
-            override fun blockingGet(): TrackedEntityInstance? {
-                val list = this@TrackedEntityInstanceQueryCollectionRepository.blockingGet()
-                return transformer.transform(list)
+            override fun rxGet(): Single<TrackedEntityInstance?> {
+                return Single.fromCallable { this.blockingGet() }
             }
 
+            override fun blockingGet(): TrackedEntityInstance? = runBlocking { suspendGet() }
+
+            @Deprecated("Use rxExists instead", replaceWith = ReplaceWith("rxExists()"))
             override fun exists(): Single<Boolean> {
                 return Single.fromCallable { blockingExists() }
             }
 
-            override fun blockingExists(): Boolean {
-                return blockingGet() != null
+            override fun rxExists(): Single<Boolean> {
+                return Single.fromCallable { blockingExists() }
             }
+
+            override suspend fun suspendExists(): Boolean {
+                return suspendGet() != null
+            }
+
+            override fun blockingExists(): Boolean = runBlocking { suspendExists() }
         }
     }
 

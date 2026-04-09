@@ -78,13 +78,13 @@ class OrganisationUnitService(
         return organisationUnitRepository
             .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
             .byUid().eq(organisationUnitUid)
-            .getInternal().isNotEmpty()
+            .suspendGet().isNotEmpty()
     }
 
     internal suspend fun isInSearchScope(organisationUnitUid: String): Boolean {
         return organisationUnitRepository
             .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
             .byUid().eq(organisationUnitUid)
-            .getInternal().isNotEmpty()
+            .suspendGet().isNotEmpty()
     }
 }

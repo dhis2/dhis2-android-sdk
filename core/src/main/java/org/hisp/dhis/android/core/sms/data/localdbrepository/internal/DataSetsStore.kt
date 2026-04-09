@@ -58,11 +58,11 @@ internal class DataSetsStore(
         val uploadable = uploadableStatesIncludingError().toList()
         val dataValues = baseQuery
             .bySyncState().`in`(uploadable)
-            .getInternal()
+            .suspendGet()
 
         return dataValues.ifEmpty {
             baseQuery
-                .getInternal()
+                .suspendGet()
                 .takeIf { it.isNotEmpty() }
                 ?.take(1)
                 ?: emptyList()

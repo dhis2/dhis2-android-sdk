@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity
 
 import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.rx2.asObservable
@@ -95,16 +96,12 @@ class TrackedEntityInstanceCollectionRepository internal constructor(
     }
 
     @Suppress("SpreadOperator")
-    override fun upload(): Observable<D2Progress> = flow {
+    override fun flowUpload(): Flow<D2Progress> = flow {
         emitAll(jobQueryCall.queryPendingJobs())
         val trackedEntityInstances = byAggregatedSyncState()
             .`in`(*uploadableStatesIncludingError())
             .getWithoutChildrenInternal()
         emitAll(postCall.uploadTrackedEntityInstances(trackedEntityInstances))
-    }.asObservable()
-
-    override fun blockingUpload() {
-        upload().blockingSubscribe()
     }
 
     override fun uid(uid: String?): TrackedEntityInstanceObjectRepository {

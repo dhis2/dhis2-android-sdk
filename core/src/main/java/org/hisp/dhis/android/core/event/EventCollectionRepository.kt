@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.event
 
 import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
@@ -95,17 +96,13 @@ class EventCollectionRepository internal constructor(
     ReadWriteWithUploadWithUidCollectionRepository<Event, EventCreateProjection> {
 
     @Suppress("SpreadOperator")
-    override fun upload(): Observable<D2Progress> = flow {
+    override fun flowUpload(): Flow<D2Progress> = flow {
         emitAll(jobQueryCall.queryPendingJobs())
         val events = byAggregatedSyncState()
             .`in`(*uploadableStatesIncludingError())
             .byEnrollmentUid().isNull
             .getWithoutChildrenInternal()
         emitAll(postCall.uploadEvents(events))
-    }.asObservable()
-
-    override fun blockingUpload() {
-        upload().blockingSubscribe()
     }
 
     override suspend fun propagateState(m: Event, action: HandleAction?) {

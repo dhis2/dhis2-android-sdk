@@ -64,15 +64,6 @@ class TrackedEntityAttributeValueObjectRepository internal constructor(
 ),
     ReadWriteValueObjectRepository<TrackedEntityAttributeValue> {
 
-    @Deprecated("Use rxSet instead", replaceWith = ReplaceWith("rxSet(value)"))
-    override fun set(value: String?): Completable {
-        return Completable.fromAction { blockingSet(value) }
-    }
-
-    override fun rxSet(value: String?): Completable {
-        return Completable.fromAction { blockingSet(value) }
-    }
-
     override suspend fun suspendSet(value: String?) {
         updateIfChangedInternal(value, { it?.value() }) {
                 trackedEntityAttributeValue: TrackedEntityAttributeValue?, newValue ->
@@ -81,17 +72,9 @@ class TrackedEntityAttributeValueObjectRepository internal constructor(
     }
 
     @Throws(D2Error::class)
-    override fun blockingSet(value: String?) {
-        updateIfChanged(value, { it?.value() }) {
-                trackedEntityAttributeValue: TrackedEntityAttributeValue?, newValue ->
-            setBuilder(trackedEntityAttributeValue).value(newValue).build()
-        }
-    }
-
-    @Throws(D2Error::class)
-    override fun delete(m: TrackedEntityAttributeValue) {
+    override suspend fun suspendDelete(m: TrackedEntityAttributeValue) {
         if (m.syncState() === State.TO_POST) {
-            super.delete(m)
+            super<ReadWriteWithValueObjectRepositoryImpl>.suspendDelete(m)
         } else {
             blockingSet(null)
         }

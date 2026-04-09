@@ -57,17 +57,9 @@ class LocalDataStoreObjectRepository internal constructor(
     },
 ),
     ReadWriteValueObjectRepository<KeyValuePair> {
-    override fun set(value: String?): Completable {
-        return rxCompletable { setInternal(value) }
-    }
 
     @Throws(D2Error::class)
-    override fun blockingSet(value: String?) {
-        runBlocking { setInternal(value) }
-    }
-
-    @Throws(D2Error::class)
-    private suspend fun setInternal(value: String?) {
+    override suspend fun suspendSet(value: String?) {
         val pair = KeyValuePair.builder()
             .key(key)
             .value(value)

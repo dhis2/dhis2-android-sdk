@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryStore
 
+@Suppress("TooManyFunctions")
 class DataStoreObjectRepository internal constructor(
     store: DataStoreEntryStore,
     childrenAppenders: ChildrenAppenderGetter<DataStoreEntry>,
@@ -54,31 +55,16 @@ class DataStoreObjectRepository internal constructor(
     },
 ),
     ReadWriteValueObjectRepository<DataStoreEntry> {
-    override fun set(value: String?): Completable {
-        return rxCompletable { setInternal(value) }
-    }
 
-    override fun blockingSet(value: String?) {
-        runBlocking { setInternal(value) }
-    }
-
-    private suspend fun setInternal(value: String?) {
+    override suspend fun suspendSet(value: String?) {
         val entry = setBuilder().value(value).deleted(false).build()
         setObject(entry)
     }
 
-    override fun delete(): Completable {
-        return rxCompletable { deleteInternal() }
-    }
-
-    override fun blockingDelete() {
-        runBlocking { deleteInternal() }
-    }
-
-    override suspend fun deleteInternal() {
+    override suspend fun suspendDelete() {
         getWithoutChildrenInternal()?.let { entry ->
             if (entry.syncState() == State.TO_POST) {
-                super.deleteInternal()
+                super.suspendDelete()
             } else {
                 setObject(entry.toBuilder().deleted(true).syncState(State.TO_UPDATE).build())
             }

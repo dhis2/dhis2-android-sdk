@@ -55,7 +55,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build test APKs
-        run: ./gradlew :assemble
+        run: ./gradlew :core:assemble
 
       - name: Setup cache
         uses: actions/cache@v4

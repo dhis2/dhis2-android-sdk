@@ -52,7 +52,7 @@ jobs:
           cache: 'gradle'
 
       - name: Setup cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: .
           key: ${{ runner.os }}-cache-${{ github.sha }}
@@ -65,7 +65,7 @@ jobs:
     
     steps:
       - name: Setup cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: .
           key: ${{ runner.os }}-cache-${{ github.sha }}
@@ -102,7 +102,7 @@ jobs:
     
     steps:
       - name: Setup cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: .
           key: ${{ runner.os }}-cache-${{ github.sha }}
@@ -137,7 +137,7 @@ jobs:
     
     steps:
       - name: Setup cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: .
           key: ${{ runner.os }}-cache-${{ github.sha }}
@@ -171,7 +171,7 @@ jobs:
     
     steps:
       - name: Setup cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: .
           key: ${{ runner.os }}-cache-${{ github.sha }}
@@ -216,7 +216,7 @@ jobs:
     
     steps:
       - name: Setup cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: .
           key: ${{ runner.os }}-cache-${{ github.sha }}
@@ -270,7 +270,7 @@ jobs:
     
     steps:
       - name: Setup cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: .
           key: ${{ runner.os }}-cache-${{ github.sha }}
@@ -380,7 +380,7 @@ jobs:
     
     steps:
       - name: Setup cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: .
           key: ${{ runner.os }}-cache-${{ github.sha }}

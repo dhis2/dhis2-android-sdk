@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.validation.engine.internal
 
-import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByUid
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.constant.ConstantCollectionRepository

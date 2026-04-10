@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepo
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyOneObjectRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 
-class ReadOnlyOneObjectRepositoryFinalImpl<M: Any> internal constructor(
+class ReadOnlyOneObjectRepositoryFinalImpl<M : Any> internal constructor(
     store: ReadableStore<M>,
     childrenAppenders: ChildrenAppenderGetter<M>,
     scope: RepositoryScope,

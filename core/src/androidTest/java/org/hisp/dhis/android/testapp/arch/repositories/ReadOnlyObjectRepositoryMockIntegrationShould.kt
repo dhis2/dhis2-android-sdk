@@ -32,7 +32,7 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 
-class ReadOnlyObjectRepositoryMockIntegrationShould: BaseMockIntegrationTestFullDispatcher() {
+class ReadOnlyObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 
     @Test
     fun should_return_null_if_object_does_not_exist() {
@@ -45,6 +45,8 @@ class ReadOnlyObjectRepositoryMockIntegrationShould: BaseMockIntegrationTestFull
 
         assertThat(dataElement.errors().size).isEqualTo(1)
         assertThat(dataElement.errors().first()).isInstanceOf(NullPointerException::class.java)
-        assertThat(dataElement.errors().first().toString()).isEqualTo("java.lang.NullPointerException: The callable returned a null value")
+        assertThat(
+            dataElement.errors().first().toString(),
+        ).isEqualTo("java.lang.NullPointerException: The callable returned a null value")
     }
 }

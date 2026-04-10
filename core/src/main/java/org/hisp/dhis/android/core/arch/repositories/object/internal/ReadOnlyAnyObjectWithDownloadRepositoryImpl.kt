@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 import org.hisp.dhis.android.core.arch.call.internal.DownloadProvider
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 
-abstract class ReadOnlyAnyObjectWithDownloadRepositoryImpl<M: Any> internal constructor(
+abstract class ReadOnlyAnyObjectWithDownloadRepositoryImpl<M : Any> internal constructor(
     private val downloadProvider: DownloadProvider,
 ) : ReadOnlyWithDownloadObjectRepository<M> {
     override suspend fun suspendGet(): M? = getInternal()

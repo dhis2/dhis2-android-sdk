@@ -7140,21 +7140,32 @@ public abstract interface class org/hisp/dhis/android/core/option/OptionModule {
 }
 
 public abstract interface class org/hisp/dhis/android/core/option/OptionService {
-	public abstract fun blockingSearchForOptions (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Ljava/util/List;
+	public fun blockingSearchForOptions (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Ljava/util/List;
 	public static synthetic fun blockingSearchForOptions$default (Lorg/hisp/dhis/android/core/option/OptionService;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Ljava/util/List;
-	public abstract fun searchForOptions (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Lio/reactivex/Single;
+	public fun rxSearchForOptions (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Lio/reactivex/Single;
+	public static synthetic fun rxSearchForOptions$default (Lorg/hisp/dhis/android/core/option/OptionService;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lio/reactivex/Single;
+	public fun searchForOptions (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Lio/reactivex/Single;
 	public static synthetic fun searchForOptions$default (Lorg/hisp/dhis/android/core/option/OptionService;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lio/reactivex/Single;
+	public abstract fun suspendSearchForOptions (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun suspendSearchForOptions$default (Lorg/hisp/dhis/android/core/option/OptionService;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/option/OptionService$DefaultImpls {
+	public static fun blockingSearchForOptions (Lorg/hisp/dhis/android/core/option/OptionService;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Ljava/util/List;
 	public static synthetic fun blockingSearchForOptions$default (Lorg/hisp/dhis/android/core/option/OptionService;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Ljava/util/List;
+	public static fun rxSearchForOptions (Lorg/hisp/dhis/android/core/option/OptionService;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Lio/reactivex/Single;
+	public static synthetic fun rxSearchForOptions$default (Lorg/hisp/dhis/android/core/option/OptionService;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lio/reactivex/Single;
+	public static fun searchForOptions (Lorg/hisp/dhis/android/core/option/OptionService;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Lio/reactivex/Single;
 	public static synthetic fun searchForOptions$default (Lorg/hisp/dhis/android/core/option/OptionService;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lio/reactivex/Single;
+	public static synthetic fun suspendSearchForOptions$default (Lorg/hisp/dhis/android/core/option/OptionService;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/option/OptionServiceImpl : org/hisp/dhis/android/core/option/OptionService {
 	public fun <init> (Lorg/hisp/dhis/android/core/option/OptionCollectionRepository;)V
 	public fun blockingSearchForOptions (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Ljava/util/List;
+	public fun rxSearchForOptions (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Lio/reactivex/Single;
 	public fun searchForOptions (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Lio/reactivex/Single;
+	public fun suspendSearchForOptions (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract class org/hisp/dhis/android/core/option/OptionSet : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
@@ -12311,8 +12322,16 @@ public final class org/hisp/dhis/android/core/validation/ValidationRuleOperator 
 }
 
 public abstract interface class org/hisp/dhis/android/core/validation/engine/ValidationEngine {
-	public abstract fun blockingValidate (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResult;
-	public abstract fun validate (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public fun blockingValidate (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResult;
+	public fun rxValidate (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public abstract fun suspendValidate (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun validate (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+}
+
+public final class org/hisp/dhis/android/core/validation/engine/ValidationEngine$DefaultImpls {
+	public static fun blockingValidate (Lorg/hisp/dhis/android/core/validation/engine/ValidationEngine;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResult;
+	public static fun rxValidate (Lorg/hisp/dhis/android/core/validation/engine/ValidationEngine;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public static fun validate (Lorg/hisp/dhis/android/core/validation/engine/ValidationEngine;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
 }
 
 public abstract class org/hisp/dhis/android/core/validation/engine/ValidationResult {

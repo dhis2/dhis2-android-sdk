@@ -401,9 +401,6 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
       
-      - name: Make SonarQube script executable
-        run: chmod +x ./scripts/sonarqube.sh
-      
       - name: Download JaCoCo reports
         id: download_jacoco
         uses: actions/download-artifact@v4
@@ -433,7 +430,7 @@ jobs:
       
       - name: Run SonarQube analysis
         if: steps.sonar_check.outputs.skip != 'true'
-        run: ./scripts/sonarqube.sh
+        run: ./gradlew sonarqube --stacktrace --no-daemon
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -29,8 +29,8 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import io.reactivex.Observable
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.asObservable
+import org.hisp.dhis.android.core.arch.call.internal.collectAndWrapException
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory
@@ -86,7 +86,7 @@ class TrackedEntityInstanceDownloader internal constructor(
     }
 
     fun blockingDownload() {
-        runBlocking { flowDownload().collect {} }
+        flowDownload().collectAndWrapException()
     }
 
     fun byUid(): ListFilterConnector<TrackedEntityInstanceDownloader, String> =

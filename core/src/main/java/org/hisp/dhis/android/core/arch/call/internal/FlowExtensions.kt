@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,19 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
-import org.koin.core.annotation.Singleton
+package org.hisp.dhis.android.core.arch.call.internal
 
-@Singleton
-internal class IsUserLoggedInCallableFactory(
-    private val credentialsSecureStore: CredentialsSecureStore,
-    private val databaseAdapter: DatabaseAdapter,
-) {
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.runBlocking
 
-    suspend fun suspendIsLogged(): Boolean {
-        return credentialsSecureStore.get() != null && databaseAdapter.isReady
-    }
+@Suppress("TooGenericExceptionThrown")
+internal fun <T> Flow<T>.collectAndWrapException() {
+    return runBlocking { this@collectAndWrapException.catch { t -> throw RuntimeException(t) }.collect {} }
 }

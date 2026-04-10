@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
-import io.reactivex.Completable
-import kotlinx.coroutines.rx2.rxCompletable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
@@ -52,7 +50,7 @@ internal class LogOutCall internal constructor(
     private val databaseConfigurationStore: DatabaseConfigurationInsecureStore,
 ) {
 
-    suspend fun intenralLogOut() {
+    suspend fun logOut() {
         val credentials = credentialsSecureStore.get()
         if (credentials == null) {
             throw D2Error.builder()
@@ -67,10 +65,6 @@ internal class LogOutCall internal constructor(
         userIdStore.remove()
         serverTimezoneManager.clearCache()
         defaultCategoryComboManager.clearCache()
-    }
-
-    fun logOut(): Completable {
-        return rxCompletable { intenralLogOut() }
     }
 
     private fun updateLastAccessDate(serverUrl: String, username: String) {

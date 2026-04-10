@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.call.internal.collectAndWrapException
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterConnector
@@ -72,7 +73,7 @@ class FileResourceDownloader internal constructor(
     }
 
     fun blockingDownload() {
-        runBlocking { flowDownload().collect {} }
+        flowDownload().collectAndWrapException()
     }
 
     fun byTrackedEntityUid(): ListFilterConnector<FileResourceDownloader, String> {

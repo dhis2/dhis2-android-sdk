@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,36 +26,12 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.domain.aggregated.data.internal
+package org.hisp.dhis.android.core.arch.call.internal
 
-import io.reactivex.Observable
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.rx2.asObservable
-import org.hisp.dhis.android.core.arch.call.internal.collectAndWrapException
-import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedD2Progress
-import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedDataDownloader
-import org.koin.core.annotation.Singleton
 
-@Singleton
-internal class AggregatedDataDownloaderImpl(
-    private val dataCall: AggregatedDataCall,
-) : AggregatedDataDownloader {
-
-    override fun flowDownload(): Flow<AggregatedD2Progress> {
-        return dataCall.download()
-    }
-
-    @Deprecated(message = "Use rxDownload instead", ReplaceWith("rxDownload()"))
-    override fun download(): Observable<AggregatedD2Progress> {
-        return flowDownload().asObservable()
-    }
-
-    override fun rxDownload(): Observable<AggregatedD2Progress> {
-        return flowDownload().asObservable()
-    }
-
-    override fun blockingDownload() {
-        flowDownload().collectAndWrapException()
-    }
+internal fun <T> Flow<T>.collectAndWrapException() {
+    return runBlocking { this@collectAndWrapException.catch { t -> throw RuntimeException(t) }.collect {} }
 }

@@ -94,9 +94,7 @@ class FileResourceCollectionRepository internal constructor(
     }
 
     @Deprecated("Check {@link #upload()}.")
-    fun blockingUpload() {
-        upload().blockingSubscribe()
-    }
+    fun blockingUpload() = Unit
 
     override suspend fun suspendAdd(o: File): String = withContext(Dispatchers.IO) {
         try {

@@ -28,6 +28,9 @@
 package org.hisp.dhis.android.core.fileresource.internal
 
 import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.fileresource.FileResourceCollectionRepository
 import org.hisp.dhis.android.core.fileresource.FileResourceDataDomainType
@@ -56,11 +59,7 @@ internal class FileResourceModuleImpl(
         ),
     )
     override fun download(): Observable<D2Progress> {
-        return fileResourceDownloader()
-            .byDomainType().eq(FileResourceDomainType.DATA_VALUE)
-            .byDataDomainType().eq(FileResourceDataDomainType.TRACKER)
-            .byValueType().eq(FileResourceValueType.IMAGE)
-            .download()
+        return flowDownload().asObservable()
     }
 
     @Deprecated(
@@ -76,7 +75,7 @@ internal class FileResourceModuleImpl(
         ),
     )
     override fun blockingDownload() {
-        download().blockingSubscribe()
+        runBlocking { flowDownload().collect {} }
     }
 
     override fun fileResources(): FileResourceCollectionRepository {
@@ -85,5 +84,13 @@ internal class FileResourceModuleImpl(
 
     override fun fileResourceDownloader(): FileResourceDownloader {
         return fileResourceDownloader
+    }
+
+    private fun flowDownload(): Flow<D2Progress> {
+        return fileResourceDownloader()
+            .byDomainType().eq(FileResourceDomainType.DATA_VALUE)
+            .byDataDomainType().eq(FileResourceDataDomainType.TRACKER)
+            .byValueType().eq(FileResourceValueType.IMAGE)
+            .flowDownload()
     }
 }

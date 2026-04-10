@@ -29,9 +29,9 @@ package org.hisp.dhis.android.core.arch.repositories.collection
 
 import io.reactivex.Observable
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.call.internal.collectAndWrapException
 
 interface CollectionRepositoryUpload {
     /**
@@ -61,5 +61,5 @@ interface CollectionRepositoryUpload {
      * executed in the main thread. Consider the asynchronous version [.rxUpload].
      * The method will finish as soon as the whole upload an processing is finished.
      */
-    fun blockingUpload() = runBlocking { flowUpload().collect {} }
+    fun blockingUpload() = flowUpload().collectAndWrapException()
 }

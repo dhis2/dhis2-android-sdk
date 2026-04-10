@@ -29,9 +29,9 @@ package org.hisp.dhis.android.core.fileresource.internal
 
 import io.reactivex.Observable
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.call.internal.collectAndWrapException
 import org.hisp.dhis.android.core.fileresource.FileResourceCollectionRepository
 import org.hisp.dhis.android.core.fileresource.FileResourceDataDomainType
 import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
@@ -75,7 +75,7 @@ internal class FileResourceModuleImpl(
         ),
     )
     override fun blockingDownload() {
-        runBlocking { flowDownload().collect {} }
+        flowDownload().collectAndWrapException()
     }
 
     override fun fileResources(): FileResourceCollectionRepository {

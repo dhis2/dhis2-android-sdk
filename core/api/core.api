@@ -11744,17 +11744,17 @@ public abstract interface class org/hisp/dhis/android/core/user/UserModule {
 	public abstract fun accountManager ()Lorg/hisp/dhis/android/core/user/AccountManager;
 	public abstract fun authenticatedUser ()Lorg/hisp/dhis/android/core/user/AuthenticatedUserObjectRepository;
 	public abstract fun authorities ()Lorg/hisp/dhis/android/core/user/AuthorityCollectionRepository;
-	public abstract fun blockingIsLogged ()Z
-	public abstract fun blockingLogIn (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User;
-	public abstract fun blockingLogOut ()V
-	public abstract fun isLogged ()Lio/reactivex/Single;
-	public abstract fun logIn (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
-	public abstract fun logOut ()Lio/reactivex/Completable;
+	public fun blockingIsLogged ()Z
+	public fun blockingLogIn (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User;
+	public fun blockingLogOut ()V
+	public fun isLogged ()Lio/reactivex/Single;
+	public fun logIn (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public fun logOut ()Lio/reactivex/Completable;
 	public abstract fun oauth2Handler ()Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Handler;
 	public abstract fun openIdHandler ()Lorg/hisp/dhis/android/core/user/openid/OpenIDConnectHandler;
-	public abstract fun rxIsLogged ()Lio/reactivex/Single;
-	public abstract fun rxLogIn (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
-	public abstract fun rxLogOut ()Lio/reactivex/Completable;
+	public fun rxIsLogged ()Lio/reactivex/Single;
+	public fun rxLogIn (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public fun rxLogOut ()Lio/reactivex/Completable;
 	public abstract fun suspendIsLogged (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun suspendLogIn (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun suspendLogOut (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -11763,6 +11763,18 @@ public abstract interface class org/hisp/dhis/android/core/user/UserModule {
 	public abstract fun userCredentials ()Lorg/hisp/dhis/android/core/user/UserCredentialsObjectRepository;
 	public abstract fun userGroups ()Lorg/hisp/dhis/android/core/user/UserGroupCollectionRepository;
 	public abstract fun userRoles ()Lorg/hisp/dhis/android/core/user/UserRoleCollectionRepository;
+}
+
+public final class org/hisp/dhis/android/core/user/UserModule$DefaultImpls {
+	public static fun blockingIsLogged (Lorg/hisp/dhis/android/core/user/UserModule;)Z
+	public static fun blockingLogIn (Lorg/hisp/dhis/android/core/user/UserModule;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User;
+	public static fun blockingLogOut (Lorg/hisp/dhis/android/core/user/UserModule;)V
+	public static fun isLogged (Lorg/hisp/dhis/android/core/user/UserModule;)Lio/reactivex/Single;
+	public static fun logIn (Lorg/hisp/dhis/android/core/user/UserModule;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public static fun logOut (Lorg/hisp/dhis/android/core/user/UserModule;)Lio/reactivex/Completable;
+	public static fun rxIsLogged (Lorg/hisp/dhis/android/core/user/UserModule;)Lio/reactivex/Single;
+	public static fun rxLogIn (Lorg/hisp/dhis/android/core/user/UserModule;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public static fun rxLogOut (Lorg/hisp/dhis/android/core/user/UserModule;)Lio/reactivex/Completable;
 }
 
 public final class org/hisp/dhis/android/core/user/UserObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyOneObjectRepositoryImpl {

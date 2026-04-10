@@ -5507,7 +5507,6 @@ public final class org/hisp/dhis/android/core/event/EventDownloader : org/hisp/d
 	public final fun limitByOrgunit (Z)Lorg/hisp/dhis/android/core/event/EventDownloader;
 	public final fun limitByProgram (Z)Lorg/hisp/dhis/android/core/event/EventDownloader;
 	public final fun rxDownload ()Lio/reactivex/Observable;
-	public final fun suspendDownload (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract class org/hisp/dhis/android/core/event/EventEditableStatus {

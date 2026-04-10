@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.datastore
 
 import io.reactivex.Observable
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
@@ -66,7 +67,7 @@ class DataStoreDownloader internal constructor(
     }
 
     fun blockingDownload() {
-        rxDownload().blockingSubscribe()
+        runBlocking { flowDownload().collect {} }
     }
 
     fun byNamespace(): ListFilterConnector<DataStoreDownloader, String> {

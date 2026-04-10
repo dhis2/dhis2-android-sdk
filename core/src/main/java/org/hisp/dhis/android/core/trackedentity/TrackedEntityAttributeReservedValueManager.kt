@@ -131,7 +131,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
         attributeUid: String,
         numberOfValuesToFillUp: Int?,
     ) {
-        rxDownloadReservedValues(attributeUid, numberOfValuesToFillUp).blockingSubscribe()
+        runBlocking { flowDownloadReservedValues(attributeUid, numberOfValuesToFillUp).collect {} }
     }
 
     /**
@@ -179,7 +179,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
      * @see .downloadAllReservedValues
      */
     fun blockingDownloadAllReservedValues(numberOfValuesToFillUp: Int?) {
-        rxDownloadAllReservedValues(numberOfValuesToFillUp).blockingSubscribe()
+        runBlocking { flowDownloadAllReservedValues(numberOfValuesToFillUp).collect {} }
     }
 
     /**

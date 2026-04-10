@@ -28,12 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import io.reactivex.Observable
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onErrorReturn
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.internal.collectAndWrapException
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
@@ -47,7 +42,6 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterCollectionRepository
 import org.hisp.dhis.android.core.tracker.exporter.TrackerD2Progress
 import org.koin.core.annotation.Singleton
-import kotlin.coroutines.CoroutineContext
 
 @Singleton
 @Suppress("TooManyFunctions")

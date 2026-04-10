@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.runBlocking
 
+@Suppress("TooGenericExceptionThrown")
 internal fun <T> Flow<T>.collectAndWrapException() {
     return runBlocking { this@collectAndWrapException.catch { t -> throw RuntimeException(t) }.collect {} }
 }

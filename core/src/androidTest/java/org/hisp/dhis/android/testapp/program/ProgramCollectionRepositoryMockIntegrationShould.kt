@@ -383,7 +383,7 @@ class ProgramCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val programSearch = d2.programModule().programs()
             .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
             .blockingGet()
-        assertThat(programSearch.size).isEqualTo(0)
+        assertThat(programSearch.size).isEqualTo(3)
     }
 
     @Test

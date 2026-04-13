@@ -31,7 +31,6 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterBreakTheGlassHelper
 import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
 import org.koin.core.annotation.Singleton
@@ -39,7 +38,6 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class TrackedEntityEnrollmentOrphanCleaner(
     private val enrollmentStore: EnrollmentStore,
-    private val breakTheGlassHelper: TrackerImporterBreakTheGlassHelper,
 ) {
 
     suspend fun deleteOrphan(
@@ -47,7 +45,7 @@ internal class TrackedEntityEnrollmentOrphanCleaner(
         children: Collection<Enrollment>?,
         program: String?,
     ): Boolean {
-        return if (parent != null && children != null) {
+        return if (parent != null && children != null && program != null) {
             val orphanEnrollmentsClause = WhereClauseBuilder().run {
                 appendKeyStringValue(EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE, parent.uid())
                 appendNotInKeyStringValues(EnrollmentTableInfo.Columns.UID, children.map { it.uid() })
@@ -55,32 +53,19 @@ internal class TrackedEntityEnrollmentOrphanCleaner(
                     EnrollmentTableInfo.Columns.SYNC_STATE,
                     listOf(State.SYNCED, State.SYNCED_VIA_SMS),
                 )
-                if (program != null) {
-                    appendKeyStringValue(EnrollmentTableInfo.Columns.PROGRAM, program)
-                }
+                appendKeyStringValue(EnrollmentTableInfo.Columns.PROGRAM, program)
                 build()
             }
 
             val orphanEnrollments = enrollmentStore.selectWhere(orphanEnrollmentsClause)
 
-            val deletedEnrollments = orphanEnrollments.filter { e -> isAccessibleByGlass(e, program) }
-
-            if (deletedEnrollments.isNotEmpty()) {
-                enrollmentStore.deleteByUid(deletedEnrollments)
+            if (orphanEnrollments.isNotEmpty()) {
+                enrollmentStore.deleteByUid(orphanEnrollments)
             }
 
-            deletedEnrollments.isNotEmpty()
+            orphanEnrollments.isNotEmpty()
         } else {
             false
         }
-    }
-
-    private suspend fun isAccessibleByGlass(enrollment: Enrollment, program: String?): Boolean {
-        val isProtected = breakTheGlassHelper.isProtectedInSearchScope(
-            program = enrollment.program(),
-            organisationUnit = enrollment.organisationUnit(),
-        )
-
-        return !isProtected || enrollment.program() == program
     }
 }

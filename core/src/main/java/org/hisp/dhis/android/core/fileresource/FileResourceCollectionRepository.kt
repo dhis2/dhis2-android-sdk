@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.fileresource
 
 import android.content.Context
 import io.reactivex.Observable
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.hisp.dhis.android.core.arch.call.D2Progress
@@ -63,6 +64,7 @@ class FileResourceCollectionRepository internal constructor(
     transformer: FileResourceProjectionTransformer,
     dataStatePropagator: DataStatePropagator,
     private val context: Context,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ReadWriteWithUidCollectionRepositoryImpl<FileResource, File, FileResourceCollectionRepository>(
     fileResourceStore,
     childrenAppenders,
@@ -75,6 +77,7 @@ class FileResourceCollectionRepository internal constructor(
             transformer,
             dataStatePropagator,
             context,
+            dispatcher,
         )
     },
 ),
@@ -96,7 +99,7 @@ class FileResourceCollectionRepository internal constructor(
     @Deprecated("Check {@link #upload()}.")
     fun blockingUpload() = Unit
 
-    override suspend fun suspendAdd(o: File): String = withContext(Dispatchers.IO) {
+    override suspend fun suspendAdd(o: File): String = withContext(dispatcher) {
         try {
             val generatedUid = UidGeneratorImpl().generate()
             val dstFile = saveFile(o, generatedUid, context)

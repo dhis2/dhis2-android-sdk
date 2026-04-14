@@ -42,8 +42,13 @@ class PingImpl internal constructor(
     private val pingNetworkHandler: PingNetworkHandler,
 ) : Ping {
 
+    @Deprecated(message = "Use rxGet instead", ReplaceWith("rxGet()"))
     override fun get(): Single<String> {
-        return rxSingle { checkPing() }
+        return rxSingle { suspendGet() }
+    }
+
+    override fun rxGet(): Single<String> {
+        return rxSingle { suspendGet() }
     }
 
     @Throws(D2Error::class)
@@ -52,7 +57,7 @@ class PingImpl internal constructor(
     }
 
     @Suppress("TooGenericExceptionCaught")
-    private suspend fun checkPing(): String {
+    override suspend fun suspendGet(): String {
         try {
             val response = pingNetworkHandler.getPing()
             return if (response.status.isSuccess()) {

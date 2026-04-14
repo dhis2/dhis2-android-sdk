@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core
 import android.util.Log
 import androidx.annotation.VisibleForTesting
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.D2ConfigurationValidator.validateAndSetDefaultValues
 import org.hisp.dhis.android.core.NotClosedObjectsDetector.enableNotClosedObjectsDetection
@@ -87,53 +88,23 @@ object D2Manager {
      * @return the D2 instance wrapped in a RxJava Single
      */
     @JvmStatic
+    @Deprecated(message = "Use RxInstantiateD2 instead", ReplaceWith("RxInstantiateD2(d2Config)"))
     fun instantiateD2(d2Config: D2Configuration): Single<D2> {
         return rxSingle {
-            val startTime = System.currentTimeMillis()
-            val context = d2Config.context()
+            suspendInstantiateD2(d2Config)
+        }
+    }
 
-            val secureStore = testingSecureStore ?: AndroidSecureStore(context)
-            val insecureStore = testingInsecureStore ?: AndroidInsecureStore(context)
-
-            val d2Configuration = validateAndSetDefaultValues(d2Config)
-            d2DIComponent = D2DIComponentFactory.create(d2Configuration, secureStore, insecureStore)
-
-            if (isTestMode) {
-                enableNotClosedObjectsDetection()
-            } else {
-                /* SSLContextInitializer, necessary to ensure everything works in Android 4.4 crashes
-                 when running the StrictMode above. That's why it's in the else clause */
-                SSLContextInitializer.initializeSSLContext()
-            }
-
-            val multiUserDatabaseManager = d2DIComponent.multiUserDatabaseManagerForD2Manager
-            multiUserDatabaseManager.applyMigration()
-
-            val credentials = d2DIComponent.credentialsSecureStore.get()
-
-            if (wantToImportDBForExternalTesting()) {
-                multiUserDatabaseManager.loadDbForTesting(
-                    testingServerUrl!!,
-                    testingDatabaseName!!,
-                    false,
-                    testingUsername!!,
-                )
-            } else {
-                multiUserDatabaseManager.loadIfLogged(credentials)
-            }
-
-            d2 = D2(d2DIComponent)
-
-            if (credentials != null) {
-                d2!!.userModule().user().blockingGet()?.uid()?.let { uid ->
-                    d2DIComponent.userIdInMemoryStore.set(uid)
-                }
-            }
-
-            val setUpTime = System.currentTimeMillis() - startTime
-            Log.i(D2Manager::class.java.name, "D2 instantiation took " + setUpTime + "ms")
-
-            d2!!
+    /**
+     * Instantiates D2 with the provided configuration. If you are not using RxJava,
+     * use [D2Manager.blockingInstantiateD2] or [D2Manager.suspendInstantiateD2] instead.
+     * @param d2Config the configuration
+     * @return the D2 instance wrapped in a RxJava Single
+     */
+    @JvmStatic
+    fun rxInstantiateD2(d2Config: D2Configuration): Single<D2> {
+        return rxSingle {
+            suspendInstantiateD2(d2Config)
         }
     }
 
@@ -145,7 +116,63 @@ object D2Manager {
      */
     @JvmStatic
     fun blockingInstantiateD2(d2Config: D2Configuration): D2? {
-        return instantiateD2(d2Config).blockingGet()
+        return runBlocking {
+            suspendInstantiateD2(d2Config)
+        }
+    }
+
+    /**
+     * Instantiates D2 with the provided configuration. This is a suspend function.
+     * @param d2Config the configuration
+     * @return the D2 instance
+     */
+
+    suspend fun suspendInstantiateD2(d2Config: D2Configuration): D2 {
+        val startTime = System.currentTimeMillis()
+        val context = d2Config.context()
+
+        val secureStore = testingSecureStore ?: AndroidSecureStore(context)
+        val insecureStore = testingInsecureStore ?: AndroidInsecureStore(context)
+
+        val d2Configuration = validateAndSetDefaultValues(d2Config)
+        d2DIComponent = D2DIComponentFactory.create(d2Configuration, secureStore, insecureStore)
+
+        if (isTestMode) {
+            enableNotClosedObjectsDetection()
+        } else {
+            /* SSLContextInitializer, necessary to ensure everything works in Android 4.4 crashes
+                 when running the StrictMode above. That's why it's in the else clause */
+            SSLContextInitializer.initializeSSLContext()
+        }
+
+        val multiUserDatabaseManager = d2DIComponent.multiUserDatabaseManagerForD2Manager
+        multiUserDatabaseManager.applyMigration()
+
+        val credentials = d2DIComponent.credentialsSecureStore.get()
+
+        if (wantToImportDBForExternalTesting()) {
+            multiUserDatabaseManager.loadDbForTesting(
+                testingServerUrl!!,
+                testingDatabaseName!!,
+                false,
+                testingUsername!!,
+            )
+        } else {
+            multiUserDatabaseManager.loadIfLogged(credentials)
+        }
+
+        d2 = D2(d2DIComponent)
+
+        if (credentials != null) {
+            d2!!.userModule().user().blockingGet()?.uid()?.let { uid ->
+                d2DIComponent.userIdInMemoryStore.set(uid)
+            }
+        }
+
+        val setUpTime = System.currentTimeMillis() - startTime
+        Log.i(D2Manager::class.java.name, "D2 instantiation took " + setUpTime + "ms")
+
+        return d2!!
     }
 
     @JvmStatic

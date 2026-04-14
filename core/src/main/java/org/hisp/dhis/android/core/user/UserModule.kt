@@ -29,6 +29,9 @@ package org.hisp.dhis.android.core.user
 
 import io.reactivex.Completable
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxCompletable
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.user.oauth2.OAuth2Handler
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectHandler
 
@@ -40,12 +43,31 @@ interface UserModule {
     fun authorities(): AuthorityCollectionRepository
     fun user(): UserObjectRepository
     fun accountManager(): AccountManager
-    fun logIn(username: String, password: String, serverUrl: String): Single<User>
-    fun blockingLogIn(username: String, password: String, serverUrl: String): User
-    fun logOut(): Completable
-    fun blockingLogOut()
-    fun isLogged(): Single<Boolean>
-    fun blockingIsLogged(): Boolean
+
+    @Deprecated(message = "Use rxLogIn instead", ReplaceWith("rxLogIn(username, password, serverUrl)"))
+    fun logIn(username: String, password: String, serverUrl: String): Single<User> =
+        rxLogIn(username, password, serverUrl)
+
+    fun rxLogIn(username: String, password: String, serverUrl: String): Single<User> =
+        rxSingle { suspendLogIn(username, password, serverUrl) }
+
+    fun blockingLogIn(username: String, password: String, serverUrl: String): User =
+        runBlocking { suspendLogIn(username, password, serverUrl) }
+
+    suspend fun suspendLogIn(username: String, password: String, serverUrl: String): User
+
+    @Deprecated(message = "Use rxLogOut instead", ReplaceWith("rxLogOut()"))
+    fun logOut(): Completable = rxLogOut()
+    fun rxLogOut(): Completable = rxCompletable { suspendLogOut() }
+    fun blockingLogOut() = runBlocking { suspendLogOut() }
+    suspend fun suspendLogOut()
+
+    @Deprecated(message = "Use rxIsLogged instead", ReplaceWith("rxIsLogged()"))
+    fun isLogged(): Single<Boolean> = rxIsLogged()
+    fun rxIsLogged(): Single<Boolean> = rxSingle { suspendIsLogged() }
+    fun blockingIsLogged(): Boolean = runBlocking { suspendIsLogged() }
+    suspend fun suspendIsLogged(): Boolean
+
     fun openIdHandler(): OpenIDConnectHandler
     fun oauth2Handler(): OAuth2Handler
     fun twoFactorAuthManager(): TwoFactorAuthManager

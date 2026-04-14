@@ -29,6 +29,8 @@
 package org.hisp.dhis.android.core.dataset.internal
 
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.cache.internal.ExpirableCache
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.CategoryOptionCollectionRepository
@@ -65,82 +67,141 @@ internal class DataSetInstanceServiceImpl(
     private val periodGenerator: ParentPeriodGenerator,
 ) : DataSetInstanceService {
 
+    @Deprecated(
+        message = "Use rxGetEditableStatus instead",
+        ReplaceWith(
+            "rxGetEditableStatus(dataSetUid, periodId, organisationUnitUid, " +
+                "attributeOptionComboUid)",
+        ),
+    )
     override fun getEditableStatus(
         dataSetUid: String,
         periodId: String,
         organisationUnitUid: String,
         attributeOptionComboUid: String,
     ): Single<DataSetEditableStatus> {
-        return Single.fromCallable {
-            blockingGetEditableStatus(
-                dataSetUid = dataSetUid,
-                periodId = periodId,
-                organisationUnitUid = organisationUnitUid,
-                attributeOptionComboUid = attributeOptionComboUid,
-            )
+        return rxSingle {
+            suspendGetEditableStatus(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)
         }
     }
 
-    @Suppress("ComplexMethod")
+    override fun rxGetEditableStatus(
+        dataSetUid: String,
+        periodId: String,
+        organisationUnitUid: String,
+        attributeOptionComboUid: String,
+    ): Single<DataSetEditableStatus> {
+        return rxSingle {
+            suspendGetEditableStatus(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)
+        }
+    }
+
     override fun blockingGetEditableStatus(
         dataSetUid: String,
         periodId: String,
         organisationUnitUid: String,
         attributeOptionComboUid: String,
     ): DataSetEditableStatus {
-        val dataSet = dataSetCollectionRepository.withDataInputPeriods().uid(dataSetUid).blockingGet()
-        val period = periodHelper.getPeriodForPeriodId(periodId).blockingGet()
+        return runBlocking {
+            suspendGetEditableStatus(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)
+        }
+    }
+
+    @Suppress("ComplexMethod")
+    override suspend fun suspendGetEditableStatus(
+        dataSetUid: String,
+        periodId: String,
+        organisationUnitUid: String,
+        attributeOptionComboUid: String,
+    ): DataSetEditableStatus {
+        val dataSet = dataSetCollectionRepository.withDataInputPeriods().uid(dataSetUid).getInternal()
+        val period = periodHelper.suspendGetPeriodForPeriodId(periodId)
         return when {
-            !blockingHasDataWriteAccess(dataSetUid) ->
+            !suspendHasDataWriteAccess(dataSetUid) ->
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.NO_DATASET_DATA_WRITE_ACCESS)
 
-            !blockingIsCategoryOptionHasDataWriteAccess(attributeOptionComboUid) ->
+            !suspendIsCategoryOptionHasDataWriteAccess(attributeOptionComboUid) ->
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.NO_ATTRIBUTE_OPTION_COMBO_ACCESS)
 
-            !blockingIsPeriodInCategoryOptionRange(period, attributeOptionComboUid) ->
+            !suspendIsPeriodInCategoryOptionRange(period, attributeOptionComboUid) ->
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.PERIOD_IS_NOT_IN_ATTRIBUTE_OPTION_RANGE)
 
-            !blockingIsOrgUnitInCaptureScope(organisationUnitUid) ->
+            !suspendIsOrgUnitInCaptureScope(organisationUnitUid) ->
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.ORGUNIT_IS_NOT_IN_CAPTURE_SCOPE)
 
-            !blockingIsAttributeOptionComboAssignToOrgUnit(attributeOptionComboUid, organisationUnitUid) ->
+            !suspendIsAttributeOptionComboAssignToOrgUnit(attributeOptionComboUid, organisationUnitUid) ->
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.ATTRIBUTE_OPTION_COMBO_NO_ASSIGN_TO_ORGUNIT)
 
-            !blockingIsPeriodInOrgUnitRange(period, organisationUnitUid) ->
+            !suspendIsPeriodInOrgUnitRange(period, organisationUnitUid) ->
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.PERIOD_IS_NOT_IN_ORGUNIT_RANGE)
 
-            dataSet?.let { blockingIsExpired(dataSet, period) } ?: false ->
+            dataSet?.let { isExpired(dataSet, period) } ?: false ->
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.EXPIRED)
 
-            dataSet?.let { blockingIsClosed(dataSet, period) } ?: false ->
+            dataSet?.let { isClosed(dataSet, period) } ?: false ->
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.CLOSED)
 
-            dataSet?.let { !blockingIsInDataInputPeriods(dataSet, period) } ?: false ->
+            dataSet?.let { !isInDataInputPeriods(dataSet, period) } ?: false ->
                 DataSetEditableStatus.NonEditable(DataSetNonEditableReason.PERIOD_NOT_IN_DATA_INPUT_PERIODS)
 
             else -> DataSetEditableStatus.Editable
         }
     }
 
+    @Deprecated(message = "Use rxHasDataWriteAccess instead", ReplaceWith("rxHasDataWriteAccess(dataSetUid)"))
     override fun hasDataWriteAccess(dataSetUid: String): Single<Boolean> {
-        return Single.just(blockingHasDataWriteAccess(dataSetUid))
+        return rxSingle { suspendHasDataWriteAccess(dataSetUid) }
+    }
+
+    override fun rxHasDataWriteAccess(dataSetUid: String): Single<Boolean> {
+        return rxSingle { suspendHasDataWriteAccess(dataSetUid) }
     }
 
     override fun blockingHasDataWriteAccess(dataSetUid: String): Boolean {
-        val dataSet = dataSetCollectionRepository.uid(dataSetUid).blockingGet() ?: return false
+        return runBlocking { suspendHasDataWriteAccess(dataSetUid) }
+    }
+
+    override suspend fun suspendHasDataWriteAccess(dataSetUid: String): Boolean {
+        val dataSet = dataSetCollectionRepository.uid(dataSetUid).getInternal() ?: return false
         return dataSet.access().write() ?: false
     }
 
+    @Deprecated(
+        message = "Use rxGetMissingMandatoryDataElementOperands instead",
+        ReplaceWith(
+            "rxGetMissingMandatoryDataElementOperands(dataSetUid, periodId, organisationUnitUid, " +
+                "attributeOptionComboUid)",
+        ),
+    )
     override fun getMissingMandatoryDataElementOperands(
         dataSetUid: String,
         periodId: String,
         organisationUnitUid: String,
         attributeOptionComboUid: String,
     ): Single<List<DataElementOperand>> {
-        return dataSetCollectionRepository.withCompulsoryDataElementOperands().uid(dataSetUid).get().map {
-            it.compulsoryDataElementOperands()?.filter { dataElementOperand ->
-                !hasDataValue(dataSetUid, dataElementOperand, periodId, organisationUnitUid, attributeOptionComboUid)
-            } ?: emptyList()
+        return rxSingle {
+            suspendGetMissingMandatoryDataElementOperands(
+                dataSetUid,
+                periodId,
+                organisationUnitUid,
+                attributeOptionComboUid,
+            )
+        }
+    }
+
+    override fun rxGetMissingMandatoryDataElementOperands(
+        dataSetUid: String,
+        periodId: String,
+        organisationUnitUid: String,
+        attributeOptionComboUid: String,
+    ): Single<List<DataElementOperand>> {
+        return rxSingle {
+            suspendGetMissingMandatoryDataElementOperands(
+                dataSetUid,
+                periodId,
+                organisationUnitUid,
+                attributeOptionComboUid,
+            )
         }
     }
 
@@ -150,15 +211,31 @@ internal class DataSetInstanceServiceImpl(
         organisationUnitUid: String,
         attributeOptionComboUid: String,
     ): List<DataElementOperand> {
-        return getMissingMandatoryDataElementOperands(
-            dataSetUid,
-            periodId,
-            organisationUnitUid,
-            attributeOptionComboUid,
-        ).blockingGet()
+        return runBlocking {
+            suspendGetMissingMandatoryDataElementOperands(
+                dataSetUid,
+                periodId,
+                organisationUnitUid,
+                attributeOptionComboUid,
+            )
+        }
     }
 
-    private fun hasDataValue(
+    override suspend fun suspendGetMissingMandatoryDataElementOperands(
+        dataSetUid: String,
+        periodId: String,
+        organisationUnitUid: String,
+        attributeOptionComboUid: String,
+    ): List<DataElementOperand> {
+        val dataSet = dataSetCollectionRepository.withCompulsoryDataElementOperands()
+            .uid(dataSetUid).getInternal()
+
+        return dataSet?.compulsoryDataElementOperands()?.filter { dataElementOperand ->
+            !hasDataValue(dataSetUid, dataElementOperand, periodId, organisationUnitUid, attributeOptionComboUid)
+        } ?: emptyList()
+    }
+
+    private suspend fun hasDataValue(
         dataSetUid: String,
         dataElementOperand: DataElementOperand,
         periodId: String,
@@ -174,73 +251,47 @@ internal class DataSetInstanceServiceImpl(
                     categoryOptionCombo.uid(),
                     attributeOptionComboUid,
                     dataSetUid,
-                ).blockingExists()
+                ).existsInternal()
             }
         } ?: false
     }
 
-    @Suppress("MagicNumber")
+    @Deprecated(
+        message = "Use rxGetMissingMandatoryFieldsCombination instead",
+        ReplaceWith(
+            "rxGetMissingMandatoryFieldsCombination(dataSetUid, periodId, organisationUnitUid, " +
+                "attributeOptionComboUid)",
+        ),
+    )
     override fun getMissingMandatoryFieldsCombination(
         dataSetUid: String,
         periodId: String,
         organisationUnitUid: String,
         attributeOptionComboUid: String,
     ): Single<List<DataElementOperand>> {
-        val stringListCache = ExpirableCache<String, List<String>>(TimeUnit.SECONDS.toMillis(120))
-
-        return dataSetCollectionRepository.withDataSetElements().uid(dataSetUid).get().map { dataSet ->
-            if (dataSet.fieldCombinationRequired() != true) return@map emptyList()
-
-            dataSet.dataSetElements().orEmpty().flatMap { dataSetElement ->
-                val categoryComboUid = dataSetElement.categoryCombo()?.uid()
-                    ?: dataElementCollectionRepository
-                        .uid(dataSetElement.dataElement().uid())
-                        .blockingGet()
-                        ?.categoryCombo()
-                        ?.uid()
-
-                categoryComboUid?.let { catComboUid ->
-                    val categoryOptionCombos = getCachedCategoryComboUid(catComboUid, stringListCache) { uid ->
-                        categoryOptionComboCollectionRepository.byCategoryComboUid().eq(uid).blockingGetUids()
-                    }
-
-                    val dataValues = dataValueCollectionRepository
-                        .byPeriod().eq(periodId)
-                        .byOrganisationUnitUid().eq(organisationUnitUid)
-                        .byAttributeOptionComboUid().eq(attributeOptionComboUid)
-                        .byDeleted().isFalse
-                        .byDataElementUid().eq(dataSetElement.dataElement().uid())
-                        .byCategoryOptionComboUid()
-                        .`in`(categoryOptionCombos)
-                        .blockingGet()
-
-                    dataValues.takeIf { it.isNotEmpty() && it.size != categoryOptionCombos.size }
-                        ?.map { dataValue ->
-                            DataElementOperand.builder().apply {
-                                uid(
-                                    listOfNotNull(dataValue.dataElement(), dataValue.categoryOptionCombo())
-                                        .joinToString("."),
-                                )
-                                dataValue.dataElement()?.let { dataElement(ObjectWithUid.create(it)) }
-                                dataValue.categoryOptionCombo()
-                                    ?.let { categoryOptionCombo(ObjectWithUid.create(it)) }
-                            }.build()
-                        } ?: emptyList()
-                } ?: emptyList()
-            }
+        return rxSingle {
+            suspendGetMissingMandatoryFieldsCombination(
+                dataSetUid,
+                periodId,
+                organisationUnitUid,
+                attributeOptionComboUid,
+            )
         }
     }
 
-    private fun getCachedCategoryComboUid(
-        uid: String?,
-        categoryComboUidCache: ExpirableCache<String, List<String>>,
-        getFromRepository: (String) -> List<String>,
-    ): List<String> {
-        return if (uid != null) {
-            categoryComboUidCache[uid] ?: getFromRepository(uid)
-                .also { categoryComboUidCache[uid] = it }
-        } else {
-            emptyList()
+    override fun rxGetMissingMandatoryFieldsCombination(
+        dataSetUid: String,
+        periodId: String,
+        organisationUnitUid: String,
+        attributeOptionComboUid: String,
+    ): Single<List<DataElementOperand>> {
+        return rxSingle {
+            suspendGetMissingMandatoryFieldsCombination(
+                dataSetUid,
+                periodId,
+                organisationUnitUid,
+                attributeOptionComboUid,
+            )
         }
     }
 
@@ -250,39 +301,111 @@ internal class DataSetInstanceServiceImpl(
         organisationUnitUid: String,
         attributeOptionComboUid: String,
     ): List<DataElementOperand> {
-        return getMissingMandatoryFieldsCombination(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)
-            .blockingGet()
+        return runBlocking {
+            suspendGetMissingMandatoryFieldsCombination(
+                dataSetUid,
+                periodId,
+                organisationUnitUid,
+                attributeOptionComboUid,
+            )
+        }
     }
 
-    internal fun blockingIsCategoryOptionHasDataWriteAccess(categoryOptionComboUid: String): Boolean {
-        val categoryOptions = getCategoryOptions(categoryOptionComboUid)
-        return categoryOptionComboService.blockingHasWriteAccess(categoryOptions)
+    @Suppress("MagicNumber")
+    override suspend fun suspendGetMissingMandatoryFieldsCombination(
+        dataSetUid: String,
+        periodId: String,
+        organisationUnitUid: String,
+        attributeOptionComboUid: String,
+    ): List<DataElementOperand> {
+        val stringListCache = ExpirableCache<String, List<String>>(TimeUnit.SECONDS.toMillis(120))
+
+        val dataSet = dataSetCollectionRepository.withDataSetElements()
+            .uid(dataSetUid).getInternal()
+            ?.takeIf { it.fieldCombinationRequired() == true }
+            ?: return emptyList()
+
+        return dataSet.dataSetElements().orEmpty().flatMap { dataSetElement ->
+            val categoryComboUid = dataSetElement.categoryCombo()?.uid()
+                ?: dataElementCollectionRepository
+                    .uid(dataSetElement.dataElement().uid())
+                    .getInternal()
+                    ?.categoryCombo()
+                    ?.uid()
+
+            categoryComboUid?.let { catComboUid ->
+                val categoryOptionCombos = getCachedCategoryComboUid(catComboUid, stringListCache) { uid ->
+                    categoryOptionComboCollectionRepository.byCategoryComboUid().eq(uid).getUidsInternal()
+                }
+
+                val dataValues = dataValueCollectionRepository
+                    .byPeriod().eq(periodId)
+                    .byOrganisationUnitUid().eq(organisationUnitUid)
+                    .byAttributeOptionComboUid().eq(attributeOptionComboUid)
+                    .byDeleted().isFalse
+                    .byDataElementUid().eq(dataSetElement.dataElement().uid())
+                    .byCategoryOptionComboUid()
+                    .`in`(categoryOptionCombos)
+                    .getInternal()
+
+                dataValues.takeIf { it.isNotEmpty() && it.size != categoryOptionCombos.size }
+                    ?.map { dataValue ->
+                        DataElementOperand.builder().apply {
+                            uid(
+                                listOfNotNull(dataValue.dataElement(), dataValue.categoryOptionCombo())
+                                    .joinToString("."),
+                            )
+                            dataValue.dataElement()?.let { dataElement(ObjectWithUid.create(it)) }
+                            dataValue.categoryOptionCombo()
+                                ?.let { categoryOptionCombo(ObjectWithUid.create(it)) }
+                        }.build()
+                    } ?: emptyList()
+            } ?: emptyList()
+        }
     }
 
-    internal fun blockingIsPeriodInCategoryOptionRange(period: Period, categoryOptionComboUid: String): Boolean {
-        val categoryOptions = getCategoryOptions(categoryOptionComboUid)
+    private suspend fun getCachedCategoryComboUid(
+        uid: String?,
+        categoryComboUidCache: ExpirableCache<String, List<String>>,
+        getFromRepository: suspend (String) -> List<String>,
+    ): List<String> {
+        return if (uid != null) {
+            categoryComboUidCache[uid] ?: getFromRepository(uid)
+                .also { categoryComboUidCache[uid] = it }
+        } else {
+            emptyList()
+        }
+    }
+
+    internal suspend fun suspendIsCategoryOptionHasDataWriteAccess(categoryOptionComboUid: String): Boolean {
+        val categoryOptions = suspendGetCategoryOptions(categoryOptionComboUid)
+        return categoryOptionComboService.hasWriteAccess(categoryOptions)
+    }
+
+    internal suspend fun suspendIsPeriodInCategoryOptionRange(period: Period, categoryOptionComboUid: String): Boolean {
+        val categoryOptions = suspendGetCategoryOptions(categoryOptionComboUid)
         val dates = listOf(period.startDate(), period.endDate())
         return dates.all { date ->
             categoryOptionComboService.isInOptionRange(categoryOptions, date)
         }
     }
 
-    internal fun blockingIsOrgUnitInCaptureScope(orgUnitUid: String): Boolean {
-        return organisationUnitService.blockingIsInCaptureScope(orgUnitUid)
+    internal suspend fun suspendIsOrgUnitInCaptureScope(orgUnitUid: String): Boolean {
+        return organisationUnitService.suspendIsInCaptureScope(orgUnitUid)
     }
 
-    internal fun blockingIsAttributeOptionComboAssignToOrgUnit(
+    internal suspend fun suspendIsAttributeOptionComboAssignToOrgUnit(
         categoryOptionComboUid: String,
         orgUnitUid: String,
     ): Boolean {
-        return categoryOptionComboService.blockingIsAssignedToOrgUnit(
+        return categoryOptionComboService.suspendIsAssignedToOrgUnit(
             categoryOptionComboUid = categoryOptionComboUid,
             orgUnitUid = orgUnitUid,
         )
     }
 
     @Suppress("MagicNumber")
-    internal fun blockingIsExpired(dataSet: DataSet, period: Period): Boolean {
+    internal fun isExpired(dataSet: DataSet, period: Period): Boolean {
         val expiryDays = dataSet.expiryDays()
         return if (expiryDays == null || expiryDays <= 0.0) {
             false
@@ -295,7 +418,7 @@ internal class DataSetInstanceServiceImpl(
         }
     }
 
-    internal fun blockingIsClosed(dataSet: DataSet, period: Period): Boolean {
+    internal fun isClosed(dataSet: DataSet, period: Period): Boolean {
         val periodType = dataSet.periodType() ?: return false
         val openFuturePeriods = dataSet.openFuturePeriods() ?: 0
         val latestFuturePeriod = periodGenerator.generatePeriod(
@@ -306,13 +429,13 @@ internal class DataSetInstanceServiceImpl(
         return period.endDate()?.after(latestFuturePeriod?.endDate()) ?: false
     }
 
-    internal fun blockingIsPeriodInOrgUnitRange(period: Period, orgUnitUid: String): Boolean {
+    internal suspend fun suspendIsPeriodInOrgUnitRange(period: Period, orgUnitUid: String): Boolean {
         return listOfNotNull(period.startDate(), period.endDate()).all { date ->
-            organisationUnitService.blockingIsDateInOrgunitRange(orgUnitUid, date)
+            organisationUnitService.suspendIsDateInOrgunitRange(orgUnitUid, date)
         }
     }
 
-    internal fun blockingIsInDataInputPeriods(dataSet: DataSet, period: Period): Boolean {
+    internal fun isInDataInputPeriods(dataSet: DataSet, period: Period): Boolean {
         val dataInputPeriods = dataSet.dataInputPeriods()
 
         return dataInputPeriods.isNullOrEmpty() || dataInputPeriods
@@ -330,9 +453,9 @@ internal class DataSetInstanceServiceImpl(
             } ?: false
     }
 
-    private fun getCategoryOptions(attributeOptionComboUid: String): List<CategoryOption> {
+    private suspend fun suspendGetCategoryOptions(attributeOptionComboUid: String): List<CategoryOption> {
         return categoryOptionRepository
             .byCategoryOptionComboUid(attributeOptionComboUid)
-            .blockingGet()
+            .getInternal()
     }
 }

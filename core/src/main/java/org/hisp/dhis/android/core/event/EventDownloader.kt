@@ -28,7 +28,9 @@
 package org.hisp.dhis.android.core.event
 
 import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.rx2.asObservable
+import org.hisp.dhis.android.core.arch.call.internal.collectAndWrapException
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory
@@ -38,6 +40,7 @@ import org.hisp.dhis.android.core.tracker.exporter.TrackerD2Progress
 import org.koin.core.annotation.Singleton
 
 @Singleton
+@Suppress("TooManyFunctions")
 class EventDownloader internal constructor(
     private val call: EventDownloadCall,
     private val params: ProgramDataDownloadParams,
@@ -58,12 +61,21 @@ class EventDownloader internal constructor(
      *
      * @return -
      */
+    fun flowDownload(): Flow<TrackerD2Progress> {
+        return call.download(params)
+    }
+
+    @Deprecated(message = "Use rxDownload instead", ReplaceWith("rxDownload()"))
     fun download(): Observable<TrackerD2Progress> {
-        return call.download(params).asObservable()
+        return flowDownload().asObservable()
+    }
+
+    fun rxDownload(): Observable<TrackerD2Progress> {
+        return flowDownload().asObservable()
     }
 
     fun blockingDownload() {
-        download().blockingSubscribe()
+        flowDownload().collectAndWrapException()
     }
 
     fun byUid(): ListFilterConnector<EventDownloader, String> =

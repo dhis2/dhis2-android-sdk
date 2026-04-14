@@ -94,11 +94,11 @@ class EventServiceShould {
     private val firstJanuary = BaseIdentifiableObject.DATE_FORMAT.parse("2020-01-01T00:00:00.000")
 
     @Before
-    fun setUp() {
-        whenever(eventRepository.uid(any()).blockingGet()) doReturn event
-        whenever(enrollmentRepository.uid(any()).blockingGet()) doReturn enrollment
-        whenever(programRepository.uid(any()).blockingGet()) doReturn program
-        whenever(programStageRepository.uid(any()).blockingGet()) doReturn programStage
+    fun setUp() = runTest {
+        whenever(eventRepository.uid(any()).getInternal()) doReturn event
+        whenever(enrollmentRepository.uid(any()).getInternal()) doReturn enrollment
+        whenever(programRepository.uid(any()).getInternal()) doReturn program
+        whenever(programStageRepository.uid(any()).getInternal()) doReturn programStage
 
         whenever(event.uid()) doReturn eventUid
         whenever(event.eventDate()) doReturn firstJanuary
@@ -129,27 +129,27 @@ class EventServiceShould {
     }
 
     @Test
-    fun `Should return true if has access to categoryCombo or attribute option combo is null`() {
+    fun `Should return true if has access to categoryCombo or attribute option combo is null`() = runTest {
         whenever(event.attributeOptionCombo()) doReturn attributeOptionComboUid
-        whenever(categoryOptionComboService.blockingHasAccess(attributeOptionComboUid, firstJanuary)) doReturn true
+        whenever(categoryOptionComboService.suspendHasAccess(attributeOptionComboUid, firstJanuary)) doReturn true
         assertTrue(eventService.blockingHasCategoryComboAccess(event))
 
         whenever(event.attributeOptionCombo()) doReturn null
-        whenever(categoryOptionComboService.blockingHasAccess(attributeOptionComboUid, firstJanuary)) doReturn false
+        whenever(categoryOptionComboService.suspendHasAccess(attributeOptionComboUid, firstJanuary)) doReturn false
         assertTrue(eventService.blockingHasCategoryComboAccess(event))
     }
 
     @Test
-    fun `Should return false if has not access to categoryCombo`() {
+    fun `Should return false if has not access to categoryCombo`() = runTest {
         whenever(event.attributeOptionCombo()) doReturn attributeOptionComboUid
-        whenever(categoryOptionComboService.blockingHasAccess(attributeOptionComboUid, firstJanuary)) doReturn false
+        whenever(categoryOptionComboService.suspendHasAccess(attributeOptionComboUid, firstJanuary)) doReturn false
         assertFalse(eventService.blockingHasCategoryComboAccess(event))
     }
 
     @Test
-    fun `Should return no data write access edition status`() {
+    fun `Should return no data write access edition status`() = runTest {
         whenever(event.attributeOptionCombo()) doReturn attributeOptionComboUid
-        whenever(categoryOptionComboService.blockingHasAccess(attributeOptionComboUid, firstJanuary)) doReturn false
+        whenever(categoryOptionComboService.suspendHasAccess(attributeOptionComboUid, firstJanuary)) doReturn false
         val status = eventService.blockingGetEditableStatus(event.uid())
 
         assertThat(status is EventEditableStatus.NonEditable).isTrue()
@@ -164,10 +164,9 @@ class EventServiceShould {
         whenever(event.enrollment()) doReturn "enrollmentUid"
         whenever(event.program()) doReturn "programUid"
         whenever(enrollment.trackedEntityInstance()) doReturn "teiUid"
-        whenever(organisationUnitService.blockingIsDateInOrgunitRange(any(), any())) doReturn true
-        whenever(organisationUnitService.blockingIsInSearchScope("OU2")) doReturn false
-        whenever(organisationUnitService.blockingIsInSearchScope("OU1")) doReturn true
-        whenever(enrollmentService.blockingIsOpen(any())) doReturn true
+        whenever(organisationUnitService.suspendIsDateInOrgunitRange(any(), any())) doReturn true
+        whenever(organisationUnitService.suspendIsInCaptureScope("OU1")) doReturn true
+        whenever(enrollmentService.suspendIsOpen(any())) doReturn true
 
         val programOwner: ProgramOwner = mock()
         whenever(programOwner.ownerOrgUnit()) doReturn "OU1"
@@ -184,10 +183,11 @@ class EventServiceShould {
         whenever(event.enrollment()) doReturn "enrollmentUid"
         whenever(event.program()) doReturn "programUid"
         whenever(enrollment.trackedEntityInstance()) doReturn "teiUid"
-        whenever(organisationUnitService.blockingIsDateInOrgunitRange(any(), any())) doReturn true
-        whenever(organisationUnitService.blockingIsInSearchScope("OU2")) doReturn false
-        whenever(organisationUnitService.blockingIsInSearchScope("OU3")) doReturn false
-        whenever(enrollmentService.blockingIsOpen(any())) doReturn true
+        whenever(organisationUnitService.suspendIsDateInOrgunitRange(any(), any())) doReturn true
+        whenever(organisationUnitService.isInSearchScope("OU2")) doReturn false
+        whenever(organisationUnitService.isInSearchScope("OU3")) doReturn false
+        whenever(organisationUnitService.suspendIsInCaptureScope(any())) doReturn false
+        whenever(enrollmentService.suspendIsOpen(any())) doReturn true
 
         val programOwner: ProgramOwner = mock()
         whenever(programOwner.ownerOrgUnit()) doReturn "OU3"

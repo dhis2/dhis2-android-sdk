@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.event.internal
 
 import io.reactivex.Single
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.category.CategoryOptionComboService
 import org.hisp.dhis.android.core.enrollment.EnrollmentCollectionRepository
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
@@ -59,50 +60,99 @@ internal class EventServiceImpl(
 ) : EventService {
 
     override fun blockingHasDataWriteAccess(eventUid: String): Boolean {
-        val event = eventRepository.uid(eventUid).blockingGet() ?: return false
-
-        return programStageRepository.uid(event.programStage()).blockingGet()?.access()?.data()?.write() ?: false
+        return runBlocking { suspendHasDataWriteAccess(eventUid) }
     }
 
+    @Deprecated(message = "Use rxHasDataWriteAccess instead", ReplaceWith("rxHasDataWriteAccess(eventUid)"))
     override fun hasDataWriteAccess(eventUid: String): Single<Boolean> {
-        return Single.just(blockingHasDataWriteAccess(eventUid))
+        return rxSingle { suspendHasDataWriteAccess(eventUid) }
+    }
+
+    override fun rxHasDataWriteAccess(eventUid: String): Single<Boolean> {
+        return rxSingle { suspendHasDataWriteAccess(eventUid) }
+    }
+
+    override suspend fun suspendHasDataWriteAccess(eventUid: String): Boolean {
+        val event = eventRepository.uid(eventUid).getInternal() ?: return false
+
+        return programStageRepository.uid(event.programStage()).getInternal()?.access()?.data()?.write() ?: false
     }
 
     override fun blockingIsInOrgunitRange(event: Event): Boolean {
+        return runBlocking { suspendIsInOrgunitRange(event) }
+    }
+
+    @Deprecated(message = "Use rxIsInOrgunitRange instead", ReplaceWith("rxIsInOrgunitRange(event)"))
+    override fun isInOrgunitRange(event: Event): Single<Boolean> {
+        return rxSingle { suspendIsInOrgunitRange(event) }
+    }
+
+    override fun rxIsInOrgunitRange(event: Event): Single<Boolean> {
+        return rxSingle { suspendIsInOrgunitRange(event) }
+    }
+
+    override suspend fun suspendIsInOrgunitRange(event: Event): Boolean {
         return event.eventDate()?.let { eventDate ->
             event.organisationUnit()?.let { orgunitUid ->
-                organisationUnitService.blockingIsDateInOrgunitRange(orgunitUid, eventDate)
+                organisationUnitService.suspendIsDateInOrgunitRange(orgunitUid, eventDate)
             }
         } ?: true
     }
 
-    override fun isInOrgunitRange(event: Event): Single<Boolean> {
-        return Single.just(blockingIsInOrgunitRange(event))
+    override fun blockingHasCategoryComboAccess(event: Event): Boolean {
+        return runBlocking { suspendHasCategoryComboAccess(event) }
     }
 
-    override fun blockingHasCategoryComboAccess(event: Event): Boolean {
+    @Deprecated(message = "Use rxHasCategoryComboAccess instead", ReplaceWith("rxHasCategoryComboAccess(event)"))
+    override fun hasCategoryComboAccess(event: Event): Single<Boolean> {
+        return rxSingle { suspendHasCategoryComboAccess(event) }
+    }
+
+    override fun rxHasCategoryComboAccess(event: Event): Single<Boolean> {
+        return rxSingle { suspendHasCategoryComboAccess(event) }
+    }
+
+    override suspend fun suspendHasCategoryComboAccess(event: Event): Boolean {
         return event.attributeOptionCombo()?.let {
-            categoryOptionComboService.blockingHasAccess(it, event.eventDate())
+            categoryOptionComboService.suspendHasAccess(it, event.eventDate())
         } ?: true
     }
 
-    override fun hasCategoryComboAccess(event: Event): Single<Boolean> {
-        return Single.just(blockingHasCategoryComboAccess(event))
-    }
-
     override fun blockingIsEditable(eventUid: String): Boolean {
-        return blockingGetEditableStatus(eventUid) is EventEditableStatus.Editable
+        return runBlocking { suspendIsEditable(eventUid) }
     }
 
+    @Deprecated(message = "Use rxIsEditable instead", ReplaceWith("rxIsEditable(eventUid)"))
     override fun isEditable(eventUid: String): Single<Boolean> {
-        return Single.just(blockingIsEditable(eventUid))
+        return rxSingle { suspendIsEditable(eventUid) }
+    }
+
+    override fun rxIsEditable(eventUid: String): Single<Boolean> {
+        return rxSingle { suspendIsEditable(eventUid) }
+    }
+
+    override suspend fun suspendIsEditable(eventUid: String): Boolean {
+        return suspendGetEditableStatus(eventUid) is EventEditableStatus.Editable
     }
 
     @Suppress("ComplexMethod")
     override fun blockingGetEditableStatus(eventUid: String): EventEditableStatus {
-        val event = eventRepository.uid(eventUid).blockingGet()!!
-        val program = programRepository.uid(event.program()).blockingGet()
-        val programStage = programStageRepository.uid(event.programStage()).blockingGet()
+        return runBlocking { suspendGetEditableStatus(eventUid) }
+    }
+
+    @Deprecated(message = "Use rxGetEditableStatus instead", ReplaceWith("rxGetEditableStatus(eventUid)"))
+    override fun getEditableStatus(eventUid: String): Single<EventEditableStatus> {
+        return rxSingle { suspendGetEditableStatus(eventUid) }
+    }
+
+    override fun rxGetEditableStatus(eventUid: String): Single<EventEditableStatus> {
+        return rxSingle { suspendGetEditableStatus(eventUid) }
+    }
+
+    override suspend fun suspendGetEditableStatus(eventUid: String): EventEditableStatus {
+        val event = eventRepository.uid(eventUid).getInternal()!!
+        val program = programRepository.uid(event.program()).getInternal()
+        val programStage = programStageRepository.uid(event.programStage()).getInternal()
 
         return when {
             event.status() == EventStatus.COMPLETED && programStage?.blockEntryForm() == true ->
@@ -116,16 +166,16 @@ internal class EventServiceImpl(
             ) ->
                 EventEditableStatus.NonEditable(EventNonEditableReason.EXPIRED)
 
-            !blockingHasDataWriteAccess(eventUid) ->
+            !suspendHasDataWriteAccess(eventUid) ->
                 EventEditableStatus.NonEditable(EventNonEditableReason.NO_DATA_WRITE_ACCESS)
 
-            !blockingIsInOrgunitRange(event) ->
+            !suspendIsInOrgunitRange(event) ->
                 EventEditableStatus.NonEditable(EventNonEditableReason.EVENT_DATE_IS_NOT_IN_ORGUNIT_RANGE)
 
-            !blockingHasCategoryComboAccess(event) ->
+            !suspendHasCategoryComboAccess(event) ->
                 EventEditableStatus.NonEditable(EventNonEditableReason.NO_CATEGORY_COMBO_ACCESS)
 
-            event.enrollment()?.let { !enrollmentService.blockingIsOpen(it) } ?: false ->
+            event.enrollment()?.let { !enrollmentService.suspendIsOpen(it) } ?: false ->
                 EventEditableStatus.NonEditable(EventNonEditableReason.ENROLLMENT_IS_NOT_OPEN)
 
             !isOwnedByUser(event, program?.accessLevel()) ->
@@ -136,13 +186,25 @@ internal class EventServiceImpl(
         }
     }
 
-    override fun getEditableStatus(eventUid: String): Single<EventEditableStatus> {
-        return Single.just(blockingGetEditableStatus(eventUid))
+    override fun blockingCanAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Boolean {
+        return runBlocking { suspendCanAddEventToEnrollment(enrollmentUid, programStageUid) }
     }
 
-    override fun blockingCanAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Boolean {
-        val enrollment = enrollmentRepository.uid(enrollmentUid).blockingGet()
-        val programStage = programStageRepository.uid(programStageUid).blockingGet()
+    @Deprecated(
+        message = "Use rxCanAddEventToEnrollment instead",
+        ReplaceWith("rxCanAddEventToEnrollment(enrollmentUid, programStageUid)"),
+    )
+    override fun canAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Single<Boolean> {
+        return rxSingle { suspendCanAddEventToEnrollment(enrollmentUid, programStageUid) }
+    }
+
+    override fun rxCanAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Single<Boolean> {
+        return rxSingle { suspendCanAddEventToEnrollment(enrollmentUid, programStageUid) }
+    }
+
+    override suspend fun suspendCanAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Boolean {
+        val enrollment = enrollmentRepository.uid(enrollmentUid).getInternal()
+        val programStage = programStageRepository.uid(programStageUid).getInternal()
 
         if (enrollment == null || programStage == null) {
             return false
@@ -160,24 +222,20 @@ internal class EventServiceImpl(
         return isActiveEnrollment && acceptMoreEvents
     }
 
-    override fun canAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Single<Boolean> {
-        return Single.just(blockingCanAddEventToEnrollment(enrollmentUid, programStageUid))
-    }
-
     @Suppress("ReturnCount")
-    private fun isOwnedByUser(event: Event, accessLevel: AccessLevel?): Boolean {
-        val ownerOrgUnit = runBlocking { getOwnerOrgUnit(event) } ?: return false
+    private suspend fun isOwnedByUser(event: Event, accessLevel: AccessLevel?): Boolean {
+        val ownerOrgUnit = getOwnerOrgUnit(event) ?: return false
 
-        if (organisationUnitService.blockingIsInCaptureScope(ownerOrgUnit)) return true
+        if (organisationUnitService.suspendIsInCaptureScope(ownerOrgUnit)) return true
 
         val allowsSearchScope = (accessLevel ?: AccessLevel.OPEN) in listOf(AccessLevel.OPEN, AccessLevel.AUDITED)
-        return allowsSearchScope && organisationUnitService.blockingIsInSearchScope(ownerOrgUnit)
+        return allowsSearchScope && organisationUnitService.isInSearchScope(ownerOrgUnit)
     }
 
     private suspend fun getOwnerOrgUnit(event: Event): String? {
         val program = event.program()
         val tei = event.enrollment()
-            ?.let { enrollmentRepository.uid(it).blockingGet() }
+            ?.let { enrollmentRepository.uid(it).getInternal() }
             ?.trackedEntityInstance()
 
         if (program == null || tei == null) return event.organisationUnit()
@@ -192,11 +250,11 @@ internal class EventServiceImpl(
             ?: event.organisationUnit()
     }
 
-    private fun getEventCount(enrollmentUid: String, programStageUid: String): Int {
+    private suspend fun getEventCount(enrollmentUid: String, programStageUid: String): Int {
         return eventRepository
             .byEnrollmentUid().eq(enrollmentUid)
             .byProgramStageUid().eq(programStageUid)
             .byDeleted().isFalse
-            .blockingCount()
+            .countInternal()
     }
 }

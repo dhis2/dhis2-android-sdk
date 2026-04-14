@@ -27,10 +27,6 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
-import io.reactivex.Completable
-import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.user.AccountManager
 import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository
 import org.hisp.dhis.android.core.user.AuthorityCollectionRepository
@@ -90,28 +86,16 @@ internal class UserModuleImpl(
         return user
     }
 
-    override fun logIn(username: String, password: String, serverUrl: String): Single<User> {
-        return rxSingle { logInCall.logIn(username, password, serverUrl) }
+    override suspend fun suspendLogIn(username: String, password: String, serverUrl: String): User {
+        return logInCall.logIn(username, password, serverUrl)
     }
 
-    override fun blockingLogIn(username: String, password: String, serverUrl: String): User {
-        return runBlocking { logInCall.logIn(username, password, serverUrl) }
+    override suspend fun suspendLogOut() {
+        logoutCallCallFactory.logOut()
     }
 
-    override fun logOut(): Completable {
-        return logoutCallCallFactory.logOut()
-    }
-
-    override fun blockingLogOut() {
-        logOut().blockingAwait()
-    }
-
-    override fun isLogged(): Single<Boolean> {
-        return isUserLoggedInCallFactory.isLogged
-    }
-
-    override fun blockingIsLogged(): Boolean {
-        return isLogged().blockingGet()
+    override suspend fun suspendIsLogged(): Boolean {
+        return isUserLoggedInCallFactory.suspendIsLogged()
     }
 
     override fun accountManager(): AccountManager {

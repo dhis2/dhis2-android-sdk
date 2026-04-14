@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.category
 
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.junit.Assert.assertFalse
@@ -56,11 +57,11 @@ class CategoryOptionComboServiceShould {
     private val thirdJanuary = BaseIdentifiableObject.DATE_FORMAT.parse("2020-01-03T00:00:00.000")
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         whenever(
             categoryOptionRepository
                 .byCategoryOptionComboUid(categoryOptionComboUid)
-                .blockingGet(),
+                .getInternal(),
         ) doReturn listOf(option1, option2)
 
         whenever(option1.access()) doReturn AccessHelper.createForDataWrite(true)

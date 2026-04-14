@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.organisationunit
 
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.koin.core.annotation.Singleton
 import java.util.*
 
@@ -37,31 +39,52 @@ class OrganisationUnitService(
 ) {
 
     fun blockingIsDateInOrgunitRange(organisationUnitUid: String, date: Date): Boolean {
-        val organisationUnit = organisationUnitRepository.uid(organisationUnitUid).blockingGet() ?: return true
+        return runBlocking { suspendIsDateInOrgunitRange(organisationUnitUid, date) }
+    }
+
+    @Deprecated(
+        message = "Use rxIsDateInOrgunitRange instead",
+        ReplaceWith("rxIsDateInOrgunitRange(organisationUnitUid, date)"),
+    )
+    fun isDateInOrgunitRange(organisationUnitUid: String, date: Date): Single<Boolean> {
+        return rxSingle { suspendIsDateInOrgunitRange(organisationUnitUid, date) }
+    }
+
+    fun rxIsDateInOrgunitRange(organisationUnitUid: String, date: Date): Single<Boolean> {
+        return rxSingle { suspendIsDateInOrgunitRange(organisationUnitUid, date) }
+    }
+
+    suspend fun suspendIsDateInOrgunitRange(organisationUnitUid: String, date: Date): Boolean {
+        val organisationUnit = organisationUnitRepository.uid(organisationUnitUid).getInternal() ?: return true
 
         return organisationUnit.openingDate()?.before(date) ?: true &&
             organisationUnit.closedDate()?.after(date) ?: true
     }
 
-    fun isDateInOrgunitRange(organisationUnitUid: String, date: Date): Single<Boolean> {
-        return Single.just(blockingIsDateInOrgunitRange(organisationUnitUid, date))
+    fun blockingIsInCaptureScope(organisationUnitUid: String): Boolean = runBlocking {
+        suspendIsInCaptureScope(organisationUnitUid)
     }
 
-    fun blockingIsInCaptureScope(organisationUnitUid: String): Boolean {
+    @Deprecated(message = "Use rxIsInCaptureScope instead", ReplaceWith("rxIsInCaptureScope(organisationUnitUid)"))
+    fun isInCaptureScope(organisationUnitUid: String): Single<Boolean> {
+        return rxSingle { suspendIsInCaptureScope(organisationUnitUid) }
+    }
+
+    fun rxIsInCaptureScope(organisationUnitUid: String): Single<Boolean> {
+        return rxSingle { suspendIsInCaptureScope(organisationUnitUid) }
+    }
+
+    suspend fun suspendIsInCaptureScope(organisationUnitUid: String): Boolean {
         return organisationUnitRepository
             .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
             .byUid().eq(organisationUnitUid)
-            .blockingGet().isNotEmpty()
+            .getInternal().isNotEmpty()
     }
 
-    fun isInCaptureScope(organisationUnitUid: String): Single<Boolean> {
-        return Single.just(blockingIsInCaptureScope(organisationUnitUid))
-    }
-
-    internal fun blockingIsInSearchScope(organisationUnitUid: String): Boolean {
+    internal suspend fun isInSearchScope(organisationUnitUid: String): Boolean {
         return organisationUnitRepository
             .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
             .byUid().eq(organisationUnitUid)
-            .blockingGet().isNotEmpty()
+            .getInternal().isNotEmpty()
     }
 }

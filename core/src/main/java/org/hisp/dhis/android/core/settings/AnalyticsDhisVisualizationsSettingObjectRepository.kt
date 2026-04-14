@@ -42,27 +42,37 @@ class AnalyticsDhisVisualizationsSettingObjectRepository internal constructor(
     analyticsSettingCall: AnalyticsSettingCall,
 ) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<AnalyticsDhisVisualizationsSetting>(analyticsSettingCall),
     ReadOnlyWithDownloadObjectRepository<AnalyticsDhisVisualizationsSetting> {
+    @Deprecated(message = "Use rxGetByProgram instead", ReplaceWith("rxGetByProgram(program)"))
     fun getByProgram(program: String?): Single<List<AnalyticsDhisVisualizationsGroup>> {
-        return rxSingle { getByProgramInternal(program)!! }
+        return rxSingle { suspendGetByProgram(program)!! }
+    }
+
+    fun rxGetByProgram(program: String?): Single<List<AnalyticsDhisVisualizationsGroup>> {
+        return rxSingle { suspendGetByProgram(program)!! }
     }
 
     fun blockingGetByProgram(program: String?): List<AnalyticsDhisVisualizationsGroup>? {
-        return runBlocking { getByProgramInternal(program) }
+        return runBlocking { suspendGetByProgram(program) }
     }
 
-    private suspend fun getByProgramInternal(program: String?): List<AnalyticsDhisVisualizationsGroup>? {
+    suspend fun suspendGetByProgram(program: String?): List<AnalyticsDhisVisualizationsGroup>? {
         return generateGroups(analyticsDhisVisualizationStore.selectAll()).program()[program]
     }
 
+    @Deprecated(message = "Use rxGetByDataSet instead", ReplaceWith("rxGetByDataSet(dataSet)"))
     fun getByDataSet(dataSet: String?): Single<List<AnalyticsDhisVisualizationsGroup>> {
-        return rxSingle { byDataSetInternal(dataSet)!! }
+        return rxSingle { suspendGetByDataSet(dataSet)!! }
+    }
+
+    fun rxGetByDataSet(dataSet: String?): Single<List<AnalyticsDhisVisualizationsGroup>> {
+        return rxSingle { suspendGetByDataSet(dataSet)!! }
     }
 
     fun blockingByDataSet(dataSet: String?): List<AnalyticsDhisVisualizationsGroup>? {
-        return runBlocking { byDataSetInternal(dataSet) }
+        return runBlocking { suspendGetByDataSet(dataSet) }
     }
 
-    private suspend fun byDataSetInternal(dataSet: String?): List<AnalyticsDhisVisualizationsGroup>? {
+    suspend fun suspendGetByDataSet(dataSet: String?): List<AnalyticsDhisVisualizationsGroup>? {
         return generateGroups(analyticsDhisVisualizationStore.selectAll()).dataSet()[dataSet]
     }
 

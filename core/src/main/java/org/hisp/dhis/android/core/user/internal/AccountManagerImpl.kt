@@ -131,7 +131,7 @@ internal class AccountManagerImpl(
     @Throws(D2Error::class)
     private fun deleteAccountInternal(credentials: Credentials, deletionReason: AccountDeletionReason) {
         accountDeletionSubject.onNext(deletionReason)
-        logOutCall.logOut().blockingAwait()
+        runBlocking { logOutCall.logOut() }
         val configuration = databasesConfigurationStore.get()
         if (configuration != null) {
             val loggedAccount = DatabaseConfigurationHelper.getLoggedAccount(

@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilte
 import org.koin.core.annotation.Singleton
 
 @Singleton
+@Suppress("TooManyFunctions")
 internal class EventLineListRepositoryImpl(
     private val eventLineListService: EventLineListService,
     private val eventLineListParams: EventLineListParams,
@@ -95,11 +96,20 @@ internal class EventLineListRepositoryImpl(
         )
     }
 
+    @Deprecated(message = "Use rxEvaluate instead", ReplaceWith("rxEvaluate()"))
     override fun evaluate(): Single<List<LineListResponse>> {
+        return rxSingle { eventLineListService.evaluate(eventLineListParams) }
+    }
+
+    override fun rxEvaluate(): Single<List<LineListResponse>> {
         return rxSingle { eventLineListService.evaluate(eventLineListParams) }
     }
 
     override fun blockingEvaluate(): List<LineListResponse> {
         return runBlocking { eventLineListService.evaluate(eventLineListParams) }
+    }
+
+    override suspend fun suspendEvaluate(): List<LineListResponse> {
+        return eventLineListService.evaluate(eventLineListParams)
     }
 }

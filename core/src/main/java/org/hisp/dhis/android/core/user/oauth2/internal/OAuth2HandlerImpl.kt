@@ -191,7 +191,16 @@ internal class OAuth2HandlerImpl(
         logoutHandler.logOut()
     }
 
+    override suspend fun suspendLogOut() {
+        logoutHandler.logOut()
+    }
+
+    @Deprecated(message = "Use rxLogOutObservable instead", ReplaceWith("rxLogOutObservable()"))
     override fun logOutObservable(): Observable<Unit> {
+        return logoutHandler.logOutObservable()
+    }
+
+    override fun rxLogOutObservable(): Observable<Unit> {
         return logoutHandler.logOutObservable()
     }
 

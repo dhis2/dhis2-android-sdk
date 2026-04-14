@@ -32,7 +32,6 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.merge
@@ -90,7 +89,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
      */
     fun blockingGetValue(attributeUid: String, organisationUnitUid: String): String {
         return runBlocking {
-            getValueCoroutines(attributeUid, organisationUnitUid)
+            suspendGetValue(attributeUid, organisationUnitUid)
         }
     }
 
@@ -103,11 +102,16 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
      * @return Single with value of tracked entity attribute
      */
 
+    @Deprecated(message = "Use rxGetValue instead", ReplaceWith("rxGetValue(attributeUid, organisationUnitUid)"))
     fun getValue(attributeUid: String, organisationUnitUid: String): Single<String> {
-        return rxSingle { getValueCoroutines(attributeUid, organisationUnitUid) }
+        return rxSingle { suspendGetValue(attributeUid, organisationUnitUid) }
     }
 
-    private suspend fun getValueCoroutines(attributeUid: String, organisationUnitUid: String): String {
+    fun rxGetValue(attributeUid: String, organisationUnitUid: String): Single<String> {
+        return rxSingle { suspendGetValue(attributeUid, organisationUnitUid) }
+    }
+
+    suspend fun suspendGetValue(attributeUid: String, organisationUnitUid: String): String {
         downloadValuesIfBelowThreshold(attributeUid, getOrganisationUnit(organisationUnitUid), null, false)
 
         val pattern = trackedEntityAttributeStore.selectByUid(attributeUid)!!.pattern()
@@ -127,7 +131,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
         attributeUid: String,
         numberOfValuesToFillUp: Int?,
     ) {
-        runBlocking { downloadReservedValuesFlow(attributeUid, numberOfValuesToFillUp).collect() }
+        runBlocking { flowDownloadReservedValues(attributeUid, numberOfValuesToFillUp).collect {} }
     }
 
     /**
@@ -145,18 +149,29 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
      * @return An Observable that notifies about the progress.
      */
 
+    fun flowDownloadReservedValues(
+        attributeUid: String,
+        numberOfValuesToFillUp: Int?,
+    ): Flow<D2Progress> = flow {
+        emitAll(downloadValuesForOrgUnits(attributeUid, numberOfValuesToFillUp))
+    }
+
+    @Deprecated(
+        message = "Use rxDownloadReservedValues instead",
+        ReplaceWith("rxDownloadReservedValues(attributeUid, numberOfValuesToFillUp)"),
+    )
     fun downloadReservedValues(
         attributeUid: String,
         numberOfValuesToFillUp: Int?,
     ): Observable<D2Progress> {
-        return downloadReservedValuesFlow(attributeUid, numberOfValuesToFillUp).asObservable()
+        return flowDownloadReservedValues(attributeUid, numberOfValuesToFillUp).asObservable()
     }
 
-    private fun downloadReservedValuesFlow(
+    fun rxDownloadReservedValues(
         attributeUid: String,
         numberOfValuesToFillUp: Int?,
-    ) = flow {
-        emitAll(downloadValuesForOrgUnits(attributeUid, numberOfValuesToFillUp))
+    ): Observable<D2Progress> {
+        return flowDownloadReservedValues(attributeUid, numberOfValuesToFillUp).asObservable()
     }
 
     /**
@@ -164,9 +179,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
      * @see .downloadAllReservedValues
      */
     fun blockingDownloadAllReservedValues(numberOfValuesToFillUp: Int?) {
-        runBlocking {
-            downloadAllReservedValuesFlow(numberOfValuesToFillUp).collect()
-        }
+        runBlocking { flowDownloadAllReservedValues(numberOfValuesToFillUp).collect {} }
     }
 
     /**
@@ -177,17 +190,23 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
      * @return An Observable that notifies about the progress.
      */
 
-    fun downloadAllReservedValues(numberOfValuesToFillUp: Int?): Observable<D2Progress> {
-        return downloadAllReservedValuesFlow(numberOfValuesToFillUp).asObservable()
-    }
-
-    private fun downloadAllReservedValuesFlow(
-        numberOfValuesToFillUp: Int?,
-    ) = flow {
+    fun flowDownloadAllReservedValues(numberOfValuesToFillUp: Int?): Flow<D2Progress> = flow {
         val flows = generatedAttributes().map { attribute ->
             downloadValuesForOrgUnits(attribute.uid(), numberOfValuesToFillUp)
         }
         emitAll(flows.merge())
+    }
+
+    @Deprecated(
+        message = "Use rxDownloadAllReservedValues instead",
+        ReplaceWith("rxDownloadAllReservedValues(numberOfValuesToFillUp)"),
+    )
+    fun downloadAllReservedValues(numberOfValuesToFillUp: Int?): Observable<D2Progress> {
+        return flowDownloadAllReservedValues(numberOfValuesToFillUp).asObservable()
+    }
+
+    fun rxDownloadAllReservedValues(numberOfValuesToFillUp: Int?): Observable<D2Progress> {
+        return flowDownloadAllReservedValues(numberOfValuesToFillUp).asObservable()
     }
 
     /**
@@ -198,7 +217,11 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
      * @param organisationUnitUid An optional organisation unit uid
      * @return Single with the reserved value count by attribute or by attribute and organisation unit.
      */
+    @Deprecated(message = "Use rxCount instead", ReplaceWith("rxCount(attributeUid, organisationUnitUid)"))
     fun count(attributeUid: String, organisationUnitUid: String?): Single<Int> =
+        rxSingle { countInternal(attributeUid, organisationUnitUid) }
+
+    fun rxCount(attributeUid: String, organisationUnitUid: String?): Single<Int> =
         rxSingle { countInternal(attributeUid, organisationUnitUid) }
 
     /**
@@ -211,6 +234,9 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
         return runBlocking { countInternal(attributeUid, organisationUnitUid) }
     }
 
+    suspend fun suspendCount(attributeUid: String, organisationUnitUid: String?): Int =
+        countInternal(attributeUid, organisationUnitUid)
+
     internal suspend fun countInternal(attributeUid: String, organisationUnitUid: String?): Int {
         return store.count(attributeUid, organisationUnitUid, null)
     }
@@ -220,7 +246,12 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
      *
      * @return Single with a list of the reserved value summaries
      */
+    @Deprecated(message = "Use rxGetReservedValueSummaries instead", ReplaceWith("rxGetReservedValueSummaries()"))
     fun getReservedValueSummaries(): Single<List<ReservedValueSummary>> {
+        return rxSingle { getReservedValueSummariesInternal() }
+    }
+
+    fun rxGetReservedValueSummaries(): Single<List<ReservedValueSummary>> {
         return rxSingle { getReservedValueSummariesInternal() }
     }
 
@@ -231,6 +262,9 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
     fun blockingGetReservedValueSummaries(): List<ReservedValueSummary> {
         return runBlocking { getReservedValueSummariesInternal() }
     }
+
+    suspend fun suspendGetReservedValueSummaries(): List<ReservedValueSummary> =
+        getReservedValueSummariesInternal()
 
     private suspend fun getReservedValueSummariesInternal(): List<ReservedValueSummary> {
         val whereClause =

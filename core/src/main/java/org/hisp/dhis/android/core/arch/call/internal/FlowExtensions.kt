@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,38 +26,13 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.trackerlinelist
+package org.hisp.dhis.android.core.arch.call.internal
 
-import io.reactivex.Single
-import org.hisp.dhis.android.core.analytics.AnalyticsException
-import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.arch.repositories.paging.PageConfig
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.runBlocking
 
-@Suppress("TooManyFunctions")
-interface TrackerLineListRepository {
-
-    fun withEventOutput(programStageId: String): TrackerLineListRepository
-
-    fun withEnrollmentOutput(programId: String): TrackerLineListRepository
-
-    fun withTrackedEntityInstanceOutput(trackedEntityTypeId: String): TrackerLineListRepository
-
-    fun withColumn(column: TrackerLineListItem): TrackerLineListRepository
-
-    fun withFilter(filter: TrackerLineListItem): TrackerLineListRepository
-
-    fun withTrackerVisualization(trackerVisualization: String): TrackerLineListRepository
-
-    fun withPageConfig(pageConfig: PageConfig): TrackerLineListRepository
-
-    fun withSorting(sorting: TrackerLineListSortingItem): TrackerLineListRepository
-
-    @Deprecated(message = "Use rxEvaluate instead", ReplaceWith("rxEvaluate()"))
-    fun evaluate(): Single<Result<TrackerLineListResponse, AnalyticsException>>
-
-    fun rxEvaluate(): Single<Result<TrackerLineListResponse, AnalyticsException>>
-
-    fun blockingEvaluate(): Result<TrackerLineListResponse, AnalyticsException>
-
-    suspend fun suspendEvaluate(): Result<TrackerLineListResponse, AnalyticsException>
+@Suppress("TooGenericExceptionThrown")
+internal fun <T> Flow<T>.collectAndWrapException() {
+    return runBlocking { this@collectAndWrapException.catch { t -> throw RuntimeException(t) }.collect {} }
 }

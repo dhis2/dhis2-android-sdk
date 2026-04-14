@@ -63,11 +63,11 @@ internal class ValidationEngineImpl(
         orgUnitUid: String,
         attributeOptionComboUid: String,
     ): ValidationResult {
-        val rules = suspendGetValidationRulesForDataSetValidation(dataSetUid)
+        val rules = getValidationRulesForDataSetValidation(dataSetUid)
 
         val violations = if (rules.isNotEmpty()) {
             val constantMap = getConstantMap()
-            val valueMap = suspendGetValueMap(
+            val valueMap = getValueMap(
                 dataSetUid,
                 attributeOptionComboUid,
                 orgUnitUid,
@@ -93,14 +93,14 @@ internal class ValidationEngineImpl(
             .build()
     }
 
-    private suspend fun suspendGetValidationRulesForDataSetValidation(datasetUid: String): List<ValidationRule> {
+    private suspend fun getValidationRulesForDataSetValidation(datasetUid: String): List<ValidationRule> {
         return validationRuleRepository
             .byDataSetUids(listOf(datasetUid))
             .bySkipFormValidation().isFalse
             .suspendGet()
     }
 
-    private suspend fun suspendGetValueMap(
+    private suspend fun getValueMap(
         dataSetUid: String,
         attributeOptionComboUid: String,
         orgUnitUid: String,

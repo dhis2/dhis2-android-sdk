@@ -56,7 +56,7 @@ class OrganisationUnitServiceShould {
 
     @Before
     fun setUp() = runTest {
-        whenever(organisationUnitRepository.uid(organisationUnitUid).getInternal()) doReturn organisationUnit
+        whenever(organisationUnitRepository.uid(organisationUnitUid).suspendGet()) doReturn organisationUnit
 
         whenever(organisationUnit.uid()) doReturn organisationUnitUid
     }

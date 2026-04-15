@@ -244,7 +244,7 @@ internal class TrackedEntityInstanceDownloadCall(
                 .byTrackedEntityInstanceFilterObject().eq(it)
                 .byOrgUnits().eq(orgunitUid)
                 .byOrgUnitMode().eq(bundle.commonParams().ouMode)
-                .onlineOnly().getUidsInternal()
+                .onlineOnly().suspendGetUids()
         } ?: emptyList()
     }
 
@@ -254,7 +254,7 @@ internal class TrackedEntityInstanceDownloadCall(
                 .byProgramStageWorkingListObject().eq(it)
                 .byOrgUnits().eq(orgunitUid)
                 .byOrgUnitMode().eq(bundle.commonParams().ouMode)
-                .onlineOnly().getUidsInternal()
+                .onlineOnly().suspendGetUids()
         } ?: emptyList()
     }
 }

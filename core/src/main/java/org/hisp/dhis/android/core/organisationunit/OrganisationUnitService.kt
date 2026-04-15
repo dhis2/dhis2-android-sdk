@@ -55,7 +55,7 @@ class OrganisationUnitService(
     }
 
     suspend fun suspendIsDateInOrgunitRange(organisationUnitUid: String, date: Date): Boolean {
-        val organisationUnit = organisationUnitRepository.uid(organisationUnitUid).getInternal() ?: return true
+        val organisationUnit = organisationUnitRepository.uid(organisationUnitUid).suspendGet() ?: return true
 
         return organisationUnit.openingDate()?.before(date) ?: true &&
             organisationUnit.closedDate()?.after(date) ?: true
@@ -78,13 +78,13 @@ class OrganisationUnitService(
         return organisationUnitRepository
             .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
             .byUid().eq(organisationUnitUid)
-            .getInternal().isNotEmpty()
+            .suspendGet().isNotEmpty()
     }
 
     internal suspend fun isInSearchScope(organisationUnitUid: String): Boolean {
         return organisationUnitRepository
             .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
             .byUid().eq(organisationUnitUid)
-            .getInternal().isNotEmpty()
+            .suspendGet().isNotEmpty()
     }
 }

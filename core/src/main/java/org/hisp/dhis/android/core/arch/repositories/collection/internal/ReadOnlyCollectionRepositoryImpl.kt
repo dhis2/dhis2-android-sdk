@@ -35,10 +35,8 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.PagingSource
-import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
@@ -53,7 +51,6 @@ import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.persistence.common.querybuilders.OrderByClauseBuilder
 import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 
-@Suppress("TooManyFunctions")
 open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollectionRepository<M>> internal constructor(
     private val store: ReadableStore<M>,
     internal val childrenAppenders: ChildrenAppenderGetter<M>,
@@ -84,27 +81,11 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
     }
 
     /**
-     * Get the list of objects in a synchronous way. Important: this is a blocking method and it should not be
-     * executed in the main thread. Consider the asynchronous version [.get].
+     * Get the objects in scope in a suspend way.
      *
-     * @return List of objects
+     * @return The list of objects.
      */
-    override fun blockingGet(): List<M> {
-        return runBlocking {
-            getInternal()
-        }
-    }
-
-    /**
-     * Get the objects in scope in an asynchronous way, returning a `Single<List>`.
-     *
-     * @return A `Single` object with the list of objects.
-     */
-    override fun get(): Single<List<M>> {
-        return rxSingle { getInternal() }
-    }
-
-    internal suspend fun getInternal(): List<M> {
+    override suspend fun suspendGet(): List<M> {
         return ChildrenAppenderExecutor.appendInObjectCollection(
             getWithoutChildrenInternal(),
             childrenAppenders,
@@ -148,49 +129,19 @@ open class ReadOnlyCollectionRepositoryImpl<M : CoreObject, R : ReadOnlyCollecti
         get() = RepositoryPagingSource(store, scope, childrenAppenders)
 
     /**
-     * Get the count of elements in an asynchronous way, returning a `Single`.
-     * @return A `Single` object with the element count
+     * Get the count of elements in a suspend way.
+     * @return The element count
      */
-    override fun count(): Single<Int> {
-        return rxSingle { countInternal() }
-    }
-
-    /**
-     * Get the count of elements. Important: this is a blocking method and it should not be
-     * executed in the main thread. Consider the asynchronous version [.count].
-     *
-     * @return Element count
-     */
-    override fun blockingCount(): Int {
-        return runBlocking { countInternal() }
-    }
-
-    internal suspend fun countInternal(): Int {
+    override suspend fun suspendCount(): Int {
         return store.countWhere(whereClause)
     }
 
     /**
-     * Check if selection of objects in current scope with applied filters is empty in an asynchronous way,
-     * returning a `Single`.
+     * Check if selection of objects in current scope with applied filters is empty in a suspend way.
      * @return If selection is empty
      */
-    override fun isEmpty(): Single<Boolean> {
-        return rxSingle { isEmptyProtected() }
-    }
-
-    /**
-     * Check if selection of objects with applied filters is empty in a synchronous way.
-     * Important: this is a blocking method and it should not be executed in the main thread.
-     * Consider the asynchronous version [.isEmpty].
-     *
-     * @return If selection is empty
-     */
-    override fun blockingIsEmpty(): Boolean {
-        return runBlocking { isEmptyProtected() }
-    }
-
-    internal suspend fun isEmptyProtected(): Boolean {
-        return !one().existsInternal()
+    override suspend fun suspendIsEmpty(): Boolean {
+        return !one().suspendExists()
     }
 
     protected val whereClause: String

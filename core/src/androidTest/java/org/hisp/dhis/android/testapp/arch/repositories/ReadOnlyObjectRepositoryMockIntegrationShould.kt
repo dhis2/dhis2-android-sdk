@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,29 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.systeminfo
 
-import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.rx2.rxSingle
-import org.hisp.dhis.android.core.maintenance.D2Error
+package org.hisp.dhis.android.testapp.arch.repositories
 
-interface Ping {
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Test
 
-    @Deprecated(message = "Use rxGet instead", ReplaceWith("rxGet()"))
-    fun get(): Single<String> = rxGet()
+class ReadOnlyObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
 
-    fun rxGet(): Single<String> = rxSingle { suspendGet() }
+    @Test
+    fun should_return_null_if_object_does_not_exist() {
+        val result = d2.dataElementModule().dataElements()
+            .uid("nonExistent")
+            .rxGet()
+            .test()
 
-    @Suppress("TooGenericExceptionThrown")
-    @Throws(D2Error::class)
-    fun blockingGet(): String = runBlocking {
-        try {
-            suspendGet()
-        } catch (e: D2Error) {
-            throw RuntimeException(e)
-        }
+        val dataElement = result.await()
+
+        assertThat(dataElement.errors().size).isEqualTo(1)
+        assertThat(dataElement.errors().first()).isInstanceOf(NullPointerException::class.java)
+        assertThat(
+            dataElement.errors().first().toString(),
+        ).isEqualTo("java.lang.NullPointerException: The callable returned a null value")
     }
 
-    suspend fun suspendGet(): String
+    @Test
+    fun should_return_null_if_object_does_not_exist_blocking() {
+        val result = d2.dataElementModule().dataElements()
+            .uid("nonExistent")
+            .blockingGet()
+
+        assertThat(result).isNull()
+    }
 }

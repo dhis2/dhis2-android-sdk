@@ -54,7 +54,7 @@ class CategoryOptionComboService(
     suspend fun suspendHasAccess(categoryOptionComboUid: String, date: Date?, orgUnitUid: String? = null): Boolean {
         val categoryOptions = categoryOptionRepository
             .byCategoryOptionComboUid(categoryOptionComboUid)
-            .getInternal()
+            .suspendGet()
 
         return suspendIsAssignedToOrgUnit(categoryOptionComboUid, orgUnitUid) &&
             hasWriteAccess(categoryOptions) &&
@@ -88,7 +88,7 @@ class CategoryOptionComboService(
             val categoryOptions = categoryOptionRepository
                 .byCategoryOptionComboUid(categoryOptionComboUid)
                 .withOrganisationUnits()
-                .getInternal()
+                .suspendGet()
 
             categoryOptions.all { categoryOption ->
                 categoryOption.organisationUnits()?.any {

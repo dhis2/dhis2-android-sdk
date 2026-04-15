@@ -79,7 +79,7 @@ internal class EnrollmentServiceImpl(
     }
 
     override suspend fun suspendIsOpen(enrollmentUid: String): Boolean {
-        val enrollment = enrollmentRepository.uid(enrollmentUid).getInternal() ?: return true
+        val enrollment = enrollmentRepository.uid(enrollmentUid).suspendGet() ?: return true
 
         return enrollment.status()?.equals(EnrollmentStatus.ACTIVE) ?: false
     }
@@ -104,7 +104,7 @@ internal class EnrollmentServiceImpl(
         trackedEntityInstanceUid: String,
         programUid: String,
     ): EnrollmentAccess {
-        val program = programRepository.uid(programUid).getInternal() ?: return EnrollmentAccess.NO_ACCESS
+        val program = programRepository.uid(programUid).suspendGet() ?: return EnrollmentAccess.NO_ACCESS
 
         val dataAccess =
             if (program.access()?.data()?.write() == true) {
@@ -139,12 +139,12 @@ internal class EnrollmentServiceImpl(
     }
 
     private suspend fun isTeiInCaptureScope(trackedEntityInstanceUid: String): Boolean {
-        val tei = trackedEntityInstanceRepository.uid(trackedEntityInstanceUid).getInternal()
+        val tei = trackedEntityInstanceRepository.uid(trackedEntityInstanceUid).suspendGet()
 
         return organisationUnitRepository
             .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
             .uid(tei?.organisationUnit())
-            .existsInternal()
+            .suspendExists()
     }
 
     private suspend fun hasProgramOwnership(trackedEntityInstanceUid: String, programUid: String): Boolean {
@@ -164,7 +164,7 @@ internal class EnrollmentServiceImpl(
         return organisationUnitRepository
             .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
             .uid(ownerOrgUnit)
-            .existsInternal()
+            .suspendExists()
     }
 
     override fun blockingGetAllowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Boolean {
@@ -185,14 +185,14 @@ internal class EnrollmentServiceImpl(
 
     override suspend fun suspendGetAllowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Boolean {
         val currentProgramStagesUids = eventCollectionRepository.byEnrollmentUid().eq(enrollmentUid)
-            .byDeleted().isFalse.getInternal()
+            .byDeleted().isFalse.suspendGet()
             .map { event: Event -> event.programStage() }
 
-        val enrollment = enrollmentRepository.uid(enrollmentUid).getInternal()
+        val enrollment = enrollmentRepository.uid(enrollmentUid).suspendGet()
         val programStages = programStagesCollectionRepository.byProgramUid().eq(
             enrollment?.program(),
         ).byAccessDataWrite().isTrue
-            .getInternal()
+            .suspendGet()
             .filter { programStage: ProgramStage ->
                 !currentProgramStagesUids.contains(programStage.uid()) ||
                     programStage.repeatable()!!

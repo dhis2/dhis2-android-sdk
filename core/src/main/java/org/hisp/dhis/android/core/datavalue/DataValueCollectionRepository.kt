@@ -27,11 +27,10 @@
  */
 package org.hisp.dhis.android.core.datavalue
 
-import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository
@@ -72,14 +71,10 @@ class DataValueCollectionRepository internal constructor(
 ),
     ReadOnlyWithUploadCollectionRepository<DataValue> {
 
-    override fun upload(): Observable<D2Progress> = flow {
+    override fun flowUpload(): Flow<D2Progress> = flow {
         val dataValues =
             bySyncState().`in`(State.uploadableStatesIncludingError().toMutableList()).getWithoutChildrenInternal()
         emitAll(postCall.uploadDataValues(dataValues))
-    }.asObservable()
-
-    override fun blockingUpload() {
-        upload().blockingSubscribe()
     }
 
     fun value(

@@ -2038,53 +2038,198 @@ public abstract interface class org/hisp/dhis/android/core/arch/repositories/col
 }
 
 public abstract interface class org/hisp/dhis/android/core/arch/repositories/collection/CollectionRepositoryUpload {
-	public abstract fun blockingUpload ()V
-	public abstract fun upload ()Lio/reactivex/Observable;
+	public fun blockingUpload ()V
+	public abstract fun flowUpload ()Lkotlinx/coroutines/flow/Flow;
+	public fun rxUpload ()Lio/reactivex/Observable;
+	public fun upload ()Lio/reactivex/Observable;
+}
+
+public final class org/hisp/dhis/android/core/arch/repositories/collection/CollectionRepositoryUpload$DefaultImpls {
+	public static fun blockingUpload (Lorg/hisp/dhis/android/core/arch/repositories/collection/CollectionRepositoryUpload;)V
+	public static fun rxUpload (Lorg/hisp/dhis/android/core/arch/repositories/collection/CollectionRepositoryUpload;)Lio/reactivex/Observable;
+	public static fun upload (Lorg/hisp/dhis/android/core/arch/repositories/collection/CollectionRepositoryUpload;)Lio/reactivex/Observable;
 }
 
 public abstract interface class org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/BaseRepository {
-	public abstract fun blockingCount ()I
-	public abstract fun blockingGet ()Ljava/util/List;
-	public abstract fun blockingIsEmpty ()Z
-	public abstract fun count ()Lio/reactivex/Single;
-	public abstract fun get ()Lio/reactivex/Single;
+	public fun blockingCount ()I
+	public fun blockingGet ()Ljava/util/List;
+	public fun blockingIsEmpty ()Z
+	public fun count ()Lio/reactivex/Single;
+	public fun get ()Lio/reactivex/Single;
 	public abstract fun getPaged (I)Landroidx/lifecycle/LiveData;
 	public abstract fun getPagingData (I)Lkotlinx/coroutines/flow/Flow;
-	public abstract fun isEmpty ()Lio/reactivex/Single;
+	public fun isEmpty ()Lio/reactivex/Single;
 	public abstract fun one ()Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository;
+	public fun rxCount ()Lio/reactivex/Single;
+	public fun rxGet ()Lio/reactivex/Single;
+	public fun rxIsEmpty ()Lio/reactivex/Single;
+	public abstract fun suspendCount (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendGet (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendIsEmpty (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyCollectionRepository$DefaultImpls {
+	public static fun blockingCount (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyCollectionRepository;)I
+	public static fun blockingGet (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyCollectionRepository;)Ljava/util/List;
+	public static fun blockingIsEmpty (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyCollectionRepository;)Z
+	public static fun count (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyCollectionRepository;)Lio/reactivex/Single;
+	public static fun get (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyCollectionRepository;)Lio/reactivex/Single;
+	public static fun isEmpty (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyCollectionRepository;)Lio/reactivex/Single;
+	public static fun rxCount (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyCollectionRepository;)Lio/reactivex/Single;
+	public static fun rxGet (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyCollectionRepository;)Lio/reactivex/Single;
+	public static fun rxIsEmpty (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyCollectionRepository;)Lio/reactivex/Single;
 }
 
 public abstract interface class org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyIdentifiableCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUidCollectionRepository, org/hisp/dhis/android/core/arch/repositories/filters/internal/IdentifiableFilters {
 }
 
+public final class org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyIdentifiableCollectionRepository$DefaultImpls {
+	public static fun blockingCount (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyIdentifiableCollectionRepository;)I
+	public static fun blockingGet (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyIdentifiableCollectionRepository;)Ljava/util/List;
+	public static fun blockingGetUids (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyIdentifiableCollectionRepository;)Ljava/util/List;
+	public static fun blockingIsEmpty (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyIdentifiableCollectionRepository;)Z
+	public static fun count (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyIdentifiableCollectionRepository;)Lio/reactivex/Single;
+	public static fun get (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyIdentifiableCollectionRepository;)Lio/reactivex/Single;
+	public static fun getUids (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyIdentifiableCollectionRepository;)Lio/reactivex/Single;
+	public static fun isEmpty (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyIdentifiableCollectionRepository;)Lio/reactivex/Single;
+	public static fun rxCount (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyIdentifiableCollectionRepository;)Lio/reactivex/Single;
+	public static fun rxGet (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyIdentifiableCollectionRepository;)Lio/reactivex/Single;
+	public static fun rxGetUids (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyIdentifiableCollectionRepository;)Lio/reactivex/Single;
+	public static fun rxIsEmpty (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyIdentifiableCollectionRepository;)Lio/reactivex/Single;
+}
+
 public abstract interface class org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyNameableCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyIdentifiableCollectionRepository, org/hisp/dhis/android/core/arch/repositories/filters/internal/NameableFilters {
 }
 
+public final class org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyNameableCollectionRepository$DefaultImpls {
+	public static fun blockingCount (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyNameableCollectionRepository;)I
+	public static fun blockingGet (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyNameableCollectionRepository;)Ljava/util/List;
+	public static fun blockingGetUids (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyNameableCollectionRepository;)Ljava/util/List;
+	public static fun blockingIsEmpty (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyNameableCollectionRepository;)Z
+	public static fun count (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyNameableCollectionRepository;)Lio/reactivex/Single;
+	public static fun get (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyNameableCollectionRepository;)Lio/reactivex/Single;
+	public static fun getUids (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyNameableCollectionRepository;)Lio/reactivex/Single;
+	public static fun isEmpty (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyNameableCollectionRepository;)Lio/reactivex/Single;
+	public static fun rxCount (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyNameableCollectionRepository;)Lio/reactivex/Single;
+	public static fun rxGet (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyNameableCollectionRepository;)Lio/reactivex/Single;
+	public static fun rxGetUids (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyNameableCollectionRepository;)Lio/reactivex/Single;
+	public static fun rxIsEmpty (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyNameableCollectionRepository;)Lio/reactivex/Single;
+}
+
 public abstract interface class org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository {
-	public abstract fun blockingDownload ()V
-	public abstract fun download ()Lio/reactivex/Completable;
+	public fun blockingDownload ()V
+	public fun download ()Lio/reactivex/Completable;
+	public fun rxDownload ()Lio/reactivex/Completable;
+	public abstract fun suspendDownload (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository$DefaultImpls {
+	public static fun blockingDownload (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository;)V
+	public static fun blockingExists (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository;)Z
+	public static fun blockingGet (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository;)Ljava/lang/Object;
+	public static fun download (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository;)Lio/reactivex/Completable;
+	public static fun exists (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository;)Lio/reactivex/Single;
+	public static fun get (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository;)Lio/reactivex/Single;
+	public static fun rxDownload (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository;)Lio/reactivex/Completable;
+	public static fun rxExists (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository;)Lio/reactivex/Single;
+	public static fun rxGet (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository;)Lio/reactivex/Single;
 }
 
 public abstract interface class org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUidCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyCollectionRepository {
-	public abstract fun blockingGetUids ()Ljava/util/List;
-	public abstract fun getUids ()Lio/reactivex/Single;
+	public fun blockingGetUids ()Ljava/util/List;
+	public fun getUids ()Lio/reactivex/Single;
+	public fun rxGetUids ()Lio/reactivex/Single;
+	public abstract fun suspendGetUids (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository;
+}
+
+public final class org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUidCollectionRepository$DefaultImpls {
+	public static fun blockingCount (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUidCollectionRepository;)I
+	public static fun blockingGet (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUidCollectionRepository;)Ljava/util/List;
+	public static fun blockingGetUids (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUidCollectionRepository;)Ljava/util/List;
+	public static fun blockingIsEmpty (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUidCollectionRepository;)Z
+	public static fun count (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUidCollectionRepository;)Lio/reactivex/Single;
+	public static fun get (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUidCollectionRepository;)Lio/reactivex/Single;
+	public static fun getUids (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUidCollectionRepository;)Lio/reactivex/Single;
+	public static fun isEmpty (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUidCollectionRepository;)Lio/reactivex/Single;
+	public static fun rxCount (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUidCollectionRepository;)Lio/reactivex/Single;
+	public static fun rxGet (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUidCollectionRepository;)Lio/reactivex/Single;
+	public static fun rxGetUids (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUidCollectionRepository;)Lio/reactivex/Single;
+	public static fun rxIsEmpty (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUidCollectionRepository;)Lio/reactivex/Single;
 }
 
 public abstract interface class org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUploadCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/CollectionRepositoryUpload, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyCollectionRepository {
 }
 
+public final class org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUploadCollectionRepository$DefaultImpls {
+	public static fun blockingCount (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUploadCollectionRepository;)I
+	public static fun blockingGet (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUploadCollectionRepository;)Ljava/util/List;
+	public static fun blockingIsEmpty (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUploadCollectionRepository;)Z
+	public static fun blockingUpload (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUploadCollectionRepository;)V
+	public static fun count (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUploadCollectionRepository;)Lio/reactivex/Single;
+	public static fun get (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUploadCollectionRepository;)Lio/reactivex/Single;
+	public static fun isEmpty (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUploadCollectionRepository;)Lio/reactivex/Single;
+	public static fun rxCount (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUploadCollectionRepository;)Lio/reactivex/Single;
+	public static fun rxGet (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUploadCollectionRepository;)Lio/reactivex/Single;
+	public static fun rxIsEmpty (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUploadCollectionRepository;)Lio/reactivex/Single;
+	public static fun rxUpload (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUploadCollectionRepository;)Lio/reactivex/Observable;
+	public static fun upload (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUploadCollectionRepository;)Lio/reactivex/Observable;
+}
+
 public abstract interface class org/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUidCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUidCollectionRepository {
-	public abstract fun add (Ljava/lang/Object;)Lio/reactivex/Single;
-	public abstract fun blockingAdd (Ljava/lang/Object;)Ljava/lang/String;
+	public fun add (Ljava/lang/Object;)Lio/reactivex/Single;
+	public fun blockingAdd (Ljava/lang/Object;)Ljava/lang/String;
+	public fun rxAdd (Ljava/lang/Object;)Lio/reactivex/Single;
+	public abstract fun suspendAdd (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class org/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUidCollectionRepository$DefaultImpls {
+	public static fun add (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUidCollectionRepository;Ljava/lang/Object;)Lio/reactivex/Single;
+	public static fun blockingAdd (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUidCollectionRepository;Ljava/lang/Object;)Ljava/lang/String;
+	public static fun blockingCount (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUidCollectionRepository;)I
+	public static fun blockingGet (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUidCollectionRepository;)Ljava/util/List;
+	public static fun blockingGetUids (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUidCollectionRepository;)Ljava/util/List;
+	public static fun blockingIsEmpty (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUidCollectionRepository;)Z
+	public static fun count (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUidCollectionRepository;)Lio/reactivex/Single;
+	public static fun get (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUidCollectionRepository;)Lio/reactivex/Single;
+	public static fun getUids (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUidCollectionRepository;)Lio/reactivex/Single;
+	public static fun isEmpty (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUidCollectionRepository;)Lio/reactivex/Single;
+	public static fun rxAdd (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUidCollectionRepository;Ljava/lang/Object;)Lio/reactivex/Single;
+	public static fun rxCount (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUidCollectionRepository;)Lio/reactivex/Single;
+	public static fun rxGet (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUidCollectionRepository;)Lio/reactivex/Single;
+	public static fun rxGetUids (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUidCollectionRepository;)Lio/reactivex/Single;
+	public static fun rxIsEmpty (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUidCollectionRepository;)Lio/reactivex/Single;
 }
 
 public abstract interface class org/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUploadWithUidCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/CollectionRepositoryUpload, org/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUidCollectionRepository {
 }
 
+public final class org/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUploadWithUidCollectionRepository$DefaultImpls {
+	public static fun add (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUploadWithUidCollectionRepository;Ljava/lang/Object;)Lio/reactivex/Single;
+	public static fun blockingAdd (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUploadWithUidCollectionRepository;Ljava/lang/Object;)Ljava/lang/String;
+	public static fun blockingCount (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUploadWithUidCollectionRepository;)I
+	public static fun blockingGet (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUploadWithUidCollectionRepository;)Ljava/util/List;
+	public static fun blockingGetUids (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUploadWithUidCollectionRepository;)Ljava/util/List;
+	public static fun blockingIsEmpty (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUploadWithUidCollectionRepository;)Z
+	public static fun blockingUpload (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUploadWithUidCollectionRepository;)V
+	public static fun count (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUploadWithUidCollectionRepository;)Lio/reactivex/Single;
+	public static fun get (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUploadWithUidCollectionRepository;)Lio/reactivex/Single;
+	public static fun getUids (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUploadWithUidCollectionRepository;)Lio/reactivex/Single;
+	public static fun isEmpty (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUploadWithUidCollectionRepository;)Lio/reactivex/Single;
+	public static fun rxAdd (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUploadWithUidCollectionRepository;Ljava/lang/Object;)Lio/reactivex/Single;
+	public static fun rxCount (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUploadWithUidCollectionRepository;)Lio/reactivex/Single;
+	public static fun rxGet (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUploadWithUidCollectionRepository;)Lio/reactivex/Single;
+	public static fun rxGetUids (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUploadWithUidCollectionRepository;)Lio/reactivex/Single;
+	public static fun rxIsEmpty (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUploadWithUidCollectionRepository;)Lio/reactivex/Single;
+	public static fun rxUpload (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUploadWithUidCollectionRepository;)Lio/reactivex/Observable;
+	public static fun upload (Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUploadWithUidCollectionRepository;)Lio/reactivex/Observable;
+}
+
 public abstract class org/hisp/dhis/android/core/arch/repositories/collection/internal/BaseReadOnlyWithUidCollectionRepositoryImpl : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyCollectionRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUidCollectionRepository {
 	public fun blockingGetUids ()Ljava/util/List;
 	public fun getUids ()Lio/reactivex/Single;
+	public fun rxGetUids ()Lio/reactivex/Single;
+	public fun suspendGetUids (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public class org/hisp/dhis/android/core/arch/repositories/collection/internal/BaseRepositoryImpl : org/hisp/dhis/android/core/arch/repositories/collection/BaseRepository {
@@ -2108,6 +2253,12 @@ public class org/hisp/dhis/android/core/arch/repositories/collection/internal/Re
 	public fun isEmpty ()Lio/reactivex/Single;
 	public synthetic fun one ()Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository;
 	public fun one ()Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyOneObjectRepositoryFinalImpl;
+	public fun rxCount ()Lio/reactivex/Single;
+	public fun rxGet ()Lio/reactivex/Single;
+	public fun rxIsEmpty ()Lio/reactivex/Single;
+	public fun suspendCount (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun suspendGet (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun suspendIsEmpty (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public class org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyWithUidCollectionRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyIdentifiableCollectionRepository {
@@ -2144,9 +2295,10 @@ public class org/hisp/dhis/android/core/arch/repositories/collection/internal/Re
 public abstract class org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadWriteWithUidCollectionRepositoryImpl : org/hisp/dhis/android/core/arch/repositories/collection/internal/BaseReadOnlyWithUidCollectionRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUidCollectionRepository {
 	protected final field transformer Lorg/hisp/dhis/android/core/arch/handlers/internal/Transformer;
 	public fun add (Ljava/lang/Object;)Lio/reactivex/Single;
-	protected fun addInternal (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun blockingAdd (Ljava/lang/Object;)Ljava/lang/String;
 	protected fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lorg/hisp/dhis/android/core/arch/handlers/internal/HandleAction;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun rxAdd (Ljava/lang/Object;)Lio/reactivex/Single;
+	public fun suspendAdd (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract class org/hisp/dhis/android/core/arch/repositories/filters/internal/AbstractFilterConnector {
@@ -2389,39 +2541,99 @@ public final class org/hisp/dhis/android/core/arch/repositories/filters/internal
 }
 
 public abstract interface class org/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository : org/hisp/dhis/android/core/arch/repositories/collection/BaseRepository {
-	public abstract fun blockingExists ()Z
-	public abstract fun blockingGet ()Ljava/lang/Object;
-	public abstract fun exists ()Lio/reactivex/Single;
-	public abstract fun get ()Lio/reactivex/Single;
+	public fun blockingExists ()Z
+	public fun blockingGet ()Ljava/lang/Object;
+	public fun exists ()Lio/reactivex/Single;
+	public fun get ()Lio/reactivex/Single;
+	public fun rxExists ()Lio/reactivex/Single;
+	public fun rxGet ()Lio/reactivex/Single;
+	public abstract fun suspendExists (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendGet (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class org/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository$DefaultImpls {
+	public static fun blockingExists (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository;)Z
+	public static fun blockingGet (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository;)Ljava/lang/Object;
+	public static fun exists (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository;)Lio/reactivex/Single;
+	public static fun get (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository;)Lio/reactivex/Single;
+	public static fun rxExists (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository;)Lio/reactivex/Single;
+	public static fun rxGet (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository;)Lio/reactivex/Single;
 }
 
 public final class org/hisp/dhis/android/core/arch/repositories/object/ReadOnlyOneObjectRepositoryFinalImpl : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyOneObjectRepositoryImpl {
 }
 
 public abstract interface class org/hisp/dhis/android/core/arch/repositories/object/ReadWriteObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository {
-	public abstract fun blockingDelete ()V
-	public abstract fun blockingDeleteIfExist ()V
-	public abstract fun delete ()Lio/reactivex/Completable;
-	public abstract fun deleteIfExist ()Lio/reactivex/Completable;
+	public fun blockingDelete ()V
+	public fun blockingDeleteIfExist ()V
+	public fun delete ()Lio/reactivex/Completable;
+	public fun deleteIfExist ()Lio/reactivex/Completable;
+	public fun rxDelete ()Lio/reactivex/Completable;
+	public fun rxDeleteIfExist ()Lio/reactivex/Completable;
+	public abstract fun suspendDelete (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendDeleteIfExist (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class org/hisp/dhis/android/core/arch/repositories/object/ReadWriteObjectRepository$DefaultImpls {
+	public static fun blockingDelete (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadWriteObjectRepository;)V
+	public static fun blockingDeleteIfExist (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadWriteObjectRepository;)V
+	public static fun blockingExists (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadWriteObjectRepository;)Z
+	public static fun blockingGet (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadWriteObjectRepository;)Lorg/hisp/dhis/android/core/common/CoreObject;
+	public static fun delete (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadWriteObjectRepository;)Lio/reactivex/Completable;
+	public static fun deleteIfExist (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadWriteObjectRepository;)Lio/reactivex/Completable;
+	public static fun exists (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadWriteObjectRepository;)Lio/reactivex/Single;
+	public static fun get (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadWriteObjectRepository;)Lio/reactivex/Single;
+	public static fun rxDelete (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadWriteObjectRepository;)Lio/reactivex/Completable;
+	public static fun rxDeleteIfExist (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadWriteObjectRepository;)Lio/reactivex/Completable;
+	public static fun rxExists (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadWriteObjectRepository;)Lio/reactivex/Single;
+	public static fun rxGet (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadWriteObjectRepository;)Lio/reactivex/Single;
 }
 
 public abstract interface class org/hisp/dhis/android/core/arch/repositories/object/ReadWriteValueObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/ReadWriteObjectRepository {
-	public abstract fun blockingSet (Ljava/lang/String;)V
-	public abstract fun set (Ljava/lang/String;)Lio/reactivex/Completable;
+	public fun blockingSet (Ljava/lang/String;)V
+	public fun rxSet (Ljava/lang/String;)Lio/reactivex/Completable;
+	public fun set (Ljava/lang/String;)Lio/reactivex/Completable;
+	public abstract fun suspendSet (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public abstract class org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyAnyObjectWithDownloadRepositoryImpl {
-	public final fun blockingDownload ()V
-	public final fun blockingExists ()Z
-	public final fun blockingGet ()Ljava/lang/Object;
-	public final fun download ()Lio/reactivex/Completable;
-	public final fun exists ()Lio/reactivex/Single;
-	public final fun get ()Lio/reactivex/Single;
+public final class org/hisp/dhis/android/core/arch/repositories/object/ReadWriteValueObjectRepository$DefaultImpls {
+	public static fun blockingDelete (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadWriteValueObjectRepository;)V
+	public static fun blockingDeleteIfExist (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadWriteValueObjectRepository;)V
+	public static fun blockingExists (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadWriteValueObjectRepository;)Z
+	public static fun blockingGet (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadWriteValueObjectRepository;)Lorg/hisp/dhis/android/core/common/CoreObject;
+	public static fun blockingSet (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadWriteValueObjectRepository;Ljava/lang/String;)V
+	public static fun delete (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadWriteValueObjectRepository;)Lio/reactivex/Completable;
+	public static fun deleteIfExist (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadWriteValueObjectRepository;)Lio/reactivex/Completable;
+	public static fun exists (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadWriteValueObjectRepository;)Lio/reactivex/Single;
+	public static fun get (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadWriteValueObjectRepository;)Lio/reactivex/Single;
+	public static fun rxDelete (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadWriteValueObjectRepository;)Lio/reactivex/Completable;
+	public static fun rxDeleteIfExist (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadWriteValueObjectRepository;)Lio/reactivex/Completable;
+	public static fun rxExists (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadWriteValueObjectRepository;)Lio/reactivex/Single;
+	public static fun rxGet (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadWriteValueObjectRepository;)Lio/reactivex/Single;
+	public static fun rxSet (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadWriteValueObjectRepository;Ljava/lang/String;)Lio/reactivex/Completable;
+	public static fun set (Lorg/hisp/dhis/android/core/arch/repositories/object/ReadWriteValueObjectRepository;Ljava/lang/String;)Lio/reactivex/Completable;
+}
+
+public abstract class org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyAnyObjectWithDownloadRepositoryImpl : org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository {
+	public fun blockingDownload ()V
+	public fun blockingExists ()Z
+	public fun blockingGet ()Ljava/lang/Object;
+	public fun download ()Lio/reactivex/Completable;
+	public fun exists ()Lio/reactivex/Single;
+	public fun get ()Lio/reactivex/Single;
+	public fun rxDownload ()Lio/reactivex/Completable;
+	public fun rxExists ()Lio/reactivex/Single;
+	public fun rxGet ()Lio/reactivex/Single;
+	public fun suspendDownload (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun suspendExists (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun suspendGet (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public class org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyFirstObjectWithDownloadRepositoryImpl : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyOneObjectRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository {
 	public fun blockingDownload ()V
 	public fun download ()Lio/reactivex/Completable;
+	public fun rxDownload ()Lio/reactivex/Completable;
+	public fun suspendDownload (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract class org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyObjectRepositoryImpl : org/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository {
@@ -2433,6 +2645,10 @@ public abstract class org/hisp/dhis/android/core/arch/repositories/object/intern
 	public fun get ()Lio/reactivex/Single;
 	protected final fun getScope ()Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope;
 	protected abstract fun getWithoutChildrenInternal (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun rxExists ()Lio/reactivex/Single;
+	public fun rxGet ()Lio/reactivex/Single;
+	public fun suspendExists (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun suspendGet (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public class org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyOneObjectRepositoryImpl : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyObjectRepositoryImpl {
@@ -2445,10 +2661,12 @@ public abstract class org/hisp/dhis/android/core/arch/repositories/object/intern
 	public fun blockingDeleteIfExist ()V
 	public fun delete ()Lio/reactivex/Completable;
 	public fun deleteIfExist ()Lio/reactivex/Completable;
-	protected final fun deleteIfExistInternal (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	protected final fun deleteInternal (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected abstract fun deleteObject (Lorg/hisp/dhis/android/core/common/CoreObject;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected abstract fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lorg/hisp/dhis/android/core/arch/handlers/internal/HandleAction;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun rxDelete ()Lio/reactivex/Completable;
+	public fun rxDeleteIfExist ()Lio/reactivex/Completable;
+	public fun suspendDelete (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun suspendDeleteIfExist (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected final fun updateIfChangedInternal (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected fun updateObject (Lorg/hisp/dhis/android/core/common/CoreObject;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -2461,13 +2679,14 @@ public class org/hisp/dhis/android/core/arch/repositories/object/internal/ReadWr
 	public fun blockingDelete ()V
 	public fun blockingDeleteIfExist ()V
 	public fun delete ()Lio/reactivex/Completable;
-	protected fun delete (Lorg/hisp/dhis/android/core/common/CoreObject;)V
 	public fun deleteIfExist ()Lio/reactivex/Completable;
-	protected final fun deleteIfExistInternal (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	protected fun deleteInternal (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	protected fun deleteInternal (Lorg/hisp/dhis/android/core/common/CoreObject;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun rxDelete ()Lio/reactivex/Completable;
+	public fun rxDeleteIfExist ()Lio/reactivex/Completable;
 	protected final fun setObject (Lorg/hisp/dhis/android/core/common/CoreObject;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun suspendDelete (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	protected fun suspendDelete (Lorg/hisp/dhis/android/core/common/CoreObject;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun suspendDeleteIfExist (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected final fun updateIfChanged (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)Lorg/hisp/dhis/android/core/common/Unit;
 	protected final fun updateIfChangedInternal (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -4494,6 +4713,8 @@ public final class org/hisp/dhis/android/core/dataset/DataSetCompleteRegistratio
 	public final fun byState ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
 	public final fun byStoredBy ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun bySyncState ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
+	public fun flowUpload ()Lkotlinx/coroutines/flow/Flow;
+	public fun rxUpload ()Lio/reactivex/Observable;
 	public fun upload ()Lio/reactivex/Observable;
 	public final fun value (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistrationObjectRepository;
 }
@@ -4504,7 +4725,13 @@ public final class org/hisp/dhis/android/core/dataset/DataSetCompleteRegistratio
 	public final fun blockingSet ()V
 	public fun delete ()Lio/reactivex/Completable;
 	public fun deleteIfExist ()Lio/reactivex/Completable;
+	public fun rxDelete ()Lio/reactivex/Completable;
+	public fun rxDeleteIfExist ()Lio/reactivex/Completable;
+	public final fun rxSet ()Lio/reactivex/Completable;
 	public final fun set ()Lio/reactivex/Completable;
+	public fun suspendDelete (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun suspendDeleteIfExist (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendSet (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract class org/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink : org/hisp/dhis/android/core/common/CoreObject {
@@ -4879,6 +5106,8 @@ public final class org/hisp/dhis/android/core/datastore/DataStoreCollectionRepos
 	public final fun byNamespace ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun bySyncState ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
 	public final fun byValue ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
+	public fun flowUpload ()Lkotlinx/coroutines/flow/Flow;
+	public fun rxUpload ()Lio/reactivex/Observable;
 	public fun upload ()Lio/reactivex/Observable;
 	public final fun value (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/datastore/DataStoreObjectRepository;
 }
@@ -4915,10 +5144,11 @@ public abstract interface class org/hisp/dhis/android/core/datastore/DataStoreMo
 }
 
 public final class org/hisp/dhis/android/core/datastore/DataStoreObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadWriteWithValueObjectRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/object/ReadWriteValueObjectRepository {
-	public fun blockingDelete ()V
 	public fun blockingSet (Ljava/lang/String;)V
-	public fun delete ()Lio/reactivex/Completable;
+	public fun rxSet (Ljava/lang/String;)Lio/reactivex/Completable;
 	public fun set (Ljava/lang/String;)Lio/reactivex/Completable;
+	public fun suspendDelete (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun suspendSet (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract class org/hisp/dhis/android/core/datastore/KeyValuePair : org/hisp/dhis/android/core/common/CoreObject {
@@ -4944,7 +5174,9 @@ public final class org/hisp/dhis/android/core/datastore/LocalDataStoreCollection
 
 public final class org/hisp/dhis/android/core/datastore/LocalDataStoreObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadWriteWithValueObjectRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/object/ReadWriteValueObjectRepository {
 	public fun blockingSet (Ljava/lang/String;)V
+	public fun rxSet (Ljava/lang/String;)Lio/reactivex/Completable;
 	public fun set (Ljava/lang/String;)Lio/reactivex/Completable;
+	public fun suspendSet (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/datastore/internal/DataStoreModuleWiper : org/hisp/dhis/android/core/wipe/internal/ModuleWiper {
@@ -5002,6 +5234,8 @@ public final class org/hisp/dhis/android/core/datavalue/DataValueCollectionRepos
 	public final fun byStoredBy ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun bySyncState ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
 	public final fun byValue ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
+	public fun flowUpload ()Lkotlinx/coroutines/flow/Flow;
+	public fun rxUpload ()Lio/reactivex/Observable;
 	public fun upload ()Lio/reactivex/Observable;
 	public final fun value (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValueObjectRepository;
 	public final fun value (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValueObjectRepository;
@@ -5061,12 +5295,13 @@ public abstract interface class org/hisp/dhis/android/core/datavalue/DataValueMo
 }
 
 public final class org/hisp/dhis/android/core/datavalue/DataValueObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadWriteWithValueObjectRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/object/ReadWriteValueObjectRepository {
-	public fun blockingDelete ()V
 	public fun blockingSet (Ljava/lang/String;)V
-	public fun delete ()Lio/reactivex/Completable;
+	public fun rxSet (Ljava/lang/String;)Lio/reactivex/Completable;
 	public fun set (Ljava/lang/String;)Lio/reactivex/Completable;
 	public final fun setComment (Ljava/lang/String;)V
 	public final fun setFollowUp (Z)V
+	public fun suspendDelete (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun suspendSet (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface annotation class org/hisp/dhis/android/core/datavalue/LegacyDataValueApi : java/lang/annotation/Annotation {
@@ -5439,6 +5674,7 @@ public final class org/hisp/dhis/android/core/event/EventCollectionRepository : 
 	public final fun byTrackedEntityInstanceUids (Ljava/util/List;)Lorg/hisp/dhis/android/core/event/EventCollectionRepository;
 	public final fun byUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun countTrackedEntityInstances ()I
+	public fun flowUpload ()Lkotlinx/coroutines/flow/Flow;
 	public final fun orderByCompleteDate (Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;)Lorg/hisp/dhis/android/core/event/EventCollectionRepository;
 	public final fun orderByCreated (Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;)Lorg/hisp/dhis/android/core/event/EventCollectionRepository;
 	public final fun orderByCreatedAtClient (Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;)Lorg/hisp/dhis/android/core/event/EventCollectionRepository;
@@ -5450,6 +5686,7 @@ public final class org/hisp/dhis/android/core/event/EventCollectionRepository : 
 	public final fun orderByOrganisationUnitName (Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;)Lorg/hisp/dhis/android/core/event/EventCollectionRepository;
 	public final fun orderByTimeline (Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;)Lorg/hisp/dhis/android/core/event/EventCollectionRepository;
 	public synthetic fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lorg/hisp/dhis/android/core/arch/handlers/internal/HandleAction;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun rxUpload ()Lio/reactivex/Observable;
 	public synthetic fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository;
 	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/EventObjectRepository;
 	public fun upload ()Lio/reactivex/Observable;
@@ -5718,6 +5955,14 @@ public final class org/hisp/dhis/android/core/event/search/EventQueryCollectionR
 	public final fun orderByLastUpdated ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EqFilterConnector;
 	public final fun orderByOrganisationUnitName ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EqFilterConnector;
 	public final fun orderByTimeline ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EqFilterConnector;
+	public fun rxCount ()Lio/reactivex/Single;
+	public fun rxGet ()Lio/reactivex/Single;
+	public fun rxGetUids ()Lio/reactivex/Single;
+	public fun rxIsEmpty ()Lio/reactivex/Single;
+	public fun suspendCount (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun suspendGet (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun suspendGetUids (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun suspendIsEmpty (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository;
 	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/EventObjectRepository;
 }
@@ -5930,11 +6175,6 @@ public abstract class org/hisp/dhis/android/core/fileresource/FileResource$Build
 }
 
 public final class org/hisp/dhis/android/core/fileresource/FileResourceCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadWriteWithUidCollectionRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUidCollectionRepository {
-	public fun add (Ljava/io/File;)Lio/reactivex/Single;
-	public synthetic fun add (Ljava/lang/Object;)Lio/reactivex/Single;
-	public synthetic fun addInternal (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun blockingAdd (Ljava/io/File;)Ljava/lang/String;
-	public synthetic fun blockingAdd (Ljava/lang/Object;)Ljava/lang/String;
 	public final fun blockingUpload ()V
 	public final fun byContentLength ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/LongFilterConnector;
 	public final fun byContentType ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
@@ -5945,6 +6185,8 @@ public final class org/hisp/dhis/android/core/fileresource/FileResourceCollectio
 	public final fun byState ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
 	public final fun bySyncState ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
 	public final fun byUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
+	public fun suspendAdd (Ljava/io/File;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun suspendAdd (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository;
 	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/fileresource/FileResourceObjectRepository;
 	public final fun upload ()Lio/reactivex/Observable;
@@ -6897,21 +7139,32 @@ public abstract interface class org/hisp/dhis/android/core/option/OptionModule {
 }
 
 public abstract interface class org/hisp/dhis/android/core/option/OptionService {
-	public abstract fun blockingSearchForOptions (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Ljava/util/List;
+	public fun blockingSearchForOptions (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Ljava/util/List;
 	public static synthetic fun blockingSearchForOptions$default (Lorg/hisp/dhis/android/core/option/OptionService;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Ljava/util/List;
-	public abstract fun searchForOptions (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Lio/reactivex/Single;
+	public fun rxSearchForOptions (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Lio/reactivex/Single;
+	public static synthetic fun rxSearchForOptions$default (Lorg/hisp/dhis/android/core/option/OptionService;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lio/reactivex/Single;
+	public fun searchForOptions (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Lio/reactivex/Single;
 	public static synthetic fun searchForOptions$default (Lorg/hisp/dhis/android/core/option/OptionService;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lio/reactivex/Single;
+	public abstract fun suspendSearchForOptions (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun suspendSearchForOptions$default (Lorg/hisp/dhis/android/core/option/OptionService;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/option/OptionService$DefaultImpls {
+	public static fun blockingSearchForOptions (Lorg/hisp/dhis/android/core/option/OptionService;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Ljava/util/List;
 	public static synthetic fun blockingSearchForOptions$default (Lorg/hisp/dhis/android/core/option/OptionService;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Ljava/util/List;
+	public static fun rxSearchForOptions (Lorg/hisp/dhis/android/core/option/OptionService;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Lio/reactivex/Single;
+	public static synthetic fun rxSearchForOptions$default (Lorg/hisp/dhis/android/core/option/OptionService;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lio/reactivex/Single;
+	public static fun searchForOptions (Lorg/hisp/dhis/android/core/option/OptionService;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Lio/reactivex/Single;
 	public static synthetic fun searchForOptions$default (Lorg/hisp/dhis/android/core/option/OptionService;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lio/reactivex/Single;
+	public static synthetic fun suspendSearchForOptions$default (Lorg/hisp/dhis/android/core/option/OptionService;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/option/OptionServiceImpl : org/hisp/dhis/android/core/option/OptionService {
 	public fun <init> (Lorg/hisp/dhis/android/core/option/OptionCollectionRepository;)V
 	public fun blockingSearchForOptions (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Ljava/util/List;
+	public fun rxSearchForOptions (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Lio/reactivex/Single;
 	public fun searchForOptions (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;)Lio/reactivex/Single;
+	public fun suspendSearchForOptions (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract class org/hisp/dhis/android/core/option/OptionSet : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
@@ -8356,6 +8609,10 @@ public final class org/hisp/dhis/android/core/relationship/RelationshipCollectio
 	public final fun getByItem (Lorg/hisp/dhis/android/core/relationship/RelationshipItem;)Ljava/util/List;
 	public final fun getByItem (Lorg/hisp/dhis/android/core/relationship/RelationshipItem;Z)Ljava/util/List;
 	public final fun getByItem (Lorg/hisp/dhis/android/core/relationship/RelationshipItem;ZZ)Ljava/util/List;
+	public synthetic fun rxAdd (Ljava/lang/Object;)Lio/reactivex/Single;
+	public fun rxAdd (Lorg/hisp/dhis/android/core/relationship/Relationship;)Lio/reactivex/Single;
+	public synthetic fun suspendAdd (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun suspendAdd (Lorg/hisp/dhis/android/core/relationship/Relationship;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository;
 	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/object/ReadWriteObjectRepository;
 	public final fun withItems ()Lorg/hisp/dhis/android/core/relationship/RelationshipCollectionRepository;
@@ -10268,10 +10525,16 @@ public abstract interface class org/hisp/dhis/android/core/systeminfo/DHISVersio
 }
 
 public abstract interface class org/hisp/dhis/android/core/systeminfo/Ping {
-	public abstract fun blockingGet ()Ljava/lang/String;
-	public abstract fun get ()Lio/reactivex/Single;
-	public abstract fun rxGet ()Lio/reactivex/Single;
+	public fun blockingGet ()Ljava/lang/String;
+	public fun get ()Lio/reactivex/Single;
+	public fun rxGet ()Lio/reactivex/Single;
 	public abstract fun suspendGet (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class org/hisp/dhis/android/core/systeminfo/Ping$DefaultImpls {
+	public static fun blockingGet (Lorg/hisp/dhis/android/core/systeminfo/Ping;)Ljava/lang/String;
+	public static fun get (Lorg/hisp/dhis/android/core/systeminfo/Ping;)Lio/reactivex/Single;
+	public static fun rxGet (Lorg/hisp/dhis/android/core/systeminfo/Ping;)Lio/reactivex/Single;
 }
 
 public final class org/hisp/dhis/android/core/systeminfo/SMSVersion : java/lang/Enum {
@@ -10606,9 +10869,12 @@ public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttribu
 public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValueObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadWriteWithValueObjectRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/object/ReadWriteValueObjectRepository {
 	public fun blockingExists ()Z
 	public fun blockingSet (Ljava/lang/String;)V
-	public synthetic fun delete (Lorg/hisp/dhis/android/core/common/CoreObject;)V
 	public synthetic fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun rxSet (Ljava/lang/String;)Lio/reactivex/Completable;
 	public fun set (Ljava/lang/String;)Lio/reactivex/Completable;
+	public synthetic fun suspendDelete (Lorg/hisp/dhis/android/core/common/CoreObject;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun suspendExists (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun suspendSet (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue : org/hisp/dhis/android/core/common/BaseDataObject, org/hisp/dhis/android/core/common/ObjectWithDeleteInterface {
@@ -10650,11 +10916,13 @@ public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityDataVal
 }
 
 public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityDataValueObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadWriteWithValueObjectRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/object/ReadWriteValueObjectRepository {
-	public fun blockingExists ()Z
 	public fun blockingSet (Ljava/lang/String;)V
-	public synthetic fun delete (Lorg/hisp/dhis/android/core/common/CoreObject;)V
 	public synthetic fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun rxSet (Ljava/lang/String;)Lio/reactivex/Completable;
 	public fun set (Ljava/lang/String;)Lio/reactivex/Completable;
+	public synthetic fun suspendDelete (Lorg/hisp/dhis/android/core/common/CoreObject;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun suspendExists (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun suspendSet (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstance : org/hisp/dhis/android/core/common/BaseDeletableDataObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
@@ -10709,11 +10977,13 @@ public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanc
 	public final fun bySyncState ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
 	public final fun byTrackedEntityType ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
+	public fun flowUpload ()Lkotlinx/coroutines/flow/Flow;
 	public final fun orderByCreated (Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCollectionRepository;
 	public final fun orderByCreatedAtClient (Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCollectionRepository;
 	public final fun orderByLastUpdated (Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCollectionRepository;
 	public final fun orderByLastUpdatedAtClient (Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCollectionRepository;
 	public synthetic fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lorg/hisp/dhis/android/core/arch/handlers/internal/HandleAction;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun rxUpload ()Lio/reactivex/Observable;
 	public synthetic fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository;
 	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceObjectRepository;
 	public fun upload ()Lio/reactivex/Observable;
@@ -11055,6 +11325,14 @@ public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntity
 	public fun getUids ()Lio/reactivex/Single;
 	public fun isEmpty ()Lio/reactivex/Single;
 	public fun one ()Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository;
+	public fun rxCount ()Lio/reactivex/Single;
+	public fun rxGet ()Lio/reactivex/Single;
+	public fun rxGetUids ()Lio/reactivex/Single;
+	public fun rxIsEmpty ()Lio/reactivex/Single;
+	public fun suspendCount (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun suspendGet (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun suspendGetUids (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun suspendIsEmpty (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository;
 }
 
@@ -11170,6 +11448,14 @@ public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntity
 	public fun getUids ()Lio/reactivex/Single;
 	public fun isEmpty ()Lio/reactivex/Single;
 	public fun one ()Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository;
+	public fun rxCount ()Lio/reactivex/Single;
+	public fun rxGet ()Lio/reactivex/Single;
+	public fun rxGetUids ()Lio/reactivex/Single;
+	public fun rxIsEmpty ()Lio/reactivex/Single;
+	public fun suspendCount (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun suspendGet (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun suspendGetUids (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun suspendIsEmpty (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository;
 }
 
@@ -11515,6 +11801,14 @@ public final class org/hisp/dhis/android/core/usecase/stock/StockUseCaseCollecti
 	public fun getUids ()Lio/reactivex/Single;
 	public fun isEmpty ()Lio/reactivex/Single;
 	public fun one ()Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository;
+	public fun rxCount ()Lio/reactivex/Single;
+	public fun rxGet ()Lio/reactivex/Single;
+	public fun rxGetUids ()Lio/reactivex/Single;
+	public fun rxIsEmpty ()Lio/reactivex/Single;
+	public fun suspendCount (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun suspendGet (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun suspendGetUids (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun suspendIsEmpty (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository;
 	public final fun withTransactions ()Lorg/hisp/dhis/android/core/usecase/stock/StockUseCaseCollectionRepository;
 }
@@ -11716,6 +12010,10 @@ public final class org/hisp/dhis/android/core/user/UserCredentialsObjectReposito
 	public fun blockingGet ()Lorg/hisp/dhis/android/core/user/UserCredentials;
 	public fun exists ()Lio/reactivex/Single;
 	public fun get ()Lio/reactivex/Single;
+	public fun rxExists ()Lio/reactivex/Single;
+	public fun rxGet ()Lio/reactivex/Single;
+	public fun suspendExists (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun suspendGet (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun withUserRoles ()Lorg/hisp/dhis/android/core/user/UserCredentialsObjectRepository;
 }
 
@@ -12041,8 +12339,16 @@ public final class org/hisp/dhis/android/core/validation/ValidationRuleOperator 
 }
 
 public abstract interface class org/hisp/dhis/android/core/validation/engine/ValidationEngine {
-	public abstract fun blockingValidate (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResult;
-	public abstract fun validate (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public fun blockingValidate (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResult;
+	public fun rxValidate (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public abstract fun suspendValidate (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun validate (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+}
+
+public final class org/hisp/dhis/android/core/validation/engine/ValidationEngine$DefaultImpls {
+	public static fun blockingValidate (Lorg/hisp/dhis/android/core/validation/engine/ValidationEngine;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResult;
+	public static fun rxValidate (Lorg/hisp/dhis/android/core/validation/engine/ValidationEngine;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public static fun validate (Lorg/hisp/dhis/android/core/validation/engine/ValidationEngine;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
 }
 
 public abstract class org/hisp/dhis/android/core/validation/engine/ValidationResult {

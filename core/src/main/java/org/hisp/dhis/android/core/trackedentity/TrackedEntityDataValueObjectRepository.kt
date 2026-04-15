@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
-import io.reactivex.Completable
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteValueObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
@@ -62,28 +61,26 @@ class TrackedEntityDataValueObjectRepository internal constructor(
     },
 ),
     ReadWriteValueObjectRepository<TrackedEntityDataValue> {
-    override fun set(value: String?): Completable {
-        return Completable.fromAction { blockingSet(value) }
-    }
 
     @Throws(D2Error::class)
-    override fun blockingSet(value: String?) {
-        updateIfChanged(value, { it?.value() }) { trackedEntityDataValue: TrackedEntityDataValue?, newValue ->
+    override suspend fun suspendSet(value: String?) {
+        updateIfChangedInternal(value, { it?.value() }) {
+                trackedEntityDataValue: TrackedEntityDataValue?, newValue ->
             setBuilder(trackedEntityDataValue).value(newValue).build()
         }
     }
 
     @Throws(D2Error::class)
-    override fun delete(m: TrackedEntityDataValue) {
+    override suspend fun suspendDelete(m: TrackedEntityDataValue) {
         if (m.syncState() === State.TO_POST) {
-            super.delete(m)
+            super<ReadWriteWithValueObjectRepositoryImpl>.suspendDelete(m)
         } else {
-            blockingSet(null)
+            suspendSet(null)
         }
     }
 
-    override fun blockingExists(): Boolean {
-        val value = blockingGetWithoutChildren()
+    override suspend fun suspendExists(): Boolean {
+        val value = getWithoutChildrenInternal()
         return if (value == null) false else value.deleted() == null || !value.deleted()
     }
 

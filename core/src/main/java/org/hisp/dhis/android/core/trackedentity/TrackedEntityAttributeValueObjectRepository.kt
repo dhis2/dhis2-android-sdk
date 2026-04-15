@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
-import io.reactivex.Completable
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteValueObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
@@ -62,29 +62,30 @@ class TrackedEntityAttributeValueObjectRepository internal constructor(
     },
 ),
     ReadWriteValueObjectRepository<TrackedEntityAttributeValue> {
-    override fun set(value: String?): Completable {
-        return Completable.fromAction { blockingSet(value) }
-    }
 
-    @Throws(D2Error::class)
-    override fun blockingSet(value: String?) {
-        updateIfChanged(value, { it?.value() }) { trackedEntityAttributeValue: TrackedEntityAttributeValue?, newValue ->
+    override suspend fun suspendSet(value: String?) {
+        updateIfChangedInternal(value, { it?.value() }) {
+                trackedEntityAttributeValue: TrackedEntityAttributeValue?, newValue ->
             setBuilder(trackedEntityAttributeValue).value(newValue).build()
         }
     }
 
     @Throws(D2Error::class)
-    override fun delete(m: TrackedEntityAttributeValue) {
+    override suspend fun suspendDelete(m: TrackedEntityAttributeValue) {
         if (m.syncState() === State.TO_POST) {
-            super.delete(m)
+            super<ReadWriteWithValueObjectRepositoryImpl>.suspendDelete(m)
         } else {
             blockingSet(null)
         }
     }
 
-    override fun blockingExists(): Boolean {
-        val value = blockingGetWithoutChildren()
+    override suspend fun suspendExists(): Boolean {
+        val value = getWithoutChildrenInternal()
         return if (value == null) false else value.deleted() == null || !value.deleted()
+    }
+
+    override fun blockingExists(): Boolean {
+        return runBlocking { suspendExists() }
     }
 
     private fun setBuilder(value: TrackedEntityAttributeValue?): TrackedEntityAttributeValue.Builder {

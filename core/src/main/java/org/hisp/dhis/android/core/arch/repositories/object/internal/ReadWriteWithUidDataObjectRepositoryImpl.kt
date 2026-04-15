@@ -28,9 +28,6 @@
 package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 
 import android.util.Log
-import io.reactivex.Completable
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.rx2.rxCompletable
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
@@ -45,7 +42,6 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 
-@Suppress("TooManyFunctions")
 abstract class ReadWriteWithUidDataObjectRepositoryImpl<M, R : ReadOnlyObjectRepository<M>> internal constructor(
     store: IdentifiableDeletableDataObjectStore<M>,
     childrenAppenders: ChildrenAppenderGetter<M>,
@@ -53,36 +49,15 @@ abstract class ReadWriteWithUidDataObjectRepositoryImpl<M, R : ReadOnlyObjectRep
     repositoryFactory: ObjectRepositoryFactory<R>,
 ) : ReadWriteWithUidObjectRepositoryImpl<M, R>(store, childrenAppenders, scope, repositoryFactory),
     ReadWriteObjectRepository<M> where M : CoreObject, M : ObjectWithUidInterface, M : DeletableDataObject {
-    /**
-     * Removes the object in scope in an asynchronous way. Field [DataObject.syncState] is marked as
-     * [State.TO_UPDATE] and [DeletableDataObject.deleted] as true. In the next upload, it will be deleted
-     * in the server. It returns a `Completable` that completes as soon as the object is deleted in the database.
-     * The `Completable` fails if the object doesn't exist.
-     * @return the `Completable` which notifies the completion
-     */
-    override fun delete(): Completable {
-        return rxCompletable { deleteInternal() }
-    }
 
     /**
-     * Removes the object in scope in a synchronous way. Field [DataObject.syncState] is marked as
-     * [State.TO_UPDATE] and [DeletableDataObject.deleted] as true. In the next upload, it will be deleted
-     * in the server. It blocks the thread and finishes as soon as the object is deleted in the database.
-     * It throws an exception if the object doesn't exist.
-     *
-     * Important: this is a blocking method and it should not be executed in the main thread. Consider the
-     * asynchronous version [.delete].
-     *
+     * Removes the object in scope in a suspend way. See the implementation JavaDoc for details on how deletion
+     * is performed. It throws an exception if the object doesn't exist.
      * @throws D2Error if any errors occur, including when the object doesn't exist.
      */
     @Throws(D2Error::class)
-    override fun blockingDelete() {
-        runBlocking { deleteInternal() }
-    }
-
-    @Throws(D2Error::class)
-    protected suspend fun deleteInternal() {
-        val obj = getInternal()
+    override suspend fun suspendDelete() {
+        val obj = suspendGet()
         if (obj === null) {
             throw D2Error
                 .builder()
@@ -96,32 +71,12 @@ abstract class ReadWriteWithUidDataObjectRepositoryImpl<M, R : ReadOnlyObjectRep
     }
 
     /**
-     * Removes the object in scope in a synchronous way. Field [DataObject.syncState] is marked as
-     * [State.TO_POST] and [DeletableDataObject.deleted] as true. Unlike [.delete],
-     * it doesn't throw an exception if the object doesn't exist.
-     * It returns a `Completable` that completes as soon as the object is deleted in the database.
-     * @return the `Completable` which notifies the completion
+     * Removes the object in scope in a suspend way. See the implementation JavaDoc for details on how deletion
+     * is performed. Unlike [.suspendDelete], it doesn't throw an exception if the object doesn't exist.
      */
-    override fun deleteIfExist(): Completable {
-        return rxCompletable { deleteIfExistInternal() }
-    }
-
-    /**
-     * Removes the object in scope in an asynchronous way. Field [DataObject.syncState] is marked as
-     * [State.TO_POST] and [DeletableDataObject.deleted] as true.
-     * Unlike [.blockingDelete], it doesn't throw an exception if the object doesn't exist.
-     * It blocks the thread and finishes as soon as the object is deleted in the database.
-     *
-     * Important: this is a blocking method and it should not be executed in the main thread. Consider the
-     * asynchronous version [.delete].
-     */
-    override fun blockingDeleteIfExist() {
-        runBlocking { deleteIfExistInternal() }
-    }
-
-    protected suspend fun deleteIfExistInternal() {
+    override suspend fun suspendDeleteIfExist() {
         try {
-            deleteInternal()
+            suspendDelete()
         } catch (d2Error: D2Error) {
             Log.v(ReadWriteWithUidDataObjectRepositoryImpl::class.java.canonicalName, d2Error.errorDescription())
         }

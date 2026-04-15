@@ -67,23 +67,23 @@ internal class FileResourceRoutine(
     suspend fun internalDeleteOutdatedFileResources(after: Date? = null) {
         val dataElementsUids = dataElementCollectionRepository
             .byValueType().`in`(ValueType.FILE_RESOURCE, ValueType.IMAGE)
-            .getInternal().map(DataElement::uid)
+            .suspendGet().map(DataElement::uid)
 
         val trackedEntityAttributesUids = trackedEntityAttributeCollectionRepository
             .byValueType().`in`(ValueType.FILE_RESOURCE, ValueType.IMAGE)
-            .getInternal().map(TrackedEntityAttribute::uid)
+            .suspendGet().map(TrackedEntityAttribute::uid)
 
         val trackedEntityDataValues = trackedEntityDataValueCollectionRepository
             .byDataElement().`in`(dataElementsUids)
-            .getInternal()
+            .suspendGet()
 
         val trackedEntityAttributeValues = trackedEntityAttributeValueCollectionRepository
             .byTrackedEntityAttribute().`in`(trackedEntityAttributesUids)
-            .getInternal()
+            .suspendGet()
 
         val dataValues = dataValueCollectionRepository
             .byDataElementUid().`in`(dataElementsUids)
-            .getInternal()
+            .suspendGet()
 
         val customIcons = customIconStore.selectAll()
 
@@ -99,7 +99,7 @@ internal class FileResourceRoutine(
             .byUid().notIn(fileResourceUids.mapNotNull { it })
             .byDomain().`in`(FileResourceDomain.DATA_VALUE, FileResourceDomain.ICON)
             .byLastUpdated().before(lastUpdatedBefore)
-            .getInternal()
+            .suspendGet()
 
         deleteFileResources(fileResources)
     }

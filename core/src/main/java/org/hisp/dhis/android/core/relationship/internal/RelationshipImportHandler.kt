@@ -64,7 +64,7 @@ internal class RelationshipImportHandler internal constructor(
         relationshipUid: String,
     ) {
         val relationship =
-            (relationshipRepository.withItems().uid(relationshipUid) as RelationshipObjectRepository).getInternal()
+            (relationshipRepository.withItems().uid(relationshipUid) as RelationshipObjectRepository).suspendGet()
         val relationshipNotFoundOnServer = checkRelationshipNotFoundOnServer(importSummary)
 
         if (relationshipNotFoundOnServer) {

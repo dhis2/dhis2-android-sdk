@@ -114,7 +114,7 @@ internal class DataSetInstanceServiceImpl(
         organisationUnitUid: String,
         attributeOptionComboUid: String,
     ): DataSetEditableStatus {
-        val dataSet = dataSetCollectionRepository.withDataInputPeriods().uid(dataSetUid).getInternal()
+        val dataSet = dataSetCollectionRepository.withDataInputPeriods().uid(dataSetUid).suspendGet()
         val period = periodHelper.suspendGetPeriodForPeriodId(periodId)
         return when {
             !suspendHasDataWriteAccess(dataSetUid) ->
@@ -162,7 +162,7 @@ internal class DataSetInstanceServiceImpl(
     }
 
     override suspend fun suspendHasDataWriteAccess(dataSetUid: String): Boolean {
-        val dataSet = dataSetCollectionRepository.uid(dataSetUid).getInternal() ?: return false
+        val dataSet = dataSetCollectionRepository.uid(dataSetUid).suspendGet() ?: return false
         return dataSet.access().write() ?: false
     }
 
@@ -228,7 +228,7 @@ internal class DataSetInstanceServiceImpl(
         attributeOptionComboUid: String,
     ): List<DataElementOperand> {
         val dataSet = dataSetCollectionRepository.withCompulsoryDataElementOperands()
-            .uid(dataSetUid).getInternal()
+            .uid(dataSetUid).suspendGet()
 
         return dataSet?.compulsoryDataElementOperands()?.filter { dataElementOperand ->
             !hasDataValue(dataSetUid, dataElementOperand, periodId, organisationUnitUid, attributeOptionComboUid)
@@ -251,7 +251,7 @@ internal class DataSetInstanceServiceImpl(
                     categoryOptionCombo.uid(),
                     attributeOptionComboUid,
                     dataSetUid,
-                ).existsInternal()
+                ).suspendExists()
             }
         } ?: false
     }
@@ -321,7 +321,7 @@ internal class DataSetInstanceServiceImpl(
         val stringListCache = ExpirableCache<String, List<String>>(TimeUnit.SECONDS.toMillis(120))
 
         val dataSet = dataSetCollectionRepository.withDataSetElements()
-            .uid(dataSetUid).getInternal()
+            .uid(dataSetUid).suspendGet()
             ?.takeIf { it.fieldCombinationRequired() == true }
             ?: return emptyList()
 
@@ -329,13 +329,13 @@ internal class DataSetInstanceServiceImpl(
             val categoryComboUid = dataSetElement.categoryCombo()?.uid()
                 ?: dataElementCollectionRepository
                     .uid(dataSetElement.dataElement().uid())
-                    .getInternal()
+                    .suspendGet()
                     ?.categoryCombo()
                     ?.uid()
 
             categoryComboUid?.let { catComboUid ->
                 val categoryOptionCombos = getCachedCategoryComboUid(catComboUid, stringListCache) { uid ->
-                    categoryOptionComboCollectionRepository.byCategoryComboUid().eq(uid).getUidsInternal()
+                    categoryOptionComboCollectionRepository.byCategoryComboUid().eq(uid).suspendGetUids()
                 }
 
                 val dataValues = dataValueCollectionRepository
@@ -346,7 +346,7 @@ internal class DataSetInstanceServiceImpl(
                     .byDataElementUid().eq(dataSetElement.dataElement().uid())
                     .byCategoryOptionComboUid()
                     .`in`(categoryOptionCombos)
-                    .getInternal()
+                    .suspendGet()
 
                 dataValues.takeIf { it.isNotEmpty() && it.size != categoryOptionCombos.size }
                     ?.map { dataValue ->
@@ -456,6 +456,6 @@ internal class DataSetInstanceServiceImpl(
     private suspend fun suspendGetCategoryOptions(attributeOptionComboUid: String): List<CategoryOption> {
         return categoryOptionRepository
             .byCategoryOptionComboUid(attributeOptionComboUid)
-            .getInternal()
+            .suspendGet()
     }
 }

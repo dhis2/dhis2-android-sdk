@@ -28,20 +28,38 @@
 package org.hisp.dhis.android.core.arch.repositories.collection
 
 import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.call.internal.collectAndWrapException
 
 interface CollectionRepositoryUpload {
+    /**
+     * Uploads the resources in scope in an asynchronous way, returning a `Flow<D2Progress>` that
+     * will emit progress until the whole upload is finished and the `Flow` is completed.
+     * @return the `Flow<D2Progress>` emitting the progress
+     */
+    fun flowUpload(): Flow<D2Progress>
+
     /**
      * Uploads the resources in scope in an asynchronous way. An `Observable<D2Progress>` is returned, which
      * will emit progress until the whole upload is finished and the `Observable` is completed.
      * @return the `Observable<D2Progress>` emitting the progress
      */
-    fun upload(): Observable<D2Progress>
+    @Deprecated(message = "Use rxUpload instead", ReplaceWith("rxUpload()"))
+    fun upload(): Observable<D2Progress> = rxUpload()
+
+    /**
+     * Uploads the resources in scope in an asynchronous way. An `Observable<D2Progress>` is returned, which
+     * will emit progress until the whole upload is finished and the `Observable` is completed.
+     * @return the `Observable<D2Progress>` emitting the progress
+     */
+    fun rxUpload(): Observable<D2Progress> = flowUpload().asObservable()
 
     /**
      * Uploads the resources in scope in a synchronous way. Important: this is a blocking method and it should not be
-     * executed in the main thread. Consider the asynchronous version [.upload].
+     * executed in the main thread. Consider the asynchronous version [.rxUpload].
      * The method will finish as soon as the whole upload an processing is finished.
      */
-    fun blockingUpload()
+    fun blockingUpload() = flowUpload().collectAndWrapException()
 }

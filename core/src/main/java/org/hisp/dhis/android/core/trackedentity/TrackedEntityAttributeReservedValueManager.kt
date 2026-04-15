@@ -40,6 +40,7 @@ import kotlinx.coroutines.rx2.asObservable
 import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
+import org.hisp.dhis.android.core.arch.call.internal.collectAndWrapException
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem
@@ -131,7 +132,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
         attributeUid: String,
         numberOfValuesToFillUp: Int?,
     ) {
-        runBlocking { flowDownloadReservedValues(attributeUid, numberOfValuesToFillUp).collect {} }
+        flowDownloadReservedValues(attributeUid, numberOfValuesToFillUp).collectAndWrapException()
     }
 
     /**
@@ -179,7 +180,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
      * @see .downloadAllReservedValues
      */
     fun blockingDownloadAllReservedValues(numberOfValuesToFillUp: Int?) {
-        runBlocking { flowDownloadAllReservedValues(numberOfValuesToFillUp).collect {} }
+        flowDownloadAllReservedValues(numberOfValuesToFillUp).collectAndWrapException()
     }
 
     /**

@@ -90,12 +90,12 @@ class EnrollmentServiceShould {
 
     @Before
     fun setUp() = runTest {
-        whenever(enrollmentRepository.uid(enrollmentUid).getInternal()) doReturn enrollment
+        whenever(enrollmentRepository.uid(enrollmentUid).suspendGet()) doReturn enrollment
         whenever(
             trackedEntityInstanceRepository
-                .uid(trackedEntityInstanceUid).getInternal(),
+                .uid(trackedEntityInstanceUid).suspendGet(),
         ) doReturn trackedEntityInstance
-        whenever(programRepository.uid(programUid).getInternal()) doReturn program
+        whenever(programRepository.uid(programUid).suspendGet()) doReturn program
 
         whenever(enrollment.uid()) doReturn enrollmentUid
         whenever(trackedEntityInstance.organisationUnit()) doReturn organisationUnitId
@@ -104,7 +104,7 @@ class EnrollmentServiceShould {
                 organisationUnitRepository
                     .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
                     .uid(organisationUnitId)
-                    .existsInternal()
+                    .suspendExists()
             },
         ) doReturn false
 
@@ -122,7 +122,7 @@ class EnrollmentServiceShould {
 
     @Test
     fun `IsOpen should return true if enrollment is not found`() = runTest {
-        whenever(enrollmentRepository.uid(enrollmentUid).getInternal()) doReturn null
+        whenever(enrollmentRepository.uid(enrollmentUid).suspendGet()) doReturn null
         assertTrue(enrollmentService.blockingIsOpen(enrollmentUid))
     }
 
@@ -173,7 +173,7 @@ class EnrollmentServiceShould {
                 organisationUnitRepository
                     .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
                     .uid(ownerOrganisationUnitId)
-                    .existsInternal()
+                    .suspendExists()
             },
         ) doReturn true
 
@@ -193,7 +193,7 @@ class EnrollmentServiceShould {
                     organisationUnitRepository
                         .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
                         .uid(ownerOrganisationUnitId)
-                        .existsInternal()
+                        .suspendExists()
                 },
             ) doReturn false
             whenever(programTempOwnerStore.selectWhere(any())) doReturn listOf(programTempOwner)
@@ -215,7 +215,7 @@ class EnrollmentServiceShould {
                     organisationUnitRepository
                         .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
                         .uid(ownerOrganisationUnitId)
-                        .existsInternal()
+                        .suspendExists()
                 },
             ) doReturn false
             whenever(programTempOwnerStore.selectWhere(any())) doReturn listOf(programTempOwner)
@@ -237,7 +237,7 @@ class EnrollmentServiceShould {
             programStageCollectionRepository.byAccessDataWrite().isTrue,
         ) doReturn programStageCollectionRepository
         whenever(
-            programStageCollectionRepository.getInternal(),
+            programStageCollectionRepository.suspendGet(),
         ) doReturn getProgramStages()
 
         whenever(
@@ -246,14 +246,14 @@ class EnrollmentServiceShould {
         whenever(
             eventCollectionRepository.byDeleted().isFalse,
         ) doReturn eventCollectionRepository
-        whenever(eventCollectionRepository.getInternal()) doReturn getEventList()
+        whenever(eventCollectionRepository.suspendGet()) doReturn getEventList()
 
         assertTrue(enrollmentService.blockingGetAllowEventCreation(enrollmentUid, listOf("1")))
     }
 
     @Test
     fun `Enrollment has not any events that allows events creation`() = runTest {
-        whenever(enrollmentRepository.uid(enrollmentUid).getInternal()) doReturn enrollment
+        whenever(enrollmentRepository.uid(enrollmentUid).suspendGet()) doReturn enrollment
         whenever(enrollment.program()) doReturn programUid
 
         whenever(
@@ -263,7 +263,7 @@ class EnrollmentServiceShould {
             programStageCollectionRepository.byAccessDataWrite().isTrue,
         ) doReturn programStageCollectionRepository
         whenever(
-            programStageCollectionRepository.getInternal(),
+            programStageCollectionRepository.suspendGet(),
         ) doReturn getProgramStages()
 
         whenever(
@@ -272,7 +272,7 @@ class EnrollmentServiceShould {
         whenever(
             eventCollectionRepository.byDeleted().isFalse,
         ) doReturn eventCollectionRepository
-        whenever(eventCollectionRepository.getInternal()) doReturn getEventList()
+        whenever(eventCollectionRepository.suspendGet()) doReturn getEventList()
 
         assertFalse(enrollmentService.blockingGetAllowEventCreation(enrollmentUid, listOf("1", "2")))
     }
@@ -299,7 +299,7 @@ class EnrollmentServiceShould {
                 organisationUnitRepository
                     .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
                     .uid(ownerOrganisationUnitId)
-                    .existsInternal()
+                    .suspendExists()
             },
         ) doReturn true
 
@@ -318,7 +318,7 @@ class EnrollmentServiceShould {
                 organisationUnitRepository
                     .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
                     .uid(ownerOrganisationUnitId)
-                    .existsInternal()
+                    .suspendExists()
             },
         ) doReturn false
 

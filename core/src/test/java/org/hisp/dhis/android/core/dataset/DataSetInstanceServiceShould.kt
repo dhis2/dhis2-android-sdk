@@ -115,8 +115,8 @@ class DataSetInstanceServiceShould {
     @Before
     fun setUp() = runTest {
         whenever(dataSet.uid()) doReturn dataSetUid
-        whenever(categoryOptionRepository.byCategoryOptionComboUid(any()).getInternal()) doReturn categories
-        whenever(dataSetCollectionRepository.uid(any()).getInternal()) doReturn dataSet
+        whenever(categoryOptionRepository.byCategoryOptionComboUid(any()).suspendGet()) doReturn categories
+        whenever(dataSetCollectionRepository.uid(any()).suspendGet()) doReturn dataSet
         whenever(periodHelper.suspendGetPeriodForPeriodId(firstPeriodId)) doReturn firstPeriod
         whenever(firstPeriod.startDate()) doReturn firstJanuary
         whenever(firstPeriod.endDate()) doReturn thirdJanuary
@@ -233,13 +233,13 @@ class DataSetInstanceServiceShould {
             on { compulsoryDataElementOperands() } doReturn listOf(operand)
         }
 
-        whenever(dataSetCollectionRepository.withCompulsoryDataElementOperands().uid(dataSetUid).getInternal())
+        whenever(dataSetCollectionRepository.withCompulsoryDataElementOperands().uid(dataSetUid).suspendGet())
             .thenReturn(dataSetWithCompulsory)
 
         val dataValueQuery = mock<DataValueObjectRepository>(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
         whenever(
             runBlocking {
-                dataValueQuery.existsInternal()
+                dataValueQuery.suspendExists()
             },
         ) doReturn false
         whenever(
@@ -273,14 +273,14 @@ class DataSetInstanceServiceShould {
             on { fieldCombinationRequired() } doReturn true
             on { dataSetElements() } doReturn listOf(dataSetElement)
         }
-        whenever(dataSetCollectionRepository.withDataSetElements().uid(dataSetUid).getInternal())
+        whenever(dataSetCollectionRepository.withDataSetElements().uid(dataSetUid).suspendGet())
             .thenReturn(dataSetWithElements)
 
         val byCatComboUidConnector = mock<StringFilterConnector<CategoryOptionComboCollectionRepository>>()
         val eqRepo = mock<CategoryOptionComboCollectionRepository>()
         whenever(categoryOptionComboCollectionRepository.byCategoryComboUid()).thenReturn(byCatComboUidConnector)
         whenever(byCatComboUidConnector.eq("ccUid")).thenReturn(eqRepo)
-        whenever(eqRepo.getUidsInternal()).thenReturn(listOf("coc1", "coc2"))
+        whenever(eqRepo.suspendGetUids()).thenReturn(listOf("coc1", "coc2"))
 
         val dataValue = mock<DataValue> {
             on { dataElement() } doReturn "de1"
@@ -317,7 +317,7 @@ class DataSetInstanceServiceShould {
         whenever(repoAfterDE.byCategoryOptionComboUid()).thenReturn(cocConnector)
         whenever(cocConnector.`in`(listOf("coc1", "coc2"))).thenReturn(finalRepo)
 
-        whenever(finalRepo.getInternal()).thenReturn(listOf(dataValue))
+        whenever(finalRepo.suspendGet()).thenReturn(listOf(dataValue))
 
         val result = dataSetInstanceService.suspendGetMissingMandatoryFieldsCombination(
             dataSetUid,

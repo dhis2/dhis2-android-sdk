@@ -61,7 +61,7 @@ class UserCredentialsObjectRepository internal constructor(
     }
 
     internal suspend fun getInternal(): UserCredentials? {
-        return delegate.getInternal()
+        return delegate.suspendGet()
     }
 
     fun withUserRoles(): UserCredentialsObjectRepository {

@@ -32,10 +32,7 @@ import androidx.paging.DataSource
 import androidx.paging.PagedList
 import androidx.paging.Pager
 import androidx.paging.PagingData
-import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUidCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EventDataFilterConnector
@@ -273,22 +270,15 @@ class EventQueryCollectionRepository internal constructor(
         return getDataFetcher().uid(uid)
     }
 
-    override fun getUids(): Single<List<String>> {
-        return rxSingle { getDataFetcher().getUids() }
+    override suspend fun suspendGetUids(): List<String> {
+        return getDataFetcher().getUids()
     }
 
-    override fun blockingGetUids(): List<String> {
-        return runBlocking { getDataFetcher().getUids() }
+    override suspend fun suspendGet(): List<Event> {
+        return getDataFetcher().get()
     }
 
-    override fun get(): Single<List<Event>> {
-        return rxSingle { getDataFetcher().get() }
-    }
-
-    override fun blockingGet(): List<Event> {
-        return runBlocking { getDataFetcher().get() }
-    }
-
+    @Deprecated("Use {@link #getPagingData()} instead}", replaceWith = ReplaceWith("getPagingData()"))
     override fun getPaged(pageSize: Int): LiveData<PagedList<Event>> {
         return getDataFetcher().getPaged(pageSize)
     }
@@ -304,20 +294,12 @@ class EventQueryCollectionRepository internal constructor(
     val dataSource: DataSource<Int, Event>
         get() = getDataFetcher().dataSource
 
-    override fun count(): Single<Int> {
-        return rxSingle { getDataFetcher().count() }
+    override suspend fun suspendCount(): Int {
+        return getDataFetcher().count()
     }
 
-    override fun blockingCount(): Int {
-        return runBlocking { getDataFetcher().count() }
-    }
-
-    override fun isEmpty(): Single<Boolean> {
-        return rxSingle { getDataFetcher().isEmpty() }
-    }
-
-    override fun blockingIsEmpty(): Boolean {
-        return runBlocking { getDataFetcher().isEmpty() }
+    override suspend fun suspendIsEmpty(): Boolean {
+        return getDataFetcher().isEmpty()
     }
 
     override fun one(): ReadOnlyObjectRepository<Event> {

@@ -39,6 +39,7 @@ interface Ping {
 
     fun rxGet(): Single<String> = rxSingle { suspendGet() }
 
+    @Suppress("TooGenericExceptionThrown")
     @Throws(D2Error::class)
     fun blockingGet(): String = runBlocking {
         try {

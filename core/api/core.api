@@ -10525,10 +10525,16 @@ public abstract interface class org/hisp/dhis/android/core/systeminfo/DHISVersio
 }
 
 public abstract interface class org/hisp/dhis/android/core/systeminfo/Ping {
-	public abstract fun blockingGet ()Ljava/lang/String;
-	public abstract fun get ()Lio/reactivex/Single;
-	public abstract fun rxGet ()Lio/reactivex/Single;
+	public fun blockingGet ()Ljava/lang/String;
+	public fun get ()Lio/reactivex/Single;
+	public fun rxGet ()Lio/reactivex/Single;
 	public abstract fun suspendGet (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class org/hisp/dhis/android/core/systeminfo/Ping$DefaultImpls {
+	public static fun blockingGet (Lorg/hisp/dhis/android/core/systeminfo/Ping;)Ljava/lang/String;
+	public static fun get (Lorg/hisp/dhis/android/core/systeminfo/Ping;)Lio/reactivex/Single;
+	public static fun rxGet (Lorg/hisp/dhis/android/core/systeminfo/Ping;)Lio/reactivex/Single;
 }
 
 public final class org/hisp/dhis/android/core/systeminfo/SMSVersion : java/lang/Enum {

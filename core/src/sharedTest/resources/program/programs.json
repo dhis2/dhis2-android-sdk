@@ -162,6 +162,19 @@
       "enrollmentCategoryCombo": {
         "id": "m2jTvAj5kkm"
       },
+      "categoryMappings": [
+        {
+          "id": "catMapping001",
+          "categoryId": "GLevLNI9wkl",
+          "mappingName": "Default mapping",
+          "optionMappings": [
+            {
+              "optionId": "xYerKDKCefk",
+              "filter": "#{condition1}"
+            }
+          ]
+        }
+      ],
       "programRuleVariables": [
       ],
       "programTrackedEntityAttributes": [
@@ -342,7 +355,20 @@
       },
       "enrollmentCategoryCombo": {
         "id": "m2jTvAj5kkm"
-      }
+      },
+      "categoryMappings": [
+        {
+          "id": "catMapping002",
+          "categoryId": "GLevLNI9wkl",
+          "mappingName": "Second mapping",
+          "optionMappings": [
+            {
+              "optionId": "xYerKDKCefk",
+              "filter": "#{condition2}"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

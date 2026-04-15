@@ -28,9 +28,6 @@
 package org.hisp.dhis.android.core.systeminfo.internal
 
 import io.ktor.http.isSuccess
-import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
@@ -42,20 +39,6 @@ import java.io.IOException
 class PingImpl internal constructor(
     private val pingNetworkHandler: PingNetworkHandler,
 ) : Ping {
-
-    @Deprecated(message = "Use rxGet instead", ReplaceWith("rxGet()"))
-    override fun get(): Single<String> {
-        return rxSingle { suspendGet() }
-    }
-
-    override fun rxGet(): Single<String> {
-        return rxSingle { suspendGet() }
-    }
-
-    @Throws(D2Error::class)
-    override fun blockingGet(): String {
-        return runBlocking { suspendGet() }
-    }
 
     @Suppress("TooGenericExceptionCaught")
     override suspend fun suspendGet(): String {

@@ -89,11 +89,15 @@ class PingImplShould {
         try {
             pingImpl.blockingGet()
             fail("D2Error was expected but not thrown.")
-        } catch (error: D2Error) {
-            assertThat(error.errorCode()).isEqualTo(D2ErrorCode.API_UNSUCCESSFUL_RESPONSE)
-            assertThat(error.errorDescription()).isEqualTo("Unable to ping the server.")
+        } catch (e: RuntimeException) {
+            val cause = e.cause
+            assertTrue("Cause of RuntimeException should be D2Error", cause is D2Error)
+
+            val d2Error = cause as D2Error
+            assertThat(d2Error.errorCode()).isEqualTo(D2ErrorCode.API_UNSUCCESSFUL_RESPONSE)
+            assertThat(d2Error.errorDescription()).isEqualTo("Unable to ping the server.")
             assertThat(
-                error.originalException()?.message,
+                d2Error.originalException()?.message,
             ).isEqualTo("Ping to the server failed with status code: 500")
         }
     }

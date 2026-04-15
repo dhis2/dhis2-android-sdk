@@ -49,4 +49,13 @@ class ReadOnlyObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFul
             dataElement.errors().first().toString(),
         ).isEqualTo("java.lang.NullPointerException: The callable returned a null value")
     }
+
+    @Test
+    fun should_return_null_if_object_does_not_exist_blocking() {
+        val result = d2.dataElementModule().dataElements()
+            .uid("nonExistent")
+            .blockingGet()
+
+        assertThat(result).isNull()
+    }
 }

@@ -63,4 +63,16 @@ internal object ProgramInternalAccessor {
     ): Program.Builder {
         return builder.programSections(programSections)
     }
+
+    @JvmStatic
+    fun accessCategoryMappings(program: Program?): List<CategoryMapping>? {
+        return program?.categoryMappings()
+    }
+
+    fun insertCategoryMappings(
+        builder: Program.Builder,
+        categoryMappings: List<CategoryMapping>?,
+    ): Program.Builder {
+        return builder.categoryMappings(categoryMappings)
+    }
 }

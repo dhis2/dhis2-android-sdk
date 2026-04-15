@@ -62,6 +62,9 @@ internal data class ProgramIndicatorDTO(
     val analyticsType: String?,
     val analyticsPeriodBoundaries: List<AnalyticsPeriodBoundaryDTO>?,
     val legendSets: List<ObjectWithUidDTO>?,
+    val categoryCombo: ObjectWithUidDTO?,
+    val attributeCombo: ObjectWithUidDTO?,
+    val categoryMappingIds: List<String>?,
 ) : BaseNameableObjectDTO {
     fun toDomain(): ProgramIndicator {
         return ProgramIndicator.builder()
@@ -76,6 +79,9 @@ internal data class ProgramIndicatorDTO(
             .analyticsType(analyticsType?.let { AnalyticsType.valueOf(it) })
             .analyticsPeriodBoundaries(analyticsPeriodBoundaries?.map { it.toDomain() })
             .legendSets(legendSets?.map { it.toDomain() })
+            .categoryCombo(categoryCombo?.toDomain())
+            .attributeCombo(attributeCombo?.toDomain())
+            .categoryMappingIds(categoryMappingIds)
             .build()
     }
 }

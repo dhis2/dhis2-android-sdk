@@ -70,5 +70,9 @@ internal class ProgramIndicatorShould : CoreObjectShould<ProgramIndicatorDTO>(
         assertThat(programIndicator.analyticsPeriodBoundaries()!![0].analyticsPeriodBoundaryType())
             .isEqualTo(AnalyticsPeriodBoundaryType.AFTER_END_OF_REPORTING_PERIOD)
         assertThat(programIndicator.analyticsPeriodBoundaries()!![1].offsetPeriods()).isEqualTo(-3)
+
+        assertThat(programIndicator.categoryCombo()!!.uid()).isEqualTo("bjDvmb4bfuf")
+        assertThat(programIndicator.attributeCombo()!!.uid()).isEqualTo("bjDvmb4bfuf")
+        assertThat(programIndicator.categoryMappingIds()).isEqualTo(listOf("mapping1", "mapping2"))
     }
 }

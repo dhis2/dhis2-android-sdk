@@ -30,4 +30,6 @@ package org.hisp.dhis.android.core.trackedentity.ownership
 
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 
-internal interface ProgramOwnerStore : ObjectWithoutUidStore<ProgramOwner>
+internal interface ProgramOwnerStore : ObjectWithoutUidStore<ProgramOwner> {
+    suspend fun selectForTeiProgram(tei: String, program: String): ProgramOwner?
+}

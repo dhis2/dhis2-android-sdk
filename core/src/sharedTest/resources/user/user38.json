@@ -39,11 +39,16 @@
       "id": "Kk12LkEWtXp"
     }
   ],
-  "teiSearchOrganisationUnits": [],
-  "organisationUnits": [
+  "teiSearchOrganisationUnits": [
     {
       "id": "YuQRtpLP10I",
       "path": "/ImspTQPwCqd/O6uvpzGd5pu/YuQRtpLP10I"
+    }
+  ],
+  "organisationUnits": [
+    {
+      "id": "DiszpKrYNg8",
+      "path": "/ImspTQPwCqd/O6uvpzGd5pu/YuQRtpLP10I/DiszpKrYNg8"
     }
   ]
 }

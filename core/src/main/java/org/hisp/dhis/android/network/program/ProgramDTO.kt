@@ -108,6 +108,7 @@ internal data class ProgramDTO(
     val displayEventLabel: String?,
     val attributeValues: List<AttributeValueDTO>?,
     val enrollmentCategoryCombo: CategoryComboWithFallbackDTO = CategoryComboWithFallbackDTO(null),
+    val categoryMappings: List<CategoryMappingDTO>?,
 ) : BaseNameableObjectDTO {
     @Suppress("ComplexMethod")
     fun toDomain(): Program {
@@ -154,6 +155,7 @@ internal data class ProgramDTO(
             displayEventLabel(displayEventLabel ?: eventLabel)
             attributeValues?.let { attributeValues(it.map { it.toDomain() }) }
             enrollmentCategoryCombo(enrollmentCategoryCombo.toDomain())
+            ProgramInternalAccessor.insertCategoryMappings(this, categoryMappings?.map { it.toDomain() })
         }.build()
     }
 }

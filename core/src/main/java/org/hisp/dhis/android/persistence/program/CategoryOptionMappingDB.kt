@@ -50,7 +50,7 @@ import org.hisp.dhis.android.processor.ParentColumn
 internal data class CategoryOptionMappingDB(
     @ParentColumn val categoryMapping: String,
     val optionId: String,
-    val filter: String?,
+    val filter: String,
 ) : EntityDB<CategoryOptionMapping> {
     override fun toDomain(): CategoryOptionMapping {
         return CategoryOptionMapping.builder()
@@ -63,8 +63,8 @@ internal data class CategoryOptionMappingDB(
 
 internal fun CategoryOptionMapping.toDB(): CategoryOptionMappingDB {
     return CategoryOptionMappingDB(
-        categoryMapping = categoryMapping()!!,
-        optionId = optionId()!!,
+        categoryMapping = categoryMapping(),
+        optionId = optionId(),
         filter = filter(),
     )
 }

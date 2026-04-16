@@ -6,7 +6,7 @@ ALTER TABLE ProgramIndicator ADD COLUMN attributeCombo TEXT;
 ALTER TABLE ProgramIndicator ADD COLUMN categoryMappingIds TEXT;
 
 # Create CategoryMapping table
-CREATE TABLE CategoryMapping(id TEXT NOT NULL, program TEXT NOT NULL, categoryId TEXT, mappingName TEXT, PRIMARY KEY(id), FOREIGN KEY(program) REFERENCES Program(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+CREATE TABLE CategoryMapping(id TEXT NOT NULL, program TEXT NOT NULL, categoryId TEXT NOT NULL, mappingName TEXT NOT NULL, PRIMARY KEY(id), FOREIGN KEY(program) REFERENCES Program(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
 
 # Create CategoryOptionMapping table
-CREATE TABLE CategoryOptionMapping(categoryMapping TEXT NOT NULL, optionId TEXT NOT NULL, filter TEXT, PRIMARY KEY(categoryMapping, optionId), FOREIGN KEY(categoryMapping) REFERENCES CategoryMapping(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+CREATE TABLE CategoryOptionMapping(categoryMapping TEXT NOT NULL, optionId TEXT NOT NULL, filter TEXT NOT NULL, PRIMARY KEY(categoryMapping, optionId), FOREIGN KEY(categoryMapping) REFERENCES CategoryMapping(id) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);

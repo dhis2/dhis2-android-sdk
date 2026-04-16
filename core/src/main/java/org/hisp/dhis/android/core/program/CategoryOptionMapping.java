@@ -28,8 +28,6 @@
 
 package org.hisp.dhis.android.core.program;
 
-import androidx.annotation.Nullable;
-
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.CoreObject;

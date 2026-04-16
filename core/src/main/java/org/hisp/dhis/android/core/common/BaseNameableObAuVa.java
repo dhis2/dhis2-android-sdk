@@ -26,68 +26,42 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.common;
 
 import androidx.annotation.Nullable;
 
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
-import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.BaseNameableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-
-import java.util.Date;
-import java.util.List;
-
-@AutoValue
-public abstract class CategoryOption extends BaseNameableObAuVa implements CoreObject {
+public abstract class BaseNameableObAuVa implements BaseNameableObject {
+    public static final String SHORT_NAME = "shortName";
+    public static final String DISPLAY_SHORT_NAME = "displayShortName";
+    public static final String DESCRIPTION = "description";
+    public static final String DISPLAY_DESCRIPTION = "displayDescription";
 
     @Nullable
-    public abstract Date startDate();
+    @Override
+    public abstract String shortName();
 
     @Nullable
-    public abstract Date endDate();
+    @Override
+    public abstract String displayShortName();
 
-    public abstract Access access();
-
-    /**
-     * This method only return results in versions greater or equal to 2.37.
-     */
     @Nullable
-    public abstract List<ObjectWithUid> organisationUnits();
+    @Override
+    public abstract String description();
 
+    @Nullable
+    @Override
+    public abstract String displayDescription();
 
-    public abstract Builder toBuilder();
+    public abstract static class Builder<T extends Builder<T>>
+            extends BaseIdentifiableObAuVa.Builder<T>
+            implements BaseNameableObject.Builder<T> {
 
-    public static Builder builder() {
-        return new AutoValue_CategoryOption.Builder();
-    }
+        public abstract T shortName(@Nullable String shortName);
 
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseNameableObAuVa.Builder<Builder> {
-        public abstract Builder startDate(@Nullable Date startDate);
+        public abstract T displayShortName(@Nullable String displayShortName);
 
-        public abstract Builder endDate(@Nullable Date endDate);
+        public abstract T description(@Nullable String description);
 
-        public abstract Builder access(Access access);
-
-        public abstract Builder organisationUnits(@Nullable List<ObjectWithUid> organisationUnits);
-
-        abstract CategoryOption autoBuild();
-
-        // Auxiliary fields
-        abstract Access access();
-
-        public CategoryOption build() {
-            try {
-                access();
-            } catch (IllegalStateException e) {
-                access(AccessHelper.defaultAccess());
-            }
-
-            return autoBuild();
-        }
+        public abstract T displayDescription(@Nullable String displayDescription);
     }
 }

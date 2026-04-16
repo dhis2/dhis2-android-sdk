@@ -32,13 +32,13 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.BaseNameableObAuVa;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ValueType;
 
 @AutoValue
 @SuppressWarnings({"PMD.ExcessivePublicCount"})
-public abstract class Attribute extends BaseNameableObject implements CoreObject {
+public abstract class Attribute extends BaseNameableObAuVa implements CoreObject {
 
     @Nullable
     public abstract ValueType valueType();
@@ -147,7 +147,7 @@ public abstract class Attribute extends BaseNameableObject implements CoreObject
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseNameableObject.Builder<Builder> {
+    public abstract static class Builder extends BaseNameableObAuVa.Builder<Builder> {
         public abstract Builder valueType(ValueType valueType);
 
         public abstract Builder mandatory(Boolean mandatory);

@@ -39,19 +39,14 @@ import java.util.List;
 @AutoValue
 public abstract class CategoryMapping implements CoreObject {
 
-    @Nullable
     public abstract String id();
 
-    @Nullable
     public abstract String program();
 
-    @Nullable
     public abstract String categoryId();
 
-    @Nullable
     public abstract String mappingName();
 
-    @Nullable
     public abstract List<CategoryOptionMapping> optionMappings();
 
     public abstract Builder toBuilder();

@@ -26,38 +26,30 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.program
+package org.hisp.dhis.android.core.data.program;
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.program.CategoryMapping
-import org.hisp.dhis.android.core.program.CategoryOptionMapping
+import org.hisp.dhis.android.core.program.CategoryMapping;
+import org.hisp.dhis.android.core.program.CategoryOptionMapping;
 
-@Serializable
-internal data class CategoryOptionMappingDTO(
-    val optionId: String,
-    val filter: String,
-) {
-    fun toDomain(): CategoryOptionMapping {
-        return CategoryOptionMapping.builder()
-            .optionId(optionId)
-            .filter(filter)
-            .build()
-    }
-}
+import java.util.Collections;
 
-@Serializable
-internal data class CategoryMappingDTO(
-    val id: String,
-    val categoryId: String,
-    val mappingName: String,
-    val optionMappings: List<CategoryOptionMappingDTO>,
-) {
-    fun toDomain(): CategoryMapping {
+public class CategoryMappingSamples {
+
+    public static CategoryMapping getCategoryMapping() {
         return CategoryMapping.builder()
-            .id(id)
-            .categoryId(categoryId)
-            .mappingName(mappingName)
-            .optionMappings(optionMappings.map { it.toDomain() })
-            .build()
+                .id("catMapping001")
+                .program("test_program")
+                .categoryId("test_category")
+                .mappingName("Test mapping")
+                .optionMappings(Collections.singletonList(getCategoryOptionMapping()))
+                .build();
+    }
+
+    public static CategoryOptionMapping getCategoryOptionMapping() {
+        return CategoryOptionMapping.builder()
+                .categoryMapping("catMapping001")
+                .optionId("test_option")
+                .filter("#{condition1}")
+                .build();
     }
 }

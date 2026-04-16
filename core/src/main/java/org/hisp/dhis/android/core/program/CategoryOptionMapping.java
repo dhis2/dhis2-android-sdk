@@ -37,13 +37,10 @@ import org.hisp.dhis.android.core.common.CoreObject;
 @AutoValue
 public abstract class CategoryOptionMapping implements CoreObject {
 
-    @Nullable
     public abstract String categoryMapping();
 
-    @Nullable
     public abstract String optionId();
 
-    @Nullable
     public abstract String filter();
 
     public abstract Builder toBuilder();

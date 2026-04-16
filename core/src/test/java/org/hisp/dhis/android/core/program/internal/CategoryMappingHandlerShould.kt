@@ -58,6 +58,7 @@ class CategoryMappingHandlerShould {
     @Test
     fun call_option_mapping_handler_after_handling_category_mapping() = runTest {
         val optionMapping = CategoryOptionMapping.builder()
+            .categoryMapping("mapping1")
             .optionId("option1")
             .filter("#{condition}")
             .build()

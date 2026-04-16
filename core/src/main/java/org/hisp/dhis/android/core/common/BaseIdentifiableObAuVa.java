@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.arch.helpers.DateUtils;
 import java.text.ParseException;
 import java.util.Date;
 
-public abstract class BaseIdentifiableObject implements IdentifiableObject, ObjectWithDeleteInterface {
+public abstract class BaseIdentifiableObAuVa implements BaseIdentifiableObject {
     /* date format which should be used for all Date instances
     within models which extend BaseIdentifiableObject */
     public static SafeDateFormat DATE_FORMAT = DateUtils.DATE_FORMAT;
@@ -53,6 +53,7 @@ public abstract class BaseIdentifiableObject implements IdentifiableObject, Obje
     public static final String DELETED = "deleted";
 
     @Override
+    @NonNull
     public abstract String uid();
 
     @Override
@@ -80,22 +81,22 @@ public abstract class BaseIdentifiableObject implements IdentifiableObject, Obje
     public abstract Boolean deleted();
 
     public static Date parseDate(String dateStr) throws ParseException {
-        return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
+        return BaseIdentifiableObAuVa.DATE_FORMAT.parse(dateStr);
     }
 
     public static Date parseSpaceDate(String dateStr) throws ParseException {
-        return BaseIdentifiableObject.SPACE_DATE_FORMAT.parse(dateStr);
+        return BaseIdentifiableObAuVa.SPACE_DATE_FORMAT.parse(dateStr);
     }
 
     public static String dateToSpaceDateStr(Date date) {
-        return BaseIdentifiableObject.SPACE_DATE_FORMAT.format(date);
+        return BaseIdentifiableObAuVa.SPACE_DATE_FORMAT.format(date);
     }
 
     public static String dateToDateStr(Date date) {
-        return BaseIdentifiableObject.DATE_FORMAT.format(date);
+        return BaseIdentifiableObAuVa.DATE_FORMAT.format(date);
     }
 
-    public abstract static class Builder<T extends Builder> {
+    public abstract static class Builder<T extends Builder<T>> implements BaseIdentifiableObject.Builder<T> {
 
         public abstract T uid(String uid);
 
@@ -108,13 +109,13 @@ public abstract class BaseIdentifiableObject implements IdentifiableObject, Obje
         public abstract T created(@Nullable Date created);
 
         public T created(@NonNull String createdStr) throws ParseException {
-            return created(BaseIdentifiableObject.DATE_FORMAT.parse(createdStr));
+            return created(BaseIdentifiableObAuVa.DATE_FORMAT.parse(createdStr));
         }
 
         public abstract T lastUpdated(@Nullable Date lastUpdated);
 
         public T lastUpdated(@NonNull String lastUpdatedStr) throws ParseException {
-            return lastUpdated(BaseIdentifiableObject.DATE_FORMAT.parse(lastUpdatedStr));
+            return lastUpdated(BaseIdentifiableObAuVa.DATE_FORMAT.parse(lastUpdatedStr));
         }
 
         public abstract T deleted(@Nullable Boolean deleted);

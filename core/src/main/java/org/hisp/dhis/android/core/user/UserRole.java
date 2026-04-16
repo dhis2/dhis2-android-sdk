@@ -30,11 +30,11 @@ package org.hisp.dhis.android.core.user;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
-public abstract class UserRole extends BaseIdentifiableObject implements CoreObject {
+public abstract class UserRole extends BaseIdentifiableObAuVa implements CoreObject {
 
     public static Builder builder() {
         return new AutoValue_UserRole.Builder();
@@ -43,7 +43,7 @@ public abstract class UserRole extends BaseIdentifiableObject implements CoreObj
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
+    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
         public abstract UserRole build();
     }
 }

@@ -32,12 +32,12 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 @AutoValue
-public abstract class ProgramRuleVariable extends BaseIdentifiableObject implements CoreObject {
+public abstract class ProgramRuleVariable extends BaseIdentifiableObAuVa implements CoreObject {
 
     @Nullable
     public abstract Boolean useCodeForOptionSet();
@@ -64,7 +64,7 @@ public abstract class ProgramRuleVariable extends BaseIdentifiableObject impleme
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
+    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
         public abstract Builder useCodeForOptionSet(Boolean useCodeForOptionSet);
 
         public abstract Builder program(ObjectWithUid program);

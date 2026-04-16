@@ -33,11 +33,11 @@ import androidx.annotation.Nullable;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
-public abstract class RelationshipType extends BaseIdentifiableObject implements CoreObject {
+public abstract class RelationshipType extends BaseIdentifiableObAuVa implements CoreObject {
 
     @Nullable
     public abstract String fromToName();
@@ -63,7 +63,7 @@ public abstract class RelationshipType extends BaseIdentifiableObject implements
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
+    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
         public abstract Builder fromToName(String fromToName);
 
         public abstract Builder toFromName(String toFromName);

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,24 +26,24 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.common
 
-import com.google.auto.value.AutoValue;
+import java.util.Date
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
+interface BaseIdentifiableObjectKt : BaseIdentifiableObject {
+    val uid: String
+    val code: String?
+    val name: String?
+    val displayName: String?
+    val created: Date?
+    val lastUpdated: Date?
+    val deleted: Boolean?
 
-@AutoValue
-public abstract class UserGroup extends BaseIdentifiableObAuVa implements CoreObject {
-
-    public static Builder builder() {
-        return new AutoValue_UserGroup.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
-        public abstract UserGroup build();
-    }
+    override fun uid(): String = uid
+    override fun code(): String? = code
+    override fun name(): String? = name
+    override fun displayName(): String? = displayName
+    override fun created(): Date? = created
+    override fun lastUpdated(): Date? = lastUpdated
+    override fun deleted(): Boolean? = deleted
 }

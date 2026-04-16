@@ -32,12 +32,12 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ValueType;
 
 @AutoValue
-public abstract class OptionSet extends BaseIdentifiableObject implements CoreObject {
+public abstract class OptionSet extends BaseIdentifiableObAuVa implements CoreObject {
 
     @Nullable
     public abstract Integer version();
@@ -52,7 +52,7 @@ public abstract class OptionSet extends BaseIdentifiableObject implements CoreOb
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
+    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
         public abstract Builder version(@Nullable Integer version);
 
         public abstract Builder valueType(@Nullable ValueType valueType);

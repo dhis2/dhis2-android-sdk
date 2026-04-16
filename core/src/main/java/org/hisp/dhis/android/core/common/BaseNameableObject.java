@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.common;
 
 import androidx.annotation.Nullable;
 
-public abstract class BaseNameableObject extends BaseIdentifiableObject implements NameableObject {
+public abstract class BaseNameableObject extends BaseIdentifiableObAuVa implements NameableObject {
     public static final String SHORT_NAME = "shortName";
     public static final String DISPLAY_SHORT_NAME = "displayShortName";
     public static final String DESCRIPTION = "description";
@@ -52,7 +52,7 @@ public abstract class BaseNameableObject extends BaseIdentifiableObject implemen
     @Override
     public abstract String displayDescription();
 
-    public abstract static class Builder<T extends Builder> extends BaseIdentifiableObject.Builder<T> {
+    public abstract static class Builder<T extends Builder<T>> extends BaseIdentifiableObAuVa.Builder<T> {
 
         public abstract T shortName(@Nullable String shortName);
 

@@ -32,13 +32,13 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.List;
 
 @AutoValue
-public abstract class Category extends BaseIdentifiableObject implements CoreObject {
+public abstract class Category extends BaseIdentifiableObAuVa implements CoreObject {
 
     @Nullable
     public abstract String dataDimensionType();
@@ -53,7 +53,7 @@ public abstract class Category extends BaseIdentifiableObject implements CoreObj
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
+    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
         public abstract Builder categoryOptions(@Nullable List<CategoryOption> categoryOptions);
 
         public abstract Builder dataDimensionType(String dimensionType);

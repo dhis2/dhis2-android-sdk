@@ -32,11 +32,11 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
-public abstract class IndicatorType extends BaseIdentifiableObject implements CoreObject {
+public abstract class IndicatorType extends BaseIdentifiableObAuVa implements CoreObject {
 
     @Nullable
     public abstract Boolean number();
@@ -51,7 +51,7 @@ public abstract class IndicatorType extends BaseIdentifiableObject implements Co
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
+    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
         public abstract Builder number(Boolean number);
 
         public abstract Builder factor(Integer factor);

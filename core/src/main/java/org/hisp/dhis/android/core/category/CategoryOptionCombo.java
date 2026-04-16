@@ -32,14 +32,14 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 import java.util.List;
 
 @AutoValue
-public abstract class CategoryOptionCombo extends BaseIdentifiableObject implements CoreObject {
+public abstract class CategoryOptionCombo extends BaseIdentifiableObAuVa implements CoreObject {
 
     @Nullable
     public abstract ObjectWithUid categoryCombo();
@@ -54,7 +54,7 @@ public abstract class CategoryOptionCombo extends BaseIdentifiableObject impleme
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
+    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
 
         public abstract Builder categoryCombo(ObjectWithUid categoryCombo);
 

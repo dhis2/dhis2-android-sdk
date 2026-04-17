@@ -61,9 +61,7 @@ internal class ProgramHandler(
         categoryMappingHandler.handleMany(
             o.uid(),
             ProgramInternalAccessor.accessCategoryMappings(o),
-        ) { categoryMapping ->
-            categoryMapping.toBuilder().program(o.uid()).build()
-        }
+        ) { it }
 
         if (action === HandleAction.Update) {
             orphanCleaner.deleteOrphan(o)

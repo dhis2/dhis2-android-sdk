@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,26 +25,9 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.category.internal
 
-import org.hisp.dhis.android.core.category.CategoryCombo
+package org.hisp.dhis.android.annotations
 
-object CreateCategoryComboUtils {
-    const val TEST_CODE: String = "test_code"
-    const val TEST_NAME: String = "test_name"
-    const val TEST_DISPLAY_NAME: String = "test_display_name"
-    const val TEST_CREATED: String = "2001-02-07T16:04:40.387"
-    const val TEST_LAST_UPDATED: String = "2001-02-07T16:04:40.387"
-
-    fun create(uid: String, isDefault: Boolean = false): CategoryCombo {
-        return CategoryCombo.builder()
-            .uid(uid)
-            .code(TEST_CODE)
-            .name(TEST_NAME)
-            .displayName(TEST_DISPLAY_NAME)
-            .created(TEST_CREATED)
-            .lastUpdated(TEST_LAST_UPDATED)
-            .isDefault(isDefault)
-            .build()
-    }
-}
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.SOURCE)
+annotation class ModelBuilder

@@ -48,7 +48,7 @@ interface BaseIdentifiableObject : IdentifiableObject, ObjectWithDeleteInterface
     override fun deleted(): Boolean?
 
     interface Builder<T : Builder<T>> {
-        fun uid(uid: String?): T
+        fun uid(uid: String): T
 
         fun code(code: String?): T
 

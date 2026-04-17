@@ -25,26 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.category.internal
+package org.hisp.dhis.android.core.constant
 
-import org.hisp.dhis.android.core.category.CategoryCombo
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import java.util.Date
 
-object CreateCategoryComboUtils {
-    const val TEST_CODE: String = "test_code"
-    const val TEST_NAME: String = "test_name"
-    const val TEST_DISPLAY_NAME: String = "test_display_name"
-    const val TEST_CREATED: String = "2001-02-07T16:04:40.387"
-    const val TEST_LAST_UPDATED: String = "2001-02-07T16:04:40.387"
+@ModelBuilder
+data class Constant(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    val value: Double?,
+) : BaseIdentifiableObjectKt, CoreObject {
+    fun value(): Double? = value
 
-    fun create(uid: String, isDefault: Boolean = false): CategoryCombo {
-        return CategoryCombo.builder()
-            .uid(uid)
-            .code(TEST_CODE)
-            .name(TEST_NAME)
-            .displayName(TEST_DISPLAY_NAME)
-            .created(TEST_CREATED)
-            .lastUpdated(TEST_LAST_UPDATED)
-            .isDefault(isDefault)
-            .build()
+    fun toBuilder(): Builder = ConstantBuilder.from(this)
+
+    class Builder : ConstantBuilder()
+
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

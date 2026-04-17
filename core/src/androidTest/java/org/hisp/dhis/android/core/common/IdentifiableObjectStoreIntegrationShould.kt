@@ -104,11 +104,6 @@ class IdentifiableObjectStoreIntegrationShould : BaseIntegrationTestWithDatabase
     }
 
     @Test(expected = RuntimeException::class)
-    fun throw_exception_updating_with_null_uid() = runTest {
-        store.update(StoreMocks.generateOptionSetWithoutUid())
-    }
-
-    @Test(expected = RuntimeException::class)
     fun throw_exception_updating_non_existing_option_set() = runTest {
         store.update(optionSet)
     }

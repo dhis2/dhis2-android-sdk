@@ -40,10 +40,8 @@ internal class CategoryMappingHandler(
 
     override suspend fun afterObjectHandled(o: CategoryMapping) {
         categoryOptionMappingHandler.handleMany(
-            o.id()!!,
+            o.id(),
             o.optionMappings(),
-        ) { optionMapping ->
-            optionMapping.toBuilder().categoryMapping(o.id()).build()
-        }
+        ) { it }
     }
 }

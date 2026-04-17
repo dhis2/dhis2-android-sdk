@@ -37,8 +37,9 @@ internal data class CategoryOptionMappingDTO(
     val optionId: String,
     val filter: String,
 ) {
-    fun toDomain(): CategoryOptionMapping {
+    fun toDomain(categoryMappingId: String): CategoryOptionMapping {
         return CategoryOptionMapping.builder()
+            .categoryMapping(categoryMappingId)
             .optionId(optionId)
             .filter(filter)
             .build()
@@ -52,12 +53,13 @@ internal data class CategoryMappingDTO(
     val mappingName: String,
     val optionMappings: List<CategoryOptionMappingDTO>,
 ) {
-    fun toDomain(): CategoryMapping {
+    fun toDomain(programUid: String): CategoryMapping {
         return CategoryMapping.builder()
             .id(id)
+            .program(programUid)
             .categoryId(categoryId)
             .mappingName(mappingName)
-            .optionMappings(optionMappings.map { it.toDomain() })
+            .optionMappings(optionMappings.map { it.toDomain(id) })
             .build()
     }
 }

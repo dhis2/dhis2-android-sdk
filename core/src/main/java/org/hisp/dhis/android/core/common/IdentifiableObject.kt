@@ -25,15 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
+import java.util.Date
 
-public interface NameableObject extends IdentifiableObject {
-    String shortName();
+interface IdentifiableObject : ObjectWithUidInterface {
+    fun code(): String?
 
-    String displayShortName();
+    fun name(): String?
 
-    String description();
+    fun displayName(): String?
 
-    String displayDescription();
+    fun created(): Date?
+
+    fun lastUpdated(): Date?
 }

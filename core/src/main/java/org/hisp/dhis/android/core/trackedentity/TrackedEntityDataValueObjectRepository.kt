@@ -81,7 +81,7 @@ class TrackedEntityDataValueObjectRepository internal constructor(
 
     override suspend fun suspendExists(): Boolean {
         val value = getWithoutChildrenInternal()
-        return if (value == null) false else value.deleted() == null || !value.deleted()
+        return if (value == null) false else value.deleted() != true
     }
 
     private fun setBuilder(value: TrackedEntityDataValue?): TrackedEntityDataValue.Builder {

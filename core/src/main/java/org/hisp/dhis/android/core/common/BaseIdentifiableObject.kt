@@ -73,21 +73,30 @@ interface BaseIdentifiableObject : IdentifiableObject, ObjectWithDeleteInterface
         fun deleted(deleted: Boolean?): T
     }
 
+    @Suppress("MayBeConst")
     companion object {
         /* date format which should be used for all Date instances
     within models which extend BaseIdentifiableObject */
         @JvmField
         val DATE_FORMAT: SafeDateFormat = DateUtils.DATE_FORMAT
+
         @JvmField
         val SPACE_DATE_FORMAT: SafeDateFormat = DateUtils.SPACE_DATE_FORMAT
 
         @JvmField val UID: String = "id"
+
         @JvmField val UUID: String = "uid"
+
         @JvmField val CODE: String = "code"
+
         @JvmField val NAME: String = "name"
+
         @JvmField val DISPLAY_NAME: String = "displayName"
+
         @JvmField val CREATED: String = "created"
+
         @JvmField val LAST_UPDATED: String = "lastUpdated"
+
         @JvmField val DELETED: String = "deleted"
 
         @Throws(ParseException::class)

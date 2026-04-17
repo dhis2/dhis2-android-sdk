@@ -25,27 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.relationship
+package org.hisp.dhis.android.core.common
 
-import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface
-import org.hisp.dhis.android.core.common.ObjectWithSyncStateInterface
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface
-import org.hisp.dhis.android.core.common.State
-import java.util.Date
+interface DeletableDataObjectKt : DataObject, ObjectWithDeleteInterface {
+    val deleted: Boolean?
 
-internal data class NewTrackerImporterRelationship(
-    val uid: String,
-    val deleted: Boolean?,
-    val syncState: State?,
-    val relationshipType: String?,
-    val relationshipName: String?,
-    val createdAt: Date?,
-    val updatedAt: Date?,
-    val bidirectional: Boolean?,
-    val from: NewTrackerImporterRelationshipItem?,
-    val to: NewTrackerImporterRelationshipItem?,
-) : ObjectWithUidInterface, ObjectWithSyncStateInterface, ObjectWithDeleteInterface {
-    override fun uid(): String = uid
-    override fun syncState(): State? = syncState
     override fun deleted(): Boolean? = deleted
 }

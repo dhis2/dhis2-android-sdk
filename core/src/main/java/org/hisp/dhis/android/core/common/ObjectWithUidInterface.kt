@@ -25,19 +25,8 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
-
-import java.util.Date;
-
-public interface IdentifiableObject extends ObjectWithUidInterface {
-    String code();
-
-    String name();
-
-    String displayName();
-
-    Date created();
-
-    Date lastUpdated();
+interface ObjectWithUidInterface {
+    fun uid(): String
 }

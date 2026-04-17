@@ -3578,6 +3578,15 @@ public abstract interface class org/hisp/dhis/android/core/common/DataObject : o
 	public abstract fun syncState ()Lorg/hisp/dhis/android/core/common/State;
 }
 
+public abstract interface class org/hisp/dhis/android/core/common/DataObjectKt : org/hisp/dhis/android/core/common/DataObject {
+	public abstract fun getSyncState ()Lorg/hisp/dhis/android/core/common/State;
+	public fun syncState ()Lorg/hisp/dhis/android/core/common/State;
+}
+
+public final class org/hisp/dhis/android/core/common/DataObjectKt$DefaultImpls {
+	public static fun syncState (Lorg/hisp/dhis/android/core/common/DataObjectKt;)Lorg/hisp/dhis/android/core/common/State;
+}
+
 public abstract class org/hisp/dhis/android/core/common/DateFilterPeriod {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod$Builder;
@@ -3620,6 +3629,15 @@ public final class org/hisp/dhis/android/core/common/DeletableDataColumns : org/
 
 public abstract interface class org/hisp/dhis/android/core/common/DeletableDataObject : org/hisp/dhis/android/core/common/DataObject, org/hisp/dhis/android/core/common/ObjectWithDeleteInterface {
 	public abstract fun deleted ()Ljava/lang/Boolean;
+}
+
+public abstract interface class org/hisp/dhis/android/core/common/DeletableDataObjectKt : org/hisp/dhis/android/core/common/DataObject, org/hisp/dhis/android/core/common/ObjectWithDeleteInterface {
+	public fun deleted ()Ljava/lang/Boolean;
+	public abstract fun getDeleted ()Ljava/lang/Boolean;
+}
+
+public final class org/hisp/dhis/android/core/common/DeletableDataObjectKt$DefaultImpls {
+	public static fun deleted (Lorg/hisp/dhis/android/core/common/DeletableDataObjectKt;)Ljava/lang/Boolean;
 }
 
 public final class org/hisp/dhis/android/core/common/FeatureType : java/lang/Enum {
@@ -4560,17 +4578,77 @@ public abstract class org/hisp/dhis/android/core/configuration/internal/Database
 	public abstract fun versionCode (J)Lorg/hisp/dhis/android/core/configuration/internal/DatabasesConfiguration$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/constant/Constant : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa, org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/constant/Constant$Builder;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/constant/Constant$Builder;
-	public abstract fun value ()Ljava/lang/Double;
+public final class org/hisp/dhis/android/core/constant/Constant : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/constant/Constant$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/Double;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/constant/Constant$Builder;
+	public fun code ()Ljava/lang/String;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/util/Date;
+	public final fun component6 ()Ljava/util/Date;
+	public final fun component7 ()Ljava/lang/Boolean;
+	public final fun component8 ()Ljava/lang/Double;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/Double;)Lorg/hisp/dhis/android/core/constant/Constant;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/constant/Constant;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/Double;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/constant/Constant;
+	public fun created ()Ljava/util/Date;
+	public fun deleted ()Ljava/lang/Boolean;
+	public fun displayName ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCode ()Ljava/lang/String;
+	public fun getCreated ()Ljava/util/Date;
+	public fun getDeleted ()Ljava/lang/Boolean;
+	public fun getDisplayName ()Ljava/lang/String;
+	public fun getLastUpdated ()Ljava/util/Date;
+	public fun getName ()Ljava/lang/String;
+	public fun getUid ()Ljava/lang/String;
+	public final fun getValue ()Ljava/lang/Double;
+	public fun hashCode ()I
+	public fun lastUpdated ()Ljava/util/Date;
+	public fun name ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/constant/Constant$Builder;
+	public fun toString ()Ljava/lang/String;
+	public fun uid ()Ljava/lang/String;
+	public final fun value ()Ljava/lang/Double;
 }
 
-public abstract class org/hisp/dhis/android/core/constant/Constant$Builder : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa$Builder {
+public final class org/hisp/dhis/android/core/constant/Constant$Builder : org/hisp/dhis/android/core/constant/ConstantBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/constant/Constant;
-	public abstract fun value (Ljava/lang/Double;)Lorg/hisp/dhis/android/core/constant/Constant$Builder;
+}
+
+public final class org/hisp/dhis/android/core/constant/Constant$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/constant/Constant$Builder;
+}
+
+public class org/hisp/dhis/android/core/constant/ConstantBuilder : org/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder {
+	public static final field Companion Lorg/hisp/dhis/android/core/constant/ConstantBuilder$Companion;
+	public fun <init> ()V
+	public final fun build ()Lorg/hisp/dhis/android/core/constant/Constant;
+	public synthetic fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/constant/Constant$Builder;
+	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/constant/ConstantBuilder;
+	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/constant/Constant$Builder;
+	public synthetic fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/constant/Constant$Builder;
+	public synthetic fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/constant/Constant$Builder;
+	public synthetic fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/constant/ConstantBuilder;
+	public synthetic fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/constant/Constant$Builder;
+	public synthetic fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/constant/Constant$Builder;
+	public synthetic fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/constant/Constant$Builder;
+	public final fun value (Ljava/lang/Double;)Lorg/hisp/dhis/android/core/constant/Constant$Builder;
+}
+
+public final class org/hisp/dhis/android/core/constant/ConstantBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/constant/Constant;)Lorg/hisp/dhis/android/core/constant/Constant$Builder;
 }
 
 public final class org/hisp/dhis/android/core/constant/ConstantCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {

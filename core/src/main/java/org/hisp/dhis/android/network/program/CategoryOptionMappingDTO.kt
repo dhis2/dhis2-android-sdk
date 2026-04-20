@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,29 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.data.program
 
-import org.hisp.dhis.android.core.program.CategoryMapping
+package org.hisp.dhis.android.network.program
+
+import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.program.CategoryOptionMapping
 
-object CategoryMappingSamples {
-    val categoryMapping: CategoryMapping?
-        get() = CategoryMapping.builder()
-            .id("catMapping001")
-            .program("test_program")
-            .categoryId("test_category")
-            .mappingName("Test mapping")
-            .optionMappings(
-                mutableListOf<CategoryOptionMapping?>(
-                    categoryOptionMapping
-                )
-            )
+@Serializable
+internal data class CategoryOptionMappingDTO(
+    val optionId: String,
+    val filter: String,
+) {
+    fun toDomain(categoryMappingId: String): CategoryOptionMapping {
+        return CategoryOptionMapping.builder()
+            .categoryMapping(categoryMappingId)
+            .optionId(optionId)
+            .filter(filter)
             .build()
-
-    val categoryOptionMapping: CategoryOptionMapping?
-        get() = CategoryOptionMapping.builder()
-            .categoryMapping("catMapping001")
-            .optionId("test_option")
-            .filter("#{condition1}")
-            .build()
+    }
 }

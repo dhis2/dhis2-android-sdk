@@ -37,7 +37,7 @@ import java.util.List;
 @AutoValue
 public abstract class CategoryMapping implements CoreObject {
 
-    public abstract String id();
+    public abstract String uid();
 
     public abstract String program();
 

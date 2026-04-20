@@ -1,8 +1,8 @@
 # PI disaggregations: adapt metadata model (ANDROSDK-1994)
 
 # Add categoryCombo, attributeCombo and categoryMappingIds columns to ProgramIndicator table
-ALTER TABLE ProgramIndicator ADD COLUMN categoryCombo TEXT;
-ALTER TABLE ProgramIndicator ADD COLUMN attributeCombo TEXT;
+ALTER TABLE ProgramIndicator ADD COLUMN categoryCombo TEXT NOT NULL;
+ALTER TABLE ProgramIndicator ADD COLUMN attributeCombo TEXT NOT NULL;
 ALTER TABLE ProgramIndicator ADD COLUMN categoryMappingIds TEXT;
 
 # Create CategoryMapping table

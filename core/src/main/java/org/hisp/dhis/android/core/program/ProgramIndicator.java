@@ -73,10 +73,8 @@ public abstract class ProgramIndicator extends BaseNameableObject implements Cor
     @Nullable
     public abstract List<ObjectWithUid> legendSets();
 
-    @Nullable
     public abstract ObjectWithUid categoryCombo();
 
-    @Nullable
     public abstract ObjectWithUid attributeCombo();
 
     @Nullable

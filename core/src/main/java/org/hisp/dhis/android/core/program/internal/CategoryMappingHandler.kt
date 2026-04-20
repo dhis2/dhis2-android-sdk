@@ -40,7 +40,7 @@ internal class CategoryMappingHandler(
 
     override suspend fun afterObjectHandled(o: CategoryMapping) {
         categoryOptionMappingHandler.handleMany(
-            o.id(),
+            o.uid(),
             o.optionMappings(),
         ) { it }
     }

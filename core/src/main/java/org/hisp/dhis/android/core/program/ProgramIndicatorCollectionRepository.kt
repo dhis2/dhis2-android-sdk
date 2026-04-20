@@ -43,6 +43,7 @@ import org.hisp.dhis.android.persistence.program.ProgramIndicatorTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
+@Suppress("TooManyFunctions")
 class ProgramIndicatorCollectionRepository internal constructor(
     store: ProgramIndicatorStore,
     scope: RepositoryScope,

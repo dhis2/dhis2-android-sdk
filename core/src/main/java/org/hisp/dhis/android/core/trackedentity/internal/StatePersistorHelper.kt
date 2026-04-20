@@ -42,10 +42,7 @@ internal class StatePersistorHelper internal constructor() {
         forcedState: State?,
     ) where O : ObjectWithSyncStateInterface, O : ObjectWithUidInterface {
         getStateToSet(o, forcedState)?.let { s ->
-            if (!stateMap.containsKey(s)) {
-                stateMap[s] = ArrayList()
-            }
-            stateMap[s]!!.add(o.uid())
+            stateMap.getOrPut(s) { ArrayList() }.add(o.uid())
         }
     }
 

@@ -55,7 +55,7 @@ public abstract class CategoryMapping implements CoreObject {
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Builder id(String id);
+        public abstract Builder uid(String uid);
 
         public abstract Builder program(String program);
 

@@ -31,20 +31,16 @@ import org.hisp.dhis.android.core.program.CategoryMapping
 import org.hisp.dhis.android.core.program.CategoryOptionMapping
 
 object CategoryMappingSamples {
-    val categoryMapping: CategoryMapping?
+    val categoryMapping: CategoryMapping
         get() = CategoryMapping.builder()
-            .id("catMapping001")
+            .uid("catMapping001")
             .program("test_program")
             .categoryId("test_category")
             .mappingName("Test mapping")
-            .optionMappings(
-                mutableListOf<CategoryOptionMapping?>(
-                    categoryOptionMapping
-                )
-            )
+            .optionMappings(listOf(categoryOptionMapping))
             .build()
 
-    val categoryOptionMapping: CategoryOptionMapping?
+    val categoryOptionMapping: CategoryOptionMapping
         get() = CategoryOptionMapping.builder()
             .categoryMapping("catMapping001")
             .optionId("test_option")

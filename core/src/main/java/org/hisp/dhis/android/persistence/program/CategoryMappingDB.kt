@@ -55,7 +55,7 @@ internal data class CategoryMappingDB(
 ) : EntityDB<CategoryMapping> {
     override fun toDomain(): CategoryMapping {
         return CategoryMapping.builder()
-            .id(uid)
+            .uid(uid)
             .program(program)
             .categoryId(categoryId)
             .mappingName(mappingName)

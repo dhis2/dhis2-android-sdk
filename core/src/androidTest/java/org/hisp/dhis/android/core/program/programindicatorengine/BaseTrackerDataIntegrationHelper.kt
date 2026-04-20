@@ -178,6 +178,8 @@ open class BaseTrackerDataIntegrationHelper(
             .analyticsType(analyticsType)
             .program(ObjectWithUid.create(programUid)).expression(expression)
             .aggregationType(aggregationType)
+            .categoryCombo(ObjectWithUid.create("bjDvmb4bfuf"))
+            .attributeCombo(ObjectWithUid.create("bjDvmb4bfuf"))
             .build()
         setProgramIndicator(programIndicator)
     }

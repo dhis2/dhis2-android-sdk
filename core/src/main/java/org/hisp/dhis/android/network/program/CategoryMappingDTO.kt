@@ -40,7 +40,7 @@ internal data class CategoryMappingDTO(
 ) {
     fun toDomain(programUid: String): CategoryMapping {
         return CategoryMapping.builder()
-            .id(id)
+            .uid(id)
             .program(programUid)
             .categoryId(categoryId)
             .mappingName(mappingName)

@@ -40,7 +40,7 @@ import org.hisp.dhis.android.processor.ParentColumn
     foreignKeys = [
         ForeignKey(
             entity = CategoryMappingDB::class,
-            parentColumns = ["id"],
+            parentColumns = ["uid"],
             childColumns = ["categoryMapping"],
             onDelete = ForeignKey.CASCADE,
             deferred = true,

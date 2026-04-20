@@ -54,6 +54,8 @@ object AggregatedSamples {
     val programIndicator1 = ProgramIndicator.builder()
         .uid("p2Zxg0wcPQ3")
         .displayName("BCG doses")
+        .categoryCombo(ObjectWithUid.create("bjDvmb4bfuf"))
+        .attributeCombo(ObjectWithUid.create("bjDvmb4bfuf"))
         .build()
 
     val indicator1 = Indicator.builder()

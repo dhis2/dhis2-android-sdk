@@ -64,7 +64,7 @@ class CategoryMappingHandlerShould {
             .build()
 
         val categoryMapping = CategoryMapping.builder()
-            .id("mapping1")
+            .uid("mapping1")
             .program("program1")
             .categoryId("category1")
             .mappingName("Test mapping")

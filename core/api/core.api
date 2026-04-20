@@ -7660,21 +7660,21 @@ public abstract class org/hisp/dhis/android/core/program/CategoryMapping : org/h
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/program/CategoryMapping$Builder;
 	public abstract fun categoryId ()Ljava/lang/String;
-	public abstract fun id ()Ljava/lang/String;
 	public abstract fun mappingName ()Ljava/lang/String;
 	public abstract fun optionMappings ()Ljava/util/List;
 	public abstract fun program ()Ljava/lang/String;
 	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/program/CategoryMapping$Builder;
+	public abstract fun uid ()Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/program/CategoryMapping$Builder {
 	public fun <init> ()V
 	public abstract fun build ()Lorg/hisp/dhis/android/core/program/CategoryMapping;
 	public abstract fun categoryId (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/CategoryMapping$Builder;
-	public abstract fun id (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/CategoryMapping$Builder;
 	public abstract fun mappingName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/CategoryMapping$Builder;
 	public abstract fun optionMappings (Ljava/util/List;)Lorg/hisp/dhis/android/core/program/CategoryMapping$Builder;
 	public abstract fun program (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/CategoryMapping$Builder;
+	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/CategoryMapping$Builder;
 }
 
 public abstract class org/hisp/dhis/android/core/program/CategoryOptionMapping : org/hisp/dhis/android/core/common/CoreObject {
@@ -14478,9 +14478,9 @@ public final class org/hisp/dhis/android/persistence/program/CategoryMappingTabl
 public final class org/hisp/dhis/android/persistence/program/CategoryMappingTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
 	public static final field CATEGORY_ID Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/program/CategoryMappingTableInfo$Columns$Companion;
-	public static final field ID Ljava/lang/String;
 	public static final field MAPPING_NAME Ljava/lang/String;
 	public static final field PROGRAM Ljava/lang/String;
+	public static final field UID Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
 }

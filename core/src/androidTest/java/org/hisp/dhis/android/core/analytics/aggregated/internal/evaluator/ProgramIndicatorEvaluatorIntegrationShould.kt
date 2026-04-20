@@ -192,6 +192,8 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
             .expression(expression)
             .filter(filter)
             .analyticsPeriodBoundaries(boundaries)
+            .categoryCombo(ObjectWithUid.create("bjDvmb4bfuf"))
+            .attributeCombo(ObjectWithUid.create("bjDvmb4bfuf"))
             .build()
 
         helper.setProgramIndicator(programIndicator)

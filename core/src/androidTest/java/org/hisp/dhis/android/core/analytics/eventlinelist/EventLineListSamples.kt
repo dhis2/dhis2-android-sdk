@@ -170,6 +170,8 @@ object EventLineListSamples {
         .expression(expression)
         .aggregationType(AggregationType.SUM)
         .legendSets(listOf(ObjectWithUid.create(legendSet1.uid())))
+        .categoryCombo(ObjectWithUid.create("bjDvmb4bfuf"))
+        .attributeCombo(ObjectWithUid.create("bjDvmb4bfuf"))
         .build()
 
     fun event(programStage: String, eventDate: Date): Event {

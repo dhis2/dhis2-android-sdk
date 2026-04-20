@@ -138,6 +138,8 @@ internal open class BaseProgramIndicatorSQLExecutorIntegrationShould : BaseEvalu
             .expression(expression)
             .filter(filter)
             .analyticsPeriodBoundaries(actualBoundaries)
+            .categoryCombo(ObjectWithUid.create("bjDvmb4bfuf"))
+            .attributeCombo(ObjectWithUid.create("bjDvmb4bfuf"))
             .build()
 
         return programIndicator.also {

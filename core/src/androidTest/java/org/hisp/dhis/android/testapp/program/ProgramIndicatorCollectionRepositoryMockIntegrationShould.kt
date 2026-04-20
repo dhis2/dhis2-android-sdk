@@ -123,6 +123,26 @@ class ProgramIndicatorCollectionRepositoryMockIntegrationShould : BaseMockIntegr
     }
 
     @Test
+    fun filter_by_category_combo() {
+        val indicators = d2.programModule().programIndicators()
+            .byCategoryCombo()
+            .eq("p0KPaWEg3cf")
+            .blockingGet()
+
+        assertThat(indicators.size).isEqualTo(3)
+    }
+
+    @Test
+    fun filter_by_attribute_combo() {
+        val indicators = d2.programModule().programIndicators()
+            .byAttributeCombo()
+            .eq("p0KPaWEg3cf")
+            .blockingGet()
+
+        assertThat(indicators.size).isEqualTo(3)
+    }
+
+    @Test
     fun include_legend_sets_as_children() {
         val programIndicators = d2.programModule().programIndicators()
             .withLegendSets().one().blockingGet()

@@ -6,7 +6,7 @@ Settings are downloaded on every metadata synchronization. There are different k
 d2.settingModule()
 ```
 
-- **System settings**: system-wide properties such as `flag` or `style`.
+- **System settings**: system-wide properties such as `flag` or `keyCustomColorMobile` (note: `style` has been deprecated in favour of `keyCustomColorMobile`).
 - **User settings**: user specific settings such as `keyDbLocale` or `keyUiLocale`.
 - **Settings app**: these settings offer additional control over the behavior of the application. More about this in the next section.
 

@@ -39,4 +39,5 @@ internal interface UserOrganisationUnitLinkStore : LinkStore<UserOrganisationUni
     suspend fun queryOrganisationUnitUidsByScope(scope: OrganisationUnit.Scope): List<String>
     suspend fun queryAssignedOrganisationUnitUidsByScope(scope: OrganisationUnit.Scope): List<String>
     suspend fun isCaptureScope(organisationUnit: String): Boolean
+    suspend fun isSearchScope(organisationUnit: String): Boolean
 }

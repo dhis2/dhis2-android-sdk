@@ -59,6 +59,7 @@ internal data class CategoryMappingDB(
             .program(program)
             .categoryId(categoryId)
             .mappingName(mappingName)
+            .optionMappings(emptyList())
             .build()
     }
 }

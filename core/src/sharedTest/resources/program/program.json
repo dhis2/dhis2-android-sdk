@@ -100,5 +100,18 @@
   ],
   "enrollmentCategoryCombo": {
     "id": "p0KPaWEg3cf"
-  }
+  },
+  "categoryMappings": [
+    {
+      "id": "catMapping001",
+      "categoryId": "GLevLNI9wkl",
+      "mappingName": "Default mapping",
+      "optionMappings": [
+        {
+          "optionId": "xYerKDKCefk",
+          "filter": "#{condition1}"
+        }
+      ]
+    }
+  ]
 }

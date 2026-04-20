@@ -82,5 +82,16 @@ internal class ProgramShould : CoreObjectShould<ProgramDTO>("program/program.jso
         assertThat(program.programTrackedEntityAttributes()!![0].uid()).isEqualTo("YGMlKXYa5xF")
         assertThat(program.programTrackedEntityAttributes()!![1].uid()).isEqualTo("WZWEBrkJSAm")
         assertThat(program.programSections()!![0].uid()).isEqualTo("FdpWnXhl7c1")
+
+        val categoryMappings = ProgramInternalAccessor.accessCategoryMappings(program)!!
+        assertThat(categoryMappings.size).isEqualTo(1)
+        assertThat(categoryMappings[0].uid()).isEqualTo("catMapping001")
+        assertThat(categoryMappings[0].program()).isEqualTo("WSGAb5XwJ3Y")
+        assertThat(categoryMappings[0].categoryId()).isEqualTo("GLevLNI9wkl")
+        assertThat(categoryMappings[0].mappingName()).isEqualTo("Default mapping")
+        assertThat(categoryMappings[0].optionMappings().size).isEqualTo(1)
+        assertThat(categoryMappings[0].optionMappings()[0].categoryMapping()).isEqualTo("catMapping001")
+        assertThat(categoryMappings[0].optionMappings()[0].optionId()).isEqualTo("xYerKDKCefk")
+        assertThat(categoryMappings[0].optionMappings()[0].filter()).isEqualTo("#{condition1}")
     }
 }

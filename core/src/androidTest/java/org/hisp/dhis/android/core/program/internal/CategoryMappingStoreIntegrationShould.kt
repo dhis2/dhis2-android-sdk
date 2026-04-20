@@ -48,7 +48,9 @@ class CategoryMappingStoreIntegrationShould : LinkStoreAbstractIntegrationShould
     }
 
     override fun buildObject(): CategoryMapping {
-        return CategoryMappingSamples.categoryMapping
+        return CategoryMappingSamples.categoryMapping.toBuilder()
+            .optionMappings(emptyList())
+            .build()
     }
 
     override fun buildObjectWithOtherMasterUid(): CategoryMapping {

@@ -30,21 +30,6 @@ package org.hisp.dhis.android.network.program
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.program.CategoryMapping
-import org.hisp.dhis.android.core.program.CategoryOptionMapping
-
-@Serializable
-internal data class CategoryOptionMappingDTO(
-    val optionId: String,
-    val filter: String,
-) {
-    fun toDomain(categoryMappingId: String): CategoryOptionMapping {
-        return CategoryOptionMapping.builder()
-            .categoryMapping(categoryMappingId)
-            .optionId(optionId)
-            .filter(filter)
-            .build()
-    }
-}
 
 @Serializable
 internal data class CategoryMappingDTO(

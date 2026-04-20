@@ -46,8 +46,8 @@ internal data class ProgramIndicatorDB(
     val program: String,
     val aggregationType: String?,
     val analyticsType: String?,
-    val categoryCombo: String?,
-    val attributeCombo: String?,
+    val categoryCombo: String,
+    val attributeCombo: String,
     val categoryMappingIds: StringListDB?,
 ) : EntityDB<ProgramIndicator>, BaseNameableObjectDB {
 
@@ -62,8 +62,8 @@ internal data class ProgramIndicatorDB(
             program(ObjectWithUid.create(program))
             aggregationType?.let { aggregationType(AggregationType.valueOf(it)) }
             analyticsType?.let { analyticsType(AnalyticsType.valueOf(it)) }
-            categoryCombo?.let { categoryCombo(ObjectWithUid.create(it)) }
-            attributeCombo?.let { attributeCombo(ObjectWithUid.create(it)) }
+            categoryCombo.let { categoryCombo(ObjectWithUid.create(it)) }
+            attributeCombo.let { attributeCombo(ObjectWithUid.create(it)) }
             categoryMappingIds?.let { categoryMappingIds(it.toDomain()) }
         }.build()
     }
@@ -89,8 +89,8 @@ internal fun ProgramIndicator.toDB(): ProgramIndicatorDB {
         program = program()!!.uid(),
         aggregationType = aggregationType()?.name,
         analyticsType = analyticsType()?.name,
-        categoryCombo = categoryCombo()?.uid(),
-        attributeCombo = attributeCombo()?.uid(),
+        categoryCombo = categoryCombo().uid(),
+        attributeCombo = attributeCombo().uid(),
         categoryMappingIds = categoryMappingIds()?.toDB(),
     )
 }

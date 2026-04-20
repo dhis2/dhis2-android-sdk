@@ -48,14 +48,14 @@ import org.hisp.dhis.android.processor.ParentColumn
     ],
 )
 internal data class CategoryMappingDB(
-    @PrimaryKey val id: String,
+    @PrimaryKey val uid: String,
     @ParentColumn val program: String,
     val categoryId: String,
     val mappingName: String,
 ) : EntityDB<CategoryMapping> {
     override fun toDomain(): CategoryMapping {
         return CategoryMapping.builder()
-            .id(id)
+            .id(uid)
             .program(program)
             .categoryId(categoryId)
             .mappingName(mappingName)
@@ -65,7 +65,7 @@ internal data class CategoryMappingDB(
 
 internal fun CategoryMapping.toDB(): CategoryMappingDB {
     return CategoryMappingDB(
-        id = id(),
+        uid = uid(),
         program = program(),
         categoryId = categoryId(),
         mappingName = mappingName(),

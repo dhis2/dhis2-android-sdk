@@ -91,6 +91,14 @@ class ProgramIndicatorCollectionRepository internal constructor(
         return cf.string(ProgramIndicatorTableInfo.Columns.PROGRAM)
     }
 
+    fun byCategoryCombo(): StringFilterConnector<ProgramIndicatorCollectionRepository> {
+        return cf.string(ProgramIndicatorTableInfo.Columns.CATEGORY_COMBO)
+    }
+
+    fun byAttributeCombo(): StringFilterConnector<ProgramIndicatorCollectionRepository> {
+        return cf.string(ProgramIndicatorTableInfo.Columns.ATTRIBUTE_COMBO)
+    }
+
     fun withLegendSets(): ProgramIndicatorCollectionRepository {
         return cf.withChild(LEGEND_SETS)
     }

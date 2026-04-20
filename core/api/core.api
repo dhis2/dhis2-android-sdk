@@ -7879,6 +7879,8 @@ public abstract class org/hisp/dhis/android/core/program/ProgramIndicator$Builde
 public final class org/hisp/dhis/android/core/program/ProgramIndicatorCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
 	public final fun byAggregationType ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byAnalyticsType ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
+	public final fun byAttributeCombo ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
+	public final fun byCategoryCombo ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byDecimals ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/IntegerFilterConnector;
 	public final fun byDimensionItem ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byDisplayInForm ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;

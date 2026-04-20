@@ -39,7 +39,6 @@ import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.google.devtools.ksp.symbol.KSType
-import com.google.devtools.ksp.validate
 import org.hisp.dhis.android.annotations.ModelBuilder
 import java.io.OutputStream
 
@@ -48,6 +47,8 @@ class ModelBuilderProcessor(
     private val logger: KSPLogger,
     private val codeGenerator: CodeGenerator,
 ) : SymbolProcessor {
+
+    private val processedSymbols = mutableSetOf<String>()
 
     operator fun OutputStream.plusAssign(str: String) {
         this.write(str.toByteArray())
@@ -58,6 +59,7 @@ class ModelBuilderProcessor(
             .getSymbolsWithAnnotation(ModelBuilder::class.qualifiedName!!)
             .filterIsInstance<KSClassDeclaration>()
             .filter { it.classKind == ClassKind.CLASS }
+            .filterNot { processedSymbols.contains(it.qualifiedName?.asString()) }
 
         symbols.forEach { symbol ->
             val packageName = symbol.packageName.asString()
@@ -149,9 +151,9 @@ class ModelBuilderProcessor(
             """.trimIndent()
 
             file.close()
+            processedSymbols.add(symbol.qualifiedName?.asString()!!)
         }
 
-        val unableToProcess = symbols.filterNot { it.validate() }.toList()
         return emptyList()
     }
 

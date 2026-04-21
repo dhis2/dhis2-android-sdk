@@ -28,9 +28,17 @@
 package org.hisp.dhis.android.core.category.internal
 
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.Truth.assertWithMessage
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
+import org.hisp.dhis.android.core.category.CategoryCombo
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.program.Program
+import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.hisp.dhis.android.persistence.category.CategoryCategoryComboLinkTableInfo
+import org.hisp.dhis.android.persistence.category.CategoryComboTableInfo
+import org.hisp.dhis.android.persistence.category.CategoryOptionComboTableInfo
 import org.junit.Test
 
 class CategoryComboUidsSeekerMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
@@ -43,5 +51,83 @@ class CategoryComboUidsSeekerMockIntegrationShould : BaseMockIntegrationTestFull
 
         // Default category combo (p0KPaWEg3cf).
         assertThat(categories.contains("p0KPaWEg3cf")).isTrue()
+    }
+
+    @Test
+    fun seek_uids_picks_enrollment_category_combo_column() = runTest {
+        val seeker: CategoryComboUidsSeeker = koin.get()
+        val programStore: ProgramStore = koin.get()
+        val categoryComboStore: CategoryComboStore = koin.get()
+
+        val testProgramUid = "testProgSeekr1"
+        val distinctEnrollmentCcUid = "testEnrollCC01"
+
+        categoryComboStore.insert(
+            CategoryCombo.builder()
+                .uid(distinctEnrollmentCcUid)
+                .isDefault(false)
+                .build(),
+        )
+        programStore.insert(
+            Program.builder()
+                .uid(testProgramUid)
+                .categoryCombo(ObjectWithUid.create("m2jTvAj5kkm"))
+                .enrollmentCategoryCombo(ObjectWithUid.create(distinctEnrollmentCcUid))
+                .build(),
+        )
+
+        try {
+            val categories = seeker.seekUids()
+            assertThat(categories).contains(distinctEnrollmentCcUid)
+        } finally {
+            programStore.deleteIfExists(testProgramUid)
+            categoryComboStore.deleteIfExists(distinctEnrollmentCcUid)
+        }
+    }
+
+    @Test
+    fun cover_all_foreign_key_references_to_category_combo() = runTest {
+        val categoryComboTable = CategoryComboTableInfo.TABLE_INFO.name()
+        val categoryOptionComboTable = CategoryOptionComboTableInfo.TABLE_INFO.name()
+        val categoryCategoryComboLinkTable = CategoryCategoryComboLinkTableInfo.TABLE_INFO.name()
+
+        // Tables that belong to the CategoryCombo subgraph. FKs from these to CategoryCombo are
+        // internal wiring (child rows, link tables) and are not separate metadata objects that
+        // need to be seeded from elsewhere, so they are excluded from the coverage check.
+        val excludedTables = setOf(
+            categoryComboTable,
+            categoryOptionComboTable,
+            categoryCategoryComboLinkTable,
+        )
+
+        val sqliteInternalTables = setOf("android_metadata", "room_master_table", "sqlite_sequence")
+        val schemaRows = databaseAdapter.getCurrentDatabase().d2Dao().getSchemaRows()
+        val tableNames = schemaRows
+            .filter { it.sql?.trimStart()?.startsWith("CREATE TABLE", ignoreCase = true) == true }
+            .map { it.name }
+            .filter { it !in sqliteInternalTables && !it.startsWith("sqlite_") }
+            .filter { it !in excludedTables }
+
+        val discoveredReferences = mutableSetOf<Pair<String, String>>()
+        for (table in tableNames) {
+            val fkRows = databaseAdapter.rawQueryWithTypedValues("PRAGMA foreign_key_list(`$table`);")
+            for (row in fkRows) {
+                val values = row.values.toList()
+                if (values.size >= 5 && values[2].toString() == categoryComboTable) {
+                    val fromColumn = values[3].toString()
+                    discoveredReferences.add(table to fromColumn)
+                }
+            }
+        }
+
+        val coveredReferences = CategoryComboUidsSeeker.categoryComboReferences
+            .flatMap { (column, tables) -> tables.map { it to column } }
+            .toSet()
+
+        val uncovered = discoveredReferences - coveredReferences
+        assertWithMessage(
+            "FK columns targeting CategoryCombo that are not swept by CategoryComboUidsSeeker. " +
+                "Add each (table, column) pair to CategoryComboUidsSeeker.categoryComboReferences.",
+        ).that(uncovered).isEmpty()
     }
 }

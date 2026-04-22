@@ -8,6 +8,7 @@ import org.hisp.dhis.android.core.common.AnalyticsType
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.util.dateFormat
+import org.hisp.dhis.android.persistence.category.CategoryComboDB
 import org.hisp.dhis.android.persistence.common.BaseNameableObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.StringListDB
@@ -21,6 +22,20 @@ import org.hisp.dhis.android.persistence.common.toDB
             entity = ProgramDB::class,
             parentColumns = ["uid"],
             childColumns = ["program"],
+            onDelete = ForeignKey.CASCADE,
+            deferred = true,
+        ),
+        ForeignKey(
+            entity = CategoryComboDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["categoryCombo"],
+            onDelete = ForeignKey.CASCADE,
+            deferred = true,
+        ),
+        ForeignKey(
+            entity = CategoryComboDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["attributeCombo"],
             onDelete = ForeignKey.CASCADE,
             deferred = true,
         ),

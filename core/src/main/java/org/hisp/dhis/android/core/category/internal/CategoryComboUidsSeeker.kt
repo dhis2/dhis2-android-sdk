@@ -42,20 +42,29 @@ internal class CategoryComboUidsSeeker(
     private val defaultCategoryComboManager: DefaultCategoryComboManager,
 ) : BaseUidsSeeker(databaseAdapter) {
     suspend fun seekUids(): Set<String> {
-        val tableNames = listOf(
-            ProgramTableInfo.TABLE_INFO.name(),
-            DataSetTableInfo.TABLE_INFO.name(),
-            DataElementTableInfo.TABLE_INFO.name(),
-            DataSetDataElementLinkTableInfo.TABLE_INFO.name(),
-        )
-        val query = MultipleTableQueryBuilder()
-            .generateQuery(DataSetTableInfo.Columns.CATEGORY_COMBO, tableNames).build()
-
-        val uids = readSingleColumnResults(query).toMutableSet()
+        val uids = categoryComboReferences.flatMap { (column, tables) ->
+            val query = MultipleTableQueryBuilder().generateQuery(column, tables).build()
+            readSingleColumnResults(query)
+        }.toMutableSet()
 
         // Always include the default CategoryCombo UID to ensure it gets downloaded
         defaultCategoryComboManager.defaultCategoryComboUid?.let { uids.add(it) }
 
         return uids
+    }
+
+    companion object {
+        // Single source of truth for every column that references CategoryCombo.uid
+        internal val categoryComboReferences: List<Pair<String, List<String>>> = listOf(
+            DataSetTableInfo.Columns.CATEGORY_COMBO to listOf(
+                ProgramTableInfo.TABLE_INFO.name(),
+                DataSetTableInfo.TABLE_INFO.name(),
+                DataElementTableInfo.TABLE_INFO.name(),
+                DataSetDataElementLinkTableInfo.TABLE_INFO.name(),
+            ),
+            ProgramTableInfo.Columns.ENROLLMENT_CATEGORY_COMBO to listOf(
+                ProgramTableInfo.TABLE_INFO.name(),
+            ),
+        )
     }
 }

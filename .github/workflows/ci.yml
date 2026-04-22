@@ -37,6 +37,7 @@ jobs:
   checkout:
     name: Checkout
     runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' || endsWith(github.ref, '-rc') }}
 
     steps:
       - name: Checkout code
@@ -53,7 +54,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
         with:
-          cache-read-only: ${{ github.ref != 'refs/heads/master' && github.ref != 'refs/heads/develop' }}
+          cache-read-only: false
 
       - name: Assemble
         run: ./gradlew :core:assemble
@@ -62,6 +63,7 @@ jobs:
     name: Build APKs for Testing
     runs-on: ubuntu-latest
     needs: [checkout]
+    if: always()
     timeout-minutes: 15
 
     steps:
@@ -95,6 +97,7 @@ jobs:
     name: Code Quality Checks
     runs-on: ubuntu-latest
     needs: [checkout]
+    if: always()
     timeout-minutes: 15
 
     steps:
@@ -126,6 +129,7 @@ jobs:
     name: API Validation
     runs-on: ubuntu-latest
     needs: [checkout]
+    if: always()
     timeout-minutes: 10
 
     steps:
@@ -156,6 +160,7 @@ jobs:
     name: Unit Tests
     runs-on: ubuntu-latest
     needs: [checkout]
+    if: always()
     timeout-minutes: 15
 
     steps:

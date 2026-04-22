@@ -63,7 +63,7 @@ jobs:
     name: Build APKs for Testing
     runs-on: ubuntu-latest
     needs: [checkout]
-    if: always()
+    if: always() && !cancelled()
     timeout-minutes: 15
 
     steps:
@@ -97,7 +97,7 @@ jobs:
     name: Code Quality Checks
     runs-on: ubuntu-latest
     needs: [checkout]
-    if: always()
+    if: always() && !cancelled()
     timeout-minutes: 15
 
     steps:
@@ -129,7 +129,7 @@ jobs:
     name: API Validation
     runs-on: ubuntu-latest
     needs: [checkout]
-    if: always()
+    if: always() && !cancelled()
     timeout-minutes: 10
 
     steps:
@@ -160,7 +160,7 @@ jobs:
     name: Unit Tests
     runs-on: ubuntu-latest
     needs: [checkout]
-    if: always()
+    if: always() && !cancelled()
     timeout-minutes: 15
 
     steps:
@@ -203,6 +203,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     needs: [build-apks]
+    if: always() && !cancelled()
 
     steps:
       - name: Checkout code

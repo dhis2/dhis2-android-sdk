@@ -32,6 +32,7 @@ import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryCombo
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOptionCombo
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.day20191101
@@ -192,8 +193,8 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
             .expression(expression)
             .filter(filter)
             .analyticsPeriodBoundaries(boundaries)
-            .categoryCombo(ObjectWithUid.create("bjDvmb4bfuf"))
-            .attributeCombo(ObjectWithUid.create("bjDvmb4bfuf"))
+            .categoryCombo(ObjectWithUid.create(categoryCombo.uid()))
+            .attributeCombo(ObjectWithUid.create(categoryCombo.uid()))
             .build()
 
         helper.setProgramIndicator(programIndicator)

@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine
 
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryCombo
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.AnalyticsType
@@ -178,8 +179,8 @@ open class BaseTrackerDataIntegrationHelper(
             .analyticsType(analyticsType)
             .program(ObjectWithUid.create(programUid)).expression(expression)
             .aggregationType(aggregationType)
-            .categoryCombo(ObjectWithUid.create("bjDvmb4bfuf"))
-            .attributeCombo(ObjectWithUid.create("bjDvmb4bfuf"))
+            .categoryCombo(ObjectWithUid.create(categoryCombo.uid()))
+            .attributeCombo(ObjectWithUid.create(categoryCombo.uid()))
             .build()
         setProgramIndicator(programIndicator)
     }

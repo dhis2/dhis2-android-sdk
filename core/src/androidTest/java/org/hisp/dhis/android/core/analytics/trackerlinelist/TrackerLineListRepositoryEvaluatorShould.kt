@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attributeOption
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attributeOptionCombo
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryCombo
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOptionCombo
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.generator
@@ -266,6 +267,7 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
             programIndicator,
             program.uid(),
             expression = "A{${attribute1.uid()}} + #{${programStage1.uid()}.${dataElement1.uid()}}",
+            categoryComboUid = categoryCombo.uid(),
             analyticsType = AnalyticsType.EVENT,
         )
 
@@ -296,6 +298,7 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
                 programIndicator,
                 program.uid(),
                 expression = expression,
+                categoryComboUid = categoryCombo.uid(),
                 analyticsType = AnalyticsType.ENROLLMENT,
             )
 

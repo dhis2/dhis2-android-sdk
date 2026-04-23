@@ -160,15 +160,17 @@ open class BaseTrackerDataIntegrationHelper(
         programIndicatorUid: String,
         programUid: String,
         expression: String,
+        categoryComboUid: String,
         analyticsType: AnalyticsType,
     ) {
-        insertProgramIndicator(programIndicatorUid, programUid, expression, AggregationType.AVERAGE, analyticsType)
+        insertProgramIndicator(programIndicatorUid, programUid, expression, categoryComboUid, AggregationType.AVERAGE, analyticsType)
     }
 
     suspend fun insertProgramIndicator(
         programIndicatorUid: String,
         programUid: String,
         expression: String,
+        categoryComboUid: String,
         aggregationType: AggregationType,
         analyticsType: AnalyticsType = AnalyticsType.ENROLLMENT,
     ) {
@@ -179,8 +181,8 @@ open class BaseTrackerDataIntegrationHelper(
             .analyticsType(analyticsType)
             .program(ObjectWithUid.create(programUid)).expression(expression)
             .aggregationType(aggregationType)
-            .categoryCombo(ObjectWithUid.create(categoryCombo.uid()))
-            .attributeCombo(ObjectWithUid.create(categoryCombo.uid()))
+            .categoryCombo(ObjectWithUid.create(categoryComboUid))
+            .attributeCombo(ObjectWithUid.create(categoryComboUid))
             .build()
         setProgramIndicator(programIndicator)
     }

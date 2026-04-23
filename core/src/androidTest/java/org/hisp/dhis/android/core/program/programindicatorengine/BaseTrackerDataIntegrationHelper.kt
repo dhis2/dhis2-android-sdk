@@ -163,7 +163,14 @@ open class BaseTrackerDataIntegrationHelper(
         categoryComboUid: String,
         analyticsType: AnalyticsType,
     ) {
-        insertProgramIndicator(programIndicatorUid, programUid, expression, categoryComboUid, AggregationType.AVERAGE, analyticsType)
+        insertProgramIndicator(
+            programIndicatorUid,
+            programUid,
+            expression,
+            categoryComboUid,
+            AggregationType.AVERAGE,
+            analyticsType,
+        )
     }
 
     suspend fun insertProgramIndicator(

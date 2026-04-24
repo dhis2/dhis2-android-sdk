@@ -82,6 +82,6 @@ internal class OpenIDConnectRequestHelper(private val config: OpenIDConnectConfi
         config.redirectUri,
     ).apply {
         setScope("openid email profile")
-        setPrompt("select_account")
+        config.prompt?.let { setPrompt(it) }
     }.build()
 }

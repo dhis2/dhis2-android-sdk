@@ -37,7 +37,6 @@ jobs:
   checkout:
     name: Checkout
     runs-on: ubuntu-latest
-    if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' || endsWith(github.ref, '-rc') }}
 
     steps:
       - name: Checkout code
@@ -63,7 +62,6 @@ jobs:
     name: Build APKs for Testing
     runs-on: ubuntu-latest
     needs: [checkout]
-    if: always() && !cancelled()
     timeout-minutes: 15
 
     steps:
@@ -97,7 +95,6 @@ jobs:
     name: Code Quality Checks
     runs-on: ubuntu-latest
     needs: [checkout]
-    if: always() && !cancelled()
     timeout-minutes: 15
 
     steps:
@@ -129,7 +126,6 @@ jobs:
     name: API Validation
     runs-on: ubuntu-latest
     needs: [checkout]
-    if: always() && !cancelled()
     timeout-minutes: 10
 
     steps:
@@ -160,7 +156,6 @@ jobs:
     name: Unit Tests
     runs-on: ubuntu-latest
     needs: [checkout]
-    if: always() && !cancelled()
     timeout-minutes: 15
 
     steps:
@@ -203,7 +198,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     needs: [build-apks]
-    if: always() && !cancelled()
 
     steps:
       - name: Checkout code
@@ -253,7 +247,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: [unit-tests, instrumented-tests]
-    if: always() && needs.instrumented-tests.result == 'success'
 
     steps:
       - name: Checkout code
@@ -359,7 +352,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: [jacoco-report]
-    if: always() && !cancelled()
 
     steps:
       - name: Checkout code

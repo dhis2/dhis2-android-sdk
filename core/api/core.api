@@ -7879,6 +7879,44 @@ public final class org/hisp/dhis/android/core/program/BoundaryTargetType$Undefin
 	public static final field INSTANCE Lorg/hisp/dhis/android/core/program/BoundaryTargetType$Undefined;
 }
 
+public abstract class org/hisp/dhis/android/core/program/CategoryMapping : org/hisp/dhis/android/core/common/CoreObject {
+	public fun <init> ()V
+	public static fun builder ()Lorg/hisp/dhis/android/core/program/CategoryMapping$Builder;
+	public abstract fun categoryId ()Ljava/lang/String;
+	public abstract fun mappingName ()Ljava/lang/String;
+	public abstract fun optionMappings ()Ljava/util/List;
+	public abstract fun program ()Ljava/lang/String;
+	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/program/CategoryMapping$Builder;
+	public abstract fun uid ()Ljava/lang/String;
+}
+
+public abstract class org/hisp/dhis/android/core/program/CategoryMapping$Builder {
+	public fun <init> ()V
+	public abstract fun build ()Lorg/hisp/dhis/android/core/program/CategoryMapping;
+	public abstract fun categoryId (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/CategoryMapping$Builder;
+	public abstract fun mappingName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/CategoryMapping$Builder;
+	public abstract fun optionMappings (Ljava/util/List;)Lorg/hisp/dhis/android/core/program/CategoryMapping$Builder;
+	public abstract fun program (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/CategoryMapping$Builder;
+	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/CategoryMapping$Builder;
+}
+
+public abstract class org/hisp/dhis/android/core/program/CategoryOptionMapping : org/hisp/dhis/android/core/common/CoreObject {
+	public fun <init> ()V
+	public static fun builder ()Lorg/hisp/dhis/android/core/program/CategoryOptionMapping$Builder;
+	public abstract fun categoryMapping ()Ljava/lang/String;
+	public abstract fun filter ()Ljava/lang/String;
+	public abstract fun optionId ()Ljava/lang/String;
+	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/program/CategoryOptionMapping$Builder;
+}
+
+public abstract class org/hisp/dhis/android/core/program/CategoryOptionMapping$Builder {
+	public fun <init> ()V
+	public abstract fun build ()Lorg/hisp/dhis/android/core/program/CategoryOptionMapping;
+	public abstract fun categoryMapping (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/CategoryOptionMapping$Builder;
+	public abstract fun filter (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/CategoryOptionMapping$Builder;
+	public abstract fun optionId (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/CategoryOptionMapping$Builder;
+}
+
 public abstract class org/hisp/dhis/android/core/program/Program : org/hisp/dhis/android/core/common/BaseNameableObAuVa, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyle {
 	public fun <init> ()V
 	public abstract fun access ()Lorg/hisp/dhis/android/core/common/Access;
@@ -8029,7 +8067,10 @@ public abstract class org/hisp/dhis/android/core/program/ProgramIndicator : org/
 	public abstract fun aggregationType ()Lorg/hisp/dhis/android/core/common/AggregationType;
 	public abstract fun analyticsPeriodBoundaries ()Ljava/util/List;
 	public abstract fun analyticsType ()Lorg/hisp/dhis/android/core/common/AnalyticsType;
+	public abstract fun attributeCombo ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public static fun builder ()Lorg/hisp/dhis/android/core/program/ProgramIndicator$Builder;
+	public abstract fun categoryCombo ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public abstract fun categoryMappingIds ()Ljava/util/List;
 	public abstract fun decimals ()Ljava/lang/Integer;
 	public abstract fun dimensionItem ()Ljava/lang/String;
 	public abstract fun displayInForm ()Ljava/lang/Boolean;
@@ -8045,7 +8086,10 @@ public abstract class org/hisp/dhis/android/core/program/ProgramIndicator$Builde
 	public abstract fun aggregationType (Lorg/hisp/dhis/android/core/common/AggregationType;)Lorg/hisp/dhis/android/core/program/ProgramIndicator$Builder;
 	public abstract fun analyticsPeriodBoundaries (Ljava/util/List;)Lorg/hisp/dhis/android/core/program/ProgramIndicator$Builder;
 	public abstract fun analyticsType (Lorg/hisp/dhis/android/core/common/AnalyticsType;)Lorg/hisp/dhis/android/core/program/ProgramIndicator$Builder;
+	public abstract fun attributeCombo (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/program/ProgramIndicator$Builder;
 	public abstract fun build ()Lorg/hisp/dhis/android/core/program/ProgramIndicator;
+	public abstract fun categoryCombo (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/program/ProgramIndicator$Builder;
+	public abstract fun categoryMappingIds (Ljava/util/List;)Lorg/hisp/dhis/android/core/program/ProgramIndicator$Builder;
 	public abstract fun decimals (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/program/ProgramIndicator$Builder;
 	public abstract fun dimensionItem (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramIndicator$Builder;
 	public abstract fun displayInForm (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramIndicator$Builder;
@@ -8058,6 +8102,8 @@ public abstract class org/hisp/dhis/android/core/program/ProgramIndicator$Builde
 public final class org/hisp/dhis/android/core/program/ProgramIndicatorCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
 	public final fun byAggregationType ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byAnalyticsType ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
+	public final fun byAttributeCombo ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
+	public final fun byCategoryCombo ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byDecimals ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/IntegerFilterConnector;
 	public final fun byDimensionItem ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun byDisplayInForm ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
@@ -14647,6 +14693,45 @@ public final class org/hisp/dhis/android/persistence/program/AnalyticsPeriodBoun
 public final class org/hisp/dhis/android/persistence/program/AnalyticsPeriodBoundaryTableInfo$Columns$Companion {
 }
 
+public final class org/hisp/dhis/android/persistence/program/CategoryMappingTableInfo {
+	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/program/CategoryMappingTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
+	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/persistence/program/CategoryMappingTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
+	public static final field CATEGORY_ID Ljava/lang/String;
+	public static final field Companion Lorg/hisp/dhis/android/persistence/program/CategoryMappingTableInfo$Columns$Companion;
+	public static final field MAPPING_NAME Ljava/lang/String;
+	public static final field PROGRAM Ljava/lang/String;
+	public static final field UID Ljava/lang/String;
+	public fun <init> ()V
+	public fun all ()[Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/persistence/program/CategoryMappingTableInfo$Columns$Companion {
+}
+
+public final class org/hisp/dhis/android/persistence/program/CategoryOptionMappingTableInfo {
+	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/program/CategoryOptionMappingTableInfo;
+	public static final field PARENT_COLUMN Ljava/lang/String;
+	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/persistence/program/CategoryOptionMappingTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
+	public static final field CATEGORY_MAPPING Ljava/lang/String;
+	public static final field Companion Lorg/hisp/dhis/android/persistence/program/CategoryOptionMappingTableInfo$Columns$Companion;
+	public static final field FILTER Ljava/lang/String;
+	public static final field OPTION_ID Ljava/lang/String;
+	public fun <init> ()V
+	public fun all ()[Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/persistence/program/CategoryOptionMappingTableInfo$Columns$Companion {
+}
+
 public final class org/hisp/dhis/android/persistence/program/ProgramIndicatorTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/program/ProgramIndicatorTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
@@ -14656,6 +14741,9 @@ public final class org/hisp/dhis/android/persistence/program/ProgramIndicatorTab
 public final class org/hisp/dhis/android/persistence/program/ProgramIndicatorTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
 	public static final field AGGREGATION_TYPE Ljava/lang/String;
 	public static final field ANALYTICS_TYPE Ljava/lang/String;
+	public static final field ATTRIBUTE_COMBO Ljava/lang/String;
+	public static final field CATEGORY_COMBO Ljava/lang/String;
+	public static final field CATEGORY_MAPPING_IDS Ljava/lang/String;
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
 	public static final field Companion Lorg/hisp/dhis/android/persistence/program/ProgramIndicatorTableInfo$Columns$Companion;

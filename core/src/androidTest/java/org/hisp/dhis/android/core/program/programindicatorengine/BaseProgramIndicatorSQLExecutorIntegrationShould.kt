@@ -31,6 +31,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorIntegrationShould
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryCombo
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOptionCombo
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.generator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.program
@@ -138,6 +139,8 @@ internal open class BaseProgramIndicatorSQLExecutorIntegrationShould : BaseEvalu
             .expression(expression)
             .filter(filter)
             .analyticsPeriodBoundaries(actualBoundaries)
+            .categoryCombo(ObjectWithUid.create(categoryCombo.uid()))
+            .attributeCombo(ObjectWithUid.create(categoryCombo.uid()))
             .build()
 
         return programIndicator.also {

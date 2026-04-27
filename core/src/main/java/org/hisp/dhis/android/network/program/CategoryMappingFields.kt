@@ -25,40 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.programindicator
 
-import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.legendset.LegendSet
-import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
-import org.hisp.dhis.android.core.program.ProgramIndicator
+package org.hisp.dhis.android.network.program
+
+import org.hisp.dhis.android.core.program.CategoryMapping
+import org.hisp.dhis.android.core.program.CategoryOptionMapping
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.network.legendset.LegendSetFields
-import org.hisp.dhis.android.persistence.program.ProgramIndicatorTableInfo.Columns
 
-internal object ProgramIndicatorFields : BaseFields<ProgramIndicator>() {
-    const val ANALYTICS_PERIOD_BOUNDARIES = "analyticsPeriodBoundaries"
-    const val LEGEND_SETS = "legendSets"
-    private const val CATEGORY_MAPPING_IDS = "categoryMappingIds"
+internal object CategoryOptionMappingFields : BaseFields<CategoryOptionMapping>() {
+    val allFields = Fields.from(
+        fh.field("optionId"),
+        fh.field("filter"),
+    )
+}
 
-    val uid = fh.uid()
-    val displayInForm = fh.field("displayInForm")
+internal object CategoryMappingFields : BaseFields<CategoryMapping>() {
+    private const val OPTION_MAPPINGS = "optionMappings"
 
     val allFields = Fields.from(
-        fh.getNameableFields(),
-        fh.field(Columns.DISPLAY_IN_FORM),
-        fh.field(Columns.EXPRESSION),
-        fh.field(Columns.DIMENSION_ITEM),
-        fh.field(Columns.FILTER),
-        fh.field(Columns.DECIMALS),
-        fh.field(Columns.AGGREGATION_TYPE),
-        fh.field(Columns.ANALYTICS_TYPE),
-        fh.nestedField<ObjectWithUid>(Columns.PROGRAM).with(ObjectWithUid.uid),
-        fh.nestedField<AnalyticsPeriodBoundary>(ANALYTICS_PERIOD_BOUNDARIES)
-            .with(AnalyticsPeriodBoundaryFields.allFields),
-        fh.nestedField<LegendSet>(LEGEND_SETS).with(LegendSetFields.uid),
-        fh.nestedFieldWithUid(Columns.CATEGORY_COMBO),
-        fh.nestedFieldWithUid(Columns.ATTRIBUTE_COMBO),
-        fh.field(CATEGORY_MAPPING_IDS),
+        fh.field("id"),
+        fh.field("categoryId"),
+        fh.field("mappingName"),
+        fh.nestedField<CategoryOptionMapping>(OPTION_MAPPINGS)
+            .with(CategoryOptionMappingFields.allFields),
     )
 }

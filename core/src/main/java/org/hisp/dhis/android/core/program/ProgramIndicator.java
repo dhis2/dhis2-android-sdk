@@ -73,6 +73,13 @@ public abstract class ProgramIndicator extends BaseNameableObAuVa implements Cor
     @Nullable
     public abstract List<ObjectWithUid> legendSets();
 
+    public abstract ObjectWithUid categoryCombo();
+
+    public abstract ObjectWithUid attributeCombo();
+
+    @Nullable
+    public abstract List<String> categoryMappingIds();
+
     public abstract Builder toBuilder();
 
     public static Builder builder() {
@@ -101,6 +108,12 @@ public abstract class ProgramIndicator extends BaseNameableObAuVa implements Cor
         public abstract Builder analyticsPeriodBoundaries(List<AnalyticsPeriodBoundary> analyticsPeriodBoundaries);
 
         public abstract Builder legendSets(List<ObjectWithUid> legendSets);
+
+        public abstract Builder categoryCombo(ObjectWithUid categoryCombo);
+
+        public abstract Builder attributeCombo(ObjectWithUid attributeCombo);
+
+        public abstract Builder categoryMappingIds(List<String> categoryMappingIds);
 
         public abstract ProgramIndicator build();
     }

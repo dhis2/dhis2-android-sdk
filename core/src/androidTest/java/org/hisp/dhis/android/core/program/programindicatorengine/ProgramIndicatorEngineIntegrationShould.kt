@@ -89,6 +89,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
         private const val dataElement2 = "Kb9hZ428FyH"
         private const val attribute1 = "Kmtdopp5GC1"
         private const val programIndicatorUid = "rg3JkCv0skl"
+        private const val categoryComboUid = "p0KPaWEg3cf"
 
         // Auxiliary variables
         private const val orgunitUid = "orgunit_uid"
@@ -110,13 +111,13 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
                 val trackedEntityType = TrackedEntityType.builder().uid(teiTypeUid).build()
                 koin.get<TrackedEntityTypeStore>().insert(trackedEntityType)
 
-                val categoryCombo = CreateCategoryComboUtils.create("p0KPaWEg3cf")
+                val categoryCombo = CreateCategoryComboUtils.create(categoryComboUid)
                 val store = CategoryComboStoreImpl(d2.databaseAdapter())
                 store.insert(categoryCombo)
 
                 val categoryOptionCombo = CategoryOptionCombo.builder()
                     .uid("bRowv6yZOF2")
-                    .categoryCombo(ObjectWithUid.create("p0KPaWEg3cf"))
+                    .categoryCombo(ObjectWithUid.create(categoryComboUid))
                     .build()
                 koin.get<CategoryOptionComboStore>().insert(categoryOptionCombo)
 
@@ -124,8 +125,8 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
                 val program = Program.builder().uid(programUid)
                     .access(access)
                     .trackedEntityType(TrackedEntityType.builder().uid(teiTypeUid).build())
-                    .categoryCombo(ObjectWithUid.create("p0KPaWEg3cf"))
-                    .enrollmentCategoryCombo(ObjectWithUid.create("p0KPaWEg3cf"))
+                    .categoryCombo(ObjectWithUid.create(categoryComboUid))
+                    .enrollmentCategoryCombo(ObjectWithUid.create(categoryComboUid))
                     .build()
                 koin.get<ProgramStore>().insert(program)
 
@@ -396,7 +397,7 @@ class ProgramIndicatorEngineIntegrationShould : BaseMockIntegrationTestEmptyDisp
     }
 
     private suspend fun insertProgramIndicator(expression: String, aggregationType: AggregationType) {
-        helper.insertProgramIndicator(programIndicatorUid, programUid, expression, aggregationType)
+        helper.insertProgramIndicator(programIndicatorUid, programUid, expression, categoryComboUid, aggregationType)
     }
 
     private suspend fun insertTrackedEntityDataValue(eventUid: String, dataElementUid: String, value: String) {

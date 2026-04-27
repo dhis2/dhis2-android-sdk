@@ -48,6 +48,7 @@ internal class ProgramHandler(
     private val collectionCleaner: ProgramCollectionCleaner,
     private val linkCleaner: ProgramOrganisationUnitLinkCleaner,
     private val programAttributeLinkHandler: ProgramAttributeValueLinkHandler,
+    private val categoryMappingHandler: CategoryMappingHandler,
 ) : IdentifiableHandlerImpl<Program>(programStore) {
 
     override suspend fun afterObjectHandled(o: Program, action: HandleAction) {
@@ -57,6 +58,10 @@ internal class ProgramHandler(
         )
         programRuleVariableHandler.handleMany(ProgramInternalAccessor.accessProgramRuleVariables(o))
         programSectionHandler.handleMany(ProgramInternalAccessor.accessProgramSections(o))
+        categoryMappingHandler.handleMany(
+            o.uid(),
+            ProgramInternalAccessor.accessCategoryMappings(o),
+        ) { it }
 
         if (action === HandleAction.Update) {
             orphanCleaner.deleteOrphan(o)

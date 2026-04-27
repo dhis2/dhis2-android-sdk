@@ -8,9 +8,12 @@ import org.hisp.dhis.android.core.common.AnalyticsType
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.util.dateFormat
+import org.hisp.dhis.android.persistence.category.CategoryComboDB
 import org.hisp.dhis.android.persistence.common.BaseNameableObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
+import org.hisp.dhis.android.persistence.common.StringListDB
 import org.hisp.dhis.android.persistence.common.applyBaseNameableFields
+import org.hisp.dhis.android.persistence.common.toDB
 
 @Entity(
     tableName = "ProgramIndicator",
@@ -19,6 +22,20 @@ import org.hisp.dhis.android.persistence.common.applyBaseNameableFields
             entity = ProgramDB::class,
             parentColumns = ["uid"],
             childColumns = ["program"],
+            onDelete = ForeignKey.CASCADE,
+            deferred = true,
+        ),
+        ForeignKey(
+            entity = CategoryComboDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["categoryCombo"],
+            onDelete = ForeignKey.CASCADE,
+            deferred = true,
+        ),
+        ForeignKey(
+            entity = CategoryComboDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["attributeCombo"],
             onDelete = ForeignKey.CASCADE,
             deferred = true,
         ),
@@ -44,6 +61,9 @@ internal data class ProgramIndicatorDB(
     val program: String,
     val aggregationType: String?,
     val analyticsType: String?,
+    val categoryCombo: String,
+    val attributeCombo: String,
+    val categoryMappingIds: StringListDB?,
 ) : EntityDB<ProgramIndicator>, BaseNameableObjectDB {
 
     override fun toDomain(): ProgramIndicator {
@@ -57,6 +77,9 @@ internal data class ProgramIndicatorDB(
             program(ObjectWithUid.create(program))
             aggregationType?.let { aggregationType(AggregationType.valueOf(it)) }
             analyticsType?.let { analyticsType(AnalyticsType.valueOf(it)) }
+            categoryCombo.let { categoryCombo(ObjectWithUid.create(it)) }
+            attributeCombo.let { attributeCombo(ObjectWithUid.create(it)) }
+            categoryMappingIds?.let { categoryMappingIds(it.toDomain()) }
         }.build()
     }
 }
@@ -81,5 +104,8 @@ internal fun ProgramIndicator.toDB(): ProgramIndicatorDB {
         program = program()!!.uid(),
         aggregationType = aggregationType()?.name,
         analyticsType = analyticsType()?.name,
+        categoryCombo = categoryCombo().uid(),
+        attributeCombo = attributeCombo().uid(),
+        categoryMappingIds = categoryMappingIds()?.toDB(),
     )
 }

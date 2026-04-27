@@ -259,6 +259,9 @@ public abstract class Program extends BaseNameableObAuVa
     @NonNull
     public abstract ObjectWithUid enrollmentCategoryCombo();
 
+    @Nullable
+    abstract List<CategoryMapping> categoryMappings();
+
     public static Builder builder() {
         return new AutoValue_Program.Builder();
     }
@@ -433,6 +436,8 @@ public abstract class Program extends BaseNameableObAuVa
         abstract ObjectStyle style();
 
         public abstract Builder enrollmentCategoryCombo(@NonNull ObjectWithUid enrollmentCategoryCombo);
+
+        abstract Builder categoryMappings(List<CategoryMapping> categoryMappings);
 
         public Program build() {
             if (featureType() == null) {

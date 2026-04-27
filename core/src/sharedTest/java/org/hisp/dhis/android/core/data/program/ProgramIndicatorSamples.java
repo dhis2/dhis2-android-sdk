@@ -51,7 +51,9 @@ public class ProgramIndicatorSamples {
                 .filter("test_filter")
                 .decimals(3)
                 .aggregationType(AggregationType.AVERAGE)
-                .program(ObjectWithUid.create("test_program"));
+                .program(ObjectWithUid.create("test_program"))
+                .categoryCombo(ObjectWithUid.create("test_category_combo"))
+                .attributeCombo(ObjectWithUid.create("test_category_combo"));
         return builder.build();
     }
 
@@ -72,6 +74,8 @@ public class ProgramIndicatorSamples {
                 .expression("d2:yearsBetween(A{iESIqZ0R0R0},V{event_date})")
                 .program(ObjectWithUid.create("lxAQ7Zs9VYR"))
                 .analyticsType(AnalyticsType.EVENT)
+                .categoryCombo(ObjectWithUid.create("bjDvmb4bfuf"))
+                .attributeCombo(ObjectWithUid.create("bjDvmb4bfuf"))
                 .build();
     }
 }

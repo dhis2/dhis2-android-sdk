@@ -28,6 +28,13 @@
   "program": {
     "id": "uy2gU8kT1jF"
   },
+  "categoryCombo": {
+    "id": "bjDvmb4bfuf"
+  },
+  "attributeCombo": {
+    "id": "bjDvmb4bfuf"
+  },
+  "categoryMappingIds": ["mapping1", "mapping2"],
   "user": {
     "id": "xE7jOejl9FI"
   },

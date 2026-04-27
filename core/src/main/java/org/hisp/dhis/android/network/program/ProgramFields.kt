@@ -30,6 +30,7 @@ package org.hisp.dhis.android.network.program
 import org.hisp.dhis.android.core.attribute.AttributeValue
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.ObjectStyle
+import org.hisp.dhis.android.core.program.CategoryMapping
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramRuleVariable
 import org.hisp.dhis.android.core.program.ProgramSection
@@ -50,6 +51,7 @@ internal object ProgramFields : BaseFields<Program>() {
     private const val STYLE = "style"
     private const val PROGRAM_SECTIONS = "programSections"
     const val ATTRIBUTE_VALUES = "attributeValues"
+    private const val CATEGORY_MAPPINGS = "categoryMappings"
 
     private const val ENROLLMENT_DATE_LABEL = "enrollmentDateLabel"
     private const val INCIDENT_DATE_LABEL = "incidentDateLabel"
@@ -96,6 +98,7 @@ internal object ProgramFields : BaseFields<Program>() {
         fh.field(Columns.DISPLAY_PROGRAM_STAGE_LABEL),
         fh.field(Columns.DISPLAY_EVENT_LABEL),
         fh.nestedFieldWithUid(Columns.ENROLLMENT_CATEGORY_COMBO),
+        fh.nestedField<CategoryMapping>(CATEGORY_MAPPINGS).with(CategoryMappingFields.allFields),
     )
 
     val allFields = Fields.from(

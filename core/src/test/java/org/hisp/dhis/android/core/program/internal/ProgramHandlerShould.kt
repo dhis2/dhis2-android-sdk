@@ -63,6 +63,7 @@ class ProgramHandlerShould {
     private val collectionCleaner: ProgramCollectionCleaner = mock()
     private val linkCleaner: ProgramOrganisationUnitLinkCleaner = mock()
     private val programAttributeValueLinkHandler: ProgramAttributeValueLinkHandler = mock()
+    private val categoryMappingHandler: CategoryMappingHandler = mock()
     private val program: Program = mock()
     private val dataAccess: DataAccess = mock()
     private val access: Access = mock()
@@ -91,6 +92,7 @@ class ProgramHandlerShould {
             collectionCleaner,
             linkCleaner,
             programAttributeValueLinkHandler,
+            categoryMappingHandler,
         )
 
         whenever(program.uid()).thenReturn("test_program_uid")
@@ -193,5 +195,11 @@ class ProgramHandlerShould {
     fun call_attribute_handlers() = runTest {
         programHandler.handleMany(listOf(program))
         verify(programAttributeValueLinkHandler).handleMany(eq(program.uid()), eq(listOf(attributeValue)), any())
+    }
+
+    @Test
+    fun call_category_mapping_handler() = runTest {
+        programHandler.handle(program)
+        verify(categoryMappingHandler).handleMany(eq(program.uid()), any(), any())
     }
 }

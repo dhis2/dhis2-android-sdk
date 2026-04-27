@@ -25,98 +25,100 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
+import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import java.text.ParseException
+import java.util.Date
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+interface BaseIdentifiableObject : IdentifiableObject, ObjectWithDeleteInterface {
+    override fun uid(): String
 
-import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat;
-import org.hisp.dhis.android.core.arch.helpers.DateUtils;
+    override fun code(): String?
 
-import java.text.ParseException;
-import java.util.Date;
+    override fun name(): String?
 
-public abstract class BaseIdentifiableObject implements IdentifiableObject, ObjectWithDeleteInterface {
-    /* date format which should be used for all Date instances
+    override fun displayName(): String?
+
+    override fun created(): Date?
+
+    override fun lastUpdated(): Date?
+
+    override fun deleted(): Boolean?
+
+    interface Builder<T : Builder<T>> {
+        fun uid(uid: String): T
+
+        fun code(code: String?): T
+
+        fun name(name: String?): T
+
+        fun displayName(displayName: String?): T
+
+        fun created(created: Date?): T
+
+        @Throws(ParseException::class)
+        fun created(createdStr: String): T {
+            return created(DATE_FORMAT.parse(createdStr))
+        }
+
+        fun lastUpdated(lastUpdated: Date?): T
+
+        @Throws(ParseException::class)
+        fun lastUpdated(lastUpdatedStr: String): T {
+            return lastUpdated(DATE_FORMAT.parse(lastUpdatedStr))
+        }
+
+        fun deleted(deleted: Boolean?): T
+    }
+
+    @Suppress("MayBeConst")
+    companion object {
+        /* date format which should be used for all Date instances
     within models which extend BaseIdentifiableObject */
-    public static SafeDateFormat DATE_FORMAT = DateUtils.DATE_FORMAT;
-    public static SafeDateFormat SPACE_DATE_FORMAT = DateUtils.SPACE_DATE_FORMAT;
+        @JvmField
+        val DATE_FORMAT: SafeDateFormat = DateUtils.DATE_FORMAT
 
-    public static final String UID = "id";
-    public static final String UUID = "uid";
-    public static final String CODE = "code";
-    public static final String NAME = "name";
-    public static final String DISPLAY_NAME = "displayName";
-    public static final String CREATED = "created";
-    public static final String LAST_UPDATED = "lastUpdated";
-    public static final String DELETED = "deleted";
+        @JvmField
+        val SPACE_DATE_FORMAT: SafeDateFormat = DateUtils.SPACE_DATE_FORMAT
 
-    @Override
-    public abstract String uid();
+        @JvmField val UID: String = "id"
 
-    @Override
-    @Nullable
-    public abstract String code();
+        @JvmField val UUID: String = "uid"
 
-    @Override
-    @Nullable
-    public abstract String name();
+        @JvmField val CODE: String = "code"
 
-    @Override
-    @Nullable
-    public abstract String displayName();
+        @JvmField val NAME: String = "name"
 
-    @Override
-    @Nullable
-    public abstract Date created();
+        @JvmField val DISPLAY_NAME: String = "displayName"
 
-    @Override
-    @Nullable
-    public abstract Date lastUpdated();
+        @JvmField val CREATED: String = "created"
 
-    @Override
-    @Nullable
-    public abstract Boolean deleted();
+        @JvmField val LAST_UPDATED: String = "lastUpdated"
 
-    public static Date parseDate(String dateStr) throws ParseException {
-        return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
-    }
+        @JvmField val DELETED: String = "deleted"
 
-    public static Date parseSpaceDate(String dateStr) throws ParseException {
-        return BaseIdentifiableObject.SPACE_DATE_FORMAT.parse(dateStr);
-    }
-
-    public static String dateToSpaceDateStr(Date date) {
-        return BaseIdentifiableObject.SPACE_DATE_FORMAT.format(date);
-    }
-
-    public static String dateToDateStr(Date date) {
-        return BaseIdentifiableObject.DATE_FORMAT.format(date);
-    }
-
-    public abstract static class Builder<T extends Builder> {
-
-        public abstract T uid(String uid);
-
-        public abstract T code(@Nullable String code);
-
-        public abstract T name(@Nullable String name);
-
-        public abstract T displayName(@Nullable String displayName);
-
-        public abstract T created(@Nullable Date created);
-
-        public T created(@NonNull String createdStr) throws ParseException {
-            return created(BaseIdentifiableObject.DATE_FORMAT.parse(createdStr));
+        @Throws(ParseException::class)
+        @JvmStatic
+        fun parseDate(dateStr: String): Date {
+            return DATE_FORMAT.parse(dateStr)
         }
 
-        public abstract T lastUpdated(@Nullable Date lastUpdated);
-
-        public T lastUpdated(@NonNull String lastUpdatedStr) throws ParseException {
-            return lastUpdated(BaseIdentifiableObject.DATE_FORMAT.parse(lastUpdatedStr));
+        @Throws(ParseException::class)
+        @JvmStatic
+        fun parseSpaceDate(dateStr: String): Date {
+            return SPACE_DATE_FORMAT.parse(dateStr)
         }
 
-        public abstract T deleted(@Nullable Boolean deleted);
+        @JvmStatic
+        fun dateToSpaceDateStr(date: Date): String {
+            return SPACE_DATE_FORMAT.format(date)
+        }
+
+        @JvmStatic
+        fun dateToDateStr(date: Date): String {
+            return DATE_FORMAT.format(date)
+        }
     }
 }

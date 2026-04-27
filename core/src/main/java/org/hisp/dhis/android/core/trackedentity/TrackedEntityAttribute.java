@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.TrackerSearchOperator;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.AggregationType;
-import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.BaseNameableObAuVa;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
@@ -47,7 +47,7 @@ import java.util.List;
 
 @AutoValue
 @SuppressWarnings({"PMD.ExcessivePublicCount"})
-public abstract class TrackedEntityAttribute extends BaseNameableObject
+public abstract class TrackedEntityAttribute extends BaseNameableObAuVa
         implements CoreObject, ObjectWithStyle<TrackedEntityAttribute, TrackedEntityAttribute.Builder> {
 
     @Nullable
@@ -122,7 +122,7 @@ public abstract class TrackedEntityAttribute extends BaseNameableObject
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseNameableObject.Builder<Builder>
+    public abstract static class Builder extends BaseNameableObAuVa.Builder<Builder>
             implements ObjectWithStyle.Builder<TrackedEntityAttribute, TrackedEntityAttribute.Builder> {
 
         public abstract Builder pattern(String pattern);

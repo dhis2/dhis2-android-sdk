@@ -34,7 +34,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.BaseNameableObAuVa;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.ObjectStyle;
@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import java.util.List;
 
 @AutoValue
-public abstract class TrackedEntityType extends BaseNameableObject implements CoreObject,
+public abstract class TrackedEntityType extends BaseNameableObAuVa implements CoreObject,
         ObjectWithStyle<TrackedEntityType, TrackedEntityType.Builder> {
 
     @Nullable
@@ -61,7 +61,7 @@ public abstract class TrackedEntityType extends BaseNameableObject implements Co
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseNameableObject.Builder<Builder>
+    public abstract static class Builder extends BaseNameableObAuVa.Builder<Builder>
             implements ObjectWithStyle.Builder<TrackedEntityType, Builder> {
 
         public abstract Builder trackedEntityTypeAttributes(List<TrackedEntityTypeAttribute> trackedEntityAttributes);

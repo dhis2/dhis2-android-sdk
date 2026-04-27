@@ -32,12 +32,12 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 @AutoValue
-public abstract class Legend extends BaseIdentifiableObject implements CoreObject {
+public abstract class Legend extends BaseIdentifiableObAuVa implements CoreObject {
 
     @Nullable
     public abstract Double startValue();
@@ -58,7 +58,7 @@ public abstract class Legend extends BaseIdentifiableObject implements CoreObjec
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
+    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
         public abstract Builder startValue(Double startValue);
 
         public abstract Builder endValue(Double endValue);

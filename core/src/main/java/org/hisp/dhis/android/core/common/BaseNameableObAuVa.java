@@ -26,24 +26,42 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.common;
 
-import com.google.auto.value.AutoValue;
+import androidx.annotation.Nullable;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
+public abstract class BaseNameableObAuVa implements BaseNameableObject {
+    public static final String SHORT_NAME = "shortName";
+    public static final String DISPLAY_SHORT_NAME = "displayShortName";
+    public static final String DESCRIPTION = "description";
+    public static final String DISPLAY_DESCRIPTION = "displayDescription";
 
-@AutoValue
-public abstract class UserGroup extends BaseIdentifiableObAuVa implements CoreObject {
+    @Nullable
+    @Override
+    public abstract String shortName();
 
-    public static Builder builder() {
-        return new AutoValue_UserGroup.Builder();
-    }
+    @Nullable
+    @Override
+    public abstract String displayShortName();
 
-    public abstract Builder toBuilder();
+    @Nullable
+    @Override
+    public abstract String description();
 
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
-        public abstract UserGroup build();
+    @Nullable
+    @Override
+    public abstract String displayDescription();
+
+    public abstract static class Builder<T extends Builder<T>>
+            extends BaseIdentifiableObAuVa.Builder<T>
+            implements BaseNameableObject.Builder<T> {
+
+        public abstract T shortName(@Nullable String shortName);
+
+        public abstract T displayShortName(@Nullable String displayShortName);
+
+        public abstract T description(@Nullable String description);
+
+        public abstract T displayDescription(@Nullable String displayDescription);
     }
 }

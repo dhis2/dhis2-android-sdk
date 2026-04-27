@@ -25,15 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
+interface NameableObject : IdentifiableObject {
+    fun shortName(): String?
 
-public interface NameableObject extends IdentifiableObject {
-    String shortName();
+    fun displayShortName(): String?
 
-    String displayShortName();
+    fun description(): String?
 
-    String description();
-
-    String displayDescription();
+    fun displayDescription(): String?
 }

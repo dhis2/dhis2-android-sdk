@@ -25,41 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
+interface BaseNameableObject : BaseIdentifiableObject, NameableObject {
+    override fun shortName(): String?
 
-import androidx.annotation.Nullable;
+    override fun displayShortName(): String?
 
-public abstract class BaseNameableObject extends BaseIdentifiableObject implements NameableObject {
-    public static final String SHORT_NAME = "shortName";
-    public static final String DISPLAY_SHORT_NAME = "displayShortName";
-    public static final String DESCRIPTION = "description";
-    public static final String DISPLAY_DESCRIPTION = "displayDescription";
+    override fun description(): String?
 
-    @Nullable
-    @Override
-    public abstract String shortName();
+    override fun displayDescription(): String?
 
-    @Nullable
-    @Override
-    public abstract String displayShortName();
+    interface Builder<T : Builder<T>> : BaseIdentifiableObject.Builder<T> {
+        fun shortName(shortName: String?): T
 
-    @Nullable
-    @Override
-    public abstract String description();
+        fun displayShortName(displayShortName: String?): T
 
-    @Nullable
-    @Override
-    public abstract String displayDescription();
+        fun description(description: String?): T
 
-    public abstract static class Builder<T extends Builder> extends BaseIdentifiableObject.Builder<T> {
+        fun displayDescription(displayDescription: String?): T
+    }
 
-        public abstract T shortName(@Nullable String shortName);
-
-        public abstract T displayShortName(@Nullable String displayShortName);
-
-        public abstract T description(@Nullable String description);
-
-        public abstract T displayDescription(@Nullable String displayDescription);
+    companion object {
+        const val SHORT_NAME: String = "shortName"
+        const val DISPLAY_SHORT_NAME: String = "displayShortName"
+        const val DESCRIPTION: String = "description"
+        const val DISPLAY_DESCRIPTION: String = "displayDescription"
     }
 }

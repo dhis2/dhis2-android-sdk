@@ -32,14 +32,14 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
 import org.hisp.dhis.android.core.dataelement.DataElement;
 
 @AutoValue
-public abstract class ProgramStageDataElement extends BaseIdentifiableObject implements CoreObject {
+public abstract class ProgramStageDataElement extends BaseIdentifiableObAuVa implements CoreObject {
 
     @Nullable
     public abstract Boolean displayInReports();
@@ -75,7 +75,7 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject imp
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
+    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
 
         public abstract Builder displayInReports(Boolean displayInReports);
 

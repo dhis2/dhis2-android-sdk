@@ -34,14 +34,14 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.AggregationType;
 import org.hisp.dhis.android.core.common.AnalyticsType;
-import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.BaseNameableObAuVa;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 import java.util.List;
 
 @AutoValue
-public abstract class ProgramIndicator extends BaseNameableObject implements CoreObject {
+public abstract class ProgramIndicator extends BaseNameableObAuVa implements CoreObject {
 
     @Nullable
     public abstract Boolean displayInForm();
@@ -88,7 +88,7 @@ public abstract class ProgramIndicator extends BaseNameableObject implements Cor
     }
 
     @AutoValue.Builder
-    public abstract static class Builder  extends BaseNameableObject.Builder<Builder> {
+    public abstract static class Builder  extends BaseNameableObAuVa.Builder<Builder> {
         public abstract Builder displayInForm(Boolean displayInForm);
 
         public abstract Builder expression(String expression);

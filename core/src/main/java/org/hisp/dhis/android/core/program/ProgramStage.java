@@ -7,7 +7,7 @@ import com.google.auto.value.AutoValue;
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.attribute.AttributeValue;
 import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.FeatureType;
 import org.hisp.dhis.android.core.common.FormType;
@@ -21,7 +21,7 @@ import java.util.List;
 
 @AutoValue
 @SuppressWarnings({"PMD.ExcessivePublicCount", "PMD.ExcessiveImports", "PMD.CouplingBetweenObjects", "PMD.GodClass"})
-public abstract class ProgramStage extends BaseIdentifiableObject
+public abstract class ProgramStage extends BaseIdentifiableObAuVa
         implements ObjectWithStyle<ProgramStage, ProgramStage.Builder>, CoreObject {
 
     @Nullable
@@ -163,7 +163,7 @@ public abstract class ProgramStage extends BaseIdentifiableObject
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder>
+    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder>
             implements ObjectWithStyle.Builder<ProgramStage, Builder> {
 
         public abstract Builder description(String description);

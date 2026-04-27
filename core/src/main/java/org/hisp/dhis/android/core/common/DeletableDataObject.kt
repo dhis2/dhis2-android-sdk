@@ -25,9 +25,8 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
-
-public interface DeletableDataObject extends DataObject, ObjectWithDeleteInterface {
-    Boolean deleted();
+interface DeletableDataObject : DataObject, ObjectWithDeleteInterface {
+    override fun deleted(): Boolean?
 }

@@ -32,13 +32,13 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.BaseNameableObAuVa;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.common.ValueTypeRendering;
 
 @AutoValue
-public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject implements CoreObject {
+public abstract class ProgramTrackedEntityAttribute extends BaseNameableObAuVa implements CoreObject {
 
     @Nullable
     public abstract Boolean mandatory();
@@ -71,7 +71,7 @@ public abstract class ProgramTrackedEntityAttribute extends BaseNameableObject i
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseNameableObject.Builder<Builder> {
+    public abstract static class Builder extends BaseNameableObAuVa.Builder<Builder> {
 
         public abstract Builder mandatory(Boolean mandatory);
 

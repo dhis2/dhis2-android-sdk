@@ -34,7 +34,7 @@ import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.BaseNameableObAuVa;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
@@ -42,7 +42,7 @@ import java.util.Date;
 import java.util.List;
 
 @AutoValue
-public abstract class CategoryOption extends BaseNameableObject implements CoreObject {
+public abstract class CategoryOption extends BaseNameableObAuVa implements CoreObject {
 
     @Nullable
     public abstract Date startDate();
@@ -66,7 +66,7 @@ public abstract class CategoryOption extends BaseNameableObject implements CoreO
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseNameableObject.Builder<Builder> {
+    public abstract static class Builder extends BaseNameableObAuVa.Builder<Builder> {
         public abstract Builder startDate(@Nullable Date startDate);
 
         public abstract Builder endDate(@Nullable Date endDate);

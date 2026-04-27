@@ -7879,7 +7879,7 @@ public final class org/hisp/dhis/android/core/program/BoundaryTargetType$Undefin
 	public static final field INSTANCE Lorg/hisp/dhis/android/core/program/BoundaryTargetType$Undefined;
 }
 
-public abstract class org/hisp/dhis/android/core/program/Program : org/hisp/dhis/android/core/common/BaseNameableObAuVa, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyle {
+public abstract class org/hisp/dhis/android/core/program/CategoryMapping : org/hisp/dhis/android/core/common/CoreObject {
 	public fun <init> ()V
 	public static fun builder ()Lorg/hisp/dhis/android/core/program/CategoryMapping$Builder;
 	public abstract fun categoryId ()Ljava/lang/String;
@@ -7917,7 +7917,7 @@ public abstract class org/hisp/dhis/android/core/program/CategoryOptionMapping$B
 	public abstract fun optionId (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/CategoryOptionMapping$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/program/Program : org/hisp/dhis/android/core/common/BaseNameableObject, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyle {
+public abstract class org/hisp/dhis/android/core/program/Program : org/hisp/dhis/android/core/common/BaseNameableObAuVa, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyle {
 	public fun <init> ()V
 	public abstract fun access ()Lorg/hisp/dhis/android/core/common/Access;
 	public abstract fun accessLevel ()Lorg/hisp/dhis/android/core/program/AccessLevel;

@@ -25,33 +25,8 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.constant;
-
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.CoreObject;
-
-@AutoValue
-public abstract class Constant extends BaseIdentifiableObject implements CoreObject {
-
-    @Nullable
-    public abstract Double value();
-
-    public static Builder builder() {
-        return new AutoValue_Constant.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
-
-        public abstract Builder value(Double value);
-
-        public abstract Constant build();
-    }
+interface DeletableDataObject : DataObject, ObjectWithDeleteInterface {
+    override fun deleted(): Boolean?
 }

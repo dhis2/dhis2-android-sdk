@@ -25,8 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
+interface DataObject : CoreObject, ObjectWithSyncStateInterface {
+    @Deprecated("")
+    fun state(): State?
 
-public interface CoreObject {
+    override fun syncState(): State?
 }

@@ -34,7 +34,7 @@ import androidx.annotation.Nullable;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.BaseNameableObAuVa;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.Geometry;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
@@ -44,7 +44,7 @@ import java.util.Date;
 import java.util.List;
 
 @AutoValue
-public abstract class OrganisationUnit extends BaseNameableObject implements CoreObject {
+public abstract class OrganisationUnit extends BaseNameableObAuVa implements CoreObject {
 
     public enum Scope {
         SCOPE_DATA_CAPTURE,
@@ -88,7 +88,7 @@ public abstract class OrganisationUnit extends BaseNameableObject implements Cor
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseNameableObject.Builder<Builder> {
+    public abstract static class Builder extends BaseNameableObAuVa.Builder<Builder> {
         public abstract Builder parent(ObjectWithUid parent);
 
         public abstract Builder path(String path);

@@ -32,11 +32,11 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 @AutoValue
-public abstract class OrganisationUnitGroup extends BaseIdentifiableObject implements CoreObject {
+public abstract class OrganisationUnitGroup extends BaseIdentifiableObAuVa implements CoreObject {
 
     @Nullable
     public abstract String shortName();
@@ -51,7 +51,7 @@ public abstract class OrganisationUnitGroup extends BaseIdentifiableObject imple
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
+    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
 
         public abstract Builder shortName(String shortName);
 

@@ -32,14 +32,14 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
 
 import java.util.List;
 
 @AutoValue
-public abstract class User extends BaseIdentifiableObject implements CoreObject {
+public abstract class User extends BaseIdentifiableObAuVa implements CoreObject {
 
     @Nullable
     public abstract String username();
@@ -105,7 +105,7 @@ public abstract class User extends BaseIdentifiableObject implements CoreObject 
     }
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
+    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
 
         public abstract Builder username(String username);
 

@@ -56,7 +56,7 @@ object CreateProgramStageUtils {
     // used for timestamps
     private const val DATE = "2017-01-05T15:39:00.000"
 
-    fun create(uid: String?, programId: String?): ProgramStage {
+    fun create(uid: String, programId: String?): ProgramStage {
         return ProgramStage.builder()
             .uid(uid)
             .code(CODE)

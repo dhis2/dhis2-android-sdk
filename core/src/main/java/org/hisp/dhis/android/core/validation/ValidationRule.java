@@ -32,14 +32,14 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseNameableObject;
+import org.hisp.dhis.android.core.common.BaseNameableObAuVa;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.period.PeriodType;
 
 import java.util.List;
 
 @AutoValue
-public abstract class ValidationRule extends BaseNameableObject implements CoreObject {
+public abstract class ValidationRule extends BaseNameableObAuVa implements CoreObject {
 
     @Nullable
     public abstract String instruction();
@@ -65,7 +65,7 @@ public abstract class ValidationRule extends BaseNameableObject implements CoreO
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseNameableObject.Builder<Builder> {
+    public abstract static class Builder extends BaseNameableObAuVa.Builder<Builder> {
 
         public abstract Builder instruction(String instruction);
 

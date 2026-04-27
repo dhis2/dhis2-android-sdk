@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,24 +26,16 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.common
 
-import com.google.auto.value.AutoValue;
+interface BaseNameableObjectKt : BaseIdentifiableObjectKt, BaseNameableObject {
+    val shortName: String?
+    val displayShortName: String?
+    val description: String?
+    val displayDescription: String?
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
-
-@AutoValue
-public abstract class UserGroup extends BaseIdentifiableObAuVa implements CoreObject {
-
-    public static Builder builder() {
-        return new AutoValue_UserGroup.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
-        public abstract UserGroup build();
-    }
+    override fun shortName(): String? = shortName
+    override fun displayShortName(): String? = displayShortName
+    override fun description(): String? = description
+    override fun displayDescription(): String? = displayDescription
 }

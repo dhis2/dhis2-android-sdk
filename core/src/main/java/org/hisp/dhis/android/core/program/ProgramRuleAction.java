@@ -32,12 +32,12 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 @AutoValue
-public abstract class ProgramRuleAction extends BaseIdentifiableObject implements CoreObject {
+public abstract class ProgramRuleAction extends BaseIdentifiableObAuVa implements CoreObject {
 
     @Nullable
     public abstract String data();
@@ -91,7 +91,7 @@ public abstract class ProgramRuleAction extends BaseIdentifiableObject implement
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
+    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
         public abstract Builder data(String data);
 
         public abstract Builder content(String content);

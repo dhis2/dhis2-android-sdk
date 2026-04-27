@@ -81,7 +81,7 @@ class TrackedEntityAttributeValueObjectRepository internal constructor(
 
     override suspend fun suspendExists(): Boolean {
         val value = getWithoutChildrenInternal()
-        return if (value == null) false else value.deleted() == null || !value.deleted()
+        return if (value == null) false else value.deleted() != true
     }
 
     override fun blockingExists(): Boolean {

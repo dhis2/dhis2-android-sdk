@@ -32,7 +32,7 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.dataelement.DataElement;
@@ -42,7 +42,7 @@ import org.hisp.dhis.android.core.indicator.Indicator;
 import java.util.List;
 
 @AutoValue
-public abstract class Section extends BaseIdentifiableObject implements CoreObject {
+public abstract class Section extends BaseIdentifiableObAuVa implements CoreObject {
 
     @Nullable
     public abstract String description();
@@ -84,7 +84,7 @@ public abstract class Section extends BaseIdentifiableObject implements CoreObje
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
+    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
         public abstract Builder description(String description);
 
         public abstract Builder sortOrder(Integer sortOrder);

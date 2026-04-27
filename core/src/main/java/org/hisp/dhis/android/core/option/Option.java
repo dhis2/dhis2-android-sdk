@@ -32,14 +32,14 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 @AutoValue
-public abstract class Option extends BaseIdentifiableObject
+public abstract class Option extends BaseIdentifiableObAuVa
         implements CoreObject, ObjectWithStyle<Option, Option.Builder> {
 
     @Nullable
@@ -55,7 +55,7 @@ public abstract class Option extends BaseIdentifiableObject
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder>
+    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder>
             implements ObjectWithStyle.Builder<Option, Option.Builder> {
 
         public abstract Builder sortOrder(@Nullable Integer sortOrder);

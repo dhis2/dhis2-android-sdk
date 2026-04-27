@@ -32,14 +32,14 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 import java.util.List;
 
 @AutoValue
-public abstract class ProgramRule extends BaseIdentifiableObject implements CoreObject {
+public abstract class ProgramRule extends BaseIdentifiableObAuVa implements CoreObject {
 
     @Nullable
     public abstract Integer priority();
@@ -63,7 +63,7 @@ public abstract class ProgramRule extends BaseIdentifiableObject implements Core
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<ProgramRule.Builder> {
+    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<ProgramRule.Builder> {
 
         public abstract Builder priority(Integer priority);
 

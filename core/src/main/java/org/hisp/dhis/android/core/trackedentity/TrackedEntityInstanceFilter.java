@@ -33,7 +33,7 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.DateFilterPeriod;
 import org.hisp.dhis.android.core.common.FilterPeriod;
@@ -45,7 +45,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import java.util.List;
 
 @AutoValue
-public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObject implements CoreObject,
+public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObAuVa implements CoreObject,
         ObjectWithStyle<TrackedEntityInstanceFilter, TrackedEntityInstanceFilter.Builder> {
 
     @Nullable
@@ -102,7 +102,7 @@ public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObject
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder>
+    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder>
             implements ObjectWithStyle.Builder<TrackedEntityInstanceFilter, Builder> {
 
         public abstract Builder program(ObjectWithUid program);

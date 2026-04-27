@@ -25,25 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.user;
+interface NameableObject : IdentifiableObject {
+    fun shortName(): String?
 
-import com.google.auto.value.AutoValue;
+    fun displayShortName(): String?
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun description(): String?
 
-@AutoValue
-public abstract class UserGroup extends BaseIdentifiableObAuVa implements CoreObject {
-
-    public static Builder builder() {
-        return new AutoValue_UserGroup.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
-        public abstract UserGroup build();
-    }
+    fun displayDescription(): String?
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,41 +25,8 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
-
-import androidx.annotation.Nullable;
-
-public abstract class BaseNameableObject extends BaseIdentifiableObject implements NameableObject {
-    public static final String SHORT_NAME = "shortName";
-    public static final String DISPLAY_SHORT_NAME = "displayShortName";
-    public static final String DESCRIPTION = "description";
-    public static final String DISPLAY_DESCRIPTION = "displayDescription";
-
-    @Nullable
-    @Override
-    public abstract String shortName();
-
-    @Nullable
-    @Override
-    public abstract String displayShortName();
-
-    @Nullable
-    @Override
-    public abstract String description();
-
-    @Nullable
-    @Override
-    public abstract String displayDescription();
-
-    public abstract static class Builder<T extends Builder> extends BaseIdentifiableObject.Builder<T> {
-
-        public abstract T shortName(@Nullable String shortName);
-
-        public abstract T displayShortName(@Nullable String displayShortName);
-
-        public abstract T description(@Nullable String description);
-
-        public abstract T displayDescription(@Nullable String displayDescription);
-    }
+interface ObjectWithSyncStateInterface {
+    fun syncState(): State?
 }

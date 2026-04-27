@@ -25,25 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.user;
+interface BaseNameableObject : BaseIdentifiableObject, NameableObject {
+    override fun shortName(): String?
 
-import com.google.auto.value.AutoValue;
+    override fun displayShortName(): String?
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
+    override fun description(): String?
 
-@AutoValue
-public abstract class UserGroup extends BaseIdentifiableObAuVa implements CoreObject {
+    override fun displayDescription(): String?
 
-    public static Builder builder() {
-        return new AutoValue_UserGroup.Builder();
+    interface Builder<T : Builder<T>> : BaseIdentifiableObject.Builder<T> {
+        fun shortName(shortName: String?): T
+
+        fun displayShortName(displayShortName: String?): T
+
+        fun description(description: String?): T
+
+        fun displayDescription(displayDescription: String?): T
     }
 
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
-        public abstract UserGroup build();
+    companion object {
+        const val SHORT_NAME: String = "shortName"
+        const val DISPLAY_SHORT_NAME: String = "displayShortName"
+        const val DESCRIPTION: String = "description"
+        const val DISPLAY_DESCRIPTION: String = "displayDescription"
     }
 }

@@ -25,35 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import androidx.annotation.Nullable;
+@ModelBuilder
+data class Geometry(
+    val type: FeatureType?,
+    val coordinates: String?,
+) {
+    fun type(): FeatureType? = type
+    fun coordinates(): String? = coordinates
 
-import com.google.auto.value.AutoValue;
+    fun toBuilder(): Builder = GeometryBuilder.from(this)
 
-@AutoValue
-public abstract class Geometry {
+    class Builder : GeometryBuilder()
 
-    @Nullable
-    public abstract FeatureType type();
 
-    @Nullable
-    public abstract String coordinates();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_Geometry.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder type(FeatureType type);
-
-        public abstract Builder coordinates(String coordinates);
-
-        public abstract Geometry build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

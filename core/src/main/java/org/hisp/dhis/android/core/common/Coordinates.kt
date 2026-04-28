@@ -25,25 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
+data class Coordinates(
+    val latitude: Double?,
+    val longitude: Double?
+) {
+    fun latitude(): Double? = latitude
+    fun longitude(): Double? = longitude
 
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class Coordinates {
-
-    @Nullable
-    public abstract Double latitude();
-
-    @Nullable
-    public abstract Double longitude();
-
-    public static Coordinates create(
-            Double latitude,
-            Double longitude) {
-        return new AutoValue_Coordinates(latitude, longitude);
+    companion object {
+        fun create(
+            latitude: Double?,
+            longitude: Double?
+        ): Coordinates {
+            return Coordinates(latitude, longitude)
+        }
     }
 }

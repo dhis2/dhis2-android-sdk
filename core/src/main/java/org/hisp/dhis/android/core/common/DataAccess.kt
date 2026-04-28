@@ -25,56 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class DataAccess(
+    val read: Boolean,
+    val write: Boolean,
+) {
+    fun read(): Boolean = read
+    fun write(): Boolean = write
 
-@AutoValue
-public abstract class DataAccess {
+    fun toBuilder(): Builder = DataAccessBuilder.from(this)
 
-    public abstract Boolean read();
+    class Builder : DataAccessBuilder()
 
-    public abstract Boolean write();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
 
-    public static DataAccess create(Boolean read,
-                                    Boolean write) {
-        return builder().read(read).write(write).build();
-    }
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_DataAccess.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder read(Boolean read);
-
-        public abstract Builder write(Boolean write);
-
-        abstract DataAccess autoBuild();
-
-        // Auxiliary fields
-        abstract Boolean read();
-
-        abstract Boolean write();
-
-        public DataAccess build() {
-            try {
-                read();
-            } catch (IllegalStateException e) {
-                read(Boolean.TRUE);
-            }
-
-            try {
-                write();
-            } catch (IllegalStateException e) {
-                write(Boolean.TRUE);
-            }
-
-            return autoBuild();
-        }
+        @JvmStatic
+        fun create(read: Boolean, write: Boolean): DataAccess = DataAccess(read, write)
     }
 }

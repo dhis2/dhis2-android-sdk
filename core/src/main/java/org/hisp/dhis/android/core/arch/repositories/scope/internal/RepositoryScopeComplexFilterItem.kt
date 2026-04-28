@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,25 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.scope.internal
 
-package org.hisp.dhis.android.core.arch.repositories.scope.internal;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class RepositoryScopeComplexFilterItem(
+    val whereQuery: String,
+) {
+    fun whereQuery(): String = whereQuery
 
-@AutoValue
-public abstract class RepositoryScopeComplexFilterItem {
+    fun toBuilder(): Builder = RepositoryScopeComplexFilterItemBuilder.from(this)
 
-    public abstract String whereQuery();
+    class Builder : RepositoryScopeComplexFilterItemBuilder()
 
-    public static Builder builder() {
-        return new AutoValue_RepositoryScopeComplexFilterItem.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder whereQuery(String whereQuery);
-
-        public abstract RepositoryScopeComplexFilterItem build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

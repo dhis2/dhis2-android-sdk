@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,33 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.attribute
 
-package org.hisp.dhis.android.core.attribute;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.ObjectWithUid
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class AttributeValue(
+    val value: String,
+    val attribute: ObjectWithUid,
+) {
+    fun value(): String = value
+    fun attribute(): ObjectWithUid = attribute
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+    fun toBuilder(): Builder = AttributeValueBuilder.from(this)
 
-@AutoValue
-public abstract class AttributeValue {
+    class Builder : AttributeValueBuilder()
 
-    public abstract String value();
-
-    public abstract ObjectWithUid attribute();
-
-    public static Builder builder() {
-        return new AutoValue_AttributeValue.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder value(String value);
-
-        public abstract Builder attribute(ObjectWithUid attribute);
-
-        public abstract AttributeValue build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

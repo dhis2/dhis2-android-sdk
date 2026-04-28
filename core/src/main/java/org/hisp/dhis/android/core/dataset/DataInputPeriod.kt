@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,49 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset
 
-package org.hisp.dhis.android.core.dataset;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import java.util.Date
 
-import androidx.annotation.Nullable;
+@ModelBuilder
+data class DataInputPeriod(
+    val dataSet: ObjectWithUid?,
+    val period: ObjectWithUid,
+    val openingDate: Date?,
+    val closingDate: Date?,
+) : CoreObject {
+    fun dataSet(): ObjectWithUid? = dataSet
+    fun period(): ObjectWithUid = period
+    fun openingDate(): Date? = openingDate
+    fun closingDate(): Date? = closingDate
 
-import com.google.auto.value.AutoValue;
+    fun toBuilder(): Builder = DataInputPeriodBuilder.from(this)
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+    class Builder : DataInputPeriodBuilder()
 
-import java.util.Date;
-
-@AutoValue
-public abstract class DataInputPeriod implements CoreObject {
-
-    @Nullable
-    public abstract ObjectWithUid dataSet();
-
-    public abstract ObjectWithUid period();
-
-    @Nullable
-    public abstract Date openingDate();
-
-    @Nullable
-    public abstract Date closingDate();
-
-    public abstract DataInputPeriod.Builder toBuilder();
-
-    public static DataInputPeriod.Builder builder() {
-        return new AutoValue_DataInputPeriod.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder dataSet(ObjectWithUid dataSet);
-
-        public abstract Builder period(ObjectWithUid period);
-
-        public abstract Builder openingDate(Date openingDate);
-
-        public abstract Builder closingDate(Date closingDate);
-
-        public abstract DataInputPeriod build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

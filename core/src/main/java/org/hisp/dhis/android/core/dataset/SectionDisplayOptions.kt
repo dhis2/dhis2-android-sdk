@@ -25,44 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset
 
-package org.hisp.dhis.android.core.dataset;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import androidx.annotation.Nullable;
+@ModelBuilder
+data class SectionDisplayOptions(
+    val beforeSectionText: String?,
+    val afterSectionText: String?,
+    val pivotMode: SectionPivotMode?,
+    val pivotedCategory: String?,
+) {
+    fun beforeSectionText(): String? = beforeSectionText
+    fun afterSectionText(): String? = afterSectionText
+    fun pivotMode(): SectionPivotMode? = pivotMode
+    fun pivotedCategory(): String? = pivotedCategory
 
-import com.google.auto.value.AutoValue;
+    fun toBuilder(): Builder = SectionDisplayOptionsBuilder.from(this)
 
-@AutoValue
-public abstract class SectionDisplayOptions {
+    class Builder : SectionDisplayOptionsBuilder()
 
-    @Nullable
-    public abstract String beforeSectionText();
-
-    @Nullable
-    public abstract String afterSectionText();
-
-    @Nullable
-    public abstract SectionPivotMode pivotMode();
-
-    @Nullable
-    public abstract String pivotedCategory();
-
-    public static Builder builder() {
-        return new AutoValue_SectionDisplayOptions.Builder();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder beforeSectionText(String beforeSectionText);
-
-        public abstract Builder afterSectionText(String afterSectionText);
-
-        public abstract Builder pivotMode(SectionPivotMode pivotMode);
-
-        public abstract Builder pivotedCategory(String pivotedCategory);
-
-        public abstract SectionDisplayOptions build();
-    }
-
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,52 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataelement
 
-package org.hisp.dhis.android.core.dataelement;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-import androidx.annotation.Nullable;
+@ModelBuilder
+data class DataElementOperand(
+    val uid: String,
+    val deleted: Boolean?,
+    val dataElement: ObjectWithUid?,
+    val categoryOptionCombo: ObjectWithUid?,
+) : CoreObject, ObjectWithUidInterface, ObjectWithDeleteInterface {
+    override fun uid(): String = uid
+    override fun deleted(): Boolean? = deleted
+    fun dataElement(): ObjectWithUid? = dataElement
+    fun categoryOptionCombo(): ObjectWithUid? = categoryOptionCombo
 
-import com.google.auto.value.AutoValue;
+    fun toBuilder(): Builder = DataElementOperandBuilder.from(this)
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+    class Builder : DataElementOperandBuilder()
 
-@AutoValue
-public abstract class DataElementOperand implements CoreObject, ObjectWithUidInterface, ObjectWithDeleteInterface {
-
-    @Override
-    @Nullable
-    public abstract String uid();
-
-    @Override
-    @Nullable
-    public abstract Boolean deleted();
-
-    @Nullable
-    public abstract ObjectWithUid dataElement();
-
-    @Nullable
-    public abstract ObjectWithUid categoryOptionCombo();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_DataElementOperand.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder uid(String uid);
-
-        public abstract Builder deleted(Boolean deleted);
-
-        public abstract Builder dataElement(ObjectWithUid dataElement);
-
-        public abstract Builder categoryOptionCombo(ObjectWithUid categoryOptionCombo);
-
-        public abstract DataElementOperand build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

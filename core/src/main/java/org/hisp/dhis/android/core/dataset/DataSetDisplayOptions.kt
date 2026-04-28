@@ -25,34 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset
 
-package org.hisp.dhis.android.core.dataset;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import androidx.annotation.Nullable;
+@ModelBuilder
+data class DataSetDisplayOptions(
+    val customText: CustomText?,
+    val tabsDirection: TabsDirection?,
+) {
+    fun customText(): CustomText? = customText
+    fun tabsDirection(): TabsDirection? = tabsDirection
 
-import com.google.auto.value.AutoValue;
+    fun toBuilder(): Builder = DataSetDisplayOptionsBuilder.from(this)
 
-@AutoValue
-public abstract class DataSetDisplayOptions {
+    class Builder : DataSetDisplayOptionsBuilder()
 
-    @Nullable
-    public abstract CustomText customText();
-
-    @Nullable
-    public abstract TabsDirection tabsDirection();
-
-    public static Builder builder() {
-        return new AutoValue_DataSetDisplayOptions.Builder();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder customText(CustomText customText);
-
-        public abstract Builder tabsDirection(TabsDirection tabsDirection);
-
-        public abstract DataSetDisplayOptions build();
-    }
-
 }

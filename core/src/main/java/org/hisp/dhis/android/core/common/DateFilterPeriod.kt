@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,56 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import java.util.Date
 
-import androidx.annotation.Nullable;
+@ModelBuilder
+data class DateFilterPeriod(
+    val startBuffer: Int?,
+    val endBuffer: Int?,
+    val startDate: Date?,
+    val endDate: Date?,
+    val period: RelativePeriod?,
+    val type: DatePeriodType?,
+) {
+    fun startBuffer(): Int? = startBuffer
+    fun endBuffer(): Int? = endBuffer
+    fun startDate(): Date? = startDate
+    fun endDate(): Date? = endDate
+    fun period(): RelativePeriod? = period
+    fun type(): DatePeriodType? = type
 
-import com.google.auto.value.AutoValue;
+    fun toBuilder(): Builder = DateFilterPeriodBuilder.from(this)
 
-import java.util.Date;
+    class Builder : DateFilterPeriodBuilder()
 
-@AutoValue
-public abstract class DateFilterPeriod {
-
-    @Nullable
-    public abstract Integer startBuffer();
-
-    @Nullable
-    public abstract Integer endBuffer();
-
-    @Nullable
-    public abstract Date startDate();
-
-    @Nullable
-    public abstract Date endDate();
-
-    @Nullable
-    public abstract RelativePeriod period();
-
-    @Nullable
-    public abstract DatePeriodType type();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_DateFilterPeriod.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder startBuffer(Integer startBuffer);
-
-        public abstract Builder endBuffer(Integer endBuffer);
-
-        public abstract Builder startDate(Date startDate);
-
-        public abstract Builder endDate(Date endDate);
-
-        public abstract Builder period(RelativePeriod period);
-
-        public abstract Builder type(DatePeriodType type);
-
-        public abstract DateFilterPeriod build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

@@ -25,38 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset
 
-package org.hisp.dhis.android.core.dataset;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import androidx.annotation.Nullable;
+@ModelBuilder
+data class CustomText(
+    val header: String?,
+    val subHeader: String?,
+    val align: TextAlign?,
+) {
+    fun header(): String? = header
+    fun subHeader(): String? = subHeader
+    fun align(): TextAlign? = align
 
-import com.google.auto.value.AutoValue;
+    fun toBuilder(): Builder = CustomTextBuilder.from(this)
 
-@AutoValue
-public abstract class CustomText {
+    class Builder : CustomTextBuilder()
 
-    public static Builder builder() {
-        return new AutoValue_CustomText.Builder();
-    }
-
-    @Nullable
-    public abstract String header();
-
-    @Nullable
-    public abstract String subHeader();
-
-    @Nullable
-    public abstract TextAlign align();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder header(String header);
-
-        public abstract Builder subHeader(String subHeader);
-
-        public abstract Builder align(TextAlign align);
-
-        public abstract CustomText build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

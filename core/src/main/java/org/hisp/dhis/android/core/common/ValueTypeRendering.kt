@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,28 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
+data class ValueTypeRendering(
+    val desktop: ValueTypeDeviceRendering?,
+    val mobile: ValueTypeDeviceRendering?,
+) {
+    fun desktop(): ValueTypeDeviceRendering? = desktop
+    fun mobile(): ValueTypeDeviceRendering? = mobile
 
-import androidx.annotation.Nullable;
+    companion object {
+        const val DESKTOP = "DESKTOP"
+        const val MOBILE = "MOBILE"
 
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class ValueTypeRendering {
-    public static final String DESKTOP = "DESKTOP";
-    public static final String MOBILE = "MOBILE";
-
-    @Nullable
-    public abstract ValueTypeDeviceRendering desktop();
-
-    @Nullable
-    public abstract ValueTypeDeviceRendering mobile();
-
-    public static ValueTypeRendering create(
-            ValueTypeDeviceRendering desktop,
-            ValueTypeDeviceRendering mobile) {
-
-        return new AutoValue_ValueTypeRendering(desktop, mobile);
+        @JvmStatic
+        fun create(
+            desktop: ValueTypeDeviceRendering?,
+            mobile: ValueTypeDeviceRendering?,
+        ): ValueTypeRendering {
+            return ValueTypeRendering(desktop, mobile)
+        }
     }
 }

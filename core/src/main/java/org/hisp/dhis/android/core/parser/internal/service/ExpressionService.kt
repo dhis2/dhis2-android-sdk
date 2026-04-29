@@ -92,7 +92,7 @@ internal class ExpressionService(
                     .dataElement(ObjectWithUid.create(it.id0))
                     .categoryOptionCombo(it.id1?.let { id -> ObjectWithUid.create(id) })
                     .build()
-        }
+            }
             .toSet()
     }
 

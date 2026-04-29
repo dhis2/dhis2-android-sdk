@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.common
 
-import com.google.auto.value.AutoValue
 import org.hisp.dhis.android.annotations.ModelBuilder
 
 @ModelBuilder

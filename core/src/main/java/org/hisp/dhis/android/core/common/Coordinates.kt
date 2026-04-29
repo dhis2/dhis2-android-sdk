@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.common
 
 data class Coordinates(
     val latitude: Double?,
-    val longitude: Double?
+    val longitude: Double?,
 ) {
     fun latitude(): Double? = latitude
     fun longitude(): Double? = longitude
@@ -37,7 +37,7 @@ data class Coordinates(
     companion object {
         fun create(
             latitude: Double?,
-            longitude: Double?
+            longitude: Double?,
         ): Coordinates {
             return Coordinates(latitude, longitude)
         }

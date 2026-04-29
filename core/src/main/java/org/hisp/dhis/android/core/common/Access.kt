@@ -33,7 +33,7 @@ import org.hisp.dhis.android.annotations.ModelBuilder
 data class Access(
     val read: Boolean,
     val write: Boolean,
-    val data: DataAccess
+    val data: DataAccess,
 ) {
     fun read(): Boolean = read
     fun write(): Boolean = write

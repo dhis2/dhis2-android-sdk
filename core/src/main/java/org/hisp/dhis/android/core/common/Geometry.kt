@@ -41,7 +41,6 @@ data class Geometry(
 
     class Builder : GeometryBuilder()
 
-
     companion object {
         @JvmStatic
         fun builder(): Builder = Builder()

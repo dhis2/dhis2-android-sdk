@@ -46,6 +46,12 @@ internal class LoginConfigCall(
     private val networkHandler: LoginConfigNetworkHandler,
 ) {
     suspend fun checkServerUrl(serverUrl: String): Result<LoginConfig, D2Error> {
+        try {
+            ServerUrlParser.validate(serverUrl)
+        } catch (d2Error: D2Error) {
+            return Result.Failure(d2Error)
+        }
+
         val sanitizedUrl = ServerUrlParser.trimAndRemoveTrailingSlash(serverUrl)!!
         val loginConfig = tryLoginConfig(sanitizedUrl)
 

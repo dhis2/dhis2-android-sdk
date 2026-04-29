@@ -45,7 +45,7 @@ abstract class AbstractFilterConnector<R : BaseRepository, V> internal construct
     fun updatedUnwrappedScope(operator: FilterItemOperator, valueStr: String?): RepositoryScope {
         return RepositoryScopeHelper.withFilterItem(
             scope,
-            RepositoryScopeFilterItem.builder().key(key).operator(operator).value(valueStr).build(),
+            RepositoryScopeFilterItem.builder().key(key).operator(operator).value(valueStr!!).build(),
         )
     }
 
@@ -60,7 +60,7 @@ abstract class AbstractFilterConnector<R : BaseRepository, V> internal construct
     ): RepositoryScope {
         return RepositoryScopeHelper.withFilterItem(
             scope,
-            RepositoryScopeFilterItem.builder().key(key).operator(operator).value(valueStr).build(),
+            RepositoryScopeFilterItem.builder().key(key).operator(operator).value(valueStr!!).build(),
         )
     }
 

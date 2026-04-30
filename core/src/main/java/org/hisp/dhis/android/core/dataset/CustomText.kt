@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,38 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset
 
-package org.hisp.dhis.android.core.arch.repositories.scope.internal;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import androidx.annotation.NonNull;
+@ModelBuilder
+data class CustomText(
+    val header: String?,
+    val subHeader: String?,
+    val align: TextAlign?,
+) {
+    fun header(): String? = header
+    fun subHeader(): String? = subHeader
+    fun align(): TextAlign? = align
 
-import com.google.auto.value.AutoValue;
+    fun toBuilder(): Builder = CustomTextBuilder.from(this)
 
-@AutoValue
-public abstract class RepositoryScopeFilterItem {
+    class Builder : CustomTextBuilder()
 
-    @NonNull
-    public abstract String key();
-
-    @NonNull
-    public abstract FilterItemOperator operator();
-
-    @NonNull
-    public abstract String value();
-
-    public static Builder builder() {
-        return new AutoValue_RepositoryScopeFilterItem.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder key(String key);
-
-        public abstract Builder operator(FilterItemOperator operator);
-
-        public abstract Builder value(String value);
-
-        public abstract RepositoryScopeFilterItem build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

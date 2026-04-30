@@ -25,34 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.scope.internal
 
-package org.hisp.dhis.android.core.dataset;
+import android.content.ContentValues
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 
-import androidx.annotation.Nullable;
+@ModelBuilder
+internal data class RepositoryScopeOrderByItem(
+    val column: String,
+    val direction: RepositoryScope.OrderByDirection,
+    val keyExtractor: RepositoryScopeKeyOrderExtractor,
+) {
+    fun column(): String = column
+    fun direction(): RepositoryScope.OrderByDirection = direction
+    fun keyExtractor(): RepositoryScopeKeyOrderExtractor = keyExtractor
 
-import com.google.auto.value.AutoValue;
+    fun getKey(contentValues: ContentValues): String =
+        keyExtractor.extractKey(contentValues, column)
 
-@AutoValue
-public abstract class DataSetDisplayOptions {
+    fun toSQLString(): String = "$column $direction"
 
-    @Nullable
-    public abstract CustomText customText();
+    fun toBuilder(): Builder = RepositoryScopeOrderByItemBuilder.from(this)
 
-    @Nullable
-    public abstract TabsDirection tabsDirection();
+    class Builder : RepositoryScopeOrderByItemBuilder()
 
-    public static Builder builder() {
-        return new AutoValue_DataSetDisplayOptions.Builder();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder().keyExtractor { contentValues, column ->
+            val key = contentValues.getAsString(column)
+            "'$key'"
+        }
     }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder customText(CustomText customText);
-
-        public abstract Builder tabsDirection(TabsDirection tabsDirection);
-
-        public abstract DataSetDisplayOptions build();
-    }
-
 }

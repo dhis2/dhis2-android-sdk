@@ -25,25 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.arch.repositories.scope.internal;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class Geometry(
+    val type: FeatureType?,
+    val coordinates: String?,
+) {
+    fun type(): FeatureType? = type
+    fun coordinates(): String? = coordinates
 
-@AutoValue
-public abstract class RepositoryScopeComplexFilterItem {
+    fun toBuilder(): Builder = GeometryBuilder.from(this)
 
-    public abstract String whereQuery();
+    class Builder : GeometryBuilder()
 
-    public static Builder builder() {
-        return new AutoValue_RepositoryScopeComplexFilterItem.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder whereQuery(String whereQuery);
-
-        public abstract RepositoryScopeComplexFilterItem build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

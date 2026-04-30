@@ -25,44 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataelement
 
-package org.hisp.dhis.android.core.dataset;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-import androidx.annotation.Nullable;
+@ModelBuilder
+data class DataElementOperand(
+    val uid: String,
+    val deleted: Boolean?,
+    val dataElement: ObjectWithUid?,
+    val categoryOptionCombo: ObjectWithUid?,
+) : CoreObject, ObjectWithUidInterface, ObjectWithDeleteInterface {
+    override fun uid(): String = uid
+    override fun deleted(): Boolean? = deleted
+    fun dataElement(): ObjectWithUid? = dataElement
+    fun categoryOptionCombo(): ObjectWithUid? = categoryOptionCombo
 
-import com.google.auto.value.AutoValue;
+    fun toBuilder(): Builder = DataElementOperandBuilder.from(this)
 
-@AutoValue
-public abstract class SectionDisplayOptions {
+    class Builder : DataElementOperandBuilder()
 
-    @Nullable
-    public abstract String beforeSectionText();
-
-    @Nullable
-    public abstract String afterSectionText();
-
-    @Nullable
-    public abstract SectionPivotMode pivotMode();
-
-    @Nullable
-    public abstract String pivotedCategory();
-
-    public static Builder builder() {
-        return new AutoValue_SectionDisplayOptions.Builder();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder beforeSectionText(String beforeSectionText);
-
-        public abstract Builder afterSectionText(String afterSectionText);
-
-        public abstract Builder pivotMode(SectionPivotMode pivotMode);
-
-        public abstract Builder pivotedCategory(String pivotedCategory);
-
-        public abstract SectionDisplayOptions build();
-    }
-
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,25 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset
 
-package org.hisp.dhis.android.core.common;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import androidx.annotation.Nullable;
+@ModelBuilder
+data class SectionDisplayOptions(
+    val beforeSectionText: String?,
+    val afterSectionText: String?,
+    val pivotMode: SectionPivotMode?,
+    val pivotedCategory: String?,
+) {
+    fun beforeSectionText(): String? = beforeSectionText
+    fun afterSectionText(): String? = afterSectionText
+    fun pivotMode(): SectionPivotMode? = pivotMode
+    fun pivotedCategory(): String? = pivotedCategory
 
-import com.google.auto.value.AutoValue;
+    fun toBuilder(): Builder = SectionDisplayOptionsBuilder.from(this)
 
-@AutoValue
-public abstract class Coordinates {
+    class Builder : SectionDisplayOptionsBuilder()
 
-    @Nullable
-    public abstract Double latitude();
-
-    @Nullable
-    public abstract Double longitude();
-
-    public static Coordinates create(
-            Double latitude,
-            Double longitude) {
-        return new AutoValue_Coordinates(latitude, longitude);
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,54 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset
 
-package org.hisp.dhis.android.core.arch.repositories.scope.internal;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import android.content.ContentValues;
+@ModelBuilder
+data class DataSetDisplayOptions(
+    val customText: CustomText?,
+    val tabsDirection: TabsDirection?,
+) {
+    fun customText(): CustomText? = customText
+    fun tabsDirection(): TabsDirection? = tabsDirection
 
-import androidx.annotation.NonNull;
+    fun toBuilder(): Builder = DataSetDisplayOptionsBuilder.from(this)
 
-import com.google.auto.value.AutoValue;
+    class Builder : DataSetDisplayOptionsBuilder()
 
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-
-@AutoValue
-public abstract class RepositoryScopeOrderByItem {
-
-    @NonNull
-    public abstract String column();
-
-    @NonNull
-    public abstract RepositoryScope.OrderByDirection direction();
-
-    @NonNull
-    public abstract RepositoryScopeKeyOrderExtractor keyExtractor();
-
-    public String getKey(ContentValues contentValues) {
-        return keyExtractor().extractKey(contentValues, column());
-    }
-
-    public String toSQLString() {
-        return column() + " " + direction();
-    }
-
-    public static Builder builder() {
-        return new AutoValue_RepositoryScopeOrderByItem.Builder()
-                .keyExtractor((contentValues, column) -> {
-                    String key = contentValues.getAsString(column);
-                    return "'" + key + "'";
-                });
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder column(@NonNull String column);
-
-        public abstract Builder direction(@NonNull RepositoryScope.OrderByDirection direction);
-
-        public abstract Builder keyExtractor(@NonNull RepositoryScopeKeyOrderExtractor keyExtractor);
-
-        public abstract RepositoryScopeOrderByItem build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

@@ -25,69 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
+data class Coordinates(
+    val latitude: Double?,
+    val longitude: Double?,
+) {
+    fun latitude(): Double? = latitude
+    fun longitude(): Double? = longitude
 
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class Access {
-
-    public abstract Boolean read();
-
-    public abstract Boolean write();
-
-    public abstract DataAccess data();
-
-    public static Access create(Boolean read, Boolean write, DataAccess data) {
-        return builder()
-                .read(read)
-                .write(write)
-                .data(data)
-                .build();
-    }
-
-    public static Builder builder() {
-        return new AutoValue_Access.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder read(Boolean read);
-
-        public abstract Builder write(Boolean write);
-
-        public abstract Builder data(DataAccess data);
-
-        abstract Access autoBuild();
-
-        // Auxiliary fields
-        abstract Boolean read();
-
-        abstract Boolean write();
-
-        abstract DataAccess data();
-
-        public Access build() {
-            try {
-                read();
-            } catch (IllegalStateException e) {
-                read(Boolean.TRUE);
-            }
-
-            try {
-                write();
-            } catch (IllegalStateException e) {
-                write(Boolean.TRUE);
-            }
-
-            try {
-                data();
-            } catch (IllegalStateException e) {
-                data(DataAccess.create(Boolean.TRUE, Boolean.TRUE));
-            }
-
-            return autoBuild();
+    companion object {
+        fun create(
+            latitude: Double?,
+            longitude: Double?,
+        ): Coordinates {
+            return Coordinates(latitude, longitude)
         }
     }
 }

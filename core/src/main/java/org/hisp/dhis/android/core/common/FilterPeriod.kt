@@ -25,33 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.attribute;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class FilterPeriod(
+    val periodFrom: Int?,
+    val periodTo: Int?,
+) {
+    fun periodFrom(): Int? = periodFrom
+    fun periodTo(): Int? = periodTo
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+    fun toBuilder(): Builder = FilterPeriodBuilder.from(this)
 
-@AutoValue
-public abstract class AttributeValue {
+    class Builder : FilterPeriodBuilder()
 
-    public abstract String value();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
 
-    public abstract ObjectWithUid attribute();
-
-    public static Builder builder() {
-        return new AutoValue_AttributeValue.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder value(String value);
-
-        public abstract Builder attribute(ObjectWithUid attribute);
-
-        public abstract AttributeValue build();
+        @JvmStatic
+        fun create(periodFrom: Int?, periodTo: Int?) = FilterPeriod(periodFrom, periodTo)
     }
 }

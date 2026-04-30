@@ -39,6 +39,7 @@ import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.google.devtools.ksp.symbol.KSType
+import com.google.devtools.ksp.symbol.Modifier
 import org.hisp.dhis.android.annotations.ModelBuilder
 import java.io.OutputStream
 
@@ -81,6 +82,7 @@ class ModelBuilderProcessor(
             }
             val implementationClass = baseClass?.let { ": ${baseClass.builder}.Builder<$builderName> " } ?: ""
             val overridenFields = baseClass?.fields ?: emptyList()
+            val visibilityModifier = if (symbol.modifiers.contains(Modifier.INTERNAL)) "internal " else ""
 
             val fields = symbol.declarations.filterIsInstance<KSPropertyDeclaration>().map { field ->
                 ClassField(
@@ -107,7 +109,7 @@ class ModelBuilderProcessor(
             ${baseClass?.builderImport ?: ""}
             import kotlin.properties.Delegates
                
-            open class $builderName $implementationClass{
+            ${visibilityModifier}open class $builderName $implementationClass{
                 ${
                 fields.joinToString("\n                ") { field ->
                     getBuilderInternalProperty(field)

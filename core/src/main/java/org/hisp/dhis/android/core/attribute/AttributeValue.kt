@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,56 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.attribute
 
-package org.hisp.dhis.android.core.common;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.ObjectWithUid
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class AttributeValue(
+    val value: String,
+    val attribute: ObjectWithUid,
+) {
+    fun value(): String = value
+    fun attribute(): ObjectWithUid = attribute
 
-@AutoValue
-public abstract class DataAccess {
+    fun toBuilder(): Builder = AttributeValueBuilder.from(this)
 
-    public abstract Boolean read();
+    class Builder : AttributeValueBuilder()
 
-    public abstract Boolean write();
-
-    public static DataAccess create(Boolean read,
-                                    Boolean write) {
-        return builder().read(read).write(write).build();
-    }
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_DataAccess.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder read(Boolean read);
-
-        public abstract Builder write(Boolean write);
-
-        abstract DataAccess autoBuild();
-
-        // Auxiliary fields
-        abstract Boolean read();
-
-        abstract Boolean write();
-
-        public DataAccess build() {
-            try {
-                read();
-            } catch (IllegalStateException e) {
-                read(Boolean.TRUE);
-            }
-
-            try {
-                write();
-            } catch (IllegalStateException e) {
-                write(Boolean.TRUE);
-            }
-
-            return autoBuild();
-        }
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

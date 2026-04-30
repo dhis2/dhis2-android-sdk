@@ -25,31 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
+import com.google.auto.value.AutoValue
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject.Companion.UID
+import org.hisp.dhis.android.network.common.fields.Field
+import org.hisp.dhis.android.network.common.fields.Field.Companion.create
 
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
 
-import androidx.annotation.NonNull;
+data class ObjectWithUid(
+    val uid: String,
+) : ObjectWithUidInterface {
+    override fun uid(): String = uid
 
-import com.google.auto.value.AutoValue;
+    companion object {
+        @JvmField
+        internal val uid: Field<ObjectWithUid> = Field.create(UID)
 
-import org.hisp.dhis.android.network.common.fields.Field;
+        @JvmStatic
+        fun create(uid: String): ObjectWithUid = ObjectWithUid(uid)
 
-@AutoValue
-public abstract class ObjectWithUid implements ObjectWithUidInterface {
-
-    public static final Field<ObjectWithUid> uid = Field.create(UID);
-
-    @Override
-    @NonNull
-    public abstract String uid();
-
-    public static ObjectWithUid create(String uid) {
-        return new AutoValue_ObjectWithUid(uid);
-    }
-
-    public static ObjectWithUid fromIdentifiable(IdentifiableObject identifiableObject) {
-        return create(identifiableObject.uid());
+        @JvmStatic
+        fun fromIdentifiable(identifiableObject: IdentifiableObject): ObjectWithUid =
+            create(identifiableObject.uid())
     }
 }
